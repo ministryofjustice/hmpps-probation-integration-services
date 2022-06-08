@@ -19,6 +19,10 @@ val copyAgentTask = project.tasks.register("copyAgent", Copy::class.java) {
 
 tasks.getByName("assemble").dependsOn(copyAgentTask)
 
+tasks.withType<org.gradle.jvm.tasks.Jar> {
+    enabled = false
+}
+
 allprojects {
     group = "uk.gov.justice.digital"
 
@@ -51,7 +55,6 @@ subprojects {
     apply {
         plugin("org.springframework.boot")
         plugin("io.spring.dependency-management")
-        plugin("org.jetbrains.kotlin.jvm")
         plugin("org.jetbrains.kotlin.plugin.spring")
         plugin("com.google.cloud.tools.jib")
     }
