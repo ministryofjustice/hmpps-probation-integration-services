@@ -5,6 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE" apply false
     kotlin("jvm") version "1.6.21" apply false
     kotlin("plugin.spring") version "1.6.21" apply false
+    id("com.google.cloud.tools.jib") version "3.2.1" apply false
 }
 
 allprojects {
@@ -36,6 +37,7 @@ subprojects {
         plugin("io.spring.dependency-management")
         plugin("org.jetbrains.kotlin.jvm")
         plugin("org.jetbrains.kotlin.plugin.spring")
+        plugin("com.google.cloud.tools.jib")
     }
 
     repositories {
