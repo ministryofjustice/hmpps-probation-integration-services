@@ -31,13 +31,19 @@ allprojects {
     }
 }
 
+// Add project name here to prevent attempting to create jib containers
+val noContainerModules = listOf<String>()
+
 subprojects {
     apply {
         plugin("org.springframework.boot")
         plugin("io.spring.dependency-management")
         plugin("org.jetbrains.kotlin.jvm")
         plugin("org.jetbrains.kotlin.plugin.spring")
-        plugin("com.google.cloud.tools.jib")
+
+        if(project.name notIn noContainerModules) {
+            plugin("com.google.cloud.tools.jib")
+        }
     }
 
     repositories {
@@ -45,3 +51,5 @@ subprojects {
         mavenCentral()
     }
 }
+
+infix fun String.notIn(list: List<String>): Boolean = !list.contains(this)
