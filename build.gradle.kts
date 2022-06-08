@@ -1,11 +1,13 @@
+import com.google.cloud.tools.jib.gradle.JibExtension
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     id("org.springframework.boot") version "2.7.0" apply false
     id("io.spring.dependency-management") version "1.0.11.RELEASE" apply false
-    kotlin("jvm") version "1.6.21"
+    kotlin("jvm") version "1.6.21" apply false
     kotlin("plugin.spring") version "1.6.21" apply false
     id("com.google.cloud.tools.jib") version "3.2.1" apply false
+    id("base")
 }
 
 val agentDeps: Configuration by configurations.creating
@@ -57,5 +59,30 @@ subprojects {
         plugin("io.spring.dependency-management")
         plugin("org.jetbrains.kotlin.plugin.spring")
         plugin("com.google.cloud.tools.jib")
+    }
+
+    JibExtension(project).apply {
+        container {
+            creationTime = "USE_CURRENT_TIMESTAMP"
+            jvmFlags = mutableListOf("-Duser.timezone=Europe/London")
+            mainClass = "uk.gov.justice.digital.hmpps.AppKt"
+            user = "2000:2000"
+        }
+        from {
+            image = "eclipse-temurin:17-jre-alpine"
+        }
+        extraDirectories {
+            paths {
+                path {
+                    setFrom("${project.buildDir}")
+                    includes.add("agent/agent.jar")
+                }
+                path {
+                    setFrom("${project.rootDir}")
+                    includes.add("applicationinsights*.json")
+                    into = "/agent"
+                }
+            }
+        }
     }
 }
