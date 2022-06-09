@@ -62,7 +62,7 @@ subprojects {
         plugin("com.google.cloud.tools.jib")
     }
 
-    JibExtension(project).apply {
+    project.extensions.getByType(JibExtension::class).apply {
         container {
             creationTime = "USE_CURRENT_TIMESTAMP"
             jvmFlags = mutableListOf("-Duser.timezone=Europe/London")
