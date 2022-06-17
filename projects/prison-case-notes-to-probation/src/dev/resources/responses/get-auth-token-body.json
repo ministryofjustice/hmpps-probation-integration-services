@@ -1,0 +1,10 @@
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYXNlLW5vdGVzLXRvLXByb2JhdGlvbiIsImdyYW50X3R5cGUiOiJjbGllbnRfY3JlZGVudGlhbHMiLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXSwiYXV0aF9zb3VyY2UiOiJub25lIiwiaXNzIjoiaHR0cHM6Ly9zaWduLWluLWRldi5obXBwcy5zZXJ2aWNlLmp1c3RpY2UuZ292LnVrL2F1dGgvaXNzdWVyIiwiZXhwIjoxNjU1MjIzNDE4LCJhdXRob3JpdGllcyI6WyJST0xFX1BST0JBVElPTl9JTkRFWCIsIlJPTEVfQ09NTVVOSVRZIl0sImp0aSI6ImZOMjlKSEp5MU43Z2NZdnFlLThCX2s1VDBtQSIsImNsaWVudF9pZCI6ImNhc2Utbm90ZXMtdG8tcHJvYmF0aW9uIn0.Vbsj0a2R5MHEV0AF0aXe4AxpEB4-awz60J2OOSptlEE",
+  "token_type": "bearer",
+  "expires_in": 1199,
+  "scope": "read write",
+  "sub": "case-notes-to-probation",
+  "auth_source": "none",
+  "jti": "fN29JHJy1N7gcYvqe-8B_k5T0mA",
+  "iss": "https://sign-in-dev.hmpps.service.justice.gov.uk/auth/issuer"
+}

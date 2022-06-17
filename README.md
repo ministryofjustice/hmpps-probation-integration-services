@@ -1,27 +1,96 @@
-# Ministry of Justice Template Repository
+# Probation Integration Services
 
-[![repo standards badge](https://img.shields.io/badge/dynamic/json?color=blue&style=for-the-badge&logo=github&label=MoJ%20Compliant&query=%24.data%5B%3F%28%40.name%20%3D%3D%20%22template-repository%22%29%5D.status&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fgithub_repositories)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/github_repositories#template-repository "Link to report")
+> :memo: This repository is a work-in-progress and subject to change.
+ 
+[![repo standards badge](https://img.shields.io/badge/dynamic/json?color=blue&style=for-the-badge&logo=github&label=MoJ%20Compliant&query=%24.data%5B%3F%28%40.name%20%3D%3D%20%22hmpps-probation-integration-services%22%29%5D.status&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fgithub_repositories)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/github_repositories#probation-integration-services "Link to report")
 
-Use this template to [create a repository] with the default initial files for a Ministry of Justice Github repository, including:
+A collection of small, domain-focused integrations to support HMPPS Digital services that need to interact with 
+probation data. Typically, these integration services will perform translations between HMPPS and Delius domain 
+concepts, and are responsible for:
+* publishing REST endpoints to read existing data from the Delius database
+* listening for HMPPS Domain Event messages and writing data into the Delius database
 
-* The correct LICENSE
-* Github Action example
-* A .gitignore file
-* A CODEOWNERS file
-* A dependabot.yml file
-* The MoJ Compliant Badge (Public repositories only)
+# Project
+## Goals
+This project is intended to reduce the surface area of larger integration systems (e.g. [Community API](https://github.com/ministryofjustice/community-api)),
+and to replace other components (e.g. [Case Notes to Probation](https://github.com/ministryofjustice/case-notes-to-probation))
+with simpler services that have direct access to the Delius database.
 
-Once you have created your repository, please:
+With this in mind, we aim to:
+* Support HMPPS Digital teams by building and deploying at pace
+* Separate overlapping domain concepts by creating smaller, more focused services
+* Simplify the developer experience by unifying common approaches and streamlining workflows
 
-* Edit the copy of this README.md file to document your project.
-* Grant permission/s to the appropriate MoJ team/s with at least one team having Admin permissions.
-* Try not to add individual users to the repository, instead use a team.
-* To add an Outside Collaborator to the repository follow the guidelines on the [GitHub-collaborator repository](https://github.com/ministryofjustice/github-collaborators).
-* Ensure branch protection is set up on the main branch.
-* Modify the CODEOWNERS file and state the team or users that can authorise PR's. 
-* Modify the Dependabot file to suit the [dependency manager](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#package-ecosystem) you plan to use and for [automated pull requests for package updates](https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/enabling-and-disabling-dependabot-version-updates#enabling-dependabot-version-updates). Dependabot is enabled in the settings by default.
-* Modify the short description found on the right side of the README.md file.
-* Ensure as many of the [GitHub Standards](https://github.com/ministryofjustice/github-repository-standards) rules are maintained as possibly can.
-* Modify the MoJ Compliant Badge url using these [instructions](https://github.com/orgs/ministryofjustice/teams/operations-engineering/discussions). If the repository is internal or private then the badge can removed as it will not work. 
+## Design Decisions
+* Each service serves one, and only one, client
+* Services have a single well-defined purpose
+* Entities/projections are defined using domain-specific language (e.g. CaseNote, not Contact)
 
-[create a repository]: https://github.com/ministryofjustice/template-repository/generate
+A full list of decision records can be found in [decisions](decisions). (**TODO**)
+
+## Tooling
+* Code is written in [Kotlin](https://kotlinlang.org/), using [Spring Boot](https://spring.io/projects/spring-boot) 
+* Built and tested as a multi-project [Gradle](https://gradle.org/) build
+* Unit tests with [JUnit](https://junit.org/) and [Mockito](https://mockito.org/)
+* Integration tests with [Hoverfly](https://hoverfly.io/), [H2](https://www.h2database.com/), and [embedded ActiveMQ](https://activemq.apache.org/)
+* Contract testing with [PACT](https://pact.io/)
+* End-to-end testing **TBC**
+* Docker images are built with [Jib](https://github.com/GoogleContainerTools/jib#readme)
+* Continuous integration with [GitHub Actions](https://help.github.com/en/actions) **TBC**
+
+# Development
+The project is configured to enable developers to build/test/run integration services in isolation without the need for 
+Docker or remote dependencies.
+
+To set up your development environment,
+1. Open the project in [IntelliJ IDEA](https://www.jetbrains.com/idea/)
+2. To run tests for a service, right-click the `src/test` folder in the project view and select "Run tests".  See [Test](#test).
+3. To start the service, use the pre-defined run configuration in `.idea/runConfigurations` (See [Run](#run)).
+
+
+# Build
+IntelliJ will automatically build your code as needed.  To build and unit test using Gradle, run:
+```shell
+./gradlew build
+```
+
+## Docker
+To build Docker images locally, run:
+```shell
+./gradlew jibDockerBuild
+```
+
+# Run
+## IntelliJ
+In IntelliJ IDEA, a [run configuration](https://www.jetbrains.com/help/idea/run-debug-configuration.html) is available 
+for each service. Select it from the toolbar, and click either Run or Debug. The service will start in the `dev` 
+profile, which typically auto-configures embedded test data and services.
+
+Run configurations are stored in [.idea/runConfigurations](.idea/runConfigurations).
+
+## Gradle
+To run Gradle tasks in a sub-project, prepend the task name with the name of the project. Environment variables can be 
+used to set the dev profile. For example,
+```shell
+SPRING_PROFILES_ACTIVE=dev ./gradlew :case-notes:bootRun
+```
+
+# Test
+## Integration tests
+Integration tests use Hoverfly JSON files to mock any external services.
+
+**TODO** add more details when test implementation is complete.
+
+# Deploy
+Services are deployed to the Delius AWS ECS cluster, which gives them direct access to the Delius database. The
+infrastructure code is maintained here: [probation-integration-services](https://github.com/ministryofjustice/hmpps-delius-core-terraform/tree/main/application/probation-integration-services).
+
+To access queues or other resources in MOJ Cloud Platform, you should add an IAM policy that grants access to one of the
+following roles ([example](https://github.com/ministryofjustice/cloud-platform-environments/blob/7a028911f8ed459a30e98d8dbba8cdcf7283ac93/namespaces/live.cloud-platform.service.justice.gov.uk/offender-events-dev/resources/case-notes-sub-queue.tf#L42-L57)):
+* Dev/Test: `arn:aws:iam::728765553488:role/delius-test-ecs-sqs-consumer`
+* Pre-Prod: `arn:aws:iam::010587221707:role/delius-pre-prod-ecs-sqs-consumer`
+* Production: `arn:aws:iam::050243167760:role/delius-prod-ecs-sqs-consumer`
+
+# Support
+For any issues, please contact the Probation Integration team via the [#probation-integration-tech](https://mojdt.slack.com/archives/C02HQ4M2YQN)
+Slack channel. Or feel free to create a [new issue](https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new) in this repository.

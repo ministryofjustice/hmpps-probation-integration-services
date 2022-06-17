@@ -1,0 +1,3 @@
+spring:
+  datasource.url: jdbc:h2:file:./projects/prison-case-notes-to-probation/test;MODE=Oracle;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
+  jpa.hibernate.ddl-auto: create-drop

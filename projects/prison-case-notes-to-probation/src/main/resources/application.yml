@@ -1,0 +1,32 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  security:
+    oauth2:
+      client:
+        registration:
+          case-notes:
+            provider: hmpps-auth
+            client-id: ${oauth.client.id}
+            client-secret: ${oauth.client.secret}
+            authorization-grant-type: client_credentials
+            scope: read
+        provider:
+          hmpps-auth:
+            token-uri: ${oauth.endpoint.url}/oauth/token
+
+management:
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: "health"
+
+feign:
+  client:
+    config:
+      nomis-client:
+        logger-level: full
+        connect-timeout: 5000
+        read-timeout: 5000
