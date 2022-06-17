@@ -26,6 +26,9 @@ management:
 hawtio:
   authenticationEnabled: false
 
+hoverfly:
+  run: true
+
 logging:
   level:
     uk.gov.justice.digital.hmpps.integrations.nomis.NomisClient: DEBUG

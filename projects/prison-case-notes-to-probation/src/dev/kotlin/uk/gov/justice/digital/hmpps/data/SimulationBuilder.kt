@@ -13,7 +13,7 @@ import kotlin.io.path.isRegularFile
 import kotlin.io.path.name
 
 @Component
-@Profile("dev")
+@Profile("dev", "test")
 class SimulationBuilder(private val om: ObjectMapper) {
     fun simulationsFromFile(): List<SimulationSource> {
         val resource = ResourceUtils.getFile("classpath:application-dev.yml")

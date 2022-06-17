@@ -32,27 +32,29 @@ allprojects {
         mavenCentral()
     }
 
-    tasks.withType<JavaCompile> {
-        sourceCompatibility = "17"
-    }
-
-    tasks.withType<KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = "17"
+    tasks {
+        withType<JavaCompile> {
+            sourceCompatibility = "17"
         }
-    }
 
-    tasks.withType<Test> {
-        useJUnitPlatform()
-    }
+        withType<KotlinCompile> {
+            kotlinOptions {
+                freeCompilerArgs = listOf("-Xjsr305=strict")
+                jvmTarget = "17"
+            }
+        }
 
-    tasks.withType<BootJar> {
-        enabled = false
-    }
+        withType<Test> {
+            useJUnitPlatform()
+        }
 
-    tasks.withType<Jar> {
-        enabled = false
+        withType<BootJar> {
+            enabled = false
+        }
+
+        withType<Jar> {
+            enabled = false
+        }
     }
 }
 
@@ -66,9 +68,11 @@ subprojects {
         plugin("com.google.cloud.tools.jib")
     }
 
-    project.tasks.getByName("jib").dependsOn(copyAgentTask)
-    project.tasks.getByName("jibBuildTar").dependsOn(copyAgentTask)
-    project.tasks.getByName("jibDockerBuild").dependsOn(copyAgentTask)
+    tasks {
+        getByName("jib").dependsOn(copyAgentTask)
+        getByName("jibBuildTar").dependsOn(copyAgentTask)
+        getByName("jibDockerBuild").dependsOn(copyAgentTask)
+    }
 
     configure<JibExtension> {
         container {
@@ -103,13 +107,23 @@ subprojects {
     configure<SourceSetContainer> {
         val main by getting {
             if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
-                compileClasspath += dev
-                runtimeClasspath += dev
+                compileClasspath += configurations["dev"]
+                runtimeClasspath += configurations["dev"]
             }
         }
         val dev by creating {
-            compileClasspath += dev + main.compileClasspath + main.output
-            runtimeClasspath += dev + main.runtimeClasspath + main.output
+            compileClasspath += configurations["dev"] + main.compileClasspath + main.output
+            runtimeClasspath += configurations["dev"] + main.runtimeClasspath + main.output
+        }
+
+        val test by getting {
+            compileClasspath += configurations["dev"] + dev.output
+            runtimeClasspath += configurations["dev"] + dev.output
+        }
+
+        val integrationTest by creating {
+            compileClasspath += test.compileClasspath + test.output
+            runtimeClasspath += test.runtimeClasspath + test.output
         }
     }
 }

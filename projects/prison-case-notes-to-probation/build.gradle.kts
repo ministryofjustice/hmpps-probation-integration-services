@@ -15,5 +15,9 @@ dependencies {
     dev(libs.hoverfly)
 
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation(libs.mockito.kotlin)
+    integrationTestImplementation(libs.hoverfly.junit)
 }
 
