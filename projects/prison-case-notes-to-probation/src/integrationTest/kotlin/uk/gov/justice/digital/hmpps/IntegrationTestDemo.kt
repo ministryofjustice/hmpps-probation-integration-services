@@ -13,10 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.SimulationBuilder
-import uk.gov.justice.digital.hmpps.integrations.nomis.CaseNoteMessage
-import uk.gov.justice.digital.hmpps.listener.CaseNoteMessageWrapper
 
-@ActiveProfiles("test")
+@ActiveProfiles("integration-test")
 @SpringBootTest
 @HoverflyCore(
     mode = HoverflyMode.SIMULATE,
@@ -44,9 +42,6 @@ class IntegrationTestDemo {
 
     @Test
     fun integrationTestDemo() {
-        val cnMessage = CaseNoteMessage("GA52214", 1234, "NEG")
-        jmsTemplate.convertAndSend(
-            "events", CaseNoteMessageWrapper(cnMessage)
-        )
+        println("Integration Test")
     }
 }
