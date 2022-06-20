@@ -72,7 +72,7 @@ Run configurations are stored in [.idea/runConfigurations](.idea/runConfiguratio
 To run Gradle tasks in a sub-project, prepend the task name with the name of the project. Environment variables can be 
 used to set the dev profile. For example,
 ```shell
-SPRING_PROFILES_ACTIVE=dev ./gradlew :<project-name>:bootRun
+SPRING_PROFILES_ACTIVE=dev ./gradlew <project-name>:bootRun
 ```
 
 # Test
