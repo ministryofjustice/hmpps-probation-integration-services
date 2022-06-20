@@ -9,7 +9,7 @@ import java.time.ZonedDateTime
 
 const val UNKNOWN_LOCATION = "UNK"
 
-data class CaseNote(
+data class NomisCaseNote(
     val eventId: Long,
     val offenderIdentifier: String,
     val type: String,
@@ -42,7 +42,7 @@ data class CaseNoteMessage(
     val eventType: String
 )
 
-fun CaseNote.toDeliusCaseNote(): DeliusCaseNote {
+fun NomisCaseNote.toDeliusCaseNote(): DeliusCaseNote {
 
     fun amendments(): (CaseNoteAmendment) -> String = { a ->
         " ...[${a.authorName} updated the case notes on ${DeliusDateTimeFormatter.format(a.creationDateTime)}] ${a.additionalNoteText}"

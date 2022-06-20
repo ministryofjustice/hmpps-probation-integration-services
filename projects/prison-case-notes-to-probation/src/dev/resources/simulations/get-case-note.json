@@ -18,7 +18,34 @@
         },
         "response": {
           "status": 200,
-          "bodyFile": "responses/get-case-note-body.json",
+          "bodyFile": "responses/get-case-note-body-exists-in-delius.json",
+          "encodedBody": false,
+          "headers": {
+            "Content-Type": [
+              "application/json"
+            ]
+          },
+          "templated": false
+        }
+      },
+      {
+        "request": {
+          "path": [
+            {
+              "matcher": "exact",
+              "value": "/case-notes/GA52214/1235"
+            }
+          ],
+          "method": [
+            {
+              "matcher": "exact",
+              "value": "GET"
+            }
+          ]
+        },
+        "response": {
+          "status": 200,
+          "bodyFile": "responses/get-case-note-body-not-in-delius.json",
           "encodedBody": false,
           "headers": {
             "Content-Type": [

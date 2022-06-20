@@ -130,10 +130,14 @@ subprojects {
             }
 
             val jacocoTestReport = named<JacocoReport>("jacocoTestReport") {
+                dependsOn("test")
                 reports {
+                    html.required.set(true)
                     xml.required.set(false)
                     csv.required.set(false)
                 }
+
+                executionData.setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
             }
 
             withType<Test> {
