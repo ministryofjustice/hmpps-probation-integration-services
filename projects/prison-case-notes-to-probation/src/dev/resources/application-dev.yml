@@ -11,8 +11,8 @@ oauth:
   endpoint:
     url: http://localhost:8500/auth
   client:
-    id: case-notes-to-probation
-    secret: case-notes-to-probation
+    id: prison-case-notes-to-probation
+    secret: prison-case-notes-to-probation
 
 integrations:
   nomis:

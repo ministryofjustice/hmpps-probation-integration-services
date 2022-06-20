@@ -29,16 +29,17 @@ class DeliusService(
             date = caseNote.body.contactTimeStamp,
             startTime = caseNote.body.contactTimeStamp,
             lastModifiedUserId = user.id
-        )
-            ?: caseNote.newEntity(user)
+        ) ?: caseNote.newEntity(user)
         caseNoteRepository.save(entity)
     }
 
     private fun DeliusCaseNote.newEntity(user: User): CaseNote {
-        val caseNoteType = nomisTypeRepository.findById(body.type).map(CaseNoteNomisType::type)
+        val caseNoteType = nomisTypeRepository.findById(body.type)
+            .map(CaseNoteNomisType::type)
             .orElseThrow { CaseNoteTypeNotFoundException(body.type) }
 
-        val offender = offenderRepository.findByNomsId(header.nomisId) ?: throw OffenderNotFoundException(header.nomisId)
+        val offender = offenderRepository.findByNomsId(header.nomisId)
+            ?: throw OffenderNotFoundException(header.nomisId)
 
         return CaseNote(
             offenderId = offender.id,

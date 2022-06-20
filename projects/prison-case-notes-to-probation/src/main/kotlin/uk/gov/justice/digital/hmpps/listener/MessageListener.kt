@@ -21,7 +21,7 @@ class MessageListener(
         val log: Logger = LoggerFactory.getLogger(this::class.java)
     }
 
-    @JmsListener(destination = "events")
+    @JmsListener(destination = "\${spring.jms.template.default-destination}")
     fun receive(caseNoteMessage: CaseNoteMessage) {
         val nomisCaseNote = try {
             nc.getCaseNote(caseNoteMessage.offenderId, caseNoteMessage.caseNoteId)

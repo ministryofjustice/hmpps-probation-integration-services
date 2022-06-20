@@ -2,6 +2,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+  jms:
+    template:
+      default-destination: events
   security:
     oauth2:
       client:
@@ -30,3 +33,4 @@ feign:
         logger-level: full
         connect-timeout: 5000
         read-timeout: 5000
+

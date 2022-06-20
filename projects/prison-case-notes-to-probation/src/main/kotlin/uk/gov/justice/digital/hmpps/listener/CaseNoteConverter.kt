@@ -13,7 +13,7 @@ import javax.jms.TextMessage
 class CaseNoteConverter(private val om: ObjectMapper) : MessageConverter {
     override fun toMessage(caseNoteMessage: Any, session: Session): Message {
         val message = session.createTextMessage()
-        message.text = om.writeValueAsString(caseNoteMessage)
+        message.text = om.writeValueAsString(CaseNoteMessageWrapper(caseNoteMessage as CaseNoteMessage))
         return message
     }
 

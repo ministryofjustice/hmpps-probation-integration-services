@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.PathVariable
 @FeignClient(name = "nomis-client", url = "\${integrations.nomis.url}")
 interface NomisClient {
     @GetMapping(value = ["/case-notes/{offenderId}/{caseNoteId}"])
-    fun getCaseNote(@PathVariable offenderId: String, @PathVariable caseNoteId: Long): CaseNote?
+    fun getCaseNote(@PathVariable offenderId: String, @PathVariable caseNoteId: Long): NomisCaseNote?
 }
