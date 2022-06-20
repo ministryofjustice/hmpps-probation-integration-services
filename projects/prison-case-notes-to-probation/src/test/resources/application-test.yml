@@ -1,4 +1,6 @@
 spring:
+  activemq:
+    broker-url: vm://localhost?broker.persistent=false&broker.useShutdownHook=false
   datasource:
     url: jdbc:h2:file:./projects/prison-case-notes-to-probation/test;MODE=Oracle;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa:
