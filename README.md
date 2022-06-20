@@ -57,18 +57,18 @@ To build the entire repository using Gradle, run:
 
 To build just a specific project.
 ```shell
-./gradlew <project-name> build
+./gradlew <project-name>:build
 ```
 
 Use buildDependents to build and test all projects that depend on a given project (for instance a shared library)
 ```shell
-./gradlew <project-name> buildDependents
+./gradlew <project-name>:buildDependents
 ```
 
 ## Docker
 To build Docker images and push to your local repository, run:
 ```shell
-./gradlew <project-name> jibDockerBuild
+./gradlew <project-name>:jibDockerBuild
 ```
 
 # Run
