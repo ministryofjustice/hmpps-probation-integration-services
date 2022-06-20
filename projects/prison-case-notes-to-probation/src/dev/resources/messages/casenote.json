@@ -3,13 +3,13 @@
   "Type": "Notification",
   "Timestamp": "2019-10-21T14:01:18.500Z",
   "Message": {
-    "eventId": 12345,
-    "eventType": "Type",
+    "eventId": 11111,
+    "eventType": "NEG",
     "eventDatetime": "2019-10-21T15:00:25.489964",
     "rootOffenderId": 2419065,
     "offenderIdDisplay": "GA52214",
     "agencyLocationId": "MDI",
-    "caseNoteId": 1234
+    "caseNoteId": 1111
   },
   "TopicArn": "arn:aws:sns:eu-west-1:000000000000:offender_events",
   "MessageAttributes": {

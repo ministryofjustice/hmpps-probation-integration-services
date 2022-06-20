@@ -17,10 +17,10 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
+import uk.gov.justice.digital.hmpps.data.SimulationBuilder
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NomisCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderGenerator
-import uk.gov.justice.digital.hmpps.data.SimulationBuilder
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.nomis.CaseNoteMessage
 
@@ -65,7 +65,7 @@ class IntegrationTest {
         jmsTemplate.convertSendAndWait(
             queueName, CaseNoteMessage(
                 OffenderGenerator.DEFAULT.nomsId,
-                1234,
+                1111,
                 CaseNoteNomisTypeGenerator.DEFAULT.nomisCode
             )
         )
@@ -88,7 +88,7 @@ class IntegrationTest {
         jmsTemplate.convertSendAndWait(
             queueName, CaseNoteMessage(
                 OffenderGenerator.DEFAULT.nomsId,
-                1235,
+                2222,
                 CaseNoteNomisTypeGenerator.DEFAULT.nomisCode
             )
         )

@@ -11,7 +11,7 @@ object CaseNoteGenerator {
         CaseNote(
             IdGenerator.getAndIncrement(),
             OffenderGenerator.DEFAULT.id,
-            12345,
+            11111,
             CaseNoteNomisTypeGenerator.DEFAULT.type,
             "A Case Note from Nomis",
             now,

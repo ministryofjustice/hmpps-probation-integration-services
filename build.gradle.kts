@@ -150,6 +150,10 @@ subprojects {
                 useJUnitPlatform()
                 finalizedBy(jacocoTestReport)
             }
+
+            named("check") {
+                dependsOn("test", "integrationTest", "jacocoTestReport")
+            }
         }
     }
 }

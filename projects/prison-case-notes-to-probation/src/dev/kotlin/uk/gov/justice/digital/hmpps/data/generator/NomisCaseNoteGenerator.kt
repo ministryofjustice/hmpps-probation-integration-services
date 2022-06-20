@@ -5,7 +5,7 @@ import java.time.ZonedDateTime
 
 object NomisCaseNoteGenerator {
     val EXISTING_IN_BOTH = NomisCaseNote(
-        eventId = 12345,
+        eventId = 11111,
         offenderIdentifier = OffenderGenerator.DEFAULT.nomsId,
         type = CaseNoteNomisTypeGenerator.DEFAULT.nomisCode,
         subType = "IEP_WARN",
@@ -18,7 +18,7 @@ object NomisCaseNoteGenerator {
     )
 
     val NEW_TO_DELIUS = NomisCaseNote(
-        eventId = 12346,
+        eventId = 22222,
         offenderIdentifier = OffenderGenerator.DEFAULT.nomsId,
         type = CaseNoteNomisTypeGenerator.DEFAULT.nomisCode,
         subType = "IEP_WARN",
