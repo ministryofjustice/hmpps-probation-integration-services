@@ -1,6 +1,7 @@
 import com.google.cloud.tools.jib.gradle.JibExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
+import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
     id("org.springframework.boot") version "2.7.0" apply false
@@ -9,6 +10,9 @@ plugins {
     kotlin("plugin.spring") version "1.7.0" apply false
     kotlin("plugin.jpa") version "1.7.0" apply false
     id("com.google.cloud.tools.jib") version "3.2.1" apply false
+    id("jacoco")
+    id("test-report-aggregation")
+    id("jacoco-report-aggregation")
     id("base")
 }
 
@@ -32,27 +36,25 @@ allprojects {
         mavenCentral()
     }
 
-    tasks.withType<JavaCompile> {
-        sourceCompatibility = "17"
-    }
-
-    tasks.withType<KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = "17"
+    tasks {
+        withType<JavaCompile> {
+            sourceCompatibility = "17"
         }
-    }
 
-    tasks.withType<Test> {
-        useJUnitPlatform()
-    }
+        withType<KotlinCompile> {
+            kotlinOptions {
+                freeCompilerArgs = listOf("-Xjsr305=strict")
+                jvmTarget = "17"
+            }
+        }
 
-    tasks.withType<BootJar> {
-        enabled = false
-    }
+        withType<BootJar> {
+            enabled = false
+        }
 
-    tasks.withType<Jar> {
-        enabled = false
+        withType<Jar> {
+            enabled = false
+        }
     }
 }
 
@@ -64,11 +66,10 @@ subprojects {
         plugin("org.jetbrains.kotlin.plugin.spring")
         plugin("org.jetbrains.kotlin.plugin.jpa")
         plugin("com.google.cloud.tools.jib")
+        plugin("jacoco")
+        plugin("test-report-aggregation")
+        plugin("jacoco-report-aggregation")
     }
-
-    project.tasks.getByName("jib").dependsOn(copyAgentTask)
-    project.tasks.getByName("jibBuildTar").dependsOn(copyAgentTask)
-    project.tasks.getByName("jibDockerBuild").dependsOn(copyAgentTask)
 
     configure<JibExtension> {
         container {
@@ -101,15 +102,50 @@ subprojects {
     }
 
     configure<SourceSetContainer> {
-        val main by getting {
-            if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
-                compileClasspath += dev
-                runtimeClasspath += dev
-            }
-        }
+        val main by getting
+
         val dev by creating {
-            compileClasspath += dev + main.compileClasspath + main.output
-            runtimeClasspath += dev + main.runtimeClasspath + main.output
+            compileClasspath += configurations["dev"] + main.compileClasspath + main.output
+            runtimeClasspath += configurations["dev"] + main.runtimeClasspath + main.output
+        }
+
+        val test by getting {
+            compileClasspath += configurations["dev"] + dev.output
+            runtimeClasspath += configurations["dev"] + dev.output
+        }
+
+        val integrationTest by creating {
+            compileClasspath += test.compileClasspath + test.output
+            runtimeClasspath += test.runtimeClasspath + test.output
+        }
+
+        tasks {
+            getByName("jib").dependsOn(copyAgentTask)
+            getByName("jibBuildTar").dependsOn(copyAgentTask)
+            getByName("jibDockerBuild").dependsOn(copyAgentTask)
+            withType<BootRun> {
+                if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
+                    classpath = dev.runtimeClasspath
+                }
+            }
+
+            val jacocoTestReport = named<JacocoReport>("jacocoTestReport") {
+                reports {
+                    xml.required.set(false)
+                    csv.required.set(false)
+                }
+            }
+
+            withType<Test> {
+                useJUnitPlatform()
+                finalizedBy(jacocoTestReport)
+            }
+            create<Test>("integrationTest") {
+                testClassesDirs = integrationTest.output.classesDirs
+                classpath = integrationTest.runtimeClasspath
+                useJUnitPlatform()
+                finalizedBy(jacocoTestReport)
+            }
         }
     }
 }

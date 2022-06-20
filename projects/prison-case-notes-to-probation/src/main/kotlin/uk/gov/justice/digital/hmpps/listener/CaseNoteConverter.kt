@@ -12,7 +12,9 @@ import javax.jms.TextMessage
 @Component
 class CaseNoteConverter(private val om: ObjectMapper) : MessageConverter {
     override fun toMessage(caseNoteMessage: Any, session: Session): Message {
-        TODO("Not yet implemented")
+        val message = session.createTextMessage()
+        message.text = om.writeValueAsString(caseNoteMessage)
+        return message
     }
 
     override fun fromMessage(message: Message): CaseNoteMessage {

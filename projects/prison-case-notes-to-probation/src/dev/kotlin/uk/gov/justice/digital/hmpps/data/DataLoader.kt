@@ -17,7 +17,7 @@ import java.time.ZonedDateTime
 import java.util.concurrent.atomic.AtomicLong
 
 @Component
-@Profile("dev")
+@Profile("dev", "integration-test")
 class DataLoader(
     private val userRepository: UserRepository,
     private val caseNoteTypeRepository: CaseNoteTypeRepository,

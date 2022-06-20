@@ -49,15 +49,26 @@ To set up your development environment,
 
 
 # Build
-IntelliJ will automatically build your code as needed.  To build and unit test using Gradle, run:
+IntelliJ will automatically build your code as needed. Any tasks you run from the root project, without specifying a project name will be ran on all the children.
+To build the entire repository using Gradle, run:
 ```shell
 ./gradlew build
 ```
 
-## Docker
-To build Docker images locally, run:
+To build just a specific project.
 ```shell
-./gradlew jibDockerBuild
+./gradlew <project-name>:build
+```
+
+Use buildDependents to build and test all projects that depend on a given project (for instance a shared library)
+```shell
+./gradlew <project-name>:buildDependents
+```
+
+## Docker
+To build Docker images and push to your local repository, run:
+```shell
+./gradlew <project-name>:jibDockerBuild
 ```
 
 # Run
@@ -72,7 +83,7 @@ Run configurations are stored in [.idea/runConfigurations](.idea/runConfiguratio
 To run Gradle tasks in a sub-project, prepend the task name with the name of the project. Environment variables can be 
 used to set the dev profile. For example,
 ```shell
-SPRING_PROFILES_ACTIVE=dev ./gradlew :case-notes:bootRun
+SPRING_PROFILES_ACTIVE=dev ./gradlew <project-name>:bootRun
 ```
 
 # Test
