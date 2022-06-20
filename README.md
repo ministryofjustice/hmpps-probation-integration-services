@@ -49,9 +49,20 @@ To set up your development environment,
 
 
 # Build
-IntelliJ will automatically build your code as needed.  To build and unit test using Gradle, run:
+IntelliJ will automatically build your code as needed. Any tasks you run from the root project, without specifying a project name will be ran on all the children.
+To build the entire repository using Gradle, run:
+```shell
+./gradlew build
+```
+
+To build just a specific project.
 ```shell
 ./gradlew <project-name> build
+```
+
+Use buildDependents to build and test all projects that depend on a given project (for instance a shared library)
+```shell
+./gradlew <project-name> buildDependents
 ```
 
 ## Docker
