@@ -39,7 +39,8 @@ data class CaseNoteMessage(
     @JsonAlias("offenderIdDisplay")
     val offenderId: String,
     val caseNoteId: Long,
-    val eventType: String
+    val eventId: Long,
+    val eventType: String,
 )
 
 fun NomisCaseNote.toDeliusCaseNote(): DeliusCaseNote {

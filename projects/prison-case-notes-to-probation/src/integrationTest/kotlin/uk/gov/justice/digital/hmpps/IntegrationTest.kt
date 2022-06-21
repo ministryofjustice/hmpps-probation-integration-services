@@ -18,11 +18,9 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.SimulationBuilder
-import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NomisCaseNoteGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OffenderGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
-import uk.gov.justice.digital.hmpps.integrations.nomis.CaseNoteMessage
 
 @ActiveProfiles("integration-test")
 @SpringBootTest
@@ -62,13 +60,7 @@ class IntegrationTest {
         val nomisCaseNote = NomisCaseNoteGenerator.EXISTING_IN_BOTH
         val original = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
 
-        jmsTemplate.convertSendAndWait(
-            queueName, CaseNoteMessage(
-                OffenderGenerator.DEFAULT.nomsId,
-                1111,
-                CaseNoteNomisTypeGenerator.DEFAULT.nomisCode
-            )
-        )
+        jmsTemplate.convertSendAndWait(queueName, CaseNoteMessageGenerator.EXISTS_IN_DELIUS)
 
         val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
 
@@ -85,13 +77,7 @@ class IntegrationTest {
         val original = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
         assertNull(original)
 
-        jmsTemplate.convertSendAndWait(
-            queueName, CaseNoteMessage(
-                OffenderGenerator.DEFAULT.nomsId,
-                2222,
-                CaseNoteNomisTypeGenerator.DEFAULT.nomisCode
-            )
-        )
+        jmsTemplate.convertSendAndWait(queueName, CaseNoteMessageGenerator.NEW_TO_DELIUS)
 
         val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
 

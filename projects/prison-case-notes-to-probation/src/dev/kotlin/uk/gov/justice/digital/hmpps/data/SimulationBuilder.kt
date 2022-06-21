@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import io.specto.hoverfly.junit.core.SimulationSource
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
-import org.springframework.util.ResourceUtils
+import uk.gov.justice.digital.hmpps.ResourceLoader
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.io.path.isRegularFile
@@ -16,8 +16,7 @@ import kotlin.io.path.name
 @Profile("dev", "integration-test")
 class SimulationBuilder(private val om: ObjectMapper) {
     fun simulationsFromFile(): List<SimulationSource> {
-        val resource = ResourceUtils.getFile("classpath:application-dev.yml")
-        val parentPath = resource.parent
+        val parentPath = ResourceLoader.resourceLocationStr
 
         return Files.walk(Paths.get(parentPath, "simulations"))
             .filter {
