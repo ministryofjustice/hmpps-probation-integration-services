@@ -2,6 +2,9 @@ name: Pipeline
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
   workflow_dispatch:
     inputs:
       deploy-to-test:
@@ -43,6 +46,12 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: check
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: 'build/reports/jacoco/jacocoTestReport/html/'
 
       - name: Report coverage
         uses: madrapps/jacoco-report@v1.2
