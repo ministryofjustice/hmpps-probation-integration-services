@@ -53,17 +53,12 @@ jobs:
         with:
           report_paths: '**/build/test-results/**/TEST-*.xml'
 
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v3
+      - name: Publish code coverage
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TEST_REPORTER_ID }}
         with:
-          name: coverage-report
-          path: 'build/reports/jacoco/jacocoTestReport/html/'
-
-      - name: Report coverage to PR
-        uses: madrapps/jacoco-report@v1.2
-        with:
-          paths: ${{ github.workspace }}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml
-          token: ${{ github.token }}
+          coverageLocations: ${{ github.workspace }}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml:jacoco
 
       - name: Push image
         if: github.ref == 'refs/heads/main' || inputs.deploy-to-test
