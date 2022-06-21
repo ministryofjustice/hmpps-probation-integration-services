@@ -137,6 +137,17 @@ subprojects {
             }
 
             named<JacocoReport>("jacocoTestReport") {
+                classDirectories.setFrom(
+                    files(classDirectories.files.map {
+                        fileTree(it) {
+                            exclude("**/config/**",
+                                "**/model/**",
+                                "**/exceptions/**",
+                                "**/entity/**",
+                                "**/AppKt.class")
+                        }
+                    })
+                )
                 executionData.setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
             }
             create<Test>("integrationTest") {

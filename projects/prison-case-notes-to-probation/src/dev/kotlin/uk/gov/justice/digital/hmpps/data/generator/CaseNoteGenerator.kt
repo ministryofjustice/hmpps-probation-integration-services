@@ -11,7 +11,7 @@ object CaseNoteGenerator {
         CaseNote(
             IdGenerator.getAndIncrement(),
             OffenderGenerator.DEFAULT.id,
-            11111,
+            CaseNoteMessageGenerator.EXISTS_IN_DELIUS.eventId,
             CaseNoteNomisTypeGenerator.DEFAULT.type,
             "A Case Note from Nomis",
             now,
