@@ -10,10 +10,10 @@ plugins {
     kotlin("plugin.spring") version "1.7.0" apply false
     kotlin("plugin.jpa") version "1.7.0" apply false
     id("com.google.cloud.tools.jib") version "3.2.1" apply false
+    id("base")
     id("jacoco")
     id("test-report-aggregation")
     id("jacoco-report-aggregation")
-    id("base")
 }
 
 val agentDeps: Configuration by configurations.creating
@@ -22,7 +22,7 @@ dependencies {
     agentDeps("com.microsoft.azure:applicationinsights-agent:3.2.11")
 }
 
-val copyAgentTask = project.tasks.register("copyAgent", Copy::class.java) {
+val copyAgentTask = project.tasks.register<Copy>("copyAgent") {
     from(agentDeps)
     into("${project.buildDir}/agent")
     rename("applicationinsights-agent(.+).jar", "agent.jar")
@@ -81,6 +81,13 @@ subprojects {
         from {
             image = "eclipse-temurin:17-jre-alpine"
         }
+        to {
+            image = "quay.io/hmpps/${project.name}:${project.version}"
+            auth {
+                username = System.getenv("QUAYIO_USERNAME")
+                password = System.getenv("QUAYIO_PASSWORD")
+            }
+        }
         extraDirectories {
             paths {
                 path {
@@ -129,31 +136,34 @@ subprojects {
                 }
             }
 
-            val jacocoTestReport = named<JacocoReport>("jacocoTestReport") {
-                dependsOn("test")
-                reports {
-                    html.required.set(true)
-                    xml.required.set(false)
-                    csv.required.set(false)
-                }
-
+            named<JacocoReport>("jacocoTestReport") {
                 executionData.setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
-            }
-
-            withType<Test> {
-                useJUnitPlatform()
-                finalizedBy(jacocoTestReport)
             }
             create<Test>("integrationTest") {
                 testClassesDirs = integrationTest.output.classesDirs
                 classpath = integrationTest.runtimeClasspath
-                useJUnitPlatform()
-                finalizedBy(jacocoTestReport)
             }
-
+            withType<Test> {
+                useJUnitPlatform()
+                finalizedBy("jacocoTestReport")
+            }
             named("check") {
-                dependsOn("test", "integrationTest", "jacocoTestReport")
+                dependsOn("test", "integrationTest")
             }
         }
     }
 }
+
+// Aggregate jacoco report across sub-projects
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn(subprojects.map { it.tasks.getByName("jacocoTestReport") })
+    val main = subprojects.map { it.sourceSets.named("main").get() }
+    additionalSourceDirs(files(main.map { it.allSource.srcDirs }))
+    additionalClassDirs(files(main.map { it.output }))
+    executionData(files(subprojects.map { it.tasks.named<JacocoReport>("jacocoTestReport").get().executionData }))
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+    }
+}
+tasks.named("check") { dependsOn("jacocoTestReport") }

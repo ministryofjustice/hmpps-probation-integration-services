@@ -1,0 +1,26 @@
+name: Check for changes
+description: Check which projects have changed since branching from main
+
+outputs:
+  projects:
+    description: A JSON array of projects that have changed
+    value: ${{ steps.check-changes.outputs.projects }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+    - uses: dorny/paths-filter@v2
+      id: paths-filter
+      with:
+        list-files: shell
+        filters: |
+          root: '*'
+          projects: 'projects/**'
+    - name: Check for changes
+      id: check-changes
+      shell: bash
+      env:
+        ROOT_CHANGED: ${{ steps.paths-filter.outputs.root }}
+        PROJECT_FILES: ${{ steps.paths-filter.outputs.projects_files }}
+      run: ./.github/actions/check-changes/parse-changes.sh
