@@ -15,6 +15,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.NomisCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
@@ -25,7 +26,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomisTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
-import java.time.ZonedDateTime
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
@@ -46,13 +46,13 @@ class DeliusServiceTest {
     @InjectMocks
     lateinit var deliusService: DeliusService
 
-    private val now = ZonedDateTime.now()
     private val user = UserGenerator.APPLICATION_USER
     private val caseNote = CaseNoteGenerator.EXISTING
     private val caseNoteNomisType = CaseNoteNomisTypeGenerator.DEFAULT
+    private val nomisCaseNote = NomisCaseNoteGenerator.EXISTING_IN_BOTH
     private val deliusCaseNote = DeliusCaseNote(
-        CaseNoteHeader("GA1234", 12345),
-        CaseNoteBody("type", "subType", "Note text", now, now, "bob smith", "EST1")
+        CaseNoteHeader(OffenderGenerator.DEFAULT.nomsId, nomisCaseNote.eventId),
+        CaseNoteBody(nomisCaseNote.type, nomisCaseNote.subType, "Note text", nomisCaseNote.occurrenceDateTime, nomisCaseNote.creationDateTime, "bob smith", "EST1")
     )
 
 
