@@ -13,12 +13,13 @@ import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.data.generator.CaseNoteGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OffenderGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteNomisType
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Offender
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.User
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteBody
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
@@ -47,23 +48,9 @@ class DeliusServiceTest {
     lateinit var deliusService: DeliusService
 
     private val now = ZonedDateTime.now()
-    private val user = User(1, "case-notes-to-probation")
-    private val caseNoteType = CaseNoteType(2,"code","description", false)
-    private val caseNote = CaseNote(
-        1,
-        123,
-        12345,
-        caseNoteType,
-        "A Case Note from Nomis",
-        now,
-        now,
-        now,
-        user.id,
-        user.id,
-        now,
-        0
-    )
-    private val caseNoteNomisType = CaseNoteNomisType("code", caseNoteType)
+    private val user = UserGenerator.APPLICATION_USER
+    private val caseNote = CaseNoteGenerator.EXISTING
+    private val caseNoteNomisType = CaseNoteNomisTypeGenerator.DEFAULT
     private val deliusCaseNote = DeliusCaseNote(
         CaseNoteHeader("GA1234", 12345),
         CaseNoteBody("type", "subType", "Note text", now, now, "bob smith", "EST1")
@@ -89,7 +76,7 @@ class DeliusServiceTest {
 
     @Test
     fun `successfully add new case note`() {
-        val offender = Offender(1,"GA1234")
+        val offender = OffenderGenerator.DEFAULT
 
         whenever(userService.findServiceUser()).thenReturn(user)
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
