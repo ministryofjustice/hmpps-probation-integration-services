@@ -45,7 +45,7 @@
         },
         "response": {
           "status": 200,
-          "bodyFile": "responses/get-case-note-body-not-in-delius.json",
+          "bodyFile": "responses/get-case-note-body-new-to-delius.json",
           "encodedBody": false,
           "headers": {
             "Content-Type": [

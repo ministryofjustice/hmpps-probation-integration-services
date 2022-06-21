@@ -136,8 +136,20 @@ subprojects {
                     xml.required.set(false)
                     csv.required.set(false)
                 }
+                classDirectories.setFrom(
+                    files(classDirectories.files.map {
+                        fileTree(it) {
+                            exclude("**/config/**",
+                                "**/model/**",
+                                "**/exceptions/**",
+                                "**/entity/**",
+                                "**/AppKt.class")
+                        }
+                    })
+                )
 
                 executionData.setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
+
             }
 
             withType<Test> {
