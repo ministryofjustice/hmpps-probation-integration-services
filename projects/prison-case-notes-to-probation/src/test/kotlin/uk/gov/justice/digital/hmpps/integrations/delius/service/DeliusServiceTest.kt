@@ -26,7 +26,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomisTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
-import java.util.*
+import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
 class DeliusServiceTest {
@@ -54,7 +54,6 @@ class DeliusServiceTest {
         CaseNoteHeader(OffenderGenerator.DEFAULT.nomsId, nomisCaseNote.eventId),
         CaseNoteBody(nomisCaseNote.type, nomisCaseNote.subType, "Note text", nomisCaseNote.occurrenceDateTime, nomisCaseNote.creationDateTime, "bob smith", "EST1")
     )
-
 
     @Test
     fun `successfully merges with existing case note`() {
@@ -89,7 +88,7 @@ class DeliusServiceTest {
         verify(caseNoteRepository, Mockito.times(1)).save(caseNoteCaptor.capture())
 
         val saved = caseNoteCaptor.value
-        assertThat(saved.notes, startsWith(deliusCaseNote.body.type +" "+ deliusCaseNote.body.subType))
+        assertThat(saved.notes, startsWith(deliusCaseNote.body.type + " " + deliusCaseNote.body.subType))
         assertThat(saved.notes, stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content))
     }
 
@@ -100,7 +99,7 @@ class DeliusServiceTest {
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.type)).thenReturn(Optional.of(caseNoteNomisType))
         whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(null)
 
-        assertThrows<OffenderNotFoundException>{
+        assertThrows<OffenderNotFoundException> {
             deliusService.mergeCaseNote(deliusCaseNote)
         }
     }

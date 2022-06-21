@@ -62,4 +62,3 @@ fun NomisCaseNote.toDeliusCaseNote(): DeliusCaseNote {
         )
     )
 }
-
