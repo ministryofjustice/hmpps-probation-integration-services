@@ -2,9 +2,6 @@ name: Pipeline
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
   workflow_dispatch:
     inputs:
       deploy-to-test:
@@ -52,6 +49,10 @@ jobs:
         if: always() # always run even if the previous step fails
         with:
           report_paths: '**/build/test-results/**/TEST-*.xml'
+
+      - uses: codecov/codecov-action@v2
+        with:
+          files: ${{ github.workspace }}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml
 
       - name: Push image
         if: github.ref == 'refs/heads/main' || inputs.deploy-to-test
