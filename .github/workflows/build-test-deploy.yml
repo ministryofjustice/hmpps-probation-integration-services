@@ -61,7 +61,7 @@ jobs:
           QUAYIO_USERNAME: ${{ secrets.QUAYIO_USERNAME }}
           QUAYIO_PASSWORD: ${{ secrets.QUAYIO_PASSWORD }}
         with:
-          arguments: jib
+          arguments: jib -Djib.to.tags=latest
 
   deploy-to-test:
     runs-on: ubuntu-latest
