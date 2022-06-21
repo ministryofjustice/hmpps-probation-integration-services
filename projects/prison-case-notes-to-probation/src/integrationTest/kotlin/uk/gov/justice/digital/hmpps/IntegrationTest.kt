@@ -10,7 +10,6 @@ import org.hamcrest.Matchers.stringContainsInOrder
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Timeout
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -55,7 +54,6 @@ class IntegrationTest {
     }
 
     @Test
-    @Timeout(5)
     fun `update an existing case note succesfully`() {
         val nomisCaseNote = NomisCaseNoteGenerator.EXISTING_IN_BOTH
         val original = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
@@ -71,7 +69,6 @@ class IntegrationTest {
     }
 
     @Test
-    @Timeout(5)
     fun `create a new case note succesfully`() {
         val nomisCaseNote = NomisCaseNoteGenerator.NEW_TO_DELIUS
         val original = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
