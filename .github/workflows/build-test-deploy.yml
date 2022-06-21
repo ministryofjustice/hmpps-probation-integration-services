@@ -47,17 +47,23 @@ jobs:
         with:
           arguments: check
 
-      - name: Upload Artifact
+      - name: Publish test report
+        uses: mikepenz/action-junit-report@v3
+        if: always() # always run even if the previous step fails
+        with:
+          report_paths: '**/build/test-results/test/TEST-*.xml'
+
+      - name: Upload coverage report
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
           path: 'build/reports/jacoco/jacocoTestReport/html/'
 
-      - name: Report coverage
+      - name: Report coverage to PR
         uses: madrapps/jacoco-report@v1.2
         with:
           paths: ${{ github.workspace }}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ github.token }}
 
       - name: Push image
         if: github.ref == 'refs/heads/main' || inputs.deploy-to-test
