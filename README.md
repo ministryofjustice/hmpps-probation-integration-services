@@ -3,6 +3,10 @@
 > :memo: This repository is a work-in-progress and subject to change.
  
 [![repo standards badge](https://img.shields.io/badge/dynamic/json?color=blue&logo=github&label=MoJ%20Compliant&query=%24.data%5B%3F%28%40.name%20%3D%3D%20%22hmpps-probation-integration-services%22%29%5D.status&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fgithub_repositories)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/github_repositories#hmpps-probation-integration-services "Link to report")
+[![Trivy](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/security.yml/badge.svg)](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/security.yml)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=ministryofjustice_hmpps-probation-integration-services&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=ministryofjustice_hmpps-probation-integration-services)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ministryofjustice_hmpps-probation-integration-services&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ministryofjustice_hmpps-probation-integration-services)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ministryofjustice_hmpps-probation-integration-services&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ministryofjustice_hmpps-probation-integration-services)
 [![codecov](https://codecov.io/gh/ministryofjustice/hmpps-probation-integration-services/branch/main/graph/badge.svg?token=CCgT1zYksg)](https://codecov.io/gh/ministryofjustice/hmpps-probation-integration-services)
 
 A collection of small, domain-focused integrations to support HMPPS Digital services that need to interact with 
