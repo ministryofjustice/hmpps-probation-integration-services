@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteBody
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
+import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomisTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
@@ -52,7 +53,7 @@ class DeliusServiceTest {
     private val nomisCaseNote = NomisCaseNoteGenerator.EXISTING_IN_BOTH
     private val deliusCaseNote = DeliusCaseNote(
         CaseNoteHeader(OffenderGenerator.DEFAULT.nomsId, nomisCaseNote.eventId),
-        CaseNoteBody(nomisCaseNote.type, nomisCaseNote.subType, "Note text", nomisCaseNote.occurrenceDateTime, nomisCaseNote.creationDateTime, "bob smith", "EST1")
+        CaseNoteBody(nomisCaseNote.type, nomisCaseNote.subType, "Note text", nomisCaseNote.occurrenceDateTime, nomisCaseNote.creationDateTime, StaffName("bob", "smith"), "EST1")
     )
 
 

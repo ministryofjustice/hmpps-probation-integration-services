@@ -6,13 +6,13 @@ import javax.persistence.Entity
 import javax.persistence.Id
 
 @Immutable
-@Entity(name = "offender")
-class Offender(
+@Entity(name = "team")
+class Team(
 
     @Id
-    @Column(name = "offender_id")
+    @Column(name = "team_id")
     val id: Long,
 
-    @Column(name = "noms_number")
-    val nomsId: String
+    @Column(name = "code")
+    val code: String
 )

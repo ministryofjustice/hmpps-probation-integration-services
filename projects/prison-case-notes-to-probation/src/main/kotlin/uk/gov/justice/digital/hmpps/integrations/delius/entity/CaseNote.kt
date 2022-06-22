@@ -43,6 +43,22 @@ data class CaseNote(
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime,
 
+    @Column(name = "sensitive_contact")
+    @Convert(converter = BooleanYesNoConverter::class)
+    val isSensitive: Boolean,
+
+    @Column(updatable = false)
+    val staffId: Long,
+
+    @Column(updatable = false)
+    val staffEmployeeId: Long,
+
+    @Column(updatable = false)
+    val teamId: Long,
+
+    @Column(updatable = false)
+    val probationAreaId: Long,
+
     @Column(name = "last_updated_datetime")
     val lastModifiedDate: ZonedDateTime,
 
@@ -57,7 +73,19 @@ data class CaseNote(
 
     @Version
     @Column(name = "row_version")
-    val version: Long,
+    val version: Long = 0,
+
+    @Column(updatable = false)
+    val trustProviderTeamId: Long = teamId,
+
+    @Column(updatable = false, columnDefinition = "NUMBER")
+    val trustProviderFlag: Boolean = false,
+
+    @Column(updatable = false)
+    val partitionAreaId: Long = 0L,
+
+    @Column(updatable = false, columnDefinition = "NUMBER")
+    val softDeleted: Boolean = false
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -85,7 +113,6 @@ class CaseNoteType(
     val id: Long,
 
     val code: String,
-    val description: String,
 
     @Column(name = "sensitive_contact")
     @Convert(converter = BooleanYesNoConverter::class)

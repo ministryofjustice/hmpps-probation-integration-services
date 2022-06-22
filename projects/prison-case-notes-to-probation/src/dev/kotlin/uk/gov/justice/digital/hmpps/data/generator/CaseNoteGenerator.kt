@@ -16,11 +16,18 @@ object CaseNoteGenerator {
             "A Case Note from Nomis",
             now,
             now,
+            false,
+            1L, //staffId
+            1L, //staffEmployeeid
+            1L, //teamId
+            1L,
             now,
             UserGenerator.APPLICATION_USER.id,
             UserGenerator.APPLICATION_USER.id,
             now,
-            1,
+            0,
+            1L,
+            false,
         )
     }
 
@@ -39,11 +46,19 @@ object CaseNoteGenerator {
             description,
             now,
             now,
+            false,
+            1L, //staffId
+            1L, //staffEmployeeid
+            1L, //teamId
+            1L,
             now,
             UserGenerator.APPLICATION_USER.id,
             UserGenerator.APPLICATION_USER.id,
             now,
             0,
+            1L,
+            false,
+
         )
     }
 }

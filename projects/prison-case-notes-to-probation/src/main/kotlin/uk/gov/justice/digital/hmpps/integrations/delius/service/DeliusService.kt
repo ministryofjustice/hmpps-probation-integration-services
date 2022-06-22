@@ -17,7 +17,8 @@ class DeliusService(
     private val userService: UserService,
     private val caseNoteRepository: CaseNoteRepository,
     private val nomisTypeRepository: CaseNoteNomisTypeRepository,
-    private val offenderRepository: OffenderRepository
+    private val offenderRepository: OffenderRepository,
+    private val assignmentService: AssignmentService
 ) {
     fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) {
         val user = userService.findServiceUser()
@@ -41,6 +42,8 @@ class DeliusService(
         val offender = offenderRepository.findByNomsId(header.nomisId)
             ?: throw OffenderNotFoundException(header.nomisId)
 
+        val assignment = assignmentService.findAssignment(body.establishmentCode,body.staffName)
+
         return CaseNote(
             offenderId = offender.id,
             type = caseNoteType,
@@ -52,8 +55,13 @@ class DeliusService(
             lastModifiedDate = body.systemTimeStamp,
             notes = body.notesToAppend(),
             date = body.contactTimeStamp,
-            startTime = body.contactTimeStamp
+            startTime = body.contactTimeStamp,
+            isSensitive = caseNoteType.isSensitive,
+            probationAreaId = assignment.first,
+            teamId = assignment.second,
+            staffId = assignment.third,
+            staffEmployeeId = assignment.third
         )
-
     }
+
 }

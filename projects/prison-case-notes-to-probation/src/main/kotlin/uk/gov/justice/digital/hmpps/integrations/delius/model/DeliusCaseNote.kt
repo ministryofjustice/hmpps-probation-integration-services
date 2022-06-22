@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.model
 
 import java.time.ZonedDateTime
+import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
@@ -18,10 +19,12 @@ data class CaseNoteBody(
     val contactTimeStamp: ZonedDateTime,
     @NotNull
     val systemTimeStamp: ZonedDateTime,
-    @NotBlank
-    val staffName: String,
+    @Valid
+    val staffName: StaffName,
     @NotBlank
     val establishmentCode: String
 ) {
     fun notesToAppend() = "$type $subType" + System.lineSeparator() + content
 }
+
+data class StaffName(@NotBlank val forename: String, @NotBlank val surname: String)
