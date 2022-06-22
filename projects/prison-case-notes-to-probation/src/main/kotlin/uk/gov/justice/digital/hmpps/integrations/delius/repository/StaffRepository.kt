@@ -13,10 +13,11 @@ interface StaffRepository : JpaRepository<Staff, Long> {
 
     @Query(
         """
-         select officer_code from staff 
-         where regexp_like(officer_code,'^:prefix[[:digit:]]{3}$')
-         order by 1 desc
+        select officer_code from staff
+        where regexp_like(officer_code, ?1, 'i')
+        order by officer_code desc
+        fetch next 1 rows only
         """, nativeQuery = true
     )
-    fun getLatestStaffReference(prefix: String): String?
+    fun getLatestStaffReference(regex: String): String?
 }

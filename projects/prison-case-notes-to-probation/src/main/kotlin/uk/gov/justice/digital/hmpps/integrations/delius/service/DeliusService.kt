@@ -42,7 +42,7 @@ class DeliusService(
         val offender = offenderRepository.findByNomsId(header.nomisId)
             ?: throw OffenderNotFoundException(header.nomisId)
 
-        val assignment = assignmentService.findAssignment(body.establishmentCode,body.staffName)
+        val assignment = assignmentService.findAssignment(body.establishmentCode, body.staffName)
 
         return CaseNote(
             offenderId = offender.id,

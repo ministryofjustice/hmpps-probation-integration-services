@@ -6,6 +6,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+#    show-sql: true
 
 oauth:
   endpoint:
@@ -34,3 +35,4 @@ hoverfly:
 logging:
   level:
     uk.gov.justice.digital.hmpps.integrations.nomis.NomisClient: DEBUG
+    org.hibernate.tool.schema: ERROR
