@@ -21,4 +21,3 @@ dependencies {
     testImplementation(libs.mockito.kotlin)
     integrationTestImplementation(libs.hoverfly.junit)
 }
-

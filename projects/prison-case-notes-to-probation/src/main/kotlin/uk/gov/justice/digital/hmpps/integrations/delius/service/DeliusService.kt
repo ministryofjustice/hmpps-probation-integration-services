@@ -54,6 +54,5 @@ class DeliusService(
             date = body.contactTimeStamp,
             startTime = body.contactTimeStamp
         )
-
     }
 }

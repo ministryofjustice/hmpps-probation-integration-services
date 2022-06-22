@@ -8,7 +8,6 @@ import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Types
 
-
 class DeliusConnectionProvider : DatasourceConnectionProviderImpl() {
     companion object {
         val log: Logger = LoggerFactory.getLogger(this::class.java)

@@ -14,7 +14,6 @@ fun JmsTemplate.convertSendAndWait(queueName: String, message: Any, timeout: Dur
         messages = browse(queueName) { _, browser ->
             browser.enumeration.toList().size
         } ?: 0
-
     } while (messages > 0 && now().isBefore(endTime))
 
     if (now().isAfter(endTime) && messages > 0) {
