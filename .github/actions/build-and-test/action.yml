@@ -1,0 +1,55 @@
+name: Build and test
+description: Build projects, run tests and check coverage using Gradle
+
+outputs:
+  version:
+    description: The image tag used in the build
+    value: ${{ steps.version.outputs.version }}
+  changed-projects:
+    description: A JSON array of projects that changed
+    value: ${{ steps.check-changes.outputs.projects }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+    - id: check-changes
+      uses: ./.github/actions/check-changes
+    - uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    - uses: gradle/wrapper-validation-action@v1
+
+    - name: Set version
+      id: version
+      shell: bash
+      run: |
+        version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
+        echo version=$version
+        echo "ORG_GRADLE_PROJECT_version=$version" >> $GITHUB_ENV
+        echo "::set-output name=version::$version"
+
+    - name: Build and test
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: check
+
+    - name: Publish test report
+      uses: mikepenz/action-junit-report@v3
+      if: always()
+      with:
+        check_name: Unit test
+        report_paths: '**/build/test-results/test/TEST-*.xml'
+
+    - name: Publish integration test report
+      uses: mikepenz/action-junit-report@v3
+      if: always()
+      with:
+        check_name: Integration test
+        report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
+
+    - name: Publish coverage report
+      uses: codecov/codecov-action@v2
+      with:
+        files: ${{ github.workspace }}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml
