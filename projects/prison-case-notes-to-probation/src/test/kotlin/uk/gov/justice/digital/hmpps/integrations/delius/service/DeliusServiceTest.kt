@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.exceptions.CaseNoteTypeNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteBody
@@ -126,6 +127,17 @@ class DeliusServiceTest {
         whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(null)
 
         assertThrows<OffenderNotFoundException> {
+            deliusService.mergeCaseNote(deliusCaseNote)
+        }
+    }
+
+    @Test
+    fun `add new case note case note type not found`() {
+        whenever(userService.findServiceUser()).thenReturn(user)
+        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
+        whenever(nomisTypeRepository.findById(deliusCaseNote.body.type)).thenReturn(Optional.empty())
+
+        assertThrows<CaseNoteTypeNotFoundException> {
             deliusService.mergeCaseNote(deliusCaseNote)
         }
     }
