@@ -1,0 +1,19 @@
+# Common values
+
+image:
+  name: prison-case-notes-to-probation
+
+cpu: 256
+memory: 512
+
+env: []
+
+secrets:
+  namespace:
+  env:
+    # TODO put these values into the parameter store:
+    APPLICATIONINSIGHTS_CONNECTION_STRING: /application-insights/connection-string
+    SPRING_DATASOURCE_URL:                 /delius-database/url
+    SPRING_DATASOURCE_USERNAME:            /prison-case-notes-to-probation/db-username
+    SPRING_DATASOURCE_PASSWORD:            /prison-case-notes-to-probation/db-password
+    SQS_QUEUE_URL:                         /prison-case-notes-to-probation/sqs-queue-url
