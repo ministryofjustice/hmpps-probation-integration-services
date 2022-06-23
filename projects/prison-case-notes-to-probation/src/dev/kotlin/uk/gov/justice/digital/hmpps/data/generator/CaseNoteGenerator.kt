@@ -6,36 +6,16 @@ import java.time.ZonedDateTime
 import kotlin.random.Random
 
 object CaseNoteGenerator {
-    val EXISTING = run {
-        val now = ZonedDateTime.now()
-        CaseNote(
-            IdGenerator.getAndIncrement(),
-            OffenderGenerator.DEFAULT.id,
-            CaseNoteMessageGenerator.EXISTS_IN_DELIUS.eventId,
-            CaseNoteNomisTypeGenerator.DEFAULT.type,
-            "A Case Note from Nomis",
-            now,
-            now,
-            false,
-            1L, //staffId
-            1L, //staffEmployeeid
-            1L, //teamId
-            1L,
-            now,
-            UserGenerator.APPLICATION_USER.id,
-            UserGenerator.APPLICATION_USER.id,
-            now,
-            0,
-            1L,
-            false,
-        )
-    }
+    val EXISTING = generate(IdGenerator.getAndIncrement())
 
     fun generate(
         nomisId: Long = Random.nextLong(),
         offenderId: Long = OffenderGenerator.DEFAULT.id,
         type: CaseNoteType = CaseNoteNomisTypeGenerator.DEFAULT.type,
-        description: String = "Another case note from Nomis"
+        description: String = "Another case note from Nomis",
+        probationAreaId: Long = ProbationAreaGenerator.DEFAULT.id,
+        teamId: Long = TeamGenerator.DEFAULT.id,
+        staffId: Long = StaffGenerator.DEFAULT.id,
     ) {
         val now = ZonedDateTime.now()
         CaseNote(
@@ -46,19 +26,14 @@ object CaseNoteGenerator {
             description,
             now,
             now,
-            false,
-            1L, //staffId
-            1L, //staffEmployeeid
-            1L, //teamId
-            1L,
-            now,
-            UserGenerator.APPLICATION_USER.id,
-            UserGenerator.APPLICATION_USER.id,
-            now,
-            0,
-            1L,
-            false,
-
+            staffId,
+            staffId,
+            teamId,
+            probationAreaId,
+            createdDateTime = now,
+            lastModifiedDateTime = now,
+            createdByUserId = UserGenerator.APPLICATION_USER.id,
+            lastModifiedUserId = UserGenerator.APPLICATION_USER.id,
         )
     }
 }

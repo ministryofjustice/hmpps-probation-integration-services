@@ -43,10 +43,6 @@ data class CaseNote(
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime,
 
-    @Column(name = "sensitive_contact")
-    @Convert(converter = BooleanYesNoConverter::class)
-    val isSensitive: Boolean,
-
     @Column(updatable = false)
     val staffId: Long,
 
@@ -59,8 +55,9 @@ data class CaseNote(
     @Column(updatable = false)
     val probationAreaId: Long,
 
-    @Column(name = "last_updated_datetime")
-    val lastModifiedDate: ZonedDateTime,
+    @Column(name = "sensitive_contact")
+    @Convert(converter = BooleanYesNoConverter::class)
+    val isSensitive: Boolean = type.isSensitive,
 
     @Column(name = "last_updated_user_id")
     val lastModifiedUserId: Long,
@@ -69,7 +66,10 @@ data class CaseNote(
     val createdByUserId: Long,
 
     @Column(name = "created_datetime", updatable = false)
-    val createdDateTime: ZonedDateTime,
+    val createdDateTime: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(name = "last_updated_datetime")
+    val lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @Version
     @Column(name = "row_version")
@@ -99,7 +99,7 @@ data class CaseNote(
 
     override fun toString(): String {
         return this::class.simpleName + "(id = $id , offenderId = $offenderId , nomisId = $nomisId , type = $type , " +
-                "notes = $notes , date = $date , startTime = $startTime , lastModifiedDate = $lastModifiedDate , " +
+                "notes = $notes , date = $date , startTime = $startTime , lastModifiedDate = $lastModifiedDateTime , " +
                 "lastModifiedUserId = $lastModifiedUserId , createdByUserId = $createdByUserId , " +
                 "createdDateTime = $createdDateTime , version = $version )"
     }

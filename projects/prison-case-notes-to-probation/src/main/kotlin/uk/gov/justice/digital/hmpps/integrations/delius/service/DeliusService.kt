@@ -25,7 +25,7 @@ class DeliusService(
         val existing = caseNoteRepository.findByNomisId(caseNote.header.noteId)
 
         val entity = existing?.copy(
-            lastModifiedDate = listOf(existing.lastModifiedDate, caseNote.body.systemTimeStamp).max(),
+            lastModifiedDateTime = listOf(existing.lastModifiedDateTime, caseNote.body.systemTimeStamp).max(),
             notes = existing.notes + System.lineSeparator() + caseNote.body.notesToAppend(),
             date = caseNote.body.contactTimeStamp,
             startTime = caseNote.body.contactTimeStamp,
@@ -52,7 +52,7 @@ class DeliusService(
             lastModifiedUserId = user.id,
             createdByUserId = user.id,
             createdDateTime = body.systemTimeStamp,
-            lastModifiedDate = body.systemTimeStamp,
+            lastModifiedDateTime = body.systemTimeStamp,
             notes = body.notesToAppend(),
             date = body.contactTimeStamp,
             startTime = body.contactTimeStamp,

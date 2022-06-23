@@ -30,7 +30,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomisTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.ProbationAreaRepository
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
@@ -47,9 +46,6 @@ class DeliusServiceTest {
 
     @Mock
     lateinit var offenderRepository: OffenderRepository
-
-    @Mock
-    lateinit var probationAreaRepository: ProbationAreaRepository
 
     @Mock
     lateinit var assignmentService: AssignmentService
@@ -115,7 +111,7 @@ class DeliusServiceTest {
         verify(caseNoteRepository, Mockito.times(1)).save(caseNoteCaptor.capture())
 
         val saved = caseNoteCaptor.value
-        assertThat(saved.notes, startsWith(deliusCaseNote.body.type + " " + deliusCaseNote.body.subType))
+        assertThat(saved.notes, startsWith("${deliusCaseNote.body.type} ${deliusCaseNote.body.subType}"))
         assertThat(
             saved.notes,
             stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content)
