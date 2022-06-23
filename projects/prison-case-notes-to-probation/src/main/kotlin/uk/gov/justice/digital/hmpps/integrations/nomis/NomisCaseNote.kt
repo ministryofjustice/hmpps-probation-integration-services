@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteBody
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
+import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
 import java.time.ZonedDateTime
 
 const val UNKNOWN_LOCATION = "UNK"
@@ -21,12 +22,11 @@ data class NomisCaseNote(
     val locationId: String = UNKNOWN_LOCATION,
     val amendments: List<CaseNoteAmendment>
 ) {
-    fun getAuthorNameWithComma(): String =
-        // delius will throw a 400 bad request if it can't find a comma in the author name
-        if (authorName.contains(',')) authorName
-        else
-        // didn't find a comma, so split and change from forename surname to surname, forename
-            "${authorName.substringAfterLast(" ")}, ${authorName.substringBeforeLast(" ")}"
+    fun getStaffName(): StaffName =
+        if (authorName.contains(',')) {
+            StaffName(authorName.substringAfterLast(","), authorName.substringBeforeLast(","))
+        } else
+            StaffName(authorName.substringBeforeLast(" "), authorName.substringAfterLast(" "))
 }
 
 data class CaseNoteAmendment(
@@ -57,7 +57,7 @@ fun NomisCaseNote.toDeliusCaseNote(): DeliusCaseNote {
             content = text + amendments.joinToString(separator = "", transform = amendments()),
             contactTimeStamp = occurrenceDateTime,
             systemTimeStamp = amendments.mapNotNull { it.creationDateTime }.maxOrNull() ?: creationDateTime,
-            staffName = getAuthorNameWithComma(),
+            staffName = getStaffName(),
             establishmentCode = locationId
         )
     )

@@ -43,8 +43,21 @@ data class CaseNote(
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime,
 
-    @Column(name = "last_updated_datetime")
-    val lastModifiedDate: ZonedDateTime,
+    @Column(updatable = false)
+    val staffId: Long,
+
+    @Column(updatable = false)
+    val staffEmployeeId: Long,
+
+    @Column(updatable = false)
+    val teamId: Long,
+
+    @Column(updatable = false)
+    val probationAreaId: Long,
+
+    @Column(name = "sensitive_contact")
+    @Convert(converter = BooleanYesNoConverter::class)
+    val isSensitive: Boolean = type.isSensitive,
 
     @Column(name = "last_updated_user_id")
     val lastModifiedUserId: Long,
@@ -53,11 +66,26 @@ data class CaseNote(
     val createdByUserId: Long,
 
     @Column(name = "created_datetime", updatable = false)
-    val createdDateTime: ZonedDateTime,
+    val createdDateTime: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(name = "last_updated_datetime")
+    val lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @Version
     @Column(name = "row_version")
-    val version: Long,
+    val version: Long = 0,
+
+    @Column(updatable = false)
+    val trustProviderTeamId: Long = teamId,
+
+    @Column(updatable = false, columnDefinition = "NUMBER")
+    val trustProviderFlag: Boolean = false,
+
+    @Column(updatable = false)
+    val partitionAreaId: Long = 0L,
+
+    @Column(updatable = false, columnDefinition = "NUMBER")
+    val softDeleted: Boolean = false
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -71,7 +99,7 @@ data class CaseNote(
 
     override fun toString(): String {
         return this::class.simpleName + "(id = $id , offenderId = $offenderId , nomisId = $nomisId , type = $type , " +
-            "notes = $notes , date = $date , startTime = $startTime , lastModifiedDate = $lastModifiedDate , " +
+            "notes = $notes , date = $date , startTime = $startTime , lastModifiedDate = $lastModifiedDateTime , " +
             "lastModifiedUserId = $lastModifiedUserId , createdByUserId = $createdByUserId , " +
             "createdDateTime = $createdDateTime , version = $version )"
     }
@@ -85,7 +113,6 @@ class CaseNoteType(
     val id: Long,
 
     val code: String,
-    val description: String,
 
     @Column(name = "sensitive_contact")
     @Convert(converter = BooleanYesNoConverter::class)

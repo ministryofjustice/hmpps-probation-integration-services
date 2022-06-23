@@ -6,32 +6,19 @@ import java.time.ZonedDateTime
 import kotlin.random.Random
 
 object CaseNoteGenerator {
-    val EXISTING = run {
-        val now = ZonedDateTime.now()
-        CaseNote(
-            IdGenerator.getAndIncrement(),
-            OffenderGenerator.DEFAULT.id,
-            CaseNoteMessageGenerator.EXISTS_IN_DELIUS.eventId,
-            CaseNoteNomisTypeGenerator.DEFAULT.type,
-            "A Case Note from Nomis",
-            now,
-            now,
-            now,
-            UserGenerator.APPLICATION_USER.id,
-            UserGenerator.APPLICATION_USER.id,
-            now,
-            1,
-        )
-    }
+    val EXISTING = generate(CaseNoteMessageGenerator.EXISTS_IN_DELIUS.eventId)
 
     fun generate(
         nomisId: Long = Random.nextLong(),
         offenderId: Long = OffenderGenerator.DEFAULT.id,
         type: CaseNoteType = CaseNoteNomisTypeGenerator.DEFAULT.type,
-        description: String = "Another case note from Nomis"
-    ) {
+        description: String = "Another case note from Nomis",
+        probationAreaId: Long = ProbationAreaGenerator.DEFAULT.id,
+        teamId: Long = TeamGenerator.DEFAULT.id,
+        staffId: Long = StaffGenerator.DEFAULT.id,
+    ): CaseNote {
         val now = ZonedDateTime.now()
-        CaseNote(
+        return CaseNote(
             IdGenerator.getAndIncrement(),
             offenderId,
             nomisId,
@@ -39,11 +26,14 @@ object CaseNoteGenerator {
             description,
             now,
             now,
-            now,
-            UserGenerator.APPLICATION_USER.id,
-            UserGenerator.APPLICATION_USER.id,
-            now,
-            0,
+            staffId,
+            staffId,
+            teamId,
+            probationAreaId,
+            createdDateTime = now,
+            lastModifiedDateTime = now,
+            createdByUserId = UserGenerator.APPLICATION_USER.id,
+            lastModifiedUserId = UserGenerator.APPLICATION_USER.id,
         )
     }
 }

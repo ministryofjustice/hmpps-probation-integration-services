@@ -17,14 +17,15 @@ class DeliusService(
     private val userService: UserService,
     private val caseNoteRepository: CaseNoteRepository,
     private val nomisTypeRepository: CaseNoteNomisTypeRepository,
-    private val offenderRepository: OffenderRepository
+    private val offenderRepository: OffenderRepository,
+    private val assignmentService: AssignmentService
 ) {
     fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) {
         val user = userService.findServiceUser()
         val existing = caseNoteRepository.findByNomisId(caseNote.header.noteId)
 
         val entity = existing?.copy(
-            lastModifiedDate = listOf(existing.lastModifiedDate, caseNote.body.systemTimeStamp).max(),
+            lastModifiedDateTime = listOf(existing.lastModifiedDateTime, caseNote.body.systemTimeStamp).max(),
             notes = existing.notes + System.lineSeparator() + caseNote.body.notesToAppend(),
             date = caseNote.body.contactTimeStamp,
             startTime = caseNote.body.contactTimeStamp,
@@ -41,6 +42,8 @@ class DeliusService(
         val offender = offenderRepository.findByNomsId(header.nomisId)
             ?: throw OffenderNotFoundException(header.nomisId)
 
+        val assignment = assignmentService.findAssignment(body.establishmentCode, body.staffName)
+
         return CaseNote(
             offenderId = offender.id,
             type = caseNoteType,
@@ -49,10 +52,15 @@ class DeliusService(
             lastModifiedUserId = user.id,
             createdByUserId = user.id,
             createdDateTime = body.systemTimeStamp,
-            lastModifiedDate = body.systemTimeStamp,
+            lastModifiedDateTime = body.systemTimeStamp,
             notes = body.notesToAppend(),
             date = body.contactTimeStamp,
-            startTime = body.contactTimeStamp
+            startTime = body.contactTimeStamp,
+            isSensitive = caseNoteType.isSensitive,
+            probationAreaId = assignment.first,
+            teamId = assignment.second,
+            staffId = assignment.third,
+            staffEmployeeId = assignment.third
         )
     }
 }

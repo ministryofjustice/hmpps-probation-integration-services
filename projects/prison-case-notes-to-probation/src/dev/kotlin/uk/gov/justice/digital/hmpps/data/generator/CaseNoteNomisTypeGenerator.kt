@@ -9,7 +9,6 @@ object CaseNoteNomisTypeGenerator {
         CaseNoteType(
             IdGenerator.getAndIncrement(),
             "CNT1",
-            "A description for the case note type",
             false
         )
     )

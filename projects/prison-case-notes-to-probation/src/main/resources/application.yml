@@ -2,6 +2,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+    database-platform: org.hibernate.dialect.Oracle10gDialect
   jms:
     template:
       default-destination: events
