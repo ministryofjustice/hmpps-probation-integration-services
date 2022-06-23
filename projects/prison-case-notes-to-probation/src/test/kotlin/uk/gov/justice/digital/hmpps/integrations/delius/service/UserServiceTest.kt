@@ -10,10 +10,10 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.UserRepository
 
 @ExtendWith(MockitoExtension::class)
@@ -42,9 +42,8 @@ class UserServiceTest {
 
     @Test
     fun `unable to retrieve user from database`() {
-        val name = "userName"
-        val simpleGrantedAuthority = SimpleGrantedAuthority("ROLE")
-        val userDetails = User(name, "", listOf(simpleGrantedAuthority))
+        val name = UserGenerator.APPLICATION_USER.username
+        val userDetails = User(name, "", listOf())
         whenever(securityContext.authentication).thenReturn(authentication)
         whenever(securityContext.authentication.principal).thenReturn(userDetails)
         whenever(userRepository.findUserByUsername(name)).thenReturn(null)
