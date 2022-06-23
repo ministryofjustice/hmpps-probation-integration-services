@@ -18,7 +18,7 @@ class YesNoConverterTest {
 
     @ParameterizedTest
     @MethodSource("attributeParams")
-    fun `convert from database column`(column: Char, attribute: Boolean) {
+    fun `convert from database column`(column: Char?, attribute: Boolean) {
         val result = converter.convertToEntityAttribute(column)
         assertThat(result, equalTo(attribute))
     }
@@ -33,7 +33,8 @@ class YesNoConverterTest {
         @JvmStatic
         private fun attributeParams(): List<Arguments> = listOf(
             Arguments.of('N', false),
-            Arguments.of('Y', true)
+            Arguments.of('Y', true),
+            Arguments.of(null, false)
         )
     }
 }

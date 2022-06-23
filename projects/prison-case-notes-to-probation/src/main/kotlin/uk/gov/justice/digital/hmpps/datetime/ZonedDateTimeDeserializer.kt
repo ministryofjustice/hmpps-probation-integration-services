@@ -15,7 +15,7 @@ class ZonedDateTimeDeserializer : JsonDeserializer<ZonedDateTime>() {
     @Throws(IOException::class, JsonProcessingException::class)
     override fun deserialize(parser: JsonParser, context: DeserializationContext?): ZonedDateTime {
         val json = parser.text
-        return if (json.matches(".*(\\+|-)\\d{2}(:?\\d{2})?$".toRegex())) {
+        return if (json.contains(".*(\\+|-)\\d{2}(:?\\d{2})".toRegex())) {
             ZonedDateTime.parse(json).withZoneSameInstant(ZoneId.systemDefault())
         } else {
             ZonedDateTime.of(LocalDateTime.parse(json), ZoneId.systemDefault())
