@@ -22,8 +22,10 @@ import uk.gov.justice.digital.hmpps.data.SimulationBuilder
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NomisCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
+import java.time.ZoneId
 
 @ActiveProfiles("integration-test")
 @SpringBootTest
@@ -71,7 +73,15 @@ class IntegrationTest {
 
         assertThat(
             saved?.notes,
-            stringContainsInOrder(original?.notes, nomisCaseNote.type, nomisCaseNote.subType, nomisCaseNote.text)
+            stringContainsInOrder(
+                original?.notes,
+                nomisCaseNote.type,
+                nomisCaseNote.subType,
+                nomisCaseNote.text,
+                nomisCaseNote.amendments[0].authorName,
+                DeliusDateTimeFormatter.format(nomisCaseNote.amendments[0].creationDateTime?.withZoneSameInstant(ZoneId.systemDefault())),
+                nomisCaseNote.amendments[0].additionalNoteText
+            )
         )
     }
 
