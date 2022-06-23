@@ -16,9 +16,9 @@ object CaseNoteGenerator {
         probationAreaId: Long = ProbationAreaGenerator.DEFAULT.id,
         teamId: Long = TeamGenerator.DEFAULT.id,
         staffId: Long = StaffGenerator.DEFAULT.id,
-    ) {
+    ): CaseNote {
         val now = ZonedDateTime.now()
-        CaseNote(
+        return CaseNote(
             IdGenerator.getAndIncrement(),
             offenderId,
             nomisId,
