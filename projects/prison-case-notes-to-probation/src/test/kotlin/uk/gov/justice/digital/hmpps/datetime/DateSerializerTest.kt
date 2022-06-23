@@ -45,5 +45,4 @@ class DateSerializerTest {
             Arguments.of("2022-06-23T23:10:47+01:00[Europe/London]", dateTime)
         )
     }
-
 }
