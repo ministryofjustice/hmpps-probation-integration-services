@@ -25,7 +25,6 @@ import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
-import java.time.ZoneId
 
 @ActiveProfiles("integration-test")
 @SpringBootTest
@@ -79,7 +78,7 @@ class IntegrationTest {
                 nomisCaseNote.subType,
                 nomisCaseNote.text,
                 nomisCaseNote.amendments[0].authorName,
-                DeliusDateTimeFormatter.format(nomisCaseNote.amendments[0].creationDateTime?.withZoneSameInstant(ZoneId.systemDefault())),
+                DeliusDateTimeFormatter.format(nomisCaseNote.amendments[0].creationDateTime),
                 nomisCaseNote.amendments[0].additionalNoteText
             )
         )
