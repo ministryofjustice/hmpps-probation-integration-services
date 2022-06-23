@@ -6,7 +6,7 @@ import java.time.ZonedDateTime
 import kotlin.random.Random
 
 object CaseNoteGenerator {
-    var EXISTING = generate(CaseNoteMessageGenerator.EXISTS_IN_DELIUS.eventId)
+    var EXISTING = generate(CaseNoteMessageGenerator.EXISTS_IN_DELIUS.eventId, description = "A case note from Nomis")
 
     fun generate(
         nomisId: Long = Random.nextLong(),

@@ -8,5 +8,14 @@
   "authorName": "Some Name",
   "text": "note content",
   "locationId": "LEI",
-  "amendments": []
+  "amendments": [
+    {
+      "additionalNoteText": "Some Additional Text",
+      "authorName": "Mickey Mouse",
+      "authorUserId": "12345",
+      "authorUserName": "USER1",
+      "caseNoteAmendmentId": 123232,
+      "creationDateTime": "2022-06-22T08:02:43.971Z"
+    }
+  ]
 }

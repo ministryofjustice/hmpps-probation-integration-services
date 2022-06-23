@@ -41,6 +41,7 @@ class DateSerializerTest {
         @JvmStatic
         private fun dateTimeStrings(): List<Arguments> = listOf(
             Arguments.of("2022-06-23T23:10:47", dateTime),
+            Arguments.of("2022-06-23T22:10:47Z", dateTime),
             Arguments.of("2022-06-23T23:10:47+01:00", dateTime),
             Arguments.of("2022-06-23T23:10:47+01:00[Europe/London]", dateTime)
         )
