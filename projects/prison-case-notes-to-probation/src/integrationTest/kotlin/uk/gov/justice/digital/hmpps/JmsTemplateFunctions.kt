@@ -5,7 +5,7 @@ import java.time.Duration
 import java.time.LocalDateTime.now
 import java.util.concurrent.TimeoutException
 
-fun JmsTemplate.convertSendAndWait(queueName: String, message: Any, timeout: Duration = Duration.ofMillis(1000)) {
+fun JmsTemplate.convertSendAndWait(queueName: String, message: Any, timeout: Duration = Duration.ofMillis(2000)) {
     convertAndSend(queueName, message)
     val startTime = now()
     val endTime = startTime.plus(timeout)

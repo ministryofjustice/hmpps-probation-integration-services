@@ -37,4 +37,4 @@ class Institution(
     @Column(name = "nomis_cde_code")
     val nomisCode: String,
 
-    )
+)

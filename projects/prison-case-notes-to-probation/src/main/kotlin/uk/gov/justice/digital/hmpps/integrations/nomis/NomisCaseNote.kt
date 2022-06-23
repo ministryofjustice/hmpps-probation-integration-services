@@ -23,11 +23,10 @@ data class NomisCaseNote(
     val amendments: List<CaseNoteAmendment>
 ) {
     fun getStaffName(): StaffName =
-        if (authorName.contains(',')){
-            StaffName(authorName.substringAfterLast(","),authorName.substringBeforeLast(","))
-        }
-        else
-          StaffName(authorName.substringBeforeLast(" "),authorName.substringAfterLast(" "))
+        if (authorName.contains(',')) {
+            StaffName(authorName.substringAfterLast(","), authorName.substringBeforeLast(","))
+        } else
+            StaffName(authorName.substringBeforeLast(" "), authorName.substringAfterLast(" "))
 }
 
 data class CaseNoteAmendment(

@@ -99,9 +99,9 @@ data class CaseNote(
 
     override fun toString(): String {
         return this::class.simpleName + "(id = $id , offenderId = $offenderId , nomisId = $nomisId , type = $type , " +
-                "notes = $notes , date = $date , startTime = $startTime , lastModifiedDate = $lastModifiedDateTime , " +
-                "lastModifiedUserId = $lastModifiedUserId , createdByUserId = $createdByUserId , " +
-                "createdDateTime = $createdDateTime , version = $version )"
+            "notes = $notes , date = $date , startTime = $startTime , lastModifiedDate = $lastModifiedDateTime , " +
+            "lastModifiedUserId = $lastModifiedUserId , createdByUserId = $createdByUserId , " +
+            "createdDateTime = $createdDateTime , version = $version )"
     }
 }
 

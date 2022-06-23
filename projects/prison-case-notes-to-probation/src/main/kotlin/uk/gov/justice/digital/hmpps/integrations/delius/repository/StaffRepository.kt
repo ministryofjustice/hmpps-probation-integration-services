@@ -17,7 +17,8 @@ interface StaffRepository : JpaRepository<Staff, Long> {
         where regexp_like(officer_code, ?1, 'i')
         order by officer_code desc
         fetch next 1 rows only
-        """, nativeQuery = true
+        """,
+        nativeQuery = true
     )
     fun getLatestStaffReference(regex: String): String?
 }

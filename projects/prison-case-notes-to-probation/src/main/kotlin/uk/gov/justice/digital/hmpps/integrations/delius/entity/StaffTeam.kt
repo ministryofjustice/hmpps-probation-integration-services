@@ -38,4 +38,3 @@ class StaffTeam(
 )
 
 class StaffTeamId(val staffId: Long = 0, val teamId: Long = 0) : Serializable
-
