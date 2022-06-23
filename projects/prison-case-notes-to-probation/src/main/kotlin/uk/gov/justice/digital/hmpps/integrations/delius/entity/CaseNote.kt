@@ -130,4 +130,3 @@ class CaseNoteNomisType(
     @JoinColumn(name = "contact_type_id")
     val type: CaseNoteType,
 )
-

@@ -10,7 +10,6 @@ import uk.gov.justice.digital.hmpps.integrations.nomis.CaseNoteMessage
 import uk.gov.justice.digital.hmpps.integrations.nomis.NomisClient
 import uk.gov.justice.digital.hmpps.integrations.nomis.toDeliusCaseNote
 
-
 @Component
 class MessageListener(
     val nc: NomisClient,

@@ -2,7 +2,12 @@
 
 > :memo: This repository is a work-in-progress and subject to change.
  
-[![repo standards badge](https://img.shields.io/badge/dynamic/json?color=blue&style=for-the-badge&logo=github&label=MoJ%20Compliant&query=%24.data%5B%3F%28%40.name%20%3D%3D%20%22hmpps-probation-integration-services%22%29%5D.status&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fgithub_repositories)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/github_repositories#probation-integration-services "Link to report")
+[![repo standards badge](https://img.shields.io/badge/dynamic/json?color=blue&logo=github&label=MoJ%20Compliant&query=%24.data%5B%3F%28%40.name%20%3D%3D%20%22hmpps-probation-integration-services%22%29%5D.status&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fgithub_repositories)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/github_repositories#hmpps-probation-integration-services "Link to report")
+[![Trivy](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/security.yml/badge.svg)](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/security.yml)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=ministryofjustice_hmpps-probation-integration-services&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=ministryofjustice_hmpps-probation-integration-services)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ministryofjustice_hmpps-probation-integration-services&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ministryofjustice_hmpps-probation-integration-services)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ministryofjustice_hmpps-probation-integration-services&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ministryofjustice_hmpps-probation-integration-services)
+[![codecov](https://codecov.io/gh/ministryofjustice/hmpps-probation-integration-services/branch/main/graph/badge.svg?token=CCgT1zYksg)](https://codecov.io/gh/ministryofjustice/hmpps-probation-integration-services)
 
 A collection of small, domain-focused integrations to support HMPPS Digital services that need to interact with 
 probation data. Typically, these integration services will perform translations between HMPPS and Delius domain 
@@ -29,14 +34,14 @@ With this in mind, we aim to:
 A full list of decision records can be found in [decisions](decisions). (**TODO**)
 
 ## Tooling
-* Code is written in [Kotlin](https://kotlinlang.org/), using [Spring Boot](https://spring.io/projects/spring-boot) 
+* Code is written in [Kotlin](https://kotlinlang.org/), using [Spring Boot](https://spring.io/projects/spring-boot)
 * Built and tested as a multi-project [Gradle](https://gradle.org/) build
 * Unit tests with [JUnit](https://junit.org/) and [Mockito](https://mockito.org/)
 * Integration tests with [Hoverfly](https://hoverfly.io/), [H2](https://www.h2database.com/), and [embedded ActiveMQ](https://activemq.apache.org/)
-* Contract testing with [PACT](https://pact.io/)
 * End-to-end testing **TBC**
 * Docker images are built with [Jib](https://github.com/GoogleContainerTools/jib#readme)
-* Continuous integration with [GitHub Actions](https://help.github.com/en/actions) **TBC**
+* Code formatting by [ktlint](https://ktlint.github.io/)
+* Continuous integration with [GitHub Actions](https://help.github.com/en/actions)
 
 # Development
 The project is configured to enable developers to build/test/run integration services in isolation without the need for 
@@ -47,6 +52,20 @@ To set up your development environment,
 2. To run tests for a service, right-click the `src/test` folder in the project view and select "Run tests".  See [Test](#test).
 3. To start the service, use the pre-defined run configuration in `.idea/runConfigurations` (See [Run](#run)).
 
+## Code formatting
+Kotlin code is formatted using [ktlint](https://ktlint.github.io/). IntelliJ will detect the ktlint configuration in 
+[.idea/codeStyles](.idea/codeStyles) and [.idea/inspectionProfiles](.idea/inspectionProfiles) and ensure formatting is 
+applied consistently in your IDE.
+
+To fix any formatting issues in your code locally, run 
+```
+./gradlew ktlintFormat
+```
+
+Or, to add a pre-commit hook to automatically fix any formatting issues, run:
+```shell
+./gradlew addKtlintFormatGitPreCommitHook
+```
 
 # Build
 IntelliJ will automatically build your code as needed. Any tasks you run from the root project, without specifying a project name will be ran on all the children.

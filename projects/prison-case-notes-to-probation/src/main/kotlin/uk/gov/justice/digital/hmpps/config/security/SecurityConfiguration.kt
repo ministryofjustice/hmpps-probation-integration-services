@@ -48,5 +48,4 @@ class SecurityConfiguration {
         authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider)
         return authorizedClientManager
     }
-
 }

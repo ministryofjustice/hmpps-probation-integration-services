@@ -60,8 +60,7 @@ class FeignConfig(
 class FeignErrorDecoder : ErrorDecoder {
     override fun decode(methodKey: String?, response: Response?): Exception =
         ResponseStatusException(
-            HttpStatus.valueOf(response?.status() ?: 500), response?.body()?.asReader(
-                StandardCharsets.UTF_8
-            )?.readText()
+            HttpStatus.valueOf(response?.status() ?: 500),
+            response?.body()?.asReader(StandardCharsets.UTF_8)?.readText()
         )
 }

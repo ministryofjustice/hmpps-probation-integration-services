@@ -4,12 +4,13 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-    id("org.springframework.boot") version "2.7.0" apply false
-    id("io.spring.dependency-management") version "1.0.11.RELEASE" apply false
     kotlin("jvm") version "1.7.0" apply false
     kotlin("plugin.spring") version "1.7.0" apply false
     kotlin("plugin.jpa") version "1.7.0" apply false
+    id("org.springframework.boot") version "2.7.0" apply false
+    id("io.spring.dependency-management") version "1.0.11.RELEASE" apply false
     id("com.google.cloud.tools.jib") version "3.2.1" apply false
+    id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
     id("base")
     id("jacoco")
     id("test-report-aggregation")
@@ -66,6 +67,7 @@ subprojects {
         plugin("org.jetbrains.kotlin.plugin.spring")
         plugin("org.jetbrains.kotlin.plugin.jpa")
         plugin("com.google.cloud.tools.jib")
+        plugin("org.jlleitschuh.gradle.ktlint")
         plugin("jacoco")
         plugin("test-report-aggregation")
         plugin("jacoco-report-aggregation")
@@ -138,15 +140,19 @@ subprojects {
 
             named<JacocoReport>("jacocoTestReport") {
                 classDirectories.setFrom(
-                    files(classDirectories.files.map {
-                        fileTree(it) {
-                            exclude("**/config/**",
-                                "**/model/**",
-                                "**/exceptions/**",
-                                "**/entity/**",
-                                "**/AppKt.class")
+                    files(
+                        classDirectories.files.map {
+                            fileTree(it) {
+                                exclude(
+                                    "**/config/**",
+                                    "**/model/**",
+                                    "**/exceptions/**",
+                                    "**/entity/**",
+                                    "**/AppKt.class"
+                                )
+                            }
                         }
-                    })
+                    )
                 )
                 executionData.setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
             }
@@ -159,7 +165,7 @@ subprojects {
                 finalizedBy("jacocoTestReport")
             }
             named("check") {
-                dependsOn("test", "integrationTest")
+                dependsOn("ktlintCheck", "test", "integrationTest")
             }
         }
     }
@@ -177,4 +183,4 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         xml.required.set(true)
     }
 }
-tasks.named("check") { dependsOn("jacocoTestReport") }
+tasks.named("check") { dependsOn("ktlintCheck", "jacocoTestReport") }

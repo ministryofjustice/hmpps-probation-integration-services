@@ -1,0 +1,15 @@
+name: Branch
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and test
+        uses: ./.github/actions/build-and-test

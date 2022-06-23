@@ -32,7 +32,7 @@ class SimulationBuilder(private val om: ObjectMapper) {
                     }
                     it
                 }
-                val arrNode = om.createArrayNode();
+                val arrNode = om.createArrayNode()
                 sim.set<ArrayNode>("pairs", arrNode)
                 arrNode.addAll(pairs)
 
@@ -44,4 +44,3 @@ class SimulationBuilder(private val om: ObjectMapper) {
         override fun getSimulation() = simulation
     }
 }
-

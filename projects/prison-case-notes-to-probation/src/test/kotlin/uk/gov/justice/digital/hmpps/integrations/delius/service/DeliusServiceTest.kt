@@ -30,7 +30,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomisTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
-import java.util.*
+import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
 class DeliusServiceTest {
