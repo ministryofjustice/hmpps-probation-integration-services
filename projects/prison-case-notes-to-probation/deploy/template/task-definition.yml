@@ -1,0 +1,18 @@
+# Generic task-definition template
+cpu: "{{ .values.cpu }}"
+memory: "{{ .values.memory }}"
+containerDefinitions:
+  - name: {{ .values.image.name }}
+    image: quay.io/hmpps/{{ .values.image.name }}:{{ .Env.VERSION }}
+    cpu: "{{ .values.cpu }}"
+    memory: "{{ .values.memory }}"
+    environment:
+    {{- range $key, $val := .values.env }}
+      - name: {{ $key }}
+        value: {{ $val }}
+    {{- end }}
+    secrets:
+    {{- range $key, $val := .values.secrets.env }}
+      - name: {{ $key }}
+        valueFrom: {{ $.values.secrets.namespace }}{{ $val }}
+    {{- end }}

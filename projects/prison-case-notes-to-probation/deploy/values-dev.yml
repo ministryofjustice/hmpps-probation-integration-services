@@ -1,0 +1,9 @@
+cpu: 1024
+
+env:
+  SOME_ENV_VAR: testing
+
+secrets:
+  namespace: /delius-test/delius/probation-integration
+  env:
+    SOME_SECRET: /test/parameter/ref

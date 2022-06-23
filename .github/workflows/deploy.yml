@@ -1,0 +1,65 @@
+name: Deploy to Delius ECS cluster
+
+on:
+  workflow_call:
+    inputs:
+      projects:
+        description: A JSON array of projects to deploy
+        type: string
+        required: true
+      environment:
+        description: The name of the environment to deploy to
+        type: string
+        required: true
+      values-file:
+        description: The name of the YAML file to use for configuration (e.g. values-dev.yml)
+        type: string
+        required: true
+      version:
+        description: The image version to deploy
+        type: string
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: ${{ fromJson(inputs.projects) }}
+    environment:
+      name: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-west-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-skip-session-tagging: true
+          role-duration-seconds: 1200
+
+      - name: Render values
+        shell: bash
+        run: yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' --inplace values.yml ${{ inputs.values-file }}
+        working-directory: projects/${{ matrix.project }}/deploy
+
+      - name: Update task definition
+        shell: bash
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          brew install gomplate
+          old_task_definition=$(aws ecs describe-task-definition --task-definition "del-${{ inputs.environment }}-${{ matrix.project }}-task-definition" --include TAGS | jq '.taskDefinition | del(.containerDefinitions[0].command)')
+          new_task_definition=$(yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' <(echo "${old_task_definition}") <(gomplate --file template/task-definition.yml --context values=values.yml) --output-format json | tee task-definition.json)
+          echo "Deploying new task definition: ${new_task_definition}"
+        working-directory: projects/${{ matrix.project }}/deploy
+
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: projects/${{ matrix.project }}/deploy/task-definition.json
+          service: del-${{ inputs.environment }}-${{ matrix.project }}-service
+          cluster: del-delius-ecscluster-private-ecs
+          wait-for-service-stability: true
+          wait-for-minutes: 5
