@@ -36,7 +36,7 @@ class DateSerializerTest {
     companion object {
         private val localDate = LocalDate.of(2022, 6, 23)
         private val localTime = LocalTime.of(23, 10, 47)
-        private val dateTime = LocalDateTime.of(localDate, localTime).atZone(ZoneId.systemDefault())
+        private val dateTime = LocalDateTime.of(localDate, localTime).atZone(ZoneId.of("Europe/London"))
 
         @JvmStatic
         private fun dateTimeStrings(): List<Arguments> = listOf(
