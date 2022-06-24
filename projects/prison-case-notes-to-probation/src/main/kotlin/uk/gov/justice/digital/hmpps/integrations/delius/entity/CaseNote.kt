@@ -55,7 +55,7 @@ data class CaseNote(
     @Column(updatable = false)
     val probationAreaId: Long,
 
-    @Column(name = "sensitive_contact")
+    @Column(name = "sensitive")
     @Convert(converter = BooleanYesNoConverter::class)
     val isSensitive: Boolean = type.isSensitive,
 
