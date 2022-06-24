@@ -17,11 +17,11 @@ feign.client.config:
 
 spring.security.oauth2.client:
   registration:
-    case-notes:
+    prison-case-notes:
       provider: hmpps-auth
       authorization-grant-type: client_credentials
-      client-id: ${integrations.case-notes.client-id}
-      client-secret: ${integrations.case-notes.client-secret}
+      client-id: ${integrations.prison-case-notes.client-id}
+      client-secret: ${integrations.prison-case-notes.client-secret}
   provider:
     hmpps-auth:
 
@@ -41,7 +41,7 @@ hoverfly:
   port: 8500
 
 integrations:
-  case-notes:
+  prison-case-notes:
     url: http://localhost:${hoverfly.port}
     client-id: prison-case-notes-to-probation
     client-secret: prison-case-notes-to-probation

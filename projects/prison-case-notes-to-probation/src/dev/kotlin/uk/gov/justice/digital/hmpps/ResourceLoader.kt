@@ -8,8 +8,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
-import uk.gov.justice.digital.hmpps.integrations.casenotes.CaseNoteMessage
-import uk.gov.justice.digital.hmpps.integrations.casenotes.NomisCaseNote
+import uk.gov.justice.digital.hmpps.integrations.prison.CaseNoteMessage
+import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
 import uk.gov.justice.digital.hmpps.listener.CaseNoteMessageWrapper
 import java.time.ZonedDateTime
 
@@ -28,9 +28,9 @@ object ResourceLoader {
             CaseNoteMessageWrapper::class.java
         ).message
 
-    fun nomisCaseNote(filename: String): NomisCaseNote =
+    fun nomisCaseNote(filename: String): PrisonCaseNote =
         MAPPER.readValue(
             ResourceUtils.getFile("classpath:responses/$filename.json"),
-            NomisCaseNote::class.java
+            PrisonCaseNote::class.java
         )
 }
