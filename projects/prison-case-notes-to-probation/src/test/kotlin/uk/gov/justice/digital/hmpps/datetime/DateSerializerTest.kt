@@ -13,7 +13,6 @@ import org.mockito.kotlin.whenever
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -35,17 +34,26 @@ class DateSerializerTest {
     }
 
     companion object {
-        private val localDate = LocalDate.of(2022, 6, 23)
-        private val localTime = LocalTime.of(23, 10, 47)
-        private val localDateTime = LocalDateTime.of(localDate, localTime)
-        private val dateTime = localDateTime.atZone(ZoneId.systemDefault())
+        private val bstLocalDate = LocalDate.of(2022, 6, 23)
+        private val bstLocalTime = LocalTime.of(23, 10, 47)
+        private val bstLocalDateTime = LocalDateTime.of(bstLocalDate, bstLocalTime)
+        private val bstDateTime = bstLocalDateTime.atZone(EuropeLondon)
+
+        private val utcLocalDate = LocalDate.of(2022, 2, 23)
+        private val utcLocalTime = LocalTime.of(23, 10, 47)
+        private val utcLocalDateTime = LocalDateTime.of(utcLocalDate, utcLocalTime)
+        private val utcDateTime = utcLocalDateTime.atZone(EuropeLondon)
 
         @JvmStatic
         private fun dateTimeStrings(): List<Arguments> = listOf(
-            Arguments.of(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(dateTime), dateTime),
-            Arguments.of(DateTimeFormatter.ISO_INSTANT.format(dateTime), dateTime),
-            Arguments.of(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(dateTime), dateTime),
-            Arguments.of(DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime), dateTime),
+            Arguments.of(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(bstDateTime), bstDateTime),
+            Arguments.of(DateTimeFormatter.ISO_INSTANT.format(bstDateTime), bstDateTime),
+            Arguments.of(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(bstDateTime), bstDateTime),
+            Arguments.of(DateTimeFormatter.ISO_ZONED_DATE_TIME.format(bstDateTime), bstDateTime),
+            Arguments.of(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(utcDateTime), utcDateTime),
+            Arguments.of(DateTimeFormatter.ISO_INSTANT.format(utcDateTime), utcDateTime),
+            Arguments.of(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(utcDateTime), utcDateTime),
+            Arguments.of(DateTimeFormatter.ISO_ZONED_DATE_TIME.format(utcDateTime), utcDateTime),
         )
     }
 }

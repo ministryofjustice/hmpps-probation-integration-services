@@ -7,18 +7,35 @@ import com.fasterxml.jackson.databind.JsonDeserializer
 import org.springframework.boot.jackson.JsonComponent
 import java.io.IOException
 import java.time.LocalDateTime
-import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
 
 @JsonComponent
 class ZonedDateTimeDeserializer : JsonDeserializer<ZonedDateTime>() {
+    companion object {
+        val formatter: DateTimeFormatter = DateTimeFormatterBuilder().parseCaseInsensitive()
+            .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            .parseLenient()
+            .optionalStart()
+            .appendOffsetId()
+            .parseStrict()
+            .optionalStart()
+            .appendLiteral('[')
+            .parseCaseSensitive()
+            .appendZoneRegionId()
+            .appendLiteral(']')
+            .optionalEnd()
+            .optionalEnd()
+            .toFormatter()
+    }
+
     @Throws(IOException::class, JsonProcessingException::class)
     override fun deserialize(parser: JsonParser, context: DeserializationContext?): ZonedDateTime {
-        val json = parser.text
-        return if (json.matches(".*(?:Z|[+-](?:2[0-3]|[01]\\d):[0-5]\\d)(?:\\[.*\\])?".toRegex())) {
-            ZonedDateTime.parse(json).withZoneSameInstant(ZoneId.systemDefault())
-        } else {
-            ZonedDateTime.of(LocalDateTime.parse(json), ZoneId.systemDefault())
+        return when (val datetime = formatter.parseBest(parser.text, ZonedDateTime::from, LocalDateTime::from)) {
+            is ZonedDateTime -> datetime.withZoneSameInstant(EuropeLondon)
+            is LocalDateTime -> datetime.atZone(EuropeLondon)
+            else -> throw IllegalArgumentException()
         }
     }
 }
