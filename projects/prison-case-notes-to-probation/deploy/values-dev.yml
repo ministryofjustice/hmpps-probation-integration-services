@@ -2,4 +2,4 @@ environment_name: delius-test
 
 env:
   INTEGRATIONS_CASE-NOTES_URL: https://offender-case-notes-dev.hmpps.service.justice.gov.uk
-  SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_JWK-SET-URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
+  SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/oauth/token
