@@ -15,6 +15,8 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+
 
 @ExtendWith(MockitoExtension::class)
 class DateSerializerTest {
@@ -36,14 +38,15 @@ class DateSerializerTest {
     companion object {
         private val localDate = LocalDate.of(2022, 6, 23)
         private val localTime = LocalTime.of(23, 10, 47)
-        private val dateTime = LocalDateTime.of(localDate, localTime).atZone(ZoneId.systemDefault())
+        private val localDateTime = LocalDateTime.of(localDate, localTime)
+        private val dateTime = localDateTime.atZone(ZoneId.systemDefault())
 
         @JvmStatic
         private fun dateTimeStrings(): List<Arguments> = listOf(
-            Arguments.of("2022-06-23T23:10:47", dateTime),
-            Arguments.of("2022-06-23T22:10:47Z", dateTime),
-            Arguments.of("2022-06-23T23:10:47+01:00", dateTime),
-            Arguments.of("2022-06-23T23:10:47+01:00[Europe/London]", dateTime),
+            Arguments.of(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(dateTime), dateTime),
+            Arguments.of(DateTimeFormatter.ISO_INSTANT.format(dateTime), dateTime),
+            Arguments.of(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(dateTime), dateTime),
+            Arguments.of(DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime), dateTime),
         )
     }
 }
