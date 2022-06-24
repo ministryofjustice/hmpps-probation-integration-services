@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.nomis
+package uk.gov.justice.digital.hmpps.integrations.casenotes
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter

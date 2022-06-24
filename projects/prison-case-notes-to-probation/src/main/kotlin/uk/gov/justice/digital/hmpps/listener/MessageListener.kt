@@ -5,15 +5,15 @@ import org.slf4j.LoggerFactory
 import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ResponseStatusException
+import uk.gov.justice.digital.hmpps.integrations.casenotes.CaseNoteMessage
+import uk.gov.justice.digital.hmpps.integrations.casenotes.CaseNotesClient
+import uk.gov.justice.digital.hmpps.integrations.casenotes.toDeliusCaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
-import uk.gov.justice.digital.hmpps.integrations.nomis.CaseNoteMessage
-import uk.gov.justice.digital.hmpps.integrations.nomis.NomisClient
-import uk.gov.justice.digital.hmpps.integrations.nomis.toDeliusCaseNote
 
 @Component
 class MessageListener(
-    val nc: NomisClient,
-    val ds: DeliusService
+    val caseNotesClient: CaseNotesClient,
+    val deliusService: DeliusService
 ) {
 
     companion object {
@@ -23,7 +23,7 @@ class MessageListener(
     @JmsListener(destination = "\${spring.jms.template.default-destination}")
     fun receive(caseNoteMessage: CaseNoteMessage) {
         val nomisCaseNote = try {
-            nc.getCaseNote(caseNoteMessage.offenderId, caseNoteMessage.caseNoteId)
+            caseNotesClient.getCaseNote(caseNoteMessage.offenderId, caseNoteMessage.caseNoteId)
         } catch (re: ResponseStatusException) {
             log.error("Unable to get Case Note: ${re.rawStatusCode}, ${re.reason}")
             null
@@ -46,6 +46,6 @@ class MessageListener(
             nomisCaseNote.eventId
         )
 
-        ds.mergeCaseNote(nomisCaseNote.toDeliusCaseNote())
+        deliusService.mergeCaseNote(nomisCaseNote.toDeliusCaseNote())
     }
 }

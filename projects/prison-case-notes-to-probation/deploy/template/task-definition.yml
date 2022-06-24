@@ -12,7 +12,7 @@ containerDefinitions:
         value: {{ $val }}
     {{- end }}
     secrets:
-    {{- range $key, $val := .values.secrets.env }}
+    {{- range $key, $val := .values.secrets }}
       - name: {{ $key }}
-        valueFrom: {{ $.values.secrets.namespace }}{{ $val }}
+        valueFrom: {{ $.values.environment_name }}/delius/probation-integration{ $val }}
     {{- end }}

@@ -1,9 +1,5 @@
-cpu: 1024
+environment_name: delius-test
 
 env:
-  SOME_ENV_VAR: testing
-
-secrets:
-  namespace: /delius-test/delius/probation-integration
-  env:
-    SOME_SECRET: /test/parameter/ref
+  INTEGRATIONS_CASE-NOTES_URL: https://offender-case-notes-dev.hmpps.service.justice.gov.uk
+  SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_JWK-SET-URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
