@@ -2,7 +2,7 @@ spring:
   activemq:
     broker-url: vm://localhost?broker.persistent=false&broker.useShutdownHook=false
   datasource:
-    url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa:
     hibernate:
       ddl-auto: create-drop
