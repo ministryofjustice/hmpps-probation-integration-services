@@ -17,7 +17,6 @@ import uk.gov.justice.digital.hmpps.data.generator.NomisCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.exceptions.InvalidEstablishmentCodeException
 import uk.gov.justice.digital.hmpps.exceptions.ProbationAreaNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.TeamNotFoundException
@@ -43,9 +42,6 @@ class AssignmentServiceTest {
 
     @Mock
     lateinit var officerCodeGenerator: OfficerCodeGenerator
-
-    @Mock
-    lateinit var userService: UserService
 
     @Mock
     lateinit var staffTeamRepository: StaffTeamRepository
@@ -136,7 +132,6 @@ class AssignmentServiceTest {
             )
         ).thenReturn(null)
 
-        whenever(userService.findServiceUser()).thenReturn(UserGenerator.APPLICATION_USER)
         whenever(officerCodeGenerator.generateFor(probationArea.code)).thenReturn(newStaffCode)
         whenever(staffRepository.save(any(Staff::class.java))).thenAnswer { it.arguments[0] }
 

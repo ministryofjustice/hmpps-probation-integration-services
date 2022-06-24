@@ -2,11 +2,17 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import org.hibernate.Hibernate
 import org.hibernate.annotations.Immutable
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.converters.BooleanYesNoConverter
 import java.time.ZonedDateTime
 import javax.persistence.Column
 import javax.persistence.Convert
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
@@ -16,6 +22,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.SequenceGenerator
 import javax.persistence.Version
 
+@EntityListeners(AuditingEntityListener::class)
 @Entity(name = "contact")
 data class CaseNote(
     @Id
@@ -55,25 +62,29 @@ data class CaseNote(
     @Column(updatable = false)
     val probationAreaId: Long,
 
-    @Column(name = "sensitive_contact")
+    @Column(name = "sensitive")
     @Convert(converter = BooleanYesNoConverter::class)
     val isSensitive: Boolean = type.isSensitive,
 
-    @Column(name = "last_updated_user_id")
-    val lastModifiedUserId: Long,
-
+    @CreatedBy
     @Column(name = "created_by_user_id", updatable = false)
-    val createdByUserId: Long,
+    var createdByUserId: Long = 0,
 
+    @LastModifiedBy
+    @Column(name = "last_updated_user_id")
+    var lastModifiedUserId: Long = 0,
+
+    @CreatedDate
     @Column(name = "created_datetime", updatable = false)
-    val createdDateTime: ZonedDateTime = ZonedDateTime.now(),
+    var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
 
+    @LastModifiedDate
     @Column(name = "last_updated_datetime")
-    val lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
+    var lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @Version
     @Column(name = "row_version")
-    val version: Long = 0,
+    var version: Long = 0,
 
     @Column(updatable = false)
     val trustProviderTeamId: Long = teamId,
@@ -85,7 +96,7 @@ data class CaseNote(
     val partitionAreaId: Long = 0L,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    var softDeleted: Boolean = false
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
