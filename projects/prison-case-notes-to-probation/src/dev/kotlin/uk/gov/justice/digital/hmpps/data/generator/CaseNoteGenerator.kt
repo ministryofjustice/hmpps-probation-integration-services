@@ -30,10 +30,6 @@ object CaseNoteGenerator {
             staffId,
             teamId,
             probationAreaId,
-            createdDateTime = now,
-            lastModifiedDateTime = now,
-            createdByUserId = UserGenerator.APPLICATION_USER.id,
-            lastModifiedUserId = UserGenerator.APPLICATION_USER.id,
         )
     }
 }
