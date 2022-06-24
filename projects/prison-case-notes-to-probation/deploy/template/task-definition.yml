@@ -14,5 +14,5 @@ containerDefinitions:
     secrets:
     {{- range $key, $val := .values.secrets }}
       - name: {{ $key }}
-        valueFrom: {{ $.values.environment_name }}/delius/probation-integration{ $val }}
+        valueFrom: /{{ $.values.environment_name }}/delius/probation-integration{ $val }}
     {{- end }}
