@@ -13,6 +13,6 @@ class Offender(
     @Column(name = "offender_id")
     val id: Long,
 
-    @Column(name = "noms_number")
+    @Column(name = "noms_number", columnDefinition = "varchar2")
     val nomsId: String
 )
