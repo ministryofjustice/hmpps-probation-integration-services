@@ -9,7 +9,7 @@ env: []
 
 secrets:
   APPLICATIONINSIGHTS_CONNECTION_STRING: /application-insights/connection-string
-  SPRING_DATASOURCE_URL:                 /delius-database/url
+  SPRING_DATASOURCE_URL:                 /delius-database/jdbc-url
   SPRING_DATASOURCE_USERNAME:            /prison-case-notes-to-probation/db-username
   SPRING_DATASOURCE_PASSWORD:            /prison-case-notes-to-probation/db-password
   INTEGRATIONS_CASE-NOTES_CLIENT-ID:     /prison-case-notes-to-probation/client-id
