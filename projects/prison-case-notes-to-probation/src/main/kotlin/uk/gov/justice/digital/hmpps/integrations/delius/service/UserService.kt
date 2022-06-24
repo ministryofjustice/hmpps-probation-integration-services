@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.UserRepositor
 
 @Service
 class UserService(private val userRepository: UserRepository) {
-    fun findServiceUser(username: String): User? {
+    fun findUser(username: String): User? {
         return userRepository.findUserByUsername(username)
     }
 }

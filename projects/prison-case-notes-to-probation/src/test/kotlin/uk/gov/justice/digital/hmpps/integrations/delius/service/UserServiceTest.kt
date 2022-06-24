@@ -21,7 +21,7 @@ class UserServiceTest {
     @Test
     fun `find a user by username`() {
         val username = UserGenerator.APPLICATION_USER.username
-        userService.findServiceUser(username)
+        userService.findUser(username)
         verify(userRepository).findUserByUsername(username)
     }
 }

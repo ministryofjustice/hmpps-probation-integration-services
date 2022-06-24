@@ -46,12 +46,12 @@ internal class AuditorAwareConfigurationTest {
         val user = UserGenerator.APPLICATION_USER
         whenever(securityContext.authentication).thenReturn(authentication)
         whenever(authentication.principal).thenReturn(servicePrincipal)
-        whenever(userService.findServiceUser(user.username)).thenReturn(user)
+        whenever(userService.findUser(user.username)).thenReturn(user)
 
         SecurityContextHolder.setContext(securityContext)
         val opt = auditorAware.currentAuditor
 
-        verify(userService).findServiceUser(user.username)
+        verify(userService).findUser(user.username)
         assertThat(opt.isPresent)
     }
 
@@ -62,7 +62,7 @@ internal class AuditorAwareConfigurationTest {
         SecurityContextHolder.setContext(securityContext)
         val opt = auditorAware.currentAuditor
 
-        verify(userService, times(0)).findServiceUser(anyString())
+        verify(userService, times(0)).findUser(anyString())
         assertThat(opt.isEmpty)
     }
 }

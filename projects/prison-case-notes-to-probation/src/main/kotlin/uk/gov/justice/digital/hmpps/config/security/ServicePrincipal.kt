@@ -13,5 +13,5 @@ class ServicePrincipal(
         const val AUTHORITY = "ROLE_CASE_NOTES"
     }
 
-    val userId = lazy { userService.findServiceUser(clientId)?.id }
+    val userId = lazy { userService.findUser(clientId)?.id }
 }
