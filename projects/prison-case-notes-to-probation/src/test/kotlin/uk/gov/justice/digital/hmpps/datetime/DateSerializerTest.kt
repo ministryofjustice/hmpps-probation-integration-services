@@ -17,7 +17,6 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-
 @ExtendWith(MockitoExtension::class)
 class DateSerializerTest {
 
