@@ -14,11 +14,11 @@ class StaffTeam(
 
     @Id
     @Column(name = "staff_id")
-    private var staffId: Long,
+    val staffId: Long,
 
     @Id
     @Column(name = "team_id")
-    private var teamId: Long,
+    val teamId: Long,
 
     @Column(name = "created_by_user_id", updatable = false)
     val createdByUserId: Long,
