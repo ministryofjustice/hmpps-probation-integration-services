@@ -2,8 +2,8 @@
 image:
   name: prison-case-notes-to-probation
 
-cpu: 256
-memory: 512
+cpu: 1 vCPU
+memory: 1 GB
 
 env: []
 
