@@ -6,7 +6,9 @@ import io.specto.hoverfly.junit5.HoverflyExtension
 import io.specto.hoverfly.junit5.api.HoverflyConfig
 import io.specto.hoverfly.junit5.api.HoverflyCore
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.stringContainsInOrder
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,7 +21,10 @@ import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.SimulationBuilder
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NomisCaseNoteGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
 
 @ActiveProfiles("integration-test")
 @SpringBootTest
@@ -41,6 +46,9 @@ class IntegrationTest {
 
     @Autowired
     private lateinit var caseNoteRepository: CaseNoteRepository
+
+    @Autowired
+    private lateinit var staffRepository: StaffRepository
 
     @BeforeEach
     fun setUp(hoverfly: Hoverfly) {
@@ -64,7 +72,15 @@ class IntegrationTest {
 
         assertThat(
             saved?.notes,
-            stringContainsInOrder(original?.notes, nomisCaseNote.type, nomisCaseNote.subType, nomisCaseNote.text)
+            stringContainsInOrder(
+                original?.notes,
+                nomisCaseNote.type,
+                nomisCaseNote.subType,
+                nomisCaseNote.text,
+                nomisCaseNote.amendments[0].authorName,
+                DeliusDateTimeFormatter.format(nomisCaseNote.amendments[0].creationDateTime),
+                nomisCaseNote.amendments[0].additionalNoteText
+            )
         )
     }
 
@@ -77,10 +93,14 @@ class IntegrationTest {
         jmsTemplate.convertSendAndWait(queueName, CaseNoteMessageGenerator.NEW_TO_DELIUS)
 
         val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
+        assertNotNull(saved)
 
         assertThat(
-            saved?.notes,
+            saved!!.notes,
             stringContainsInOrder(nomisCaseNote.type, nomisCaseNote.subType, nomisCaseNote.text)
         )
+
+        val staff = staffRepository.findById(saved.staffId).orElseThrow()
+        assertThat(staff.code, equalTo("${ProbationAreaGenerator.DEFAULT.code}B001"))
     }
 }

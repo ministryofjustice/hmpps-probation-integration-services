@@ -40,8 +40,8 @@ class DataLoader(
         institutionRepository.save(ProbationAreaGenerator.DEFAULT.institution!!)
         probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
         teamRepository.save(TeamGenerator.DEFAULT)
-        staffRepository.save(StaffGenerator.DEFAULT)
+        StaffGenerator.DEFAULT = staffRepository.save(StaffGenerator.DEFAULT)
         offenderRepository.save(OffenderGenerator.DEFAULT)
-        caseNoteRepository.save(CaseNoteGenerator.EXISTING)
+        CaseNoteGenerator.EXISTING = caseNoteRepository.save(CaseNoteGenerator.EXISTING)
     }
 }

@@ -46,7 +46,7 @@ data class CaseNoteMessage(
 fun NomisCaseNote.toDeliusCaseNote(): DeliusCaseNote {
 
     fun amendments(): (CaseNoteAmendment) -> String = { a ->
-        " ...[${a.authorName} updated the case notes on ${DeliusDateTimeFormatter.format(a.creationDateTime)}] ${a.additionalNoteText}"
+        "${System.lineSeparator()}[${a.authorName} updated the case notes on ${DeliusDateTimeFormatter.format(a.creationDateTime)}]${System.lineSeparator()}${a.additionalNoteText}"
     }
 
     return DeliusCaseNote(
