@@ -32,9 +32,12 @@ object ResourceLoader {
 
     fun caseNoteMessage(filename: String): CaseNoteMessage =
         MAPPER.readValue(
-            get("$resourceLocationStr/messages/$filename.json").toFile(),
-            CaseNoteMessageWrapper::class.java
-        ).message
+            MAPPER.readValue(
+                get("$resourceLocationStr/messages/$filename.json").toFile(),
+                CaseNoteMessageWrapper::class.java
+            ).message,
+            CaseNoteMessage::class.java
+        )
 
     fun nomisCaseNote(filename: String): NomisCaseNote =
         MAPPER.readValue(
