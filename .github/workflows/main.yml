@@ -52,7 +52,7 @@ jobs:
     needs: end-to-end-tests
     with:
       environment: pre-prod
-      values-file: values-pre-prod.yml
+      values-file: values-preprod.yml
       version: ${{ needs.build.outputs.version }}
       projects: ${{ needs.build.outputs.changed-projects }}
     secrets: inherit

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.jms.support.converter.MessageConverter
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.integrations.nomis.CaseNoteMessage
+import uk.gov.justice.digital.hmpps.integrations.prison.CaseNoteMessage
 import javax.jms.Message
 import javax.jms.Session
 import javax.jms.TextMessage

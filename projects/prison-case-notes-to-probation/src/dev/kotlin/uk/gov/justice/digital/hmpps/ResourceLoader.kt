@@ -8,20 +8,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
-import uk.gov.justice.digital.hmpps.integrations.nomis.CaseNoteMessage
-import uk.gov.justice.digital.hmpps.integrations.nomis.NomisCaseNote
+import uk.gov.justice.digital.hmpps.integrations.prison.CaseNoteMessage
+import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
 import uk.gov.justice.digital.hmpps.listener.CaseNoteMessageWrapper
-import java.nio.file.Paths.get
 import java.time.ZonedDateTime
 
 object ResourceLoader {
-
-    val resourceLocationStr: String
-
-    init {
-        val resource = ResourceUtils.getFile("classpath:application-dev.yml")
-        resourceLocationStr = resource.parent
-    }
 
     private val MAPPER = ObjectMapper()
         .registerModule(JavaTimeModule())
@@ -32,13 +24,13 @@ object ResourceLoader {
 
     fun caseNoteMessage(filename: String): CaseNoteMessage =
         MAPPER.readValue(
-            get("$resourceLocationStr/messages/$filename.json").toFile(),
+            ResourceUtils.getFile("classpath:messages/$filename.json"),
             CaseNoteMessageWrapper::class.java
         ).message
 
-    fun nomisCaseNote(filename: String): NomisCaseNote =
+    fun nomisCaseNote(filename: String): PrisonCaseNote =
         MAPPER.readValue(
-            get("$resourceLocationStr/responses/$filename.json").toFile(),
-            NomisCaseNote::class.java
+            ResourceUtils.getFile("classpath:responses/$filename.json"),
+            PrisonCaseNote::class.java
         )
 }

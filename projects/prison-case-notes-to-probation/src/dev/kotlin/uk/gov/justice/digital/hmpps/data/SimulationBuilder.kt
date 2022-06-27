@@ -6,33 +6,34 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import io.specto.hoverfly.junit.core.SimulationSource
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.ResourceLoader
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.name
+import kotlin.io.path.pathString
 
 @Component
 @Profile("dev", "integration-test")
-class SimulationBuilder(private val om: ObjectMapper) {
+class SimulationBuilder(private val objectMapper: ObjectMapper) {
     fun simulationsFromFile(): List<SimulationSource> {
-        val parentPath = ResourceLoader.resourceLocationStr
+        val simulationsPath = Paths.get(javaClass.getResource("/simulations")!!.path)
+        val parentPath = simulationsPath.parent.pathString
 
-        return Files.walk(Paths.get(parentPath, "simulations"))
+        return Files.walk(simulationsPath)
             .filter {
                 it.isRegularFile() && it.fileName.name.endsWith(".json")
             }.map { simFile ->
-                val sim = om.readTree(simFile.toFile()) as ObjectNode
+                val sim = objectMapper.readTree(simFile.toFile()) as ObjectNode
                 val pairs = sim["data"]["pairs"].map {
                     if (it["body"] == null || it["body"].isNull) {
                         val filename = it["response"]["bodyFile"].asText()
-                        val body = om.readTree(Paths.get("$parentPath/$filename").toFile())
+                        val body = objectMapper.readTree(Paths.get(parentPath, filename).toFile())
                         val res = it["response"] as ObjectNode
                         res.put("body", body.toString())
                     }
                     it
                 }
-                val arrNode = om.createArrayNode()
+                val arrNode = objectMapper.createArrayNode()
                 sim.set<ArrayNode>("pairs", arrNode)
                 arrNode.addAll(pairs)
 

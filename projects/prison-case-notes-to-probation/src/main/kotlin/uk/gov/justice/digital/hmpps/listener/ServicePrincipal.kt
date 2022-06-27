@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class ServicePrincipal(
-    @Value("\${spring.security.oauth2.client.registration.case-notes.client-id}") private val clientId: String
+    @Value("\${spring.security.oauth2.client.registration.prison-case-notes.client-id}") private val clientId: String
 ) : UserDetails {
     companion object {
         const val AUTHORITY = "ROLE_CASE_NOTES"

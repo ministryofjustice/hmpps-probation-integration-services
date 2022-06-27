@@ -15,12 +15,14 @@ runs:
       with:
         list-files: shell
         filters: |
-          root: '*'
+          commons:
+            - '*'
+            - 'libs/**'
           projects: 'projects/**'
     - name: Check for changes
       id: check-changes
       shell: bash
       env:
-        ROOT_CHANGED: ${{ steps.paths-filter.outputs.root }}
+        COMMONS_CHANGED: ${{ steps.paths-filter.outputs.commons }}
         PROJECT_FILES: ${{ steps.paths-filter.outputs.projects_files }}
       run: ./.github/actions/check-changes/parse-changes.sh
