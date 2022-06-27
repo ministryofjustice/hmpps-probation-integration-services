@@ -6,9 +6,10 @@ import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.Table
 
 @Immutable
-@Entity(name = "probation_area")
+@Entity
 class ProbationArea(
     @Id
     @Column(name = "probation_area_id")
@@ -28,7 +29,8 @@ class ProbationArea(
 )
 
 @Immutable
-@Entity(name = "r_institution")
+@Entity
+@Table(name = "r_institution")
 class Institution(
     @Id
     @Column(name = "institution_id")

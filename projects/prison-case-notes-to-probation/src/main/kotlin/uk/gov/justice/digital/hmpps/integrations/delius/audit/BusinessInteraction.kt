@@ -7,7 +7,7 @@ import javax.persistence.Entity
 import javax.persistence.Id
 
 @Immutable
-@Entity(name = "business_interaction")
+@Entity
 class BusinessInteraction(
     @Id @Column(name = "business_interaction_id", nullable = false) val id: Long,
 

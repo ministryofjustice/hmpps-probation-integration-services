@@ -17,7 +17,7 @@ import javax.persistence.SequenceGenerator
 import javax.persistence.Version
 
 @EntityListeners(AuditingEntityListener::class)
-@Entity(name = "Staff")
+@Entity
 class Staff(
 
     @Id

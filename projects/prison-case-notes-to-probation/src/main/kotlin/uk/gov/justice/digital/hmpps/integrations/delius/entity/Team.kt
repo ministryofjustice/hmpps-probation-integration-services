@@ -6,7 +6,7 @@ import javax.persistence.Entity
 import javax.persistence.Id
 
 @Immutable
-@Entity(name = "team")
+@Entity
 class Team(
 
     @Id

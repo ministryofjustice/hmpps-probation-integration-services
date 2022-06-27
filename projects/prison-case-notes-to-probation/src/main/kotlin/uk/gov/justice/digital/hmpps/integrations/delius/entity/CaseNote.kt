@@ -19,10 +19,12 @@ import javax.persistence.JoinColumn
 import javax.persistence.Lob
 import javax.persistence.ManyToOne
 import javax.persistence.SequenceGenerator
+import javax.persistence.Table
 import javax.persistence.Version
 
 @EntityListeners(AuditingEntityListener::class)
-@Entity(name = "contact")
+@Entity
+@Table(name = "contact")
 data class CaseNote(
     @Id
     @Column(name = "contact_id", updatable = false)
@@ -116,7 +118,8 @@ data class CaseNote(
 }
 
 @Immutable
-@Entity(name = "r_contact_type")
+@Entity
+@Table(name = "r_contact_type")
 class CaseNoteType(
     @Id
     @Column(name = "contact_type_id")
