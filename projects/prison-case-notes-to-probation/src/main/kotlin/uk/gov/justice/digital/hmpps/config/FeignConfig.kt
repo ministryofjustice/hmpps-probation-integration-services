@@ -16,17 +16,17 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.core.OAuth2AccessToken
 import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
-import uk.gov.justice.digital.hmpps.integrations.nomis.NomisClient
+import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
 import java.nio.charset.StandardCharsets
 
 @Configuration
-@EnableFeignClients(clients = [NomisClient::class])
+@EnableFeignClients(clients = [PrisonCaseNotesClient::class])
 class FeignConfig(
     private val authorizedClientManager: OAuth2AuthorizedClientManager,
     private val servicePrincipal: ServicePrincipal
 ) {
     companion object {
-        const val REGISTRATION_ID = "case-notes"
+        const val REGISTRATION_ID = "prison-case-notes"
     }
 
     @Bean

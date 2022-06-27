@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.nomis
+package uk.gov.justice.digital.hmpps.integrations.prison
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
@@ -10,7 +10,7 @@ import java.time.ZonedDateTime
 
 const val UNKNOWN_LOCATION = "UNK"
 
-data class NomisCaseNote(
+data class PrisonCaseNote(
     val eventId: Long,
     val offenderIdentifier: String,
     val type: String,
@@ -43,7 +43,7 @@ data class CaseNoteMessage(
     val eventType: String,
 )
 
-fun NomisCaseNote.toDeliusCaseNote(): DeliusCaseNote {
+fun PrisonCaseNote.toDeliusCaseNote(): DeliusCaseNote {
 
     fun amendments(): (CaseNoteAmendment) -> String = { a ->
         "${System.lineSeparator()}[${a.authorName} updated the case notes on ${DeliusDateTimeFormatter.format(a.creationDateTime)}]${System.lineSeparator()}${a.additionalNoteText}"

@@ -1,19 +1,18 @@
 # Common values
-
 image:
   name: prison-case-notes-to-probation
 
-cpu: 256
-memory: 512
+cpu: 1024    # = 1 vCPU
+memory: 1024 # = 1 GB
 
-env: []
+env:
+  AWS_REGION: eu-west-2
 
 secrets:
-  namespace:
-  env:
-    # TODO put these values into the parameter store:
-    APPLICATIONINSIGHTS_CONNECTION_STRING: /application-insights/connection-string
-    SPRING_DATASOURCE_URL:                 /delius-database/url
-    SPRING_DATASOURCE_USERNAME:            /prison-case-notes-to-probation/db-username
-    SPRING_DATASOURCE_PASSWORD:            /prison-case-notes-to-probation/db-password
-    SQS_QUEUE_URL:                         /prison-case-notes-to-probation/sqs-queue-url
+  APPLICATIONINSIGHTS_CONNECTION_STRING:        /application-insights/connection-string
+  AWS_SQS_ACCOUNT-ID:                           /moj-cloud-platform/aws-account-id
+  SPRING_DATASOURCE_URL:                        /delius-database/jdbc-url
+  SPRING_DATASOURCE_USERNAME:                   /prison-case-notes-to-probation/db-username
+  SPRING_DATASOURCE_PASSWORD:                   /prison-case-notes-to-probation/db-password
+  INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-ID:     /prison-case-notes-to-probation/client-id
+  INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-SECRET: /prison-case-notes-to-probation/client-secret

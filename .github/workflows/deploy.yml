@@ -1,4 +1,4 @@
-name: Deploy to Delius ECS cluster
+name: Deploy
 
 on:
   workflow_call:
@@ -39,6 +39,22 @@ jobs:
           role-skip-session-tagging: true
           role-duration-seconds: 1200
 
+      - name: Add secrets to parameter store
+        shell: bash
+        env:
+          ALL_SECRETS: ${{ toJson(secrets) }}
+        run: |
+          environment_name=$(cat ${{ inputs.values-file }} | yq '.environment_name')
+          project_name=$(echo '${{ matrix.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
+          namespace=/${environment_name}/delius/probation-integration/${{ matrix.project }}
+          echo "${ALL_SECRETS}" | jq -r ". | keys[] | select(. | startswith(\"${project_name}\"))" | while read -r key; do
+            name=$(echo "${key}" | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g' | sed 's/${{ matrix.project }}-//')
+            value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
+            echo "Adding secret to parameter store: ${key} (${namespace}/${name})"
+            aws ssm put-parameter --name "${namespace}/${name}" --value "${value}" --overwrite --type SecureString --region eu-west-2
+          done
+        working-directory: projects/${{ matrix.project }}/deploy
+
       - name: Render values
         shell: bash
         run: yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' --inplace values.yml ${{ inputs.values-file }}
@@ -50,7 +66,7 @@ jobs:
           VERSION: ${{ inputs.version }}
         run: |
           brew install gomplate
-          old_task_definition=$(aws ecs describe-task-definition --task-definition "del-${{ inputs.environment }}-${{ matrix.project }}-task-definition" --include TAGS | jq '.taskDefinition | del(.containerDefinitions[0].command)')
+          old_task_definition=$(aws ecs describe-task-definition --task-definition "del-${{ inputs.environment }}-${{ matrix.project }}-task-definition" --include TAGS | jq '.taskDefinition | del(.containerDefinitions[0].command, .compatibilities, .taskDefinitionArn, .requiresAttributes, .revision, .status, .registeredAt, .registeredBy)')
           new_task_definition=$(yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' <(echo "${old_task_definition}") <(gomplate --file template/task-definition.yml --context values=values.yml) --output-format json | tee task-definition.json)
           echo "Deploying new task definition: ${new_task_definition}"
         working-directory: projects/${{ matrix.project }}/deploy

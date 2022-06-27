@@ -53,8 +53,10 @@ allprojects {
             enabled = false
         }
 
-        withType<Jar> {
-            enabled = false
+        if (!project.path.startsWith(":libs")) {
+            withType<Jar> {
+                enabled = false
+            }
         }
     }
 }
@@ -74,40 +76,42 @@ subprojects {
         plugin("org.jetbrains.kotlin.jvm")
         plugin("org.jetbrains.kotlin.plugin.spring")
         plugin("org.jetbrains.kotlin.plugin.jpa")
-        plugin("com.google.cloud.tools.jib")
         plugin("org.jlleitschuh.gradle.ktlint")
         plugin("jacoco")
         plugin("test-report-aggregation")
         plugin("jacoco-report-aggregation")
+        if (!project.path.startsWith(":libs")) plugin("com.google.cloud.tools.jib")
     }
 
-    configure<JibExtension> {
-        container {
-            creationTime = "USE_CURRENT_TIMESTAMP"
-            jvmFlags = mutableListOf("-Duser.timezone=Europe/London")
-            mainClass = "uk.gov.justice.digital.hmpps.AppKt"
-            user = "2000:2000"
-        }
-        from {
-            image = "eclipse-temurin:17-jre-alpine"
-        }
-        to {
-            image = "quay.io/hmpps/${project.name}:${project.version}"
-            auth {
-                username = System.getenv("QUAYIO_USERNAME")
-                password = System.getenv("QUAYIO_PASSWORD")
+    if (!project.path.startsWith(":libs")) {
+        configure<JibExtension> {
+            container {
+                creationTime = "USE_CURRENT_TIMESTAMP"
+                jvmFlags = mutableListOf("-Duser.timezone=Europe/London")
+                mainClass = "uk.gov.justice.digital.hmpps.AppKt"
+                user = "2000:2000"
             }
-        }
-        extraDirectories {
-            paths {
-                path {
-                    setFrom("${rootProject.buildDir}")
-                    includes.add("agent/agent.jar")
+            from {
+                image = "eclipse-temurin:17-jre-alpine"
+            }
+            to {
+                image = "quay.io/hmpps/${project.name}:${project.version}"
+                auth {
+                    username = System.getenv("QUAYIO_USERNAME")
+                    password = System.getenv("QUAYIO_PASSWORD")
                 }
-                path {
-                    setFrom("${project.projectDir}")
-                    includes.add("applicationinsights*.json")
-                    into = "/agent"
+            }
+            extraDirectories {
+                paths {
+                    path {
+                        setFrom("${rootProject.buildDir}")
+                        includes.add("agent/agent.jar")
+                    }
+                    path {
+                        setFrom("${project.projectDir}")
+                        includes.add("applicationinsights*.json")
+                        into = "/agent"
+                    }
                 }
             }
         }
@@ -137,9 +141,14 @@ subprojects {
         }
 
         tasks {
-            getByName("jib").dependsOn(copyAgentTask)
-            getByName("jibBuildTar").dependsOn(copyAgentTask)
-            getByName("jibDockerBuild").dependsOn(copyAgentTask)
+            if (!project.path.startsWith(":libs")) {
+                getByName("jib").dependsOn(copyAgentTask)
+                getByName("jibBuildTar").dependsOn(copyAgentTask)
+                getByName("jibDockerBuild") {
+                    dependsOn(copyAgentTask)
+                    outputs.dirs(project.buildDir,)
+                }
+            }
             withType<BootRun> {
                 if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
                     classpath = dev.runtimeClasspath

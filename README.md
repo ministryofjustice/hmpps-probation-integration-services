@@ -1,7 +1,5 @@
 # Probation Integration Services
 
-> :memo: This repository is a work-in-progress and subject to change.
- 
 [![repo standards badge](https://img.shields.io/badge/dynamic/json?color=blue&logo=github&label=MoJ%20Compliant&query=%24.data%5B%3F%28%40.name%20%3D%3D%20%22hmpps-probation-integration-services%22%29%5D.status&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fgithub_repositories)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/github_repositories#hmpps-probation-integration-services "Link to report")
 [![Trivy](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/security.yml/badge.svg)](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/security.yml)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=ministryofjustice_hmpps-probation-integration-services&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=ministryofjustice_hmpps-probation-integration-services)
@@ -58,7 +56,7 @@ Kotlin code is formatted using [ktlint](https://ktlint.github.io/). IntelliJ wil
 applied consistently in your IDE.
 
 To fix any formatting issues in your code locally, run 
-```
+```shell
 ./gradlew ktlintFormat
 ```
 
@@ -68,8 +66,8 @@ Or, to add a pre-commit hook to automatically fix any formatting issues, run:
 ```
 
 # Build
-IntelliJ will automatically build your code as needed. Any tasks you run from the root project, without specifying a project name will be ran on all the children.
-To build the entire repository using Gradle, run:
+IntelliJ will automatically build your code as needed. Any tasks you run from the root project, without specifying a 
+project name will be run on all the children. To build the entire repository using Gradle, run:
 ```shell
 ./gradlew build
 ```
@@ -111,16 +109,107 @@ Integration tests use Hoverfly JSON files to mock any external services.
 
 **TODO** add more details when test implementation is complete.
 
-# Deploy
-Services are deployed to the Delius AWS ECS cluster, which gives them direct access to the Delius database. The
-infrastructure code is maintained here: [probation-integration-services](https://github.com/ministryofjustice/hmpps-delius-core-terraform/tree/main/application/probation-integration-services).
+# Deployment
+Once the code is built and tested, GitHub Actions deploys the updated images for each service to an Amazon Elastic 
+Container Service (ECS) cluster in the Delius AWS account. Deploying the services to the Delius AWS account enables 
+secure access to the Delius database.
 
-To access queues or other resources in MOJ Cloud Platform, you should add an IAM policy that grants access to one of the
-following roles ([example](https://github.com/ministryofjustice/cloud-platform-environments/blob/7a028911f8ed459a30e98d8dbba8cdcf7283ac93/namespaces/live.cloud-platform.service.justice.gov.uk/offender-events-dev/resources/case-notes-sub-queue.tf#L42-L57)):
+For documentation on the Delius ECS cluster, see the [ECS Cluster Confluence page](https://dsdmoj.atlassian.net/wiki/spaces/DAM/pages/3107979730/ECS+Cluster).
+The infrastructure code for the ECS services can be found in the [hmpps-delius-core-terraform](https://github.com/ministryofjustice/hmpps-delius-core-terraform/tree/main/application/probation-integration-services) 
+repository.
+
+## Environments
+Although the services are deployed to the Delius environments, they typically need to interact with resources in MOJ 
+Cloud Platform.
+
+We map Delius environments to MOJ Cloud Platform namespaces as follows:
+
+| Delius          | MOJ Cloud Platform | Used for               |
+|-----------------|--------------------|------------------------|
+| delius-test     | dev                | End-to-end testing     |
+| delius-pre-prod | preprod            | Testing with live data |
+| delius-prod     | prod               | Live service           |
+
+## Configuration
+Each subproject has a `deploy` folder containing YAML files used for configuration.
+The default `values.yml` file provides common configuration across all environments, while additional files (e.g. 
+`values-dev.yml`) can be used to set environment-specific configuration.
+
+```bash
+deploy
+├── values.yml                # common/shared config
+└── values-<environment>.yml  # 1 per environment
+```
+
+### Setting project wide values
+
+`<project>/deploy/values.yml`
+
+This file contains values that are the same across all environments.
+Example:
+
+```yaml
+# Image
+image:
+  name: project-name
+
+# Container
+# See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#ContainerDefinition-taskcpu
+cpu: 1024    # = 1 vCPU
+memory: 1024 # = 1 GB
+
+# Environment variables
+env:
+  JAVA_OPTS: "-Xmx512m"
+  SERVER_PORT: "8080"
+  SPRING_PROFILES_ACTIVE: "my-profile"
+
+# Secrets
+# These are stored in the AWS Parameter Store, and referenced by their name
+secrets:
+  CLIENT_SECRET: /parameters/client-secret
+```
+
+### Setting environment specific values
+
+`<project>/deploy/values-<environment>.yml`
+
+This file should only contain values that differ between environments.
+Additionally, it must specify the Delius environment in the `environment_name` value.
+
+Example:
+
+```yaml
+environment_name: delius-pre-prod
+
+memory: 2048
+
+env:
+  SERVICE_URL: https://example.com
+```
+
+### Secrets
+Add secrets for each environment here: https://github.com/ministryofjustice/hmpps-probation-integration-services/settings/secrets/actions.
+
+The deployment job pushes GitHub secrets to AWS Parameter Store. 
+Then at runtime, ECS passes these secrets from AWS Parameter Store as environment variables to the container.
+
+GitHub secret names should be uppercase and prefixed with the project name. (e.g. `PRISON_CASE_NOTES_TO_PROBATION_CLIENT_ID`).
+When the secrets are pushed to parameter store, their names will be converted to paths (e.g. `prison-case-notes-to-probation/client-id`),
+which is how they should be referenced in the `values*.yml` files.
+
+For more details, see the "Add secrets to parameter store" step in [deploy.yml](.github/workflows/deploy.yml).
+
+## Accessing MOJ Cloud Platform
+To access SQS queues or other resources in MOJ Cloud Platform, add an IAM policy to [cloud-platform-environments](https://github.com/ministryofjustice/cloud-platform-environments)
+that grants access to one of the following roles:
 * Dev/Test: `arn:aws:iam::728765553488:role/delius-test-ecs-sqs-consumer`
 * Pre-Prod: `arn:aws:iam::010587221707:role/delius-pre-prod-ecs-sqs-consumer`
 * Production: `arn:aws:iam::050243167760:role/delius-prod-ecs-sqs-consumer`
 
+Example: [case-notes-sub-queue.tf](https://github.com/ministryofjustice/cloud-platform-environments/blob/7a028911f8ed459a30e98d8dbba8cdcf7283ac93/namespaces/live.cloud-platform.service.justice.gov.uk/offender-events-dev/resources/case-notes-sub-queue.tf#L42-L57).
+
 # Support
-For any issues, please contact the Probation Integration team via the [#probation-integration-tech](https://mojdt.slack.com/archives/C02HQ4M2YQN)
-Slack channel. Or feel free to create a [new issue](https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new) in this repository.
+For any issues or questions, please contact the Probation Integration team via the [#probation-integration-tech](https://mojdt.slack.com/archives/C02HQ4M2YQN)
+Slack channel. Or feel free to create a [new issue](https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new) 
+in this repository.

@@ -2,15 +2,14 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import org.hibernate.Hibernate
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.Type
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import uk.gov.justice.digital.hmpps.integrations.delius.converters.BooleanYesNoConverter
 import java.time.ZonedDateTime
 import javax.persistence.Column
-import javax.persistence.Convert
 import javax.persistence.Entity
 import javax.persistence.EntityListeners
 import javax.persistence.GeneratedValue
@@ -63,7 +62,7 @@ data class CaseNote(
     val probationAreaId: Long,
 
     @Column(name = "sensitive")
-    @Convert(converter = BooleanYesNoConverter::class)
+    @Type(type = "yes_no")
     val isSensitive: Boolean = type.isSensitive,
 
     @CreatedBy
@@ -126,7 +125,7 @@ class CaseNoteType(
     val code: String,
 
     @Column(name = "sensitive_contact")
-    @Convert(converter = BooleanYesNoConverter::class)
+    @Type(type = "yes_no")
     val isSensitive: Boolean,
 )
 
