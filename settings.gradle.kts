@@ -3,7 +3,7 @@ include("libs:probation-integration-commons", "prison-case-notes-to-probation")
 
 // load children from the "projects" directory (and drop the prefix)
 rootProject.children
-    .filter { it.parent?.name != "libs" }
+    .filter { !it.path.startsWith(":libs") }
     .forEach { it.projectDir = File(rootDir, "projects/${it.projectDir.relativeTo(rootDir)}") }
 
 dependencyResolutionManagement {

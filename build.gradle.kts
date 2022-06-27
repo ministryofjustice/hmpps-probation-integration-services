@@ -74,14 +74,14 @@ subprojects {
         plugin("org.jetbrains.kotlin.jvm")
         plugin("org.jetbrains.kotlin.plugin.spring")
         plugin("org.jetbrains.kotlin.plugin.jpa")
-        plugin("com.google.cloud.tools.jib")
         plugin("org.jlleitschuh.gradle.ktlint")
         plugin("jacoco")
         plugin("test-report-aggregation")
         plugin("jacoco-report-aggregation")
+        if (!project.path.startsWith(":libs")) plugin("com.google.cloud.tools.jib")
     }
 
-    configure<JibExtension> {
+    if (!project.path.startsWith(":libs")) configure<JibExtension> {
         container {
             creationTime = "USE_CURRENT_TIMESTAMP"
             jvmFlags = mutableListOf("-Duser.timezone=Europe/London")
@@ -137,9 +137,11 @@ subprojects {
         }
 
         tasks {
-            getByName("jib").dependsOn(copyAgentTask)
-            getByName("jibBuildTar").dependsOn(copyAgentTask)
-            getByName("jibDockerBuild").dependsOn(copyAgentTask)
+            if (!project.path.startsWith(":libs")) {
+                getByName("jib").dependsOn(copyAgentTask)
+                getByName("jibBuildTar").dependsOn(copyAgentTask)
+                getByName("jibDockerBuild").dependsOn(copyAgentTask)
+            }
             withType<BootRun> {
                 if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
                     classpath = dev.runtimeClasspath
