@@ -1,5 +1,6 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.audit
+package uk.gov.justice.digital.hmpps.integrations.delius.audit.converter
 
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
 import javax.persistence.AttributeConverter
 import javax.persistence.Converter
 

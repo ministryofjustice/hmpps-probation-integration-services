@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.audit
 
 import org.hibernate.annotations.Immutable
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.converter.AuditedInteractionOutcomeConverter
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.converter.AuditedInteractionParamsConverter
 import java.io.Serializable
 import java.time.ZonedDateTime
 import javax.persistence.Column
@@ -49,7 +51,7 @@ class AuditedInteraction(
         SUCCESS, FAIL
     }
 
-    class Parameters(private val paramMap: Map<String, String> = mapOf()) {
+    data class Parameters(private val paramMap: Map<String, String> = mapOf()) {
 
         constructor(vararg paramPairs: Pair<String, String>) : this(paramPairs.toMap())
 
