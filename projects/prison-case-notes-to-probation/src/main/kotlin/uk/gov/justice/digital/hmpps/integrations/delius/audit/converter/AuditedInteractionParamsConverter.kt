@@ -15,8 +15,8 @@ class AuditedInteractionParamsConverter : AttributeConverter<AuditedInteraction.
 
     override fun convertToEntityAttribute(dbData: String?): AuditedInteraction.Parameters {
         val args = dbData?.split(",")
-            ?.filter { it.contains("=") }
-            ?.map { it.substringBefore("=") to it.substringAfter("=").replace("'", "") }
+            ?.filter { it.contains("^.+=.+\$".toRegex()) }
+            ?.map { it.substringBefore("=").trim() to it.substringAfter("=").replace("'", "") }
             ?.toTypedArray() ?: arrayOf()
         return if (args.isNotEmpty()) AuditedInteraction.Parameters(*args)
         else AuditedInteraction.Parameters()

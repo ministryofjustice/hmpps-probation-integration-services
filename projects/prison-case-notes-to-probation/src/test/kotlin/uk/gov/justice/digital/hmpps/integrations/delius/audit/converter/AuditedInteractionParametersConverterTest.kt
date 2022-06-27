@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.audit.converter.converters
+package uk.gov.justice.digital.hmpps.integrations.delius.audit.converter
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -6,7 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.converter.AuditedInteractionParamsConverter
 
 internal class AuditedInteractionParametersConverterTest {
 
@@ -20,7 +19,7 @@ internal class AuditedInteractionParametersConverterTest {
     }
 
     @ParameterizedTest
-    @MethodSource("paramToDb")
+    @MethodSource("dbToParam")
     fun convertToEntityAttribute(params: AuditedInteraction.Parameters, column: String) {
         val res = converter.convertToEntityAttribute(column)
         assertThat(res, equalTo(params))
@@ -40,6 +39,11 @@ internal class AuditedInteractionParametersConverterTest {
             ),
             Arguments.of(AuditedInteraction.Parameters(), ""),
             Arguments.of(AuditedInteraction.Parameters("param" to ""), "param=''")
+        )
+
+        @JvmStatic
+        fun dbToParam() = paramToDb() + listOf(
+            Arguments.of(AuditedInteraction.Parameters(), "=")
         )
     }
 }
