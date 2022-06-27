@@ -13,14 +13,14 @@ internal class AuditedInteractionOutcomeConverterTest {
 
     @ParameterizedTest
     @MethodSource("outcomeToDb")
-    fun convertToDatabaseColumn(outcome: AuditedInteraction.Outcome, column: String) {
+    fun convertToDatabaseColumn(outcome: AuditedInteraction.Outcome, column: Char) {
         val res = converter.convertToDatabaseColumn(outcome)
         assertThat(res, equalTo(column))
     }
 
     @ParameterizedTest
     @MethodSource("outcomeToDb")
-    fun convertToEntityAttribute(outcome: AuditedInteraction.Outcome, column: String) {
+    fun convertToEntityAttribute(outcome: AuditedInteraction.Outcome, column: Char) {
         val res = converter.convertToEntityAttribute(column)
         assertThat(res, equalTo(outcome))
     }
@@ -28,8 +28,8 @@ internal class AuditedInteractionOutcomeConverterTest {
     companion object {
         @JvmStatic
         fun outcomeToDb(): List<Arguments> = listOf(
-            Arguments.of(AuditedInteraction.Outcome.FAIL, "F"),
-            Arguments.of(AuditedInteraction.Outcome.SUCCESS, "P")
+            Arguments.of(AuditedInteraction.Outcome.FAIL, 'F'),
+            Arguments.of(AuditedInteraction.Outcome.SUCCESS, 'P')
         )
     }
 }

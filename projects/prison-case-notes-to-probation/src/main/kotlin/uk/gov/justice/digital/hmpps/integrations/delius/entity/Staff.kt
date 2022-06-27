@@ -32,7 +32,7 @@ class Staff(
     @Column(name = "surname")
     val surname: String,
 
-    @Column(name = "officer_code")
+    @Column(name = "officer_code", columnDefinition = "char(7)")
     val code: String,
 
     @Column(name = "probation_area_id")
