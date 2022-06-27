@@ -4,6 +4,7 @@ env:
   SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: Digital-Prison-Services-dev-case_note_poll_pusher_queue
   INTEGRATIONS_PRISON-CASE-NOTES_URL: https://offender-case-notes-dev.hmpps.service.justice.gov.uk
   SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/oauth/token
+  DELIUS_DB_USERNAME: APIUser
 
   LOGGING_LEVEL_COM_AMAZON_SQS: DEBUG
   LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
