@@ -13,7 +13,7 @@ import kotlin.io.path.isRegularFile
 import kotlin.io.path.name
 
 @Component
-@Profile("dev", "integration-test")
+@Profile("dev", "integration-test", "oracle")
 class SimulationBuilder(private val om: ObjectMapper) {
     fun simulationsFromFile(): List<SimulationSource> {
         val parentPath = ResourceLoader.resourceLocationStr

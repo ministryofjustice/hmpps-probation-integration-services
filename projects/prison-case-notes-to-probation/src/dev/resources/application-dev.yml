@@ -8,6 +8,8 @@ spring:
       ddl-auto: create-drop
 #    show-sql: true
 
+delius.db.username: prison-case-notes-to-probation
+
 oauth:
   endpoint:
     url: http://localhost:8500/auth

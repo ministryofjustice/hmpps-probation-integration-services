@@ -2,7 +2,12 @@ package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
+import org.springframework.security.authentication.AnonymousAuthenticationToken
+import org.springframework.security.core.authority.AuthorityUtils
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
+import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderGenerator
@@ -12,6 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.data.repository.CaseNoteTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.InstitutionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomisTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
@@ -23,7 +29,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.UserRepositor
 @Component
 @Profile("dev", "integration-test")
 class DataLoader(
+    private val servicePrincipal: ServicePrincipal,
     private val userRepository: UserRepository,
+    private val businessInteractionRepository: BusinessInteractionRepository,
     private val caseNoteTypeRepository: CaseNoteTypeRepository,
     private val caseNoteNomisTypeRepository: CaseNoteNomisTypeRepository,
     private val probationAreaRepository: ProbationAreaRepository,
@@ -35,6 +43,14 @@ class DataLoader(
 ) : CommandLineRunner {
     override fun run(vararg args: String?) {
         userRepository.save(UserGenerator.APPLICATION_USER)
+        SecurityContextHolder.getContext().authentication =
+            AnonymousAuthenticationToken(
+                "hmpps-auth",
+                servicePrincipal,
+                AuthorityUtils.createAuthorityList(ServicePrincipal.AUTHORITY)
+            )
+
+        businessInteractionRepository.save(BusinessInteractionGenerator.CASE_NOTES_MERGE)
         caseNoteTypeRepository.save(CaseNoteNomisTypeGenerator.DEFAULT.type)
         caseNoteNomisTypeRepository.save(CaseNoteNomisTypeGenerator.DEFAULT)
         institutionRepository.save(ProbationAreaGenerator.DEFAULT.institution!!)

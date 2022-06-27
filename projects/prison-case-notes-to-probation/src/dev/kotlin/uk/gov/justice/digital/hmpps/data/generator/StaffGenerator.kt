@@ -15,8 +15,6 @@ object StaffGenerator {
         surname: String,
         id: Long = IdGenerator.getAndIncrement(),
         probationAreaId: Long = ProbationAreaGenerator.DEFAULT.id,
-        createdByUserId: Long = UserGenerator.APPLICATION_USER.id,
-        lastModifiedUserId: Long = UserGenerator.APPLICATION_USER.id,
     ): Staff {
         return Staff(
             id,
@@ -24,8 +22,6 @@ object StaffGenerator {
             surname,
             code,
             probationAreaId,
-            createdByUserId = createdByUserId,
-            lastModifiedUserId = lastModifiedUserId,
         )
     }
 }

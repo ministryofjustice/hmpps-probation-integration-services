@@ -13,16 +13,16 @@ import javax.jms.TextMessage
 class CaseNoteConverter(private val om: ObjectMapper) : MessageConverter {
     override fun toMessage(caseNoteMessage: Any, session: Session): Message {
         val message = session.createTextMessage()
-        message.text = om.writeValueAsString(CaseNoteMessageWrapper(caseNoteMessage as CaseNoteMessage))
+        message.text = om.writeValueAsString(CaseNoteMessageWrapper(om.writeValueAsString(caseNoteMessage)))
         return message
     }
 
     override fun fromMessage(message: Message): CaseNoteMessage {
         if (message is TextMessage) {
-            return om.readValue(message.text, CaseNoteMessageWrapper::class.java).message
+            return om.readValue(om.readValue(message.text, CaseNoteMessageWrapper::class.java).message, CaseNoteMessage::class.java)
         }
         throw IllegalArgumentException("Unable to convert $message to a CaseNoteMessage")
     }
 }
 
-data class CaseNoteMessageWrapper(@JsonProperty("Message") val message: CaseNoteMessage)
+data class CaseNoteMessageWrapper(@JsonProperty("Message") val message: String)

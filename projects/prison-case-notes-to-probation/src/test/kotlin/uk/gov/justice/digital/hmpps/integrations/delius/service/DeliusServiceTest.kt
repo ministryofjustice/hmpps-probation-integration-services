@@ -20,9 +20,9 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.exceptions.CaseNoteTypeNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteBody
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
@@ -37,9 +37,6 @@ import java.util.Optional
 class DeliusServiceTest {
 
     @Mock
-    lateinit var userService: UserService
-
-    @Mock
     lateinit var caseNoteRepository: CaseNoteRepository
 
     @Mock
@@ -51,10 +48,12 @@ class DeliusServiceTest {
     @Mock
     lateinit var assignmentService: AssignmentService
 
+    @Mock
+    lateinit var auditedInteractionService: AuditedInteractionService
+
     @InjectMocks
     lateinit var deliusService: DeliusService
 
-    private val user = UserGenerator.APPLICATION_USER
     private val caseNote = CaseNoteGenerator.EXISTING
     private val caseNoteNomisType = CaseNoteNomisTypeGenerator.DEFAULT
     private val nomisCaseNote = NomisCaseNoteGenerator.EXISTING_IN_BOTH
@@ -76,8 +75,6 @@ class DeliusServiceTest {
 
     @Test
     fun `successfully merges with existing case note`() {
-
-        whenever(userService.findServiceUser()).thenReturn(user)
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(caseNote)
 
         deliusService.mergeCaseNote(deliusCaseNote)
@@ -97,8 +94,6 @@ class DeliusServiceTest {
     @Test
     fun `successfully add new case note`() {
         val offender = OffenderGenerator.DEFAULT
-
-        whenever(userService.findServiceUser()).thenReturn(user)
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.type)).thenReturn(Optional.of(caseNoteNomisType))
         whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(offender)
@@ -121,7 +116,6 @@ class DeliusServiceTest {
 
     @Test
     fun `add new case note offender not found`() {
-        whenever(userService.findServiceUser()).thenReturn(user)
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.type)).thenReturn(Optional.of(caseNoteNomisType))
         whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(null)
@@ -133,7 +127,6 @@ class DeliusServiceTest {
 
     @Test
     fun `add new case note case note type not found`() {
-        whenever(userService.findServiceUser()).thenReturn(user)
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.type)).thenReturn(Optional.empty())
 
