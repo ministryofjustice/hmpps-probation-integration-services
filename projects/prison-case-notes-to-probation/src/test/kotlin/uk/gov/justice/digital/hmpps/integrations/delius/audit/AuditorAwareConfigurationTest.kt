@@ -38,7 +38,7 @@ internal class AuditorAwareConfigurationTest {
 
     @BeforeEach
     fun setUp() {
-        servicePrincipal = ServicePrincipal(UserGenerator.APPLICATION_USER.username, userService)
+        servicePrincipal = ServicePrincipal("prison-case-notes-to-probation", userService)
     }
 
     @Test
@@ -46,12 +46,13 @@ internal class AuditorAwareConfigurationTest {
         val user = UserGenerator.APPLICATION_USER
         whenever(securityContext.authentication).thenReturn(authentication)
         whenever(authentication.principal).thenReturn(servicePrincipal)
-        whenever(userService.findUser(user.username)).thenReturn(user)
+        whenever(userService.findUser("prison-case-notes-to-probation")).thenReturn(user)
 
+        servicePrincipal.postConstruct()
         SecurityContextHolder.setContext(securityContext)
         val opt = auditorAware.currentAuditor
 
-        verify(userService).findUser(user.username)
+        verify(userService).findUser("prison-case-notes-to-probation")
         assertThat(opt.isPresent)
     }
 

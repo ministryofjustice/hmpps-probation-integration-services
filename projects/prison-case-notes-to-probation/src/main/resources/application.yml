@@ -33,7 +33,7 @@ spring.security.oauth2.client:
 
 ---
 # Shared dev/test config
-spring.config.activate.on-profile: ["dev", "integration-test"]
+spring.config.activate.on-profile: ["dev", "integration-test", "oracle"]
 
 spring:
   activemq.broker-url: vm://localhost?broker.persistent=false&broker.useShutdownHook=false
@@ -86,7 +86,7 @@ spring.config.activate.on-profile: oracle
 spring:
   datasource:
     url: 'jdbc:oracle:thin:@//localhost:1521/XEPDB1'
-    username: delius_app_schema
+    username: delius_pool
     password: NDelius1
   jpa.properties:
-    hibernate.dialect: org.hibernate.dialect.OracleDialect
+    hibernate.dialect: org.hibernate.dialect.Oracle12cDialect

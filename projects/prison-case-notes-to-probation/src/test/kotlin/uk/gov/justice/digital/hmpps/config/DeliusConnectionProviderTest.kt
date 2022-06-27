@@ -13,6 +13,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
+import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import java.sql.Connection
 import java.sql.PreparedStatement
@@ -36,13 +37,17 @@ class DeliusConnectionProviderTest {
     @Mock
     private lateinit var dataSource: DataSource
 
+    @Mock
+    private lateinit var servicePrincipal: ServicePrincipal
+
     private val deliusConnectionProvider = DeliusConnectionProvider()
 
     @Test
     fun `retrieving a connection with oracle sets client identifier with security context`() {
         val username = UserGenerator.APPLICATION_USER.username
         whenever(securityContext.authentication).thenReturn(authentication)
-        whenever(authentication.name).thenReturn(username)
+        whenever(authentication.principal).thenReturn(servicePrincipal)
+        whenever(servicePrincipal.clientId).thenReturn(username)
         whenever(connection.prepareStatement(anyString())).thenReturn(preparedStatement)
         whenever(dataSource.connection).thenReturn(connection)
 

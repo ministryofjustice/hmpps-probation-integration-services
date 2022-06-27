@@ -14,7 +14,7 @@ import javax.persistence.Id
 import javax.persistence.IdClass
 import javax.persistence.Version
 @EntityListeners(AuditingEntityListener::class)
-@Entity(name = "StaffTeam")
+@Entity
 @IdClass(StaffTeamId::class)
 class StaffTeam(
 
