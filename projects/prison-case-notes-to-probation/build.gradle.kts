@@ -1,4 +1,6 @@
 dependencies {
+    implementation(project(":libs:probation-integration-commons"))
+
     implementation("org.springframework:spring-jms")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

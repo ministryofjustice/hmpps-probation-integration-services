@@ -15,8 +15,8 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.core.OAuth2AccessToken
 import org.springframework.web.server.ResponseStatusException
+import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
-import uk.gov.justice.digital.hmpps.listener.ServicePrincipal
 import java.nio.charset.StandardCharsets
 
 @Configuration

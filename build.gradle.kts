@@ -59,6 +59,14 @@ allprojects {
     }
 }
 
+val exclusions = listOf(
+    "**/ThreadConfig*",
+    "**/ContextRunnable*",
+    "**/ConnectionProviderConfig*",
+    "**/entity/**",
+    "**/AppKt.class"
+)
+
 subprojects {
     apply {
         plugin("org.springframework.boot")
@@ -141,17 +149,7 @@ subprojects {
             named<JacocoReport>("jacocoTestReport") {
                 classDirectories.setFrom(
                     files(
-                        classDirectories.files.map {
-                            fileTree(it) {
-                                exclude(
-                                    "**/config/**",
-                                    "**/model/**",
-                                    "**/exceptions/**",
-                                    "**/entity/**",
-                                    "**/AppKt.class"
-                                )
-                            }
-                        }
+                        classDirectories.files.map { fileTree(it) { exclude(exclusions) } }
                     )
                 )
                 executionData.setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
@@ -176,7 +174,11 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     dependsOn(subprojects.map { it.tasks.getByName("jacocoTestReport") })
     val main = subprojects.map { it.sourceSets.named("main").get() }
     additionalSourceDirs(files(main.map { it.allSource.srcDirs }))
-    additionalClassDirs(files(main.map { it.output }))
+    additionalClassDirs(
+        files(
+            main.map { it.output }.map { it.flatMap { file -> fileTree(file) { exclude(exclusions) } } }
+        )
+    )
     executionData(files(subprojects.map { it.tasks.named<JacocoReport>("jacocoTestReport").get().executionData }))
     reports {
         html.required.set(true)

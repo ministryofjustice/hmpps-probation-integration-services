@@ -1,13 +1,19 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
 import java.time.ZonedDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.Id
 import javax.persistence.IdClass
 import javax.persistence.Version
-
+@EntityListeners(AuditingEntityListener::class)
 @Entity(name = "StaffTeam")
 @IdClass(StaffTeamId::class)
 class StaffTeam(
@@ -20,21 +26,25 @@ class StaffTeam(
     @Column(name = "team_id")
     val teamId: Long,
 
+    @CreatedBy
     @Column(name = "created_by_user_id", updatable = false)
-    val createdByUserId: Long,
+    var createdByUserId: Long = 0,
 
+    @LastModifiedBy
     @Column(name = "last_updated_user_id")
-    val lastModifiedUserId: Long,
+    var lastModifiedUserId: Long = 0,
 
-    @Column(name = "last_updated_datetime")
-    val lastModifiedDate: ZonedDateTime = ZonedDateTime.now(),
-
+    @CreatedDate
     @Column(name = "created_datetime", updatable = false)
-    val createdDateTime: ZonedDateTime = ZonedDateTime.now(),
+    var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
+
+    @LastModifiedDate
+    @Column(name = "last_updated_datetime")
+    var lastModifiedDate: ZonedDateTime = ZonedDateTime.now(),
 
     @Version
     @Column(name = "row_version")
-    val version: Long = 0,
+    var version: Long = 0,
 )
 
 class StaffTeamId(val staffId: Long = 0, val teamId: Long = 0) : Serializable

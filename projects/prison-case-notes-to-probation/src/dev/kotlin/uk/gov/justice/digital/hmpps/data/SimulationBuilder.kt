@@ -13,7 +13,7 @@ import kotlin.io.path.name
 import kotlin.io.path.pathString
 
 @Component
-@Profile("dev", "integration-test")
+@Profile("dev", "integration-test", "oracle")
 class SimulationBuilder(private val objectMapper: ObjectMapper) {
     fun simulationsFromFile(): List<SimulationSource> {
         val simulationsPath = Paths.get(javaClass.getResource("/simulations")!!.path)

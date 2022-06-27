@@ -20,7 +20,6 @@ class AssignmentService(
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
     private val officerCodeGenerator: OfficerCodeGenerator,
-    private val userService: UserService,
     private val staffTeamRepository: StaffTeamRepository
 ) {
 
@@ -41,18 +40,15 @@ class AssignmentService(
             staffName.forename,
             staffName.surname
         ) ?: run {
-            val user = userService.findServiceUser()
             val staff = staffRepository.save(
                 Staff(
                     forename = staffName.forename,
                     surname = staffName.surname,
                     probationAreaId = probationArea.id,
                     code = officerCodeGenerator.generateFor(probationArea.code),
-                    createdByUserId = user.id,
-                    lastModifiedUserId = user.id
                 )
             )
-            staffTeamRepository.save(StaffTeam(staff.id, team.id, user.id, user.id))
+            staffTeamRepository.save(StaffTeam(staff.id, team.id))
             staff
         }
     }
