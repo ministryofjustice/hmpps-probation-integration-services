@@ -1,4 +1,6 @@
 dependencies {
+    implementation(project(":probation-integration-commons"))
+
     implementation("org.springframework.boot:spring-boot-starter-activemq")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

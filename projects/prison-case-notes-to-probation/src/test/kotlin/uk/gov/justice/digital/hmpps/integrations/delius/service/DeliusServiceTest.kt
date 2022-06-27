@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.exceptions.CaseNoteTypeNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteBody
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
@@ -46,6 +47,9 @@ class DeliusServiceTest {
 
     @Mock
     lateinit var assignmentService: AssignmentService
+
+    @Mock
+    lateinit var auditedInteractionService: AuditedInteractionService
 
     @InjectMocks
     lateinit var deliusService: DeliusService

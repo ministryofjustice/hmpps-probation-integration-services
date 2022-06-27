@@ -17,7 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditorAware
-import uk.gov.justice.digital.hmpps.integrations.delius.service.UserService
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.UserService
 
 @ExtendWith(MockitoExtension::class)
 internal class AuditorAwareConfigurationTest {

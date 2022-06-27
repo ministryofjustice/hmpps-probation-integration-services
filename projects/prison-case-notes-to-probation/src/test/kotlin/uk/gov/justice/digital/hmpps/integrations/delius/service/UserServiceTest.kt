@@ -7,6 +7,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.UserService
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.UserRepository
 
 @ExtendWith(MockitoExtension::class)

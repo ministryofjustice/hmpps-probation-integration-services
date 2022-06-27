@@ -3,6 +3,9 @@ package uk.gov.justice.digital.hmpps.integrations.delius.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exceptions.CaseNoteTypeNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteNomisType
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
@@ -16,7 +19,8 @@ class DeliusService(
     private val caseNoteRepository: CaseNoteRepository,
     private val nomisTypeRepository: CaseNoteNomisTypeRepository,
     private val offenderRepository: OffenderRepository,
-    private val assignmentService: AssignmentService
+    private val assignmentService: AssignmentService,
+    private val auditedInteractionService: AuditedInteractionService,
 ) {
     fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) {
         val existing = caseNoteRepository.findByNomisId(caseNote.header.noteId)
@@ -27,6 +31,11 @@ class DeliusService(
             startTime = caseNote.body.contactTimeStamp,
         ) ?: caseNote.newEntity()
         caseNoteRepository.save(entity)
+
+        auditedInteractionService.createAuditedInteraction(
+            BusinessInteractionCode.CASE_NOTES_MERGE,
+            AuditedInteraction.Parameters("contactId" to entity.id.toString())
+        )
     }
 
     private fun DeliusCaseNote.newEntity(): CaseNote {

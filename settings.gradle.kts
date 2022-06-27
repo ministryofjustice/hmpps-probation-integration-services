@@ -1,5 +1,5 @@
 rootProject.name = "probation-integration-services"
-include("prison-case-notes-to-probation")
+include("probation-integration-commons", "prison-case-notes-to-probation")
 
 // load children from the "projects" directory (and drop the prefix)
 rootProject.children.forEach { it.projectDir = File(rootDir, "projects/${it.projectDir.relativeTo(rootDir)}") }

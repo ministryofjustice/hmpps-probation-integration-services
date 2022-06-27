@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.config.security
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.integrations.delius.service.UserService
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.UserService
 
 @Component
 class ServicePrincipal(

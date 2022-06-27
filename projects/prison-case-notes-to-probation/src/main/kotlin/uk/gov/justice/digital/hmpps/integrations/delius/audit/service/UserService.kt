@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.service
+package uk.gov.justice.digital.hmpps.integrations.delius.audit.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.User
