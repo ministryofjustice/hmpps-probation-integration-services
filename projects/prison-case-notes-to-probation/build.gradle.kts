@@ -1,3 +1,5 @@
+apply(plugin = "com.google.cloud.tools.jib")
+
 dependencies {
     implementation(project(":libs:probation-integration-commons"))
 
@@ -26,3 +28,7 @@ dependencies {
     testImplementation(libs.mockito.kotlin)
     integrationTestImplementation(libs.hoverfly.junit)
 }
+
+println(parent?.ext?.get("Stevo"))
+val func = parent?.ext?.get("functionForStevo") as () -> Unit
+func()

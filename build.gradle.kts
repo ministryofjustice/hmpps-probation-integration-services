@@ -1,7 +1,6 @@
-import com.google.cloud.tools.jib.gradle.JibExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
-import org.springframework.boot.gradle.tasks.run.BootRun
+import uk.gov.justice.digital.hmpps.plugins.JibConfigPlugin
 
 plugins {
     kotlin("jvm") version "1.7.0" apply false
@@ -9,7 +8,7 @@ plugins {
     kotlin("plugin.jpa") version "1.7.0" apply false
     id("org.springframework.boot") version "2.7.1" apply false
     id("io.spring.dependency-management") version "1.0.11.RELEASE" apply false
-    id("com.google.cloud.tools.jib") version "3.2.1" apply false
+    id("com.google.cloud.tools.jib") apply false
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
     id("base")
     id("jacoco")
@@ -80,41 +79,7 @@ subprojects {
         plugin("jacoco")
         plugin("test-report-aggregation")
         plugin("jacoco-report-aggregation")
-        if (!project.path.startsWith(":libs")) plugin("com.google.cloud.tools.jib")
-    }
-
-    if (!project.path.startsWith(":libs")) {
-        configure<JibExtension> {
-            container {
-                creationTime = "USE_CURRENT_TIMESTAMP"
-                jvmFlags = mutableListOf("-Duser.timezone=Europe/London")
-                mainClass = "uk.gov.justice.digital.hmpps.AppKt"
-                user = "2000:2000"
-            }
-            from {
-                image = "eclipse-temurin:17-jre-alpine"
-            }
-            to {
-                image = "quay.io/hmpps/${project.name}:${project.version}"
-                auth {
-                    username = System.getenv("QUAYIO_USERNAME")
-                    password = System.getenv("QUAYIO_PASSWORD")
-                }
-            }
-            extraDirectories {
-                paths {
-                    path {
-                        setFrom("${rootProject.buildDir}")
-                        includes.add("agent/agent.jar")
-                    }
-                    path {
-                        setFrom("${project.projectDir}")
-                        includes.add("applicationinsights*.json")
-                        into = "/agent"
-                    }
-                }
-            }
-        }
+        plugin(JibConfigPlugin::class.java)
     }
 
     val dev: Configuration by configurations.creating {
@@ -141,15 +106,7 @@ subprojects {
         }
 
         tasks {
-            if (!project.path.startsWith(":libs")) {
-                getByName("jib").dependsOn(copyAgentTask)
-                getByName("jibBuildTar").dependsOn(copyAgentTask)
-                getByName("jibDockerBuild") {
-                    dependsOn(copyAgentTask)
-                    outputs.dirs(project.buildDir,)
-                }
-            }
-            withType<BootRun> {
+            withType<org.springframework.boot.gradle.tasks.run.BootRun> {
                 if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
                     classpath = dev.runtimeClasspath
                 }
@@ -177,6 +134,9 @@ subprojects {
         }
     }
 }
+
+project.ext.set("Stevo", "A special message for stevo")
+project.ext.set("functionForStevo", {println("Running this for Stevo")})
 
 // Aggregate jacoco report across sub-projects
 tasks.register<JacocoReport>("jacocoTestReport") {
