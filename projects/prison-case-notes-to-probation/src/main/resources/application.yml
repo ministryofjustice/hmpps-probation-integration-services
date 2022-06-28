@@ -90,3 +90,7 @@ spring:
     password: NDelius1
   jpa.properties:
     hibernate.dialect: org.hibernate.dialect.Oracle12cDialect
+
+#azure:
+#  application-insights:
+#    connection-string: "InstrumentationKey=INSTRUMENTATION_KEY"
