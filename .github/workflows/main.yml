@@ -49,7 +49,9 @@ jobs:
     name: Deploy to pre-prod
     uses: ./.github/workflows/deploy.yml
     if: github.ref == 'refs/heads/main'
-    needs: end-to-end-tests
+    needs:
+      - build
+      - end-to-end-tests
     with:
       environment: pre-prod
       values-file: values-preprod.yml
@@ -61,7 +63,9 @@ jobs:
     name: Deploy to production
     uses: ./.github/workflows/deploy.yml
     if: github.ref == 'refs/heads/main'
-    needs: deploy-to-pre-prod
+    needs:
+      - build
+      - deploy-to-pre-prod
     with:
       environment: prod
       values-file: values-prod.yml
