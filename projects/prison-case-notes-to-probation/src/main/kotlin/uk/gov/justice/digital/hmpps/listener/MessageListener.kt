@@ -6,6 +6,8 @@ import org.springframework.jms.annotation.EnableJms
 import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ResponseStatusException
+import uk.gov.justice.digital.hmpps.config.TelemetryService
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.CaseNoteMessage
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
@@ -15,7 +17,8 @@ import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
 @EnableJms
 class MessageListener(
     val prisonCaseNotesClient: PrisonCaseNotesClient,
-    val deliusService: DeliusService
+    val deliusService: DeliusService,
+    val telemetryService: TelemetryService
 ) {
 
     companion object {
@@ -46,6 +49,17 @@ class MessageListener(
             nomisCaseNote.type,
             nomisCaseNote.subType,
             nomisCaseNote.eventId
+        )
+
+        telemetryService.trackEvent(
+            "CaseNoteMerge",
+            mapOf(
+                "caseNoteId" to caseNoteMessage.caseNoteId.toString(),
+                "type" to "${nomisCaseNote.type}-${nomisCaseNote.subType}",
+                "eventId" to nomisCaseNote.eventId.toString(),
+                "created" to DeliusDateTimeFormatter.format(nomisCaseNote.creationDateTime),
+                "occurrence" to DeliusDateTimeFormatter.format(nomisCaseNote.occurrenceDateTime)
+            )
         )
 
         deliusService.mergeCaseNote(nomisCaseNote.toDeliusCaseNote())

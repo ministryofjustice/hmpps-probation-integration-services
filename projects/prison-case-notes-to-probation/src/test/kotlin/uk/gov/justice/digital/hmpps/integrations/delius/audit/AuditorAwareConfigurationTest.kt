@@ -66,4 +66,15 @@ internal class AuditorAwareConfigurationTest {
         verify(userService, times(0)).findUser(anyString())
         assertThat(opt.isEmpty)
     }
+
+    @Test
+    fun `no authentication set returns empty optional`() {
+        whenever(securityContext.authentication).thenReturn(null)
+
+        SecurityContextHolder.setContext(securityContext)
+        val opt = auditorAware.currentAuditor
+
+        verify(userService, times(0)).findUser(anyString())
+        assertThat(opt.isEmpty)
+    }
 }
