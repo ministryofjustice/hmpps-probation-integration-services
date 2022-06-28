@@ -1,6 +1,7 @@
 environment_name: delius-pre-prod
 
 env:
+  SENTRY_ENVIRONMENT: pre-prod
   SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: Digital-Prison-Services-preprod-case_note_poll_pusher_queue
   INTEGRATIONS_PRISON-CASE-NOTES_URL: https://offender-case-notes-preprod.hmpps.service.justice.gov.uk
   SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/oauth/token
