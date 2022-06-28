@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
+import org.springframework.boot.gradle.tasks.run.BootRun
 import uk.gov.justice.digital.hmpps.plugins.JibConfigPlugin
 
 plugins {
@@ -106,7 +107,7 @@ subprojects {
         }
 
         tasks {
-            withType<org.springframework.boot.gradle.tasks.run.BootRun> {
+            withType<BootRun> {
                 if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
                     classpath = dev.runtimeClasspath
                 }
@@ -134,9 +135,6 @@ subprojects {
         }
     }
 }
-
-project.ext.set("Stevo", "A special message for stevo")
-project.ext.set("functionForStevo", {println("Running this for Stevo")})
 
 // Aggregate jacoco report across sub-projects
 tasks.register<JacocoReport>("jacocoTestReport") {
