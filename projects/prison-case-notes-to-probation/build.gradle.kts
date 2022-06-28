@@ -1,3 +1,5 @@
+import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
+
 apply(plugin = "com.google.cloud.tools.jib")
 
 dependencies {
@@ -27,4 +29,12 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.mockito.kotlin)
     integrationTestImplementation(libs.hoverfly.junit)
+}
+
+configure<ClassPathExtension> {
+    jacocoExclusions = listOf(
+        "**/ConnectionProviderConfig*",
+        "**/entity/**",
+        "**/AppKt.class",
+    )
 }

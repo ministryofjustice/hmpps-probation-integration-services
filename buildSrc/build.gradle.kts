@@ -1,6 +1,6 @@
 plugins {
     id("com.google.cloud.tools.jib") version "3.2.1" apply false
-    `kotlin-dsl`
+   `kotlin-dsl`
 }
 
 repositories {
