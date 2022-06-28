@@ -1,3 +1,5 @@
+apply(plugin = "com.google.cloud.tools.jib")
+
 dependencies {
     implementation(project(":libs:probation-integration-commons"))
 
