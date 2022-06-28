@@ -13,6 +13,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation(libs.amazon.sqs)
     implementation(libs.openfeign)
+    implementation(libs.sentry)
 
     dev("org.springframework.boot:spring-boot-starter-activemq")
     dev("com.h2database:h2")
