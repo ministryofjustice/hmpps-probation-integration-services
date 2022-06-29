@@ -1,23 +1,18 @@
 package uk.gov.justice.digital.hmpps.config
 
 import feign.RequestInterceptor
-import feign.Response
-import feign.codec.ErrorDecoder
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.core.OAuth2AccessToken
-import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
-import java.nio.charset.StandardCharsets
 
 @Configuration
 @EnableFeignClients(clients = [PrisonCaseNotesClient::class])
@@ -28,9 +23,6 @@ class FeignConfig(
     companion object {
         const val REGISTRATION_ID = "prison-case-notes"
     }
-
-    @Bean
-    fun errorDecoder(): ErrorDecoder = FeignErrorDecoder()
 
     @Bean
     fun requestInterceptor() = RequestInterceptor { template ->
@@ -55,12 +47,4 @@ class FeignConfig(
             .build()
         return authorizedClientManager.authorize(request)?.accessToken
     }
-}
-
-class FeignErrorDecoder : ErrorDecoder {
-    override fun decode(methodKey: String?, response: Response?): Exception =
-        ResponseStatusException(
-            HttpStatus.valueOf(response?.status() ?: 500),
-            response?.body()?.asReader(StandardCharsets.UTF_8)?.readText()
-        )
 }

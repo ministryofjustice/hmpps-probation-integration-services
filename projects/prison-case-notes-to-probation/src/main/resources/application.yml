@@ -30,6 +30,7 @@ spring.security.oauth2.client:
   provider:
     hmpps-auth:
 
+sentry.debug: true
 
 ---
 # Shared dev/test config

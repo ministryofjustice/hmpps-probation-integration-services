@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.jms.annotation.EnableJms
 import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
-import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.config.TelemetryService
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
@@ -27,12 +26,7 @@ class MessageListener(
 
     @JmsListener(destination = "\${spring.jms.template.default-destination}")
     fun receive(caseNoteMessage: CaseNoteMessage) {
-        val nomisCaseNote = try {
-            prisonCaseNotesClient.getCaseNote(caseNoteMessage.offenderId, caseNoteMessage.caseNoteId)
-        } catch (re: ResponseStatusException) {
-            log.error("Unable to get Case Note: ${re.rawStatusCode}, ${re.reason}")
-            null
-        }
+        val nomisCaseNote = prisonCaseNotesClient.getCaseNote(caseNoteMessage.offenderId, caseNoteMessage.caseNoteId)
 
         if (nomisCaseNote == null || nomisCaseNote.text.isBlank()) {
             log.warn(
