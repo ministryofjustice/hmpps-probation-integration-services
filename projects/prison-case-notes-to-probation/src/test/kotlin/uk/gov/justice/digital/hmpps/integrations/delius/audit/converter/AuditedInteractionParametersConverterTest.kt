@@ -20,7 +20,7 @@ internal class AuditedInteractionParametersConverterTest {
 
     @ParameterizedTest
     @MethodSource("dbToParam")
-    fun convertToEntityAttribute(params: AuditedInteraction.Parameters, column: String) {
+    fun convertToEntityAttribute(params: AuditedInteraction.Parameters, column: String?) {
         val res = converter.convertToEntityAttribute(column)
         assertThat(res, equalTo(params))
     }
@@ -43,7 +43,8 @@ internal class AuditedInteractionParametersConverterTest {
 
         @JvmStatic
         fun dbToParam() = paramToDb() + listOf(
-            Arguments.of(AuditedInteraction.Parameters(), "=")
+            Arguments.of(AuditedInteraction.Parameters(), "="),
+            Arguments.of(AuditedInteraction.Parameters(), null)
         )
     }
 }

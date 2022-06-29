@@ -64,7 +64,6 @@ class DeliusServiceTest {
             nomisCaseNote.subType,
             "Note text",
             nomisCaseNote.occurrenceDateTime,
-            nomisCaseNote.creationDateTime,
             StaffName("bob", "smith"),
             "EST1"
         )

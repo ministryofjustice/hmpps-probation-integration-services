@@ -33,7 +33,7 @@ dependencies {
 
 configure<ClassPathExtension> {
     jacocoExclusions = listOf(
-        "**/ConnectionProviderConfig*",
+        "**/config/**",
         "**/entity/**",
         "**/AppKt.class",
     )

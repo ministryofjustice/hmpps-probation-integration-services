@@ -11,6 +11,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -53,7 +54,8 @@ class AuditedInteractionTest {
         SecurityContextHolder.setContext(securityContext)
 
         val bi = BusinessInteraction(1, BusinessInteractionCode.CASE_NOTES_MERGE.code, ZonedDateTime.now())
-        whenever(businessInteractionRepository.findByCode(any(), any())).thenReturn(bi)
+        whenever(businessInteractionRepository.findByCode(eq(BusinessInteractionCode.CASE_NOTES_MERGE.code), any()))
+            .thenReturn(bi)
 
         val parameters = AuditedInteraction.Parameters(
             Pair("key", "value")
