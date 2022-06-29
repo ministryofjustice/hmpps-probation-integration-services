@@ -32,10 +32,8 @@ class ZonedDateTimeDeserializer : JsonDeserializer<ZonedDateTime>() {
 
     @Throws(IOException::class, JsonProcessingException::class)
     override fun deserialize(parser: JsonParser, context: DeserializationContext?): ZonedDateTime {
-        return when (val datetime = formatter.parseBest(parser.text, ZonedDateTime::from, LocalDateTime::from)) {
-            is ZonedDateTime -> datetime.withZoneSameInstant(EuropeLondon)
-            is LocalDateTime -> datetime.atZone(EuropeLondon)
-            else -> throw IllegalArgumentException()
-        }
+        val datetime = formatter.parseBest(parser.text, ZonedDateTime::from, LocalDateTime::from)
+        return if (datetime is ZonedDateTime) datetime.withZoneSameInstant(EuropeLondon)
+        else (datetime as LocalDateTime).atZone(EuropeLondon)
     }
 }

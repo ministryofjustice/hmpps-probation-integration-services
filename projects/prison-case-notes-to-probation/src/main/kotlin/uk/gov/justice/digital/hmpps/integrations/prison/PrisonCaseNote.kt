@@ -35,10 +35,10 @@ data class CaseNoteAmendment(
     val additionalNoteText: String
 )
 
-data class CaseNoteMessage(
+data class PrisonOffenderEvent(
     @JsonAlias("offenderIdDisplay")
     val offenderId: String,
-    val caseNoteId: Long,
+    val caseNoteId: Long?,
     val eventId: Long,
     val eventType: String,
 )
