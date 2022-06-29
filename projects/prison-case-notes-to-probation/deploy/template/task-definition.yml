@@ -4,6 +4,8 @@ memory: "{{ .values.memory }}"
 containerDefinitions:
   - name: {{ .values.image.name }}
     image: quay.io/hmpps/{{ .values.image.name }}:{{ .Env.VERSION }}
+    healthCheck:
+      command: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"]
     cpu: "{{ .values.cpu }}"
     memory: "{{ .values.memory }}"
     environment:
