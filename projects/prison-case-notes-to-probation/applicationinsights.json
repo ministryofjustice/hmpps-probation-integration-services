@@ -3,7 +3,7 @@
     "name": "prison-case-notes-to-probation"
   },
   "customDimensions": {
-    "service.version": "${BUILD_NUMBER}"
+    "service.version": "${VERSION}"
   },
   "instrumentation": {
     "logging": {

@@ -7,6 +7,8 @@ containerDefinitions:
     cpu: "{{ .values.cpu }}"
     memory: "{{ .values.memory }}"
     environment:
+      - name: VERSION
+        value: {{ .Env.VERSION }}
     {{- range $key, $val := .values.env }}
       - name: {{ $key }}
         value: {{ $val }}
