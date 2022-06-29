@@ -9,7 +9,6 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
-import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.config.TelemetryService
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
@@ -31,12 +30,6 @@ class MessageListenerTest {
 
     @InjectMocks
     lateinit var messageListener: MessageListener
-
-    @Test
-    fun `unable to get case note from NOMIS`() {
-        whenever(prisonCaseNotesClient.getCaseNote(any(), any())).thenThrow(ResponseStatusException::class.java)
-        assertThat(messageListener.receive(CaseNoteMessageGenerator.EXISTS_IN_DELIUS), equalTo(Unit))
-    }
 
     @Test
     fun `get case note from NOMIS was null`() {
