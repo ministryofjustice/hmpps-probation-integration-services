@@ -7,6 +7,5 @@ import org.springframework.boot.runApplication
 class App
 
 fun main(args: Array<String>) {
-    throw RuntimeException("testing")
     runApplication<App>(*args)
 }
