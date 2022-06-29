@@ -5,4 +5,5 @@ import uk.gov.justice.digital.hmpps.ResourceLoader
 object CaseNoteMessageGenerator {
     val EXISTS_IN_DELIUS = ResourceLoader.caseNoteMessage("case-note-exists-in-delius")
     val NEW_TO_DELIUS = ResourceLoader.caseNoteMessage("case-note-new-to-delius")
+    val NOT_FOUND = ResourceLoader.caseNoteMessage("case-note-not-found")
 }

@@ -54,6 +54,33 @@
           },
           "templated": false
         }
+      },
+      {
+        "request": {
+          "path": [
+            {
+              "matcher": "exact",
+              "value": "/case-notes/GA52214/4444"
+            }
+          ],
+          "method": [
+            {
+              "matcher": "exact",
+              "value": "GET"
+            }
+          ]
+        },
+        "response": {
+          "status": 404,
+          "body": "",
+          "encodedBody": false,
+          "headers": {
+            "Content-Type": [
+              "application/json"
+            ]
+          },
+          "templated": false
+        }
       }
     ],
     "globalActions": {

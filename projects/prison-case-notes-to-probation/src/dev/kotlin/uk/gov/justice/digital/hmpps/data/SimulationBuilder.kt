@@ -26,10 +26,12 @@ class SimulationBuilder(private val objectMapper: ObjectMapper) {
                 val sim = objectMapper.readTree(simFile.toFile()) as ObjectNode
                 val pairs = sim["data"]["pairs"].map {
                     if (it["body"] == null || it["body"].isNull) {
-                        val filename = it["response"]["bodyFile"].asText()
-                        val body = objectMapper.readTree(Paths.get(parentPath, filename).toFile())
-                        val res = it["response"] as ObjectNode
-                        res.put("body", body.toString())
+                        val filename = it["response"]["bodyFile"]?.asText()
+                        if (filename != null) {
+                            val body = objectMapper.readTree(Paths.get(parentPath, filename).toFile())
+                            val res = it["response"] as ObjectNode
+                            res.put("body", body.toString())
+                        }
                     }
                     it
                 }
