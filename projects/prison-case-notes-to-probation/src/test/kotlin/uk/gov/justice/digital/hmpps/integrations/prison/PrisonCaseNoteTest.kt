@@ -11,6 +11,7 @@ class PrisonCaseNoteTest {
     fun `get staff name test`() {
         val caseNote = PrisonCaseNote(
             1L,
+            1L,
             "1",
             "type",
             "subType",

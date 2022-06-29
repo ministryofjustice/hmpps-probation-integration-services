@@ -11,12 +11,13 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.NomisCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
@@ -24,6 +25,7 @@ import uk.gov.justice.digital.hmpps.exceptions.CaseNoteTypeNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteNomisType
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteBody
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
@@ -56,7 +58,7 @@ class DeliusServiceTest {
 
     private val caseNote = CaseNoteGenerator.EXISTING
     private val caseNoteNomisType = CaseNoteNomisTypeGenerator.DEFAULT
-    private val nomisCaseNote = NomisCaseNoteGenerator.EXISTING_IN_BOTH
+    private val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
     private val deliusCaseNote = DeliusCaseNote(
         CaseNoteHeader(OffenderGenerator.DEFAULT.nomsId, nomisCaseNote.eventId),
         CaseNoteBody(
@@ -94,7 +96,7 @@ class DeliusServiceTest {
     fun `successfully add new case note`() {
         val offender = OffenderGenerator.DEFAULT
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
-        whenever(nomisTypeRepository.findById(deliusCaseNote.body.type)).thenReturn(Optional.of(caseNoteNomisType))
+        whenever(nomisTypeRepository.findById(any())).thenReturn(Optional.of(caseNoteNomisType))
         whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(offender)
         whenever(assignmentService.findAssignment(deliusCaseNote.body.establishmentCode, deliusCaseNote.body.staffName))
             .thenReturn(Triple(probationArea.id, team.id, staff.id))
@@ -116,7 +118,7 @@ class DeliusServiceTest {
     @Test
     fun `add new case note offender not found`() {
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
-        whenever(nomisTypeRepository.findById(deliusCaseNote.body.type)).thenReturn(Optional.of(caseNoteNomisType))
+        whenever(nomisTypeRepository.findById(any())).thenReturn(Optional.of(caseNoteNomisType))
         whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(null)
 
         assertThrows<OffenderNotFoundException> {
@@ -127,7 +129,8 @@ class DeliusServiceTest {
     @Test
     fun `add new case note case note type not found`() {
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
-        whenever(nomisTypeRepository.findById(deliusCaseNote.body.type)).thenReturn(Optional.empty())
+        whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(Optional.empty())
+        whenever(nomisTypeRepository.findById(CaseNoteNomisType.DEFAULT_CODE)).thenReturn(Optional.empty())
 
         assertThrows<CaseNoteTypeNotFoundException> {
             deliusService.mergeCaseNote(deliusCaseNote)

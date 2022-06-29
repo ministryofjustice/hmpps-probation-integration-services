@@ -13,7 +13,7 @@ import org.mockito.Mockito.times
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.data.generator.NomisCaseNoteGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
@@ -60,25 +60,25 @@ class AssignmentServiceTest {
 
     @Test
     fun `unable to find probation area`() {
-        whenever(probationAreaRepository.findByInstitutionNomisCode(NomisCaseNoteGenerator.EXISTING_IN_BOTH.locationId)).thenReturn(
+        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId)).thenReturn(
             null
         )
         val ex = assertThrows<ProbationAreaNotFoundException> {
-            assignmentService.findAssignment(NomisCaseNoteGenerator.EXISTING_IN_BOTH.locationId, staffName)
+            assignmentService.findAssignment(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId, staffName)
         }
         assertThat(
             ex.message,
-            equalTo("Probation area not found for NOMIS institution: ${NomisCaseNoteGenerator.EXISTING_IN_BOTH.locationId}")
+            equalTo("Probation area not found for NOMIS institution: ${PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId}")
         )
     }
 
     @Test
     fun `unable to find team`() {
-        whenever(probationAreaRepository.findByInstitutionNomisCode(NomisCaseNoteGenerator.EXISTING_IN_BOTH.locationId))
+        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId))
             .thenReturn(ProbationAreaGenerator.DEFAULT)
         whenever(teamRepository.findByCode(TeamGenerator.DEFAULT.code)).thenReturn(null)
         val ex = assertThrows<TeamNotFoundException> {
-            assignmentService.findAssignment(NomisCaseNoteGenerator.EXISTING_IN_BOTH.locationId, staffName)
+            assignmentService.findAssignment(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId, staffName)
         }
         assertThat(
             ex.message,
@@ -92,7 +92,7 @@ class AssignmentServiceTest {
         val team = TeamGenerator.DEFAULT
         val staff = StaffGenerator.DEFAULT
 
-        whenever(probationAreaRepository.findByInstitutionNomisCode(NomisCaseNoteGenerator.EXISTING_IN_BOTH.locationId))
+        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId))
             .thenReturn(probationArea)
         whenever(teamRepository.findByCode(team.code)).thenReturn(team)
         whenever(
@@ -104,7 +104,7 @@ class AssignmentServiceTest {
         ).thenReturn(staff)
 
         val res = assignmentService.findAssignment(
-            NomisCaseNoteGenerator.EXISTING_IN_BOTH.locationId, StaffName(staff.forename, staff.surname)
+            PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId, StaffName(staff.forename, staff.surname)
         )
 
         verify(staffRepository, times(0)).save(any())
@@ -121,7 +121,7 @@ class AssignmentServiceTest {
         val team = TeamGenerator.DEFAULT
         val newStaffCode = "C12A001"
 
-        whenever(probationAreaRepository.findByInstitutionNomisCode(NomisCaseNoteGenerator.EXISTING_IN_BOTH.locationId))
+        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId))
             .thenReturn(probationArea)
         whenever(teamRepository.findByCode(team.code)).thenReturn(team)
         whenever(
@@ -137,7 +137,7 @@ class AssignmentServiceTest {
 
         val staffCaptor = ArgumentCaptor.forClass(Staff::class.java)
 
-        assignmentService.findAssignment(NomisCaseNoteGenerator.EXISTING_IN_BOTH.locationId, staffName)
+        assignmentService.findAssignment(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId, staffName)
 
         verify(staffRepository, times(1)).save(staffCaptor.capture())
         assertThat(staffCaptor.value.forename, equalTo(staffName.forename))

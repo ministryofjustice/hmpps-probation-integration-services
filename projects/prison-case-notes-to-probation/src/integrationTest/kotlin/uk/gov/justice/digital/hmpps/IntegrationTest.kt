@@ -20,7 +20,7 @@ import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.SimulationBuilder
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
-import uk.gov.justice.digital.hmpps.data.generator.NomisCaseNoteGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
@@ -63,7 +63,7 @@ class IntegrationTest {
 
     @Test
     fun `update an existing case note succesfully`() {
-        val nomisCaseNote = NomisCaseNoteGenerator.EXISTING_IN_BOTH
+        val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
         val original = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
 
         jmsTemplate.convertSendAndWait(queueName, CaseNoteMessageGenerator.EXISTS_IN_DELIUS)
@@ -86,7 +86,7 @@ class IntegrationTest {
 
     @Test
     fun `create a new case note succesfully`() {
-        val nomisCaseNote = NomisCaseNoteGenerator.NEW_TO_DELIUS
+        val nomisCaseNote = PrisonCaseNoteGenerator.NEW_TO_DELIUS
         val original = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
         assertNull(original)
 

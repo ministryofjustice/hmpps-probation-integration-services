@@ -5,7 +5,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 
 object CaseNoteNomisTypeGenerator {
     val DEFAULT = CaseNoteNomisType(
-        "NEG",
+        "NEG IEP_WARN",
         CaseNoteType(
             IdGenerator.getAndIncrement(),
             "CNT1",
