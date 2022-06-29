@@ -41,11 +41,11 @@ class DeliusService(
     private fun DeliusCaseNote.newEntity(): CaseNote {
         val caseNoteType = nomisTypeRepository.findById(body.typeLookup())
             .map(CaseNoteNomisType::type)
-            .orElse(
+            .orElseGet {
                 nomisTypeRepository.findById(CaseNoteNomisType.DEFAULT_CODE)
                     .map(CaseNoteNomisType::type)
                     .orElseThrow { CaseNoteTypeNotFoundException(body.typeLookup()) }
-            )
+            }
 
         val offender = offenderRepository.findByNomsId(header.nomisId)
             ?: throw OffenderNotFoundException(header.nomisId)
