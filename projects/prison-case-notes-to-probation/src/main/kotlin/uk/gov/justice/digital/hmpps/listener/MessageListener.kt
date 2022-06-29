@@ -27,7 +27,7 @@ class MessageListener(
     @JmsListener(destination = "\${spring.jms.template.default-destination}")
     fun receive(prisonOffenderEvent: PrisonOffenderEvent) {
         if (prisonOffenderEvent.caseNoteId == null) {
-            log.info("Received an event for ${prisonOffenderEvent.offenderId} without a case note id: ${prisonOffenderEvent.eventType}")
+            log.info("Received ${prisonOffenderEvent.eventType} for ${prisonOffenderEvent.offenderId} without a case note id")
             return
         }
 
