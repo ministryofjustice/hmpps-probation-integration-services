@@ -46,14 +46,14 @@ jobs:
       - run: echo 'Hello, world!'
 
   deploy-to-pre-prod:
-    name: Deploy to pre-prod
+    name: Deploy to preprod
     uses: ./.github/workflows/deploy.yml
     if: github.ref == 'refs/heads/main'
     needs:
       - build
       - end-to-end-tests
     with:
-      environment: pre-prod
+      environment: preprod
       values-file: values-preprod.yml
       version: ${{ needs.build.outputs.version }}
       projects: ${{ needs.build.outputs.changed-projects }}
