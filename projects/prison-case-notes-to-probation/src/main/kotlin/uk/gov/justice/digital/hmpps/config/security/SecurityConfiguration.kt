@@ -22,7 +22,7 @@ class SecurityConfiguration {
     fun filterChain(http: HttpSecurity): SecurityFilterChain? {
         http.authorizeRequests {
             it
-                .antMatchers("/hawtio/**", "/health/**", "/jolokia").permitAll()
+                .antMatchers("/health/**", "/info/**", "/hawtio/**", "/jolokia").permitAll()
                 .anyRequest().authenticated()
         }
             .csrf().disable()
