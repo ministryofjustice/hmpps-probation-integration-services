@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
+import uk.gov.justice.digital.hmpps.plugins.ClassPathPlugin
 import uk.gov.justice.digital.hmpps.plugins.JibConfigPlugin
 
 plugins {
@@ -61,14 +62,6 @@ allprojects {
     }
 }
 
-val exclusions = listOf(
-    "**/ThreadConfig*",
-    "**/ContextRunnable*",
-    "**/ConnectionProviderConfig*",
-    "**/entity/**",
-    "**/AppKt.class"
-)
-
 subprojects {
     apply {
         plugin("org.springframework.boot")
@@ -81,57 +74,12 @@ subprojects {
         plugin("test-report-aggregation")
         plugin("jacoco-report-aggregation")
         plugin(JibConfigPlugin::class.java)
+        plugin(ClassPathPlugin::class.java)
     }
 
-    val dev: Configuration by configurations.creating {
-        extendsFrom(configurations["implementation"])
-        extendsFrom(configurations["runtimeOnly"])
-    }
-
-    configure<SourceSetContainer> {
-        val main by getting
-
-        val dev by creating {
-            compileClasspath += configurations["dev"] + main.compileClasspath + main.output
-            runtimeClasspath += configurations["dev"] + main.runtimeClasspath + main.output
-        }
-
-        val test by getting {
-            compileClasspath += configurations["dev"] + dev.output
-            runtimeClasspath += configurations["dev"] + dev.output
-        }
-
-        val integrationTest by creating {
-            compileClasspath += test.compileClasspath + test.output
-            runtimeClasspath += test.runtimeClasspath + test.output
-        }
-
-        tasks {
-            withType<BootRun> {
-                if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
-                    classpath = dev.runtimeClasspath
-                }
-            }
-
-            named<JacocoReport>("jacocoTestReport") {
-                classDirectories.setFrom(
-                    files(
-                        classDirectories.files.map { fileTree(it) { exclude(exclusions) } }
-                    )
-                )
-                executionData.setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
-            }
-            create<Test>("integrationTest") {
-                testClassesDirs = integrationTest.output.classesDirs
-                classpath = integrationTest.runtimeClasspath
-            }
-            withType<Test> {
-                useJUnitPlatform()
-                finalizedBy("jacocoTestReport")
-            }
-            named("check") {
-                dependsOn("ktlintCheck", "test", "integrationTest")
-            }
+    tasks.withType<BootRun> {
+        if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
+            classpath = sourceSets.getByName("dev").runtimeClasspath
         }
     }
 }
@@ -143,7 +91,9 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     additionalSourceDirs(files(main.map { it.allSource.srcDirs }))
     additionalClassDirs(
         files(
-            main.map { it.output }.map { it.flatMap { file -> fileTree(file) { exclude(exclusions) } } }
+            subprojects.map {
+                it.tasks.named<JacocoReport>("jacocoTestReport").get().classDirectories
+            }
         )
     )
     executionData(files(subprojects.map { it.tasks.named<JacocoReport>("jacocoTestReport").get().executionData }))
