@@ -56,7 +56,6 @@ fun PrisonCaseNote.toDeliusCaseNote(): DeliusCaseNote {
             subType = subType,
             content = text + amendments.joinToString(separator = "", transform = amendments()),
             contactTimeStamp = occurrenceDateTime,
-            systemTimeStamp = amendments.mapNotNull { it.creationDateTime }.maxOrNull() ?: creationDateTime,
             staffName = getStaffName(),
             establishmentCode = locationId
         )

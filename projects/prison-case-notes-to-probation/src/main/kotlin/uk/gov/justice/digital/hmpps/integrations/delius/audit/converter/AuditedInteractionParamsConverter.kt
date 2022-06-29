@@ -14,11 +14,13 @@ class AuditedInteractionParamsConverter : AttributeConverter<AuditedInteraction.
         attribute.paramPairs().joinToString(",") { "${it.first}='${it.second}'" }
 
     override fun convertToEntityAttribute(dbData: String?): AuditedInteraction.Parameters {
-        val args = dbData?.split(",")
-            ?.filter { it.contains("^.+=.+\$".toRegex()) }
-            ?.map { it.substringBefore("=").trim() to it.substringAfter("=").replace("'", "") }
-            ?.toTypedArray() ?: arrayOf()
-        return if (args.isNotEmpty()) AuditedInteraction.Parameters(*args)
-        else AuditedInteraction.Parameters()
+        var params = AuditedInteraction.Parameters()
+        if (dbData !== null) {
+            val args = dbData.split(",")
+                .filter { it.contains("^.+=.+\$".toRegex()) }
+                .associate { it.substringBefore("=").trim() to it.substringAfter("=").replace("'", "") }
+            if (args.isNotEmpty()) params = AuditedInteraction.Parameters(args)
+        }
+        return params
     }
 }

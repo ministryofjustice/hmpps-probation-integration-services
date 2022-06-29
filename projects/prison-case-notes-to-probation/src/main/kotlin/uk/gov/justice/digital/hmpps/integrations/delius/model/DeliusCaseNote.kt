@@ -17,8 +17,6 @@ data class CaseNoteBody(
     val content: String,
     @NotNull
     val contactTimeStamp: ZonedDateTime,
-    @NotNull
-    val systemTimeStamp: ZonedDateTime,
     @Valid
     val staffName: StaffName,
     @NotBlank

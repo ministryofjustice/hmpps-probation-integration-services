@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.integrations.delius.audit.converter
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -23,6 +25,11 @@ internal class AuditedInteractionOutcomeConverterTest {
     fun convertToEntityAttribute(outcome: AuditedInteraction.Outcome, column: Char) {
         val res = converter.convertToEntityAttribute(column)
         assertThat(res, equalTo(outcome))
+    }
+
+    @Test
+    fun `test unknown outcome from db`() {
+        assertThrows<IllegalArgumentException> { converter.convertToEntityAttribute('T') }
     }
 
     companion object {
