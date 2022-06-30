@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.config
+package uk.gov.justice.digital.hmpps.telemetry
 
 import com.microsoft.applicationinsights.TelemetryClient
 import org.springframework.scheduling.annotation.Async

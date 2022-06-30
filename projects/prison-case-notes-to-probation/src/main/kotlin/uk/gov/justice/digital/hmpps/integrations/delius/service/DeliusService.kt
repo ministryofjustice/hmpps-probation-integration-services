@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exceptions.CaseNoteTypeNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
@@ -22,6 +23,7 @@ class DeliusService(
     private val assignmentService: AssignmentService,
     private val auditedInteractionService: AuditedInteractionService,
 ) {
+    @Transactional
     fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) {
         val existing = caseNoteRepository.findByNomisId(caseNote.header.noteId)
 
