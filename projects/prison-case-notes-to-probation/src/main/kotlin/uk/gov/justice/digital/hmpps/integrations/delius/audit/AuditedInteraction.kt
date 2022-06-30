@@ -19,7 +19,7 @@ class AuditedInteractionId(
     val businessInteractionId: Long = 0,
     val userId: Long = 0,
 
-    ) : Serializable {
+) : Serializable {
 
     companion object {
         private const val serialVersionUID = -671767078136505398L
@@ -47,7 +47,7 @@ class AuditedInteraction(
     @Convert(converter = AuditedInteractionParamsConverter::class)
     val parameters: Parameters = Parameters(),
 
-    ) : Persistable<AuditedInteractionId> {
+) : Persistable<AuditedInteractionId> {
     enum class Outcome {
         SUCCESS, FAIL
     }
