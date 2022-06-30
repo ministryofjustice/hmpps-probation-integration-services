@@ -45,7 +45,7 @@ jobs:
     steps:
       - run: echo 'Hello, world!'
 
-  deploy-to-pre-prod:
+  deploy-to-preprod:
     name: Deploy to preprod
     uses: ./.github/workflows/deploy.yml
     if: github.ref == 'refs/heads/main'
@@ -65,7 +65,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs:
       - build
-      - deploy-to-pre-prod
+      - deploy-to-preprod
     with:
       environment: prod
       values-file: values-prod.yml
