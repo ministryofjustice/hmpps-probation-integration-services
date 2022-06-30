@@ -10,7 +10,7 @@ class PrisonCaseNoteTest {
     @Test
     fun `get staff name test`() {
         val caseNote = PrisonCaseNote(
-            1L,
+            "1",
             1L,
             "1",
             "type",

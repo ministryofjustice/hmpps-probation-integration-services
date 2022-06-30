@@ -12,7 +12,7 @@ const val UNKNOWN_LOCATION = "UNK"
 
 data class PrisonCaseNote(
     @JsonAlias("caseNoteId")
-    val id: Long,
+    val id: String,
     val eventId: Long,
     val offenderIdentifier: String,
     val type: String,
