@@ -40,7 +40,7 @@ data class CaseNoteAmendment(
 data class PrisonOffenderEvent(
     @JsonAlias("offenderIdDisplay")
     val offenderId: String,
-    val caseNoteId: Long?,
+    val caseNoteId: String?,
     val eventId: Long,
     val eventType: String,
 )
