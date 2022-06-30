@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.config
 import com.amazon.sqs.javamessaging.ProviderConfiguration
 import com.amazon.sqs.javamessaging.SQSConnectionFactory
 import com.amazon.sqs.javamessaging.SQSSession
+import io.sentry.Sentry
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer
@@ -38,6 +39,7 @@ class JmsConfig {
         val factory = DefaultJmsListenerContainerFactory()
         configurer.configure(factory, connectionFactory())
         factory.setSessionTransacted(false) // SQS does not support transactions
+        factory.setErrorHandler { Sentry.captureException(it) }
         return factory
     }
 }
