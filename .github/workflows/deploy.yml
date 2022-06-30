@@ -39,14 +39,21 @@ jobs:
           role-skip-session-tagging: true
           role-duration-seconds: 1200
 
+      - name: Get environment name
+        id: env
+        shell: bash
+        run: |
+          echo "::set-output name=name::$(cat ${{ inputs.values-file }} | yq '.environment_name')"
+          echo "::set-output name=short-name::${environment_name/delius-/del-}"
+        working-directory: projects/${{ matrix.project }}/deploy
+
       - name: Add secrets to parameter store
         shell: bash
         env:
           ALL_SECRETS: ${{ toJson(secrets) }}
         run: |
-          environment_name=$(cat ${{ inputs.values-file }} | yq '.environment_name')
           project_name=$(echo '${{ matrix.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
-          namespace=/${environment_name}/delius/probation-integration/${{ matrix.project }}
+          namespace=/${{ steps.env.outputs.name }}/delius/probation-integration/${{ matrix.project }}
           echo "${ALL_SECRETS}" | jq -r ". | keys[] | select(. | startswith(\"${project_name}\"))" | while read -r key; do
             name=$(echo "${key}" | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g' | sed 's/${{ matrix.project }}-//')
             value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
@@ -66,7 +73,7 @@ jobs:
           VERSION: ${{ inputs.version }}
         run: |
           brew install gomplate
-          old_task_definition=$(aws ecs describe-task-definition --task-definition "del-${{ inputs.environment }}-${{ matrix.project }}-task-definition" --include TAGS | jq '.taskDefinition | del(.containerDefinitions[0].command, .compatibilities, .taskDefinitionArn, .requiresAttributes, .revision, .status, .registeredAt, .registeredBy)')
+          old_task_definition=$(aws ecs describe-task-definition --task-definition "${{ steps.env.outputs.short-name }}-${{ matrix.project }}-task-definition" --include TAGS | jq '.taskDefinition | del(.containerDefinitions[0].command, .compatibilities, .taskDefinitionArn, .requiresAttributes, .revision, .status, .registeredAt, .registeredBy)')
           new_task_definition=$(yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' <(echo "${old_task_definition}") <(gomplate --file template/task-definition.yml --context values=values.yml) --output-format json | tee task-definition.json)
           echo "Deploying new task definition: ${new_task_definition}"
         working-directory: projects/${{ matrix.project }}/deploy
@@ -75,7 +82,7 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: projects/${{ matrix.project }}/deploy/task-definition.json
-          service: del-${{ inputs.environment }}-${{ matrix.project }}-service
+          service: ${{ steps.env.outputs.short-name }}-${{ matrix.project }}-service
           cluster: del-delius-ecscluster-private-ecs
           wait-for-service-stability: true
           wait-for-minutes: 5
