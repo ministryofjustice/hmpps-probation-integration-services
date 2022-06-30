@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.audit
 
 import org.hibernate.annotations.Immutable
+import org.springframework.data.domain.Persistable
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.converter.AuditedInteractionOutcomeConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.converter.AuditedInteractionParamsConverter
 import java.io.Serializable
@@ -46,7 +47,7 @@ class AuditedInteraction(
     @Convert(converter = AuditedInteractionParamsConverter::class)
     val parameters: Parameters = Parameters(),
 
-) {
+) : Persistable<AuditedInteractionId> {
     enum class Outcome {
         SUCCESS, FAIL
     }
@@ -57,4 +58,8 @@ class AuditedInteraction(
 
         fun paramPairs(): List<Pair<String, String>> = paramMap.entries.map { Pair(it.key, it.value) }
     }
+
+    override fun getId() = AuditedInteractionId(dateTime, businessInteractionId, userId)
+
+    override fun isNew() = true
 }

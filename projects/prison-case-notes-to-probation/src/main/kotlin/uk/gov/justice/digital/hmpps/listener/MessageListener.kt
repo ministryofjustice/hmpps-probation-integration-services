@@ -5,12 +5,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.jms.annotation.EnableJms
 import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.config.TelemetryService
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonOffenderEvent
 import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Component
 @EnableJms
