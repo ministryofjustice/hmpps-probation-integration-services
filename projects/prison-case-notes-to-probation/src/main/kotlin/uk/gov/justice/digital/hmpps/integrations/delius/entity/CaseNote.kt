@@ -142,4 +142,8 @@ class CaseNoteNomisType(
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
     val type: CaseNoteType,
-)
+) {
+    companion object {
+        const val DEFAULT_CODE = "NOMISD"
+    }
+}

@@ -53,6 +53,8 @@ class DataLoader(
         businessInteractionRepository.save(BusinessInteractionGenerator.CASE_NOTES_MERGE)
         caseNoteTypeRepository.save(CaseNoteNomisTypeGenerator.DEFAULT.type)
         caseNoteNomisTypeRepository.save(CaseNoteNomisTypeGenerator.DEFAULT)
+        caseNoteTypeRepository.save(CaseNoteNomisTypeGenerator.NEG.type)
+        caseNoteNomisTypeRepository.save(CaseNoteNomisTypeGenerator.NEG)
         institutionRepository.save(ProbationAreaGenerator.DEFAULT.institution!!)
         probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
         teamRepository.save(TeamGenerator.DEFAULT)

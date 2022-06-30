@@ -53,8 +53,9 @@ class MessageListener(
         telemetryService.trackEvent(
             "CaseNoteMerge",
             mapOf(
-                "caseNoteId" to prisonOffenderEvent.caseNoteId.toString(),
-                "type" to "${prisonCaseNote.type}-${prisonCaseNote.subType}",
+                "caseNoteId" to prisonCaseNote.id.toString(),
+                "type" to prisonCaseNote.type,
+                "subType" to prisonCaseNote.subType,
                 "eventId" to prisonCaseNote.eventId.toString(),
                 "created" to DeliusDateTimeFormatter.format(prisonCaseNote.creationDateTime),
                 "occurrence" to DeliusDateTimeFormatter.format(prisonCaseNote.occurrenceDateTime)

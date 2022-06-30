@@ -58,6 +58,7 @@ internal class MessageListenerTest {
     fun `get case note from NOMIS has blank text`() {
         val prisonCaseNote = PrisonCaseNote(
             1L,
+            1L,
             "1",
             "type",
             "subType",

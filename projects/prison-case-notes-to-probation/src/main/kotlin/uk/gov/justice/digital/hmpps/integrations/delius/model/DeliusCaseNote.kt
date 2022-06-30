@@ -22,7 +22,8 @@ data class CaseNoteBody(
     @NotBlank
     val establishmentCode: String
 ) {
-    fun notesToAppend() = "$type $subType" + System.lineSeparator() + content
+    fun notesToAppend() = typeLookup() + System.lineSeparator() + content
+    fun typeLookup() = "$type $subType"
 }
 
 data class StaffName(@NotBlank val forename: String, @NotBlank val surname: String)

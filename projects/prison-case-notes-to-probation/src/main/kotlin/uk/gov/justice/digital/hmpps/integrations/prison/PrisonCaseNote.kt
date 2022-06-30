@@ -11,6 +11,8 @@ import java.time.ZonedDateTime
 const val UNKNOWN_LOCATION = "UNK"
 
 data class PrisonCaseNote(
+    @JsonAlias("caseNoteId")
+    val id: Long,
     val eventId: Long,
     val offenderIdentifier: String,
     val type: String,

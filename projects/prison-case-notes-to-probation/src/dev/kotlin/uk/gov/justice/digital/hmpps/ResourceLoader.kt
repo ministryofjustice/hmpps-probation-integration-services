@@ -31,7 +31,7 @@ object ResourceLoader {
             PrisonOffenderEvent::class.java
         )
 
-    fun nomisCaseNote(filename: String): PrisonCaseNote =
+    fun prisonCaseNote(filename: String): PrisonCaseNote =
         MAPPER.readValue(
             ResourceUtils.getFile("classpath:responses/$filename.json"),
             PrisonCaseNote::class.java

@@ -7,6 +7,6 @@ object ProbationAreaGenerator {
     val DEFAULT = ProbationArea(
         IdGenerator.getAndIncrement(),
         "PA1",
-        Institution(IdGenerator.getAndIncrement(), NomisCaseNoteGenerator.EXISTING_IN_BOTH.locationId)
+        Institution(IdGenerator.getAndIncrement(), PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId)
     )
 }
