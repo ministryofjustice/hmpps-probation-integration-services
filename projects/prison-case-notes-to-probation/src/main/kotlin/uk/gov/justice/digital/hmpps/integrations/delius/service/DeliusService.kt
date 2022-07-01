@@ -8,10 +8,11 @@ import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteNomisType
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomisTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
 import javax.validation.Valid
 
@@ -19,6 +20,7 @@ import javax.validation.Valid
 class DeliusService(
     private val caseNoteRepository: CaseNoteRepository,
     private val nomisTypeRepository: CaseNoteNomisTypeRepository,
+    private val caseNoteTypeRepository: CaseNoteTypeRepository,
     private val offenderRepository: OffenderRepository,
     private val assignmentService: AssignmentService,
     private val auditedInteractionService: AuditedInteractionService,
@@ -42,11 +44,10 @@ class DeliusService(
 
     private fun DeliusCaseNote.newEntity(): CaseNote {
         val caseNoteType = nomisTypeRepository.findById(body.typeLookup())
-            .map(CaseNoteNomisType::type)
+            .map { it.type }
             .orElseGet {
-                nomisTypeRepository.findById(CaseNoteNomisType.DEFAULT_CODE)
-                    .map(CaseNoteNomisType::type)
-                    .orElseThrow { CaseNoteTypeNotFoundException(body.typeLookup()) }
+                caseNoteTypeRepository.findByCode(CaseNoteType.DEFAULT_CODE)
+                    ?: throw CaseNoteTypeNotFoundException(body.typeLookup())
             }
 
         val offender = offenderRepository.findByNomsId(header.nomisId)

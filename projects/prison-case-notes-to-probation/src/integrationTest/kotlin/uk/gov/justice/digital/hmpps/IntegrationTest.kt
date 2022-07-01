@@ -20,6 +20,7 @@ import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.SimulationBuilder
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
@@ -98,6 +99,11 @@ class IntegrationTest {
         assertThat(
             saved!!.notes,
             stringContainsInOrder(nomisCaseNote.type, nomisCaseNote.subType, nomisCaseNote.text)
+        )
+
+        assertThat(
+            saved.type.code,
+            equalTo(CaseNoteNomisTypeGenerator.NEG.type.code)
         )
 
         val staff = staffRepository.findById(saved.staffId).orElseThrow()

@@ -10,16 +10,17 @@ import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CaseNoteTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.data.repository.CaseNoteTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomisTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.ProbationAreaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
@@ -51,8 +52,7 @@ class DataLoader(
             )
 
         businessInteractionRepository.save(BusinessInteractionGenerator.CASE_NOTES_MERGE)
-        caseNoteTypeRepository.save(CaseNoteNomisTypeGenerator.DEFAULT.type)
-        caseNoteNomisTypeRepository.save(CaseNoteNomisTypeGenerator.DEFAULT)
+        caseNoteTypeRepository.save(CaseNoteTypeGenerator.DEFAULT)
         caseNoteTypeRepository.save(CaseNoteNomisTypeGenerator.NEG.type)
         caseNoteNomisTypeRepository.save(CaseNoteNomisTypeGenerator.NEG)
         institutionRepository.save(ProbationAreaGenerator.DEFAULT.institution!!)

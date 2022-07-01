@@ -130,7 +130,11 @@ class CaseNoteType(
     @Column(name = "sensitive_contact")
     @Type(type = "yes_no")
     val isSensitive: Boolean,
-)
+) {
+    companion object {
+        const val DEFAULT_CODE = "NOMISD"
+    }
+}
 
 @Immutable
 @Entity(name = "r_contact_type_nomis_type")
@@ -142,8 +146,4 @@ class CaseNoteNomisType(
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
     val type: CaseNoteType,
-) {
-    companion object {
-        const val DEFAULT_CODE = "NOMISD"
-    }
-}
+)
