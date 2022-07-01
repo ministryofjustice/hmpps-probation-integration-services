@@ -47,4 +47,4 @@ class StaffTeam(
     var version: Long = 0,
 )
 
-class StaffTeamId(val staffId: Long = 0, val teamId: Long = 0) : Serializable
+data class StaffTeamId(val staffId: Long = 0, val teamId: Long = 0) : Serializable
