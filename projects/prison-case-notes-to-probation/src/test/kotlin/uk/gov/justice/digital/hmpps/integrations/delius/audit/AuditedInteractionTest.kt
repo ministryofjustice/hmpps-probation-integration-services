@@ -30,6 +30,7 @@ class AuditedInteractionTest {
 
     @Mock
     lateinit var businessInteractionRepository: BusinessInteractionRepository
+
     @Mock
     lateinit var auditedInteractionRepository: AuditedInteractionRepository
 
@@ -50,7 +51,7 @@ class AuditedInteractionTest {
         val userId = 123L
         whenever(securityContext.authentication).thenReturn(authentication)
         whenever(authentication.principal).thenReturn(servicePrincipal)
-        whenever(servicePrincipal.userId).thenReturn(userId)
+        whenever(servicePrincipal.userId).thenReturn(lazyOf(userId))
         SecurityContextHolder.setContext(securityContext)
 
         val bi = BusinessInteraction(1, BusinessInteractionCode.CASE_NOTES_MERGE.code, ZonedDateTime.now())
@@ -166,7 +167,7 @@ class AuditedInteractionTest {
     @Test
     fun `test audit interaction id class`() {
         val dateTime = ZonedDateTime.now()
-        val auditedInteractionId = AuditedInteractionId(dateTime, 111, 222,)
+        val auditedInteractionId = AuditedInteractionId(dateTime, 111, 222)
         assertThat(auditedInteractionId.businessInteractionId, Matchers.equalTo(111))
         assertThat(auditedInteractionId.userId, Matchers.equalTo(222))
         assertThat(auditedInteractionId.dateTime, Matchers.equalTo(dateTime))

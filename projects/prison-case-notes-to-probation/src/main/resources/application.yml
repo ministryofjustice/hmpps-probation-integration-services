@@ -88,8 +88,11 @@ spring:
     url: 'jdbc:oracle:thin:@//localhost:1521/XEPDB1'
     username: delius_pool
     password: NDelius1
-  jpa.properties:
-    hibernate.dialect: org.hibernate.dialect.Oracle12cDialect
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.Oracle12cDialect
+    ddl-auto: validate
 
 #azure:
 #  application-insights:

@@ -12,7 +12,7 @@ import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.IdClass
 
-class AuditedInteractionId(
+data class AuditedInteractionId(
 
     val dateTime: ZonedDateTime = ZonedDateTime.now(),
 

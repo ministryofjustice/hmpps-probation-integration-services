@@ -48,7 +48,6 @@ internal class AuditorAwareConfigurationTest {
         whenever(authentication.principal).thenReturn(servicePrincipal)
         whenever(userService.findUser("prison-case-notes-to-probation")).thenReturn(user)
 
-        servicePrincipal.postConstruct()
         SecurityContextHolder.setContext(securityContext)
         val opt = auditorAware.currentAuditor
 

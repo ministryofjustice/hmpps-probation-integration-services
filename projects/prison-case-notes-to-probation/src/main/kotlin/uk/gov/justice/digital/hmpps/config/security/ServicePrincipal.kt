@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.config.security
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.UserService
-import javax.annotation.PostConstruct
 
 @Component
 class ServicePrincipal(
@@ -14,10 +13,5 @@ class ServicePrincipal(
         const val AUTHORITY = "ROLE_CASE_NOTES"
     }
 
-    @PostConstruct
-    fun postConstruct() {
-        userId = userService.findUser(clientId)?.id
-    }
-
-    var userId: Long? = 0
+    var userId = lazy { userService.findUser(clientId)?.id }
 }
