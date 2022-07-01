@@ -13,7 +13,7 @@ class AuditorAware : AuditorAware<Long> {
     override fun getCurrentAuditor(): Optional<Long> {
         val principal = SecurityContextHolder.getContext().authentication?.principal
         return if (principal is ServicePrincipal) {
-            Optional.ofNullable(principal.userId)
+            Optional.ofNullable(principal.userId.value)
         } else Optional.empty()
     }
 }
