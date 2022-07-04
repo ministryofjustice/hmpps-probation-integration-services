@@ -9,7 +9,7 @@ plugins {
     kotlin("plugin.spring") version "1.7.0" apply false
     kotlin("plugin.jpa") version "1.7.0" apply false
     id("org.springframework.boot") version "2.7.1" apply false
-    id("io.spring.dependency-management") version "1.0.11.RELEASE" apply false
+    id("io.spring.dependency-management") version "1.0.12.RELEASE" apply false
     id("com.google.cloud.tools.jib") apply false
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
     id("base")
