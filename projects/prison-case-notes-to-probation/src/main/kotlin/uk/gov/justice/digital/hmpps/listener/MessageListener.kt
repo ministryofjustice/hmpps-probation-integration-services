@@ -53,7 +53,7 @@ class MessageListener(
         telemetryService.trackEvent(
             "CaseNoteMerge",
             mapOf(
-                "caseNoteId" to prisonCaseNote.id.toString(),
+                "caseNoteId" to prisonCaseNote.id,
                 "type" to prisonCaseNote.type,
                 "subType" to prisonCaseNote.subType,
                 "eventId" to prisonCaseNote.eventId.toString(),
