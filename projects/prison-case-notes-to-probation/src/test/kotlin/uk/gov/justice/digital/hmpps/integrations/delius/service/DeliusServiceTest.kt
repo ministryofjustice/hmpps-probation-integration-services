@@ -4,6 +4,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.startsWith
 import org.hamcrest.Matchers.stringContainsInOrder
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -17,6 +18,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
@@ -29,6 +31,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteBody
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
+import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteRelatedIds
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomisTypeRepository
@@ -57,6 +60,9 @@ class DeliusServiceTest {
 
     @Mock
     lateinit var auditedInteractionService: AuditedInteractionService
+
+    @Mock
+    lateinit var caseNoteRelatedService: CaseNoteRelatedService
 
     @InjectMocks
     lateinit var deliusService: DeliusService
@@ -109,6 +115,8 @@ class DeliusServiceTest {
         whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(offender)
         whenever(assignmentService.findAssignment(deliusCaseNote.body.establishmentCode, deliusCaseNote.body.staffName))
             .thenReturn(Triple(probationArea.id, team.id, staff.id))
+        whenever(caseNoteRelatedService.findRelatedCaseNoteIds(offender.id))
+            .thenReturn(CaseNoteRelatedIds(EventGenerator.CUSTODIAL_EVENT.id))
 
         deliusService.mergeCaseNote(deliusCaseNote)
 
@@ -122,6 +130,8 @@ class DeliusServiceTest {
             saved.notes,
             stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content)
         )
+
+        assertThat(saved.eventId, equalTo(EventGenerator.CUSTODIAL_EVENT.id))
     }
 
     @Test
@@ -159,6 +169,7 @@ class DeliusServiceTest {
         whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(offender)
         whenever(assignmentService.findAssignment(deliusCaseNote.body.establishmentCode, deliusCaseNote.body.staffName))
             .thenReturn(Triple(probationArea.id, team.id, staff.id))
+        whenever(caseNoteRelatedService.findRelatedCaseNoteIds(offender.id)).thenReturn(CaseNoteRelatedIds())
 
         deliusService.mergeCaseNote(deliusCaseNote)
 
@@ -173,5 +184,6 @@ class DeliusServiceTest {
             stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content)
         )
         assertThat(saved.type.code, equalTo(CaseNoteTypeGenerator.DEFAULT.code))
+        assertNull(saved.eventId)
     }
 }
