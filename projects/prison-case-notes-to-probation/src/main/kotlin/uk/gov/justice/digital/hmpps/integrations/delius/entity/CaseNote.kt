@@ -38,6 +38,9 @@ data class CaseNote(
     @Column(updatable = false)
     val eventId: Long?,
 
+    @Column(updatable = false)
+    val nsiId: Long?,
+
     @Column(name = "nomis_case_note_id", updatable = false)
     val nomisId: Long,
 

@@ -11,7 +11,8 @@ object CaseNoteGenerator {
     fun generate(
         nomisId: Long = Random.nextLong(),
         offenderId: Long = OffenderGenerator.DEFAULT.id,
-        eventId: Long = EventGenerator.CUSTODIAL_EVENT.id,
+        eventId: Long? = EventGenerator.CUSTODIAL_EVENT.id,
+        nsiId: Long? = NsiGenerator.EVENT_CASE_NOTE_NSI.id,
         type: CaseNoteType = CaseNoteTypeGenerator.DEFAULT,
         description: String = "Another case note from Nomis",
         probationAreaId: Long = ProbationAreaGenerator.DEFAULT.id,
@@ -23,6 +24,7 @@ object CaseNoteGenerator {
             IdGenerator.getAndIncrement(),
             offenderId,
             eventId,
+            nsiId,
             nomisId,
             type,
             description,
