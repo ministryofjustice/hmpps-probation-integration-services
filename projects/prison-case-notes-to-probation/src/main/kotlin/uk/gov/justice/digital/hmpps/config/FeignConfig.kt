@@ -20,7 +20,7 @@ import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
 @EnableFeignClients(clients = [PrisonCaseNotesClient::class])
 class FeignConfig(
     private val authorizedClientManager: OAuth2AuthorizedClientManager,
-    @Value("\${delius.db.username:prison-case-notes-to-probation}") val deliusDbName: String,
+    @Value("\${delius.db.username:prison-case-notes-to-probation}") private val deliusDbName: String,
     private val userService: UserService
 ) {
     companion object {
