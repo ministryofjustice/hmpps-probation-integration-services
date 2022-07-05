@@ -2,11 +2,8 @@ package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
-import org.springframework.security.authentication.AnonymousAuthenticationToken
-import org.springframework.security.core.authority.AuthorityUtils
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
+import uk.gov.justice.digital.hmpps.config.ServiceContext
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
@@ -39,7 +36,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.UserRepositor
 @Component
 @Profile("dev", "integration-test")
 class DataLoader(
-    private val servicePrincipal: ServicePrincipal,
+    private val serviceContext: ServiceContext,
     private val userRepository: UserRepository,
     private val businessInteractionRepository: BusinessInteractionRepository,
     private val caseNoteTypeRepository: CaseNoteTypeRepository,
@@ -59,12 +56,7 @@ class DataLoader(
 ) : CommandLineRunner {
     override fun run(vararg args: String?) {
         userRepository.save(UserGenerator.APPLICATION_USER)
-        SecurityContextHolder.getContext().authentication =
-            AnonymousAuthenticationToken(
-                "hmpps-auth",
-                servicePrincipal,
-                AuthorityUtils.createAuthorityList(ServicePrincipal.AUTHORITY)
-            )
+        serviceContext.setUp()
 
         businessInteractionRepository.save(BusinessInteractionGenerator.CASE_NOTES_MERGE)
 

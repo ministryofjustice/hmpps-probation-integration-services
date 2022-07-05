@@ -4,12 +4,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.anyString
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
@@ -17,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder
 import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditorAware
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.UserService
 
 @ExtendWith(MockitoExtension::class)
 internal class AuditorAwareConfigurationTest {
@@ -28,9 +24,6 @@ internal class AuditorAwareConfigurationTest {
     @Mock
     private lateinit var authentication: Authentication
 
-    @Mock
-    private lateinit var userService: UserService
-
     private lateinit var servicePrincipal: ServicePrincipal
 
     @InjectMocks
@@ -38,20 +31,17 @@ internal class AuditorAwareConfigurationTest {
 
     @BeforeEach
     fun setUp() {
-        servicePrincipal = ServicePrincipal("prison-case-notes-to-probation", userService)
+        servicePrincipal = ServicePrincipal("prison-case-notes-to-probation", UserGenerator.APPLICATION_USER.id)
     }
 
     @Test
     fun `get current auditor contains db username`() {
-        val user = UserGenerator.APPLICATION_USER
         whenever(securityContext.authentication).thenReturn(authentication)
         whenever(authentication.principal).thenReturn(servicePrincipal)
-        whenever(userService.findUser("prison-case-notes-to-probation")).thenReturn(user)
 
         SecurityContextHolder.setContext(securityContext)
         val opt = auditorAware.currentAuditor
 
-        verify(userService).findUser("prison-case-notes-to-probation")
         assertThat(opt.isPresent)
     }
 
@@ -62,7 +52,6 @@ internal class AuditorAwareConfigurationTest {
         SecurityContextHolder.setContext(securityContext)
         val opt = auditorAware.currentAuditor
 
-        verify(userService, times(0)).findUser(anyString())
         assertThat(opt.isEmpty)
     }
 
@@ -73,7 +62,6 @@ internal class AuditorAwareConfigurationTest {
         SecurityContextHolder.setContext(securityContext)
         val opt = auditorAware.currentAuditor
 
-        verify(userService, times(0)).findUser(anyString())
         assertThat(opt.isEmpty)
     }
 }

@@ -55,8 +55,6 @@ spring.security.oauth2.client.provider:
   hmpps-auth:
     token-uri: http://localhost:${hoverfly.port}/auth/oauth/token
 
-delius.db.username: prison-case-notes-to-probation
-
 management.endpoints.web:
   base-path: /
   exposure.include: [ "hawtio", "health", "jolokia" ]
@@ -92,7 +90,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.Oracle12cDialect
-    ddl-auto: validate
+    hibernate:
+      ddl-auto: validate
 
 #azure:
 #  application-insights:
