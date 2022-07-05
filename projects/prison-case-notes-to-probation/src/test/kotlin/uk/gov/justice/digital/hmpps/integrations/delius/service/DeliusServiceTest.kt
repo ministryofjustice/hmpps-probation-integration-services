@@ -4,6 +4,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.startsWith
 import org.hamcrest.Matchers.stringContainsInOrder
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -17,6 +18,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
@@ -29,6 +31,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteBody
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
+import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteRelatedIds
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomisTypeRepository
@@ -36,6 +39,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepos
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
 import java.util.Optional
+import java.util.Random
 
 @ExtendWith(MockitoExtension::class)
 class DeliusServiceTest {
@@ -57,6 +61,9 @@ class DeliusServiceTest {
 
     @Mock
     lateinit var auditedInteractionService: AuditedInteractionService
+
+    @Mock
+    lateinit var caseNoteRelatedService: CaseNoteRelatedService
 
     @InjectMocks
     lateinit var deliusService: DeliusService
@@ -98,7 +105,7 @@ class DeliusServiceTest {
     }
 
     @Test
-    fun `successfully add new case note`() {
+    fun `successfully add new case note with link to event`() {
         val offender = OffenderGenerator.DEFAULT
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(
@@ -109,6 +116,8 @@ class DeliusServiceTest {
         whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(offender)
         whenever(assignmentService.findAssignment(deliusCaseNote.body.establishmentCode, deliusCaseNote.body.staffName))
             .thenReturn(Triple(probationArea.id, team.id, staff.id))
+        whenever(caseNoteRelatedService.findRelatedCaseNoteIds(offender.id, deliusCaseNote.body.typeLookup()))
+            .thenReturn(CaseNoteRelatedIds(EventGenerator.CUSTODIAL_EVENT.id))
 
         deliusService.mergeCaseNote(deliusCaseNote)
 
@@ -122,6 +131,42 @@ class DeliusServiceTest {
             saved.notes,
             stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content)
         )
+
+        assertThat(saved.eventId, equalTo(EventGenerator.CUSTODIAL_EVENT.id))
+        assertNull(saved.nsiId)
+    }
+
+    @Test
+    fun `successfully add new case note with link to nsi`() {
+        val offender = OffenderGenerator.DEFAULT
+        val nsiId = Random().nextLong()
+        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
+        whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(
+            Optional.of(
+                caseNoteNomisType
+            )
+        )
+        whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(offender)
+        whenever(assignmentService.findAssignment(deliusCaseNote.body.establishmentCode, deliusCaseNote.body.staffName))
+            .thenReturn(Triple(probationArea.id, team.id, staff.id))
+        whenever(caseNoteRelatedService.findRelatedCaseNoteIds(offender.id, deliusCaseNote.body.typeLookup()))
+            .thenReturn(CaseNoteRelatedIds(nsiId = nsiId))
+
+        deliusService.mergeCaseNote(deliusCaseNote)
+
+        val caseNoteCaptor = ArgumentCaptor.forClass(CaseNote::class.java)
+
+        verify(caseNoteRepository, Mockito.times(1)).save(caseNoteCaptor.capture())
+
+        val saved = caseNoteCaptor.value
+        assertThat(saved.notes, startsWith("${deliusCaseNote.body.type} ${deliusCaseNote.body.subType}"))
+        assertThat(
+            saved.notes,
+            stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content)
+        )
+
+        assertThat(saved.nsiId, equalTo(nsiId))
+        assertNull(saved.eventId)
     }
 
     @Test
@@ -159,6 +204,7 @@ class DeliusServiceTest {
         whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(offender)
         whenever(assignmentService.findAssignment(deliusCaseNote.body.establishmentCode, deliusCaseNote.body.staffName))
             .thenReturn(Triple(probationArea.id, team.id, staff.id))
+        whenever(caseNoteRelatedService.findRelatedCaseNoteIds(offender.id, deliusCaseNote.body.typeLookup())).thenReturn(CaseNoteRelatedIds())
 
         deliusService.mergeCaseNote(deliusCaseNote)
 
@@ -173,5 +219,6 @@ class DeliusServiceTest {
             stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content)
         )
         assertThat(saved.type.code, equalTo(CaseNoteTypeGenerator.DEFAULT.code))
+        assertNull(saved.eventId)
     }
 }

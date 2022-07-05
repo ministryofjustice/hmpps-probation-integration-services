@@ -21,6 +21,8 @@ import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.SimulationBuilder
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
@@ -105,6 +107,16 @@ class IntegrationTest {
         assertThat(
             saved.type.code,
             equalTo(CaseNoteNomisTypeGenerator.NEG.type.code)
+        )
+
+        assertThat(
+            saved.eventId,
+            equalTo(EventGenerator.CUSTODIAL_EVENT.id)
+        )
+
+        assertThat(
+            saved.nsiId,
+            equalTo(NsiGenerator.EVENT_CASE_NOTE_NSI.id)
         )
 
         val staff = staffRepository.findById(saved.staffId).orElseThrow()
