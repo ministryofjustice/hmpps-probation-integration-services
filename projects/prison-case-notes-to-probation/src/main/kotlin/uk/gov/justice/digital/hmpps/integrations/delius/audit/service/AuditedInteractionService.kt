@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.audit.service
 import org.springframework.scheduling.annotation.Async
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
 import uk.gov.justice.digital.hmpps.exceptions.BusinessInteractionNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
@@ -16,6 +17,7 @@ class AuditedInteractionService(
     private val auditedInteractionRepository: AuditedInteractionRepository,
 ) {
     @Async
+    @Transactional
     fun createAuditedInteraction(biCode: BusinessInteractionCode, params: AuditedInteraction.Parameters) {
         val principal = SecurityContextHolder.getContext().authentication?.principal
 

@@ -4,7 +4,6 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.config.ServiceContext
-import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
@@ -57,8 +56,7 @@ class DataLoader(
 ) : CommandLineRunner {
     override fun run(vararg args: String?) {
         userRepository.save(UserGenerator.APPLICATION_USER)
-        serviceContext.servicePrincipal =
-            ServicePrincipal(UserGenerator.APPLICATION_USER.username, UserGenerator.APPLICATION_USER.id)
+        serviceContext.setUp()
 
         businessInteractionRepository.save(BusinessInteractionGenerator.CASE_NOTES_MERGE)
 

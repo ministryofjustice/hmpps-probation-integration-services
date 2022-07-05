@@ -17,8 +17,7 @@ import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
 @Configuration
 @EnableFeignClients(clients = [PrisonCaseNotesClient::class])
 class FeignConfig(
-    private val authorizedClientManager: OAuth2AuthorizedClientManager,
-    private val serviceContext: ServiceContext
+    private val authorizedClientManager: OAuth2AuthorizedClientManager
 ) {
     companion object {
         const val REGISTRATION_ID = "prison-case-notes"
@@ -37,7 +36,7 @@ class FeignConfig(
             SecurityContextHolder.getContext().authentication =
                 AnonymousAuthenticationToken(
                     "hmpps-auth",
-                    serviceContext.servicePrincipal,
+                    ServiceContext.servicePrincipal(),
                     AuthorityUtils.createAuthorityList(ServicePrincipal.AUTHORITY)
                 )
         }

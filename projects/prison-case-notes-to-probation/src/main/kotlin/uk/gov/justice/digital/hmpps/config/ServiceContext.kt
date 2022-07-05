@@ -11,7 +11,15 @@ class ServiceContext(
     @Value("\${delius.db.username:prison-case-notes-to-probation}") private val deliusDbName: String,
     private val userService: UserService,
 ) {
-    lateinit var servicePrincipal: ServicePrincipal
+    companion object {
+        private var servicePrincipal: ServicePrincipal? = null
+
+        fun servicePrincipal() = servicePrincipal
+    }
+
+    init {
+        servicePrincipal = ServicePrincipal(deliusDbName, null)
+    }
 
     @PostConstruct
     fun setUp() {
