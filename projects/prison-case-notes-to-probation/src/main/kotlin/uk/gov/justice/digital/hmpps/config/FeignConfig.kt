@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.config
 
 import feign.RequestInterceptor
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -12,13 +13,15 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.core.OAuth2AccessToken
 import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.UserService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
 
 @Configuration
 @EnableFeignClients(clients = [PrisonCaseNotesClient::class])
 class FeignConfig(
     private val authorizedClientManager: OAuth2AuthorizedClientManager,
-    private val servicePrincipal: ServicePrincipal
+    @Value("\${delius.db.username:prison-case-notes-to-probation}") val deliusDbName: String,
+    private val userService: UserService
 ) {
     companion object {
         const val REGISTRATION_ID = "prison-case-notes"
@@ -32,11 +35,13 @@ class FeignConfig(
     }
 
     private fun getAccessToken(): OAuth2AccessToken? {
-        if (SecurityContextHolder.getContext().authentication == null) {
+        val auth = SecurityContextHolder.getContext().authentication
+        if (auth == null || auth.principal == null) {
+            val user = userService.findUser(deliusDbName)
             SecurityContextHolder.getContext().authentication =
                 AnonymousAuthenticationToken(
                     "hmpps-auth",
-                    servicePrincipal,
+                    ServicePrincipal(deliusDbName, user?.id),
                     AuthorityUtils.createAuthorityList(ServicePrincipal.AUTHORITY)
                 )
         }

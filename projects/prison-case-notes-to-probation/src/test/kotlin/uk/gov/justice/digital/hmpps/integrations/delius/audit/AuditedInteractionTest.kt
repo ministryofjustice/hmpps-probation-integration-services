@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.exceptions.BusinessInteractionNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.repository.BusinessInteractionRepository
@@ -34,8 +35,7 @@ class AuditedInteractionTest {
     @Mock
     lateinit var auditedInteractionRepository: AuditedInteractionRepository
 
-    @Mock
-    private lateinit var servicePrincipal: ServicePrincipal
+    private val principal = ServicePrincipal(UserGenerator.APPLICATION_USER.username, UserGenerator.APPLICATION_USER.id)
 
     @Mock
     private lateinit var authentication: Authentication
@@ -50,8 +50,7 @@ class AuditedInteractionTest {
     fun `create audited interaction`() {
         val userId = 123L
         whenever(securityContext.authentication).thenReturn(authentication)
-        whenever(authentication.principal).thenReturn(servicePrincipal)
-        whenever(servicePrincipal.userId).thenReturn(lazyOf(userId))
+        whenever(authentication.principal).thenReturn(ServicePrincipal("username", userId))
         SecurityContextHolder.setContext(securityContext)
 
         val bi = BusinessInteraction(1, BusinessInteractionCode.CASE_NOTES_MERGE.code, ZonedDateTime.now())
@@ -78,7 +77,7 @@ class AuditedInteractionTest {
     @Test
     fun `create audited interaction no bi code`() {
         whenever(securityContext.authentication).thenReturn(authentication)
-        whenever(authentication.principal).thenReturn(servicePrincipal)
+        whenever(authentication.principal).thenReturn(principal)
         SecurityContextHolder.setContext(securityContext)
         whenever(businessInteractionRepository.findByCode(any(), any())).thenReturn(null)
 

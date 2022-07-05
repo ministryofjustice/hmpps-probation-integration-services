@@ -24,7 +24,7 @@ class AuditedInteractionService(
             auditedInteractionRepository.save(
                 AuditedInteraction(
                     bi?.id ?: throw BusinessInteractionNotFoundException(biCode.code),
-                    principal.userId.value ?: throw IllegalArgumentException("No user id in security context"),
+                    principal.userId ?: throw IllegalArgumentException("No user id in security context"),
                     parameters = params
                 )
             )

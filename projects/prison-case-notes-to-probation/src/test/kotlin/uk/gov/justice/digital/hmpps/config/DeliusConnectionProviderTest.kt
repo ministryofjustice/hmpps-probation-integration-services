@@ -37,8 +37,7 @@ class DeliusConnectionProviderTest {
     @Mock
     private lateinit var dataSource: DataSource
 
-    @Mock
-    private lateinit var servicePrincipal: ServicePrincipal
+    private val principal = ServicePrincipal(UserGenerator.APPLICATION_USER.username, UserGenerator.APPLICATION_USER.id)
 
     private val deliusConnectionProvider = DeliusConnectionProvider()
 
@@ -46,8 +45,7 @@ class DeliusConnectionProviderTest {
     fun `retrieving a connection with oracle sets client identifier with security context`() {
         val username = UserGenerator.APPLICATION_USER.username
         whenever(securityContext.authentication).thenReturn(authentication)
-        whenever(authentication.principal).thenReturn(servicePrincipal)
-        whenever(servicePrincipal.clientId).thenReturn(username)
+        whenever(authentication.principal).thenReturn(principal)
         whenever(connection.prepareStatement(anyString())).thenReturn(preparedStatement)
         whenever(dataSource.connection).thenReturn(connection)
 

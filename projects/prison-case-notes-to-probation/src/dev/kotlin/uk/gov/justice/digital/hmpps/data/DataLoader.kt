@@ -30,7 +30,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.UserRepositor
 @Component
 @Profile("dev", "integration-test")
 class DataLoader(
-    private val servicePrincipal: ServicePrincipal,
     private val userRepository: UserRepository,
     private val businessInteractionRepository: BusinessInteractionRepository,
     private val caseNoteTypeRepository: CaseNoteTypeRepository,
@@ -47,7 +46,7 @@ class DataLoader(
         SecurityContextHolder.getContext().authentication =
             AnonymousAuthenticationToken(
                 "hmpps-auth",
-                servicePrincipal,
+                ServicePrincipal(UserGenerator.APPLICATION_USER.username, UserGenerator.APPLICATION_USER.id),
                 AuthorityUtils.createAuthorityList(ServicePrincipal.AUTHORITY)
             )
 
