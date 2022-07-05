@@ -90,7 +90,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.Oracle12cDialect
-    ddl-auto: validate
+    hibernate:
+      ddl-auto: validate
 
 #azure:
 #  application-insights:
