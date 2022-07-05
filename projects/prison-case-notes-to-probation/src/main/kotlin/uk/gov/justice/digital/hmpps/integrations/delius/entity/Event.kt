@@ -76,9 +76,6 @@ class DisposalType(
 
     @Column(name = "sentence_type")
     val sentenceType: String,
-
-    @Column(updatable = false, columnDefinition = "NUMBER")
-    var softDeleted: Boolean = false,
 ) {
     companion object {
         val CUSTODIAL_CODES = listOf("NC", "SC")
