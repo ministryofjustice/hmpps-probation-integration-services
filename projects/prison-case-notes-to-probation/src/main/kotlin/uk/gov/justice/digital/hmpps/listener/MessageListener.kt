@@ -4,6 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.jms.annotation.EnableJms
 import org.springframework.jms.annotation.JmsListener
+import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
@@ -11,6 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonOffenderEvent
 import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import javax.jms.TextMessage
 
 @Component
 @EnableJms
@@ -24,7 +26,21 @@ class MessageListener(
         val log: Logger = LoggerFactory.getLogger(this::class.java)
     }
 
-    @JmsListener(destination = "\${spring.jms.template.default-destination}")
+    @JmsListener(destination = "\${integrations.prison-offender-events.dlq}")
+    @SendTo("\${integrations.prison-offender-events.queue}")
+    fun retry(message: TextMessage): String {
+        telemetryService.trackEvent(
+            "RetryDLQMessage",
+            mapOf(
+                "messageID" to message.jmsMessageID,
+                "correlationID" to message.jmsCorrelationID,
+                "text" to message.text
+            )
+        )
+        return message.text
+    }
+
+    @JmsListener(destination = "\${integrations.prison-offender-events.queue}")
     fun receive(prisonOffenderEvent: PrisonOffenderEvent) {
         if (prisonOffenderEvent.caseNoteId == null) {
             log.info("Received ${prisonOffenderEvent.eventType} for ${prisonOffenderEvent.offenderId} without a case note id")

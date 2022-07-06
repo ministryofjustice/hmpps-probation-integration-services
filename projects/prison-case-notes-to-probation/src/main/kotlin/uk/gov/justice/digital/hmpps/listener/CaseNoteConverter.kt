@@ -13,7 +13,15 @@ import javax.jms.TextMessage
 class CaseNoteConverter(private val om: ObjectMapper) : MessageConverter {
     override fun toMessage(caseNoteMessage: Any, session: Session): Message {
         val message = session.createTextMessage()
-        message.text = om.writeValueAsString(PrisonOffenderEventMessage(om.writeValueAsString(caseNoteMessage)))
+        message.text = when (caseNoteMessage) {
+            is String -> caseNoteMessage
+            is PrisonOffenderEvent -> om.writeValueAsString(PrisonOffenderEventMessage(om.writeValueAsString(caseNoteMessage)))
+            is PrisonOffenderEventMessage -> om.writeValueAsString(caseNoteMessage)
+            else -> throw IllegalArgumentException("Unexpected message type")
+        }
+        // We could move this somewhere and make it conditional, as it's only required when using ActiveMQ.
+        // SQS has the "Delay Seconds" property to achieve the same thing - see https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-delay-queues.html
+        message.setLongProperty("AMQ_SCHEDULED_DELAY", 60 * 1000)
         return message
     }
 

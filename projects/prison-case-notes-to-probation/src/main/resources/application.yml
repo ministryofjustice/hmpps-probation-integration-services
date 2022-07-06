@@ -3,12 +3,10 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
-  jms:
-    template.default-destination: events
-    listener:
-      concurrency: 1
-      max-concurrency: 10
-      acknowledge-mode: client
+  jms.listener:
+    concurrency: 1
+    max-concurrency: 10
+    acknowledge-mode: client
 
 management.endpoints.web:
   base-path: /
@@ -46,6 +44,9 @@ hoverfly:
   port: 8500
 
 integrations:
+  prison-offender-events:
+    queue: prison-offender-events-queue
+    dlq: ActiveMQ.DLQ
   prison-case-notes:
     url: http://localhost:${hoverfly.port}
     client-id: prison-case-notes-to-probation
@@ -61,7 +62,7 @@ management.endpoints.web:
 hawtio.authenticationEnabled: false
 
 logging.level:
-  uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient: DEBUG
+  uk.gov.justice.digital.hmpps: DEBUG
   org.hibernate.tool.schema: ERROR
 
 
@@ -87,12 +88,6 @@ spring:
     username: delius_pool
     password: NDelius1
   jpa:
+    hibernate.ddl-auto: validate
     properties:
-      hibernate:
-        dialect: org.hibernate.dialect.Oracle12cDialect
-    hibernate:
-      ddl-auto: validate
-
-#azure:
-#  application-insights:
-#    connection-string: "InstrumentationKey=INSTRUMENTATION_KEY"
+      hibernate.dialect: org.hibernate.dialect.Oracle12cDialect
