@@ -3,10 +3,12 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
-  jms.listener:
-    concurrency: 1
-    max-concurrency: 10
-    acknowledge-mode: client
+  jms:
+    template.delivery-delay: 10m # DLQ retry interval
+    listener:
+      concurrency: 1
+      max-concurrency: 10
+      acknowledge-mode: client
 
 management.endpoints.web:
   base-path: /
