@@ -63,6 +63,14 @@ jobs:
           done
         working-directory: projects/${{ matrix.project }}/deploy
 
+      - name: Configure database access
+        shell: bash
+        run: |
+          aws ssm start-automation-execution --document-name oracle-{{ steps.env.outputs.short_name }}-probation-integration-access \
+                                             --parameters "Configuration='$(yq access.yml -o json)'" \
+                                             --region eu-west-2
+        working-directory: projects/${{ matrix.project }}/deploy/database
+
       - name: Render values
         shell: bash
         run: yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' --inplace values.yml ${{ inputs.values-file }}
