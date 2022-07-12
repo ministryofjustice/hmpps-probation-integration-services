@@ -39,7 +39,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffReposito
 @ExtendWith(HoverflyExtension::class)
 class IntegrationTest {
 
-    @Value("\${spring.jms.template.default-destination}")
+    @Value("\${integrations.prison-offender-events.queue}")
     private lateinit var queueName: String
 
     @Autowired

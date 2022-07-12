@@ -37,7 +37,7 @@ spring.config.activate.on-profile: ["dev", "integration-test", "oracle"]
 
 spring:
   artemis.mode: embedded
-  web.resources.static-locations: classpath:/plugin/ # To expose js and html files for artemis hawtio plugin
+  web.resources.static-locations: classpath:/plugin/ # This enables the artemis hawtio plugin by exposing its js files
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
 

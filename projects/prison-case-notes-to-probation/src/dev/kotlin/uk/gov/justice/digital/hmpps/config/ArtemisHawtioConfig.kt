@@ -3,16 +3,19 @@ package uk.gov.justice.digital.hmpps.config
 import io.hawt.jmx.JMXSecurity
 import io.hawt.jmx.JMXSecurityMBean
 import io.hawt.springboot.HawtioPlugin
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jmx.export.annotation.ManagedResource
 
 @Configuration
-class Config {
-    @Bean
-    fun HawtioPlugin() = HawtioPlugin(
+class ArtemisHawtioConfig {
+    @Bean /* This bean replicates the plugin setup in the artemis-plugin:war dependency.
+             See the org.apache.activemq.hawtio.plugin.PluginContextListener#contextInitialized method */
+    fun hawtioPlugin() = HawtioPlugin(
         "artemis-plugin", "", "",
         arrayOf(
+            // This list comes from the web.xml file in the artemis-plugin war
             "js/artemisHelpers.js",
             "js/artemisPlugin.js",
             "js/components/addressSendMessage.js",
@@ -41,9 +44,9 @@ class Config {
         )
     )
 
-    @Bean
-    fun dummyArtemisJMXSecurity(): JMXSecurityMBean = DummyArtemisJMXSecurity()
+    @Bean /* This bean bypasses the artemis-plugin authorization when rendering the "Send Message" and "Browse Messages"
+             pages, if hawtio authentication is disabled. */
+    @ConditionalOnProperty("hawtio.authenticationEnabled", havingValue = "false")
+    fun dummyArtemisJMXSecurity(): JMXSecurityMBean =
+        @ManagedResource("hawtio:type=security,area=jmx,name=ArtemisJMXSecurity") object : JMXSecurity() {}
 }
-
-@ManagedResource("hawtio:type=security,area=jmx,name=ArtemisJMXSecurity")
-class DummyArtemisJMXSecurity : JMXSecurity()
