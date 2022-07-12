@@ -36,8 +36,8 @@ spring.security.oauth2.client:
 spring.config.activate.on-profile: ["dev", "integration-test", "oracle"]
 
 spring:
-  activemq.broker-url: vm://localhost?broker.persistent=false&broker.useShutdownHook=false
-
+  artemis.mode: embedded
+  web.resources.static-locations: classpath:/plugin/ # To expose js and html files for artemis hawtio plugin
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
 
@@ -48,7 +48,8 @@ hoverfly:
 integrations:
   prison-offender-events:
     queue: prison-offender-events-queue
-    dlq: ActiveMQ.DLQ
+    dlq: DLQ
+    retry-dlq-messages: true
   prison-case-notes:
     url: http://localhost:${hoverfly.port}
     client-id: prison-case-notes-to-probation
@@ -66,6 +67,7 @@ hawtio.authenticationEnabled: false
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
   org.hibernate.tool.schema: ERROR
+  org.apache.activemq: WARN
 
 
 
