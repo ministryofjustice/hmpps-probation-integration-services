@@ -3,16 +3,17 @@ package uk.gov.justice.digital.hmpps.listener
 import feign.FeignException
 import feign.Request
 import feign.Request.Body
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.springframework.jms.core.JmsTemplate
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
@@ -23,18 +24,18 @@ import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class MessageListenerTest {
+    @Mock private lateinit var prisonCaseNotesClient: PrisonCaseNotesClient
+    @Mock private lateinit var deliusService: DeliusService
+    @Mock private lateinit var telemetryService: TelemetryService
+    @Mock private lateinit var jmsTemplate: JmsTemplate
 
-    @Mock
-    private lateinit var prisonCaseNotesClient: PrisonCaseNotesClient
-
-    @Mock
-    private lateinit var deliusService: DeliusService
-
-    @Mock
-    private lateinit var telemetryService: TelemetryService
-
-    @InjectMocks
     private lateinit var messageListener: MessageListener
+
+    @BeforeEach
+    fun beforeEach() {
+        messageListener =
+            MessageListener(prisonCaseNotesClient, deliusService, telemetryService, jmsTemplate, "queue-name")
+    }
 
     @Test
     fun `feign exceptions are propogated`() {
