@@ -200,6 +200,33 @@ which is how they should be referenced in the `values*.yml` files.
 
 For more details, see the "Add secrets to parameter store" step in [deploy.yml](.github/workflows/deploy.yml).
 
+## Accessing the Delius Database
+To configure access to the Delius probation database, add an `access.yml` file to the project's `deploy/database` 
+folder.
+
+The `access.yml` file defines the account used for accessing the database, as well as an optional user for auditing
+interactions.  Example (see [access.yml](projects/prison-case-notes-to-probation/deploy/database/access.yml):
+```yaml
+database:
+  access:
+    username_key: /prison-case-notes-to-probation/db-username    # references AWS Parameter Store 
+    password_key: /prison-case-notes-to-probation/db-password    # (see Secrets section above)
+    tables:
+      # A list of tables that the service can write to. Read access is granted on all tables.
+      - audited_interaction
+      - contact
+
+  audit:
+    username: PrisonCaseNotesToProbation
+    forename: Prison Case Notes
+    surname: Service
+```
+
+Before each deployment, GitHub Actions will invoke a pre-defined [Systems Manager Automation Runbook](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation.html)
+in AWS to create/update the access account and the audit user in the Delius database.  The runbook is in the 
+[hmpps-delius-pipelines](https://github.com/ministryofjustice/hmpps-delius-pipelines/tree/master/components/oracle/playbooks/probation_integration_access) 
+repository.
+
 ## Accessing MOJ Cloud Platform
 To access SQS queues or other resources in MOJ Cloud Platform, add an IAM policy to [cloud-platform-environments](https://github.com/ministryofjustice/cloud-platform-environments)
 that grants access to one of the following roles:

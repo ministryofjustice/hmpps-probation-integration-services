@@ -9,14 +9,14 @@ rootProject.children
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("amazon-sqs", "com.amazonaws:amazon-sqs-java-messaging-lib:1.1.0")
+            library("amazon-sqs", "com.amazonaws:amazon-sqs-java-messaging-lib:2.0.0")
             library("hawtio", "io.hawt:hawtio-springboot:2.15.0")
             library("hawtio-artemis", "org.apache.activemq:artemis-plugin:2.19.1")
             library("hoverfly", "io.specto:hoverfly-java:0.14.2")
             library("hoverfly-junit", "io.specto:hoverfly-java-junit5:0.14.2")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:4.0.0")
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:3.1.3")
-            library("sentry", "io.sentry:sentry-spring-boot-starter:6.1.4")
+            library("sentry", "io.sentry:sentry-spring-boot-starter:6.2.0")
             library("insights", "com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
         }
     }
