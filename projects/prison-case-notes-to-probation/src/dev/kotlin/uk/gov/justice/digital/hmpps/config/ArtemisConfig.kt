@@ -12,7 +12,7 @@ import org.springframework.jmx.export.annotation.ManagedResource
 
 @Configuration
 class ArtemisConfig {
-    @Bean /* This bean replicates the plugin setup in the artemis-plugin:war dependency. The references scripts are
+    @Bean /* This bean replicates the plugin setup in the artemis-plugin:war dependency. The referenced scripts are
              exposed to the Hawtio UI using the `spring.web.resources.static-locations` property in application.yml.
              See the org.apache.activemq.hawtio.plugin.PluginContextListener#contextInitialized method */
     fun hawtioPlugin() = HawtioPlugin(
