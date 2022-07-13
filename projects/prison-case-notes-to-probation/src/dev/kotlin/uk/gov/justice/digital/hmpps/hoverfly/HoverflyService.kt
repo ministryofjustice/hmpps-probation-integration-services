@@ -7,13 +7,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.data.SimulationBuilder
 import javax.annotation.PostConstruct
 
 @Service
-@Order(Int.MIN_VALUE)
 @ConditionalOnProperty("hoverfly.enabled", havingValue = "true", matchIfMissing = false)
 class HoverflyService(
     private val simulationBuilder: SimulationBuilder,
