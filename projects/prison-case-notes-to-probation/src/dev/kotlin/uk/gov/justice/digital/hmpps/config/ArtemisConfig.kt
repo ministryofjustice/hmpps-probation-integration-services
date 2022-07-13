@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.jmx.export.annotation.ManagedResource
 
 @Configuration
-class ArtemisHawtioConfig {
+class ArtemisConfig {
     @Bean /* This bean replicates the plugin setup in the artemis-plugin:war dependency.
              See the org.apache.activemq.hawtio.plugin.PluginContextListener#contextInitialized method */
     fun hawtioPlugin() = HawtioPlugin(

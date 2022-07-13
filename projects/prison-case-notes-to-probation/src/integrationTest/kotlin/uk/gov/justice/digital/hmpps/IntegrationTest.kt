@@ -5,6 +5,7 @@ import io.specto.hoverfly.junit.core.HoverflyMode
 import io.specto.hoverfly.junit5.HoverflyExtension
 import io.specto.hoverfly.junit5.api.HoverflyConfig
 import io.specto.hoverfly.junit5.api.HoverflyCore
+import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.stringContainsInOrder
@@ -54,6 +55,9 @@ class IntegrationTest {
     @Autowired
     private lateinit var staffRepository: StaffRepository
 
+    @Autowired
+    private lateinit var embeddedActiveMQ: EmbeddedActiveMQ
+
     @BeforeEach
     fun setUp(hoverfly: Hoverfly) {
         val sources = simBuilder.simulationsFromFile()
@@ -70,7 +74,8 @@ class IntegrationTest {
         val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
         val original = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
 
-        jmsTemplate.convertSendAndWait(queueName, CaseNoteMessageGenerator.EXISTS_IN_DELIUS)
+        val queue = embeddedActiveMQ.activeMQServer.locateQueue(queueName)
+        jmsTemplate.convertSendAndWait(queue, CaseNoteMessageGenerator.EXISTS_IN_DELIUS)
 
         val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
 
@@ -94,30 +99,16 @@ class IntegrationTest {
         val original = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
         assertNull(original)
 
-        jmsTemplate.convertSendAndWait(queueName, CaseNoteMessageGenerator.NEW_TO_DELIUS)
+        val queue = embeddedActiveMQ.activeMQServer.locateQueue(queueName)
+        jmsTemplate.convertSendAndWait(queue, CaseNoteMessageGenerator.NEW_TO_DELIUS)
 
         val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
         assertNotNull(saved)
 
-        assertThat(
-            saved!!.notes,
-            stringContainsInOrder(nomisCaseNote.type, nomisCaseNote.subType, nomisCaseNote.text)
-        )
-
-        assertThat(
-            saved.type.code,
-            equalTo(CaseNoteNomisTypeGenerator.NEG.type.code)
-        )
-
-        assertThat(
-            saved.eventId,
-            equalTo(EventGenerator.CUSTODIAL_EVENT.id)
-        )
-
-        assertThat(
-            saved.nsiId,
-            equalTo(NsiGenerator.EVENT_CASE_NOTE_NSI.id)
-        )
+        assertThat(saved!!.notes, stringContainsInOrder(nomisCaseNote.type, nomisCaseNote.subType, nomisCaseNote.text))
+        assertThat(saved.type.code, equalTo(CaseNoteNomisTypeGenerator.NEG.type.code))
+        assertThat(saved.eventId, equalTo(EventGenerator.CUSTODIAL_EVENT.id))
+        assertThat(saved.nsiId, equalTo(NsiGenerator.EVENT_CASE_NOTE_NSI.id))
 
         val staff = staffRepository.findById(saved.staffId).orElseThrow()
         assertThat(staff.code, equalTo("${ProbationAreaGenerator.DEFAULT.code}B001"))

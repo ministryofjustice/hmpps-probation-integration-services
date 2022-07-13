@@ -18,7 +18,6 @@ class CaseNoteConverter(
         message.text = when (caseNoteMessage) {
             is String -> caseNoteMessage
             is PrisonOffenderEvent -> objectMapper.writeValueAsString(PrisonOffenderEventMessage(objectMapper.writeValueAsString(caseNoteMessage)))
-            is PrisonOffenderEventMessage -> objectMapper.writeValueAsString(caseNoteMessage)
             else -> throw IllegalArgumentException("Unexpected message type")
         }
         return message

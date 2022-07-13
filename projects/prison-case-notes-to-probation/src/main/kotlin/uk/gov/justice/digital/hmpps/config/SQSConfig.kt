@@ -16,8 +16,7 @@ import javax.jms.Queue
 import javax.jms.Session
 
 @Configuration
-@ConditionalOnMissingClass("org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory")
-// @ConditionalOnMissingClass("org.apache.activemq.ActiveMQConnectionFactory")
+@ConditionalOnMissingClass("uk.gov.justice.digital.hmpps.config.ArtemisConfig")
 class SQSConfig {
     @Bean
     fun connectionFactory(): ConnectionFactory = SQSConnectionFactory(ProviderConfiguration())
