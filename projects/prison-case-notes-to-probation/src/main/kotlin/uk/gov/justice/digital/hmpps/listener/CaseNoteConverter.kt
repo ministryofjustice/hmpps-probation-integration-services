@@ -20,13 +20,13 @@ class CaseNoteConverter(
         message.text = when (caseNoteMessage) {
             is String -> caseNoteMessage
             is PrisonOffenderEvent -> objectMapper.writeValueAsString(PrisonOffenderEventMessage(objectMapper.writeValueAsString(caseNoteMessage)))
-            is PrisonOffenderEventMessage -> objectMapper.writeValueAsString(caseNoteMessage)
             else -> throw IllegalArgumentException("Unexpected message type")
         }
 
         // We should move this somewhere and make it conditional, as it's only required when using ActiveMQ.
         // Amazon SQS supports the JMS 2.0 deliveryDelay property, whereas ActiveMQ does not. See https://github.com/apache/activemq/pull/729.
         // (note: schedulerSupport must be enabled on the ActiveMQ broker)
+        // TODO move this somewhere else
         message.setLongProperty("AMQ_SCHEDULED_DELAY", jmsProperties.template.deliveryDelay.toMillis())
 
         return message

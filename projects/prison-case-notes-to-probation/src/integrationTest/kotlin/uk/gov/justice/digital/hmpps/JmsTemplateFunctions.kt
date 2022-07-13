@@ -7,16 +7,15 @@ import java.util.concurrent.TimeoutException
 
 fun JmsTemplate.convertSendAndWait(queueName: String, message: Any, timeout: Duration = Duration.ofSeconds(5)) {
     convertAndSend(queueName, message)
-    val startTime = now()
-    val endTime = startTime.plus(timeout)
-    var messages: Int
-    do {
-        messages = browse(queueName) { _, browser ->
-            browser.enumeration.toList().size
-        } ?: 0
-    } while (messages > 0 && now().isBefore(endTime))
+    waitForQueueToBeEmpty(queueName, timeout)
+}
 
-    if (now().isAfter(endTime) && messages > 0) {
-        throw TimeoutException("Message not processed before timeout of $timeout")
+fun JmsTemplate.waitForQueueToBeEmpty(queueName: String, timeout: Duration = Duration.ofSeconds(5)) {
+    val endTime = now().plus(timeout)
+    while (getMessageCount(queueName) > 0) {
+        if (now().isAfter(endTime)) throw TimeoutException("Message not read before timeout of $timeout")
     }
 }
+
+fun JmsTemplate.getMessageCount(queueName: String) =
+    browse(queueName) { _, browser -> browser.enumeration.toList().size } ?: 0

@@ -36,7 +36,7 @@ spring.security.oauth2.client:
 spring.config.activate.on-profile: ["dev", "integration-test", "oracle"]
 
 spring:
-  activemq.broker-url: vm://localhost?broker.persistent=false&broker.useShutdownHook=false
+  activemq.broker-url: vm://localhost?broker.persistent=true&broker.schedulerSupport=true&broker.useShutdownHook=false
 
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
@@ -49,6 +49,7 @@ integrations:
   prison-offender-events:
     queue: prison-offender-events-queue
     dlq: ActiveMQ.DLQ
+    retry-dlq-messages: true
   prison-case-notes:
     url: http://localhost:${hoverfly.port}
     client-id: prison-case-notes-to-probation

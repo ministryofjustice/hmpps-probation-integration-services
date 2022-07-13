@@ -2,9 +2,11 @@ package uk.gov.justice.digital.hmpps.listener
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.jms.annotation.EnableJms
 import org.springframework.jms.annotation.JmsListener
-import org.springframework.messaging.handler.annotation.SendTo
+import org.springframework.jms.core.JmsTemplate
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
@@ -19,7 +21,9 @@ import javax.jms.TextMessage
 class MessageListener(
     val prisonCaseNotesClient: PrisonCaseNotesClient,
     val deliusService: DeliusService,
-    val telemetryService: TelemetryService
+    val telemetryService: TelemetryService,
+    val jmsTemplate: JmsTemplate,
+    @Value("\${integrations.prison-offender-events.queue}") val queueName: String
 ) {
 
     companion object {
@@ -27,8 +31,8 @@ class MessageListener(
     }
 
     @JmsListener(destination = "\${integrations.prison-offender-events.dlq}")
-    @SendTo("\${integrations.prison-offender-events.queue}")
-    fun retry(message: TextMessage): String {
+    @ConditionalOnProperty("integrations.prison-offender-events.retry-dlq-messages", havingValue = "true", matchIfMissing = true)
+    fun retry(message: TextMessage) {
         telemetryService.trackEvent(
             "RetryDLQMessage",
             mapOf(
@@ -37,7 +41,7 @@ class MessageListener(
                 "text" to message.text
             )
         )
-        return message.text
+        jmsTemplate.convertAndSend(queueName, message.text)
     }
 
     @JmsListener(destination = "\${integrations.prison-offender-events.queue}")

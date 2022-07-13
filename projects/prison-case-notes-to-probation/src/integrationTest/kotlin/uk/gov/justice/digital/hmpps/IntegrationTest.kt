@@ -39,7 +39,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffReposito
 @ExtendWith(HoverflyExtension::class)
 class IntegrationTest {
 
-    @Value("\${spring.jms.template.default-destination}")
+    @Value("\${integrations.prison-offender-events.queue}")
     private lateinit var queueName: String
 
     @Autowired
@@ -99,25 +99,10 @@ class IntegrationTest {
         val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
         assertNotNull(saved)
 
-        assertThat(
-            saved!!.notes,
-            stringContainsInOrder(nomisCaseNote.type, nomisCaseNote.subType, nomisCaseNote.text)
-        )
-
-        assertThat(
-            saved.type.code,
-            equalTo(CaseNoteNomisTypeGenerator.NEG.type.code)
-        )
-
-        assertThat(
-            saved.eventId,
-            equalTo(EventGenerator.CUSTODIAL_EVENT.id)
-        )
-
-        assertThat(
-            saved.nsiId,
-            equalTo(NsiGenerator.EVENT_CASE_NOTE_NSI.id)
-        )
+        assertThat(saved!!.notes, stringContainsInOrder(nomisCaseNote.type, nomisCaseNote.subType, nomisCaseNote.text))
+        assertThat(saved.type.code, equalTo(CaseNoteNomisTypeGenerator.NEG.type.code))
+        assertThat(saved.eventId, equalTo(EventGenerator.CUSTODIAL_EVENT.id))
+        assertThat(saved.nsiId, equalTo(NsiGenerator.EVENT_CASE_NOTE_NSI.id))
 
         val staff = staffRepository.findById(saved.staffId).orElseThrow()
         assertThat(staff.code, equalTo("${ProbationAreaGenerator.DEFAULT.code}B001"))

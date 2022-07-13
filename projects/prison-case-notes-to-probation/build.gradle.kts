@@ -20,6 +20,7 @@ dependencies {
     implementation(libs.sentry)
 
     dev("org.springframework.boot:spring-boot-starter-activemq")
+    dev("org.apache.activemq:activemq-kahadb-store")
     dev("com.h2database:h2")
     dev(libs.hawtio)
     dev(libs.hoverfly)
