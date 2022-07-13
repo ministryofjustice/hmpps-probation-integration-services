@@ -15,7 +15,7 @@ dependencyResolutionManagement {
             library("hoverfly-junit", "io.specto:hoverfly-java-junit5:0.14.2")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:4.0.0")
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:3.1.3")
-            library("sentry", "io.sentry:sentry-spring-boot-starter:6.1.4")
+            library("sentry", "io.sentry:sentry-spring-boot-starter:6.2.0")
             library("insights", "com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
         }
     }
