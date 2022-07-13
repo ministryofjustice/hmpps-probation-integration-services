@@ -3,7 +3,7 @@ environment_name: delius-test
 env:
   SENTRY_ENVIRONMENT: dev
   INTEGRATIONS_PRISON-OFFENDER-EVENTS_QUEUE: Digital-Prison-Services-dev-case_note_poll_pusher_queue
-  INTEGRATIONS_PRISON-OFFENDER-EVENTS_DLQ: Digital-Prison-Services-dev-case_note_poll_pusher_dl_queue
+  INTEGRATIONS_PRISON-OFFENDER-EVENTS_DLQ: Digital-Prison-Services-dev-case_note_poll_pusher_queue_dl
   INTEGRATIONS_PRISON-CASE-NOTES_URL: https://dev.offender-case-notes.service.justice.gov.uk
   SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/oauth/token
 
