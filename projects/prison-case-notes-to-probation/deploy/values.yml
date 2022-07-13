@@ -8,6 +8,7 @@ memory: 1024 # = 1 GB
 env:
   AWS_REGION: eu-west-2
   JDK_JAVA_OPTIONS: -javaagent:/agent/agent.jar
+  DELIUS_DB_USERNAME: PrisonCaseNotesToProbation # Defined in database/access.yml
 
 secrets:
   APPLICATIONINSIGHTS_CONNECTION_STRING:        /application-insights/connection-string

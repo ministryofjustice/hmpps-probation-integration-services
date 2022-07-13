@@ -38,20 +38,10 @@ jobs:
       projects: ${{ needs.build.outputs.changed-projects }}
     secrets: inherit
 
-  end-to-end-tests:
-    name: End-to-end tests
-    runs-on: ubuntu-latest
-    needs: deploy-to-test
-    steps:
-      - run: echo 'Hello, world!'
-
   deploy-to-preprod:
     name: Deploy to preprod
     uses: ./.github/workflows/deploy.yml
-    if: github.ref == 'refs/heads/main'
-    needs:
-      - build
-      - end-to-end-tests
+    needs: build
     with:
       environment: preprod
       values-file: values-preprod.yml
@@ -59,13 +49,24 @@ jobs:
       projects: ${{ needs.build.outputs.changed-projects }}
     secrets: inherit
 
+  end-to-end-tests:
+    name: End-to-end tests
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-to-test
+      - deploy-to-preprod
+    steps:
+      - run: |
+          echo 'Not yet implemented!'
+          exit 1
+
   deploy-to-prod:
     name: Deploy to production
     uses: ./.github/workflows/deploy.yml
     if: github.ref == 'refs/heads/main'
     needs:
       - build
-      - deploy-to-preprod
+      - end-to-end-tests
     with:
       environment: prod
       values-file: values-prod.yml
