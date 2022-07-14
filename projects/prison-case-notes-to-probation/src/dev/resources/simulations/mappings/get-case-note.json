@@ -1,0 +1,40 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/case-notes/GA52214/1111"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-case-note-body-exists-in-delius.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/case-notes/GA52214/2222"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-case-note-body-new-to-delius.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/case-notes/GA52214/4444"
+      },
+      "response": {
+        "status": 404,
+        "body": null
+      }
+    }
+  ]
+}

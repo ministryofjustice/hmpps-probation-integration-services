@@ -33,7 +33,7 @@ object ResourceLoader {
 
     fun prisonCaseNote(filename: String): PrisonCaseNote =
         MAPPER.readValue(
-            ResourceUtils.getFile("classpath:responses/$filename.json"),
+            ResourceUtils.getFile("classpath:simulations/__files/$filename.json"),
             PrisonCaseNote::class.java
         )
 }
