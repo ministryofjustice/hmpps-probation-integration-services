@@ -22,13 +22,12 @@ dependencies {
     dev("org.springframework.boot:spring-boot-starter-activemq")
     dev("com.h2database:h2")
     dev(libs.hawtio)
-    dev(libs.hoverfly)
+    dev(libs.wiremock)
 
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.mockito.kotlin)
-    integrationTestImplementation(libs.hoverfly.junit)
 }
 
 configure<ClassPathExtension> {

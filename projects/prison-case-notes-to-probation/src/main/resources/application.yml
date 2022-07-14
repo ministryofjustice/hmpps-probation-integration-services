@@ -41,19 +41,19 @@ spring:
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
 
-hoverfly:
+wiremock:
   enabled: true
-  port: 8500
+  port: 7979
 
 integrations:
   prison-case-notes:
-    url: http://localhost:${hoverfly.port}
+    url: http://localhost:${wiremock.port}
     client-id: prison-case-notes-to-probation
     client-secret: prison-case-notes-to-probation
 
 spring.security.oauth2.client.provider:
   hmpps-auth:
-    token-uri: http://localhost:${hoverfly.port}/auth/oauth/token
+    token-uri: http://localhost:${wiremock.port}/auth/oauth/token
 
 management.endpoints.web:
   base-path: /
@@ -68,13 +68,10 @@ logging.level:
 
 ---
 spring.config.activate.on-profile: dev
-hoverfly.enabled: true # Start the Hoverfly mock web server when using the dev profile
-
 
 
 ---
 spring.config.activate.on-profile: integration-test
-hoverfly.enabled: false # Hoverfly is already embedded in the integration tests by using the JUnit extension
 spring.datasource.url: jdbc:h2:file:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
 
 
