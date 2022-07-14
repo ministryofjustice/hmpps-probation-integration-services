@@ -28,6 +28,7 @@ With this in mind, we aim to:
 * Each service serves one, and only one, client
 * Services have a single well-defined purpose
 * Entities/projections are defined using domain-specific language (e.g. CaseNote, not Contact)
+* Embedded services are preferred to containerized dependencies for dev/testing (e.g. ActiveMQ over LocalStack)
 
 A full list of decision records can be found in [decisions](decisions). (**TODO**)
 
@@ -35,7 +36,7 @@ A full list of decision records can be found in [decisions](decisions). (**TODO*
 * Code is written in [Kotlin](https://kotlinlang.org/), using [Spring Boot](https://spring.io/projects/spring-boot)
 * Built and tested as a multi-project [Gradle](https://gradle.org/) build
 * Unit tests with [JUnit](https://junit.org/) and [Mockito](https://mockito.org/)
-* Integration tests with [Wiremock](https://wiremock.org/), [H2](https://www.h2database.com/), and [embedded ActiveMQ](https://activemq.apache.org/)
+* Integration tests with [WireMock](https://wiremock.org/), [H2](https://www.h2database.com/), and [embedded ActiveMQ Artemis](https://activemq.apache.org/components/artemis/)
 * End-to-end testing with [Playwright](https://playwright.dev/) - see [End to end tests](https://github.com/ministryofjustice/hmpps-end-to-end-tests)
 * Docker images are built with [Jib](https://github.com/GoogleContainerTools/jib#readme)
 * Code formatting by [ktlint](https://ktlint.github.io/)
@@ -49,6 +50,11 @@ To set up your development environment,
 1. Open the project in [IntelliJ IDEA](https://www.jetbrains.com/idea/)
 2. To run tests for a service, right-click the `src/test` folder in the project view and select "Run tests".  See [Test](#test).
 3. To start the service, use the pre-defined run configuration in `.idea/runConfigurations` (See [Run](#run)).
+
+Before pushing any changes, you can run the tests and format your code using Gradle: 
+```shell
+./gradlew check
+```
 
 ## Code formatting
 Kotlin code is formatted using [ktlint](https://ktlint.github.io/). IntelliJ will detect the ktlint configuration in 
@@ -66,11 +72,12 @@ Or, to add a pre-commit hook to automatically fix any formatting issues, run:
 ```
 
 # Build
-IntelliJ will automatically build your code as needed. Any tasks you run from the root project, without specifying a 
-project name will be run on all the children. To build the entire repository using Gradle, run:
+IntelliJ will automatically build your code as needed. To build the entire repository using Gradle, run:
 ```shell
 ./gradlew build
 ```
+
+Any tasks you run from the root project, without specifying a project name will be run on all the children.
 
 To build just a specific project.
 ```shell
