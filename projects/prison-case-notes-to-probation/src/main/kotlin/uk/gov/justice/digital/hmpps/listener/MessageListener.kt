@@ -32,17 +32,7 @@ class MessageListener(
 
     @JmsListener(destination = "\${integrations.prison-offender-events.dlq}")
     @ConditionalOnProperty("integrations.prison-offender-events.retry-dlq-messages", havingValue = "true", matchIfMissing = true)
-    fun retry(message: TextMessage) {
-        telemetryService.trackEvent(
-            "RetryDLQMessage",
-            mapOf(
-                "messageID" to message.jmsMessageID,
-                "correlationID" to message.jmsCorrelationID,
-                "text" to message.text
-            )
-        )
-        jmsTemplate.convertAndSend(queueName, message.text)
-    }
+    fun retry(message: TextMessage) = jmsTemplate.convertAndSend(queueName, message.text)
 
     @JmsListener(destination = "\${integrations.prison-offender-events.queue}")
     fun receive(prisonOffenderEvent: PrisonOffenderEvent) {
