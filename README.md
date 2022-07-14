@@ -35,8 +35,8 @@ A full list of decision records can be found in [decisions](decisions). (**TODO*
 * Code is written in [Kotlin](https://kotlinlang.org/), using [Spring Boot](https://spring.io/projects/spring-boot)
 * Built and tested as a multi-project [Gradle](https://gradle.org/) build
 * Unit tests with [JUnit](https://junit.org/) and [Mockito](https://mockito.org/)
-* Integration tests with [Hoverfly](https://hoverfly.io/), [H2](https://www.h2database.com/), and [embedded ActiveMQ](https://activemq.apache.org/)
-* End-to-end testing **TBC**
+* Integration tests with [Wiremock](https://wiremock.org/), [H2](https://www.h2database.com/), and [embedded ActiveMQ](https://activemq.apache.org/)
+* End-to-end testing with [Playwright](https://playwright.dev/) - see [End to end tests](https://github.com/ministryofjustice/hmpps-end-to-end-tests)
 * Docker images are built with [Jib](https://github.com/GoogleContainerTools/jib#readme)
 * Code formatting by [ktlint](https://ktlint.github.io/)
 * Continuous integration with [GitHub Actions](https://help.github.com/en/actions)
