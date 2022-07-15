@@ -96,6 +96,6 @@ class IntegrationTest {
         assertThat(staff.code, equalTo("${ProbationAreaGenerator.DEFAULT.code}B001"))
 
         assertThat(saved.createdByUserId, equalTo(UserGenerator.APPLICATION_USER.id))
-        assertThat(saved.lastModifiedUserId, equaElTo(UserGenerator.APPLICATION_USER.id))
+        assertThat(saved.lastModifiedUserId, equalTo(UserGenerator.APPLICATION_USER.id))
     }
 }
