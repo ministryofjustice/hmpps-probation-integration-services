@@ -35,6 +35,10 @@ spring.security.oauth2.client:
 # Shared dev/test config
 spring.config.activate.on-profile: ["dev", "integration-test", "oracle"]
 
+context:
+  initializer:
+    classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+
 spring:
   activemq.broker-url: vm://localhost?broker.persistent=false&broker.useShutdownHook=false
 
@@ -43,7 +47,6 @@ spring:
 
 wiremock:
   enabled: true
-  port: 7979
 
 integrations:
   prison-case-notes:
