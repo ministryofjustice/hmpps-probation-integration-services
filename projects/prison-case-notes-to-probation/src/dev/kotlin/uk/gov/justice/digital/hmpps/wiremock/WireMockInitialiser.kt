@@ -32,7 +32,7 @@ class WireMockInitialiser : ApplicationContextInitializer<ConfigurableApplicatio
         ctx.beanFactory
             .registerSingleton("wireMockServer", wireMockServer)
 
-        ctx.addApplicationListener { applicationEvent: ApplicationEvent? ->
+        ctx.addApplicationListener { applicationEvent: ApplicationEvent ->
             if (applicationEvent is ContextClosedEvent) {
                 wireMockServer.stop()
             }
