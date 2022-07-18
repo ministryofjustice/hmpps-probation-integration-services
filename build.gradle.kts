@@ -87,7 +87,7 @@ subprojects {
         }
     }
 
-    tasks.withType<SonarQubeTask>{
+    tasks.withType<SonarQubeTask> {
         dependsOn("jacocoTestReport")
     }
 }
