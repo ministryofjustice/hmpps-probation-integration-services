@@ -31,6 +31,8 @@ runs:
         echo "::set-output name=version::$version"
 
     - name: Build and test
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       uses: gradle/gradle-build-action@v2
       with:
         arguments: sonarqube
