@@ -1,5 +1,5 @@
-
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.sonarqube.gradle.SonarQubeExtension
 import org.sonarqube.gradle.SonarQubeTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
@@ -18,7 +18,7 @@ plugins {
     id("jacoco")
     id("test-report-aggregation")
     id("jacoco-report-aggregation")
-    id("org.sonarqube") version "3.4.0.2513" apply false
+    id("org.sonarqube") version "3.4.0.2513"
 }
 
 val agentDeps: Configuration by configurations.creating
@@ -90,6 +90,13 @@ subprojects {
     tasks.withType<SonarQubeTask> {
         dependsOn("jacocoTestReport")
     }
+
+    configure<SonarQubeExtension> {
+        properties {
+            property("sonar.projectKey", "uk.gov.justice.digital.hmpps")
+            property("sonar.host.url", "https://sonarcloud.io")
+        }
+    }
 }
 
 // Aggregate jacoco report across sub-projects
@@ -111,3 +118,4 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     }
 }
 tasks.named("check") { dependsOn("ktlintCheck", "jacocoTestReport") }
+tasks.named("sonarqube") { dependsOn("check") }
