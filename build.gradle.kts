@@ -1,4 +1,6 @@
+
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.sonarqube.gradle.SonarQubeTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
 import uk.gov.justice.digital.hmpps.plugins.ClassPathPlugin
@@ -16,6 +18,7 @@ plugins {
     id("jacoco")
     id("test-report-aggregation")
     id("jacoco-report-aggregation")
+    id("org.sonarqube") version "3.4.0.2513" apply false
 }
 
 val agentDeps: Configuration by configurations.creating
@@ -75,12 +78,17 @@ subprojects {
         plugin("jacoco-report-aggregation")
         plugin(JibConfigPlugin::class.java)
         plugin(ClassPathPlugin::class.java)
+        plugin("org.sonarqube")
     }
 
     tasks.withType<BootRun> {
         if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
             classpath = sourceSets.getByName("dev").runtimeClasspath
         }
+    }
+
+    tasks.withType<SonarQubeTask>{
+        dependsOn("jacocoTestReport")
     }
 }
 

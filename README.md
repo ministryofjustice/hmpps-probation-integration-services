@@ -5,7 +5,8 @@
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=ministryofjustice_hmpps-probation-integration-services&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=ministryofjustice_hmpps-probation-integration-services)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ministryofjustice_hmpps-probation-integration-services&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ministryofjustice_hmpps-probation-integration-services)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ministryofjustice_hmpps-probation-integration-services&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ministryofjustice_hmpps-probation-integration-services)
-[![codecov](https://codecov.io/gh/ministryofjustice/hmpps-probation-integration-services/branch/main/graph/badge.svg?token=CCgT1zYksg)](https://codecov.io/gh/ministryofjustice/hmpps-probation-integration-services)
+[![code coverage](https://sonarcloud.io/api/project_badges/measure?project=ministryofjustice_hmpps-probation-integration-services&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ministryofjustice_hmpps-probation-integration-services)
+
 
 A collection of small, domain-focused integrations to support HMPPS Digital services that need to interact with 
 probation data. Typically, these integration services will perform translations between HMPPS and Delius domain 
