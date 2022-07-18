@@ -93,8 +93,7 @@ subprojects {
 
     configure<SonarQubeExtension> {
         properties {
-            property("sonar.projectKey", "uk.gov.justice.digital.hmpps")
-            property("sonar.host.url", "https://sonarcloud.io")
+            property("systemProp.sonar.host.url", "https://sonarcloud.io")
         }
     }
 }
