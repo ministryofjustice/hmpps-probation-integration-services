@@ -90,11 +90,14 @@ subprojects {
     tasks.withType<SonarQubeTask> {
         dependsOn("jacocoTestReport")
     }
+}
 
-    configure<org.sonarqube.gradle.SonarQubeExtension> {
-        properties {
-            property("sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
-        }
+configure<org.sonarqube.gradle.SonarQubeExtension> {
+    properties {
+        property("sonar.coverage.jacoco.xmlReportPaths",
+            project.subprojects.joinToString { "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml" }
+                    + ", ${project.buildDir}/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
+        )
     }
 }
 
