@@ -13,5 +13,6 @@ configure<ClassPathExtension> {
     jacocoExclusions = listOf(
         "**/ThreadConfig*",
         "**/ContextRunnable*",
+        "**/TelemetryService*"
     )
 }

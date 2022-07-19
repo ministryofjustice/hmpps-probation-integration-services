@@ -17,7 +17,7 @@ plugins {
     id("jacoco")
     id("test-report-aggregation")
     id("jacoco-report-aggregation")
-    id("org.sonarqube") version "3.4.0.2513"
+    id("org.sonarqube")
 }
 
 val agentDeps: Configuration by configurations.creating
