@@ -1,3 +1,4 @@
+
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
@@ -16,6 +17,7 @@ plugins {
     id("jacoco")
     id("test-report-aggregation")
     id("jacoco-report-aggregation")
+    id("org.sonarqube")
 }
 
 val agentDeps: Configuration by configurations.creating
@@ -75,6 +77,7 @@ subprojects {
         plugin("jacoco-report-aggregation")
         plugin(JibConfigPlugin::class.java)
         plugin(ClassPathPlugin::class.java)
+        plugin("org.sonarqube")
     }
 
     tasks.withType<BootRun> {

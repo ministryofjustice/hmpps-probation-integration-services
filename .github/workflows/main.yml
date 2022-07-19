@@ -18,7 +18,8 @@ jobs:
       - name: Build and test
         id: build
         uses: ./.github/actions/build-and-test
-
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Push image
         uses: gradle/gradle-build-action@v2
         env:

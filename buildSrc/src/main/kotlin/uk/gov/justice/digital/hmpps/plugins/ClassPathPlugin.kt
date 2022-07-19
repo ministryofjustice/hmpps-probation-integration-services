@@ -9,6 +9,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.named
 import org.gradle.testing.jacoco.tasks.JacocoReport
+import org.sonarqube.gradle.SonarQubeExtension
 import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
 
 class ClassPathPlugin : Plugin<Project> {
@@ -45,6 +46,10 @@ class ClassPathPlugin : Plugin<Project> {
                     )
                 )
                 executionData.setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
+                reports {
+                    html.required.set(true)
+                    xml.required.set(true)
+                }
             }
 
             project.tasks.create("integrationTest", Test::class.java) {
@@ -57,6 +62,12 @@ class ClassPathPlugin : Plugin<Project> {
             }
             project.tasks.named("check") {
                 dependsOn("ktlintCheck", "test", "integrationTest")
+            }
+
+            project.configure<SonarQubeExtension> {
+                properties {
+                    property("sonar.exclusions", extension.jacocoExclusions)
+                }
             }
         }
     }
