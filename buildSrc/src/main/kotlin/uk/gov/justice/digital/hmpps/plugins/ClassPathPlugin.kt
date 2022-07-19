@@ -44,6 +44,10 @@ class ClassPathPlugin : Plugin<Project> {
                         classDirectories.files.map { project.fileTree(it) { exclude(extension.jacocoExclusions) } }
                     )
                 )
+                reports {
+                    html.required.set(true)
+                    xml.required.set(true)
+                }
                 executionData.setFrom(project.fileTree(project.buildDir).include("/jacoco/*.exec"))
             }
 
