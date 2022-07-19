@@ -32,8 +32,6 @@ runs:
 
     - name: Build and test
       uses: gradle/gradle-build-action@v2
-#      env:
-#        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         arguments: sonarqube
 
