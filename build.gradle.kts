@@ -94,9 +94,10 @@ subprojects {
 
 configure<org.sonarqube.gradle.SonarQubeExtension> {
     properties {
-        property("sonar.coverage.jacoco.xmlReportPaths",
-            project.subprojects.joinToString { "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml" }
-                    + ", ${project.buildDir}/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
+            project.subprojects.joinToString { "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml" } +
+                ", ${project.buildDir}/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
         )
     }
 }
