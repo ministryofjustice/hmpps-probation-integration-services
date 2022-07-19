@@ -1,6 +1,5 @@
 
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.sonarqube.gradle.SonarQubeExtension
 import org.sonarqube.gradle.SonarQubeTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
@@ -91,11 +90,11 @@ subprojects {
     tasks.withType<SonarQubeTask> {
         dependsOn("jacocoTestReport")
     }
-}
 
-configure<SonarQubeExtension> {
-    properties {
-        property("sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
+    configure<org.sonarqube.gradle.SonarQubeExtension> {
+        properties {
+            property("sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+        }
     }
 }
 
