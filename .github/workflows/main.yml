@@ -1,6 +1,10 @@
 name: Main
 
 on:
+  workflow_call:
+    inputs:
+      with:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   push:
     branches:
       - main
