@@ -1,6 +1,5 @@
 
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.sonarqube.gradle.SonarQubeTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
 import uk.gov.justice.digital.hmpps.plugins.ClassPathPlugin
@@ -86,20 +85,6 @@ subprojects {
             classpath = sourceSets.getByName("dev").runtimeClasspath
         }
     }
-
-    tasks.withType<SonarQubeTask> {
-        dependsOn("jacocoTestReport")
-    }
-}
-
-configure<org.sonarqube.gradle.SonarQubeExtension> {
-    properties {
-        property(
-            "sonar.coverage.jacoco.xmlReportPaths",
-            project.subprojects.joinToString(",") { "${it.buildDir}/reports/jacoco/test/jacocoTestReport.xml" } +
-                ",${project.buildDir}/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
-        )
-    }
 }
 
 // Aggregate jacoco report across sub-projects
@@ -121,4 +106,3 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     }
 }
 tasks.named("check") { dependsOn("ktlintCheck", "jacocoTestReport") }
-tasks.named("sonarqube") { dependsOn("check") }

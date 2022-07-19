@@ -29,12 +29,11 @@ runs:
         echo version=$version
         echo "ORG_GRADLE_PROJECT_version=$version" >> $GITHUB_ENV
         echo "::set-output name=version::$version"
-        echo pwd
 
     - name: Build and test
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: "clean sonarqube --info"
+        arguments: "build check sonarqube"
 
     - name: Publish test report
       uses: mikepenz/action-junit-report@v3
