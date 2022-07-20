@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exceptions.CaseNoteTypeNotFoundException
-import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditedInteractionService
@@ -35,15 +34,17 @@ class DeliusService(
             date = caseNote.body.contactTimeStamp,
             startTime = caseNote.body.contactTimeStamp,
         ) ?: caseNote.newEntity()
-        caseNoteRepository.save(entity)
+        if (entity != null) {
+            caseNoteRepository.save(entity)
 
-        auditedInteractionService.createAuditedInteraction(
-            BusinessInteractionCode.CASE_NOTES_MERGE,
-            AuditedInteraction.Parameters("contactId" to entity.id.toString())
-        )
+            auditedInteractionService.createAuditedInteraction(
+                BusinessInteractionCode.CASE_NOTES_MERGE,
+                AuditedInteraction.Parameters("contactId" to entity.id.toString())
+            )
+        }
     }
 
-    private fun DeliusCaseNote.newEntity(): CaseNote {
+    private fun DeliusCaseNote.newEntity(): CaseNote? {
         val caseNoteType = nomisTypeRepository.findById(body.typeLookup())
             .map { it.type }
             .orElseGet {
@@ -51,8 +52,7 @@ class DeliusService(
                     ?: throw CaseNoteTypeNotFoundException(body.typeLookup())
             }
 
-        val offender = offenderRepository.findByNomsId(header.nomisId)
-            ?: throw OffenderNotFoundException(header.nomisId)
+        val offender = offenderRepository.findByNomsId(header.nomisId) ?: return null
 
         val relatedIds = relatedService.findRelatedCaseNoteIds(offender.id, body.typeLookup())
 

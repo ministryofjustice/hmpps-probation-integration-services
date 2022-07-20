@@ -13,6 +13,8 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteGenerator
@@ -25,7 +27,6 @@ import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.exceptions.CaseNoteTypeNotFoundException
-import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
@@ -171,17 +172,7 @@ class DeliusServiceTest {
 
     @Test
     fun `add new case note offender not found`() {
-        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
-        whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(
-            Optional.of(
-                caseNoteNomisType
-            )
-        )
-        whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(null)
-
-        assertThrows<OffenderNotFoundException> {
-            deliusService.mergeCaseNote(deliusCaseNote)
-        }
+        verify(caseNoteRepository, never()).save(any())
     }
 
     @Test
@@ -204,7 +195,12 @@ class DeliusServiceTest {
         whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(offender)
         whenever(assignmentService.findAssignment(deliusCaseNote.body.establishmentCode, deliusCaseNote.body.staffName))
             .thenReturn(Triple(probationArea.id, team.id, staff.id))
-        whenever(caseNoteRelatedService.findRelatedCaseNoteIds(offender.id, deliusCaseNote.body.typeLookup())).thenReturn(CaseNoteRelatedIds())
+        whenever(
+            caseNoteRelatedService.findRelatedCaseNoteIds(
+                offender.id,
+                deliusCaseNote.body.typeLookup()
+            )
+        ).thenReturn(CaseNoteRelatedIds())
 
         deliusService.mergeCaseNote(deliusCaseNote)
 
