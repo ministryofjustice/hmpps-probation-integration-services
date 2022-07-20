@@ -33,9 +33,10 @@ class MessageListener(
 
         val prisonCaseNote = prisonCaseNotesClient.getCaseNote(prisonOffenderEvent.offenderId, prisonOffenderEvent.caseNoteId)
 
-        if (prisonCaseNote.text.isBlank()) {
+        if (prisonCaseNote?.text == null || prisonCaseNote.text.isBlank()) {
+            val reason = if (prisonCaseNote == null) "was not found" else "text is empty"
             log.warn(
-                "Ignoring case note id {} and type {} because case note text is empty",
+                "Ignoring case note id {} and type {} because case note $reason",
                 prisonOffenderEvent.caseNoteId,
                 prisonOffenderEvent.eventType
             )

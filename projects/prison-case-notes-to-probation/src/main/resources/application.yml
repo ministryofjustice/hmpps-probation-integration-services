@@ -19,6 +19,7 @@ feign.client.config:
     logger-level: full
     connect-timeout: 5000
     read-timeout: 5000
+    decode404: true
 
 spring.security.oauth2.client:
   registration:

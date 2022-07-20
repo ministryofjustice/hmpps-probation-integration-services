@@ -13,6 +13,8 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteGenerator
@@ -25,19 +27,15 @@ import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.exceptions.CaseNoteTypeNotFoundException
-import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
-import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteBody
-import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteRelatedIds
-import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
-import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomisTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
+import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
 import java.util.Optional
 import java.util.Random
 
@@ -71,17 +69,7 @@ class DeliusServiceTest {
     private val caseNote = CaseNoteGenerator.EXISTING
     private val caseNoteNomisType = CaseNoteNomisTypeGenerator.NEG
     private val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
-    private val deliusCaseNote = DeliusCaseNote(
-        CaseNoteHeader(OffenderGenerator.DEFAULT.nomsId, nomisCaseNote.eventId),
-        CaseNoteBody(
-            nomisCaseNote.type,
-            nomisCaseNote.subType,
-            "Note text",
-            nomisCaseNote.occurrenceDateTime,
-            StaffName("bob", "smith"),
-            "EST1"
-        )
-    )
+    private val deliusCaseNote = nomisCaseNote.toDeliusCaseNote()
     private val probationArea = ProbationAreaGenerator.DEFAULT
     private val team = TeamGenerator.DEFAULT
     private val staff = StaffGenerator.DEFAULT
@@ -97,11 +85,25 @@ class DeliusServiceTest {
         verify(caseNoteRepository, Mockito.times(1)).save(caseNoteCaptor.capture())
 
         val saved = caseNoteCaptor.value
-        assertThat(saved.notes, startsWith(caseNote.notes))
         assertThat(
             saved.notes,
             stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content)
         )
+    }
+
+    @Test
+    fun `duplicate or late messages result in no-op`() {
+        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(caseNote)
+
+        deliusService.mergeCaseNote(
+            deliusCaseNote.copy(
+                body = deliusCaseNote.body.copy(
+                    systemTimestamp = caseNote.lastModifiedDateTime
+                )
+            )
+        )
+
+        verify(caseNoteRepository, never()).save(any())
     }
 
     @Test
@@ -179,9 +181,8 @@ class DeliusServiceTest {
         )
         whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(null)
 
-        assertThrows<OffenderNotFoundException> {
-            deliusService.mergeCaseNote(deliusCaseNote)
-        }
+        deliusService.mergeCaseNote(deliusCaseNote)
+        verify(caseNoteRepository, never()).save(any())
     }
 
     @Test
@@ -204,7 +205,12 @@ class DeliusServiceTest {
         whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(offender)
         whenever(assignmentService.findAssignment(deliusCaseNote.body.establishmentCode, deliusCaseNote.body.staffName))
             .thenReturn(Triple(probationArea.id, team.id, staff.id))
-        whenever(caseNoteRelatedService.findRelatedCaseNoteIds(offender.id, deliusCaseNote.body.typeLookup())).thenReturn(CaseNoteRelatedIds())
+        whenever(
+            caseNoteRelatedService.findRelatedCaseNoteIds(
+                offender.id,
+                deliusCaseNote.body.typeLookup()
+            )
+        ).thenReturn(CaseNoteRelatedIds())
 
         deliusService.mergeCaseNote(deliusCaseNote)
 
@@ -220,5 +226,27 @@ class DeliusServiceTest {
         )
         assertThat(saved.type.code, equalTo(CaseNoteTypeGenerator.DEFAULT.code))
         assertNull(saved.eventId)
+    }
+
+    @Test
+    fun `successfully merges shorter case notes by padding`() {
+        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(caseNote)
+
+        val newContent = "Shorter case note text"
+        deliusService.mergeCaseNote(
+            nomisCaseNote.copy(text = newContent).toDeliusCaseNote()
+        )
+
+        val caseNoteCaptor = ArgumentCaptor.forClass(CaseNote::class.java)
+
+        verify(caseNoteRepository, Mockito.times(1)).save(caseNoteCaptor.capture())
+
+        val saved = caseNoteCaptor.value
+        assertThat(
+            saved.notes,
+            stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, newContent)
+        )
+
+        assertThat(caseNote.notes.length, equalTo(saved.notes.length))
     }
 }

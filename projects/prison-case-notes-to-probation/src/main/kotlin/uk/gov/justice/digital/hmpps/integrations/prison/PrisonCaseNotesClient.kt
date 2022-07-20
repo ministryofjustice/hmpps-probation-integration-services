@@ -7,5 +7,5 @@ import org.springframework.web.bind.annotation.PathVariable
 @FeignClient(name = "prison-case-notes", url = "\${integrations.prison-case-notes.url}")
 interface PrisonCaseNotesClient {
     @GetMapping(value = ["/case-notes/{offenderId}/{caseNoteId}"])
-    fun getCaseNote(@PathVariable offenderId: String, @PathVariable caseNoteId: String): PrisonCaseNote
+    fun getCaseNote(@PathVariable offenderId: String, @PathVariable caseNoteId: String): PrisonCaseNote?
 }
