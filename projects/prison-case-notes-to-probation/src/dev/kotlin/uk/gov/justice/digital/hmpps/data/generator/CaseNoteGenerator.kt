@@ -8,7 +8,12 @@ import kotlin.random.Random
 object CaseNoteGenerator {
     var EXISTING = generate(
         CaseNoteMessageGenerator.EXISTS_IN_DELIUS.eventId,
-        description = "A case note from Nomis",
+        description = """
+            NEG IEP_WARN
+            This is an existing case note
+            [Mickey Mouse updated the case notes on 2022/07/20 12:25:20]
+            Some Additional Text
+        """.trimIndent(),
         startDateTime = ZonedDateTime.parse("2022-07-20T11:24:10+00:00"),
         lastModifiedDateTime = ZonedDateTime.parse("2022-07-20T11:24:10+00:00")
     )

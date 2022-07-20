@@ -7,7 +7,7 @@
   "creationDateTime": "2022-07-20T11:22:35+00:00",
   "occurrenceDateTime": "2022-07-20T11:22:35+00:00",
   "authorName": "Some Name",
-  "text": "note content",
+  "text": "This is an existing case note",
   "locationId": "LEI",
   "amendments": [
     {

@@ -227,4 +227,26 @@ class DeliusServiceTest {
         assertThat(saved.type.code, equalTo(CaseNoteTypeGenerator.DEFAULT.code))
         assertNull(saved.eventId)
     }
+
+    @Test
+    fun `successfully merges shorter case notes by padding`() {
+        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(caseNote)
+
+        val newContent = "Shorter case note text"
+        deliusService.mergeCaseNote(
+            nomisCaseNote.copy(text = newContent).toDeliusCaseNote()
+        )
+
+        val caseNoteCaptor = ArgumentCaptor.forClass(CaseNote::class.java)
+
+        verify(caseNoteRepository, Mockito.times(1)).save(caseNoteCaptor.capture())
+
+        val saved = caseNoteCaptor.value
+        assertThat(
+            saved.notes,
+            stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, newContent)
+        )
+
+        assertThat(caseNote.notes.length, equalTo(saved.notes.length))
+    }
 }

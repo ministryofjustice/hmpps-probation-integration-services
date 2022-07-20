@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exceptions.CaseNoteTypeNotFoundException
@@ -44,14 +46,17 @@ class DeliusService(
     private fun CaseNote.updateFrom(caseNote: DeliusCaseNote): CaseNote? {
         val last = lastModifiedDateTime.truncatedTo(ChronoUnit.SECONDS)
         val current = caseNote.body.systemTimestamp.truncatedTo(ChronoUnit.SECONDS)
-        return if (last.isBefore(current))
+        return if (last.isBefore(current)) {
             copy(
                 notes = caseNote.body.notes(notes.length),
                 date = caseNote.body.contactTimeStamp,
                 startTime = caseNote.body.contactTimeStamp,
                 lastModifiedDateTime = caseNote.body.systemTimestamp
             )
-        else null
+        } else {
+            log.warn("Case Note update ignored because it was out of sequence ${caseNote.header}")
+            null
+        }
     }
 
     private fun DeliusCaseNote.newEntity(): CaseNote? {
@@ -83,5 +88,9 @@ class DeliusService(
             staffId = assignment.third,
             staffEmployeeId = assignment.third
         )
+    }
+
+    companion object {
+        private val log: Logger = LoggerFactory.getLogger(DeliusService::class.java)
     }
 }
