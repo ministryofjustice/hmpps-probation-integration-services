@@ -30,15 +30,12 @@ import uk.gov.justice.digital.hmpps.exceptions.CaseNoteTypeNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
-import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteBody
-import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteRelatedIds
-import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
-import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomisTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
+import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
 import java.util.Optional
 import java.util.Random
 
@@ -72,17 +69,7 @@ class DeliusServiceTest {
     private val caseNote = CaseNoteGenerator.EXISTING
     private val caseNoteNomisType = CaseNoteNomisTypeGenerator.NEG
     private val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
-    private val deliusCaseNote = DeliusCaseNote(
-        CaseNoteHeader(OffenderGenerator.DEFAULT.nomsId, nomisCaseNote.eventId),
-        CaseNoteBody(
-            nomisCaseNote.type,
-            nomisCaseNote.subType,
-            "Note text",
-            nomisCaseNote.occurrenceDateTime,
-            StaffName("bob", "smith"),
-            "EST1"
-        )
-    )
+    private val deliusCaseNote = nomisCaseNote.toDeliusCaseNote()
     private val probationArea = ProbationAreaGenerator.DEFAULT
     private val team = TeamGenerator.DEFAULT
     private val staff = StaffGenerator.DEFAULT
@@ -98,7 +85,6 @@ class DeliusServiceTest {
         verify(caseNoteRepository, Mockito.times(1)).save(caseNoteCaptor.capture())
 
         val saved = caseNoteCaptor.value
-        assertThat(saved.notes, startsWith(caseNote.notes))
         assertThat(
             saved.notes,
             stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content)

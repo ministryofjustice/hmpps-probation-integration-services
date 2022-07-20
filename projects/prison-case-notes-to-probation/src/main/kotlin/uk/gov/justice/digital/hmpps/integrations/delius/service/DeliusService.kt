@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomis
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
+import java.time.temporal.ChronoUnit
 import javax.validation.Valid
 
 @Service
@@ -29,11 +30,7 @@ class DeliusService(
     fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) {
         val existing = caseNoteRepository.findByNomisId(caseNote.header.noteId)
 
-        val entity = existing?.copy(
-            notes = existing.notes + System.lineSeparator() + caseNote.body.notesToAppend(),
-            date = caseNote.body.contactTimeStamp,
-            startTime = caseNote.body.contactTimeStamp,
-        ) ?: caseNote.newEntity()
+        val entity = if (existing == null) caseNote.newEntity() else existing.updateFrom(caseNote)
         if (entity != null) {
             caseNoteRepository.save(entity)
 
@@ -42,6 +39,19 @@ class DeliusService(
                 AuditedInteraction.Parameters("contactId" to entity.id.toString())
             )
         }
+    }
+
+    private fun CaseNote.updateFrom(caseNote: DeliusCaseNote): CaseNote? {
+        val last = lastModifiedDateTime.truncatedTo(ChronoUnit.SECONDS)
+        val current = caseNote.body.systemTimestamp.truncatedTo(ChronoUnit.SECONDS)
+        return if (last.isBefore(current))
+            copy(
+                notes = caseNote.body.notes(notes.length),
+                date = caseNote.body.contactTimeStamp,
+                startTime = caseNote.body.contactTimeStamp,
+                lastModifiedDateTime = caseNote.body.systemTimestamp
+            )
+        else null
     }
 
     private fun DeliusCaseNote.newEntity(): CaseNote? {
@@ -64,7 +74,7 @@ class DeliusService(
             nsiId = relatedIds.nsiId,
             type = caseNoteType,
             nomisId = header.noteId,
-            notes = body.notesToAppend(),
+            notes = body.notes(),
             date = body.contactTimeStamp,
             startTime = body.contactTimeStamp,
             isSensitive = caseNoteType.isSensitive,

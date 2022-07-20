@@ -17,13 +17,18 @@ data class CaseNoteBody(
     val content: String,
     @NotNull
     val contactTimeStamp: ZonedDateTime,
+    @NotNull
+    val systemTimestamp: ZonedDateTime,
     @Valid
     val staffName: StaffName,
     @NotBlank
     val establishmentCode: String
 ) {
-    fun notesToAppend() = typeLookup() + System.lineSeparator() + content
     fun typeLookup() = "$type $subType"
+    fun notes(length: Int = 0): String {
+        val notes = typeLookup() + System.lineSeparator() + content
+        return if (notes.length >= length) notes else notes.padEnd(length - notes.length)
+    }
 }
 
 data class StaffName(@NotBlank val forename: String, @NotBlank val surname: String)

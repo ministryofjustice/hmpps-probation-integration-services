@@ -4,9 +4,7 @@ import org.hibernate.Hibernate
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Type
 import org.springframework.data.annotation.CreatedBy
-import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
-import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.ZonedDateTime
 import javax.persistence.Column
@@ -73,6 +71,12 @@ data class CaseNote(
     @Type(type = "yes_no")
     val isSensitive: Boolean = type.isSensitive,
 
+    @Column(name = "created_datetime", updatable = false)
+    val createdDateTime: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(name = "last_updated_datetime")
+    val lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
+
     @CreatedBy
     @Column(name = "created_by_user_id", updatable = false)
     var createdByUserId: Long = 0,
@@ -80,14 +84,6 @@ data class CaseNote(
     @LastModifiedBy
     @Column(name = "last_updated_user_id")
     var lastModifiedUserId: Long = 0,
-
-    @CreatedDate
-    @Column(name = "created_datetime", updatable = false)
-    var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
-
-    @LastModifiedDate
-    @Column(name = "last_updated_datetime")
-    var lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @Version
     @Column(name = "row_version")

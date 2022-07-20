@@ -52,7 +52,6 @@ class IntegrationTest {
     @Test
     fun `update an existing case note succesfully`() {
         val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
-        val original = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
 
         jmsTemplate.convertSendAndWait(queueName, CaseNoteMessageGenerator.EXISTS_IN_DELIUS)
 
@@ -61,7 +60,6 @@ class IntegrationTest {
         assertThat(
             saved?.notes,
             stringContainsInOrder(
-                original?.notes,
                 nomisCaseNote.type,
                 nomisCaseNote.subType,
                 nomisCaseNote.text,

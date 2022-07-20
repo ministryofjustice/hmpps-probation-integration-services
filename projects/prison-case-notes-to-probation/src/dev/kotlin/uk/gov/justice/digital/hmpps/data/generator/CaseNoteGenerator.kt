@@ -6,7 +6,12 @@ import java.time.ZonedDateTime
 import kotlin.random.Random
 
 object CaseNoteGenerator {
-    var EXISTING = generate(CaseNoteMessageGenerator.EXISTS_IN_DELIUS.eventId, description = "A case note from Nomis")
+    var EXISTING = generate(
+        CaseNoteMessageGenerator.EXISTS_IN_DELIUS.eventId,
+        description = "A case note from Nomis",
+        startDateTime = ZonedDateTime.parse("2022-07-20T11:24:10+00:00"),
+        lastModifiedDateTime = ZonedDateTime.parse("2022-07-20T11:24:10+00:00")
+    )
 
     fun generate(
         nomisId: Long = Random.nextLong(),
@@ -18,8 +23,10 @@ object CaseNoteGenerator {
         probationAreaId: Long = ProbationAreaGenerator.DEFAULT.id,
         teamId: Long = TeamGenerator.DEFAULT.id,
         staffId: Long = StaffGenerator.DEFAULT.id,
+        startDateTime: ZonedDateTime = ZonedDateTime.now(),
+        createdDateTime: ZonedDateTime = ZonedDateTime.now(),
+        lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now()
     ): CaseNote {
-        val now = ZonedDateTime.now()
         return CaseNote(
             IdGenerator.getAndIncrement(),
             offenderId,
@@ -28,12 +35,14 @@ object CaseNoteGenerator {
             nomisId,
             type,
             description,
-            now,
-            now,
+            startDateTime,
+            startDateTime,
             staffId,
             staffId,
             teamId,
             probationAreaId,
+            createdDateTime = createdDateTime,
+            lastModifiedDateTime = lastModifiedDateTime
         )
     }
 }
