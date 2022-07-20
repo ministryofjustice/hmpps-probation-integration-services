@@ -66,7 +66,7 @@ class ClassPathPlugin : Plugin<Project> {
 
             project.configure<SonarQubeExtension> {
                 properties {
-                    property("sonar.exclusions", extension.jacocoExclusions)
+                    property("sonar.coverage.exclusions", extension.jacocoExclusions)
                 }
             }
         }
