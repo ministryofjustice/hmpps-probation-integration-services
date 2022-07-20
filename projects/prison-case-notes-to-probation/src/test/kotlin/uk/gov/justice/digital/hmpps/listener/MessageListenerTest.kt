@@ -1,15 +1,14 @@
 package uk.gov.justice.digital.hmpps.listener
 
-import feign.FeignException
-import feign.Request
-import feign.Request.Body
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -37,21 +36,17 @@ internal class MessageListenerTest {
     private lateinit var messageListener: MessageListener
 
     @Test
-    fun `feign exceptions are propogated`() {
+    fun `when case note not found - noop`() {
         whenever(
             prisonCaseNotesClient.getCaseNote(
                 CaseNoteMessageGenerator.NOT_FOUND.offenderId,
                 CaseNoteMessageGenerator.NOT_FOUND.caseNoteId!!
             )
-        ).thenThrow(
-            FeignException.NotFound(
-                "Error Message",
-                Request.create(Request.HttpMethod.GET, "localhost:8500", mapOf(), null as Body?, null),
-                null, mapOf()
-            )
-        )
+        ).thenReturn(null)
 
-        assertThrows<FeignException.NotFound> { messageListener.receive(CaseNoteMessageGenerator.NOT_FOUND) }
+        assertDoesNotThrow { messageListener.receive(CaseNoteMessageGenerator.NOT_FOUND) }
+        verify(telemetryService, never()).trackEvent(eq("CaseNoteMerge"), any(), any())
+        verify(deliusService, never()).mergeCaseNote(any())
     }
 
     @Test

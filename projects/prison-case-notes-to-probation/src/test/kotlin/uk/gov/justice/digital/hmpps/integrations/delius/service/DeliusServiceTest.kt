@@ -172,6 +172,15 @@ class DeliusServiceTest {
 
     @Test
     fun `add new case note offender not found`() {
+        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
+        whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(
+            Optional.of(
+                caseNoteNomisType
+            )
+        )
+        whenever(offenderRepository.findByNomsId(deliusCaseNote.header.nomisId)).thenReturn(null)
+
+        deliusService.mergeCaseNote(deliusCaseNote)
         verify(caseNoteRepository, never()).save(any())
     }
 
