@@ -92,6 +92,21 @@ class DeliusServiceTest {
     }
 
     @Test
+    fun `duplicate or late messages result in no-op`() {
+        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(caseNote)
+
+        deliusService.mergeCaseNote(
+            deliusCaseNote.copy(
+                body = deliusCaseNote.body.copy(
+                    systemTimestamp = caseNote.lastModifiedDateTime
+                )
+            )
+        )
+
+        verify(caseNoteRepository, never()).save(any())
+    }
+
+    @Test
     fun `successfully add new case note with link to event`() {
         val offender = OffenderGenerator.DEFAULT
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
