@@ -106,9 +106,31 @@ SPRING_PROFILES_ACTIVE=dev ./gradlew <project-name>:bootRun
 
 # Test
 ## Integration tests
-Integration tests use Hoverfly JSON files to mock any external services.
+Integration tests use WireMock JSON files to mock any external services.
 
-**TODO** add more details when test implementation is complete.
+The strategy with the dev/test profiles is to use a single WireMock server and distinguish any potential duplicate urls using a service name on the url if required.
+For example if two urls were used as part of a service 
+
+```
+https://hmpps.service1/offender/{crn}
+https://hmpps.service2/offender/{crn}
+```
+
+When mocking these urls the following would be appropriate (rather than a separate mock server for each service)
+```
+{wiremockUrl}:{wiremockPort}/service1/offender/{crn}
+{wiremockUrl}:{wiremockPort}/service2/offender/{crn}
+```
+
+The WireMock Server is exposed as a spring bean and can be injected into Spring Boot (Integration) Tests 
+for verification or adding extra scenarios specific to a test that are not available in json.
+
+```
+@Autowired
+private val wireMockServer: WireMockServer
+```
+
+All other concepts of Spring Boot Tests are usable as per Spring documentation.
 
 # Deployment
 Once the code is built and tested, GitHub Actions deploys the updated images for each service to an Amazon Elastic 
