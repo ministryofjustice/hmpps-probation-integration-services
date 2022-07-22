@@ -108,6 +108,10 @@ SPRING_PROFILES_ACTIVE=dev ./gradlew <project-name>:bootRun
 ## Integration tests
 Integration tests use WireMock JSON files to mock any external services.
 
+The json files for simulations must reside in simulations/mappings in the dev class path. This makes them usable for dev and test.
+Any json bodies to add to mappings must live in the simulations/__files directory. These are the defaults for WireMock.
+Any json mappings and body files provided in these locations will be automatically loaded and available during dev and test.
+
 The WireMock Server is exposed as a spring bean and can be injected into Spring Boot (Integration) Tests
 for verification or adding extra scenarios specific to a test that are not available in json.
 
