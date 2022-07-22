@@ -108,6 +108,14 @@ SPRING_PROFILES_ACTIVE=dev ./gradlew <project-name>:bootRun
 ## Integration tests
 Integration tests use WireMock JSON files to mock any external services.
 
+The WireMock Server is exposed as a spring bean and can be injected into Spring Boot (Integration) Tests
+for verification or adding extra scenarios specific to a test that are not available in json.
+
+```
+@Autowired
+private val wireMockServer: WireMockServer
+```
+
 The strategy with the dev/test profiles is to use a single WireMock server and distinguish any potential duplicate urls using a service name on the url if required.
 For example if two urls were used as part of a service 
 
@@ -120,14 +128,6 @@ When mocking these urls the following would be appropriate (rather than a separa
 ```
 {wiremockUrl}:{wiremockPort}/service1/offender/{crn}
 {wiremockUrl}:{wiremockPort}/service2/offender/{crn}
-```
-
-The WireMock Server is exposed as a spring bean and can be injected into Spring Boot (Integration) Tests 
-for verification or adding extra scenarios specific to a test that are not available in json.
-
-```
-@Autowired
-private val wireMockServer: WireMockServer
 ```
 
 All other concepts of Spring Boot Tests are usable as per Spring documentation.
