@@ -19,7 +19,6 @@ import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
@@ -91,9 +90,6 @@ class IntegrationTest {
         assertNotNull(saved.eventId)
 
         assertNotNull(saved.nsiId)
-
-        val staff = staffRepository.findById(saved.staffId).orElseThrow()
-        assertThat(staff.code, equalTo("${ProbationAreaGenerator.DEFAULT.code}B001"))
 
         assertThat(saved.createdByUserId, equalTo(UserGenerator.APPLICATION_USER.id))
         assertThat(saved.lastModifiedUserId, equalTo(UserGenerator.APPLICATION_USER.id))

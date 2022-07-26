@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.ProbationArea
 object ProbationAreaGenerator {
     val DEFAULT = ProbationArea(
         IdGenerator.getAndIncrement(),
-        "PA1",
+        "LEI",
         Institution(IdGenerator.getAndIncrement(), PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId)
     )
 }

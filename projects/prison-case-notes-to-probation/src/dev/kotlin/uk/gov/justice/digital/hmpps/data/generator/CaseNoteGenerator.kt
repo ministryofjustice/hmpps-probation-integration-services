@@ -9,7 +9,7 @@ object CaseNoteGenerator {
     var EXISTING = generate(
         CaseNoteMessageGenerator.EXISTS_IN_DELIUS.eventId,
         description = """
-            NEG IEP_WARN
+            AR EVENT-LEVEL CASENOTE
             This is an existing case note
             [Mickey Mouse updated the case notes on 2022/07/20 12:25:20]
             Some Additional Text
