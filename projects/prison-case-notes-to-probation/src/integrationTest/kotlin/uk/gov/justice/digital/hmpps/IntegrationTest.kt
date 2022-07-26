@@ -18,8 +18,6 @@ import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
@@ -88,20 +86,11 @@ class IntegrationTest {
             stringContainsInOrder(nomisCaseNote.type, nomisCaseNote.subType, nomisCaseNote.text)
         )
 
-        assertThat(
-            saved.type.code,
-            equalTo(CaseNoteTypeGenerator.DEFAULT.code)
-        )
+        assertThat(saved.type.code, equalTo(CaseNoteTypeGenerator.DEFAULT.code))
 
-        assertThat(
-            saved.eventId,
-            equalTo(EventGenerator.CUSTODIAL_EVENT.id)
-        )
+        assertNotNull(saved.eventId)
 
-        assertThat(
-            saved.nsiId,
-            equalTo(NsiGenerator.EVENT_CASE_NOTE_NSI.id)
-        )
+        assertNotNull(saved.nsiId)
 
         val staff = staffRepository.findById(saved.staffId).orElseThrow()
         assertThat(staff.code, equalTo("${ProbationAreaGenerator.DEFAULT.code}B001"))
