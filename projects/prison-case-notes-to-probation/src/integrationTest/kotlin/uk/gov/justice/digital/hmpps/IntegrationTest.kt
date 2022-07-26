@@ -17,7 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CaseNoteTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
@@ -86,7 +86,7 @@ class IntegrationTest {
             stringContainsInOrder(nomisCaseNote.type, nomisCaseNote.subType, nomisCaseNote.text)
         )
 
-        assertThat(saved.type.code, equalTo(CaseNoteTypeGenerator.DEFAULT.code))
+        assertThat(saved.type.code, equalTo(CaseNoteNomisTypeGenerator.AREL.type.code))
 
         assertNotNull(saved.eventId)
 

@@ -67,7 +67,7 @@ class DeliusServiceTest {
     lateinit var deliusService: DeliusService
 
     private val caseNote = CaseNoteGenerator.EXISTING
-    private val caseNoteNomisType = CaseNoteNomisTypeGenerator.NEG
+    private val caseNoteNomisType = CaseNoteNomisTypeGenerator.AREL
     private val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
     private val deliusCaseNote = nomisCaseNote.toDeliusCaseNote()
     private val probationArea = ProbationAreaGenerator.DEFAULT
