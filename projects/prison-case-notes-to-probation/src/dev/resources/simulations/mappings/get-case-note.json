@@ -3,7 +3,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/case-notes/A1138RI/155485"
+        "url": "/case-notes/A1137AB/155485"
       },
       "response": {
         "headers": {
@@ -16,7 +16,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/case-notes/A1138RI/7512365"
+        "url": "/case-notes/A1137AB/7512365"
       },
       "response": {
         "headers": {
@@ -29,7 +29,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/case-notes/A1138RI/4444"
+        "url": "/case-notes/A1137AB/404404"
       },
       "response": {
         "status": 404,

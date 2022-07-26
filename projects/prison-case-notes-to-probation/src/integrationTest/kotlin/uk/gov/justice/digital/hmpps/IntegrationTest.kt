@@ -17,7 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CaseNoteTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
@@ -90,7 +90,7 @@ class IntegrationTest {
 
         assertThat(
             saved.type.code,
-            equalTo(CaseNoteNomisTypeGenerator.NEG.type.code)
+            equalTo(CaseNoteTypeGenerator.DEFAULT.code)
         )
 
         assertThat(

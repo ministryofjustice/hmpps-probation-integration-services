@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.config.ServiceContext
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NomisNsiTypeGenerator
@@ -63,8 +62,6 @@ class DataLoader(
         businessInteractionRepository.save(BusinessInteractionGenerator.CASE_NOTES_MERGE)
 
         caseNoteTypeRepository.save(CaseNoteTypeGenerator.DEFAULT)
-        caseNoteTypeRepository.save(CaseNoteNomisTypeGenerator.NEG.type)
-        caseNoteNomisTypeRepository.save(CaseNoteNomisTypeGenerator.NEG)
 
         institutionRepository.save(ProbationAreaGenerator.DEFAULT.institution!!)
         probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
