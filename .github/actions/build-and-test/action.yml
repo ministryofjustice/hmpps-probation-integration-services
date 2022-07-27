@@ -46,13 +46,13 @@ runs:
       uses: mikepenz/action-junit-report@v3
       if: always()
       with:
-        check_name: Unit test
+        check_name: Unit test results
         report_paths: '**/build/test-results/test/TEST-*.xml'
 
     - name: Publish integration test report
       uses: mikepenz/action-junit-report@v3
       if: always()
       with:
-        check_name: Integration test
+        check_name: Integration test results
         report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
 

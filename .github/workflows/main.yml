@@ -51,15 +51,59 @@ jobs:
     secrets: inherit
 
   end-to-end-tests:
-    name: End-to-end tests
-    runs-on: ubuntu-latest
+    name: Run end-to-end tests
+    runs-on: moj-cloud-platform
+    timeout-minutes: 60
     needs:
       - deploy-to-test
       - deploy-to-preprod
     steps:
-      - run: |
-          echo 'Not yet implemented!'
-          exit 1
+      - uses: actions/checkout@v3
+        with:
+          repository: ministryofjustice/hmpps-probation-integration-e2e-tests
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers # Note: this step could move into the runner image build
+        run: |
+          wget 'https://download-chromium.appspot.com/dl/Linux_x64' -O chrome-linux.zip
+          rm -rf "$BROWSERS_DIR" && mkdir -p "$BROWSERS_DIR"
+          unzip chrome-linux.zip -d "$BROWSERS_DIR"
+        env:
+          BROWSERS_DIR: /home/runner/.cache/ms-playwright/chromium-1012
+      - name: Run Playwright tests
+        run: npx playwright test --reporter=html,junit
+        env:
+          DELIUS_URL: https://ndelius.test.probation.service.justice.gov.uk
+          WORKFORCE_URL: https://workforce-management-dev.hmpps.service.justice.gov.uk
+          DPS_URL: https://digital-dev.prison.service.justice.gov.uk
+          AUTH_URL: https://sign-in-dev.hmpps.service.justice.gov.uk
+          PRISON_API: https://api-dev.prison.service.justice.gov.uk/
+          DELIUS_USERNAME: ${{ secrets.E2E_DELIUS_USERNAME }}
+          DELIUS_PASSWORD: ${{ secrets.E2E_DELIUS_PASSWORD }}
+          DPS_USERNAME: ${{ secrets.E2E_DPS_USERNAME }}
+          DPS_PASSWORD: ${{ secrets.E2E_DPS_PASSWORD }}
+          CRED_USERNAME: ${{ secrets.E2E_CLIENT_ID }}
+          CRED_PASSWORD: ${{ secrets.E2E_CLIENT_SECRET }}
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME: junit.xml
+      - name: Publish JUnit report
+        uses: mikepenz/action-junit-report@v3
+        if: always()
+        with:
+          check_name: End-to-end test results
+          report_paths: junit.xml
+      - name: Publish HTML report
+        uses: JamesIves/github-pages-deploy-action@v4
+        if: always()
+        with:
+          folder: playwright-report
+          target-folder: playwright-report/test/${{ github.ref_name }}/${{ github.sha }}/${{ github.run_attempt }}
+      - name: Add HTML report URL to the job summary
+        if: always()
+        run: echo '[🎭 Playwright HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/playwright-report/test/${{ github.ref_name }}/${{ github.sha }}/${{ github.run_attempt }})' >> $GITHUB_STEP_SUMMARY
 
   deploy-to-prod:
     name: Deploy to production
