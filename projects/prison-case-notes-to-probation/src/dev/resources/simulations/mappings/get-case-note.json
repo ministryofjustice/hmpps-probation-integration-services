@@ -39,8 +39,8 @@
         },
         "jsonBody": {
           "status": 404,
-          "userMessage": "Resource with id [A1140AB] not found.",
-          "developerMessage": "Resource with id [A1140AB] not found."
+          "userMessage": "Resource with id [GA52214] not found.",
+          "developerMessage": "Resource with id [GA52214] not found."
         }
       }
     }
