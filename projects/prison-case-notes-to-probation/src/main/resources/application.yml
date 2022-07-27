@@ -19,7 +19,9 @@ feign.client.config:
     logger-level: full
     connect-timeout: 5000
     read-timeout: 5000
-    decode404: true
+    default-request-headers:
+      Accept: application/json
+      Content-Type: application/json
 
 spring.security.oauth2.client:
   registration:
