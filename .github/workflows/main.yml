@@ -67,13 +67,8 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Install Playwright Browsers # Note: this step could move into the runner image build
-        run: |
-          wget 'https://download-chromium.appspot.com/dl/Linux_x64' -O chrome-linux.zip
-          rm -rf "$BROWSERS_DIR" && mkdir -p "$BROWSERS_DIR"
-          unzip chrome-linux.zip -d "$BROWSERS_DIR"
-        env:
-          BROWSERS_DIR: /home/runner/.cache/ms-playwright/chromium-1012
+      - name: Install Playwright Browsers
+        run: npx playwright install
       - name: Run Playwright tests
         run: npx playwright test --reporter=html,junit
         env:
