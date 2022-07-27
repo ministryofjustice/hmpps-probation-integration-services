@@ -247,9 +247,6 @@ class DeliusServiceTest {
             stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, newContent)
         )
 
-        println(caseNote.notes)
-        println(saved.notes)
-
         assertThat(saved.notes.length, equalTo(caseNote.notes.length))
     }
 }
