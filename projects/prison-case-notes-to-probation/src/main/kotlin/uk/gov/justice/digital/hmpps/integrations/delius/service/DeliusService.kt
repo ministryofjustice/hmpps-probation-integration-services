@@ -67,7 +67,7 @@ class DeliusService(
                     ?: throw CaseNoteTypeNotFoundException(body.typeLookup())
             }
 
-        val offender = offenderRepository.findByNomsId(header.nomisId) ?: return null
+        val offender = offenderRepository.findByNomsIdAndSoftDeletedIsFalse(header.nomisId) ?: return null
 
         val relatedIds = relatedService.findRelatedCaseNoteIds(offender.id, body.typeLookup())
 
