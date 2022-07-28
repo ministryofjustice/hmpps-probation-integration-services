@@ -14,5 +14,8 @@ class Offender(
     val id: Long,
 
     @Column(name = "noms_number", columnDefinition = "char(7)")
-    val nomsId: String
+    val nomsId: String,
+
+    @Column(updatable = false, columnDefinition = "NUMBER")
+    var softDeleted: Boolean = false,
 )
