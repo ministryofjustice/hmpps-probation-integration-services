@@ -1,6 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exceptions.InvalidEstablishmentCodeException
 import uk.gov.justice.digital.hmpps.exceptions.ProbationAreaNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.TeamNotFoundException
@@ -23,6 +26,7 @@ class AssignmentService(
     private val staffTeamRepository: StaffTeamRepository
 ) {
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun findAssignment(establishmentCode: String, staffName: StaffName): Triple<Long, Long, Long> {
         if (establishmentCode.length < 3) throw InvalidEstablishmentCodeException(establishmentCode)
 
@@ -35,11 +39,15 @@ class AssignmentService(
     }
 
     private fun getStaff(probationArea: ProbationArea, team: Team, staffName: StaffName): Staff {
-        return staffRepository.findTopByProbationAreaIdAndForenameIgnoreCaseAndSurnameIgnoreCase(
-            probationArea.id,
-            staffName.forename,
-            staffName.surname
-        ) ?: run {
+        val findStaff = {
+            staffRepository.findTopByProbationAreaIdAndForenameIgnoreCaseAndSurnameIgnoreCase(
+                probationArea.id,
+                staffName.forename,
+                staffName.surname
+            )
+        }
+
+        return findStaff() ?: try {
             val staff = staffRepository.save(
                 Staff(
                     forename = staffName.forename,
@@ -50,6 +58,8 @@ class AssignmentService(
             )
             staffTeamRepository.save(StaffTeam(staff.id, team.id))
             staff
+        } catch (dive: DataIntegrityViolationException) {
+            findStaff() ?: throw dive
         }
     }
 }
