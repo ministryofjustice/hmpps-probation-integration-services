@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exceptions.InvalidEstablishmentCodeException
 import uk.gov.justice.digital.hmpps.exceptions.ProbationAreaNotFoundException
@@ -35,11 +36,15 @@ class AssignmentService(
     }
 
     private fun getStaff(probationArea: ProbationArea, team: Team, staffName: StaffName): Staff {
-        return staffRepository.findTopByProbationAreaIdAndForenameIgnoreCaseAndSurnameIgnoreCase(
-            probationArea.id,
-            staffName.forename,
-            staffName.surname
-        ) ?: run {
+        val findStaff = {
+            staffRepository.findTopByProbationAreaIdAndForenameIgnoreCaseAndSurnameIgnoreCase(
+                probationArea.id,
+                staffName.forename,
+                staffName.surname
+            )
+        }
+
+        return findStaff() ?: try {
             val staff = staffRepository.save(
                 Staff(
                     forename = staffName.forename,
@@ -50,6 +55,8 @@ class AssignmentService(
             )
             staffTeamRepository.save(StaffTeam(staff.id, team.id))
             staff
+        } catch (dive: DataIntegrityViolationException) {
+            findStaff() ?: throw dive
         }
     }
 }
