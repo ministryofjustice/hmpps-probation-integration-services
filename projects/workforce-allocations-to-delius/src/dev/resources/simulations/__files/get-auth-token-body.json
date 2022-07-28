@@ -1,0 +1,10 @@
+{
+  "access_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3b3JrZm9yY2UtYWxsb2NhdGlvbnMtdG8tZGVsaXVzIiwiZ3JhbnRfdHlwZSI6ImNsaWVudF9jcmVkZW50aWFscyIsInNjb3BlIjpbInJlYWQiLCJ3cml0ZSJdLCJhdXRoX3NvdXJjZSI6Im5vbmUiLCJpc3MiOiJodHRwczovL3NpZ24taW4tZGV2LmhtcHBzLnNlcnZpY2UuanVzdGljZS5nb3YudWsvYXV0aC9pc3N1ZXIiLCJleHAiOjE2NTUyMjM0MTgsImF1dGhvcml0aWVzIjpbXSwianRpIjoiZk4yOUpISnkxTjdnY1l2cWUtOEJfazVUMG1BIiwiY2xpZW50X2lkIjoid29ya2ZvcmNlLWFsbG9jYXRpb25zLXRvLWRlbGl1cyJ9.6emQISTLY1Ee7iGQuUmZshLPvgvl-L7Nwe3l8K0E0dg",
+  "token_type": "bearer",
+  "expires_in": 1199,
+  "scope": "read write",
+  "sub": "workforce-allocations-to-delius",
+  "auth_source": "none",
+  "jti": "fN29JHJy1N7gcYvqe-8B_k5T0mA",
+  "iss": "https://sign-in-dev.hmpps.service.justice.gov.uk/auth/issuer"
+}
