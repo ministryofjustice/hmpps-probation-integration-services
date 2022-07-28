@@ -20,6 +20,7 @@
       },
       "response": {
         "headers": {
+          "Accept": "application/json",
           "Content-Type": "application/json"
         },
         "status": 200,
@@ -33,7 +34,14 @@
       },
       "response": {
         "status": 404,
-        "body": null
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "status": 404,
+          "userMessage": "Resource with id [GA52214] not found.",
+          "developerMessage": "Resource with id [GA52214] not found."
+        }
       }
     }
   ]

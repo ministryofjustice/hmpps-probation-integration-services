@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.listener
 
+import feign.FeignException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.jms.annotation.EnableJms
@@ -31,7 +32,11 @@ class MessageListener(
             return
         }
 
-        val prisonCaseNote = prisonCaseNotesClient.getCaseNote(prisonOffenderEvent.offenderId, prisonOffenderEvent.caseNoteId)
+        val prisonCaseNote = try {
+            prisonCaseNotesClient.getCaseNote(prisonOffenderEvent.offenderId, prisonOffenderEvent.caseNoteId)
+        } catch (notFound: FeignException.NotFound) {
+            null
+        }
 
         if (prisonCaseNote?.text == null || prisonCaseNote.text.isBlank()) {
             val reason = if (prisonCaseNote == null) "was not found" else "text is empty"
