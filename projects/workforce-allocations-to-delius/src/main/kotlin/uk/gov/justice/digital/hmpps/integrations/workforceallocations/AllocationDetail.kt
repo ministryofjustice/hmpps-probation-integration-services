@@ -24,11 +24,6 @@ sealed interface AllocationDetail {
         override val createdBy: String,
         override val createdDate: ZonedDateTime,
         val crn: String,
-        val personName: String,
-        val staffGrade: String,
-        val staffEmail: String,
-        val staffForename: String,
-        val staffSurname: String,
     ) : AllocationDetail
 
     @JsonDeserialize(using = JsonDeserializer.None::class)
