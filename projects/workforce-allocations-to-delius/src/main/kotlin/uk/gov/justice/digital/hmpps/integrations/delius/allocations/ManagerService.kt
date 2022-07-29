@@ -1,19 +1,16 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.managers
+package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
 import org.slf4j.LoggerFactory
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exceptions.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactContext
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeNotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.exceptions.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 abstract class ManagerService<T : ManagerBaseEntity>(
     private val managerRepository: JpaRepository<T, Long>,
-    private val contactTypeRepository: ContactTypeRepository
 ) {
     companion object {
         private val log = LoggerFactory.getLogger(this::class.java)
@@ -36,16 +33,14 @@ abstract class ManagerService<T : ManagerBaseEntity>(
         cci: ContactContext
     ): Contact {
         return Contact(
-            type = contactTypeRepository.findByCode(cci.contactTypeCode.value)
-                ?: throw ContactTypeNotFoundException(cci.contactTypeCode.value),
-            offenderId = cci.offenderId,
+            type = cci.contactType,
+            personId = cci.offenderId,
             eventId = cci.eventId,
             requirementId = cci.requirementId,
             date = newManager.allocationDate,
             startTime = newManager.allocationDate,
             teamId = newManager.team.id,
-            staffId = newManager.staffAllocation.id,
-            staffEmployeeId = newManager.staffAllocation.id,
+            staffId = newManager.staff.id,
             providerId = newManager.provider.id,
             notes =
             """
@@ -53,7 +48,7 @@ abstract class ManagerService<T : ManagerBaseEntity>(
         |Transfer Date: ${newManager.allocationDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}
         |From Trust: ${newManager.provider.description}
         |From Team: ${oldManager.team.description}
-        |From Officer: ${oldManager.staffAllocation.displayName}
+        |From Officer: ${oldManager.staff.displayName}
         |-------------------------------/${System.lineSeparator()}
         |"""
                 .trimMargin()
@@ -61,7 +56,7 @@ abstract class ManagerService<T : ManagerBaseEntity>(
     }
 
     protected fun AllocationDetail.isDuplicate(manager: ManagerBaseEntity): Boolean {
-        if (staffCode == manager.staffAllocation.code && teamCode == manager.team.code) {
+        if (staffCode == manager.staff.code && teamCode == manager.team.code) {
             log.info("Ignoring duplicate allocation request for $this")
             return true
         }

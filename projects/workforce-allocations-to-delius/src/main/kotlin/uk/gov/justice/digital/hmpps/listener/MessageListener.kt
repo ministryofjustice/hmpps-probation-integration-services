@@ -5,7 +5,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.jms.annotation.EnableJms
 import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.person.AllocatePersonService
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocationDetail
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.PersonAllocationDetail
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.RequirementAllocationDetail
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationEvent
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.WorkforceAllocationsClient
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -15,6 +19,7 @@ import java.net.URI
 @EnableJms
 class MessageListener(
     val allocationsClient: WorkforceAllocationsClient,
+    val allocatePersonService: AllocatePersonService,
     val telemetryService: TelemetryService
 ) {
 
@@ -32,10 +37,10 @@ class MessageListener(
             ) + allocationEvent.personReference.identifiers.associate { Pair(it.type, it.value) }
         )
 
-        when (allocationsClient.getAllocationDetail(URI.create(allocationEvent.detailUrl))) {
-            is AllocationDetail.PersonAllocationDetail -> {}
-            is AllocationDetail.EventAllocationDetail -> {}
-            is AllocationDetail.RequirementAllocationDetail -> {}
+        when (val allocationDetail = allocationsClient.getAllocationDetail(URI.create(allocationEvent.detailUrl))) {
+            is PersonAllocationDetail -> allocatePersonService.createPersonAllocation(allocationDetail)
+            is EventAllocationDetail -> {}
+            is RequirementAllocationDetail -> {}
         }
     }
 }

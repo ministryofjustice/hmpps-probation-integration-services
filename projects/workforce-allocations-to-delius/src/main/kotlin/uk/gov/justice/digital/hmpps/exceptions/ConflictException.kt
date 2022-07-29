@@ -1,3 +1,3 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.exceptions
+package uk.gov.justice.digital.hmpps.exceptions
 
 class ConflictException(message: String) : RuntimeException(message)

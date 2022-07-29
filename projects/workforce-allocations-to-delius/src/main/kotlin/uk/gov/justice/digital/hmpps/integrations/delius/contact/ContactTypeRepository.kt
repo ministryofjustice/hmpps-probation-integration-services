@@ -5,3 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface ContactTypeRepository : JpaRepository<ContactType, Long> {
     fun findByCode(code: String): ContactType?
 }
+
+fun ContactTypeRepository.findByCodeOrThrow(code: String): ContactType =
+    findByCode(code) ?: throw ContactTypeNotFoundException(code)

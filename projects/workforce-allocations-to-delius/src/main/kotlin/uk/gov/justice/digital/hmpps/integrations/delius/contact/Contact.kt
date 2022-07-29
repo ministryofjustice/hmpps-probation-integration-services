@@ -1,13 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.contact
 
-import org.hibernate.Hibernate
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Type
-import org.springframework.data.annotation.CreatedBy
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedBy
-import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.BaseEntity
 import java.time.ZonedDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -20,26 +16,25 @@ import javax.persistence.Lob
 import javax.persistence.ManyToOne
 import javax.persistence.SequenceGenerator
 import javax.persistence.Table
-import javax.persistence.Version
 
 @EntityListeners(AuditingEntityListener::class)
 @Entity
 @Table(name = "contact")
-data class Contact(
+@SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
+class Contact(
     @Id
     @Column(name = "contact_id", updatable = false)
-    @SequenceGenerator(name = "idGenerator", sequenceName = "contact_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
     val id: Long? = null,
 
-    @Column(updatable = false)
-    val offenderId: Long,
+    @Column(name = "offender_id", updatable = false)
+    val personId: Long,
 
     @Column(updatable = false)
-    val eventId: Long?,
+    val eventId: Long? = null,
 
     @Column(updatable = false)
-    val requirementId: Long?,
+    val requirementId: Long? = null,
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id", updatable = false)
@@ -58,7 +53,7 @@ data class Contact(
     val staffId: Long,
 
     @Column(updatable = false)
-    val staffEmployeeId: Long,
+    val staffEmployeeId: Long = staffId,
 
     @Column(updatable = false)
     val teamId: Long,
@@ -70,26 +65,6 @@ data class Contact(
     @Type(type = "yes_no")
     val isSensitive: Boolean = type.isSensitive,
 
-    @CreatedDate
-    @Column(name = "created_datetime", updatable = false)
-    var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
-
-    @LastModifiedDate
-    @Column(name = "last_updated_datetime")
-    var lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
-
-    @CreatedBy
-    @Column(name = "created_by_user_id", updatable = false)
-    var createdByUserId: Long = 0,
-
-    @LastModifiedBy
-    @Column(name = "last_updated_user_id")
-    var lastModifiedUserId: Long = 0,
-
-    @Version
-    @Column(name = "row_version")
-    var version: Long = 0,
-
     @Column(updatable = false)
     val trustProviderTeamId: Long = teamId,
 
@@ -99,25 +74,7 @@ data class Contact(
     @Column(updatable = false)
     val partitionAreaId: Long = 0L,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
-    var softDeleted: Boolean = false
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-        other as Contact
-        return id != null && id == other.id
-    }
-
-    override fun hashCode(): Int = javaClass.hashCode()
-
-    override fun toString(): String {
-        return this::class.simpleName + "(id = $id , offenderId = $offenderId , type = $type , " +
-                "notes = $notes , date = $date , startTime = $startTime , lastModifiedDate = $lastModifiedDateTime , " +
-                "lastModifiedUserId = $lastModifiedUserId , createdByUserId = $createdByUserId , " +
-                "createdDateTime = $createdDateTime , version = $version )"
-    }
-}
+    ) : BaseEntity()
 
 @Immutable
 @Entity

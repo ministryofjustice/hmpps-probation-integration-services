@@ -1,6 +1,7 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.managers
+package uk.gov.justice.digital.hmpps.integrations.delius.provider
 
 import org.hibernate.annotations.Immutable
+import java.time.ZonedDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -21,6 +22,9 @@ class Staff(
 
     @Column(name = "FORENAME2", length = 35)
     val middleName: String?,
+
+    @Column(name = "end_date")
+    val endDate: ZonedDateTime? = null,
 ) {
     val displayName = listOfNotNull(forename, middleName, surname).joinToString(" ")
 }

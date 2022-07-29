@@ -1,5 +1,9 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.managers
+package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamStaffContainer
 import java.time.ZonedDateTime
 import javax.persistence.Column
 import javax.persistence.JoinColumn
@@ -14,7 +18,7 @@ abstract class ManagerBaseEntity : BaseEntity() {
 
     @JoinColumn(name = "allocation_staff_id")
     @ManyToOne
-    lateinit var staffAllocation: Staff
+    lateinit var staff: Staff
 
     @JoinColumn(name = "allocation_team_id")
     @ManyToOne
@@ -50,7 +54,7 @@ abstract class ManagerBaseEntity : BaseEntity() {
 
     @JoinColumn(name = "allocation_reason_id")
     @ManyToOne
-    lateinit var allocationReason: AllocationReason
+    lateinit var allocationReason: ReferenceData
 
     @Column(name = "active_flag", columnDefinition = "NUMBER")
     var active: Boolean = true
@@ -59,7 +63,7 @@ abstract class ManagerBaseEntity : BaseEntity() {
         team = ts.team
         allocationDate = requestDate
         allocationReason = ts.reason
-        staffAllocation = ts.staff
+        staff = ts.staff
         staffEmployee = ts.staff
         provider = activeManager.provider
         partitionAreaId = activeManager.partitionAreaId

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.entity
+package uk.gov.justice.digital.hmpps.integrations.delius.person
 
 import org.hibernate.annotations.Immutable
 import javax.persistence.Column
@@ -7,14 +7,13 @@ import javax.persistence.Id
 
 @Immutable
 @Entity
-class Offender(
+class Person(
 
     @Id
     @Column(name = "offender_id")
     val id: Long,
 
-    @Column(name = "noms_number", columnDefinition = "char(7)")
-    val nomsId: String,
+    val crn: String,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false,
