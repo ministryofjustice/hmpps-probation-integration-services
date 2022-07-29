@@ -19,21 +19,21 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficerRepository
-import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.PersonAllocationDetail
 
 @Service
 class AllocatePersonService(
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
+    private val allocationRequestValidator: AllocationRequestValidator,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val responsibleOfficerRepository: ResponsibleOfficerRepository,
-    private val allocationRequestValidator: AllocationRequestValidator,
 
 ) : ManagerService<PersonManager>(personManagerRepository) {
 
     @Transactional
-    fun createPersonAllocation(allocationDetail: AllocationDetail.PersonAllocationDetail) {
+    fun createPersonAllocation(allocationDetail: PersonAllocationDetail) {
         val person = personRepository.findByCrn(allocationDetail.crn)
             ?: throw PersonNotFoundException(allocationDetail.crn)
 

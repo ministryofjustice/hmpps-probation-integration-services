@@ -20,6 +20,8 @@ enum class EventType(@JsonValue val value: String) {
 
 data class AdditionalInformation(val allocationId: String)
 
-data class PersonReference(val identifiers: List<PersonIdentifier>)
+data class PersonReference(val identifiers: List<PersonIdentifier>) {
+    fun findCrn(): String? = identifiers.find { it.type == "CRN" }?.value
+}
 
 data class PersonIdentifier(val type: String, val value: String)

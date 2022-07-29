@@ -48,7 +48,7 @@ class ResponsibleOfficer(
     var endDate: ZonedDateTime? = null,
 
     @Version
-    var rowVersion: Long = 1,
+    var version: Long = 0,
 
     @CreatedBy
     var createdByUserId: Long = 0,
