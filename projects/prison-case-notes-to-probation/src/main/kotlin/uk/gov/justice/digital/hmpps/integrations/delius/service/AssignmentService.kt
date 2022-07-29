@@ -1,32 +1,24 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exceptions.InvalidEstablishmentCodeException
 import uk.gov.justice.digital.hmpps.exceptions.ProbationAreaNotFoundException
+import uk.gov.justice.digital.hmpps.exceptions.StaffNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.TeamNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.StaffTeam
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.ProbationAreaRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffTeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.TeamRepository
 
 @Service
 class AssignmentService(
     private val probationAreaRepository: ProbationAreaRepository,
     private val teamRepository: TeamRepository,
-    private val staffRepository: StaffRepository,
-    private val officerCodeGenerator: OfficerCodeGenerator,
-    private val staffTeamRepository: StaffTeamRepository
+    private val staffService: StaffService
 ) {
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun findAssignment(establishmentCode: String, staffName: StaffName): Triple<Long, Long, Long> {
         if (establishmentCode.length < 3) throw InvalidEstablishmentCodeException(establishmentCode)
 
@@ -40,26 +32,16 @@ class AssignmentService(
 
     private fun getStaff(probationArea: ProbationArea, team: Team, staffName: StaffName): Staff {
         val findStaff = {
-            staffRepository.findTopByProbationAreaIdAndForenameIgnoreCaseAndSurnameIgnoreCase(
-                probationArea.id,
-                staffName.forename,
-                staffName.surname
-            )
+            staffService.findStaff(probationArea.id, staffName)
         }
 
         return findStaff() ?: try {
-            val staff = staffRepository.save(
-                Staff(
-                    forename = staffName.forename,
-                    surname = staffName.surname,
-                    probationAreaId = probationArea.id,
-                    code = officerCodeGenerator.generateFor(probationArea.code),
+            staffService.create(probationArea, team, staffName)
+        } catch (e: Exception) {
+            findStaff()
+                ?: throw StaffNotFoundException(
+                    "Unable to find or create staff with name $staffName for probation area ${probationArea.code}"
                 )
-            )
-            staffTeamRepository.save(StaffTeam(staff.id, team.id))
-            staff
-        } catch (dive: DataIntegrityViolationException) {
-            findStaff() ?: throw dive
         }
     }
 }

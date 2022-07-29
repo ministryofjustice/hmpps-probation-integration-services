@@ -5,12 +5,10 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentCaptor
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.any
-import org.mockito.Mockito.times
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
@@ -19,13 +17,10 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.exceptions.InvalidEstablishmentCodeException
 import uk.gov.justice.digital.hmpps.exceptions.ProbationAreaNotFoundException
+import uk.gov.justice.digital.hmpps.exceptions.StaffNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.TeamNotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.StaffTeam
 import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.ProbationAreaRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffTeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.TeamRepository
 
 @ExtendWith(MockitoExtension::class)
@@ -38,13 +33,7 @@ class AssignmentServiceTest {
     lateinit var teamRepository: TeamRepository
 
     @Mock
-    lateinit var staffRepository: StaffRepository
-
-    @Mock
-    lateinit var officerCodeGenerator: OfficerCodeGenerator
-
-    @Mock
-    lateinit var staffTeamRepository: StaffTeamRepository
+    lateinit var staffService: StaffService
 
     @InjectMocks
     lateinit var assignmentService: AssignmentService
@@ -87,29 +76,19 @@ class AssignmentServiceTest {
     }
 
     @Test
-    fun `staff found and and returned`() {
+    fun `find staff successfully`() {
         val probationArea = ProbationAreaGenerator.DEFAULT
         val team = TeamGenerator.DEFAULT
         val staff = StaffGenerator.DEFAULT
 
-        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId))
+        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId))
             .thenReturn(probationArea)
         whenever(teamRepository.findByCode(team.code)).thenReturn(team)
-        whenever(
-            staffRepository.findTopByProbationAreaIdAndForenameIgnoreCaseAndSurnameIgnoreCase(
-                probationArea.id,
-                staff.forename,
-                staff.surname
-            )
-        ).thenReturn(staff)
+        whenever(staffService.findStaff(probationArea.id, staffName)).thenReturn(staff)
 
-        val res = assignmentService.findAssignment(
-            PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId, StaffName(staff.forename, staff.surname)
-        )
+        val res = assignmentService.findAssignment(PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId, staffName)
 
-        verify(staffRepository, times(0)).save(any())
-        verify(staffTeamRepository, times(0)).save(any())
-
+        verify(staffService).findStaff(probationArea.id, staffName)
         assertThat(res.first, equalTo(probationArea.id))
         assertThat(res.second, equalTo(team.id))
         assertThat(res.third, equalTo(staff.id))
@@ -120,33 +99,66 @@ class AssignmentServiceTest {
         val probationArea = ProbationAreaGenerator.DEFAULT
         val team = TeamGenerator.DEFAULT
         val newStaffCode = "C12A001"
+        val newStaff = StaffGenerator.generate(newStaffCode, staffName.forename, staffName.surname)
 
-        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId))
+        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId))
             .thenReturn(probationArea)
         whenever(teamRepository.findByCode(team.code)).thenReturn(team)
-        whenever(
-            staffRepository.findTopByProbationAreaIdAndForenameIgnoreCaseAndSurnameIgnoreCase(
-                probationArea.id,
-                staffName.forename,
-                staffName.surname
+        whenever(staffService.findStaff(probationArea.id, staffName)).thenReturn(null)
+        whenever(staffService.create(probationArea, team, staffName))
+            .thenReturn(newStaff)
+
+        val res = assignmentService.findAssignment(PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId, staffName)
+
+        verify(staffService).create(probationArea, team, staffName)
+        assertThat(res.first, equalTo(probationArea.id))
+        assertThat(res.second, equalTo(team.id))
+        assertThat(res.third, equalTo(newStaff.id))
+    }
+
+    @Test
+    fun `retry find when exception thrown creating a new staff`() {
+        val probationArea = ProbationAreaGenerator.DEFAULT
+        val team = TeamGenerator.DEFAULT
+        val newStaffCode = "C12A001"
+        val newStaff = StaffGenerator.generate(newStaffCode, staffName.forename, staffName.surname)
+
+        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId))
+            .thenReturn(probationArea)
+        whenever(teamRepository.findByCode(team.code)).thenReturn(team)
+        whenever(staffService.findStaff(probationArea.id, staffName))
+            .thenReturn(null)
+            .thenReturn(newStaff)
+        whenever(staffService.create(probationArea, team, staffName))
+            .thenThrow(RuntimeException())
+
+        val res = assignmentService.findAssignment(PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId, staffName)
+
+        verify(staffService).create(probationArea, team, staffName)
+        verify(staffService, times(2)).findStaff(probationArea.id, staffName)
+        assertThat(res.first, equalTo(probationArea.id))
+        assertThat(res.second, equalTo(team.id))
+        assertThat(res.third, equalTo(newStaff.id))
+    }
+
+    @Test
+    fun `throws exception if second find fails`() {
+        val probationArea = ProbationAreaGenerator.DEFAULT
+        val team = TeamGenerator.DEFAULT
+
+        whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId))
+            .thenReturn(probationArea)
+        whenever(teamRepository.findByCode(team.code)).thenReturn(team)
+        whenever(staffService.findStaff(probationArea.id, staffName))
+            .thenReturn(null)
+        whenever(staffService.create(probationArea, team, staffName))
+            .thenThrow(RuntimeException())
+
+        assertThrows<StaffNotFoundException> {
+            assignmentService.findAssignment(
+                PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId,
+                staffName
             )
-        ).thenReturn(null)
-
-        whenever(officerCodeGenerator.generateFor(probationArea.code)).thenReturn(newStaffCode)
-        whenever(staffRepository.save(any(Staff::class.java))).thenAnswer { it.arguments[0] }
-
-        val staffCaptor = ArgumentCaptor.forClass(Staff::class.java)
-
-        assignmentService.findAssignment(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId, staffName)
-
-        verify(staffRepository, times(1)).save(staffCaptor.capture())
-        assertThat(staffCaptor.value.forename, equalTo(staffName.forename))
-        assertThat(staffCaptor.value.surname, equalTo(staffName.surname))
-        assertThat(staffCaptor.value.probationAreaId, equalTo(probationArea.id))
-        assertThat(staffCaptor.value.code, equalTo(newStaffCode))
-        val staffTeamCaptor = ArgumentCaptor.forClass(StaffTeam::class.java)
-        verify(staffTeamRepository, times(1)).save(staffTeamCaptor.capture())
-        assertThat(staffTeamCaptor.value.staffId, equalTo(staffCaptor.value.id))
-        assertThat(staffTeamCaptor.value.teamId, equalTo(team.id))
+        }
     }
 }
