@@ -30,14 +30,14 @@ class AllocatePersonService(
     private val responsibleOfficerRepository: ResponsibleOfficerRepository,
     private val allocationRequestValidator: AllocationRequestValidator,
 
-    ) : ManagerService<PersonManager>(personManagerRepository) {
+) : ManagerService<PersonManager>(personManagerRepository) {
 
     @Transactional
     fun createPersonAllocation(allocationDetail: AllocationDetail.PersonAllocationDetail) {
         val person = personRepository.findByCrn(allocationDetail.crn)
             ?: throw PersonNotFoundException(allocationDetail.crn)
 
-        //TODO: Auditing
+        // TODO: Auditing
 
         val activeOffenderManager =
             personManagerRepository.findActiveManagerAtDate(person.id, allocationDetail.createdDate)

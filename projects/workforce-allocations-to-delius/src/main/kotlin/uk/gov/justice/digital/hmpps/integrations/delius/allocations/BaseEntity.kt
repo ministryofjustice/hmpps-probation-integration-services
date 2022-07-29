@@ -12,26 +12,26 @@ import javax.persistence.Version
 @MappedSuperclass
 abstract class BaseEntity {
 
-  @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
-  var softDeleted: Boolean = false
+    @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
+    var softDeleted: Boolean = false
 
-  @Column(name = "row_version", nullable = false)
-  @Version
-  var version: Long? = null
+    @Column(name = "row_version", nullable = false)
+    @Version
+    var version: Long? = null
 
-  @Column(name = "created_datetime", nullable = false)
-  @CreatedDate
-  var createdDateTime: ZonedDateTime? = null
+    @Column(name = "created_datetime", nullable = false)
+    @CreatedDate
+    var createdDateTime: ZonedDateTime? = null
 
-  @Column(name = "last_updated_datetime", nullable = false)
-  @LastModifiedDate
-  var lastModifiedDateTime: ZonedDateTime? = null
+    @Column(name = "last_updated_datetime", nullable = false)
+    @LastModifiedDate
+    var lastModifiedDateTime: ZonedDateTime? = null
 
-  @Column(name = "created_by_user_id", nullable = false)
-  @CreatedBy
-  var createdUserId: Long? = null
+    @Column(name = "created_by_user_id", nullable = false)
+    @CreatedBy
+    var createdUserId: Long? = null
 
-  @Column(name = "last_updated_user_id", nullable = false)
-  @LastModifiedBy
-  var lastModifiedUserId: Long? = null
+    @Column(name = "last_updated_user_id", nullable = false)
+    @LastModifiedBy
+    var lastModifiedUserId: Long? = null
 }

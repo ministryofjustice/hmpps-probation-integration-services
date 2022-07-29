@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 const val CASE_NOTE_MERGE = "CaseNoteMerge"

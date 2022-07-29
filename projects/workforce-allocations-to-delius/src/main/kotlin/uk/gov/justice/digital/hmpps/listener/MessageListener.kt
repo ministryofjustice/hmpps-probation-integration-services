@@ -6,7 +6,6 @@ import org.springframework.jms.annotation.EnableJms
 import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.person.AllocatePersonService
-import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocationDetail
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.PersonAllocationDetail
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.RequirementAllocationDetail
@@ -31,7 +30,8 @@ class MessageListener(
     fun receive(allocationEvent: AllocationEvent) {
         log.info("received $allocationEvent")
         telemetryService.trackEvent(
-            "${allocationEvent.eventType}_RECEIVED", mapOf(
+            "${allocationEvent.eventType}_RECEIVED",
+            mapOf(
                 "eventType" to allocationEvent.eventType.value,
                 "detailUrl" to allocationEvent.detailUrl
             ) + allocationEvent.personReference.identifiers.associate { Pair(it.type, it.value) }

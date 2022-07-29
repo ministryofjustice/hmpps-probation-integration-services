@@ -74,7 +74,7 @@ class Contact(
     @Column(updatable = false)
     val partitionAreaId: Long = 0L,
 
-    ) : BaseEntity()
+) : BaseEntity()
 
 @Immutable
 @Entity

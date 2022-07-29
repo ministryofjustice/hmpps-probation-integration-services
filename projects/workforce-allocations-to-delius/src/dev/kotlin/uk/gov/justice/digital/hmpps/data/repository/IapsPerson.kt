@@ -8,10 +8,10 @@ import javax.persistence.Table
 @Entity
 @Table(name = "iaps_offender")
 class IapsPerson(
-  @Id
-  @Column(name = "offender_id")
-  val personId: Long,
+    @Id
+    @Column(name = "offender_id")
+    val personId: Long,
 
-  @Column(name = "iaps_flag")
-  val iapsFlag: Long
+    @Column(name = "iaps_flag")
+    val iapsFlag: Long
 )
