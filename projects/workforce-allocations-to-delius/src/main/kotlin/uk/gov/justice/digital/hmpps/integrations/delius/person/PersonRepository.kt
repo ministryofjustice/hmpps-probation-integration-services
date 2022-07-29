@@ -10,9 +10,9 @@ interface PersonRepository : JpaRepository<Person, Long> {
     @Modifying
     @Query(
         """
-    merge into iaps_offender using dual on (offender_id = ?2) 
-    when matched then update set iaps_flag=?1 
-    when not matched then insert(offender_id, iaps_flag) values(?2,?1)
+    merge into iaps_offender using dual on (offender_id = ?1) 
+    when matched then update set iaps_flag=?2 
+    when not matched then insert(offender_id, iaps_flag) values(?1,?2)
     """,
         nativeQuery = true
     )

@@ -8,9 +8,9 @@ interface EventRepository : JpaRepository<Event, Long> {
     @Modifying
     @Query(
         """
-    merge into iaps_event using dual on (event_id = ?2) 
-    when matched then update set iaps_flag=?1 
-    when not matched then insert(event_id, iaps_flag) values(?2,?1)
+    merge into iaps_event using dual on (event_id = ?1) 
+    when matched then update set iaps_flag=?2 
+    when not matched then insert(event_id, iaps_flag) values(?1,?2)
     """,
         nativeQuery = true
     )
