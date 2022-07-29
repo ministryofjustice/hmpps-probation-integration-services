@@ -24,10 +24,6 @@ abstract class ManagerBaseEntity : BaseEntity() {
     @ManyToOne
     lateinit var team: Team
 
-    @JoinColumn(name = "provider_team_id")
-    @ManyToOne
-    var teamProvider: Team? = null
-
     @JoinColumn(name = "trust_provider_team_id")
     @ManyToOne
     var trustProviderTeam: Team? = null
@@ -36,7 +32,10 @@ abstract class ManagerBaseEntity : BaseEntity() {
     var trustProviderFlag: Boolean = false
 
     @Column(name = "allocation_date", nullable = false)
-    lateinit var allocationDate: ZonedDateTime
+    lateinit var startDate: ZonedDateTime
+
+    @Column(name = "active_flag", columnDefinition = "NUMBER")
+    var active: Boolean = true
 
     @Column(name = "end_date")
     var endDate: ZonedDateTime? = null
@@ -56,12 +55,9 @@ abstract class ManagerBaseEntity : BaseEntity() {
     @ManyToOne
     lateinit var allocationReason: ReferenceData
 
-    @Column(name = "active_flag", columnDefinition = "NUMBER")
-    var active: Boolean = true
-
     fun populate(requestDate: ZonedDateTime, ts: TeamStaffContainer, activeManager: ManagerBaseEntity) {
         team = ts.team
-        allocationDate = requestDate
+        startDate = requestDate
         allocationReason = ts.reason
         staff = ts.staff
         staffEmployee = ts.staff

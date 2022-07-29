@@ -78,16 +78,16 @@ class AllocatePersonService(
         newPersonManager: PersonManager,
     ) {
         val activeResponsibleOfficer = responsibleOfficerRepository
-            .findActiveManagerAtDate(newPersonManager.personId, newPersonManager.allocationDate)
-            ?: throw ResponsibleOfficerNotFoundException(newPersonManager.personId, newPersonManager.allocationDate)
+            .findActiveManagerAtDate(newPersonManager.personId, newPersonManager.startDate)
+            ?: throw ResponsibleOfficerNotFoundException(newPersonManager.personId, newPersonManager.startDate)
 
         val newResponsibleOfficer = ResponsibleOfficer(
             personId = newPersonManager.personId,
-            startDate = newPersonManager.allocationDate,
+            startDate = newPersonManager.startDate,
             endDate = newPersonManager.endDate,
             communityManager = newPersonManager
         )
-        activeResponsibleOfficer.endDate = newPersonManager.allocationDate
+        activeResponsibleOfficer.endDate = newPersonManager.startDate
 
         // Need to flush changes here to ensure single active RO constraint isn't violated when new RO is added.
         responsibleOfficerRepository.saveAndFlush(activeResponsibleOfficer)

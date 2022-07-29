@@ -14,14 +14,14 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
     @Query(
         """
         SELECT rd FROM ReferenceData rd
-        WHERE rd.referenceDataMaster.code = :masterCode
+        WHERE rd.dataset.code = :datasetCode
         AND rd.code = :code
     """
     )
-    fun findByDatasetAndCode(masterCode: String, code: String): ReferenceData?
+    fun findByDatasetAndCode(datasetCode: DatasetCode, code: String): ReferenceData?
 }
 
-fun ReferenceDataRepository.findPendingTransfer() = findByDatasetAndCode("TRANSFER STATUS", "PN")
+fun ReferenceDataRepository.findPendingTransfer() = findByDatasetAndCode(DatasetCode.TRANSFER_STATUS, "PN")
 
 @Immutable
 @Entity
@@ -39,17 +39,5 @@ class ReferenceData(
 
     @ManyToOne
     @JoinColumn(name = "reference_data_master_id")
-    val referenceDataMaster: ReferenceDataMaster
-)
-
-@Immutable
-@Entity
-@Table(name = "r_reference_data_master")
-class ReferenceDataMaster(
-    @Id
-    @Column(name = "reference_data_master_id")
-    val id: Long,
-
-    @Column(name = "code_set_name", length = 100, nullable = false)
-    val code: String,
+    val dataset: Dataset
 )

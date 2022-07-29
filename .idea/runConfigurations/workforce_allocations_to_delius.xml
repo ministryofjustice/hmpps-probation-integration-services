@@ -3,6 +3,7 @@
     <option name="ACTIVE_PROFILES" value="dev" />
     <module name="probation-integration-services.workforce-allocations-to-delius.dev" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="uk.gov.justice.digital.hmpps.App" />
+    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/projects/workforce-allocations-to-delius" />
     <extension name="net.ashald.envfile">
       <option name="IS_ENABLED" value="false" />
       <option name="IS_SUBST" value="false" />

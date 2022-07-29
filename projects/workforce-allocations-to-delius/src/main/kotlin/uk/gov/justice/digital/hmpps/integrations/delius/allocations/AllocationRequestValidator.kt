@@ -34,8 +34,8 @@ class AllocationRequestValidator(
         }
 
         val allocationReason = referenceDataRepository.findByDatasetAndCode(
-            allocationDetail.masterCode.value, allocationDetail.code
-        ) ?: throw ReferenceDataNotFound(allocationDetail.masterCode.value, allocationDetail.code)
+            allocationDetail.datasetCode, allocationDetail.code
+        ) ?: throw ReferenceDataNotFound(allocationDetail.datasetCode.value, allocationDetail.code)
 
         val staff = staffRepository.findByCode(allocationDetail.staffCode)
             ?: throw StaffNotFoundException(allocationDetail.staffCode)

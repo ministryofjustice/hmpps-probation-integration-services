@@ -14,16 +14,16 @@ import javax.persistence.SequenceGenerator
 import javax.persistence.Table
 
 @Entity
-@AssociationOverride(name = "team", joinColumns = [JoinColumn(name = "team_id")])
 @EntityListeners(AuditingEntityListener::class)
+@AssociationOverride(name = "team", joinColumns = [JoinColumn(name = "team_id")])
 @Table(name = "offender_manager")
 @SequenceGenerator(name = "offender_manager_id_seq", sequenceName = "offender_manager_id_seq", allocationSize = 1)
 class PersonManager(
     @Id
     @Column(name = "offender_manager_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offender_manager_id_seq")
-    var id: Long? = null,
+    var id: Long = 0,
 
     @Column(name = "offender_id")
-    val personId: Long
+    var personId: Long = 0
 ) : ManagerBaseEntity()

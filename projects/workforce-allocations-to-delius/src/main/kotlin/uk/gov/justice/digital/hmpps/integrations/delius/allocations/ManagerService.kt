@@ -21,7 +21,7 @@ abstract class ManagerService<T : ManagerBaseEntity>(
         newManager: T
     ): Pair<T, T> {
         newManager.endDate = managerActive.endDate
-        managerActive.endDate = newManager.allocationDate
+        managerActive.endDate = newManager.startDate
         val managerActiveSaved = managerRepository.save(managerActive)
         val newManagerSaved = managerRepository.save(newManager)
         return Pair(managerActiveSaved, newManagerSaved)
@@ -37,15 +37,15 @@ abstract class ManagerService<T : ManagerBaseEntity>(
             personId = cci.offenderId,
             eventId = cci.eventId,
             requirementId = cci.requirementId,
-            date = newManager.allocationDate,
-            startTime = newManager.allocationDate,
+            date = newManager.startDate,
+            startTime = newManager.startDate,
             teamId = newManager.team.id,
             staffId = newManager.staff.id,
             providerId = newManager.provider.id,
             notes =
             """
         |Transfer Reason: Internal Transfer
-        |Transfer Date: ${newManager.allocationDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}
+        |Transfer Date: ${newManager.startDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}
         |From Trust: ${newManager.provider.description}
         |From Team: ${oldManager.team.description}
         |From Officer: ${oldManager.staff.displayName}
@@ -61,7 +61,7 @@ abstract class ManagerService<T : ManagerBaseEntity>(
             return true
         }
 
-        if (createdDate.truncatedTo(ChronoUnit.SECONDS) == manager.allocationDate.truncatedTo(ChronoUnit.SECONDS)) {
+        if (createdDate.truncatedTo(ChronoUnit.SECONDS) == manager.startDate.truncatedTo(ChronoUnit.SECONDS)) {
             throw ConflictException("Allocation date conflicts with the current active manager: $this")
         }
 

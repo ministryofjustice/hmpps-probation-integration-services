@@ -10,7 +10,7 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
         """
     select pm from PersonManager pm 
     where pm.personId = :personId 
-    and pm.allocationDate <= :dateTime 
+    and pm.startDate <= :dateTime 
     and (pm.endDate is null or pm.endDate > :dateTime)  
     and pm.softDeleted = false
     """
