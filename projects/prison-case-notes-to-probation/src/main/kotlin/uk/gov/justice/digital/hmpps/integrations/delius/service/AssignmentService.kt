@@ -38,8 +38,10 @@ class AssignmentService(
         return findStaff() ?: try {
             staffService.create(probationArea, team, staffName)
         } catch (e: Exception) {
-            null
-        } ?: findStaff()
-            ?: throw StaffNotFoundException("Unable to find or create staff with name $staffName for probation area ${probationArea.code}")
+            findStaff()
+                ?: throw StaffNotFoundException(
+                    "Unable to find or create staff with name $staffName for probation area ${probationArea.code}"
+                )
+        }
     }
 }
