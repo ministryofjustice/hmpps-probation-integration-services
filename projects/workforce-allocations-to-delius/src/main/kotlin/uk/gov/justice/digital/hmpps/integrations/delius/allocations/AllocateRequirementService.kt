@@ -44,7 +44,7 @@ class AllocateRequirementService(
         if (!requirement.active) throw NotActiveException("Requirement", "id", allocationDetail.requirementId)
 
         auditedInteractionService.createAuditedInteraction(
-            BusinessInteractionCode.ADD_EVENT_ALLOCATION,
+            BusinessInteractionCode.CREATE_COMPONENT_TRANSFER,
             AuditedInteraction.Parameters(
                 "offenderId" to requirement.person.id.toString(),
                 "eventId" to requirement.disposal.event.id.toString(),

@@ -8,6 +8,7 @@ dependencies {
     implementation("org.springframework:spring-jms")
     implementation(libs.amazon.sqs)
     implementation(libs.insights)
+    implementation(libs.openfeign)
     implementation(libs.sentry)
 
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")

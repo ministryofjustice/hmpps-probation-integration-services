@@ -1,9 +1,7 @@
-package uk.gov.justice.digital.hmpps.config
+package uk.gov.justice.digital.hmpps.feign
 
 import feign.RequestInterceptor
-import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.authority.AuthorityUtils
@@ -11,20 +9,17 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.core.OAuth2AccessToken
+import uk.gov.justice.digital.hmpps.config.ServiceContext
 import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
-import uk.gov.justice.digital.hmpps.integrations.workforceallocations.WorkforceAllocationsClient
 
-@Configuration
-@EnableFeignClients(clients = [WorkforceAllocationsClient::class])
-class FeignConfig(
+abstract class FeignConfig(
     private val authorizedClientManager: OAuth2AuthorizedClientManager
 ) {
-    companion object {
-        const val REGISTRATION_ID = "workforce-allocations-to-delius"
-    }
+
+    abstract fun registrationId(): String
 
     @Bean
-    fun requestInterceptor() = RequestInterceptor { template ->
+    open fun requestInterceptor() = RequestInterceptor { template ->
         getAccessToken()?.tokenValue?.let {
             template.header(HttpHeaders.AUTHORIZATION, "Bearer $it")
         }
@@ -42,7 +37,7 @@ class FeignConfig(
         }
 
         val request = OAuth2AuthorizeRequest
-            .withClientRegistrationId(REGISTRATION_ID)
+            .withClientRegistrationId(registrationId())
             .principal(SecurityContextHolder.getContext().authentication)
             .build()
         return authorizedClientManager.authorize(request)?.accessToken
