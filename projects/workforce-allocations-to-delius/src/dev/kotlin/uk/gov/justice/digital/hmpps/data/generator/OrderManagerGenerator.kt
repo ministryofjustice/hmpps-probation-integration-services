@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
 import UserGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator.build
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
@@ -28,17 +29,15 @@ object OrderManagerGenerator {
         id,
         eventId,
         transferReasonId
-    ).apply {
-        this.provider = provider
-        this.team = team
-        this.staff = staff
-        trustProviderTeam = team
-        staffEmployee = staff
-        startDate = dateTime
-        this.createdDateTime = createdDateTime
-        this.lastModifiedDateTime = lastModifiedDateTime
-        this.createdUserId = createdUserId
-        this.lastModifiedUserId = lastModifiedUserId
-        this.version = version
-    }
+    ).build(
+        provider,
+        team,
+        staff,
+        dateTime,
+        createdDateTime,
+        lastModifiedDateTime,
+        createdUserId,
+        lastModifiedUserId,
+        version
+    ) as OrderManager
 }

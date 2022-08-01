@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.allocations.person
+package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -6,8 +6,9 @@ import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exceptions.PersonManagerNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.PersonNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.ResponsibleOfficerNotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationRequestValidator
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ManagerService
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactContext
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -23,6 +24,7 @@ import uk.gov.justice.digital.hmpps.integrations.workforceallocations.Allocation
 
 @Service
 class AllocatePersonService(
+    private val auditedInteractionService: AuditedInteractionService,
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
     private val allocationRequestValidator: AllocationRequestValidator,
@@ -37,7 +39,10 @@ class AllocatePersonService(
         val person = personRepository.findByCrn(allocationDetail.crn)
             ?: throw PersonNotFoundException(allocationDetail.crn)
 
-        // TODO: Auditing
+        auditedInteractionService.createAuditedInteraction(
+            BusinessInteractionCode.ADD_PERSON_ALLOCATION,
+            AuditedInteraction.Parameters("offenderId" to person.id.toString())
+        )
 
         val activeOffenderManager =
             personManagerRepository.findActiveManagerAtDate(person.id, allocationDetail.createdDate)

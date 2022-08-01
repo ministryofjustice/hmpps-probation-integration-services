@@ -1,20 +1,14 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import IdGenerator
 import UserGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator.build
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManager
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ManagerBaseEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
 import java.time.ZonedDateTime
 
-object PersonManagerGenerator {
-    var DEFAULT = generate(dateTime = ZonedDateTime.now().minusMonths(1))
-
-    fun generate(
-        id: Long = IdGenerator.getAndIncrement(),
-        personId: Long = PersonGenerator.DEFAULT.id,
+interface ManagerGenerator {
+    fun ManagerBaseEntity.build(
         provider: Provider = ProviderGenerator.DEFAULT,
         team: Team = TeamGenerator.DEFAULT,
         staff: Staff = StaffGenerator.DEFAULT,
@@ -24,18 +18,17 @@ object PersonManagerGenerator {
         createdUserId: Long = UserGenerator.APPLICATION_USER.id,
         lastModifiedUserId: Long = UserGenerator.APPLICATION_USER.id,
         version: Long = 0
-    ) = PersonManager(
-        id,
-        personId
-    ).build(
-        provider,
-        team,
-        staff,
-        dateTime,
-        createdDateTime,
-        lastModifiedDateTime,
-        createdUserId,
-        lastModifiedUserId,
-        version
-    ) as PersonManager
+    ) = apply {
+        this.provider = provider
+        this.team = team
+        this.staff = staff
+        trustProviderTeam = team
+        staffEmployee = staff
+        startDate = dateTime
+        this.createdDateTime = createdDateTime
+        this.lastModifiedDateTime = lastModifiedDateTime
+        this.createdUserId = createdUserId
+        this.lastModifiedUserId = lastModifiedUserId
+        this.version = version
+    }
 }

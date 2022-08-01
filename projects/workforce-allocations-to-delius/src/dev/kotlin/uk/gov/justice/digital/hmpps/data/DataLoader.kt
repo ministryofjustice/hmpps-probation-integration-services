@@ -5,6 +5,9 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.config.ServiceContext
+import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator.ADD_EVENT_ALLOCATION
+import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator.ADD_PERSON_ALLOCATION
+import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator.CREATE_COMPONENT_TRANSFER
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
@@ -40,6 +43,10 @@ class DataLoader(
     override fun run(vararg args: String?) {
         userRepository.save(UserGenerator.APPLICATION_USER)
         serviceContext.setUp()
+
+        businessInteractionRepository.saveAll(
+            listOf(ADD_PERSON_ALLOCATION, ADD_EVENT_ALLOCATION, CREATE_COMPONENT_TRANSFER)
+        )
 
         datasetRepository.saveAll(
             listOf(

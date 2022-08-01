@@ -5,8 +5,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.jms.annotation.EnableJms
 import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.person.AllocateEventService
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.person.AllocatePersonService
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocateEventService
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocatePersonService
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocateRequirementService
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocationDetail
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.PersonAllocationDetail
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.RequirementAllocationDetail
@@ -21,6 +22,7 @@ class MessageListener(
     private val allocationsClient: WorkforceAllocationsClient,
     private val allocatePersonService: AllocatePersonService,
     private val allocateEventService: AllocateEventService,
+    private val allocateRequirementService: AllocateRequirementService,
     private val telemetryService: TelemetryService
 ) {
 
@@ -44,7 +46,9 @@ class MessageListener(
             is EventAllocationDetail -> allocateEventService.createEventAllocation(
                 allocationEvent.personReference.findCrn()!!, allocationDetail
             )
-            is RequirementAllocationDetail -> {}
+            is RequirementAllocationDetail -> allocateRequirementService.createRequirementAllocation(
+                allocationEvent.personReference.findCrn()!!, allocationDetail
+            )
         }
     }
 }

@@ -2,19 +2,19 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
 import UserGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator.build
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManager
+import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
 import java.time.ZonedDateTime
 
-object PersonManagerGenerator {
+object RequirementManagerGenerator : ManagerGenerator {
     var DEFAULT = generate(dateTime = ZonedDateTime.now().minusMonths(1))
 
     fun generate(
         id: Long = IdGenerator.getAndIncrement(),
-        personId: Long = PersonGenerator.DEFAULT.id,
+        requirementId: Long = RequirementGenerator.DEFAULT.id,
+        transferReasonId: Long = TransferReasonGenerator.CASE_ORDER.id,
         provider: Provider = ProviderGenerator.DEFAULT,
         team: Team = TeamGenerator.DEFAULT,
         staff: Staff = StaffGenerator.DEFAULT,
@@ -24,9 +24,10 @@ object PersonManagerGenerator {
         createdUserId: Long = UserGenerator.APPLICATION_USER.id,
         lastModifiedUserId: Long = UserGenerator.APPLICATION_USER.id,
         version: Long = 0
-    ) = PersonManager(
+    ) = RequirementManager(
         id,
-        personId
+        requirementId,
+        transferReasonId
     ).build(
         provider,
         team,
@@ -37,5 +38,5 @@ object PersonManagerGenerator {
         createdUserId,
         lastModifiedUserId,
         version
-    ) as PersonManager
+    ) as RequirementManager
 }

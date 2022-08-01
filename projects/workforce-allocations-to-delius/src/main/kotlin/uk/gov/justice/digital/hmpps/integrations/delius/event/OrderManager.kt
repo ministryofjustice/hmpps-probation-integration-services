@@ -23,6 +23,5 @@ class OrderManager(
 
     var eventId: Long = 0,
 
-    var transferReasonId: Long = 0,
-
+    var transferReasonId: Long = 0
 ) : ManagerBaseEntity()

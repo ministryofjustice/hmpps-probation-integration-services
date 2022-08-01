@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.allocations.person
+package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -8,8 +8,9 @@ import uk.gov.justice.digital.hmpps.exceptions.EventNotActiveException
 import uk.gov.justice.digital.hmpps.exceptions.EventNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.OrderManagerNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.TransferReasonNotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationRequestValidator
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ManagerService
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactContext
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeCode
@@ -24,6 +25,7 @@ import uk.gov.justice.digital.hmpps.integrations.workforceallocations.Allocation
 
 @Service
 class AllocateEventService(
+    private val auditedInteractionService: AuditedInteractionService,
     private val eventRepository: EventRepository,
     private val orderManagerRepository: OrderManagerRepository,
     private val allocationRequestValidator: AllocationRequestValidator,
@@ -40,7 +42,13 @@ class AllocateEventService(
         if (!event.active) throw EventNotActiveException(allocationDetail.eventId)
         if (event.person.crn != crn) throw ConflictException("Event ${allocationDetail.eventId} not for $crn")
 
-        // TODO: Auditing
+        auditedInteractionService.createAuditedInteraction(
+            BusinessInteractionCode.ADD_EVENT_ALLOCATION,
+            AuditedInteraction.Parameters(
+                "offenderId" to event.person.id.toString(),
+                "eventId" to event.id.toString()
+            )
+        )
 
         val activeOrderManager =
             orderManagerRepository.findActiveManagerAtDate(allocationDetail.eventId, allocationDetail.createdDate)
