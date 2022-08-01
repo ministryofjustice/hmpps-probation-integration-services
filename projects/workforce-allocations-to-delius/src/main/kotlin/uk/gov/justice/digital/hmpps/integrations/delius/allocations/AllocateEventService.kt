@@ -28,7 +28,7 @@ class AllocateEventService(
     private val auditedInteractionService: AuditedInteractionService,
     private val eventRepository: EventRepository,
     private val orderManagerRepository: OrderManagerRepository,
-    private val allocationRequestValidator: AllocationRequestValidator,
+    private val allocationValidator: AllocationValidator,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val transferReasonRepository: TransferReasonRepository
@@ -58,8 +58,10 @@ class AllocateEventService(
             return
         }
 
-        allocationRequestValidator.hasNoPendingTransfers(event)
-        val ts = allocationRequestValidator.initialValidations(
+        if (eventRepository.countPendingTransfers(event.id) > 0) {
+            throw ConflictException("Pending transfer exists for this event: ${event.id}")
+        }
+        val ts = allocationValidator.initialValidations(
             activeOrderManager.provider.id,
             allocationDetail,
         )

@@ -21,8 +21,6 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
     fun findByDatasetAndCode(datasetCode: DatasetCode, code: String): ReferenceData?
 }
 
-fun ReferenceDataRepository.findPendingTransfer() = findByDatasetAndCode(DatasetCode.TRANSFER_STATUS, "PN")
-
 @Immutable
 @Entity
 @Table(name = "r_standard_reference_list")

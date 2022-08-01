@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
+import uk.gov.justice.digital.hmpps.exceptions.ConflictException
 import uk.gov.justice.digital.hmpps.exceptions.PersonManagerNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.PersonNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.ResponsibleOfficerNotFoundException
@@ -27,7 +28,7 @@ class AllocatePersonService(
     private val auditedInteractionService: AuditedInteractionService,
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
-    private val allocationRequestValidator: AllocationRequestValidator,
+    private val allocationValidator: AllocationValidator,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val responsibleOfficerRepository: ResponsibleOfficerRepository,
@@ -44,16 +45,18 @@ class AllocatePersonService(
             AuditedInteraction.Parameters("offenderId" to person.id.toString())
         )
 
-        val activeOffenderManager =
-            personManagerRepository.findActiveManagerAtDate(person.id, allocationDetail.createdDate)
-                ?: throw PersonManagerNotFoundException(allocationDetail.crn, allocationDetail.createdDate)
+        val activeOffenderManager = personManagerRepository.findActiveManagerAtDate(
+            person.id, allocationDetail.createdDate
+        ) ?: throw PersonManagerNotFoundException(allocationDetail.crn, allocationDetail.createdDate)
 
         if (allocationDetail.isDuplicate(activeOffenderManager)) {
             return
         }
 
-        allocationRequestValidator.hasNoPendingTransfers(person)
-        val ts = allocationRequestValidator.initialValidations(
+        if (personRepository.countPendingTransfers(person.id) > 0) {
+            throw ConflictException("Pending transfer exists for this person: ${person.crn}")
+        }
+        val ts = allocationValidator.initialValidations(
             activeOffenderManager.provider.id,
             allocationDetail,
         )

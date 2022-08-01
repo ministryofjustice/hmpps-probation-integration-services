@@ -7,6 +7,17 @@ import org.springframework.data.jpa.repository.Query
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?
 
+    @Query(
+        """
+        SELECT COUNT(pt) FROM PersonTransfer pt
+        JOIN ReferenceData status ON pt.statusId = status.id 
+        WHERE pt.personId = :personId 
+        AND status.code = 'PN'
+        AND pt.softDeleted = false
+    """
+    )
+    fun countPendingTransfers(personId: Long): Int
+
     @Modifying
     @Query(
         """

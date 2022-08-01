@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.data.repository
+package uk.gov.justice.digital.hmpps.data.entity
 
 import org.hibernate.annotations.Immutable
 import javax.persistence.Column

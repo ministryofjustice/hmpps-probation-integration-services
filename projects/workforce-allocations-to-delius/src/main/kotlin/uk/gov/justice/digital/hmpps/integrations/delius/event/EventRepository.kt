@@ -5,6 +5,18 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 
 interface EventRepository : JpaRepository<Event, Long> {
+
+    @Query(
+        """
+        SELECT COUNT(ot) FROM OrderTransfer ot
+        JOIN ReferenceData status ON ot.statusId = status.id 
+        WHERE ot.eventId = :eventId 
+        AND status.code = 'PN'
+        AND ot.softDeleted = false
+    """
+    )
+    fun countPendingTransfers(eventId: Long): Int
+
     @Modifying
     @Query(
         """

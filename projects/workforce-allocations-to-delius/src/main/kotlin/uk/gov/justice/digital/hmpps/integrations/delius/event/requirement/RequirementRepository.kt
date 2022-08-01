@@ -5,6 +5,18 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 
 interface RequirementRepository : JpaRepository<Requirement, Long> {
+
+    @Query(
+        """
+        SELECT COUNT(rt) FROM RequirementTransfer rt
+        JOIN ReferenceData status ON rt.statusId = status.id 
+        WHERE rt.requirementId = :requirementId 
+        AND status.code = 'PN'
+        AND rt.softDeleted = false
+    """
+    )
+    fun countPendingTransfers(requirementId: Long): Int
+
     @Modifying
     @Query(
         """

@@ -28,7 +28,7 @@ class AllocateRequirementService(
     private val auditedInteractionService: AuditedInteractionService,
     private val requirementRepository: RequirementRepository,
     private val requirementManagerRepository: RequirementManagerRepository,
-    private val allocationRequestValidator: AllocationRequestValidator,
+    private val allocationValidator: AllocationValidator,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val transferReasonRepository: TransferReasonRepository
@@ -62,8 +62,10 @@ class AllocateRequirementService(
             return
         }
 
-        allocationRequestValidator.hasNoPendingTransfers(requirement)
-        val ts = allocationRequestValidator.initialValidations(
+        if (requirementRepository.countPendingTransfers(requirement.id) > 0) {
+            throw ConflictException("Pending transfer exists for this requirement: ${requirement.id}")
+        }
+        val ts = allocationValidator.initialValidations(
             activeRequirementManager.provider.id,
             allocationDetail,
         )
