@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
+import uk.gov.justice.digital.hmpps.data.repository.IapsPersonRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManager
@@ -48,6 +49,9 @@ class AllocatePersonIntegrationTest {
 
     @Autowired
     private lateinit var responsibleOfficerRepository: ResponsibleOfficerRepository
+
+    @Autowired
+    private lateinit var iapsPersonRepository: IapsPersonRepository
 
     @MockBean
     private lateinit var telemetryService: TelemetryService
@@ -131,5 +135,7 @@ class AllocatePersonIntegrationTest {
 
         val updatedRoCount = responsibleOfficerRepository.findAll().count { it.personId == person.id }
         assertThat(originalRoCount + 1, equalTo(updatedRoCount))
+
+        assert(iapsPersonRepository.findById(person.id).isPresent)
     }
 }

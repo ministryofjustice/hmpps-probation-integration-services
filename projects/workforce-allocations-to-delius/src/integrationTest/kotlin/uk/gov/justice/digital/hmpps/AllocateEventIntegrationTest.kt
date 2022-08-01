@@ -17,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
+import uk.gov.justice.digital.hmpps.data.repository.IapsEventRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
@@ -42,6 +43,9 @@ class AllocateEventIntegrationTest {
 
     @Autowired
     private lateinit var orderManagerRepository: OrderManagerRepository
+
+    @Autowired
+    private lateinit var iapsEventRepository: IapsEventRepository
 
     @MockBean
     private lateinit var telemetryService: TelemetryService
@@ -105,5 +109,7 @@ class AllocateEventIntegrationTest {
 
         val updatedOmCount = orderManagerRepository.findAll().count { it.eventId == event.id }
         assertThat(originalOmCount + 1, equalTo(updatedOmCount))
+
+        assert(iapsEventRepository.findById(event.id).isPresent)
     }
 }

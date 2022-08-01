@@ -17,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator
+import uk.gov.justice.digital.hmpps.data.repository.IapsRequirementRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
@@ -42,6 +43,9 @@ class AllocateRequirementIntegrationTest {
 
     @Autowired
     private lateinit var requirementManagerRepository: RequirementManagerRepository
+
+    @Autowired
+    private lateinit var iapsRequirementRepository: IapsRequirementRepository
 
     @MockBean
     private lateinit var telemetryService: TelemetryService
@@ -105,5 +109,7 @@ class AllocateRequirementIntegrationTest {
 
         val updatedRmCount = requirementManagerRepository.findAll().count { it.requirementId == requirement.id }
         assertThat(originalRmCount + 1, equalTo(updatedRmCount))
+
+        assert(iapsRequirementRepository.findById(requirement.id).isPresent)
     }
 }
