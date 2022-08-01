@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.config
 
+import UserGenerator
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyString
@@ -7,7 +8,8 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.UserService
+import uk.gov.justice.digital.hmpps.config.datasource.DeliusConnectionProvider
+import uk.gov.justice.digital.hmpps.user.UserService
 import java.sql.Connection
 import java.sql.PreparedStatement
 import javax.sql.DataSource

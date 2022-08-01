@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.data
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.config.ServiceContext
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteGenerator
@@ -21,7 +22,6 @@ import uk.gov.justice.digital.hmpps.data.repository.DisposalTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.InstitutionRepository
 import uk.gov.justice.digital.hmpps.data.repository.NomisTypeNsiTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.NsiTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomisTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteTypeRepository
@@ -31,7 +31,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepos
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.ProbationAreaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.TeamRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.repository.UserRepository
+import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
 @Profile("dev", "integration-test")

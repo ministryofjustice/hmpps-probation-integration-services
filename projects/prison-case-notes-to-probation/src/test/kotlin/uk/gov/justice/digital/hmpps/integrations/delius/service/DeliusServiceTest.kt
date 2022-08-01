@@ -17,6 +17,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteTypeGenerator
@@ -27,7 +28,6 @@ import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.exceptions.CaseNoteTypeNotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteRelatedIds

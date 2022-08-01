@@ -10,6 +10,8 @@ spring:
       max-concurrency: 10
       acknowledge-mode: client
 
+delius.db.username: workforce-allocations-to-delius
+
 management.endpoints.web:
   base-path: /
   exposure.include: "health"

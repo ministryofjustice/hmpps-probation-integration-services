@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.audit
 
+import UserGenerator
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -11,8 +12,8 @@ import org.mockito.kotlin.whenever
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
+import uk.gov.justice.digital.hmpps.audit.service.AuditorAware
 import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditorAware
 
 @ExtendWith(MockitoExtension::class)
 internal class AuditorAwareConfigurationTest {

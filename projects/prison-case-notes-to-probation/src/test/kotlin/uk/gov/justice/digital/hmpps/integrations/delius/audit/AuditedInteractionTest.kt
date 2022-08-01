@@ -18,12 +18,13 @@ import org.mockito.kotlin.whenever
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
+import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
+import uk.gov.justice.digital.hmpps.audit.BusinessInteractionNotFoundException
+import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
+import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.exceptions.BusinessInteractionNotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.repository.AuditedInteractionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.repository.BusinessInteractionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditedInteractionService
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)

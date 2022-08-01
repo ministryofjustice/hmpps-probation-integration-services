@@ -10,6 +10,8 @@ spring:
       max-concurrency: 10
       acknowledge-mode: client
 
+delius.db.username: prison-case-notes-to-probation
+
 management.endpoints.web:
   base-path: /
   exposure.include: "health"
@@ -36,7 +38,7 @@ spring.security.oauth2.client:
 
 ---
 # Shared dev/test config
-spring.config.activate.on-profile: ["dev", "integration-test", "oracle"]
+spring.config.activate.on-profile: [ "dev", "integration-test", "oracle" ]
 
 context:
   initializer:

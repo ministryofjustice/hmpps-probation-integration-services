@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exceptions.ConflictException
 import uk.gov.justice.digital.hmpps.exceptions.EventNotActiveException
 import uk.gov.justice.digital.hmpps.exceptions.EventNotFoundException
@@ -10,7 +11,6 @@ import uk.gov.justice.digital.hmpps.exceptions.OrderManagerNotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.TransferReasonNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactContext
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeCode
