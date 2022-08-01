@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 import IdGenerator
 import UserGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator.build
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
@@ -10,7 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
 import java.time.ZonedDateTime
 
 object PersonManagerGenerator {
-    var DEFAULT = generate(dateTime = ZonedDateTime.now().minusMonths(1))
+    var DEFAULT = generate(startDateTime = ZonedDateTime.of(2022, 7, 1, 10, 30, 0, 0, EuropeLondon))
 
     fun generate(
         id: Long = IdGenerator.getAndIncrement(),
@@ -18,12 +19,12 @@ object PersonManagerGenerator {
         provider: Provider = ProviderGenerator.DEFAULT,
         team: Team = TeamGenerator.DEFAULT,
         staff: Staff = StaffGenerator.DEFAULT,
-        dateTime: ZonedDateTime = ZonedDateTime.now(),
+        startDateTime: ZonedDateTime = ZonedDateTime.now(),
         createdDateTime: ZonedDateTime = ZonedDateTime.now(),
         lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
         createdUserId: Long = UserGenerator.APPLICATION_USER.id,
         lastModifiedUserId: Long = UserGenerator.APPLICATION_USER.id,
-        version: Long = 0
+        version: Long? = null
     ) = PersonManager(
         id,
         personId
@@ -31,7 +32,7 @@ object PersonManagerGenerator {
         provider,
         team,
         staff,
-        dateTime,
+        startDateTime,
         createdDateTime,
         lastModifiedDateTime,
         createdUserId,

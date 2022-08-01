@@ -39,10 +39,10 @@ class PersonAllocationDataLoader(
         transferReasonRepository.saveAll(listOf(TransferReasonGenerator.CASE_ORDER, TransferReasonGenerator.COMPONENT))
 
         eventRepository.save(EventGenerator.DEFAULT)
-        orderManagerRepository.save(OrderManagerGenerator.DEFAULT)
+        OrderManagerGenerator.DEFAULT = orderManagerRepository.save(OrderManagerGenerator.DEFAULT)
 
         disposalRepository.save(RequirementGenerator.DEFAULT.disposal)
         requirementRepository.save(RequirementGenerator.DEFAULT)
-        requirementManagerRepository.save(RequirementManagerGenerator.DEFAULT)
+        RequirementManagerGenerator.DEFAULT = requirementManagerRepository.save(RequirementManagerGenerator.DEFAULT)
     }
 }

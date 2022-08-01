@@ -32,7 +32,7 @@ const val CASE_NOTE_MERGE = "CaseNoteMerge"
 
 @ActiveProfiles("integration-test")
 @SpringBootTest
-class IntegrationTest {
+class CaseNotesIntegrationTest {
 
     @Value("\${spring.jms.template.default-destination}")
     private lateinit var queueName: String

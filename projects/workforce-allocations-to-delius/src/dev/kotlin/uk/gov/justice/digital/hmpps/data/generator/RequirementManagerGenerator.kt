@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
 import java.time.ZonedDateTime
 
 object RequirementManagerGenerator : ManagerGenerator {
-    var DEFAULT = generate(dateTime = ZonedDateTime.now().minusMonths(1))
+    var DEFAULT = generate(startDateTime = ZonedDateTime.now().minusMonths(1))
 
     fun generate(
         id: Long = IdGenerator.getAndIncrement(),
@@ -18,7 +18,7 @@ object RequirementManagerGenerator : ManagerGenerator {
         provider: Provider = ProviderGenerator.DEFAULT,
         team: Team = TeamGenerator.DEFAULT,
         staff: Staff = StaffGenerator.DEFAULT,
-        dateTime: ZonedDateTime = ZonedDateTime.now(),
+        startDateTime: ZonedDateTime = ZonedDateTime.now(),
         createdDateTime: ZonedDateTime = ZonedDateTime.now(),
         lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
         createdUserId: Long = UserGenerator.APPLICATION_USER.id,
@@ -32,7 +32,7 @@ object RequirementManagerGenerator : ManagerGenerator {
         provider,
         team,
         staff,
-        dateTime,
+        startDateTime,
         createdDateTime,
         lastModifiedDateTime,
         createdUserId,

@@ -48,7 +48,8 @@ class ResponsibleOfficer(
     var endDate: ZonedDateTime? = null,
 
     @Version
-    var version: Long = 0,
+    @Column(name = "row_version")
+    var version: Long? = null,
 
     @CreatedBy
     var createdByUserId: Long = 0,
