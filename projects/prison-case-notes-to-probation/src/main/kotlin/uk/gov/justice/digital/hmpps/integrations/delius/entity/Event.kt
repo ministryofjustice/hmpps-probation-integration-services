@@ -63,7 +63,7 @@ class Disposal(
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    var softDeleted: Boolean = false,
+    val softDeleted: Boolean = false,
 )
 
 @Immutable

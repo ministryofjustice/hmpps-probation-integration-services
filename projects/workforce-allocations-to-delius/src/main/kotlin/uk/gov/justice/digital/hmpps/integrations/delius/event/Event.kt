@@ -17,8 +17,8 @@ class Event(
 
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
-    var person: Person,
+    val person: Person,
 
     @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
-    var active: Boolean,
+    val active: Boolean,
 )

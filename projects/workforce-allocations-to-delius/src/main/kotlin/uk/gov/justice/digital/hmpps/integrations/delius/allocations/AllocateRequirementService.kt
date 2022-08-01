@@ -40,6 +40,7 @@ class AllocateRequirementService(
             ?: throw RequirementNotFoundException(allocationDetail.requirementId)
 
         if (requirement.person.crn != crn) throw ConflictException("Requirement ${allocationDetail.requirementId} not for $crn")
+        if (requirement.disposal.event.id != allocationDetail.eventId) throw ConflictException("Requirement ${allocationDetail.requirementId} not for event ${allocationDetail.eventId}")
         if (!requirement.active) throw RequirementNotActiveException(allocationDetail.requirementId)
 
         auditedInteractionService.createAuditedInteraction(
