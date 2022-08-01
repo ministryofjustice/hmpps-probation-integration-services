@@ -39,15 +39,17 @@ class AllocateRequirementService(
         val requirement = requirementRepository.findByIdOrNull(allocationDetail.requirementId)
             ?: throw RequirementNotFoundException(allocationDetail.requirementId)
 
-        if (requirement.person.crn != crn) throw ConflictException("Requirement ${allocationDetail.requirementId} not for $crn")
-        if (requirement.disposal.event.id != allocationDetail.eventId) throw ConflictException("Requirement ${allocationDetail.requirementId} not for event ${allocationDetail.eventId}")
+        if (requirement.person.crn != crn)
+            throw ConflictException("Requirement ${allocationDetail.requirementId} not for $crn")
+        if (requirement.disposal.event.id != allocationDetail.eventId)
+            throw ConflictException("Requirement ${allocationDetail.requirementId} not for event ${allocationDetail.eventId}")
         if (!requirement.active) throw RequirementNotActiveException(allocationDetail.requirementId)
 
         auditedInteractionService.createAuditedInteraction(
             BusinessInteractionCode.ADD_EVENT_ALLOCATION,
             AuditedInteraction.Parameters(
                 "offenderId" to requirement.person.id.toString(),
-                "eventId" to allocationDetail.eventId.toString(),
+                "eventId" to requirement.disposal.event.id.toString(),
                 "requirementId" to requirement.id.toString()
             )
         )
