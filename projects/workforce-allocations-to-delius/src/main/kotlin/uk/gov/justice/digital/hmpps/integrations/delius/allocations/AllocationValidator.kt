@@ -1,12 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.exceptions.ReferenceDataNotFound
-import uk.gov.justice.digital.hmpps.exceptions.StaffNotActiveException
-import uk.gov.justice.digital.hmpps.exceptions.StaffNotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotActiveException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.StaffNotInTeamException
-import uk.gov.justice.digital.hmpps.exceptions.TeamNotActiveException
-import uk.gov.justice.digital.hmpps.exceptions.TeamNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamStaffContainer
@@ -24,21 +21,21 @@ class AllocationValidator(
         allocationDetail: AllocationDetail,
     ): TeamStaffContainer {
         val team = teamRepository.findByCodeAndProviderId(allocationDetail.teamCode, providerId)
-            ?: throw TeamNotFoundException(allocationDetail.teamCode)
+            ?: throw NotFoundException("Team", "code", allocationDetail.teamCode)
 
         if (team.endDate != null && team.endDate.isBefore(allocationDetail.createdDate)) {
-            throw TeamNotActiveException(team.code)
+            throw NotActiveException("Team", "code", team.code)
         }
 
         val allocationReason = referenceDataRepository.findByDatasetAndCode(
             allocationDetail.datasetCode, allocationDetail.code
-        ) ?: throw ReferenceDataNotFound(allocationDetail.datasetCode.value, allocationDetail.code)
+        ) ?: throw NotFoundException("$allocationDetail.datasetCode.value with code ${allocationDetail.code} not found")
 
         val staff = staffRepository.findByCode(allocationDetail.staffCode)
-            ?: throw StaffNotFoundException(allocationDetail.staffCode)
+            ?: throw NotFoundException("Staff", "code", allocationDetail.staffCode)
 
         if (staff.endDate != null && staff.endDate.isBefore(allocationDetail.createdDate)) {
-            throw StaffNotActiveException(staff.code)
+            throw NotActiveException("Staff", "code", staff.code)
         }
         if (!staffRepository.verifyTeamMembership(staff.id, team.id)) {
             throw StaffNotInTeamException(staff.code, team.code)

@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.exceptions.CaseNoteTypeNotFoundException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
@@ -64,7 +64,7 @@ class DeliusService(
             .map { it.type }
             .orElseGet {
                 caseNoteTypeRepository.findByCode(CaseNoteType.DEFAULT_CODE)
-                    ?: throw CaseNoteTypeNotFoundException(body.typeLookup())
+                    ?: throw NotFoundException("Case note type ${body.typeLookup()} not found and no default type is set")
             }
 
         val offender = offenderRepository.findByNomsIdAndSoftDeletedIsFalse(header.nomisId) ?: return null

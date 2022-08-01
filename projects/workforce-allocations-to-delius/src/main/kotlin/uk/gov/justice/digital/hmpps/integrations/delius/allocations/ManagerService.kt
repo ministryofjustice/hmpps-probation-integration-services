@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
 import org.slf4j.LoggerFactory
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.exceptions.ConflictException
+import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactContext
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail

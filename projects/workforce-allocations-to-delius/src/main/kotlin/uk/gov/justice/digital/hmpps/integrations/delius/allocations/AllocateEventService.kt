@@ -4,11 +4,9 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.exceptions.ConflictException
-import uk.gov.justice.digital.hmpps.exceptions.EventNotActiveException
-import uk.gov.justice.digital.hmpps.exceptions.EventNotFoundException
-import uk.gov.justice.digital.hmpps.exceptions.OrderManagerNotFoundException
-import uk.gov.justice.digital.hmpps.exceptions.TransferReasonNotFoundException
+import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.exception.NotActiveException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactContext
@@ -37,9 +35,9 @@ class AllocateEventService(
     @Transactional
     fun createEventAllocation(crn: String, allocationDetail: EventAllocationDetail) {
         val event = eventRepository.findByIdOrNull(allocationDetail.eventId)
-            ?: throw EventNotFoundException(allocationDetail.eventId)
+            ?: throw NotFoundException("Event", "id", allocationDetail.eventId)
 
-        if (!event.active) throw EventNotActiveException(allocationDetail.eventId)
+        if (!event.active) throw NotActiveException("Event", "id", allocationDetail.eventId)
         if (event.person.crn != crn) throw ConflictException("Event ${allocationDetail.eventId} not for $crn")
 
         auditedInteractionService.createAuditedInteraction(
@@ -50,9 +48,11 @@ class AllocateEventService(
             )
         )
 
-        val activeOrderManager =
-            orderManagerRepository.findActiveManagerAtDate(allocationDetail.eventId, allocationDetail.createdDate)
-                ?: throw OrderManagerNotFoundException(allocationDetail.eventId, allocationDetail.createdDate)
+        val activeOrderManager = orderManagerRepository.findActiveManagerAtDate(
+            allocationDetail.eventId, allocationDetail.createdDate
+        ) ?: throw NotFoundException(
+            "Order Manager for event ${allocationDetail.eventId} at ${allocationDetail.createdDate} not found"
+        )
 
         if (allocationDetail.isDuplicate(activeOrderManager)) {
             return
@@ -67,7 +67,7 @@ class AllocateEventService(
         )
 
         val transferReason = transferReasonRepository.findByCode(CASE_ORDER.value)
-            ?: throw TransferReasonNotFoundException(CASE_ORDER.value)
+            ?: throw NotFoundException("Transfer Reason", "code", CASE_ORDER.value)
 
         val newOrderManager = OrderManager(eventId = event.id, transferReasonId = transferReason.id).apply {
             populate(allocationDetail.createdDate, ts, activeOrderManager)

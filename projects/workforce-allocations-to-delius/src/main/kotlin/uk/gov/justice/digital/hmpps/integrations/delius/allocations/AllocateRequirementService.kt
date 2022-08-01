@@ -4,11 +4,9 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.exceptions.ConflictException
-import uk.gov.justice.digital.hmpps.exceptions.RequirementManagerNotFoundException
-import uk.gov.justice.digital.hmpps.exceptions.RequirementNotActiveException
-import uk.gov.justice.digital.hmpps.exceptions.RequirementNotFoundException
-import uk.gov.justice.digital.hmpps.exceptions.TransferReasonNotFoundException
+import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.exception.NotActiveException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactContext
@@ -37,13 +35,13 @@ class AllocateRequirementService(
     @Transactional
     fun createRequirementAllocation(crn: String, allocationDetail: RequirementAllocationDetail) {
         val requirement = requirementRepository.findByIdOrNull(allocationDetail.requirementId)
-            ?: throw RequirementNotFoundException(allocationDetail.requirementId)
+            ?: throw NotFoundException("Requirement", "id", allocationDetail.requirementId)
 
         if (requirement.person.crn != crn)
             throw ConflictException("Requirement ${allocationDetail.requirementId} not for $crn")
         if (requirement.disposal.event.id != allocationDetail.eventId)
             throw ConflictException("Requirement ${allocationDetail.requirementId} not for event ${allocationDetail.eventId}")
-        if (!requirement.active) throw RequirementNotActiveException(allocationDetail.requirementId)
+        if (!requirement.active) throw NotActiveException("Requirement", "id", allocationDetail.requirementId)
 
         auditedInteractionService.createAuditedInteraction(
             BusinessInteractionCode.ADD_EVENT_ALLOCATION,
@@ -56,7 +54,9 @@ class AllocateRequirementService(
 
         val activeRequirementManager = requirementManagerRepository.findActiveManagerAtDate(
             allocationDetail.requirementId, allocationDetail.createdDate
-        ) ?: throw RequirementManagerNotFoundException(allocationDetail.requirementId, allocationDetail.createdDate)
+        ) ?: throw NotFoundException(
+            "Requirement Manager for requirement ${allocationDetail.requirementId} at ${allocationDetail.createdDate} not found"
+        )
 
         if (allocationDetail.isDuplicate(activeRequirementManager)) {
             return
@@ -71,7 +71,7 @@ class AllocateRequirementService(
         )
 
         val transferReason = transferReasonRepository.findByCode(TransferReasonCode.COMPONENT.value)
-            ?: throw TransferReasonNotFoundException(TransferReasonCode.COMPONENT.value)
+            ?: throw NotFoundException("Transfer Reason", "code", TransferReasonCode.COMPONENT.value)
 
         val newRequirementManager = RequirementManager(
             requirementId = allocationDetail.requirementId,

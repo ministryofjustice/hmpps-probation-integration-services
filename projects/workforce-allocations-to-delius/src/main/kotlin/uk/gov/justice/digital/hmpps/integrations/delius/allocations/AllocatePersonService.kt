@@ -4,10 +4,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
-import uk.gov.justice.digital.hmpps.exceptions.ConflictException
-import uk.gov.justice.digital.hmpps.exceptions.PersonManagerNotFoundException
-import uk.gov.justice.digital.hmpps.exceptions.PersonNotFoundException
-import uk.gov.justice.digital.hmpps.exceptions.ResponsibleOfficerNotFoundException
+import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
@@ -38,7 +36,7 @@ class AllocatePersonService(
     @Transactional
     fun createPersonAllocation(allocationDetail: PersonAllocationDetail) {
         val person = personRepository.findByCrn(allocationDetail.crn)
-            ?: throw PersonNotFoundException(allocationDetail.crn)
+            ?: throw NotFoundException("Person", "crn", allocationDetail.crn)
 
         auditedInteractionService.createAuditedInteraction(
             BusinessInteractionCode.ADD_PERSON_ALLOCATION,
@@ -47,7 +45,9 @@ class AllocatePersonService(
 
         val activeOffenderManager = personManagerRepository.findActiveManagerAtDate(
             person.id, allocationDetail.createdDate
-        ) ?: throw PersonManagerNotFoundException(allocationDetail.crn, allocationDetail.createdDate)
+        ) ?: throw NotFoundException(
+            "Person Manager for ${allocationDetail.crn} at ${allocationDetail.createdDate} not found"
+        )
 
         if (allocationDetail.isDuplicate(activeOffenderManager)) {
             return
@@ -87,7 +87,7 @@ class AllocatePersonService(
     ) {
         val activeResponsibleOfficer = responsibleOfficerRepository
             .findActiveManagerAtDate(newPersonManager.personId, newPersonManager.startDate)
-            ?: throw ResponsibleOfficerNotFoundException(newPersonManager.personId, newPersonManager.startDate)
+            ?: throw NotFoundException("Responsible Officer for ${newPersonManager.personId} at ${newPersonManager.startDate} not found")
 
         val newResponsibleOfficer = ResponsibleOfficer(
             personId = newPersonManager.personId,
