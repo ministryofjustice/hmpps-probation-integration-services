@@ -1,6 +1,5 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.audit
+package uk.gov.justice.digital.hmpps.audit
 
-import UserGenerator
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -14,6 +13,7 @@ import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import uk.gov.justice.digital.hmpps.audit.service.AuditorAware
 import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
+import uk.gov.justice.digital.hmpps.user.User
 
 @ExtendWith(MockitoExtension::class)
 internal class AuditorAwareConfigurationTest {
@@ -31,7 +31,8 @@ internal class AuditorAwareConfigurationTest {
 
     @BeforeEach
     fun setUp() {
-        servicePrincipal = ServicePrincipal("prison-case-notes-to-probation", UserGenerator.APPLICATION_USER.id)
+        val user = User(1, "ServiceUserName")
+        servicePrincipal = ServicePrincipal(user.username, user.id)
     }
 
     @Test

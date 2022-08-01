@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.config
 
-import UserGenerator
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyString
@@ -9,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.config.datasource.DeliusConnectionProvider
+import uk.gov.justice.digital.hmpps.user.User
 import uk.gov.justice.digital.hmpps.user.UserService
 import java.sql.Connection
 import java.sql.PreparedStatement
@@ -35,7 +35,7 @@ class DeliusConnectionProviderTest {
 
     @Test
     fun `retrieving a connection with oracle sets client identifier with security context`() {
-        val user = UserGenerator.APPLICATION_USER
+        val user = User(1, "ServiceUserName")
         serviceContext = ServiceContext(user.username, userService)
         whenever(userService.findUser(user.username)).thenReturn(user)
         whenever(connection.prepareStatement(anyString())).thenReturn(preparedStatement)

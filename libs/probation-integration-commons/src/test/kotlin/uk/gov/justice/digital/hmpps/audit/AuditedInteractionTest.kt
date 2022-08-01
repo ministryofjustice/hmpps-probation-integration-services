@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.audit
+package uk.gov.justice.digital.hmpps.audit
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
@@ -18,13 +18,11 @@ import org.mockito.kotlin.whenever
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
-import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
-import uk.gov.justice.digital.hmpps.audit.BusinessInteractionNotFoundException
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
-import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.user.User
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -36,7 +34,8 @@ class AuditedInteractionTest {
     @Mock
     lateinit var auditedInteractionRepository: AuditedInteractionRepository
 
-    private val principal = ServicePrincipal(UserGenerator.APPLICATION_USER.username, UserGenerator.APPLICATION_USER.id)
+    private val user = User(1, "ServiceUserName")
+    private val principal = ServicePrincipal(user.username, user.id)
 
     @Mock
     private lateinit var authentication: Authentication
@@ -54,15 +53,15 @@ class AuditedInteractionTest {
         whenever(authentication.principal).thenReturn(ServicePrincipal("username", userId))
         SecurityContextHolder.setContext(securityContext)
 
-        val bi = BusinessInteraction(1, BusinessInteractionCode.CASE_NOTES_MERGE.code, ZonedDateTime.now())
-        whenever(businessInteractionRepository.findByCode(eq(BusinessInteractionCode.CASE_NOTES_MERGE.code), any()))
+        val bi = BusinessInteraction(1, BusinessInteractionCode.TEST_BI_CODE.code, ZonedDateTime.now())
+        whenever(businessInteractionRepository.findByCode(eq(BusinessInteractionCode.TEST_BI_CODE.code), any()))
             .thenReturn(bi)
 
         val parameters = AuditedInteraction.Parameters(
             Pair("key", "value")
         )
         auditedInteractionService.createAuditedInteraction(
-            BusinessInteractionCode.CASE_NOTES_MERGE,
+            BusinessInteractionCode.TEST_BI_CODE,
             parameters
         )
         val aiCaptor = ArgumentCaptor.forClass(AuditedInteraction::class.java)
@@ -87,7 +86,7 @@ class AuditedInteractionTest {
         )
         assertThrows<BusinessInteractionNotFoundException> {
             auditedInteractionService.createAuditedInteraction(
-                BusinessInteractionCode.CASE_NOTES_MERGE,
+                BusinessInteractionCode.TEST_BI_CODE,
                 parameters
             )
         }
@@ -103,7 +102,7 @@ class AuditedInteractionTest {
             Pair("key", "value")
         )
         auditedInteractionService.createAuditedInteraction(
-            BusinessInteractionCode.CASE_NOTES_MERGE,
+            BusinessInteractionCode.TEST_BI_CODE,
             parameters
         )
         verify(auditedInteractionRepository, times(0)).save(any())
@@ -118,7 +117,7 @@ class AuditedInteractionTest {
             Pair("key", "value")
         )
         auditedInteractionService.createAuditedInteraction(
-            BusinessInteractionCode.CASE_NOTES_MERGE,
+            BusinessInteractionCode.TEST_BI_CODE,
             parameters
         )
         verify(auditedInteractionRepository, times(0)).save(any())

@@ -19,8 +19,15 @@ dependencies {
 
 configure<ClassPathExtension> {
     jacocoExclusions = listOf(
-        "**/ThreadConfig*",
+        "**/AuditingConfig*",
         "**/ContextRunnable*",
-        "**/TelemetryService*"
+        "**/ConnectionProviderConfig*",
+        "**/exception/**",
+        "**/FeignConfig*",
+        "**/JmsConfig*",
+        "**/OracleCondition*",
+        "**/SecurityConfiguration*",
+        "**/TelemetryService*",
+        "**/ThreadConfig*",
     )
 }

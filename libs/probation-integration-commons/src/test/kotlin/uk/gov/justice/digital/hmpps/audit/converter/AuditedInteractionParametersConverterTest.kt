@@ -1,12 +1,11 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.audit.converter
+package uk.gov.justice.digital.hmpps.audit.converter
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import uk.gov.justice.digital.hmpps.audit.converter.AuditedInteractionParamsConverter
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
+import uk.gov.justice.digital.hmpps.audit.AuditedInteraction
 
 internal class AuditedInteractionParametersConverterTest {
 

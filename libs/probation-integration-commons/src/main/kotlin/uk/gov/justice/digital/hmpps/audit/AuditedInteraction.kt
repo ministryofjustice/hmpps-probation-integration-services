@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.audit
+package uk.gov.justice.digital.hmpps.audit
 
 import org.hibernate.annotations.Immutable
 import org.springframework.data.domain.Persistable

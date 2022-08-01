@@ -4,12 +4,12 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.audit.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.BusinessInteractionNotFoundException
 import uk.gov.justice.digital.hmpps.audit.InteractionCode
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.AuditedInteraction
 
 @Service
 class AuditedInteractionService(
