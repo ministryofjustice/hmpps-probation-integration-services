@@ -5,9 +5,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework:spring-jms")
+    implementation(libs.amazon.sqs)
     implementation(libs.insights)
+    implementation(libs.sentry)
 
-    dev("com.h2database:h2")
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
