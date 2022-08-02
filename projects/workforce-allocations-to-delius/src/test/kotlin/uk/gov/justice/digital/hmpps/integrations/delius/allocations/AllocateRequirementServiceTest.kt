@@ -113,7 +113,7 @@ internal class AllocateRequirementServiceTest {
             Optional.of(
                 RequirementGenerator.generate(
                     disposal = DisposalGenerator.generate
-                        (
+                    (
                         EventGenerator.generate(id = allocationDetail.eventId),
                         active = false
                     )
@@ -135,7 +135,7 @@ internal class AllocateRequirementServiceTest {
             Optional.of(
                 RequirementGenerator.generate(
                     disposal = DisposalGenerator.generate
-                        (
+                    (
                         EventGenerator.generate(id = allocationDetail.eventId, active = false)
                     )
                 )
@@ -150,14 +150,14 @@ internal class AllocateRequirementServiceTest {
         }
     }
 
-
     @Test
     fun `when requirement not active`() {
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(
             Optional.of(
-                RequirementGenerator.generate(active = false,
+                RequirementGenerator.generate(
+                    active = false,
                     disposal = DisposalGenerator.generate
-                        (
+                    (
                         EventGenerator.generate(id = allocationDetail.eventId)
                     )
                 )
@@ -178,15 +178,18 @@ internal class AllocateRequirementServiceTest {
             Optional.of(
                 RequirementGenerator.generate(
                     disposal = DisposalGenerator.generate
-                        (
+                    (
                         EventGenerator.generate(id = allocationDetail.eventId)
                     )
                 )
             )
         )
 
-        whenever(requirementManagerRepository.findActiveManagerAtDate(
-            allocationDetail.requirementId, allocationDetail.createdDate)).thenReturn(null)
+        whenever(
+            requirementManagerRepository.findActiveManagerAtDate(
+                allocationDetail.requirementId, allocationDetail.createdDate
+            )
+        ).thenReturn(null)
 
         assertThrows<NotFoundException> {
             allocateRequirementService.createRequirementAllocation(
@@ -207,7 +210,7 @@ internal class AllocateRequirementServiceTest {
             Optional.of(
                 RequirementGenerator.generate(
                     disposal = DisposalGenerator.generate
-                        (
+                    (
                         EventGenerator.generate(id = allocationDetail.eventId)
                     )
                 )
@@ -230,7 +233,7 @@ internal class AllocateRequirementServiceTest {
     fun `when pending transfers exist`() {
         val requirement = RequirementGenerator.generate(
             disposal = DisposalGenerator.generate
-                (
+            (
                 EventGenerator.generate(id = allocationDetail.eventId)
             )
         )
@@ -240,8 +243,11 @@ internal class AllocateRequirementServiceTest {
             )
         )
 
-        whenever(requirementManagerRepository.findActiveManagerAtDate(
-            allocationDetail.requirementId, allocationDetail.createdDate)).thenReturn(RequirementManagerGenerator.DEFAULT)
+        whenever(
+            requirementManagerRepository.findActiveManagerAtDate(
+                allocationDetail.requirementId, allocationDetail.createdDate
+            )
+        ).thenReturn(RequirementManagerGenerator.DEFAULT)
 
         whenever(requirementRepository.countPendingTransfers(requirement.id)).thenReturn(1)
 
@@ -257,7 +263,7 @@ internal class AllocateRequirementServiceTest {
     fun `when  transfer reason not found`() {
         val requirement = RequirementGenerator.generate(
             disposal = DisposalGenerator.generate
-                (
+            (
                 EventGenerator.generate(id = allocationDetail.eventId)
             )
         )
@@ -267,8 +273,11 @@ internal class AllocateRequirementServiceTest {
             )
         )
 
-        whenever(requirementManagerRepository.findActiveManagerAtDate(
-            allocationDetail.requirementId, allocationDetail.createdDate)).thenReturn(RequirementManagerGenerator.DEFAULT)
+        whenever(
+            requirementManagerRepository.findActiveManagerAtDate(
+                allocationDetail.requirementId, allocationDetail.createdDate
+            )
+        ).thenReturn(RequirementManagerGenerator.DEFAULT)
 
         whenever(requirementRepository.countPendingTransfers(requirement.id)).thenReturn(0)
 
@@ -281,6 +290,4 @@ internal class AllocateRequirementServiceTest {
             )
         }
     }
-
-
 }
