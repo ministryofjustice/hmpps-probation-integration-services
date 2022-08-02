@@ -19,7 +19,6 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.StaffNotInTeamException
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamRepository
 import java.time.ZonedDateTime
 
@@ -54,7 +53,7 @@ class AllocationValidatorTest {
     }
 
     @Test
-    fun `Unable to transfer to another provider`() {
+    fun `unable to transfer to another provider`() {
         whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(TeamGenerator.DEFAULT)
 
@@ -70,7 +69,7 @@ class AllocationValidatorTest {
 
     @Test
     fun `team not active`() {
-        val team = Team(1L, "code", 1L, "team", ZonedDateTime.now().minusYears(5))
+        val team = TeamGenerator.generate("code", endDate = ZonedDateTime.now().minusYears(5))
         whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(team)
         val exception =
@@ -84,8 +83,8 @@ class AllocationValidatorTest {
     }
 
     @Test
-    fun `Team active end dated in the future`() {
-        val team = Team(1L, "code", 1L, "team", ZonedDateTime.now().plusYears(5))
+    fun `team active end dated in the future`() {
+        val team = TeamGenerator.generate("code", endDate = ZonedDateTime.now().plusYears(5))
         val staff = StaffGenerator.DEFAULT
         whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(team)
@@ -106,7 +105,7 @@ class AllocationValidatorTest {
     }
 
     @Test
-    fun `Allocation reason not found`() {
+    fun `allocation reason not found`() {
         val team = TeamGenerator.DEFAULT
         whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(team)
@@ -126,7 +125,7 @@ class AllocationValidatorTest {
     }
 
     @Test
-    fun `Staff not found`() {
+    fun `staff not found`() {
         val team = TeamGenerator.DEFAULT
         whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(team)
@@ -148,7 +147,7 @@ class AllocationValidatorTest {
     }
 
     @Test
-    fun `Staff not active`() {
+    fun `staff not active`() {
         val team = TeamGenerator.DEFAULT
         whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(team)
@@ -171,7 +170,7 @@ class AllocationValidatorTest {
     }
 
     @Test
-    fun `Staff active end dated in the future`() {
+    fun `staff active end dated in the future`() {
         val team = TeamGenerator.DEFAULT
         whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(team)
@@ -193,7 +192,7 @@ class AllocationValidatorTest {
     }
 
     @Test
-    fun `Staff not not in correct team`() {
+    fun `staff not not in correct team`() {
         val team = TeamGenerator.DEFAULT
         val staff = StaffGenerator.DEFAULT
         whenever(teamRepository.findByCode(allocationDetail.teamCode))

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
+import java.time.ZonedDateTime
 
 object TeamGenerator {
     val DEFAULT = generate(
@@ -14,6 +15,7 @@ object TeamGenerator {
         code: String,
         description: String = code,
         providerId: Long = ProviderGenerator.DEFAULT.id,
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Team(id, code, providerId, description)
+        id: Long = IdGenerator.getAndIncrement(),
+        endDate: ZonedDateTime? = null
+    ) = Team(id, code, providerId, description, endDate)
 }

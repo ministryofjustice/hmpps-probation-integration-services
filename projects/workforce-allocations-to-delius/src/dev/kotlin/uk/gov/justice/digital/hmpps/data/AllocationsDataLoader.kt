@@ -29,7 +29,7 @@ import uk.gov.justice.digital.hmpps.user.UserRepository
 @Component
 @Profile("dev", "integration-test")
 @ConditionalOnProperty(prefix = "dataloader", name = ["enabled"], havingValue = "true", matchIfMissing = true)
-class DataLoader(
+class AllocationsDataLoader(
     private val serviceContext: ServiceContext,
     private val userRepository: UserRepository,
     private val businessInteractionRepository: BusinessInteractionRepository,
