@@ -83,4 +83,4 @@ subprojects {
         }
     }
 }
-tasks.named("check") { dependsOn("ktlintCheck", "jacocoTestReport") }
+tasks.named("check") { dependsOn("ktlintCheck") }
