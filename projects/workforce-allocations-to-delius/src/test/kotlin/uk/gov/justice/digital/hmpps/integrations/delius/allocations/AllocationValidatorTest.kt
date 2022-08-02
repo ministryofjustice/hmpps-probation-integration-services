@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.INITIAL_OM_ALLOCATION
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
+import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.StaffNotInTeamException
@@ -40,7 +41,7 @@ class AllocationValidatorTest {
 
     @Test
     fun `team not found`() {
-        whenever(teamRepository.findByCodeAndProviderId(allocationDetail.teamCode, ProviderGenerator.DEFAULT.id))
+        whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(null)
         val exception =
             assertThrows<NotFoundException> {
@@ -53,9 +54,24 @@ class AllocationValidatorTest {
     }
 
     @Test
+    fun `Unable to transfer to another provider`() {
+        whenever(teamRepository.findByCode(allocationDetail.teamCode))
+            .thenReturn(TeamGenerator.DEFAULT)
+
+        val exception =
+            assertThrows<ConflictException> {
+                allocationValidator.initialValidations(
+                    -99L,
+                    allocationDetail
+                )
+            }
+        assert(exception.message!!.contains("Cannot transfer from provider -99 to ${TeamGenerator.DEFAULT.providerId}"))
+    }
+
+    @Test
     fun `team not active`() {
         val team = Team(1L, "code", 1L, "team", ZonedDateTime.now().minusYears(5))
-        whenever(teamRepository.findByCodeAndProviderId(allocationDetail.teamCode, ProviderGenerator.DEFAULT.id))
+        whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(team)
         val exception =
             assertThrows<NotActiveException> {
@@ -71,7 +87,7 @@ class AllocationValidatorTest {
     fun `Team active end dated in the future`() {
         val team = Team(1L, "code", 1L, "team", ZonedDateTime.now().plusYears(5))
         val staff = StaffGenerator.DEFAULT
-        whenever(teamRepository.findByCodeAndProviderId(allocationDetail.teamCode, ProviderGenerator.DEFAULT.id))
+        whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(team)
         whenever(
             referenceDataRepository.findByDatasetAndCode(
@@ -92,7 +108,7 @@ class AllocationValidatorTest {
     @Test
     fun `Allocation reason not found`() {
         val team = TeamGenerator.DEFAULT
-        whenever(teamRepository.findByCodeAndProviderId(allocationDetail.teamCode, ProviderGenerator.DEFAULT.id))
+        whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(team)
         whenever(
             referenceDataRepository.findByDatasetAndCode(
@@ -112,7 +128,7 @@ class AllocationValidatorTest {
     @Test
     fun `Staff not found`() {
         val team = TeamGenerator.DEFAULT
-        whenever(teamRepository.findByCodeAndProviderId(allocationDetail.teamCode, ProviderGenerator.DEFAULT.id))
+        whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(team)
         whenever(
             referenceDataRepository.findByDatasetAndCode(
@@ -134,7 +150,7 @@ class AllocationValidatorTest {
     @Test
     fun `Staff not active`() {
         val team = TeamGenerator.DEFAULT
-        whenever(teamRepository.findByCodeAndProviderId(allocationDetail.teamCode, ProviderGenerator.DEFAULT.id))
+        whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(team)
         whenever(
             referenceDataRepository.findByDatasetAndCode(
@@ -157,7 +173,7 @@ class AllocationValidatorTest {
     @Test
     fun `Staff active end dated in the future`() {
         val team = TeamGenerator.DEFAULT
-        whenever(teamRepository.findByCodeAndProviderId(allocationDetail.teamCode, ProviderGenerator.DEFAULT.id))
+        whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(team)
         whenever(
             referenceDataRepository.findByDatasetAndCode(
@@ -180,7 +196,7 @@ class AllocationValidatorTest {
     fun `Staff not not in correct team`() {
         val team = TeamGenerator.DEFAULT
         val staff = StaffGenerator.DEFAULT
-        whenever(teamRepository.findByCodeAndProviderId(allocationDetail.teamCode, ProviderGenerator.DEFAULT.id))
+        whenever(teamRepository.findByCode(allocationDetail.teamCode))
             .thenReturn(team)
         whenever(
             referenceDataRepository.findByDatasetAndCode(

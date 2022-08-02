@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.StaffNotInTeamException
@@ -20,8 +21,12 @@ class AllocationValidator(
         providerId: Long,
         allocationDetail: AllocationDetail,
     ): TeamStaffContainer {
-        val team = teamRepository.findByCodeAndProviderId(allocationDetail.teamCode, providerId)
+        val team = teamRepository.findByCode(allocationDetail.teamCode)
             ?: throw NotFoundException("Team", "code", allocationDetail.teamCode)
+
+        if (team.providerId != providerId) {
+            throw ConflictException("Cannot transfer from provider $providerId to ${team.providerId}")
+        }
 
         if (team.endDate != null && team.endDate.isBefore(allocationDetail.createdDate)) {
             throw NotActiveException("Team", "code", team.code)
