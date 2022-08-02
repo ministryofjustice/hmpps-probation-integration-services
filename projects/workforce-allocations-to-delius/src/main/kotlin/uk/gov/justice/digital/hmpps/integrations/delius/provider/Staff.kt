@@ -17,8 +17,8 @@ class Staff(
     @Column(name = "officer_code", columnDefinition = "char(7)")
     val code: String,
 
-    forename: String,
-    surname: String,
+    val forename: String,
+    val surname: String,
 
     @Column(name = "FORENAME2", length = 35)
     val middleName: String?,
@@ -26,5 +26,6 @@ class Staff(
     @Column(name = "end_date")
     val endDate: ZonedDateTime? = null,
 ) {
+    @Transient
     val displayName = listOfNotNull(forename, middleName, surname).joinToString(" ")
 }
