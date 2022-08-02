@@ -1,14 +1,11 @@
 package uk.gov.justice.digital.hmpps.audit.converter
 
 import uk.gov.justice.digital.hmpps.audit.AuditedInteraction
-import java.util.concurrent.atomic.AtomicInteger
 import javax.persistence.AttributeConverter
 import javax.persistence.Converter
 
 @Converter
 class AuditedInteractionParamsConverter : AttributeConverter<AuditedInteraction.Parameters, String> {
-
-    private val atomicInteger: AtomicInteger = AtomicInteger(0)
 
     override fun convertToDatabaseColumn(attribute: AuditedInteraction.Parameters) =
         attribute.paramPairs().joinToString(",") { "${it.first}='${it.second}'" }

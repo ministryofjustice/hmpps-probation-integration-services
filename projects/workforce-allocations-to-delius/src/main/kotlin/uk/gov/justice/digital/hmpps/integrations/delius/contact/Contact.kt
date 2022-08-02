@@ -25,7 +25,7 @@ class Contact(
     @Id
     @Column(name = "contact_id", updatable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
-    val id: Long? = null,
+    val id: Long = 0,
 
     @Column(name = "offender_id", updatable = false)
     val personId: Long,

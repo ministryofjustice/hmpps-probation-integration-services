@@ -41,14 +41,16 @@ class AllocateRequirementService(
             throw ConflictException("Requirement ${allocationDetail.requirementId} not for $crn")
         if (requirement.disposal.event.id != allocationDetail.eventId)
             throw ConflictException("Requirement ${allocationDetail.requirementId} not for event ${allocationDetail.eventId}")
+        if (!requirement.disposal.active || !requirement.disposal.event.active)
+            throw NotActiveException("Event", "id", requirement.disposal.event.id)
         if (!requirement.active) throw NotActiveException("Requirement", "id", allocationDetail.requirementId)
 
         auditedInteractionService.createAuditedInteraction(
             BusinessInteractionCode.CREATE_COMPONENT_TRANSFER,
             AuditedInteraction.Parameters(
-                "offenderId" to requirement.person.id.toString(),
-                "eventId" to requirement.disposal.event.id.toString(),
-                "requirementId" to requirement.id.toString()
+                "offenderId" to requirement.person.id,
+                "eventId" to requirement.disposal.event.id,
+                "requirementId" to requirement.id
             )
         )
 
