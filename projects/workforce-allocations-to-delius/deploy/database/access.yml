@@ -1,0 +1,16 @@
+database:
+  access:
+    username_key: /workforce-allocations-to-delius/db-username
+    password_key: /workforce-allocations-to-delius/db-password
+    tables:
+      - audited_interaction
+      - contact
+      - offender_manager
+      - responsible_officer
+      - order_manager
+      - rqmnt_manager
+
+  audit:
+    username: WorkforceAllocationsToDelius
+    forename: Workforce Allocations
+    surname: Service
