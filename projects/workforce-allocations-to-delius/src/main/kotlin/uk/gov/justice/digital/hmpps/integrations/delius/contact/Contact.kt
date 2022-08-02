@@ -33,7 +33,7 @@ class Contact(
     @Column(updatable = false)
     val eventId: Long? = null,
 
-    @Column(updatable = false)
+    @Column(name = "rqmnt_id", updatable = false)
     val requirementId: Long? = null,
 
     @ManyToOne

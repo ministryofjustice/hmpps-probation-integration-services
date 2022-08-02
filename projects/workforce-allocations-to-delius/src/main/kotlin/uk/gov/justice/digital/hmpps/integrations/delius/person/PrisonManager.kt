@@ -9,9 +9,11 @@ import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.Table
 
 @Immutable
 @Entity
+@Table(name = "prison_offender_manager")
 class PrisonManager(
     @Id
     @Column(name = "prison_offender_manager_id", nullable = false)

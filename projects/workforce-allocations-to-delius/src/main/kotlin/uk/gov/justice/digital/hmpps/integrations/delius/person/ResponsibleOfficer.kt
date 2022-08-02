@@ -58,8 +58,8 @@ class ResponsibleOfficer(
     var lastUpdatedUserId: Long = 0,
 
     @CreatedDate
-    var createdDateTime: ZonedDateTime? = null,
+    var createdDatetime: ZonedDateTime? = null,
 
     @LastModifiedDate
-    var lastUpdatedDateTime: ZonedDateTime? = null,
+    var lastUpdatedDatetime: ZonedDateTime? = null,
 )

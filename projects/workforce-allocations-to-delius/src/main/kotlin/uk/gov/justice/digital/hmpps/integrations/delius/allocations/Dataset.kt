@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 import org.hibernate.annotations.Immutable
 import javax.persistence.AttributeConverter
 import javax.persistence.Column
+import javax.persistence.Convert
 import javax.persistence.Converter
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -16,7 +17,8 @@ class Dataset(
     @Column(name = "reference_data_master_id")
     val id: Long,
 
-    @Column(name = "code_set_name", length = 100, nullable = false)
+    @Convert(converter = DatasetCodeConverter::class)
+    @Column(name = "code_set_name", nullable = false)
     val code: DatasetCode,
 )
 

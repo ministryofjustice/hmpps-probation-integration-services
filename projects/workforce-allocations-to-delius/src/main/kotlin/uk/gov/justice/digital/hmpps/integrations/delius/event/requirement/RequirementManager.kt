@@ -17,7 +17,7 @@ import javax.persistence.Table
 @Table(name = "rqmnt_manager")
 @EntityListeners(AuditingEntityListener::class)
 @AssociationOverride(name = "team", joinColumns = [JoinColumn(name = "allocated_team_id")])
-@AssociationOverride(name = "staffAllocation", joinColumns = [JoinColumn(name = "allocated_staff_id")])
+@AssociationOverride(name = "staff", joinColumns = [JoinColumn(name = "allocated_staff_id")])
 @SequenceGenerator(name = "rqmnt_manager_id_seq", sequenceName = "rqmnt_manager_id_seq", allocationSize = 1)
 class RequirementManager(
     @Id

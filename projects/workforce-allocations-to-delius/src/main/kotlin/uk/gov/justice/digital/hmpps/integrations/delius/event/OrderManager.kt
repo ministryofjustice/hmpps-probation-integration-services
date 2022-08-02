@@ -17,7 +17,7 @@ import javax.persistence.Table
 @SequenceGenerator(name = "order_manager_id_seq", sequenceName = "order_manager_id_seq", allocationSize = 1)
 class OrderManager(
     @Id
-    @Column(name = "order_manager_id_seq")
+    @Column(name = "order_manager_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_manager_id_seq")
     var id: Long = 0,
 

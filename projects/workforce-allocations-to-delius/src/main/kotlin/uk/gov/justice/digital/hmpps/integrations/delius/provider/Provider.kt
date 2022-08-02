@@ -4,9 +4,11 @@ import org.hibernate.annotations.Immutable
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
+import javax.persistence.Table
 
 @Immutable
 @Entity
+@Table(name = "probation_area")
 class Provider(
     @Id
     @Column(name = "probation_area_id")
