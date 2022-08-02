@@ -12,9 +12,9 @@ import javax.persistence.Table
 class TransferReason(
     @Id
     @Column(name = "transfer_reason_id")
-    var id: Long,
+    val id: Long,
 
-    var code: String,
+    val code: String,
 )
 
 enum class TransferReasonCode(val value: String) {
