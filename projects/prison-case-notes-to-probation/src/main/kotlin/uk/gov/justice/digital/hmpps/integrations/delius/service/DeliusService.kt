@@ -38,7 +38,7 @@ class DeliusService(
 
             auditedInteractionService.createAuditedInteraction(
                 BusinessInteractionCode.CASE_NOTES_MERGE,
-                AuditedInteraction.Parameters("contactId" to entity.id.toString())
+                AuditedInteraction.Parameters("contactId" to entity.id)
             )
         }
     }
