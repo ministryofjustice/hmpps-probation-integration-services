@@ -74,6 +74,7 @@ internal class AllocateEventServiceTest {
         whenever(eventRepository.findById(allocationDetail.eventId)).thenReturn(
             Optional.of(
                 EventGenerator.generate(
+                    id = allocationDetail.eventId,
                     active = false
                 )
             )
@@ -92,6 +93,7 @@ internal class AllocateEventServiceTest {
         whenever(eventRepository.findById(allocationDetail.eventId)).thenReturn(
             Optional.of(
                 EventGenerator.generate(
+                    id = allocationDetail.eventId,
                     person = PersonGenerator.generate("NX999")
                 )
             )
@@ -131,7 +133,7 @@ internal class AllocateEventServiceTest {
             teamCode = OrderManagerGenerator.DEFAULT.team.code
         )
         whenever(eventRepository.findById(allocationDetail.eventId)).thenReturn(
-            Optional.of(EventGenerator.DEFAULT)
+            Optional.of(EventGenerator.generate(id = allocationDetail.eventId))
         )
 
         whenever(orderManagerRepository.findActiveManagerAtDate(allocationDetail.eventId, allocationDetail.createdDate))
@@ -149,13 +151,13 @@ internal class AllocateEventServiceTest {
     @Test
     fun `when pending transfer for event exception thrown`() {
         whenever(eventRepository.findById(allocationDetail.eventId)).thenReturn(
-            Optional.of(EventGenerator.DEFAULT)
+            Optional.of(EventGenerator.generate(id = allocationDetail.eventId))
         )
 
         whenever(orderManagerRepository.findActiveManagerAtDate(allocationDetail.eventId, allocationDetail.createdDate))
             .thenReturn(OrderManagerGenerator.DEFAULT)
 
-        whenever(eventRepository.countPendingTransfers(EventGenerator.DEFAULT.id)).thenReturn(1)
+        whenever(eventRepository.countPendingTransfers(allocationDetail.eventId)).thenReturn(1)
 
         assertThrows<ConflictException> {
             allocateEventService.createEventAllocation(
@@ -168,11 +170,11 @@ internal class AllocateEventServiceTest {
     @Test
     fun `when transfer reason not found exception thrown`() {
         whenever(eventRepository.findById(allocationDetail.eventId)).thenReturn(
-            Optional.of(EventGenerator.DEFAULT)
+            Optional.of(EventGenerator.generate(id = allocationDetail.eventId))
         )
         whenever(orderManagerRepository.findActiveManagerAtDate(allocationDetail.eventId, allocationDetail.createdDate))
             .thenReturn(OrderManagerGenerator.DEFAULT)
-        whenever(eventRepository.countPendingTransfers(EventGenerator.DEFAULT.id)).thenReturn(0)
+        whenever(eventRepository.countPendingTransfers(allocationDetail.eventId)).thenReturn(0)
         whenever(transferReasonRepository.findByCode(TransferReasonCode.CASE_ORDER.value)).thenReturn(null)
 
         assertThrows<NotFoundException> {
