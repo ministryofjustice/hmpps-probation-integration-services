@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -67,6 +68,28 @@ class AllocationValidatorTest {
     }
 
     @Test
+    fun `Team active end dated in the future`() {
+        val team = Team(1L, "code", 1L, "team", ZonedDateTime.now().plusYears(5))
+        val staff = StaffGenerator.DEFAULT
+        whenever(teamRepository.findByCodeAndProviderId(allocationDetail.teamCode, ProviderGenerator.DEFAULT.id))
+            .thenReturn(team)
+        whenever(
+            referenceDataRepository.findByDatasetAndCode(
+                allocationDetail.datasetCode, allocationDetail.code
+            )
+        )
+            .thenReturn(INITIAL_OM_ALLOCATION)
+        whenever(staffRepository.verifyTeamMembership(staff.id, team.id)).thenReturn(true)
+        whenever(staffRepository.findByCode(allocationDetail.staffCode)).thenReturn(staff)
+        assertDoesNotThrow {
+            allocationValidator.initialValidations(
+                ProviderGenerator.DEFAULT.id,
+                allocationDetail
+            )
+        }
+    }
+
+    @Test
     fun `Allocation reason not found`() {
         val team = TeamGenerator.DEFAULT
         whenever(teamRepository.findByCodeAndProviderId(allocationDetail.teamCode, ProviderGenerator.DEFAULT.id))
@@ -129,6 +152,28 @@ class AllocationValidatorTest {
                 )
             }
         assert(exception.message!!.contains("Staff with code of ${oldStaff.code} not active"))
+    }
+
+    @Test
+    fun `Staff active end dated in the future`() {
+        val team = TeamGenerator.DEFAULT
+        whenever(teamRepository.findByCodeAndProviderId(allocationDetail.teamCode, ProviderGenerator.DEFAULT.id))
+            .thenReturn(team)
+        whenever(
+            referenceDataRepository.findByDatasetAndCode(
+                allocationDetail.datasetCode, allocationDetail.code
+            )
+        )
+            .thenReturn(INITIAL_OM_ALLOCATION)
+        val futureEndDatedStaff = Staff(1L, "code", "old", "staff", "", ZonedDateTime.now().plusYears(5))
+        whenever(staffRepository.verifyTeamMembership(futureEndDatedStaff.id, team.id)).thenReturn(true)
+        whenever(staffRepository.findByCode(allocationDetail.staffCode)).thenReturn(futureEndDatedStaff)
+        assertDoesNotThrow {
+            allocationValidator.initialValidations(
+                ProviderGenerator.DEFAULT.id,
+                allocationDetail
+            )
+        }
     }
 
     @Test
