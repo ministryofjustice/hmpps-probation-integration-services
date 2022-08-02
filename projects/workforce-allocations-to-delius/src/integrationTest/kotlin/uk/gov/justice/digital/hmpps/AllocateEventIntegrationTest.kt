@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.repository.IapsEventRepository
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
@@ -77,8 +78,8 @@ class AllocateEventIntegrationTest {
 
         val insertedPm = orderManagerRepository.findActiveManagerAtDate(event.id, ZonedDateTime.now().minusDays(2))
         assertThat(
-            insertedPm?.endDate?.truncatedTo(ChronoUnit.SECONDS),
-            equalTo(secondOm.startDate.truncatedTo(ChronoUnit.SECONDS))
+            insertedPm?.endDate?.truncatedTo(ChronoUnit.SECONDS)?.withZoneSameInstant(EuropeLondon),
+            equalTo(secondOm.startDate.truncatedTo(ChronoUnit.SECONDS).withZoneSameInstant(EuropeLondon))
         )
     }
 
@@ -105,7 +106,10 @@ class AllocateEventIntegrationTest {
         val allocationDetail = ResourceLoader.allocationBody("get-event-allocation-body")
 
         val oldOm = orderManagerRepository.findById(existingOm.id).orElseThrow()
-        assertThat(oldOm.endDate, equalTo(allocationDetail.createdDate))
+        assertThat(
+            oldOm.endDate?.withZoneSameInstant(EuropeLondon),
+            equalTo(allocationDetail.createdDate.withZoneSameInstant(EuropeLondon))
+        )
 
         val updatedOmCount = orderManagerRepository.findAll().count { it.eventId == event.id }
         assertThat(originalOmCount + 1, equalTo(updatedOmCount))
