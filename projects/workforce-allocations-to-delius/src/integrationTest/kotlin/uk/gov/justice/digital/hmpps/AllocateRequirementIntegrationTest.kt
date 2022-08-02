@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator
 import uk.gov.justice.digital.hmpps.data.repository.IapsRequirementRepository
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
@@ -69,16 +70,18 @@ class AllocateRequirementIntegrationTest {
                 endDate = ZonedDateTime.now().minusDays(1)
             }!!
         )
-        val secondRm = requirementManagerRepository.save(RequirementManagerGenerator.generate(startDateTime = firstRm.endDate!!))
+        val secondRm =
+            requirementManagerRepository.save(RequirementManagerGenerator.generate(startDateTime = firstRm.endDate!!))
 
         val originalRmCount = requirementManagerRepository.findAll().count { it.requirementId == requirement.id }
 
         allocateAndValidate(firstRm, requirement, originalRmCount)
 
-        val insertedRm = requirementManagerRepository.findActiveManagerAtDate(requirement.id, ZonedDateTime.now().minusDays(2))
+        val insertedRm =
+            requirementManagerRepository.findActiveManagerAtDate(requirement.id, ZonedDateTime.now().minusDays(2))
         assertThat(
-            insertedRm?.endDate?.truncatedTo(ChronoUnit.SECONDS),
-            equalTo(secondRm.startDate.truncatedTo(ChronoUnit.SECONDS))
+            insertedRm?.endDate?.truncatedTo(ChronoUnit.SECONDS)?.withZoneSameInstant(EuropeLondon),
+            equalTo(secondRm.startDate.truncatedTo(ChronoUnit.SECONDS).withZoneSameInstant(EuropeLondon))
         )
     }
 
@@ -105,7 +108,10 @@ class AllocateRequirementIntegrationTest {
         val allocationDetail = ResourceLoader.allocationBody("get-requirement-allocation-body")
 
         val oldRm = requirementManagerRepository.findById(existingRm.id).orElseThrow()
-        assertThat(oldRm.endDate, equalTo(allocationDetail.createdDate))
+        assertThat(
+            oldRm.endDate?.withZoneSameInstant(EuropeLondon),
+            equalTo(allocationDetail.createdDate.withZoneSameInstant(EuropeLondon))
+        )
 
         val updatedRmCount = requirementManagerRepository.findAll().count { it.requirementId == requirement.id }
         assertThat(originalRmCount + 1, equalTo(updatedRmCount))
