@@ -108,7 +108,7 @@ internal class AllocateEventServiceTest {
     }
 
     @Test
-    fun `when order manage not found for event and date exception thrown`() {
+    fun `when order manager not found for event and date exception thrown`() {
         val event = EventGenerator.generate(id = allocationDetail.eventId, person = PersonGenerator.DEFAULT)
         whenever(eventRepository.findById(allocationDetail.eventId)).thenReturn(
             Optional.of(event)
