@@ -2,7 +2,7 @@ environment_name: delius-test
 
 env:
   SENTRY_ENVIRONMENT: dev
-  SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: Digital-Prison-Services-dev-case_note_poll_pusher_queue  # TODO what are these?
+  SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: Digital-Prison-Services-dev-workforce_allocation_hmpps_queue
   SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/oauth/token
 
   LOGGING_LEVEL_COM_AMAZON_SQS: DEBUG
