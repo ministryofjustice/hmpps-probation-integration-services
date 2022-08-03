@@ -62,7 +62,8 @@ class AuditedInteractionTest {
         )
         auditedInteractionService.createAuditedInteraction(
             BusinessInteractionCode.TEST_BI_CODE,
-            parameters
+            parameters,
+            AuditedInteraction.Outcome.SUCCESS
         )
         val aiCaptor = ArgumentCaptor.forClass(AuditedInteraction::class.java)
         verify(auditedInteractionRepository, Mockito.times(1)).save(aiCaptor.capture())
@@ -87,7 +88,8 @@ class AuditedInteractionTest {
         assertThrows<BusinessInteractionNotFoundException> {
             auditedInteractionService.createAuditedInteraction(
                 BusinessInteractionCode.TEST_BI_CODE,
-                parameters
+                parameters,
+                AuditedInteraction.Outcome.SUCCESS
             )
         }
     }
@@ -103,7 +105,8 @@ class AuditedInteractionTest {
         )
         auditedInteractionService.createAuditedInteraction(
             BusinessInteractionCode.TEST_BI_CODE,
-            parameters
+            parameters,
+            AuditedInteraction.Outcome.FAIL
         )
         verify(auditedInteractionRepository, times(0)).save(any())
     }
@@ -118,7 +121,8 @@ class AuditedInteractionTest {
         )
         auditedInteractionService.createAuditedInteraction(
             BusinessInteractionCode.TEST_BI_CODE,
-            parameters
+            parameters,
+            AuditedInteraction.Outcome.FAIL
         )
         verify(auditedInteractionRepository, times(0)).save(any())
     }

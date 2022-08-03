@@ -52,11 +52,16 @@ class AuditedInteraction(
         SUCCESS, FAIL
     }
 
-    data class Parameters(private val paramMap: Map<String, Any> = mapOf()) {
+    data class Parameters(private val paramMap: MutableMap<String, Any> = mutableMapOf()) {
 
-        constructor(vararg paramPairs: Pair<String, Any>) : this(paramPairs.toMap())
+        constructor(vararg paramPairs: Pair<String, Any>) : this(paramPairs.toMap().toMutableMap())
 
         fun paramPairs(): List<Pair<String, Any>> = paramMap.entries.map { Pair(it.key, it.value) }
+
+        operator fun get(key: String): Any? = paramMap[key]
+        operator fun set(key: String, value: Any) {
+            paramMap[key] = value
+        }
     }
 
     override fun getId() = AuditedInteractionId(dateTime, businessInteractionId, userId)

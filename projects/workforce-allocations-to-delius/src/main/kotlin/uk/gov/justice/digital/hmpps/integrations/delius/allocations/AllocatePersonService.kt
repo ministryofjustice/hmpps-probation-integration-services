@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.audit.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exception.ConflictException
@@ -23,64 +22,61 @@ import uk.gov.justice.digital.hmpps.integrations.workforceallocations.Allocation
 
 @Service
 class AllocatePersonService(
-    private val auditedInteractionService: AuditedInteractionService,
+    auditedInteractionService: AuditedInteractionService,
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
     private val allocationValidator: AllocationValidator,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
-    private val responsibleOfficerRepository: ResponsibleOfficerRepository,
-
-) : ManagerService<PersonManager>(personManagerRepository) {
+    private val responsibleOfficerRepository: ResponsibleOfficerRepository
+) : ManagerService<PersonManager>(auditedInteractionService, personManagerRepository) {
 
     @Transactional
-    fun createPersonAllocation(allocationDetail: PersonAllocationDetail) {
-        val person = personRepository.findByCrn(allocationDetail.crn)
-            ?: throw NotFoundException("Person", "crn", allocationDetail.crn)
+    fun createPersonAllocation(allocationDetail: PersonAllocationDetail) =
+        audit(BusinessInteractionCode.ADD_PERSON_ALLOCATION) {
+            val person = personRepository.findByCrn(allocationDetail.crn)
+                ?: throw NotFoundException("Person", "crn", allocationDetail.crn)
 
-        auditedInteractionService.createAuditedInteraction(
-            BusinessInteractionCode.ADD_PERSON_ALLOCATION,
-            AuditedInteraction.Parameters("offenderId" to person.id.toString())
-        )
+            it["offenderId"] = person.id
 
-        val activeOffenderManager = personManagerRepository.findActiveManagerAtDate(
-            person.id, allocationDetail.createdDate
-        ) ?: throw NotFoundException(
-            "Person Manager for ${allocationDetail.crn} at ${allocationDetail.createdDate} not found"
-        )
+            val activeOffenderManager = personManagerRepository.findActiveManagerAtDate(
+                person.id, allocationDetail.createdDate
+            ) ?: throw NotFoundException(
+                "Person Manager for ${allocationDetail.crn} at ${allocationDetail.createdDate} not found"
+            )
 
-        if (allocationDetail.isDuplicate(activeOffenderManager)) {
-            return
-        }
+            if (allocationDetail.isDuplicate(activeOffenderManager)) {
+                return@audit
+            }
 
-        if (personRepository.countPendingTransfers(person.id) > 0) {
-            throw ConflictException("Pending transfer exists for this person: ${person.crn}")
-        }
-        val ts = allocationValidator.initialValidations(
-            activeOffenderManager.provider.id,
-            allocationDetail,
-        )
+            if (personRepository.countPendingTransfers(person.id) > 0) {
+                throw ConflictException("Pending transfer exists for this person: ${person.crn}")
+            }
+            val ts = allocationValidator.initialValidations(
+                activeOffenderManager.provider.id,
+                allocationDetail,
+            )
 
-        val newOffenderManager = PersonManager(personId = person.id).apply {
-            populate(allocationDetail.createdDate, ts, activeOffenderManager)
-        }
+            val newOffenderManager = PersonManager(personId = person.id).apply {
+                populate(allocationDetail.createdDate, ts, activeOffenderManager)
+            }
 
-        val (activeOm, newOm) = updateDateTimes(activeOffenderManager, newOffenderManager)
+            val (activeOm, newOm) = updateDateTimes(activeOffenderManager, newOffenderManager)
 
-        updateResponsibleOfficer(newOm)
-        contactRepository.save(
-            createTransferContact(
-                activeOm,
-                newOm,
-                ContactContext(
-                    contactTypeRepository.findByCodeOrThrow(ContactTypeCode.OFFENDER_MANAGER_TRANSFER.value),
-                    person.id
+            updateResponsibleOfficer(newOm)
+            contactRepository.save(
+                createTransferContact(
+                    activeOm,
+                    newOm,
+                    ContactContext(
+                        contactTypeRepository.findByCodeOrThrow(ContactTypeCode.OFFENDER_MANAGER_TRANSFER.value),
+                        person.id
+                    )
                 )
             )
-        )
 
-        personRepository.updateIaps(person.id)
-    }
+            personRepository.updateIaps(person.id)
+        }
 
     private fun updateResponsibleOfficer(
         newPersonManager: PersonManager,

@@ -18,16 +18,21 @@ class AuditedInteractionService(
 ) {
     @Async
     @Transactional
-    fun createAuditedInteraction(biCode: InteractionCode, params: AuditedInteraction.Parameters) {
+    fun createAuditedInteraction(
+        interactionCode: InteractionCode,
+        params: AuditedInteraction.Parameters,
+        outcome: AuditedInteraction.Outcome
+    ) {
         val principal = SecurityContextHolder.getContext().authentication?.principal
 
         if (principal is ServicePrincipal) {
-            val bi = businessInteractionRepository.findByCode(biCode.code)
+            val bi = businessInteractionRepository.findByCode(interactionCode.code)
             auditedInteractionRepository.save(
                 AuditedInteraction(
-                    bi?.id ?: throw BusinessInteractionNotFoundException(biCode.code),
+                    bi?.id ?: throw BusinessInteractionNotFoundException(interactionCode.code),
                     principal.userId ?: throw IllegalArgumentException("No user id in security context"),
-                    parameters = params
+                    parameters = params,
+                    outcome = outcome,
                 )
             )
         }
