@@ -15,8 +15,11 @@ class AuditedInteractionParamsConverter : AttributeConverter<AuditedInteraction.
         if (dbData !== null) {
             val args = dbData.split(",")
                 .filter { it.contains("^.+=.+\$".toRegex()) }
-                .associate { it.substringBefore("=").trim() to it.substringAfter("=").replace("'", "") }
-            if (args.isNotEmpty()) params = AuditedInteraction.Parameters(args)
+                .associate {
+                    it.substringBefore("=").trim() to it.substringAfter("=")
+                        .replace("'", "")
+                }.toMutableMap()
+            if (args.isNotEmpty()) params = AuditedInteraction.Parameters(args.toMutableMap())
         }
         return params
     }

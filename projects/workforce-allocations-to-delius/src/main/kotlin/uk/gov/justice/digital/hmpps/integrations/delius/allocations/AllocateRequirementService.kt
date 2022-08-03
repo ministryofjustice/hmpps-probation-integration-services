@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.audit.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
@@ -23,80 +22,76 @@ import uk.gov.justice.digital.hmpps.integrations.workforceallocations.Allocation
 
 @Service
 class AllocateRequirementService(
-    private val auditedInteractionService: AuditedInteractionService,
+    auditedInteractionService: AuditedInteractionService,
     private val requirementRepository: RequirementRepository,
     private val requirementManagerRepository: RequirementManagerRepository,
     private val allocationValidator: AllocationValidator,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val transferReasonRepository: TransferReasonRepository
-) : ManagerService<RequirementManager>(requirementManagerRepository) {
+) : ManagerService<RequirementManager>(auditedInteractionService, requirementManagerRepository) {
 
     @Transactional
-    fun createRequirementAllocation(crn: String, allocationDetail: RequirementAllocationDetail) {
-        val requirement = requirementRepository.findByIdOrNull(allocationDetail.requirementId)
-            ?: throw NotFoundException("Requirement", "id", allocationDetail.requirementId)
+    fun createRequirementAllocation(crn: String, allocationDetail: RequirementAllocationDetail) =
+        audit(BusinessInteractionCode.CREATE_COMPONENT_TRANSFER) {
+            val requirement = requirementRepository.findByIdOrNull(allocationDetail.requirementId)
+                ?: throw NotFoundException("Requirement", "id", allocationDetail.requirementId)
 
-        if (requirement.person.crn != crn)
-            throw ConflictException("Requirement ${allocationDetail.requirementId} not for $crn")
-        if (requirement.disposal.event.id != allocationDetail.eventId)
-            throw ConflictException("Requirement ${allocationDetail.requirementId} not for event ${allocationDetail.eventId}")
-        if (!requirement.disposal.active || !requirement.disposal.event.active)
-            throw NotActiveException("Event", "id", requirement.disposal.event.id)
-        if (!requirement.active) throw NotActiveException("Requirement", "id", allocationDetail.requirementId)
+            it["offenderId"] = requirement.person.id
+            it["eventId"] = requirement.disposal.event.id
+            it["requirementId"] = requirement.id
 
-        auditedInteractionService.createAuditedInteraction(
-            BusinessInteractionCode.CREATE_COMPONENT_TRANSFER,
-            AuditedInteraction.Parameters(
-                "offenderId" to requirement.person.id,
-                "eventId" to requirement.disposal.event.id,
-                "requirementId" to requirement.id
+            if (requirement.person.crn != crn)
+                throw ConflictException("Requirement ${allocationDetail.requirementId} not for $crn")
+            if (requirement.disposal.event.id != allocationDetail.eventId)
+                throw ConflictException("Requirement ${allocationDetail.requirementId} not for event ${allocationDetail.eventId}")
+            if (!requirement.disposal.active || !requirement.disposal.event.active)
+                throw NotActiveException("Event", "id", requirement.disposal.event.id)
+            if (!requirement.active) throw NotActiveException("Requirement", "id", allocationDetail.requirementId)
+
+            val activeRequirementManager = requirementManagerRepository.findActiveManagerAtDate(
+                allocationDetail.requirementId, allocationDetail.createdDate
+            ) ?: throw NotFoundException(
+                "Requirement Manager for requirement ${allocationDetail.requirementId} at ${allocationDetail.createdDate} not found"
             )
-        )
 
-        val activeRequirementManager = requirementManagerRepository.findActiveManagerAtDate(
-            allocationDetail.requirementId, allocationDetail.createdDate
-        ) ?: throw NotFoundException(
-            "Requirement Manager for requirement ${allocationDetail.requirementId} at ${allocationDetail.createdDate} not found"
-        )
+            if (allocationDetail.isDuplicate(activeRequirementManager)) {
+                return@audit
+            }
 
-        if (allocationDetail.isDuplicate(activeRequirementManager)) {
-            return
-        }
+            if (requirementRepository.countPendingTransfers(requirement.id) > 0) {
+                throw ConflictException("Pending transfer exists for this requirement: ${requirement.id}")
+            }
+            val ts = allocationValidator.initialValidations(
+                activeRequirementManager.provider.id,
+                allocationDetail,
+            )
 
-        if (requirementRepository.countPendingTransfers(requirement.id) > 0) {
-            throw ConflictException("Pending transfer exists for this requirement: ${requirement.id}")
-        }
-        val ts = allocationValidator.initialValidations(
-            activeRequirementManager.provider.id,
-            allocationDetail,
-        )
+            val transferReason = transferReasonRepository.findByCode(TransferReasonCode.COMPONENT.value)
+                ?: throw NotFoundException("Transfer Reason", "code", TransferReasonCode.COMPONENT.value)
 
-        val transferReason = transferReasonRepository.findByCode(TransferReasonCode.COMPONENT.value)
-            ?: throw NotFoundException("Transfer Reason", "code", TransferReasonCode.COMPONENT.value)
+            val newRequirementManager = RequirementManager(
+                requirementId = allocationDetail.requirementId,
+                transferReasonId = transferReason.id
+            ).apply {
+                populate(allocationDetail.createdDate, ts, activeRequirementManager)
+            }
 
-        val newRequirementManager = RequirementManager(
-            requirementId = allocationDetail.requirementId,
-            transferReasonId = transferReason.id
-        ).apply {
-            populate(allocationDetail.createdDate, ts, activeRequirementManager)
-        }
+            val (activeOM, newOM) = updateDateTimes(activeRequirementManager, newRequirementManager)
 
-        val (activeOM, newOM) = updateDateTimes(activeRequirementManager, newRequirementManager)
-
-        contactRepository.save(
-            createTransferContact(
-                activeOM,
-                newOM,
-                ContactContext(
-                    contactTypeRepository.findByCodeOrThrow(ContactTypeCode.SENTENCE_COMPONENT_TRANSFER.value),
-                    requirement.person.id,
-                    allocationDetail.eventId,
-                    allocationDetail.requirementId
+            contactRepository.save(
+                createTransferContact(
+                    activeOM,
+                    newOM,
+                    ContactContext(
+                        contactTypeRepository.findByCodeOrThrow(ContactTypeCode.SENTENCE_COMPONENT_TRANSFER.value),
+                        requirement.person.id,
+                        allocationDetail.eventId,
+                        allocationDetail.requirementId
+                    )
                 )
             )
-        )
 
-        requirementRepository.updateIaps(allocationDetail.requirementId)
-    }
+            requirementRepository.updateIaps(allocationDetail.requirementId)
+        }
 }

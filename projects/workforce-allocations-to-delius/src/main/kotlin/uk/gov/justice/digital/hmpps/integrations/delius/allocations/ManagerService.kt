@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
 import org.slf4j.LoggerFactory
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.audit.service.AuditableService
+import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactContext
@@ -10,8 +12,9 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 abstract class ManagerService<T : ManagerBaseEntity>(
+    auditedInteractionService: AuditedInteractionService,
     private val managerRepository: JpaRepository<T, Long>,
-) {
+) : AuditableService(auditedInteractionService) {
     companion object {
         private val log = LoggerFactory.getLogger(this::class.java)
     }

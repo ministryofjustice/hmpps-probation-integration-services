@@ -4,10 +4,10 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.audit.AuditedInteraction
+import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.CASE_NOTES_MERGE
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
@@ -20,26 +20,24 @@ import javax.validation.Valid
 
 @Service
 class DeliusService(
+    auditedInteractionService: AuditedInteractionService,
     private val caseNoteRepository: CaseNoteRepository,
     private val nomisTypeRepository: CaseNoteNomisTypeRepository,
     private val caseNoteTypeRepository: CaseNoteTypeRepository,
     private val offenderRepository: OffenderRepository,
     private val assignmentService: AssignmentService,
-    private val auditedInteractionService: AuditedInteractionService,
     private val relatedService: CaseNoteRelatedService
-) {
+) : AuditableService(auditedInteractionService) {
     @Transactional
-    fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) {
+    fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) = audit(CASE_NOTES_MERGE) {
+        it["nomisId"] = caseNote.header.noteId
+
         val existing = caseNoteRepository.findByNomisId(caseNote.header.noteId)
 
         val entity = if (existing == null) caseNote.newEntity() else existing.updateFrom(caseNote)
         if (entity != null) {
             caseNoteRepository.save(entity)
-
-            auditedInteractionService.createAuditedInteraction(
-                BusinessInteractionCode.CASE_NOTES_MERGE,
-                AuditedInteraction.Parameters("contactId" to entity.id)
-            )
+            it["contactId"] = entity.id
         }
     }
 
