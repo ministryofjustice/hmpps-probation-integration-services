@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.plugins.ClassPathPlugin
 import uk.gov.justice.digital.hmpps.plugins.JibConfigPlugin
 
 plugins {
-    kotlin("jvm") version "1.7.10" apply false
+    kotlin("jvm") version "1.7.10"
     kotlin("plugin.spring") version "1.7.10" apply false
     kotlin("plugin.jpa") version "1.7.10" apply false
     id("org.springframework.boot") version "2.7.2" apply false
@@ -14,9 +14,6 @@ plugins {
     id("com.google.cloud.tools.jib") apply false
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
     id("base")
-    id("jacoco")
-    id("test-report-aggregation")
-    id("jacoco-report-aggregation")
     id("org.sonarqube")
 }
 
@@ -86,23 +83,4 @@ subprojects {
         }
     }
 }
-
-// Aggregate jacoco report across sub-projects
-tasks.register<JacocoReport>("jacocoTestReport") {
-    dependsOn(subprojects.map { it.tasks.getByName("jacocoTestReport") })
-    val main = subprojects.map { it.sourceSets.named("main").get() }
-    additionalSourceDirs(files(main.map { it.allSource.srcDirs }))
-    additionalClassDirs(
-        files(
-            subprojects.map {
-                it.tasks.named<JacocoReport>("jacocoTestReport").get().classDirectories
-            }
-        )
-    )
-    executionData(files(subprojects.map { it.tasks.named<JacocoReport>("jacocoTestReport").get().executionData }))
-    reports {
-        html.required.set(true)
-        xml.required.set(true)
-    }
-}
-tasks.named("check") { dependsOn("ktlintCheck", "jacocoTestReport") }
+tasks.named("check") { dependsOn("ktlintCheck") }

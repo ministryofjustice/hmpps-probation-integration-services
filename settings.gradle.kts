@@ -1,5 +1,5 @@
 rootProject.name = "probation-integration-services"
-include("libs:probation-integration-commons", "prison-case-notes-to-probation")
+include("libs:probation-integration-commons", "prison-case-notes-to-probation", "workforce-allocations-to-delius")
 
 // load children from the "projects" directory (and drop the prefix)
 rootProject.children

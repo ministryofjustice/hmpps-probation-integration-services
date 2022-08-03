@@ -1,0 +1,48 @@
+package uk.gov.justice.digital.hmpps.integrations.delius.allocations
+
+import org.hibernate.annotations.Immutable
+import javax.persistence.AttributeConverter
+import javax.persistence.Column
+import javax.persistence.Convert
+import javax.persistence.Converter
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
+
+@Immutable
+@Entity
+@Table(name = "r_reference_data_master")
+class Dataset(
+    @Id
+    @Column(name = "reference_data_master_id")
+    val id: Long,
+
+    @Convert(converter = DatasetCodeConverter::class)
+    @Column(name = "code_set_name", nullable = false)
+    val code: DatasetCode,
+)
+
+enum class DatasetCode(val value: String) {
+    BULK_TRANSFER_REASON("BULK TRANSFER REASON"),
+    BULK_ALLOCATION_REASON("BULK ALLOCATION REASON"),
+    INTER_AREA_ORDER_TRANSFER_REASON("INTER AREA ORDER TRANSFER REASON"),
+    INTER_AREA_REQUIREMENT_TRANSFER_REASON("INTER AREA REQUIREMENT TRANSFER REASON"),
+    INTER_AREA_TRANSFER_REASON("INTER AREA TRANSFER REASON"),
+    OM_ALLOCATION_REASON("OM ALLOCATION REASON"),
+    ORDER_ALLOCATION_REASON("ORDER ALLOCATION REASON"),
+    RM_ALLOCATION_REASON("RM ALLOCATION REASON"),
+    TRANSFER_STATUS("TRANSFER STATUS");
+
+    companion object {
+        private val index = DatasetCode.values().associateBy { it.value }
+        fun fromString(value: String): DatasetCode =
+            index[value] ?: throw IllegalArgumentException("Invalid DatasetCode")
+    }
+}
+
+@Converter
+class DatasetCodeConverter : AttributeConverter<DatasetCode, String> {
+    override fun convertToDatabaseColumn(attribute: DatasetCode): String = attribute.value
+
+    override fun convertToEntityAttribute(dbData: String): DatasetCode = DatasetCode.fromString(dbData)
+}

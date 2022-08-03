@@ -1,0 +1,10 @@
+{
+  "MessageId": "ae06c49e-1f41-4b9f-b2f2-dcca610d02cd",
+  "Message": "{\n    \"eventType\": \"event.manager.allocated\",\n    \"version\": 1,\n    \"description\": \"Event allocated event\",\n    \"detailUrl\": \"http://localhost:{wiremock.port}/allocation/event/5716275b-127e-4115-971f-0c131bcbf065\",\n    \"occurredAt\": \"2022-07-28T10:30:55.0123+01:00\",\n    \"additionalInformation\": {\n      \"allocationId\": \"5716275b-127e-4115-971f-0c131bcbf065\"\n    },\n    \"personReference\": {\n      \"identifiers\": [\n        {\n          \"type\": \"CRN\",\n          \"value\": \"X123456\"\n        }\n      ]\n    }\n  }",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "event.manager.allocated"
+    }
+  }
+}

@@ -2,8 +2,16 @@ import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework:spring-jms")
+    implementation(libs.amazon.sqs)
     implementation(libs.insights)
+    implementation(libs.openfeign)
+    implementation(libs.sentry)
+
+    runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.mockito.kotlin)
@@ -11,8 +19,15 @@ dependencies {
 
 configure<ClassPathExtension> {
     jacocoExclusions = listOf(
-        "**/ThreadConfig*",
+        "**/AuditingConfig*",
         "**/ContextRunnable*",
-        "**/TelemetryService*"
+        "**/ConnectionProviderConfig*",
+        "**/exception/**",
+        "**/FeignConfig*",
+        "**/JmsConfig*",
+        "**/OracleCondition*",
+        "**/SecurityConfiguration*",
+        "**/TelemetryService*",
+        "**/ThreadConfig*",
     )
 }

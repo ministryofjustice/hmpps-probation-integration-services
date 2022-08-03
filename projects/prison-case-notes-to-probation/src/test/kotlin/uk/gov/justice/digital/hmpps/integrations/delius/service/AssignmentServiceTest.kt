@@ -15,10 +15,8 @@ import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.InvalidEstablishmentCodeException
-import uk.gov.justice.digital.hmpps.exceptions.ProbationAreaNotFoundException
-import uk.gov.justice.digital.hmpps.exceptions.StaffNotFoundException
-import uk.gov.justice.digital.hmpps.exceptions.TeamNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.ProbationAreaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.TeamRepository
@@ -52,12 +50,12 @@ class AssignmentServiceTest {
         whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId)).thenReturn(
             null
         )
-        val ex = assertThrows<ProbationAreaNotFoundException> {
+        val ex = assertThrows<NotFoundException> {
             assignmentService.findAssignment(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId, staffName)
         }
         assertThat(
             ex.message,
-            equalTo("Probation area not found for NOMIS institution: ${PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId}")
+            equalTo("Probation Area not found for NOMIS institution: ${PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId}")
         )
     }
 
@@ -66,12 +64,12 @@ class AssignmentServiceTest {
         whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId))
             .thenReturn(ProbationAreaGenerator.DEFAULT)
         whenever(teamRepository.findByCode(TeamGenerator.DEFAULT.code)).thenReturn(null)
-        val ex = assertThrows<TeamNotFoundException> {
+        val ex = assertThrows<NotFoundException> {
             assignmentService.findAssignment(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId, staffName)
         }
         assertThat(
             ex.message,
-            equalTo("Team not found: ${TeamGenerator.DEFAULT.code}")
+            equalTo("Team with code of ${TeamGenerator.DEFAULT.code} not found")
         )
     }
 
@@ -154,7 +152,7 @@ class AssignmentServiceTest {
         whenever(staffService.create(probationArea, team, staffName))
             .thenThrow(RuntimeException())
 
-        assertThrows<StaffNotFoundException> {
+        assertThrows<NotFoundException> {
             assignmentService.findAssignment(
                 PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId,
                 staffName

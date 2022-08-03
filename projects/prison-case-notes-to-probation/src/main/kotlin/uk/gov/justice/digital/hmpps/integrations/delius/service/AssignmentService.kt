@@ -1,10 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.InvalidEstablishmentCodeException
-import uk.gov.justice.digital.hmpps.exceptions.ProbationAreaNotFoundException
-import uk.gov.justice.digital.hmpps.exceptions.StaffNotFoundException
-import uk.gov.justice.digital.hmpps.exceptions.TeamNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Team
@@ -23,9 +21,9 @@ class AssignmentService(
         if (establishmentCode.length < 3) throw InvalidEstablishmentCodeException(establishmentCode)
 
         val pa = probationAreaRepository.findByInstitutionNomisCode(establishmentCode.substring(0, 3))
-            ?: throw ProbationAreaNotFoundException(establishmentCode.substring(0, 3))
+            ?: throw NotFoundException("Probation Area not found for NOMIS institution: ${establishmentCode.substring(0, 3)}")
         val team = teamRepository.findByCode("${pa.code}CSN")
-            ?: throw TeamNotFoundException("${pa.code}CSN")
+            ?: throw NotFoundException("Team", "code", "${pa.code}CSN")
         val staff = getStaff(pa, team, staffName)
         return Triple(pa.id, team.id, staff.id)
     }
@@ -39,7 +37,7 @@ class AssignmentService(
             staffService.create(probationArea, team, staffName)
         } catch (e: Exception) {
             findStaff()
-                ?: throw StaffNotFoundException(
+                ?: throw NotFoundException(
                     "Unable to find or create staff with name $staffName for probation area ${probationArea.code}"
                 )
         }

@@ -28,7 +28,7 @@ data class CaseNote(
     @Column(name = "contact_id", updatable = false)
     @SequenceGenerator(name = "idGenerator", sequenceName = "contact_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idGenerator")
-    val id: Long? = null,
+    val id: Long = 0,
 
     @Column(updatable = false)
     val offenderId: Long,
@@ -106,7 +106,7 @@ data class CaseNote(
         if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
         other as CaseNote
 
-        return id != null && id == other.id
+        return id == other.id
     }
 
     override fun hashCode(): Int = javaClass.hashCode()
