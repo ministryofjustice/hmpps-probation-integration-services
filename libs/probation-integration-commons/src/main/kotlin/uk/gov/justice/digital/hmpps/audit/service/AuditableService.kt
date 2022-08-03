@@ -4,7 +4,7 @@ import uk.gov.justice.digital.hmpps.audit.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.InteractionCode
 
 abstract class AuditableService(protected val auditedInteractionService: AuditedInteractionService) {
-    fun <T> audit(
+    protected fun <T> audit(
         interactionCode: InteractionCode,
         params: AuditedInteraction.Parameters = AuditedInteraction.Parameters(),
         code: (AuditedInteraction.Parameters) -> T
