@@ -11,6 +11,6 @@ database:
       - rqmnt_manager
 
   audit:
-    username: WorkforceAllocationsToDelius
+    username: HMPPSAllocations
     forename: Workforce Allocations
     surname: Service
