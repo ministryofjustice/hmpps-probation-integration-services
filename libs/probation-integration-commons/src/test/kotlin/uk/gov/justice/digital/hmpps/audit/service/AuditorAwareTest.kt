@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.audit
+package uk.gov.justice.digital.hmpps.audit.service
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -11,12 +11,11 @@ import org.mockito.kotlin.whenever
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
-import uk.gov.justice.digital.hmpps.audit.service.AuditorAware
 import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
 import uk.gov.justice.digital.hmpps.user.User
 
 @ExtendWith(MockitoExtension::class)
-internal class AuditorAwareConfigurationTest {
+internal class AuditorAwareTest {
 
     @Mock
     private lateinit var securityContext: SecurityContext

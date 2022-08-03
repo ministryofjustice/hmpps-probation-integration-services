@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.audit
+package uk.gov.justice.digital.hmpps.audit.service
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
@@ -18,15 +18,19 @@ import org.mockito.kotlin.whenever
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
+import uk.gov.justice.digital.hmpps.audit.AuditedInteraction
+import uk.gov.justice.digital.hmpps.audit.AuditedInteractionId
+import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
+import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.audit.BusinessInteractionNotFoundException
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
-import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
 import uk.gov.justice.digital.hmpps.user.User
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
-class AuditedInteractionTest {
+class AuditedInteractionServiceTest {
 
     @Mock
     lateinit var businessInteractionRepository: BusinessInteractionRepository
