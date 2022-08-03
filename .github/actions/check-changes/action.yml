@@ -20,7 +20,6 @@ runs:
             - 'libs/**'
           projects: 
             - 'projects/**'
-            - '!projects/workforce-allocations-to-delius'
     - name: Check for changes
       id: check-changes
       shell: bash
