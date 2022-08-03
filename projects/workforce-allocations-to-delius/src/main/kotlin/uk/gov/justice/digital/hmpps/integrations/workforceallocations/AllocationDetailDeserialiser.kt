@@ -4,9 +4,6 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
-import java.util.concurrent.atomic.AtomicInteger
-
-val count = AtomicInteger(0)
 
 class AllocationDetailDeserialiser : JsonDeserializer<AllocationDetail>() {
     override fun deserialize(jp: JsonParser, dc: DeserializationContext): AllocationDetail {
@@ -16,8 +13,10 @@ class AllocationDetailDeserialiser : JsonDeserializer<AllocationDetail>() {
             om.treeToValue(node, AllocationDetail.PersonAllocationDetail::class.java)
         } else if (node.has("requirementId")) {
             om.treeToValue(node, AllocationDetail.RequirementAllocationDetail::class.java)
-        } else {
+        } else if (node.has("eventId")) {
             om.treeToValue(node, AllocationDetail.EventAllocationDetail::class.java)
+        } else {
+            throw IllegalArgumentException("Unexpected response from allocation service.")
         }
     }
 }

@@ -98,6 +98,8 @@ spring:
     hibernate:
       ddl-auto: validate
 
+dataloader.enabled: false
+
 #azure:
 #  application-insights:
 #    connection-string: "InstrumentationKey=INSTRUMENTATION_KEY"
