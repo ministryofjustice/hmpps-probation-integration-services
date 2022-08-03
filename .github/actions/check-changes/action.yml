@@ -18,7 +18,8 @@ runs:
           commons:
             - '*'
             - 'libs/**'
-          projects: 'projects/**'
+          projects: 
+            - 'projects/**'
     - name: Check for changes
       id: check-changes
       shell: bash

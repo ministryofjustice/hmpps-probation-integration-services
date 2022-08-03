@@ -30,7 +30,7 @@ With this in mind, we aim to:
 * Services have a single well-defined purpose
 * Entities/projections are defined using domain-specific language (e.g. CaseNote, not Contact)
 
-A full list of decision records can be found in [decisions](decisions). (**TODO**)
+A full list of decision records can be found in [decisions](doc/adr)
 
 ## Tooling
 * Code is written in [Kotlin](https://kotlinlang.org/), using [Spring Boot](https://spring.io/projects/spring-boot)
