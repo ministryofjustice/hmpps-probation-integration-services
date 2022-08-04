@@ -9,6 +9,8 @@ import java.time.ZonedDateTime
 
 object ResponsibleOfficerGenerator {
     var DEFAULT = generate()
+    var NEW = generate(personId = PersonGenerator.NEW_PM.id, PersonManagerGenerator.NEW)
+    var HISTORIC = generate(personId = PersonGenerator.HISTORIC_PM.id, PersonManagerGenerator.HISTORIC)
 
     fun generate(
         personId: Long = PersonGenerator.DEFAULT.id,

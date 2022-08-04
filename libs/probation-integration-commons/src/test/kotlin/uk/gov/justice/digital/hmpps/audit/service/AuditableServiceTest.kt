@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import uk.gov.justice.digital.hmpps.audit.AuditedInteraction
@@ -25,33 +24,41 @@ class AuditableServiceTest {
 
     @Test
     fun `audit success`() {
-        val result = auditedService.audit(BusinessInteractionCode.TEST_BI_CODE, AuditedInteraction.Parameters()) {
-            4 + 4
-        }
+        val result = auditedService.success(4, 4)
 
         assertThat(result, equalTo(8))
         verify(auditedInteractionService).createAuditedInteraction(
             eq(BusinessInteractionCode.TEST_BI_CODE),
-            any(),
+            eq(AuditedInteraction.Parameters(mutableMapOf("field" to "value"))),
             eq(AuditedInteraction.Outcome.SUCCESS)
         )
     }
 
     @Test
     fun `audit failure`() {
-        assertThrows<RuntimeException> {
-            auditedService.audit(BusinessInteractionCode.TEST_BI_CODE, AuditedInteraction.Parameters()) {
-                throw RuntimeException("something went wrong")
-            }
+        assertThrows<IllegalArgumentException> {
+            auditedService.fail()
         }
 
         verify(auditedInteractionService).createAuditedInteraction(
             eq(BusinessInteractionCode.TEST_BI_CODE),
-            any(),
+            eq(AuditedInteraction.Parameters(mutableMapOf("field" to "value"))),
             eq(AuditedInteraction.Outcome.FAIL)
         )
     }
 
     class AuditedService(auditedInteractionService: AuditedInteractionService) :
-        AuditableService(auditedInteractionService)
+        AuditableService(auditedInteractionService) {
+        fun success(left: Int, right: Int) = audit(BusinessInteractionCode.TEST_BI_CODE) {
+            it["field"] = "value"
+            left + right
+        }
+
+        fun fail(): Nothing = audit(
+            BusinessInteractionCode.TEST_BI_CODE,
+            AuditedInteraction.Parameters(mutableMapOf("field" to "value"))
+        ) {
+            throw IllegalArgumentException("Something went wrong")
+        }
+    }
 }

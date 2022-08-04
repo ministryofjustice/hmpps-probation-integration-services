@@ -6,6 +6,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 
 object EventGenerator {
     val DEFAULT = generate()
+    val NEW = generate()
+    val HISTORIC = generate()
 
     fun generate(
         person: Person = PersonGenerator.DEFAULT,

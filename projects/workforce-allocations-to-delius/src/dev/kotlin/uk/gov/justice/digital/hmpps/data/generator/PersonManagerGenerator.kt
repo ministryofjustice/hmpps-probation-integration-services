@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.data.generator
 import IdGenerator
 import UserGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator.build
-import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
@@ -11,7 +10,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
 import java.time.ZonedDateTime
 
 object PersonManagerGenerator {
-    var DEFAULT = generate(startDateTime = ZonedDateTime.of(2022, 7, 1, 10, 30, 0, 0, EuropeLondon))
+    var DEFAULT = generate(startDateTime = ManagerGenerator.START_DATE_TIME)
+    var NEW = generate(startDateTime = ManagerGenerator.START_DATE_TIME, personId = PersonGenerator.NEW_PM.id)
+    var HISTORIC = generate(startDateTime = ManagerGenerator.START_DATE_TIME, personId = PersonGenerator.HISTORIC_PM.id)
 
     fun generate(
         id: Long = IdGenerator.getAndIncrement(),
