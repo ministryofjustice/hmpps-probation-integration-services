@@ -53,6 +53,7 @@ jobs:
     runs-on: moj-cloud-platform
     timeout-minutes: 60
     needs:
+      - build
       - deploy-to-test
       - deploy-to-preprod
     steps:
@@ -68,7 +69,7 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install
       - name: Run Playwright tests
-        run: npx playwright test --reporter=html,junit
+        run: npx playwright test --reporter=html,junit $(echo '${{ needs.build.outputs.changed-projects }}' | jq -r 'join(" ")')
         env:
           ENV: test
           DELIUS_URL: https://ndelius.test.probation.service.justice.gov.uk
