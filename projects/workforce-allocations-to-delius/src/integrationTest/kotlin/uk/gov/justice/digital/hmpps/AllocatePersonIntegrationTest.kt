@@ -18,7 +18,6 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
 import uk.gov.justice.digital.hmpps.data.repository.IapsPersonRepository
-import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
@@ -27,7 +26,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOffice
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.EventType
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
 
 @SpringBootTest
 @ActiveProfiles("integration-test")
@@ -113,16 +111,11 @@ class AllocatePersonIntegrationTest {
         )
 
         val insertedPm = personManagerRepository.findActiveManagerAtDate(person.id, ZonedDateTime.now().minusDays(2))
-        assertThat(
-            insertedPm?.endDate?.truncatedTo(ChronoUnit.SECONDS)?.withZoneSameInstant(EuropeLondon),
-            equalTo(secondPm.startDate.truncatedTo(ChronoUnit.SECONDS).withZoneSameInstant(EuropeLondon))
-        )
+        assert(secondPm.startDate.closeTo(insertedPm?.endDate))
+
         val insertedRo =
             responsibleOfficerRepository.findActiveManagerAtDate(person.id, ZonedDateTime.now().minusDays(2))
-        assertThat(
-            insertedRo?.endDate?.truncatedTo(ChronoUnit.SECONDS)?.withZoneSameInstant(EuropeLondon),
-            equalTo(secondRo.startDate.truncatedTo(ChronoUnit.SECONDS).withZoneSameInstant(EuropeLondon))
-        )
+        assert(secondRo.startDate.closeTo(insertedRo?.endDate))
     }
 
     private fun allocateAndValidate(
@@ -152,16 +145,10 @@ class AllocatePersonIntegrationTest {
         val allocationDetail = ResourceLoader.allocationBody(jsonFile)
 
         val oldPm = personManagerRepository.findById(existingPm.id).orElseThrow()
-        assertThat(
-            oldPm.endDate?.withZoneSameInstant(EuropeLondon),
-            equalTo(allocationDetail.createdDate.withZoneSameInstant(EuropeLondon))
-        )
+        assert(allocationDetail.createdDate.closeTo(oldPm.endDate))
 
         val oldRo = responsibleOfficerRepository.findById(existingRo.id).orElseThrow()
-        assertThat(
-            oldRo.endDate?.withZoneSameInstant(EuropeLondon),
-            equalTo(allocationDetail.createdDate.withZoneSameInstant(EuropeLondon))
-        )
+        assert(allocationDetail.createdDate.closeTo(oldRo.endDate))
 
         val updatedPmCount = personManagerRepository.findAll().count { it.personId == person.id }
         assertThat(updatedPmCount, equalTo(originalPmCount + 1))

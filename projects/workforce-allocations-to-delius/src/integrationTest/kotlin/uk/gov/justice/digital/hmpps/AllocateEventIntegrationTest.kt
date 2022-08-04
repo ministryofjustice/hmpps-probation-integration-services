@@ -17,14 +17,12 @@ import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.repository.IapsEventRepository
-import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.EventType
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
 
 @ActiveProfiles("integration-test")
 @SpringBootTest
@@ -87,10 +85,7 @@ class AllocateEventIntegrationTest {
         )
 
         val insertedPm = orderManagerRepository.findActiveManagerAtDate(event.id, ZonedDateTime.now().minusDays(2))
-        assertThat(
-            insertedPm?.endDate?.truncatedTo(ChronoUnit.SECONDS)?.withZoneSameInstant(EuropeLondon),
-            equalTo(secondOm.startDate.truncatedTo(ChronoUnit.SECONDS).withZoneSameInstant(EuropeLondon))
-        )
+        assert(secondOm.startDate.closeTo(insertedPm?.endDate))
     }
 
     private fun allocateAndValidate(
@@ -118,10 +113,7 @@ class AllocateEventIntegrationTest {
         val allocationDetail = ResourceLoader.allocationBody(jsonFile)
 
         val oldOm = orderManagerRepository.findById(existingOm.id).orElseThrow()
-        assertThat(
-            oldOm.endDate?.withZoneSameInstant(EuropeLondon),
-            equalTo(allocationDetail.createdDate.withZoneSameInstant(EuropeLondon))
-        )
+        assert(allocationDetail.createdDate.closeTo(oldOm.endDate))
 
         val updatedOmCount = orderManagerRepository.findAll().count { it.eventId == event.id }
         assertThat(updatedOmCount, equalTo(originalOmCount + 1))
