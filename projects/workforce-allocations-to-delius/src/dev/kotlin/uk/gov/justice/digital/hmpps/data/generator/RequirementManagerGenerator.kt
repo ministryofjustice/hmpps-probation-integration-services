@@ -10,11 +10,13 @@ import java.time.ZonedDateTime
 
 object RequirementManagerGenerator : ManagerGenerator {
     var DEFAULT = generate(startDateTime = ZonedDateTime.now().minusMonths(1))
+    var NEW = generate(requirementId = RequirementGenerator.NEW.id)
+    var HISTORIC = generate(requirementId = RequirementGenerator.HISTORIC.id)
 
     fun generate(
         id: Long = IdGenerator.getAndIncrement(),
         requirementId: Long = RequirementGenerator.DEFAULT.id,
-        transferReasonId: Long = TransferReasonGenerator.CASE_ORDER.id,
+        transferReasonId: Long = TransferReasonGenerator.COMPONENT.id,
         provider: Provider = ProviderGenerator.DEFAULT,
         team: Team = TeamGenerator.DEFAULT,
         staff: Staff = StaffGenerator.DEFAULT,

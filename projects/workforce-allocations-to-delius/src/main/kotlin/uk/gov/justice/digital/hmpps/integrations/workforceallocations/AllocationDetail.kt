@@ -8,7 +8,6 @@ import java.time.ZonedDateTime
 @JsonDeserialize(using = AllocationDetailDeserialiser::class)
 sealed interface AllocationDetail {
     val id: String
-    val staffId: Long
     val staffCode: String
     val teamCode: String
     val providerCode: String
@@ -20,7 +19,6 @@ sealed interface AllocationDetail {
     @JsonDeserialize(using = JsonDeserializer.None::class)
     data class PersonAllocationDetail(
         override val id: String,
-        override val staffId: Long,
         override val staffCode: String,
         override val teamCode: String,
         override val providerCode: String,
@@ -34,7 +32,6 @@ sealed interface AllocationDetail {
     @JsonDeserialize(using = JsonDeserializer.None::class)
     data class EventAllocationDetail(
         override val id: String,
-        override val staffId: Long,
         override val staffCode: String,
         override val teamCode: String,
         override val providerCode: String,
@@ -48,7 +45,6 @@ sealed interface AllocationDetail {
     @JsonDeserialize(using = JsonDeserializer.None::class)
     data class RequirementAllocationDetail(
         override val id: String,
-        override val staffId: Long,
         override val staffCode: String,
         override val teamCode: String,
         override val providerCode: String,

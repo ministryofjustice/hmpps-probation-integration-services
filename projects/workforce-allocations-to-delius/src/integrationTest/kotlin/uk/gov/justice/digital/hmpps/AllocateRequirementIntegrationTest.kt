@@ -13,13 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.jms.core.JmsTemplate
-import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator
 import uk.gov.justice.digital.hmpps.data.repository.IapsRequirementRepository
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManagerRepository
@@ -30,7 +28,6 @@ import java.time.temporal.ChronoUnit
 
 @ActiveProfiles("integration-test")
 @SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class AllocateRequirementIntegrationTest {
 
     @Value("\${spring.jms.template.default-destination}")
@@ -53,32 +50,46 @@ class AllocateRequirementIntegrationTest {
 
     @Test
     fun `allocate new requirement manager`() {
-        val requirement = RequirementGenerator.DEFAULT
-        val existingManager = requirementManagerRepository.findByIdOrNull(RequirementManagerGenerator.DEFAULT.id)
-            ?: throw NotFoundException("Requirement Manager Not Found")
-        val originalRmCount = requirementManagerRepository.findAll().count { it.requirementId == requirement.id }
+        val requirement = RequirementGenerator.NEW
+        val existingManager = RequirementManagerGenerator.NEW
 
-        allocateAndValidate(existingManager, requirement, originalRmCount)
+        allocateAndValidate(
+            "new-requirement-allocation-message",
+            "new-requirement-allocation-body",
+            existingManager,
+            requirement,
+            1
+        )
     }
 
     @Test
     fun `allocate historic requirement manager`() {
-        val requirement = RequirementGenerator.DEFAULT
+        val requirement = RequirementGenerator.HISTORIC
 
         val firstRm = requirementManagerRepository.save(
-            requirementManagerRepository.findByIdOrNull(RequirementManagerGenerator.DEFAULT.id)?.apply {
+            requirementManagerRepository.findByIdOrNull(RequirementManagerGenerator.HISTORIC.id)?.apply {
                 endDate = ZonedDateTime.now().minusDays(1)
             }!!
         )
         val secondRm =
-            requirementManagerRepository.save(RequirementManagerGenerator.generate(startDateTime = firstRm.endDate!!))
+            requirementManagerRepository.save(
+                RequirementManagerGenerator.generate(
+                    requirementId = requirement.id,
+                    startDateTime = firstRm.endDate!!
+                )
+            )
 
-        val originalRmCount = requirementManagerRepository.findAll().count { it.requirementId == requirement.id }
+        allocateAndValidate(
+            "historic-requirement-allocation-message",
+            "historic-requirement-allocation-body",
+            firstRm,
+            requirement,
+            2
+        )
 
-        allocateAndValidate(firstRm, requirement, originalRmCount)
-
-        val insertedRm =
-            requirementManagerRepository.findActiveManagerAtDate(requirement.id, ZonedDateTime.now().minusDays(2))
+        val insertedRm = requirementManagerRepository.findActiveManagerAtDate(
+            requirement.id, ZonedDateTime.now().minusDays(2)
+        )
         assertThat(
             insertedRm?.endDate?.truncatedTo(ChronoUnit.SECONDS)?.withZoneSameInstant(EuropeLondon),
             equalTo(secondRm.startDate.truncatedTo(ChronoUnit.SECONDS).withZoneSameInstant(EuropeLondon))
@@ -86,11 +97,13 @@ class AllocateRequirementIntegrationTest {
     }
 
     private fun allocateAndValidate(
+        messageName: String,
+        jsonFile: String,
         existingRm: RequirementManager,
         requirement: Requirement,
         originalRmCount: Int,
     ) {
-        val allocationEvent = prepMessage("requirement-allocation-message", wireMockServer.port())
+        val allocationEvent = prepMessage(messageName, wireMockServer.port())
         jmsTemplate.convertSendAndWait(queueName, allocationEvent)
 
         verify(telemetryService).trackEvent(
@@ -105,7 +118,7 @@ class AllocateRequirementIntegrationTest {
             ArgumentMatchers.anyMap()
         )
 
-        val allocationDetail = ResourceLoader.allocationBody("get-requirement-allocation-body")
+        val allocationDetail = ResourceLoader.allocationBody(jsonFile)
 
         val oldRm = requirementManagerRepository.findById(existingRm.id).orElseThrow()
         assertThat(
@@ -114,7 +127,7 @@ class AllocateRequirementIntegrationTest {
         )
 
         val updatedRmCount = requirementManagerRepository.findAll().count { it.requirementId == requirement.id }
-        assertThat(originalRmCount + 1, equalTo(updatedRmCount))
+        assertThat(updatedRmCount, equalTo(originalRmCount + 1))
 
         assert(iapsRequirementRepository.findById(requirement.id).isPresent)
     }
