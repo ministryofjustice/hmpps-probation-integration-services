@@ -11,14 +11,31 @@ on:
         description: The name of the environment to deploy to
         type: string
         required: true
-      values-file:
-        description: The name of the YAML file to use for configuration (e.g. values-dev.yml)
-        type: string
-        required: true
       version:
         description: The image version to deploy
         type: string
         required: true
+
+  workflow_dispatch:
+    inputs:
+      projects:
+        description: Project
+        type: choice
+        required: true
+        options:
+          - '["prison-case-notes-to-probation"]'
+          - '["workforce-allocations-to-delius"]'
+          # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
+          # See https://github.com/community/community/discussions/11795
+      environment:
+        description: Environment
+        type: environment
+        required: true
+      version:
+        description: Image version
+        type: string
+        required: true
+        default: latest
 
 jobs:
   deploy:
@@ -39,11 +56,19 @@ jobs:
           role-skip-session-tagging: true
           role-duration-seconds: 1200
 
-      - name: Get environment name
+      - name: Map GitHub environment to values file
+        id: values
+        shell: bash
+        run: |
+          if [ '${{ inputs.environment }}' == 'test' ];     then echo '::set-output name=filename::values-dev.yml; fi
+          if [ '${{ inputs.environment }}' == 'pre-prod' ]; then echo '::set-output name=filename::values-preprod.yml; fi
+          if [ '${{ inputs.environment }}' == 'prod' ];     then echo '::set-output name=filename::values-prod.yml; fi
+
+      - name: Get Delius environment name from values file
         id: env
         shell: bash
         run: |
-          environment_name=$(cat ${{ inputs.values-file }} | yq '.environment_name')
+          environment_name=$(cat ${{ steps.values.outputs.filename }} | yq '.environment_name')
           echo "::set-output name=name::${environment_name}"
           echo "::set-output name=short-name::${environment_name/delius-/del-}"
         working-directory: projects/${{ matrix.project }}/deploy
@@ -61,7 +86,6 @@ jobs:
             echo "Adding secret to parameter store: ${key} (${namespace}/${name})"
             aws ssm put-parameter --name "${namespace}/${name}" --value "${value}" --overwrite --type SecureString --region eu-west-2
           done
-        working-directory: projects/${{ matrix.project }}/deploy
 
       - name: Configure database access
         shell: bash
@@ -69,13 +93,13 @@ jobs:
           test -f database/access.yml && \
           aws ssm start-automation-execution --document-name oracle-${{ steps.env.outputs.short-name }}-probation-integration-access \
                                              --parameters "Configuration='$(yq database/access.yml -o json)'" \
-                                             --region eu-west-2
+                                             --region eu-west-2 && \
           echo 'Execution started. Follow the logs in AWS: https://eu-west-2.console.aws.amazon.com/systems-manager/automation/executions?region=eu-west-2'
         working-directory: projects/${{ matrix.project }}/deploy
 
       - name: Render values
         shell: bash
-        run: yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' --inplace values.yml ${{ inputs.values-file }}
+        run: yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' --inplace values.yml ${{ steps.values.outputs.filename }}
         working-directory: projects/${{ matrix.project }}/deploy
 
       - name: Update task definition
@@ -96,4 +120,4 @@ jobs:
           service: ${{ steps.env.outputs.short-name }}-${{ matrix.project }}-service
           cluster: del-delius-ecscluster-private-ecs
           wait-for-service-stability: true
-          wait-for-minutes: 5
+          wait-for-minutes: 10

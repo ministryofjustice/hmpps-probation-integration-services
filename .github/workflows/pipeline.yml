@@ -1,4 +1,4 @@
-name: Main
+name: Pipeline
 
 on:
   push:
@@ -34,7 +34,6 @@ jobs:
     needs: build
     with:
       environment: test
-      values-file: values-dev.yml
       version: ${{ needs.build.outputs.version }}
       projects: ${{ needs.build.outputs.changed-projects }}
     secrets: inherit
@@ -45,7 +44,6 @@ jobs:
     needs: build
     with:
       environment: preprod
-      values-file: values-preprod.yml
       version: ${{ needs.build.outputs.version }}
       projects: ${{ needs.build.outputs.changed-projects }}
     secrets: inherit
@@ -72,6 +70,7 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test --reporter=html,junit
         env:
+          ENV: test
           DELIUS_URL: https://ndelius.test.probation.service.justice.gov.uk
           WORKFORCE_URL: https://workforce-management-dev.hmpps.service.justice.gov.uk
           DPS_URL: https://digital-dev.prison.service.justice.gov.uk
@@ -109,7 +108,6 @@ jobs:
       - end-to-end-tests
     with:
       environment: prod
-      values-file: values-prod.yml
       version: ${{ needs.build.outputs.version }}
       projects: ${{ needs.build.outputs.changed-projects }}
     secrets: inherit
