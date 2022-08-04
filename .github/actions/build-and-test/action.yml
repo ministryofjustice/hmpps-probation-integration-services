@@ -42,17 +42,13 @@ runs:
       with:
         arguments: "build sonarqube"
 
-    - name: Publish test report
-      uses: mikepenz/action-junit-report@v3
+    - name: Publish test reports
+      uses: mikepenz/action-junit-report@main # switch to tag once multi-report feature is released - see https://github.com/mikepenz/action-junit-report/releases
       if: always()
       with:
-        check_name: Unit test results
-        report_paths: '**/build/test-results/test/TEST-*.xml'
-
-    - name: Publish integration test report
-      uses: mikepenz/action-junit-report@v3
-      if: always()
-      with:
-        check_name: Integration test results
-        report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
-
+        check_name: |-
+          Unit test results
+          Integration test results
+        report_paths: |-
+          **/build/test-results/test/TEST-*.xml
+          **/build/test-results/integrationTest/TEST-*.xml
