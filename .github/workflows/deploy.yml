@@ -29,8 +29,12 @@ on:
           # See https://github.com/community/community/discussions/11795
       environment:
         description: Environment
-        type: environment
+        type: choice
         required: true
+        options:
+          - test
+          - preprod
+          - prod
       version:
         description: Image version
         type: string
