@@ -17,14 +17,12 @@ import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator
 import uk.gov.justice.digital.hmpps.data.repository.IapsRequirementRepository
-import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.EventType
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
 
 @ActiveProfiles("integration-test")
 @SpringBootTest
@@ -90,10 +88,7 @@ class AllocateRequirementIntegrationTest {
         val insertedRm = requirementManagerRepository.findActiveManagerAtDate(
             requirement.id, ZonedDateTime.now().minusDays(2)
         )
-        assertThat(
-            insertedRm?.endDate?.truncatedTo(ChronoUnit.SECONDS)?.withZoneSameInstant(EuropeLondon),
-            equalTo(secondRm.startDate.truncatedTo(ChronoUnit.SECONDS).withZoneSameInstant(EuropeLondon))
-        )
+        assert(secondRm.startDate.closeTo(insertedRm?.endDate))
     }
 
     private fun allocateAndValidate(
@@ -120,14 +115,11 @@ class AllocateRequirementIntegrationTest {
 
         val allocationDetail = ResourceLoader.allocationBody(jsonFile)
 
-        val oldRm = requirementManagerRepository.findById(existingRm.id).orElseThrow()
-        assertThat(
-            oldRm.endDate?.withZoneSameInstant(EuropeLondon),
-            equalTo(allocationDetail.createdDate.withZoneSameInstant(EuropeLondon))
-        )
-
         val updatedRmCount = requirementManagerRepository.findAll().count { it.requirementId == requirement.id }
         assertThat(updatedRmCount, equalTo(originalRmCount + 1))
+
+        val oldRm = requirementManagerRepository.findById(existingRm.id).orElseThrow()
+        assert(allocationDetail.createdDate.closeTo(oldRm.endDate))
 
         assert(iapsRequirementRepository.findById(requirement.id).isPresent)
     }
