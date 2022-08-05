@@ -35,6 +35,8 @@ spring.security.oauth2.client:
   provider:
     hmpps-auth:
 
+logging.level:
+    org.hibernate.engine.jdbc.spi.SqlExceptionHelper: OFF
 
 ---
 # Shared dev/test config
