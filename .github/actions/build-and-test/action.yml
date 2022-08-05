@@ -37,13 +37,13 @@ runs:
 
     - name: Sonar analysis
       uses: gradle/gradle-build-action@v2
-      if: ${{ github.event.pull_request.head.repo.fork == false }}
+      if: ${{ github.actor != 'dependabot[bot]' }}
       with:
         arguments: sonarqube
 
     - name: Publish test reports
       uses: mikepenz/action-junit-report@main # switch to tag once multi-report feature is released - see https://github.com/mikepenz/action-junit-report/releases
-      if: always() && github.event.pull_request.head.repo.fork == false
+      if: always() && github.actor != 'dependabot[bot]'
       with:
         check_name: |-
           Unit test results
