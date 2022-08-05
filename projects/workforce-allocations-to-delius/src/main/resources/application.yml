@@ -9,6 +9,16 @@ spring:
       concurrency: 1
       max-concurrency: 10
       acknowledge-mode: client
+  security.oauth2.client:
+    registration:
+      workforce-allocations-to-delius:
+        provider: hmpps-auth
+        authorization-grant-type: client_credentials
+        client-id: ${integrations.workforce-allocations.client-id}
+        client-secret: ${integrations.workforce-allocations.client-secret}
+    provider:
+      hmpps-auth:
+        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
 
 delius.db.username: workforce-allocations-to-delius
 
@@ -25,20 +35,10 @@ feign.client.config:
       Accept: application/json
       Content-Type: application/json
 
-spring.security.oauth2.client:
-  registration:
-    workforce-allocations-to-delius:
-      provider: hmpps-auth
-      authorization-grant-type: client_credentials
-      client-id: ${integrations.workforce-allocations.client-id}
-      client-secret: ${integrations.workforce-allocations.client-secret}
-  provider:
-    hmpps-auth:
-
 
 ---
 # Shared dev/test config
-spring.config.activate.on-profile: ["dev", "integration-test", "oracle"]
+spring.config.activate.on-profile: [ "dev", "integration-test", "oracle" ]
 
 context:
   initializer:
@@ -59,10 +59,6 @@ integrations:
     client-id: workforce-allocations-to-delius
     client-secret: workforce-allocations-to-delius
 
-spring.security.oauth2.client.provider:
-  hmpps-auth:
-    token-uri: http://localhost:${wiremock.port}/auth/oauth/token
-
 management.endpoints.web:
   base-path: /
   exposure.include: [ "hawtio", "health", "jolokia" ]
@@ -71,8 +67,6 @@ hawtio.authenticationEnabled: false
 logging.level:
   uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient: DEBUG
   org.hibernate.tool.schema: ERROR
-
-
 
 ---
 spring.config.activate.on-profile: dev

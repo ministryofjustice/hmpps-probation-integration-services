@@ -26,8 +26,8 @@ import javax.persistence.Version
 data class CaseNote(
     @Id
     @Column(name = "contact_id", updatable = false)
-    @SequenceGenerator(name = "idGenerator", sequenceName = "contact_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idGenerator")
+    @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
     val id: Long = 0,
 
     @Column(updatable = false)
