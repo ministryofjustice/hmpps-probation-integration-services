@@ -9,6 +9,16 @@ spring:
       concurrency: 1
       max-concurrency: 10
       acknowledge-mode: client
+  security.oauth2.client:
+    registration:
+      prison-case-notes:
+        provider: hmpps-auth
+        authorization-grant-type: client_credentials
+        client-id: ${integrations.prison-case-notes.client-id}
+        client-secret: ${integrations.prison-case-notes.client-secret}
+    provider:
+      hmpps-auth:
+        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
 
 delius.db.username: prison-case-notes-to-probation
 
@@ -25,18 +35,8 @@ feign.client.config:
       Accept: application/json
       Content-Type: application/json
 
-spring.security.oauth2.client:
-  registration:
-    prison-case-notes:
-      provider: hmpps-auth
-      authorization-grant-type: client_credentials
-      client-id: ${integrations.prison-case-notes.client-id}
-      client-secret: ${integrations.prison-case-notes.client-secret}
-  provider:
-    hmpps-auth:
-
 logging.level:
-    org.hibernate.engine.jdbc.spi.SqlExceptionHelper: OFF
+  org.hibernate.engine.jdbc.spi.SqlExceptionHelper: OFF
 
 ---
 # Shared dev/test config
@@ -60,10 +60,6 @@ integrations:
     url: http://localhost:${wiremock.port}
     client-id: prison-case-notes-to-probation
     client-secret: prison-case-notes-to-probation
-
-spring.security.oauth2.client.provider:
-  hmpps-auth:
-    token-uri: http://localhost:${wiremock.port}/auth/oauth/token
 
 management.endpoints.web:
   base-path: /

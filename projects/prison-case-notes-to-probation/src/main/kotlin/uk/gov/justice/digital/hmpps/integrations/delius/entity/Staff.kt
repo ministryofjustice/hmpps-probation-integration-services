@@ -22,8 +22,8 @@ class Staff(
 
     @Id
     @Column(name = "staff_id")
-    @SequenceGenerator(name = "idGenerator", sequenceName = "staff_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idGenerator")
+    @SequenceGenerator(name = "staff_id_seq", sequenceName = "staff_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "staff_id_seq")
     val id: Long = 0,
 
     @Column(name = "forename")
