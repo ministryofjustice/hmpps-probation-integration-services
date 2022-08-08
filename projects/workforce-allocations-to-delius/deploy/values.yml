@@ -11,11 +11,11 @@ env:
   DELIUS_DB_USERNAME: HMPPSAllocations # Defined in database/access.yml
 
 secrets:
-  APPLICATIONINSIGHTS_CONNECTION_STRING:                      /application-insights/connection-string
-  AWS_SQS_ACCOUNT-ID:                                         /moj-cloud-platform/aws-account-id
-  SPRING_DATASOURCE_URL:                                      /delius-database/jdbc-url
-  SPRING_DATASOURCE_USERNAME:                                 /workforce-allocations-to-delius/db-username
-  SPRING_DATASOURCE_PASSWORD:                                 /workforce-allocations-to-delius/db-password
-  INTEGRATIONS_WORKFORCE-ALLOCATIONS-TO-DELIUS_CLIENT-ID:     /workforce-allocations-to-delius/client-id
-  INTEGRATIONS_WORKFORCE-ALLOCATIONS-TO-DELIUS_CLIENT-SECRET: /workforce-allocations-to-delius/client-secret
-  SENTRY_DSN:                                                 /workforce-allocations-to-delius/sentry-dsn
+  APPLICATIONINSIGHTS_CONNECTION_STRING:            /application-insights/connection-string
+  AWS_SQS_ACCOUNT-ID:                               /moj-cloud-platform/aws-account-id
+  SPRING_DATASOURCE_URL:                            /delius-database/jdbc-url
+  SPRING_DATASOURCE_USERNAME:                       /workforce-allocations-to-delius/db-username
+  SPRING_DATASOURCE_PASSWORD:                       /workforce-allocations-to-delius/db-password
+  INTEGRATIONS_WORKFORCE-ALLOCATIONS_CLIENT-ID:     /workforce-allocations-to-delius/client-id
+  INTEGRATIONS_WORKFORCE-ALLOCATIONS_CLIENT-SECRET: /workforce-allocations-to-delius/client-secret
+  SENTRY_DSN:                                       /workforce-allocations-to-delius/sentry-dsn
