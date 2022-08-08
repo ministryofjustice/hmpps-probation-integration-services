@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.data.entity
+package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
 import org.hibernate.annotations.Immutable
 import javax.persistence.Column
