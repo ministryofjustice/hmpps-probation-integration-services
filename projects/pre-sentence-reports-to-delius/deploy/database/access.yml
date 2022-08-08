@@ -1,0 +1,12 @@
+database:
+  access:
+    username_key: /pre-sentence-reports-to-delius/db-username
+    password_key: /pre-sentence-reports-to-delius/db-password
+    tables:
+      - audited_interaction
+      - document
+
+  audit:
+    username: PreSentenceReportToDelius
+    forename: Pre sentence report
+    surname: Service

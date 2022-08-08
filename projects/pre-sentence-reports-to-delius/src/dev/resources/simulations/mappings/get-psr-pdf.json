@@ -1,0 +1,17 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/report/PSR-123/pdf"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "psr.pdf",
+        "headers": {
+          "Content-Type": "application/octet-stream"
+        }
+      }
+    }
+  ]
+}

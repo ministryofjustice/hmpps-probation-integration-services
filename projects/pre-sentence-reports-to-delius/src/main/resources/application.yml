@@ -4,23 +4,23 @@ spring:
     database-platform: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
   jms:
-    template.default-destination: workforce-allocations-events
+    template.default-destination: pre-sentence-report-events
     listener:
       concurrency: 1
       max-concurrency: 10
       acknowledge-mode: client
   security.oauth2.client:
     registration:
-      workforce-allocations:
+      pre-sentence-reports:
         provider: hmpps-auth
         authorization-grant-type: client_credentials
-        client-id: ${integrations.workforce-allocations.client-id}
-        client-secret: ${integrations.workforce-allocations.client-secret}
+        client-id: ${pre-sentence-reports-to-delius.client-id}
+        client-secret: ${pre-sentence-reports-to-delius.client-secret}
     provider:
       hmpps-auth:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
 
-delius.db.username: workforce-allocations-to-delius
+delius.db.username: pre-sentence-reports-to-delius
 
 management.endpoints.web:
   base-path: /
@@ -54,10 +54,10 @@ wiremock:
   enabled: true
 
 integrations:
-  workforce-allocations:
+  pre-sentence-reports:
     url: http://localhost:${wiremock.port}
-    client-id: workforce-allocations-to-delius
-    client-secret: workforce-allocations-to-delius
+    client-id: pre-sentence-reports-to-delius
+    client-secret: pre-sentence-reports-to-delius
 
 management.endpoints.web:
   base-path: /
@@ -70,12 +70,9 @@ logging.level:
 ---
 spring.config.activate.on-profile: dev
 
-
 ---
 spring.config.activate.on-profile: integration-test
 spring.datasource.url: jdbc:h2:file:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
-
-
 
 ---
 spring.config.activate.on-profile: oracle

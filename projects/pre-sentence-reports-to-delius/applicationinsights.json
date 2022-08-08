@@ -1,0 +1,16 @@
+{
+  "role": {
+    "name": "pre-sentence-reports-to-delius"
+  },
+  "customDimensions": {
+    "service.version": "${VERSION}"
+  },
+  "instrumentation": {
+    "logging": {
+      "level": "DEBUG"
+    }
+  },
+  "selfDiagnostics": {
+    "destination": "console"
+  }
+}

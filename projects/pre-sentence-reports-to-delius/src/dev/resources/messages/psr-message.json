@@ -1,0 +1,10 @@
+{
+  "MessageId": "ae06c49e-1f41-4b9f-b2f2-dcca610d02cd",
+  "Message": "{\n  \"version\": \"1\",\n  \"eventType\": \"pre-sentence.report.completed\",\n  \"description\": \"A Pre-Sentence Report has been completed\",\n  \"detailUrl\": \"http://localhost:{wiremock.port}/report/PSR-123/pdf\",\n  \"occurredAt\": \"2022-10-05T12:00:00.000Z\",\n  \"additionalInformation\": {\n    \"reportId\": \"PSR-123\"\n  },\n  \"personReference\": {\n    \"identifiers\": [\n      {\n        \"type\": \"CRN\",\n        \"value\": \"D001022\"\n      }\n    ]\n  }\n}",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "pre-sentence.report.completed"
+    }
+  }
+}
