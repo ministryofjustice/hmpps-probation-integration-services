@@ -21,10 +21,10 @@ class JibConfigPlugin : Plugin<Project> {
                     image = "eclipse-temurin:17-jre-alpine"
                 }
                 to {
-                    image = "quay.io/hmpps/${project.name}:${project.version}"
+                    image = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}:${project.version}"
                     auth {
-                        username = System.getenv("QUAYIO_USERNAME")
-                        password = System.getenv("QUAYIO_PASSWORD")
+                        username = System.getenv("GITHUB_USERNAME")
+                        password = System.getenv("GITHUB_PASSWORD")
                     }
                     tags = mutableSetOf("latest")
                 }

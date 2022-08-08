@@ -23,8 +23,8 @@ jobs:
       - name: Push image
         uses: gradle/gradle-build-action@v2
         env:
-          QUAYIO_USERNAME: ${{ secrets.QUAYIO_USERNAME }}
-          QUAYIO_PASSWORD: ${{ secrets.QUAYIO_PASSWORD }}
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         with:
           arguments: jib -Djib.to.tags=latest
 
