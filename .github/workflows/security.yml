@@ -27,7 +27,7 @@ jobs:
       - name: Scan image
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'quay.io/hmpps/${{ matrix.project }}:latest'
+          image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
           format: 'sarif'
