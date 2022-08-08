@@ -9,6 +9,9 @@ database:
       - responsible_officer
       - order_manager
       - rqmnt_manager
+      - iaps_offender
+      - iaps_event
+      - iaps_rqmnt
 
   audit:
     username: HMPPSAllocations
