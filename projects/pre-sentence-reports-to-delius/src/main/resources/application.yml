@@ -55,9 +55,10 @@ wiremock:
 
 integrations:
   pre-sentence-reports:
-    url: http://localhost:${wiremock.port}
     client-id: pre-sentence-reports-to-delius
     client-secret: pre-sentence-reports-to-delius
+  alfresco:
+    url: http://localhost:${wiremock.port}
 
 management.endpoints.web:
   base-path: /
@@ -66,6 +67,7 @@ hawtio.authenticationEnabled: false
 
 logging.level:
   org.hibernate.tool.schema: ERROR
+  uk.gov.justice.digital.hmpps.integrations.alfresco: DEBUG
 
 ---
 spring.config.activate.on-profile: dev

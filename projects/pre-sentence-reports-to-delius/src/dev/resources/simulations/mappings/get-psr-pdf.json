@@ -3,7 +3,12 @@
     {
       "request": {
         "method": "GET",
-        "url": "/report/PSR-123/pdf"
+        "url": "/api/v1/report/PSR-123/pdf",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer (.*)$"
+          }
+        }
       },
       "response": {
         "status": 200,

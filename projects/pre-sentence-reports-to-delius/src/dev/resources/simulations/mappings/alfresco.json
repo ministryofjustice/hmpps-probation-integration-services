@@ -10,6 +10,9 @@
           },
           "X-DocRepository-Real-Remote-User": {
             "equalTo": "pre-sentence-reports-to-delius"
+          },
+          "Authorization": {
+            "doesNotMatch": "^Bearer (.*)$"
           }
         }
       },
@@ -27,6 +30,9 @@
           },
           "X-DocRepository-Real-Remote-User": {
             "equalTo": "pre-sentence-reports-to-delius"
+          },
+          "Authorization": {
+            "doesNotMatch": "^Bearer (.*)$"
           }
         },
         "multipartPatterns": [
@@ -65,7 +71,7 @@
             },
             "bodyPatterns": [
               {
-                "contains": "OFFENDER"
+                "contains": "COURT_REPORT"
               }
             ]
           },

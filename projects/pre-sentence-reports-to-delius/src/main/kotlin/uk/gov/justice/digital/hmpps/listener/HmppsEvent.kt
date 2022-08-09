@@ -10,7 +10,7 @@ data class HmppsEvent(
     val personReference: PersonReference
 )
 
-data class AdditionalInformation(val allocationId: String)
+data class AdditionalInformation(val reportId: String)
 
 data class PersonReference(val identifiers: List<PersonIdentifier>) {
     fun findCrn(): String? = identifiers.find { it.type == "CRN" }?.value
