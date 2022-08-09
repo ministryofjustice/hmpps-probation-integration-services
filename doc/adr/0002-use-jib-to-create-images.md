@@ -50,6 +50,12 @@ image. The use of an Alpine-based image reduces the system-level dependencies
 in the deployed image lowering the ongoing dependency management overhead for
 the team.
 
+The Jib build process does not need a Docker daemon process to be running as
+it builds and pushes directly from the Gradle JVM process. This is both easier
+and faster to run in our CI pipeline. Additionally, as the Gradle build is run
+directly as a CI stage rather than within a `docker build` process we are able
+to take advantage of any build caching provided by the CI system.
+
 As Jib is focused on JVM-based applications this tool is not appropriate when
 building images for other runtimes that we may need to produce within HMPPS,
 such as Typescript. If we have a requirement to do this we would need to
