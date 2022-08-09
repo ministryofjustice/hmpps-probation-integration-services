@@ -27,6 +27,6 @@ class MessageListener(
             ) + hmppsEvent.personReference.identifiers.associate { Pair(it.type, it.value) }
         )
 
-       //TODO process the message
+        // TODO process the message
     }
 }

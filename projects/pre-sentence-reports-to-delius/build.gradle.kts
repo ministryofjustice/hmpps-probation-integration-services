@@ -19,10 +19,10 @@ dependencies {
     implementation(libs.openfeign)
     implementation(libs.sentry)
 
+    dev(project(":libs:probation-integration-dev-tools"))
     dev("org.springframework.boot:spring-boot-starter-activemq")
     dev("com.h2database:h2")
     dev(libs.hawtio)
-    dev(libs.wiremock)
 
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 

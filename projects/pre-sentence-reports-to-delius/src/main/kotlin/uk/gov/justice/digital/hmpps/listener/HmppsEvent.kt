@@ -10,7 +10,6 @@ data class HmppsEvent(
     val personReference: PersonReference
 )
 
-
 data class AdditionalInformation(val allocationId: String)
 
 data class PersonReference(val identifiers: List<PersonIdentifier>) {
