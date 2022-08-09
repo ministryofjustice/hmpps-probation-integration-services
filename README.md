@@ -37,8 +37,9 @@ A full list of decision records can be found in [decisions](doc/adr)
 * Built and tested as a multi-project [Gradle](https://gradle.org/) build
 * Unit tests with [JUnit](https://junit.org/) and [Mockito](https://mockito.org/)
 * Integration tests with [Wiremock](https://wiremock.org/), [H2](https://www.h2database.com/), and [embedded ActiveMQ](https://activemq.apache.org/)
-* End-to-end testing with [Playwright](https://playwright.dev/) - see [End to end tests](https://github.com/ministryofjustice/hmpps-end-to-end-tests)
-* Docker images are built with [Jib](https://github.com/GoogleContainerTools/jib#readme)
+* End-to-end testing with [Playwright](https://playwright.dev/) - see [End-to-end tests](https://github.com/ministryofjustice/hmpps-probation-integration-services#end-to-end-tests)
+* Container images are built with [Jib](https://github.com/GoogleContainerTools/jib#readme), and pushed to 
+[GitHub Packages](https://github.com/orgs/ministryofjustice/packages?repo_name=hmpps-probation-integration-services)
 * Code formatting by [ktlint](https://ktlint.github.io/)
 * Continuous integration with [GitHub Actions](https://help.github.com/en/actions)
 
@@ -142,7 +143,8 @@ End-to-end tests are written in [TypeScript](https://www.typescriptlang.org/) us
 in the [hmpps-probation-integration-e2e-tests](https://github.com/ministryofjustice/hmpps-probation-integration-e2e-tests) 
 repository.
 
-We run the end-to-end tests in GitHub Actions as part of the [main deployment pipeline](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/main.yml), 
+We run the end-to-end tests in GitHub Actions as part of the 
+[deployment pipeline](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/pipeline.yml), 
 against a real dev/test environment with all dependencies.  Running the tests in a real environment gives us confidence 
 that all the integration points involved in the user journey are working correctly before we push changes to production.
 
