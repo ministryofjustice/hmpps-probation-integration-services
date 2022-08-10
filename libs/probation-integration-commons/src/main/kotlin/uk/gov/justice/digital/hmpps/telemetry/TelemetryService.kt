@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.telemetry
 import com.microsoft.applicationinsights.TelemetryClient
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.message.HmppsEvent
+import uk.gov.justice.digital.hmpps.message.SimpleHmppsEvent
 
 @Async
 @Service
@@ -13,7 +13,7 @@ class TelemetryService(private val telemetryClient: TelemetryClient = TelemetryC
         telemetryClient.trackEvent(name, properties, metrics)
     }
 
-    fun hmppsEventReceived(hmppsEvent: HmppsEvent) {
+    fun hmppsEventReceived(hmppsEvent: SimpleHmppsEvent) {
         trackEvent(
             "${hmppsEvent.eventType.uppercase().replace(".", "_")}_RECEIVED",
             mapOf(

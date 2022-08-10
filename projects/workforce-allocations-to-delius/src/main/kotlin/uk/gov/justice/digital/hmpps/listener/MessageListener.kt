@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.workforceallocations.Allocation
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.PersonAllocationDetail
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.RequirementAllocationDetail
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.WorkforceAllocationsClient
-import uk.gov.justice.digital.hmpps.message.HmppsEvent
+import uk.gov.justice.digital.hmpps.message.SimpleHmppsEvent
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
 
@@ -31,7 +31,7 @@ class MessageListener(
     }
 
     @JmsListener(destination = "\${spring.jms.template.default-destination}")
-    fun receive(allocationEvent: HmppsEvent) {
+    fun receive(allocationEvent: SimpleHmppsEvent) {
         log.info("received $allocationEvent")
         telemetryService.hmppsEventReceived(allocationEvent)
 
@@ -46,6 +46,6 @@ class MessageListener(
         }
     }
 
-    fun HmppsEvent.findCrn(): String =
+    fun SimpleHmppsEvent.findCrn(): String =
         personReference.findCrn() ?: throw IllegalArgumentException("No CRN available in person reference")
 }

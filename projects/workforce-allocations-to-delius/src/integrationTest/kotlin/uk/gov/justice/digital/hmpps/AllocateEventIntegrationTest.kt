@@ -18,6 +18,8 @@ import uk.gov.justice.digital.hmpps.data.repository.IapsEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
+import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
@@ -97,7 +99,7 @@ class AllocateEventIntegrationTest {
 
         verify(telemetryService).hmppsEventReceived(allocationEvent)
 
-        val allocationDetail = ResourceLoader.allocationBody(jsonFile)
+        val allocationDetail = ResourceLoader.file<AllocationDetail>(jsonFile)
 
         val oldOm = orderManagerRepository.findById(existingOm.id).orElseThrow()
         assert(allocationDetail.createdDate.closeTo(oldOm.endDate))

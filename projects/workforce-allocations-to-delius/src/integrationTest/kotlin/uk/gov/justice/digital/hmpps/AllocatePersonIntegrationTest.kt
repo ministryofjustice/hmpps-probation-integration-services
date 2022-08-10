@@ -21,6 +21,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficerRepository
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
+import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
@@ -129,7 +131,7 @@ class AllocatePersonIntegrationTest {
 
         verify(telemetryService).hmppsEventReceived(allocationEvent)
 
-        val allocationDetail = ResourceLoader.allocationBody(jsonFile)
+        val allocationDetail = ResourceLoader.file<AllocationDetail>(jsonFile)
 
         val oldPm = personManagerRepository.findById(existingPm.id).orElseThrow()
         assert(allocationDetail.createdDate.closeTo(oldPm.endDate))

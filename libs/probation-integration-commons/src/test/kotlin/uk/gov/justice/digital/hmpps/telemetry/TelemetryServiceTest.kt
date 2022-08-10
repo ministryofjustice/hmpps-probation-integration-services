@@ -12,9 +12,9 @@ import org.mockito.Mockito.anyMap
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
-import uk.gov.justice.digital.hmpps.message.HmppsEvent
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
 import uk.gov.justice.digital.hmpps.message.PersonReference
+import uk.gov.justice.digital.hmpps.message.SimpleHmppsEvent
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -37,7 +37,7 @@ class TelemetryServiceTest {
         val detailUrl = "https://detail/url"
 
         telemetryService.hmppsEventReceived(
-            HmppsEvent(
+            SimpleHmppsEvent(
                 eventType,
                 1,
                 detailUrl,
