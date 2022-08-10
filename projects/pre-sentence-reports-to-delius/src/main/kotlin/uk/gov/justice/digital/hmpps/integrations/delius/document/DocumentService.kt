@@ -35,6 +35,9 @@ class DocumentService(
                 ?: throw NotFoundException("Document", "externalReference", reportId)
             it["documentId"] = document.id
             it["alfrescoDocumentId"] = document.alfrescoId
+            it["entityId"] = document.courtReportId
+            it["tableName"] = "COURT_REPORT"
+
             val courtReport = courtReportRepository.findById(document.courtReportId).orElseThrow {
                 NotFoundException("CourtReport", "id", document.courtReportId)
             }

@@ -3,7 +3,7 @@ import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
 apply(plugin = "com.google.cloud.tools.jib")
 
 dependencies {
-    implementation(project(":libs:probation-integration-commons"))
+    implementation(project(":libs:commons"))
 
     implementation("org.springframework:spring-jms")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -19,7 +19,7 @@ dependencies {
     implementation(libs.openfeign)
     implementation(libs.sentry)
 
-    dev(project(":libs:probation-integration-dev-tools"))
+    dev(project(":libs:dev-tools"))
     dev("org.springframework.boot:spring-boot-starter-activemq")
     dev("com.h2database:h2")
     dev(libs.hawtio)

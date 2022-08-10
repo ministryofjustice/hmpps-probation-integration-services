@@ -1,7 +1,7 @@
 rootProject.name = "probation-integration-services"
 include(
-    "libs:probation-integration-commons",
-    "libs:probation-integration-dev-tools",
+    "libs:commons",
+    "libs:dev-tools",
     "prison-case-notes-to-probation",
     "workforce-allocations-to-delius",
     "pre-sentence-reports-to-delius"
