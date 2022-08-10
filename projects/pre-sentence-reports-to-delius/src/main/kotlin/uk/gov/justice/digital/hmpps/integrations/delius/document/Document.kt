@@ -27,7 +27,8 @@ class Document(
 
     val externalReference: String,
 
-    var documentName: String,
+    @Column(name = "document_name")
+    var name: String,
 
     @LastModifiedDate
     var lastSaved: ZonedDateTime? = null,

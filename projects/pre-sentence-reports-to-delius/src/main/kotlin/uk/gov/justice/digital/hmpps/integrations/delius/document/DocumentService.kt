@@ -49,7 +49,7 @@ class DocumentService(
                 populateBodyValues(hmppsEvent, document.courtReportId, file)
             )
 
-            document.documentName = hmppsEvent.filename()
+            document.name = hmppsEvent.filename()
         }
 
     private fun populateBodyValues(hmppsEvent: SimpleHmppsEvent, courtReportId: Long, file: ByteArray): MultiValueMap<String, HttpEntity<*>> {
