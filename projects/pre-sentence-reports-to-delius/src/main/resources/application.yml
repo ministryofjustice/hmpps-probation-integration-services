@@ -67,7 +67,6 @@ hawtio.authenticationEnabled: false
 
 logging.level:
   org.hibernate.tool.schema: ERROR
-  uk.gov.justice.digital.hmpps.integrations.alfresco: DEBUG
 
 ---
 spring.config.activate.on-profile: dev

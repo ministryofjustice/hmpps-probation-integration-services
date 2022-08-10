@@ -1,11 +1,14 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.document
 
+import org.springframework.http.HttpEntity
 import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.MultiValueMap
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.config.ServiceContext
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
@@ -43,23 +46,23 @@ class DocumentService(
             alfrescoClient.releaseDocument(reportId)
             alfrescoClient.updateDocument(
                 reportId,
-                populateBodyValues(hmppsEvent, document.courtReportId, file).build()
+                populateBodyValues(hmppsEvent, document.courtReportId, file)
             )
 
             document.documentName = hmppsEvent.filename()
         }
 
-    private fun populateBodyValues(hmppsEvent: SimpleHmppsEvent, courtReportId: Long, file: ByteArray): MultipartBodyBuilder {
+    private fun populateBodyValues(hmppsEvent: SimpleHmppsEvent, courtReportId: Long, file: ByteArray): MultiValueMap<String, HttpEntity<*>> {
         val crn = hmppsEvent.personReference.findCrn()!!
         val bodyBuilder = MultipartBodyBuilder()
         bodyBuilder.part("CRN", crn, MediaType.TEXT_PLAIN)
         bodyBuilder.part("entityId", courtReportId.toString(), MediaType.TEXT_PLAIN)
-        bodyBuilder.part("author", "pre-sentence-reports-to-delius", MediaType.TEXT_PLAIN)
+        bodyBuilder.part("author", ServiceContext.servicePrincipal()!!.username, MediaType.TEXT_PLAIN)
         bodyBuilder.part("filedata", file, MediaType.APPLICATION_OCTET_STREAM).filename(hmppsEvent.filename())
         bodyBuilder.part("docType", "DOCUMENT", MediaType.TEXT_PLAIN)
         bodyBuilder.part("entityType", "COURT_REPORT", MediaType.TEXT_PLAIN)
 
-        return bodyBuilder
+        return bodyBuilder.build()
     }
 
     fun SimpleHmppsEvent.filename() = URLEncoder.encode(

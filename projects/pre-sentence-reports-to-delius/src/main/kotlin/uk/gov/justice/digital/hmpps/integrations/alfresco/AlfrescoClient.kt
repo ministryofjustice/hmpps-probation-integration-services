@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.alfresco
 
 import org.springframework.cloud.openfeign.FeignClient
+import org.springframework.http.HttpEntity
+import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -13,5 +15,5 @@ interface AlfrescoClient {
     fun releaseDocument(@PathVariable id: String)
 
     @PostMapping(value = ["/uploadandrelease/{id}"])
-    fun updateDocument(@PathVariable id: String, @RequestBody body: Any)
+    fun updateDocument(@PathVariable id: String, @RequestBody body: MultiValueMap<String, HttpEntity<*>>)
 }
