@@ -46,7 +46,7 @@ class PsrCompletedIntegrationTest {
         verify(telemetryService).hmppsEventReceived(any())
 
         val reportId = message.additionalInformation["reportId"] as String
-        val document  = documentRepository.findByExternalReference(reportId)
+        val document = documentRepository.findByExternalReference(reportId)
 
         val filename = "${PersonGenerator.DEFAULT.crn}_pre-sentence-report_$reportId.pdf"
         assertThat(document?.name, equalTo(filename))
