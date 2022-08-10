@@ -40,9 +40,8 @@ class DocumentServiceTest {
 
     @Test
     fun `when document not found exception thrown`() {
-        whenever(documentRepository.findByExternalReference(simpleHmppsEvent.additionalInformation["reportId"].toString())).thenReturn(
-            null
-        )
+        whenever(documentRepository.findByExternalReference(simpleHmppsEvent.additionalInformation["reportId"].toString()))
+            .thenReturn(null)
 
         assertThrows<NotFoundException> {
             documentService.updateCourtReportDocument(
