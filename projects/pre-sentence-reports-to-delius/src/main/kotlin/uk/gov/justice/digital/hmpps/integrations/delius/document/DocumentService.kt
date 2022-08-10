@@ -11,7 +11,8 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportRepository
-import uk.gov.justice.digital.hmpps.listener.HmppsEvent
+import uk.gov.justice.digital.hmpps.message.AdditionalInformation
+import uk.gov.justice.digital.hmpps.message.SimpleHmppsEvent
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -22,33 +23,33 @@ class DocumentService(
     private val courtReportRepository: CourtReportRepository,
     private val alfrescoClient: AlfrescoClient
 ) : AuditableService(auditedInteractionService) {
-
+    fun AdditionalInformation.reportId() = this["reportId"] as String
     @Transactional
-    fun updateCourtReportDocument(hmppsEvent: HmppsEvent, file: ByteArray) =
+    fun updateCourtReportDocument(hmppsEvent: SimpleHmppsEvent, file: ByteArray) =
         audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
-            val document = documentRepository.findByExternalReference(hmppsEvent.additionalInformation.reportId)
-                ?: throw NotFoundException("Document", "externalReference", hmppsEvent.additionalInformation.reportId)
+            val reportId = hmppsEvent.additionalInformation.reportId()
+            val document = documentRepository.findByExternalReference(reportId)
+                ?: throw NotFoundException("Document", "externalReference", reportId)
             it["documentId"] = document.id
             it["alfrescoDocumentId"] = document.alfrescoId
             val courtReport = courtReportRepository.findById(document.courtReportId).orElseThrow {
                 NotFoundException("CourtReport", "id", document.courtReportId)
             }
 
-            if(courtReport.person.crn!=hmppsEvent.personReference.findCrn()){
+            if (courtReport.person.crn != hmppsEvent.personReference.findCrn()) {
                 throw ConflictException("Court report ${courtReport.id} not for ${hmppsEvent.personReference.findCrn()}")
             }
 
-            alfrescoClient.releaseDocument(hmppsEvent.additionalInformation.reportId)
+            alfrescoClient.releaseDocument(reportId)
             alfrescoClient.updateDocument(
-                hmppsEvent.additionalInformation.reportId,
+                reportId,
                 populateBodyValues(hmppsEvent, document.courtReportId, file).build()
             )
 
             document.documentName = hmppsEvent.filename()
         }
 
-
-    private fun populateBodyValues(hmppsEvent: HmppsEvent, courtReportId: Long, file: ByteArray): MultipartBodyBuilder {
+    private fun populateBodyValues(hmppsEvent: SimpleHmppsEvent, courtReportId: Long, file: ByteArray): MultipartBodyBuilder {
         val crn = hmppsEvent.personReference.findCrn()!!
         val bodyBuilder = MultipartBodyBuilder()
         bodyBuilder.part("CRN", crn, MediaType.TEXT_PLAIN)
@@ -61,8 +62,8 @@ class DocumentService(
         return bodyBuilder
     }
 
-    fun HmppsEvent.filename() = URLEncoder.encode(
-        "${personReference.findCrn()}_pre-sentence-report_${additionalInformation.reportId}.pdf",
+    fun SimpleHmppsEvent.filename() = URLEncoder.encode(
+        "${personReference.findCrn()}_pre-sentence-report_${additionalInformation.reportId()}.pdf",
         StandardCharsets.UTF_8.name()
     )
 }

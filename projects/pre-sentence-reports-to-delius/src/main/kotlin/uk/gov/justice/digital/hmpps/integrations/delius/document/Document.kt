@@ -15,26 +15,26 @@ import javax.persistence.Version
 @Table(name = "document")
 @EntityListeners(AuditingEntityListener::class)
 class Document(
-  @Id
-  @Column(name = "document_id")
-  val id: Long = 0,
+    @Id
+    @Column(name = "document_id")
+    val id: Long = 0,
 
-  @Column(name = "primary_key_id")
-  val courtReportId: Long,
+    @Column(name = "primary_key_id")
+    val courtReportId: Long,
 
-  @Column(name = "alfresco_document_id")
-  val alfrescoId: String,
+    @Column(name = "alfresco_document_id")
+    val alfrescoId: String,
 
-  val externalReference: String,
+    val externalReference: String,
 
-  var documentName: String,
+    var documentName: String,
 
-  @LastModifiedDate
-  var lastSaved: ZonedDateTime,
+    @LastModifiedDate
+    var lastSaved: ZonedDateTime? = null,
 
-  @LastModifiedBy
-  var lastUpdatedUserId: Long,
+    @LastModifiedBy
+    var lastUpdatedUserId: Long? = null,
 
-  @Version
-  var rowVersion: Long,
+    @Version
+    var rowVersion: Long? = null,
 )

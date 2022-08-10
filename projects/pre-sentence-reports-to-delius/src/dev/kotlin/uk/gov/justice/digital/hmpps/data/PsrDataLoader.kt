@@ -7,6 +7,12 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.config.ServiceContext
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
@@ -15,6 +21,9 @@ class PsrDataLoader(
     private val serviceContext: ServiceContext,
     private val userRepository: UserRepository,
     private val businessInteractionRepository: BusinessInteractionRepository,
+    private val personRepository: PersonRepository,
+    private val documentRepository: DocumentRepository,
+    private val courtReportRepository: CourtReportRepository
 ) : CommandLineRunner {
     override fun run(vararg args: String?) {
         userRepository.save(UserGenerator.APPLICATION_USER)
@@ -23,5 +32,9 @@ class PsrDataLoader(
         businessInteractionRepository.saveAll(
             listOf(BusinessInteractionGenerator.UPLOAD_DOCUMENT)
         )
+
+        personRepository.save(PersonGenerator.DEFAULT)
+        courtReportRepository.save(CourtReportGenerator.DEFAULT)
+        documentRepository.save(DocumentGenerator.DEFAULT)
     }
 }

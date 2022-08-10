@@ -97,7 +97,7 @@
             },
             "bodyPatterns": [
               {
-                "contains": "2500003003"
+                "contains": "4"
               }
             ]
           }

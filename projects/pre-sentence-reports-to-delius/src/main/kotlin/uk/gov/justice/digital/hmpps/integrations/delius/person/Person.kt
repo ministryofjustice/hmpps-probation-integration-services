@@ -16,8 +16,5 @@ class Person(
     val id: Long,
 
     @Column(columnDefinition = "CHAR(7)")
-    val crn: String,
-
-    @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
+    val crn: String
 )

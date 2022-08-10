@@ -7,9 +7,9 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
 fun prepMessage(fileName: String, port: Int): SimpleHmppsEvent {
-    val allocationEvent = ResourceLoader.message<SimpleHmppsEvent>(fileName)
-    return allocationEvent.copy(
-        detailUrl = allocationEvent.detailUrl.replace(
+    val simpleHmppsEvent = ResourceLoader.message<SimpleHmppsEvent>(fileName)
+    return simpleHmppsEvent.copy(
+        detailUrl = simpleHmppsEvent.detailUrl.replace(
             "{wiremock.port}",
             port.toString()
         )

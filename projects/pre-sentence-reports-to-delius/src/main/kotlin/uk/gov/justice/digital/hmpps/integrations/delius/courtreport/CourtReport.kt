@@ -11,12 +11,12 @@ import javax.persistence.ManyToOne
 @Entity
 class CourtReport(
 
-  @Id
-  @Column(name = "court_report_id")
-  val id: Long,
+    @Id
+    @Column(name = "court_report_id")
+    val id: Long,
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "offender_id")
-  val person: Person,
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "offender_id")
+    val person: Person,
 
 )

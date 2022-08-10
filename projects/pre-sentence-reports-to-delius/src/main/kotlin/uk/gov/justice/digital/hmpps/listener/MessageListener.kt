@@ -7,6 +7,7 @@ import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentService
 import uk.gov.justice.digital.hmpps.integrations.psr.PsrClient
+import uk.gov.justice.digital.hmpps.message.SimpleHmppsEvent
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
 
@@ -23,18 +24,10 @@ class MessageListener(
     }
 
     @JmsListener(destination = "\${spring.jms.template.default-destination}")
-    fun receive(hmppsEvent: HmppsEvent) {
+    fun receive(hmppsEvent: SimpleHmppsEvent) {
         log.info("received $hmppsEvent")
-        telemetryService.trackEvent(
-            "PSR_COMPLETED_EVENT_RECEIVED",
-            mapOf(
-                "detailUrl" to hmppsEvent.detailUrl
-            ) + hmppsEvent.personReference.identifiers.associate { Pair(it.type, it.value) }
-        )
-
+        telemetryService.hmppsEventReceived(hmppsEvent)
         val psrDocument = psrClient.getPsrReport(URI.create(hmppsEvent.detailUrl))
         documentService.updateCourtReportDocument(hmppsEvent, psrDocument)
-
     }
 }
-

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps
+package uk.gov.justice.digital.hmpps.jms
 
 import org.springframework.jms.core.JmsTemplate
 import java.time.Duration
