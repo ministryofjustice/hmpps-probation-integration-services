@@ -38,4 +38,7 @@ class Document(
 
     @Version
     var rowVersion: Long? = null,
+
+    @Column(columnDefinition = "NUMBER")
+    val softDeleted: Boolean = false
 )

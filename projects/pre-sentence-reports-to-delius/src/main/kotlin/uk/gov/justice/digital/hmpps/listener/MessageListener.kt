@@ -25,7 +25,6 @@ class MessageListener(
 
     @JmsListener(destination = "\${spring.jms.template.default-destination}")
     fun receive(hmppsEvent: SimpleHmppsEvent) {
-        log.info("received $hmppsEvent")
         telemetryService.hmppsEventReceived(hmppsEvent)
         val psrDocument = psrClient.getPsrReport(URI.create(hmppsEvent.detailUrl))
         documentService.updateCourtReportDocument(hmppsEvent, psrDocument)

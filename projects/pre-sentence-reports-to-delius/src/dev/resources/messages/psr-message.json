@@ -1,6 +1,6 @@
 {
   "MessageId": "ae06c49e-1f41-4b9f-b2f2-dcca610d02cd",
-  "Message": "{\n  \"version\": \"1\",\n  \"eventType\": \"pre-sentence.report.completed\",\n  \"description\": \"A Pre-Sentence Report has been completed\",\n  \"detailUrl\": \"http://localhost:{wiremock.port}/api/v1/report/PSR-123/pdf\",\n  \"occurredAt\": \"2022-10-05T12:00:00.000Z\",\n  \"additionalInformation\": {\n    \"reportId\": \"PSR-123\"\n  },\n  \"personReference\": {\n    \"identifiers\": [\n      {\n        \"type\": \"CRN\",\n        \"value\": \"D001022\"\n      }\n    ]\n  }\n}",
+  "Message": "{\n  \"version\": \"1\",\n  \"eventType\": \"pre-sentence.report.completed\",\n  \"description\": \"A Pre-Sentence Report has been completed\",\n  \"detailUrl\": \"http://localhost:{wiremock.port}/api/v1/report/f9b09fcf-39c0-4008-8b43-e616ddfd918c/pdf\",\n  \"occurredAt\": \"2022-10-05T12:00:00.000Z\",\n  \"additionalInformation\": {\n    \"reportId\": \"f9b09fcf-39c0-4008-8b43-e616ddfd918c\"\n  },\n  \"personReference\": {\n    \"identifiers\": [\n      {\n        \"type\": \"CRN\",\n        \"value\": \"D001022\"\n      }\n    ]\n  }\n}",
   "MessageAttributes": {
     "eventType": {
       "Type": "String",
