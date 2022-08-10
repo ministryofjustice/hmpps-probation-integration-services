@@ -17,7 +17,7 @@ data class HmppsMessage(
     @JsonProperty("MessageAttributes") val metadata: Metadata = Metadata()
 )
 
-data class Metadata(@JsonAnyGetter @JsonAnySetter val attributes: MutableMap<String, MessageAttribute> = mutableMapOf()) {
+data class Metadata(@JsonAnyGetter @JsonAnySetter private val attributes: MutableMap<String, MessageAttribute> = mutableMapOf()) {
     constructor(eventType: String) : this(mutableMapOf("eventType" to MessageAttribute("String", eventType)))
 
     operator fun get(key: String): MessageAttribute? = attributes[key]

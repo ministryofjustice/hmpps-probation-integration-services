@@ -20,11 +20,13 @@ data class SimpleHmppsEvent(
 
 data class PersonReference(val identifiers: List<PersonIdentifier> = listOf()) {
     fun findCrn(): String? = identifiers.find { it.type == "CRN" }?.value
+
+    operator fun get(key: String) = identifiers.find { it.type == key }?.value
 }
 
 data class PersonIdentifier(val type: String, val value: String)
 
-data class AdditionalInformation(@JsonAnyGetter @JsonAnySetter val info: MutableMap<String, Any?> = mutableMapOf()) {
+data class AdditionalInformation(@JsonAnyGetter @JsonAnySetter private val info: MutableMap<String, Any?> = mutableMapOf()) {
     operator fun get(key: String): Any? = info[key]
     operator fun set(key: String, value: Any) {
         info[key] = value
