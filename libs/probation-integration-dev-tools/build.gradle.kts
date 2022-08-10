@@ -1,3 +1,4 @@
+import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
 dependencies {
     implementation(project(":libs:probation-integration-commons"))
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -8,4 +9,9 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.mockito.kotlin)
+}
+configure<ClassPathExtension> {
+    jacocoExclusions = listOf(
+        "**/**",
+    )
 }
