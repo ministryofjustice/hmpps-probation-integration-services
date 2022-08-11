@@ -32,7 +32,7 @@ class MessageListener(
 
     @JmsListener(destination = "\${spring.jms.template.default-destination}")
     fun receive(allocationEvent: SimpleHmppsEvent) {
-        log.info("received $allocationEvent")
+        log.debug("received $allocationEvent")
         telemetryService.hmppsEventReceived(allocationEvent)
 
         when (val allocationDetail = allocationsClient.getAllocationDetail(URI.create(allocationEvent.detailUrl))) {
