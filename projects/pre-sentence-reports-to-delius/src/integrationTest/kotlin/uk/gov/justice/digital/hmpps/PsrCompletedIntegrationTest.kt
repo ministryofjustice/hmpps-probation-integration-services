@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.greaterThan
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
@@ -14,6 +16,7 @@ import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
+import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -33,12 +36,17 @@ class PsrCompletedIntegrationTest {
     @Autowired
     private lateinit var wireMockServer: WireMockServer
 
+    @Autowired
+    private lateinit var documentRepository: DocumentRepository
+
     @SpyBean
     private lateinit var alfrescoClient: AlfrescoClient
 
     @Test
     @Suppress("UNCHECKED_CAST")
     fun `completed pre sentence report`() {
+        val reportId = "f9b09fcf-39c0-4008-8b43-e616ddfd918c"
+        val document = documentRepository.findByExternalReference(reportId)
 
         val message = prepMessage("psr-message", wireMockServer.port())
 
@@ -48,5 +56,8 @@ class PsrCompletedIntegrationTest {
 
         verify(alfrescoClient).releaseDocument(DocumentGenerator.DEFAULT.alfrescoId)
         verify(alfrescoClient).updateDocument(eq(DocumentGenerator.DEFAULT.alfrescoId), any())
+
+        val updated = documentRepository.findByExternalReference("f9b09fcf-39c0-4008-8b43-e616ddfd918c")
+        assertThat(updated?.lastSaved, greaterThan(document?.lastSaved))
     }
 }
