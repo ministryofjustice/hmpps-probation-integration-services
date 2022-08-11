@@ -4,4 +4,4 @@ env:
   SENTRY_ENVIRONMENT: prod
   SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: Digital-Prison-Services-prod-pre_sentence_report_hmpps_queue
   SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in.hmpps.service.justice.gov.uk/auth/oauth/token
-  INTEGRATIONS_ALFRESCO_URL: https://alfresco.prod.delius.probation.hmpps.dsd.io/alfresco/service/noms-spg/
+  INTEGRATIONS_ALFRESCO_URL: https://alfresco.probation.service.justice.gov.uk/alfresco/service/noms-spg/
