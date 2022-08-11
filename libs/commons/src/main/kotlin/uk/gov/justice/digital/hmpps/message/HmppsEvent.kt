@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import java.time.ZonedDateTime
 
-interface HmppsEvent {
+interface IntegrationEvent {
     val eventType: String
 }
 
-data class SimpleHmppsEvent(
+data class HmppsEvent(
     override val eventType: String,
     val version: Int,
     val detailUrl: String,
@@ -16,7 +16,7 @@ data class SimpleHmppsEvent(
     val description: String? = null,
     val additionalInformation: AdditionalInformation = AdditionalInformation(),
     val personReference: PersonReference = PersonReference()
-) : HmppsEvent
+) : IntegrationEvent
 
 data class PersonReference(val identifiers: List<PersonIdentifier> = listOf()) {
     fun findCrn(): String? = identifiers.find { it.type == "CRN" }?.value

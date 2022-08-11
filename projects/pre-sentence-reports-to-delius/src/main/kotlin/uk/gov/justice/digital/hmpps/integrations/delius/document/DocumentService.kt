@@ -15,9 +15,8 @@ import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportRepository
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
-import uk.gov.justice.digital.hmpps.message.SimpleHmppsEvent
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
+import uk.gov.justice.digital.hmpps.message.HmppsEvent
+import java.time.ZonedDateTime
 
 @Service
 class DocumentService(
@@ -27,8 +26,9 @@ class DocumentService(
     private val alfrescoClient: AlfrescoClient
 ) : AuditableService(auditedInteractionService) {
     fun AdditionalInformation.reportId() = this["reportId"] as String
+
     @Transactional
-    fun updateCourtReportDocument(hmppsEvent: SimpleHmppsEvent, file: ByteArray) =
+    fun updateCourtReportDocument(hmppsEvent: HmppsEvent, file: ByteArray) =
         audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
             val reportId = hmppsEvent.additionalInformation.reportId()
             val document = documentRepository.findByExternalReference(reportId)
@@ -46,30 +46,29 @@ class DocumentService(
                 throw ConflictException("Court report ${courtReport.id} not for ${hmppsEvent.personReference.findCrn()}")
             }
 
-            alfrescoClient.releaseDocument(reportId)
+            alfrescoClient.releaseDocument(document.alfrescoId)
             alfrescoClient.updateDocument(
-                reportId,
-                populateBodyValues(hmppsEvent, document.courtReportId, file)
+                document.alfrescoId,
+                populateBodyValues(hmppsEvent, document, file)
             )
 
-            document.name = hmppsEvent.filename()
+            document.lastSaved = ZonedDateTime.now()
         }
 
-    private fun populateBodyValues(hmppsEvent: SimpleHmppsEvent, courtReportId: Long, file: ByteArray): MultiValueMap<String, HttpEntity<*>> {
+    private fun populateBodyValues(
+        hmppsEvent: HmppsEvent,
+        document: Document,
+        file: ByteArray
+    ): MultiValueMap<String, HttpEntity<*>> {
         val crn = hmppsEvent.personReference.findCrn()!!
         val bodyBuilder = MultipartBodyBuilder()
         bodyBuilder.part("CRN", crn, MediaType.TEXT_PLAIN)
-        bodyBuilder.part("entityId", courtReportId.toString(), MediaType.TEXT_PLAIN)
+        bodyBuilder.part("entityId", document.courtReportId.toString(), MediaType.TEXT_PLAIN)
         bodyBuilder.part("author", ServiceContext.servicePrincipal()!!.username, MediaType.TEXT_PLAIN)
-        bodyBuilder.part("filedata", file, MediaType.APPLICATION_OCTET_STREAM).filename(hmppsEvent.filename())
+        bodyBuilder.part("filedata", file, MediaType.APPLICATION_OCTET_STREAM).filename(document.name)
         bodyBuilder.part("docType", "DOCUMENT", MediaType.TEXT_PLAIN)
         bodyBuilder.part("entityType", "COURT_REPORT", MediaType.TEXT_PLAIN)
 
         return bodyBuilder.build()
     }
-
-    fun SimpleHmppsEvent.filename() = URLEncoder.encode(
-        "${personReference.findCrn()}_pre-sentence-report_${additionalInformation.reportId()}.pdf",
-        StandardCharsets.UTF_8.name()
-    )
 }

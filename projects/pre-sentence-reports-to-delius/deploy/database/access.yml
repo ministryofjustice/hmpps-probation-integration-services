@@ -7,6 +7,6 @@ database:
       - document
 
   audit:
-    username: PreSentenceReportToDelius
-    forename: Pre sentence report
+    username: PreSentenceService
+    forename: Pre-Sentence
     surname: Service

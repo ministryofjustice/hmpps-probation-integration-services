@@ -1,15 +1,15 @@
 package uk.gov.justice.digital.hmpps
 
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.message.SimpleHmppsEvent
+import uk.gov.justice.digital.hmpps.message.HmppsEvent
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
-fun prepMessage(fileName: String, port: Int): SimpleHmppsEvent {
-    val simpleHmppsEvent = ResourceLoader.message<SimpleHmppsEvent>(fileName)
-    return simpleHmppsEvent.copy(
-        detailUrl = simpleHmppsEvent.detailUrl.replace(
+fun prepMessage(fileName: String, port: Int): HmppsEvent {
+    val hmppsEvent = ResourceLoader.message<HmppsEvent>(fileName)
+    return hmppsEvent.copy(
+        detailUrl = hmppsEvent.detailUrl.replace(
             "{wiremock.port}",
             port.toString()
         )

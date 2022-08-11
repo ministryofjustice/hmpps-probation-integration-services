@@ -3,7 +3,7 @@
     {
       "request": {
         "method": "PUT",
-        "url": "/release/f9b09fcf-39c0-4008-8b43-e616ddfd918c",
+        "url": "/release/123-abc",
         "headers": {
           "X-DocRepository-Remote-User": {
             "equalTo": "N00"
@@ -23,7 +23,7 @@
     {
       "request": {
         "method": "POST",
-        "url": "/uploadandrelease/f9b09fcf-39c0-4008-8b43-e616ddfd918c",
+        "url": "/uploadandrelease/123-abc",
         "headers": {
           "X-DocRepository-Remote-User": {
             "equalTo": "N00"

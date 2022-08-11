@@ -62,7 +62,7 @@ class SimpleHmppsMessageConverterTest {
             """.trimIndent()
         )
 
-        val event: SimpleHmppsEvent = converter.fromMessage(textMessage)
+        val event: HmppsEvent = converter.fromMessage(textMessage)
         assertThat(event.eventType, equalTo("message.event.type"))
         assertThat(event.version, equalTo(1))
         assertThat(event.description, equalTo("A description for the event"))
@@ -77,7 +77,7 @@ class SimpleHmppsMessageConverterTest {
 
     @Test
     fun `can convert to jms message`() {
-        val hmppsEvent = SimpleHmppsEvent(
+        val hmppsEvent = HmppsEvent(
             "message.event.type",
             1,
             "http://detail/url",

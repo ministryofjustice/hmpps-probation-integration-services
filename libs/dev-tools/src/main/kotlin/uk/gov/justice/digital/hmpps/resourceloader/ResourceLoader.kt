@@ -9,8 +9,8 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
-import uk.gov.justice.digital.hmpps.message.HmppsEvent
 import uk.gov.justice.digital.hmpps.message.HmppsMessage
+import uk.gov.justice.digital.hmpps.message.IntegrationEvent
 import java.time.ZonedDateTime
 
 object ResourceLoader {
@@ -21,7 +21,7 @@ object ResourceLoader {
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .registerModule(SimpleModule().addDeserializer(ZonedDateTime::class.java, ZonedDateTimeDeserializer()))
 
-    inline fun <reified T : HmppsEvent> message(filename: String): T =
+    inline fun <reified T : IntegrationEvent> message(filename: String): T =
         MAPPER.readValue(
             MAPPER.readValue(
                 ResourceUtils.getFile("classpath:messages/$filename.json"),
