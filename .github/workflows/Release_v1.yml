@@ -3,7 +3,9 @@ name: Release_v1
 on:
   push:
     branches:
-      - main
+      - PI-352-releasenotes-to-slack
+    tags:
+      - '*'
   workflow_dispatch:
 
 jobs:
@@ -11,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
-        uses: mikepenz/action-gh-release@v0.2.0-a03 #softprops/action-gh-release
+        uses: mikepenz/action-gh-release@v3.2.0
         with:
-          body: ${{steps.github_release.outputs.changelog}}
+         configuration: "release_notes_config.json"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
