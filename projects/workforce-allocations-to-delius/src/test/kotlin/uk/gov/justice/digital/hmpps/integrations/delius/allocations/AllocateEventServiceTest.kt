@@ -11,7 +11,6 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.ResourceLoader
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
@@ -26,6 +25,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerReposi
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonRepository
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocationDetail
+import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
@@ -55,7 +55,7 @@ internal class AllocateEventServiceTest {
     @InjectMocks
     private lateinit var allocateEventService: AllocateEventService
 
-    private val allocationDetail = ResourceLoader.allocationBody("get-event-allocation-body") as EventAllocationDetail
+    private val allocationDetail = ResourceLoader.file<EventAllocationDetail>("get-event-allocation-body")
 
     @Test
     fun `when event not found exception thrown`() {

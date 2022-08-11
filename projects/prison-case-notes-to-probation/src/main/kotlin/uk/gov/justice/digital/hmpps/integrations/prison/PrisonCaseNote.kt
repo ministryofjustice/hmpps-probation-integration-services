@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteBody
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteHeader
 import uk.gov.justice.digital.hmpps.integrations.delius.model.DeliusCaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
+import uk.gov.justice.digital.hmpps.message.IntegrationEvent
 import java.time.ZonedDateTime
 
 const val UNKNOWN_LOCATION = "UNK"
@@ -42,8 +43,8 @@ data class PrisonOffenderEvent(
     val offenderId: String,
     val caseNoteId: String?,
     val eventId: Long,
-    val eventType: String,
-)
+    override val eventType: String,
+) : IntegrationEvent
 
 fun PrisonCaseNote.toDeliusCaseNote(): DeliusCaseNote {
 

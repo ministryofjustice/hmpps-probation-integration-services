@@ -11,5 +11,5 @@ import uk.gov.justice.digital.hmpps.integrations.workforceallocations.WorkforceA
 class WorkForceFeignConfig(
     authorizedClientManager: OAuth2AuthorizedClientManager
 ) : FeignConfig(authorizedClientManager) {
-    override fun registrationId() = "workforce-allocations-to-delius"
+    override fun registrationId() = "workforce-allocations"
 }

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data
 
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
@@ -29,6 +30,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOffice
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficerRepository
 
 @Component
+@Profile("dev", "integration-test")
 class PersonAllocationDataLoader(
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,

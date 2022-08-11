@@ -1,0 +1,111 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "PUT",
+        "url": "/release/123-abc",
+        "headers": {
+          "X-DocRepository-Remote-User": {
+            "equalTo": "N00"
+          },
+          "X-DocRepository-Real-Remote-User": {
+            "equalTo": "pre-sentence-reports-to-delius"
+          },
+          "Authorization": {
+            "doesNotMatch": "^Bearer (.*)$"
+          }
+        }
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/uploadandrelease/123-abc",
+        "headers": {
+          "X-DocRepository-Remote-User": {
+            "equalTo": "N00"
+          },
+          "X-DocRepository-Real-Remote-User": {
+            "equalTo": "pre-sentence-reports-to-delius"
+          },
+          "Authorization": {
+            "doesNotMatch": "^Bearer (.*)$"
+          }
+        },
+        "multipartPatterns": [
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"CRN\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "D001022"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"author\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "pre-sentence-reports-to-delius"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"entityType\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "COURT_REPORT"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"docType\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "DOCUMENT"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"entityId\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "4"
+              }
+            ]
+          }
+        ]
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}

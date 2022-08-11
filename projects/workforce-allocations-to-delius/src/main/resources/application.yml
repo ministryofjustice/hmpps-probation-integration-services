@@ -11,7 +11,7 @@ spring:
       acknowledge-mode: client
   security.oauth2.client:
     registration:
-      workforce-allocations-to-delius:
+      workforce-allocations:
         provider: hmpps-auth
         authorization-grant-type: client_credentials
         client-id: ${integrations.workforce-allocations.client-id}
@@ -65,7 +65,6 @@ management.endpoints.web:
 hawtio.authenticationEnabled: false
 
 logging.level:
-  uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient: DEBUG
   org.hibernate.tool.schema: ERROR
 
 ---
@@ -91,8 +90,6 @@ spring:
         dialect: org.hibernate.dialect.Oracle12cDialect
     hibernate:
       ddl-auto: validate
-
-dataloader.enabled: false
 
 #azure:
 #  application-insights:

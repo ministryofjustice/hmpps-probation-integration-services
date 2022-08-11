@@ -67,7 +67,6 @@ management.endpoints.web:
 hawtio.authenticationEnabled: false
 
 logging.level:
-  uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient: DEBUG
   org.hibernate.tool.schema: ERROR
 
 

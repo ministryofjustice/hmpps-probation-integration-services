@@ -4,8 +4,6 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -23,7 +21,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficerRepository
-import uk.gov.justice.digital.hmpps.integrations.workforceallocations.EventType
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
+import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
+import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
@@ -130,19 +130,9 @@ class AllocatePersonIntegrationTest {
         val allocationEvent = prepMessage(messageName, wireMockServer.port())
         jmsTemplate.convertSendAndWait(queueName, allocationEvent)
 
-        verify(telemetryService).trackEvent(
-            eq("${EventType.PERSON_ALLOCATED}_RECEIVED"),
-            eq(
-                mapOf(
-                    "eventType" to allocationEvent.eventType.value,
-                    "detailUrl" to allocationEvent.detailUrl,
-                    "CRN" to allocationEvent.personReference.findCrn()!!
-                )
-            ),
-            ArgumentMatchers.anyMap()
-        )
+        verify(telemetryService).hmppsEventReceived(allocationEvent)
 
-        val allocationDetail = ResourceLoader.allocationBody(jsonFile)
+        val allocationDetail = ResourceLoader.file<AllocationDetail>(jsonFile)
 
         val oldPm = personManagerRepository.findById(existingPm.id).orElseThrow()
         assert(allocationDetail.createdDate.closeTo(oldPm.endDate))
