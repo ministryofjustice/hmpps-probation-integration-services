@@ -57,7 +57,7 @@ class PsrCompletedIntegrationTest {
         verify(alfrescoClient).releaseDocument(DocumentGenerator.DEFAULT.alfrescoId)
         verify(alfrescoClient).updateDocument(eq(DocumentGenerator.DEFAULT.alfrescoId), any())
 
-        val updated = documentRepository.findByExternalReference("f9b09fcf-39c0-4008-8b43-e616ddfd918c")
+        val updated = documentRepository.findByExternalReference(reportId)
         assertThat(updated?.lastSaved, greaterThan(document?.lastSaved))
     }
 }
