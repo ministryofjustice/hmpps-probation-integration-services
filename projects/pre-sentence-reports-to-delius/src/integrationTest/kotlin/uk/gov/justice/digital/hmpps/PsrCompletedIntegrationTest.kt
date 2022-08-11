@@ -2,8 +2,6 @@ package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
@@ -21,7 +19,6 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @ActiveProfiles("integration-test")
 @SpringBootTest
-@ExtendWith(MockitoExtension::class)
 class PsrCompletedIntegrationTest {
 
     @Value("\${spring.jms.template.default-destination}")
