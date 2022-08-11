@@ -28,7 +28,7 @@ data class Metadata(@JsonAnyGetter @JsonAnySetter private val attributes: Mutabl
 
 data class MessageAttribute(@JsonProperty("Type") val type: String, @JsonProperty("Value") val value: String)
 
-abstract class HmppsEventConverter<T : IntegrationEvent>(private val om: ObjectMapper) : MessageConverter {
+abstract class IntegrationEventConverter<T : IntegrationEvent>(private val om: ObjectMapper) : MessageConverter {
 
     protected abstract fun getEventClass(message: HmppsMessage): KClass<T>
 
@@ -54,6 +54,6 @@ abstract class HmppsEventConverter<T : IntegrationEvent>(private val om: ObjectM
 }
 
 @Component
-class SimpleHmppsEventConverter(om: ObjectMapper) : HmppsEventConverter<HmppsEvent>(om) {
+class HmppsEventConverter(om: ObjectMapper) : IntegrationEventConverter<HmppsEvent>(om) {
     override fun getEventClass(message: HmppsMessage) = HmppsEvent::class
 }

@@ -40,7 +40,7 @@ class SimpleHmppsMessageConverterTest {
     @Mock
     private lateinit var session: Session
 
-    private val converter = SimpleHmppsEventConverter(mapper)
+    private val converter = HmppsEventConverter(mapper)
 
     @Test
     fun `can convert from jms message`() {
