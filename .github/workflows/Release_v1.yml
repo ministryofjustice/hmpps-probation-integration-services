@@ -23,27 +23,3 @@ jobs:
         uses: mikepenz/action-gh-release@v0.2.0-a03
         with:
          configuration: "release_notes_config.json"
-
-      - name: Release to Slack
-        on:
-          release:
-            types: [ published ]
-          workflow_dispatch:
-        jobs:
-          build:
-            runs-on: ubuntu-latest
-            steps:
-              # To check the github context
-              - name: Dump Github context
-                env:
-                GITHUB_CONTEXT: ${{ toJSON(github) }}
-                run: echo "$GITHUB_CONTEXT"
-
-              - name: Slack Notification on SUCCESS
-                if: success()
-                uses: tokorom/action-slack-incoming-webhook@main
-                env:
-                  INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-                with:
-                  configuration: "release_to_slack.json"
-                  text: New release published.
