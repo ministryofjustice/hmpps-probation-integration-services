@@ -90,15 +90,17 @@ jobs:
         run: echo "::set-output name=with_underscores::$(echo '${{ inputs.project_name }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')"
 
       - name: Create project
+        id: project
         run: |
-          curl https://sentry.io/api/0/teams/ministryofjustice/probation-integration/projects/ --fail \
+          response=$(curl https://sentry.io/api/0/teams/ministryofjustice/probation-integration/projects/ --fail \
             -H 'Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }}' \
             -H 'Content-Type: application/json' \
-            -d '{"name":"${{ inputs.project_name }}"}'
+            -d '{"name":"${{ inputs.project_name }}"}')
+          echo "::set-output name=slug::$(echo $response | jq -r '.slug')"
 
       - name: Set platform to Kotlin
         run: |
-          curl -X PUT https://sentry.io/api/0/teams/ministryofjustice/${{ inputs.project_name }}/ --fail \
+          curl -X PUT https://sentry.io/api/0/teams/ministryofjustice/${{ steps.project.outputs.slug }}/ --fail \
             -H 'Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }}' \
             -H 'Content-Type: application/json' \
             -d '{"platform":"kotlin"}'
@@ -106,7 +108,7 @@ jobs:
       - name: Get client key (DSN)
         id: client_key
         run: |
-          response=$(curl https://sentry.io/api/0/projects/ministryofjustice/${{ inputs.project_name }}/keys/ --fail \
+          response=$(curl https://sentry.io/api/0/projects/ministryofjustice/${{ steps.project.outputs.slug }}/keys/ --fail \
                   -H 'Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }})
           id=$(echo $response | jq -r '.[0].id')
           dsn=$(echo $response | jq -r '.[0].dsn.public')
@@ -123,8 +125,8 @@ jobs:
 
       # see https://github.com/getsentry/sentry/issues/18904
       - run: |
-          echo Set up Sentry rate-limiting: https://sentry.io/settings/ministryofjustice/projects/${{ inputs.project_name }}/keys/${{ steps.client_key.outputs.id }}
-          echo '*Manual step required* - [Set up Sentry rate-limiting](https://sentry.io/settings/ministryofjustice/projects/${{ inputs.project_name }}/keys/${{ steps.client_key.outputs.id }})' >> $GITHUB_STEP_SUMMARY
+          echo Set up Sentry rate-limiting: https://sentry.io/settings/ministryofjustice/projects/${{ steps.project.outputs.slug }}/keys/${{ steps.client_key.outputs.id }}
+          echo '*Manual step required* - [Set up Sentry rate-limiting](https://sentry.io/settings/ministryofjustice/projects/${{ steps.project.outputs.slug }}/keys/${{ steps.client_key.outputs.id }})' >> $GITHUB_STEP_SUMMARY
 
       # see https://github.com/getsentry/sentry/issues/36968
       - run: |
