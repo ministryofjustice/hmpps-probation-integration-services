@@ -8,7 +8,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.ResourceLoader
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator.INITIAL_OM_ALLOCATION
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
@@ -20,6 +19,8 @@ import uk.gov.justice.digital.hmpps.exceptions.StaffNotInTeamException
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamRepository
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
+import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -36,7 +37,7 @@ class AllocationValidatorTest {
     @InjectMocks
     private lateinit var allocationValidator: AllocationValidator
 
-    private val allocationDetail = ResourceLoader.allocationBody("get-person-allocation-body")
+    private val allocationDetail = ResourceLoader.file<AllocationDetail>("get-person-allocation-body")
 
     @Test
     fun `team not found`() {

@@ -11,8 +11,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocateRequ
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocationDetail
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.PersonAllocationDetail
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.RequirementAllocationDetail
-import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationEvent
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.WorkforceAllocationsClient
+import uk.gov.justice.digital.hmpps.message.HmppsEvent
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
 
@@ -31,24 +31,21 @@ class MessageListener(
     }
 
     @JmsListener(destination = "\${spring.jms.template.default-destination}")
-    fun receive(allocationEvent: AllocationEvent) {
-        log.info("received $allocationEvent")
-        telemetryService.trackEvent(
-            "${allocationEvent.eventType}_RECEIVED",
-            mapOf(
-                "eventType" to allocationEvent.eventType.value,
-                "detailUrl" to allocationEvent.detailUrl
-            ) + allocationEvent.personReference.identifiers.associate { Pair(it.type, it.value) }
-        )
+    fun receive(allocationEvent: HmppsEvent) {
+        log.debug("received $allocationEvent")
+        telemetryService.hmppsEventReceived(allocationEvent)
 
         when (val allocationDetail = allocationsClient.getAllocationDetail(URI.create(allocationEvent.detailUrl))) {
             is PersonAllocationDetail -> allocatePersonService.createPersonAllocation(allocationDetail)
             is EventAllocationDetail -> allocateEventService.createEventAllocation(
-                allocationEvent.personReference.findCrn()!!, allocationDetail
+                allocationEvent.findCrn(), allocationDetail
             )
             is RequirementAllocationDetail -> allocateRequirementService.createRequirementAllocation(
-                allocationEvent.personReference.findCrn()!!, allocationDetail
+                allocationEvent.findCrn(), allocationDetail
             )
         }
     }
+
+    fun HmppsEvent.findCrn(): String =
+        personReference.findCrn() ?: throw IllegalArgumentException("No CRN available in person reference")
 }

@@ -4,8 +4,6 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -20,7 +18,9 @@ import uk.gov.justice.digital.hmpps.data.repository.IapsRequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.workforceallocations.EventType
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
+import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
+import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
@@ -101,19 +101,9 @@ class AllocateRequirementIntegrationTest {
         val allocationEvent = prepMessage(messageName, wireMockServer.port())
         jmsTemplate.convertSendAndWait(queueName, allocationEvent)
 
-        verify(telemetryService).trackEvent(
-            eq("${EventType.REQUIREMENT_ALLOCATED}_RECEIVED"),
-            eq(
-                mapOf(
-                    "eventType" to allocationEvent.eventType.value,
-                    "detailUrl" to allocationEvent.detailUrl,
-                    "CRN" to allocationEvent.personReference.findCrn()!!
-                )
-            ),
-            ArgumentMatchers.anyMap()
-        )
+        verify(telemetryService).hmppsEventReceived(allocationEvent)
 
-        val allocationDetail = ResourceLoader.allocationBody(jsonFile)
+        val allocationDetail = ResourceLoader.file<AllocationDetail>(jsonFile)
 
         val updatedRmCount = requirementManagerRepository.findAll().count { it.requirementId == requirement.id }
         assertThat(updatedRmCount, equalTo(originalRmCount + 1))

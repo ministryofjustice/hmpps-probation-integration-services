@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.data
 
 import UserGenerator
 import org.springframework.boot.CommandLineRunner
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
@@ -28,7 +27,6 @@ import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
 @Profile("dev", "integration-test")
-@ConditionalOnProperty(prefix = "dataloader", name = ["enabled"], havingValue = "true", matchIfMissing = true)
 class AllocationsDataLoader(
     private val serviceContext: ServiceContext,
     private val userRepository: UserRepository,

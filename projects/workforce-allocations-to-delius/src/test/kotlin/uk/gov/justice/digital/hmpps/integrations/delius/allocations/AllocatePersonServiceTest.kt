@@ -15,7 +15,6 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.ResourceLoader
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
@@ -39,6 +38,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PrisonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamStaffContainer
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.PersonAllocationDetail
+import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 
 @ExtendWith(MockitoExtension::class)
 internal class AllocatePersonServiceTest {
@@ -67,7 +67,7 @@ internal class AllocatePersonServiceTest {
     @InjectMocks
     private lateinit var allocatePersonService: AllocatePersonService
 
-    private val allocationDetail = ResourceLoader.allocationBody("get-person-allocation-body") as PersonAllocationDetail
+    private val allocationDetail = ResourceLoader.file<PersonAllocationDetail>("get-person-allocation-body")
 
     @Test
     fun `when person not found exception thrown`() {

@@ -11,7 +11,6 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.ResourceLoader
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
@@ -29,6 +28,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.RequirementAllocationDetail
+import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
@@ -58,8 +58,7 @@ internal class AllocateRequirementServiceTest {
     @InjectMocks
     private lateinit var allocateRequirementService: AllocateRequirementService
 
-    private val allocationDetail =
-        ResourceLoader.allocationBody("get-requirement-allocation-body") as RequirementAllocationDetail
+    private val allocationDetail = ResourceLoader.file<RequirementAllocationDetail>("get-requirement-allocation-body")
 
     @Test
     fun `when requirement not for person with crn exception thrown`() {
@@ -217,7 +216,12 @@ internal class AllocateRequirementServiceTest {
             )
         )
 
-        whenever(requirementManagerRepository.findActiveManagerAtDate(allocationDetail.requirementId, allocationDetail.createdDate))
+        whenever(
+            requirementManagerRepository.findActiveManagerAtDate(
+                allocationDetail.requirementId,
+                allocationDetail.createdDate
+            )
+        )
             .thenReturn(RequirementManagerGenerator.DEFAULT)
 
         assertDoesNotThrow {
