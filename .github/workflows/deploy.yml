@@ -125,3 +125,12 @@ jobs:
           cluster: del-delius-ecscluster-private-ecs
           wait-for-service-stability: true
           wait-for-minutes: 10
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_ORG: ministryofjustice
+          SENTRY_PROJECT: ${{ matrix.project }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        with:
+          environment: ${{ inputs.environment }}
