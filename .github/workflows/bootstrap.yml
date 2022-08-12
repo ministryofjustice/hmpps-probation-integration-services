@@ -37,7 +37,7 @@ jobs:
 
       - uses: ./.github/actions/random-secret
         with:
-          environment: dev
+          environment: test
           name: ${{ steps.project_name.outputs.with_underscores }}_DB_PASSWORD
           token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
 
