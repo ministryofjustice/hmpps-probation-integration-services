@@ -39,7 +39,7 @@ class JmsConfig {
         val factory = DefaultJmsListenerContainerFactory()
         configurer.configure(factory, connectionFactory())
         factory.setSessionTransacted(false) // SQS does not support transactions
-        factory.setErrorHandler { Sentry.captureException(it) }
+        factory.setErrorHandler { Sentry.captureException(it.cause ?: it) }
         return factory
     }
 }
