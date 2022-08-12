@@ -23,6 +23,8 @@ jobs:
   db-secrets-setup:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+
       # convert project name to environment variable (e.g. 'hello-world' -> 'HELLO_WORLD')
       - id: project_name
         run: echo "::set-output name=with_underscores::$(echo '${{ inputs.project_name }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')"
