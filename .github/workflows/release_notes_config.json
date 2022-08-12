@@ -13,16 +13,9 @@
       "labels": ["test"]
     },
     {
-      "title": "Version",
-      "labels": ["v1.*"]
+      "title": "## Linked card",
+      "labels": ["PI-*"]
     },
-    {
-      "title": "## 🧪 Tests and some 🪄 Magic",
-      "labels": ["test", "magic"],
-      "exclude_labels": ["no-magic"],
-      "exhaustive": true,
-      "empty_content": "- no matching PRs"
-    }
   ],
   "ignore_labels": [
     "ignore"

@@ -1,4 +1,4 @@
-name: Release_v1
+name: Release notes to Git
 
 on:
   push:
