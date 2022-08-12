@@ -109,7 +109,7 @@ jobs:
         id: client_key
         run: |
           response=$(curl https://sentry.io/api/0/projects/ministryofjustice/${{ steps.project.outputs.slug }}/keys/ --fail \
-                  -H 'Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }})
+                  -H 'Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }}')
           id=$(echo $response | jq -r '.[0].id')
           dsn=$(echo $response | jq -r '.[0].dsn.public')
           echo "::add-mask::$dsn"
