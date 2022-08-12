@@ -100,7 +100,7 @@ jobs:
 
       - name: Set platform to Kotlin
         run: |
-          curl -X PUT https://sentry.io/api/0/teams/ministryofjustice/${{ steps.project.outputs.slug }}/ --fail \
+          curl -X PUT https://sentry.io/api/0/projects/ministryofjustice/${{ steps.project.outputs.slug }}/ --fail \
             -H 'Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }}' \
             -H 'Content-Type: application/json' \
             -d '{"platform":"kotlin"}'
