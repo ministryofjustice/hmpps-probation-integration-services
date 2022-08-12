@@ -1,7 +1,10 @@
 name: ReleaseNotice
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - PI-352-releasenotes-to-slack
+    tags:
+      - 'v1.*'
   workflow_dispatch:
 jobs:
   build:
