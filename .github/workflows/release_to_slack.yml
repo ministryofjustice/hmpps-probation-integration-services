@@ -3,7 +3,7 @@ name: Release notes to Git
 on:
   push:
     tags:
-      - 'v1.*'
+      - 'v*'
   workflow_dispatch:
 
 jobs:
