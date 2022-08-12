@@ -1,0 +1,35 @@
+name: Generate secret
+description: Generate an alphanumeric random value and store it in a GitHub secret
+
+inputs:
+  name:
+    description: Name of the secret key. Should be uppercase and seperated by underscores.
+    required: true
+  length:
+    description: Length of the secret value.
+    required: true
+    default: '16'
+  environment:
+    description: GitHub environment to create the secret in. If no environment is provided, the action will create a repository secret.
+    required: false
+  token:
+    description: Personal access token used to create the secret.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: random
+      run: |
+        brew install pwgen
+        value=$(pwgen -N1 '${{ inputs.length }}')
+        echo "::add-mask::$value"
+        echo "::set-output name=value::$value"
+      shell: bash
+
+    - uses: mmercan/actions-set-secret@da197fb79d8c1ecedcde53fbd32a4b02ece5723a # v/4.0.0
+      with:
+        name: ${{ inputs.name }}
+        value: ${{ steps.random.outputs.value }}
+        environment: ${{ inputs.environment }}
+        token: ${{ inputs.token }}

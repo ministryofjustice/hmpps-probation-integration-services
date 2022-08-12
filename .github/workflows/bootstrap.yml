@@ -1,0 +1,126 @@
+name: Bootstrap
+# Perform initial project setup to enable development of a new service
+
+on:
+  workflow_dispatch:
+    inputs:
+      project_name:
+        description: Project name
+        required: false
+        type: string
+
+jobs:
+  auth-setup:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo Request HMPPS Auth credentials: https://mojdt.slack.com/archives/C02S71KUBED
+          echo '*Manual step required* - [Request HMPPS Auth Credentials](https://mojdt.slack.com/archives/C02S71KUBED)' >> $GITHUB_STEP_SUMMARY
+      - run: |
+          echo Store HMPPS Auth Credentials in GitHub secrets: https://github.com/ministryofjustice/hmpps-probation-integration-services/settings/secrets/actions/new
+          echo '*Manual step required* - [Store HMPPS Auth Credentials in GitHub secrets](https://github.com/ministryofjustice/hmpps-probation-integration-services/settings/secrets/actions/new)' >> $GITHUB_STEP_SUMMARY
+
+  db-secrets-setup:
+    runs-on: ubuntu-latest
+    steps:
+      # convert project name to environment variable (e.g. 'hello-world' -> 'HELLO_WORLD')
+      - id: project_name
+        run: echo "::set-output name=with_underscores::$(echo '${{ inputs.project_name }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')"
+
+      - uses: mmercan/actions-set-secret@da197fb79d8c1ecedcde53fbd32a4b02ece5723a # v/4.0.0
+        with:
+          name: ${{ steps.project_name.outputs.with_underscores }}_DB_USERNAME
+          value: ${{ steps.project_name.outputs.with_underscores }}
+          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
+
+      - uses: ./.github/actions/random-secret
+        with:
+          environment: dev
+          name: ${{ steps.project_name.outputs.with_underscores }}_DB_PASSWORD
+          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
+
+      - uses: ./.github/actions/random-secret
+        with:
+          environment: preprod
+          name: ${{ steps.project_name.outputs.with_underscores }}_DB_PASSWORD
+          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
+
+      - uses: ./.github/actions/random-secret
+        with:
+          environment: prod
+          name: ${{ steps.project_name.outputs.with_underscores }}_DB_PASSWORD
+          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
+
+  terraform-setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/checkout@v3
+        with:
+          path: hmpps-delius-core-terraform
+          repository: ministryofjustice/hmpps-delius-core-terraform
+
+      - name: Render Terraform template
+        run: sed 's/$SERVICE_NAME/${{ inputs.project_name }}/' templates/service.tf > 'hmpps-delius-core-terraform/application/probation-integration-services/${{ inputs.project_name }}.tf'
+
+      - name: Create pull request
+        id: pr
+        uses: peter-evans/create-pull-request@v4
+        with:
+          path: hmpps-delius-core-terraform
+          commit-message: Create ECS service for ${{ inputs.project_name }}
+          title: Create ECS service for ${{ inputs.project_name }}
+          body: Automated changes by [hmpps-probation-integration-services](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/bootstrap.yml)
+          branch: probation-integration/create-${{ inputs.project_name }}
+          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
+
+      - name: Output pull request
+        run: |
+          echo Merge pull request for infrastructure code: ${{ steps.pr.outputs.pull-request-url }}
+          echo '*Manual step required* - [Merge pull request for infrastructure code](${{ steps.pr.outputs.pull-request-url }})' >> $GITHUB_STEP_SUMMARY
+
+  sentry-setup:
+    runs-on: ubuntu-latest
+    steps:
+      # convert project name to environment variable (e.g. 'hello-world' -> 'HELLO_WORLD')
+      - id: project_name
+        run: echo "::set-output name=with_underscores::$(echo '${{ inputs.project_name }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')"
+
+      - name: Create project
+        run: |
+          curl https://sentry.io/api/0/teams/ministryofjustice/probation-integration/projects/ --fail \
+            -H 'Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }}' \
+            -H 'Content-Type: application/json' \
+            -d '{"name":"${{ inputs.project_name }}"}'
+          curl -X PUT https://sentry.io/api/0/teams/ministryofjustice/probation-integration/projects/ --fail \
+            -H 'Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }}' \
+            -H 'Content-Type: application/json' \
+            -d '{"platform":"kotlin"}'
+
+      - name: Get client key (DSN)
+        id: client_key
+        run: |
+          response=$(curl https://sentry.io/api/0/projects/ministryofjustice/${{ inputs.project_name }}/keys/ --fail \
+                  -H 'Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }})
+          id=$(echo $response | jq -r '.[0].id')
+          dsn=$(echo $response | jq -r '.[0].dsn.public')
+          echo "::add-mask::$dsn"
+          echo "::set-output name=dsn::$dsn"
+          echo "::set-output name=id::$id"
+
+      - name: Store DSN as GitHub secret
+        uses: mmercan/actions-set-secret@da197fb79d8c1ecedcde53fbd32a4b02ece5723a # v/4.0.0
+        with:
+          name: ${{ steps.project_name.outputs.with_underscores }}_SENTRY_DSN
+          value: ${{ steps.client_key.outputs.dsn }}
+          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
+
+      - run: |
+          echo Set up Sentry rate-limiting: https://sentry.io/settings/ministryofjustice/projects/${{ inputs.project_name }}/keys/${{ steps.client_key.outputs.id }}
+          echo '*Manual step required* - [Set up Sentry rate-limiting](https://sentry.io/settings/ministryofjustice/projects/${{ inputs.project_name }}/keys/${{ steps.client_key.outputs.id }})' >> $GITHUB_STEP_SUMMARY
+
+      - run: |
+          echo Create a Sentry alert: https://sentry.io/organizations/ministryofjustice/alerts/new/issue/?createFromDuplicate=true&duplicateRuleId=11530702&project=prison-case-notes-to-probation
+          echo '*Manual step required* - [Create a Sentry alert](https://sentry.io/organizations/ministryofjustice/alerts/new/issue/?createFromDuplicate=true&duplicateRuleId=11530702&project=prison-case-notes-to-probation)' >> $GITHUB_STEP_SUMMARY
+          echo '> :memo: Note: the above link will duplicate an alert from `prison-case-notes-to-probation`.  Make sure to update the Project to `${{ inputs.project_name }}` in the drop-down.' >> $GITHUB_STEP_SUMMARY
