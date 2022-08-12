@@ -2,8 +2,6 @@ name: Release_v1
 
 on:
   push:
-    branches:
-      - PI-352-releasenotes-to-slack
     tags:
       - 'v1.*'
   workflow_dispatch:
@@ -16,7 +14,6 @@ jobs:
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v3.2.0
         env:
-          GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release

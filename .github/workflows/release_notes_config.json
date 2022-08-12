@@ -13,6 +13,10 @@
       "labels": ["test"]
     },
     {
+      "title": "Version",
+      "labels": ["v1.*"]
+    },
+    {
       "title": "## 🧪 Tests and some 🪄 Magic",
       "labels": ["test", "magic"],
       "exclude_labels": ["no-magic"],
