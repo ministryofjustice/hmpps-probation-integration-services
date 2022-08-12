@@ -93,7 +93,10 @@ jobs:
             -H 'Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }}' \
             -H 'Content-Type: application/json' \
             -d '{"name":"${{ inputs.project_name }}"}'
-          curl -X PUT https://sentry.io/api/0/teams/ministryofjustice/probation-integration/projects/ --fail \
+
+      - name: Set platform to Kotlin
+        run: |
+          curl -X PUT https://sentry.io/api/0/teams/ministryofjustice/${{ inputs.project_name }}/ --fail \
             -H 'Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }}' \
             -H 'Content-Type: application/json' \
             -d '{"platform":"kotlin"}'
