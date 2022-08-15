@@ -27,9 +27,9 @@ data class PrisonCaseNote(
 ) {
     fun getStaffName(): StaffName =
         if (authorName.contains(',')) {
-            StaffName(authorName.substringAfterLast(","), authorName.substringBeforeLast(","))
+            StaffName(authorName.substringAfterLast(",").trim(), authorName.substringBeforeLast(",").trim())
         } else
-            StaffName(authorName.substringBeforeLast(" "), authorName.substringAfterLast(" "))
+            StaffName(authorName.substringBeforeLast(" ").trim(), authorName.substringAfterLast(" ").trim())
 }
 
 data class CaseNoteAmendment(
