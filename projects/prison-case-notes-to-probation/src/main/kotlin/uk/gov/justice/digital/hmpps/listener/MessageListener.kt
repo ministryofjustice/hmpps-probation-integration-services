@@ -44,7 +44,7 @@ class MessageListener(
             PrisonCaseNoteFilters.filters.firstOrNull { it.predicate.invoke(prisonCaseNote!!) }?.reason
         }
 
-        if (prisonCaseNote?.text == null || reasonToIgnore.value != null) {
+        if (prisonCaseNote == null || reasonToIgnore.value != null) {
             val reason = if (prisonCaseNote == null) "case note was not found" else {
                 telemetryService.trackEvent(
                     "CaseNoteIgnored",
