@@ -1,4 +1,4 @@
-name: Release notes to Git
+name: Release
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          configuration: "./.github/workflows/release_notes_config.json"
+          configuration: "./.github/workflows/release.json"
 
       - name: Create release
         uses: softprops/action-gh-release@v1
