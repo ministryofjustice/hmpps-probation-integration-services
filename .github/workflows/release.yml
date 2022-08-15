@@ -20,8 +20,30 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          configuration: "./.github/workflows/release.json"
-
+          configurationJSON: |
+            {  
+              "template": "${{CHANGELOG}}\n\n<details>\n<summary>❓ Other changes</summary>\n\n${{UNCATEGORIZED}}\n</details>",
+              "pr_template": "- ${{TITLE}} (#${{NUMBER}})",
+              "empty_template": "- no changes",
+              "catagories": [
+                {
+                  "title": "## ✨ Features",
+                  "labels": ["enhancement"]
+                },
+                {
+                  "title": "## 🐛 Fixes",
+                  "labels": ["bug"]
+                },
+                {
+                  "title": "## 📄 Documentation",
+                  "labels": ["documentation"]
+                },
+                {
+                  "title": "## ⬆️ Dependencies",
+                  "labels": ["dependencies"]
+                }
+              ]
+            }
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
