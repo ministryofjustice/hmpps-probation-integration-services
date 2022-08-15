@@ -74,7 +74,7 @@ internal class MessageListenerTest {
     }
 
     @Test
-    fun `when prison being transferred noop`() {
+    fun `when prisoner being transferred noop`() {
         val prisonCaseNote = PrisonCaseNote(
             "1",
             1L,
