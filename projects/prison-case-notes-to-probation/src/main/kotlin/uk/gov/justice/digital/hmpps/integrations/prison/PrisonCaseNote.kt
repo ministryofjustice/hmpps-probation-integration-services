@@ -21,7 +21,7 @@ data class PrisonCaseNote(
     val creationDateTime: ZonedDateTime,
     val occurrenceDateTime: ZonedDateTime,
     val authorName: String,
-    val text: String,
+    val text: String?,
     val locationId: String = UNKNOWN_LOCATION,
     val amendments: List<CaseNoteAmendment>
 ) {

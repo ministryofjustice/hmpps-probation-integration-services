@@ -8,6 +8,8 @@ import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
+import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
+import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNoteFilters
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonOffenderEvent
 import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
@@ -38,10 +40,20 @@ class MessageListener(
             null
         }
 
-        if (prisonCaseNote?.text == null || prisonCaseNote.text.isBlank()) {
-            val reason = if (prisonCaseNote == null) "was not found" else "text is empty"
+        val reasonToIgnore: Lazy<String?> = lazy {
+            PrisonCaseNoteFilters.filters.firstOrNull { it.predicate.invoke(prisonCaseNote!!) }?.reason
+        }
+
+        if (prisonCaseNote == null || reasonToIgnore.value != null) {
+            val reason = if (prisonCaseNote == null) "case note was not found" else {
+                telemetryService.trackEvent(
+                    "CaseNoteIgnored",
+                    prisonCaseNote.properties()
+                )
+                reasonToIgnore.value
+            }
             log.warn(
-                "Ignoring case note id {} and type {} because case note $reason",
+                "Ignoring case note id {} and type {} because $reason",
                 prisonOffenderEvent.caseNoteId,
                 prisonOffenderEvent.eventType
             )
@@ -58,16 +70,19 @@ class MessageListener(
 
         telemetryService.trackEvent(
             "CaseNoteMerge",
-            mapOf(
-                "caseNoteId" to prisonCaseNote.id,
-                "type" to prisonCaseNote.type,
-                "subType" to prisonCaseNote.subType,
-                "eventId" to prisonCaseNote.eventId.toString(),
-                "created" to DeliusDateTimeFormatter.format(prisonCaseNote.creationDateTime),
-                "occurrence" to DeliusDateTimeFormatter.format(prisonCaseNote.occurrenceDateTime)
-            )
+            prisonCaseNote.properties()
         )
 
         deliusService.mergeCaseNote(prisonCaseNote.toDeliusCaseNote())
     }
+
+    private fun PrisonCaseNote.properties() = mapOf(
+        "caseNoteId" to id,
+        "type" to type,
+        "subType" to subType,
+        "eventId" to eventId.toString(),
+        "created" to DeliusDateTimeFormatter.format(creationDateTime),
+        "occurrence" to DeliusDateTimeFormatter.format(occurrenceDateTime),
+        "location" to locationId
+    )
 }
