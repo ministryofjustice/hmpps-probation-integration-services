@@ -11,41 +11,27 @@
     {
       "title": "## 🧪 Tests",
       "labels": ["test"]
-    },
-    {
-      "title": "## Linked card",
-      "labels": ["PI-*"]
     }
   ],
 
-  "template": "${{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n${{UNCATEGORIZED}}\n</details>",
-  "pr_template": "- ${{TITLE}}\n   - PR: #${{NUMBER}}",
+  "template": "${{CHANGELOG}}\n\n<details>\n<summary>❓ Other changes</summary>\n\n${{UNCATEGORIZED}}\n</details>",
+  "pr_template": "- ${{TITLE}} (#${{NUMBER}})",
   "empty_template": "- no changes",
   "label_extractor": [
     {
-      "pattern": "✨",
+      "pattern": ":sparkles:",
       "on_property": "title",
       "target": "feature"
     },
     {
-      "pattern": "🐛",
+      "pattern": ":bug:",
       "on_property": "title",
       "target": "fix"
     },
     {
-      "pattern": "🧪",
+      "pattern": ":test_tube:",
       "on_property": "title",
       "target": "test"
-    },
-    {
-      "pattern": "(PI-[^ ]+).*",
-      "on_property": "title",
-      "target": "jira"
-    },
-    {
-      "pattern": "PI-[^ ]+",
-      "on_property": "title",
-      "method": "match"
     }
   ]
 }
