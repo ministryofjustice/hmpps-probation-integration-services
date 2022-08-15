@@ -29,15 +29,36 @@
   "empty_template": "- no changes",
   "label_extractor": [
     {
-      "pattern": "(.) (.+)",
-      "target": "$1",
-      "flags": "gu"
+      "pattern": "✨",
+      "on_property": "title",
+      "target": "feature"
     },
     {
       "pattern": "\\[Issue\\]",
       "on_property": "title",
       "method": "match"
-    }
+    },
+    {
+      "pattern": "🐛",
+      "on_property": "title",
+      "target": "fix"
+    },
+    {
+      "pattern": "🧪",
+      "on_property": "title",
+      "target": "test"
+    },
+    {
+      "pattern": "(PI-[^ ]+).*",
+      "on_property": "title",
+      "target": "jira"
+    },
+    {
+      "pattern": "PI-[^ ]+",
+      "on_property": "title",
+      "method": "match"
+    },
+
   ],
   "duplicate_filter": {
     "pattern": "\\[ABC-....\\]",
