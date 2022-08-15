@@ -74,6 +74,33 @@ internal class MessageListenerTest {
     }
 
     @Test
+    fun `when prison being transferred noop`() {
+        val prisonCaseNote = PrisonCaseNote(
+            "1",
+            1L,
+            "1",
+            "type",
+            "subType",
+            creationDateTime = ZonedDateTime.now(),
+            occurrenceDateTime = ZonedDateTime.now(),
+            locationId = "TRN",
+            authorName = "bob",
+            text = "Prisoner being transferred",
+            amendments = listOf()
+        )
+        whenever(
+            prisonCaseNotesClient.getCaseNote(
+                CaseNoteMessageGenerator.EXISTS_IN_DELIUS.offenderId,
+                CaseNoteMessageGenerator.EXISTS_IN_DELIUS.caseNoteId!!
+            )
+        ).thenReturn(prisonCaseNote)
+
+        messageListener.receive(CaseNoteMessageGenerator.EXISTS_IN_DELIUS)
+        verify(deliusService, never()).mergeCaseNote(any())
+        verify(telemetryService).trackEvent(eq("CaseNoteIgnored"), any(), any())
+    }
+
+    @Test
     fun `get case note from NOMIS has null caseNoteId`() {
         val prisonOffenderEvent = PrisonOffenderEvent("1", null, 0, "type")
         messageListener.receive(prisonOffenderEvent)
