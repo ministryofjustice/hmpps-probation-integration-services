@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.model.StaffName
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.ProbationAreaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.TeamRepository
+import uk.gov.justice.digital.hmpps.retry.retry
 
 @Service
 class AssignmentService(
@@ -21,7 +22,9 @@ class AssignmentService(
         if (establishmentCode.length < 3) throw InvalidEstablishmentCodeException(establishmentCode)
 
         val pa = probationAreaRepository.findByInstitutionNomisCode(establishmentCode.substring(0, 3))
-            ?: throw NotFoundException("Probation Area not found for NOMIS institution: ${establishmentCode.substring(0, 3)}")
+            ?: throw NotFoundException(
+                "Probation Area not found for NOMIS institution: ${establishmentCode.substring(0, 3)}"
+            )
         val team = teamRepository.findByCode("${pa.code}CSN")
             ?: throw NotFoundException("Team", "code", "${pa.code}CSN")
         val staff = getStaff(pa, team, staffName)
@@ -33,13 +36,8 @@ class AssignmentService(
             staffService.findStaff(probationArea.id, staffName)
         }
 
-        return findStaff() ?: try {
-            staffService.create(probationArea, team, staffName)
-        } catch (e: Exception) {
-            findStaff()
-                ?: throw NotFoundException(
-                    "Unable to find or create staff with name $staffName for probation area ${probationArea.code}"
-                )
+        return retry(3) {
+            findStaff() ?: staffService.create(probationArea, team, staffName)
         }
     }
 }
