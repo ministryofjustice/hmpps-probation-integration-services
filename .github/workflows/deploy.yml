@@ -124,6 +124,35 @@ jobs:
           echo "Deploying new task definition: ${new_task_definition}"
         working-directory: projects/${{ matrix.project }}/deploy
 
+      - name: Get Hmpps Auth vals
+        id: hmpps-auth-values
+        shell: bash
+        run: |
+          project_name=$(echo '${{ matrix.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
+          echo "::set-output name=token_url::$(cat ${{ steps.values.outputs.filename }} | yq '.env.SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI')
+          echo "::set-output name=roles::$(cat values.yml | yq '.required-roles')
+          echo "::set-output name=client_id_name::${project_name}_CLIENT_ID"
+          echo "::set-output name=client_secret_name::${project_name}_CLIENT_SECRET"
+        working-directory: projects/${{ matrix.project }}/deploy
+
+      - name: Get Hmmps Auth Roles
+        id: hmpps-auth-request
+        env:
+          CLIENT_ID_NAME: ${{ steps.hmpps-auth-values.outputs.client_id_name }}
+          CLIENT_SECRET_NAME: ${{ steps.hmpps-auth-values.outputs.client_secret_name }}
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: ${{ steps.hmpps-auth-values.outputs.token_url }}?grant_type=client_credentials
+          method: 'POST'
+          username: ${{ secrets[env.CLIENT_ID_NAME] }}
+          password: ${{ secrets[env.CLIENT_SECRET_NAME] }}
+          customHeaders: '{"Accept": "application/json"}'
+
+      - name: Check Roles in token
+        run: |
+          echo ${{ steps.hmpps-auth-request.outputs.response }}
+          echo "roles-required: ${{ steps.hmpps-auth-values.outputs.roles }}"
+
       - name: Deploy to Amazon ECS
         if: steps.env.outputs.enabled == 'true'
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1

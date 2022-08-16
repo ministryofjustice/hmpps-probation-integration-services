@@ -5,6 +5,8 @@ image:
 cpu: 1024    # = 1 vCPU
 memory: 1024 # = 1 GB
 
+required-roles: ROLE_WORKLOAD_READ
+
 env:
   AWS_REGION: eu-west-2
   JDK_JAVA_OPTIONS: -javaagent:/agent/agent.jar
