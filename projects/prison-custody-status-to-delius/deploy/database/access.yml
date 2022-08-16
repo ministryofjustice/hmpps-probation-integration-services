@@ -1,0 +1,11 @@
+database:
+  access:
+    username_key: /prison-custody-status-to-delius/db-username
+    password_key: /prison-custody-status-to-delius/db-password
+    tables:
+      - audited_interaction
+
+  audit:
+    username: PrisonCustodyStatusService
+    forename: Custody Status
+    surname: Service

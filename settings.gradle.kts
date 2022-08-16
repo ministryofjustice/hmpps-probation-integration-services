@@ -4,7 +4,8 @@ include(
     "libs:dev-tools",
     "prison-case-notes-to-probation",
     "workforce-allocations-to-delius",
-    "pre-sentence-reports-to-delius"
+    "pre-sentence-reports-to-delius",
+    "prison-custody-status-to-delius"
 )
 
 // load children from the "projects" directory (and drop the prefix)
