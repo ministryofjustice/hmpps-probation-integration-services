@@ -41,7 +41,8 @@ jobs:
   deploy-to-preprod:
     name: Deploy to preprod
     uses: ./.github/workflows/deploy.yml
-    needs: build
+    needs:
+      - deploy-to-test
     with:
       environment: preprod
       version: ${{ needs.build.outputs.version }}

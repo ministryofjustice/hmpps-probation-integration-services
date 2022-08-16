@@ -44,7 +44,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: moj-cloud-platform
     strategy:
       matrix:
         project: ${{ fromJson(inputs.projects) }}
@@ -152,6 +152,7 @@ jobs:
         run: |
           echo ${{ steps.hmpps-auth-request.outputs.response }}
           echo "roles-required: ${{ steps.hmpps-auth-values.outputs.roles }}"
+          echo ${{ fromJson(steps.hmpps-auth-request.outputs.response) }}
 
       - name: Deploy to Amazon ECS
         if: steps.env.outputs.enabled == 'true'
