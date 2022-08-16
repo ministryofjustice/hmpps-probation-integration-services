@@ -25,6 +25,7 @@ on:
         options:
           - '["prison-case-notes-to-probation"]'
           - '["workforce-allocations-to-delius"]'
+          - '["pre-sentence-reports-to-delius"]'
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
       environment:
@@ -73,11 +74,14 @@ jobs:
         shell: bash
         run: |
           environment_name=$(cat ${{ steps.values.outputs.filename }} | yq '.environment_name')
+          environment_enabled=$(cat ${{ steps.values.outputs.filename }} | yq '.enabled' | sed 's/^null$/true/')
           echo "::set-output name=name::${environment_name}"
           echo "::set-output name=short-name::${environment_name/delius-/del-}"
+          echo "::set-output name=enabled::${environment_enabled}"
         working-directory: projects/${{ matrix.project }}/deploy
 
       - name: Add secrets to parameter store
+        if: steps.env.outputs.enabled == 'true'
         shell: bash
         env:
           ALL_SECRETS: ${{ toJson(secrets) }}
@@ -92,6 +96,7 @@ jobs:
           done
 
       - name: Configure database access
+        if: steps.env.outputs.enabled == 'true'
         shell: bash
         run: |
           test -f database/access.yml && \
@@ -102,11 +107,13 @@ jobs:
         working-directory: projects/${{ matrix.project }}/deploy
 
       - name: Render values
+        if: steps.env.outputs.enabled == 'true'
         shell: bash
         run: yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' --inplace values.yml ${{ steps.values.outputs.filename }}
         working-directory: projects/${{ matrix.project }}/deploy
 
       - name: Update task definition
+        if: steps.env.outputs.enabled == 'true'
         shell: bash
         env:
           VERSION: ${{ inputs.version }}
@@ -118,6 +125,7 @@ jobs:
         working-directory: projects/${{ matrix.project }}/deploy
 
       - name: Deploy to Amazon ECS
+        if: steps.env.outputs.enabled == 'true'
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: projects/${{ matrix.project }}/deploy/task-definition.json
@@ -127,6 +135,7 @@ jobs:
           wait-for-minutes: 10
 
       - name: Create Sentry release
+        if: steps.env.outputs.enabled == 'true'
         uses: getsentry/action-release@v1
         env:
           SENTRY_ORG: ministryofjustice
