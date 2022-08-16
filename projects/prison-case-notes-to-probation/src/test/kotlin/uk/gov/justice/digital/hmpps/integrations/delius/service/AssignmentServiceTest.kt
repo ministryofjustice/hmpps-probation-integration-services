@@ -150,7 +150,7 @@ class AssignmentServiceTest {
         whenever(staffService.findStaff(probationArea.id, staffName))
             .thenReturn(null)
         whenever(staffService.create(probationArea, team, staffName))
-            .thenThrow(RuntimeException())
+            .thenThrow(NotFoundException("Staff not found"))
 
         assertThrows<NotFoundException> {
             assignmentService.findAssignment(
