@@ -3,15 +3,15 @@ name: Check Roles
 on:
   schedule:
     - cron: '30 8,16 * * 1,2,3,4,5'
+  workflow_dispatch:
 
 jobs:
   check-roles:
     runs-on: moj-cloud-platform
     strategy:
       matrix:
-        project: ${{ fromJson(inputs.projects) }}
-    environment:
-      name: ${{ inputs.environment }}
+        environment: [test, preprod, prod]
+        project: [pre-sentence-reports-to-delius, prison-case-notes-to-probation, workforce-allocations-to-delius]
     steps:
       - uses: actions/checkout@v3
 
@@ -19,9 +19,9 @@ jobs:
         id: values
         shell: bash
         run: |
-          if [ '${{ inputs.environment }}' == 'test' ];    then echo '::set-output name=filename::values-dev.yml'; fi
-          if [ '${{ inputs.environment }}' == 'preprod' ]; then echo '::set-output name=filename::values-preprod.yml'; fi
-          if [ '${{ inputs.environment }}' == 'prod' ];    then echo '::set-output name=filename::values-prod.yml'; fi
+          if [ '${{ matrix.environment }}' == 'test' ];    then echo '::set-output name=filename::values-dev.yml'; fi
+          if [ '${{ matrix.environment }}' == 'preprod' ]; then echo '::set-output name=filename::values-preprod.yml'; fi
+          if [ '${{ matrix.environment }}' == 'prod' ];    then echo '::set-output name=filename::values-prod.yml'; fi
 
       - name: Get Hmpps Auth vals
         id: hmpps-auth-values
