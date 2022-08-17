@@ -150,9 +150,16 @@ jobs:
 
       - name: Check Roles in token
         run: |
-          echo ${{ steps.hmpps-auth-request.outputs.response }}
-          echo "roles-required: ${{ steps.hmpps-auth-values.outputs.roles }}"
-          echo ${{ fromJson(steps.hmpps-auth-request.outputs.response) }}
+          response=${{ steps.hmpps-auth-request.outputs.response }}
+          actual_roles=$(jq -R 'fromjson | .access_token | split(".") | .[1] | @base64d | fromjson | .authorities' <<< "${response}")
+          roles_array=(`echo $actual_roles | sed  's/[]["|(",)|]/\n/g'`)
+          required_array=(`echo ${{ steps.hmpps-auth-values.outputs.roles }} | sed 's/- /\n/g'`)
+          echo "Actual Roles: $roles_array"
+          echo "Required Roles: $required_array"
+          matched_roles=$(awk 'BEGIN{RS = FS} NR == FNR {roles_array[$1] = 1; next} $1 in roles_array' <(echo "${roles_array[*]}") <(echo "${required_array[*]}"))
+          matched_array=(`echo $matched_roles | sed  's/,/\n/g'`)
+          echo "Matched Roles: $matched_array"
+          if [ "${#matched_array[@]}" -eq "${#required_array[@]}" ]; then; exit 0; else exit 1; fi    
 
       - name: Deploy to Amazon ECS
         if: steps.env.outputs.enabled == 'true'
@@ -164,12 +171,12 @@ jobs:
           wait-for-service-stability: true
           wait-for-minutes: 10
 
-      - name: Create Sentry release
-        if: steps.env.outputs.enabled == 'true'
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_ORG: ministryofjustice
-          SENTRY_PROJECT: ${{ matrix.project }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        with:
-          environment: ${{ inputs.environment }}
+#      - name: Create Sentry release
+#        if: steps.env.outputs.enabled == 'true'
+#        uses: getsentry/action-release@v1
+#        env:
+#          SENTRY_ORG: ministryofjustice
+#          SENTRY_PROJECT: ${{ matrix.project }}
+#          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+#        with:
+#          environment: ${{ inputs.environment }}
