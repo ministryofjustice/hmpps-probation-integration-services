@@ -28,21 +28,40 @@ jobs:
         with:
           arguments: jib -Djib.to.tags=latest
 
+  check-roles-in-test:
+    name: Check roles in test
+    uses: ./.github/workflows/check-roles.yml
+    with:
+      environment: test
+      projects: "prison-case-notes-to-probation" "workforce-allocations-to-delius" "pre-sentence-reports-to-delius"
+    secrets: inherit
+
   deploy-to-test:
     name: Deploy to test
     uses: ./.github/workflows/deploy.yml
-    needs: build
+    needs:
+      - build
+      - check-roles-in-test
     with:
       environment: test
       version: ${{ needs.build.outputs.version }}
       projects: ${{ needs.build.outputs.changed-projects }}
     secrets: inherit
 
+  check-roles-in-preprod:
+    name: Check roles in pre-prod
+    uses: ./.github/workflows/check-roles.yml
+    with:
+      environment: preprod
+      projects: "prison-case-notes-to-probation" "workforce-allocations-to-delius" "pre-sentence-reports-to-delius"
+    secrets: inherit
+
   deploy-to-preprod:
     name: Deploy to preprod
     uses: ./.github/workflows/deploy.yml
     needs:
-      - deploy-to-test
+      - build
+      - check-roles-in-preprod
     with:
       environment: preprod
       version: ${{ needs.build.outputs.version }}

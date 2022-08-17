@@ -44,7 +44,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: moj-cloud-platform
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         project: ${{ fromJson(inputs.projects) }}
@@ -124,43 +124,6 @@ jobs:
           echo "Deploying new task definition: ${new_task_definition}"
         working-directory: projects/${{ matrix.project }}/deploy
 
-      - name: Get Hmpps Auth vals
-        id: hmpps-auth-values
-        shell: bash
-        run: |
-          project_name=$(echo '${{ matrix.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
-          echo "::set-output name=token_url::$(cat ${{ steps.values.outputs.filename }} | yq '.env.SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI')
-          echo "::set-output name=roles::$(cat values.yml | yq '.required-roles')
-          echo "::set-output name=client_id_name::${project_name}_CLIENT_ID"
-          echo "::set-output name=client_secret_name::${project_name}_CLIENT_SECRET"
-        working-directory: projects/${{ matrix.project }}/deploy
-
-      - name: Get Hmmps Auth Roles
-        id: hmpps-auth-request
-        env:
-          CLIENT_ID_NAME: ${{ steps.hmpps-auth-values.outputs.client_id_name }}
-          CLIENT_SECRET_NAME: ${{ steps.hmpps-auth-values.outputs.client_secret_name }}
-        uses: fjogeleit/http-request-action@v1
-        with:
-          url: ${{ steps.hmpps-auth-values.outputs.token_url }}?grant_type=client_credentials
-          method: 'POST'
-          username: ${{ secrets[env.CLIENT_ID_NAME] }}
-          password: ${{ secrets[env.CLIENT_SECRET_NAME] }}
-          customHeaders: '{"Accept": "application/json"}'
-
-      - name: Check Roles in token
-        run: |
-          response=${{ steps.hmpps-auth-request.outputs.response }}
-          actual_roles=$(jq -R 'fromjson | .access_token | split(".") | .[1] | @base64d | fromjson | .authorities' <<< "${response}")
-          roles_array=(`echo $actual_roles | sed  's/[]["|(",)|]/\n/g'`)
-          required_array=(`echo ${{ steps.hmpps-auth-values.outputs.roles }} | sed 's/- /\n/g'`)
-          echo "Actual Roles: $roles_array"
-          echo "Required Roles: $required_array"
-          matched_roles=$(awk 'BEGIN{RS = FS} NR == FNR {roles_array[$1] = 1; next} $1 in roles_array' <(echo "${roles_array[*]}") <(echo "${required_array[*]}"))
-          matched_array=(`echo $matched_roles | sed  's/,/\n/g'`)
-          echo "Matched Roles: $matched_array"
-          if [ "${#matched_array[@]}" -eq "${#required_array[@]}" ]; then; exit 0; else exit 1; fi    
-
       - name: Deploy to Amazon ECS
         if: steps.env.outputs.enabled == 'true'
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -171,12 +134,12 @@ jobs:
           wait-for-service-stability: true
           wait-for-minutes: 10
 
-#      - name: Create Sentry release
-#        if: steps.env.outputs.enabled == 'true'
-#        uses: getsentry/action-release@v1
-#        env:
-#          SENTRY_ORG: ministryofjustice
-#          SENTRY_PROJECT: ${{ matrix.project }}
-#          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-#        with:
-#          environment: ${{ inputs.environment }}
+      - name: Create Sentry release
+        if: steps.env.outputs.enabled == 'true'
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_ORG: ministryofjustice
+          SENTRY_PROJECT: ${{ matrix.project }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        with:
+          environment: ${{ inputs.environment }}
