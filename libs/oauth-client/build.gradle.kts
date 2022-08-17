@@ -4,3 +4,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation(libs.openfeign)
 }
+
+configure<uk.gov.justice.digital.hmpps.extensions.ClassPathExtension> {
+    jacocoExclusions = listOf(
+        "**/FeignConfig*",
+        "**/SecurityConfiguration*",
+    )
+}
