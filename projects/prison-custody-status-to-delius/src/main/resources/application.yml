@@ -1,0 +1,75 @@
+# Default config
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.Oracle12cDialect
+    hibernate.ddl-auto: validate
+  jms:
+    template.default-destination: prison-custody-status-events
+    listener:
+      concurrency: 1
+      max-concurrency: 10
+      acknowledge-mode: client
+  security.oauth2.client:
+    registration:
+      prison-custody-status-to-delius:
+        provider: hmpps-auth
+        authorization-grant-type: client_credentials
+        client-id: prison-custody-status-to-delius
+        client-secret: prison-custody-status-to-delius
+    provider:
+      hmpps-auth:
+        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
+
+delius.db.username: PrisonCustodyStatusService # See deploy/database/access.yml
+
+management.endpoints.web:
+  base-path: /
+  exposure.include: "health"
+
+feign.client.config:
+  default:
+    logger-level: full
+    connect-timeout: 5000
+    read-timeout: 5000
+    default-request-headers:
+      Accept: application/json
+      Content-Type: application/json
+
+
+---
+# Shared dev/test config
+spring.config.activate.on-profile: [ "dev", "integration-test", "oracle" ]
+
+spring:
+  activemq.broker-url: vm://localhost?broker.persistent=false&broker.useShutdownHook=false
+  datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
+  jpa.hibernate.ddl-auto: create-drop
+
+wiremock.enabled: true
+context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+
+integrations:
+
+management.endpoints.web:
+  base-path: /
+  exposure.include: [ "hawtio", "health", "jolokia" ]
+hawtio.authenticationEnabled: false
+
+logging.level:
+  org.hibernate.tool.schema: ERROR
+
+---
+spring.config.activate.on-profile: integration-test
+spring.datasource.url: jdbc:h2:file:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
+
+---
+spring.config.activate.on-profile: oracle
+spring:
+  datasource:
+    url: 'jdbc:oracle:thin:@//localhost:1521/XEPDB1'
+    username: delius_pool
+    password: NDelius1
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.Oracle12cDialect
+    hibernate.ddl-auto: validate

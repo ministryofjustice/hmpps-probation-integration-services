@@ -1,0 +1,16 @@
+{
+  "role": {
+    "name": "prison-custody-status-to-delius"
+  },
+  "customDimensions": {
+    "service.version": "${VERSION}"
+  },
+  "instrumentation": {
+    "logging": {
+      "level": "DEBUG"
+    }
+  },
+  "selfDiagnostics": {
+    "destination": "console"
+  }
+}

@@ -1,0 +1,7 @@
+environment_name: delius-pre-prod
+
+enabled: false
+
+env:
+  SENTRY_ENVIRONMENT: preprod
+  SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/oauth/token
