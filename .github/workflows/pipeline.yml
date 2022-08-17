@@ -31,9 +31,10 @@ jobs:
   check-roles-in-test:
     name: Check roles in test
     uses: ./.github/workflows/check-roles.yml
+    needs: build
     with:
       environment: test
-      projects: "prison-case-notes-to-probation" "workforce-allocations-to-delius" "pre-sentence-reports-to-delius"
+      projects: ${{ needs.build.outputs.changed-projects }}
     secrets: inherit
 
   deploy-to-test:
@@ -51,9 +52,10 @@ jobs:
   check-roles-in-preprod:
     name: Check roles in pre-prod
     uses: ./.github/workflows/check-roles.yml
+    needs: build
     with:
       environment: preprod
-      projects: "prison-case-notes-to-probation" "workforce-allocations-to-delius" "pre-sentence-reports-to-delius"
+      projects: ${{ needs.build.outputs.changed-projects }}
     secrets: inherit
 
   deploy-to-preprod:
