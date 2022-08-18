@@ -9,32 +9,12 @@ spring:
       concurrency: 1
       max-concurrency: 10
       acknowledge-mode: client
-  security.oauth2.client:
-    registration:
-      prison-custody-status-to-delius:
-        provider: hmpps-auth
-        authorization-grant-type: client_credentials
-        client-id: prison-custody-status-to-delius
-        client-secret: prison-custody-status-to-delius
-    provider:
-      hmpps-auth:
-        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
 
 delius.db.username: PrisonCustodyStatusService # See deploy/database/access.yml
 
 management.endpoints.web:
   base-path: /
   exposure.include: "health"
-
-feign.client.config:
-  default:
-    logger-level: full
-    connect-timeout: 5000
-    read-timeout: 5000
-    default-request-headers:
-      Accept: application/json
-      Content-Type: application/json
-
 
 ---
 # Shared dev/test config
@@ -44,11 +24,6 @@ spring:
   activemq.broker-url: vm://localhost?broker.persistent=false&broker.useShutdownHook=false
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
-
-wiremock.enabled: true
-context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
-
-integrations:
 
 management.endpoints.web:
   base-path: /
