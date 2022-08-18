@@ -11,7 +11,7 @@ interface IntegrationEvent {
 data class HmppsEvent(
     override val eventType: String,
     val version: Int,
-    val detailUrl: String,
+    val detailUrl: String? = null,
     val occurredAt: ZonedDateTime,
     val description: String? = null,
     val additionalInformation: AdditionalInformation = AdditionalInformation(),

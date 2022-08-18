@@ -16,10 +16,9 @@ class TelemetryService(private val telemetryClient: TelemetryClient = TelemetryC
     fun hmppsEventReceived(hmppsEvent: HmppsEvent) {
         trackEvent(
             "${hmppsEvent.eventType.uppercase().replace(".", "_")}_RECEIVED",
-            mapOf(
-                "eventType" to hmppsEvent.eventType,
-                "detailUrl" to hmppsEvent.detailUrl
-            ) + (hmppsEvent.personReference.identifiers.associate { Pair(it.type, it.value) })
+            mapOf("eventType" to hmppsEvent.eventType) +
+                (hmppsEvent.detailUrl?.let { mapOf("detailUrl" to it) } ?: mapOf()) +
+                (hmppsEvent.personReference.identifiers.associate { Pair(it.type, it.value) })
         )
     }
 }

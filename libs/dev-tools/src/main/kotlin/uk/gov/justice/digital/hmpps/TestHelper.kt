@@ -9,10 +9,7 @@ import java.time.temporal.ChronoUnit
 fun prepMessage(fileName: String, port: Int): HmppsEvent {
     val hmppsEvent = ResourceLoader.message<HmppsEvent>(fileName)
     return hmppsEvent.copy(
-        detailUrl = hmppsEvent.detailUrl.replace(
-            "{wiremock.port}",
-            port.toString()
-        )
+        detailUrl = hmppsEvent.detailUrl?.replace("{wiremock.port}", port.toString())
     )
 }
 

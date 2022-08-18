@@ -35,7 +35,7 @@ class MessageListener(
         log.debug("received $allocationEvent")
         telemetryService.hmppsEventReceived(allocationEvent)
 
-        when (val allocationDetail = allocationsClient.getAllocationDetail(URI.create(allocationEvent.detailUrl))) {
+        when (val allocationDetail = allocationsClient.getAllocationDetail(URI.create(allocationEvent.detailUrl!!))) {
             is PersonAllocationDetail -> allocatePersonService.createPersonAllocation(allocationDetail)
             is EventAllocationDetail -> allocateEventService.createEventAllocation(
                 allocationEvent.findCrn(), allocationDetail
