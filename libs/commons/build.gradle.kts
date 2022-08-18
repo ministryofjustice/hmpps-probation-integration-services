@@ -22,10 +22,8 @@ configure<ClassPathExtension> {
         "**/ContextRunnable*",
         "**/ConnectionProviderConfig*",
         "**/exception/**",
-        "**/FeignConfig*",
         "**/JmsConfig*",
         "**/OracleCondition*",
-        "**/SecurityConfiguration*",
         "**/ThreadConfig*",
     )
 }

@@ -4,6 +4,7 @@ apply(plugin = "com.google.cloud.tools.jib")
 
 dependencies {
     implementation(project(":libs:commons"))
+    implementation(project(":libs:oauth-client"))
 
     implementation("org.springframework:spring-jms")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
