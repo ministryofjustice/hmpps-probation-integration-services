@@ -13,12 +13,12 @@ import javax.persistence.Table
 class RecallReason(
     @Id
     @Column(name = "recall_reason_id")
-    var id: Long,
+    val id: Long,
 
     @Column(nullable = false)
-    var code: String,
+    val code: String,
 
     @Column(nullable = false)
     @Type(type = "yes_no")
-    var selectable: Boolean = true,
+    val selectable: Boolean = true,
 )

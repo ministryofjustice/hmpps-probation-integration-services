@@ -11,13 +11,13 @@ import javax.persistence.Table
 
 @Immutable
 @Entity
-class Disposal(
+data class Disposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long,
 
     @OneToOne(mappedBy = "disposal")
-    var custody: Custody,
+    val custody: Custody,
 
     @ManyToOne
     @JoinColumn(name = "disposal_type_id", updatable = false)
@@ -25,7 +25,7 @@ class Disposal(
 
     @OneToOne
     @JoinColumn(name = "event_id", updatable = false)
-    var event: Event? = null,
+    val event: Event? = null,
 
     @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
     val active: Boolean = true,

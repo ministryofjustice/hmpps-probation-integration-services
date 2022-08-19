@@ -28,8 +28,13 @@ object EventGenerator {
                 DisposalType(IdGenerator.getAndIncrement(), "NC")
             )
         )
-        event.disposal.event = event
-        event.disposal.custody.disposal = event.disposal
-        return event
+        return event.copy(
+            disposal = event.disposal.copy(
+                event = event,
+                custody = event.disposal.custody.copy(
+                    disposal = event.disposal
+                )
+            )
+        )
     }
 }

@@ -12,23 +12,23 @@ import javax.persistence.OneToOne
 
 @Entity
 @Where(clause = "soft_deleted = 0")
-class Custody(
+data class Custody(
     @Id
     @Column(name = "custody_id")
     val id: Long,
 
     @ManyToOne
     @JoinColumn(name = "custodial_status_id")
-    var custodialStatus: ReferenceData,
+    val custodialStatus: ReferenceData,
 
     @ManyToOne
     @JoinColumn(name = "institution_id")
-    var institution: Institution,
+    val institution: Institution,
 
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
-    var softDeleted: Boolean = false,
+    val softDeleted: Boolean = false,
 
     @OneToOne
     @JoinColumn(name = "disposal_id", updatable = false)
-    var disposal: Disposal? = null,
+    val disposal: Disposal? = null,
 )

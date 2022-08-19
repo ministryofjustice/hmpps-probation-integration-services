@@ -23,7 +23,7 @@ class Institution(
 
     @Column
     @Type(type = "yes_no")
-    var establishment: Boolean,
+    val establishment: Boolean,
 
     @Column
     @Type(type = "yes_no")
