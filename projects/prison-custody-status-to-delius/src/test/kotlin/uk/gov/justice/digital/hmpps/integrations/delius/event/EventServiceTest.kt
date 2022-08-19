@@ -28,47 +28,50 @@ internal class EventServiceTest {
     @Test
     fun activeCustodialEventIsReturned() {
         val event = EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT)
-        whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse("Z0001ZZ"))
+        whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse(PersonGenerator.RELEASABLE.nomsNumber))
             .thenReturn(listOf(PersonGenerator.RELEASABLE))
         whenever(eventRepository.findActiveCustodialEvents(PersonGenerator.RELEASABLE.id))
             .thenReturn(listOf(event))
 
-        assertEquals(listOf(event), eventService.getActiveCustodialEvents("Z0001ZZ"))
+        assertEquals(listOf(event), eventService.getActiveCustodialEvents(PersonGenerator.RELEASABLE.nomsNumber))
     }
 
     @Test
     fun missingNomsNumberIsIgnored() {
-        whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse("Z0001ZZ")).thenReturn(emptyList())
+        whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse(PersonGenerator.RELEASABLE.nomsNumber))
+            .thenReturn(emptyList())
         assertThrows<IgnorableMessageException> {
-            eventService.getActiveCustodialEvents("Z0001ZZ")
+            eventService.getActiveCustodialEvents(PersonGenerator.RELEASABLE.nomsNumber)
         }
     }
 
     @Test
     fun duplicateNomsNumberIsIgnored() {
-        whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse("Z0001ZZ")).thenReturn(List(3) { PersonGenerator.RELEASABLE })
+        whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse(PersonGenerator.RELEASABLE.nomsNumber))
+            .thenReturn(List(3) { PersonGenerator.RELEASABLE })
         assertThrows<IgnorableMessageException> {
-            eventService.getActiveCustodialEvents("Z0001ZZ")
+            eventService.getActiveCustodialEvents(PersonGenerator.RELEASABLE.nomsNumber)
         }
     }
 
     @Test
     fun noActiveCustodialEventIsIgnored() {
-        whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse("Z0001ZZ")).thenReturn(listOf(PersonGenerator.RELEASABLE))
+        whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse(PersonGenerator.RELEASABLE.nomsNumber))
+            .thenReturn(listOf(PersonGenerator.RELEASABLE))
         whenever(eventRepository.findActiveCustodialEvents(PersonGenerator.RELEASABLE.id)).thenReturn(emptyList())
         assertThrows<IgnorableMessageException> {
-            eventService.getActiveCustodialEvents("Z0001ZZ")
+            eventService.getActiveCustodialEvents(PersonGenerator.RELEASABLE.nomsNumber)
         }
     }
 
     @Test
     fun multipleActiveCustodialEventsAreIgnored() {
-        whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse("Z0001ZZ"))
+        whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse(PersonGenerator.RELEASABLE.nomsNumber))
             .thenReturn(listOf(PersonGenerator.RELEASABLE))
         whenever(eventRepository.findActiveCustodialEvents(PersonGenerator.RELEASABLE.id))
             .thenReturn(List(3) { EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT) })
         assertThrows<IgnorableMessageException> {
-            eventService.getActiveCustodialEvents("Z0001ZZ")
+            eventService.getActiveCustodialEvents(PersonGenerator.RELEASABLE.nomsNumber)
         }
     }
 }
