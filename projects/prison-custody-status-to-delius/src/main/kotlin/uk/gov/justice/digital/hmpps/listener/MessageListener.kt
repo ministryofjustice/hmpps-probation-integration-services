@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.jms.annotation.EnableJms
 import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallService
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseService
@@ -26,7 +25,6 @@ class MessageListener(
         val log: Logger = LoggerFactory.getLogger(this::class.java)
     }
 
-    @Transactional
     @JmsListener(destination = "\${spring.jms.template.default-destination}")
     fun receive(hmppsEvent: HmppsEvent) {
         log.debug("received $hmppsEvent")

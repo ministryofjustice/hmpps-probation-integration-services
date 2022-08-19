@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.release
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
@@ -20,6 +21,8 @@ class ReleaseService(
     private val institutionRepository: InstitutionRepository,
     private val referenceDataRepository: ReferenceDataRepository,
 ) : AuditableService(auditedInteractionService) {
+
+    @Transactional
     fun release(
         nomsNumber: String,
         prisonId: String,

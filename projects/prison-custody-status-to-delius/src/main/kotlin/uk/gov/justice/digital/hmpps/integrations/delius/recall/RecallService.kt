@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.recall
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
@@ -20,6 +21,8 @@ class RecallService(
     private val institutionRepository: InstitutionRepository,
     private val recallReasonRepository: RecallReasonRepository,
 ) : AuditableService(auditedInteractionService) {
+
+    @Transactional
     fun recall(
         nomsNumber: String,
         prisonId: String,
