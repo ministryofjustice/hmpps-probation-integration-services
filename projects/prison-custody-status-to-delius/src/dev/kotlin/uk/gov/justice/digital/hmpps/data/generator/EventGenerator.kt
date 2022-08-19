@@ -18,22 +18,21 @@ object EventGenerator {
         val event = Event(
             IdGenerator.getAndIncrement(),
             person,
-            Disposal(
-                IdGenerator.getAndIncrement(),
-                Custody(
-                    IdGenerator.getAndIncrement(),
-                    ReferenceDataGenerator.CUSTODIAL_STATUS[custodialStatusCode]!!,
-                    institution
-                ),
-                DisposalType(IdGenerator.getAndIncrement(), "NC")
-            )
+        )
+        val disposal = Disposal(
+            IdGenerator.getAndIncrement(),
+            DisposalType(IdGenerator.getAndIncrement(), "NC"),
+            event,
+        )
+        val custody = Custody(
+            IdGenerator.getAndIncrement(),
+            ReferenceDataGenerator.CUSTODIAL_STATUS[custodialStatusCode]!!,
+            institution,
+            disposal,
         )
         return event.copy(
-            disposal = event.disposal.copy(
-                event = event,
-                custody = event.disposal.custody.copy(
-                    disposal = event.disposal
-                )
+            disposal = disposal.copy(
+                custody = custody.copy(disposal = disposal)
             )
         )
     }

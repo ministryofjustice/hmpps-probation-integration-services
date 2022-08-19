@@ -25,10 +25,10 @@ data class Custody(
     @JoinColumn(name = "institution_id")
     val institution: Institution,
 
-    @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
-    val softDeleted: Boolean = false,
-
     @OneToOne
     @JoinColumn(name = "disposal_id", updatable = false)
-    val disposal: Disposal? = null,
+    val disposal: Disposal,
+
+    @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
+    val softDeleted: Boolean = false,
 )

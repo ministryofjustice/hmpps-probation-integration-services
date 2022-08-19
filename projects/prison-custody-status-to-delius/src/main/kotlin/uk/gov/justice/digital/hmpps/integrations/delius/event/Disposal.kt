@@ -16,16 +16,16 @@ data class Disposal(
     @Column(name = "disposal_id")
     val id: Long,
 
-    @OneToOne(mappedBy = "disposal")
-    val custody: Custody,
-
     @ManyToOne
     @JoinColumn(name = "disposal_type_id", updatable = false)
     val disposalType: DisposalType,
 
     @OneToOne
     @JoinColumn(name = "event_id", updatable = false)
-    val event: Event? = null,
+    val event: Event,
+
+    @OneToOne(mappedBy = "disposal")
+    val custody: Custody? = null,
 
     @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
     val active: Boolean = true,

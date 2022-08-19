@@ -21,11 +21,11 @@ data class Event(
     val person: Person,
 
     @OneToOne(mappedBy = "event")
-    val disposal: Disposal,
+    val disposal: Disposal? = null,
 
-    @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
+    @Column(name = "active_flag", updatable = false, columnDefinition = "number")
     val active: Boolean = true,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
 )
