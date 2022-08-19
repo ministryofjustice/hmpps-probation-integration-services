@@ -57,7 +57,7 @@ class DataLoader(
 
         val releasableEvent = EventGenerator.custodialEvent(releasablePerson, InstitutionGenerator.DEFAULT)
         eventRepository.save(releasableEvent)
-        disposalTypeRepository.save(releasableEvent.disposal.disposalType)
-        disposalRepository.save(releasableEvent.disposal)
+        disposalTypeRepository.save(releasableEvent.disposal!!.disposalType)
+        disposalRepository.save(releasableEvent.disposal!!)
     }
 }
