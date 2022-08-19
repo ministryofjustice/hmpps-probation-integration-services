@@ -22,7 +22,7 @@ dependencyResolutionManagement {
             library("hawtio", "io.hawt:hawtio-springboot:2.15.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:4.0.0")
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:3.1.3")
-            library("sentry", "io.sentry:sentry-spring-boot-starter:6.3.1")
+            library("sentry", "io.sentry:sentry-spring-boot-starter:6.4.0")
             library("wiremock", "com.github.tomakehurst:wiremock-jre8:2.33.2")
         }
     }
