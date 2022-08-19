@@ -27,7 +27,7 @@ class MessageListener(
     fun receive(hmppsEvent: HmppsEvent) {
         log.debug("received $hmppsEvent")
         telemetryService.hmppsEventReceived(hmppsEvent)
-        val psrDocument = psrClient.getPsrReport(URI.create(hmppsEvent.detailUrl + "/pdf"))
+        val psrDocument = psrClient.getPsrReport(URI.create(hmppsEvent.detailUrl!! + "/pdf"))
         documentService.updateCourtReportDocument(hmppsEvent, psrDocument)
     }
 }
