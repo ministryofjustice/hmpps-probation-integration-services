@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.referencedata
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
     @Query(
@@ -12,5 +13,8 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
         and rd.selectable = true
         """
     )
-    fun getReleaseType(code: String): ReferenceData
+    fun findReleaseType(code: String): ReferenceData?
 }
+
+fun ReferenceDataRepository.getReleaseType(code: String): ReferenceData =
+    findReleaseType(code) ?: throw NotFoundException("Release Type", "code", code)

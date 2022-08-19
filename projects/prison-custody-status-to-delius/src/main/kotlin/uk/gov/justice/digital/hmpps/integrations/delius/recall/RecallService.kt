@@ -7,7 +7,9 @@ import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.institution.InstitutionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.institution.getByNomisCdeCodeAndEstablishmentIsTrueAndSelectableIsTrue
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.RecallReasonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getByCodeAndSelectableIsTrue
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.RecallReasonCode
 import java.time.ZonedDateTime
 
@@ -24,8 +26,8 @@ class RecallService(
         reason: String,
         releaseDate: ZonedDateTime,
     ) = audit(BusinessInteractionCode.ADD_RECALL) {
-        val releaseType = recallReasonRepository.findByCodeAndSelectableIsTrue(mapToRecallReason(reason).code)
-        val institution = institutionRepository.findByNomisCdeCodeAndEstablishmentIsTrueAndSelectableIsTrue(prisonId)
+        val recallReason = recallReasonRepository.getByCodeAndSelectableIsTrue(mapToRecallReason(reason).code)
+        val institution = institutionRepository.getByNomisCdeCodeAndEstablishmentIsTrueAndSelectableIsTrue(prisonId)
 
         eventService.getActiveCustodialEvents(nomsNumber).forEach {
             // Do the thing
