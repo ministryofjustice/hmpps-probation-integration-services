@@ -12,11 +12,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepositor
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.CustodyService
-import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.getByEventIdAndActiveIsTrueAndSoftDeletedIsFalse
+import uk.gov.justice.digital.hmpps.integrations.delius.institution.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.institution.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.institution.getByNomisCdeCodeAndSelectableIsTrue
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.HostRepository
@@ -36,7 +37,6 @@ class ReleaseService(
     private val eventService: EventService,
     private val releaseRepository: ReleaseRepository,
     private val custodyService: CustodyService,
-    private val eventRepository: EventRepository,
     private val orderManagerRepository: OrderManagerRepository,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
@@ -54,19 +54,10 @@ class ReleaseService(
 
         eventService.getActiveCustodialEvents(nomsNumber).forEach {
             val disposal = it.disposal ?: throw NotFoundException("Disposal", "eventId", it.id)
-            val custody = it.disposal.custody ?: throw NotFoundException("Custody", "disposalId", it.disposal.id)
+            val custody = disposal.custody ?: throw NotFoundException("Custody", "disposalId", disposal.id)
 
-            if (!custody.isInCustody()) throw IgnorableMessageException("UnexpectedCustodialStatus")
-
-            // This behaviour may change. See https://dsdmoj.atlassian.net/browse/PI-264
-            if (custody.institution.code != institution.code)
-                throw IgnorableMessageException("UnexpectedInstitution", mapOf("current" to custody.institution.code))
-
-            if (releaseDate.isBefore(disposal.date)) throw IgnorableMessageException("InvalidReleaseDate")
-
-            val previousRelease = custody.mostRecentRelease()
-            if (previousRelease?.recall?.date != null && releaseDate.isBefore(previousRelease.recall.date))
-                throw IgnorableMessageException("InvalidReleaseDate")
+            // perform validation
+            validateRelease(custody, institution, releaseDate)
 
             // create the release
             releaseRepository.save(
@@ -78,7 +69,7 @@ class ReleaseService(
                     institutionId = institution.id,
                     leadHostProviderId = hostRepository
                         .findLeadHostProviderIdByInstitutionId(institution.id.institutionId, releaseDate),
-                    recall = previousRelease?.recall,
+                    recall = custody.mostRecentRelease()?.recall,
                 )
             )
 
@@ -87,11 +78,7 @@ class ReleaseService(
             custodyService.updateLocation(custody, InstitutionCode.IN_COMMUNITY, releaseDate)
 
             // update event
-            if (it.firstReleaseDate == null) {
-                it.firstReleaseDate = releaseDate
-                eventRepository.save(it)
-            }
-            eventRepository.updateIaps(it.id)
+            eventService.updateReleaseDateAndIapsFlag(it, releaseDate)
 
             // create contact
             val orderManager = orderManagerRepository.getByEventIdAndActiveIsTrueAndSoftDeletedIsFalse(it.id)
@@ -108,6 +95,22 @@ class ReleaseService(
                 )
             )
         }
+    }
+
+    private fun validateRelease(custody: Custody, institution: Institution, releaseDate: ZonedDateTime) {
+        if (!custody.isInCustody())
+            throw IgnorableMessageException("UnexpectedCustodialStatus")
+
+        // This behaviour may change. See https://dsdmoj.atlassian.net/browse/PI-264
+        if (custody.institution.code != institution.code)
+            throw IgnorableMessageException("UnexpectedInstitution", mapOf("current" to custody.institution.code))
+
+        if (releaseDate.isBefore(custody.disposal.date))
+            throw IgnorableMessageException("InvalidReleaseDate")
+
+        val previousRecallDate = custody.mostRecentRelease()?.recall?.date
+        if (previousRecallDate != null && releaseDate.isBefore(previousRecallDate))
+            throw IgnorableMessageException("InvalidReleaseDate")
     }
 
     private fun mapToReleaseType(reason: String) = when (reason) {

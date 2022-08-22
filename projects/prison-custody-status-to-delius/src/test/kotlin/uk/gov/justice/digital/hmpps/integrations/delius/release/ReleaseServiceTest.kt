@@ -10,7 +10,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
@@ -29,7 +28,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepositor
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.CustodyService
-import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.institution.InstitutionRepository
@@ -63,9 +61,6 @@ internal class ReleaseServiceTest {
 
     @Mock
     private lateinit var custodyService: CustodyService
-
-    @Mock
-    private lateinit var eventRepository: EventRepository
 
     @Mock
     private lateinit var orderManagerRepository: OrderManagerRepository
@@ -287,9 +282,7 @@ internal class ReleaseServiceTest {
 
         verify(custodyService).updateStatus(event.disposal!!.custody!!, CustodialStatusCode.RELEASED_ON_LICENCE, releaseDate, "Released on Licence")
         verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionCode.IN_COMMUNITY, releaseDate)
-        verify(eventRepository).updateIaps(event.id)
-        verify(eventRepository).save(event)
-        assertThat(event.firstReleaseDate, equalTo(releaseDate))
+        verify(eventService).updateReleaseDateAndIapsFlag(event, releaseDate)
     }
 
     @Test
@@ -328,25 +321,5 @@ internal class ReleaseServiceTest {
                 )
             )
         )
-    }
-
-    @Test
-    fun subsequentReleaseDoesntOverrideFirstReleaseDate() {
-        val firstReleaseDate = ZonedDateTime.now().minusMonths(6)
-        val event = EventGenerator.previouslyReleasedEvent(person, RELEASED_FROM, firstReleaseDate)
-        val orderManager = OrderManagerGenerator.generate(event)
-        val releaseDate = ZonedDateTime.now()
-        whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
-            .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndSelectableIsTrue(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
-        whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
-        whenever(orderManagerRepository.findByEventIdAndActiveIsTrueAndSoftDeletedIsFalse(event.id)).thenReturn(orderManager)
-        whenever(contactTypeRepository.findByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code))
-            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY])
-
-        releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, releaseDate)
-
-        verify(eventRepository, never()).save(event)
-        assertThat(event.firstReleaseDate, equalTo(firstReleaseDate))
     }
 }
