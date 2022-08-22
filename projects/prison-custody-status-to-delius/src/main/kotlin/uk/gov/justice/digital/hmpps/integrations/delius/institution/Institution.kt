@@ -2,30 +2,40 @@ package uk.gov.justice.digital.hmpps.integrations.delius.institution
 
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Type
+import java.io.Serializable
 import javax.persistence.Column
+import javax.persistence.Embeddable
+import javax.persistence.EmbeddedId
 import javax.persistence.Entity
-import javax.persistence.Id
 import javax.persistence.Table
 
 @Immutable
 @Entity
 @Table(name = "r_institution")
 class Institution(
-    @Id
-    @Column(name = "institution_id")
-    val id: Long,
+    @EmbeddedId
+    val id: InstitutionId,
 
-    @Column
+    @Column(nullable = false, columnDefinition = "char(6)")
     val code: String,
 
-    @Column(name = "nomis_cde_code", columnDefinition = "CHAR(6)")
+    @Column(name = "nomis_cde_code", columnDefinition = "char(6)")
     val nomisCdeCode: String,
 
-    @Column
-    @Type(type = "yes_no")
-    val establishment: Boolean,
+    @Column(nullable = false)
+    val description: String,
 
     @Column
     @Type(type = "yes_no")
     val selectable: Boolean,
 )
+
+@Embeddable
+data class InstitutionId(
+    @Column(name = "institution_id")
+    val institutionId: Long,
+
+    @Column(name = "establishment")
+    @Type(type = "yes_no")
+    val establishment: Boolean,
+) : Serializable

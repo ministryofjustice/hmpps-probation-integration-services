@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event
 
 import org.hibernate.annotations.Immutable
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.Custody
+import java.time.ZonedDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -18,7 +20,10 @@ data class Disposal(
 
     @ManyToOne
     @JoinColumn(name = "disposal_type_id", updatable = false)
-    val disposalType: DisposalType,
+    val type: DisposalType,
+
+    @Column(name = "disposal_date", nullable = false)
+    val date: ZonedDateTime,
 
     @OneToOne
     @JoinColumn(name = "event_id", updatable = false)

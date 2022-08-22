@@ -5,21 +5,41 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.CustodyService
+import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
+import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.getByEventIdAndActiveIsTrueAndSoftDeletedIsFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.institution.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.institution.getByNomisCdeCodeAndSelectableIsTrue
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.HostRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getReleaseType
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import java.time.ZonedDateTime
 
 @Service
 class ReleaseService(
     auditedInteractionService: AuditedInteractionService,
-    private val eventService: EventService,
-    private val institutionRepository: InstitutionRepository,
     private val referenceDataRepository: ReferenceDataRepository,
+    private val institutionRepository: InstitutionRepository,
+    private val hostRepository: HostRepository,
+    private val eventService: EventService,
+    private val releaseRepository: ReleaseRepository,
+    private val custodyService: CustodyService,
+    private val eventRepository: EventRepository,
+    private val orderManagerRepository: OrderManagerRepository,
+    private val contactRepository: ContactRepository,
+    private val contactTypeRepository: ContactTypeRepository,
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -33,7 +53,60 @@ class ReleaseService(
         val institution = institutionRepository.getByNomisCdeCodeAndSelectableIsTrue(prisonId)
 
         eventService.getActiveCustodialEvents(nomsNumber).forEach {
-            // Do the thing
+            val disposal = it.disposal ?: throw NotFoundException("Disposal", "eventId", it.id)
+            val custody = it.disposal.custody ?: throw NotFoundException("Custody", "disposalId", it.disposal.id)
+
+            if (!custody.isInCustody()) throw IgnorableMessageException("UnexpectedCustodialStatus")
+
+            // This behaviour may change. See https://dsdmoj.atlassian.net/browse/PI-264
+            if (custody.institution.code != institution.code)
+                throw IgnorableMessageException("UnexpectedInstitution", mapOf("current" to custody.institution.code))
+
+            if (releaseDate.isBefore(disposal.date)) throw IgnorableMessageException("InvalidReleaseDate")
+
+            val previousRelease = custody.mostRecentRelease()
+            if (previousRelease?.recall?.date != null && releaseDate.isBefore(previousRelease.recall.date))
+                throw IgnorableMessageException("InvalidReleaseDate")
+
+            // create the release
+            releaseRepository.save(
+                Release(
+                    date = releaseDate,
+                    type = releaseType,
+                    person = it.person,
+                    custody = custody,
+                    institutionId = institution.id,
+                    leadHostProviderId = hostRepository
+                        .findLeadHostProviderIdByInstitutionId(institution.id.institutionId, releaseDate),
+                    recall = previousRelease?.recall,
+                )
+            )
+
+            // update custody status + location
+            custodyService.updateStatus(custody, CustodialStatusCode.RELEASED_ON_LICENCE, releaseDate, "Released on Licence")
+            custodyService.updateLocation(custody, InstitutionCode.IN_COMMUNITY, releaseDate)
+
+            // update event
+            if (it.firstReleaseDate == null) {
+                it.firstReleaseDate = releaseDate
+                eventRepository.save(it)
+            }
+            eventRepository.updateIaps(it.id)
+
+            // create contact
+            val orderManager = orderManagerRepository.getByEventIdAndActiveIsTrueAndSoftDeletedIsFalse(it.id)
+            contactRepository.save(
+                Contact(
+                    type = contactTypeRepository.getByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code),
+                    date = releaseDate,
+                    event = it,
+                    person = it.person,
+                    notes = "Release Type: ${releaseType.description}",
+                    staffId = orderManager.staffId,
+                    teamId = orderManager.teamId,
+                    providerId = orderManager.providerId,
+                )
+            )
         }
     }
 

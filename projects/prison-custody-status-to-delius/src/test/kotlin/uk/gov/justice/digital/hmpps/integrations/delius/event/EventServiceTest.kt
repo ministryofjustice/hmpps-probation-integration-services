@@ -27,7 +27,7 @@ internal class EventServiceTest {
 
     @Test
     fun activeCustodialEventIsReturned() {
-        val event = EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT)
+        val event = EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.RELEASED_FROM)
         whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse(PersonGenerator.RELEASABLE.nomsNumber))
             .thenReturn(listOf(PersonGenerator.RELEASABLE))
         whenever(eventRepository.findActiveCustodialEvents(PersonGenerator.RELEASABLE.id))
@@ -69,7 +69,7 @@ internal class EventServiceTest {
         whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse(PersonGenerator.RELEASABLE.nomsNumber))
             .thenReturn(listOf(PersonGenerator.RELEASABLE))
         whenever(eventRepository.findActiveCustodialEvents(PersonGenerator.RELEASABLE.id))
-            .thenReturn(List(3) { EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT) })
+            .thenReturn(List(3) { EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.RELEASED_FROM) })
         assertThrows<IgnorableMessageException> {
             eventService.getActiveCustodialEvents(PersonGenerator.RELEASABLE.nomsNumber)
         }
