@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.probationarea
+package uk.gov.justice.digital.hmpps.integrations.delius.host
 
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Type
@@ -19,16 +19,16 @@ class Host(
     @Column
     val institutionId: Long,
 
-    @Column(name = "probation_area_id", nullable = false)
-    val providerId: Long,
+    @Column(nullable = false)
+    val probationAreaId: Long,
 
-    @Column(name = "lead_host")
+    @Column
     @Type(type = "yes_no")
     val leadHost: Boolean? = false,
 
-    @Column(name = "start_date", nullable = false)
+    @Column(nullable = false)
     val startDate: ZonedDateTime,
 
-    @Column(name = "end_date")
+    @Column
     val endDate: ZonedDateTime? = null,
 )

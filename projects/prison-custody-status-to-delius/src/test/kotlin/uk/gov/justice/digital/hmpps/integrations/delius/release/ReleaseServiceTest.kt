@@ -30,8 +30,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.CustodyService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.host.HostRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.institution.InstitutionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.HostRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
@@ -267,14 +267,14 @@ internal class ReleaseServiceTest {
         verify(eventService).updateReleaseDateAndIapsFlag(event, releaseDate)
 
         val release = saved.firstValue
-        assert(release.createdDateTime.closeTo(ZonedDateTime.now()))
-        assert(release.lastUpdatedDateTime.closeTo(ZonedDateTime.now()))
+        assert(release.createdDatetime.closeTo(ZonedDateTime.now()))
+        assert(release.lastUpdatedDatetime.closeTo(ZonedDateTime.now()))
         assertEquals(release.date, releaseDate)
         assertEquals(release.type, ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE]!!)
         assertEquals(release.person, person)
         assertEquals(release.custody, event.disposal!!.custody)
         assertEquals(release.institutionId, RELEASED_FROM.id)
-        assertEquals(release.leadHostProviderId, 0)
+        assertEquals(release.probationAreaId, 0)
     }
 
     @Test
@@ -296,8 +296,8 @@ internal class ReleaseServiceTest {
         verify(contactRepository).save(saved.capture())
 
         val contact = saved.firstValue
-        assert(contact.createdDateTime.closeTo(ZonedDateTime.now()))
-        assert(contact.lastUpdatedDateTime.closeTo(ZonedDateTime.now()))
+        assert(contact.createdDatetime.closeTo(ZonedDateTime.now()))
+        assert(contact.lastUpdatedDatetime.closeTo(ZonedDateTime.now()))
         assertEquals(contact.date, releaseDate)
         assertEquals(contact.type, ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY]!!)
         assertEquals(contact.person, person)
@@ -305,6 +305,5 @@ internal class ReleaseServiceTest {
         assertEquals(contact.notes, "Release Type: description of ADL")
         assertEquals(contact.staffId, orderManager.staffId)
         assertEquals(contact.teamId, orderManager.teamId)
-        assertEquals(contact.providerId, orderManager.providerId)
     }
 }

@@ -21,7 +21,7 @@ class Institution(
     @Column(nullable = false, columnDefinition = "char(6)")
     val code: String,
 
-    @Column(name = "nomis_cde_code", columnDefinition = "char(6)")
+    @Column(columnDefinition = "char(6)")
     val nomisCdeCode: String,
 
     @Column(nullable = false)
@@ -33,7 +33,7 @@ class Institution(
 )
 
 @Embeddable
-class InstitutionId(
+data class InstitutionId(
     @Column(name = "institution_id")
     val institutionId: Long,
 

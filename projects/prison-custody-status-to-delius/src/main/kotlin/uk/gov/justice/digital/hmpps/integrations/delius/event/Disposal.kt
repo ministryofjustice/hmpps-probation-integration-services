@@ -47,6 +47,6 @@ class DisposalType(
     @Column(name = "disposal_type_id")
     val id: Long,
 
-    @Column(name = "sentence_type")
+    @Column
     val sentenceType: String,
 )

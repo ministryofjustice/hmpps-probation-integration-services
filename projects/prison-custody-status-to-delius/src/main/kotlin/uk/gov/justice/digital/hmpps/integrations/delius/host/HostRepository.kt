@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.probationarea
+package uk.gov.justice.digital.hmpps.integrations.delius.host
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -7,7 +7,7 @@ import java.time.ZonedDateTime
 interface HostRepository : JpaRepository<Host, Long> {
     @Query(
         """
-        select host.providerId from Host host
+        select host.probationAreaId from Host host
         where host.leadHost = true 
         and host.institutionId = :institutionId
         and host.startDate <= :date

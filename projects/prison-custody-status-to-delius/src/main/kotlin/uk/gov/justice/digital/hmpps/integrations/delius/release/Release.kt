@@ -57,31 +57,31 @@ class Release(
     @Embedded
     val institutionId: InstitutionId? = null,
 
-    @Column(name = "probation_area_id", nullable = true)
-    val leadHostProviderId: Long? = null,
+    @Column(nullable = true)
+    val probationAreaId: Long? = null,
 
     @OneToOne(mappedBy = "release")
     var recall: Recall? = null,
 
-    @Column(name = "partition_area_id", nullable = false)
+    @Column(nullable = false)
     val partitionAreaId: Long = 0,
 
-    @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
+    @Column(columnDefinition = "number", nullable = false)
     val softDeleted: Boolean = false,
 
-    @Column(name = "created_by_user_id", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     @CreatedBy
     var createdByUserId: Long = 0,
 
-    @Column(name = "last_updated_user_id", nullable = false)
+    @Column(nullable = false)
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
 
-    @Column(name = "created_datetime", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     @CreatedDate
-    var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
-    @Column(name = "last_updated_datetime", nullable = false)
+    @Column(nullable = false)
     @LastModifiedDate
-    var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 )

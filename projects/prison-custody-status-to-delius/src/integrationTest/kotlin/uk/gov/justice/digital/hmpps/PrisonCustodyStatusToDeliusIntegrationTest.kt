@@ -67,7 +67,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
 
         // and the release information is recorded correctly
         val release = releaseRepository.findAll().single()
-        assert(release.createdDateTime.closeTo(ZonedDateTime.now()))
+        assert(release.createdDatetime.closeTo(ZonedDateTime.now()))
         assertThat(release.date.withZoneSameInstant(EuropeLondon), equalTo(message.occurredAt))
         assertThat(release.person.nomsNumber, equalTo(message.additionalInformation.nomsNumber()))
 

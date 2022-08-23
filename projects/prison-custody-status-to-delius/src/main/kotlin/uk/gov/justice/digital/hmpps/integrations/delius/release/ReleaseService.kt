@@ -17,10 +17,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.CustodyService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.getByEventIdAndActiveIsTrueAndSoftDeletedIsFalse
+import uk.gov.justice.digital.hmpps.integrations.delius.host.HostRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.institution.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.institution.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.institution.getByNomisCdeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.HostRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getReleaseType
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
@@ -67,7 +67,7 @@ class ReleaseService(
                     person = it.person,
                     custody = custody,
                     institutionId = institution.id,
-                    leadHostProviderId = hostRepository
+                    probationAreaId = hostRepository
                         .findLeadHostProviderIdByInstitutionId(institution.id.institutionId, releaseDate),
                     recall = custody.mostRecentRelease()?.recall,
                 )
@@ -91,7 +91,6 @@ class ReleaseService(
                     notes = "Release Type: ${releaseType.description}",
                     staffId = orderManager.staffId,
                     teamId = orderManager.teamId,
-                    providerId = orderManager.providerId,
                 )
             )
         }

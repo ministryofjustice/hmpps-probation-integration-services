@@ -33,6 +33,6 @@ class Event(
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
 
-    @Column(name = "first_release_date")
+    @Column
     var firstReleaseDate: ZonedDateTime? = null,
 )

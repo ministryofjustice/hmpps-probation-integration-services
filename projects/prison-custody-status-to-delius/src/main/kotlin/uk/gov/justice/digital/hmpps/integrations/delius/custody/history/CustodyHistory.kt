@@ -46,6 +46,6 @@ class CustodyHistory(
     @JoinColumn(name = "custody_id", nullable = false)
     val custody: Custody,
 
-    @Column(name = "partition_area_id", nullable = false)
+    @Column(nullable = false)
     val partitionAreaId: Long = 0,
 )

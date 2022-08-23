@@ -14,6 +14,6 @@ class ContactType(
     @Column(name = "contact_type_id", nullable = false)
     val id: Long,
 
-    @Column(name = "CODE", nullable = false)
+    @Column(nullable = false)
     val code: String,
 )

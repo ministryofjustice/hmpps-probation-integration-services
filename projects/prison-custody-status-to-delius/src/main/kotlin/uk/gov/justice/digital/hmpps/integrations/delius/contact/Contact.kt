@@ -49,41 +49,35 @@ class Contact(
     val person: Person,
 
     @Lob
-    @Column(name = "notes")
+    @Column
     val notes: String? = null,
 
-    @Column(name = "staff_id")
+    @Column
     val staffId: Long,
 
-    @Column(name = "team_id")
+    @Column
     val teamId: Long,
-
-    @Column(name = "probation_area_id")
-    val providerId: Long,
 
     // Removed the createdDate annotation as Delius relies on the created date time to infer the contact/recall linkage.
     // Please refer to: https://github.com/ministryofjustice/delius/blob/2e43abfe3110801bd1c3093bcde5fa001eae38e6/NDelius-ejb/src/main/java/uk/co/bconline/ndelius/service/throughcare/ThroughcareServiceBean.java#L1230-L1232
-    @Column(name = "created_datetime", nullable = false)
-    var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
+    @Column(nullable = false)
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
-    @Column(name = "created_by_user_id", nullable = false)
+    @Column(nullable = false)
     @CreatedBy
     var createdByUserId: Long = 0,
 
-    @Column(name = "last_updated_datetime", nullable = false)
+    @Column(nullable = false)
     @LastModifiedDate
-    var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
-    @Column(name = "last_updated_user_id", nullable = false)
+    @Column(nullable = false)
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
 
-    @Column(name = "trust_provider_flag", nullable = false)
-    val trustProviderFlag: Long = 0,
+    @Column(nullable = false, columnDefinition = "number")
+    val softDeleted: Boolean = false,
 
-    @Column(name = "staff_employee_id", nullable = false)
-    val staffEmployeeId: Long = 1,
-
-    @Column(name = "trust_provider_team_id", nullable = false)
-    val teamProviderId: Long = 1,
+    @Column(nullable = false)
+    val partitionAreaId: Long = 0,
 )

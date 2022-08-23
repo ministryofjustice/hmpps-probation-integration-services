@@ -43,13 +43,13 @@ class Custody(
     @JoinColumn(name = "disposal_id", updatable = false)
     val disposal: Disposal,
 
-    @Column(name = "status_change_date", nullable = false)
+    @Column(nullable = false)
     var statusChangeDate: ZonedDateTime,
 
-    @Column(name = "location_change_date", nullable = false)
+    @Column(nullable = false)
     var locationChangeDate: ZonedDateTime,
 
-    @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
+    @Column(columnDefinition = "number", nullable = false)
     val softDeleted: Boolean = false,
 
     @OneToMany(mappedBy = "custody")
@@ -61,5 +61,5 @@ class Custody(
         CustodialStatusCode.IN_CUSTODY.code
     )
 
-    fun mostRecentRelease() = releases.maxWithOrNull(compareBy({ it.date }, { it.createdDateTime }))
+    fun mostRecentRelease() = releases.maxWithOrNull(compareBy({ it.date }, { it.createdDatetime }))
 }
