@@ -17,7 +17,7 @@ import javax.persistence.Version
 
 @Entity
 @Table(name = "custody_history")
-data class CustodyHistory(
+class CustodyHistory(
     @Id
     @SequenceGenerator(name = "custody_history_id_generator", sequenceName = "custody_history_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custody_history_id_generator")

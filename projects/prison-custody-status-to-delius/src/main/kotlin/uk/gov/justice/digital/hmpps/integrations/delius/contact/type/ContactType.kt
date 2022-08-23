@@ -9,7 +9,7 @@ import javax.persistence.Table
 @Immutable
 @Entity
 @Table(name = "r_contact_type")
-data class ContactType(
+class ContactType(
     @Id
     @Column(name = "contact_type_id", nullable = false)
     val id: Long,

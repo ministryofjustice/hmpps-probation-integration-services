@@ -13,7 +13,7 @@ import javax.persistence.Table
 
 @Immutable
 @Entity
-data class Disposal(
+class Disposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long,
@@ -30,7 +30,7 @@ data class Disposal(
     val event: Event,
 
     @OneToOne(mappedBy = "disposal")
-    val custody: Custody? = null,
+    var custody: Custody? = null,
 
     @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
     val active: Boolean = true,

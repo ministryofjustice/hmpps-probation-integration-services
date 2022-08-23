@@ -33,7 +33,7 @@ class Institution(
 )
 
 @Embeddable
-data class InstitutionId(
+class InstitutionId(
     @Column(name = "institution_id")
     val institutionId: Long,
 

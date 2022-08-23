@@ -19,7 +19,7 @@ import javax.persistence.Version
 
 @Entity
 @Where(clause = "soft_deleted = 0")
-data class Custody(
+class Custody(
     @Id
     @Column(name = "custody_id")
     val id: Long,

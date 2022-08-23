@@ -11,7 +11,7 @@ import javax.persistence.OneToOne
 import javax.persistence.Version
 
 @Entity
-data class Event(
+class Event(
     @Id
     @Column(name = "event_id", nullable = false)
     val id: Long,
@@ -25,7 +25,7 @@ data class Event(
     val person: Person,
 
     @OneToOne(mappedBy = "event")
-    val disposal: Disposal? = null,
+    var disposal: Disposal? = null,
 
     @Column(name = "active_flag", updatable = false, columnDefinition = "number")
     val active: Boolean = true,

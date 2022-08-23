@@ -23,7 +23,7 @@ import javax.persistence.Version
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-data class Contact(
+class Contact(
     @Id
     @SequenceGenerator(name = "contact_id_generator", sequenceName = "contact_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")

@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.release
 
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.matchesPattern
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -128,7 +128,7 @@ internal class ReleaseServiceTest {
 
     @Test
     fun attemptToReleaseUnsentencedEventIsThrown() {
-        val event = EventGenerator.unsentencedEvent(person)
+        val event = EventGenerator.unSentencedEvent(person)
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
         whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
@@ -166,7 +166,7 @@ internal class ReleaseServiceTest {
         val exception = assertThrows<IgnorableMessageException> {
             releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, ZonedDateTime.now())
         }
-        assertThat(exception.message, equalTo("UnexpectedCustodialStatus"))
+        assertEquals(exception.message, "UnexpectedCustodialStatus")
     }
 
     @Test
@@ -181,7 +181,7 @@ internal class ReleaseServiceTest {
         val exception = assertThrows<IgnorableMessageException> {
             releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, ZonedDateTime.now())
         }
-        assertThat(exception.message, equalTo("UnexpectedInstitution"))
+        assertEquals(exception.message, "UnexpectedInstitution")
     }
 
     @Test
@@ -196,7 +196,7 @@ internal class ReleaseServiceTest {
         val exception = assertThrows<IgnorableMessageException> {
             releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, releaseDate)
         }
-        assertThat(exception.message, equalTo("InvalidReleaseDate"))
+        assertEquals(exception.message, "InvalidReleaseDate")
     }
 
     @Test
@@ -212,7 +212,7 @@ internal class ReleaseServiceTest {
         val exception = assertThrows<IgnorableMessageException> {
             releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, releaseDate)
         }
-        assertThat(exception.message, equalTo("InvalidReleaseDate"))
+        assertEquals(exception.message, "InvalidReleaseDate")
     }
 
     @Test
@@ -242,7 +242,7 @@ internal class ReleaseServiceTest {
         val exception = assertThrows<NotFoundException> {
             releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, ZonedDateTime.now())
         }
-        assertThat(exception.message, equalTo("ContactType with code of EREL not found"))
+        assertEquals(exception.message, "ContactType with code of EREL not found")
     }
 
     @Test
@@ -262,27 +262,19 @@ internal class ReleaseServiceTest {
 
         val saved = argumentCaptor<Release>()
         verify(releaseRepository).save(saved.capture())
-        assert(saved.firstValue.createdDateTime.closeTo(ZonedDateTime.now()))
-        assert(saved.firstValue.lastUpdatedDateTime.closeTo(ZonedDateTime.now()))
-        assertThat(
-            saved.firstValue,
-            equalTo(
-                Release(
-                    date = releaseDate,
-                    type = ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE]!!,
-                    person = person,
-                    custody = event.disposal!!.custody,
-                    institutionId = RELEASED_FROM.id,
-                    leadHostProviderId = 0,
-                    createdDateTime = saved.firstValue.createdDateTime,
-                    lastUpdatedDateTime = saved.firstValue.lastUpdatedDateTime
-                )
-            )
-        )
-
         verify(custodyService).updateStatus(event.disposal!!.custody!!, CustodialStatusCode.RELEASED_ON_LICENCE, releaseDate, "Released on Licence")
         verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionCode.IN_COMMUNITY, releaseDate)
         verify(eventService).updateReleaseDateAndIapsFlag(event, releaseDate)
+
+        val release = saved.firstValue
+        assert(release.createdDateTime.closeTo(ZonedDateTime.now()))
+        assert(release.lastUpdatedDateTime.closeTo(ZonedDateTime.now()))
+        assertEquals(release.date, releaseDate)
+        assertEquals(release.type, ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE]!!)
+        assertEquals(release.person, person)
+        assertEquals(release.custody, event.disposal!!.custody)
+        assertEquals(release.institutionId, RELEASED_FROM.id)
+        assertEquals(release.leadHostProviderId, 0)
     }
 
     @Test
@@ -302,24 +294,17 @@ internal class ReleaseServiceTest {
 
         val saved = argumentCaptor<Contact>()
         verify(contactRepository).save(saved.capture())
-        assert(saved.firstValue.createdDateTime.closeTo(ZonedDateTime.now()))
-        assert(saved.firstValue.lastUpdatedDateTime.closeTo(ZonedDateTime.now()))
-        assertThat(
-            saved.firstValue,
-            equalTo(
-                Contact(
-                    type = ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY]!!,
-                    date = releaseDate,
-                    event = event,
-                    person = person,
-                    notes = "Release Type: description of ADL",
-                    staffId = orderManager.staffId,
-                    teamId = orderManager.teamId,
-                    providerId = orderManager.providerId,
-                    createdDateTime = saved.firstValue.createdDateTime,
-                    lastUpdatedDateTime = saved.firstValue.lastUpdatedDateTime
-                )
-            )
-        )
+
+        val contact = saved.firstValue
+        assert(contact.createdDateTime.closeTo(ZonedDateTime.now()))
+        assert(contact.lastUpdatedDateTime.closeTo(ZonedDateTime.now()))
+        assertEquals(contact.date, releaseDate)
+        assertEquals(contact.type, ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY]!!)
+        assertEquals(contact.person, person)
+        assertEquals(contact.event, event)
+        assertEquals(contact.notes, "Release Type: description of ADL")
+        assertEquals(contact.staffId, orderManager.staffId)
+        assertEquals(contact.teamId, orderManager.teamId)
+        assertEquals(contact.providerId, orderManager.providerId)
     }
 }

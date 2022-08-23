@@ -28,7 +28,7 @@ import javax.persistence.Version
 @Entity
 @EntityListeners(AuditingEntityListener::class)
 @Where(clause = "soft_deleted = 0")
-data class Release(
+class Release(
     @Id
     @SequenceGenerator(name = "release_id_generator", sequenceName = "release_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "release_id_generator")
@@ -61,7 +61,7 @@ data class Release(
     val leadHostProviderId: Long? = null,
 
     @OneToOne(mappedBy = "release")
-    val recall: Recall? = null,
+    var recall: Recall? = null,
 
     @Column(name = "partition_area_id", nullable = false)
     val partitionAreaId: Long = 0,

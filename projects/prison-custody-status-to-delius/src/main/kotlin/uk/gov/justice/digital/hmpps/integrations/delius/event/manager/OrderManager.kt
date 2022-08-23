@@ -9,7 +9,7 @@ import javax.persistence.Table
 @Entity
 @Immutable
 @Table(name = "order_manager")
-data class OrderManager(
+class OrderManager(
     @Id
     @Column(name = "order_manager_id", nullable = false)
     val id: Long,

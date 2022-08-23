@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.custody
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.CustodyGenerator
@@ -50,16 +52,16 @@ internal class CustodyServiceTest {
 
         custodyService.updateStatus(custody, IN_CUSTODY, now, "Some detail string")
 
+        val saved = argumentCaptor<CustodyHistory>()
+        verify(custodyHistoryRepository).save(saved.capture())
         verify(custodyRepository).save(custody)
-        verify(custodyHistoryRepository).save(
-            CustodyHistory(
-                date = now,
-                type = ReferenceDataGenerator.CUSTODY_EVENT_TYPE[STATUS_CHANGE]!!,
-                detail = "Some detail string",
-                person = custody.disposal.event.person,
-                custody = custody,
-            )
-        )
+
+        val savedCustody = saved.firstValue
+        assertEquals(savedCustody.date, now)
+        assertEquals(savedCustody.type, ReferenceDataGenerator.CUSTODY_EVENT_TYPE[STATUS_CHANGE]!!)
+        assertEquals(savedCustody.detail, "Some detail string")
+        assertEquals(savedCustody.person, custody.disposal.event.person)
+        assertEquals(savedCustody.custody, custody)
     }
 
     @Test
@@ -73,15 +75,15 @@ internal class CustodyServiceTest {
 
         custodyService.updateLocation(custody, InstitutionCode.IN_COMMUNITY, now)
 
+        val saved = argumentCaptor<CustodyHistory>()
+        verify(custodyHistoryRepository).save(saved.capture())
         verify(custodyRepository).save(custody)
-        verify(custodyHistoryRepository).save(
-            CustodyHistory(
-                date = now,
-                type = ReferenceDataGenerator.CUSTODY_EVENT_TYPE[LOCATION_CHANGE]!!,
-                detail = "Test institution",
-                person = custody.disposal.event.person,
-                custody = custody,
-            )
-        )
+
+        val savedCustody = saved.firstValue
+        assertEquals(savedCustody.date, now)
+        assertEquals(savedCustody.type, ReferenceDataGenerator.CUSTODY_EVENT_TYPE[LOCATION_CHANGE]!!)
+        assertEquals(savedCustody.detail, "Test institution")
+        assertEquals(savedCustody.person, custody.disposal.event.person)
+        assertEquals(savedCustody.custody, custody)
     }
 }
