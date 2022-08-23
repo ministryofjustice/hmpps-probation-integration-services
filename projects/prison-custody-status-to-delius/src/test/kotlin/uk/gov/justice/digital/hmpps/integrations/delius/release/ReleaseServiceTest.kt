@@ -118,7 +118,7 @@ internal class ReleaseServiceTest {
     fun failureToRetrieveEventsIsThrown() {
         whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndSelectableIsTrue(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
         whenever(eventService.getActiveCustodialEvents("INVALID")).thenThrow(IllegalArgumentException())
 
         assertThrows<IllegalArgumentException> {
@@ -131,7 +131,7 @@ internal class ReleaseServiceTest {
         val event = EventGenerator.unsentencedEvent(person)
         whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndSelectableIsTrue(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<NotFoundException> {
@@ -145,7 +145,7 @@ internal class ReleaseServiceTest {
         val event = EventGenerator.nonCustodialEvent(person)
         whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndSelectableIsTrue(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<NotFoundException> {
@@ -159,7 +159,7 @@ internal class ReleaseServiceTest {
         val status = CustodialStatusCode.RELEASED_ON_LICENCE
         whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndSelectableIsTrue(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber))
             .thenReturn(listOf(EventGenerator.custodialEvent(person, RELEASED_FROM, status)))
 
@@ -174,7 +174,7 @@ internal class ReleaseServiceTest {
         val institution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]!!
         whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndSelectableIsTrue(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber))
             .thenReturn(listOf(EventGenerator.custodialEvent(person, institution)))
 
@@ -189,7 +189,7 @@ internal class ReleaseServiceTest {
         val releaseDate = LocalDate.of(2022, 1, 1).atStartOfDay(EuropeLondon)
         whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndSelectableIsTrue(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber))
             .thenReturn(listOf(EventGenerator.custodialEvent(person, RELEASED_FROM)))
 
@@ -206,7 +206,7 @@ internal class ReleaseServiceTest {
         val event = EventGenerator.previouslyRecalledEvent(person, RELEASED_FROM, previousRecallDate)
         whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndSelectableIsTrue(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
@@ -220,7 +220,7 @@ internal class ReleaseServiceTest {
         val event = EventGenerator.custodialEvent(person, RELEASED_FROM)
         whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndSelectableIsTrue(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<NotFoundException> {
@@ -235,7 +235,7 @@ internal class ReleaseServiceTest {
         val orderManager = OrderManagerGenerator.generate(event)
         whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndSelectableIsTrue(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
         whenever(orderManagerRepository.findByEventIdAndActiveIsTrueAndSoftDeletedIsFalse(event.id)).thenReturn(orderManager)
 
@@ -252,7 +252,7 @@ internal class ReleaseServiceTest {
         val releaseDate = ZonedDateTime.now()
         whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndSelectableIsTrue(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
         whenever(orderManagerRepository.findByEventIdAndActiveIsTrueAndSoftDeletedIsFalse(event.id)).thenReturn(orderManager)
         whenever(contactTypeRepository.findByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code))
@@ -292,7 +292,7 @@ internal class ReleaseServiceTest {
         val releaseDate = ZonedDateTime.now()
         whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndSelectableIsTrue(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
         whenever(orderManagerRepository.findByEventIdAndActiveIsTrueAndSoftDeletedIsFalse(event.id)).thenReturn(orderManager)
         whenever(contactTypeRepository.findByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code))

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyHistory
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.institution.InstitutionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.institution.getByCodeAndSelectableIsTrue
+import uk.gov.justice.digital.hmpps.integrations.delius.institution.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustodialStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustodyEventType
@@ -36,7 +36,7 @@ class CustodyService(
     }
 
     fun updateLocation(custody: Custody, institution: InstitutionCode, date: ZonedDateTime) {
-        custody.institution = institutionRepository.getByCodeAndSelectableIsTrue(institution.code)
+        custody.institution = institutionRepository.getByCode(institution.code)
         custody.locationChangeDate = date
         custodyRepository.save(custody)
         custodyHistoryRepository.save(

@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManag
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.getByEventIdAndActiveIsTrueAndSoftDeletedIsFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.institution.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.institution.InstitutionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.institution.getByNomisCdeCodeAndSelectableIsTrue
+import uk.gov.justice.digital.hmpps.integrations.delius.institution.getByNomisCdeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.HostRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getReleaseType
@@ -50,7 +50,7 @@ class ReleaseService(
         releaseDate: ZonedDateTime,
     ) = audit(BusinessInteractionCode.ADD_RELEASE) {
         val releaseType = referenceDataRepository.getReleaseType(mapToReleaseType(reason).code)
-        val institution = institutionRepository.getByNomisCdeCodeAndSelectableIsTrue(prisonId)
+        val institution = institutionRepository.getByNomisCdeCode(prisonId)
 
         eventService.getActiveCustodialEvents(nomsNumber).forEach {
             val disposal = it.disposal ?: throw NotFoundException("Disposal", "eventId", it.id)

@@ -66,7 +66,7 @@ internal class CustodyServiceTest {
     fun updateLocationCreatesHistoryRecord() {
         val custody = CustodyGenerator.generate(PersonGenerator.RELEASABLE, InstitutionGenerator.RELEASED_FROM)
         val now = ZonedDateTime.now()
-        whenever(institutionRepository.findByCodeAndSelectableIsTrue(InstitutionCode.IN_COMMUNITY.code))
+        whenever(institutionRepository.findByCode(InstitutionCode.IN_COMMUNITY.code))
             .thenReturn(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY])
         whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(LOCATION_CHANGE.code, "CUSTODY EVENT TYPE"))
             .thenReturn(ReferenceDataGenerator.CUSTODY_EVENT_TYPE[LOCATION_CHANGE])

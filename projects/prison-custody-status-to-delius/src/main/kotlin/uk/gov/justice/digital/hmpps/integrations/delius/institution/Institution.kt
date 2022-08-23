@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.institution
 
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Type
+import org.hibernate.annotations.Where
 import java.io.Serializable
 import javax.persistence.Column
 import javax.persistence.Embeddable
@@ -12,6 +13,7 @@ import javax.persistence.Table
 @Immutable
 @Entity
 @Table(name = "r_institution")
+@Where(clause = "selectable = 'Y'")
 class Institution(
     @EmbeddedId
     val id: InstitutionId,
