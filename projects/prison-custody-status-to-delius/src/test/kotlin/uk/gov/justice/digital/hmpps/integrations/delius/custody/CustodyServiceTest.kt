@@ -43,9 +43,9 @@ internal class CustodyServiceTest {
     fun updateStatusCreatesHistoryRecord() {
         val custody = CustodyGenerator.generate(PersonGenerator.RELEASABLE, InstitutionGenerator.RELEASED_FROM)
         val now = ZonedDateTime.now()
-        whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(IN_CUSTODY.code, "THROUGHCARE STATUS"))
+        whenever(referenceDataRepository.findByCodeAndSetName(IN_CUSTODY.code, "THROUGHCARE STATUS"))
             .thenReturn(ReferenceDataGenerator.CUSTODIAL_STATUS[IN_CUSTODY])
-        whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(STATUS_CHANGE.code, "CUSTODY EVENT TYPE"))
+        whenever(referenceDataRepository.findByCodeAndSetName(STATUS_CHANGE.code, "CUSTODY EVENT TYPE"))
             .thenReturn(ReferenceDataGenerator.CUSTODY_EVENT_TYPE[STATUS_CHANGE])
 
         custodyService.updateStatus(custody, IN_CUSTODY, now, "Some detail string")
@@ -68,7 +68,7 @@ internal class CustodyServiceTest {
         val now = ZonedDateTime.now()
         whenever(institutionRepository.findByCode(InstitutionCode.IN_COMMUNITY.code))
             .thenReturn(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY])
-        whenever(referenceDataRepository.findByCodeAndSetNameAndSelectableIsTrue(LOCATION_CHANGE.code, "CUSTODY EVENT TYPE"))
+        whenever(referenceDataRepository.findByCodeAndSetName(LOCATION_CHANGE.code, "CUSTODY EVENT TYPE"))
             .thenReturn(ReferenceDataGenerator.CUSTODY_EVENT_TYPE[LOCATION_CHANGE])
 
         custodyService.updateLocation(custody, InstitutionCode.IN_COMMUNITY, now)
