@@ -18,19 +18,8 @@ import org.springframework.security.web.SecurityFilterChain
 class SecurityConfiguration {
 
     @Bean
-    @Throws(java.lang.Exception::class)
-    fun filterChain(http: HttpSecurity): SecurityFilterChain? {
-        http.authorizeRequests {
-            it
-                .antMatchers("/health/**", "/info/**", "/hawtio/**", "/jolokia").permitAll()
-                .anyRequest().authenticated()
-        }
-            .csrf().disable()
-            .cors().disable()
-            .httpBasic().disable()
-            .formLogin().disable()
-            .logout().disable()
-            .oauth2Client()
+    fun oauthFilterChain(http: HttpSecurity): SecurityFilterChain {
+        http.oauth2Client()
         return http.build()
     }
 
