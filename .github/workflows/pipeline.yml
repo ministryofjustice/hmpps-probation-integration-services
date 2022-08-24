@@ -60,7 +60,9 @@ jobs:
   deploy-to-test:
     name: Deploy to test
     uses: ./.github/workflows/deploy.yml
-    needs: build
+    needs:
+     - build
+     - build-docker
     with:
       environment: test
       version: ${{ needs.build.outputs.version }}
@@ -70,7 +72,9 @@ jobs:
   deploy-to-preprod:
     name: Deploy to preprod
     uses: ./.github/workflows/deploy.yml
-    needs: build
+    needs:
+      - build
+      - build-docker
     with:
       environment: preprod
       version: ${{ needs.build.outputs.version }}
