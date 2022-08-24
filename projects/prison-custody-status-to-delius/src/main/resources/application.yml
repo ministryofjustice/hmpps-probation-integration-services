@@ -48,3 +48,4 @@ spring:
     properties:
       hibernate.dialect: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
+delius.db.username: NationalUser

@@ -94,7 +94,4 @@ spring:
         dialect: org.hibernate.dialect.Oracle12cDialect
     hibernate:
       ddl-auto: validate
-
-#azure:
-#  application-insights:
-#    connection-string: "InstrumentationKey=INSTRUMENTATION_KEY"
+delius.db.username: NationalUser
