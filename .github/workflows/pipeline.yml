@@ -35,10 +35,12 @@ jobs:
       matrix:
         project: ${{ fromJson(needs.build.outputs.changed-projects) }}
     steps:
+      - uses: actions/checkout@v3
       - name: Check for Dockerfile
         id: check-for-dockerfile
         uses: andstor/file-existence-action@v1
         with:
+          ignore_case: true
           files: projects/${{ matrix.project }}/container/Dockerfile
 
       - name: Login to Github Packages
