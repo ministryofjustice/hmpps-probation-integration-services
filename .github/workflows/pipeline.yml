@@ -39,7 +39,7 @@ jobs:
         id: check-for-dockerfile
         uses: andstor/file-existence-action@v1
         with:
-          files: Dockerfile
+          files: projects/${{ matrix.project }}/container/Dockerfile
 
       - name: Login to Github Packages
         if: steps.check-for-dockerfile.outputs.files_exists == 'true'
