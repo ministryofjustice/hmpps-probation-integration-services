@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown
+package uk.gov.justice.digital.hmpps.integrations.delius.recall.reason
 
 enum class RecallReasonCode(val code: String) {
     NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT("NN"),

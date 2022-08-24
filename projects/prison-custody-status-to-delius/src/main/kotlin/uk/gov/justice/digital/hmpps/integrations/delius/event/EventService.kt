@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
+import java.time.ZonedDateTime
 
 @Service
 class EventService(
@@ -19,5 +20,13 @@ class EventService(
         if (events.size > 1) throw IgnorableMessageException("MultipleActiveCustodialEvents") // This behaviour may change - see https://dsdmoj.atlassian.net/browse/PI-262
 
         return events
+    }
+
+    fun updateReleaseDateAndIapsFlag(event: Event, releaseDate: ZonedDateTime) {
+        if (event.firstReleaseDate == null) {
+            event.firstReleaseDate = releaseDate
+            eventRepository.save(event)
+        }
+        eventRepository.updateIaps(event.id)
     }
 }

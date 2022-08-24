@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.referencedata
+package uk.gov.justice.digital.hmpps.integrations.delius.recall.reason
 
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
