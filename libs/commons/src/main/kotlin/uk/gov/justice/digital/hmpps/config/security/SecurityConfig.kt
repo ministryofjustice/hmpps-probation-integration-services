@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.config.security
 
+import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
@@ -10,10 +11,10 @@ import org.springframework.security.web.SecurityFilterChain
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-class SecurityConfiguration {
+@ConditionalOnDefaultWebSecurity
+class SecurityConfig {
 
-    @Bean
-    fun defaultFilterChain(http: HttpSecurity): SecurityFilterChain {
+    fun filterChain(http: HttpSecurity): HttpSecurity {
         http.authorizeRequests {
             it
                 .antMatchers("/health/**", "/info/**", "/hawtio/**", "/jolokia").permitAll()
@@ -24,6 +25,9 @@ class SecurityConfiguration {
             .httpBasic().disable()
             .formLogin().disable()
             .logout().disable()
-        return http.build()
+        return http
     }
+
+    @Bean
+    fun configure(http: HttpSecurity): SecurityFilterChain = filterChain(http).build()
 }
