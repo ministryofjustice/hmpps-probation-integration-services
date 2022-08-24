@@ -53,9 +53,9 @@ jobs:
         if: steps.check-for-dockerfile.outputs.files_exists == 'true'
         uses: docker/build-push-action@v2
         with:
+          context: projects/${{ matrix.project }}/container
           tags:
             ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:${{ needs.build.outputs.version }}
-      working-directory: projects/${{ matrix.project }}/container
 
   deploy-to-test:
     name: Deploy to test
