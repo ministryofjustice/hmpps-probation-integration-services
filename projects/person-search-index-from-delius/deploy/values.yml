@@ -1,0 +1,15 @@
+# Common values
+image:
+  name: person-search-index-from-delius
+
+cpu: 1024    # = 1 vCPU
+memory: 1024 # = 1 GB
+
+env:
+  AWS_REGION: eu-west-2
+  SEARCH_INDEX: person-search
+
+secrets:
+  JDBC_CONNECTION_STRING: /delius-database/jdbc-url
+  JDBC_USER: /person-search-index-from-delius/db-username
+  JDBC_PASSWORD: /person-search-index-from-delius/db-password
