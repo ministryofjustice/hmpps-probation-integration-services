@@ -8,6 +8,14 @@ containerDefinitions:
       command: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:9600 || exit 1"]
     cpu: "{{ .values.cpu }}"
     memory: "{{ .values.memory }}"
+    "volumes": [
+      {
+        "name": "logstash-volume",
+        "dockerVolumeConfiguration": {
+          "scope": "task"
+        }
+      }
+    ]
     environment:
       - name: VERSION
         value: {{ .Env.VERSION }}

@@ -22,7 +22,7 @@ SELECT json_object(
                'exclusionMessage' VALUE o.EXCLUSION_MESSAGE,
                'currentRestriction' VALUE CASE WHEN o.CURRENT_RESTRICTION = 1 THEN 'true' ELSE 'false' END FORMAT JSON,
                'currentExclusion' VALUE CASE WHEN o.CURRENT_EXCLUSION = 1 THEN 'true' ELSE 'false' END FORMAT JSON,
-               'currentTier' VALUE o.CURRENT_TIER,
+               'currentTier' VALUE tier.CODE_VALUE,
                'currentDisposal' VALUE TO_CHAR(o.CURRENT_DISPOSAL),
                'activeProbationManagedSentence' VALUE CASE WHEN o.CURRENT_DISPOSAL = 1 THEN 'true' ELSE 'false' END
                FORMAT JSON,
@@ -43,16 +43,23 @@ SELECT json_object(
                        'offenderDetails' VALUE o.OFFENDER_DETAILS,
                        'remandStatus' VALUE o.CURRENT_REMAND_STATUS,
                        'previousConviction' VALUE
-                       json_object('convictionDate' VALUE o.PREVIOUS_CONVICTION_DATE ABSENT ON NULL),
+                       json_object('convictionDate' VALUE to_char(o.PREVIOUS_CONVICTION_DATE, 'yyyy-MM-dd')
+                                   ABSENT ON NULL),
                        'riskColour' VALUE o.CURRENT_HIGHEST_RISK_COLOUR,
                        'genderIdentity' VALUE genDes.CODE_DESCRIPTION,
                        'selfDescribedGender' VALUE o.GENDER_IDENTITY_DESCRIPTION
                        ABSENT ON NULL RETURNING CLOB),
-               'softDeleted' VALUE o.SOFT_DELETED,
+               'softDeleted' VALUE CASE WHEN o.SOFT_DELETED = 1 THEN 'true' ELSE 'false' END FORMAT JSON,
                'offenderManagers' VALUE json_array(json_object(
+                                                           'active' VALUE
+                                                           CASE WHEN om.ACTIVE_FLAG = 1 THEN 'true' ELSE 'false' END
+                                                           FORMAT JSON,
                                                            'partitionArea' VALUE ompa.AREA,
                                                            'fromDate' VALUE om.ALLOCATION_DATE,
                                                            'toDate' VALUE om.END_DATE,
+                                                           'softDeleted' VALUE
+                                                           CASE WHEN om.SOFT_DELETED = 1 THEN 'true' ELSE 'false' END
+                                                           FORMAT JSON,
                                                            'staff' VALUE json_object(
                                                                    'code' VALUE staff.OFFICER_CODE, 'forenames' VALUE
                                                                    staff.FORENAME ||
@@ -101,8 +108,9 @@ SELECT json_object(
                        'emailAddresses' VALUE json_array(o.E_MAIL_ADDRESS ABSENT ON NULL RETURNING CLOB),
                        'allowSms' VALUE CASE WHEN o.ALLOW_SMS = 'Y' THEN 'true' ELSE 'false' END FORMAT JSON,
                        'addresses' VALUE (SELECT json_arrayagg(json_object(
-                                                                       'from' VALUE oa.START_DATE,
-                                                                       'to' VALUE oa.END_DATE,
+                                                                       'from' VALUE
+                                                                       to_char(oa.START_DATE, 'yyyy-MM-dd'),
+                                                                       'to' VALUE to_char(oa.END_DATE, 'yyyy-MM-dd'),
                                                                        'noFixedAbode' VALUE
                                                                        CASE
                                                                            WHEN oa.NO_FIXED_ABODE = 'Y' THEN 'true'
@@ -129,7 +137,10 @@ SELECT json_object(
                                                                                                 WHEN oa.TYPE_VERIFIED = 'Y'
                                                                                                     THEN 'true'
                                                                                                 ELSE 'false' END FORMAT
-                                                                       JSON
+                                                                       JSON,
+                                                                       'createdDateTime' VALUE oa.CREATED_DATETIME,
+                                                                       'lastUpdatedDateTime' VALUE
+                                                                       oa.LAST_UPDATED_DATETIME
                                                                        ABSENT ON NULL RETURNING CLOB) RETURNING CLOB)
                                           FROM OFFENDER_ADDRESS oa
                                                    LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST type
@@ -141,7 +152,8 @@ SELECT json_object(
                        ABSENT ON NULL RETURNING CLOB),
                'offenderAliases' VALUE (SELECT json_arrayagg(json_object(
                                                                      'id' VALUE al.ALIAS_ID,
-                                                                     'dateOfBirth' VALUE al.DATE_OF_BIRTH_DATE,
+                                                                     'dateOfBirth' VALUE
+                                                                     to_char(al.DATE_OF_BIRTH_DATE, 'yyyy-MM-dd'),
                                                                      'firstName' VALUE al.FIRST_NAME,
                                                                      'middleNames' VALUE
                                                                      json_array(al.SECOND_NAME, al.THIRD_NAME ABSENT ON NULL),
@@ -197,8 +209,8 @@ SELECT json_object(
                                              'category' VALUE COALESCE(cat.CODE_VALUE, '0'),
                                              'categoryDescription' VALUE
                                              COALESCE(cat.CODE_DESCRIPTION, 'Missing category'),
-                                             'startDate' VALUE r.REGISTRATION_DATE,
-                                             'reviewDate' VALUE r.NEXT_REVIEW_DATE,
+                                             'startDate' VALUE to_char(r.REGISTRATION_DATE, 'yyyy-MM-dd'),
+                                             'reviewDate' VALUE to_char(r.NEXT_REVIEW_DATE, 'yyyy-MM-dd'),
                                              'notes' VALUE r.REGISTRATION_NOTES,
                                              'team' VALUE
                                              json_object('code' VALUE t.CODE, 'description' VALUE t.DESCRIPTION),
@@ -224,9 +236,7 @@ SELECT json_object(
                                 AND rt.CODE = 'MAPP'
                               ORDER BY r.CREATED_DATETIME DESC FETCH NEXT 1 ROWS ONLY)
                ABSENT ON NULL RETURNING CLOB) "json",
-       o.OFFENDER_ID           AS             "id",
-       o.LAST_UPDATED_DATETIME AS             "lastUpdatedDateTime",
-       o.ROW_VERSION           AS             "version"
+       o.LAST_UPDATED_DATETIME AS             "lastUpdatedDateTime"
 
 FROM OFFENDER o
          JOIN PARTITION_AREA pa ON pa.PARTITION_AREA_ID = o.PARTITION_AREA_ID
@@ -249,6 +259,7 @@ FROM OFFENDER o
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST so ON so.STANDARD_REFERENCE_LIST_ID = o.SEXUAL_ORIENTATION_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST lan ON lan.STANDARD_REFERENCE_LIST_ID = o.LANGUAGE_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST genDes ON genDes.STANDARD_REFERENCE_LIST_ID = o.GENDER_IDENTITY_ID
+         LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST tier ON tier.STANDARD_REFERENCE_LIST_ID = o.CURRENT_TIER
 WHERE 1 = 1
   AND o.SOFT_DELETED = 0
   AND om.SOFT_DELETED = 0
