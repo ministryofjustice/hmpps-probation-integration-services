@@ -1,4 +1,4 @@
-CALL PKG_VPD_CTX.SET_CLIENT_IDENTIFIER(10);
+CALL PKG_VPD_CTX.SET_CLIENT_IDENTIFIER(10)
 SELECT json_object(
                'otherIds' VALUE json_object(
                 'crn' VALUE o.CRN,
