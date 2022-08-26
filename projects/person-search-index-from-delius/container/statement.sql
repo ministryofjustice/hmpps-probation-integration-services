@@ -1,13 +1,13 @@
 SELECT json_object(
                'otherIds' VALUE json_object(
-                       'crn' VALUE o.CRN,
-                       'nomsNumber' VALUE o.NOMS_NUMBER,
-                       'croNumber' VALUE o.CRO_NUMBER,
-                       'niNumber' VALUE o.NI_NUMBER,
-                       'pncNumber' VALUE o.PNC_NUMBER,
-                       'immigrationNumber' VALUE o.IMMIGRATION_NUMBER,
-                       'mostRecentPrisonerNumber' VALUE o.MOST_RECENT_PRISONER_NUMBER
-                       ABSENT ON NULL),
+                'crn' VALUE o.CRN,
+                'nomsNumber' VALUE o.NOMS_NUMBER,
+                'croNumber' VALUE o.CRO_NUMBER,
+                'niNumber' VALUE o.NI_NUMBER,
+                'pncNumber' VALUE o.PNC_NUMBER,
+                'immigrationNumber' VALUE o.IMMIGRATION_NUMBER,
+                'mostRecentPrisonerNumber' VALUE o.MOST_RECENT_PRISONER_NUMBER
+                ABSENT ON NULL),
                'firstName' VALUE o.FIRST_NAME,
                'middleNames' VALUE json_array(o.SECOND_NAME, o.THIRD_NAME ABSENT ON NULL),
                'surname' VALUE o.SURNAME,
@@ -203,9 +203,11 @@ SELECT json_object(
                                                ELSE 'false' END FORMAT JSON
                        ABSENT ON NULL RETURNING CLOB),
                'mappa' VALUE (SELECT json_object(
-                                             'level' VALUE COALESCE(lvl.CODE_VALUE, '0'),
-                                             'levelDescription' VALUE COALESCE(lvl.CODE_DESCRIPTION, 'Missing Level'),
-                                             'category' VALUE COALESCE(cat.CODE_VALUE, '0'),
+                                             'level' VALUE to_number(substr(coalesce(lvl.CODE_VALUE, 'M0'), 2, 1)),
+                                             'levelDescription' VALUE coalesce(lvl.CODE_DESCRIPTION, 'Missing Level'),
+                                             'category' VALUE CASE
+                                                                  WHEN coalesce(cat.CODE_VALUE, 'X9') = 'X9' THEN 0
+                                                                  ELSE to_number(substr(cat.CODE_VALUE, 2, 1)) END,
                                              'categoryDescription' VALUE
                                              COALESCE(cat.CODE_DESCRIPTION, 'Missing category'),
                                              'startDate' VALUE to_char(r.REGISTRATION_DATE, 'yyyy-MM-dd'),
