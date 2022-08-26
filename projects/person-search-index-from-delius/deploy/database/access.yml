@@ -5,3 +5,7 @@ database:
     tables:
       - audited_interaction
 
+  audit:
+    username: PersonSearchIndexer
+    forename: Person Search
+    surname: Indexer
