@@ -32,7 +32,7 @@ internal class EventServiceTest {
 
     @Test
     fun activeCustodialEventIsReturned() {
-        val event = EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.RELEASED_FROM)
+        val event = EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT)
         whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse(PersonGenerator.RELEASABLE.nomsNumber))
             .thenReturn(listOf(PersonGenerator.RELEASABLE))
         whenever(eventRepository.findActiveCustodialEvents(PersonGenerator.RELEASABLE.id))
@@ -74,7 +74,7 @@ internal class EventServiceTest {
         whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse(PersonGenerator.RELEASABLE.nomsNumber))
             .thenReturn(listOf(PersonGenerator.RELEASABLE))
         whenever(eventRepository.findActiveCustodialEvents(PersonGenerator.RELEASABLE.id))
-            .thenReturn(List(3) { EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.RELEASED_FROM) })
+            .thenReturn(List(3) { EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT) })
         assertThrows<IgnorableMessageException> {
             eventService.getActiveCustodialEvents(PersonGenerator.RELEASABLE.nomsNumber)
         }
@@ -83,7 +83,7 @@ internal class EventServiceTest {
     @Test
     fun newReleaseSetsReleaseDate() {
         val releaseDate = ZonedDateTime.now()
-        val event = EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.RELEASED_FROM)
+        val event = EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT)
 
         eventService.updateReleaseDateAndIapsFlag(event, releaseDate)
 
@@ -96,7 +96,7 @@ internal class EventServiceTest {
         val firstReleaseDate = ZonedDateTime.now().minusWeeks(1)
         val releaseDate = ZonedDateTime.now()
         val event = EventGenerator.previouslyReleasedEvent(
-            PersonGenerator.RELEASABLE, InstitutionGenerator.RELEASED_FROM, firstReleaseDate
+            PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT, releaseDate = firstReleaseDate
         )
 
         eventService.updateReleaseDateAndIapsFlag(event, releaseDate)

@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.custody
 
 import org.hibernate.annotations.Where
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Disposal
-import uk.gov.justice.digital.hmpps.integrations.delius.institution.Institution
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.Release

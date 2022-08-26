@@ -7,8 +7,8 @@ abstract class AuditableService(protected val auditedInteractionService: Audited
     protected fun <T> audit(
         interactionCode: InteractionCode,
         params: AuditedInteraction.Parameters = AuditedInteraction.Parameters(),
-        code: (AuditedInteraction.Parameters) -> T
-    ): T {
+        code: (AuditedInteraction.Parameters) -> T?
+    ): T? {
         try {
             val result = code(params)
             auditedInteractionService.createAuditedInteraction(

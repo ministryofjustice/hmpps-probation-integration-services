@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.release
 
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.matchesPattern
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -13,10 +14,9 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.closeTo
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator.RELEASED_FROM
+import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator.DEFAULT
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
@@ -30,12 +30,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.CustodyService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.host.HostRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.institution.InstitutionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host.HostRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
+import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -118,11 +119,11 @@ internal class ReleaseServiceTest {
     fun failureToRetrieveEventsIsThrown() {
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents("INVALID")).thenThrow(IllegalArgumentException())
 
         assertThrows<IllegalArgumentException> {
-            releaseService.release("INVALID", RELEASED_FROM.code, RELEASED, ZonedDateTime.now())
+            releaseService.release("INVALID", DEFAULT.code, RELEASED, ZonedDateTime.now())
         }
     }
 
@@ -131,11 +132,11 @@ internal class ReleaseServiceTest {
         val event = EventGenerator.unSentencedEvent(person)
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<NotFoundException> {
-            releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, ZonedDateTime.now())
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, ZonedDateTime.now())
         }
         assertThat(exception.message, matchesPattern("Disposal with eventId of \\d* not found"))
     }
@@ -145,11 +146,11 @@ internal class ReleaseServiceTest {
         val event = EventGenerator.nonCustodialEvent(person)
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<NotFoundException> {
-            releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, ZonedDateTime.now())
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, ZonedDateTime.now())
         }
         assertThat(exception.message, matchesPattern("Custody with disposalId of \\d* not found"))
     }
@@ -159,12 +160,12 @@ internal class ReleaseServiceTest {
         val status = CustodialStatusCode.RELEASED_ON_LICENCE
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber))
-            .thenReturn(listOf(EventGenerator.custodialEvent(person, RELEASED_FROM, status)))
+            .thenReturn(listOf(EventGenerator.custodialEvent(person, DEFAULT, status)))
 
         val exception = assertThrows<IgnorableMessageException> {
-            releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, ZonedDateTime.now())
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, ZonedDateTime.now())
         }
         assertEquals(exception.message, "UnexpectedCustodialStatus")
     }
@@ -174,12 +175,12 @@ internal class ReleaseServiceTest {
         val institution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]!!
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber))
             .thenReturn(listOf(EventGenerator.custodialEvent(person, institution)))
 
         val exception = assertThrows<IgnorableMessageException> {
-            releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, ZonedDateTime.now())
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, ZonedDateTime.now())
         }
         assertEquals(exception.message, "UnexpectedInstitution")
     }
@@ -189,121 +190,121 @@ internal class ReleaseServiceTest {
         val releaseDate = LocalDate.of(2022, 1, 1).atStartOfDay(EuropeLondon)
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber))
-            .thenReturn(listOf(EventGenerator.custodialEvent(person, RELEASED_FROM)))
+            .thenReturn(listOf(EventGenerator.custodialEvent(person, DEFAULT)))
 
         val exception = assertThrows<IgnorableMessageException> {
-            releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, releaseDate)
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, releaseDate)
         }
-        assertEquals(exception.message, "InvalidReleaseDate")
+        assertThat(exception.message, equalTo("InvalidReleaseDate"))
     }
 
     @Test
     fun releaseDateBeforePreviousRecallDateIsIgnored() {
         val previousRecallDate = ZonedDateTime.now()
         val releaseDate = previousRecallDate.minusWeeks(1)
-        val event = EventGenerator.previouslyRecalledEvent(person, RELEASED_FROM, previousRecallDate)
+        val event = EventGenerator.previouslyRecalledEvent(person, DEFAULT, recallDate = previousRecallDate)
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
-            releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, releaseDate)
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, releaseDate)
         }
-        assertEquals(exception.message, "InvalidReleaseDate")
+        assertThat(exception.message, equalTo("InvalidReleaseDate"))
     }
 
     @Test
     fun missingOrderManagerIsThrown() {
-        val event = EventGenerator.custodialEvent(person, RELEASED_FROM)
+        val event = EventGenerator.custodialEvent(person, DEFAULT)
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<NotFoundException> {
-            releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, ZonedDateTime.now())
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, ZonedDateTime.now())
         }
         assertThat(exception.message, matchesPattern("OrderManager with eventId of \\d* not found"))
     }
 
     @Test
     fun missingContactTypeIsThrown() {
-        val event = EventGenerator.custodialEvent(person, RELEASED_FROM)
+        val event = EventGenerator.custodialEvent(person, DEFAULT)
         val orderManager = OrderManagerGenerator.generate(event)
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
-        whenever(orderManagerRepository.findByEventIdAndActiveIsTrueAndSoftDeletedIsFalse(event.id)).thenReturn(orderManager)
+        whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(orderManager)
 
         val exception = assertThrows<NotFoundException> {
-            releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, ZonedDateTime.now())
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, ZonedDateTime.now())
         }
-        assertEquals(exception.message, "ContactType with code of EREL not found")
+        assertThat(exception.message, equalTo("ContactType with code of EREL not found"))
     }
 
     @Test
     fun successfulReleaseIsSaved() {
-        val event = EventGenerator.custodialEvent(person, RELEASED_FROM)
+        val event = EventGenerator.custodialEvent(person, DEFAULT)
         val orderManager = OrderManagerGenerator.generate(event)
         val releaseDate = ZonedDateTime.now()
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
-        whenever(orderManagerRepository.findByEventIdAndActiveIsTrueAndSoftDeletedIsFalse(event.id)).thenReturn(orderManager)
+        whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(orderManager)
         whenever(contactTypeRepository.findByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code))
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY])
 
-        releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, releaseDate)
+        releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, releaseDate)
 
         val saved = argumentCaptor<Release>()
         verify(releaseRepository).save(saved.capture())
         verify(custodyService).updateStatus(event.disposal!!.custody!!, CustodialStatusCode.RELEASED_ON_LICENCE, releaseDate, "Released on Licence")
-        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionCode.IN_COMMUNITY, releaseDate)
+        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionCode.IN_COMMUNITY.code, releaseDate)
         verify(eventService).updateReleaseDateAndIapsFlag(event, releaseDate)
 
         val release = saved.firstValue
-        assert(release.createdDatetime.closeTo(ZonedDateTime.now()))
-        assert(release.lastUpdatedDatetime.closeTo(ZonedDateTime.now()))
-        assertEquals(release.date, releaseDate)
-        assertEquals(release.type, ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE]!!)
-        assertEquals(release.person, person)
-        assertEquals(release.custody, event.disposal!!.custody)
-        assertEquals(release.institutionId, RELEASED_FROM.id)
-        assertEquals(release.probationAreaId, 0)
+        assertThat(release.createdDatetime, isCloseTo(ZonedDateTime.now()))
+        assertThat(release.lastUpdatedDatetime, isCloseTo(ZonedDateTime.now()))
+        assertThat(release.date, equalTo(releaseDate))
+        assertThat(release.type, equalTo(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE]!!))
+        assertThat(release.person, equalTo(person))
+        assertThat(release.custody, equalTo(event.disposal!!.custody))
+        assertThat(release.institutionId, equalTo(DEFAULT.id))
+        assertThat(release.probationAreaId, equalTo(0))
     }
 
     @Test
     fun successfulReleaseCreatesAContact() {
-        val event = EventGenerator.custodialEvent(person, RELEASED_FROM)
+        val event = EventGenerator.custodialEvent(person, DEFAULT)
         val orderManager = OrderManagerGenerator.generate(event)
         val releaseDate = ZonedDateTime.now()
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(RELEASED_FROM.code)).thenReturn(RELEASED_FROM)
+        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
-        whenever(orderManagerRepository.findByEventIdAndActiveIsTrueAndSoftDeletedIsFalse(event.id)).thenReturn(orderManager)
+        whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(orderManager)
         whenever(contactTypeRepository.findByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code))
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY])
 
-        releaseService.release(person.nomsNumber, RELEASED_FROM.code, RELEASED, releaseDate)
+        releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, releaseDate)
 
         val saved = argumentCaptor<Contact>()
         verify(contactRepository).save(saved.capture())
 
         val contact = saved.firstValue
-        assert(contact.createdDatetime.closeTo(ZonedDateTime.now()))
-        assert(contact.lastUpdatedDatetime.closeTo(ZonedDateTime.now()))
-        assertEquals(contact.date, releaseDate)
-        assertEquals(contact.type, ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY]!!)
-        assertEquals(contact.person, person)
-        assertEquals(contact.event, event)
-        assertEquals(contact.notes, "Release Type: description of ADL")
-        assertEquals(contact.staffId, orderManager.staffId)
-        assertEquals(contact.teamId, orderManager.teamId)
+        assertThat(contact.createdDatetime, isCloseTo(ZonedDateTime.now()))
+        assertThat(contact.lastUpdatedDatetime, isCloseTo(ZonedDateTime.now()))
+        assertThat(contact.date, equalTo(releaseDate))
+        assertThat(contact.type, equalTo(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY]!!))
+        assertThat(contact.person, equalTo(person))
+        assertThat(contact.event, equalTo(event))
+        assertThat(contact.notes, equalTo("Release Type: description of ADL"))
+        assertThat(contact.staffId, equalTo(orderManager.staffId))
+        assertThat(contact.teamId, equalTo(orderManager.teamId))
     }
 }

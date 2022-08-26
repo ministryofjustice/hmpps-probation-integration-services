@@ -13,3 +13,4 @@ fun ReferenceDataRepository.getByCodeAndSetName(code: String, set: String): Refe
 fun ReferenceDataRepository.getReleaseType(code: String): ReferenceData = getByCodeAndSetName(code, "RELEASE TYPE")
 fun ReferenceDataRepository.getCustodialStatus(code: String): ReferenceData = getByCodeAndSetName(code, "THROUGHCARE STATUS")
 fun ReferenceDataRepository.getCustodyEventType(code: String): ReferenceData = getByCodeAndSetName(code, "CUSTODY EVENT TYPE")
+fun ReferenceDataRepository.getTransferStatus(code: String): ReferenceData = getByCodeAndSetName(code, "TRANSFER STATUS")

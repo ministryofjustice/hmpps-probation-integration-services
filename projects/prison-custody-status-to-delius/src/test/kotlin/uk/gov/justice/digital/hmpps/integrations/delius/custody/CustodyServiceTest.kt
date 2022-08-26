@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.custody
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -15,7 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyHistory
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyHistoryRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.institution.InstitutionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode.IN_CUSTODY
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode.LOCATION_CHANGE
@@ -43,7 +44,7 @@ internal class CustodyServiceTest {
 
     @Test
     fun updateStatusCreatesHistoryRecord() {
-        val custody = CustodyGenerator.generate(PersonGenerator.RELEASABLE, InstitutionGenerator.RELEASED_FROM)
+        val custody = CustodyGenerator.generate(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT)
         val now = ZonedDateTime.now()
         whenever(referenceDataRepository.findByCodeAndSetName(IN_CUSTODY.code, "THROUGHCARE STATUS"))
             .thenReturn(ReferenceDataGenerator.CUSTODIAL_STATUS[IN_CUSTODY])
@@ -57,33 +58,33 @@ internal class CustodyServiceTest {
         verify(custodyRepository).save(custody)
 
         val savedCustody = saved.firstValue
-        assertEquals(savedCustody.date, now)
-        assertEquals(savedCustody.type, ReferenceDataGenerator.CUSTODY_EVENT_TYPE[STATUS_CHANGE]!!)
-        assertEquals(savedCustody.detail, "Some detail string")
-        assertEquals(savedCustody.person, custody.disposal.event.person)
-        assertEquals(savedCustody.custody, custody)
+        assertThat(savedCustody.date, equalTo(now))
+        assertThat(savedCustody.type, equalTo(ReferenceDataGenerator.CUSTODY_EVENT_TYPE[STATUS_CHANGE]!!))
+        assertThat(savedCustody.detail, equalTo("Some detail string"))
+        assertThat(savedCustody.person, equalTo(custody.disposal.event.person))
+        assertThat(savedCustody.custody, equalTo(custody))
     }
 
     @Test
     fun updateLocationCreatesHistoryRecord() {
-        val custody = CustodyGenerator.generate(PersonGenerator.RELEASABLE, InstitutionGenerator.RELEASED_FROM)
+        val custody = CustodyGenerator.generate(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT)
         val now = ZonedDateTime.now()
         whenever(institutionRepository.findByCode(InstitutionCode.IN_COMMUNITY.code))
             .thenReturn(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY])
         whenever(referenceDataRepository.findByCodeAndSetName(LOCATION_CHANGE.code, "CUSTODY EVENT TYPE"))
             .thenReturn(ReferenceDataGenerator.CUSTODY_EVENT_TYPE[LOCATION_CHANGE])
 
-        custodyService.updateLocation(custody, InstitutionCode.IN_COMMUNITY, now)
+        custodyService.updateLocation(custody, InstitutionCode.IN_COMMUNITY.code, now)
 
         val saved = argumentCaptor<CustodyHistory>()
         verify(custodyHistoryRepository).save(saved.capture())
         verify(custodyRepository).save(custody)
 
         val savedCustody = saved.firstValue
-        assertEquals(savedCustody.date, now)
-        assertEquals(savedCustody.type, ReferenceDataGenerator.CUSTODY_EVENT_TYPE[LOCATION_CHANGE]!!)
-        assertEquals(savedCustody.detail, "Test institution")
-        assertEquals(savedCustody.person, custody.disposal.event.person)
-        assertEquals(savedCustody.custody, custody)
+        assertThat(savedCustody.date, equalTo(now))
+        assertThat(savedCustody.type, equalTo(ReferenceDataGenerator.CUSTODY_EVENT_TYPE[LOCATION_CHANGE]!!))
+        assertThat(savedCustody.detail, equalTo("Test institution (COMMUN)"))
+        assertThat(savedCustody.person, equalTo(custody.disposal.event.person))
+        assertThat(savedCustody.custody, equalTo(custody))
     }
 }

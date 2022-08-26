@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.host
+package uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query

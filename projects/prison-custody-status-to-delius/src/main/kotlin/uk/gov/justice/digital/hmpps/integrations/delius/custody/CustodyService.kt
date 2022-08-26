@@ -3,14 +3,13 @@ package uk.gov.justice.digital.hmpps.integrations.delius.custody
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyHistory
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyHistoryRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.institution.InstitutionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.institution.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustodialStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustodyEventType
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import java.time.ZonedDateTime
 
 @Service
@@ -35,8 +34,8 @@ class CustodyService(
         )
     }
 
-    fun updateLocation(custody: Custody, institution: InstitutionCode, date: ZonedDateTime) {
-        custody.institution = institutionRepository.getByCode(institution.code)
+    fun updateLocation(custody: Custody, institutionCode: String, date: ZonedDateTime) {
+        custody.institution = institutionRepository.getByCode(institutionCode)
         custody.locationChangeDate = date
         custodyRepository.save(custody)
         custodyHistoryRepository.save(
