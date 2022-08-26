@@ -236,7 +236,7 @@ SELECT json_object(
                                 AND rt.CODE = 'MAPP'
                               ORDER BY r.CREATED_DATETIME DESC FETCH NEXT 1 ROWS ONLY)
                ABSENT ON NULL RETURNING CLOB) "json",
-       o.LAST_UPDATED_DATETIME AS             "lastUpdatedDateTime"
+       o.OFFENDER_ID AS                       "offenderId"
 
 FROM OFFENDER o
          JOIN PARTITION_AREA pa ON pa.PARTITION_AREA_ID = o.PARTITION_AREA_ID
@@ -263,4 +263,5 @@ FROM OFFENDER o
 WHERE 1 = 1
   AND o.SOFT_DELETED = 0
   AND om.SOFT_DELETED = 0
-  AND o.LAST_UPDATED_DATETIME > :sql_last_value
+  AND o.OFFENDER_ID > :sql_last_value
+ORDER BY o.OFFENDER_ID

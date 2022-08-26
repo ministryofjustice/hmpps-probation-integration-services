@@ -1,14 +1,6 @@
 # Generic task-definition template
 cpu: "{{ .values.cpu }}"
 memory: "{{ .values.memory }}"
-volumes: [
-  {
-    name: "logstash-volume",
-    dockerVolumeConfiguration: {
-      scope: "task"
-    }
-  }
-]
 containerDefinitions:
   - name: { { .values.image.name } }
     image: ghcr.io/ministryofjustice/hmpps-probation-integration-services/{{ .values.image.name }}:{{ .Env.VERSION }}
