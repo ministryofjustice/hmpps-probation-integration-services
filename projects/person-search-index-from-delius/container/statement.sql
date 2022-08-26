@@ -46,7 +46,46 @@ SELECT json_object(
                                    ABSENT ON NULL),
                        'riskColour' VALUE o.CURRENT_HIGHEST_RISK_COLOUR,
                        'genderIdentity' VALUE genDes.CODE_DESCRIPTION,
-                       'selfDescribedGender' VALUE o.GENDER_IDENTITY_DESCRIPTION
+                       'selfDescribedGender' VALUE o.GENDER_IDENTITY_DESCRIPTION,
+                       'disabilities' VALUE (SELECT json_arrayagg(
+                                                            json_object('disabilityId' VALUE d.DISABILITY_ID,
+                                                                        'disabilityType' VALUE json_object(
+                                                                                'code' VALUE dt.CODE_VALUE,
+                                                                                'description' VALUE dt.CODE_DESCRIPTION
+                                                                            ),
+                                                                        'startDate' VALUE
+                                                                        to_char(d.START_DATE, 'yyyy-MM-dd'),
+                                                                        'endDate' VALUE
+                                                                        to_char(d.FINISH_DATE, 'yyyy-MM-dd'),
+                                                                        'notes' VALUE d.NOTES,
+                                                                        'lastUpdatedDateTime' VALUE
+                                                                        d.LAST_UPDATED_DATETIME,
+                                                                        'provisions' VALUE (SELECT json_arrayagg( json_object(
+                                                                                                   'provisionId' VALUE pr.PROVISION_ID,
+                                                                                                   'provisionType' VALUE json_object(
+                                                                                                           'code' VALUE pt.CODE_VALUE,
+                                                                                                           'description' VALUE pt.CODE_DESCRIPTION
+                                                                                                    ),
+                                                                                                   'notes' VALUE pr.NOTES,
+                                                                                                   'startDate' VALUE
+                                                                                                   to_char(d.START_DATE, 'yyyy-MM-dd'),
+                                                                                                   'finishDate' VALUE
+                                                                                                   to_char(d.FINISH_DATE, 'yyyy-MM-dd')
+                                                                                                   ABSENT ON NULL)
+                                                                                               ABSENT ON NULL
+                                                                                               RETURNING CLOB)
+                                                                                            FROM PROVISION pr
+                                                                                            JOIN R_STANDARD_REFERENCE_LIST pt ON pt.STANDARD_REFERENCE_LIST_ID = pr.PROVISION_TYPE_ID
+                                                                                            WHERE pr.DISABILITY_ID = d.DISABILITY_ID
+                                                                                            AND pr.SOFT_DELETED = 0)
+                                                                        ABSENT ON NULL RETURNING CLOB)
+                                                            ABSENT ON NULL RETURNING CLOB)
+                                             FROM DISABILITY d
+                                                      JOIN R_STANDARD_REFERENCE_LIST dt
+                                                           ON dt.STANDARD_REFERENCE_LIST_ID = d.DISABILITY_TYPE_ID
+                                             WHERE d.OFFENDER_ID = o.OFFENDER_ID
+                                               AND d.SOFT_DELETED = 0
+                                             ORDER BY d.START_DATE DESC)
                        ABSENT ON NULL RETURNING CLOB),
                'softDeleted' VALUE CASE WHEN o.SOFT_DELETED = 1 THEN 'true' ELSE 'false' END FORMAT JSON,
                'offenderManagers' VALUE json_array(json_object(
