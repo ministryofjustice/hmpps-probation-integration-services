@@ -11,12 +11,12 @@ containerDefinitions:
     environment:
       - name: VERSION
         value: {{ .Env.VERSION }}
-    {{ - range $key, $val := .values.env }}
+    {{- range $key, $val := .values.env }}
     - name: {{ $key }}
       value: {{ $val }}
-    {{ - end }}
+    {{- end }}
     secrets:
-    {{ - range $key, $val := .values.secrets }}
+    {{- range $key, $val := .values.secrets }}
     - name: {{ $key }}
       valueFrom: /{{ $.values.environment_name }}/delius/probation-integration{{ $val }}
-    {{ - end }}
+    {{- end }}
