@@ -27,30 +27,32 @@ jobs:
 
       # convert project name to environment variable (e.g. 'hello-world' -> 'HELLO_WORLD')
       - id: project_name
-        run: echo "::set-output name=with_underscores::$(echo '${{ inputs.project_name }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')"
+        run: |
+          echo "::set-output name=with_underscores::$(echo '${{ inputs.project_name }}' | sed 's/-/_/g')"
+          echo "::set-output name=with_underscores_uppercase::$(echo '${{ inputs.project_name }}' | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')"
 
       - uses: mmercan/actions-set-secret@da197fb79d8c1ecedcde53fbd32a4b02ece5723a # v/4.0.0
         with:
-          name: ${{ steps.project_name.outputs.with_underscores }}_DB_USERNAME
+          name: ${{ steps.project_name.outputs.with_underscores_uppercase }}_DB_USERNAME
           value: ${{ steps.project_name.outputs.with_underscores }}
           token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
 
       - uses: ./.github/actions/random-secret
         with:
           environment: test
-          name: ${{ steps.project_name.outputs.with_underscores }}_DB_PASSWORD
+          name: ${{ steps.project_name.outputs.with_underscores_uppercase }}_DB_PASSWORD
           token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
 
       - uses: ./.github/actions/random-secret
         with:
           environment: preprod
-          name: ${{ steps.project_name.outputs.with_underscores }}_DB_PASSWORD
+          name: ${{ steps.project_name.outputs.with_underscores_uppercase }}_DB_PASSWORD
           token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
 
       - uses: ./.github/actions/random-secret
         with:
           environment: prod
-          name: ${{ steps.project_name.outputs.with_underscores }}_DB_PASSWORD
+          name: ${{ steps.project_name.outputs.with_underscores_uppercase }}_DB_PASSWORD
           token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
 
   terraform-setup:
