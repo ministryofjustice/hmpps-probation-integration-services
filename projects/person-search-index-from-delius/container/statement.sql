@@ -1,5 +1,4 @@
 SELECT json_object(
-               'offenderId' VALUE o.OFFENDER_ID,
                'otherIds' VALUE json_object(
                        'crn' VALUE o.CRN,
                        'nomsNumber' VALUE o.NOMS_NUMBER,
