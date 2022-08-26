@@ -2,3 +2,5 @@ environment_name: delius-test
 
 env:
   ELASTIC_SEARCH_HOST: "https://probation-search-es-dev.hmpps.service.justice.gov.uk:443"
+
+secrets:
