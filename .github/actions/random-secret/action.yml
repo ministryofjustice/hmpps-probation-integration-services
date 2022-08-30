@@ -19,17 +19,9 @@ inputs:
 runs:
   using: composite
   steps:
-    - id: random
-      run: |
+    - run: |
         brew install pwgen
-        value=$(pwgen -N1 '${{ inputs.length }}')
-        echo "::add-mask::$value"
-        echo "::set-output name=value::$value"
+        gh secret set '${{ inputs.name }}' --body "$(pwgen -N1 '${{ inputs.length }}')" --env '${{ inputs.environment }}' --app actions
       shell: bash
-
-    - uses: mmercan/actions-set-secret@da197fb79d8c1ecedcde53fbd32a4b02ece5723a # v/4.0.0
-      with:
-        name: ${{ inputs.name }}
-        value: ${{ steps.random.outputs.value }}
-        environment: ${{ inputs.environment }}
-        token: ${{ inputs.token }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
