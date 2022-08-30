@@ -1,3 +1,4 @@
 pipeline:
+  workers: 4
   batch:
-    size: 100000
+    size: 10000
