@@ -68,9 +68,10 @@ internal class RecallServiceTest {
 
     @Test
     fun unsupportedReleaseTypeIsIgnored() {
-        assertThrows<IgnorableMessageException> {
-            recallService.recall("", "", "TEMPORARY_ABSENCE_RETURN", recallDate)
-        }
+        assertThrows<IgnorableMessageException> { recallService.recall("", "", "TEMPORARY_ABSENCE_RETURN", recallDate) }
+        assertThrows<IgnorableMessageException> { recallService.recall("", "", "RETURN_FROM_COURT", recallDate) }
+        assertThrows<IgnorableMessageException> { recallService.recall("", "", "TRANSFERRED", recallDate) }
+        assertThrows<IgnorableMessageException> { recallService.recall("", "", "UNKNOWN", recallDate) }
     }
 
     @Test

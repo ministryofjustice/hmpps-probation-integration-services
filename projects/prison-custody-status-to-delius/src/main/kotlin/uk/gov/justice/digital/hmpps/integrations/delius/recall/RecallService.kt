@@ -164,7 +164,10 @@ class RecallService(
 
     private fun mapToRecallReason(reason: String) = when (reason) {
         "ADMISSION" -> RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT
-        "TEMPORARY_ABSENCE_RETURN" -> throw IgnorableMessageException("UnsupportedRecallReason") // RecallReasonCode.END_OF_TEMPORARY_LICENCE
+        "TEMPORARY_ABSENCE_RETURN", // -> RecallReasonCode.END_OF_TEMPORARY_LICENCE
+        "RETURN_FROM_COURT",
+        "TRANSFERRED",
+        "UNKNOWN" -> throw IgnorableMessageException("UnsupportedRecallReason")
         else -> throw IllegalArgumentException("Unexpected recall reason: $reason")
     }
 }

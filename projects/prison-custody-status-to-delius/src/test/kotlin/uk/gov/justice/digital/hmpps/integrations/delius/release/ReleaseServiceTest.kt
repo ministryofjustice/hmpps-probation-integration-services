@@ -83,12 +83,10 @@ internal class ReleaseServiceTest {
 
     @Test
     fun unsupportedReleaseTypeIsIgnored() {
-        assertThrows<IgnorableMessageException> {
-            releaseService.release("", "", "TEMPORARY_ABSENCE_RELEASE", ZonedDateTime.now())
-        }
-        assertThrows<IgnorableMessageException> {
-            releaseService.release("", "", "RELEASED_TO_HOSPITAL", ZonedDateTime.now())
-        }
+        assertThrows<IgnorableMessageException> { releaseService.release("", "", "TEMPORARY_ABSENCE_RELEASE", ZonedDateTime.now()) }
+        assertThrows<IgnorableMessageException> { releaseService.release("", "", "RELEASED_TO_HOSPITAL", ZonedDateTime.now()) }
+        assertThrows<IgnorableMessageException> { releaseService.release("", "", "SENT_TO_COURT", ZonedDateTime.now()) }
+        assertThrows<IgnorableMessageException> { releaseService.release("", "", "TRANSFERRED", ZonedDateTime.now()) }
     }
 
     @Test
