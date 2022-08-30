@@ -4,6 +4,19 @@ database:
     password_key: /prison-custody-status-to-delius/db-password
     tables:
       - audited_interaction
+      - contact
+      - contact_alert
+      - custody
+      - custody_history
+      - event
+      - iaps_event
+      - lic_condition
+      - lic_condition_transfer
+      - prison_offender_manager
+      - recall
+      - rejected_transfer_diary
+      - release
+      - responsible_officer
 
   audit:
     username: PrisonCustodyStatusService

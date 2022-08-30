@@ -7,8 +7,8 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.Custody
-import uk.gov.justice.digital.hmpps.integrations.delius.institution.InstitutionId
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionId
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.Recall
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import java.time.ZonedDateTime

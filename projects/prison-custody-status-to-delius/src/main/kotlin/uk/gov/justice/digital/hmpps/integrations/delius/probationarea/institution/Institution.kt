@@ -1,13 +1,15 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.institution
+package uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution
 
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Type
 import org.hibernate.annotations.Where
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import java.io.Serializable
 import javax.persistence.Column
 import javax.persistence.Embeddable
 import javax.persistence.EmbeddedId
 import javax.persistence.Entity
+import javax.persistence.OneToOne
 import javax.persistence.Table
 
 @Immutable
@@ -21,7 +23,7 @@ class Institution(
     @Column(nullable = false, columnDefinition = "char(6)")
     val code: String,
 
-    @Column(columnDefinition = "char(6)")
+    @Column
     val nomisCdeCode: String,
 
     @Column(nullable = false)
@@ -29,7 +31,10 @@ class Institution(
 
     @Column
     @Type(type = "yes_no")
-    val selectable: Boolean,
+    val selectable: Boolean = true,
+
+    @OneToOne(mappedBy = "institution")
+    val probationArea: ProbationArea? = null,
 )
 
 @Embeddable

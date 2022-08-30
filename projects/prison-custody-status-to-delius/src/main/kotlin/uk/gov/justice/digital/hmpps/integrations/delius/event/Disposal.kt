@@ -25,6 +25,12 @@ class Disposal(
     @Column(name = "disposal_date", nullable = false)
     val date: ZonedDateTime,
 
+    @Column
+    val lengthInDays: Long? = null,
+
+    @Column
+    val notionalEndDate: ZonedDateTime? = null,
+
     @OneToOne
     @JoinColumn(name = "event_id", updatable = false)
     val event: Event,
@@ -37,7 +43,12 @@ class Disposal(
 
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false,
-)
+) {
+    fun isLongerThan20Months(): Boolean? {
+        val endDate = if (lengthInDays != null) date.plusDays(lengthInDays) else notionalEndDate ?: return null
+        return endDate > date.plusMonths(20)
+    }
+}
 
 @Immutable
 @Entity

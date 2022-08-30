@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.host
+package uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host
 
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Type

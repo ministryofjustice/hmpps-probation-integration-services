@@ -23,13 +23,13 @@ class ReferenceData(
     @Column(name = "code_description", length = 500, nullable = false)
     val description: String,
 
-    @Column(nullable = false)
-    @Type(type = "yes_no")
-    val selectable: Boolean,
-
     @ManyToOne
     @JoinColumn(name = "reference_data_master_id")
-    val set: ReferenceDataSet
+    val set: ReferenceDataSet,
+
+    @Column(nullable = false)
+    @Type(type = "yes_no")
+    val selectable: Boolean = true,
 )
 
 @Immutable

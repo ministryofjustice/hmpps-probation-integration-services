@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.contact
 
+import org.hibernate.annotations.Type
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
@@ -36,17 +37,26 @@ class Contact(
     @Column(name = "contact_date", nullable = false)
     val date: ZonedDateTime,
 
+    @Column(name = "contact_start_time")
+    val startTime: ZonedDateTime? = null,
+
     @ManyToOne
     @JoinColumn(name = "contact_type_id", nullable = false)
     val type: ContactType,
 
     @ManyToOne
-    @JoinColumn(name = "event_id")
-    val event: Event,
-
-    @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
+
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    val event: Event? = null,
+
+    @Column(name = "lic_condition_id")
+    val licenceConditionId: Long? = null,
+
+    @Column(name = "contact_outcome_type_id")
+    val outcomeId: Long? = null,
 
     @Lob
     @Column
@@ -57,6 +67,10 @@ class Contact(
 
     @Column
     val teamId: Long,
+
+    @Type(type = "yes_no")
+    @Column(name = "alert_active")
+    val alert: Boolean? = false,
 
     // Removed the createdDate annotation as Delius relies on the created date time to infer the contact/recall linkage.
     // Please refer to: https://github.com/ministryofjustice/delius/blob/2e43abfe3110801bd1c3093bcde5fa001eae38e6/NDelius-ejb/src/main/java/uk/co/bconline/ndelius/service/throughcare/ThroughcareServiceBean.java#L1230-L1232
