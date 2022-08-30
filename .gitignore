@@ -21,7 +21,9 @@ bin/
 .idea/**/*
 !.idea/runConfigurations
 !.idea/runConfigurations/**/*
+!.idea/codeStyles
 !.idea/codeStyles/**/*
+!.idea/inspectionProfiles
 !.idea/inspectionProfiles/**/*
 *.iws
 *.iml

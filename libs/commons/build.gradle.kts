@@ -24,6 +24,7 @@ configure<ClassPathExtension> {
         "**/exception/**",
         "**/JmsConfig*",
         "**/OracleCondition*",
+        "**/SecurityConfig*",
         "**/ThreadConfig*",
     )
 }

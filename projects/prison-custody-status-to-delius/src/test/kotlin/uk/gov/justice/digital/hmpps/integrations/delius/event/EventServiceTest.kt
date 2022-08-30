@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event
 
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -7,12 +9,15 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
+import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class EventServiceTest {
@@ -73,5 +78,30 @@ internal class EventServiceTest {
         assertThrows<IgnorableMessageException> {
             eventService.getActiveCustodialEvents(PersonGenerator.RELEASABLE.nomsNumber)
         }
+    }
+
+    @Test
+    fun newReleaseSetsReleaseDate() {
+        val releaseDate = ZonedDateTime.now()
+        val event = EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT)
+
+        eventService.updateReleaseDateAndIapsFlag(event, releaseDate)
+
+        assertThat(event.firstReleaseDate, equalTo(releaseDate))
+        verify(eventRepository).save(event)
+    }
+
+    @Test
+    fun subsequentReleaseDoesntOverrideFirstReleaseDate() {
+        val firstReleaseDate = ZonedDateTime.now().minusWeeks(1)
+        val releaseDate = ZonedDateTime.now()
+        val event = EventGenerator.previouslyReleasedEvent(
+            PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT, releaseDate = firstReleaseDate
+        )
+
+        eventService.updateReleaseDateAndIapsFlag(event, releaseDate)
+
+        assertThat(event.firstReleaseDate, equalTo(firstReleaseDate))
+        verify(eventRepository, never()).save(event)
     }
 }

@@ -31,6 +31,7 @@ management.endpoints.web:
 hawtio.authenticationEnabled: false
 
 logging.level:
+  uk.gov.justice.digital.hmpps: DEBUG
   org.hibernate.tool.schema: ERROR
 
 ---
@@ -48,3 +49,4 @@ spring:
     properties:
       hibernate.dialect: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
+delius.db.username: NationalUser
