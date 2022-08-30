@@ -34,7 +34,7 @@ class Staff(
         joinColumns = [JoinColumn(name = "staff_id", referencedColumnName = "staff_id")],
         inverseJoinColumns = [JoinColumn(name = "team_id", referencedColumnName = "team_id")],
     )
-    val teams: MutableList<Team> = mutableListOf()
+    val teams: List<Team> = listOf()
 ) {
     fun displayName() = when {
         code.endsWith("IAVU") -> "Inactive"
