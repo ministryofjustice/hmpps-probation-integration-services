@@ -251,11 +251,18 @@ SELECT json_object(
                                                ELSE 'false' END FORMAT JSON
                        ABSENT ON NULL RETURNING CLOB),
                'mappa' VALUE (SELECT json_object(
-                                             'level' VALUE to_number(substr(coalesce(lvl.CODE_VALUE, 'M0'), 2, 1)),
+                                             'level' VALUE CASE
+                                                               WHEN lvl.CODE_VALUE = 'M1' THEN 1
+                                                               WHEN lvl.CODE_VALUE = 'M2' THEN 2
+                                                               WHEN lvl.CODE_VALUE = 'M3' THEN 3
+                                                               ELSE 0 END,
                                              'levelDescription' VALUE coalesce(lvl.CODE_DESCRIPTION, 'Missing Level'),
                                              'category' VALUE CASE
-                                                                  WHEN coalesce(cat.CODE_VALUE, 'X9') = 'X9' THEN 0
-                                                                  ELSE to_number(substr(cat.CODE_VALUE, 2, 1)) END,
+                                                                  WHEN cat.CODE_VALUE = 'M1' THEN 1
+                                                                  WHEN cat.CODE_VALUE = 'M2' THEN 2
+                                                                  WHEN cat.CODE_VALUE = 'M3' THEN 3
+                                                                  WHEN cat.CODE_VALUE = 'M4' THEN 4
+                                                                  ELSE 0 END,
                                              'categoryDescription' VALUE
                                              COALESCE(cat.CODE_DESCRIPTION, 'Missing category'),
                                              'startDate' VALUE to_char(r.REGISTRATION_DATE, 'yyyy-MM-dd'),
@@ -311,4 +318,5 @@ FROM OFFENDER o
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST tier ON tier.STANDARD_REFERENCE_LIST_ID = o.CURRENT_TIER
 WHERE o.SOFT_DELETED = 0
   AND om.SOFT_DELETED = 0
+  AND o.OFFENDER_ID > :sql_last_value
 ORDER BY o.OFFENDER_ID

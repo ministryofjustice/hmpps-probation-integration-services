@@ -1,4 +1,4 @@
 pipeline:
   batch:
-    size: 10000
-    delay: 100
+    size: 50000
+    delay: 500

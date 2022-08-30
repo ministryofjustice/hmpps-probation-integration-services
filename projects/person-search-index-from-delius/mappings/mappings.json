@@ -1,0 +1,252 @@
+{
+  "mappings": {
+    "properties": {
+      "@timestamp": {
+        "type": "date"
+      },
+      "@version": {
+        "enabled": false
+      },
+      "activeProbationManagedSentence": {
+        "enabled": false
+      },
+      "contactDetails": {
+        "properties": {
+          "addresses": {
+            "properties": {
+              "addressNumber": {
+                "enabled": false
+              },
+              "buildingName": {
+                "enabled": false
+              },
+              "county": {
+                "enabled": false
+              },
+              "createdDateTime": {
+                "enabled": false
+              },
+              "district": {
+                "enabled": false
+              },
+              "from": {
+                "enabled": false
+              },
+              "lastUpdatedDateTime": {
+                "enabled": false
+              },
+              "noFixedAbode": {
+                "enabled": false
+              },
+              "notes": {
+                "enabled": false
+              },
+              "postcode": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "status": {
+                "enabled": false
+              },
+              "streetName": {
+                "enabled": false
+              },
+              "telephoneNumber": {
+                "enabled": false
+              },
+              "to": {
+                "enabled": false
+              },
+              "town": {
+                "type": "text",
+                "analyzer": "simple"
+              },
+              "type": {
+                "enabled": false
+              },
+              "typeVerified": {
+                "enabled": false
+              }
+            }
+          },
+          "allowSms": {
+            "enabled": false
+          },
+          "emailAddresses": {
+            "enabled": false
+          },
+          "phoneNumbers": {
+            "enabled": false
+          }
+        }
+      },
+      "currentDisposal": {
+        "enabled": false
+      },
+      "currentExclusion": {
+        "enabled": false
+      },
+      "currentRestriction": {
+        "enabled": false
+      },
+      "currentTier": {
+        "enabled": false
+      },
+      "dateOfBirth": {
+        "type": "date",
+        "format": "yyyy-MM-dd||yyyy/MM/dd||dd-MM-yy||dd/MM/yy||dd-MM-yyyy||dd/MM/yyyy"
+      },
+      "exclusionMessage": {
+        "enabled": false
+      },
+      "firstName": {
+        "type": "text",
+        "analyzer": "simple"
+      },
+      "gender": {
+        "enabled": false
+      },
+      "mappa": {
+        "enabled": false
+      },
+      "middleNames": {
+        "type": "text",
+        "analyzer": "simple"
+      },
+      "offenderAliases": {
+        "properties": {
+          "dateOfBirth": {
+            "type": "date",
+            "format": "yyyy-MM-dd||yyyy/MM/dd||dd-MM-yy||dd/MM/yy||dd-MM-yyyy||dd/MM/yyyy"
+          },
+          "firstName": {
+            "type": "text",
+            "analyzer": "simple"
+          },
+          "gender": {
+            "enabled": false
+          },
+          "id": {
+            "enabled": false
+          },
+          "middleNames": {
+            "type": "text",
+            "analyzer": "simple"
+          },
+          "surname": {
+            "type": "text",
+            "analyzer": "simple"
+          }
+        }
+      },
+      "offenderId": {
+        "enabled": false
+      },
+      "offenderManagers": {
+        "enabled": false
+      },
+      "offenderProfile": {
+        "enabled": false
+      },
+      "otherIds": {
+        "properties": {
+          "crn": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "croNumber": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "immigrationNumber": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "mostRecentPrisonerNumber": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "niNumber": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "nomsNumber": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "pncNumber": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          }
+        }
+      },
+      "partitionArea": {
+        "enabled": false
+      },
+      "preferredName": {
+        "type": "text",
+        "analyzer": "simple"
+      },
+      "previousSurname": {
+        "type": "text",
+        "analyzer": "simple"
+      },
+      "probationStatus": {
+        "enabled": false
+      },
+      "restrictionMessage": {
+        "enabled": false
+      },
+      "softDeleted": {
+        "enabled": false
+      },
+      "surname": {
+        "type": "text",
+        "analyzer": "simple"
+      },
+      "title": {
+        "enabled": false
+      }
+    }
+  }
+}
