@@ -51,6 +51,9 @@ class Recall(
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
+    @Column(nullable = false)
+    val partitionAreaId: Long = 0,
+
     @Column(columnDefinition = "number", nullable = false)
     val softDeleted: Boolean = false,
 
