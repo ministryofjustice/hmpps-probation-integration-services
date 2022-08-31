@@ -131,8 +131,10 @@ class ReleaseService(
 
     private fun mapToReleaseType(reason: String) = when (reason) {
         "RELEASED" -> ReleaseTypeCode.ADULT_LICENCE
-        "TEMPORARY_ABSENCE_RELEASE" -> throw IgnorableMessageException("UnsupportedReleaseReason") // ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE
-        "RELEASED_TO_HOSPITAL" -> throw IgnorableMessageException("UnsupportedReleaseReason")
+        "TEMPORARY_ABSENCE_RELEASE", // -> ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE
+        "RELEASED_TO_HOSPITAL", // -> TBC
+        "SENT_TO_COURT",
+        "TRANSFERRED" -> throw IgnorableMessageException("UnsupportedReleaseReason")
         else -> throw IllegalArgumentException("Unexpected release reason: $reason")
     }
 }
