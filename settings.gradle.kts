@@ -6,7 +6,8 @@ include(
     "prison-case-notes-to-probation",
     "workforce-allocations-to-delius",
     "pre-sentence-reports-to-delius",
-    "prison-custody-status-to-delius"
+    "prison-custody-status-to-delius",
+    "person-search-index-from-delius"
 )
 
 // load children from the "projects" directory (and drop the prefix)
