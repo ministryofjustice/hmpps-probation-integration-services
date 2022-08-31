@@ -63,8 +63,7 @@
                 "enabled": false
               },
               "town": {
-                "type": "text",
-                "analyzer": "simple"
+                "type": "text"
               },
               "type": {
                 "enabled": false
@@ -105,8 +104,7 @@
         "enabled": false
       },
       "firstName": {
-        "type": "text",
-        "analyzer": "simple"
+        "type": "text"
       },
       "gender": {
         "enabled": false
@@ -115,8 +113,7 @@
         "enabled": false
       },
       "middleNames": {
-        "type": "text",
-        "analyzer": "simple"
+        "type": "text"
       },
       "offenderAliases": {
         "properties": {
@@ -125,8 +122,7 @@
             "format": "yyyy-MM-dd||yyyy/MM/dd||dd-MM-yy||dd/MM/yy||dd-MM-yyyy||dd/MM/yyyy"
           },
           "firstName": {
-            "type": "text",
-            "analyzer": "simple"
+            "type": "text"
           },
           "gender": {
             "enabled": false
@@ -135,12 +131,10 @@
             "enabled": false
           },
           "middleNames": {
-            "type": "text",
-            "analyzer": "simple"
+            "type": "text"
           },
           "surname": {
-            "type": "text",
-            "analyzer": "simple"
+            "type": "text"
           }
         }
       },
@@ -224,12 +218,10 @@
         "enabled": false
       },
       "preferredName": {
-        "type": "text",
-        "analyzer": "simple"
+        "type": "text"
       },
       "previousSurname": {
-        "type": "text",
-        "analyzer": "simple"
+        "type": "text"
       },
       "probationStatus": {
         "enabled": false
@@ -241,8 +233,7 @@
         "enabled": false
       },
       "surname": {
-        "type": "text",
-        "analyzer": "simple"
+        "type": "text"
       },
       "title": {
         "enabled": false
