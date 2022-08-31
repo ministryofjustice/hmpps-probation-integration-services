@@ -20,13 +20,19 @@ jobs:
         uses: ./.github/actions/build-and-test
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: Push image
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push images
         uses: gradle/gradle-build-action@v2
         env:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         with:
-          arguments: jib -Djib.to.tags=latest
+          arguments: jib dockerTagsPush
 
   deploy-to-test:
     name: Deploy to test
