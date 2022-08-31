@@ -30,10 +30,15 @@ runs:
         echo "ORG_GRADLE_PROJECT_version=$version" >> $GITHUB_ENV
         echo "::set-output name=version::$version"
 
-    - name: Build and test
+    - name: Compile and test
       uses: gradle/gradle-build-action@v2
       with:
         arguments: check
+
+    - name: Build standalone docker images
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: docker
 
     - name: Sonar analysis
       uses: gradle/gradle-build-action@v2
@@ -42,7 +47,7 @@ runs:
         arguments: sonarqube
 
     - name: Publish test reports
-      uses: mikepenz/action-junit-report@main # switch to tag once multi-report feature is released - see https://github.com/mikepenz/action-junit-report/releases
+      uses: mikepenz/action-junit-report@v3.3.3
       if: always() && github.actor != 'dependabot[bot]'
       with:
         check_name: |-

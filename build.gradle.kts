@@ -12,6 +12,7 @@ plugins {
     id("org.springframework.boot") version "2.7.3" apply false
     id("io.spring.dependency-management") version "1.0.13.RELEASE" apply false
     id("com.google.cloud.tools.jib") apply false
+    id("com.palantir.docker") version "0.34.0" apply false
     id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
     id("base")
     id("org.sonarqube")
