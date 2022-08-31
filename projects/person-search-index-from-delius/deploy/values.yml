@@ -13,3 +13,5 @@ secrets:
   JDBC_CONNECTION_STRING: /delius-database/jdbc-url
   JDBC_USER: /person-search-index-from-delius/db-username
   JDBC_PASSWORD: /person-search-index-from-delius/db-password
+  INGRESS_USERNAME: /person-search-index-from-delius/ingress-username
+  INGRESS_PASSWORD: /person-search-index-from-delius/ingress-password
