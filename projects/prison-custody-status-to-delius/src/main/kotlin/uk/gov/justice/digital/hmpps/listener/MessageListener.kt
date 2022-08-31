@@ -11,7 +11,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseService
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsEvent
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.lang.IllegalArgumentException
 
 @Component
 @EnableJms
@@ -64,10 +63,10 @@ class MessageListener(
 fun AdditionalInformation.nomsNumber() = this["nomsNumber"] as String
 fun AdditionalInformation.prisonId() = this["prisonId"] as String
 fun AdditionalInformation.reason() = this["reason"] as String
-fun AdditionalInformation.details() = this["details"] as String
-fun HmppsEvent.telemetryProperties() = mapOf(
+fun AdditionalInformation.details() = this["details"] as String?
+fun HmppsEvent.telemetryProperties() = listOfNotNull(
     "nomsNumber" to additionalInformation.nomsNumber(),
     "institution" to additionalInformation.prisonId(),
     "reason" to additionalInformation.reason(),
-    "details" to additionalInformation.details()
-)
+    additionalInformation.details()?.let { "details" to it }
+).toMap()
