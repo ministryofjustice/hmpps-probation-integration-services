@@ -2,7 +2,7 @@
 image:
   name: person-search-index-from-delius
 
-cpu: 2048    # = 1 vCPU
+cpu: 1024    # = 1 vCPU
 memory: 4096 # = 1 GB
 
 env:
