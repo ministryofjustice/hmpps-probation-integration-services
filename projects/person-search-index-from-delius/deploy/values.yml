@@ -2,8 +2,8 @@
 image:
   name: person-search-index-from-delius
 
-cpu: 1024    # = 1 vCPU
-memory: 1024 # = 1 GB
+cpu: 2048    # = 1 vCPU
+memory: 4096 # = 1 GB
 
 env:
   AWS_REGION: eu-west-2
