@@ -291,8 +291,8 @@ SELECT json_object(
                                 AND r.DEREGISTERED = 0
                                 AND rt.CODE = 'MAPP'
                               ORDER BY r.CREATED_DATETIME DESC FETCH NEXT 1 ROWS ONLY)
-               ABSENT ON NULL RETURNING CLOB) "json",
-       o.OFFENDER_ID AS                       "offenderId"
+               ABSENT ON NULL RETURNING CLOB) json,
+       o.OFFENDER_ID AS                       offenderId
 
 FROM OFFENDER o
          JOIN PARTITION_AREA pa ON pa.PARTITION_AREA_ID = o.PARTITION_AREA_ID
@@ -318,3 +318,4 @@ FROM OFFENDER o
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST tier ON tier.STANDARD_REFERENCE_LIST_ID = o.CURRENT_TIER
 WHERE o.SOFT_DELETED = 0
   AND om.SOFT_DELETED = 0
+  AND (:offender_id = 0 OR o.OFFENDER_ID = :offender_id)
