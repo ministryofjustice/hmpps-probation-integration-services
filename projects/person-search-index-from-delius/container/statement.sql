@@ -80,9 +80,8 @@ SELECT json_object(
                                                                                                       to_char(d.START_DATE, 'yyyy-MM-dd'),
                                                                                                       'finishDate' VALUE
                                                                                                       to_char(d.FINISH_DATE, 'yyyy-MM-dd')
-                                                                                                      ABSENT ON NULL)
-                                                                                              ABSENT ON NULL
-                                                                                              RETURNING CLOB)
+                                                                                                      ABSENT ON NULL RETURNING CLOB)
+                                                                                              ABSENT ON NULL RETURNING CLOB)
                                                                          FROM PROVISION pr
                                                                                   JOIN R_STANDARD_REFERENCE_LIST pt
                                                                                        ON pt.STANDARD_REFERENCE_LIST_ID = pr.PROVISION_TYPE_ID
