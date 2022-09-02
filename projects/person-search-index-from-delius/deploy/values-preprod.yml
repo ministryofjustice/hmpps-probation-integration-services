@@ -1,3 +1,5 @@
 environment_name: delius-pre-prod
 
-enabled: false
+env:
+  ELASTIC_SEARCH_HOST: "https://probation-search-es-preprod.hmpps.service.justice.gov.uk:443"
+  INDEX_SCHEDULE: "0 8,12,16 * * *"
