@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.config.datasource.OptimisationContext
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
@@ -66,6 +67,7 @@ class ReleaseService(
         releaseDate: ZonedDateTime
     ) = audit(BusinessInteractionCode.ADD_RELEASE) {
         it["eventId"] = event.id
+        OptimisationContext.offenderId.set(event.person.id)
 
         val disposal = event.disposal ?: throw NotFoundException("Disposal", "eventId", event.id)
         val custody = disposal.custody ?: throw NotFoundException("Custody", "disposalId", disposal.id)
