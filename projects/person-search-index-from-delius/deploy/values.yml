@@ -15,4 +15,3 @@ secrets:
   JDBC_PASSWORD: /person-search-index-from-delius/db-password
   INGRESS_USERNAME: /person-search-index-from-delius/ingress-username
   INGRESS_PASSWORD: /person-search-index-from-delius/ingress-password
-  INDEX_SCHEDULE: /person-search-index-from-delius/index-schedule
