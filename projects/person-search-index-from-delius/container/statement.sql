@@ -291,8 +291,8 @@ SELECT json_object(
                                 AND r.DEREGISTERED = 0
                                 AND rt.CODE = 'MAPP'
                               ORDER BY r.CREATED_DATETIME DESC FETCH NEXT 1 ROWS ONLY)
-               ABSENT ON NULL RETURNING CLOB) json,
-       o.OFFENDER_ID AS                       offenderId
+               ABSENT ON NULL RETURNING CLOB) "json",
+       o.OFFENDER_ID AS                       "offenderId"
 
 FROM OFFENDER o
          JOIN PARTITION_AREA pa ON pa.PARTITION_AREA_ID = o.PARTITION_AREA_ID

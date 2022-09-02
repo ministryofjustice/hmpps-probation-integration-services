@@ -7,4 +7,4 @@ COPY --chown=logstash logstash.yml pipelines.yml /usr/share/logstash/config/
 
 # Workaround for the jdbc_streaming plugin not supporting statement_filepath.
 # See https://github.com/logstash-plugins/logstash-integration-jdbc/issues/51
-RUN sed -i "s/\${INCREMENTAL_STATEMENT_SQL}/$(cat /etc/logstash/statement.sql | tr '\n' ' ')/" /usr/share/logstash/incremental/logstash.conf
+RUN sed -i "s/\${INCREMENTAL_STATEMENT_SQL}/$(cat /etc/logstash/statement.sql | tr '\n' ' ' | sed 's/"/\\"/g')/" /usr/share/logstash/incremental/logstash.conf
