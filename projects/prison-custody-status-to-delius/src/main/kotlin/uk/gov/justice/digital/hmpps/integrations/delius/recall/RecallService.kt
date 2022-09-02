@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.config.datasource.OptimisationContext
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
@@ -77,6 +78,7 @@ class RecallService(
         recallDate: ZonedDateTime
     ) = audit(BusinessInteractionCode.ADD_RECALL) {
         it["eventId"] = event.id
+        OptimisationContext.offenderId.set(event.person.id)
 
         val person = event.person
         val disposal = event.disposal ?: throw NotFoundException("Disposal", "eventId", event.id)

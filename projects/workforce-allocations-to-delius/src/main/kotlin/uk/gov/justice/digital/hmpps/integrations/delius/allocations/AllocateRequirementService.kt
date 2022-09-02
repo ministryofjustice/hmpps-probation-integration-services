@@ -4,6 +4,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.config.datasource.OptimisationContext
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -40,6 +41,7 @@ class AllocateRequirementService(
             it["offenderId"] = requirement.person.id
             it["eventId"] = requirement.disposal.event.id
             it["requirementId"] = requirement.id
+            OptimisationContext.offenderId.set(requirement.person.id)
 
             if (requirement.person.crn != crn)
                 throw ConflictException("Requirement ${allocationDetail.requirementId} not for $crn")
