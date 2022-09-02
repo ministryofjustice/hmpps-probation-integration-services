@@ -3,7 +3,7 @@ image:
   name: person-search-index-from-delius
 
 cpu: 1024    # = 1 vCPU
-memory: 4096 # = 4 GB
+memory: 2048 # = 2 GB
 
 env:
   AWS_REGION: eu-west-2
@@ -15,3 +15,4 @@ secrets:
   JDBC_PASSWORD: /person-search-index-from-delius/db-password
   INGRESS_USERNAME: /person-search-index-from-delius/ingress-username
   INGRESS_PASSWORD: /person-search-index-from-delius/ingress-password
+  INDEX_SCHEDULE: /person-search-index-from-delius/index-schedule
