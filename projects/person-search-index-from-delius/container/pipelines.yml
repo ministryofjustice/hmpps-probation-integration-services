@@ -1,0 +1,5 @@
+- pipeline.id: full-load
+  path.config: "/usr/share/logstash/full-load/logstash.conf"
+
+- pipeline.id: incremental
+  path.config: "/usr/share/logstash/incremental/logstash.conf"
