@@ -23,9 +23,11 @@ on:
         type: choice
         required: true
         options:
-          - '["prison-case-notes-to-probation"]'
-          - '["workforce-allocations-to-delius"]'
+          - '["person-search-index-from-delius"]'
           - '["pre-sentence-reports-to-delius"]'
+          - '["prison-case-notes-to-probation"]'
+          - '["prison-custody-status-to-delius"]'
+          - '["workforce-allocations-to-delius"]'
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
       environment:
