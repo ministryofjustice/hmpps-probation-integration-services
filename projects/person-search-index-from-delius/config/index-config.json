@@ -1,12 +1,10 @@
 {
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 2
+  },
   "mappings": {
     "properties": {
-      "@timestamp": {
-        "type": "date"
-      },
-      "@version": {
-        "enabled": false
-      },
       "activeProbationManagedSentence": {
         "enabled": false
       },
@@ -42,13 +40,7 @@
                 "enabled": false
               },
               "postcode": {
-                "type": "text",
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "text"
               },
               "status": {
                 "enabled": false
@@ -150,67 +142,25 @@
       "otherIds": {
         "properties": {
           "crn": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            }
+            "type": "text"
           },
           "croNumber": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            }
+            "type": "text"
           },
           "immigrationNumber": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            }
+            "type": "text"
           },
           "mostRecentPrisonerNumber": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            }
+            "type": "text"
           },
           "niNumber": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            }
+            "type": "text"
           },
           "nomsNumber": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            }
+            "type": "text"
           },
           "pncNumber": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            }
+            "type": "text"
           }
         }
       },
