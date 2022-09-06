@@ -142,25 +142,25 @@
       "otherIds": {
         "properties": {
           "crn": {
-            "type": "text"
+            "type": "keyword"
           },
           "croNumber": {
-            "type": "text"
+            "type": "keyword"
           },
           "immigrationNumber": {
-            "type": "text"
+            "type": "keyword"
           },
           "mostRecentPrisonerNumber": {
-            "type": "text"
+            "type": "keyword"
           },
           "niNumber": {
-            "type": "text"
+            "type": "keyword"
           },
           "nomsNumber": {
-            "type": "text"
+            "type": "keyword"
           },
           "pncNumber": {
-            "type": "text"
+            "type": "keyword"
           }
         }
       },
