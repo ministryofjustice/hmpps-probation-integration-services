@@ -332,4 +332,4 @@ SELECT json_object('activeOffenders' VALUE (SELECT COUNT(1)
                                                            AND om.SOFT_DELETED = 0)) RETURNING CLOB) "json",
        -1                                                                                            "offenderId"
 FROM DUAL
-WHERE :offender_id > 0
+WHERE :offender_id = 0
