@@ -328,6 +328,7 @@ SELECT json_object('activeOffenders' VALUE (SELECT COUNT(1)
                                             WHERE SOFT_DELETED = 0
                                               AND EXISTS(SELECT 1
                                                          FROM OFFENDER_MANAGER om
-                                                         WHERE o.OFFENDER_ID = om.OFFENDER_ID))) "json",
-       -1                                                                                        "offenderId"
+                                                         WHERE o.OFFENDER_ID = om.OFFENDER_ID
+                                                           AND om.SOFT_DELETED = 0)) RETURNING CLOB) "json",
+       -1                                                                                            "offenderId"
 FROM DUAL
