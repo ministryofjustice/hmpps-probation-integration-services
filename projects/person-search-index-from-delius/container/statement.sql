@@ -80,8 +80,10 @@ SELECT json_object(
                                                                                                       to_char(d.START_DATE, 'yyyy-MM-dd'),
                                                                                                       'finishDate' VALUE
                                                                                                       to_char(d.FINISH_DATE, 'yyyy-MM-dd')
-                                                                                                      ABSENT ON NULL RETURNING CLOB)
-                                                                                              ABSENT ON NULL RETURNING CLOB)
+                                                                                                      ABSENT ON NULL
+                                                                                                      RETURNING CLOB)
+                                                                                              ABSENT ON NULL
+                                                                                              RETURNING CLOB)
                                                                          FROM PROVISION pr
                                                                                   JOIN R_STANDARD_REFERENCE_LIST pt
                                                                                        ON pt.STANDARD_REFERENCE_LIST_ID = pr.PROVISION_TYPE_ID
@@ -318,3 +320,16 @@ FROM OFFENDER o
 WHERE o.SOFT_DELETED = 0
   AND om.SOFT_DELETED = 0
   AND (:offender_id = 0 OR o.OFFENDER_ID = :offender_id)
+
+UNION ALL
+
+SELECT json_object('activeOffenders' VALUE (SELECT COUNT(1)
+                                            FROM OFFENDER o
+                                            WHERE SOFT_DELETED = 0
+                                              AND EXISTS(SELECT 1
+                                                         FROM OFFENDER_MANAGER om
+                                                         WHERE o.OFFENDER_ID = om.OFFENDER_ID AND om.ACTIVE_FLAG = 1
+                                                           AND om.SOFT_DELETED = 0)) RETURNING CLOB) "json",
+       -1                                                                                            "offenderId"
+FROM DUAL
+WHERE :offender_id > 0
