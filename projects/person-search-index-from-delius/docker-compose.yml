@@ -8,11 +8,12 @@ services:
       JDBC_CONNECTION_STRING: jdbc:oracle:thin:@//oracledb:1521/XEPDB1
       JDBC_USER: delius_app_schema
       JDBC_PASSWORD: NDelius1
-      PRIMARY_INDEX_NAME: primary
-      STANDBY_INDEX_NAME: standby
+      PRIMARY_INDEX_NAME: person-search-primary
+      STANDBY_INDEX_NAME: person-search-standby
       SEARCH_INDEX_HOST: "http://elasticsearch:9200"
       SEARCH_INDEX_USERNAME: elastic
       SEARCH_INDEX_PASSWORD: elastic
+      INDEX_SCHEDULE: "* * * * *"
     ports:
       - "9600:9600"
     depends_on:
@@ -33,7 +34,7 @@ services:
       - shared
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.9.3
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
     healthcheck:
       test: curl -f localhost:9200
     environment:

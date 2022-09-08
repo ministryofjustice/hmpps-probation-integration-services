@@ -11,11 +11,14 @@ env:
   STANDBY_INDEX_NAME: person-search-standby
 
 secrets:
-  JDBC_CONNECTION_STRING: /delius-database/jdbc-url
-  JDBC_USER:              /person-search-index-from-delius/db-username
-  JDBC_PASSWORD:          /person-search-index-from-delius/db-password
-  SEARCH_INDEX_USERNAME:  /person-search-index-from-delius/ingress-username
-  SEARCH_INDEX_PASSWORD:  /person-search-index-from-delius/ingress-password
-  AWS_SQS_QUEUE_NAME:     /person-search-index-from-delius/sqs-queue-name
-  AWS_ACCESS_KEY_ID:      /person-search-index-from-delius/sqs-aws-access-key-id
-  AWS_SECRET_ACCESS_KEY:  /person-search-index-from-delius/sqs-aws-secret-access-key
+  JDBC_CONNECTION_STRING:      /delius-database/jdbc-url
+  JDBC_USER:                   /person-search-index-from-delius/db-username
+  JDBC_PASSWORD:               /person-search-index-from-delius/db-password
+  SEARCH_INDEX_USERNAME:       /person-search-index-from-delius/ingress-username
+  SEARCH_INDEX_PASSWORD:       /person-search-index-from-delius/ingress-password
+  SQS_QUEUE_NAME:              /person-search-index-from-delius/sqs-queue-name
+  SQS_QUEUE_ACCESS_KEY_ID:     /person-search-index-from-delius/sqs-queue-access-key-id
+  SQS_QUEUE_SECRET_ACCESS_KEY: /person-search-index-from-delius/sqs-queue-secret-access-key
+  SQS_DLQ_NAME:                /person-search-index-from-delius/sqs-dlq-name
+  SQS_DLQ_ACCESS_KEY_ID:       /person-search-index-from-delius/sqs-dlq-access-key-id
+  SQS_DLQ_SECRET_ACCESS_KEY:   /person-search-index-from-delius/sqs-dlq-secret-access-key
