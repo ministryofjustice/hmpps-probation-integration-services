@@ -5,7 +5,7 @@ containerDefinitions:
   - name: {{ .values.image.name }}
     image: ghcr.io/ministryofjustice/hmpps-probation-integration-services/{{ .values.image.name }}:{{ .Env.VERSION }}
     healthCheck:
-      command: ["CMD-SHELL", "exit 0"]
+      command: ["CMD-SHELL", "curl -sf localhost:9600"]
     cpu: "{{ .values.cpu }}"
     memory: "{{ .values.memory }}"
     environment:
