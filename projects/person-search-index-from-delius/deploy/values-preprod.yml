@@ -1,5 +1,8 @@
 environment_name: delius-pre-prod
 
+cpu: 2048    # = 2 vCPU
+memory: 4096 # = 4 GB
+
 env:
   SEARCH_INDEX_HOST: "https://probation-search-preprod.hmpps.service.justice.gov.uk:443"
-  INDEX_SCHEDULE: "0 7,10,11,14 * * *"
+  INDEX_SCHEDULE: "0 7,11,15 * * *"
