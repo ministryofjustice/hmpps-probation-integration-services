@@ -11,7 +11,7 @@ env:
   STANDBY_INDEX_NAME: person-search-standby
 
 secrets:
-  JDBC_CONNECTION_STRING:      /delius-database/jdbc-url
+  JDBC_CONNECTION_STRING:      /delius-database/jdbc-standby-url
   JDBC_USER:                   /person-search-index-from-delius/db-username
   JDBC_PASSWORD:               /person-search-index-from-delius/db-password
   SEARCH_INDEX_USERNAME:       /person-search-index-from-delius/ingress-username
