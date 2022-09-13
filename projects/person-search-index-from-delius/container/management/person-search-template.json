@@ -1,0 +1,43 @@
+{
+  "index_patterns": [
+    "person-search-*"
+  ],
+  "template": {
+    "settings": {
+      "index": {
+        "number_of_shards": "1",
+        "number_of_replicas": "2",
+        "default_pipeline": "person-search-pipeline"
+      }
+    },
+    "mappings": {
+      "properties": {
+        "otherIds.pncNumberShortYear": {
+          "type": "keyword"
+        },
+        "otherIds.croNumberLowercase": {
+          "type": "keyword"
+        },
+        "offenderManagers": {
+          "type": "nested",
+          "properties": {
+            "probationArea.code": {
+              "type": "keyword"
+            }
+          }
+        },
+        "offenderAliases": {
+          "include_in_root": true,
+          "type": "nested"
+        },
+        "dateOfBirth": {
+          "format": "yyyy-MM-dd||yyyy/MM/dd||dd-MM-yy||dd/MM/yy||dd-MM-yyyy||dd/MM/yyyy",
+          "type": "date"
+        },
+        "otherIds.pncNumberLongYear": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}
