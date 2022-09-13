@@ -26,6 +26,6 @@ RUN mkdir -p /usr/share/logstash/data/dead_letter_queue/incremental /usr/share/l
 RUN sed -i "s/\${INCREMENTAL_STATEMENT_SQL}/$(cat /etc/logstash/statement.sql | tr '\n' ' ' | sed 's/"/\\\\"/g')/" /usr/share/logstash/incremental/logstash.conf
 
 ENTRYPOINT /tmp/init/init-script.sh -p /tmp/init/person-search-pipeline.json -t /tmp/init/person-search-template.json \
-            && echo "${INDEX_SCHEDULE} /tmp/index-alias-management.sh -u ${SEARCH_INDEX_HOST} >> /tmp/cron.log 2>&1" | crontab - \
+            && echo "${MANAGMENT_SCHEDULE} /tmp/index-alias-management.sh -u ${SEARCH_INDEX_HOST} >> /tmp/cron.log 2>&1" | crontab - \
             && cron \
             && /opt/logstash/bin/logstash
