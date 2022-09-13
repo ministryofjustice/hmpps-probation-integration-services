@@ -1,13 +1,14 @@
 # Generic task-definition template
-cpu: "{{ .values.cpu }}"
-memory: "{{ .values.memory }}"
+cpu: "{{ .values.limits.cpu }}"
+memory: "{{ .values.limits.memory }}"
 containerDefinitions:
   - name: {{ .values.image.name }}
     image: ghcr.io/ministryofjustice/hmpps-probation-integration-services/{{ .values.image.name }}:{{ .Env.VERSION }}
     healthCheck:
-      command: ["CMD-SHELL", "curl -sf localhost:9600"]
-    cpu: "{{ .values.cpu }}"
-    memory: "{{ .values.memory }}"
+      command: ["CMD-SHELL", "{{ .values.healthcheck.command }}"]
+    cpu: "{{ .values.reservations.cpu }}"
+    memory: "{{ .values.limits.memory }}"
+    memoryReservation: "{{ .values.reservations.memory }}"
     environment:
       - name: VERSION
         value: {{ .Env.VERSION }}
