@@ -1,7 +1,5 @@
 #!/bin/bash
-#set -ex
-
-env
+set -euo pipefail
 
 function help {
   echo -e "\\nSCRIPT USAGE\\n"
@@ -14,7 +12,7 @@ function help {
 export SEARCH_URL="${SEARCH_INDEX_HOST}"
 export PERSON_SEARCH_PRIMARY="person-search-primary"
 export PERSON_SEARCH_STANDBY="person-search-standby"
-export MAX_TIMEOUT=3600
+export MAX_TIMEOUT=4200
 
 while getopts a:b:h:u: FLAG; do
   case $FLAG in
