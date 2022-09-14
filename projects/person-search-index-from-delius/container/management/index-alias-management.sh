@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -eo pipefail
 
 function help {
   echo -e "\\nSCRIPT USAGE\\n"
