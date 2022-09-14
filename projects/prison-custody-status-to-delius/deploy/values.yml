@@ -2,13 +2,6 @@
 image:
   name: prison-custody-status-to-delius
 
-cpu: 1024    # = 1 vCPU
-memory: 1024 # = 1 GB
-
-env:
-  AWS_REGION: eu-west-2
-  JDK_JAVA_OPTIONS: -javaagent:/agent/agent.jar
-
 secrets:
   APPLICATIONINSIGHTS_CONNECTION_STRING:   /application-insights/connection-string
   AWS_SQS_ACCOUNT-ID:                      /moj-cloud-platform/aws-account-id

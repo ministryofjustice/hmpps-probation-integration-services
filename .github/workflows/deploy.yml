@@ -111,8 +111,12 @@ jobs:
       - name: Render values
         if: steps.env.outputs.enabled == 'true'
         shell: bash
-        run: yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' --inplace values.yml ${{ steps.values.outputs.filename }}
-        working-directory: projects/${{ matrix.project }}/deploy
+        run: |
+          yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1) *d select(fileIndex == 2)' \
+            templates/defaults.yml \
+            projects/${{ matrix.project }}/deploy/values.yml \
+            projects/${{ matrix.project }}/deploy/${{ steps.values.outputs.filename }} \
+          > projects/${{ matrix.project }}/deploy/merged.yml
 
       - name: Update task definition
         if: steps.env.outputs.enabled == 'true'
@@ -122,15 +126,14 @@ jobs:
         run: |
           brew install gomplate
           old_task_definition=$(aws ecs describe-task-definition --task-definition "${{ steps.env.outputs.short-name }}-${{ matrix.project }}-task-definition" --include TAGS | jq '.taskDefinition | del(.containerDefinitions[0].command, .compatibilities, .taskDefinitionArn, .requiresAttributes, .revision, .status, .registeredAt, .registeredBy)')
-          new_task_definition=$(yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' <(echo "${old_task_definition}") <(gomplate --file template/task-definition.yml --context values=values.yml) --output-format json | tee task-definition.json)
+          new_task_definition=$(yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' <(echo "${old_task_definition}") <(gomplate --file templates/task-definition.yml --context values=projects/${{ matrix.project }}/deploy/merged.yml) --output-format json | tee task-definition.json)
           echo "Deploying new task definition: ${new_task_definition}"
-        working-directory: projects/${{ matrix.project }}/deploy
 
       - name: Deploy to Amazon ECS
         if: steps.env.outputs.enabled == 'true'
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: projects/${{ matrix.project }}/deploy/task-definition.json
+          task-definition: task-definition.json
           service: ${{ steps.env.outputs.short-name }}-${{ matrix.project }}-service
           cluster: del-delius-ecscluster-private-ecs
           wait-for-service-stability: true

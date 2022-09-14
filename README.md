@@ -179,13 +179,20 @@ We map Delius environments to MOJ Cloud Platform namespaces as follows:
 
 ## Configuration
 Each subproject has a `deploy` folder containing YAML files used for configuration.
-The default `values.yml` file provides common configuration across all environments, while additional files (e.g. 
+The standard `values.yml` file provides common configuration across all environments, while additional files (e.g. 
 `values-dev.yml`) can be used to set environment-specific configuration.
 
+There is also a repository-level [defaults.yml](templates/defaults.yml) containing the default configuration across all 
+projects.
+
 ```bash
-deploy
-├── values.yml                # common/shared config
-└── values-<environment>.yml  # 1 per environment
+├── templates
+│   └── defaults.yml                      # default values across all projects
+└── projects
+    └── workforce-allocations-to-delius
+        └── deploy
+            ├── values.yml                # common values across each environment
+            └── values-<environment>.yml  # 1 per environment
 ```
 
 ### Setting project wide values
@@ -200,10 +207,11 @@ Example:
 image:
   name: project-name
 
-# Container
+# Container resources
 # See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#ContainerDefinition-taskcpu
-cpu: 1024    # = 1 vCPU
-memory: 1024 # = 1 GB
+limits:
+  cpu: 1024    # = 1 vCPU
+  memory: 1024 # = 1 GB
 
 # Environment variables
 env:

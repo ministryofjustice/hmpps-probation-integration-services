@@ -1,7 +1,8 @@
 environment_name: delius-pre-prod
 
-cpu: 2048    # = 2 vCPU
-memory: 4096 # = 4 GB
+limits:
+  cpu: 2048    # = 2 vCPU
+  memory: 2048 # = 2 GB
 
 env:
   SEARCH_INDEX_HOST: "https://probation-search-preprod.hmpps.service.justice.gov.uk:443"

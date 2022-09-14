@@ -2,11 +2,15 @@
 image:
   name: person-search-index-from-delius
 
-cpu: 1024    # = 1 vCPU
-memory: 2048 # = 2 GB
+reservations:
+  cpu: 1024
+  memory: 1024
+
+healthcheck:
+  command: curl -sf localhost:9600
 
 env:
-  AWS_REGION: eu-west-2
+  JDK_JAVA_OPTIONS: -XX:MaxRAMPercentage=75.0
   PRIMARY_INDEX_NAME: person-search-primary
   STANDBY_INDEX_NAME: person-search-standby
 

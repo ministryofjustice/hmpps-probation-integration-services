@@ -2,12 +2,7 @@
 image:
   name: pre-sentence-reports-to-delius
 
-cpu: 1024    # = 1 vCPU
-memory: 1024 # = 1 GB
-
 env:
-  AWS_REGION: eu-west-2
-  JDK_JAVA_OPTIONS: -javaagent:/agent/agent.jar
   DELIUS_DB_USERNAME: PreSentenceService # Defined in database/access.yml
 
 secrets:
