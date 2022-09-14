@@ -7,3 +7,4 @@ limits:
 env:
   SEARCH_INDEX_HOST: "https://probation-search-prod.hmpps.service.justice.gov.uk:443"
   INDEX_SCHEDULE: "0 7 * * 1-5"
+  MANAGEMENT_SCHEDULE: "58 6 * * 1-5"
