@@ -62,7 +62,7 @@ check_count_document() {
   export EXPECTED_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.activeOffenders')
 
   SECONDS=0
-  until [[ "${EXPECTED_COUNT}" -gt 0 ]]; do
+  until [[ "${EXPECTED_COUNT:-0}" -gt 0 ]]; do
     echo 'waiting for count to be indexed ... '
     if (("${SECONDS}" >= "${MAX_TIMEOUT}")); then
       echo "Timed out getting index count."
@@ -80,7 +80,7 @@ wait_for_index_to_complete() {
 
   ACTUAL_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
 
-  until [[ "${ACTUAL_COUNT}" -ge "${EXPECTED_COUNT}" ]]; do
+  until [[ "${ACTUAL_COUNT:-0}" -ge "${EXPECTED_COUNT}" ]]; do
     echo 'waiting for actual count to be at least expected count ...'
     if (("${SECONDS}" >= "${MAX_TIMEOUT}")); then
       echo "Indexing process timed out: Expected ${EXPECTED_COUNT} but got ${ACTUAL_COUNT}"
