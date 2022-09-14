@@ -9,7 +9,6 @@ function help {
   exit 1
 }
 
-export SEARCH_URL="${SEARCH_INDEX_HOST}"
 export PERSON_SEARCH_PRIMARY="person-search-primary"
 export PERSON_SEARCH_STANDBY="person-search-standby"
 export MAX_TIMEOUT=4200
