@@ -1,5 +1,4 @@
 config.support_escapes: true
 dead_letter_queue.enable: true
 pipeline:
-  workers: 8
   batch.size: 500
