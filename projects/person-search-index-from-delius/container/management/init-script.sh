@@ -44,23 +44,23 @@ done
 
 function create_pipeline() {
   printf "creating person search pipeline ...\\n"
-  curl -sSf -XPUT -H "Content-Type: application/json" -d @"${PIPELINE_FILENAME}" "${SEARCH_URL}/_ingest/pipeline/person-search-pipeline"
+  curl -sSf -XPUT -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" -d @"${PIPELINE_FILENAME}" "${SEARCH_URL}/_ingest/pipeline/person-search-pipeline"
   printf "\\n"
 }
 
 function create_template() {
   printf "creating person search template ...\\n"
-  curl -sSf -XPUT -H "Content-Type: application/json" -d @"${TEMPLATE_FILENAME}" "${SEARCH_URL}/_index_template/person-search-template"
+  curl -sSf -XPUT -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" -d @"${TEMPLATE_FILENAME}" "${SEARCH_URL}/_index_template/person-search-template"
   printf "\\n"
 }
 
 function create_indices() {
-  curl -sS -XPUT -H "Content-Type: application/json" "${SEARCH_URL}/person-search-a" -d '{
+  curl -sS -XPUT -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/person-search-a" -d '{
                                            "aliases": {
                                                "'"${PERSON_SEARCH_PRIMARY}"'": {}
                                            }
                                         }'
-  curl -sS -XPUT -H "Content-Type: application/json" "${SEARCH_URL}/person-search-b" -d '{
+  curl -sS -XPUT -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/person-search-b" -d '{
                                              "aliases": {
                                                  "'"${PERSON_SEARCH_STANDBY}"'": {}
                                              }

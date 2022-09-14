@@ -37,9 +37,9 @@ done
 
 get_current_indices() {
   echo "Search URL: ${SEARCH_URL}"
-  export PRIMARY_INDEX=$(curl -sSf -XGET -H "Content-Type: application/json" "${SEARCH_URL}/_alias/${PERSON_SEARCH_PRIMARY}" | jq keys | jq -r '.[0]')
+  export PRIMARY_INDEX=$(curl -sSf -XGET -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/_alias/${PERSON_SEARCH_PRIMARY}" | jq keys | jq -r '.[0]')
   echo "Primary Index => ${PRIMARY_INDEX}"
-  export STANDBY_INDEX=$(curl -sSf -XGET -H "Content-Type: application/json" "${SEARCH_URL}/_alias/${PERSON_SEARCH_STANDBY}" | jq keys | jq -r '.[0]')
+  export STANDBY_INDEX=$(curl -sSf -XGET -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/_alias/${PERSON_SEARCH_STANDBY}" | jq keys | jq -r '.[0]')
   echo "Standby Index => ${STANDBY_INDEX}"
 
   if [ -z "$PRIMARY_INDEX" ] || [ -z "$STANDBY_INDEX" ] || [ "$PRIMARY_INDEX" = 'error' ] || [ "$STANDBY_INDEX" = 'error' ]; then
@@ -50,8 +50,8 @@ get_current_indices() {
 
 delete_ready_for_reindex() {
   echo "deleting ${STANDBY_INDEX} ready for indexing ..."
-  curl -sSf -XDELETE -H "Content-Type: application/json" "${SEARCH_URL}/${STANDBY_INDEX}"
-  curl -sSf -XPUT -H "Content-Type: application/json" "${SEARCH_URL}/${STANDBY_INDEX}" -d '{
+  curl -sSf -XDELETE -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/${STANDBY_INDEX}"
+  curl -sSf -XPUT -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/${STANDBY_INDEX}" -d '{
                                          "aliases": {
                                              "'"${PERSON_SEARCH_STANDBY}"'": {}
                                          }
@@ -59,7 +59,7 @@ delete_ready_for_reindex() {
 }
 
 check_count_document() {
-  export EXPECTED_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.activeOffenders')
+  export EXPECTED_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.activeOffenders')
 
   SECONDS=0
   until [[ "${EXPECTED_COUNT}" -gt 0 ]]; do
@@ -69,7 +69,7 @@ check_count_document() {
       exit 1
     fi
     sleep 10
-    export EXPECTED_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.activeOffenders')
+    export EXPECTED_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.activeOffenders')
   done
   echo "Expected Count After Indexing ${EXPECTED_COUNT}"
 }
@@ -78,7 +78,7 @@ wait_for_index_to_complete() {
   printf "\\nwaiting for indexing to complete ...\\n"
   check_count_document
 
-  ACTUAL_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
+  ACTUAL_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
 
   until [[ "${ACTUAL_COUNT}" -ge "${EXPECTED_COUNT}" ]]; do
     echo 'waiting for actual count to be at least expected count ...'
@@ -87,7 +87,7 @@ wait_for_index_to_complete() {
       exit 1
     fi
     sleep 5
-    ACTUAL_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
+    ACTUAL_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
   done
   echo "Actual Count is ${ACTUAL_COUNT} => Expected ${EXPECTED_COUNT}"
 }
@@ -97,7 +97,7 @@ switch_aliases() {
   echo "primary => $PRIMARY_INDEX"
   echo "standby => $STANDBY_INDEX"
 
-  curl -sSf -XPOST -H "Content-Type: application/json" "${SEARCH_URL}"/_aliases -d '{
+  curl -sSf -XPOST -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}"/_aliases -d '{
                                       "actions": [
                                         {
                                           "remove": {
