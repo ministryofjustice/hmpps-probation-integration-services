@@ -27,4 +27,4 @@ RUN sed -i "s/\${INCREMENTAL_STATEMENT_SQL}/$(cat /etc/logstash/statement.sql | 
 ENTRYPOINT /search-management/init-script.sh -p /search-management/person-search-pipeline.json -t /search-management/person-search-template.json \
             && echo "${MANAGMENT_SCHEDULE} /search-management/index-alias-management.sh -u ${SEARCH_INDEX_HOST} >> /tmp/cron.log 2>&1" | crontab - \
             && cron \
-            && /opt/logstash/bin/logstash
+            && /usr/local/bin/docker-entrypoint
