@@ -1,0 +1,7 @@
+# Reason: snakeyaml only used for internal (controlled) objects
+CVE-2017-18640
+CVE-2022-25857
+CVE-2022-38752
+
+# Reason: Not applicable as running on java 17
+CVE-2022-24823

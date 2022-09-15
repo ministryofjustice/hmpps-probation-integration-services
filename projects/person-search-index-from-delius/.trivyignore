@@ -1,9 +1,19 @@
 # Reason: jackson only used for internal (controlled) objects
 CVE-2020-36518
 
+# Reason: gson only used for internal (controlled) objects
+CVE-2022-25647
+
 # Reason: snakeyaml only used for internal (controlled) objects
 CVE-2017-18640
 CVE-2022-25857
+CVE-2022-38752
 
 # Reason: truncation of integers in this context is unlikely and of low risk
 CVE-2022-34169
+
+# Reason: No local users in the container to expose data to
+CVE-2021-28168
+
+# Reason: Not applicable as running on java 17
+CVE-2022-24823
