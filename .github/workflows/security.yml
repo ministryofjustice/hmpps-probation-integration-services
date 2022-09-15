@@ -3,6 +3,7 @@ name: Security
 on:
   schedule:
     - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
+  workflow_dispatch:
 
 jobs:
   get-projects:
@@ -32,6 +33,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
           format: 'sarif'
           output: 'trivy-results.sarif'
+          trivyignores: 'projects/${{ matrix.project }}'
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2

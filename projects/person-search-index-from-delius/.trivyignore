@@ -1,0 +1,9 @@
+# Reason: jackson only used for internal (controlled) objects
+CVE-2020-36518
+
+# Reason: snakeyaml only used for internal (controlled) objects
+CVE-2017-18640
+CVE-2022-25857
+
+# Reason: truncation of integers in this context is unlikely and of low risk
+CVE-2022-34169
