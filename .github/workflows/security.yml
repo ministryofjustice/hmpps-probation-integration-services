@@ -32,6 +32,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
           format: 'sarif'
           output: 'trivy-results.sarif'
+          trivyignores: 'project/${{ matrix.project }}'
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2

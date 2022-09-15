@@ -10,7 +10,7 @@ COPY --chown=logstash logstash.yml pipelines.yml /usr/share/logstash/config/
 COPY --chown=logstash management/* /search-management/
 
 USER root
-RUN apt-get update && apt-get -y install \
+RUN apt-get update && apt-get upgrade -y && apt-get -y install \
   cron \
   jq \
   && rm -rf /var/lib/apt/lists/* \
