@@ -20,17 +20,19 @@ jobs:
     needs:
       - get-projects
     strategy:
+      fail-fast: false
       matrix:
         project: ${{ fromJson(needs.get-projects.outputs.projects) }}
     steps:
       - uses: actions/checkout@v3
 
       - name: Scan image
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@d63413b0a4a4482237085319f7f4a1ce99a8f2ac # v0.7.1
         with:
           image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
+          exit-code: '1'
           format: 'sarif'
           output: 'trivy-results.sarif'
           trivyignores: 'projects/${{ matrix.project }}/.trivyignore'
@@ -40,3 +42,59 @@ jobs:
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
+
+      - name: Get Trivy results
+        if: failure()
+        uses: aquasecurity/trivy-action@d63413b0a4a4482237085319f7f4a1ce99a8f2ac # v0.7.1
+        with:
+          image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+          format: 'json'
+          output: 'results.json'
+          trivyignores: 'projects/${{ matrix.project }}/.trivyignore'
+
+      - name: Output Trivy results
+        id: trivy
+        if: failure()
+        run: |
+          results=$(cat results.json | jq -r '.Results[].Vulnerabilities[]? | ("><" + .PrimaryURL + "|" + .VulnerabilityID + "> (" + .Severity + ") - " + .PkgName + ":" + .InstalledVersion)')
+          echo "::set-output name=results::$results"
+          echo $results
+
+      - name: Send message to Slack
+        if: failure()
+        uses: slackapi/slack-github-action@v1.22.0
+        with:
+          channel-id: 'probation-integration-notifications'
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":trivy: *${{ matrix.project }}* failed security scan"
+                  },
+                  "accessory": {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "View job"
+                    },
+                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ steps.trivy.outputs.results }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
