@@ -1,0 +1,2 @@
+# Reason: snakeyaml only used for internal (controlled) objects
+CVE-2022-25857
