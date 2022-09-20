@@ -1,6 +1,4 @@
 environment_name: delius-prod
 
-enabled: false
-
 env:
   SENTRY_ENVIRONMENT: prod
