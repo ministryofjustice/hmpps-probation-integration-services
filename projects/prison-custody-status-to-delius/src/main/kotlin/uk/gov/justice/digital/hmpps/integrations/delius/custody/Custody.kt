@@ -1,6 +1,11 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.custody
 
 import org.hibernate.annotations.Where
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
@@ -9,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.release.Release
 import java.time.ZonedDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.JoinColumns
@@ -18,6 +24,7 @@ import javax.persistence.OneToOne
 import javax.persistence.Version
 
 @Entity
+@EntityListeners(AuditingEntityListener::class)
 @Where(clause = "soft_deleted = 0")
 class Custody(
     @Id
@@ -54,6 +61,22 @@ class Custody(
 
     @OneToMany(mappedBy = "custody")
     val releases: MutableList<Release> = ArrayList(),
+
+    @Column(nullable = false, updatable = false)
+    @CreatedBy
+    var createdByUserId: Long = 0,
+
+    @Column(nullable = false)
+    @LastModifiedBy
+    var lastUpdatedUserId: Long = 0,
+
+    @Column(nullable = false, updatable = false)
+    @CreatedDate
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(nullable = false)
+    @LastModifiedDate
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 ) {
     fun isInCustody() = status.code in listOf(
         CustodialStatusCode.RECALLED.code,

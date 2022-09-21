@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseService
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsEvent
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.temporal.ChronoUnit.DAYS
 
 @Component
 @EnableJms
@@ -36,7 +37,7 @@ class MessageListener(
                         hmppsEvent.additionalInformation.nomsNumber(),
                         hmppsEvent.additionalInformation.prisonId(),
                         hmppsEvent.additionalInformation.reason(),
-                        hmppsEvent.occurredAt,
+                        hmppsEvent.occurredAt.truncatedTo(DAYS),
                     )
                     telemetryService.trackEvent("PrisonerReleased", hmppsEvent.telemetryProperties())
                 }
@@ -46,7 +47,7 @@ class MessageListener(
                         hmppsEvent.additionalInformation.nomsNumber(),
                         hmppsEvent.additionalInformation.prisonId(),
                         hmppsEvent.additionalInformation.reason(),
-                        hmppsEvent.occurredAt,
+                        hmppsEvent.occurredAt.truncatedTo(DAYS),
                     )
                     telemetryService.trackEvent("PrisonerRecalled", hmppsEvent.telemetryProperties())
                 }
@@ -65,6 +66,7 @@ fun AdditionalInformation.prisonId() = this["prisonId"] as String
 fun AdditionalInformation.reason() = this["reason"] as String
 fun AdditionalInformation.details() = this["details"] as String?
 fun HmppsEvent.telemetryProperties() = listOfNotNull(
+    "occurredAt" to occurredAt.toString(),
     "nomsNumber" to additionalInformation.nomsNumber(),
     "institution" to additionalInformation.prisonId(),
     "reason" to additionalInformation.reason(),
