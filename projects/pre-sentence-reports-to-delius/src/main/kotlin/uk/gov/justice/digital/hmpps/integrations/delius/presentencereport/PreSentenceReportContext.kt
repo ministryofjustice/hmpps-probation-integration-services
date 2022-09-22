@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.controller
+package uk.gov.justice.digital.hmpps.integrations.delius.presentencereport
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import java.util.Date

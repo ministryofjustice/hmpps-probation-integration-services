@@ -55,11 +55,10 @@ WHERE 1=1
   AND ca.SOFT_DELETED = 0
   AND o.SOFT_DELETED = 0
   AND mo.SOFT_DELETED = 0
-  AND a.no_fixed_abode = 'N'
   AND a.SOFT_DELETED = 0
   AND ast.CODE_VALUE = 'M'
  """,
         nativeQuery = true
     )
-    fun getCourtReportContext(reportId: String): String?
+    fun getCourtReportContextJson(reportId: String): String?
 }

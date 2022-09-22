@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="pre-sentence-reports-to-delius" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <option name="ACTIVE_PROFILES" value="dev" />
+    <option name="ACTIVE_PROFILES" value="oracle" />
     <module name="probation-integration-services.pre-sentence-reports-to-delius.dev" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="uk.gov.justice.digital.hmpps.App" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/projects/pre-sentence-reports-to-delius" />

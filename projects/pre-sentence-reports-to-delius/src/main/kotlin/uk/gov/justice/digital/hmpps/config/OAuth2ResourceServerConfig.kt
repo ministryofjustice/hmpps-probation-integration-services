@@ -12,7 +12,7 @@ class OAuth2ResourceServerConfig : OAuth2ClientSecurityConfig() {
     fun configureResourceServer(http: HttpSecurity): SecurityFilterChain {
         filterChain(http)
             .oauth2ResourceServer {
-                it.jwt()
+                it.jwt().jwtAuthenticationConverter(AuthAwareTokenConverter())
             }
         return http.build()
     }
