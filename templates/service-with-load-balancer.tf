@@ -33,10 +33,6 @@ resource "aws_iam_role_policy_attachment" "$SERVICE_NAME" {
   policy_arn = aws_iam_policy.access_ssm_parameters.arn
 }
 
-resource "random_id" "$SERVICE_NAME" {
-  byte_length = 8
-}
-
 resource "aws_lb" "$SERVICE_NAME" {
   internal = false
   subnets = [
