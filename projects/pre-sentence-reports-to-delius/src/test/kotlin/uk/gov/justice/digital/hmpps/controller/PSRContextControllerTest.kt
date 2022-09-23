@@ -1,12 +1,15 @@
 package uk.gov.justice.digital.hmpps.controller
 
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.Address
 import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.LocalJusticeArea
@@ -29,6 +32,14 @@ class PSRContextControllerTest {
         whenever(preSentenceReportService.getPreSentenceReportContext("1")).thenReturn(getPreSentenceReportContext())
         val result = pSRContextController.getPreSentenceReportContext("1")
         Assertions.assertNotNull(result)
+    }
+
+    @Test
+    fun `Get pre sentence report context not found`() {
+        whenever(preSentenceReportService.getPreSentenceReportContext("1")).thenThrow(NotFoundException("Not found"))
+
+        val exception: Exception = assertThrows(NotFoundException::class.java) { pSRContextController.getPreSentenceReportContext("1") }
+        assertTrue(exception.message!!.contains("Not found"))
     }
 
     private fun getPreSentenceReportContext(): PreSentenceReportContext {
