@@ -6,12 +6,33 @@ on:
     inputs:
       project_name:
         description: Project name
-        required: false
+        required: true
         type: string
+      create_database_credentials:
+        description: Will the service access the Delius database?
+        default: true
+        required: true
+        type: boolean
+      create_sentry_project:
+        description: Will the service use Sentry for capturing exceptions?
+        default: true
+        required: true
+        type: boolean
+      create_oauth_client:
+        description: Will the service consume another HTTP API that requires HMPPS Auth client credentials?
+        default: true
+        required: true
+        type: boolean
+      create_ingress:
+        description: Will the service provide a HTTP API that requires access from MOJ Cloud Platform?
+        default: false
+        required: true
+        type: boolean
 
 jobs:
   auth-setup:
     runs-on: ubuntu-latest
+    if: ${{ inputs.create_oauth_client }}
     steps:
       - run: |
           echo Request HMPPS Auth credentials: https://mojdt.slack.com/archives/C02S71KUBED
@@ -22,6 +43,7 @@ jobs:
 
   db-secrets-setup:
     runs-on: ubuntu-latest
+    if: ${{ inputs.create_database_credentials }}
     steps:
       - uses: actions/checkout@v3
 
@@ -65,8 +87,13 @@ jobs:
           path: hmpps-delius-core-terraform
           repository: ministryofjustice/hmpps-delius-core-terraform
 
-      - name: Render Terraform template
+      - name: Render Terraform service template
+        if: ${{ ! inputs.create_ingress }}
         run: sed 's/$SERVICE_NAME/${{ inputs.project_name }}/' templates/service.tf > 'hmpps-delius-core-terraform/application/probation-integration-services/${{ inputs.project_name }}.tf'
+
+      - name: Render Terraform service with load-balancer template
+        if: ${{ inputs.create_ingress }}
+        run: sed 's/$SERVICE_NAME/${{ inputs.project_name }}/' templates/service-with-load-balancer.tf > 'hmpps-delius-core-terraform/application/probation-integration-services/${{ inputs.project_name }}.tf'
 
       - name: Create pull request
         id: pr
@@ -86,6 +113,7 @@ jobs:
 
   sentry-setup:
     runs-on: ubuntu-latest
+    if: ${{ inputs.create_sentry_project }}
     steps:
       # convert project name to environment variable (e.g. 'hello-world' -> 'HELLO_WORLD')
       - id: project_name
