@@ -55,7 +55,7 @@ class PsrContextIntegrationTest {
     fun `get PSR Context not found`() {
 
         val reportId = "123:123:123"
-        whenever(courtReportRepository.getCourtReportContextJson("%$reportId"))
+        whenever(courtReportRepository.getCourtReportContextJson(reportId))
             .thenReturn(null)
 
         mockMvc.perform(
@@ -69,7 +69,7 @@ class PsrContextIntegrationTest {
     fun `get PSR Context`() {
 
         val reportId = "123:123:123"
-        whenever(courtReportRepository.getCourtReportContextJson("%$reportId"))
+        whenever(courtReportRepository.getCourtReportContextJson(reportId))
             .thenReturn(objectMapper.writeValueAsString(getPreSentenceReportContext()))
 
         val result = mockMvc.perform(

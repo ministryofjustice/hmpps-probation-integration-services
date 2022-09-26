@@ -51,8 +51,7 @@ FROM OFFENDER o
          LEFT OUTER JOIN OFFENDER_ADDRESS a ON a.OFFENDER_ID = o.OFFENDER_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST ast ON ast.STANDARD_REFERENCE_LIST_ID = a.ADDRESS_STATUS_ID
 WHERE
-  d.external_reference like :reportId
-  AND d.table_name = 'COURT_REPORT'
+  lower(substr(d.external_reference, -36, 36)) = lower(:reportId)
   AND cr.SOFT_DELETED = 0
   AND ca.SOFT_DELETED = 0
   AND o.SOFT_DELETED = 0
