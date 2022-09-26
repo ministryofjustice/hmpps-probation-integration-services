@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsEvent
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit.DAYS
 
 @ExtendWith(MockitoExtension::class)
 internal class MessageListenerTest {
@@ -51,14 +52,14 @@ internal class MessageListenerTest {
     fun releaseMessagesAreHandled() {
         messageListener.receive(testEvent.copy(eventType = "prison-offender-events.prisoner.released"))
 
-        verify(releaseService).release("Z0001ZZ", "ZZZ", "Test data", testEvent.occurredAt)
+        verify(releaseService).release("Z0001ZZ", "ZZZ", "Test data", testEvent.occurredAt.truncatedTo(DAYS))
     }
 
     @Test
     fun recallMessagesAreHandled() {
         messageListener.receive(testEvent.copy(eventType = "prison-offender-events.prisoner.received"))
 
-        verify(recallService).recall("Z0001ZZ", "ZZZ", "Test data", testEvent.occurredAt)
+        verify(recallService).recall("Z0001ZZ", "ZZZ", "Test data", testEvent.occurredAt.truncatedTo(DAYS))
     }
 
     @Test
