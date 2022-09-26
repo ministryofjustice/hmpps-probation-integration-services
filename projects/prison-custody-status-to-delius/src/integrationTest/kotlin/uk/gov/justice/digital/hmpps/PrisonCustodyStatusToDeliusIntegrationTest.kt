@@ -36,6 +36,7 @@ import uk.gov.justice.digital.hmpps.listener.nomsNumber
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit.DAYS
 
 @SpringBootTest
 @ActiveProfiles("integration-test")
@@ -91,7 +92,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         // and the release information is recorded correctly
         val release = getReleases(custody).single()
         assertThat(release.createdDatetime, isCloseTo(ZonedDateTime.now()))
-        assertThat(release.date.withZoneSameInstant(EuropeLondon), equalTo(message.occurredAt))
+        assertThat(release.date.withZoneSameInstant(EuropeLondon), equalTo(message.occurredAt.truncatedTo(DAYS)))
         assertThat(release.person.nomsNumber, equalTo(message.additionalInformation.nomsNumber()))
 
         // and the history is recorded correctly
@@ -109,6 +110,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         verify(telemetryService).trackEvent(
             "PrisonerReleased",
             mapOf(
+                "occurredAt" to message.occurredAt.toString(),
                 "nomsNumber" to "A0001AA",
                 "institution" to "WSI",
                 "reason" to "RELEASED",
@@ -134,7 +136,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         // and the recall information is recorded correctly
         val recall = getRecalls(custody).single()
         assertThat(recall.createdDatetime, isCloseTo(ZonedDateTime.now()))
-        assertThat(recall.date.withZoneSameInstant(EuropeLondon), equalTo(message.occurredAt))
+        assertThat(recall.date.withZoneSameInstant(EuropeLondon), equalTo(message.occurredAt.truncatedTo(DAYS)))
 
         // and the history is recorded correctly
         val custodyHistory = getCustodyHistory(custody)
@@ -160,6 +162,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         verify(telemetryService).trackEvent(
             "PrisonerRecalled",
             mapOf(
+                "occurredAt" to message.occurredAt.toString(),
                 "nomsNumber" to "A0002AA",
                 "institution" to "WSI",
                 "reason" to "ADMISSION",

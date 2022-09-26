@@ -5,5 +5,9 @@ CVE-2020-36518
 CVE-2017-18640
 CVE-2022-25857
 
-# Reason: truncation of integers in this context is unlikely and of low risk
-CVE-2022-34169
+# Reason:
+#   Given the CVE description, the changes in the JDK source code and the information publicly available we believe that Logstash is not affected by any of the aforementioned flaws.
+#   Logstash bundles a JDK with all download artifacts ( archives, RPM/DEB packages, Docker images ).
+#   Logstash versions 8.4.0 and 7.17.6 that are released on 2022-08-24 bundle unaffected JDK versions. Namely, Logstash version 8.4.0 bundles JDK 17.0.4 and Logstash version 7.17.6 bundles JDK 11.0.16.
+#   - https://discuss.elastic.co/t/elastic-stack-8-4-0-7-17-6-security-statement/312823
+CVE-2022-25647
