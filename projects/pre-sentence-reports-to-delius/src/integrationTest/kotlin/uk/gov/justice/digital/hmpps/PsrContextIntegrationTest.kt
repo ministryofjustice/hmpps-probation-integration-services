@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.Name
 import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.Offence
 import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.PreSentenceReportContext
 import java.time.LocalDate
+import java.util.UUID
 
 @ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -54,7 +55,7 @@ class PsrContextIntegrationTest {
     @Test
     fun `get PSR Context not found`() {
 
-        val reportId = "123:123:123"
+        val reportId = UUID.randomUUID().toString()
         whenever(courtReportRepository.getCourtReportContextJson(reportId))
             .thenReturn(null)
 
@@ -68,7 +69,7 @@ class PsrContextIntegrationTest {
     @Test
     fun `get PSR Context`() {
 
-        val reportId = "123:123:123"
+        val reportId = UUID.randomUUID().toString()
         whenever(courtReportRepository.getCourtReportContextJson(reportId))
             .thenReturn(objectMapper.writeValueAsString(getPreSentenceReportContext()))
 
@@ -89,7 +90,7 @@ class PsrContextIntegrationTest {
             null,
             JsonNode::class.java
         )!!
-        return authResponse["access_token"].toString().replace("\"", "")
+        return authResponse["access_token"].asText()
     }
 
     private fun getPreSentenceReportContext(): PreSentenceReportContext {
