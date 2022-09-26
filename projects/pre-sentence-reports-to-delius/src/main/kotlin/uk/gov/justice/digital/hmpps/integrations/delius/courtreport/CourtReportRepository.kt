@@ -40,6 +40,7 @@ SELECT json_object(
     )
 FROM OFFENDER o
          JOIN COURT_REPORT cr ON cr.OFFENDER_ID = o.OFFENDER_ID
+         JOIN DOCUMENT d ON d.primary_key_id = cr.court_report_id
          JOIN COURT_APPEARANCE ca ON ca.COURT_APPEARANCE_ID = cr.COURT_APPEARANCE_ID
          JOIN EVENT e ON ca.event_id = e.event_id
          JOIN COURT c ON c.COURT_ID = ca.COURT_ID
@@ -49,8 +50,9 @@ FROM OFFENDER o
          LEFT OUTER JOIN ADDITIONAL_OFFENCE ao ON ao.EVENT_ID = e.EVENT_ID
          LEFT OUTER JOIN OFFENDER_ADDRESS a ON a.OFFENDER_ID = o.OFFENDER_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST ast ON ast.STANDARD_REFERENCE_LIST_ID = a.ADDRESS_STATUS_ID
-WHERE 1=1 
-  AND cr.COURT_REPORT_ID = :reportId
+WHERE
+  d.external_reference like :reportId
+  AND d.table_name = 'COURT_REPORT'
   AND cr.SOFT_DELETED = 0
   AND ca.SOFT_DELETED = 0
   AND o.SOFT_DELETED = 0

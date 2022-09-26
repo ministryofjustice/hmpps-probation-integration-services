@@ -54,12 +54,12 @@ class PsrContextIntegrationTest {
     @Test
     fun `get PSR Context not found`() {
 
-        val courtReportId: Long = CourtReportGenerator.DEFAULT.id
-        whenever(courtReportRepository.getCourtReportContextJson(courtReportId.toString()))
+        val reportId = "123:123:123"
+        whenever(courtReportRepository.getCourtReportContextJson("%$reportId"))
             .thenReturn(null)
 
         mockMvc.perform(
-            get("/context/$courtReportId")
+            get("/context/$reportId")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer ${getToken()}")
         )
             .andExpect(status().isNotFound)
@@ -68,12 +68,12 @@ class PsrContextIntegrationTest {
     @Test
     fun `get PSR Context`() {
 
-        val courtReportId: Long = CourtReportGenerator.DEFAULT.id
-        whenever(courtReportRepository.getCourtReportContextJson(courtReportId.toString()))
+        val reportId = "123:123:123"
+        whenever(courtReportRepository.getCourtReportContextJson("%$reportId"))
             .thenReturn(objectMapper.writeValueAsString(getPreSentenceReportContext()))
 
         val result = mockMvc.perform(
-            get("/context/$courtReportId")
+            get("/context/$reportId")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer ${getToken()}")
         )
             .andExpect(status().is2xxSuccessful)

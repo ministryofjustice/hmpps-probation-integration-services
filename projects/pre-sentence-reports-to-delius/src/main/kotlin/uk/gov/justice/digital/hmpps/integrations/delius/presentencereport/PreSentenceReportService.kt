@@ -11,7 +11,7 @@ class PreSentenceReportService(
     private val objectMapper: ObjectMapper
 ) {
     fun getPreSentenceReportContext(reportId: String): PreSentenceReportContext {
-        val json = courtReportRepository.getCourtReportContextJson(reportId)
+        val json = courtReportRepository.getCourtReportContextJson("%$reportId")
             ?: throw NotFoundException("CourtReport", "id", reportId)
         return objectMapper.readValue(json, PreSentenceReportContext::class.java)
     }
