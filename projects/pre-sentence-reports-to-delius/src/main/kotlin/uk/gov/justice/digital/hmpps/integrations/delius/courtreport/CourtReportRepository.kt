@@ -16,7 +16,7 @@ SELECT json_object(
        'middleName' value o.SECOND_NAME),
        'dateOfBirth' value o.DATE_OF_BIRTH_DATE,
        'address' value json_object(
-       'noFixedAbode' value a.NO_FIXED_ABODE,
+       'noFixedAbode' value CASE WHEN a.NO_FIXED_ABODE = 'Y' THEN 'true' ELSE 'false' END FORMAT JSON,
        'buildingName' value a.BUILDING_NAME,
        'addressNumber' value a.ADDRESS_NUMBER,
        'streetName' value a.STREET_NAME,

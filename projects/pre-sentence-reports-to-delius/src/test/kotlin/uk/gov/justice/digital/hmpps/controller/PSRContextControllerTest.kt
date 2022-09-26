@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.Address
@@ -17,7 +18,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.Name
 import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.Offence
 import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.PreSentenceReportContext
 import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.PreSentenceReportService
-import java.text.SimpleDateFormat
+import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 class PSRContextControllerTest {
@@ -32,6 +33,7 @@ class PSRContextControllerTest {
         whenever(preSentenceReportService.getPreSentenceReportContext("1")).thenReturn(getPreSentenceReportContext())
         val result = pSRContextController.getPreSentenceReportContext("1")
         Assertions.assertNotNull(result)
+        verify(preSentenceReportService).getPreSentenceReportContext("1")
     }
 
     @Test
@@ -44,14 +46,12 @@ class PSRContextControllerTest {
 
     private fun getPreSentenceReportContext(): PreSentenceReportContext {
 
-        val formatter = SimpleDateFormat("dd-MM-yyyy")
-
         return PreSentenceReportContext(
             "X123123",
             Name("forename", "surename", "middlename"),
-            formatter.parse("12-12-2000"),
+            LocalDate.of(2000, 1, 20),
             "PNC123",
-            Address("N", "building name", "123", "StreetName", "Town", "District", "County", "NE1 2SW"),
+            Address(false, "building name", "123", "StreetName", "Town", "District", "County", "NE1 2SW"),
             Offence("MainOffence"),
             listOf(Offence("other offence")),
             Court("CourtName", LocalJusticeArea("Local justice area"))

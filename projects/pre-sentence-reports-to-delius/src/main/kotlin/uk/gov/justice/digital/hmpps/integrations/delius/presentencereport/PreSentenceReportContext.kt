@@ -1,13 +1,13 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.presentencereport
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import java.util.Date
+import java.time.LocalDate
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class PreSentenceReportContext(
     val crn: String,
     val name: Name,
-    val dateOfBirth: Date,
+    val dateOfBirth: LocalDate,
     val pnc: String?,
     val address: Address?,
     val mainOffence: Offence,
@@ -24,7 +24,7 @@ data class Name(
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class Address(
-    val noFixedAbode: String?,
+    val noFixedAbode: Boolean,
     val buildingName: String?,
     val addressNumber: String?,
     val streetName: String?,
@@ -32,14 +32,7 @@ data class Address(
     val district: String?,
     val county: String?,
     val postcode: String?,
-) {
-    fun getNoFixedAbode(): Boolean {
-        if (noFixedAbode == null || noFixedAbode == "N") {
-            return false
-        }
-        return true
-    }
-}
+)
 
 data class Offence(
     val description: String,
