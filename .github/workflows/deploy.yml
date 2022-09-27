@@ -124,6 +124,7 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         run: |
+          echo "/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin" >> $GITHUB_PATH
           brew install gomplate
           old_task_definition=$(aws ecs describe-task-definition --task-definition "${{ steps.env.outputs.short-name }}-${{ matrix.project }}-task-definition" --include TAGS | jq '.taskDefinition | del(.containerDefinitions[0].command, .compatibilities, .taskDefinitionArn, .requiresAttributes, .revision, .status, .registeredAt, .registeredBy)')
           new_task_definition=$(yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' <(echo "${old_task_definition}") <(gomplate --file templates/task-definition.yml --context values=projects/${{ matrix.project }}/deploy/merged.yml) --output-format json | tee task-definition.json)
