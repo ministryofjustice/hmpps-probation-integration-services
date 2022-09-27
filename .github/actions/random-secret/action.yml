@@ -20,7 +20,7 @@ runs:
   using: composite
   steps:
     - run: |
-        brew install pwgen
+        sudo apt-get install pwgen
         gh secret set '${{ inputs.name }}' --body "$(pwgen -N1 '${{ inputs.length }}')" --env '${{ inputs.environment }}' --app actions
       shell: bash
       env:
