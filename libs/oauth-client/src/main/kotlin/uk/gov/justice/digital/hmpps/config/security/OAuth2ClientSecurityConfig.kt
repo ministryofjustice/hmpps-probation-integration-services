@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.config.security
 
+import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -11,6 +12,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
+@ConditionalOnDefaultWebSecurity
 class OAuth2ClientSecurityConfig : SecurityConfig() {
 
     @Bean
