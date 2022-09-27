@@ -192,7 +192,7 @@ SELECT json_object(
                                                                        ABSENT ON NULL RETURNING CLOB) RETURNING CLOB)
                                           FROM OFFENDER_ADDRESS oa
                                                    LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST type
-                                                                   ON oa.ADDRESS_STATUS_ID = type.STANDARD_REFERENCE_LIST_ID
+                                                                   ON oa.ADDRESS_TYPE_ID = type.STANDARD_REFERENCE_LIST_ID
                                                    LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST status
                                                                    ON oa.ADDRESS_STATUS_ID = status.STANDARD_REFERENCE_LIST_ID
                                           WHERE oa.OFFENDER_ID = o.OFFENDER_ID
