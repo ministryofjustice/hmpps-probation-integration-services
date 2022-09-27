@@ -2,8 +2,6 @@ database:
   access:
     username_key: /person-search-index-from-delius/db-username
     password_key: /person-search-index-from-delius/db-password
-    tables:
-      - audited_interaction
 
   audit:
     username: PersonSearchIndexer

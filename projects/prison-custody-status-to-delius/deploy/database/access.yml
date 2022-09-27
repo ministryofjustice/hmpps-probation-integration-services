@@ -17,6 +17,8 @@ database:
       - rejected_transfer_diary
       - release
       - responsible_officer
+    packages:
+      - pkg_triggersupport # for caseload rebuild
 
   audit:
     username: PrisonCustodyStatusService
