@@ -12,11 +12,11 @@ spring:
   security.oauth2:
     client:
       registration:
-        pre-sentence-reports:
+        pre-sentence-reports-to-delius:
           provider: hmpps-auth
           authorization-grant-type: client_credentials
-          client-id: ${pre-sentence-reports-to-delius.client-id}
-          client-secret: ${pre-sentence-reports-to-delius.client-secret}
+          client-id: ${integrations.pre-sentence-reports.client-id}
+          client-secret: ${integrations.pre-sentence-reports.client-secret}
       provider:
         hmpps-auth:
           token-uri: http://localhost:${wiremock.port}/auth/oauth/token

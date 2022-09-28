@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.config.PsrFeignConfig
 import java.net.URI
 
 @FeignClient(
-    name = "pre-sentence-reports",
+    name = "pre-sentence-service",
     url = "https://dummy-url/to/be/overridden",
     configuration = [PsrFeignConfig::class]
 )
