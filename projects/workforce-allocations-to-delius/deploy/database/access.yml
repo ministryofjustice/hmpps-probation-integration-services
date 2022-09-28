@@ -12,6 +12,8 @@ database:
       - iaps_offender
       - iaps_event
       - iaps_rqmnt
+    packages:
+      - pkg_triggersupport # for caseload rebuild
 
   audit:
     username: HMPPSAllocations
