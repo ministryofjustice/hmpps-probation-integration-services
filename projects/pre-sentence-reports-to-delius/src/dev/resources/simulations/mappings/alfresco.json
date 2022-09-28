@@ -71,7 +71,7 @@
             },
             "bodyPatterns": [
               {
-                "contains": "COURT_REPORT"
+                "contains": "COURTREPORT"
               }
             ]
           },

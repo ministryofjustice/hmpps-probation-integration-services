@@ -66,7 +66,7 @@ class DocumentService(
         bodyBuilder.part("author", "Service,Pre-Sentence", MediaType.TEXT_PLAIN)
         bodyBuilder.part("filedata", file, MediaType.APPLICATION_OCTET_STREAM).filename(document.name)
         bodyBuilder.part("docType", "DOCUMENT", MediaType.TEXT_PLAIN)
-        bodyBuilder.part("entityType", "COURT_REPORT", MediaType.TEXT_PLAIN)
+        bodyBuilder.part("entityType", "COURTREPORT", MediaType.TEXT_PLAIN)
 
         return bodyBuilder.build()
     }
