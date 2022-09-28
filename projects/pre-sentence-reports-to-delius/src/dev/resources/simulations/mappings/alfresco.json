@@ -58,7 +58,7 @@
             },
             "bodyPatterns": [
               {
-                "contains": "pre-sentence-reports-to-delius"
+                "contains": "Service,Pre-Sentence"
               }
             ]
           },
