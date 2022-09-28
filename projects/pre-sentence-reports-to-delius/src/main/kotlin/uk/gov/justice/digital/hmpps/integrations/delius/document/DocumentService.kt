@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.MultiValueMap
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.config.ServiceContext
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
@@ -64,7 +63,7 @@ class DocumentService(
         val bodyBuilder = MultipartBodyBuilder()
         bodyBuilder.part("CRN", crn, MediaType.TEXT_PLAIN)
         bodyBuilder.part("entityId", document.courtReportId.toString(), MediaType.TEXT_PLAIN)
-        bodyBuilder.part("author", ServiceContext.servicePrincipal()!!.username, MediaType.TEXT_PLAIN)
+        bodyBuilder.part("author", "Service,Pre-Sentence", MediaType.TEXT_PLAIN)
         bodyBuilder.part("filedata", file, MediaType.APPLICATION_OCTET_STREAM).filename(document.name)
         bodyBuilder.part("docType", "DOCUMENT", MediaType.TEXT_PLAIN)
         bodyBuilder.part("entityType", "COURT_REPORT", MediaType.TEXT_PLAIN)
