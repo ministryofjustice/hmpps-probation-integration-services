@@ -36,6 +36,9 @@
         },
         "otherIds.pncNumberLongYear": {
           "type": "keyword"
+        },
+        "contactDetails.addresses":{
+          "type": "nested"
         }
       }
     }
