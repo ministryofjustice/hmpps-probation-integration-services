@@ -8,6 +8,7 @@ include(
     "pre-sentence-reports-to-delius",
     "prison-custody-status-to-delius",
     "person-search-index-from-delius",
+    "risk-assessment-scores-to-delius",
     // ^ add new projects here
 )
 
