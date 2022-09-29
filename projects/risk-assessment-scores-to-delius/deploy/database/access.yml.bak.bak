@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /$SERVICE_NAME/db-username
+    password_key: /$SERVICE_NAME/db-password
+
+  audit:
+    username: RiskAssessmentScoresToDelius
+    forename: Probation Integration # TODO change this to something meaningful for your service
+    surname: Service
