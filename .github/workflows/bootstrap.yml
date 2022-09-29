@@ -98,8 +98,8 @@ jobs:
 
       - name: Render project template
         run: |
-          find templates/projects/${{ inputs.project_template }} -type f -exec sed -i.bak 's/$SERVICE_NAME_CAMELCASE/${{ steps.project_name.outputs.camel_case }}/g' {} \;
-          find templates/projects/${{ inputs.project_template }} -type f -exec sed -i.bak 's/$SERVICE_NAME/${{ inputs.project_name }}/g' {} \;
+          find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME_CAMELCASE/${{ steps.project_name.outputs.camel_case }}/g' {} \;
+          find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME/${{ inputs.project_name }}/g' {} \;
           cp -R templates/projects/${{ inputs.project_template }} projects/${{ inputs.project_name }}
           sed -i '/add new projects here/i \    "${{ inputs.project_name }}",' settings.gradle.kts
 
