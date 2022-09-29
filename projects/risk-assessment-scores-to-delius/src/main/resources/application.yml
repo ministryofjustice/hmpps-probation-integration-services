@@ -1,0 +1,53 @@
+# Default config
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.Oracle12cDialect
+    hibernate.ddl-auto: validate
+  jms:
+    template.default-destination: message-queue
+    listener:
+      concurrency: 1
+      max-concurrency: 10
+      acknowledge-mode: client
+
+delius.db.username: RiskAssessmentScoresToDelius # Should match value in [deploy/database/access.yml].
+
+management.endpoints.web:
+  base-path: /
+  exposure.include: "health"
+
+
+---
+# Shared dev/test config
+spring.config.activate.on-profile: [ "dev", "integration-test", "oracle" ]
+
+spring:
+  activemq.broker-url: vm://localhost?broker.persistent=false&broker.useShutdownHook=false
+  datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
+  jpa.hibernate.ddl-auto: create-drop
+
+management.endpoints.web:
+  base-path: /
+  exposure.include: [ "hawtio", "health", "jolokia" ]
+hawtio.authenticationEnabled: false
+
+logging.level:
+  uk.gov.justice.digital.hmpps: DEBUG
+  org.hibernate.tool.schema: ERROR
+
+---
+spring.config.activate.on-profile: integration-test
+spring.datasource.url: jdbc:h2:file:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
+
+---
+spring.config.activate.on-profile: oracle
+spring:
+  datasource:
+    url: 'jdbc:oracle:thin:@//localhost:1521/XEPDB1'
+    username: delius_pool
+    password: NDelius1
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.Oracle12cDialect
+    hibernate.ddl-auto: validate
+delius.db.username: NationalUser
