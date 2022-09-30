@@ -24,7 +24,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.getByEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceConditionService
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.PrisonManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.getByPersonId
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.getByNomisCdeCodeAndIdEstablishmentIsTrue
@@ -120,7 +120,7 @@ class RecallService(
 
         // create alert contact
         val orderManager = orderManagerRepository.getByEventId(event.id)
-        val personManager = personManagerRepository.getByPersonId(person.id)
+        val personManager = personManagerRepository.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)
         val contact = contactRepository.save(
             Contact(
                 type = contactTypeRepository.getByCode(ContactTypeCode.BREACH_PRISON_RECALL.code),
