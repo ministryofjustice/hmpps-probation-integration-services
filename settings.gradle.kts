@@ -1,5 +1,6 @@
 rootProject.name = "probation-integration-services"
 include(
+    "libs:audit",
     "libs:commons",
     "libs:dev-tools",
     "libs:oauth-client",

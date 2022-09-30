@@ -11,7 +11,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
-import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
+import uk.gov.justice.digital.hmpps.security.ServicePrincipal
 import uk.gov.justice.digital.hmpps.user.User
 
 @ExtendWith(MockitoExtension::class)

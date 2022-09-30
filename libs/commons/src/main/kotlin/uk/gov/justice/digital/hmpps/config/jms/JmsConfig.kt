@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.jms
+package uk.gov.justice.digital.hmpps.config.jms
 
 import com.amazon.sqs.javamessaging.ProviderConfiguration
 import com.amazon.sqs.javamessaging.SQSConnectionFactory

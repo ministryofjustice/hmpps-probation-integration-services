@@ -1,7 +1,7 @@
-package uk.gov.justice.digital.hmpps.config.datasource
+package uk.gov.justice.digital.hmpps.datasource
 
 import org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl
-import uk.gov.justice.digital.hmpps.config.ServiceContext
+import uk.gov.justice.digital.hmpps.security.ServiceContext
 import java.sql.Connection
 
 open class DeliusConnectionProvider : DatasourceConnectionProviderImpl() {
