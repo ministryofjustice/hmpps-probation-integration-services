@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -27,6 +28,6 @@ internal class IntegrationTest {
     fun `successfully update RSR scores`() {
         val message = MessageGenerator.RSR_SCORES_DETERMINED
         jmsTemplate.convertSendAndWait(queueName, message)
-        telemetryService.trackEvent("RsrScoresUpdated", message.telemetryProperties())
+        verify(telemetryService).trackEvent("RsrScoresUpdated", message.telemetryProperties())
     }
 }
