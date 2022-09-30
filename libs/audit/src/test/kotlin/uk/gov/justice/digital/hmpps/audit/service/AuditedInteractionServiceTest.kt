@@ -25,7 +25,7 @@ import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.audit.BusinessInteractionNotFoundException
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
-import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
+import uk.gov.justice.digital.hmpps.security.ServicePrincipal
 import uk.gov.justice.digital.hmpps.user.User
 import java.time.ZonedDateTime
 

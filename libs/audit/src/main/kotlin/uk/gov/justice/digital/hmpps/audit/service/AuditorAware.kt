@@ -4,8 +4,8 @@ import org.springframework.data.domain.AuditorAware
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.config.ServiceContext
-import uk.gov.justice.digital.hmpps.config.security.ServicePrincipal
+import uk.gov.justice.digital.hmpps.security.ServiceContext
+import uk.gov.justice.digital.hmpps.security.ServicePrincipal
 import java.util.Optional
 
 @EnableJpaAuditing(auditorAwareRef = "auditorAware", dateTimeProviderRef = "auditingDateTimeProvider")

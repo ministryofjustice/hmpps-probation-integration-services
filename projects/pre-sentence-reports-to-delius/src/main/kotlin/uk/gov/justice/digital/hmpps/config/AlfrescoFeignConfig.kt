@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.config
 
 import feign.RequestInterceptor
 import org.springframework.context.annotation.Bean
+import uk.gov.justice.digital.hmpps.security.ServiceContext
 
 class AlfrescoFeignConfig {
     @Bean

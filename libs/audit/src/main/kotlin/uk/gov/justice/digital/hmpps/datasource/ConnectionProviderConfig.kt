@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.config.datasource
+package uk.gov.justice.digital.hmpps.datasource
 
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer
 import org.springframework.context.annotation.Bean

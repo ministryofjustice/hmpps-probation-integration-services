@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.config.security
+package uk.gov.justice.digital.hmpps.security
 
 class ServicePrincipal(
     val username: String,
