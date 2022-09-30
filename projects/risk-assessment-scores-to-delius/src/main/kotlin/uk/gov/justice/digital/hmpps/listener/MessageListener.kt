@@ -46,8 +46,8 @@ class MessageListener(
     }
 }
 
-fun HmppsEvent.telemetryProperties() = listOfNotNull(
+fun HmppsEvent.telemetryProperties() = mapOf(
     "occurredAt" to occurredAt.toString(),
     "personReference" to personReference.toString(),
     "additionalInformation" to additionalInformation.toString(),
-).toMap()
+)
