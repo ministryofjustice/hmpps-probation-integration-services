@@ -29,7 +29,7 @@ class MessageListener(
                 riskScoreService.updateRsrScores(
                     hmppsEvent.personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN in ${hmppsEvent.personReference}"),
                     hmppsEvent.additionalInformation["EventNumber"] as Int,
-                    ZonedDateTimeDeserializer.deserialize(hmppsEvent.additionalInformation["AssessmentDate"] as String),
+                    (hmppsEvent.additionalInformation["AssessmentDate"] as String).toDate(),
                     hmppsEvent.additionalInformation["RSRScore"] as Double,
                     hmppsEvent.additionalInformation["RSRBand"] as String,
                     hmppsEvent.additionalInformation["OSPIndecentScore"] as Double,
@@ -51,3 +51,5 @@ fun HmppsEvent.telemetryProperties() = mapOf(
     "personReference" to personReference.toString(),
     "additionalInformation" to additionalInformation.toString(),
 )
+
+fun String.toDate() = ZonedDateTimeDeserializer.deserialize(this)

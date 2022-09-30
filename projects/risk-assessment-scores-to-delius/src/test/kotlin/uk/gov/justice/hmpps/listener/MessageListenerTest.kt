@@ -9,10 +9,10 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import uk.gov.justice.digital.hmpps.MessageGenerator
-import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
 import uk.gov.justice.digital.hmpps.listener.MessageListener
 import uk.gov.justice.digital.hmpps.listener.telemetryProperties
+import uk.gov.justice.digital.hmpps.listener.toDate
 import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -46,7 +46,7 @@ internal class MessageListenerTest {
         verify(riskScoreService).updateRsrScores(
             event.personReference.findCrn()!!,
             event.additionalInformation["EventNumber"] as Int,
-            ZonedDateTimeDeserializer.deserialize(event.additionalInformation["AssessmentDate"] as String),
+            (event.additionalInformation["AssessmentDate"] as String).toDate(),
             event.additionalInformation["RSRScore"] as Double,
             event.additionalInformation["RSRBand"] as String,
             event.additionalInformation["OSPIndecentScore"] as Double,
