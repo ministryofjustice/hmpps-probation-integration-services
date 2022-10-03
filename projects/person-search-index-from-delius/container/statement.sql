@@ -156,6 +156,7 @@ SELECT json_object(
                        'emailAddresses' VALUE json_array(o.E_MAIL_ADDRESS ABSENT ON NULL RETURNING CLOB),
                        'allowSms' VALUE CASE WHEN o.ALLOW_SMS = 'Y' THEN 'true' ELSE 'false' END FORMAT JSON,
                        'addresses' VALUE (SELECT json_arrayagg(json_object(
+                                                                       'id' VALUE oa.offender_address_id,
                                                                        'from' VALUE
                                                                        to_char(oa.START_DATE, 'yyyy-MM-dd'),
                                                                        'to' VALUE to_char(oa.END_DATE, 'yyyy-MM-dd'),
@@ -192,7 +193,7 @@ SELECT json_object(
                                                                        ABSENT ON NULL RETURNING CLOB) RETURNING CLOB)
                                           FROM OFFENDER_ADDRESS oa
                                                    LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST type
-                                                                   ON oa.ADDRESS_STATUS_ID = type.STANDARD_REFERENCE_LIST_ID
+                                                                   ON oa.ADDRESS_TYPE_ID = type.STANDARD_REFERENCE_LIST_ID
                                                    LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST status
                                                                    ON oa.ADDRESS_STATUS_ID = status.STANDARD_REFERENCE_LIST_ID
                                           WHERE oa.OFFENDER_ID = o.OFFENDER_ID

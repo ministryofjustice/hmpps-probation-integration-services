@@ -1,5 +1,6 @@
 rootProject.name = "probation-integration-services"
 include(
+    "libs:audit",
     "libs:commons",
     "libs:dev-tools",
     "libs:oauth-client",
@@ -7,7 +8,9 @@ include(
     "workforce-allocations-to-delius",
     "pre-sentence-reports-to-delius",
     "prison-custody-status-to-delius",
-    "person-search-index-from-delius"
+    "person-search-index-from-delius",
+    "risk-assessment-scores-to-delius",
+    // ^ add new projects here
 )
 
 // load children from the "projects" directory (and drop the prefix)

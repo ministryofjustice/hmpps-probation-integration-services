@@ -6,11 +6,11 @@ env:
   DELIUS_DB_USERNAME: PreSentenceService # Defined in database/access.yml
 
 secrets:
-  APPLICATIONINSIGHTS_CONNECTION_STRING:                      /application-insights/connection-string
-  AWS_SQS_ACCOUNT-ID:                                         /moj-cloud-platform/aws-account-id
-  SPRING_DATASOURCE_URL:                                      /delius-database/jdbc-url
-  SPRING_DATASOURCE_USERNAME:                                 /pre-sentence-reports-to-delius/db-username
-  SPRING_DATASOURCE_PASSWORD:                                 /pre-sentence-reports-to-delius/db-password
-  INTEGRATIONS_PRE-SENTENCE-REPORTS-TO-DELIUS_CLIENT-ID:      /pre-sentence-reports-to-delius/client-id
-  INTEGRATIONS_PRE-SENTENCE-REPORTS-TO-DELIUS_CLIENT-SECRET:  /pre-sentence-reports-to-delius/client-secret
-  SENTRY_DSN:                                                 /pre-sentence-reports-to-delius/sentry-dsn
+  APPLICATIONINSIGHTS_CONNECTION_STRING:            /application-insights/connection-string
+  AWS_SQS_ACCOUNT-ID:                               /moj-cloud-platform/aws-account-id
+  SPRING_DATASOURCE_URL:                            /delius-database/jdbc-url
+  SPRING_DATASOURCE_USERNAME:                       /pre-sentence-reports-to-delius/db-username
+  SPRING_DATASOURCE_PASSWORD:                       /pre-sentence-reports-to-delius/db-password
+  INTEGRATIONS_PRE-SENTENCE-REPORTS_CLIENT-ID:      /pre-sentence-reports-to-delius/client-id
+  INTEGRATIONS_PRE-SENTENCE-REPORTS_CLIENT-SECRET:  /pre-sentence-reports-to-delius/client-secret
+  SENTRY_DSN:                                       /pre-sentence-reports-to-delius/sentry-dsn

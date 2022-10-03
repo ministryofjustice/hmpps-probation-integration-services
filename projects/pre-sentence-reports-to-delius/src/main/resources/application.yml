@@ -9,16 +9,17 @@ spring:
       concurrency: 1
       max-concurrency: 10
       acknowledge-mode: client
-  security.oauth2.client:
-    registration:
-      pre-sentence-reports:
-        provider: hmpps-auth
-        authorization-grant-type: client_credentials
-        client-id: ${pre-sentence-reports-to-delius.client-id}
-        client-secret: ${pre-sentence-reports-to-delius.client-secret}
-    provider:
-      hmpps-auth:
-        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
+  security.oauth2:
+    client:
+      registration:
+        pre-sentence-reports:
+          provider: hmpps-auth
+          authorization-grant-type: client_credentials
+          client-id: ${integrations.pre-sentence-reports.client-id}
+          client-secret: ${integrations.pre-sentence-reports.client-secret}
+      provider:
+        hmpps-auth:
+          token-uri: http://localhost:${wiremock.port}/auth/oauth/token
 
 delius.db.username: pre-sentence-reports-to-delius
 
@@ -49,6 +50,8 @@ spring:
 
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
+  security.oauth2:
+    resourceserver.jwt.public-key-location: classpath:local-public-key.pub
 
 wiremock:
   enabled: true

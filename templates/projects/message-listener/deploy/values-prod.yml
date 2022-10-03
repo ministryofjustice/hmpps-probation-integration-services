@@ -1,0 +1,6 @@
+environment_name: delius-prod
+
+enabled: false # TODO set this to true when you're ready to deploy your service
+
+env:
+  SENTRY_ENVIRONMENT: prod
