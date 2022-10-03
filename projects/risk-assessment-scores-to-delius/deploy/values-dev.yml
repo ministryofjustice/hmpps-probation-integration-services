@@ -1,7 +1,5 @@
 environment_name: delius-test
 
-enabled: false # TODO set this to true when you're ready to deploy your service
-
 env:
   SENTRY_ENVIRONMENT: dev
   LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG

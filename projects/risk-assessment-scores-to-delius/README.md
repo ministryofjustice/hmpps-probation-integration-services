@@ -10,28 +10,27 @@ Sample message:
 
 ```json
 {
-  "eventType": "risk-assessment.scores.determined",
+  "eventType": "risk-assessment.scores.rsr.determined",
   "version": 1,
   "description": "Risk assessment scores have been determined",
-  "detailUrl": "https://some-url-where-we-can-get-more-info",
-  "occurredAt": "2022-12-04T10:42:43+00:00",
+  "detailUrl": "https://some-url-where-we-can-get-more-info-this-might-not-exist",
+  "occurredAt": "2022-09-22T12:16:04+01:00",
   "additionalInformation": {
-    "RSRScore": 0,
-    "RSRBand": 0,
-    "OSPIndecentScore": 0,
-    "OSPIndecentBand": 0,
-    "OSPContactScore": 0,
-    "OSPContactBand": 0,
-    "EventNumber": 0,
-    "OGRS3Yr1": 0,
-    "OGRS3Yr2": 0,
-    "AssessmentDate": "2022-12-04T10:42:43+00:00"
+    "RSRScore": 45.33,
+    "RSRBand": "H",
+    "RSRStaticOrDynamic": "STATIC",
+    "OSPIndecentScore": 5.79,
+    "OSPIndecentBand": "H",
+    "OSPContactScore": 38.70,
+    "OSPContactBand": "V",
+    "EventNumber": 1,
+    "AssessmentDate": "2022-09-22T12:16:04+01:00"
   },
   "personReference": {
     "identifiers": [
       {
         "type": "CRN",
-        "value": "X08769"
+        "value": "X552020"
       }
     ]
   }
