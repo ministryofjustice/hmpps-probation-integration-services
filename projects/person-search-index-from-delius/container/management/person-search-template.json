@@ -8,6 +8,51 @@
         "number_of_shards": "1",
         "number_of_replicas": "2",
         "default_pipeline": "person-search-pipeline"
+      },
+      "analysis": {
+        "analyzer": {
+          "streetAnalyzer": {
+            "type": "custom",
+            "tokenizer": "ngram",
+            "filter": [
+              "lowercase",
+              "asciifolding",
+              "street_synonym"
+            ]
+          },
+          "postcodeAnalyzer": {
+            "type": "custom",
+            "tokenizer": "ngram",
+            "filter": [
+              "lowercase"
+            ],
+            "char_filter": [
+              "remove_whitespace"
+            ]
+          }
+        },
+        "char_filter": {
+          "remove_whitespace": {
+            "type": "pattern_replace",
+            "pattern": "(.+)(\\s+)(.+)",
+            "replacement": "$1$3"
+          }
+        },
+        "filter": {
+          "street_synonym": {
+            "type": "synonym",
+            "synonyms": [
+              "av => avenue",
+              "cl => close",
+              "cres => crescent",
+              "ct => court",
+              "ln => lane",
+              "pl => place",
+              "rd => road",
+              "st => street"
+            ]
+          }
+        }
       }
     },
     "mappings": {
@@ -37,8 +82,18 @@
         "otherIds.pncNumberLongYear": {
           "type": "keyword"
         },
-        "contactDetails.addresses":{
-          "type": "nested"
+        "contactDetails.addresses": {
+          "type": "nested",
+          "properties": {
+            "streetName": {
+              "type": "text",
+              "analyzer": "streetAnalyzer"
+            },
+            "postcode": {
+              "type": "text",
+              "analyzer": "postcodeAnalyzer"
+            }
+          }
         }
       }
     }
