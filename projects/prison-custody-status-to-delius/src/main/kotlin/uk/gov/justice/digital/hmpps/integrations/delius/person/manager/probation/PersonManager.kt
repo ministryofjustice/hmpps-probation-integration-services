@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation
 
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
@@ -16,7 +15,6 @@ import javax.persistence.Table
 @Entity
 @Immutable
 @Table(name = "offender_manager")
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
 class PersonManager(
     @Id
     @Column(name = "offender_manager_id", nullable = false)

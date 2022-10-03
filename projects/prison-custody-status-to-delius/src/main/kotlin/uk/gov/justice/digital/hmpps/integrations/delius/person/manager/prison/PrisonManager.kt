@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison
 
-import org.hibernate.annotations.Where
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -26,7 +25,6 @@ import javax.persistence.Version
 @Entity
 @EntityListeners(AuditingEntityListener::class)
 @Table(name = "prison_offender_manager")
-@Where(clause = "soft_deleted = 0")
 class PrisonManager(
     @Id
     @SequenceGenerator(name = "prison_manager_id_generator", sequenceName = "prison_offender_manager_id_seq", allocationSize = 1)
