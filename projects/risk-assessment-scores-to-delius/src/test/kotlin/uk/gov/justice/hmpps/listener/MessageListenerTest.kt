@@ -11,8 +11,11 @@ import org.mockito.kotlin.verifyNoInteractions
 import uk.gov.justice.digital.hmpps.MessageGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
 import uk.gov.justice.digital.hmpps.listener.MessageListener
+import uk.gov.justice.digital.hmpps.listener.assessmentDate
+import uk.gov.justice.digital.hmpps.listener.ospContact
+import uk.gov.justice.digital.hmpps.listener.ospIndecent
+import uk.gov.justice.digital.hmpps.listener.rsr
 import uk.gov.justice.digital.hmpps.listener.telemetryProperties
-import uk.gov.justice.digital.hmpps.listener.toDate
 import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -46,13 +49,10 @@ internal class MessageListenerTest {
         verify(riskScoreService).updateRsrScores(
             event.personReference.findCrn()!!,
             event.additionalInformation["EventNumber"] as Int,
-            (event.additionalInformation["AssessmentDate"] as String).toDate(),
-            event.additionalInformation["RSRScore"] as Double,
-            event.additionalInformation["RSRBand"] as String,
-            event.additionalInformation["OSPIndecentScore"] as Double,
-            event.additionalInformation["OSPIndecentBand"] as String,
-            event.additionalInformation["OSPContactScore"] as Double,
-            event.additionalInformation["OSPContactBand"] as String,
+            event.assessmentDate(),
+            event.rsr(),
+            event.ospIndecent(),
+            event.ospContact()
         )
         verify(telemetryService).trackEvent("RsrScoresUpdated", event.telemetryProperties())
     }
