@@ -1,0 +1,4 @@
+database:
+  access:
+    username_key: /risk-assessment-scores-to-delius/db-username
+    password_key: /risk-assessment-scores-to-delius/db-password

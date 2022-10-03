@@ -4,8 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
-    fun findByPersonId(personId: Long): PersonManager?
+    fun findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(personId: Long): PersonManager?
 }
 
-fun PersonManagerRepository.getByPersonId(personId: Long): PersonManager =
-    findByPersonId(personId) ?: throw NotFoundException("PersonManager", "personId", personId)
+fun PersonManagerRepository.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(personId: Long): PersonManager =
+    findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(personId) ?: throw NotFoundException("PersonManager", "personId", personId)
