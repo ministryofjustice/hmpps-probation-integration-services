@@ -39,6 +39,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit.DAYS
 
 @ExtendWith(MockitoExtension::class)
 internal class ReleaseServiceTest {
@@ -248,7 +249,8 @@ internal class ReleaseServiceTest {
     fun successfulReleaseIsSaved() {
         val event = EventGenerator.custodialEvent(person, DEFAULT)
         val orderManager = OrderManagerGenerator.generate(event)
-        val releaseDate = ZonedDateTime.now()
+        val releaseDateTime = ZonedDateTime.now()
+        val releaseDate = releaseDateTime.truncatedTo(DAYS)
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
         whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
@@ -257,7 +259,7 @@ internal class ReleaseServiceTest {
         whenever(contactTypeRepository.findByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code))
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY])
 
-        releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, releaseDate)
+        releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, releaseDateTime)
 
         val saved = argumentCaptor<Release>()
         verify(releaseRepository).save(saved.capture())
@@ -280,7 +282,7 @@ internal class ReleaseServiceTest {
     fun successfulReleaseCreatesAContact() {
         val event = EventGenerator.custodialEvent(person, DEFAULT)
         val orderManager = OrderManagerGenerator.generate(event)
-        val releaseDate = ZonedDateTime.now()
+        val releaseDateTime = ZonedDateTime.now()
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
         whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
@@ -289,7 +291,7 @@ internal class ReleaseServiceTest {
         whenever(contactTypeRepository.findByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code))
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY])
 
-        releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, releaseDate)
+        releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, releaseDateTime)
 
         val saved = argumentCaptor<Contact>()
         verify(contactRepository).save(saved.capture())
@@ -297,7 +299,7 @@ internal class ReleaseServiceTest {
         val contact = saved.firstValue
         assertThat(contact.createdDatetime, isCloseTo(ZonedDateTime.now()))
         assertThat(contact.lastUpdatedDatetime, isCloseTo(ZonedDateTime.now()))
-        assertThat(contact.date, equalTo(releaseDate))
+        assertThat(contact.date, equalTo(releaseDateTime))
         assertThat(contact.type, equalTo(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY]!!))
         assertThat(contact.person, equalTo(person))
         assertThat(contact.event, equalTo(event))
