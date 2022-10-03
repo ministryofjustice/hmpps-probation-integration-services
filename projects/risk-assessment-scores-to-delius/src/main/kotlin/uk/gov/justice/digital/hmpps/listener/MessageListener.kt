@@ -29,13 +29,10 @@ class MessageListener(
                 riskScoreService.updateRsrScores(
                     hmppsEvent.personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN in ${hmppsEvent.personReference}"),
                     hmppsEvent.additionalInformation["EventNumber"] as Int,
-                    (hmppsEvent.additionalInformation["AssessmentDate"] as String).toDate(),
-                    hmppsEvent.additionalInformation["RSRScore"] as Double,
-                    hmppsEvent.additionalInformation["RSRBand"] as String,
-                    hmppsEvent.additionalInformation["OSPIndecentScore"] as Double,
-                    hmppsEvent.additionalInformation["OSPIndecentBand"] as String,
-                    hmppsEvent.additionalInformation["OSPContactScore"] as Double,
-                    hmppsEvent.additionalInformation["OSPContactBand"] as String,
+                    hmppsEvent.assessmentDate(),
+                    hmppsEvent.rsr(),
+                    hmppsEvent.ospIndecent(),
+                    hmppsEvent.ospContact()
                 )
                 telemetryService.trackEvent("RsrScoresUpdated", hmppsEvent.telemetryProperties())
             }
@@ -45,6 +42,23 @@ class MessageListener(
         }
     }
 }
+
+fun HmppsEvent.assessmentDate() =
+    ZonedDateTimeDeserializer.deserialize(additionalInformation["AssessmentDate"] as String)
+
+data class RiskAssessment(val score: Double, val band: String)
+fun HmppsEvent.rsr() = RiskAssessment(
+    additionalInformation["RSRScore"] as Double,
+    additionalInformation["RSRBand"] as String
+)
+fun HmppsEvent.ospIndecent() = RiskAssessment(
+    additionalInformation["OSPIndecentScore"] as Double,
+    additionalInformation["OSPIndecentBand"] as String
+)
+fun HmppsEvent.ospContact() = RiskAssessment(
+    additionalInformation["OSPContactScore"] as Double,
+    additionalInformation["OSPContactBand"] as String
+)
 
 fun HmppsEvent.telemetryProperties() = mapOf(
     "occurredAt" to occurredAt.toString(),

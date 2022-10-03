@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.simple.SimpleJdbcCall
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.FailureToUpdateRiskScores
+import uk.gov.justice.digital.hmpps.listener.RiskAssessment
 import java.time.ZonedDateTime
 
 @Service
@@ -17,24 +18,21 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate) {
         crn: String,
         eventNumber: Int,
         assessmentDate: ZonedDateTime,
-        rsrScore: Double,
-        rsrBand: String,
-        ospIndecentScore: Double,
-        ospIndecentBand: String,
-        ospContactScore: Double,
-        ospContactBand: String,
+        rsr: RiskAssessment,
+        ospIndecent: RiskAssessment,
+        ospContact: RiskAssessment,
     ) {
         val result = updateRsrScoresProcedure.execute(
             MapSqlParameterSource()
                 .addValue("p_crn", crn)
                 .addValue("p_event_number", eventNumber)
                 .addValue("p_rsr_assessor_date", assessmentDate)
-                .addValue("p_rsr_score", rsrScore)
-                .addValue("p_rsr_band", rsrBand)
-                .addValue("p_osp_indecent_score", ospIndecentScore)
-                .addValue("p_osp_indecent_band", ospIndecentBand)
-                .addValue("p_osp_contact_score", ospContactScore)
-                .addValue("p_osp_contact_band", ospContactBand)
+                .addValue("p_rsr_score", rsr.score)
+                .addValue("p_rsr_band", rsr.band)
+                .addValue("p_osp_indecent_score", ospIndecent.score)
+                .addValue("p_osp_indecent_band", ospIndecent.band)
+                .addValue("p_osp_contact_score", ospContact.score)
+                .addValue("p_osp_contact_band", ospContact.band)
         )
         result["P_ERROR"]?.let { throw FailureToUpdateRiskScores(it as String) }
     }
