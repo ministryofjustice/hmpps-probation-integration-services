@@ -61,7 +61,7 @@ class PrisonManagerService(
         val person = disposal.event.person
 
         // end-date the previous prison manager
-        prisonManagerRepository.findFirstByPersonIdAndActiveTrueOrderByDateDesc(person.id)?.let { oldPrisonManager ->
+        prisonManagerRepository.findFirstByPersonIdAndActiveTrueAndSoftDeletedFalseOrderByDateDesc(person.id)?.let { oldPrisonManager ->
             oldPrisonManager.active = false
             oldPrisonManager.endDate = allocationDate
             prisonManagerRepository.save(oldPrisonManager)
