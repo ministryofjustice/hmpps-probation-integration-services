@@ -16,6 +16,10 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "docker"
-    directory: "/projects/person-search-index-from-delius/container"
+    directory: "/tools/eclipse-temurin/17-jre"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "docker"
+    directory: "/tools/opensearch-logstash/8"
     schedule:
       interval: "daily"
