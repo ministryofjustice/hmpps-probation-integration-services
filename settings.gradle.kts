@@ -1,5 +1,6 @@
 rootProject.name = "probation-integration-services"
 include(
+    "libs:audit",
     "libs:commons",
     "libs:dev-tools",
     "libs:oauth-client",
@@ -8,6 +9,7 @@ include(
     "pre-sentence-reports-to-delius",
     "prison-custody-status-to-delius",
     "person-search-index-from-delius",
+    "risk-assessment-scores-to-delius",
     // ^ add new projects here
 )
 
@@ -21,7 +23,7 @@ dependencyResolutionManagement {
         create("libs") {
             library("amazon-sqs", "com.amazonaws:amazon-sqs-java-messaging-lib:2.0.0")
             library("insights", "com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
-            library("hawtio", "io.hawt:hawtio-springboot:2.15.1")
+            library("hawtio", "io.hawt:hawtio-springboot:2.15.2")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:4.0.0")
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:3.1.4")
             library("sentry", "io.sentry:sentry-spring-boot-starter:6.4.2")

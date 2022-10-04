@@ -28,12 +28,14 @@ class ZonedDateTimeDeserializer : JsonDeserializer<ZonedDateTime>() {
             .optionalEnd()
             .optionalEnd()
             .toFormatter()
+
+        fun deserialize(text: String): ZonedDateTime {
+            val datetime = formatter.parseBest(text, ZonedDateTime::from, LocalDateTime::from)
+            return if (datetime is ZonedDateTime) datetime.withZoneSameInstant(EuropeLondon)
+            else (datetime as LocalDateTime).atZone(EuropeLondon)
+        }
     }
 
     @Throws(IOException::class, JsonProcessingException::class)
-    override fun deserialize(parser: JsonParser, context: DeserializationContext?): ZonedDateTime {
-        val datetime = formatter.parseBest(parser.text, ZonedDateTime::from, LocalDateTime::from)
-        return if (datetime is ZonedDateTime) datetime.withZoneSameInstant(EuropeLondon)
-        else (datetime as LocalDateTime).atZone(EuropeLondon)
-    }
+    override fun deserialize(parser: JsonParser, context: DeserializationContext?) = deserialize(parser.text)
 }

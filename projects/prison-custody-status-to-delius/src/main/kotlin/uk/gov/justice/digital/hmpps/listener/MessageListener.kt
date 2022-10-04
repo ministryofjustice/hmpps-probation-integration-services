@@ -11,7 +11,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseService
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsEvent
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.time.temporal.ChronoUnit.DAYS
 
 @Component
 @EnableJms
@@ -37,7 +36,7 @@ class MessageListener(
                         hmppsEvent.additionalInformation.nomsNumber(),
                         hmppsEvent.additionalInformation.prisonId(),
                         hmppsEvent.additionalInformation.reason(),
-                        hmppsEvent.occurredAt.truncatedTo(DAYS),
+                        hmppsEvent.occurredAt,
                     )
                     telemetryService.trackEvent("PrisonerReleased", hmppsEvent.telemetryProperties())
                 }
@@ -47,7 +46,7 @@ class MessageListener(
                         hmppsEvent.additionalInformation.nomsNumber(),
                         hmppsEvent.additionalInformation.prisonId(),
                         hmppsEvent.additionalInformation.reason(),
-                        hmppsEvent.occurredAt.truncatedTo(DAYS),
+                        hmppsEvent.occurredAt,
                     )
                     telemetryService.trackEvent("PrisonerRecalled", hmppsEvent.telemetryProperties())
                 }
