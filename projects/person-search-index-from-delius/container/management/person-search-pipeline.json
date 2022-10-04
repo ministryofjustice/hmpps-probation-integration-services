@@ -31,6 +31,12 @@
                 "field": "otherIds.pncNumberShortYear",
                 "ignore_missing": true
             }
+        },
+        {
+            "script": {
+                "inline": "ctx.contactDetails.addresses.forEach(a -> { a.postcode_analyzed = a.postcode; a.streetName_analyzed = a.streetName })",
+                "ignore_failure": true
+            }
         }
     ]
 }

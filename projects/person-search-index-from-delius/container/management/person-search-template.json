@@ -89,11 +89,11 @@
           "include_in_root": true,
           "type": "nested",
           "properties": {
-            "streetName": {
+            "streetName_analyzed": {
               "type": "text",
               "analyzer": "streetAnalyzer"
             },
-            "postcode": {
+            "postcode_analyzed": {
               "type": "text",
               "analyzer": "postcodeAnalyzer"
             }
