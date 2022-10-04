@@ -1,0 +1,16 @@
+{
+  "role": {
+    "name": "workforce-allocations-to-delius"
+  },
+  "customDimensions": {
+    "service.version": "${VERSION}"
+  },
+  "instrumentation": {
+    "logging": {
+      "level": "DEBUG"
+    }
+  },
+  "selfDiagnostics": {
+    "destination": "console"
+  }
+}

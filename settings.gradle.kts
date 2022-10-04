@@ -10,6 +10,7 @@ include(
     "prison-custody-status-to-delius",
     "person-search-index-from-delius",
     "risk-assessment-scores-to-delius",
+    "workforce-allocations-to-delius",
     // ^ add new projects here
 )
 
