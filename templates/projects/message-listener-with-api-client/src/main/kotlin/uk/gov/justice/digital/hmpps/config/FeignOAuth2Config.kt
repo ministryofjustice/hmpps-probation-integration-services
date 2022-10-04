@@ -11,5 +11,5 @@ import uk.gov.justice.digital.hmpps.integrations.example.ExampleFeignClient
 class FeignOAuth2Config(
     authorizedClientManager: OAuth2AuthorizedClientManager
 ) : FeignConfig(authorizedClientManager) {
-    override fun registrationId() = "$SERVICE_NAME_HYPHENS"
+    override fun registrationId() = "$SERVICE_NAME"
 }
