@@ -6,14 +6,13 @@
     "settings": {
       "index": {
         "number_of_shards": "1",
-        "number_of_replicas": "2",
+        "number_of_replicas": "0",
         "default_pipeline": "person-search-pipeline"
       },
       "analysis": {
         "analyzer": {
           "streetAnalyzer": {
-            "type": "custom",
-            "tokenizer": "ngram",
+            "tokenizer": "standard",
             "filter": [
               "lowercase",
               "asciifolding",
@@ -21,21 +20,12 @@
             ]
           },
           "postcodeAnalyzer": {
-            "type": "custom",
-            "tokenizer": "ngram",
+            "tokenizer": "standard",
             "filter": [
-              "lowercase"
-            ],
-            "char_filter": [
-              "remove_whitespace"
+              "lowercase",
+              "postcode_shingle",
+              "postcode_space_filter"
             ]
-          }
-        },
-        "char_filter": {
-          "remove_whitespace": {
-            "type": "pattern_replace",
-            "pattern": "(.+)(\\s+)(.+)",
-            "replacement": "$1$3"
           }
         },
         "filter": {
@@ -46,11 +36,24 @@
               "cl => close",
               "cres => crescent",
               "ct => court",
+              "dr => drive",
               "ln => lane",
               "pl => place",
               "rd => road",
-              "st => street"
+              "st => street",
+              "wy => way"
             ]
+          },
+          "postcode_shingle": {
+            "type": "shingle",
+            "min_shingle_size": 2,
+            "max_shingle_size": 3,
+            "output_unigrams": true
+          },
+          "postcode_space_filter": {
+            "type": "pattern_replace",
+            "pattern": " ",
+            "replacement": ""
           }
         }
       }
@@ -83,6 +86,7 @@
           "type": "keyword"
         },
         "contactDetails.addresses": {
+          "include_in_root": true,
           "type": "nested",
           "properties": {
             "streetName": {
