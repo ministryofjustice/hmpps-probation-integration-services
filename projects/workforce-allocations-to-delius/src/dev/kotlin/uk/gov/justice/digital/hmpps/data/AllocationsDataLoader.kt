@@ -5,7 +5,6 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
-import uk.gov.justice.digital.hmpps.config.ServiceContext
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator.ADD_EVENT_ALLOCATION
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator.ADD_PERSON_ALLOCATION
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator.CREATE_COMPONENT_TRANSFER
@@ -23,6 +22,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepos
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffTeam
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamRepository
+import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component

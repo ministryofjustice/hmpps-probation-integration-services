@@ -119,7 +119,7 @@ internal class PrisonManagerServiceTest {
         whenever(referenceDataRepository.findByCodeAndSetName("AUT", "POM ALLOCATION REASON")).thenReturn(ReferenceDataGenerator.generate("TEST", ReferenceDataSetGenerator.generate("POM ALLOCATION REASON")))
         doAnswer<PrisonManager> { it.getArgument(0) }.whenever(prisonManagerRepository).save(any())
         whenever(contactTypeRepository.findByCode(ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER])
-        whenever(prisonManagerRepository.findFirstByPersonIdAndActiveTrueOrderByDateDesc(PersonGenerator.RECALLABLE.id))
+        whenever(prisonManagerRepository.findFirstByPersonIdAndActiveTrueAndSoftDeletedFalseOrderByDateDesc(PersonGenerator.RECALLABLE.id))
             .thenReturn(PrisonManagerGenerator.generate(PersonGenerator.RECALLABLE))
 
         prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, ZonedDateTime.now())
@@ -148,7 +148,7 @@ internal class PrisonManagerServiceTest {
         whenever(referenceDataRepository.findByCodeAndSetName("AUT", "POM ALLOCATION REASON")).thenReturn(ReferenceDataGenerator.generate("TEST", ReferenceDataSetGenerator.generate("POM ALLOCATION REASON")))
         whenever(contactTypeRepository.findByCode(ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER])
         whenever(contactTypeRepository.findByCode(ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE])
-        whenever(prisonManagerRepository.findFirstByPersonIdAndActiveTrueOrderByDateDesc(PersonGenerator.RECALLABLE.id)).thenReturn(prisonManager)
+        whenever(prisonManagerRepository.findFirstByPersonIdAndActiveTrueAndSoftDeletedFalseOrderByDateDesc(PersonGenerator.RECALLABLE.id)).thenReturn(prisonManager)
 
         prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, ZonedDateTime.now())
 
@@ -191,7 +191,7 @@ internal class PrisonManagerServiceTest {
         doAnswer<PrisonManager> { it.getArgument(0) }.whenever(prisonManagerRepository).save(any())
         whenever(contactTypeRepository.findByCode(ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER])
         whenever(contactTypeRepository.findByCode(ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE])
-        whenever(prisonManagerRepository.findFirstByPersonIdAndActiveTrueOrderByDateDesc(PersonGenerator.RECALLABLE.id)).thenReturn(prisonManager)
+        whenever(prisonManagerRepository.findFirstByPersonIdAndActiveTrueAndSoftDeletedFalseOrderByDateDesc(PersonGenerator.RECALLABLE.id)).thenReturn(prisonManager)
         whenever(responsibleOfficerRepository.findActiveManagerAtDate(eq(event.person.id), any())).thenReturn(ResponsibleOfficer(personId = event.person.id, startDate = ZonedDateTime.now(), communityManager = personManager))
 
         prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, ZonedDateTime.now())

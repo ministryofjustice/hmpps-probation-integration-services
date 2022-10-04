@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.config.datasource.OptimisationContext
+import uk.gov.justice.digital.hmpps.datasource.OptimisationContext
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
@@ -30,6 +30,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit.DAYS
 
 @Service
 class ReleaseService(
@@ -50,13 +51,13 @@ class ReleaseService(
         nomsNumber: String,
         prisonId: String,
         reason: String,
-        releaseDate: ZonedDateTime,
+        releaseDateTime: ZonedDateTime,
     ) {
         val releaseType = referenceDataRepository.getReleaseType(mapToReleaseType(reason).code)
         val institution = institutionRepository.getByNomisCdeCode(prisonId)
 
         eventService.getActiveCustodialEvents(nomsNumber).forEach {
-            addReleaseToEvent(it, institution, releaseType, releaseDate)
+            addReleaseToEvent(it, institution, releaseType, releaseDateTime)
         }
     }
 
@@ -64,13 +65,14 @@ class ReleaseService(
         event: Event,
         fromInstitution: Institution,
         releaseType: ReferenceData,
-        releaseDate: ZonedDateTime
+        releaseDateTime: ZonedDateTime
     ) = audit(BusinessInteractionCode.ADD_RELEASE) {
         it["eventId"] = event.id
         OptimisationContext.offenderId.set(event.person.id)
 
         val disposal = event.disposal ?: throw NotFoundException("Disposal", "eventId", event.id)
         val custody = disposal.custody ?: throw NotFoundException("Custody", "disposalId", disposal.id)
+        val releaseDate = releaseDateTime.truncatedTo(DAYS)
 
         // perform validation
         validateRelease(custody, fromInstitution, releaseDate)
@@ -101,7 +103,7 @@ class ReleaseService(
         contactRepository.save(
             Contact(
                 type = contactTypeRepository.getByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code),
-                date = releaseDate,
+                date = releaseDateTime,
                 event = event,
                 person = event.person,
                 notes = "Release Type: ${releaseType.description}",

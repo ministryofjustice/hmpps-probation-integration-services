@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.config.datasource.OptimisationContext
+import uk.gov.justice.digital.hmpps.datasource.OptimisationContext
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
@@ -24,7 +24,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.getByEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceConditionService
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.PrisonManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.getByPersonId
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.getByNomisCdeCodeAndIdEstablishmentIsTrue
@@ -38,6 +38,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.Release
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit.DAYS
 
 @Service
 class RecallService(
@@ -61,13 +62,13 @@ class RecallService(
         nomsNumber: String,
         prisonId: String,
         reason: String,
-        recallDate: ZonedDateTime,
+        recallDateTime: ZonedDateTime,
     ) {
         val recallReason = recallReasonRepository.getByCodeAndSelectableIsTrue(mapToRecallReason(reason).code)
         val institution = institutionRepository.getByNomisCdeCodeAndIdEstablishmentIsTrue(prisonId)
 
         eventService.getActiveCustodialEvents(nomsNumber).forEach {
-            addRecallToEvent(it, institution, recallReason, recallDate)
+            addRecallToEvent(it, institution, recallReason, recallDateTime)
         }
     }
 
@@ -75,7 +76,7 @@ class RecallService(
         event: Event,
         toInstitution: Institution,
         recallReason: RecallReason,
-        recallDate: ZonedDateTime
+        recallDateTime: ZonedDateTime
     ) = audit(BusinessInteractionCode.ADD_RECALL) {
         it["eventId"] = event.id
         OptimisationContext.offenderId.set(event.person.id)
@@ -84,6 +85,7 @@ class RecallService(
         val disposal = event.disposal ?: throw NotFoundException("Disposal", "eventId", event.id)
         val custody = disposal.custody ?: throw NotFoundException("Custody", "disposalId", disposal.id)
         val latestRelease = custody.mostRecentRelease() ?: throw IgnorableMessageException("MissingRelease")
+        val recallDate = recallDateTime.truncatedTo(DAYS)
 
         // perform validation
         validateRecall(custody, latestRelease, recallDate)
@@ -108,7 +110,7 @@ class RecallService(
 
         // allocate a prison manager if institution has changed and institution is linked to a provider
         if (toInstitution.id != latestRelease.institutionId && toInstitution.probationArea != null) {
-            prisonManagerService.allocateToProbationArea(disposal, toInstitution.probationArea, recallDate)
+            prisonManagerService.allocateToProbationArea(disposal, toInstitution.probationArea, recallDateTime)
         }
 
         // terminate any licence conditions
@@ -120,11 +122,11 @@ class RecallService(
 
         // create alert contact
         val orderManager = orderManagerRepository.getByEventId(event.id)
-        val personManager = personManagerRepository.getByPersonId(person.id)
+        val personManager = personManagerRepository.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)
         val contact = contactRepository.save(
             Contact(
                 type = contactTypeRepository.getByCode(ContactTypeCode.BREACH_PRISON_RECALL.code),
-                date = recallDate,
+                date = recallDateTime,
                 event = event,
                 person = person,
                 notes = "Reason for Recall: ${recallReason.description}",
