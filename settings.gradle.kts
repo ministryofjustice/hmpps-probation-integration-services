@@ -4,6 +4,7 @@ include(
     "libs:commons",
     "libs:dev-tools",
     "libs:oauth-client",
+    "libs:oauth-server",
     "prison-case-notes-to-probation",
     "workforce-allocations-to-delius",
     "pre-sentence-reports-to-delius",
