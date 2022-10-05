@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /tier-to-delius/db-username
+    password_key: /tier-to-delius/db-password
+
+  audit:
+    username: TierToDelius
+    forename: Tier
+    surname: Service
