@@ -94,7 +94,9 @@ jobs:
 
       # convert project name to UpperCamelCase (e.g. 'hello-world' -> 'HelloWorld')
       - id: project_name
-        run: echo "::set-output name=camel_case::$(echo '${{ inputs.project_name }}' | sed -E 's/-(.)/\U\1/g' | sed -E 's/^(.)/\U\1/')"
+        run: |
+          echo "::set-output name=camel_case::$(echo '${{ inputs.project_name }}' | sed -E 's/-(.)/\U\1/g' | sed -E 's/^(.)/\U\1/')"
+          echo "::set-output name=underscore::$(echo '${{ inputs.project_name }}' | tr '-' '_')"
 
       - name: Render project template
         run: |
@@ -102,6 +104,7 @@ jobs:
           find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME/${{ inputs.project_name }}/g' {} \;
           cp -R templates/projects/${{ inputs.project_template }} projects/${{ inputs.project_name }}
           sed -i '/add new projects here/i \    "${{ inputs.project_name }}",' settings.gradle.kts
+          sed 's/$SERVICE_NAME/${{ inputs.project_name }}/g' templates/runConfiguration.xml > '.idea/runConfigurations/${{ steps.project_name.outputs.underscore }}.xml'
 
       - name: Create pull request
         id: pr
@@ -110,10 +113,12 @@ jobs:
           add-paths: |
             settings.gradle.kts
             projects/${{ inputs.project_name }}/*
+            .idea/runConfigurations/${{ steps.project_name.outputs.underscore }}.xml
           commit-message: Create initial project for ${{ inputs.project_name }}
           title: Create initial project for ${{ inputs.project_name }}
           body: Automated changes by [hmpps-probation-integration-services](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/bootstrap.yml)
           branch: bootstrap/${{ inputs.project_name }}
+          author: 'github-actions[bot] <github-actions[bot]@users.noreply.github.com>'
 
       - name: Output pull request
         run: |
