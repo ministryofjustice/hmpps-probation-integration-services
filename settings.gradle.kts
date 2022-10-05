@@ -11,6 +11,7 @@ include(
     "prison-custody-status-to-delius",
     "person-search-index-from-delius",
     "risk-assessment-scores-to-delius",
+    "tier-to-delius",
     // ^ add new projects here
 )
 
