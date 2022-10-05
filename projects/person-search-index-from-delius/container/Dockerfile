@@ -1,4 +1,4 @@
-FROM opensearchproject/logstash-oss-with-opensearch-output-plugin:8.4.0
+FROM ghcr.io/ministryofjustice/hmpps-probation-integration-services/opensearch-logstash:8
 
 COPY --chown=logstash ojdbc11.jar statement.sql /etc/logstash/
 COPY --chown=logstash logstash-full-load.conf /usr/share/logstash/full-load/logstash.conf
@@ -10,7 +10,7 @@ COPY --chown=logstash logstash.yml pipelines.yml /usr/share/logstash/config/
 COPY --chown=logstash management/* /search-management/
 
 USER root
-RUN apt-get update && apt-get upgrade -y && apt-get -y install \
+RUN apt-get update && apt-get -y install \
   cron \
   jq \
   && rm -rf /var/lib/apt/lists/* \
