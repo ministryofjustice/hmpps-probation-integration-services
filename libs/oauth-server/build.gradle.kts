@@ -8,6 +8,6 @@ dependencies {
 
 configure<uk.gov.justice.digital.hmpps.extensions.ClassPathExtension> {
     jacocoExclusions = listOf(
-        "**/OAuth2ServerSecurityConfig*",
+        "**/config/**",
     )
 }
