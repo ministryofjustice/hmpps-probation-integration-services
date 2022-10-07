@@ -1,10 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="workforce-allocations-to-delius" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <option name="ACTIVE_PROFILES" value="oracle" />
-    <envs>
-      <env name="SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI" value="https://sign-in-dev.hmpps.service.justice.gov.uk/auth/issuer" />
-      <env name="SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI" value="https://sign-in-dev.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json" />
-    </envs>
+    <option name="ACTIVE_PROFILES" value="dev" />
     <module name="probation-integration-services.workforce-allocations-to-delius.dev" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="uk.gov.justice.digital.hmpps.App" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/projects/workforce-allocations-to-delius" />
