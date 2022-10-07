@@ -72,10 +72,12 @@ class AllocationDemandIntegrationTest {
         whenever(allocationDemandRepository.findAllocationDemand(listOf(Pair(allocationRequest.crn, allocationRequest.eventNumber))))
             .thenReturn(listOf())
 
-        mockMvc.perform(post("/allocation-demand/" )
-            .contentType(MediaType.APPLICATION_JSON)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ${getToken()}")
-            .content(objectMapper.writeValueAsString(AllocationDemandRequest(listOf(allocationRequest)))))
+        mockMvc.perform(
+            post("/allocation-demand/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer ${getToken()}")
+                .content(objectMapper.writeValueAsString(AllocationDemandRequest(listOf(allocationRequest))))
+        )
             .andExpect(status().is4xxClientError)
     }
 
