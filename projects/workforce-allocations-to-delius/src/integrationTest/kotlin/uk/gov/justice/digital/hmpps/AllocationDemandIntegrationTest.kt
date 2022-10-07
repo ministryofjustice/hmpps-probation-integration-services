@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -59,14 +61,13 @@ class AllocationDemandIntegrationTest {
             .andExpect(status().is2xxSuccessful)
     }
 
-    @Test
-    fun `get allocation demand invalid CRN`() {
-        val crn = "D123123!"
-        val eventNumber = "1"
-        whenever(allocationDemandRepository.findAllocationDemand(listOf(Pair(crn, eventNumber))))
+    @ParameterizedTest
+    @MethodSource("allocationRequests")
+    fun `get allocation demand invalid inputs`(allocationRequest: AllocationRequest) {
+
+        whenever(allocationDemandRepository.findAllocationDemand(listOf(Pair(allocationRequest.crn, allocationRequest.eventNumber))))
             .thenReturn(listOf())
 
-        val allocationRequest = AllocationRequest(crn, eventNumber)
         mockMvc.perform(post("/allocation-demand/" )
             .contentType(MediaType.APPLICATION_JSON)
             .header(HttpHeaders.AUTHORIZATION, "Bearer ${getToken()}")
@@ -81,5 +82,13 @@ class AllocationDemandIntegrationTest {
             JsonNode::class.java
         )!!
         return authResponse["access_token"].asText()
+    }
+
+    companion object {
+        @JvmStatic
+        fun allocationRequests(): List<AllocationRequest> = listOf(
+            AllocationRequest("D123123!", "1"),
+            AllocationRequest("D123123", "1!"),
+        )
     }
 }
