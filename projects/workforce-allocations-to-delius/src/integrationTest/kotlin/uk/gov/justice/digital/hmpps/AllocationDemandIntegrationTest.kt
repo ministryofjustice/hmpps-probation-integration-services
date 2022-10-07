@@ -41,9 +41,11 @@ class AllocationDemandIntegrationTest {
 
     @Test
     fun `get allocation demand unauthorised`() {
-        mockMvc.perform(post("/allocation-demand/" )
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(AllocationDemandRequest(listOf()))))
+        mockMvc.perform(
+            post("/allocation-demand/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(AllocationDemandRequest(listOf())))
+        )
             .andExpect(status().isUnauthorized)
     }
 
@@ -54,10 +56,12 @@ class AllocationDemandIntegrationTest {
         whenever(allocationDemandRepository.findAllocationDemand(listOf(Pair(crn, eventNumber))))
             .thenReturn(listOf())
 
-        mockMvc.perform(post("/allocation-demand/" )
-            .contentType(MediaType.APPLICATION_JSON)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ${getToken()}")
-            .content(objectMapper.writeValueAsString(AllocationDemandRequest(listOf()))))
+        mockMvc.perform(
+            post("/allocation-demand/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer ${getToken()}")
+                .content(objectMapper.writeValueAsString(AllocationDemandRequest(listOf())))
+        )
             .andExpect(status().is2xxSuccessful)
     }
 
