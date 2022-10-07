@@ -23,32 +23,34 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
         )
     }
 
-    private val mapper = RowMapper<AllocationResponse> { rs, _ ->
-        val sentenceDate: Date? = rs.getDate("sentence_date")
-        val iad: Date? = rs.getDate("initial_appointment_date")
-        AllocationResponse(
-            rs.getString("crn"),
-            Name(rs.getString("forename"), rs.getString("middle_name"), rs.getString("surname")),
-            Event(
-                rs.getString("event_number"),
-                EventManager(
-                    rs.getString("staff_code"),
-                    Name(
-                        rs.getString("staff_forename"),
-                        rs.getString("staff_middle_name"),
-                        rs.getString("staff_surname")
-                    ),
-                    rs.getString("team_code")
-                )
-            ),
-            if (sentenceDate == null) null
-            else Sentence(
-                rs.getString("sentence_type"),
-                rs.getDate("sentence_date").toLocalDate(),
-                "${rs.getString("sentence_length_value")} ${rs.getString("sentence_length_unit")}"
-            ),
-            if (iad == null) null else InitialAppointment(iad.toLocalDate())
-        )
+    companion object {
+        val mapper = RowMapper<AllocationResponse> { rs, _ ->
+            val sentenceDate: Date? = rs.getDate("sentence_date")
+            val iad: Date? = rs.getDate("initial_appointment_date")
+            AllocationResponse(
+                rs.getString("crn"),
+                Name(rs.getString("forename"), rs.getString("middle_name"), rs.getString("surname")),
+                Event(
+                    rs.getString("event_number"),
+                    EventManager(
+                        rs.getString("staff_code"),
+                        Name(
+                            rs.getString("staff_forename"),
+                            rs.getString("staff_middle_name"),
+                            rs.getString("staff_surname")
+                        ),
+                        rs.getString("team_code")
+                    )
+                ),
+                if (sentenceDate == null) null
+                else Sentence(
+                    rs.getString("sentence_type"),
+                    rs.getDate("sentence_date").toLocalDate(),
+                    "${rs.getString("sentence_length_value")} ${rs.getString("sentence_length_unit")}"
+                ),
+                if (iad == null) null else InitialAppointment(iad.toLocalDate())
+            )
+        }
     }
 }
 
