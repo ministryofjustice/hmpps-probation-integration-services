@@ -5,13 +5,13 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
-class HmppsMessageTest {
+class NotificationTest {
 
     @Test
     fun `attributes can be added and retrieved`() {
         val uuid = UUID.randomUUID().toString()
-        val message = HmppsMessage("{}")
-        message.metadata["specialId"] = MessageAttribute("String", uuid)
-        assertThat(message.metadata["specialId"]?.value, equalTo(uuid))
+        val message = Notification("{}")
+        message.attributes["specialId"] = MessageAttribute("String", uuid)
+        assertThat(message.attributes["specialId"]?.value, equalTo(uuid))
     }
 }

@@ -11,7 +11,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallService
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseService
 import uk.gov.justice.digital.hmpps.listener.MessageListener
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
-import uk.gov.justice.digital.hmpps.message.HmppsEvent
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.message.MessageAttributes
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
@@ -29,42 +31,44 @@ internal class MessageListenerTest {
     @InjectMocks
     lateinit var messageListener: MessageListener
 
-    private val testEvent = HmppsEvent(
-        "prison-offender-events.prisoner.released", 1, "https//detail/url", ZonedDateTime.now(),
-        additionalInformation = AdditionalInformation(
-            mutableMapOf(
-                "nomsNumber" to "Z0001ZZ",
-                "prisonId" to "ZZZ",
-                "reason" to "Test data",
-                "details" to "Test data",
+    private val notification = Notification(
+        message = HmppsDomainEvent(
+            "prison-offender-events.prisoner.released", 1, "https//detail/url", ZonedDateTime.now(),
+            additionalInformation = AdditionalInformation(
+                mutableMapOf(
+                    "nomsNumber" to "Z0001ZZ",
+                    "prisonId" to "ZZZ",
+                    "reason" to "Test data",
+                    "details" to "Test data",
+                )
             )
-        )
+        ),
+        attributes = MessageAttributes("prison-offender-events.prisoner.released")
     )
 
     @Test
     fun messageIsLoggedToTelemetry() {
-        messageListener.receive(testEvent)
-        verify(telemetryService).hmppsEventReceived(testEvent)
+        messageListener.receive(notification)
+        verify(telemetryService).notificationReceived(notification)
     }
 
     @Test
     fun releaseMessagesAreHandled() {
-        messageListener.receive(testEvent.copy(eventType = "prison-offender-events.prisoner.released"))
-
-        verify(releaseService).release("Z0001ZZ", "ZZZ", "Test data", testEvent.occurredAt)
+        messageListener.receive(notification)
+        verify(releaseService).release("Z0001ZZ", "ZZZ", "Test data", notification.message.occurredAt)
     }
 
     @Test
     fun recallMessagesAreHandled() {
-        messageListener.receive(testEvent.copy(eventType = "prison-offender-events.prisoner.received"))
+        messageListener.receive(notification.copy(attributes = MessageAttributes("prison-offender-events.prisoner.received")))
 
-        verify(recallService).recall("Z0001ZZ", "ZZZ", "Test data", testEvent.occurredAt)
+        verify(recallService).recall("Z0001ZZ", "ZZZ", "Test data", notification.message.occurredAt)
     }
 
     @Test
     fun unknownMessagesAreThrown() {
         assertThrows<IllegalArgumentException> {
-            messageListener.receive(testEvent.copy(eventType = "INVALID"))
+            messageListener.receive(notification.copy(attributes = MessageAttributes("unknown")))
         }
     }
 }

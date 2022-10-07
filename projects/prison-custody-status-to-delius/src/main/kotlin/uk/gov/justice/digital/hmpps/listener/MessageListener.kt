@@ -9,7 +9,8 @@ import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallService
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseService
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
-import uk.gov.justice.digital.hmpps.message.HmppsEvent
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Component
@@ -25,12 +26,12 @@ class MessageListener(
     }
 
     @JmsListener(destination = "\${spring.jms.template.default-destination}")
-    fun receive(hmppsEvent: HmppsEvent) {
-        log.debug("received $hmppsEvent")
-        telemetryService.hmppsEventReceived(hmppsEvent)
+    fun receive(notification: Notification<HmppsDomainEvent>) {
+        telemetryService.notificationReceived(notification)
+        val hmppsEvent = notification.message
 
         try {
-            when (hmppsEvent.eventType) {
+            when (notification.eventType()) {
                 "prison-offender-events.prisoner.released" -> {
                     releaseService.release(
                         hmppsEvent.additionalInformation.nomsNumber(),
@@ -51,7 +52,7 @@ class MessageListener(
                     telemetryService.trackEvent("PrisonerRecalled", hmppsEvent.telemetryProperties())
                 }
 
-                else -> throw IllegalArgumentException("Unknown event type ${hmppsEvent.eventType}")
+                else -> throw IllegalArgumentException("Unknown event type ${notification.eventType()}")
             }
         } catch (e: IgnorableMessageException) {
             telemetryService.trackEvent(e.message, hmppsEvent.telemetryProperties() + e.additionalProperties)
@@ -64,7 +65,7 @@ fun AdditionalInformation.nomsNumber() = this["nomsNumber"] as String
 fun AdditionalInformation.prisonId() = this["prisonId"] as String
 fun AdditionalInformation.reason() = this["reason"] as String
 fun AdditionalInformation.details() = this["details"] as String?
-fun HmppsEvent.telemetryProperties() = listOfNotNull(
+fun HmppsDomainEvent.telemetryProperties() = listOfNotNull(
     "occurredAt" to occurredAt.toString(),
     "nomsNumber" to additionalInformation.nomsNumber(),
     "institution" to additionalInformation.prisonId(),

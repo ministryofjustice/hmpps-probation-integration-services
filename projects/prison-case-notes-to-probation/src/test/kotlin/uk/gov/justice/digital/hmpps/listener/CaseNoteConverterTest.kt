@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.activemq.command.ActiveMQObjectMessage
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.springframework.jms.support.converter.MessageConversionException
 
 class CaseNoteConverterTest {
     @Test
@@ -11,6 +12,6 @@ class CaseNoteConverterTest {
         val objectMapper = ObjectMapper()
         val caseNoteConverter = CaseNoteConverter(objectMapper)
         val message = ActiveMQObjectMessage()
-        assertThrows<IllegalArgumentException> { caseNoteConverter.fromMessage(message) }
+        assertThrows<MessageConversionException> { caseNoteConverter.fromMessage(message) }
     }
 }

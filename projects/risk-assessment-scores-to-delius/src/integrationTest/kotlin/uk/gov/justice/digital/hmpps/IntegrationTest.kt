@@ -10,6 +10,8 @@ import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
 import uk.gov.justice.digital.hmpps.listener.telemetryProperties
+import uk.gov.justice.digital.hmpps.message.MessageAttributes
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @SpringBootTest
@@ -26,8 +28,8 @@ internal class IntegrationTest {
 
     @Test
     fun `successfully update RSR scores`() {
-        val message = MessageGenerator.RSR_SCORES_DETERMINED
-        jmsTemplate.convertSendAndWait(queueName, message)
-        verify(telemetryService).trackEvent("RsrScoresUpdated", message.telemetryProperties())
+        val notification = Notification(message = MessageGenerator.RSR_SCORES_DETERMINED, attributes = MessageAttributes("risk-assessment.scores.rsr.determined"))
+        jmsTemplate.convertSendAndWait(queueName, notification)
+        verify(telemetryService).trackEvent("RsrScoresUpdated", notification.message.telemetryProperties())
     }
 }
