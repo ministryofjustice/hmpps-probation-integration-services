@@ -30,6 +30,7 @@ dependencyResolutionManagement {
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:3.1.4")
             library("sentry", "io.sentry:sentry-spring-boot-starter:6.4.2")
             library("wiremock", "com.github.tomakehurst:wiremock-jre8:2.34.0")
+            library("swagger-docs", "org.springdoc:springdoc-openapi-ui:1.6.11")
         }
     }
 }
