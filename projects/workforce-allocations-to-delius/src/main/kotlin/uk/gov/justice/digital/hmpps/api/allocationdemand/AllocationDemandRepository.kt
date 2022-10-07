@@ -4,17 +4,23 @@ import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
+import uk.gov.justice.digital.hmpps.security.ServiceContext
 import java.sql.Date
 
 @Repository
 class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
 
-    fun findAllocationDemand(params: List<Pair<String, String>>): List<AllocationResponse> =
-        jdbcTemplate.query(
+    fun findAllocationDemand(params: List<Pair<String, String>>): List<AllocationResponse> {
+        jdbcTemplate.update("call PKG_VPD_CTX.SET_CLIENT_IDENTIFIER(:dbName)",
+            MapSqlParameterSource().addValue("dbName",ServiceContext.servicePrincipal()!!.username)
+        )
+        return jdbcTemplate.query(
             QS_ALLOCATION_DEMAND,
-            MapSqlParameterSource().addValue("values", params.map { arrayOf(it.first, it.second) }),
+            MapSqlParameterSource()
+                .addValue("values", params.map { arrayOf(it.first, it.second) }),
             mapper
         )
+    }
 
     private val mapper = RowMapper<AllocationResponse> { rs, _ ->
         val sentenceDate: Date? = rs.getDate("sentence_date")
