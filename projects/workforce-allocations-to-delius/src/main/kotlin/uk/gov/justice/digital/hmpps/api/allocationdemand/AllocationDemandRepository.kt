@@ -11,8 +11,9 @@ import java.sql.Date
 class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
 
     fun findAllocationDemand(params: List<Pair<String, String>>): List<AllocationResponse> {
-        jdbcTemplate.update("call PKG_VPD_CTX.SET_CLIENT_IDENTIFIER(:dbName)",
-            MapSqlParameterSource().addValue("dbName",ServiceContext.servicePrincipal()!!.username)
+        jdbcTemplate.update(
+            "call PKG_VPD_CTX.SET_CLIENT_IDENTIFIER(:dbName)",
+            MapSqlParameterSource().addValue("dbName", ServiceContext.servicePrincipal()!!.username)
         )
         return jdbcTemplate.query(
             QS_ALLOCATION_DEMAND,
