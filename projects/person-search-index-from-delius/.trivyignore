@@ -12,5 +12,8 @@ CVE-2022-25857
 #   - https://discuss.elastic.co/t/elastic-stack-8-4-0-7-17-6-security-statement/312823
 CVE-2022-25647
 
-# Reason: Logstash does not process any RPM files
+# Reason: arr-pm - Logstash does not process any RPM files
 CVE-2022-39224
+
+# Reason: jackson-databind:2.13.3 - The UNWRAP_SINGLE_VALUE_ARRAYS feature is not enabled
+CVE-2022-42003
