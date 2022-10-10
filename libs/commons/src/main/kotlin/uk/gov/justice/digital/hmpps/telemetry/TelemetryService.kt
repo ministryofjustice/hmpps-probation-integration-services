@@ -28,11 +28,11 @@ class TelemetryService(private val telemetryClient: TelemetryClient = TelemetryC
         )
     }
 
-    fun <T> notificationReceived(message: Notification<T>) {
-        if (message.message is HmppsDomainEvent) {
-            hmppsEventReceived(message.message)
+    fun <T> notificationReceived(notification: Notification<T>) {
+        if (notification.message is HmppsDomainEvent) {
+            hmppsEventReceived(notification.message)
         } else {
-            message.eventType()?.let {
+            notification.eventType?.let {
                 trackEvent("${it.uppercase().replace(".", "_")}_RECEIVED", mapOf("eventType" to it))
             } ?: trackEvent("UNKNOWN_EVENT_RECEIVED")
         }

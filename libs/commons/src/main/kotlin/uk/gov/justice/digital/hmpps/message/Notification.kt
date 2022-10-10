@@ -2,13 +2,14 @@ package uk.gov.justice.digital.hmpps.message
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class Notification<T>(
     @JsonProperty("Message") val message: T,
     @JsonProperty("MessageAttributes") val attributes: MessageAttributes = MessageAttributes()
 ) {
-    fun eventType() = attributes["eventType"]?.value
+    val eventType: String? @JsonIgnore get() = attributes["eventType"]?.value
 }
 
 data class MessageAttributes(@JsonAnyGetter @JsonAnySetter private val attributes: MutableMap<String, MessageAttribute> = mutableMapOf()) {

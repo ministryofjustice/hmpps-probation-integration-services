@@ -33,7 +33,7 @@ class MessageListener(
         telemetryService.notificationReceived(notification)
         val prisonOffenderEvent = notification.message
         if (prisonOffenderEvent.caseNoteId == null) {
-            log.info("Received ${notification.eventType()} for ${prisonOffenderEvent.offenderId} without a case note id")
+            log.info("Received ${notification.eventType} for ${prisonOffenderEvent.offenderId} without a case note id")
             return
         }
 
@@ -58,7 +58,7 @@ class MessageListener(
             log.warn(
                 "Ignoring case note id {} and type {} because $reason",
                 prisonOffenderEvent.caseNoteId,
-                notification.eventType()
+                notification.eventType
             )
             return
         }

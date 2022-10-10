@@ -31,7 +31,7 @@ class MessageListener(
         val hmppsEvent = notification.message
 
         try {
-            when (notification.eventType()) {
+            when (notification.eventType) {
                 "prison-offender-events.prisoner.released" -> {
                     releaseService.release(
                         hmppsEvent.additionalInformation.nomsNumber(),
@@ -52,7 +52,7 @@ class MessageListener(
                     telemetryService.trackEvent("PrisonerRecalled", hmppsEvent.telemetryProperties())
                 }
 
-                else -> throw IllegalArgumentException("Unknown event type ${notification.eventType()}")
+                else -> throw IllegalArgumentException("Unknown event type ${notification.eventType}")
             }
         } catch (e: IgnorableMessageException) {
             telemetryService.trackEvent(e.message, hmppsEvent.telemetryProperties() + e.additionalProperties)
