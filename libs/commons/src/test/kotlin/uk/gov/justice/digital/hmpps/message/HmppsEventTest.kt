@@ -10,7 +10,7 @@ class HmppsEventTest {
 
     @Test
     fun `can find crn successfully`() {
-        val hmppsEvent = HmppsEvent(
+        val hmppsEvent = HmppsDomainEvent(
             "test.event.type",
             1,
             "https//detail/url",
@@ -25,7 +25,7 @@ class HmppsEventTest {
 
     @Test
     fun `can find identifier successfully`() {
-        val hmppsEvent = HmppsEvent(
+        val hmppsEvent = HmppsDomainEvent(
             "test.event.type",
             1,
             "https//detail/url",
@@ -40,7 +40,7 @@ class HmppsEventTest {
 
     @Test
     fun `does not error if identifier does not exist`() {
-        val hmppsEvent = HmppsEvent(
+        val hmppsEvent = HmppsDomainEvent(
             "test.event.type",
             1,
             "https//detail/url",
@@ -53,7 +53,7 @@ class HmppsEventTest {
 
     @Test
     fun `can set and retrieve additional information`() {
-        val hmppsEvent = HmppsEvent(
+        val hmppsEvent = HmppsDomainEvent(
             "test.event.type",
             1,
             "https//detail/url",

@@ -16,6 +16,8 @@ import uk.gov.justice.digital.hmpps.listener.ospContact
 import uk.gov.justice.digital.hmpps.listener.ospIndecent
 import uk.gov.justice.digital.hmpps.listener.rsr
 import uk.gov.justice.digital.hmpps.listener.telemetryProperties
+import uk.gov.justice.digital.hmpps.message.MessageAttributes
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -27,60 +29,79 @@ internal class MessageListenerTest {
 
     @Test
     fun `message is logged to telemetry`() {
-        // Given an event
-        val event = MessageGenerator.RSR_SCORES_DETERMINED
+        // Given a message
+        val message = Notification(
+            message = MessageGenerator.RSR_SCORES_DETERMINED,
+            attributes = MessageAttributes("risk-assessment.scores.rsr.determined")
+        )
 
         // When it is received
-        messageListener.receive(event)
+        messageListener.receive(message)
 
         // Then it is logged to telemetry
-        verify(telemetryService).hmppsEventReceived(event)
+        verify(telemetryService).notificationReceived(message)
     }
 
     @Test
     fun `RSR messages are processed`() {
         // Given an RSR message
-        val event = MessageGenerator.RSR_SCORES_DETERMINED
+        val message = Notification(
+            message = MessageGenerator.RSR_SCORES_DETERMINED,
+            attributes = MessageAttributes("risk-assessment.scores.rsr.determined")
+        )
 
         // When it is received
-        messageListener.receive(event)
+        messageListener.receive(message)
 
         // Then it is processed
         verify(riskScoreService).updateRsrScores(
-            event.personReference.findCrn()!!,
-            event.additionalInformation["EventNumber"] as Int,
-            event.assessmentDate(),
-            event.rsr(),
-            event.ospIndecent(),
-            event.ospContact()
+            message.message.personReference.findCrn()!!,
+            message.message.additionalInformation["EventNumber"] as Int,
+            message.message.assessmentDate(),
+            message.message.rsr(),
+            message.message.ospIndecent(),
+            message.message.ospContact()
         )
-        verify(telemetryService).trackEvent("RsrScoresUpdated", event.telemetryProperties())
+        verify(telemetryService).trackEvent("RsrScoresUpdated", message.message.telemetryProperties())
     }
 
     @Test
     fun `OGRS messages are ignored`() {
         // Given an OGRS message
-        val event = MessageGenerator.OGRS_SCORES_DETERMINED
+        val message = Notification(
+            message = MessageGenerator.OGRS_SCORES_DETERMINED,
+            attributes = MessageAttributes("risk-assessment.scores.ogrs.determined")
+        )
 
         // When it is received
-        messageListener.receive(event)
+        messageListener.receive(message)
 
         // Then it is not processed
         verifyNoInteractions(riskScoreService)
-        verify(telemetryService).trackEvent("UnsupportedEventType", event.telemetryProperties())
+        verify(telemetryService).trackEvent("UnsupportedEventType", message.message.telemetryProperties())
     }
 
     @Test
     fun `unknown messages are thrown`() {
         assertThrows<IllegalArgumentException> {
-            messageListener.receive(MessageGenerator.RSR_SCORES_DETERMINED.copy(eventType = "INVALID"))
+            messageListener.receive(
+                Notification(
+                    message = MessageGenerator.RSR_SCORES_DETERMINED,
+                    attributes = MessageAttributes("unknown")
+                )
+            )
         }
     }
 
     @Test
     fun `missing CRN is thrown`() {
         assertThrows<IllegalArgumentException> {
-            messageListener.receive(MessageGenerator.RSR_SCORES_DETERMINED.copy(personReference = PersonReference()))
+            messageListener.receive(
+                Notification(
+                    message = MessageGenerator.RSR_SCORES_DETERMINED.copy(personReference = PersonReference()),
+                    attributes = MessageAttributes("risk-assessment.scores.rsr.determined")
+                )
+            )
         }
     }
 }

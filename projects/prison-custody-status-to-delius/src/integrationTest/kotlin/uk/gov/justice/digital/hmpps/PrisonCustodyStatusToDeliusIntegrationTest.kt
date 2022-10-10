@@ -33,6 +33,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseRepository
 import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
 import uk.gov.justice.digital.hmpps.listener.nomsNumber
+import uk.gov.justice.digital.hmpps.message.MessageAttributes
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
@@ -82,8 +84,8 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         assertTrue(getCustody(nomsNumber).isInCustody())
 
         // when they are released
-        val message = MessageGenerator.PRISONER_RELEASED
-        jmsTemplate.convertSendAndWait(queueName, message)
+        val notification = Notification(message = MessageGenerator.PRISONER_RELEASED, attributes = MessageAttributes("prison-offender-events.prisoner.released"))
+        jmsTemplate.convertSendAndWait(queueName, notification)
 
         // then they are no longer in custody
         val custody = getCustody(nomsNumber)
@@ -92,8 +94,8 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         // and the release information is recorded correctly
         val release = getReleases(custody).single()
         assertThat(release.createdDatetime, isCloseTo(ZonedDateTime.now()))
-        assertThat(release.date.withZoneSameInstant(EuropeLondon), equalTo(message.occurredAt.truncatedTo(DAYS)))
-        assertThat(release.person.nomsNumber, equalTo(message.additionalInformation.nomsNumber()))
+        assertThat(release.date.withZoneSameInstant(EuropeLondon), equalTo(notification.message.occurredAt.truncatedTo(DAYS)))
+        assertThat(release.person.nomsNumber, equalTo(notification.message.additionalInformation.nomsNumber()))
 
         // and the history is recorded correctly
         val custodyHistory = getCustodyHistory(custody)
@@ -110,7 +112,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         verify(telemetryService).trackEvent(
             "PrisonerReleased",
             mapOf(
-                "occurredAt" to message.occurredAt.toString(),
+                "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0001AA",
                 "institution" to "WSI",
                 "reason" to "RELEASED",
@@ -126,8 +128,8 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         assertFalse(getCustody(nomsNumber).isInCustody())
 
         // when they are recalled
-        val message = MessageGenerator.PRISONER_RECEIVED
-        jmsTemplate.convertSendAndWait(queueName, message)
+        val notification = Notification(message = MessageGenerator.PRISONER_RECEIVED, attributes = MessageAttributes("prison-offender-events.prisoner.received"))
+        jmsTemplate.convertSendAndWait(queueName, notification)
 
         // then they are now in custody
         val custody = getCustody(nomsNumber)
@@ -136,7 +138,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         // and the recall information is recorded correctly
         val recall = getRecalls(custody).single()
         assertThat(recall.createdDatetime, isCloseTo(ZonedDateTime.now()))
-        assertThat(recall.date.withZoneSameInstant(EuropeLondon), equalTo(message.occurredAt.truncatedTo(DAYS)))
+        assertThat(recall.date.withZoneSameInstant(EuropeLondon), equalTo(notification.message.occurredAt.truncatedTo(DAYS)))
 
         // and the history is recorded correctly
         val custodyHistory = getCustodyHistory(custody)
@@ -162,7 +164,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         verify(telemetryService).trackEvent(
             "PrisonerRecalled",
             mapOf(
-                "occurredAt" to message.occurredAt.toString(),
+                "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0002AA",
                 "institution" to "WSI",
                 "reason" to "ADMISSION",

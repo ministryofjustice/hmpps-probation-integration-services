@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNoteFilters
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonOffenderEvent
 import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Component
@@ -28,9 +29,11 @@ class MessageListener(
     }
 
     @JmsListener(destination = "\${spring.jms.template.default-destination}")
-    fun receive(prisonOffenderEvent: PrisonOffenderEvent) {
+    fun receive(notification: Notification<PrisonOffenderEvent>) {
+        telemetryService.notificationReceived(notification)
+        val prisonOffenderEvent = notification.message
         if (prisonOffenderEvent.caseNoteId == null) {
-            log.info("Received ${prisonOffenderEvent.eventType} for ${prisonOffenderEvent.offenderId} without a case note id")
+            log.info("Received ${notification.eventType} for ${prisonOffenderEvent.offenderId} without a case note id")
             return
         }
 
@@ -55,7 +58,7 @@ class MessageListener(
             log.warn(
                 "Ignoring case note id {} and type {} because $reason",
                 prisonOffenderEvent.caseNoteId,
-                prisonOffenderEvent.eventType
+                notification.eventType
             )
             return
         }

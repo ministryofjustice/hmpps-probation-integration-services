@@ -7,7 +7,8 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import uk.gov.justice.digital.hmpps.listener.MessageListener
-import uk.gov.justice.digital.hmpps.message.HmppsEvent
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
@@ -18,13 +19,13 @@ internal class MessageListenerTest {
 
     @Test
     fun messageIsLoggedToTelemetry() {
-        // Given an event
-        val event = HmppsEvent("test.event.type", 1, "https//detail/url", ZonedDateTime.now())
+        // Given a message
+        val notification = Notification(message = HmppsDomainEvent("test.event.type", 1, "https//detail/url", ZonedDateTime.now()))
 
         // When it is received
-        try { messageListener.receive(event) } catch (_: Throwable) { }
+        try { messageListener.receive(notification) } catch (_: Throwable) { }
 
         // Then it is logged to telemetry
-        verify(telemetryService).hmppsEventReceived(event)
+        verify(telemetryService).notificationReceived(notification)
     }
 }

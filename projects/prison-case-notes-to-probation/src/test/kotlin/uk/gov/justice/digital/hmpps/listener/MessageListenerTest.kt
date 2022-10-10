@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonOffenderEvent
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
@@ -44,7 +45,7 @@ internal class MessageListenerTest {
             )
         ).thenReturn(null)
 
-        assertDoesNotThrow { messageListener.receive(CaseNoteMessageGenerator.NOT_FOUND) }
+        assertDoesNotThrow { messageListener.receive(Notification(message = CaseNoteMessageGenerator.NOT_FOUND)) }
         verify(telemetryService, never()).trackEvent(eq("CaseNoteMerge"), any(), any())
         verify(deliusService, never()).mergeCaseNote(any())
     }
@@ -69,7 +70,7 @@ internal class MessageListenerTest {
                 CaseNoteMessageGenerator.EXISTS_IN_DELIUS.caseNoteId!!
             )
         ).thenReturn(prisonCaseNote)
-        messageListener.receive(CaseNoteMessageGenerator.EXISTS_IN_DELIUS)
+        messageListener.receive(Notification(message = CaseNoteMessageGenerator.EXISTS_IN_DELIUS))
         verify(deliusService, times(0)).mergeCaseNote(any())
     }
 
@@ -95,14 +96,14 @@ internal class MessageListenerTest {
             )
         ).thenReturn(prisonCaseNote)
 
-        messageListener.receive(CaseNoteMessageGenerator.EXISTS_IN_DELIUS)
+        messageListener.receive(Notification(message = CaseNoteMessageGenerator.EXISTS_IN_DELIUS))
         verify(deliusService, never()).mergeCaseNote(any())
         verify(telemetryService).trackEvent(eq("CaseNoteIgnored"), any(), any())
     }
 
     @Test
     fun `get case note from NOMIS has null caseNoteId`() {
-        val prisonOffenderEvent = PrisonOffenderEvent("1", null, 0, "type")
+        val prisonOffenderEvent = Notification(message = PrisonOffenderEvent("1", null, 0))
         messageListener.receive(prisonOffenderEvent)
         verify(deliusService, times(0)).mergeCaseNote(any())
         verify(prisonCaseNotesClient, times(0)).getCaseNote(any(), any())

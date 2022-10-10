@@ -17,7 +17,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.message.HmppsEvent
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
 import uk.gov.justice.digital.hmpps.message.PersonReference
 import java.time.ZonedDateTime
@@ -41,7 +41,7 @@ class TelemetryServiceTest {
         val detailUrl = "https://detail/url"
 
         telemetryService.hmppsEventReceived(
-            HmppsEvent(
+            HmppsDomainEvent(
                 eventType,
                 1,
                 detailUrl,
@@ -66,7 +66,7 @@ class TelemetryServiceTest {
     @Test
     fun nullDetailUrlIsIgnored() {
         telemetryService.hmppsEventReceived(
-            HmppsEvent(
+            HmppsDomainEvent(
                 eventType = "some.special.event",
                 version = 1,
                 occurredAt = ZonedDateTime.now()
@@ -84,7 +84,7 @@ class TelemetryServiceTest {
         whenever(telemetryClient.isDisabled).thenReturn(true)
 
         telemetryService.hmppsEventReceived(
-            HmppsEvent(
+            HmppsDomainEvent(
                 eventType = "some.special.event",
                 version = 1,
                 occurredAt = ZonedDateTime.now()

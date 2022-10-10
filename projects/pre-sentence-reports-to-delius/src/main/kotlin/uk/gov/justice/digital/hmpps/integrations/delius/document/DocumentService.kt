@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportRepository
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
-import uk.gov.justice.digital.hmpps.message.HmppsEvent
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import java.time.ZonedDateTime
 
 @Service
@@ -27,7 +27,7 @@ class DocumentService(
     fun AdditionalInformation.reportId() = this["reportId"] as String
 
     @Transactional
-    fun updateCourtReportDocument(hmppsEvent: HmppsEvent, file: ByteArray) =
+    fun updateCourtReportDocument(hmppsEvent: HmppsDomainEvent, file: ByteArray) =
         audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
             val reportId = hmppsEvent.additionalInformation.reportId()
             val document = documentRepository.findByExternalReference(reportId)
@@ -55,7 +55,7 @@ class DocumentService(
         }
 
     private fun populateBodyValues(
-        hmppsEvent: HmppsEvent,
+        hmppsEvent: HmppsDomainEvent,
         document: Document,
         file: ByteArray
     ): MultiValueMap<String, HttpEntity<*>> {

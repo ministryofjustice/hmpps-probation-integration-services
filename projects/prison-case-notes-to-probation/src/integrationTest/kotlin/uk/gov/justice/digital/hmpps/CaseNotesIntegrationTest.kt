@@ -27,6 +27,7 @@ import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
 import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 const val CASE_NOTE_MERGE = "CaseNoteMerge"
@@ -54,7 +55,7 @@ class CaseNotesIntegrationTest {
     fun `update an existing case note succesfully`() {
         val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
 
-        jmsTemplate.convertSendAndWait(queueName, CaseNoteMessageGenerator.EXISTS_IN_DELIUS)
+        jmsTemplate.convertSendAndWait(queueName, Notification(CaseNoteMessageGenerator.EXISTS_IN_DELIUS))
 
         val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
 
@@ -79,7 +80,7 @@ class CaseNotesIntegrationTest {
         val original = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
         assertNull(original)
 
-        jmsTemplate.convertSendAndWait(queueName, CaseNoteMessageGenerator.NEW_TO_DELIUS)
+        jmsTemplate.convertSendAndWait(queueName, Notification(CaseNoteMessageGenerator.NEW_TO_DELIUS))
 
         val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
         assertNotNull(saved)
@@ -114,7 +115,7 @@ class CaseNotesIntegrationTest {
     @Test
     fun `case note not found - noop`() {
 
-        jmsTemplate.convertSendAndWait(queueName, CaseNoteMessageGenerator.NOT_FOUND)
+        jmsTemplate.convertSendAndWait(queueName, Notification(CaseNoteMessageGenerator.NOT_FOUND))
 
         verify(telemetryService, never()).trackEvent(eq(CASE_NOTE_MERGE), anyMap(), anyMap())
     }

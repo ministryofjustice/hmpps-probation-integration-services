@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @ActiveProfiles("integration-test")
@@ -43,7 +44,6 @@ class PsrCompletedIntegrationTest {
     private lateinit var alfrescoClient: AlfrescoClient
 
     @Test
-    @Suppress("UNCHECKED_CAST")
     fun `completed pre sentence report`() {
         val reportId = "f9b09fcf-39c0-4008-8b43-e616ddfd918c"
         val document = documentRepository.findByExternalReference(reportId)
@@ -52,7 +52,7 @@ class PsrCompletedIntegrationTest {
 
         jmsTemplate.convertSendAndWait(queueName, message)
 
-        verify(telemetryService).hmppsEventReceived(any())
+        verify(telemetryService).notificationReceived(any<Notification<Any>>())
 
         verify(alfrescoClient).releaseDocument(DocumentGenerator.DEFAULT.alfrescoId)
         verify(alfrescoClient).updateDocument(eq(DocumentGenerator.DEFAULT.alfrescoId), any())

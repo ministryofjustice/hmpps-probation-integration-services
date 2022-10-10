@@ -98,7 +98,7 @@ class AllocateEventIntegrationTest {
         val allocationEvent = prepMessage(messageName, wireMockServer.port())
         jmsTemplate.convertSendAndWait(queueName, allocationEvent)
 
-        verify(telemetryService).hmppsEventReceived(allocationEvent)
+        verify(telemetryService).notificationReceived(allocationEvent)
 
         val allocationDetail = ResourceLoader.file<AllocationDetail>(jsonFile)
 
