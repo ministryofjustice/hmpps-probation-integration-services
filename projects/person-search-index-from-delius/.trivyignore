@@ -17,3 +17,4 @@ CVE-2022-39224
 
 # Reason: jackson-databind:2.13.3 - The UNWRAP_SINGLE_VALUE_ARRAYS feature is not enabled
 CVE-2022-42003
+CVE-2022-42004
