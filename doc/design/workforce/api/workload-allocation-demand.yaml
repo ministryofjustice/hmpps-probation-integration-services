@@ -84,10 +84,6 @@ definitions:
               properties:
                 "type":
                   type: string
-                  enum:
-                    - CUSTODY
-                    - COMMUNITY
-                    - LICENSE
                 date:
                   type: string
                 length:
