@@ -16,8 +16,11 @@ class ReferenceData(
     @Column(name = "standard_reference_list_id", nullable = false)
     val id: Long,
 
-    @Column(name = "code_value", length = 100, nullable = false)
+    @Column(name = "code_value")
     val code: String,
+
+    @Column(name = "code_description")
+    val description: String,
 
     @ManyToOne
     @JoinColumn(name = "reference_data_master_id")

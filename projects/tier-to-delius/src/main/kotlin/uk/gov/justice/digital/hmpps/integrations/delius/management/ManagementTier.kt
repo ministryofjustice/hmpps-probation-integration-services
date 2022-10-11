@@ -50,8 +50,8 @@ data class ManagementTier(
 
 @Embeddable
 data class ManagementTierId(
-    @Column
-    val offenderId: Long,
+    @Column(name = "offender_id")
+    val personId: Long,
 
     @Column
     val tierId: Long,
