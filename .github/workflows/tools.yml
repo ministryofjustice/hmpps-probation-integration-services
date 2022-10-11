@@ -25,6 +25,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
+        if: github.ref != 'refs/heads/main' && github.event_name != 'workflow_dispatch'
         uses: gradle/gradle-build-action@v2
         with:
           arguments: -p tools docker
@@ -34,3 +35,5 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: -p tools dockerPush
+        env:
+          PUSH: true
