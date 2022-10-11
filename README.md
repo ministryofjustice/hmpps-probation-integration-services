@@ -283,13 +283,34 @@ in AWS to create/update the access account and the audit user in the Delius data
 repository.
 
 ## Accessing MOJ Cloud Platform
-To access SQS queues or other resources in MOJ Cloud Platform, add an IAM policy to [cloud-platform-environments](https://github.com/ministryofjustice/cloud-platform-environments)
+To access SQS queues or other AWS resources in MOJ Cloud Platform, add an IAM policy to [cloud-platform-environments](https://github.com/ministryofjustice/cloud-platform-environments)
 that grants access to one of the following roles:
 * Dev/Test: `arn:aws:iam::728765553488:role/delius-test-ecs-sqs-consumer`
 * Pre-Prod: `arn:aws:iam::010587221707:role/delius-pre-prod-ecs-sqs-consumer`
 * Production: `arn:aws:iam::050243167760:role/delius-prod-ecs-sqs-consumer`
 
 Example: [case-notes-sub-queue.tf](https://github.com/ministryofjustice/cloud-platform-environments/blob/7a028911f8ed459a30e98d8dbba8cdcf7283ac93/namespaces/live.cloud-platform.service.justice.gov.uk/offender-events-dev/resources/case-notes-sub-queue.tf#L42-L57).
+
+To access HTTP endpoints in MOJ Cloud Platform, the following IP ranges should be added to their allow list:
+```yaml
+# values-dev.yml
+  allowlist:
+    delius-test-1: "35.176.126.163/32"
+    delius-test-2: "35.178.162.73/32"
+    delius-test-3: "52.56.195.113/32"
+--- 
+# values-preprod.yml
+  allowlist:
+    delius-pre-prod-1: "52.56.240.62/32"
+    delius-pre-prod-2: "18.130.110.168/32"
+    delius-pre-prod-3: "35.178.44.184/32"
+--- 
+# values-prod.yml
+  allowlist:
+    delius-prod-1: "52.56.115.146/32"
+    delius-prod-2: "35.178.104.253/32"
+    delius-prod-3: "35.177.47.45/32"
+```
 
 # Support
 For any issues or questions, please contact the Probation Integration team via the [#probation-integration-tech](https://mojdt.slack.com/archives/C02HQ4M2YQN)
