@@ -20,6 +20,10 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "docker"
+    directory: "/tools/eclipse-temurin/19-jre-jammy"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "docker"
     directory: "/tools/opensearch-logstash/8"
     schedule:
       interval: "daily"
