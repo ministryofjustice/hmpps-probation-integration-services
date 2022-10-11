@@ -16,7 +16,11 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "docker"
-    directory: "/tools/eclipse-temurin/17-jre"
+    directory: "/tools/eclipse-temurin/17-jre-alpine"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "docker"
+    directory: "/tools/eclipse-temurin/17-jre-jammy"
     schedule:
       interval: "daily"
   - package-ecosystem: "docker"
