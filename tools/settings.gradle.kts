@@ -1,4 +1,5 @@
 include(
     "eclipse-temurin:17-jre",
-    "opensearch-logstash:8",
+    "eclipse-temurin:19-jre-jammy",
+    "opensearch-logstash:8"
 )
