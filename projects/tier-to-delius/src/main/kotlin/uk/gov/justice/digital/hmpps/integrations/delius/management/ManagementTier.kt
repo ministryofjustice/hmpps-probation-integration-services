@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.management
 
 import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.Immutable
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
@@ -38,6 +39,7 @@ data class ManagementTier(
     var lastUpdatedUserId: Long = 0,
 )
 
+@Immutable
 @Embeddable
 data class ManagementTierId(
     @Column(name = "offender_id")
