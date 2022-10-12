@@ -26,10 +26,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepositor
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.management.ManagementTier
 import uk.gov.justice.digital.hmpps.integrations.delius.management.ManagementTierRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
 
@@ -43,6 +45,7 @@ internal class TierServiceTest {
     @Mock lateinit var staffRepository: StaffRepository
     @Mock lateinit var teamRepository: TeamRepository
     @Mock lateinit var contactTypeRepository: ContactTypeRepository
+    @Mock lateinit var telemetryService: TelemetryService
     @InjectMocks lateinit var tierService: TierService
 
     private val tierScore = ReferenceDataGenerator.generate("someTierCode", ReferenceDataSetGenerator.TIER)
@@ -56,10 +59,10 @@ internal class TierServiceTest {
         )
 
         val exception = assertThrows<NotFoundException> {
-            tierService.updateTier(person.crn, "someCalculationId")
+            tierService.handleTierCalculation(person.crn, "someCalculationId")
         }
 
-        assertEquals("TIER with code of someTierCode not found", exception.message)
+        assertEquals("TIER with code of UsomeTierCode not found", exception.message)
     }
 
     @Test
@@ -68,11 +71,11 @@ internal class TierServiceTest {
             TierCalculation(tierScore.code, "someCalculationId", ZonedDateTime.now())
         )
 
-        whenever(referenceDataRepository.findByCodeAndSetName(tierScore.code, ReferenceDataSetGenerator.TIER.name))
+        whenever(referenceDataRepository.findByCodeAndSetName("U${tierScore.code}", ReferenceDataSetGenerator.TIER.name))
             .thenReturn(tierScore)
 
         val exception = assertThrows<NotFoundException> {
-            tierService.updateTier(person.crn, "someCalculationId")
+            tierService.handleTierCalculation(person.crn, "someCalculationId")
         }
 
         assertEquals("Person with crn of someCrn not found", exception.message)
@@ -84,13 +87,13 @@ internal class TierServiceTest {
             TierCalculation(tierScore.code, "someCalculationId", ZonedDateTime.now())
         )
 
-        whenever(referenceDataRepository.findByCodeAndSetName(tierScore.code, ReferenceDataSetGenerator.TIER.name))
+        whenever(referenceDataRepository.findByCodeAndSetName("U${tierScore.code}", ReferenceDataSetGenerator.TIER.name))
             .thenReturn(tierScore)
 
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(person.crn)).thenReturn(person)
 
         val exception = assertThrows<NotFoundException> {
-            tierService.updateTier(person.crn, "someCalculationId")
+            tierService.handleTierCalculation(person.crn, "someCalculationId")
         }
 
         assertEquals("TIER CHANGE REASON with code of ATS not found", exception.message)
@@ -104,7 +107,7 @@ internal class TierServiceTest {
             TierCalculation(tierScore.code, "someCalculationId", tierCalculationDate)
         )
 
-        whenever(referenceDataRepository.findByCodeAndSetName(tierScore.code, ReferenceDataSetGenerator.TIER.name))
+        whenever(referenceDataRepository.findByCodeAndSetName("U${tierScore.code}", ReferenceDataSetGenerator.TIER.name))
             .thenReturn(tierScore)
 
         person.managers.clear()
@@ -113,7 +116,7 @@ internal class TierServiceTest {
         whenever(referenceDataRepository.findByCodeAndSetName("ATS", ReferenceDataSetGenerator.TIER_CHANGE_REASON.name))
             .thenReturn(changeReason)
 
-        val exception = assertThrows<NotFoundException> { tierService.updateTier(person.crn, "someCalculationId") }
+        val exception = assertThrows<NotFoundException> { tierService.handleTierCalculation(person.crn, "someCalculationId") }
 
         assertEquals("PersonManager with crn of someCrn not found", exception.message)
     }
@@ -126,7 +129,7 @@ internal class TierServiceTest {
             TierCalculation(tierScore.code, "someCalculationId", tierCalculationDate)
         )
 
-        whenever(referenceDataRepository.findByCodeAndSetName(tierScore.code, ReferenceDataSetGenerator.TIER.name))
+        whenever(referenceDataRepository.findByCodeAndSetName("U${tierScore.code}", ReferenceDataSetGenerator.TIER.name))
             .thenReturn(tierScore)
 
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(person.crn)).thenReturn(person)
@@ -140,7 +143,7 @@ internal class TierServiceTest {
 
         whenever(contactTypeRepository.findByCode(ContactTypeGenerator.TIER_UPDATE.code)).thenReturn(ContactTypeGenerator.TIER_UPDATE)
 
-        tierService.updateTier(person.crn, "someCalculationId")
+        tierService.handleTierCalculation(person.crn, "someCalculationId")
 
         val managementTierArgumentCaptor = ArgumentCaptor.forClass(ManagementTier::class.java)
         verify(managementTierRepository).save(managementTierArgumentCaptor.capture())
@@ -171,5 +174,19 @@ internal class TierServiceTest {
         )
         assertThat(contact.type.id, equalTo(ContactTypeGenerator.TIER_UPDATE.id))
         assertThat(contact.type.code, equalTo(ContactTypeGenerator.TIER_UPDATE.code))
+
+        val personCaptor = ArgumentCaptor.forClass(Person::class.java)
+        verify(personRepository).save(personCaptor.capture())
+        val person = personCaptor.value
+        assertThat(person.currentTier, equalTo(tierScore.id))
+
+        verify(telemetryService).trackEvent(
+            "TierUpdateSuccess",
+            mapOf(
+                "crn" to person.crn,
+                "tier" to "someTierCode",
+                "calculationDate" to tierCalculationDate.toString()
+            )
+        )
     }
 }

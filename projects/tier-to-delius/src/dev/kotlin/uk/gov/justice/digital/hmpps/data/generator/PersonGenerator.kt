@@ -25,5 +25,5 @@ object PersonManagerGenerator {
 }
 
 object ProbationAreaGenerator {
-    val DEFAULT = ProbationArea(IdGenerator.getAndIncrement(), "someCode")
+    val DEFAULT = ProbationArea(IdGenerator.getAndIncrement(), "ZZZ")
 }

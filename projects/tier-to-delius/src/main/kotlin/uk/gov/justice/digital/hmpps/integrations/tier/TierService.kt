@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.tier
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -20,6 +21,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.getByCode
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 @Service
@@ -32,45 +35,65 @@ class TierService(
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
     private val contactTypeRepository: ContactTypeRepository,
+    private val telemetryService: TelemetryService,
 ) {
-    fun updateTier(crn: String, calculationId: String) {
-        writeTierUpdate(crn, calculationId)
+    fun handleTierCalculation(crn: String, calculationId: String) {
+        val tierCalculation = tierClient.getTierCalculation(crn, calculationId)
+        updateTier(crn, tierCalculation)
+        telemetryService.trackEvent(
+            "TierUpdateSuccess",
+            mapOf(
+                "crn" to crn,
+                "tier" to tierCalculation.tierScore,
+                "calculationDate" to tierCalculation.calculationDate.toString()
+            )
+        )
     }
 
-    private fun writeTierUpdate(crn: String, calculationId: String) {
-        val tierCalculation = tierClient.getTierCalculation(crn, calculationId)
-        val tier = referenceDataRepository.getByCodeAndSetName(tierCalculation.tierScore, "TIER")
+    @Transactional
+    fun updateTier(crn: String, tierCalculation: TierCalculation) {
+        val tier = referenceDataRepository.getByCodeAndSetName("U${tierCalculation.tierScore}", "TIER")
         val person = personRepository.getByCrnAndSoftDeletedIsFalse(crn)
         val changeReason = referenceDataRepository.getByCodeAndSetName("ATS", "TIER CHANGE REASON")
+
+        createTier(person, tier, tierCalculation.calculationDate, changeReason)
+        createContact(person, tier, tierCalculation.calculationDate, changeReason)
+        updatePerson(person, tier)
+    }
+
+    private fun createTier(
+        person: Person,
+        tier: ReferenceData,
+        calculationDate: ZonedDateTime,
+        changeReason: ReferenceData
+    ) {
         managementTierRepository.save(
             ManagementTier(
                 id = ManagementTierId(
                     personId = person.id,
                     tierId = tier.id,
-                    dateChanged = tierCalculation.calculationDate
+                    dateChanged = calculationDate
                 ),
                 tierChangeReasonId = changeReason.id
             )
         )
-
-        writeContact(person, tierCalculation, tier, changeReason)
     }
 
-    private fun writeContact(
+    private fun createContact(
         person: Person,
-        tierCalculation: TierCalculation,
         tier: ReferenceData,
+        calculationDate: ZonedDateTime,
         changeReason: ReferenceData
     ) {
         val areaCode = person.managers.firstOrNull()?.probationArea?.code
             ?: throw NotFoundException("PersonManager", "crn", person.crn)
 
-        val formattedDate = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(tierCalculation.calculationDate)
+        val formattedDate = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(calculationDate)
         contactRepository.save(
             Contact(
-                date = tierCalculation.calculationDate,
+                date = calculationDate,
                 person = person,
-                startTime = tierCalculation.calculationDate,
+                startTime = calculationDate,
                 notes = """
                         Tier Change Date: $formattedDate
                         Tier: ${tier.description}
@@ -81,5 +104,13 @@ class TierService(
                 type = contactTypeRepository.getByCode(ContactTypeCode.TIER_UPDATE.code)
             )
         )
+    }
+
+    private fun updatePerson(
+        person: Person,
+        tier: ReferenceData
+    ) {
+        person.currentTier = tier.id
+        personRepository.save(person)
     }
 }

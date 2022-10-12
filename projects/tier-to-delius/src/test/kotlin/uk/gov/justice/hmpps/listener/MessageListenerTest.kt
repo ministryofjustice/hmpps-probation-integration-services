@@ -39,6 +39,6 @@ internal class MessageListenerTest {
         messageListener.receive(message)
 
         // Then tier is updated
-        verify(tierService).updateTier("A123456", "calculationId")
+        verify(tierService).handleTierCalculation("A123456", "calculationId")
     }
 }

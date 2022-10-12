@@ -18,6 +18,6 @@ class MessageListener(
         telemetryService.notificationReceived(notification)
         val crn = notification.message.crn
         val calculationId = notification.message.calculationId
-        tierService.updateTier(crn, calculationId)
+        tierService.handleTierCalculation(crn, calculationId)
     }
 }
