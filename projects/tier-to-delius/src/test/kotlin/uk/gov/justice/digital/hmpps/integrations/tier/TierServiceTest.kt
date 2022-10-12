@@ -32,7 +32,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceD
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -152,7 +151,6 @@ internal class TierServiceTest {
         assertThat(tier.id.personId, equalTo(person.id))
         assertThat(tier.id.tierId, equalTo(tierScore.id))
         assertThat(tier.id.dateChanged, equalTo(tierCalculationDate))
-        assertThat(tier.createdDatetime, isCloseTo(ZonedDateTime.now()))
         assertThat(tier.tierChangeReasonId, equalTo(changeReason.id))
 
         val contactArgumentCaptor = ArgumentCaptor.forClass(Contact::class.java)

@@ -1,9 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.management
 
 import org.springframework.data.annotation.CreatedBy
-import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
-import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
 import java.time.ZonedDateTime
@@ -38,14 +36,6 @@ data class ManagementTier(
     @Column(nullable = false)
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
-
-    @Column(nullable = false, updatable = false)
-    @CreatedDate
-    var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
-
-    @Column(nullable = false)
-    @LastModifiedDate
-    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 )
 
 @Embeddable
