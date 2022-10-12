@@ -95,7 +95,10 @@ jobs:
             name=$(echo "${key}" | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g' | sed 's/${{ matrix.project }}-//')
             value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
             echo "Adding secret to parameter store: ${key} (${namespace}/${name})"
-            aws ssm put-parameter --name "${namespace}/${name}" --value "${value}" --overwrite --type SecureString --region eu-west-2
+            existing=$(aws ssm get-parameter --name "${namespace}/${name}")
+            if [ existing != value ]; then
+              aws ssm put-parameter --name "${namespace}/${name}" --value "${value}" --overwrite --type SecureString --region eu-west-2
+            fi
           done
 
       - name: Configure database access
