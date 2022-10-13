@@ -12,6 +12,7 @@ import javax.persistence.FetchType
 import javax.persistence.Id
 import javax.persistence.OneToMany
 import javax.persistence.Table
+import javax.persistence.Version
 
 @Entity
 @Table(name = "offender")
@@ -26,6 +27,10 @@ class Person(
 
     @Column
     var currentTier: Long? = null,
+
+    @Version
+    @Column(name = "row_version", nullable = false)
+    val version: Long = 0,
 
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,

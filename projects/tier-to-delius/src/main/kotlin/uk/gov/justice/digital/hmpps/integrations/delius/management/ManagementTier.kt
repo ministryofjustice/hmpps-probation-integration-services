@@ -16,7 +16,7 @@ import javax.persistence.EntityListeners
 @EntityListeners(AuditingEntityListener::class)
 data class ManagementTier(
     @EmbeddedId
-    var id: ManagementTierId,
+    val id: ManagementTierId,
 
     @Column
     val tierChangeReasonId: Long,
