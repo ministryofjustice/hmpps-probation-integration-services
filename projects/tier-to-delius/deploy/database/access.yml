@@ -2,6 +2,10 @@ database:
   access:
     username_key: /tier-to-delius/db-username
     password_key: /tier-to-delius/db-password
+    tables:
+      - contact
+      - offender
+      - management_tier
 
   audit:
     username: TierToDelius
