@@ -7,7 +7,8 @@
       "index": {
         "number_of_shards": "1",
         "number_of_replicas": "2",
-        "default_pipeline": "person-search-pipeline"
+        "default_pipeline": "person-search-pipeline",
+        "max_ngram_diff": 9
       },
       "analysis": {
         "analyzer": {
@@ -26,6 +27,10 @@
               "postcode_shingle",
               "postcode_space_filter"
             ]
+          },
+            "phoneAnalyzer": {
+            "tokenizer": "standard",
+            "filter": ["phone_number_filter"]
           }
         },
         "filter": {
@@ -54,6 +59,11 @@
             "type": "pattern_replace",
             "pattern": " ",
             "replacement": ""
+          },
+          "phone_number_filter": {
+            "type": "ngram",
+            "min_gram": 6,
+            "max_gram": 15
           }
         }
       }
@@ -96,6 +106,10 @@
             "postcode_analyzed": {
               "type": "text",
               "analyzer": "postcodeAnalyzer"
+            },
+            "contactNumbers": {
+              "type": "text",
+              "analyzer": "phoneAnalyzer"
             }
           }
         }

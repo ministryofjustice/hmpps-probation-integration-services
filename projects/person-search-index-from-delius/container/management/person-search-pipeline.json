@@ -37,6 +37,12 @@
                 "inline": "ctx.contactDetails.addresses.forEach(a -> { a.postcode_analyzed = a.postcode; a.streetName_analyzed = a.streetName })",
                 "ignore_failure": true
             }
+        },
+        {
+            "script": {
+                "inline": "ctx.contactNumbers=ctx.contactDetails.phoneNumbers.stream().map(p -> ((String)p.number).replace(\" \",\"\")).collect(Collectors.toList())",
+                "ignore_failure": true
+            }
         }
     ]
 }
