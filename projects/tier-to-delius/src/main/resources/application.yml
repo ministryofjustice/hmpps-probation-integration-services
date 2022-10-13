@@ -48,9 +48,7 @@ spring:
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
-integrations:
-  example:
-    url: http://localhost:${wiremock.port}/example
+integrations.tier.url: http://localhost:${wiremock.port}/hmpps-tier
 
 management.endpoints.web:
   base-path: /
