@@ -29,6 +29,7 @@ on:
           - '["prison-custody-status-to-delius"]'
           - '["risk-assessment-scores-to-delius"]'
           - '["workforce-allocations-to-delius"]'
+          - '["tier-to-delius"]'
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
       environment:
