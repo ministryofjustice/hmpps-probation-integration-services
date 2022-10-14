@@ -1,0 +1,218 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "CVL Search",
+    "description": "",
+    "termsOfService": "",
+    "version": "1"
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "CVL"
+    }
+  ],
+  "paths": {
+    "/cvl/search": {
+      "post": {
+        "tags": [
+          "CVL Search"
+        ],
+        "description": "Search endpoint for CVL",
+        "requestBody": {
+          "description": "List of people matching filter conditions",
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/CvlRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CvlPerson"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CvlRequest": {
+        "type": "object",
+        "required": [
+          "teamCodes"
+        ],
+        "properties": {
+          "teamCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "crns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "staffCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sortBy": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "default": "person.surname"
+                },
+                "direction": {
+                  "type": "string",
+                  "enum": [
+                    "asc",
+                    "desc"
+                  ],
+                  "default": "asc"
+                }
+              }
+            }
+          },
+          "pageSize": {
+            "type": "integer",
+            "default": 100
+          },
+          "offset": {
+            "type": "integer",
+            "default": 0
+          }
+        }
+      },
+      "CvlPerson": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "object",
+            "properties": {
+              "forename": {
+                "type": "string"
+              },
+              "surname": {
+                "type": "string"
+              },
+              "middleName": {
+                "type": "string"
+              }
+            }
+          },
+          "identifiers": {
+            "type": "object",
+            "properties": {
+              "crn": {
+                "type": "string"
+              },
+              "cro": {
+                "type": "string"
+              },
+              "noms": {
+                "type": "string"
+              },
+              "pnc": {
+                "type": "string"
+              }
+            }
+          },
+          "manager": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "name": {
+                "type": "object",
+                "properties": {
+                  "forename": {
+                    "type": "string"
+                  },
+                  "surname": {
+                    "type": "string"
+                  }
+                }
+              },
+              "team": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "borough": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "district": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "probationArea": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "allocationDate": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
