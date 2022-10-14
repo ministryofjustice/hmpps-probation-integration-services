@@ -95,6 +95,10 @@
         "otherIds.pncNumberLongYear": {
           "type": "keyword"
         },
+        "contactNumbers": {
+          "type": "text",
+          "analyzer": "phoneAnalyzer"
+        },
         "contactDetails.addresses": {
           "include_in_root": true,
           "type": "nested",
@@ -106,10 +110,6 @@
             "postcode_analyzed": {
               "type": "text",
               "analyzer": "postcodeAnalyzer"
-            },
-            "contactNumbers": {
-              "type": "text",
-              "analyzer": "phoneAnalyzer"
             }
           }
         }
