@@ -1,0 +1,179 @@
+---
+openapi: 3.0.1
+info:
+  title: CVL Search
+  description: ""
+  termsOfService: ""
+  version: "1"
+servers:
+  - url: /
+tags:
+  - name: CVL
+paths:
+  /cvl/search:
+    post:
+      tags:
+        - CVL Search
+      description: Search endpoint for CVL
+      requestBody:
+        description: List of people matching filter conditions
+        content:
+          "*/*":
+            schema:
+              $ref: "#/components/schemas/CvlRequest"
+        required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/CvlPerson"
+components:
+  schemas:
+    CvlRequest:
+      type: object
+      required:
+        - teamCodes
+      properties:
+        teamCodes:
+          type: array
+          items:
+            type: string
+        query:
+          type: string
+        sortBy:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                default: person.surname
+              direction:
+                type: string
+                enum:
+                  - asc
+                  - desc
+                default: asc
+        pageSize:
+          type: integer
+          default: 100
+        offset:
+          type: integer
+          default: 0
+    CvlPerson:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: object
+                properties:
+                  forename:
+                    type: string
+                  surname:
+                    type: string
+                  middleName:
+                    type: string
+              identifiers:
+                type: object
+                properties:
+                  crn:
+                    type: string
+                  cro:
+                    type: string
+                  noms:
+                    type: string
+                  pnc:
+                    type: string
+              manager:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  name:
+                    type: object
+                    properties:
+                      forename:
+                        type: string
+                      surname:
+                        type: string
+                  team:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      description:
+                        type: string
+                      borough:
+                        type: object
+                        properties:
+                          code:
+                            type: string
+                          description:
+                            type: string
+                      district:
+                        type: object
+                        properties:
+                          code:
+                            type: string
+                          description:
+                            type: string
+                  probationArea:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      description:
+                        type: string
+              allocationDate:
+                type: string
+        empty:
+          type: boolean
+        first:
+          type: boolean
+        last:
+          type: boolean
+        number:
+          type: number
+        numberofElements:
+          type: number
+        pageable:
+          type: object
+          properties:
+            offset:
+              type: number
+            pageNumber:
+              type: number
+            pageSize:
+              type: number
+            paged:
+              type: boolean
+            sort:
+              type: object
+              properties:
+                empty:
+                  type: boolean
+                sorted:
+                  type: boolean
+                unsorted:
+                  type: boolean
+        size:
+          type: number
+        sort:
+          type: object
+          properties:
+            empty:
+              type: boolean
+            sorted:
+              type: boolean
+            unsorted:
+              type: boolean
+        totalElements:
+          type: number
+        totalPages:
+          type: number
