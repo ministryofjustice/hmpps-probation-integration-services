@@ -132,48 +132,19 @@ components:
                         type: string
               allocationDate:
                 type: string
-        empty:
-          type: boolean
-        first:
-          type: boolean
-        last:
-          type: boolean
-        number:
-          type: number
-        numberofElements:
+        numberOfElements:
           type: number
         pageable:
           type: object
           properties:
             offset:
               type: number
-            pageNumber:
-              type: number
             pageSize:
               type: number
-            paged:
-              type: boolean
             sort:
               type: object
               properties:
-                empty:
-                  type: boolean
                 sorted:
                   type: boolean
-                unsorted:
-                  type: boolean
-        size:
-          type: number
-        sort:
-          type: object
-          properties:
-            empty:
-              type: boolean
-            sorted:
-              type: boolean
-            unsorted:
-              type: boolean
         totalElements:
-          type: number
-        totalPages:
           type: number
