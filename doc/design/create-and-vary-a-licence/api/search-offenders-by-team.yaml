@@ -1,26 +1,26 @@
 ---
 openapi: 3.0.1
 info:
-  title: CVL Search
+  title: Licence Caseload
   description: ""
   termsOfService: ""
   version: "1"
 servers:
   - url: /
 tags:
-  - name: CVL
+  - name: Team LicenceCaseload
 paths:
-  /cvl/search:
+  /licence-caseload/by-team:
     post:
       tags:
-        - CVL Search
-      description: Search endpoint for CVL
+        - Licence Search by Team
+      description: Search endpoint scoped to a list of probation teams
       requestBody:
         description: List of people matching filter conditions
         content:
           "*/*":
             schema:
-              $ref: "#/components/schemas/CvlRequest"
+              $ref: "#/components/schemas/LicenceCaseloadRequest"
         required: true
       responses:
         "200":
@@ -28,10 +28,10 @@ paths:
           content:
             "*/*":
               schema:
-                $ref: "#/components/schemas/CvlPerson"
+                $ref: "#/components/schemas/LicenceCaseloadPerson"
 components:
   schemas:
-    CvlRequest:
+    LicenceCaseloadRequest:
       type: object
       required:
         - teamCodes
@@ -62,7 +62,7 @@ components:
         offset:
           type: integer
           default: 0
-    CvlPerson:
+    LicenceCaseloadPerson:
       type: object
       properties:
         content:
