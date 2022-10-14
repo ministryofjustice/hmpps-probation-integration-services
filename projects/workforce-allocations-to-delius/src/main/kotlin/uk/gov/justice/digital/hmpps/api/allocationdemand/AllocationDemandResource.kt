@@ -16,5 +16,5 @@ class AllocationDemandResource(private val service: AllocationDemandService) {
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @RequestMapping(method = [RequestMethod.GET, RequestMethod.POST])
     fun findUnallocatedForTeam(@Valid @RequestBody request: AllocationDemandRequest): AllocationDemandResponse =
-        service.findAllocationDemand(request)
+        if (request.cases.isEmpty()) AllocationDemandResponse(listOf()) else service.findAllocationDemand(request)
 }
