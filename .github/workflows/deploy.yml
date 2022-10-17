@@ -96,7 +96,7 @@ jobs:
           echo "${ALL_SECRETS}" | jq -r ". | keys[] | select(. | startswith(\"${project_name}\"))" | while read -r key; do
             name=$(echo "${key}" | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g' | sed 's/${{ matrix.project }}-//')
             value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
-            existing=$(aws ssm get-parameter --name "${namespace}/${name}" --region eu-west-2 --with-decryption | jq -r '.Parameter.Value')
+            existing=$(aws ssm get-parameter --name "${namespace}/${name}" --region eu-west-2 --with-decryption --query 'Parameter.Value' --output text || echo "")
             if [ "${existing}" != "${value}" ]; then
               echo "Updating secret in parameter store: ${key} (${namespace}/${name})"
               aws ssm put-parameter --name "${namespace}/${name}" --value "${value}" --overwrite --type SecureString --region eu-west-2
