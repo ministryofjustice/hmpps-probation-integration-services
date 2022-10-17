@@ -23,7 +23,7 @@ rootProject.children
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("amazon-sqs", "com.amazonaws:amazon-sqs-java-messaging-lib:2.0.0")
+            library("amazon-sqs", "com.amazonaws:amazon-sqs-java-messaging-lib:2.0.1")
             library("insights", "com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
             library("hawtio", "io.hawt:hawtio-springboot:2.16.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:4.0.0")
