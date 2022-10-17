@@ -76,11 +76,54 @@
         "otherIds.croNumberLowercase": {
           "type": "keyword"
         },
+        "otherIds.crn": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "firstName": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "surname": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
         "offenderManagers": {
           "type": "nested",
           "properties": {
             "probationArea.code": {
               "type": "keyword"
+            },
+            "team.code": {
+              "type": "keyword"
+            },
+            "staff.forenames": {
+              "type": "text",
+              "fields": {
+                "raw": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "staff.surname": {
+              "type": "text",
+              "fields": {
+                "raw": {
+                  "type": "keyword"
+                }
+              }
             }
           }
         },
