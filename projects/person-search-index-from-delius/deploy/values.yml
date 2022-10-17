@@ -6,6 +6,10 @@ reservations:
   cpu: 1024
   memory: 1024
 
+limits:
+  cpu: 2048    # = 2 vCPU
+  memory: 2048 # = 2 GB
+
 healthcheck:
   command: curl -sf localhost:9600
 
