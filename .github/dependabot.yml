@@ -15,19 +15,3 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-  - package-ecosystem: "docker"
-    directory: "/tools/eclipse-temurin/17-jre-alpine"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "docker"
-    directory: "/tools/eclipse-temurin/17-jre-jammy"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "docker"
-    directory: "/tools/eclipse-temurin/19-jre-jammy"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "docker"
-    directory: "/tools/opensearch-logstash/8"
-    schedule:
-      interval: "daily"
