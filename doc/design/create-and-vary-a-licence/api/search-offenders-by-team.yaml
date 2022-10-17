@@ -49,13 +49,19 @@ components:
             properties:
               field:
                 type: string
-                default: person.surname
+                enum:
+                  - identifiers.crn
+                  - name.forename
+                  - name.surname
+                  - manager.name.forename
+                  - manager.name.surname
               direction:
                 type: string
                 enum:
                   - asc
                   - desc
                 default: asc
+          default: [{field: name.forename}, {field: name.surname}]
         pageSize:
           type: integer
           default: 100
@@ -102,6 +108,8 @@ components:
                         type: string
                       surname:
                         type: string
+                      middleName:
+                        type: string
                   team:
                     type: object
                     properties:
@@ -132,6 +140,8 @@ components:
                         type: string
               allocationDate:
                 type: string
+                examples:
+                  - "2022-10-17"
         numberOfElements:
           type: number
         pageable:
