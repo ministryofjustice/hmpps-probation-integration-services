@@ -62,11 +62,7 @@ resource "aws_lb_listener" "$SERVICE_NAME" {
   certificate_arn   = local.certificate_arn
   default_action {
     type = "forward"
-    forward {
-      target_group {
-        arn = module.$SERVICE_NAME.primary_target_group["arn"]
-      }
-    }
+    target_group_arn = module.$SERVICE_NAME.primary_target_group["arn"]
   }
 }
 

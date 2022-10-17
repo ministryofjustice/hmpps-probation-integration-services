@@ -8,5 +8,7 @@ secrets:
   SPRING_DATASOURCE_URL:                   /delius-database/jdbc-url
   SPRING_DATASOURCE_USERNAME:              /$SERVICE_NAME/db-username
   SPRING_DATASOURCE_PASSWORD:              /$SERVICE_NAME/db-password
-  SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: /$SERVICE_NAME/queue-name
+  SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: /$SERVICE_NAME/sqs-queue-name
+  OAUTH2_CLIENT-ID:                        /$SERVICE_NAME/client-id
+  OAUTH2_CLIENT-SECRET:                    /$SERVICE_NAME/client-secret
   SENTRY_DSN:                              /$SERVICE_NAME/sentry-dsn

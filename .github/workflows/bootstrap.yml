@@ -62,11 +62,12 @@ jobs:
           echo "::set-output name=with_underscores::$(echo '${{ inputs.project_name }}' | sed 's/-/_/g')"
           echo "::set-output name=with_underscores_uppercase::$(echo '${{ inputs.project_name }}' | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')"
 
-      - uses: mmercan/actions-set-secret@da197fb79d8c1ecedcde53fbd32a4b02ece5723a # v/4.0.0
-        with:
-          name: ${{ steps.project_name.outputs.with_underscores_uppercase }}_DB_USERNAME
-          value: ${{ steps.project_name.outputs.with_underscores }}
-          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
+      - name: Set database username
+        run: gh secret set "$NAME" --body "$VALUE" --app actions
+        env:
+          NAME: ${{ steps.project_name.outputs.with_underscores_uppercase }}_DB_USERNAME
+          VALUE: ${{ steps.project_name.outputs.with_underscores }}
+          GITHUB_TOKEN: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
 
       - uses: ./.github/actions/random-secret
         with:
@@ -104,6 +105,7 @@ jobs:
           find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME/${{ inputs.project_name }}/g' {} \;
           cp -R templates/projects/${{ inputs.project_template }} projects/${{ inputs.project_name }}
           sed -i '/add new projects here/i \    "${{ inputs.project_name }}",' settings.gradle.kts
+          sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' .github/workflows/deploy.yml
           sed 's/$SERVICE_NAME/${{ inputs.project_name }}/g' templates/runConfiguration.xml > '.idea/runConfigurations/${{ steps.project_name.outputs.underscore }}.xml'
 
       - name: Create pull request
@@ -112,6 +114,7 @@ jobs:
         with:
           add-paths: |
             settings.gradle.kts
+            .github/workflows/deploy.yml
             projects/${{ inputs.project_name }}/*
             .idea/runConfigurations/${{ steps.project_name.outputs.underscore }}.xml
           commit-message: Create initial project for ${{ inputs.project_name }}

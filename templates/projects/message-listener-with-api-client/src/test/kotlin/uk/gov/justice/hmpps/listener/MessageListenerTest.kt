@@ -18,7 +18,7 @@ internal class MessageListenerTest {
     @InjectMocks lateinit var messageListener: MessageListener
 
     @Test
-    fun messageIsLoggedToTelemetry() {
+    fun `message is logged to telemetry`() {
         // Given a message
         val notification = Notification(message = HmppsDomainEvent("test.event.type", 1, "https//detail/url", ZonedDateTime.now()))
 
