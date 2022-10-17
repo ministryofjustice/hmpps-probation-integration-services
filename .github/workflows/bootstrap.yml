@@ -114,6 +114,7 @@ jobs:
         with:
           add-paths: |
             settings.gradle.kts
+            .github/workflows/deploy.yml
             projects/${{ inputs.project_name }}/*
             .idea/runConfigurations/${{ steps.project_name.outputs.underscore }}.xml
           commit-message: Create initial project for ${{ inputs.project_name }}
