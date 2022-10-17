@@ -2,5 +2,5 @@ environment_name: delius-test
 
 env:
   SEARCH_INDEX_HOST: "https://probation-search-dev.hmpps.service.justice.gov.uk:443"
-  INDEX_SCHEDULE: "30 9 * * 1-5"
-  MANAGEMENT_SCHEDULE: "28 9 * * 1-5"
+  INDEX_SCHEDULE: "10 10 * * 1-5"
+  MANAGEMENT_SCHEDULE: "8 10 * * 1-5"
