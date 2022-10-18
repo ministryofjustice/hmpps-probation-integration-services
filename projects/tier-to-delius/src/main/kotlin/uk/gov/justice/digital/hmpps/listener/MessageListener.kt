@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.tier.TierService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.net.URI
 
 @Component
 @EnableJms
@@ -21,8 +22,7 @@ class MessageListener(
     fun receive(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val crn = notification.message.personReference.findCrn()!!
-        val calculationId = notification.message.additionalInformation["calculationId"] as String
-        val tierCalculation = tierClient.getTierCalculation(crn, calculationId)
+        val tierCalculation = tierClient.getTierCalculation(URI.create(notification.message.detailUrl!!))
         tierService.updateTier(crn, tierCalculation)
         telemetryService.trackEvent("TierUpdateSuccess", tierCalculation.telemetryProperties(crn))
     }
