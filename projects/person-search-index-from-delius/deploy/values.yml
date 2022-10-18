@@ -17,6 +17,7 @@ env:
   JDK_JAVA_OPTIONS: -XX:MaxRAMPercentage=75.0
   PRIMARY_INDEX_NAME: person-search-primary
   STANDBY_INDEX_NAME: person-search-standby
+  APP_INSIGHTS_URL: https://northeurope-0.in.applicationinsights.azure.com/v2/track
 
 secrets:
   JDBC_CONNECTION_STRING:      /delius-database/jdbc-standby-url
