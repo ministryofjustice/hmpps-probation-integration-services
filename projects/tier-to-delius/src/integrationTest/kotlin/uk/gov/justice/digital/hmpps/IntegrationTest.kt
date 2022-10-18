@@ -49,14 +49,17 @@ internal class IntegrationTest {
 
     @Test
     fun `updates a tier`() {
-        val notification = Notification(message = MessageGenerator.DEFAULT, attributes = MessageAttributes("TIER_CALCULATION_COMPLETE"))
+        val notification = Notification(
+            message = MessageGenerator.DEFAULT,
+            attributes = MessageAttributes("tier.calculation.complete")
+        )
 
         jmsTemplate.convertSendAndWait(queueName, notification)
 
         val expectedTier = referenceDataRepository.findByCodeAndSetName("UD2", "TIER")!!
         val expectedReason = referenceDataRepository.findByCodeAndSetName("ATS", "TIER CHANGE REASON")!!
 
-        val person = personRepository.findByCrnAndSoftDeletedIsFalse(notification.message.crn)!!
+        val person = personRepository.findByCrnAndSoftDeletedIsFalse(notification.message.personReference.findCrn()!!)!!
         assertThat(person.currentTier, equalTo(expectedTier.id))
 
         val managementTier = managementTierDevRepository.findByIdPersonId(person.id)

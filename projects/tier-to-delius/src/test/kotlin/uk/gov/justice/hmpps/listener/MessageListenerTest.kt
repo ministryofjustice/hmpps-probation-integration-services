@@ -7,11 +7,11 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculation
 import uk.gov.justice.digital.hmpps.integrations.tier.TierClient
 import uk.gov.justice.digital.hmpps.integrations.tier.TierService
 import uk.gov.justice.digital.hmpps.listener.MessageListener
-import uk.gov.justice.digital.hmpps.listener.TierChangeEvent
 import uk.gov.justice.digital.hmpps.listener.telemetryProperties
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -27,7 +27,7 @@ internal class MessageListenerTest {
     @Test
     fun `should update tier`() {
         // Given a message
-        val message = Notification(message = TierChangeEvent("A123456", "calculationId"))
+        val message = Notification(message = MessageGenerator.DEFAULT)
         // And a calculation
         val calculation = TierCalculation("someScore", "calculationId", now())
         whenever(tierClient.getTierCalculation("A123456", "calculationId")).thenReturn(calculation)
