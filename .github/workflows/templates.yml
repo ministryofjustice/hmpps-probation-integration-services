@@ -1,0 +1,39 @@
+name: Templates
+# Check that templates build correctly and tests pass
+
+on:
+  push:
+    paths:
+      - templates/projects/**
+      - .github/workflows/templates.yml
+      - .github/actions/render-project-template/action.yml
+  schedule:
+    - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project_template:
+          - message-listener
+          - message-listener-with-api-client
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Render project template
+        uses: ./.github/actions/render-project-template
+        with:
+          project_name: test-project
+          project_template: ${{ matrix.project_template }}
+
+      - name: Compile and test
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: check

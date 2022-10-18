@@ -93,20 +93,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # convert project name to UpperCamelCase (e.g. 'hello-world' -> 'HelloWorld')
-      - id: project_name
-        run: |
-          echo "::set-output name=camel_case::$(echo '${{ inputs.project_name }}' | sed -E 's/-(.)/\U\1/g' | sed -E 's/^(.)/\U\1/')"
-          echo "::set-output name=underscore::$(echo '${{ inputs.project_name }}' | tr '-' '_')"
-
       - name: Render project template
-        run: |
-          find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME_CAMELCASE/${{ steps.project_name.outputs.camel_case }}/g' {} \;
-          find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME/${{ inputs.project_name }}/g' {} \;
-          cp -R templates/projects/${{ inputs.project_template }} projects/${{ inputs.project_name }}
-          sed -i '/add new projects here/i \    "${{ inputs.project_name }}",' settings.gradle.kts
-          sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' .github/workflows/deploy.yml
-          sed 's/$SERVICE_NAME/${{ inputs.project_name }}/g' templates/runConfiguration.xml > '.idea/runConfigurations/${{ steps.project_name.outputs.underscore }}.xml'
+        uses: ./.github/actions/render-project-template
+        with:
+          project_name: ${{ inputs.project_name }}
+          project_template: ${{ inputs.project_template }}
 
       - name: Create pull request
         id: pr
