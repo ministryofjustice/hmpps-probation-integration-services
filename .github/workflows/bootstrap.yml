@@ -15,6 +15,7 @@ on:
         default: message-listener-with-api-client
         options:
           - message-listener-with-api-client
+          - message-listener-with-api-client-and-server
           - message-listener
           - 'No template - I want to create the project from scratch'
       create_database_credentials:
