@@ -1,0 +1,30 @@
+name: Render project template
+description: Renders a project template from the templates/projects directory and adds it to the Gradle build
+
+inputs:
+  project_name:
+    description: Project name
+    required: true
+  project_template:
+    description: Project template name
+    required: true
+
+runs:
+  using: composite
+  steps:
+    # convert project name to UpperCamelCase (e.g. 'hello-world' -> 'HelloWorld')
+    - id: project_name
+      shell: bash
+      run: |
+        echo "camel_case=$(echo '${{ inputs.project_name }}' | sed -E 's/-(.)/\U\1/g' | sed -E 's/^(.)/\U\1/')" >> $GITHUB_ENV
+        echo "underscore=$(echo '${{ inputs.project_name }}' | tr '-' '_')" >> $GITHUB_ENV
+
+    - name: Render project template
+      shell: bash
+      run: |
+        find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME_CAMELCASE/${{ steps.project_name.outputs.camel_case }}/g' {} \;
+        find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME/${{ inputs.project_name }}/g' {} \;
+        cp -R templates/projects/${{ inputs.project_template }} projects/${{ inputs.project_name }}
+        sed -i '/add new projects here/i \    "${{ inputs.project_name }}",' settings.gradle.kts
+        sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' .github/workflows/deploy.yml
+        sed 's/$SERVICE_NAME/${{ inputs.project_name }}/g' templates/runConfiguration.xml > '.idea/runConfigurations/${{ steps.project_name.outputs.underscore }}.xml'

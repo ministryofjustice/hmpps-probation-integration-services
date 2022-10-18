@@ -6,6 +6,7 @@ on:
     paths:
       - templates/projects/**
       - .github/workflows/templates.yml
+      - .github/actions/render-project-template/action.yml
   schedule:
     - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
   workflow_dispatch:
@@ -18,26 +19,19 @@ jobs:
         project_template:
           - message-listener
           - message-listener-with-api-client
-    env:
-      project_name: test-project
-      project_name_underscore: test_project
-      project_name_camel_case: TestProject
     steps:
       - uses: actions/checkout@v3
-
-      - name: Render project template
-        run: |
-          find templates/projects/${{ matrix.project_template }} -type f -exec sed -i 's/$SERVICE_NAME_CAMELCASE/${{ env.project_name_camel_case }}/g' {} \;
-          find templates/projects/${{ matrix.project_template }} -type f -exec sed -i 's/$SERVICE_NAME/${{ env.project_name }}/g' {} \;
-          cp -R templates/projects/${{ matrix.project_template }} projects/${{ env.project_name }}
-          sed -i '/add new projects here/i \    "${{ env.project_name }}",' settings.gradle.kts
-          sed -i '/add new projects here/i \          - '"'"'["${{ env.project_name }}"]'"'"'' .github/workflows/deploy.yml
-          sed 's/$SERVICE_NAME/${{ env.project_name }}/g' templates/runConfiguration.xml > '.idea/runConfigurations/${{ env.project_name_underscore }}.xml'
 
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      - name: Render project template
+        uses: ./.github/actions/render-project-template
+        with:
+          project_name: test-project
+          project_template: ${{ matrix.project_template }}
 
       - name: Compile and test
         uses: gradle/gradle-build-action@v2
