@@ -59,7 +59,7 @@ delete_ready_for_reindex() {
 }
 
 parseAppInsightsConnectionString() {
-    terms=$(echo "$APP_INSIGHTS_CONNECTION_STRING" | tr ";" "\n")
+    terms=$(echo "$APPLICATIONINSIGHTS_CONNECTION_STRING" | tr ";" "\n")
 
     for term in $terms
     do
