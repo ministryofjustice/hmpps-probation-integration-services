@@ -58,6 +58,24 @@ delete_ready_for_reindex() {
                                       }'
 }
 
+parseAppInsightsConnectionString() {
+    terms=$(echo "$APPLICATIONINSIGHTS_CONNECTION_STRING" | tr ";" "\n")
+
+    for term in $terms
+    do
+        key=$(echo "$term" | cut -d "=" -f 1)
+        value=$(echo "$term" | cut -d "=" -f 2)
+        if [ "$key" = 'InstrumentationKey' ];
+          then APP_INSIGHTS_KEY="$value"
+        fi
+        if [ "$key" = 'IngestionEndpoint' ];
+          then APP_INSIGHTS_URL="$value"v2/track
+        fi
+    done
+
+    printf 'APP INSIGHTS URL:  %s' "$APP_INSIGHTS_URL"
+}
+
 check_count_document() {
   export EXPECTED_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.activeOffenders')
 
@@ -66,6 +84,7 @@ check_count_document() {
     echo 'waiting for count to be indexed ... '
     if (("${SECONDS}" >= "${MAX_TIMEOUT}")); then
       echo "Timed out getting index count."
+      sendFailure
       exit 1
     fi
     sleep 10
@@ -76,6 +95,7 @@ check_count_document() {
 
 wait_for_index_to_complete() {
   printf "\\nwaiting for indexing to complete ...\\n"
+  parseAppInsightsConnectionString
   check_count_document
 
   ACTUAL_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
@@ -84,6 +104,7 @@ wait_for_index_to_complete() {
     echo 'waiting for actual count to be at least expected count ...'
     if (("${SECONDS}" >= "${MAX_TIMEOUT}")); then
       echo "Indexing process timed out: Expected ${EXPECTED_COUNT} but got ${ACTUAL_COUNT}"
+      sendFailure
       exit 1
     fi
     sleep 5
@@ -92,10 +113,64 @@ wait_for_index_to_complete() {
   echo "Actual Count is ${ACTUAL_COUNT} => Expected ${EXPECTED_COUNT}"
 }
 
+sendSuccess() {
+  printf '\\nSuccessfully completed indexing and alias switch\\n'
+  now=$(date +'%FT%T%z')
+  curl -sSf -XPOST -H "Content-Type: application/json" "${APP_INSIGHTS_URL}" -d '{
+                                    "name": "ProbationSearchIndexCompleted",
+                                    "time": "'"${now}"'",
+                                    "iKey": "'"${APP_INSIGHTS_KEY}"'",
+                                    "tags": {
+                                    },
+                                    "data": {
+                                       "baseType": "EventData",
+                                       "baseData": {
+                                          "ver": 1,
+                                          "name": "ProbationSearchIndexCompleted",
+                                          "properties": {
+                                             "duration": "'"${SECONDS}"'",
+                                             "count": "'"${ACTUAL_COUNT}"'"
+                                          }
+                                       }
+                                    }
+                                 }'
+}
+
+sendFailure() {
+  printf '\\nFailed to complete indexing due to timeout\\n'
+  now=$(date +'%FT%T%z')
+  curl -sSf -XPOST -H "Content-Type: application/json" "${APP_INSIGHTS_URL}" -d '{
+                                    "name": "ProbationSearchIndexFailure",
+                                    "time": "'"${now}"'",
+                                    "iKey": "'"${APP_INSIGHTS_KEY}"'",
+                                    "tags": {
+                                    },
+                                    "data": {
+                                       "baseType": "ExceptionData",
+                                       "baseData": {
+                                          "ver": 1,
+                                          "handledAt": "ProbationSearchIndexFailure",
+                                          "properties": {
+                                             "timeout": "'"${MAX_TIMEOUT}"'"
+                                          },
+                                          "exceptions": [
+                                            {
+                                               "typeName": "ProbationSearchIndexFailure",
+                                               "message": "Indexing Process Timed Out",
+                                               "hasFullStack": false,
+                                               "parsedStack": [
+                                               ]
+                                            }
+                                         ]
+                                       }
+                                    }
+                                 }'
+}
+
 switch_aliases() {
   echo 'switching aliases'
-  echo "primary => $PRIMARY_INDEX"
-  echo "standby => $STANDBY_INDEX"
+  echo "primary => $STANDBY_INDEX"
+  echo "standby => $PRIMARY_INDEX"
 
   curl -sSf -XPOST -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}"/_aliases -d '{
                                       "actions": [
@@ -125,7 +200,7 @@ switch_aliases() {
                                         }
                                       ]
                                     }'
-
+  sendSuccess
 }
 
 get_current_indices && delete_ready_for_reindex && wait_for_index_to_complete && switch_aliases
