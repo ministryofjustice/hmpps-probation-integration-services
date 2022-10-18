@@ -19,7 +19,7 @@ class MessageListener(
     fun receive(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val hmppsEvent = notification.message
-        when (notification.eventType) {
+        when (hmppsEvent.eventType) {
             "risk-assessment.scores.rsr.determined" -> {
                 riskScoreService.updateRsrScores(
                     hmppsEvent.personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN in ${hmppsEvent.personReference}"),

@@ -47,7 +47,7 @@ internal class MessageListenerTest {
         // Given an RSR message
         val message = Notification(
             message = MessageGenerator.RSR_SCORES_DETERMINED,
-            attributes = MessageAttributes("risk-assessment.scores.rsr.determined")
+            attributes = MessageAttributes("risk-assessment.scores.determined")
         )
 
         // When it is received
@@ -70,7 +70,7 @@ internal class MessageListenerTest {
         // Given an OGRS message
         val message = Notification(
             message = MessageGenerator.OGRS_SCORES_DETERMINED,
-            attributes = MessageAttributes("risk-assessment.scores.ogrs.determined")
+            attributes = MessageAttributes("risk-assessment.scores.determined")
         )
 
         // When it is received
@@ -86,8 +86,8 @@ internal class MessageListenerTest {
         assertThrows<IllegalArgumentException> {
             messageListener.receive(
                 Notification(
-                    message = MessageGenerator.RSR_SCORES_DETERMINED,
-                    attributes = MessageAttributes("unknown")
+                    message = MessageGenerator.RSR_SCORES_DETERMINED.copy(eventType = "unknown"),
+                    attributes = MessageAttributes("risk-assessment.scores.determined")
                 )
             )
         }
@@ -99,7 +99,7 @@ internal class MessageListenerTest {
             messageListener.receive(
                 Notification(
                     message = MessageGenerator.RSR_SCORES_DETERMINED.copy(personReference = PersonReference()),
-                    attributes = MessageAttributes("risk-assessment.scores.rsr.determined")
+                    attributes = MessageAttributes("risk-assessment.scores.determined")
                 )
             )
         }
