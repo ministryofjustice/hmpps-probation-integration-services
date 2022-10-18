@@ -58,6 +58,24 @@ delete_ready_for_reindex() {
                                       }'
 }
 
+parseAppInsightsConnectionString() {
+    terms=$(echo "$APP_INSIGHTS_CONNECTION_STRING" | tr ";" "\n")
+
+    for term in $terms
+    do
+        key=$(echo "$term" | cut -d "=" -f 1)
+        value=$(echo "$term" | cut -d "=" -f 2)
+        if [ "$key" = 'InstrumentationKey' ];
+          then APP_INSIGHTS_KEY="$value"
+        fi
+        if [ "$key" = 'IngestionEndpoint' ];
+          then APP_INSIGHTS_URL="$value"v2/track
+        fi
+    done
+
+    printf 'APP INSIGHTS URL:  %s' "$APP_INSIGHTS_URL"
+}
+
 check_count_document() {
   export EXPECTED_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.activeOffenders')
 
@@ -77,6 +95,7 @@ check_count_document() {
 
 wait_for_index_to_complete() {
   printf "\\nwaiting for indexing to complete ...\\n"
+  parseAppInsightsConnectionString
   check_count_document
 
   ACTUAL_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
@@ -95,7 +114,7 @@ wait_for_index_to_complete() {
 }
 
 sendSuccess() {
-  echo 'Successfully completed indexing and alias switch'
+  printf '\\nSuccessfully completed indexing and alias switch\\n'
   now=$(date +'%FT%T%z')
   curl -sSf -XPOST -H "Content-Type: application/json" "${APP_INSIGHTS_URL}" -d '{
                                     "name": "ProbationSearchIndexCompleted",
@@ -118,7 +137,7 @@ sendSuccess() {
 }
 
 sendFailure() {
-  echo 'Failed to complete indexing due to timeout'
+  printf '\\nFailed to complete indexing due to timeout\\n'
   now=$(date +'%FT%T%z')
   curl -sSf -XPOST -H "Content-Type: application/json" "${APP_INSIGHTS_URL}" -d '{
                                     "name": "ProbationSearchIndexFailure",
