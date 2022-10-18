@@ -28,7 +28,10 @@ internal class IntegrationTest {
 
     @Test
     fun `successfully update RSR scores`() {
-        val notification = Notification(message = MessageGenerator.RSR_SCORES_DETERMINED, attributes = MessageAttributes("risk-assessment.scores.rsr.determined"))
+        val notification = Notification(
+            message = MessageGenerator.RSR_SCORES_DETERMINED,
+            attributes = MessageAttributes("risk-assessment.scores.determined")
+        )
         jmsTemplate.convertSendAndWait(queueName, notification)
         verify(telemetryService).trackEvent("RsrScoresUpdated", notification.message.telemetryProperties())
     }
