@@ -88,7 +88,7 @@ check_count_document() {
       sendFailure
       exit 1
     fi
-    sleep 10
+    sleep 60
     export EXPECTED_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.activeOffenders')
   done
   echo "Expected Count After Indexing ${EXPECTED_COUNT}"
@@ -108,7 +108,7 @@ wait_for_index_to_complete() {
       sendFailure
       exit 1
     fi
-    sleep 5
+    sleep 10
     ACTUAL_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" -u "${SEARCH_INDEX_USERNAME}:${SEARCH_INDEX_PASSWORD}" "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
   done
   echo "Actual Count is ${ACTUAL_COUNT} => Expected ${EXPECTED_COUNT}"
@@ -122,6 +122,7 @@ sendSuccess() {
                                     "time": "'"${now}"'",
                                     "iKey": "'"${APP_INSIGHTS_KEY}"'",
                                     "tags": {
+                                      "ai.cloud.role": "person-search-index-from-delius"
                                     },
                                     "data": {
                                        "baseType": "EventData",
@@ -145,6 +146,7 @@ sendFailure() {
                                     "time": "'"${now}"'",
                                     "iKey": "'"${APP_INSIGHTS_KEY}"'",
                                     "tags": {
+                                      "ai.cloud.role": "person-search-index-from-delius"
                                     },
                                     "data": {
                                        "baseType": "ExceptionData",
