@@ -51,7 +51,7 @@ internal class IntegrationTest {
     }
 
     @Test
-    fun `API call retuns a successul response`() {
+    fun `API call retuns a success response`() {
         mockMvc
             .perform(get("/example/123").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful)
