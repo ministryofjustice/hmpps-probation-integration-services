@@ -63,7 +63,6 @@ parseAppInsightsConnectionString() {
 
     for term in $terms
     do
-        printf "\\nTerm: %s\\n" "$term"
         key=$(echo "$term" | cut -d "=" -f 1)
         value=$(echo "$term" | cut -d "=" -f 2)
         if [ "$key" = 'InstrumentationKey' ];
