@@ -59,10 +59,11 @@ delete_ready_for_reindex() {
 }
 
 parseAppInsightsConnectionString() {
-    terms=$(echo "\"${APPLICATIONINSIGHTS_CONNECTION_STRING}\"" | tr ";" "\n")
+    terms=$(echo "${APPLICATIONINSIGHTS_CONNECTION_STRING}" | tr ";" "\n")
 
     for term in $terms
     do
+        printf "\\nTerm: %s\\n" "$term"
         key=$(echo "$term" | cut -d "=" -f 1)
         value=$(echo "$term" | cut -d "=" -f 2)
         if [ "$key" = 'InstrumentationKey' ];
@@ -73,7 +74,7 @@ parseAppInsightsConnectionString() {
         fi
     done
 
-    printf 'APP INSIGHTS URL:  %s' "$APP_INSIGHTS_URL"
+    printf "\\nAPP INSIGHTS URL:  %s\\n" "$APP_INSIGHTS_URL"
 }
 
 check_count_document() {
