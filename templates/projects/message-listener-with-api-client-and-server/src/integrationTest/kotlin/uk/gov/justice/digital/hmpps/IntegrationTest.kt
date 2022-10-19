@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.HttpHeaders
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
