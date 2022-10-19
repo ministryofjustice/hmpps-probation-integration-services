@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import com.github.tomakehurst.wiremock.WireMockServer
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.verify
@@ -17,7 +18,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
 import uk.gov.justice.digital.hmpps.message.Notification
-import uk.gov.justice.digital.hmpps.security.TokenHelper
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.util.concurrent.TimeoutException
@@ -29,7 +29,7 @@ internal class IntegrationTest {
     @Value("\${spring.jms.template.default-destination}") lateinit var queueName: String
 
     @Autowired lateinit var mockMvc: MockMvc
-    @Autowired lateinit var tokenHelper: TokenHelper
+    @Autowired lateinit var wireMockServer: WireMockServer
     @Autowired lateinit var jmsTemplate: JmsTemplate
 
     @MockBean lateinit var telemetryService: TelemetryService
@@ -53,7 +53,7 @@ internal class IntegrationTest {
     @Test
     fun `API call retuns a successul response`() {
         mockMvc
-            .perform(get("/example/123").withOAuth2Token(tokenHelper))
+            .perform(get("/example/123").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful)
     }
 }
