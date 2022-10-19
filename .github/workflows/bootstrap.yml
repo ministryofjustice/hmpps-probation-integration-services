@@ -94,6 +94,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          ref: main
           token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
 
       - name: Render project template

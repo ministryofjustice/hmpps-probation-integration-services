@@ -8,6 +8,6 @@
       "Content-Type": "application/json"
     },
     "status": 200,
-    "bodyFileName": "get-auth-token-body.json"
+    "bodyFileName": "hmpps-auth-token-body.json"
   }
 }

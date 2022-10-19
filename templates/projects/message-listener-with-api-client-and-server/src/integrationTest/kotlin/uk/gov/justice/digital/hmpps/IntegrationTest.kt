@@ -5,21 +5,34 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.HttpHeaders
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.security.TokenHelper
+import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.util.concurrent.TimeoutException
 
-@SpringBootTest
+@AutoConfigureMockMvc
 @ActiveProfiles("integration-test")
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest {
     @Value("\${spring.jms.template.default-destination}") lateinit var queueName: String
+
+    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired lateinit var tokenHelper: TokenHelper
     @Autowired lateinit var jmsTemplate: JmsTemplate
+
     @MockBean lateinit var telemetryService: TelemetryService
 
     @Test
@@ -36,5 +49,12 @@ internal class IntegrationTest {
 
         // Then it is logged to telemetry
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
+    }
+
+    @Test
+    fun `API call retuns a successul response`() {
+        mockMvc
+            .perform(get("/example/123").withOAuth2Token(tokenHelper))
+            .andExpect(status().is2xxSuccessful)
     }
 }
