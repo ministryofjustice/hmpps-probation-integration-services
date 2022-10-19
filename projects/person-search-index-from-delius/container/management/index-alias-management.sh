@@ -59,7 +59,7 @@ delete_ready_for_reindex() {
 }
 
 parseAppInsightsConnectionString() {
-    terms=$(echo "$APPLICATIONINSIGHTS_CONNECTION_STRING" | tr ";" "\n")
+    terms=$(echo "\"${APPLICATIONINSIGHTS_CONNECTION_STRING}\"" | tr ";" "\n")
 
     for term in $terms
     do
@@ -114,7 +114,7 @@ wait_for_index_to_complete() {
 }
 
 sendSuccess() {
-  printf '\\nSuccessfully completed indexing and alias switch\\n'
+  printf "\\nSuccessfully completed indexing and alias switch\\n"
   now=$(date +'%FT%T%z')
   curl -sSf -XPOST -H "Content-Type: application/json" "${APP_INSIGHTS_URL}" -d '{
                                     "name": "ProbationSearchIndexCompleted",
@@ -137,7 +137,7 @@ sendSuccess() {
 }
 
 sendFailure() {
-  printf '\\nFailed to complete indexing due to timeout\\n'
+  printf "\\nFailed to complete indexing due to timeout\\n"
   now=$(date +'%FT%T%z')
   curl -sSf -XPOST -H "Content-Type: application/json" "${APP_INSIGHTS_URL}" -d '{
                                     "name": "ProbationSearchIndexFailure",
