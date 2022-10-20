@@ -1,9 +1,14 @@
 import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation(project(":libs:commons"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation(libs.amazon.sqs)
+    implementation(libs.insights)
+    implementation(libs.sentry)
+
+    api("org.springframework:spring-jms")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.mockito.kotlin)

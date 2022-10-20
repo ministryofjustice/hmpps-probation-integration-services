@@ -4,8 +4,8 @@ apply(plugin = "com.google.cloud.tools.jib")
 
 dependencies {
     implementation(project(":libs:commons"))
+    implementation(project(":libs:messaging"))
 
-    implementation("org.springframework:spring-jms")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-security")
