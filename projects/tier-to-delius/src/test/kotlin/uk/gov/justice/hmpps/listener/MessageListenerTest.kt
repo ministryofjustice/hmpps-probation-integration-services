@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.listener.MessageListener
 import uk.gov.justice.digital.hmpps.listener.telemetryProperties
 import uk.gov.justice.digital.hmpps.prepMessage
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.net.URI
 import java.time.ZonedDateTime.now
 

@@ -13,16 +13,18 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.jms.core.JmsTemplate
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
-import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
 @ActiveProfiles("integration-test")
 @SpringBootTest
+@DirtiesContext
 class PsrCompletedIntegrationTest {
 
     @Value("\${spring.jms.template.default-destination}")
@@ -52,7 +54,7 @@ class PsrCompletedIntegrationTest {
 
         jmsTemplate.convertSendAndWait(queueName, message)
 
-        verify(telemetryService).notificationReceived(any<Notification<Any>>())
+        verify(telemetryService).notificationReceived(message)
 
         verify(alfrescoClient).releaseDocument(DocumentGenerator.DEFAULT.alfrescoId)
         verify(alfrescoClient).updateDocument(eq(DocumentGenerator.DEFAULT.alfrescoId), any())

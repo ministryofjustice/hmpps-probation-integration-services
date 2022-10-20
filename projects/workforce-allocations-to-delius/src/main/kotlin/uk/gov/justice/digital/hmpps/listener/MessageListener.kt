@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.workforceallocations.WorkforceA
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.net.URI
 
 @Component

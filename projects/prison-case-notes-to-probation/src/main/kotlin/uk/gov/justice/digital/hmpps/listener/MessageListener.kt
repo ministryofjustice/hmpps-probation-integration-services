@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.prison.PrisonOffenderEvent
 import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
 @Component
 @EnableJms
