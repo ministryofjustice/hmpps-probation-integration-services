@@ -16,8 +16,8 @@ runs:
     - id: project_name
       shell: bash
       run: |
-        echo "camel_case=$(echo '${{ inputs.project_name }}' | sed -E 's/-(.)/\U\1/g' | sed -E 's/^(.)/\U\1/')" >> $GITHUB_ENV
-        echo "underscore=$(echo '${{ inputs.project_name }}' | tr '-' '_')" >> $GITHUB_ENV
+        echo "camel_case=$(echo '${{ inputs.project_name }}' | sed -E 's/-(.)/\U\1/g' | sed -E 's/^(.)/\U\1/')" >> $GITHUB_OUTPUT
+        echo "underscore=$(echo '${{ inputs.project_name }}' | tr '-' '_')" >> $GITHUB_OUTPUT
 
     - name: Render project template
       shell: bash
