@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.config.security
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -30,5 +31,6 @@ class SecurityConfig {
     }
 
     @Bean
+    @ConditionalOnMissingBean
     fun configure(http: HttpSecurity): SecurityFilterChain = filterChain(http).build()
 }
