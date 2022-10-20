@@ -32,7 +32,8 @@ project which need to be actioned before the project setup is complete.
 
 ## Decision
 
-- We will use a GitHub Actions workflow to bootstrap projects in this repository
+- We will use a GitHub Actions [workflow](<https://github.com/ministryofjustice/hmpps-probation-integration-services/tree/main/.github/workflows/bootstrap.yml>)
+  to bootstrap projects in this repository
 - The workflow will submit a pull request to this repository, creating a
   skeleton project of the required shape based on template files defined [here](<https://github.com/ministryofjustice/hmpps-probation-integration-services/tree/main/templates/projects>)
 - The workflow will submit a pull request to the [hmpps-delius-core-terraform](<https://github.com/ministryofjustice/hmpps-delius-core-terraform>)
