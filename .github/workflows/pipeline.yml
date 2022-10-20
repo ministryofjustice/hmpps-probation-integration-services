@@ -83,12 +83,15 @@ jobs:
           DPS_URL: https://digital-dev.prison.service.justice.gov.uk
           AUTH_URL: https://sign-in-dev.hmpps.service.justice.gov.uk
           PRISON_API: https://api-dev.prison.service.justice.gov.uk/
+          REFERANDMONITOR_URL: https://hmpps-interventions-ui-dev.apps.live-1.cloud-platform.service.justice.gov.uk
           DELIUS_USERNAME: ${{ secrets.E2E_DELIUS_USERNAME }}
           DELIUS_PASSWORD: ${{ secrets.E2E_DELIUS_PASSWORD }}
           DPS_USERNAME: ${{ secrets.E2E_DPS_USERNAME }}
           DPS_PASSWORD: ${{ secrets.E2E_DPS_PASSWORD }}
           CRED_USERNAME: ${{ secrets.E2E_CLIENT_ID }}
           CRED_PASSWORD: ${{ secrets.E2E_CLIENT_SECRET }}
+          REFERANDMONITOR_SUPPLIER_USERNAME: ${{ secrets.E2E_REFERANDMONITOR_SUPPLIER_USERNAME }}
+          REFERANDMONITOR_SUPPLIER_PASSWORD: ${{ secrets.E2E_REFERANDMONITOR_SUPPLIER_PASSWORD }}
           PLAYWRIGHT_JUNIT_OUTPUT_NAME: junit.xml
       - name: Publish JUnit report
         uses: mikepenz/action-junit-report@v3
