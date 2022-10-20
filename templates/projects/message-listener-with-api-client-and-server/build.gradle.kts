@@ -9,7 +9,6 @@ dependencies {
     implementation(project(":libs:oauth-client"))
     implementation(project(":libs:oauth-server"))
 
-    implementation("org.springframework:spring-jms")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
