@@ -19,6 +19,7 @@ jobs:
         project_template:
           - message-listener
           - message-listener-with-api-client
+          - message-listener-with-api-client-and-server
     steps:
       - uses: actions/checkout@v3
 

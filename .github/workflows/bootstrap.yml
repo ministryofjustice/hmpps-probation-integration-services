@@ -15,6 +15,7 @@ on:
         default: message-listener-with-api-client
         options:
           - message-listener-with-api-client
+          - message-listener-with-api-client-and-server
           - message-listener
           - 'No template - I want to create the project from scratch'
       create_database_credentials:
@@ -92,6 +93,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
 
       - name: Render project template
         uses: ./.github/actions/render-project-template
@@ -111,8 +114,10 @@ jobs:
           commit-message: Create initial project for ${{ inputs.project_name }}
           title: Create initial project for ${{ inputs.project_name }}
           body: Automated changes by [hmpps-probation-integration-services](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/bootstrap.yml)
+          base: main
           branch: bootstrap/${{ inputs.project_name }}
           author: 'github-actions[bot] <github-actions[bot]@users.noreply.github.com>'
+          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
 
       - name: Output pull request
         run: |
