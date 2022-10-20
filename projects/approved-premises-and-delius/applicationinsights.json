@@ -1,6 +1,6 @@
 {
   "role": {
-    "name": "approved-premises-with-delius"
+    "name": "approved-premises-and-delius"
   },
   "customDimensions": {
     "service.version": "${VERSION}"

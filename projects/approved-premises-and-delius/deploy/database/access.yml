@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /approved-premises-and-delius/db-username
+    password_key: /approved-premises-and-delius/db-password
+
+  audit:
+    username: ApprovedPremisesAndDelius
+    forename: Approved Premises
+    surname: Service

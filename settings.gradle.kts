@@ -12,7 +12,7 @@ include(
     "person-search-index-from-delius",
     "risk-assessment-scores-to-delius",
     "tier-to-delius",
-    "approved-premises-with-delius",
+    "approved-premises-and-delius",
     // ^ add new projects here
 )
 

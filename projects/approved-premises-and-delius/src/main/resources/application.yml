@@ -11,7 +11,7 @@ spring:
       acknowledge-mode: client
   security.oauth2.client:
     registration:
-      approved-premises-with-delius:
+      approved-premises-and-delius:
         provider: hmpps-auth
         authorization-grant-type: client_credentials
         client-id: ${oauth2.client-id}
@@ -20,7 +20,7 @@ spring:
       hmpps-auth:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
 
-delius.db.username: ApprovedPremisesWithDelius # Should match value in [deploy/database/access.yml].
+delius.db.username: ApprovedPremisesAndDelius # Should match value in [deploy/database/access.yml].
 
 management.endpoints.web:
   base-path: /
@@ -50,8 +50,8 @@ wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 oauth2:
-  client-id: approved-premises-with-delius
-  client-secret: approved-premises-with-delius
+  client-id: approved-premises-and-delius
+  client-secret: approved-premises-and-delius
 
 integrations:
   example:
