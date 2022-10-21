@@ -33,7 +33,7 @@ class ControllerAdviceTest {
 
         assertThat(response.statusCode, equalTo(BAD_REQUEST))
         assertThat(response.body?.message, equalTo("Validation failure"))
-        assertThat(response.body?.fields.toString(), equalTo("[FieldError(type=null, message=message, field=field)]"))
+        assertThat(response.body?.fields, equalTo(listOf(FieldError(null, "message", "field"))))
     }
 
     private fun testMethod(parameter: String) {}
