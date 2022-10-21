@@ -50,3 +50,4 @@ jobs:
         with:
           body: ${{ steps.github_release.outputs.changelog }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          draft: true

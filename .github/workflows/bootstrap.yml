@@ -14,9 +14,10 @@ on:
         type: choice
         default: message-listener-with-api-client
         options:
+          - api-client-and-server
+          - message-listener
           - message-listener-with-api-client
           - message-listener-with-api-client-and-server
-          - message-listener
           - 'No template - I want to create the project from scratch'
       create_database_credentials:
         description: Will the service access the Delius database?
