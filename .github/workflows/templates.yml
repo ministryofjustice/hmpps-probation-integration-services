@@ -17,6 +17,7 @@ jobs:
     strategy:
       matrix:
         project_template:
+          - api-client-and-server
           - message-listener
           - message-listener-with-api-client
           - message-listener-with-api-client-and-server
