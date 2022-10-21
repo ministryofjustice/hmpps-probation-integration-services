@@ -22,7 +22,6 @@ import java.util.concurrent.TimeoutException
 @ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest {
-    @Value("\${spring.jms.template.default-destination}") lateinit var queueName: String
 
     @Autowired lateinit var mockMvc: MockMvc
     @Autowired lateinit var wireMockServer: WireMockServer
