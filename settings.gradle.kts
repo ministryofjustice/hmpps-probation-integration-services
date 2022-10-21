@@ -14,6 +14,7 @@ include(
     "risk-assessment-scores-to-delius",
     "tier-to-delius",
     "approved-premises-and-delius",
+    "approved-premises-and-oasys",
     // ^ add new projects here
 )
 
