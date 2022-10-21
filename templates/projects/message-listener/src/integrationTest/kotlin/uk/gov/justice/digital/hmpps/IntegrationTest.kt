@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.util.concurrent.TimeoutException
 
 @SpringBootTest
