@@ -9,6 +9,7 @@ import org.mockito.kotlin.verify
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
 @ExtendWith(MockitoExtension::class)
 internal class MessageListenerTest {
