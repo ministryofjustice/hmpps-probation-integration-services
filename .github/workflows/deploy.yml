@@ -30,7 +30,7 @@ on:
           - '["risk-assessment-scores-to-delius"]'
           - '["workforce-allocations-to-delius"]'
           - '["tier-to-delius"]'
-          - '["approved-premises-with-delius"]'
+          - '["approved-premises-and-delius"]'
           - '["approved-premises-and-oasys"]'
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
