@@ -4,3 +4,7 @@ CVE-2022-25857
 # Reason: jackson-databind:2.13.3 - The UNWRAP_SINGLE_VALUE_ARRAYS feature is not enabled
 CVE-2022-42003
 CVE-2022-42004
+
+# Suppression for apache common-text 1.9 as bundled with application insights
+#   can be suppressed for the time being as it will be fixed in next version of application insights
+CVE-2022-42889 exp:2022-10-26
