@@ -8,7 +8,6 @@ dependencies {
     implementation(project(":libs:oauth-client"))
     implementation(project(":libs:oauth-server"))
 
-    implementation("org.springframework:spring-jms")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -17,13 +16,11 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation(libs.amazon.sqs)
     implementation(libs.openfeign)
     implementation(libs.sentry)
     implementation(libs.swagger.docs)
 
     dev(project(":libs:dev-tools"))
-    dev("org.springframework.boot:spring-boot-starter-activemq")
     dev("com.h2database:h2")
     dev(libs.hawtio)
 
@@ -34,9 +31,5 @@ dependencies {
 }
 
 configure<ClassPathExtension> {
-    jacocoExclusions = listOf(
-        "**/config/**",
-        "**/entity/**",
-        "**/AppKt.class"
-    )
+    jacocoExclusions = listOf("**/AppKt.class")
 }
