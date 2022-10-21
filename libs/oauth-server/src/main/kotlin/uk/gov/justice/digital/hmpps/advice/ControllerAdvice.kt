@@ -21,7 +21,7 @@ class ControllerAdvice {
         .body(
             ErrorResponse(
                 status = BAD_REQUEST.value(),
-                message = e.message,
+                message = "Validation failure",
                 fields = e.bindingResult.fieldErrors.map { FieldError(it.code, it.defaultMessage, it.field) }
             )
         )
