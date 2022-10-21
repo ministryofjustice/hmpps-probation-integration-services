@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /approved-premises-and-oasys/db-username
+    password_key: /approved-premises-and-oasys/db-password
+
+  audit:
+    username: ApprovedPremisesAndOasys
+    forename: Probation Integration # TODO change this to something meaningful for your service
+    surname: Service
