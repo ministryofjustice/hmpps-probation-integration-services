@@ -1,0 +1,16 @@
+{
+  "role": {
+    "name": "approved-premises-and-oasys"
+  },
+  "customDimensions": {
+    "service.version": "${VERSION}"
+  },
+  "instrumentation": {
+    "logging": {
+      "level": "DEBUG"
+    }
+  },
+  "selfDiagnostics": {
+    "destination": "console"
+  }
+}
