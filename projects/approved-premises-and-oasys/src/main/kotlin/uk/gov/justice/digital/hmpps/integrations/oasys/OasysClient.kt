@@ -14,6 +14,4 @@ import uk.gov.justice.digital.hmpps.config.FeignOAuth2Config
 interface OasysClient {
     @GetMapping(value = ["/ass/timeline/{crn}/ALLOW"])
     fun getAssessmentTimeline(@PathVariable("crn") crn: String): OrdsAssessmentTimeline
-
-
 }
