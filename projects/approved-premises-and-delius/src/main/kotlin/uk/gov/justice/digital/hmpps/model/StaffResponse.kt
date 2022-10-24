@@ -4,6 +4,7 @@ data class StaffResponse(
     val code: String,
     val name: PersonName,
     val grade: StaffGrade,
+    val keyWorker: Boolean,
 )
 
 data class PersonName(

@@ -12,7 +12,7 @@ class StaffController(
     private val staffService: StaffService
 ) {
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_STAFF')")
-    @GetMapping(value = ["/approved-premises/{code}/key-workers"])
+    @GetMapping(value = ["/approved-premises/{code}/staff"])
     fun getStaff(
         @PathVariable("code") code: String,
         pageable: Pageable = Pageable.unpaged()

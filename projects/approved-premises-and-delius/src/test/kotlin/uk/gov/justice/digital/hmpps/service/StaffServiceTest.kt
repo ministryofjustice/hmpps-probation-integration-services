@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -15,6 +14,7 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
+import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
@@ -39,17 +39,18 @@ internal class StaffServiceTest {
     fun `maps and returns results`() {
         val approvedPremises = ApprovedPremisesGenerator.DEFAULT
         val staffEntities = listOf(
-            StaffGenerator.generate("Key-worker 1", listOf(approvedPremises)),
-            StaffGenerator.generate("Key-worker 2", listOf(approvedPremises)),
+            StaffGenerator.generate("Staff 1", listOf(TeamGenerator.APPROVED_PREMISES_TEAM_1), emptyList()),
+            StaffGenerator.generate("Staff 2", listOf(TeamGenerator.APPROVED_PREMISES_TEAM_1), listOf(approvedPremises)),
         )
         whenever(approvedPremisesRepository.existsByCodeCode(approvedPremises.code.code)).thenReturn(true)
-        whenever(staffRepository.findAllByApprovedPremisesCodeCode(approvedPremises.code.code, Pageable.unpaged()))
+        whenever(staffRepository.findAllStaffLinkedToApprovedPremisesLDU(approvedPremises.code.code, Pageable.unpaged()))
             .thenReturn(PageImpl(staffEntities))
 
         val results = staffService.getStaffInApprovedPremises(approvedPremises.code.code, Pageable.unpaged())
 
         assertThat(results.content, hasSize(2))
-        assertThat(results.content.map { it.name.surname }, hasItems("Key-worker 1", "Key-worker 2"))
+        assertThat(results.content.map { it.name.surname }, equalTo(listOf("Staff 1", "Staff 2")))
+        assertThat(results.content.map { it.keyWorker }, equalTo(listOf(false, true)))
         assertThat(results.content[0].code, equalTo(staffEntities[0].code))
         assertThat(results.content[0].name.forename, equalTo(staffEntities[0].forename))
         assertThat(results.content[0].name.middleName, equalTo(staffEntities[0].middleName))

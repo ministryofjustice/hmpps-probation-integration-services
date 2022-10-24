@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.staff
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -33,6 +34,14 @@ class Staff(
 
     @Column
     val surname: String,
+
+    @ManyToMany
+    @JoinTable(
+        name = "r_staff_team",
+        joinColumns = [JoinColumn(name = "staff_id")],
+        inverseJoinColumns = [JoinColumn(name = "team_id")]
+    )
+    val teams: List<Team>,
 
     @ManyToMany
     @JoinTable(

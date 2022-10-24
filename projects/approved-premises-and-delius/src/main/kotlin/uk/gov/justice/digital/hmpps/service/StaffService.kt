@@ -21,14 +21,15 @@ class StaffService(
         if (!approvedPremisesRepository.existsByCodeCode(approvedPremisesCode))
             throw NotFoundException("Approved Premises", "code", approvedPremisesCode)
 
-        return staffRepository.findAllByApprovedPremisesCodeCode(approvedPremisesCode, pageable).map {
+        return staffRepository.findAllStaffLinkedToApprovedPremisesLDU(approvedPremisesCode, pageable).map {
             StaffResponse(
                 code = it.code,
                 name = PersonName(it.forename, it.surname, it.middleName),
                 grade = StaffGrade(
                     code = it.grade.code,
                     description = it.grade.description
-                )
+                ),
+                keyWorker = it.approvedPremises.map { ap -> ap.code.code }.contains(approvedPremisesCode)
             )
         }
     }
