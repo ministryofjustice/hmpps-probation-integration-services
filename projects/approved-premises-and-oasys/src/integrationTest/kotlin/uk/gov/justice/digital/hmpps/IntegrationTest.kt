@@ -23,9 +23,16 @@ internal class IntegrationTest {
     lateinit var wireMockServer: WireMockServer
 
     @Test
-    fun `API call retuns a success response`() {
+    fun `get latest layer 3 assessment`() {
         mockMvc
-            .perform(get("/example/123").withOAuth2Token(wireMockServer))
+            .perform(get("/latest-assessment/D006296").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful)
+    }
+
+    @Test
+    fun `get latest layer 3 assessment not found`() {
+        mockMvc
+            .perform(get("/latest-assessment/D000000").withOAuth2Token(wireMockServer))
+            .andExpect(status().isNotFound)
     }
 }
