@@ -44,9 +44,16 @@ internal class IntegrationTest {
     }
 
     @Test
-    fun `get latest layer 3 assessment not found`() {
+    fun `get latest layer 3 crn not found`() {
         mockMvc
             .perform(get("/latest-assessment/D000000").withOAuth2Token(wireMockServer))
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `get latest layer 3 assessment not found`() {
+        mockMvc
+            .perform(get("/latest-assessment/D000001").withOAuth2Token(wireMockServer))
             .andExpect(status().isNotFound)
     }
 }
