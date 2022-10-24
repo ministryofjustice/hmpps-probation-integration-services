@@ -5,7 +5,7 @@ data class OrdsAssessmentTimeline(
     var inputs: Inputs,
     var crn: String,
     var limitedAccessOffender: Boolean,
-    var timeline: List<OasysAssessment>?
+    var timeline: List<OasysAssessment>
 )
 
 data class Inputs(
