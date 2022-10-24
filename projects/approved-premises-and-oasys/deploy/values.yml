@@ -4,6 +4,6 @@ image:
 
 secrets:
   APPLICATIONINSIGHTS_CONNECTION_STRING:   /application-insights/connection-string
-  OAUTH2_CLIENT-ID:                        /approved-premises-and-oasys/client-id
-  OAUTH2_CLIENT-SECRET:                    /approved-premises-and-oasys/client-secret
   SENTRY_DSN:                              /approved-premises-and-oasys/sentry-dsn
+  ORDS_OAUTH2_CLIENT-ID:                   /approved-premises-and-oasys/ords-client-id
+  ORDS_OAUTH2_CLIENT-SECRET:               /approved-premises-and-oasys/ords-client-secret

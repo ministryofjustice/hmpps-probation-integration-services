@@ -2,19 +2,12 @@
 spring:
   security.oauth2.client:
     registration:
-      approved-premises-and-oasys:
-        provider: hmpps-auth
-        authorization-grant-type: client_credentials
-        client-id: ${oauth2.client-id}
-        client-secret: ${oauth2.client-secret}
       ords-oasys:
         provider: ords-oasys-auth
         authorization-grant-type: client_credentials
         client-id: ${ords.oauth2.client-id}
         client-secret: ${ords.oauth2.client-secret}
     provider:
-      hmpps-auth:
-          token-uri: http://localhost:${wiremock.port}/auth/oauth/token
       ords-oasys-auth:
           token-uri: http://localhost:${wiremock.port}/eor/oasys/oauth/token
 
