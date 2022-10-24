@@ -37,7 +37,7 @@ class Staff(
 
     @ManyToMany
     @JoinTable(
-        name = "r_staff_team",
+        name = "staff_team",
         joinColumns = [JoinColumn(name = "staff_id")],
         inverseJoinColumns = [JoinColumn(name = "team_id")]
     )
