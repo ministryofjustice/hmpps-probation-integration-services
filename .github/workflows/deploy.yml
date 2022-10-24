@@ -1,21 +1,6 @@
 name: Deploy
 
 on:
-  workflow_call:
-    inputs:
-      projects:
-        description: A JSON array of projects to deploy
-        type: string
-        required: true
-      environment:
-        description: The name of the environment to deploy to
-        type: string
-        required: true
-      version:
-        description: The image version to deploy
-        type: string
-        required: true
-
   workflow_dispatch:
     inputs:
       projects:
@@ -23,15 +8,15 @@ on:
         type: choice
         required: true
         options:
+          - '["approved-premises-and-oasys"]'
+          - '["approved-premises-with-delius"]'
           - '["person-search-index-from-delius"]'
           - '["pre-sentence-reports-to-delius"]'
           - '["prison-case-notes-to-probation"]'
           - '["prison-custody-status-to-delius"]'
           - '["risk-assessment-scores-to-delius"]'
-          - '["workforce-allocations-to-delius"]'
           - '["tier-to-delius"]'
-          - '["approved-premises-with-delius"]'
-          - '["approved-premises-and-oasys"]'
+          - '["workforce-allocations-to-delius"]'
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
@@ -40,7 +25,7 @@ on:
         type: choice
         required: true
         options:
-          - test
+          - dev
           - preprod
           - prod
       version:
@@ -59,101 +44,19 @@ jobs:
       name: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@v3
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: eu-west-2
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          role-skip-session-tagging: true
-          role-duration-seconds: 1200
-
-      - name: Map GitHub environment to values file
-        id: values
-        shell: bash
-        run: |
-          if [ '${{ inputs.environment }}' == 'test' ];    then echo '::set-output name=filename::values-dev.yml'; fi
-          if [ '${{ inputs.environment }}' == 'preprod' ]; then echo '::set-output name=filename::values-preprod.yml'; fi
-          if [ '${{ inputs.environment }}' == 'prod' ];    then echo '::set-output name=filename::values-prod.yml'; fi
-
-      - name: Get Delius environment name from values file
-        id: env
-        shell: bash
-        run: |
-          environment_name=$(cat ${{ steps.values.outputs.filename }} | yq '.environment_name')
-          environment_enabled=$(cat ${{ steps.values.outputs.filename }} | yq '.enabled' | sed 's/^null$/true/')
-          echo "::set-output name=name::${environment_name}"
-          echo "::set-output name=short-name::${environment_name/delius-/del-}"
-          echo "::set-output name=enabled::${environment_enabled}"
-        working-directory: projects/${{ matrix.project }}/deploy
-
-      - name: Add secrets to parameter store
-        if: steps.env.outputs.enabled == 'true'
-        shell: bash
-        env:
-          ALL_SECRETS: ${{ toJson(secrets) }}
-        run: |
-          project_name=$(echo '${{ matrix.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
-          namespace=/${{ steps.env.outputs.name }}/delius/probation-integration/${{ matrix.project }}
-          echo "${ALL_SECRETS}" | jq -r ". | keys[] | select(. | startswith(\"${project_name}\"))" | while read -r key; do
-            name=$(echo "${key}" | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g' | sed 's/${{ matrix.project }}-//')
-            value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
-            existing=$(aws ssm get-parameter --name "${namespace}/${name}" --region eu-west-2 --with-decryption --query 'Parameter.Value' --output text || echo "")
-            if [ "${existing}" != "${value}" ]; then
-              echo "Updating secret in parameter store: ${key} (${namespace}/${name})"
-              aws ssm put-parameter --name "${namespace}/${name}" --value "${value}" --overwrite --type SecureString --region eu-west-2
-            fi
-          done
-
-      - name: Configure database access
-        if: steps.env.outputs.enabled == 'true'
-        shell: bash
-        run: |
-          test -f database/access.yml && \
-          aws ssm start-automation-execution --document-name oracle-${{ steps.env.outputs.short-name }}-probation-integration-access \
-                                             --parameters "Configuration='$(yq database/access.yml -o json)'" \
-                                             --region eu-west-2 && \
-          echo 'Execution started. Follow the logs in AWS: https://eu-west-2.console.aws.amazon.com/systems-manager/automation/executions?region=eu-west-2'
-        working-directory: projects/${{ matrix.project }}/deploy
-
-      - name: Render values
-        if: steps.env.outputs.enabled == 'true'
-        shell: bash
-        run: |
-          yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1) *d select(fileIndex == 2)' \
-            templates/defaults.yml \
-            projects/${{ matrix.project }}/deploy/values.yml \
-            projects/${{ matrix.project }}/deploy/${{ steps.values.outputs.filename }} \
-          > projects/${{ matrix.project }}/deploy/merged.yml
-
-      - name: Update task definition
-        if: steps.env.outputs.enabled == 'true'
-        shell: bash
+          
+      - name: Authenticate to the cluster
         env:
           VERSION: ${{ inputs.version }}
         run: |
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          brew install gomplate
-          old_task_definition=$(aws ecs describe-task-definition --task-definition "${{ steps.env.outputs.short-name }}-${{ matrix.project }}-task-definition" --include TAGS | jq '.taskDefinition | del(.containerDefinitions[0].command, .compatibilities, .taskDefinitionArn, .requiresAttributes, .revision, .status, .registeredAt, .registeredBy)')
-          new_task_definition=$(yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' <(echo "${old_task_definition}") <(gomplate --file templates/task-definition.yml --context values=projects/${{ matrix.project }}/deploy/merged.yml) --output-format json | tee task-definition.json)
-          echo "Deploying new task definition: ${new_task_definition}"
-
-      - name: Deploy to Amazon ECS
-        if: steps.env.outputs.enabled == 'true'
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          service: ${{ steps.env.outputs.short-name }}-${{ matrix.project }}-service
-          cluster: del-delius-ecscluster-private-ecs
-          wait-for-service-stability: true
-          wait-for-minutes: 10
-
-      - name: Create Sentry release
-        if: steps.env.outputs.enabled == 'true'
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_ORG: ministryofjustice
-          SENTRY_PROJECT: ${{ matrix.project }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        with:
-          environment: ${{ inputs.environment }}
+          echo "${{ secrets.KUBE_CERT_DEV }}" > ca.crt
+          kubectl config set-cluster ${KUBE_CLUSTER_DEV} --certificate-authority=./ca.crt --server=https://${KUBE_CLUSTER_DEV}
+          kubectl config set-credentials cd-serviceaccount --token=${{ secrets.KUBE_TOKEN_DEV }}
+          kubectl config set-context ${KUBE_CLUSTER_DEV} --cluster=${KUBE_CLUSTER_DEV} --user=cd-serviceaccount --namespace=${{ secrets.KUBE_NAMESPACE_DEV}}
+          kubectl config use-context ${KUBE_CLUSTER_DEV}
+          kubectl -n hmpps-probation-integration-services-dev get pods
+          brew install helm
+          sed -i "s/^version:.*$/version: ${VERSION}/" projects/${{ matrix.project }}/helm-deploy/${{ matrix.project }}/Chart.yaml
+          helm dependency update projects/${{ matrix.project }}/helm-deploy/${{ matrix.project }}
+          helm package projects/${{ matrix.project }}/helm-deploy/${{ matrix.project }}
+          helm upgrade ${{ matrix.project }} projects/${{ matrix.project }}/helm-deploy/${{ matrix.project }}-$VERSION.tgz --namespace hmpps-probation-integration-services-dev --values projects/approved-premises-and-oasys/helm-deploy/values-dev.yaml 
