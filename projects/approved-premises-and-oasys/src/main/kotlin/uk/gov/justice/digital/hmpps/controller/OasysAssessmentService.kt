@@ -8,12 +8,12 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.OasysClient
 @Service
 class OasysAssessmentService(private var oasysClient: OasysClient) {
     fun getLatestAssessment(crn: String): OasysAssessment {
-        val ordsAssessmentTimeline = oasysClient.getAssessmentTimeline(crn)
+        val ordsAssessmentTimeline = oasysClient.getAssessmentTimeline(crn) ?: throw NotFoundException("No Assessments were found for crn= $crn")
         val assessment =
             ordsAssessmentTimeline.timeline.sortedByDescending { it.completedDate }.stream().filter {
                 it.assessmentType == "LAYER3" &&
                     it.status == "COMPLETE"
-            }?.findFirst() ?: throw NotFoundException("Latest layer 3 assessment not found")
+            }?.findFirst() ?: throw NotFoundException("Latest layer 3 assessment not found for crn=$crn")
         return assessment.get()
     }
 }
