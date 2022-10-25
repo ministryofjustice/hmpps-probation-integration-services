@@ -55,6 +55,8 @@ jobs:
     strategy:
       matrix:
         project: ${{ fromJson(inputs.projects) }}
+    environment:
+      name: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@v3
 
