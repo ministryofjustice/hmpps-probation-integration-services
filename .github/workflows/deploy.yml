@@ -109,6 +109,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
           json-secrets: ${{ toJson(secrets) }}
+          delius-env: ${{ steps.env.outputs.name }}
 
       - name: Create Sentry release
         if: steps.env.outputs.enabled == 'true'
