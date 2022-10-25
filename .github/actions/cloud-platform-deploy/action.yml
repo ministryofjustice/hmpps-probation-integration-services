@@ -1,0 +1,33 @@
+name: Cloud Platform Deploy
+description: Deploy to Cloud Platform using Helm
+
+inputs:
+  project:
+    description: The project to deploy
+    required: true
+  environment:
+    description: The environment to deploy to (dev/preprod/prod)
+    required: true
+  version:
+    description: The version of the service to deploy
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - run: |
+        if [ '${{ inputs.environment }}' == 'test' ]; then 
+          ENV_YAML=dev
+        else 
+          ENV_YAML=${{ inputs.environment }}
+        fi
+        echo "${{ secrets.KUBE_CERT }}" > ca.crt
+        kubectl config set-cluster ${{ secrets.KUBE_CLUSTER }} --certificate-authority=./ca.crt --server=${{ secrets.KUBE_ENV_API }}
+        kubectl config set-credentials cd-serviceaccount --token=${{ secrets.KUBE_TOKEN }}
+        kubectl config set-context ${{ secrets.KUBE_CLUSTER }} --cluster=${{ secrets.KUBE_CLUSTER }} --user=cd-serviceaccount --namespace=${{ secrets.KUBE_NAMESPACE }}
+        kubectl config use-context ${{ secrets.KUBE_CLUSTER }}
+        
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+        brew install helm
+        helm dependency update projects/${inputs.project}/helm-deploy/${inputs.project}
+        helm upgrade --install ${inputs.project} projects/${inputs.project}/deploy/${inputs.project} --namespace=${{ secrets.KUBE_NAMESPACE }} --values projects/${inputs.project}/deploy/values-${ENV_YAML}.yaml --set generic-service.image.tag=${VERSION} --version ${VERSION}
