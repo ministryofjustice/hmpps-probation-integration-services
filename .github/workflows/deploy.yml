@@ -47,16 +47,19 @@ jobs:
           
       - name: Authenticate to the cluster
         env:
+          KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER_DEV }}
           VERSION: ${{ inputs.version }}
         run: |
           echo "${{ secrets.KUBE_CERT_DEV }}" > ca.crt
-          kubectl config set-cluster ${KUBE_CLUSTER_DEV} --certificate-authority=./ca.crt --server=https://${KUBE_CLUSTER_DEV}
+          kubectl config set-cluster ${{ secrets.KUBE_CLUSTER_DEV }} --certificate-authority=./ca.crt --server=https://DF366E49809688A3B16EEC29707D8C09.gr7.eu-west-2.eks.amazonaws.com
           kubectl config set-credentials cd-serviceaccount --token=${{ secrets.KUBE_TOKEN_DEV }}
-          kubectl config set-context ${KUBE_CLUSTER_DEV} --cluster=${KUBE_CLUSTER_DEV} --user=cd-serviceaccount --namespace=${{ secrets.KUBE_NAMESPACE_DEV}}
-          kubectl config use-context ${KUBE_CLUSTER_DEV}
-          kubectl -n hmpps-probation-integration-services-dev get pods
+          kubectl config set-context ${{ secrets.KUBE_CLUSTER_DEV }} --cluster=${{ secrets.KUBE_CLUSTER_DEV }} --user=cd-serviceaccount --namespace=${{ secrets.KUBE_NAMESPACE_DEV }}
+          kubectl config use-context ${{ secrets.KUBE_CLUSTER_DEV }}
+          kubectl get pods
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           brew install helm
           sed -i "s/^version:.*$/version: ${VERSION}/" projects/${{ matrix.project }}/helm-deploy/${{ matrix.project }}/Chart.yaml
           helm dependency update projects/${{ matrix.project }}/helm-deploy/${{ matrix.project }}
           helm package projects/${{ matrix.project }}/helm-deploy/${{ matrix.project }}
-          helm upgrade ${{ matrix.project }} projects/${{ matrix.project }}/helm-deploy/${{ matrix.project }}-$VERSION.tgz --namespace hmpps-probation-integration-services-dev --values projects/approved-premises-and-oasys/helm-deploy/values-dev.yaml 
+          pwd
+          helm upgrade --install ${{ matrix.project }} ${{ matrix.project }}-$VERSION.tgz --namespace=${{ secrets.KUBE_NAMESPACE_DEV }} --values projects/${{ matrix.project }}/helm-deploy/values-dev.yaml
