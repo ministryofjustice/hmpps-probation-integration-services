@@ -8,8 +8,7 @@ import uk.gov.justice.digital.hmpps.config.FeignOAuth2Config
 @FeignClient(
     name = "ords-oasys",
     url = "\${integrations.ords-oasys.url}",
-    configuration = [FeignOAuth2Config::class],
-    decode404 = true
+    configuration = [FeignOAuth2Config::class]
 )
 interface OasysClient {
     @GetMapping(value = ["/ass/timeline/{crn}/ALLOW"])

@@ -65,7 +65,11 @@
         }
       },
       "response": {
-        "status": 404
+        "status": 404,
+        "bodyFileName": "not-found.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
       }
     }
   ]
