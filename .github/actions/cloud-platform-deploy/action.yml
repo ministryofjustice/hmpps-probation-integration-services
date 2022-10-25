@@ -34,11 +34,6 @@ runs:
   steps:
     - shell: bash
       run: |
-        if [ '${{ inputs.environment }}' == 'test' ]; then 
-          ENV_YAML=dev
-        else 
-          ENV_YAML=${{ inputs.environment }}
-        fi
         echo "${{ inputs.cert }}" > ca.crt
         kubectl config set-cluster ${{ inputs.cluster }} --certificate-authority=./ca.crt --server=${{ inputs.api }}
         kubectl config set-credentials cd-serviceaccount --token=${{ inputs.token }}
@@ -47,5 +42,5 @@ runs:
         
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         brew install helm
-        helm dependency update projects/${{ inputs.project }}/deploy/${{ inputs.project }}
-        helm upgrade --install ${{ inputs.project }} projects/${{ inputs.project }}/deploy/${{ inputs.project }} --namespace=${{ inputs.namespace }} --values projects/${{ inputs.project }}/deploy/${{ inputs.values-file }} --set generic-service.image.tag=${{ inputs.version }} --version ${{ inputs.version }}
+        helm dependency update projects/${{ inputs.project }}/deploy
+        helm upgrade --install ${{ inputs.project }} projects/${{ inputs.project }}/deploy --namespace=${{ inputs.namespace }} --values projects/${{ inputs.project }}/deploy/${{ inputs.values-file }} --set generic-service.image.tag=${{ inputs.version }} --version ${{ inputs.version }}
