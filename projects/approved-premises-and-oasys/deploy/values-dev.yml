@@ -1,5 +1,6 @@
 environment_name: delius-test
 
+enabled: false # TODO set this to true when you're ready to deploy your service
 env:
   SENTRY_ENVIRONMENT: dev
   SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_ORDS-OASYS-AUTH_TOKEN-URI: https://ords.t1.oasys.service.justice.gov.uk/eor/oasys/oauth/token
