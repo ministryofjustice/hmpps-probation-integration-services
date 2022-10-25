@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.OasysAssessment
 
 @RestController
 class AssessmentController(private var oasysAssessmentService: OasysAssessmentService) {
-    @PreAuthorize("hasRole('ROLE_PROBATION')")
+    @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_ASSESSMENTS')")
     @GetMapping(value = ["/latest-assessment/{crn}"])
     fun handle(
         @PathVariable("crn") crn: String
