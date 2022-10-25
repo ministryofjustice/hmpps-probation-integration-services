@@ -99,6 +99,6 @@ jobs:
         env:
           SENTRY_ORG: ministryofjustice
           SENTRY_PROJECT: ${{ inputs.project }}
-          SENTRY_AUTH_TOKEN: ${{ inpouts.sentry-auth-token }}
+          SENTRY_AUTH_TOKEN: ${{ inputs.sentry-auth-token }}
         with:
           environment: ${{ inputs.environment }}
