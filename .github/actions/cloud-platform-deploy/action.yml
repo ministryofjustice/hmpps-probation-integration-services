@@ -11,23 +11,41 @@ inputs:
   version:
     description: The version of the service to deploy
     required: true
+  api:
+    description: The KUBE_ENV_API
+    required: true
+  cert:
+    description: The KUBE_CERT
+    required: true
+  cluster:
+    description: The KUBE_CLUSTER
+    required: true
+  namespace:
+    description: The KUBE_NAMESPACE
+    required: true
+  token:
+    description: The KUBE_TOKEN
+    required: true
+  values-file:
+    description: The name of the values file
 
 runs:
   using: composite
   steps:
-    - run: |
+    - shell: bash
+      run: |
         if [ '${{ inputs.environment }}' == 'test' ]; then 
           ENV_YAML=dev
         else 
           ENV_YAML=${{ inputs.environment }}
         fi
-        echo "${{ secrets.KUBE_CERT }}" > ca.crt
-        kubectl config set-cluster ${{ secrets.KUBE_CLUSTER }} --certificate-authority=./ca.crt --server=${{ secrets.KUBE_ENV_API }}
-        kubectl config set-credentials cd-serviceaccount --token=${{ secrets.KUBE_TOKEN }}
-        kubectl config set-context ${{ secrets.KUBE_CLUSTER }} --cluster=${{ secrets.KUBE_CLUSTER }} --user=cd-serviceaccount --namespace=${{ secrets.KUBE_NAMESPACE }}
-        kubectl config use-context ${{ secrets.KUBE_CLUSTER }}
+        echo "${{ inputs.cert }}" > ca.crt
+        kubectl config set-cluster ${{ inputs.cluster }} --certificate-authority=./ca.crt --server=${{ inputs.api }}
+        kubectl config set-credentials cd-serviceaccount --token=${{ inputs.token }}
+        kubectl config set-context ${{ inputs.cluster }} --cluster=${{ inputs.cluster }} --user=cd-serviceaccount --namespace=${{ inputs.namespace }}
+        kubectl config use-context ${{ inputs.cluster }}
         
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         brew install helm
-        helm dependency update projects/${inputs.project}/helm-deploy/${inputs.project}
-        helm upgrade --install ${inputs.project} projects/${inputs.project}/deploy/${inputs.project} --namespace=${{ secrets.KUBE_NAMESPACE }} --values projects/${inputs.project}/deploy/values-${ENV_YAML}.yaml --set generic-service.image.tag=${VERSION} --version ${VERSION}
+        helm dependency update projects/${{ inputs.project }}/deploy/${{ inputs.project }}
+        helm upgrade --install ${{ inputs.project }} projects/${{ inputs.project }}/deploy/${{ inputs.project }} --namespace=${{ inputs.namespace }} --values projects/${{ inputs.project }}/deploy/${{ inputs.values-file }} --set generic-service.image.tag=${{ inputs.version }} --version ${{ inputs.version }}
