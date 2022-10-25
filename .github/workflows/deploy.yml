@@ -51,7 +51,25 @@ jobs:
           if [ '${{ inputs.environment }}' == 'preprod' ]; then echo '::set-output name=filename::values-preprod.yml'; fi
           if [ '${{ inputs.environment }}' == 'prod' ];    then echo '::set-output name=filename::values-prod.yml'; fi
 
-      - uses: ./.github/actions/cloud-platform-deploy
+      - name: Get environment name from values file
+        id: env
+        shell: bash
+        run: |
+          environment_name=$(cat ${{ steps.values.outputs.filename }} | yq '.environment_name')
+          environment_enabled=$(cat ${{ steps.values.outputs.filename }} | yq '.enabled' | sed 's/^null$/true/')
+          echo "::set-output name=name::${environment_name}"
+          echo "::set-output name=short-name::${environment_name/delius-/del-}"
+          echo "::set-output name=enabled::${environment_enabled}"
+        working-directory: projects/${{ inputs.project }}/deploy
+
+      - name: Check Chart.yaml file exists
+        uses: andstor/file-existence-action@v2
+        with:
+          files: projects/${{ matrix.project }}/deploy/Chart.yaml
+
+      - name: Deploy to Cloud Platform
+        if: steps.check_files.outputs.files_exists == 'true' && steps.env.outputs.enabled == 'true'
+        uses: ./.github/actions/cloud-platform-deploy
         with:
           project: ${{ matrix.project }}
           environment: ${{ inputs.environment }}
@@ -62,3 +80,25 @@ jobs:
           namespace: ${{ secrets.KUBE_NAMESPACE }}
           token: ${{ secrets.KUBE_TOKEN }}
           values-file: ${{ steps.values.outputs.filename }}
+
+      - name: Deploy to Delius AWS
+        if: steps.check_files.outputs.files_exists == 'false' && steps.env.outputs.enabled == 'true'
+        uses: ./.github/actions/delius-deploy
+        with:
+          project: ${{ matrix.project }}
+          environment: ${{ inputs.environment }}
+          version: ${{ inputs.version }}
+          values-file: ${{ steps.values.outputs.filename }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+
+      - name: Create Sentry release
+        if: steps.env.outputs.enabled == 'true'
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_ORG: ministryofjustice
+          SENTRY_PROJECT: ${{ inputs.project }}
+          SENTRY_AUTH_TOKEN: ${{ inpouts.sentry-auth-token }}
+        with:
+          environment: ${{ inputs.environment }}

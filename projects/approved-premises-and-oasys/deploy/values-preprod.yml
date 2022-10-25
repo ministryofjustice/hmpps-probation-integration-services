@@ -1,4 +1,6 @@
 ---
+enabled: false
+
 generic-service:
   replicaCount: 2
   ingress:
