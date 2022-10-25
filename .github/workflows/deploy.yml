@@ -112,6 +112,7 @@ jobs:
           aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
           json-secrets: ${{ toJson(secrets) }}
           delius-env: ${{ steps.env.outputs.name }}
+          delius-short-name: ${{ steps.env.outputs.short-name }}
 
       - name: Create Sentry release
         if: steps.env.outputs.enabled == 'true'

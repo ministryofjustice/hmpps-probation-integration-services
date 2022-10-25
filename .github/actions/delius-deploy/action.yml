@@ -28,6 +28,9 @@ inputs:
   delius-env:
     description: the delius deployment environment
     required: true
+  delius-short-name:
+    description: the short 'del' name
+    required: true
 
 runs:
   using: composite
@@ -63,7 +66,7 @@ runs:
       shell: bash
       run: |
         test -f database/access.yml && \
-        aws ssm start-automation-execution --document-name oracle-${{ steps.env.outputs.short-name }}-probation-integration-access \
+        aws ssm start-automation-execution --document-name oracle-${{ inputs.delius-short-name }}-probation-integration-access \
                                            --parameters "Configuration='$(yq database/access.yml -o json)'" \
                                            --region eu-west-2 && \
         echo 'Execution started. Follow the logs in AWS: https://eu-west-2.console.aws.amazon.com/systems-manager/automation/executions?region=eu-west-2'
@@ -85,7 +88,7 @@ runs:
       run: |
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         brew install gomplate
-        old_task_definition=$(aws ecs describe-task-definition --task-definition "${{ steps.env.outputs.short-name }}-${{ inputs.project }}-task-definition" --include TAGS | jq '.taskDefinition | del(.containerDefinitions[0].command, .compatibilities, .taskDefinitionArn, .requiresAttributes, .revision, .status, .registeredAt, .registeredBy)')
+        old_task_definition=$(aws ecs describe-task-definition --task-definition "${{ inputs.delius-short-name }}-${{ inputs.project }}-task-definition" --include TAGS | jq '.taskDefinition | del(.containerDefinitions[0].command, .compatibilities, .taskDefinitionArn, .requiresAttributes, .revision, .status, .registeredAt, .registeredBy)')
         new_task_definition=$(yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' <(echo "${old_task_definition}") <(gomplate --file templates/task-definition.yml --context values=projects/${{ inputs.project }}/deploy/merged.yml) --output-format json | tee task-definition.json)
         echo "Deploying new task definition: ${new_task_definition}"
 
@@ -93,7 +96,7 @@ runs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: task-definition.json
-        service: ${{ steps.env.outputs.short-name }}-${{ inputs.project }}-service
+        service: ${{ inputs.delius-short-name }}-${{ inputs.project }}-service
         cluster: del-delius-ecscluster-private-ecs
         wait-for-service-stability: true
         wait-for-minutes: 10
