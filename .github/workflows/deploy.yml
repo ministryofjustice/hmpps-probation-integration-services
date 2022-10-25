@@ -1,6 +1,21 @@
 name: Deploy
 
 on:
+  workflow_call:
+    inputs:
+      projects:
+        description: A JSON array of projects to deploy
+        type: string
+        required: true
+      environment:
+        description: The name of the environment to deploy to
+        type: string
+        required: true
+      version:
+        description: The image version to deploy
+        type: string
+        required: true
+
   workflow_dispatch:
     inputs:
       projects:
@@ -60,7 +75,7 @@ jobs:
           echo "::set-output name=name::${environment_name}"
           echo "::set-output name=short-name::${environment_name/delius-/del-}"
           echo "::set-output name=enabled::${environment_enabled}"
-        working-directory: projects/${{ inputs.project }}/deploy
+        working-directory: projects/${{ matrix.project }}/deploy
 
       - name: Check Chart.yaml file exists
         uses: andstor/file-existence-action@v2
