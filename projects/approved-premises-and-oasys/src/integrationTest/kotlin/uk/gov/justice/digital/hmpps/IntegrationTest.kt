@@ -39,8 +39,8 @@ internal class IntegrationTest {
             .andReturn()
 
         val oasysAssessment = objectMapper.readValue(result.response.contentAsString, OasysAssessment::class.java)
-        assertThat(oasysAssessment.completedDate)
-            .isEqualTo(ZonedDateTime.parse("2022-07-27T12:09:41+01:00").withZoneSameInstant(EuropeLondon))
+        assertThat(oasysAssessment.initiationDate)
+            .isEqualTo(ZonedDateTime.parse("2022-07-27T12:10:58+01:00").withZoneSameInstant(EuropeLondon))
     }
 
     @Test
@@ -54,12 +54,6 @@ internal class IntegrationTest {
     fun `get latest layer 3 assessment not found`() {
         mockMvc
             .perform(get("/latest-assessment/D000001").withOAuth2Token(wireMockServer))
-            .andExpect(status().isNotFound)
-    }
-    @Test
-    fun `get latest layer 3 assessment no completed date`() {
-        mockMvc
-            .perform(get("/latest-assessment/D000002").withOAuth2Token(wireMockServer))
             .andExpect(status().isNotFound)
     }
 }
