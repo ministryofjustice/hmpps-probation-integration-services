@@ -1,10 +1,9 @@
 environment_name: delius-test
 
 enabled: false # TODO set this to true when you're ready to deploy your service
-
 env:
   SENTRY_ENVIRONMENT: dev
-  SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: #TODO complete with OASYS client token uri
+  SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_ORDS-OASYS-AUTH_TOKEN-URI: https://ords.t1.oasys.service.justice.gov.uk/eor/oasys/oauth/token
   SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
   SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/issuer
 

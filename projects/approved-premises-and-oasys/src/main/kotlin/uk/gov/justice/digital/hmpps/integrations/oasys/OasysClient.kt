@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.example
+package uk.gov.justice.digital.hmpps.integrations.oasys
 
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.PathVariable
 import uk.gov.justice.digital.hmpps.config.FeignOAuth2Config
 
 @FeignClient(
-    name = "example",
-    url = "\${integrations.example.url}",
+    name = "ords-oasys",
+    url = "\${integrations.ords-oasys.url}",
     configuration = [FeignOAuth2Config::class]
 )
-interface ExampleFeignClient {
-    @GetMapping(value = ["/example/{inputId}"])
-    fun getExampleAPICall(@PathVariable("inputId") inputId: String): String
+interface OasysClient {
+    @GetMapping(value = ["/ass/timeline/{crn}/ALLOW"])
+    fun getAssessmentTimeline(@PathVariable("crn") crn: String): OrdsAssessmentTimeline?
 }
