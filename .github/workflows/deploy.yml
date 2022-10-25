@@ -47,7 +47,6 @@ jobs:
           
       - name: Authenticate to the cluster
         env:
-          KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER_DEV }}
           VERSION: ${{ inputs.version }}
         run: |
           echo "${{ secrets.KUBE_CERT_DEV }}" > ca.crt
@@ -62,4 +61,4 @@ jobs:
           helm dependency update projects/${{ matrix.project }}/helm-deploy/${{ matrix.project }}
           helm package projects/${{ matrix.project }}/helm-deploy/${{ matrix.project }}
           pwd
-          helm upgrade --install ${{ matrix.project }} ${{ matrix.project }}-$VERSION.tgz --namespace=${{ secrets.KUBE_NAMESPACE_DEV }} --values projects/${{ matrix.project }}/helm-deploy/values-dev.yaml
+          helm upgrade --install ${{ matrix.project }} ${{ matrix.project }}-$VERSION.tgz --namespace=${{ secrets.KUBE_NAMESPACE_DEV }} --values projects/${{ matrix.project }}/helm-deploy/values-dev.yaml --set generic-service.image.tag=${VERSION}
