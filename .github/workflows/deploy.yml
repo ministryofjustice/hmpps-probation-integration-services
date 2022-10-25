@@ -78,6 +78,7 @@ jobs:
         working-directory: projects/${{ matrix.project }}/deploy
 
       - name: Check Chart.yaml file exists
+        id: check_files
         uses: andstor/file-existence-action@v2
         with:
           files: projects/${{ matrix.project }}/deploy/Chart.yaml
