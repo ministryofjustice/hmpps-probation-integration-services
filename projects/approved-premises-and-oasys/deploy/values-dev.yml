@@ -1,5 +1,5 @@
 ---
-enabled: false
+enabled: true
 
 generic-service:
   replicaCount: 2
