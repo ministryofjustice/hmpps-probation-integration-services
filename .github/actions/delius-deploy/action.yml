@@ -22,8 +22,8 @@ inputs:
   aws-role-arn:
     description: AWS_ROLE_ARN
     required: true
-  secrets:
-    description: string representation of secrets to add to parameter store
+  json-secrets:
+    description: json representation of secrets to add to parameter store
     required: true
 
 runs:
@@ -42,7 +42,7 @@ runs:
     - name: Add secrets to parameter store
       shell: bash
       env:
-        ALL_SECRETS: ${{ toJson(inputs.secrets) }}
+        ALL_SECRETS: ${{ inputs.json-secrets }}
       run: |
         project_name=$(echo '${{ inputs.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
         namespace=/${{ steps.env.outputs.name }}/delius/probation-integration/${{ inputs.project }}
