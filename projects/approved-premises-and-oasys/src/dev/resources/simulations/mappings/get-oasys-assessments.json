@@ -39,6 +39,24 @@
     {
       "request": {
         "method": "GET",
+        "url": "/eor/oasys/ass/timeline/D000002/ALLOW",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer (.*)$"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "assessments-not-found-no-completed-date.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/eor/oasys/ass/timeline/D000000/ALLOW",
         "headers": {
           "Authorization": {

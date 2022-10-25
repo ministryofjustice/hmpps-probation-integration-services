@@ -56,4 +56,10 @@ internal class IntegrationTest {
             .perform(get("/latest-assessment/D000001").withOAuth2Token(wireMockServer))
             .andExpect(status().isNotFound)
     }
+    @Test
+    fun `get latest layer 3 assessment no completed date`() {
+        mockMvc
+            .perform(get("/latest-assessment/D000002").withOAuth2Token(wireMockServer))
+            .andExpect(status().isNotFound)
+    }
 }
