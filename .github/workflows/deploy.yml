@@ -25,7 +25,7 @@ on:
         type: choice
         required: true
         options:
-          - dev
+          - test
           - preprod
           - prod
       version:
