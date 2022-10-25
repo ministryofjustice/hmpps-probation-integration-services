@@ -58,4 +58,4 @@ jobs:
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           brew install helm
           helm dependency update projects/${{ matrix.project }}/helm-deploy/${{ matrix.project }}
-          helm upgrade --install ${{ matrix.project }} projects/${{ matrix.project }}/helm-deploy/${{ matrix.project }} --namespace=${{ secrets.KUBE_NAMESPACE_DEV }} --values projects/${{ matrix.project }}/helm-deploy/values-dev.yaml --set generic-service.image.tag=${VERSION} --version ${VERSION}
+          helm upgrade --install ${{ matrix.project }} projects/${{ matrix.project }}/deploy/${{ matrix.project }} --namespace=${{ secrets.KUBE_NAMESPACE_DEV }} --values projects/${{ matrix.project }}/deploy/values-dev.yaml --set generic-service.image.tag=${VERSION} --version ${VERSION}

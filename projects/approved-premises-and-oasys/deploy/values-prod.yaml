@@ -3,7 +3,6 @@ generic-service:
   replicaCount: 2
   ingress:
     host: approved-premises-and-oasys-prod.hmpps.service.justice.gov.uk
-    contextColour: green
 
   env:
     SENTRY_ENVIRONMENT: prod
