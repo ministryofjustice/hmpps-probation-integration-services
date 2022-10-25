@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - id: get-projects
-        run: echo "::set-output name=projects::$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)"
+        run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_OUTPUT
 
   scan:
     runs-on: ubuntu-latest
@@ -59,7 +59,7 @@ jobs:
         if: failure()
         run: |
           results=$(cat results.json | jq -r '.Results[].Vulnerabilities[]? | ("><" + .PrimaryURL + "|" + .VulnerabilityID + "> (" + .Severity + ") - " + .PkgName + ":" + .InstalledVersion)')
-          echo "::set-output name=results::$results"
+          echo "results=${results//$'\n'/\\n}" >> $GITHUB_OUTPUT
           echo $results
 
       - name: Send message to Slack
