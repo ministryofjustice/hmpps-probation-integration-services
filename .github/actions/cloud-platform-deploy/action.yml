@@ -52,8 +52,9 @@ runs:
       run: |
         project_name=$(echo '${{ inputs.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
         secret_command='kubectl -n ${{ inputs.namespace }} create secret generic ${{ inputs.project }}'
-        echo "${ALL_SECRETS}" | jq -r ". | keys[] | select(. | startswith(\"${project_name}\"))" | while read -r key; do
-          name=$(echo "${key}" | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g' | sed 's/${{ inputs.project }}-//')
+        for key in $(echo "${ALL_SECRETS}" | jq -r ". | keys[] | select(. | startswith(\"${project_name}\"))");
+        do
+          name="${key##${project_name}_}"
           value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
           secret_command="${secret_command} --from-literal='$name=$value'"
         done
