@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.tier
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -23,7 +24,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.team.getByCode
 import uk.gov.justice.digital.hmpps.listener.telemetryProperties
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 @Service
 class TierService(
@@ -88,7 +88,7 @@ class TierService(
         val areaCode = person.managers.firstOrNull()?.probationArea?.code
             ?: throw NotFoundException("PersonManager", "crn", person.crn)
 
-        val formattedDate = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(calculationDate)
+        val formattedDate = DeliusDateTimeFormatter.format(calculationDate)
         contactRepository.save(
             Contact(
                 date = calculationDate,
