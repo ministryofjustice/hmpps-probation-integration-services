@@ -5,10 +5,10 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.PrisonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManager
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EntityListeners
@@ -70,14 +70,14 @@ class ResponsibleOfficer(
         """
             Responsible Officer Type: Prison Offender Manager
             Responsible Officer: ${prisonManager.staff.displayName()} (${prisonManager.team.description}, ${prisonManager.probationArea.description})
-            Start Date: ${startDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))}
+            Start Date: ${DeliusDateTimeFormatter.format(startDate)}
             Allocation Reason: ${prisonManager.allocationReason.description}
         """.trimIndent()
     } else if (communityManager != null) {
         """
             Responsible Officer Type: Offender Manager
             Responsible Officer: ${communityManager.staff.displayName()} (${communityManager.team.description}, ${communityManager.probationArea.description})
-            Start Date: ${startDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))}
+            Start Date: ${DeliusDateTimeFormatter.format(startDate)}
             Allocation Reason: ${communityManager.allocationReason.description}
         """.trimIndent()
     } else null
