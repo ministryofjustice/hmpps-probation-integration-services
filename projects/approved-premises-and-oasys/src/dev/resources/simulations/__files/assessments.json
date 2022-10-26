@@ -1,0 +1,60 @@
+{
+  "source": "OASys",
+  "inputs": {
+    "crn": "D006296",
+    "laoPrivilege": "ALLOW"
+  },
+  "crn": "D006296",
+  "limitedAccessOffender": false,
+  "timeline": [
+    {
+      "assessmentPk": 9630348,
+      "assessmentType": "LAYER1",
+      "initiationDate": "2022-04-27T12:42:25",
+      "status": "COMPLETE",
+      "completedDate": "2022-04-27T12:46:39"
+    },
+    {
+      "assessmentPk": 9632348,
+      "assessmentType": "LAYER3",
+      "initiationDate": "2022-05-31T10:37:05",
+      "status": "LOCKED_INCOMPLETE",
+      "partcompStatus": "Unsigned",
+      "completedDate": "2022-06-09T15:13:18"
+    },
+    {
+      "assessmentPk": 9634348,
+      "assessmentType": "LAYER3",
+      "initiationDate": "2022-06-09T15:13:55",
+      "status": "COMPLETE",
+      "completedDate": "2022-06-09T15:16:21"
+    },
+    {
+      "assessmentPk": 9635350,
+      "assessmentType": "LAYER3",
+      "initiationDate": "2022-06-10T18:22:02",
+      "status": "COMPLETE",
+      "completedDate": "2022-06-10T18:23:20"
+    },
+    {
+      "assessmentPk": 9635351,
+      "assessmentType": "LAYER3",
+      "initiationDate": "2022-06-10T18:23:51",
+      "status": "COMPLETE",
+      "completedDate": "2022-07-21T15:43:12"
+    },
+    {
+      "assessmentPk": 9639348,
+      "assessmentType": "LAYER3",
+      "initiationDate": "2022-07-21T15:43:58",
+      "status": "COMPLETE",
+      "completedDate": "2022-07-27T12:09:41"
+    },
+    {
+      "assessmentPk": 9641348,
+      "assessmentType": "LAYER3",
+      "initiationDate": "2022-07-27T12:10:58",
+      "status": "OPEN"
+    }
+  ]
+}

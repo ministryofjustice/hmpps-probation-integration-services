@@ -31,7 +31,7 @@ dependencyResolutionManagement {
             library("hawtio", "io.hawt:hawtio-springboot:2.16.0")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:4.0.0")
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:3.1.4")
-            library("sentry", "io.sentry:sentry-spring-boot-starter:6.5.0")
+            library("sentry", "io.sentry:sentry-spring-boot-starter:6.6.0")
             library("wiremock", "com.github.tomakehurst:wiremock-jre8:2.34.0")
             library("swagger-docs", "org.springdoc:springdoc-openapi-ui:1.6.12")
         }

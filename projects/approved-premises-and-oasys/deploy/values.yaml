@@ -19,6 +19,9 @@ generic-service:
   namespace_secrets:
     approved-premises-and-oasys:
       APPLICATIONINSIGHTS_CONNECTION_STRING: APPLICATIONINSIGHTS_CONNECTION_STRING
+      SENTRY_DSN: SENTRY_DSN
+      ORDS_OAUTH2_CLIENT-ID: ORDS_OAUTH2_CLIENT
+      ORDS_OAUTH2_CLIENT-SECRET: ORDS_OAUTH2_CLIENT-SECRET
 
 generic-prometheus-alerts:
   targetApplication: approved-premises-and-oasys
