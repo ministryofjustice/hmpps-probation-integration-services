@@ -1,0 +1,28 @@
+---
+# Values here are the same across all environments
+generic-service:
+  nameOverride: approved-premises-and-oasys
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/approved-premises-and-oasys
+    port: 8080
+
+  ingress:
+    enabled: true
+    v1_2_enabled: true
+    v0_47_enabled: false
+    tlsSecretName: approved-premises-and-oasys-cert
+
+  env:
+    APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
+
+  namespace_secrets:
+    approved-premises-and-oasys:
+      APPLICATIONINSIGHTS_CONNECTION_STRING: APPLICATIONINSIGHTS_CONNECTION_STRING
+      SENTRY_DSN: SENTRY_DSN
+      ORDS_OAUTH2_CLIENT-ID: ORDS_OAUTH2_CLIENT-ID
+      ORDS_OAUTH2_CLIENT-SECRET: ORDS_OAUTH2_CLIENT-SECRET
+
+generic-prometheus-alerts:
+  targetApplication: approved-premises-and-oasys
+  alertSeverity: probation-integration-notifications

@@ -1,9 +1,0 @@
-# Common values
-image:
-  name: approved-premises-and-oasys
-
-secrets:
-  APPLICATIONINSIGHTS_CONNECTION_STRING:   /application-insights/connection-string
-  SENTRY_DSN:                              /approved-premises-and-oasys/sentry-dsn
-  ORDS_OAUTH2_CLIENT-ID:                   /approved-premises-and-oasys/ords-client-id
-  ORDS_OAUTH2_CLIENT-SECRET:               /approved-premises-and-oasys/ords-client-secret

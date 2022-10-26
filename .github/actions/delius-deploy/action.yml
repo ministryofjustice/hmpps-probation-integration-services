@@ -1,0 +1,105 @@
+name: Cloud Platform Deploy
+description: Deploy to Cloud Platform using Helm
+
+inputs:
+  project:
+    description: The project to deploy
+    required: true
+  environment:
+    description: The environment to deploy to (dev/preprod/prod)
+    required: true
+  version:
+    description: The version of the service to deploy
+    required: true
+  values-file:
+    description: The name of the values file
+  aws-access-key-id:
+    description: AWS_ACCESS_KEY_ID
+    required: true
+  aws-secret-access-key:
+    description: AWS_SECRET_ACCESS_KEY
+    required: true
+  aws-role-arn:
+    description: AWS_ROLE_ARN
+    required: true
+  json-secrets:
+    description: json representation of secrets to add to parameter store
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v3
+    - uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: eu-west-2
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        role-to-assume: ${{ inputs.aws-role-arn }}
+        role-skip-session-tagging: true
+        role-duration-seconds: 1200
+
+    - name: Get Delius environment name from values file
+      id: env
+      shell: bash
+      run: |
+        environment_name=$(cat ${{ inputs.values-file }} | yq '.environment_name')
+        echo "name=${environment_name}" >> $GITHUB_OUTPUT
+        echo "short-name=${environment_name/delius-/del-}" >> $GITHUB_OUTPUT
+      working-directory: projects/${{ matrix.project }}/deploy
+
+    - name: Add secrets to parameter store
+      shell: bash
+      env:
+        ALL_SECRETS: ${{ inputs.json-secrets }}
+      run: |
+        project_name=$(echo '${{ inputs.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
+        namespace=/${{ steps.env.outputs.name }}/delius/probation-integration/${{ inputs.project }}
+        echo "${ALL_SECRETS}" | jq -r ". | keys[] | select(. | startswith(\"${project_name}\"))" | while read -r key; do
+          name=$(echo "${key}" | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g' | sed 's/${{ inputs.project }}-//')
+          value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
+          existing=$(aws ssm get-parameter --name "${namespace}/${name}" --region eu-west-2 --with-decryption --query 'Parameter.Value' --output text || echo "")
+          if [ "${existing}" != "${value}" ]; then
+            echo "Updating secret in parameter store: ${key} (${namespace}/${name})"
+            aws ssm put-parameter --name "${namespace}/${name}" --value "${value}" --overwrite --type SecureString --region eu-west-2
+          fi
+        done
+
+    - name: Configure database access
+      shell: bash
+      run: |
+        test -f database/access.yml && \
+        aws ssm start-automation-execution --document-name oracle-${{ steps.env.outputs.short-name }}-probation-integration-access \
+                                           --parameters "Configuration='$(yq database/access.yml -o json)'" \
+                                           --region eu-west-2 && \
+        echo 'Execution started. Follow the logs in AWS: https://eu-west-2.console.aws.amazon.com/systems-manager/automation/executions?region=eu-west-2'
+      working-directory: projects/${{ inputs.project }}/deploy
+
+    - name: Render values
+      shell: bash
+      run: |
+        yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1) *d select(fileIndex == 2)' \
+          templates/defaults.yml \
+          projects/${{ inputs.project }}/deploy/values.yml \
+          projects/${{ inputs.project }}/deploy/${{ inputs.values-file }} \
+        > projects/${{ inputs.project }}/deploy/merged.yml
+
+    - name: Update task definition
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+      run: |
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+        brew install gomplate
+        old_task_definition=$(aws ecs describe-task-definition --task-definition "${{ steps.env.outputs.short-name }}-${{ inputs.project }}-task-definition" --include TAGS | jq '.taskDefinition | del(.containerDefinitions[0].command, .compatibilities, .taskDefinitionArn, .requiresAttributes, .revision, .status, .registeredAt, .registeredBy)')
+        new_task_definition=$(yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' <(echo "${old_task_definition}") <(gomplate --file templates/task-definition.yml --context values=projects/${{ inputs.project }}/deploy/merged.yml) --output-format json | tee task-definition.json)
+        echo "Deploying new task definition: ${new_task_definition}"
+
+    - name: Deploy to Amazon ECS
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: task-definition.json
+        service: ${{ steps.env.outputs.short-name }}-${{ inputs.project }}-service
+        cluster: del-delius-ecscluster-private-ecs
+        wait-for-service-stability: true
+        wait-for-minutes: 10
