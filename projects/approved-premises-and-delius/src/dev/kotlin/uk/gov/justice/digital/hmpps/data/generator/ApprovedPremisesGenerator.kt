@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceD
 
 object ApprovedPremisesGenerator {
     val DEFAULT = generate("Q001")
+    val DUPLICATE = generate("Q001")
     val NO_STAFF = generate("Q002", ProbationAreaGenerator.WITHOUT_PDU)
 
     fun generate(

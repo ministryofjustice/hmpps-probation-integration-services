@@ -25,12 +25,7 @@ class StaffService(
             StaffResponse(
                 code = it.code,
                 name = PersonName(it.forename, it.surname, it.middleName),
-                grade = it.grade?.let { grade ->
-                    StaffGrade(
-                        code = grade.code,
-                        description = grade.description
-                    )
-                },
+                grade = it.grade?.let { grade -> StaffGrade(grade.code, grade.description) },
                 keyWorker = it.approvedPremises.map { ap -> ap.code.code }.contains(approvedPremisesCode)
             )
         }

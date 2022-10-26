@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query
 interface StaffRepository : JpaRepository<Staff, Long> {
     @Query(
         """
-        select s from Staff s
+        select distinct s from Staff s
         join s.teams t
         join t.localAdminUnit.probationDeliveryUnit.probationArea.approvedPremises ap
         where upper(t.localAdminUnit.description) like '%APPROVED PREMISES'
