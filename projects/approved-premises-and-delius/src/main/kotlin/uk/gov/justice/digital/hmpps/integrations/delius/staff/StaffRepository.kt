@@ -10,12 +10,12 @@ interface StaffRepository : JpaRepository<Staff, Long> {
         """
         select s from Staff s
         join s.teams t
-        join t.localDeliveryUnit.probationDeliveryUnit.probationArea.approvedPremises ap
-        where upper(t.localDeliveryUnit.description) like '%APPROVED PREMISES'
+        join t.localAdminUnit.probationDeliveryUnit.probationArea.approvedPremises ap
+        where upper(t.localAdminUnit.description) like '%APPROVED PREMISES'
         and ap.code.code = :approvedPremisesCode
-    """
+        """
     )
-    fun findAllStaffLinkedToApprovedPremisesLDU(
+    fun findAllStaffLinkedToApprovedPremisesLAU(
         approvedPremisesCode: String,
         pageable: Pageable
     ): Page<Staff>

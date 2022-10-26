@@ -43,7 +43,7 @@ internal class StaffServiceTest {
             StaffGenerator.generate("Staff 2", listOf(TeamGenerator.APPROVED_PREMISES_TEAM_1), listOf(approvedPremises)),
         )
         whenever(approvedPremisesRepository.existsByCodeCode(approvedPremises.code.code)).thenReturn(true)
-        whenever(staffRepository.findAllStaffLinkedToApprovedPremisesLDU(approvedPremises.code.code, Pageable.unpaged()))
+        whenever(staffRepository.findAllStaffLinkedToApprovedPremisesLAU(approvedPremises.code.code, Pageable.unpaged()))
             .thenReturn(PageImpl(staffEntities))
 
         val results = staffService.getStaffInApprovedPremises(approvedPremises.code.code, Pageable.unpaged())
@@ -55,7 +55,7 @@ internal class StaffServiceTest {
         assertThat(results.content[0].name.forename, equalTo(staffEntities[0].forename))
         assertThat(results.content[0].name.middleName, equalTo(staffEntities[0].middleName))
         assertThat(results.content[0].name.surname, equalTo(staffEntities[0].surname))
-        assertThat(results.content[0].grade.code, equalTo(staffEntities[0].grade.code))
-        assertThat(results.content[0].grade.description, equalTo(staffEntities[0].grade.description))
+        assertThat(results.content[0].grade!!.code, equalTo(staffEntities[0].grade!!.code))
+        assertThat(results.content[0].grade!!.description, equalTo(staffEntities[0].grade!!.description))
     }
 }

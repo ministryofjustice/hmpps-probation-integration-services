@@ -24,7 +24,7 @@ class Staff(
 
     @ManyToOne
     @JoinColumn(name = "staff_grade_id")
-    val grade: ReferenceData,
+    val grade: ReferenceData?,
 
     @Column
     val forename: String,
