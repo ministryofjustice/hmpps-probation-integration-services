@@ -43,14 +43,13 @@ runs:
         
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         brew install helm
-        yq '.appVersion = "${{ inputs.version }}"' projects/${{ inputs.project }}/deploy/Chart.yaml
+        yq -i '.appVersion = "${{ inputs.version }}"' projects/${{ inputs.project }}/deploy/Chart.yaml
         helm dependency update projects/${{ inputs.project }}/deploy
         helm upgrade ${{ inputs.project }} projects/${{ inputs.project }}/deploy \
           --install \
           --namespace=${{ inputs.namespace }} \
           --values projects/${{ inputs.project }}/deploy/${{ inputs.values-file }} \
           --set generic-service.image.tag=${{ inputs.version }} \
-          --version ${{ inputs.version }} \
           --wait \
           --timeout 10m \
           --history-max 10 \
