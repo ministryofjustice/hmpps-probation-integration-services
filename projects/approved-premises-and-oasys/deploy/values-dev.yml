@@ -13,5 +13,3 @@ generic-service:
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/issuer
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.dev.json
 
-generic-prometheus-alerts:
-  alertSeverity: probation-integration-notifications
