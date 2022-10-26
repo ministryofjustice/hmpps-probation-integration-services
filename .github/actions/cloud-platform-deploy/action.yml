@@ -29,18 +29,40 @@ inputs:
   token:
     description: The KUBE_TOKEN
     required: true
+  json-secrets:
+    description: json representation of secrets to add to parameter store
+    required: true
 
 runs:
   using: composite
   steps:
-    - shell: bash
+    - name: auth k8s
+      shell: bash
       run: |
-        echo "${{ inputs.cert }}" > ca.crt
-        kubectl config set-cluster ${{ inputs.cluster }} --certificate-authority=./ca.crt --server=${{ inputs.api }}
-        kubectl config set-credentials cd-serviceaccount --token=${{ inputs.token }}
-        kubectl config set-context ${{ inputs.cluster }} --cluster=${{ inputs.cluster }} --user=cd-serviceaccount --namespace=${{ inputs.namespace }}
-        kubectl config use-context ${{ inputs.cluster }}
-        
+      echo "${{ inputs.cert }}" > ca.crt
+      kubectl config set-cluster ${{ inputs.cluster }} --certificate-authority=./ca.crt --server=${{ inputs.api }}
+      kubectl config set-credentials cd-serviceaccount --token=${{ inputs.token }}
+      kubectl config set-context ${{ inputs.cluster }} --cluster=${{ inputs.cluster }} --user=cd-serviceaccount --namespace=${{ inputs.namespace }}
+      kubectl config use-context ${{ inputs.cluster }}
+
+    - name: add secrets to k8s
+      shell: bash
+      env:
+        ALL_SECRETS: ${{ inputs.json-secrets }}
+      run: |
+        project_name=$(echo '${{ inputs.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
+        secret_command='kubectl -n ${{ inputs.namespace }} create secret generic ${{ inputs.project }}'
+        echo "${ALL_SECRETS}" | jq -r ". | keys[] | select(. | startswith(\"${project_name}\"))" | while read -r key; do
+          name=$(echo "${key}" | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g' | sed 's/${{ inputs.project }}-//')
+          value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
+          secret_command="${secret_command} --from-literal='$name=$value'"
+        done
+        kubectl -n ${{ inputs.namespace }} delete secret ${{ inputs.project }}
+        eval $secret_command
+
+    - name: deploy to k8s
+      shell: bash
+      run: |        
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         brew install helm
         yq -i '.appVersion = "${{ inputs.version }}"' projects/${{ inputs.project }}/deploy/Chart.yaml
