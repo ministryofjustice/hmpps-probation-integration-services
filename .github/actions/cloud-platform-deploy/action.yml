@@ -39,11 +39,11 @@ runs:
     - name: auth k8s
       shell: bash
       run: |
-      echo "${{ inputs.cert }}" > ca.crt
-      kubectl config set-cluster ${{ inputs.cluster }} --certificate-authority=./ca.crt --server=${{ inputs.api }}
-      kubectl config set-credentials cd-serviceaccount --token=${{ inputs.token }}
-      kubectl config set-context ${{ inputs.cluster }} --cluster=${{ inputs.cluster }} --user=cd-serviceaccount --namespace=${{ inputs.namespace }}
-      kubectl config use-context ${{ inputs.cluster }}
+        echo "${{ inputs.cert }}" > ca.crt
+        kubectl config set-cluster ${{ inputs.cluster }} --certificate-authority=./ca.crt --server=${{ inputs.api }}
+        kubectl config set-credentials cd-serviceaccount --token=${{ inputs.token }}
+        kubectl config set-context ${{ inputs.cluster }} --cluster=${{ inputs.cluster }} --user=cd-serviceaccount --namespace=${{ inputs.namespace }}
+        kubectl config use-context ${{ inputs.cluster }}
 
     - name: add secrets to k8s
       shell: bash
