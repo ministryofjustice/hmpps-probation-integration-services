@@ -25,12 +25,6 @@ inputs:
   json-secrets:
     description: json representation of secrets to add to parameter store
     required: true
-  delius-env:
-    description: the delius deployment environment
-    required: true
-  delius-short-name:
-    description: the short 'del' name
-    required: true
 
 runs:
   using: composite
@@ -45,13 +39,22 @@ runs:
         role-skip-session-tagging: true
         role-duration-seconds: 1200
 
+    - name: Get Delius environment name from values file
+      id: env
+      shell: bash
+      run: |
+        environment_name=$(cat ${{ steps.values.outputs.filename }} | yq '.environment_name')
+        echo "name=${environment_name}" >> $GITHUB_OUTPUT
+        echo "short-name=${environment_name/delius-/del-}" >> $GITHUB_OUTPUT
+      working-directory: projects/${{ matrix.project }}/deploy
+
     - name: Add secrets to parameter store
       shell: bash
       env:
         ALL_SECRETS: ${{ inputs.json-secrets }}
       run: |
         project_name=$(echo '${{ inputs.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
-        namespace=/${{ inputs.delius-env }}/delius/probation-integration/${{ inputs.project }}
+        namespace=/${{ steps.env.outputs.name }}/delius/probation-integration/${{ inputs.project }}
         echo "${ALL_SECRETS}" | jq -r ". | keys[] | select(. | startswith(\"${project_name}\"))" | while read -r key; do
           name=$(echo "${key}" | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g' | sed 's/${{ inputs.project }}-//')
           value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
@@ -66,7 +69,7 @@ runs:
       shell: bash
       run: |
         test -f database/access.yml && \
-        aws ssm start-automation-execution --document-name oracle-${{ inputs.delius-short-name }}-probation-integration-access \
+        aws ssm start-automation-execution --document-name oracle-${{ steps.env.outputs.short-name }}-probation-integration-access \
                                            --parameters "Configuration='$(yq database/access.yml -o json)'" \
                                            --region eu-west-2 && \
         echo 'Execution started. Follow the logs in AWS: https://eu-west-2.console.aws.amazon.com/systems-manager/automation/executions?region=eu-west-2'
@@ -88,7 +91,7 @@ runs:
       run: |
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         brew install gomplate
-        old_task_definition=$(aws ecs describe-task-definition --task-definition "${{ inputs.delius-short-name }}-${{ inputs.project }}-task-definition" --include TAGS | jq '.taskDefinition | del(.containerDefinitions[0].command, .compatibilities, .taskDefinitionArn, .requiresAttributes, .revision, .status, .registeredAt, .registeredBy)')
+        old_task_definition=$(aws ecs describe-task-definition --task-definition "${{ steps.env.outputs.short-name }}-${{ inputs.project }}-task-definition" --include TAGS | jq '.taskDefinition | del(.containerDefinitions[0].command, .compatibilities, .taskDefinitionArn, .requiresAttributes, .revision, .status, .registeredAt, .registeredBy)')
         new_task_definition=$(yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' <(echo "${old_task_definition}") <(gomplate --file templates/task-definition.yml --context values=projects/${{ inputs.project }}/deploy/merged.yml) --output-format json | tee task-definition.json)
         echo "Deploying new task definition: ${new_task_definition}"
 
@@ -96,7 +99,7 @@ runs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: task-definition.json
-        service: ${{ inputs.delius-short-name }}-${{ inputs.project }}-service
+        service: ${{ steps.env.outputs.short-name }}-${{ inputs.project }}-service
         cluster: del-delius-ecscluster-private-ecs
         wait-for-service-stability: true
         wait-for-minutes: 10

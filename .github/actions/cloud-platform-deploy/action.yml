@@ -11,6 +11,9 @@ inputs:
   version:
     description: The version of the service to deploy
     required: true
+  values-file:
+    description: The name of the values file
+    required: true
   api:
     description: The KUBE_ENV_API
     required: true
@@ -26,8 +29,6 @@ inputs:
   token:
     description: The KUBE_TOKEN
     required: true
-  values-file:
-    description: The name of the values file
 
 runs:
   using: composite
