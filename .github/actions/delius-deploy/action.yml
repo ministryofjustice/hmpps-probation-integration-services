@@ -43,7 +43,7 @@ runs:
       id: env
       shell: bash
       run: |
-        environment_name=$(cat ${{ steps.values.outputs.filename }} | yq '.environment_name')
+        environment_name=$(cat ${{ inputs.values-file }} | yq '.environment_name')
         echo "name=${environment_name}" >> $GITHUB_OUTPUT
         echo "short-name=${environment_name/delius-/del-}" >> $GITHUB_OUTPUT
       working-directory: projects/${{ matrix.project }}/deploy
