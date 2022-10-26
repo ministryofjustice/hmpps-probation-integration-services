@@ -10,6 +10,6 @@ class DateTimeFormatterTest {
     fun `formatter produces expected output`() {
         val datetime = ZonedDateTime.of(2022, 8, 1, 12, 30, 30, 21, EuropeLondon)
         val output = DeliusDateTimeFormatter.format(datetime)
-        assertThat(output, equalTo("2022/08/01 12:30:30"))
+        assertThat(output, equalTo("01/08/2022 12:30:30"))
     }
 }
