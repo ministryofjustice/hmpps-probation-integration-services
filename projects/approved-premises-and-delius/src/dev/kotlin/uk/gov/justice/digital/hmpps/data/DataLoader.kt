@@ -37,6 +37,7 @@ class DataLoader(
         serviceContext.setUp()
 
         referenceDataRepository.save(ApprovedPremisesGenerator.DEFAULT.code)
+        referenceDataRepository.save(ApprovedPremisesGenerator.DUPLICATE.code)
         referenceDataRepository.save(ApprovedPremisesGenerator.NO_STAFF.code)
         referenceDataRepository.save(StaffGenerator.STAFF_GRADE)
         probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
