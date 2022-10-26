@@ -55,7 +55,7 @@ internal class StaffServiceTest {
         assertThat(results.content[0].name.forename, equalTo(staffEntities[0].forename))
         assertThat(results.content[0].name.middleName, equalTo(staffEntities[0].middleName))
         assertThat(results.content[0].name.surname, equalTo(staffEntities[0].surname))
-        assertThat(results.content[0].grade.code, equalTo(staffEntities[0].grade.code))
-        assertThat(results.content[0].grade.description, equalTo(staffEntities[0].grade.description))
+        assertThat(results.content[0].grade!!.code, equalTo(staffEntities[0].grade!!.code))
+        assertThat(results.content[0].grade!!.description, equalTo(staffEntities[0].grade!!.description))
     }
 }
