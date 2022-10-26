@@ -43,7 +43,7 @@ internal class StaffServiceTest {
             StaffGenerator.generate("Staff 2", listOf(TeamGenerator.APPROVED_PREMISES_TEAM_1), listOf(approvedPremises)),
         )
         whenever(approvedPremisesRepository.existsByCodeCode(approvedPremises.code.code)).thenReturn(true)
-        whenever(staffRepository.findAllStaffLinkedToApprovedPremisesLDU(approvedPremises.code.code, Pageable.unpaged()))
+        whenever(staffRepository.findAllStaffLinkedToApprovedPremisesLAU(approvedPremises.code.code, Pageable.unpaged()))
             .thenReturn(PageImpl(staffEntities))
 
         val results = staffService.getStaffInApprovedPremises(approvedPremises.code.code, Pageable.unpaged())

@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.team
 
 import org.hibernate.annotations.Immutable
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.LocalDeliveryUnit
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.LocalAdminUnit
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -20,5 +20,5 @@ class Team(
 
     @ManyToOne
     @JoinColumn(name = "district_id")
-    val localDeliveryUnit: LocalDeliveryUnit,
+    val localAdminUnit: LocalAdminUnit,
 )

@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.LocalDeliveryUnit
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.LocalAdminUnit
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationDeliveryUnit
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
@@ -29,7 +29,7 @@ class DataLoader(
     private val staffRepository: StaffRepository,
     private val probationAreaRepository: ProbationAreaRepository,
     private val probationDeliveryUnitRepository: ProbationDeliveryUnitRepository,
-    private val localDeliveryUnitRepository: LocalDeliveryUnitRepository,
+    private val localAdminUnitRepository: LocalAdminUnitRepository,
     private val teamRepository: TeamRepository,
 ) : CommandLineRunner {
     override fun run(vararg args: String?) {
@@ -42,9 +42,9 @@ class DataLoader(
         probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
         probationAreaRepository.save(ProbationAreaGenerator.WITHOUT_PDU)
         probationDeliveryUnitRepository.save(ProbationAreaGenerator.PDU)
-        localDeliveryUnitRepository.save(ProbationAreaGenerator.APPROVED_PREMISES_LDU_1)
-        localDeliveryUnitRepository.save(ProbationAreaGenerator.APPROVED_PREMISES_LDU_2)
-        localDeliveryUnitRepository.save(ProbationAreaGenerator.NON_APPROVED_PREMISES_LDU)
+        localAdminUnitRepository.save(ProbationAreaGenerator.APPROVED_PREMISES_LAU_1)
+        localAdminUnitRepository.save(ProbationAreaGenerator.APPROVED_PREMISES_LAU_2)
+        localAdminUnitRepository.save(ProbationAreaGenerator.NON_APPROVED_PREMISES_LAU)
         teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM_1)
         teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM_2)
         teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM_3)
@@ -63,5 +63,5 @@ class DataLoader(
 interface ReferenceDataRepository : JpaRepository<ReferenceData, Long>
 interface ProbationAreaRepository : JpaRepository<ProbationArea, Long>
 interface ProbationDeliveryUnitRepository : JpaRepository<ProbationDeliveryUnit, Long>
-interface LocalDeliveryUnitRepository : JpaRepository<LocalDeliveryUnit, Long>
+interface LocalAdminUnitRepository : JpaRepository<LocalAdminUnit, Long>
 interface TeamRepository : JpaRepository<Team, Long>

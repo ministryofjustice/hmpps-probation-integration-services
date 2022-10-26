@@ -11,7 +11,7 @@ import javax.persistence.Table
 @Entity
 @Immutable
 @Table(name = "district")
-class LocalDeliveryUnit(
+class LocalAdminUnit(
     @Id
     @Column(name = "district_id")
     val id: Long = 0,
