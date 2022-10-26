@@ -5,7 +5,6 @@ generic-service:
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/approved-premises-and-oasys
-    tag: 2022-10-21.313.5df3ad4
     port: 8080
 
   ingress:

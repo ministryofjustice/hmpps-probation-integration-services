@@ -43,6 +43,7 @@ runs:
         
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         brew install helm
+        yq '.appVersion = "${{ inputs.version }}"' projects/${{ inputs.project }}/deploy/Chart.yaml
         helm dependency update projects/${{ inputs.project }}/deploy
         helm upgrade ${{ inputs.project }} projects/${{ inputs.project }}/deploy \
           --install \
