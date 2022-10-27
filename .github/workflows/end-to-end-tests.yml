@@ -73,6 +73,7 @@ jobs:
           PLAYWRIGHT_JUNIT_OUTPUT_NAME: junit.xml
       - name: Publish JUnit report
         uses: mikepenz/action-junit-report@v3
+        id: junit
         if: always()
         with:
           check_name: End-to-end test results
@@ -86,3 +87,39 @@ jobs:
       - name: Add HTML report URL to the job summary
         if: always()
         run: echo '[🎭 Playwright HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/playwright-report/test/${{ github.ref_name }}/${{ github.sha }}/${{ github.run_attempt }})' >> $GITHUB_STEP_SUMMARY
+      - name: Send message to Slack
+        uses: slackapi/slack-github-action@v1.23.0
+        if: ${{ failure() && github.event_name == 'schedule' }}
+        with:
+          channel-id: 'probation-integration-notifications'
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "🎭 *hmpps-probation-integration-services* end-to-end test failure"
+                  },
+                  "accessory": {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "View report"
+                    },
+                    "url": "https://ministryofjustice.github.io/hmpps-probation-integration-services/playwright-report/test/${{ github.ref_name }}/${{ github.sha }}/${{ github.run_attempt }}"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": ">${{ steps.junit.outputs.total }} tests run, ${{ steps.junit.outputs.passed }} passed, ${{ steps.junit.outputs.skipped }} skipped, ${{ steps.junit.outputs.failed }} failed."
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
