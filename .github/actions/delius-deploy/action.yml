@@ -30,7 +30,7 @@ runs:
   using: composite
   steps:
     - uses: actions/checkout@v3
-    - uses: aws-actions/configure-aws-credentials@v1
+    - uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         aws-region: eu-west-2
         aws-access-key-id: ${{ inputs.aws-access-key-id }}

@@ -64,9 +64,9 @@ jobs:
         id: values
         shell: bash
         run: |
-          if [ '${{ inputs.environment }}' == 'test' ];    then echo '::set-output name=filename::values-dev.yml'; fi
-          if [ '${{ inputs.environment }}' == 'preprod' ]; then echo '::set-output name=filename::values-preprod.yml'; fi
-          if [ '${{ inputs.environment }}' == 'prod' ];    then echo '::set-output name=filename::values-prod.yml'; fi
+          if [ '${{ inputs.environment }}' == 'test' ];    then echo 'filename=values-dev.yml' >> $GITHUB_OUTPUT; fi
+          if [ '${{ inputs.environment }}' == 'preprod' ]; then echo 'filename=values-preprod.yml' >> $GITHUB_OUTPUT; fi
+          if [ '${{ inputs.environment }}' == 'prod' ];    then echo 'filename=values-prod.yml' >> $GITHUB_OUTPUT; fi
 
       - name: Get enabled flag from values file
         id: enabled

@@ -11,9 +11,9 @@ function topLevelChanges() {
 if [ "$COMMONS_CHANGED" == "true" ]; then
   projects=$(cd projects && echo * | xargs -n1 | toJsonArray)
   echo "Changes detected in common files, rebuild/deploy everything"
-  echo "::set-output name=projects::$projects"
+  echo "projects=$projects" >> $GITHUB_OUTPUT
 elif [ -n "$PROJECT_FILES" ]; then
   projects=$(echo $PROJECT_FILES | xargs -n1 | topLevelChanges | toJsonArray)
   echo "Changes detected in: $projects"
-  echo "::set-output name=projects::$projects"
+  echo "projects=$projects" >> $GITHUB_OUTPUT
 fi

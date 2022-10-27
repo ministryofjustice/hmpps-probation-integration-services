@@ -61,8 +61,8 @@ jobs:
       # convert project name to environment variable (e.g. 'hello-world' -> 'HELLO_WORLD')
       - id: project_name
         run: |
-          echo "::set-output name=with_underscores::$(echo '${{ inputs.project_name }}' | sed 's/-/_/g')"
-          echo "::set-output name=with_underscores_uppercase::$(echo '${{ inputs.project_name }}' | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')"
+          echo "with_underscores=$(echo '${{ inputs.project_name }}' | sed 's/-/_/g')" >> $GITHUB_OUTPUT
+          echo "with_underscores_uppercase=$(echo '${{ inputs.project_name }}' | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')" >> $GITHUB_OUTPUT
 
       - name: Set database username
         run: gh secret set "$NAME" --body "$VALUE" --app actions
@@ -165,7 +165,7 @@ jobs:
     steps:
       # convert project name to environment variable (e.g. 'hello-world' -> 'HELLO_WORLD')
       - id: project_name
-        run: echo "::set-output name=with_underscores::$(echo '${{ inputs.project_name }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')"
+        run: echo "with_underscores=$(echo '${{ inputs.project_name }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')" >> $GITHUB_OUTPUT
 
       - name: Create project
         id: project
@@ -174,7 +174,7 @@ jobs:
             -H 'Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }}' \
             -H 'Content-Type: application/json' \
             -d '{"name":"${{ inputs.project_name }}"}')
-          echo "::set-output name=slug::$(echo $response | jq -r '.slug')"
+          echo "slug=$(echo $response | jq -r '.slug')" >> $GITHUB_OUTPUT
 
       - name: Set platform to Kotlin
         run: |
@@ -191,8 +191,8 @@ jobs:
           id=$(echo $response | jq -r '.[0].id')
           dsn=$(echo $response | jq -r '.[0].dsn.public')
           echo "::add-mask::$dsn"
-          echo "::set-output name=dsn::$dsn"
-          echo "::set-output name=id::$id"
+          echo "dsn=$dsn" >> $GITHUB_OUTPUT
+          echo "id=$id" >> $GITHUB_OUTPUT
 
       - name: Store DSN as GitHub secret
         uses: mmercan/actions-set-secret@da197fb79d8c1ecedcde53fbd32a4b02ece5723a # v/4.0.0

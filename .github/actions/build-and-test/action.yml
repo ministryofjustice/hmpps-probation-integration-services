@@ -28,7 +28,7 @@ runs:
         version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
         echo version=$version
         echo "ORG_GRADLE_PROJECT_version=$version" >> $GITHUB_ENV
-        echo "::set-output name=version::$version"
+        echo "version=$version" >> $GITHUB_OUTPUT
 
     - name: Compile and test
       uses: gradle/gradle-build-action@v2
