@@ -39,6 +39,7 @@ jobs:
         with:
           repository: ministryofjustice/hmpps-probation-integration-e2e-tests
       - name: Check tests are present
+        if: github.event_name != 'schedule'
         run: |
           for project in $(echo '${{ inputs.projects }}' | jq -r '.[]'); do
             if [ ! -d "tests/$project" ]; then echo "No tests found for $project" >&2; exit 1; fi
