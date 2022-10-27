@@ -74,4 +74,37 @@ internal class IntegrationTest {
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.message", equalTo("Approved Premises with code of NOTFOUND not found")))
     }
+
+    @Test
+    fun `approved premises key workers only are returned successfully`() {
+        val approvedPremises = ApprovedPremisesGenerator.DEFAULT
+        mockMvc
+            .perform(get("/approved-premises/${approvedPremises.code.code}/staff?keyWorker=true").withOAuth2Token(wireMockServer))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.numberOfElements", equalTo(3)))
+            .andExpect(
+                jsonPath(
+                    "$.content[*].name.surname",
+                    equalTo(
+                        listOf(
+                            "Key-worker (team 1)",
+                            "Key-worker (team 2)",
+                            "Key-worker (team 3)",
+                        )
+                    )
+                )
+            )
+            .andExpect(
+                jsonPath(
+                    "$.content[*].keyWorker",
+                    equalTo(
+                        listOf(
+                            true,
+                            true,
+                            true,
+                        )
+                    )
+                )
+            )
+    }
 }

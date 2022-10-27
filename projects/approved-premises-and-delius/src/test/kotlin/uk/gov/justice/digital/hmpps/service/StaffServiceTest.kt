@@ -30,7 +30,7 @@ internal class StaffServiceTest {
         whenever(approvedPremisesRepository.existsByCodeCode("TEST")).thenReturn(false)
 
         val exception = assertThrows<NotFoundException> {
-            staffService.getStaffInApprovedPremises("TEST", Pageable.unpaged())
+            staffService.getStaffInApprovedPremises("TEST", false, Pageable.unpaged())
         }
         assertThat(exception.message, equalTo("Approved Premises with code of TEST not found"))
     }
@@ -46,7 +46,7 @@ internal class StaffServiceTest {
         whenever(staffRepository.findAllStaffLinkedToApprovedPremisesLAU(approvedPremises.code.code, Pageable.unpaged()))
             .thenReturn(PageImpl(staffEntities))
 
-        val results = staffService.getStaffInApprovedPremises(approvedPremises.code.code, Pageable.unpaged())
+        val results = staffService.getStaffInApprovedPremises(approvedPremises.code.code, false, Pageable.unpaged())
 
         assertThat(results.content, hasSize(2))
         assertThat(results.content.map { it.name.surname }, equalTo(listOf("Staff 1", "Staff 2")))

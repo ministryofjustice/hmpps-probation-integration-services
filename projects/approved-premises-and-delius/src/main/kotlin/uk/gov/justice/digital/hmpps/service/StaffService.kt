@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.model.PersonName
 import uk.gov.justice.digital.hmpps.model.StaffGrade
@@ -17,17 +18,25 @@ class StaffService(
     private val staffRepository: StaffRepository,
 ) {
     @Transactional
-    fun getStaffInApprovedPremises(approvedPremisesCode: String, pageable: Pageable): Page<StaffResponse> {
+    fun getStaffInApprovedPremises(approvedPremisesCode: String, keyWorkersOnly: Boolean, pageable: Pageable): Page<StaffResponse> {
         if (!approvedPremisesRepository.existsByCodeCode(approvedPremisesCode))
             throw NotFoundException("Approved Premises", "code", approvedPremisesCode)
 
-        return staffRepository.findAllStaffLinkedToApprovedPremisesLAU(approvedPremisesCode, pageable).map {
-            StaffResponse(
-                code = it.code,
-                name = PersonName(it.forename, it.surname, it.middleName),
-                grade = it.grade?.let { grade -> StaffGrade(grade.code, grade.description) },
-                keyWorker = it.approvedPremises.map { ap -> ap.code.code }.contains(approvedPremisesCode)
-            )
+        return if (keyWorkersOnly) {
+            staffRepository.findKeyWorkersLinkedToApprovedPremises(approvedPremisesCode, pageable).map {
+                it.toResponse(approvedPremisesCode)
+            }
+        } else {
+            staffRepository.findAllStaffLinkedToApprovedPremisesLAU(approvedPremisesCode, pageable).map {
+                it.toResponse(approvedPremisesCode)
+            }
         }
     }
+
+    fun Staff.toResponse(approvedPremisesCode: String) = StaffResponse(
+        code = code,
+        name = PersonName(forename, surname, middleName),
+        grade = grade?.let { grade -> StaffGrade(grade.code, grade.description) },
+        keyWorker = approvedPremises.map { ap -> ap.code.code }.contains(approvedPremisesCode)
+    )
 }

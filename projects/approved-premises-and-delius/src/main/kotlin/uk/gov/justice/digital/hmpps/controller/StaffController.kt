@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.service.StaffService
 
@@ -14,7 +15,8 @@ class StaffController(
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_STAFF')")
     @GetMapping(value = ["/approved-premises/{code}/staff"])
     fun getStaff(
-        @PathVariable("code") code: String,
+        @PathVariable code: String,
+        @RequestParam(required = false, defaultValue = "false") keyWorker: Boolean,
         pageable: Pageable = Pageable.unpaged()
-    ) = staffService.getStaffInApprovedPremises(code, pageable)
+    ) = staffService.getStaffInApprovedPremises(code, keyWorker, pageable)
 }

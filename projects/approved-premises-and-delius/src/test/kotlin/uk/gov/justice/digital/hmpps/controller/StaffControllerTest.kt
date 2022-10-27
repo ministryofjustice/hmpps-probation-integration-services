@@ -16,7 +16,7 @@ internal class StaffControllerTest {
 
     @Test
     fun `calls the service`() {
-        staffController.getStaff("TEST")
-        verify(staffService).getStaffInApprovedPremises("TEST", Pageable.unpaged())
+        staffController.getStaff("TEST", false)
+        verify(staffService).getStaffInApprovedPremises("TEST", false, Pageable.unpaged())
     }
 }

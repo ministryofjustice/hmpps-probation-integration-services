@@ -19,4 +19,16 @@ interface StaffRepository : JpaRepository<Staff, Long> {
         approvedPremisesCode: String,
         pageable: Pageable
     ): Page<Staff>
+
+    @Query(
+        """
+        select distinct s from Staff s
+        join s.approvedPremises ap
+        where ap.code.code = :approvedPremisesCode
+        """
+    )
+    fun findKeyWorkersLinkedToApprovedPremises(
+        approvedPremisesCode: String,
+        pageable: Pageable
+    ): Page<Staff>
 }
