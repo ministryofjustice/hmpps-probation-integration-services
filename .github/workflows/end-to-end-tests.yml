@@ -1,0 +1,87 @@
+name: End-to-end tests
+
+on:
+  schedule:
+    - cron: "0 8 * * MON-FRI" # Every weekday at 08:00 UTC
+  workflow_call:
+    inputs:
+      projects:
+        description: A JSON array of projects to deploy
+        type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      projects:
+        description: Project
+        type: choice
+        required: true
+        options:
+          - '["approved-premises-and-oasys"]'
+          - '["approved-premises-with-delius"]'
+          - '["person-search-index-from-delius"]'
+          - '["pre-sentence-reports-to-delius"]'
+          - '["prison-case-notes-to-probation"]'
+          - '["prison-custody-status-to-delius"]'
+          - '["risk-assessment-scores-to-delius"]'
+          - '["tier-to-delius"]'
+          - '["workforce-allocations-to-delius"]'
+          # ^ add new projects here
+          # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
+          # See https://github.com/community/community/discussions/11795
+
+jobs:
+  end-to-end-tests:
+    name: Run end-to-end tests
+    runs-on: moj-cloud-platform
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: ministryofjustice/hmpps-probation-integration-e2e-tests
+      - name: Check tests are present
+        run: |
+          for project in $(echo '${{ inputs.projects }}' | jq -r '.[]'); do
+            if [ ! -d "tests/$project" ]; then echo "No tests found for $project" >&2; exit 1; fi
+          done
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install
+      - name: Run Playwright tests
+        run: npx playwright test --reporter=html,junit,line $(echo '${{ inputs.projects }}' | jq -r 'join(" ")')
+        env:
+          ENV: test
+          DELIUS_URL: https://ndelius.test.probation.service.justice.gov.uk
+          WORKFORCE_URL: https://workforce-management-dev.hmpps.service.justice.gov.uk
+          DPS_URL: https://digital-dev.prison.service.justice.gov.uk
+          AUTH_URL: https://sign-in-dev.hmpps.service.justice.gov.uk
+          PRISON_API: https://api-dev.prison.service.justice.gov.uk/
+          REFERANDMONITOR_URL: https://hmpps-interventions-ui-dev.apps.live-1.cloud-platform.service.justice.gov.uk
+          DELIUS_USERNAME: ${{ secrets.E2E_DELIUS_USERNAME }}
+          DELIUS_PASSWORD: ${{ secrets.E2E_DELIUS_PASSWORD }}
+          DPS_USERNAME: ${{ secrets.E2E_DPS_USERNAME }}
+          DPS_PASSWORD: ${{ secrets.E2E_DPS_PASSWORD }}
+          CRED_USERNAME: ${{ secrets.E2E_CLIENT_ID }}
+          CRED_PASSWORD: ${{ secrets.E2E_CLIENT_SECRET }}
+          REFERANDMONITOR_SUPPLIER_USERNAME: ${{ secrets.E2E_REFERANDMONITOR_SUPPLIER_USERNAME }}
+          REFERANDMONITOR_SUPPLIER_PASSWORD: ${{ secrets.E2E_REFERANDMONITOR_SUPPLIER_PASSWORD }}
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME: junit.xml
+      - name: Publish JUnit report
+        uses: mikepenz/action-junit-report@v3
+        if: always()
+        with:
+          check_name: End-to-end test results
+          report_paths: junit.xml
+      - name: Publish HTML report
+        uses: JamesIves/github-pages-deploy-action@v4
+        if: always()
+        with:
+          folder: playwright-report
+          target-folder: playwright-report/test/${{ github.ref_name }}/${{ github.sha }}/${{ github.run_attempt }}
+      - name: Add HTML report URL to the job summary
+        if: always()
+        run: echo '[🎭 Playwright HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/playwright-report/test/${{ github.ref_name }}/${{ github.sha }}/${{ github.run_attempt }})' >> $GITHUB_STEP_SUMMARY
