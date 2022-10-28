@@ -18,3 +18,7 @@ CVE-2022-39224
 # Reason: jackson-databind:2.13.3 - The UNWRAP_SINGLE_VALUE_ARRAYS feature is not enabled
 CVE-2022-42003
 CVE-2022-42004
+
+# Suppression for Xstream to serialise XML data was vulnerable to Denial of Service attacks
+# can be suppressed as  it’s not receiving data from untrusted source
+CVE-2022-40153 exp:2022-12-01
