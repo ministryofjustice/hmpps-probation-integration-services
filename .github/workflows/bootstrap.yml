@@ -111,6 +111,7 @@ jobs:
             settings.gradle.kts
             .idea/runConfigurations/*
             .github/workflows/deploy.yml
+            .github/workflows/end-to-end-tests.yml
             projects/${{ inputs.project_name }}/*
           commit-message: Create initial project for ${{ inputs.project_name }}
           title: Create initial project for ${{ inputs.project_name }}
