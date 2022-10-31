@@ -23,13 +23,13 @@ jobs:
           USERNAME: ${{ secrets.SCHEMA_SPY_USERNAME }}
           PASSWORD: ${{ secrets.SCHEMA_SPY_PASSWORD }}
         run: run.sh
-        working-directory: schema-spy
+        working-directory: tools/schema-spy
 
       - name: Publish HTML report
         uses: JamesIves/github-pages-deploy-action@v4
         if: always()
         with:
-          folder: schema-spy/DeliusSchema
+          folder: tools/schema-spy/DeliusSchema
           target-folder: schema-spy/${{ github.ref_name }}/${{ github.sha }}
 
       - name: Add HTML report URL to the job summary
