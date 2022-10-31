@@ -14,6 +14,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: run schema spy
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 8
         shell: bash
         env:
           DB: ${{ secrets.SCHEMA_SPY_DB }}
@@ -22,9 +26,7 @@ jobs:
           SCHEMA: ${{ secrets.SCHEMA_SPY_SCHEMA }}
           USERNAME: ${{ secrets.SCHEMA_SPY_USERNAME }}
           PASSWORD: ${{ secrets.SCHEMA_SPY_PASSWORD }}
-        run: |
-          chmod +x run.sh
-          ./run.sh
+        run: ./run.sh
         working-directory: schema-spy
 
       - name: Publish HTML report
