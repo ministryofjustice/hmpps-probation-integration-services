@@ -1,6 +1,6 @@
 #!/bin/bash
 
-java -Xmx2G -Xms2G -jar ./artifacts/schemaspy-6.1.0.jar -debug -t orathin-service \
+java -Xss4096k -Xmx2G -Xms2G -jar ./artifacts/schemaspy-6.1.0.jar -debug -t orathin-service \
           -dp ./artifacts/ojdbc8.jar \
           -db "${DB}" \
           -host "${HOST}" \
