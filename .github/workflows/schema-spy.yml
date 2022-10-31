@@ -22,7 +22,7 @@ jobs:
           SCHEMA: ${{ secrets.SCHEMA_SPY_SCHEMA }}
           USERNAME: ${{ secrets.SCHEMA_SPY_USERNAME }}
           PASSWORD: ${{ secrets.SCHEMA_SPY_PASSWORD }}
-        run: run.sh
+        run: ./run.sh
         working-directory: schema-spy
 
       - name: Publish HTML report
