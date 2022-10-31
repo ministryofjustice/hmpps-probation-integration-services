@@ -17,7 +17,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 8
-        shell: bash
+      - name: run schema spy
         env:
           DB: ${{ secrets.SCHEMA_SPY_DB }}
           HOST: ${{ secrets.SCHEMA_SPY_HOST }}
@@ -25,7 +25,7 @@ jobs:
           SCHEMA: ${{ secrets.SCHEMA_SPY_SCHEMA }}
           USERNAME: ${{ secrets.SCHEMA_SPY_USERNAME }}
           PASSWORD: ${{ secrets.SCHEMA_SPY_PASSWORD }}
-      - run: ./run.sh
+        run: ./run.sh
         working-directory: schema-spy
 
       - name: Publish HTML report
