@@ -36,5 +36,5 @@ class ControllerAdviceTest {
         assertThat(response.body?.fields, equalTo(listOf(FieldError(null, "message", "field"))))
     }
 
-    private fun testMethod(parameter: String) {}
+    private fun testMethod(parameter: String) = parameter
 }

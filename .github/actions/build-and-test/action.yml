@@ -30,6 +30,10 @@ runs:
         echo "ORG_GRADLE_PROJECT_version=$version" >> $GITHUB_ENV
         echo "version=$version" >> $GITHUB_OUTPUT
 
+    - name: Set Gradle properties
+      shell: bash
+      run: echo -e "\norg.gradle.jvmargs=-Xmx1g -XX:MaxMetaspaceSize=512m" >> gradle.properties
+
     - name: Compile and test
       uses: gradle/gradle-build-action@v2
       with:
