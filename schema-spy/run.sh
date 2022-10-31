@@ -10,7 +10,6 @@ java -jar ./artifacts/schemaspy-6.1.0.jar -t orathin-service \
           -u "${USERNAME}" \
           -p "${PASSWORD}" \
           -cat "${SCHEMA}" \
-#          -I "^(^Z.*$|^.*[0-9]$|^SPG.*$|^PRF_.*$|^MIS_.*$|^.*\\$.*$)$" \
           -i "CONTACT|OFFENDER" \
           -vizjs \
           -o ./DeliusSchema
