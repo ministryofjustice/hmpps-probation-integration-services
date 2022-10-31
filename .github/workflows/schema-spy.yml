@@ -1,0 +1,36 @@
+name: Schema Spy report generation
+
+on:
+  schedule:
+    - cron: "0 7 * * WED" # Every Wednesday at 07:00 UTC
+
+  workflow_dispatch:
+
+jobs:
+  schema-spy:
+    name: Schema Spy report generation
+    runs-on: moj-cloud-platform
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v3
+      - name: run schema spy
+        shell: bash
+        env:
+          DB: ${{ secrets.SCHEMA_SPY_DB }}
+          HOST: ${{ secrets.SCHEMA_SPY_HOST }}
+          PORT: ${{ secrets.SCHEMA_SPY_PORT }}
+          SCHEMA: ${{ secrets.SCHEMA_SPY_SCHEMA }}
+          USERNAME: ${{ secrets.SCHEMA_SPY_USERNAME }}
+          PASSWORD: ${{ secrets.SCHEMA_SPY_PASSWORD }}
+        run: run.sh
+        working-directory: schema-spy
+
+      - name: Publish HTML report
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: schema-spy/DeliusSchema
+          target-folder: schema-spy/${{ github.ref_name }}/${{ github.sha }}
+
+      - name: Add HTML report URL to the job summary
+        run: echo '[Schema Spy HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/schema-spy/${{ github.ref_name }}/${{ github.sha }})' >> $GITHUB_STEP_SUMMARY
+
