@@ -23,16 +23,14 @@ jobs:
           USERNAME: ${{ secrets.SCHEMA_SPY_USERNAME }}
           PASSWORD: ${{ secrets.SCHEMA_SPY_PASSWORD }}
         run: run.sh
-        working-directory: tools/schema-spy
+        working-directory: schema-spy
 
       - name: Publish HTML report
         uses: JamesIves/github-pages-deploy-action@v4
-        if: always()
         with:
-          folder: tools/schema-spy/DeliusSchema
+          folder: schema-spy/DeliusSchema
           target-folder: schema-spy/${{ github.ref_name }}/${{ github.sha }}
 
       - name: Add HTML report URL to the job summary
-        if: always()
         run: echo '[Schema Spy HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/schema-spy/${{ github.ref_name }}/${{ github.sha }})' >> $GITHUB_STEP_SUMMARY
 
