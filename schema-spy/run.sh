@@ -1,6 +1,6 @@
 #!/bin/bash
 
-java -Xmx768m -jar ./artifacts/schemaspy-6.1.0.jar -t orathin-service \
+java -Xmx768m -XX:OnOutOfMemoryError="echo 'Ran out of memory'" -jar ./artifacts/schemaspy-6.1.0.jar -t orathin-service \
           -dp ./artifacts/ojdbc8.jar \
           -db "${DB}" \
           -host "${HOST}" \
