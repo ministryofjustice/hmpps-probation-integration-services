@@ -9,7 +9,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.named
 import org.gradle.testing.jacoco.tasks.JacocoReport
-import org.sonarqube.gradle.SonarQubeExtension
+import org.sonarqube.gradle.SonarExtension
 import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
 
 class ClassPathPlugin : Plugin<Project> {
@@ -64,7 +64,7 @@ class ClassPathPlugin : Plugin<Project> {
                 dependsOn("ktlintCheck", "test", "integrationTest")
             }
 
-            project.configure<SonarQubeExtension> {
+            project.configure<SonarExtension> {
                 properties {
                     property("sonar.coverage.exclusions", extension.jacocoExclusions)
                 }
