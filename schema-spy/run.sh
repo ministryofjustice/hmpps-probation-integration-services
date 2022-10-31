@@ -1,7 +1,6 @@
 #!/bin/bash
 
-java -version
-java -jar ./artifacts/schemaspy-6.1.0.jar -t orathin-service \
+java -Xmx768m -jar ./artifacts/schemaspy-6.1.0.jar -t orathin-service \
           -dp ./artifacts/ojdbc8.jar \
           -db "${DB}" \
           -host "${HOST}" \
@@ -10,6 +9,6 @@ java -jar ./artifacts/schemaspy-6.1.0.jar -t orathin-service \
           -u "${USERNAME}" \
           -p "${PASSWORD}" \
           -cat "${SCHEMA}" \
-          -i "CONTACT|OFFENDER" \
+          -I "^(^Z.*$|^.*[0-9]$|^SPG.*$|^PRF_.*$|^MIS_.*$|^.*\\$.*$)$" \
           -vizjs \
           -o ./DeliusSchema
