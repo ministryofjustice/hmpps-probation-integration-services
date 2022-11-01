@@ -9,6 +9,6 @@ java -Xss2048k -Xmx2G -Xms2G -jar ./artifacts/schemaspy-6.1.0.jar -t orathin-ser
           -u "${USERNAME}" \
           -p "${PASSWORD}" \
           -cat "${SCHEMA}" \
-          -I "^(^Z.*$|^.*[0-9]$|^SPG.*$|^R_SPG.*$|^PRF_.*$|^PERF_.*$|^MIS_.*$|^.*\\$.*$|^.*TRAINING.*$|^PDT_THREAD$|^CHANGE_CAPTURE$)$" \
+          -I "^(^Z.*$|^.*[0-9]$|^SPG.*$|^R_SPG.*$|^PRF_.*$|^PERF_.*$|^MIS_.*$|^.*_MV$|^.*\\$.*$|^.*TRAINING.*$|^PDT_THREAD$|^CHANGE_CAPTURE$)$" \
           -vizjs \
           -o ./DeliusSchema
