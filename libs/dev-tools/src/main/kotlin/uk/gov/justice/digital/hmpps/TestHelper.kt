@@ -4,14 +4,14 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
+import java.security.SecureRandom
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
-import java.util.Random
 
 fun prepMessage(fileName: String, port: Int): Notification<HmppsDomainEvent> =
     prepMessage(ResourceLoader.message<HmppsDomainEvent>(fileName), port)
 
-fun prepMessage(message: HmppsDomainEvent, port: Int = Random().nextInt(9999)): Notification<HmppsDomainEvent> =
+fun prepMessage(message: HmppsDomainEvent, port: Int = SecureRandom().nextInt(9999)): Notification<HmppsDomainEvent> =
     Notification(message = message.copy(detailUrl = message.detailUrl?.replace("{wiremock.port}", port.toString())))
 
 fun ZonedDateTime.closeTo(dateTime: ZonedDateTime?, unit: ChronoUnit = ChronoUnit.SECONDS, number: Int = 1): Boolean {
