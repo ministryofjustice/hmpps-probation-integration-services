@@ -37,13 +37,6 @@ data class CaseNoteAmendment(
     val additionalNoteText: String
 )
 
-data class PrisonOffenderEvent(
-    @JsonAlias("offenderIdDisplay")
-    val offenderId: String,
-    val caseNoteId: String?,
-    val eventId: Long,
-)
-
 fun PrisonCaseNote.toDeliusCaseNote(): DeliusCaseNote {
 
     fun amendments(): (CaseNoteAmendment) -> String = { a ->

@@ -6,15 +6,13 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
+import java.util.Random
 
-fun prepMessage(fileName: String, port: Int): Notification<HmppsDomainEvent> {
-    val hmppsEvent = ResourceLoader.message<HmppsDomainEvent>(fileName)
-    return Notification(
-        message = hmppsEvent.copy(
-            detailUrl = hmppsEvent.detailUrl?.replace("{wiremock.port}", port.toString())
-        )
-    )
-}
+fun prepMessage(fileName: String, port: Int): Notification<HmppsDomainEvent> =
+    prepMessage(ResourceLoader.message<HmppsDomainEvent>(fileName), port)
+
+fun prepMessage(message: HmppsDomainEvent, port: Int = Random().nextInt(9999)): Notification<HmppsDomainEvent> =
+    Notification(message = message.copy(detailUrl = message.detailUrl?.replace("{wiremock.port}", port.toString())))
 
 fun ZonedDateTime.closeTo(dateTime: ZonedDateTime?, unit: ChronoUnit = ChronoUnit.SECONDS, number: Int = 1): Boolean {
     return dateTime != null && unit.between(
