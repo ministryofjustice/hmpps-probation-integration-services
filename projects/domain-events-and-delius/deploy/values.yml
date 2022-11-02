@@ -1,0 +1,10 @@
+# Common values
+image:
+  name: domain-events-and-delius
+
+secrets:
+  APPLICATIONINSIGHTS_CONNECTION_STRING:   /application-insights/connection-string
+  SPRING_DATASOURCE_URL:                   /delius-database/jdbc-url
+  SPRING_DATASOURCE_USERNAME:              /domain-events-and-delius/db-username
+  SPRING_DATASOURCE_PASSWORD:              /domain-events-and-delius/db-password
+  SENTRY_DSN:                              /domain-events-and-delius/sentry-dsn
