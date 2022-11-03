@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps
 
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -36,6 +38,7 @@ internal class IntegrationTest {
     @MockBean
     lateinit var telemetryService: TelemetryService
 
+    @Execution(ExecutionMode.SAME_THREAD)
     @ParameterizedTest
     @MethodSource("deltas")
     fun `offender delta test`(delta: OffenderDelta, notifications: List<Notification<OffenderEvent>>) {
