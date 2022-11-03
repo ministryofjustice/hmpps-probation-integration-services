@@ -16,7 +16,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaRe
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.asNotifications
 import uk.gov.justice.digital.hmpps.message.Notification
-import uk.gov.justice.digital.hmpps.retry.retry
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @SpringBootTest
@@ -42,8 +41,7 @@ internal class IntegrationTest {
             val notification = jmsTemplate.receiveAndConvert(topicName)
             assertEquals(it, notification)
         }
-        retry(3) { offenderDeltaRepository.findById(delta.id).isEmpty }
-        assertEquals(0, offenderDeltaRepository.count())
+        waitUntil { offenderDeltaRepository.findById(delta.id).isEmpty }
     }
 
     companion object {
