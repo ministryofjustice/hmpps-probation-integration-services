@@ -16,9 +16,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaRe
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.asNotifications
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.retry.retry
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 
 @SpringBootTest
 @ActiveProfiles("integration-test")
@@ -37,25 +36,14 @@ internal class IntegrationTest {
 
     @ParameterizedTest
     @MethodSource("deltas")
-    @SuppressWarnings("unchecked")
     fun `offender delta test`(delta: OffenderDelta, notifications: List<Notification<OffenderEvent>>) {
         offenderDeltaRepository.save(delta)
         notifications.forEach {
             val notification = jmsTemplate.receiveAndConvert(topicName)
             assertEquals(it, notification)
         }
-        waitUntil(2000) { offenderDeltaRepository.findById(delta.id).isEmpty }
+        retry(3) { offenderDeltaRepository.findById(delta.id).isEmpty }
         assertEquals(0, offenderDeltaRepository.count())
-    }
-
-    fun waitUntil(timeout: Long = 1000, block: () -> Boolean) {
-        val start = System.currentTimeMillis()
-        while (!block() && (System.currentTimeMillis() - start) <= timeout) {
-            TimeUnit.MILLISECONDS.sleep(300)
-        }
-        if ((System.currentTimeMillis() - start) >= timeout) {
-            throw TimeoutException("timeout reached")
-        }
     }
 
     companion object {

@@ -12,14 +12,14 @@ object OffenderDeltaGenerator {
         sourceId: Long = offender.id,
         action: String = "UPSERT"
     ) = OffenderDelta(
-            IdGenerator.getAndIncrement(),
-            offender,
-            ZonedDateTime.now(),
-            action,
-            sourceTable,
-            sourceId,
-            "CREATED",
-            ZonedDateTime.now(),
-            ZonedDateTime.now()
-        )
+        IdGenerator.getAndIncrement(),
+        offender,
+        ZonedDateTime.now(),
+        action,
+        sourceTable,
+        sourceId,
+        "CREATED",
+        ZonedDateTime.now(),
+        ZonedDateTime.now()
+    )
 }
