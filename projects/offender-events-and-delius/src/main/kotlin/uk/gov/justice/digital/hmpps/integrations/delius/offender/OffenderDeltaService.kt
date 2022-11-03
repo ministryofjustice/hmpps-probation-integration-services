@@ -23,7 +23,7 @@ class OffenderDeltaService(
         deltas.asSequence()
             .flatMap { it.asNotifications() }
             .forEach { jmsTemplate.convertAndSend(topicName, it) }
-        repository.deleteAll(deltas)
+        repository.deleteAllByIdInBatch(deltas.map { it.id })
         return deltas.size
     }
 
