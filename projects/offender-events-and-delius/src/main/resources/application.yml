@@ -3,12 +3,9 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
+    show-sql: true
   jms:
-    template.default-destination: message-queue
-    listener:
-      concurrency: 1
-      max-concurrency: 10
-      acknowledge-mode: client
+    template.default-destination: offender-events
 
 delius.db.username: OffenderEventsAndDelius # Should match value in [deploy/database/access.yml].
 
@@ -30,6 +27,9 @@ management.endpoints.web:
   base-path: /
   exposure.include: [ "hawtio", "health", "jolokia" ]
 hawtio.authenticationEnabled: false
+
+offender-events:
+  fixed-delay: 2000
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
