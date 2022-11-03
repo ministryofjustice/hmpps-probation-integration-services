@@ -26,8 +26,11 @@ class OffenderDeltaService(
         repository.deleteAllByIdInBatch(deltas.map { it.id })
         return deltas.size
     }
+}
 
-    private fun sourceToEventType(sourceTable: String, action: String): String = when (sourceTable) {
+fun OffenderDelta.asNotifications(): List<Notification<OffenderEvent>> {
+
+    fun sourceToEventType(sourceTable: String, action: String): String = when (sourceTable) {
         "ALIAS" -> "OFFENDER_ALIAS_CHANGED"
         "DEREGISTRATION" -> "OFFENDER_REGISTRATION_DEREGISTERED"
         "DISPOSAL" -> "SENTENCE_CHANGED"
@@ -42,13 +45,11 @@ class OffenderDeltaService(
         else -> "${sourceTable}_CHANGED"
     }
 
-    fun OffenderDelta.asNotifications(): List<Notification<OffenderEvent>> {
-        val oe = OffenderEvent(offender.id, offender.crn, offender.nomsNumber, sourceRecordId, dateChanged)
-        val list: MutableList<Notification<OffenderEvent>> = mutableListOf()
-        if (sourceTable in listOf("ALIAS", "OFFENDER", "OFFENDER_MANAGER", "OFFENDER_ADDRESS", "OFFICER")) {
-            list += Notification(oe, MessageAttributes("OFFENDER_CHANGED"))
-        }
-        list += Notification(oe, MessageAttributes(sourceToEventType(sourceTable, action)))
-        return list
+    val oe = OffenderEvent(offender.id, offender.crn, offender.nomsNumber, sourceRecordId, dateChanged)
+    val list: MutableList<Notification<OffenderEvent>> = mutableListOf()
+    if (sourceTable in listOf("ALIAS", "OFFENDER", "OFFENDER_MANAGER", "OFFENDER_ADDRESS", "OFFICER")) {
+        list += Notification(oe, MessageAttributes("OFFENDER_CHANGED"))
     }
+    list += Notification(oe, MessageAttributes(sourceToEventType(sourceTable, action)))
+    return list
 }
