@@ -1,0 +1,16 @@
+{
+  "role": {
+    "name": "offender-events-and-delius"
+  },
+  "customDimensions": {
+    "service.version": "${VERSION}"
+  },
+  "instrumentation": {
+    "logging": {
+      "level": "DEBUG"
+    }
+  },
+  "selfDiagnostics": {
+    "destination": "console"
+  }
+}
