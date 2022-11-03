@@ -1,9 +1,12 @@
 package uk.gov.justice.digital.hmpps
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import org.mockito.kotlin.any
+import org.mockito.kotlin.timeout
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -37,11 +40,12 @@ internal class IntegrationTest {
     @MethodSource("deltas")
     fun `offender delta test`(delta: OffenderDelta, notifications: List<Notification<OffenderEvent>>) {
         offenderDeltaRepository.save(delta)
-        notifications.forEach {
-            val notification = jmsTemplate.receiveAndConvert(topicName)
-            assertEquals(it, notification)
+        val messages = (1..notifications.size).map {
+            jmsTemplate.receiveAndConvert(topicName)
         }
-        waitUntil { offenderDeltaRepository.findById(delta.id).isEmpty }
+        assertTrue(messages.containsAll(notifications))
+        verify(telemetryService, timeout(5000)).trackEvent(any(), any(), any())
+        assertTrue(offenderDeltaRepository.findById(delta.id).isEmpty)
     }
 
     companion object {

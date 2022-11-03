@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.data
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.OffenderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderRepository
@@ -17,7 +16,6 @@ class PoeDataLoader(
     private val userRepository: UserRepository,
     private val offenderRepository: OffenderRepository,
 ) : CommandLineRunner {
-    @Transactional
     override fun run(vararg args: String?) {
         userRepository.save(UserGenerator.APPLICATION_USER)
         serviceContext.setUp()
