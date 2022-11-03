@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.DisposalType
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Event
 
 object EventGenerator {
+    const val EXISTING_EVENT_ID = 11111L
     val CUSTODIAL_EVENT = custodialEvent(OffenderGenerator.DEFAULT.id)
 
     fun custodialEvent(offenderId: Long): Event {
