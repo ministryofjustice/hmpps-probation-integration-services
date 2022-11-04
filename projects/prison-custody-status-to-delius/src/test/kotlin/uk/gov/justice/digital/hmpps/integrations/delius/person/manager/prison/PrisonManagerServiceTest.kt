@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.junit.jupiter.MockitoSettings
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.check
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.times
@@ -113,31 +114,69 @@ internal class PrisonManagerServiceTest {
 
     @Test
     fun oldPrisonManagerIsEndDated() {
+        val allocationDate = ZonedDateTime.now()
         val event = EventGenerator.custodialEvent(PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT)
         whenever(teamRepository.findByCodeAndProbationAreaId("N02ALL", ProbationAreaGenerator.DEFAULT.id)).thenReturn(TeamGenerator.DEFAULT)
         whenever(staffRepository.findByCodeAndTeamsId("N02UATU", TeamGenerator.DEFAULT.id)).thenReturn(StaffGenerator.UNALLOCATED)
         whenever(referenceDataRepository.findByCodeAndSetName("AUT", "POM ALLOCATION REASON")).thenReturn(ReferenceDataGenerator.generate("TEST", ReferenceDataSetGenerator.generate("POM ALLOCATION REASON")))
         doAnswer<PrisonManager> { it.getArgument(0) }.whenever(prisonManagerRepository).save(any())
         whenever(contactTypeRepository.findByCode(ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER])
-        whenever(prisonManagerRepository.findFirstByPersonIdAndActiveTrueAndSoftDeletedFalseOrderByDateDesc(PersonGenerator.RECALLABLE.id))
+        whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.RECALLABLE.id, allocationDate))
             .thenReturn(PrisonManagerGenerator.generate(PersonGenerator.RECALLABLE))
 
-        prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, ZonedDateTime.now())
+        prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
 
-        val prisonManager = argumentCaptor<PrisonManager>()
-        verify(prisonManagerRepository, times(2)).save(prisonManager.capture())
-        assertNotNull(prisonManager.firstValue.endDate)
-        assertFalse(prisonManager.firstValue.active)
-        assertNull(prisonManager.secondValue.endDate)
-        assertTrue(prisonManager.secondValue.active)
+        verify(prisonManagerRepository).saveAndFlush(
+            check { oldPrisonManager ->
+                assertNotNull(oldPrisonManager.endDate)
+                assertFalse(oldPrisonManager.active)
+            }
+        )
+        verify(prisonManagerRepository).save(
+            check { newPrisonManager ->
+                assertNull(newPrisonManager.endDate)
+                assertTrue(newPrisonManager.active)
+            }
+        )
 
-        val contact = argumentCaptor<Contact>()
-        verify(contactRepository).save(contact.capture())
-        assertEquals("EPOMAT", contact.firstValue.type.code)
+        verify(contactRepository).save(check { assertEquals("EPOMAT", it.type.code) })
+    }
+
+    @Test
+    fun historicalPrisonManagerIsInsertedWithEndDate() {
+        val allocationDate = ZonedDateTime.now().minusDays(1)
+        val event = EventGenerator.custodialEvent(PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT)
+        whenever(teamRepository.findByCodeAndProbationAreaId("N02ALL", ProbationAreaGenerator.DEFAULT.id)).thenReturn(TeamGenerator.DEFAULT)
+        whenever(staffRepository.findByCodeAndTeamsId("N02UATU", TeamGenerator.DEFAULT.id)).thenReturn(StaffGenerator.UNALLOCATED)
+        whenever(referenceDataRepository.findByCodeAndSetName("AUT", "POM ALLOCATION REASON")).thenReturn(ReferenceDataGenerator.generate("TEST", ReferenceDataSetGenerator.generate("POM ALLOCATION REASON")))
+        doAnswer<PrisonManager> { it.getArgument(0) }.whenever(prisonManagerRepository).save(any())
+        whenever(contactTypeRepository.findByCode(ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER])
+        whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.RECALLABLE.id, allocationDate)).thenReturn(
+            PrisonManagerGenerator.generate(
+                PersonGenerator.RECALLABLE,
+                startDate = ZonedDateTime.now().minusDays(2),
+                endDate = ZonedDateTime.now()
+            )
+        )
+
+        prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
+
+        val oldPrisonManager = argumentCaptor<PrisonManager>()
+        val newPrisonManager = argumentCaptor<PrisonManager>()
+        verify(prisonManagerRepository).saveAndFlush(oldPrisonManager.capture())
+        assertNotNull(oldPrisonManager.firstValue.endDate)
+        assertThat(oldPrisonManager.firstValue.endDate!!, equalTo(allocationDate))
+        assertFalse(oldPrisonManager.firstValue.active)
+        verify(prisonManagerRepository).save(newPrisonManager.capture())
+        assertNotNull(newPrisonManager.firstValue.endDate)
+        assertThat(newPrisonManager.firstValue.date, equalTo(allocationDate))
+        assertThat(newPrisonManager.firstValue.endDate!!, isCloseTo(ZonedDateTime.now()))
+        assertFalse(oldPrisonManager.firstValue.active)
     }
 
     @Test
     fun newResponsibleOfficerIsCreatedForDisposalsLongerThan20Months() {
+        val allocationDate = ZonedDateTime.now()
         val event = EventGenerator.custodialEvent(
             PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT,
             lengthInDays = 1000
@@ -148,14 +187,14 @@ internal class PrisonManagerServiceTest {
         whenever(referenceDataRepository.findByCodeAndSetName("AUT", "POM ALLOCATION REASON")).thenReturn(ReferenceDataGenerator.generate("TEST", ReferenceDataSetGenerator.generate("POM ALLOCATION REASON")))
         whenever(contactTypeRepository.findByCode(ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER])
         whenever(contactTypeRepository.findByCode(ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE])
-        whenever(prisonManagerRepository.findFirstByPersonIdAndActiveTrueAndSoftDeletedFalseOrderByDateDesc(PersonGenerator.RECALLABLE.id)).thenReturn(prisonManager)
+        whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.RECALLABLE.id, allocationDate)).thenReturn(prisonManager)
 
-        prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, ZonedDateTime.now())
+        prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
 
         val newResponsibleOfficer = argumentCaptor<ResponsibleOfficer>()
         verify(responsibleOfficerRepository).save(newResponsibleOfficer.capture())
         assertThat(newResponsibleOfficer.firstValue.personId, equalTo(event.person.id))
-        assertThat(newResponsibleOfficer.firstValue.startDate, isCloseTo(ZonedDateTime.now()))
+        assertThat(newResponsibleOfficer.firstValue.startDate, equalTo(allocationDate))
         assertNull(newResponsibleOfficer.firstValue.endDate)
         assertNull(newResponsibleOfficer.firstValue.communityManager)
         assertNotNull(newResponsibleOfficer.firstValue.prisonManager)
@@ -179,6 +218,7 @@ internal class PrisonManagerServiceTest {
 
     @Test
     fun existingResponsibleOfficerIsUpdatedForDisposalsLongerThan20Months() {
+        val allocationDate = ZonedDateTime.now()
         val event = EventGenerator.custodialEvent(
             PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT,
             lengthInDays = 1000
@@ -191,15 +231,15 @@ internal class PrisonManagerServiceTest {
         doAnswer<PrisonManager> { it.getArgument(0) }.whenever(prisonManagerRepository).save(any())
         whenever(contactTypeRepository.findByCode(ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER])
         whenever(contactTypeRepository.findByCode(ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE])
-        whenever(prisonManagerRepository.findFirstByPersonIdAndActiveTrueAndSoftDeletedFalseOrderByDateDesc(PersonGenerator.RECALLABLE.id)).thenReturn(prisonManager)
+        whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.RECALLABLE.id, allocationDate)).thenReturn(prisonManager)
         whenever(responsibleOfficerRepository.findActiveManagerAtDate(eq(event.person.id), any())).thenReturn(ResponsibleOfficer(personId = event.person.id, startDate = ZonedDateTime.now(), communityManager = personManager))
 
-        prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, ZonedDateTime.now())
+        prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
 
         val oldResponsibleOfficer = argumentCaptor<ResponsibleOfficer>()
         verify(responsibleOfficerRepository).saveAndFlush(oldResponsibleOfficer.capture())
         assertThat(oldResponsibleOfficer.firstValue.personId, equalTo(event.person.id))
-        assertThat(oldResponsibleOfficer.firstValue.endDate!!, isCloseTo(ZonedDateTime.now()))
+        assertThat(oldResponsibleOfficer.firstValue.endDate!!, equalTo(allocationDate))
 
         val contact = argumentCaptor<Contact>()
         verify(contactRepository, times(2)).save(contact.capture())
@@ -221,6 +261,46 @@ internal class PrisonManagerServiceTest {
             Allocation Reason: description of TEST
                 """.trimIndent()
             )
+        )
+    }
+
+    @Test
+    fun historicalResponsibleOfficerIsInsertedWithEndDate() {
+        val allocationDate = ZonedDateTime.now().minusDays(1)
+        val event = EventGenerator.custodialEvent(
+            PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT,
+            lengthInDays = 1000
+        )
+        val personManager = PersonManagerGenerator.generate(PersonGenerator.RECALLABLE, staff = StaffGenerator.DEFAULT)
+        val prisonManager = PrisonManagerGenerator.generate(PersonGenerator.RECALLABLE)
+        whenever(teamRepository.findByCodeAndProbationAreaId("N02ALL", ProbationAreaGenerator.DEFAULT.id)).thenReturn(TeamGenerator.DEFAULT)
+        whenever(staffRepository.findByCodeAndTeamsId("N02UATU", TeamGenerator.DEFAULT.id)).thenReturn(StaffGenerator.UNALLOCATED)
+        whenever(referenceDataRepository.findByCodeAndSetName("AUT", "POM ALLOCATION REASON")).thenReturn(ReferenceDataGenerator.generate("TEST", ReferenceDataSetGenerator.generate("POM ALLOCATION REASON")))
+        doAnswer<PrisonManager> { it.getArgument(0) }.whenever(prisonManagerRepository).save(any())
+        whenever(contactTypeRepository.findByCode(ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER])
+        whenever(contactTypeRepository.findByCode(ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE])
+        whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.RECALLABLE.id, allocationDate)).thenReturn(prisonManager)
+        whenever(responsibleOfficerRepository.findActiveManagerAtDate(eq(event.person.id), any())).thenReturn(
+            ResponsibleOfficer(
+                personId = event.person.id, communityManager = personManager,
+                startDate = ZonedDateTime.now().minusDays(2),
+                endDate = ZonedDateTime.now()
+            )
+        )
+
+        prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
+
+        verify(responsibleOfficerRepository).saveAndFlush(
+            check { oldResponsibleOfficer ->
+                assertThat(oldResponsibleOfficer.personId, equalTo(event.person.id))
+                assertThat(oldResponsibleOfficer.endDate!!, equalTo(allocationDate))
+            }
+        )
+        verify(responsibleOfficerRepository).save(
+            check { newResponsibleOfficer ->
+                assertThat(newResponsibleOfficer.startDate, equalTo(allocationDate))
+                assertThat(newResponsibleOfficer.endDate!!, isCloseTo(ZonedDateTime.now()))
+            }
         )
     }
 }
