@@ -37,7 +37,6 @@ internal class IntegrationTest {
     @ParameterizedTest
     @MethodSource("deltas")
     fun `offender delta test`(delta: OffenderDelta, eventTypes: List<String>) {
-        // offenderDeltaRepository.saveAll(deltas().map { it.get()[0] as OffenderDelta } )
         offenderDeltaRepository.save(delta)
 
         val messages = (1..eventTypes.size).mapNotNull {
