@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionReposito
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
+import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
@@ -107,7 +108,12 @@ class DataLoader(
 
         val recallablePerson = PersonGenerator.RECALLABLE
         personRepository.save(recallablePerson)
-        val recallableEvent = EventGenerator.previouslyReleasedEvent(recallablePerson, InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]!!, lengthInDays = 999)
+        val recallableEvent = EventGenerator.previouslyReleasedEvent(
+            person = recallablePerson,
+            institution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]!!,
+            releaseDate = MessageGenerator.PRISONER_RECEIVED.occurredAt.minusMonths(6),
+            lengthInDays = 999,
+        )
         eventRepository.save(recallableEvent)
         disposalTypeRepository.save(recallableEvent.disposal!!.type)
         disposalRepository.save(recallableEvent.disposal!!)
