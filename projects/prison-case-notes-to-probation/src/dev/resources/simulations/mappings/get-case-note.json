@@ -3,7 +3,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/case-notes/GA52214/1111"
+        "url": "/case-notes/AA0001A/1111"
       },
       "response": {
         "headers": {
@@ -16,7 +16,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/case-notes/GA52214/2222"
+        "url": "/case-notes/AA0001A/2222"
       },
       "response": {
         "headers": {
@@ -30,7 +30,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/case-notes/GA52214/4444"
+        "url": "/case-notes/AA0001A/4444"
       },
       "response": {
         "status": 404,
@@ -39,8 +39,8 @@
         },
         "jsonBody": {
           "status": 404,
-          "userMessage": "Resource with id [GA52214] not found.",
-          "developerMessage": "Resource with id [GA52214] not found."
+          "userMessage": "Resource with id [AA0001A] not found.",
+          "developerMessage": "Resource with id [AA0001A] not found."
         }
       }
     }

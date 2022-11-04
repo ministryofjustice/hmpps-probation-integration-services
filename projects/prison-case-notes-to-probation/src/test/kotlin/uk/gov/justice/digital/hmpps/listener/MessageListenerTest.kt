@@ -16,9 +16,11 @@ import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
-import uk.gov.justice.digital.hmpps.integrations.prison.PrisonOffenderEvent
+import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.prepMessage
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.net.URI
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -38,14 +40,11 @@ internal class MessageListenerTest {
 
     @Test
     fun `when case note not found - noop`() {
-        whenever(
-            prisonCaseNotesClient.getCaseNote(
-                CaseNoteMessageGenerator.NOT_FOUND.offenderId,
-                CaseNoteMessageGenerator.NOT_FOUND.caseNoteId!!
-            )
-        ).thenReturn(null)
+        val message = prepMessage(CaseNoteMessageGenerator.NOT_FOUND).message
+        whenever(prisonCaseNotesClient.getCaseNote(URI.create(message.detailUrl!!)))
+            .thenReturn(null)
 
-        assertDoesNotThrow { messageListener.receive(Notification(message = CaseNoteMessageGenerator.NOT_FOUND)) }
+        assertDoesNotThrow { messageListener.receive(Notification(message = message)) }
         verify(telemetryService, never()).trackEvent(eq("CaseNoteMerge"), any(), any())
         verify(deliusService, never()).mergeCaseNote(any())
     }
@@ -64,13 +63,9 @@ internal class MessageListenerTest {
             text = "",
             amendments = listOf()
         )
-        whenever(
-            prisonCaseNotesClient.getCaseNote(
-                CaseNoteMessageGenerator.EXISTS_IN_DELIUS.offenderId,
-                CaseNoteMessageGenerator.EXISTS_IN_DELIUS.caseNoteId!!
-            )
-        ).thenReturn(prisonCaseNote)
-        messageListener.receive(Notification(message = CaseNoteMessageGenerator.EXISTS_IN_DELIUS))
+        val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
+        whenever(prisonCaseNotesClient.getCaseNote(URI.create(message.detailUrl!!))).thenReturn(prisonCaseNote)
+        messageListener.receive(Notification(message = message))
         verify(deliusService, times(0)).mergeCaseNote(any())
     }
 
@@ -89,23 +84,20 @@ internal class MessageListenerTest {
             text = "Prisoner being transferred",
             amendments = listOf()
         )
-        whenever(
-            prisonCaseNotesClient.getCaseNote(
-                CaseNoteMessageGenerator.EXISTS_IN_DELIUS.offenderId,
-                CaseNoteMessageGenerator.EXISTS_IN_DELIUS.caseNoteId!!
-            )
-        ).thenReturn(prisonCaseNote)
+        val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
+        whenever(prisonCaseNotesClient.getCaseNote(URI.create(message.detailUrl!!))).thenReturn(prisonCaseNote)
 
-        messageListener.receive(Notification(message = CaseNoteMessageGenerator.EXISTS_IN_DELIUS))
+        messageListener.receive(Notification(message = message))
         verify(deliusService, never()).mergeCaseNote(any())
         verify(telemetryService).trackEvent(eq("CaseNoteIgnored"), any(), any())
     }
 
     @Test
     fun `get case note from NOMIS has null caseNoteId`() {
-        val prisonOffenderEvent = Notification(message = PrisonOffenderEvent("1", null, 0))
+        val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
+        val prisonOffenderEvent = Notification(message = message.copy(additionalInformation = AdditionalInformation()))
         messageListener.receive(prisonOffenderEvent)
         verify(deliusService, times(0)).mergeCaseNote(any())
-        verify(prisonCaseNotesClient, times(0)).getCaseNote(any(), any())
+        verify(prisonCaseNotesClient, times(0)).getCaseNote(any())
     }
 }

@@ -57,7 +57,6 @@ wiremock:
 
 integrations:
   prison-case-notes:
-    url: http://localhost:${wiremock.port}
     client-id: prison-case-notes-to-probation
     client-secret: prison-case-notes-to-probation
 

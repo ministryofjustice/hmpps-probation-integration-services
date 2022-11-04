@@ -11,11 +11,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNoteFilters
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
-import uk.gov.justice.digital.hmpps.integrations.prison.PrisonOffenderEvent
 import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
+import java.net.URI
 
 @Component
 @EnableJms
@@ -30,18 +31,27 @@ class MessageListener(
     }
 
     @JmsListener(destination = "\${spring.jms.template.default-destination}")
-    fun receive(notification: Notification<PrisonOffenderEvent>) {
+    fun receive(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
-        val prisonOffenderEvent = notification.message
-        if (prisonOffenderEvent.caseNoteId == null) {
-            log.info("Received ${notification.eventType} for ${prisonOffenderEvent.offenderId} without a case note id")
+        val event = notification.message
+        val caseNoteId = event.additionalInformation["caseNoteId"]
+        if (caseNoteId == null) {
+            log.info("Received ${notification.eventType} for ${event.personReference.findNomsNumber()} without a case note id")
+            telemetryService.trackEvent(
+                "MissingCaseNoteId",
+                mapOf(
+                    "eventType" to event.eventType,
+                    "nomsNumber" to event.personReference.findNomsNumber()!!,
+                )
+            )
             return
         }
 
         val prisonCaseNote = try {
-            prisonCaseNotesClient.getCaseNote(prisonOffenderEvent.offenderId, prisonOffenderEvent.caseNoteId)
+            prisonCaseNotesClient.getCaseNote(URI.create(event.detailUrl!!))
         } catch (notFound: FeignException.NotFound) {
-            null
+            telemetryService.trackEvent("CaseNoteNotFound", mapOf("detailUrl" to event.detailUrl!!))
+            return
         }
 
         val reasonToIgnore: Lazy<String?> = lazy {
@@ -50,32 +60,22 @@ class MessageListener(
 
         if (prisonCaseNote == null || reasonToIgnore.value != null) {
             val reason = if (prisonCaseNote == null) "case note was not found" else {
-                telemetryService.trackEvent(
-                    "CaseNoteIgnored",
-                    prisonCaseNote.properties()
-                )
+                telemetryService.trackEvent("CaseNoteIgnored", prisonCaseNote.properties())
                 reasonToIgnore.value
             }
-            log.warn(
-                "Ignoring case note id {} and type {} because $reason",
-                prisonOffenderEvent.caseNoteId,
-                notification.eventType
-            )
+            log.warn("Ignoring case note id {} and type {} because $reason", caseNoteId, notification.eventType)
             return
         }
 
         log.debug(
             "Found case note {} of type {} {} in case notes service, now pushing to delius with event id {}",
-            prisonOffenderEvent.caseNoteId,
+            caseNoteId,
             prisonCaseNote.type,
             prisonCaseNote.subType,
             prisonCaseNote.eventId
         )
 
-        telemetryService.trackEvent(
-            "CaseNoteMerge",
-            prisonCaseNote.properties()
-        )
+        telemetryService.trackEvent("CaseNoteMerge", prisonCaseNote.properties())
 
         deliusService.mergeCaseNote(prisonCaseNote.toDeliusCaseNote())
     }

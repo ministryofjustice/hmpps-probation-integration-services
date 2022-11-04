@@ -2,10 +2,10 @@ package uk.gov.justice.digital.hmpps.integrations.prison
 
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
+import java.net.URI
 
-@FeignClient(name = "prison-case-notes", url = "\${integrations.prison-case-notes.url}")
+@FeignClient(name = "prison-case-notes", url = "https://dummy-url/to/be/overridden")
 interface PrisonCaseNotesClient {
-    @GetMapping(value = ["/case-notes/{offenderId}/{caseNoteId}"])
-    fun getCaseNote(@PathVariable offenderId: String, @PathVariable caseNoteId: String): PrisonCaseNote?
+    @GetMapping
+    fun getCaseNote(baseUrl: URI): PrisonCaseNote?
 }
