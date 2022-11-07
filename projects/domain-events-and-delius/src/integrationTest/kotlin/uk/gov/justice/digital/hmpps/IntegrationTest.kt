@@ -35,7 +35,6 @@ internal class IntegrationTest {
             .andReturn()
 
         val breachDetails = objectMapper.readValue(result.response.contentAsString, BreachDetails::class.java)
-        assertThat(breachDetails.referralDate).isEqualTo(NsiGenerator.DEFAULT_NSI.referralDate)
         assertThat(breachDetails.crn).isEqualTo(NsiGenerator.DEFAULT_NSI.offender.crn)
         assertThat(breachDetails.eventNumber).isEqualTo(NsiGenerator.DEFAULT_NSI.event!!.number)
     }

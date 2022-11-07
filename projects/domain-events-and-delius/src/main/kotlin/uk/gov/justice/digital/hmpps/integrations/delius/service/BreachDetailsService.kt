@@ -15,7 +15,6 @@ class BreachDetailsService(
         }
 
         return BreachDetails(
-            nsi.referralDate,
             nsi.offender.crn,
             nsi.event?.number
         )

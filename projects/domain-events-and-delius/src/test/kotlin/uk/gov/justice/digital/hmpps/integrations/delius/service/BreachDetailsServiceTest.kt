@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.model.BreachDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.NsiRepository
-import java.time.ZonedDateTime
 import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
@@ -31,11 +30,7 @@ class BreachDetailsServiceTest {
 
         val breachDetails = breachDetailsService.getBreachDetails(nsiId)
 
-        val expectedBreachDetails = BreachDetails(
-            ZonedDateTime.parse("2022-01-31T00:00:00+00:00"),
-            "D006926",
-            "1",
-        )
+        val expectedBreachDetails = BreachDetails("D006926", "1")
         assertThat(breachDetails).isEqualTo(expectedBreachDetails)
     }
 

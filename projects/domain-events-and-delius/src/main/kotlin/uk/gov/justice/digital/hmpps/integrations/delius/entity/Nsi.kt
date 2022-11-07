@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import org.hibernate.annotations.Immutable
-import java.time.ZonedDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -14,8 +13,6 @@ class Nsi(
     @Id
     @Column(name = "nsi_id")
     var id: Long,
-
-    val referralDate: ZonedDateTime,
 
     @ManyToOne
     @JoinColumn(name = "offender_id", updatable = false)
