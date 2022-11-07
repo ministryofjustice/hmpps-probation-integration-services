@@ -1,8 +1,5 @@
 package uk.gov.justice.digital.hmpps.config.aws
 
-import com.amazonaws.auth.AWSCredentials
-import com.amazonaws.auth.AWSStaticCredentialsProvider
-import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.sns.AmazonSNS
 import com.amazonaws.services.sns.AmazonSNSClientBuilder
@@ -16,18 +13,12 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.converter.MappingJackson2MessageConverter
 
 @Configuration
-@ConditionalOnProperty(prefix = "aws", name = ["access-key", "secret-key"])
+@ConditionalOnProperty(prefix = "aws", name = ["region", "accessKeyId", "secretAccessKey"])
 class AwsConfig(val awsConfigProperties: AwsConfigProperties) {
 
     @Bean
-    fun credentials(): AWSCredentials {
-        return BasicAWSCredentials(awsConfigProperties.accessKey, awsConfigProperties.secretKey)
-    }
-
-    @Bean
-    fun amazonSns(awsCredentials: AWSCredentials): AmazonSNS {
+    fun amazonSns(): AmazonSNS {
         val builder = AmazonSNSClientBuilder.standard()
-            .withCredentials(AWSStaticCredentialsProvider(awsCredentials))
         if (awsConfigProperties.endpoint != null) {
             builder.withEndpointConfiguration(
                 AwsClientBuilder.EndpointConfiguration(awsConfigProperties.endpoint, awsConfigProperties.region)
@@ -52,8 +43,6 @@ class AwsConfig(val awsConfigProperties: AwsConfigProperties) {
 @ConstructorBinding
 @ConfigurationProperties(prefix = "aws")
 data class AwsConfigProperties(
-    val accessKey: String?,
-    val secretKey: String?,
     val endpoint: String?,
     val region: String?,
     val topicName: String?,

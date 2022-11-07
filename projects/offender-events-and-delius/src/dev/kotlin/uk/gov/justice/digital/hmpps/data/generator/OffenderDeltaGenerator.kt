@@ -18,8 +18,5 @@ object OffenderDeltaGenerator {
         action,
         sourceTable,
         sourceId,
-        "CREATED",
-        ZonedDateTime.now(),
-        ZonedDateTime.now()
     )
 }

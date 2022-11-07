@@ -26,9 +26,4 @@ class OffenderDelta(
     val action: String,
     val sourceTable: String,
     val sourceRecordId: Long,
-    val status: String,
-    @Column(name = "created_datetime")
-    val createdDateTime: ZonedDateTime,
-    @Column(name = "last_updated_datetime")
-    val lastUpdatedDateTime: ZonedDateTime,
 )

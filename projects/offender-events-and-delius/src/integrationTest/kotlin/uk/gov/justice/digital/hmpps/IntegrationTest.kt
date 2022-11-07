@@ -39,7 +39,6 @@ internal class IntegrationTest {
     fun `offender delta test`(delta: OffenderDelta, eventTypes: List<String>) {
         offenderDeltaRepository.save(delta)
 
-
         val messages = (1..eventTypes.size).mapNotNull {
             (jmsTemplate.receiveAndConvert(topicName) as Notification<*>).eventType
         }

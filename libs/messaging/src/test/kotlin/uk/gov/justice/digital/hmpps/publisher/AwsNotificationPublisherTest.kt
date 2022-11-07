@@ -59,6 +59,5 @@ class AwsNotificationPublisherTest {
             message.headers["anotherValue"],
             equalTo("Test")
         )
-
     }
 }
