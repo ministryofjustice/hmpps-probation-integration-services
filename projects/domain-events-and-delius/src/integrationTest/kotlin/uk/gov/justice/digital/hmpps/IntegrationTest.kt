@@ -30,17 +30,14 @@ internal class IntegrationTest {
     @Test
     fun `get breach details returns ok`() {
         val result = mockMvc
-            .perform(get("/details/enforcement.breach.raised/${NsiGenerator.NSI_ID}").withOAuth2Token(wireMockServer))
+            .perform(get("/details/enforcement.breach.raised/${NsiGenerator.DEFAULT_NSI.id}").withOAuth2Token(wireMockServer))
             .andExpect(status().isOk)
             .andReturn()
 
         val breachDetails = objectMapper.readValue(result.response.contentAsString, BreachDetails::class.java)
-        assertThat(breachDetails.referralDate).isEqualTo(NsiGenerator.BREACH_DETAILS_NSI.referralDate)
-        assertThat(breachDetails.outcome!!.code).isEqualTo(NsiGenerator.BREACH_DETAILS_NSI.outcome!!.code)
-        assertThat(breachDetails.outcome!!.description).isEqualTo(NsiGenerator.BREACH_DETAILS_NSI.outcome!!.description)
-        assertThat(breachDetails.status.code).isEqualTo(NsiGenerator.BREACH_DETAILS_NSI.status.code)
-        assertThat(breachDetails.status.description).isEqualTo(NsiGenerator.BREACH_DETAILS_NSI.status.description)
-        assertThat(breachDetails.eventNumber).isEqualTo(NsiGenerator.BREACH_DETAILS_NSI.event!!.number)
+        assertThat(breachDetails.referralDate).isEqualTo(NsiGenerator.DEFAULT_NSI.referralDate)
+        assertThat(breachDetails.crn).isEqualTo(NsiGenerator.DEFAULT_NSI.offender.crn)
+        assertThat(breachDetails.eventNumber).isEqualTo(NsiGenerator.DEFAULT_NSI.event!!.number)
     }
 
     @Test

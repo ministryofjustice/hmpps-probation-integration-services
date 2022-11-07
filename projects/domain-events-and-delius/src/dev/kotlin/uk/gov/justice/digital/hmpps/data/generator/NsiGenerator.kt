@@ -1,23 +1,19 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Nsi
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.StandardReferenceList
-import java.time.LocalDate
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Offender
+import java.time.ZonedDateTime
 
 object NsiGenerator {
 
-    const val NSI_ID = 2500000986
-    val EVENT = Event(IdGenerator.getAndIncrement(), "1")
-    val OUTCOME = StandardReferenceList(IdGenerator.getAndIncrement(), "BRE01", "Revoked & Re- Sentenced")
-    val NSI_STATUS = StandardReferenceList(IdGenerator.getAndIncrement(), "208", "DTTO - Low Intensity")
-    val REFERRAL_DATE: LocalDate = LocalDate.of(2022, 1, 31)
+    val DEFAULT_EVENT = Event(IdGenerator.getAndIncrement(), "1")
 
-    val BREACH_DETAILS_NSI = Nsi(
-        NSI_ID,
-        REFERRAL_DATE,
-        OUTCOME,
-        NSI_STATUS,
-        EVENT,
+    val DEFAULT_NSI = Nsi(
+        2500000986,
+        ZonedDateTime.parse("2022-01-31T00:00:00+00:00"),
+        Offender(IdGenerator.getAndIncrement(), "D006926"),
+        DEFAULT_EVENT,
     )
 }
