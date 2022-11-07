@@ -1,6 +1,6 @@
 environment_name: delius-test
 
-enabled: false # TODO set this to true when you're ready to deploy your service
+enabled: true
 
 env:
   SENTRY_ENVIRONMENT: dev
