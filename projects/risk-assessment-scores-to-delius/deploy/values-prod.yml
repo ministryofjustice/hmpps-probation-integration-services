@@ -2,3 +2,4 @@ environment_name: delius-prod
 
 env:
   SENTRY_ENVIRONMENT: prod
+  SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: hmpps-probation-integration-prod-risk-assessment-scores-to-delius-queue
