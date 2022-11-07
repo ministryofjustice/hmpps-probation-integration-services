@@ -39,7 +39,6 @@ internal class IntegrationTest {
     fun `offender delta test`(delta: OffenderDelta, eventTypes: List<String>) {
         offenderDeltaRepository.save(delta)
 
-        verify(telemetryService, timeout(5000)).trackEvent(any(), any(), any())
 
         val messages = (1..eventTypes.size).mapNotNull {
             (jmsTemplate.receiveAndConvert(topicName) as Notification<*>).eventType
@@ -47,6 +46,7 @@ internal class IntegrationTest {
 
         assertEquals(eventTypes.size, messages.size)
         assertEquals(eventTypes.sorted(), messages.sorted())
+        verify(telemetryService, timeout(5000)).trackEvent(any(), any(), any())
         assertEquals(0, offenderDeltaRepository.count())
     }
 
