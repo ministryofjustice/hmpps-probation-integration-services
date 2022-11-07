@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.converter.MappingJackson2MessageConverter
 
 @Configuration
-@ConditionalOnProperty(prefix = "aws", name = ["topicName"])
+@ConditionalOnProperty(prefix = "aws", name = ["topic-name"])
 class AwsConfig(val awsConfigProperties: AwsConfigProperties) {
 
     @Bean
