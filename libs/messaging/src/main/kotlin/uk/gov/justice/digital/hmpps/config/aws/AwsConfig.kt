@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.config
+package uk.gov.justice.digital.hmpps.config.aws
 
 import com.amazonaws.auth.AWSCredentials
 import com.amazonaws.auth.AWSStaticCredentialsProvider

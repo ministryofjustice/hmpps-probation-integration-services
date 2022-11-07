@@ -1,13 +1,13 @@
-package uk.gov.justice.digital.hmpps.publisher.jms
+package uk.gov.justice.digital.hmpps.jms
 
 import org.apache.activemq.ActiveMQConnectionFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.config.AwsConfig
-import uk.gov.justice.digital.hmpps.integrations.delius.NotificationPublisher
+import uk.gov.justice.digital.hmpps.config.aws.AwsConfig
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
 
 @Component
 @ConditionalOnClass(ActiveMQConnectionFactory::class)
