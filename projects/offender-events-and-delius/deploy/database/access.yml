@@ -2,6 +2,8 @@ database:
   access:
     username_key: /offender-events-and-delius/db-username
     password_key: /offender-events-and-delius/db-password
+    tables:
+      - offender_delta
 
   audit:
     username: OffenderEventsAndDelius

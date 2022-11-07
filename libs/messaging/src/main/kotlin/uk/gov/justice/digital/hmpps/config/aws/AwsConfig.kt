@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.converter.MappingJackson2MessageConverter
 
 @Configuration
-@ConditionalOnProperty(prefix = "aws", name = ["topic-name"])
+@ConditionalOnProperty(prefix = "aws", name = ["topic-arn"])
 class AwsConfig(val awsConfigProperties: AwsConfigProperties) {
 
     @Bean
@@ -35,7 +35,7 @@ class AwsConfig(val awsConfigProperties: AwsConfigProperties) {
         mappingJackson2MessageConverter.serializedPayloadClass = String::class.java
         mappingJackson2MessageConverter.objectMapper = objectMapper
         notificationMessagingTemplate.messageConverter = mappingJackson2MessageConverter
-        notificationMessagingTemplate.setDefaultDestinationName(awsConfigProperties.topicName)
+        notificationMessagingTemplate.setDefaultDestinationName(awsConfigProperties.topicArn)
         return notificationMessagingTemplate
     }
 }
@@ -45,5 +45,5 @@ class AwsConfig(val awsConfigProperties: AwsConfigProperties) {
 data class AwsConfigProperties(
     val endpoint: String?,
     val region: String?,
-    val topicName: String?,
+    val topicArn: String?,
 )
