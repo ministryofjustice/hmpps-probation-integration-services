@@ -2,6 +2,7 @@ environment_name: delius-test
 
 env:
   SENTRY_ENVIRONMENT: dev
+  SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: hmpps-probation-integration-dev-tier-to-delius-queue
   SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/oauth/token
   INTEGRATIONS_TIER_URL: https://hmpps-tier-dev.hmpps.service.justice.gov.uk
 

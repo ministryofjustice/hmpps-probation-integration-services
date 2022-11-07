@@ -3,10 +3,11 @@ image:
   name: offender-events-and-delius
 
 secrets:
-  APPLICATIONINSIGHTS_CONNECTION_STRING:   /application-insights/connection-string
-  AWS_SQS_ACCOUNT-ID:                      /moj-cloud-platform/aws-account-id
-  SPRING_DATASOURCE_URL:                   /delius-database/jdbc-url
-  SPRING_DATASOURCE_USERNAME:              /offender-events-and-delius/db-username
-  SPRING_DATASOURCE_PASSWORD:              /offender-events-and-delius/db-password
-  SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: /offender-events-and-delius/sqs-queue-name
-  SENTRY_DSN:                              /offender-events-and-delius/sentry-dsn
+  APPLICATIONINSIGHTS_CONNECTION_STRING: /application-insights/connection-string
+  SPRING_DATASOURCE_URL: /delius-database/jdbc-url
+  SPRING_DATASOURCE_USERNAME: /offender-events-and-delius/db-username
+  SPRING_DATASOURCE_PASSWORD: /offender-events-and-delius/db-password
+  AWS_ACCESS_KEY_ID: /offender-events-and-delius/aws-access-key-id
+  AWS_SECRET_ACCESS_KEY: /offender-events-and-delius/aws-secret-access-key
+  AWS_TOPIC-NAME: /offender-events-and-delius/aws-topic-name
+  SENTRY_DSN: /offender-events-and-delius/sentry-dsn

@@ -18,6 +18,7 @@ jobs:
       matrix:
         project_template:
           - api-client-and-server
+          - api-server
           - message-listener
           - message-listener-with-api-client
           - message-listener-with-api-client-and-server

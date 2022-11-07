@@ -2,4 +2,5 @@ environment_name: delius-test
 
 env:
   SENTRY_ENVIRONMENT: dev
+  SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: hmpps-probation-integration-dev-risk-assessment-scores-to-delius-queue
   LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG

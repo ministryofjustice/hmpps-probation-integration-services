@@ -61,10 +61,12 @@ class PrisonManagerService(
         val person = disposal.event.person
 
         // end-date the previous prison manager
-        prisonManagerRepository.findFirstByPersonIdAndActiveTrueAndSoftDeletedFalseOrderByDateDesc(person.id)?.let { oldPrisonManager ->
-            oldPrisonManager.active = false
-            oldPrisonManager.endDate = allocationDate
-            prisonManagerRepository.save(oldPrisonManager)
+        val activePrisonManager = prisonManagerRepository.findActiveManagerAtDate(person.id, allocationDate)
+        val activePrisonManagerEndDate = activePrisonManager?.endDate
+        if (activePrisonManager != null) {
+            activePrisonManager.active = false
+            activePrisonManager.endDate = allocationDate
+            prisonManagerRepository.saveAndFlush(activePrisonManager)
             contactRepository.save(
                 Contact(
                     type = contactTypeRepository.getByCode(ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER.code),
@@ -74,10 +76,10 @@ class PrisonManagerService(
                     staffId = staff.id,
                     notes = """
                     Transfer Reason: ${allocationReason.description}
-                    Transfer Date: ${oldPrisonManager.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}
-                    From Establishment: ${oldPrisonManager.probationArea.description}
-                    From Team: ${oldPrisonManager.team.description}
-                    From Officer: ${oldPrisonManager.staff.displayName()}
+                    Transfer Date: ${activePrisonManager.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}
+                    From Establishment: ${activePrisonManager.probationArea.description}
+                    From Team: ${activePrisonManager.team.description}
+                    From Officer: ${activePrisonManager.staff.displayName()}
                     """.trimIndent(),
                 )
             )
@@ -87,6 +89,8 @@ class PrisonManagerService(
         val newPrisonManager = prisonManagerRepository.save(
             PrisonManager(
                 date = allocationDate,
+                endDate = activePrisonManagerEndDate,
+                active = activePrisonManagerEndDate == null,
                 allocationReason = allocationReason,
                 personId = person.id,
                 staff = staff,
@@ -103,6 +107,7 @@ class PrisonManagerService(
 
     private fun updateResponsibleOfficer(person: Person, prisonManager: PrisonManager, allocationDate: ZonedDateTime) {
         val activeResponsibleOfficer = responsibleOfficerRepository.findActiveManagerAtDate(person.id, allocationDate)
+        val activeResponsibleOfficerEndDate = activeResponsibleOfficer?.endDate
 
         // end-date previous responsible officer
         if (activeResponsibleOfficer != null) {
@@ -116,7 +121,8 @@ class PrisonManagerService(
             ResponsibleOfficer(
                 personId = person.id,
                 prisonManager = prisonManager,
-                startDate = allocationDate
+                startDate = allocationDate,
+                endDate = activeResponsibleOfficerEndDate,
             )
         )
 
