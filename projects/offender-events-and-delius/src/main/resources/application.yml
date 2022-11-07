@@ -4,11 +4,7 @@ spring:
     database-platform: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
   jms:
-    template.default-destination: message-queue
-    listener:
-      concurrency: 1
-      max-concurrency: 10
-      acknowledge-mode: client
+    template.default-destination: offender-events
 
 delius.db.username: OffenderEventsAndDelius # Should match value in [deploy/database/access.yml].
 
@@ -31,6 +27,9 @@ management.endpoints.web:
   exposure.include: [ "hawtio", "health", "jolokia" ]
 hawtio.authenticationEnabled: false
 
+offender-events:
+  fixed-delay: 2000
+
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
   org.hibernate.tool.schema: ERROR
@@ -38,6 +37,9 @@ logging.level:
 ---
 spring.config.activate.on-profile: integration-test
 spring.datasource.url: jdbc:h2:file:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH
+offender-events:
+  fixed-delay: 200
+  batch-size: 5
 
 ---
 spring.config.activate.on-profile: oracle
