@@ -20,7 +20,7 @@ class OffenderDelta(
 
     @OneToOne
     @JoinColumn(name = "offender_id")
-    val offender: Offender,
+    val offender: Offender?,
 
     val dateChanged: ZonedDateTime,
     val action: String,

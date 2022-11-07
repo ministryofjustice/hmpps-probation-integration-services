@@ -42,12 +42,14 @@ class OffenderDeltaService(
             else -> "${sourceTable}_CHANGED"
         }
 
-        val oe = OffenderEvent(offender.id, offender.crn, offender.nomsNumber, sourceRecordId, dateChanged)
-        val list: MutableList<Notification<OffenderEvent>> = mutableListOf()
-        if (sourceTable in listOf("ALIAS", "OFFENDER", "OFFENDER_MANAGER", "OFFENDER_ADDRESS", "OFFICER")) {
-            list += Notification(oe, MessageAttributes("OFFENDER_CHANGED"))
-        }
-        list += Notification(oe, MessageAttributes(sourceToEventType(sourceTable, action)))
-        return list
+        return if (offender != null) {
+            val oe = OffenderEvent(offender.id, offender.crn, offender.nomsNumber, sourceRecordId, dateChanged)
+            val list: MutableList<Notification<OffenderEvent>> = mutableListOf()
+            if (sourceTable in listOf("ALIAS", "OFFENDER", "OFFENDER_MANAGER", "OFFENDER_ADDRESS", "OFFICER")) {
+                list += Notification(oe, MessageAttributes("OFFENDER_CHANGED"))
+            }
+            list += Notification(oe, MessageAttributes(sourceToEventType(sourceTable, action)))
+            list
+        } else listOf()
     }
 }
