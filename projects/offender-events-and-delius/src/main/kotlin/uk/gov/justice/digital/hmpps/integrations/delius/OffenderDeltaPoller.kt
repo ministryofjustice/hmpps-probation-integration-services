@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius
 
+import io.sentry.Sentry
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaService
@@ -20,6 +21,7 @@ class OffenderDeltaPoller(private val service: OffenderDeltaService, private val
                 "OffenderEventsProcessingFailed",
                 mapOf("Exception" to (e.message ?: "Unknown Exception"))
             )
+            Sentry.captureException(e)
         }
     }
 }
