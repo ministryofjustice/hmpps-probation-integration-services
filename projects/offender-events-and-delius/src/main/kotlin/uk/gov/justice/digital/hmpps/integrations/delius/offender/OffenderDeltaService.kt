@@ -2,9 +2,9 @@ package uk.gov.justice.digital.hmpps.integrations.delius.offender
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
-import org.springframework.jms.core.JmsTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.integrations.delius.NotificationPublisher
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 
@@ -12,17 +12,15 @@ import uk.gov.justice.digital.hmpps.message.Notification
 class OffenderDeltaService(
     @Value("\${offender-events.batch-size:50}")
     private val batchSize: Int,
-    @Value("\${spring.jms.template.default-destination}")
-    private val topicName: String,
     private val repository: OffenderDeltaRepository,
-    private val jmsTemplate: JmsTemplate
+    private val notificationPublisher: NotificationPublisher
 ) {
     @Transactional
     fun checkAndSendEvents(): Int {
         val deltas = repository.findAll(Pageable.ofSize(batchSize)).content
         deltas.asSequence()
             .flatMap { it.asNotifications() }
-            .forEach { jmsTemplate.convertAndSend(topicName, it) }
+            .forEach { notificationPublisher.publish(it) }
         repository.deleteAllByIdInBatch(deltas.map { it.id })
         return deltas.size
     }

@@ -15,7 +15,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
     implementation(libs.amazon.sqs)
+    implementation(libs.aws.messaging)
     implementation(libs.sentry)
 
     dev(project(":libs:dev-tools"))
