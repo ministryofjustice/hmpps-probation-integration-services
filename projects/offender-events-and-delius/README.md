@@ -49,11 +49,20 @@ aws --endpoint-url=http://localhost:4566 sns subscribe \
 --notification-endpoint http://localhost:4566/000000000000/offender-events
 ```
 
+#### Check for messages
+
+```shell
+aws --endpoint-url=http://localhost:4566 sqs receive-message \
+--queue-url http://localhost:4566/000000000000/offender-events \
+--max-number-of-messages 10
+```
+
 Add the following environment variables before running the application:
 
 ```shell
 AWS_REGION=eu-west-2
 AWS_TOPIC-NAME=offender-events
+AWS_ENDPOINT=http://localhost:4566 # for localstack only - not required in AWS
 AWS_ACCESS_KEY_ID=<access-key-id>
 AWS_SECRET_ACCESS_KEY=<secret-access-key>
 ```
