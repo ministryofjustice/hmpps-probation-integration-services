@@ -40,7 +40,7 @@
         },
         {
             "script": {
-                "inline": "ctx.contactNumbers=ctx.contactDetails.phoneNumbers.stream().map(p -> ((String)p.number).replace(\" \",\"\")).collect(Collectors.toList())",
+                "inline": "ctx.contactNumbers=Stream.concat(ctx.contactDetails.phoneNumbers.stream().map(p -> ((String)p.number).replace(\" \",\"\")), ctx.contactDetails.addresses.stream().filter(a -> a.telephoneNumber != null).map(a -> ((String)a.telephoneNumber).replace(\" \",\"\"))).collect(Collectors.toSet())",
                 "ignore_failure": true
             }
         }
