@@ -7,9 +7,9 @@ import java.time.ZonedDateTime
 
 object OffenderDeltaGenerator {
     fun generate(
-        offender: Offender = OffenderGenerator.DEFAULT,
+        offender: Offender? = OffenderGenerator.DEFAULT,
         sourceTable: String = "OFFENDER",
-        sourceId: Long = offender.id,
+        sourceId: Long = offender?.id ?: 0,
         action: String = "UPSERT"
     ) = OffenderDelta(
         IdGenerator.getAndIncrement(),
