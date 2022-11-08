@@ -62,6 +62,8 @@ integrations:
     url: http://localhost:${wiremock.port}
     client-id: workforce-allocations-to-delius
     client-secret: workforce-allocations-to-delius
+  alfresco:
+    url: http://localhost:${wiremock.port}
 
 management.endpoints.web:
   base-path: /

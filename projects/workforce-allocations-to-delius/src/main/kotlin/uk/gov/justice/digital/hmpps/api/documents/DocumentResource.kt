@@ -1,0 +1,21 @@
+package uk.gov.justice.digital.hmpps.api.documents
+
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentService
+import uk.gov.justice.digital.hmpps.integrations.delius.document.PersonDocument
+
+@Validated
+@RestController
+@RequestMapping("/offenders/{crn}/documents")
+class DocumentResource(private val service: DocumentService) {
+
+    @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
+    @GetMapping
+    fun findDocuments(@PathVariable crn: String): List<PersonDocument> =
+        service.getDocumentsByCrn(crn)
+}
