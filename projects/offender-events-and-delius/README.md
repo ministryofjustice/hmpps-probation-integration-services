@@ -61,7 +61,7 @@ Add the following environment variables before running the application:
 
 ```shell
 AWS_REGION=eu-west-2
-AWS_TOPIC-NAME=offender-events
+AWS_TOPIC-ARN=arn:aws:sns:eu-west-2:000000000000:offender-events
 AWS_ENDPOINT=http://localhost:4566 # for localstack only - not required in AWS
 AWS_ACCESS_KEY_ID=<access-key-id>
 AWS_SECRET_ACCESS_KEY=<secret-access-key>
