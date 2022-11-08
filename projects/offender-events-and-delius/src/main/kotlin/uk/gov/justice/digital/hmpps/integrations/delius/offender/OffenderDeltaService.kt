@@ -16,13 +16,12 @@ class OffenderDeltaService(
     private val notificationPublisher: NotificationPublisher
 ) {
     @Transactional
-    fun checkAndSendEvents(): Int {
+    fun checkAndSendEvents(): Pair<Int, Int> {
         val deltas = repository.findAll(Pageable.ofSize(batchSize)).content
-        deltas.asSequence()
-            .flatMap { it.asNotifications() }
-            .forEach { notificationPublisher.publish(it) }
+        val events = deltas.flatMap { it.asNotifications() }
+        events.forEach { notificationPublisher.publish(it) }
         repository.deleteAllByIdInBatch(deltas.map { it.id })
-        return deltas.size
+        return Pair(events.size, deltas.count { it.offender == null })
     }
 
     fun OffenderDelta.asNotifications(): List<Notification<OffenderEvent>> {

@@ -12,9 +12,12 @@ class OffenderDeltaPoller(private val service: OffenderDeltaService, private val
     @Scheduled(fixedDelayString = "\${offender-events.fixed-delay:100}")
     fun checkAndSendEvents() {
         try {
-            val eventCount = service.checkAndSendEvents()
-            if (eventCount > 0) {
-                telemetryService.trackEvent("OffenderEventsProcessed", mapOf("EventCount" to eventCount.toString()))
+            val counts = service.checkAndSendEvents()
+            if (counts.first > 0 || counts.second > 0) {
+                telemetryService.trackEvent(
+                    "OffenderEventsProcessed",
+                    mapOf("EventsSent" to counts.first.toString(), "PersonNotFound" to counts.second.toString())
+                )
             }
         } catch (e: Exception) {
             telemetryService.trackEvent(
