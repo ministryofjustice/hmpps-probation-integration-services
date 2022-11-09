@@ -41,7 +41,7 @@ dependencyResolutionManagement {
     }
 }
 
-plugins { id("com.gradle.enterprise") version "3.11.3" }
+plugins { id("com.gradle.enterprise") version "3.11.4" }
 gradleEnterprise {
     if (System.getenv("CI") != null) {
         buildScan {
