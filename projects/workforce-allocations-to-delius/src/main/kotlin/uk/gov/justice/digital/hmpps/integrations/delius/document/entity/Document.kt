@@ -58,6 +58,13 @@ class OffenderDocument : Document() {
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorValue("OFFENDER_ADDRESS")
+class OffenderAddress : Document() {
+    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.OFFENDER_ADDRESS)
+}
+
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("EVENT")
 class EventDocument(
     @JoinColumn(name = "primary_key_id", referencedColumnName = "event_id", insertable = false, updatable = false)
@@ -108,7 +115,7 @@ class AssessmentDocument(
     @ManyToOne
     val assessment: Assessment
 ) : Document() {
-    override fun findRelatedTo():  RelatedTo =
+    override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.ASSESSMENT,
             assessment.type.description,
@@ -120,11 +127,16 @@ class AssessmentDocument(
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("CASE_ALLOCATION")
 class CaseAllocationDocument(
-    @JoinColumn(name = "primary_key_id", referencedColumnName = "case_allocation_id", insertable = false, updatable = false)
+    @JoinColumn(
+        name = "primary_key_id",
+        referencedColumnName = "case_allocation_id",
+        insertable = false,
+        updatable = false
+    )
     @ManyToOne
     val allocation: CaseAllocation
-): Document() {
-    override fun findRelatedTo():  RelatedTo =
+) : Document() {
+    override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.CASE_ALLOCATION,
             allocation.event.disposal?.type?.description ?: "",
@@ -151,28 +163,50 @@ class ContactDocument(
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("COURT_REPORT")
-class CourtReportDocument : Document() {
-    override fun findRelatedTo(): RelatedTo {
-        TODO("Not yet implemented")
-    }
+class CourtReportDocument(
+    @JoinColumn(
+        name = "primary_key_id",
+        referencedColumnName = "court_report_id",
+        insertable = false,
+        updatable = false
+    )
+    @ManyToOne
+    val courtReport: CourtReport
+) : Document() {
+    override fun findRelatedTo(): RelatedTo =
+        RelatedTo(
+            RelatedType.COURT_REPORT,
+            courtReport.type.description,
+            courtReport.courtAppearance?.event?.toDocumentEvent()
+        )
 }
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("INSTITUTIONAL_REPORT")
-class InstitutionalReportDocument : Document() {
-    override fun findRelatedTo(): RelatedTo {
-        TODO("Not yet implemented")
-    }
+class InstitutionalReportDocument() : Document() {
+    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.INSTITUTIONAL_REPORT)
 }
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("NSI")
-class NsiDocument : Document() {
-    override fun findRelatedTo(): RelatedTo {
-        TODO("Not yet implemented")
-    }
+class NsiDocument(
+    @JoinColumn(
+        name = "primary_key_id",
+        referencedColumnName = "nsi_id",
+        insertable = false,
+        updatable = false
+    )
+    @ManyToOne
+    val nsi: Nsi
+) : Document() {
+    override fun findRelatedTo(): RelatedTo =
+        RelatedTo(
+            RelatedType.NSI,
+            nsi.type.description,
+            nsi.event?.toDocumentEvent()
+        )
 }
 
 @Entity
@@ -192,18 +226,48 @@ class PersonalContactDocument : Document() {
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("REFERRAL")
-class ReferralDocument : Document() {
-    override fun findRelatedTo(): RelatedTo {
-        TODO("Not yet implemented")
-    }
+class ReferralDocument(
+    @JoinColumn(
+        name = "primary_key_id",
+        referencedColumnName = "referral_id",
+        insertable = false,
+        updatable = false
+    )
+    @ManyToOne
+    val referral: Referral
+) : Document() {
+    override fun findRelatedTo(): RelatedTo =
+        RelatedTo(
+            RelatedType.REFERRAL,
+            referral.type.description,
+            referral.event.toDocumentEvent()
+        )
+}
+
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorValue("REGISTRATION")
+class RegistrationDocument : Document() {
+    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.REGISTRATION)
 }
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("UPW_APPOINTMENT")
-class UPWAppointmentDocument : Document() {
-    override fun findRelatedTo(): RelatedTo {
-        TODO("Not yet implemented")
-    }
+class UPWAppointmentDocument(
+    @JoinColumn(
+        name = "primary_key_id",
+        referencedColumnName = "upw_appointment_id",
+        insertable = false,
+        updatable = false
+    )
+    @ManyToOne
+    val upwAppointment: UpwAppointment
+) : Document() {
+    override fun findRelatedTo(): RelatedTo =
+        RelatedTo(
+            RelatedType.UPW_APPOINTMENT,
+            "",
+            upwAppointment.upwDetails?.disposal?.event?.toDocumentEvent()
+        )
 }
-

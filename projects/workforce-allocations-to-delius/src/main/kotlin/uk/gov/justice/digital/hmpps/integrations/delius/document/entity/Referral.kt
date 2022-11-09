@@ -17,7 +17,11 @@ class Referral(
 
     @JoinColumn(name = "event_id", insertable = false, updatable = false)
     @ManyToOne
-    val event: DocEvent
+    val event: DocEvent,
+
+    @JoinColumn(name = "REFERRAL_TYPE_ID")
+    @ManyToOne
+    val type: ReferralType
 )
 
 @Entity
@@ -38,10 +42,20 @@ class Assessment(
 
 @Entity
 @Immutable
-@Table(name="r_assessment_type")
+@Table(name = "r_assessment_type")
 class AssessmentType(
     @Id
     @Column(name = "assessment_type_id")
+    val id: Long,
+    val description: String
+)
+
+@Entity
+@Immutable
+@Table(name = "r_referral_type")
+class ReferralType(
+    @Id
+    @Column(name = "referral_type_id")
     val id: Long,
     val description: String
 )

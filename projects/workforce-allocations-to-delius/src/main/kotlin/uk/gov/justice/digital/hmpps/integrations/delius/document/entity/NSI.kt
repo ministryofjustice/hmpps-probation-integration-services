@@ -10,28 +10,27 @@ import javax.persistence.Table
 
 @Entity
 @Immutable
-class ApprovedPremisesReferral(
+class Nsi(
     @Id
-    @Column(name = "approved_premises_referral_id")
-    val id: Long,
+    @Column(name = "nsi_id", updatable = false)
+    val id: Long = 0,
 
     @JoinColumn(name = "event_id", insertable = false, updatable = false)
     @ManyToOne
-    val event: DocEvent,
+    val event: DocEvent?,
 
-    @JoinColumn(name = "referral_category_id", insertable = false, updatable = false)
     @ManyToOne
-    val category: DocReferenceData
-
+    @JoinColumn(name = "nsi_type_id", updatable = false)
+    val type: NsiType,
 )
 
-@Entity
 @Immutable
-@Table(name = "r_standard_reference_list")
-class DocReferenceData(
+@Entity
+@Table(name = "r_nsi_type")
+class NsiType(
     @Id
-    @Column(name = "standard_reference_list_id")
+    @Column(name = "nsi_type_id")
     val id: Long,
-    @Column(name = "code_description")
+
     val description: String
 )

@@ -3,9 +3,11 @@ package uk.gov.justice.digital.hmpps.integrations.delius.document
 import java.time.ZonedDateTime
 
 data class PersonDocument(
+    val id: Long,
     val name: String,
     val relatedTo: RelatedTo,
-    val dateSaved: ZonedDateTime
+    val dateSaved: ZonedDateTime,
+    val sensitive: Boolean
 )
 
 data class RelatedTo(
@@ -43,5 +45,4 @@ enum class RelatedType {
     REFERRAL,
     REGISTRATION,
     UPW_APPOINTMENT
-
 }
