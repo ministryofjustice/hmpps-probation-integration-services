@@ -9,6 +9,6 @@ class DocumentService(private val documentRepository: DocumentRepository, privat
 
     fun getDocumentsByCrn(crn: String): List<PersonDocument> {
         val person = personRepository.findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
-        return documentRepository.findAllByPersonId(person.id).map { PersonDocument(it.id, it.name, it.findRelatedTo(), it.lastSaved, it.sensitive) }
+        return documentRepository.findAllByPersonId(person.id).map { PersonDocument(it.alfrescoId, it.name, it.findRelatedTo(), it.lastSaved, it.sensitive) }
     }
 }

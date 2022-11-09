@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.document
 import java.time.ZonedDateTime
 
 data class PersonDocument(
-    val id: Long,
+    val id: String?,
     val name: String,
     val relatedTo: RelatedTo,
     val dateSaved: ZonedDateTime,
