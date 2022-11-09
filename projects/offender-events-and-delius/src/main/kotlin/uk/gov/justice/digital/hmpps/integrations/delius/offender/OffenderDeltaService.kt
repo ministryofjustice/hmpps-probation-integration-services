@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.message.MessageAttribute
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
@@ -43,17 +42,12 @@ class OffenderDeltaService(
         }
 
         return if (offender != null) {
-            val source = ("source" to MessageAttribute("String", "delius"))
             val oe = OffenderEvent(offender.id, offender.crn, offender.nomsNumber, sourceRecordId, dateChanged)
             val list: MutableList<Notification<OffenderEvent>> = mutableListOf()
             if (sourceTable in listOf("ALIAS", "OFFENDER", "OFFENDER_MANAGER", "OFFENDER_ADDRESS", "OFFICER")) {
-                val attrs = MessageAttributes("OFFENDER_CHANGED")
-                attrs += source
-                list += Notification(oe, attrs)
+                list += Notification(oe, MessageAttributes("OFFENDER_CHANGED"))
             }
-            val attrs = MessageAttributes(sourceToEventType(sourceTable, action))
-            attrs += source
-            list += Notification(oe, attrs)
+            list += Notification(oe, MessageAttributes(sourceToEventType(sourceTable, action)))
             list
         } else listOf()
     }

@@ -1,5 +1,7 @@
 # Default config
 spring:
+  jackson:
+    default-property-inclusion: non_null
   jpa:
     database-platform: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
