@@ -8,4 +8,7 @@ secrets:
   SPRING_DATASOURCE_URL:                   /delius-database/jdbc-url
   SPRING_DATASOURCE_USERNAME:              /risk-assessment-scores-to-delius/db-username
   SPRING_DATASOURCE_PASSWORD:              /risk-assessment-scores-to-delius/db-password
+  SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: /risk-assessment-scores-to-delius/sqs-queue-name
+  AWS_ACCESS_KEY_ID:                       /risk-assessment-scores-to-delius/sqs-queue-access-key-id
+  AWS_SECRET_ACCESS_KEY:                   /risk-assessment-scores-to-delius/sqs-queue-secret-access-key
   SENTRY_DSN:                              /risk-assessment-scores-to-delius/sentry-dsn
