@@ -16,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.OffenderDeltaGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDelta
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaRepository
-import uk.gov.justice.digital.hmpps.message.MessageAttribute
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -41,9 +40,7 @@ internal class IntegrationTest {
         offenderDeltaRepository.save(delta)
 
         val messages = (1..eventTypes.size).mapNotNull {
-            val notification = (jmsTemplate.receiveAndConvert(topicName) as Notification<*>)
-            assertEquals(MessageAttribute("String", "delius"), notification.attributes["source"])
-            notification.eventType
+            (jmsTemplate.receiveAndConvert(topicName) as Notification<*>).eventType
         }
 
         assertEquals(eventTypes.size, messages.size)
