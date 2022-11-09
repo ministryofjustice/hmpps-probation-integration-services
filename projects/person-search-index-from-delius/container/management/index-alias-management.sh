@@ -153,7 +153,7 @@ sendFailure() {
                                           "ver": 1,
                                           "handledAt": "ProbationSearchIndexFailure",
                                           "properties": {
-                                             "timeout": "'"${MAX_TIMEOUT}"'"
+                                             "timeout": "'"${SECONDS}"'"
                                           },
                                           "exceptions": [
                                             {
