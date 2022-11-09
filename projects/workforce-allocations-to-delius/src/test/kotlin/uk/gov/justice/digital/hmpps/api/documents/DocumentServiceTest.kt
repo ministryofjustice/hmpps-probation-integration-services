@@ -42,8 +42,8 @@ class DocumentServiceTest {
     fun `get documents`() {
         val crn = "D111111"
         whenever(personRepository.findByCrn(crn)).thenReturn(Person(1L, crn, false))
-        whenever(documentRepository.findAllByPersonId(1L)).thenReturn(listOf( OffenderDocument()))
+        whenever(documentRepository.findAllByPersonId(1L)).thenReturn(listOf(OffenderDocument()))
         val documents = service.getDocumentsByCrn(crn)
-        assertEquals(1,documents.size)
+        assertEquals(1, documents.size)
     }
 }
