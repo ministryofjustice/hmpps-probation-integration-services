@@ -50,20 +50,34 @@ class DocumentServiceTest {
     }
 
     @Test
-    fun `get event document`() {
+    fun `get event documents`() {
         val crn = "D111111"
         whenever(personRepository.findByCrn(crn)).thenReturn(Person(1L, crn, false))
-        val eventDocument = EventDocument(
-            DocEvent(
-                1L,
-                Person(1L, crn, false),
-                true,
-                "1",
-                null,
-                null
+
+        val eventDocuments = listOf(
+            EventDocument(
+                DocEvent(
+                    1L,
+                    Person(1L, crn, false),
+                    true,
+                    "1",
+                    null,
+                    null
+                )
+            ),
+            EventDocument(
+                DocEvent(
+                    1L,
+                    Person(1L, crn, false),
+                    false,
+                    "1",
+                    null,
+                    null
+                )
             )
         )
-        whenever(documentRepository.findAllByPersonId(1L)).thenReturn(listOf(eventDocument))
+
+        whenever(documentRepository.findAllByPersonId(1L)).thenReturn(eventDocuments)
         val documents = service.getDocumentsByCrn(crn)
         assertEquals(1, documents.size)
     }
