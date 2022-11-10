@@ -11,6 +11,9 @@ secrets:
   SPRING_DATASOURCE_URL:                            /delius-database/jdbc-url
   SPRING_DATASOURCE_USERNAME:                       /pre-sentence-reports-to-delius/db-username
   SPRING_DATASOURCE_PASSWORD:                       /pre-sentence-reports-to-delius/db-password
+  SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION:          /pre-sentence-reports-to-delius/sqs-queue-name
+  AWS_ACCESS_KEY_ID:                                /pre-sentence-reports-to-delius/sqs-queue-access-key-id
+  AWS_SECRET_ACCESS_KEY:                            /pre-sentence-reports-to-delius/sqs-queue-secret-access-key
   INTEGRATIONS_PRE-SENTENCE-REPORTS_CLIENT-ID:      /pre-sentence-reports-to-delius/client-id
   INTEGRATIONS_PRE-SENTENCE-REPORTS_CLIENT-SECRET:  /pre-sentence-reports-to-delius/client-secret
   SENTRY_DSN:                                       /pre-sentence-reports-to-delius/sentry-dsn

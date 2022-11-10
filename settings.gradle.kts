@@ -33,21 +33,19 @@ dependencyResolutionManagement {
             library("insights", "com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
             library("hawtio", "io.hawt:hawtio-springboot:2.16.1")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:4.0.0")
-            library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:3.1.4")
-            library("sentry", "io.sentry:sentry-spring-boot-starter:6.6.0")
+            library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:3.1.5")
+            library("sentry", "io.sentry:sentry-spring-boot-starter:6.7.0")
             library("swagger-docs", "org.springdoc:springdoc-openapi-ui:1.6.12")
-            library("wiremock", "com.github.tomakehurst:wiremock-jre8:2.34.0")
+            library("wiremock", "com.github.tomakehurst:wiremock-jre8:2.35.0")
         }
     }
 }
 
-plugins { id("com.gradle.enterprise") version "3.11.3" }
+plugins { id("com.gradle.enterprise") version "3.11.4" }
 gradleEnterprise {
-    if (System.getenv("CI") != null) {
-        buildScan {
-            publishAlways()
-            termsOfServiceUrl = "https://gradle.com/terms-of-service"
-            termsOfServiceAgree = "yes"
-        }
+    buildScan {
+        publishAlwaysIf(!System.getenv("CI").isNullOrEmpty())
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
     }
 }
