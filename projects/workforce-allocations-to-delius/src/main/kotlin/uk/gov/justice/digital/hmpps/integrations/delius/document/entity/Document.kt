@@ -47,6 +47,7 @@ abstract class Document : Relatable {
     open var alfrescoId: String? = null
     open var sensitive: Boolean = false
     open var lastSaved: ZonedDateTime = ZonedDateTime.now()
+
     @Column(name = "created_datetime")
     open var createdDate: ZonedDateTime = ZonedDateTime.now()
 }
@@ -269,7 +270,7 @@ class UPWAppointmentDocument(
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.UPW_APPOINTMENT,
-            upwAppointment.upwDetails?.disposal?.type?.description?:"Unpaid work appointment",
+            upwAppointment.upwDetails?.disposal?.type?.description ?: "Unpaid work appointment",
             upwAppointment.upwDetails?.disposal?.event?.toDocumentEvent()
         )
 }
