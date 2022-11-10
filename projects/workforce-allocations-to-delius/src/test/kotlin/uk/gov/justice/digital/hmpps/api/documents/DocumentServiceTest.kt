@@ -8,6 +8,10 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import org.springframework.core.io.Resource
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
@@ -84,5 +88,46 @@ class DocumentServiceTest {
         whenever(documentRepository.findAllByPersonId(1L)).thenReturn(eventDocuments)
         val documents = service.getDocumentsByCrn(crn)
         assertEquals(2, documents.size)
+    }
+
+    @Test
+    fun `get document`() {
+        val crn = "D111111"
+        val id = "123-123"
+        val document = OffenderDocument()
+        document.personId = 1L
+        val expectedResponse = ResponseEntity<Resource>(HttpStatus.OK)
+
+        whenever(personRepository.findByCrn(crn)).thenReturn(Person(1L, crn, false))
+        whenever(documentRepository.findByAlfrescoId(id)).thenReturn(document)
+        whenever(alfrescoClient.getDocument(id)).thenReturn(expectedResponse)
+        val response = service.getDocument(crn, id)
+        assertEquals(expectedResponse.statusCode, response.statusCode)
+    }
+
+    @Test
+    fun `get document person not found`() {
+        val crn = "D111111"
+        val id = "123-123"
+        whenever(personRepository.findByCrn(crn)).thenReturn(null)
+        val ex = assertThrows<NotFoundException> {
+            service.getDocument(crn, id)
+        }
+        val expected = NotFoundException("Person", "crn", crn)
+        assertEquals(expected.message, ex.message)
+    }
+
+    @Test
+    fun `get document not matching crn`() {
+        val crn = "D111111"
+        val id = "123-123"
+        val document = OffenderDocument()
+        document.personId = 10L
+        whenever(personRepository.findByCrn(crn)).thenReturn(Person(1L, crn, false))
+        whenever(documentRepository.findByAlfrescoId(id)).thenReturn(document)
+        val ex = assertThrows<ConflictException> {
+            service.getDocument(crn, id)
+        }
+        assertEquals("Document and CRN do not match", ex.message)
     }
 }
