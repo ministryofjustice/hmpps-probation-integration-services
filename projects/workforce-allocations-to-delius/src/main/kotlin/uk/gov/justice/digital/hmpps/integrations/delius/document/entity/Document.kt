@@ -47,7 +47,6 @@ abstract class Document : Relatable {
     open var alfrescoId: String? = null
     open var sensitive: Boolean = false
     open var lastSaved: ZonedDateTime = ZonedDateTime.now()
-
     @Column(name = "created_datetime")
     open var createdDate: ZonedDateTime = ZonedDateTime.now()
 }
