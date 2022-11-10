@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.documents
 
+import org.springframework.core.io.Resource
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,4 +20,9 @@ class DocumentResource(private val service: DocumentService) {
     @GetMapping
     fun findDocuments(@PathVariable crn: String): List<PersonDocument> =
         service.getDocumentsByCrn(crn)
+
+    @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
+    @GetMapping(value = ["/{id}"])
+    fun getDocument(@PathVariable crn: String, @PathVariable id: String): ResponseEntity<Resource> =
+        service.getDocument(crn, id)
 }

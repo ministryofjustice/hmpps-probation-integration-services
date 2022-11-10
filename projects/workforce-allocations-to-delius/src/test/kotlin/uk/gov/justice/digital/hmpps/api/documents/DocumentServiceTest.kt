@@ -9,6 +9,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentService
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocEvent
@@ -25,6 +26,9 @@ class DocumentServiceTest {
 
     @Mock
     private lateinit var documentRepository: DocumentRepository
+
+    @Mock
+    private lateinit var alfrescoClient: AlfrescoClient
 
     @InjectMocks
     private lateinit var service: DocumentService

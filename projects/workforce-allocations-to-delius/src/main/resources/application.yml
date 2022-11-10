@@ -63,7 +63,7 @@ integrations:
     client-id: workforce-allocations-to-delius
     client-secret: workforce-allocations-to-delius
   alfresco:
-    url: http://localhost:${wiremock.port}
+    url: https://alfresco.test.delius.probation.hmpps.dsd.io/alfresco/service/noms-spg
 
 management.endpoints.web:
   base-path: /
