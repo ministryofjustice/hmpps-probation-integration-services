@@ -16,12 +16,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.document.PersonDocument
 @RequestMapping("/offenders/{crn}/documents")
 class DocumentResource(private val service: DocumentService) {
 
-    @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
+    @PreAuthorize("hasRole('ROLE_WORKFORCE_DOCUMENT')")
     @GetMapping
     fun findDocuments(@PathVariable crn: String): List<PersonDocument> =
         service.getDocumentsByCrn(crn)
 
-    @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
+    @PreAuthorize("hasRole('ROLE_WORKFORCE_DOCUMENT')")
     @GetMapping(value = ["/{id}"])
     fun getDocument(@PathVariable crn: String, @PathVariable id: String): ResponseEntity<Resource> =
         service.getDocument(crn, id)
