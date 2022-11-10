@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentService
 import uk.gov.justice.digital.hmpps.integrations.delius.document.PersonDocument
 
-@Validated
 @RestController
 @RequestMapping("/offenders/{crn}/documents")
 class DocumentResource(private val service: DocumentService) {

@@ -269,7 +269,7 @@ class UPWAppointmentDocument(
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.UPW_APPOINTMENT,
-            "",
+            "Unpaid work appointment",
             upwAppointment.upwDetails?.disposal?.event?.toDocumentEvent()
         )
 }
