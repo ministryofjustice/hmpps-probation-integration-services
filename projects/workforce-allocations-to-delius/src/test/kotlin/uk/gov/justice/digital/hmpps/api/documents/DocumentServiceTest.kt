@@ -79,6 +79,6 @@ class DocumentServiceTest {
 
         whenever(documentRepository.findAllByPersonId(1L)).thenReturn(eventDocuments)
         val documents = service.getDocumentsByCrn(crn)
-        assertEquals(1, documents.size)
+        assertEquals(2, documents.size)
     }
 }
