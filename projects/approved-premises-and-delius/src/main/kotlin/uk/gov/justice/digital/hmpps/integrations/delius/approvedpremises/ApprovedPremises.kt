@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises
 
 import org.hibernate.annotations.Immutable
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -21,8 +20,4 @@ class ApprovedPremises(
     @ManyToOne
     @JoinColumn(name = "national_hostel_code")
     val code: ReferenceData,
-
-    @ManyToOne
-    @JoinColumn(name = "probation_area_id")
-    val probationArea: ProbationArea
 )
