@@ -27,7 +27,7 @@ class StaffService(
                 it.toResponse(approvedPremisesCode)
             }
         } else {
-            staffRepository.findAllStaffLinkedToApprovedPremisesLAU(approvedPremisesCode, pageable).map {
+            staffRepository.findAllStaffLinkedToApprovedPremisesTeam(approvedPremisesCode, pageable).map {
                 it.toResponse(approvedPremisesCode)
             }
         }

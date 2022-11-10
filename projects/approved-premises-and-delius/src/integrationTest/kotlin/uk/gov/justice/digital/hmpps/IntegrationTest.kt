@@ -28,33 +28,9 @@ internal class IntegrationTest {
         mockMvc
             .perform(get("/approved-premises/${approvedPremises.code.code}/staff").withOAuth2Token(wireMockServer))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.numberOfElements", equalTo(4)))
-            .andExpect(
-                jsonPath(
-                    "$.content[*].name.surname",
-                    equalTo(
-                        listOf(
-                            "Key-worker (team 1)",
-                            "Key-worker (team 2)",
-                            "Key-worker (team 3)",
-                            "Normal AP staff (not key-worker)"
-                        )
-                    )
-                )
-            )
-            .andExpect(
-                jsonPath(
-                    "$.content[*].keyWorker",
-                    equalTo(
-                        listOf(
-                            true,
-                            true,
-                            true,
-                            false
-                        )
-                    )
-                )
-            )
+            .andExpect(jsonPath("$.numberOfElements", equalTo(2)))
+            .andExpect(jsonPath("$.content[*].name.surname", equalTo(listOf("Key-worker", "Not key-worker"))))
+            .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(true, false))))
     }
 
     @Test
@@ -81,30 +57,8 @@ internal class IntegrationTest {
         mockMvc
             .perform(get("/approved-premises/${approvedPremises.code.code}/staff?keyWorker=true").withOAuth2Token(wireMockServer))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.numberOfElements", equalTo(3)))
-            .andExpect(
-                jsonPath(
-                    "$.content[*].name.surname",
-                    equalTo(
-                        listOf(
-                            "Key-worker (team 1)",
-                            "Key-worker (team 2)",
-                            "Key-worker (team 3)",
-                        )
-                    )
-                )
-            )
-            .andExpect(
-                jsonPath(
-                    "$.content[*].keyWorker",
-                    equalTo(
-                        listOf(
-                            true,
-                            true,
-                            true,
-                        )
-                    )
-                )
-            )
+            .andExpect(jsonPath("$.numberOfElements", equalTo(1)))
+            .andExpect(jsonPath("$.content[*].name.surname", equalTo(listOf("Key-worker"))))
+            .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(true))))
     }
 }
