@@ -60,7 +60,7 @@ class DocumentServiceTest {
                 true,
                 "1",
                 null,
-               null
+                null
             )
         )
         whenever(documentRepository.findAllByPersonId(1L)).thenReturn(listOf(eventDocument))
