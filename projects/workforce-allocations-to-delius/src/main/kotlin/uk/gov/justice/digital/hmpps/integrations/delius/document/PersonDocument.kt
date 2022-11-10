@@ -7,6 +7,7 @@ data class PersonDocument(
     val name: String,
     val relatedTo: RelatedTo,
     val dateSaved: ZonedDateTime,
+    val dateCreated: ZonedDateTime,
     val sensitive: Boolean
 )
 
