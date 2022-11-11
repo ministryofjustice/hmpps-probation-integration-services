@@ -1,18 +1,17 @@
-package uk.gov.justice.digital.hmpps.controller
+package uk.gov.justice.digital.hmpps.service
 
 import feign.FeignException.NotFound
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.oasys.OasysAssessment
-import uk.gov.justice.digital.hmpps.integrations.oasys.OasysClient
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
+import uk.gov.justice.digital.hmpps.integrations.oasys.client.OasysClient
+import uk.gov.justice.digital.hmpps.model.OffenceDetails
 
 @Service
 class OasysAssessmentService(private var oasysClient: OasysClient) {
-    fun getLatestAssessment(crn: String): OasysAssessment {
+    fun getLatestAssessment(crn: String): OasysTimelineAssessment {
         try {
-            val ordsAssessmentTimeline =
-                oasysClient.getAssessmentTimeline(crn)
-                    ?: throw NotFoundException("No Assessments were found for crn= $crn")
+            val ordsAssessmentTimeline = oasysClient.getAssessmentTimeline(crn)
             val assessments =
                 ordsAssessmentTimeline.timeline.sortedByDescending { it.initiationDate }.stream().filter {
                     it.assessmentType == "LAYER3"
@@ -23,5 +22,10 @@ class OasysAssessmentService(private var oasysClient: OasysClient) {
         } catch (notfound: NotFound) {
             throw NotFoundException(notfound.localizedMessage)
         }
+    }
+
+    fun getOffenceDetails(crn: String): OffenceDetails {
+        val latestAssessment = getLatestAssessment(crn)
+        return OffenceDetails.from(oasysClient.getOffenceDetails(crn, latestAssessment.assessmentPk, latestAssessment.status))
     }
 }

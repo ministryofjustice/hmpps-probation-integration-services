@@ -1,8 +1,8 @@
-package uk.gov.justice.digital.hmpps.integrations.oasys
+package uk.gov.justice.digital.hmpps.integrations.oasys.model
 
 import java.time.ZonedDateTime
 
-data class OasysAssessment(
+data class OasysTimelineAssessment(
     val assessmentPk: Long,
     val assessmentType: String,
     val initiationDate: ZonedDateTime,

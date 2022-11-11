@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.integrations.oasys.OasysAssessment
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import java.time.ZonedDateTime
 
@@ -38,20 +38,20 @@ internal class IntegrationTest {
             .andExpect(status().is2xxSuccessful)
             .andReturn()
 
-        val oasysAssessment = objectMapper.readValue(result.response.contentAsString, OasysAssessment::class.java)
-        assertThat(oasysAssessment.initiationDate)
+        val oasysTimelineAssessment = objectMapper.readValue(result.response.contentAsString, OasysTimelineAssessment::class.java)
+        assertThat(oasysTimelineAssessment.initiationDate)
             .isEqualTo(ZonedDateTime.parse("2022-07-27T12:10:58+01:00").withZoneSameInstant(EuropeLondon))
     }
 
     @Test
-    fun `get latest layer 3 crn not found`() {
+    fun `should return HTTP not found when CRN does not exist`() {
         mockMvc
             .perform(get("/latest-assessment/D000000").withOAuth2Token(wireMockServer))
             .andExpect(status().isNotFound)
     }
 
     @Test
-    fun `get latest layer 3 assessment not found`() {
+    fun `should return HTTP not found when a layer 3 assessment does not exist`() {
         mockMvc
             .perform(get("/latest-assessment/D000001").withOAuth2Token(wireMockServer))
             .andExpect(status().isNotFound)
