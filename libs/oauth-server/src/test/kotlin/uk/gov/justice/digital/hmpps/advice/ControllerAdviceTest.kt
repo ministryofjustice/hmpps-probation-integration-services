@@ -7,10 +7,12 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
 import org.springframework.core.MethodParameter
 import org.springframework.http.HttpStatus.BAD_REQUEST
+import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.validation.BindingResult
 import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
+import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import kotlin.reflect.jvm.javaMethod
 
@@ -21,6 +23,14 @@ class ControllerAdviceTest {
 
         assertThat(response.statusCode, equalTo(NOT_FOUND))
         assertThat(response.body?.message, equalTo("Some Entity with identifier of 123 not found"))
+    }
+
+    @Test
+    fun `handles conflict`() {
+        val response = ControllerAdvice().handleConflict(ConflictException("something conflicted"))
+
+        assertThat(response.statusCode, equalTo(CONFLICT))
+        assertThat(response.body?.message, equalTo("something conflicted"))
     }
 
     @Test

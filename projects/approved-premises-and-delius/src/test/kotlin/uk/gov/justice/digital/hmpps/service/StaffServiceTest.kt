@@ -39,11 +39,11 @@ internal class StaffServiceTest {
     fun `maps and returns results`() {
         val approvedPremises = ApprovedPremisesGenerator.DEFAULT
         val staffEntities = listOf(
-            StaffGenerator.generate("Staff 1", listOf(TeamGenerator.APPROVED_PREMISES_TEAM_1), emptyList()),
-            StaffGenerator.generate("Staff 2", listOf(TeamGenerator.APPROVED_PREMISES_TEAM_1), listOf(approvedPremises)),
+            StaffGenerator.generate("Staff 1", listOf(TeamGenerator.APPROVED_PREMISES_TEAM), emptyList()),
+            StaffGenerator.generate("Staff 2", listOf(TeamGenerator.APPROVED_PREMISES_TEAM), listOf(approvedPremises)),
         )
         whenever(approvedPremisesRepository.existsByCodeCode(approvedPremises.code.code)).thenReturn(true)
-        whenever(staffRepository.findAllStaffLinkedToApprovedPremisesLAU(approvedPremises.code.code, Pageable.unpaged()))
+        whenever(staffRepository.findAllStaffLinkedToApprovedPremisesTeam(approvedPremises.code.code, Pageable.unpaged()))
             .thenReturn(PageImpl(staffEntities))
 
         val results = staffService.getStaffInApprovedPremises(approvedPremises.code.code, false, Pageable.unpaged())
