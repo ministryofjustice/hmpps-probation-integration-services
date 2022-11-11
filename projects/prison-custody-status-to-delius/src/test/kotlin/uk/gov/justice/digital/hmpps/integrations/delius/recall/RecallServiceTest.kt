@@ -30,7 +30,6 @@ import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.DAYS
 
-@ExtendWith(MockitoExtension::class)
 internal class RecallServiceTest : RecallServiceTestBase() {
     private val person = PersonGenerator.RECALLABLE
     private val nomsNumber = person.nomsNumber

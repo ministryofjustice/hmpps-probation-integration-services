@@ -31,7 +31,6 @@ import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.DAYS
 
-@ExtendWith(MockitoExtension::class)
 class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
 
     @Test

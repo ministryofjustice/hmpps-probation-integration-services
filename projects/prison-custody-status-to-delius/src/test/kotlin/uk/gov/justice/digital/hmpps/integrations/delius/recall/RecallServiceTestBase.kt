@@ -18,7 +18,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institutio
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonRepository
 
 @ExtendWith(MockitoExtension::class)
-open class RecallServiceTestBase {
+abstract class RecallServiceTestBase {
     @Mock
     lateinit var auditedInteractionService: AuditedInteractionService
     @Mock
