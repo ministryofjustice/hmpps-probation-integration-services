@@ -41,6 +41,8 @@ internal class OffenceDetailsTest {
         val offenceDetails = objectMapper.readValue(result.response.contentAsString, OffenceDetails::class.java)
         assertThat(offenceDetails.initiationDate)
             .isEqualTo(ZonedDateTime.parse("2022-11-02T15:17:29Z").withZoneSameInstant(EuropeLondon))
+        assertThat(offenceDetails.offence?.offenceAnalysis)
+            .isEqualTo("Threatened a passer-by with a knife")
     }
 
     @Test
