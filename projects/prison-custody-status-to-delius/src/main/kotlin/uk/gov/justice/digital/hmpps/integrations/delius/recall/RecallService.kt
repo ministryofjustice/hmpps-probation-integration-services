@@ -173,9 +173,9 @@ class RecallService(
     ) {
         // allocate a prison manager if institution has changed and institution is linked to a provider
         if ((
-                (latestRelease != null && toInstitution.id != latestRelease.institutionId) ||
-                    (latestRelease == null && toInstitution.id != custody.institution.id)
-                ) &&
+            (latestRelease != null && toInstitution.id != latestRelease.institutionId) ||
+                (latestRelease == null && toInstitution.id != custody.institution.id)
+            ) &&
             toInstitution.probationArea != null
         ) {
             prisonManagerService.allocateToProbationArea(disposal, toInstitution.probationArea, recallDateTime)
@@ -190,9 +190,9 @@ class RecallService(
         person: Person
     ): Recall? {
         return if (!custody.status.canRecall() || (
-                CustodialStatusCode.RELEASED_ON_LICENCE.code == custody.status.code &&
-                    RecallReasonCode.END_OF_TEMPORARY_LICENCE.code == recallReason.code
-                )
+            CustodialStatusCode.RELEASED_ON_LICENCE.code == custody.status.code &&
+                RecallReasonCode.END_OF_TEMPORARY_LICENCE.code == recallReason.code
+            )
         ) null
         else recallRepository.save(
             Recall(
