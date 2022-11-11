@@ -189,11 +189,7 @@ class RecallService(
         latestRelease: Release?,
         person: Person
     ): Recall? {
-        return if (!custody.status.canRecall() || (
-            CustodialStatusCode.RELEASED_ON_LICENCE.code == custody.status.code &&
-                RecallReasonCode.END_OF_TEMPORARY_LICENCE.code == recallReason.code
-            )
-        ) null
+        return if (!custody.status.canRecall()) null
         else recallRepository.save(
             Recall(
                 date = recallDate,

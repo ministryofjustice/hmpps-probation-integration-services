@@ -222,10 +222,9 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
     @Test
     fun `temporary absence with current status Release on Licence`() {
         val person = PersonGenerator.generate("A52345B")
-        val event = EventGenerator.previouslyRecalledEvent(
+        val event = EventGenerator.previouslyReleasedEvent(
             person,
             InstitutionGenerator.generate("TSP"),
-            custodialStatusCode = CustodialStatusCode.RELEASED_ON_LICENCE
         )
         val recallDateTime = ZonedDateTime.now()
         val recallDate = recallDateTime.truncatedTo(DAYS)
@@ -244,8 +243,13 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
 
         recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", recallDateTime)
 
-        // recall is not created
-        verify(recallRepository, never()).save(any())
+        // recall is created
+        val recall = argumentCaptor<Recall>()
+        verify(recallRepository).save(recall.capture())
+        assertThat(recall.firstValue.date, equalTo(recallDate))
+        assertThat(recall.firstValue.createdDatetime, isCloseTo(recallDateTime))
+        assertThat(recall.firstValue.lastUpdatedDatetime, isCloseTo(recallDateTime))
+        assertThat(recall.firstValue.reason.code, equalTo(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
 
         // custody details are updated
         verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT.code, recallDate)
