@@ -1,12 +1,13 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.team
 
 import org.hibernate.annotations.Immutable
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.LocalAdminUnit
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremises
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
+import javax.persistence.JoinTable
+import javax.persistence.OneToOne
 
 @Entity
 @Immutable
@@ -18,7 +19,11 @@ class Team(
     @Column(name = "code", columnDefinition = "char(6)")
     val code: String,
 
-    @ManyToOne
-    @JoinColumn(name = "district_id")
-    val localAdminUnit: LocalAdminUnit,
+    @OneToOne
+    @JoinTable(
+        name = "r_approved_premises_team",
+        joinColumns = [JoinColumn(name = "team_id")],
+        inverseJoinColumns = [JoinColumn(name = "approved_premises_id")]
+    )
+    val approvedPremises: ApprovedPremises?,
 )

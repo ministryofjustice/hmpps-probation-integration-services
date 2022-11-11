@@ -30,7 +30,7 @@ class Contact(
     @Column(name = "offender_id", updatable = false)
     val personId: Long,
 
-    @Column(updatable = false)
+    @Column(name = "event_id", updatable = false)
     val eventId: Long? = null,
 
     @Column(name = "rqmnt_id", updatable = false)
