@@ -17,11 +17,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.CustodyService
+import uk.gov.justice.digital.hmpps.integrations.delius.event.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.getByEventId
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceConditionService
+import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.PrisonManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse
@@ -96,20 +98,7 @@ class RecallService(
         // perform validation
         validateRecall(recallReason, custody, latestRelease, recallDate)
 
-        // create recall record
-        val recall = if (!custody.status.canRecall() || (
-            CustodialStatusCode.RELEASED_ON_LICENCE.code == custody.status.code &&
-                RecallReasonCode.END_OF_TEMPORARY_LICENCE.code == recallReason.code
-            )
-        ) null
-        else recallRepository.save(
-            Recall(
-                date = recallDate,
-                reason = recallReason,
-                release = latestRelease!!, // Only possible to be null if no recall to be created
-                person = person,
-            )
-        )
+        val recall = createRecall(custody, recallReason, recallDate, latestRelease, person)
 
         if (custody.institution.id != toInstitution.id || custody.status.canRecall()) {
             custodyService.updateLocation(custody, toInstitution.code, recallDate)
@@ -138,15 +127,7 @@ class RecallService(
             }
         }
 
-        // allocate a prison manager if institution has changed and institution is linked to a provider
-        if ((
-            (latestRelease != null && toInstitution.id != latestRelease.institutionId) ||
-                (latestRelease == null && toInstitution.id != custody.institution.id)
-            ) &&
-            toInstitution.probationArea != null
-        ) {
-            prisonManagerService.allocateToProbationArea(disposal, toInstitution.probationArea, recallDateTime)
-        }
+        allocatePrisonManager(latestRelease, toInstitution, custody, disposal, recallDateTime)
 
         // terminate any licence conditions
         licenceConditionService.terminateLicenceConditionsForDisposal(
@@ -179,6 +160,46 @@ class RecallService(
                 personManagerId = personManager.id,
                 staffId = personManager.staff.id,
                 teamId = personManager.team.id,
+            )
+        )
+    }
+
+    private fun allocatePrisonManager(
+        latestRelease: Release?,
+        toInstitution: Institution,
+        custody: Custody,
+        disposal: Disposal,
+        recallDateTime: ZonedDateTime
+    ) {
+        // allocate a prison manager if institution has changed and institution is linked to a provider
+        if ((
+                (latestRelease != null && toInstitution.id != latestRelease.institutionId) ||
+                    (latestRelease == null && toInstitution.id != custody.institution.id)
+                ) &&
+            toInstitution.probationArea != null
+        ) {
+            prisonManagerService.allocateToProbationArea(disposal, toInstitution.probationArea, recallDateTime)
+        }
+    }
+
+    private fun createRecall(
+        custody: Custody,
+        recallReason: RecallReason,
+        recallDate: ZonedDateTime,
+        latestRelease: Release?,
+        person: Person
+    ): Recall? {
+        return if (!custody.status.canRecall() || (
+                CustodialStatusCode.RELEASED_ON_LICENCE.code == custody.status.code &&
+                    RecallReasonCode.END_OF_TEMPORARY_LICENCE.code == recallReason.code
+                )
+        ) null
+        else recallRepository.save(
+            Recall(
+                date = recallDate,
+                reason = recallReason,
+                release = latestRelease!!, // Only possible to be null if no recall to be created
+                person = person,
             )
         )
     }
