@@ -1,10 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.oasys.model
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.ZonedDateTime
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class OasysOffenceDetails(
     val limitedAccessOffender: Boolean,
     val assessments: List<OasysOffenceAssessment>

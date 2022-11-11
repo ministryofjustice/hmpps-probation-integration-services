@@ -5,7 +5,7 @@ data class OasysAssessmentTimeline(
     val inputs: Inputs,
     val crn: String,
     val limitedAccessOffender: Boolean,
-    var timeline: List<OasysTimelineAssessment> = emptyList()
+    val timeline: List<OasysTimelineAssessment> = emptyList()
 )
 
 data class Inputs(
