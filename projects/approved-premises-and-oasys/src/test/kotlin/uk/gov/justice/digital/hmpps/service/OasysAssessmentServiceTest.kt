@@ -4,7 +4,6 @@ import feign.FeignException.NotFound
 import feign.Request
 import feign.RequestTemplate
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -76,14 +75,16 @@ internal class OasysAssessmentServiceTest {
 
         val oasysOffenceDetails = OasysOffenceDetails(
             limitedAccessOffender = false,
-            listOf(OasysOffenceAssessment(
-                assessmentPk = assessmentPk,
-                assessmentType = assessmentType,
-                initiationDate = now,
-                assessmentStatus = status,
-                offenceAnalysis = "analysis",
-                dateCompleted = now
-            ))
+            listOf(
+                OasysOffenceAssessment(
+                    assessmentPk = assessmentPk,
+                    assessmentType = assessmentType,
+                    initiationDate = now,
+                    assessmentStatus = status,
+                    offenceAnalysis = "analysis",
+                    dateCompleted = now
+                )
+            )
         )
         whenever(oasysClient.getOffenceDetails(crn, assessmentPk, status)).thenReturn(oasysOffenceDetails)
 
@@ -92,20 +93,19 @@ internal class OasysAssessmentServiceTest {
 
         // Then
         val expectedOffenceDetails = OffenceDetails(
-          assessmentPk,
-          assessmentType,
-          now,
-          assessorSignedDate = null,
-          initiationDate = now,
-          status,
-          null,
-          null,
-          false,
-          Offence(
-              offenceAnalysis = "analysis"
-          )
+            assessmentPk,
+            assessmentType,
+            now,
+            assessorSignedDate = null,
+            initiationDate = now,
+            status,
+            null,
+            null,
+            false,
+            Offence(
+                offenceAnalysis = "analysis"
+            )
         )
         assertThat(offenceDetails).isEqualTo(expectedOffenceDetails)
     }
 }
-

@@ -3,8 +3,8 @@ package uk.gov.justice.digital.hmpps.service
 import feign.FeignException.NotFound
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.client.OasysClient
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
 
 @Service

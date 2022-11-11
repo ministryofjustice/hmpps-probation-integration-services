@@ -20,7 +20,7 @@ import java.time.ZonedDateTime
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest {
+internal class AssessmentTimelineTest {
 
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -32,7 +32,7 @@ internal class IntegrationTest {
     lateinit var objectMapper: ObjectMapper
 
     @Test
-    fun `get latest layer 3 assessment`() {
+    fun `get latest layer 3 timeline assessment`() {
         val result = mockMvc
             .perform(get("/latest-assessment/D006296").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful)

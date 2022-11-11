@@ -18,7 +18,7 @@ data class OffenceDetails(
     val offence: Offence? = null
 ) {
     companion object {
-        fun from(oasysOffenceDetails: OasysOffenceDetails) : OffenceDetails {
+        fun from(oasysOffenceDetails: OasysOffenceDetails): OffenceDetails {
             with(oasysOffenceDetails.assessments[0]) {
                 return OffenceDetails(
                     assessmentPk,
@@ -45,7 +45,6 @@ data class OffenceDetails(
             }
         }
     }
-
 }
 
 data class Offence(

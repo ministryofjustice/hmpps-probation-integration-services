@@ -4,8 +4,8 @@ import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import uk.gov.justice.digital.hmpps.config.FeignOAuth2Config
-import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysAssessmentTimeline
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceDetails
 
 @FeignClient(
     name = "ords-oasys",
@@ -20,5 +20,6 @@ interface OasysClient {
     fun getOffenceDetails(
         @PathVariable("crn") crn: String,
         @PathVariable("assessmentId") assessmentId: Long,
-        @PathVariable("status") status: String,): OasysOffenceDetails
+        @PathVariable("status") status: String,
+    ): OasysOffenceDetails
 }
