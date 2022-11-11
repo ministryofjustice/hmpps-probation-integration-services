@@ -32,6 +32,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReas
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonCode
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.getByCodeAndSelectableIsTrue
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.NO_CHANGE_STATUSES
@@ -87,7 +88,7 @@ class RecallService(
         val disposal = event.disposal ?: throw NotFoundException("Disposal", "eventId", event.id)
         val custody = disposal.custody ?: throw NotFoundException("Custody", "disposalId", disposal.id)
         val latestRelease = custody.mostRecentRelease()
-        if (latestRelease == null && !NO_RECALL_STATUSES.map { it.code }.contains(custody.status.code))
+        if (latestRelease == null && custody.status.canRecall())
             throw IgnorableMessageException("MissingRelease")
 
         val recallDate = recallDateTime.truncatedTo(DAYS)
@@ -96,20 +97,17 @@ class RecallService(
         validateRecall(recallReason, custody, latestRelease, recallDate)
 
         // create recall record
-        val recall = if (NO_RECALL_STATUSES.map { it.code }.contains(custody.status.code)
-        ) null
+        val recall = if (!custody.status.canRecall()) null
         else recallRepository.save(
             Recall(
                 date = recallDate,
                 reason = recallReason,
-                release = latestRelease!!, // Only possible to be null if no release to be created
+                release = latestRelease!!, // Only possible to be null if no recall to be created
                 person = person,
             )
         )
 
-        if (custody.institution.id != toInstitution.id ||
-            !NO_RECALL_STATUSES.map { it.code }.contains(custody.status.code)
-        ) {
+        if (custody.institution.id != toInstitution.id || custody.status.canRecall()) {
             custodyService.updateLocation(custody, toInstitution.code, recallDate)
         }
 
@@ -126,7 +124,7 @@ class RecallService(
                 recallDate,
                 "Recall added but location unknown "
             )
-            else -> if (!NO_CHANGE_STATUSES.map { it.code }.contains(custody.status.code)) {
+            else -> if (custody.status.canChange()) {
                 custodyService.updateStatus(
                     custody,
                     CustodialStatusCode.IN_CUSTODY,
@@ -137,9 +135,11 @@ class RecallService(
         }
 
         // allocate a prison manager if institution has changed and institution is linked to a provider
-        if (((latestRelease != null && toInstitution.id != latestRelease.institutionId)
-                || (latestRelease == null && toInstitution.id != custody.institution.id))
-            && toInstitution.probationArea != null
+        if ((
+            (latestRelease != null && toInstitution.id != latestRelease.institutionId) ||
+                (latestRelease == null && toInstitution.id != custody.institution.id)
+            ) &&
+            toInstitution.probationArea != null
         ) {
             prisonManagerService.allocateToProbationArea(disposal, toInstitution.probationArea, recallDateTime)
         }
@@ -191,7 +191,7 @@ class RecallService(
             throw IgnorableMessageException("UnexpectedCustodialStatus")
         }
 
-        if (TERMINATED_STATUSES.map { it.code }.contains(custody.status.code)) {
+        if (custody.status.isTerminated()) {
             throw IllegalArgumentException("TerminatedCustodialStatus")
         }
 
@@ -200,11 +200,15 @@ class RecallService(
             throw IgnorableMessageException("RecallAlreadyExists")
         }
 
-        if (latestRelease?.type?.code != ReleaseTypeCode.ADULT_LICENCE.code) {
+        if (latestRelease?.type?.code != ReleaseTypeCode.ADULT_LICENCE.code &&
+            reason.code != RecallReasonCode.END_OF_TEMPORARY_LICENCE.code
+        ) {
             throw IgnorableMessageException("UnexpectedReleaseType")
         }
 
-        if (recallDate.isAfter(ZonedDateTime.now()) || recallDate.isBefore(latestRelease.date)) {
+        if (recallDate.isAfter(ZonedDateTime.now()) ||
+            (latestRelease != null && recallDate.isBefore(latestRelease.date))
+        ) {
             throw IgnorableMessageException("InvalidRecallDate")
         }
     }
@@ -217,4 +221,9 @@ class RecallService(
         "UNKNOWN" -> throw IgnorableMessageException("UnsupportedRecallReason")
         else -> throw IllegalArgumentException("Unexpected recall reason: $reason")
     }
+
+    private fun ReferenceData.canRecall() = !NO_RECALL_STATUSES.map { it.code }.contains(code)
+    private fun ReferenceData.canChange() = !NO_CHANGE_STATUSES.map { it.code }.contains(code)
+
+    private fun ReferenceData.isTerminated() = TERMINATED_STATUSES.map { it.code }.contains(code)
 }
