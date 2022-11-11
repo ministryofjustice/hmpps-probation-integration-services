@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.integrations.oasys.model
 
-import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.ZonedDateTime
 
 data class OasysOffenceDetails(
@@ -8,7 +7,6 @@ data class OasysOffenceDetails(
     val assessments: List<OasysOffenceAssessment>
 )
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class OasysOffenceAssessment(
     val assessmentPk: Long,
     val assessmentType: String,
