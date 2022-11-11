@@ -4,10 +4,8 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
-import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doAnswer
@@ -221,10 +219,65 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         assertThat(exception.message, equalTo("UnexpectedCustodialStatus"))
     }
 
+    @Test
+    fun `temporary absence with current status Release on Licence`() {
+        val person = PersonGenerator.generate("A52345B")
+        val event = EventGenerator.previouslyRecalledEvent(
+            person,
+            InstitutionGenerator.generate("TSP"),
+            custodialStatusCode = CustodialStatusCode.RELEASED_ON_LICENCE
+        )
+        val recallDateTime = ZonedDateTime.now()
+        val recallDate = recallDateTime.truncatedTo(DAYS)
+
+        whenever(recallReasonRepository.findByCodeAndSelectableIsTrue(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
+            .thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE])
+        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishmentIsTrue("WSI"))
+            .thenReturn(InstitutionGenerator.DEFAULT)
+        whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
+        whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
+        whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id))
+            .thenReturn(PersonManagerGenerator.generate(person))
+        whenever(contactTypeRepository.findByCode(ContactTypeCode.BREACH_PRISON_RECALL.code))
+            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
+        doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
+
+        recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", recallDateTime)
+
+        // recall is not created
+        verify(recallRepository, never()).save(any())
+
+        // custody details are updated
+        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT.code, recallDate)
+        verify(custodyService).updateStatus(
+            event.disposal!!.custody!!,
+            CustodialStatusCode.IN_CUSTODY,
+            recallDate,
+            "Recall added in custody "
+        )
+
+        // licence conditions are terminated
+        verify(licenceConditionService).terminateLicenceConditionsForDisposal(
+            event.disposal!!.id,
+            ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
+            recallDate
+        )
+
+        // contact alert is created
+        val contact = argumentCaptor<Contact>()
+        verify(contactRepository).save(contact.capture())
+        assertThat(contact.firstValue.event, equalTo(event))
+        assertThat(contact.firstValue.date, equalTo(recallDateTime))
+        assertThat(contact.firstValue.notes, equalTo("Reason for Recall: description of EOTL"))
+        val contactAlert = argumentCaptor<ContactAlert>()
+        verify(contactAlertRepository).save(contactAlert.capture())
+        assertThat(contactAlert.firstValue.contactId, equalTo(contact.firstValue.id))
+    }
+
     @ParameterizedTest
     @MethodSource("terminatedStatuses")
     fun `temporary absence with current status terminated throws exception`(status: CustodialStatusCode) {
-        val person = PersonGenerator.generate("A42345B")
+        val person = PersonGenerator.generate("A62345B")
         val event = EventGenerator.custodialEvent(
             person,
             InstitutionGenerator.DEFAULT,
