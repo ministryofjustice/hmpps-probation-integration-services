@@ -17,6 +17,7 @@ include(
     "approved-premises-and-oasys",
     "domain-events-and-delius",
     "offender-events-and-delius",
+    "test-project",
     // ^ add new projects here
 )
 

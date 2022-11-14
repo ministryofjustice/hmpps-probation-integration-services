@@ -1,0 +1,14 @@
+# Common values
+image:
+  name: test-project
+
+secrets:
+  APPLICATIONINSIGHTS_CONNECTION_STRING:   /application-insights/connection-string
+  AWS_SQS_ACCOUNT-ID:                      /moj-cloud-platform/aws-account-id
+  SPRING_DATASOURCE_URL:                   /delius-database/jdbc-url
+  SPRING_DATASOURCE_USERNAME:              /test-project/db-username
+  SPRING_DATASOURCE_PASSWORD:              /test-project/db-password
+  SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: /test-project/sqs-queue-name
+  OAUTH2_CLIENT-ID:                        /test-project/client-id
+  OAUTH2_CLIENT-SECRET:                    /test-project/client-secret
+  SENTRY_DSN:                              /test-project/sentry-dsn
