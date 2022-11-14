@@ -15,7 +15,9 @@ data class RelatedTo(
     val type: RelatedType,
     val name: String = "",
     val event: DocumentEvent? = null
-)
+) {
+    val description: String = type.description()
+}
 
 data class DocumentEvent(
     val eventType: EventType,
@@ -27,7 +29,7 @@ enum class EventType {
     CURRENT, PREVIOUS
 }
 
-enum class RelatedType {
+enum class RelatedType(private val displayName: String = "") {
     ADDRESS_ASSESSMENT,
     APPROVED_PREMISES_REFERRAL,
     ASSESSMENT,
@@ -38,12 +40,15 @@ enum class RelatedType {
     EQUALITY,
     EVENT,
     INSTITUTIONAL_REPORT,
-    NSI,
+    NSI("Non Statutory Intervention"),
     OFFENDER,
     OFFENDER_ADDRESS,
     PERSONAL_CONTACT,
     PERSONAL_CIRCUMSTANCE,
     REFERRAL,
     REGISTRATION,
-    UPW_APPOINTMENT
+    UPW_APPOINTMENT("Unpaid Work Appointment");
+
+    fun description(): String =
+        displayName.ifEmpty { name.split("_").joinToString(" ") { it.lowercase().replaceFirstChar(Char::titlecase) } }
 }
