@@ -1,0 +1,69 @@
+{
+  "source": "OASys",
+  "inputs": {
+    "crn": "D006296",
+    "laoPrivilege": "ALLOW",
+    "assessmentPk": 9641348,
+    "expectedStatus": "OPEN"
+  },
+  "crn": "D006296",
+  "limitedAccessOffender": false,
+  "assessments": [
+    {
+      "assessmentPk": 9641348,
+      "assessmentType": "LAYER3",
+      "dateCompleted": null,
+      "assessorSignedDate": null,
+      "initiationDate": "2022-11-02T15:17:29",
+      "assessmentStatus": "OPEN",
+      "superStatus": "WIP",
+      "laterWIPAssessmentExists": false,
+      "latestWIPDate": "2022-11-02T15:17:29",
+      "laterSignLockAssessmentExists": false,
+      "latestSignLockDate": null,
+      "laterPartCompUnsignedAssessmentExists": false,
+      "latestPartCompUnsignedDate": null,
+      "laterPartCompSignedAssessmentExists": false,
+      "latestPartCompSignedDate": null,
+      "laterCompleteAssessmentExists": false,
+      "latestCompleteDate": null,
+      "offenceAnalysis": "Threatened a passer-by with a knife",
+      "othersInvolved": null,
+      "issueContributingToRisk": "works in a kitchen with knives",
+      "offenceMotivation": "random knife attack",
+      "victimImpact": "cries a lot and does not sleep",
+      "victimPerpetratorRel": "Stranger",
+      "victimInfo": "easy access",
+      "patternOffending": "random",
+      "acceptsResponsibility": "Full responsibility"
+    }
+  ],
+  "latest_dates": [
+    {
+      "offenceAnalysis": "2022-11-02T15:22:20",
+      "currentConcernsSelfHarmSuicide": "2022-11-03T11:50:34",
+      "currentSources": "2022-11-04T08:44:11",
+      "currentWhyDone": "2022-11-04T08:44:11",
+      "currentAnyoneElsePresent": "2022-11-04T08:43:50",
+      "currentWhoVictims": "2022-11-04T08:44:24",
+      "currentHowDone": "2022-11-04T08:43:50",
+      "currentWhereAndWhen": "2022-11-04T08:43:50",
+      "currentOffenceDetails": "2022-11-04T08:42:43",
+      "whoAtRisk": "2022-11-02T15:55:22",
+      "attIssuesDetails": "2022-11-02T15:34:17",
+      "thingIssuesDetails": "2022-11-02T15:34:06",
+      "emoIssuesDetails": "2022-11-02T15:28:09",
+      "alcoholIssuesDetails": "2022-11-02T15:26:55",
+      "lifestyleIssuesDetails": "2022-11-02T15:25:11",
+      "relIssuesDetails": "2022-11-02T15:25:16",
+      "offenceAnalysisDetails": "2022-11-04T08:33:53",
+      "issueContributingToRisk": "2022-11-04T08:33:53",
+      "patternOffending": "2022-11-04T08:33:53",
+      "acceptsResponsibility": "2022-11-04T08:33:53",
+      "offenceMotivation": "2022-11-04T08:33:53",
+      "victimImpact": "2022-11-04T08:33:53",
+      "victimInfo": "2022-11-04T08:33:53",
+      "victimPerpetratorRel": "2022-11-04T08:33:53"
+    }
+  ]
+}
