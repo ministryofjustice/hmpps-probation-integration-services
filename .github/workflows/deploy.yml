@@ -34,6 +34,7 @@ on:
           - '["workforce-allocations-to-delius"]'
           - '["domain-events-and-delius"]'
           - '["offender-events-and-delius"]'
+          - '["test-project"]'
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
