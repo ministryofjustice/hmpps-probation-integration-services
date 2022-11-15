@@ -52,7 +52,7 @@ class DocumentServiceTest {
     fun `get documents`() {
         val crn = "D111111"
         whenever(personRepository.findByCrn(crn)).thenReturn(Person(1L, crn, false))
-        whenever(documentRepository.findAllByPersonId(1L)).thenReturn(listOf(OffenderDocument()))
+        whenever(documentRepository.findAllByPersonIdAndSoftDeletedIsFalse(1L)).thenReturn(listOf(OffenderDocument()))
         val documents = service.getDocumentsByCrn(crn)
         assertEquals(1, documents.size)
     }
@@ -85,7 +85,7 @@ class DocumentServiceTest {
             )
         )
 
-        whenever(documentRepository.findAllByPersonId(1L)).thenReturn(eventDocuments)
+        whenever(documentRepository.findAllByPersonIdAndSoftDeletedIsFalse(1L)).thenReturn(eventDocuments)
         val documents = service.getDocumentsByCrn(crn)
         assertEquals(2, documents.size)
     }
@@ -99,7 +99,7 @@ class DocumentServiceTest {
         val expectedResponse = ResponseEntity<Resource>(HttpStatus.OK)
 
         whenever(personRepository.findByCrn(crn)).thenReturn(Person(1L, crn, false))
-        whenever(documentRepository.findByAlfrescoId(id)).thenReturn(document)
+        whenever(documentRepository.findByAlfrescoIdAndSoftDeletedIsFalse(id)).thenReturn(document)
         whenever(alfrescoClient.getDocument(id)).thenReturn(expectedResponse)
         val response = service.getDocument(crn, id)
         assertEquals(expectedResponse.statusCode, response.statusCode)
@@ -124,7 +124,7 @@ class DocumentServiceTest {
         val document = OffenderDocument()
         document.personId = 10L
         whenever(personRepository.findByCrn(crn)).thenReturn(Person(1L, crn, false))
-        whenever(documentRepository.findByAlfrescoId(id)).thenReturn(document)
+        whenever(documentRepository.findByAlfrescoIdAndSoftDeletedIsFalse(id)).thenReturn(document)
         val ex = assertThrows<ConflictException> {
             service.getDocument(crn, id)
         }
