@@ -55,49 +55,24 @@ jobs:
           trivyignores: 'projects/${{ matrix.project }}/.trivyignore'
 
       - name: Output Trivy results
-        id: trivy
+        run: cat results.json
+
+      - name: Create GitHub issues
         if: failure()
         run: |
-          results=$(cat results.json | jq -r '.Results[].Vulnerabilities[]? | ("><" + .PrimaryURL + "|" + .VulnerabilityID + "> (" + .Severity + ") - " + .PkgName + ":" + .InstalledVersion)')
-          echo "results=${results//$'\n'/\\n}" >> $GITHUB_OUTPUT
-          echo $results
-
-      - name: Send message to Slack
-        if: failure()
-        uses: slackapi/slack-github-action@v1.23.0
-        with:
-          channel-id: 'probation-integration-notifications'
-          payload: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": ":trivy: *${{ matrix.project }}* failed security scan"
-                  },
-                  "accessory": {
-                    "type": "button",
-                    "text": {
-                      "type": "plain_text",
-                      "text": "View job"
-                    },
-                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                  }
-                },
-                {
-                  "type": "context",
-                  "elements": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "${{ steps.trivy.outputs.results }}"
-                    }
-                  ]
-                }
-              ]
-            }
+          cat results.json | jq -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[]' | while read -r vulnerability; do
+            id=$(echo "$vulnerability" | jq -r '.VulnerabilityID')
+            if [[ $(gh issue list --state open --label dependencies --label security --search "$id (${{ matrix.project }})") -gt 0 ]]; then
+              echo 'Issue $title already exists'
+            else
+              gh issue create \
+                --title "$id (${{ matrix.project }})" \
+                --body "$(echo $vulnerability | jq -r '.Title + "\n* Project: ${{ matrix.project }}\n* Package: `" + .PkgName + ":" + .InstalledVersion + "`\n* Location: `" + .PkgPath + "`\n\n>" + .Description + "\n\n" + .PrimaryURL')" \
+                --label 'dependencies,security'
+            fi
+          done
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
 
   veracode-scan:
     runs-on: ubuntu-latest
