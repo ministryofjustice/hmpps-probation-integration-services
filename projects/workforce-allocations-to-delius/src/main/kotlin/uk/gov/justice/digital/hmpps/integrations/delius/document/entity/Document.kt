@@ -48,10 +48,10 @@ abstract class Document : Relatable {
     @Column(name = "alfresco_document_id")
     open var alfrescoId: String? = null
     open var sensitive: Boolean = false
-    open var lastSaved: ZonedDateTime = ZonedDateTime.now()
+    open var lastSaved: ZonedDateTime? = ZonedDateTime.now()
 
     @Column(name = "created_datetime")
-    open var createdDate: ZonedDateTime = ZonedDateTime.now()
+    open var createdDate: ZonedDateTime? = ZonedDateTime.now()
 }
 
 @Entity

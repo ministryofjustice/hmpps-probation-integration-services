@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocPerso
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.EventDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.OffenderDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 class DocumentServiceTest {
@@ -99,6 +100,42 @@ class DocumentServiceTest {
         whenever(documentRepository.findAllByPersonIdAndSoftDeletedIsFalse(1L)).thenReturn(eventDocuments)
         val documents = service.getDocumentsByCrn(crn)
         assertEquals(2, documents.size)
+    }
+
+    @Test
+    fun `get precons documents`() {
+        val crn = "D111111"
+        whenever(docPersonRepository.findByCrn(crn)).thenReturn(DocPerson(1L, crn, false, "docname.pdf", "123-123", ZonedDateTime.now()))
+
+        whenever(documentRepository.findAllByPersonIdAndSoftDeletedIsFalse(1L)).thenReturn(listOf())
+        val documents = service.getDocumentsByCrn(crn)
+        assertEquals(1, documents.size)
+    }
+
+    @Test
+    fun `get cps documents`() {
+        val crn = "D111111"
+        whenever(docPersonRepository.findByCrn(crn)).thenReturn(DocPerson(1L, crn, false, null, null, null))
+
+        whenever(documentRepository.findAllByPersonIdAndSoftDeletedIsFalse(1L)).thenReturn(listOf())
+
+        whenever(docEventRepository.findByPersonId(1L)).thenReturn(
+            listOf(
+                DocEvent(
+                    1L,
+                    Person(1L, crn, false),
+                    false,
+                    "1",
+                    null,
+                    null,
+                    "123-123",
+                    "filename.pdf",
+                    ZonedDateTime.now(),
+                )
+            )
+        )
+        val documents = service.getDocumentsByCrn(crn)
+        assertEquals(1, documents.size)
     }
 
     @Test
