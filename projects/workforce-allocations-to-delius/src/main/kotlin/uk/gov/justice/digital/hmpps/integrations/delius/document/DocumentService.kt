@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
+import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.entityNotFound
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 
 @Service
@@ -28,7 +29,7 @@ class DocumentService(
                     it.sensitive
                 )
             }
-        return documents.filter { it.relatedTo.name != ("ENTITY_NOT_FOUND") }
+        return documents.filter { it.relatedTo.name != entityNotFound }
     }
 
     fun getDocument(crn: String, id: String): ResponseEntity<Resource> {
