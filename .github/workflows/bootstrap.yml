@@ -4,6 +4,10 @@ name: Bootstrap
 on:
   workflow_dispatch:
     inputs:
+      issue_number:
+        description: Issue number (e.g. PI-123)
+        required: true
+        type: string
       project_name:
         description: Project name
         required: true
@@ -36,7 +40,7 @@ on:
         required: true
         type: boolean
       create_ingress:
-        description: Will the service provide a HTTP API that requires access from MOJ Cloud Platform?
+        description: Will the service provide a HTTP API?
         default: false
         required: true
         type: boolean
@@ -46,12 +50,17 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ inputs.create_oauth_client }}
     steps:
-      - run: |
-          echo Request HMPPS Auth credentials: https://mojdt.slack.com/archives/C02S71KUBED
-          echo '*Manual step required* - [Request HMPPS Auth Credentials](https://mojdt.slack.com/archives/C02S71KUBED)' >> $GITHUB_STEP_SUMMARY
-      - run: |
-          echo Store HMPPS Auth Credentials in GitHub secrets: https://github.com/ministryofjustice/hmpps-probation-integration-services/settings/secrets/actions/new
-          echo '*Manual step required* - [Store HMPPS Auth Credentials in GitHub secrets](https://github.com/ministryofjustice/hmpps-probation-integration-services/settings/secrets/actions/new)' >> $GITHUB_STEP_SUMMARY
+      - uses: actions/checkout@v3
+      - name: Create issue for manual steps
+        run: |
+          gh issue create \
+            --title "${{ inputs.issue_number }} Request HMPPS Auth client for ${{ inputs.project_name }}" \
+            --body '
+          - [ ] Clone Jira ticket: [HAAR-928](https://dsdmoj.atlassian.net/browse/HAAR-928)
+          - [ ] Raise in Slack: [#hmpps-auth-audit-registers](https://mojdt.slack.com/archives/C02S71KUBED)' \
+            --label bootstrap
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
   db-secrets-setup:
     runs-on: ubuntu-latest
@@ -70,25 +79,25 @@ jobs:
         env:
           NAME: ${{ steps.project_name.outputs.with_underscores_uppercase }}_DB_USERNAME
           VALUE: ${{ steps.project_name.outputs.with_underscores }}
-          GITHUB_TOKEN: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - uses: ./.github/actions/random-secret
         with:
           environment: test
           name: ${{ steps.project_name.outputs.with_underscores_uppercase }}_DB_PASSWORD
-          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - uses: ./.github/actions/random-secret
         with:
           environment: preprod
           name: ${{ steps.project_name.outputs.with_underscores_uppercase }}_DB_PASSWORD
-          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - uses: ./.github/actions/random-secret
         with:
           environment: prod
           name: ${{ steps.project_name.outputs.with_underscores_uppercase }}_DB_PASSWORD
-          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
   project-setup:
     if: ${{ inputs.project_template != 'No template - I want to create the project from scratch' }}
@@ -96,7 +105,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Render project template
         uses: ./.github/actions/render-project-template
@@ -114,20 +123,24 @@ jobs:
             .github/workflows/deploy.yml
             .github/workflows/end-to-end-tests.yml
             projects/${{ inputs.project_name }}/*
-          commit-message: Create initial project for ${{ inputs.project_name }}
-          title: Create initial project for ${{ inputs.project_name }}
+          commit-message: ${{ inputs.issue_number }} Create initial project for ${{ inputs.project_name }}
+          title: ${{ inputs.issue_number }} Create initial project for ${{ inputs.project_name }}
           body: Automated changes by [hmpps-probation-integration-services](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/bootstrap.yml)
           base: main
           branch: bootstrap/${{ inputs.project_name }}
           author: 'github-actions[bot] <github-actions[bot]@users.noreply.github.com>'
-          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - name: Output pull request
+      - name: Create issue for manual steps
         run: |
-          echo Merge pull request for initial project: ${{ steps.pr.outputs.pull-request-url }}
-          echo '*Manual step required* - [Merge pull request for initial project](${{ steps.pr.outputs.pull-request-url }})' >> $GITHUB_STEP_SUMMARY
+          gh issue create \
+            --title "${{ inputs.issue_number }} Complete project setup for ${{ inputs.project_name }}" \
+            --body "- [ ] Merge pull request: ${{ steps.pr.outputs.pull-request-url }}" \
+            --label bootstrap
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
-  terraform-setup:
+  delius-aws-setup:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -150,21 +163,27 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           path: hmpps-delius-core-terraform
-          commit-message: Create ECS service for ${{ inputs.project_name }}
-          title: Create ECS service for ${{ inputs.project_name }}
+          commit-message: ${{ inputs.issue_number }} Create ECS service for ${{ inputs.project_name }}
+          title: ${{ inputs.issue_number }} Create ECS service for ${{ inputs.project_name }}
           body: Automated changes by [hmpps-probation-integration-services](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/bootstrap.yml)
           branch: probation-integration/create-${{ inputs.project_name }}
-          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - name: Output pull request
+      - name: Create issue for manual steps
         run: |
-          echo Merge pull request for infrastructure code: ${{ steps.pr.outputs.pull-request-url }}
-          echo '*Manual step required* - [Merge pull request for infrastructure code](${{ steps.pr.outputs.pull-request-url }})' >> $GITHUB_STEP_SUMMARY
+          gh issue create \
+            --title "${{ inputs.issue_number }} Complete infrastructure setup for ${{ inputs.project_name }}" \
+            --body "- [ ] Merge pull request: ${{ steps.pr.outputs.pull-request-url }}" \
+            --label bootstrap
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
   sentry-setup:
     runs-on: ubuntu-latest
     if: ${{ inputs.create_sentry_project }}
     steps:
+      - uses: actions/checkout@v3
+
       # convert project name to environment variable (e.g. 'hello-world' -> 'HELLO_WORLD')
       - id: project_name
         run: echo "with_underscores=$(echo '${{ inputs.project_name }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')" >> $GITHUB_OUTPUT
@@ -197,19 +216,23 @@ jobs:
           echo "id=$id" >> $GITHUB_OUTPUT
 
       - name: Store DSN as GitHub secret
-        uses: mmercan/actions-set-secret@da197fb79d8c1ecedcde53fbd32a4b02ece5723a # v/4.0.0
-        with:
-          name: ${{ steps.project_name.outputs.with_underscores }}_SENTRY_DSN
-          value: ${{ steps.client_key.outputs.dsn }}
-          token: ${{ secrets.EXTERNAL_GITHUB_TOKEN }}
+        run: gh secret set "$NAME" --body "$VALUE" --app actions
+        env:
+          NAME: ${{ steps.project_name.outputs.with_underscores }}_SENTRY_DSN
+          VALUE: ${{ steps.client_key.outputs.dsn }}
+          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      # see https://github.com/getsentry/sentry/issues/18904
-      - run: |
-          echo Set up Sentry rate-limiting: https://sentry.io/settings/ministryofjustice/projects/${{ steps.project.outputs.slug }}/keys/${{ steps.client_key.outputs.id }}
-          echo '*Manual step required* - [Set up Sentry rate-limiting](https://sentry.io/settings/ministryofjustice/projects/${{ steps.project.outputs.slug }}/keys/${{ steps.client_key.outputs.id }})' >> $GITHUB_STEP_SUMMARY
-
-      # see https://github.com/getsentry/sentry/issues/36968
-      - run: |
-          echo Create a Sentry alert: https://sentry.io/organizations/ministryofjustice/alerts/new/issue/?createFromDuplicate=true&duplicateRuleId=11530702&project=prison-case-notes-to-probation
-          echo '*Manual step required* - [Create a Sentry alert](https://sentry.io/organizations/ministryofjustice/alerts/new/issue/?createFromDuplicate=true&duplicateRuleId=11530702&project=prison-case-notes-to-probation)' >> $GITHUB_STEP_SUMMARY
-          echo '> :memo: Note: the above link will duplicate an alert from `prison-case-notes-to-probation`.  Make sure to update the Project to `${{ inputs.project_name }}` in the drop-down.' >> $GITHUB_STEP_SUMMARY
+      - name: Create issue for manual steps
+        # see https://github.com/getsentry/sentry/issues/18904
+        # see https://github.com/getsentry/sentry/issues/36968
+        run: |
+          gh issue create \
+            --title "${{ inputs.issue_number }} Complete Sentry setup for ${{ inputs.project_name }}" \
+            --body '
+          - [ ] Configure rate limiting to 10/minute: https://sentry.io/settings/ministryofjustice/projects/${{ steps.project.outputs.slug }}/keys/${{ steps.client_key.outputs.id }}
+          - [ ] Create a Slack alert: https://sentry.io/organizations/ministryofjustice/alerts/new/issue/?createFromDuplicate=true&duplicateRuleId=11530702&project=prison-case-notes-to-probation
+          
+          > :memo: Note: the above link will duplicate an alert from `prison-case-notes-to-probation`.  Make sure to update the Project to `${{ inputs.project_name }}` in the drop-down.' \
+            --label bootstrap
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
