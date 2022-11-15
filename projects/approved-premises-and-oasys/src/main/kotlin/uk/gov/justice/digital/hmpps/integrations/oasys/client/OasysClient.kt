@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import uk.gov.justice.digital.hmpps.config.FeignOAuth2Config
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysAssessmentTimeline
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysNeedsDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceDetails
 
 @FeignClient(
@@ -22,4 +23,11 @@ interface OasysClient {
         @PathVariable("assessmentId") assessmentId: Long,
         @PathVariable("status") status: String,
     ): OasysOffenceDetails
+
+    @GetMapping(value = ["/ap/needs/{crn}/ALLOW/{assessmentId}/{status}"])
+    fun getNeedsDetails(
+        @PathVariable("crn") crn: String,
+        @PathVariable("assessmentId") assessmentId: Long,
+        @PathVariable("status") status: String,
+    ): OasysNeedsDetails
 }

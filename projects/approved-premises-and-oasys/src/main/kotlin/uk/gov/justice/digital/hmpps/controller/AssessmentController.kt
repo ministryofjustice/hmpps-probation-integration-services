@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
+import uk.gov.justice.digital.hmpps.model.NeedsDetails
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
 import uk.gov.justice.digital.hmpps.service.OasysAssessmentService
 
@@ -24,5 +25,13 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
         @PathVariable("crn") crn: String
     ): OffenceDetails {
         return oasysAssessmentService.getOffenceDetails(crn)
+    }
+
+    @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_ASSESSMENTS')")
+    @GetMapping(value = ["/needs-details/{crn}"])
+    fun getNeeds(
+        @PathVariable("crn") crn: String
+    ): NeedsDetails {
+        return oasysAssessmentService.getNeedsDetails(crn)
     }
 }

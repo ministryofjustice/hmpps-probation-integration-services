@@ -8,14 +8,14 @@ data class OasysOffenceDetails(
 )
 
 data class OasysOffenceAssessment(
-    val assessmentPk: Long,
-    val assessmentType: String,
-    val dateCompleted: ZonedDateTime? = null,
-    val assessorSignedDate: ZonedDateTime? = null,
-    val initiationDate: ZonedDateTime,
-    val assessmentStatus: String,
-    val superStatus: String? = null,
-    val laterWIPAssessmentExists: Boolean? = null,
+    override val assessmentPk: Long,
+    override val assessmentType: String,
+    override val dateCompleted: ZonedDateTime? = null,
+    override val assessorSignedDate: ZonedDateTime? = null,
+    override val initiationDate: ZonedDateTime,
+    override val assessmentStatus: String,
+    override val superStatus: String? = null,
+    override val laterWIPAssessmentExists: Boolean? = null,
     val offenceAnalysis: String? = null,
     val othersInvolved: String? = null,
     val issueContributingToRisk: String? = null,
@@ -25,4 +25,4 @@ data class OasysOffenceAssessment(
     val victimInfo: String? = null,
     val patternOffending: String? = null,
     val acceptsResponsibility: String? = null
-)
+) : OasysAssessment()
