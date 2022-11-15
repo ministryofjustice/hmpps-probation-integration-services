@@ -17,13 +17,23 @@ class DocumentService(
 
     fun getDocumentsByCrn(crn: String): List<PersonDocument> {
         val person = personRepository.findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
-        return documentRepository.findAllByPersonId(person.id)
-            .map { PersonDocument(it.alfrescoId, it.name, it.findRelatedTo(), it.lastSaved, it.createdDate, it.sensitive) }
+        val documents = documentRepository.findAllByPersonIdAndSoftDeletedIsFalse(person.id)
+            .map {
+                PersonDocument(
+                    it.alfrescoId,
+                    it.name,
+                    it.findRelatedTo(),
+                    it.lastSaved,
+                    it.createdDate,
+                    it.sensitive
+                )
+            }
+        return documents.filter { it.relatedTo.name != ("ENTITY_NOT_FOUND") }
     }
 
     fun getDocument(crn: String, id: String): ResponseEntity<Resource> {
         val person = personRepository.findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
-        val documentMetaData = documentRepository.findByAlfrescoId(id)
+        val documentMetaData = documentRepository.findByAlfrescoIdAndSoftDeletedIsFalse(id)
         if (person.id != documentMetaData?.personId) {
             throw ConflictException("Document and CRN do not match")
         }

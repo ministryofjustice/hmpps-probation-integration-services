@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.document.entity
 
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.NotFound
+import org.hibernate.annotations.NotFoundAction
 import org.hibernate.annotations.Type
 import uk.gov.justice.digital.hmpps.integrations.delius.document.Relatable
 import uk.gov.justice.digital.hmpps.integrations.delius.document.RelatedTo
@@ -152,13 +154,14 @@ class CaseAllocationDocument(
 class ContactDocument(
     @JoinColumn(name = "primary_key_id", referencedColumnName = "contact_id", insertable = false, updatable = false)
     @ManyToOne
-    val contact: DocContact
+    @NotFound(action = NotFoundAction.IGNORE)
+    val contact: DocContact?
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.CONTACT,
-            contact.type.description,
-            contact.event?.toDocumentEvent()
+            contact?.type?.description?:"ENTITY_NOT_FOUND",
+            contact?.event?.toDocumentEvent()
         )
 }
 
