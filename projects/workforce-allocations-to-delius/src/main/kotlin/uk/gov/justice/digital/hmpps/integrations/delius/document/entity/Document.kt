@@ -82,7 +82,7 @@ class EventDocument(
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.EVENT,
-            event?.disposal?.type?.description ?: entityNotFound,
+            if (event == null) entityNotFound else event.disposal?.type?.description ?: "",
             event?.toDocumentEvent()
         )
 }
