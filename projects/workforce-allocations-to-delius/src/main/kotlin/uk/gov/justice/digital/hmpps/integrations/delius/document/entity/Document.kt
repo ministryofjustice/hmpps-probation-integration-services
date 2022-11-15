@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.document.entity
 
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.NotFound
+import org.hibernate.annotations.NotFoundAction
 import org.hibernate.annotations.Type
 import uk.gov.justice.digital.hmpps.integrations.delius.document.Relatable
 import uk.gov.justice.digital.hmpps.integrations.delius.document.RelatedTo
@@ -47,6 +49,7 @@ abstract class Document : Relatable {
     open var alfrescoId: String? = null
     open var sensitive: Boolean = false
     open var lastSaved: ZonedDateTime = ZonedDateTime.now()
+
     @Column(name = "created_datetime")
     open var createdDate: ZonedDateTime = ZonedDateTime.now()
 }
@@ -65,19 +68,22 @@ class OffenderAddress : Document() {
     override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.OFFENDER_ADDRESS)
 }
 
+const val entityNotFound = "ENTITY_NOT_FOUND"
+
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("EVENT")
 class EventDocument(
     @JoinColumn(name = "primary_key_id", referencedColumnName = "event_id", insertable = false, updatable = false)
     @ManyToOne
-    val event: DocEvent
+    @NotFound(action = NotFoundAction.IGNORE)
+    val event: DocEvent?
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.EVENT,
-            event.disposal?.type?.description ?: "",
-            event.toDocumentEvent()
+            if (event == null) entityNotFound else event.disposal?.type?.description ?: "",
+            event?.toDocumentEvent()
         )
 }
 
@@ -99,13 +105,14 @@ class ApprovedPremisesReferralDocument(
         updatable = false
     )
     @ManyToOne
-    val approvedPremisesReferral: ApprovedPremisesReferral
+    @NotFound(action = NotFoundAction.IGNORE)
+    val approvedPremisesReferral: ApprovedPremisesReferral?
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.APPROVED_PREMISES_REFERRAL,
-            approvedPremisesReferral.category.description,
-            approvedPremisesReferral.event.toDocumentEvent()
+            approvedPremisesReferral?.category?.description ?: entityNotFound,
+            approvedPremisesReferral?.event?.toDocumentEvent()
         )
 }
 
@@ -115,13 +122,14 @@ class ApprovedPremisesReferralDocument(
 class AssessmentDocument(
     @JoinColumn(name = "primary_key_id", referencedColumnName = "assessment_id", insertable = false, updatable = false)
     @ManyToOne
-    val assessment: Assessment
+    @NotFound(action = NotFoundAction.IGNORE)
+    val assessment: Assessment?
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.ASSESSMENT,
-            assessment.type.description,
-            assessment.referral?.event?.toDocumentEvent()
+            assessment?.type?.description ?: entityNotFound,
+            assessment?.referral?.event?.toDocumentEvent()
         )
 }
 
@@ -136,13 +144,14 @@ class CaseAllocationDocument(
         updatable = false
     )
     @ManyToOne
-    val allocation: CaseAllocation
+    @NotFound(action = NotFoundAction.IGNORE)
+    val allocation: CaseAllocation?
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.CASE_ALLOCATION,
-            allocation.event.disposal?.type?.description ?: "",
-            allocation.event.toDocumentEvent()
+            allocation?.event?.disposal?.type?.description ?: entityNotFound,
+            allocation?.event?.toDocumentEvent()
         )
 }
 
@@ -152,13 +161,14 @@ class CaseAllocationDocument(
 class ContactDocument(
     @JoinColumn(name = "primary_key_id", referencedColumnName = "contact_id", insertable = false, updatable = false)
     @ManyToOne
-    val contact: DocContact
+    @NotFound(action = NotFoundAction.IGNORE)
+    val contact: DocContact?
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.CONTACT,
-            contact.type.description,
-            contact.event?.toDocumentEvent()
+            contact?.type?.description ?: entityNotFound,
+            contact?.event?.toDocumentEvent()
         )
 }
 
@@ -173,13 +183,14 @@ class CourtReportDocument(
         updatable = false
     )
     @ManyToOne
-    val courtReport: CourtReport
+    @NotFound(action = NotFoundAction.IGNORE)
+    val courtReport: CourtReport?
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.COURT_REPORT,
-            courtReport.type.description,
-            courtReport.courtAppearance?.event?.toDocumentEvent()
+            courtReport?.type?.description ?: entityNotFound,
+            courtReport?.courtAppearance?.event?.toDocumentEvent()
         )
 }
 
@@ -201,13 +212,14 @@ class NsiDocument(
         updatable = false
     )
     @ManyToOne
-    val nsi: Nsi
+    @NotFound(action = NotFoundAction.IGNORE)
+    val nsi: Nsi?
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.NSI,
-            nsi.type.description,
-            nsi.event?.toDocumentEvent()
+            nsi?.type?.description ?: entityNotFound,
+            nsi?.event?.toDocumentEvent()
         )
 }
 
@@ -236,13 +248,14 @@ class ReferralDocument(
         updatable = false
     )
     @ManyToOne
-    val referral: Referral
+    @NotFound(action = NotFoundAction.IGNORE)
+    val referral: Referral?
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.REFERRAL,
-            referral.type.description,
-            referral.event.toDocumentEvent()
+            referral?.type?.description ?: entityNotFound,
+            referral?.event?.toDocumentEvent()
         )
 }
 
@@ -264,12 +277,13 @@ class UPWAppointmentDocument(
         updatable = false
     )
     @ManyToOne
-    val upwAppointment: UpwAppointment
+    @NotFound(action = NotFoundAction.IGNORE)
+    val upwAppointment: UpwAppointment?
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.UPW_APPOINTMENT,
-            upwAppointment.upwDetails?.disposal?.type?.description ?: "Unpaid work appointment",
-            upwAppointment.upwDetails?.disposal?.event?.toDocumentEvent()
+            upwAppointment?.upwDetails?.disposal?.type?.description ?: entityNotFound,
+            upwAppointment?.upwDetails?.disposal?.event?.toDocumentEvent()
         )
 }

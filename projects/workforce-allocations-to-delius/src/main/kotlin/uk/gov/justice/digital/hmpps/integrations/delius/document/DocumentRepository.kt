@@ -5,7 +5,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.Document
 
 interface DocumentRepository : JpaRepository<Document, Long> {
 
-    fun findAllByPersonId(personId: Long): List<Document>
+    fun findAllByPersonIdAndSoftDeletedIsFalse(personId: Long): List<Document>
 
-    fun findByAlfrescoId(id: String): Document?
+    fun findByAlfrescoIdAndSoftDeletedIsFalse(id: String): Document?
 }
