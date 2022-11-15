@@ -4,17 +4,17 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceDetails
 import java.time.ZonedDateTime
 
 data class OffenceDetails(
-    val assessmentId: Long,
-    val assessmentType: String,
-    val dateCompleted: ZonedDateTime? = null,
-    val assessorSignedDate: ZonedDateTime? = null,
-    val initiationDate: ZonedDateTime,
-    val assessmentStatus: String,
-    val superStatus: String? = null,
-    val laterWIPAssessmentExists: Boolean? = null,
-    val limitedAccessOffender: Boolean,
+    override val assessmentId: Long,
+    override val assessmentType: String,
+    override val dateCompleted: ZonedDateTime? = null,
+    override val assessorSignedDate: ZonedDateTime? = null,
+    override val initiationDate: ZonedDateTime,
+    override val assessmentStatus: String,
+    override val superStatus: String? = null,
+    override val laterWIPAssessmentExists: Boolean? = null,
+    override val limitedAccessOffender: Boolean,
     val offence: Offence? = null
-) {
+) : Assessment() {
     companion object {
         fun from(oasysOffenceDetails: OasysOffenceDetails): OffenceDetails {
             with(oasysOffenceDetails.assessments[0]) {
