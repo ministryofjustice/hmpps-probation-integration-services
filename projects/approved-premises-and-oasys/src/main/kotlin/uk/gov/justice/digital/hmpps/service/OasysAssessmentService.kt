@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.client.OasysClient
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
 import uk.gov.justice.digital.hmpps.model.NeedsDetails
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
+import uk.gov.justice.digital.hmpps.model.RiskManagementPlanDetails
 
 @Service
 class OasysAssessmentService(private var oasysClient: OasysClient) {
@@ -33,5 +34,10 @@ class OasysAssessmentService(private var oasysClient: OasysClient) {
     fun getNeedsDetails(crn: String): NeedsDetails {
         val latestAssessment = getLatestAssessment(crn)
         return NeedsDetails.from(oasysClient.getNeedsDetails(crn, latestAssessment.assessmentPk, latestAssessment.status))
+    }
+
+    fun getRiskManagementPlanDetails(crn: String): RiskManagementPlanDetails {
+        val latestAssessment = getLatestAssessment(crn)
+        return RiskManagementPlanDetails.from(oasysClient.getRiskManagementPlanDetails(crn, latestAssessment.assessmentPk, latestAssessment.status))
     }
 }
