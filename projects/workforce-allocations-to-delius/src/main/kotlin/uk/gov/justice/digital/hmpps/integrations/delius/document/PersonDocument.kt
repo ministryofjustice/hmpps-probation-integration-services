@@ -6,8 +6,8 @@ data class PersonDocument(
     val id: String?,
     val name: String,
     val relatedTo: RelatedTo,
-    val dateSaved: ZonedDateTime,
-    val dateCreated: ZonedDateTime,
+    val dateSaved: ZonedDateTime?,
+    val dateCreated: ZonedDateTime?,
     val sensitive: Boolean
 )
 
@@ -36,8 +36,8 @@ enum class RelatedType(private val displayName: String = "") {
     CASE_ALLOCATION,
     CONTACT,
     COURT_REPORT,
-    DRUGS_TEST,
-    EQUALITY,
+    CPSPACK("Crown Prosecution Service case pack"),
+    PRECONS("PNC previous convictions"),
     EVENT,
     INSTITUTIONAL_REPORT,
     NSI("Non Statutory Intervention"),
