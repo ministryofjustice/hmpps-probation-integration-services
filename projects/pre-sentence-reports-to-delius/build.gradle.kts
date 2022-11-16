@@ -20,7 +20,7 @@ dependencies {
     implementation(libs.amazon.sqs)
     implementation(libs.openfeign)
     implementation(libs.sentry)
-    implementation(libs.swagger.docs)
+    implementation(libs.bundles.swagger.docs)
 
     dev(project(":libs:dev-tools"))
     dev("org.springframework.boot:spring-boot-starter-activemq")
