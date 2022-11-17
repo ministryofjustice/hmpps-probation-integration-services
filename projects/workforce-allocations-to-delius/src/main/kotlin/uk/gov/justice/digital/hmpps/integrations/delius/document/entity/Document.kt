@@ -58,7 +58,7 @@ abstract class Document : Relatable {
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("OFFENDER")
 class OffenderDocument : Document() {
-    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.OFFENDER)
+    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.PERSON, "Person")
 }
 
 @Entity
@@ -197,8 +197,19 @@ class CourtReportDocument(
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("INSTITUTIONAL_REPORT")
-class InstitutionalReportDocument() : Document() {
-    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.INSTITUTIONAL_REPORT)
+class InstitutionalReportDocument(
+    @JoinColumn(
+        name = "primary_key_id",
+        referencedColumnName = "institutional_report_id",
+        insertable = false,
+        updatable = false
+    )
+    @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    val institutionalReport: InstitutionalReport?
+) : Document() {
+
+    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.INSTITUTIONAL_REPORT, institutionalReport?.type?.description ?: entityNotFound)
 }
 
 @Entity
