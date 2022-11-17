@@ -38,7 +38,7 @@ class DocumentService(
                 person.preconDocName!!,
                 RelatedTo(RelatedType.PRECONS, "Pre Cons"),
                 null,
-                person.preconDocCreatedDate!!,
+                person.preconDocCreatedDate,
                 false
             )
         }
@@ -61,7 +61,7 @@ class DocumentService(
                         it.toDocumentEvent()
                     ),
                     null,
-                    it.cpsCreatedDate!!,
+                    it.cpsCreatedDate,
                     false
                 )
             }
