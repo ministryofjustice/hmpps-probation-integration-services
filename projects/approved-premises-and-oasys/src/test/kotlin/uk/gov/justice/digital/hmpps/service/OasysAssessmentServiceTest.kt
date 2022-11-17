@@ -25,6 +25,8 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceAssessm
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskManagementPlanAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskManagementPlanDetails
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRoshSummary
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRoshSummaryAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
 import uk.gov.justice.digital.hmpps.model.Needs
 import uk.gov.justice.digital.hmpps.model.NeedsDetails
@@ -32,6 +34,8 @@ import uk.gov.justice.digital.hmpps.model.Offence
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
 import uk.gov.justice.digital.hmpps.model.RiskManagementPlan
 import uk.gov.justice.digital.hmpps.model.RiskManagementPlanDetails
+import uk.gov.justice.digital.hmpps.model.RoshSummary
+import uk.gov.justice.digital.hmpps.model.RoshSummaryDetails
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -236,5 +240,61 @@ internal class OasysAssessmentServiceTest {
             )
         )
         assertThat(riskManagementPlanDetails).isEqualTo(expectedRiskManagementPlanDetails)
+    }
+
+    @Test
+    fun `should not attempt to retrieve rosh summary details where CRN does not exist`() {
+        // Given
+        val crn = "D123456"
+        val request = Request.create(
+            Request.HttpMethod.GET, "url",
+            HashMap(), null, RequestTemplate()
+        )
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+
+        // When
+        val exception = assertThrows<NotFoundException> {
+            oasysAssessmentService.getRoshSummary(crn)
+        }
+
+        // Then
+        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        verify(never()) { oasysClient.getRoshSummary(any(), any(), any()) }
+    }
+
+    @Test
+    fun `should return RoshSummary for valid CRN`() {
+        // Given
+        val oasysRoshSummary = OasysRoshSummary(
+            limitedAccessOffender = false,
+            listOf(
+                OasysRoshSummaryAssessment(
+                    assessmentPk = assessmentPk,
+                    assessmentType = assessmentType,
+                    initiationDate = now,
+                    assessmentStatus = status,
+                    dateCompleted = now,
+                    whoAtRisk = "I am!"
+                )
+            )
+        )
+        whenever(oasysClient.getRoshSummary(crn, assessmentPk, status)).thenReturn(oasysRoshSummary)
+
+        // When
+        val roshSummary = oasysAssessmentService.getRoshSummary(crn)
+
+        // Then
+        val expectedRoshSummary = RoshSummaryDetails(
+            assessmentId = assessmentPk,
+            assessmentType = assessmentType,
+            initiationDate = now,
+            dateCompleted = now,
+            assessmentStatus = status,
+            limitedAccessOffender = false,
+            roshSummary = RoshSummary(
+                whoIsAtRisk = "I am!"
+            )
+        )
+        assertThat(roshSummary).isEqualTo(expectedRoshSummary)
     }
 }

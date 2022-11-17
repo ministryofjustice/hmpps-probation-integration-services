@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssess
 import uk.gov.justice.digital.hmpps.model.NeedsDetails
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
 import uk.gov.justice.digital.hmpps.model.RiskManagementPlanDetails
+import uk.gov.justice.digital.hmpps.model.RoshSummaryDetails
 
 @Service
 class OasysAssessmentService(private var oasysClient: OasysClient) {
@@ -39,5 +40,10 @@ class OasysAssessmentService(private var oasysClient: OasysClient) {
     fun getRiskManagementPlanDetails(crn: String): RiskManagementPlanDetails {
         val latestAssessment = getLatestAssessment(crn)
         return RiskManagementPlanDetails.from(oasysClient.getRiskManagementPlanDetails(crn, latestAssessment.assessmentPk, latestAssessment.status))
+    }
+
+    fun getRoshSummary(crn: String): RoshSummaryDetails {
+        val latestAssessment = getLatestAssessment(crn)
+        return RoshSummaryDetails.from(oasysClient.getRoshSummary(crn, latestAssessment.assessmentPk, latestAssessment.status))
     }
 }
