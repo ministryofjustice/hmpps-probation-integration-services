@@ -284,8 +284,19 @@ class ReferralDocument(
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("REGISTRATION")
-class RegistrationDocument : Document() {
-    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.REGISTRATION)
+class RegistrationDocument(
+    @JoinColumn(
+        name = "primary_key_id",
+        referencedColumnName = "registration_id",
+        insertable = false,
+        updatable = false
+    )
+    @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    val registration: Registration?
+) : Document() {
+
+    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.REGISTRATION, registration?.type?.description ?: entityNotFound)
 }
 
 @Entity
