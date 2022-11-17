@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.config.FeignOAuth2Config
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysAssessmentTimeline
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysNeedsDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceDetails
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskManagementPlanDetails
 
 @FeignClient(
     name = "ords-oasys",
@@ -30,4 +31,11 @@ interface OasysClient {
         @PathVariable("assessmentId") assessmentId: Long,
         @PathVariable("status") status: String,
     ): OasysNeedsDetails
+
+    @GetMapping(value = ["/ap/rmp/{crn}/ALLOW/{assessmentId}/{status}"])
+    fun getRiskManagementPlanDetails(
+        @PathVariable("crn") crn: String,
+        @PathVariable("assessmentId") assessmentId: Long,
+        @PathVariable("status") status: String,
+    ): OasysRiskManagementPlanDetails
 }
