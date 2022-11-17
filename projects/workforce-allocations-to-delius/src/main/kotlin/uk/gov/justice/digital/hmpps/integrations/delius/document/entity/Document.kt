@@ -237,8 +237,19 @@ class NsiDocument(
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("PERSONAL_CIRCUMSTANCE")
-class PersonalCircumstanceDocument : Document() {
-    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.PERSONAL_CIRCUMSTANCE)
+class PersonalCircumstanceDocument(
+    @JoinColumn(
+        name = "primary_key_id",
+        referencedColumnName = "personal_circumstance_id",
+        insertable = false,
+        updatable = false
+    )
+    @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    val personalCircumstance: PersonalCircumstance?
+) : Document() {
+
+    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.PERSONAL_CIRCUMSTANCE, personalCircumstance?.type?.description ?: entityNotFound)
 }
 
 @Entity
@@ -273,8 +284,19 @@ class ReferralDocument(
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("REGISTRATION")
-class RegistrationDocument : Document() {
-    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.REGISTRATION)
+class RegistrationDocument(
+    @JoinColumn(
+        name = "primary_key_id",
+        referencedColumnName = "registration_id",
+        insertable = false,
+        updatable = false
+    )
+    @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    val registration: Registration?
+) : Document() {
+
+    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.REGISTRATION, registration?.type?.description ?: entityNotFound)
 }
 
 @Entity
