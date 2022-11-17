@@ -18,5 +18,4 @@ class InstitutionalReport(
     @JoinColumn(name = "institution_report_type_id", updatable = false)
     val type: StandardReference,
 
-) {
-}
+)

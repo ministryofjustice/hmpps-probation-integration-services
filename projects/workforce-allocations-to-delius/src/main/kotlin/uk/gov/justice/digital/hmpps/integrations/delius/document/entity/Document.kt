@@ -209,7 +209,6 @@ class InstitutionalReportDocument(
     val institutionalReport: InstitutionalReport?
 ) : Document() {
 
-
     override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.INSTITUTIONAL_REPORT, institutionalReport?.type?.description ?: entityNotFound)
 }
 

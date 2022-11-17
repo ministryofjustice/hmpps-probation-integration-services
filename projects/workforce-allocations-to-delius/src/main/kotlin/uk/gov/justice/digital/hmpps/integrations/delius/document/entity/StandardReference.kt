@@ -9,7 +9,7 @@ import javax.persistence.Table
 @Entity
 @Table(name = "R_STANDARD_REFERENCE_LIST")
 @Immutable
-class StandardReference (
+class StandardReference(
     @Id @Column(name = "standard_reference_list_id")
     var id: Long,
 
