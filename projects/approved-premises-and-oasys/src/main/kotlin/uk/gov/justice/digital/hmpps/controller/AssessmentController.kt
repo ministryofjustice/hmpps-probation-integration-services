@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssess
 import uk.gov.justice.digital.hmpps.model.NeedsDetails
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
 import uk.gov.justice.digital.hmpps.model.RiskManagementPlanDetails
+import uk.gov.justice.digital.hmpps.model.RoshSummaryDetails
 import uk.gov.justice.digital.hmpps.service.OasysAssessmentService
 
 @RestController
@@ -42,5 +43,13 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
         @PathVariable("crn") crn: String
     ): RiskManagementPlanDetails {
         return oasysAssessmentService.getRiskManagementPlanDetails(crn)
+    }
+
+    @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_ASSESSMENTS')")
+    @GetMapping(value = ["/rosh-summary/{crn}"])
+    fun getRoshSummary(
+        @PathVariable("crn") crn: String
+    ): RoshSummaryDetails {
+        return oasysAssessmentService.getRoshSummary(crn)
     }
 }
