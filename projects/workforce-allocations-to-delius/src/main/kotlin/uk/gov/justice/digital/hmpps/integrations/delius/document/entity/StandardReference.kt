@@ -7,7 +7,7 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name = "R_STANDARD_REFERENCE_LIST")
+@Table(name = "r_standard_reference_list")
 @Immutable
 class StandardReference(
     @Id @Column(name = "standard_reference_list_id")
