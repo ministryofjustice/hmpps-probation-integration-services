@@ -10,7 +10,7 @@ import javax.persistence.Table
 
 @Entity
 @Immutable
-class Registration (
+class Registration(
     @Id @Column(name = "registration_id")
     var id: Long,
 
