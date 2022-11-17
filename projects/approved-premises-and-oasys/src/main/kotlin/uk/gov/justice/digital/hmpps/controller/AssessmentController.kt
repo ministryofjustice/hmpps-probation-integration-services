@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
 import uk.gov.justice.digital.hmpps.model.NeedsDetails
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
+import uk.gov.justice.digital.hmpps.model.RiskManagementPlanDetails
 import uk.gov.justice.digital.hmpps.service.OasysAssessmentService
 
 @RestController
@@ -33,5 +34,13 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
         @PathVariable("crn") crn: String
     ): NeedsDetails {
         return oasysAssessmentService.getNeedsDetails(crn)
+    }
+
+    @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_ASSESSMENTS')")
+    @GetMapping(value = ["/risk-management-plan/{crn}"])
+    fun getRiskManagementPlan(
+        @PathVariable("crn") crn: String
+    ): RiskManagementPlanDetails {
+        return oasysAssessmentService.getRiskManagementPlanDetails(crn)
     }
 }

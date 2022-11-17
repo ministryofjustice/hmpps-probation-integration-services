@@ -23,11 +23,15 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysNeedsAssessmen
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysNeedsDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceDetails
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskManagementPlanAssessment
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskManagementPlanDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
 import uk.gov.justice.digital.hmpps.model.Needs
 import uk.gov.justice.digital.hmpps.model.NeedsDetails
 import uk.gov.justice.digital.hmpps.model.Offence
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
+import uk.gov.justice.digital.hmpps.model.RiskManagementPlan
+import uk.gov.justice.digital.hmpps.model.RiskManagementPlanDetails
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -176,5 +180,61 @@ internal class OasysAssessmentServiceTest {
             )
         )
         assertThat(needsDetails).isEqualTo(expectedNeedsDetails)
+    }
+
+    @Test
+    fun `should not attempt to retrieve risk management plan details where CRN does not exist`() {
+        // Given
+        val crn = "D123456"
+        val request = Request.create(
+            Request.HttpMethod.GET, "url",
+            HashMap(), null, RequestTemplate()
+        )
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+
+        // When
+        val exception = assertThrows<NotFoundException> {
+            oasysAssessmentService.getRiskManagementPlanDetails(crn)
+        }
+
+        // Then
+        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        verify(never()) { oasysClient.getRiskManagementPlanDetails(any(), any(), any()) }
+    }
+
+    @Test
+    fun `should return RiskManagementPlanDetails for valid CRN`() {
+        // Given
+        val oasysRiskManagementPlanDetails = OasysRiskManagementPlanDetails(
+            limitedAccessOffender = false,
+            listOf(
+                OasysRiskManagementPlanAssessment(
+                    assessmentPk = assessmentPk,
+                    assessmentType = assessmentType,
+                    initiationDate = now,
+                    assessmentStatus = status,
+                    dateCompleted = now,
+                    keyInformationAboutCurrentSituation = "key info"
+                )
+            )
+        )
+        whenever(oasysClient.getRiskManagementPlanDetails(crn, assessmentPk, status)).thenReturn(oasysRiskManagementPlanDetails)
+
+        // When
+        val riskManagementPlanDetails = oasysAssessmentService.getRiskManagementPlanDetails(crn)
+
+        // Then
+        val expectedRiskManagementPlanDetails = RiskManagementPlanDetails(
+            assessmentId = assessmentPk,
+            assessmentType = assessmentType,
+            initiationDate = now,
+            dateCompleted = now,
+            assessmentStatus = status,
+            limitedAccessOffender = false,
+            riskManagementPlan = RiskManagementPlan(
+                keyInformationAboutCurrentSituation = "key info"
+            )
+        )
+        assertThat(riskManagementPlanDetails).isEqualTo(expectedRiskManagementPlanDetails)
     }
 }
