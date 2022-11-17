@@ -41,7 +41,7 @@ enum class RelatedType(private val displayName: String = "") {
     EVENT,
     INSTITUTIONAL_REPORT,
     NSI("Non Statutory Intervention"),
-    OFFENDER,
+    PERSON,
     OFFENDER_ADDRESS,
     PERSONAL_CONTACT,
     PERSONAL_CIRCUMSTANCE,

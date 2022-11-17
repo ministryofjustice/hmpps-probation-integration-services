@@ -36,7 +36,7 @@ class DocumentService(
             documents += PersonDocument(
                 person.preconDocId,
                 person.preconDocName!!,
-                RelatedTo(RelatedType.PRECONS),
+                RelatedTo(RelatedType.PRECONS, "Pre Cons"),
                 null,
                 person.preconDocCreatedDate!!,
                 false
@@ -57,7 +57,7 @@ class DocumentService(
                     it.cpsDocumentName!!,
                     RelatedTo(
                         RelatedType.CPSPACK,
-                        it.disposal?.type?.description ?: "",
+                        "CPS Pack",
                         it.toDocumentEvent()
                     ),
                     null,
