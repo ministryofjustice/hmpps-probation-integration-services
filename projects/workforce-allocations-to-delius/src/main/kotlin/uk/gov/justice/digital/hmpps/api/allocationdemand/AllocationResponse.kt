@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.api.allocationdemand
 
-import com.fasterxml.jackson.annotation.JsonValue
 import java.time.LocalDate
 
 data class AllocationResponse(
@@ -30,7 +29,7 @@ data class AllocationDemandResponse(val cases: List<AllocationResponse>)
 data class ProbationStatus(
     val status: ManagementStatus,
     val previousManager: Manager? = null
-){
+) {
     val description = status.description
 }
 
