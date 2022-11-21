@@ -30,11 +30,12 @@ data class AllocationDemandResponse(val cases: List<AllocationResponse>)
 data class ProbationStatus(
     val status: ManagementStatus,
     val previousManager: Manager? = null
-)
+){
+    val description = status.description
+}
 
 enum class ManagementStatus(
-    @JsonValue
-    val status: String
+    val description: String
 ) {
     CURRENTLY_MANAGED("Currently managed"),
     PREVIOUSLY_MANAGED("Previously managed"),
