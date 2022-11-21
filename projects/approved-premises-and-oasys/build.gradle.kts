@@ -26,7 +26,6 @@ dependencies {
 
 configure<ClassPathExtension> {
     jacocoExclusions = listOf(
-        "**/integrations/oasys/model/**",
         "**/model/**",
         "**/config/**",
         "**/AppKt.class"
