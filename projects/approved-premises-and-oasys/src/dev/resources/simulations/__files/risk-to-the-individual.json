@@ -30,7 +30,7 @@
       "concernsRiskOfSuicide": "[Yes]",
       "currentConcernsBreachOfTrustText": "Current Breach of Trust",
       "currentConcernsBreachOfTrust": "[Yes]",
-      "riskOfSeriousHarm": "8",
+      "riskOfSeriousHarm": "R8.4.1 RoSH",
       "previousVulnerability": "Previous Vulnerability",
       "currentVulnerability": "Current Vulnerability",
       "previousCustodyHostelCoping": "Previous custody or hostel concerns",
