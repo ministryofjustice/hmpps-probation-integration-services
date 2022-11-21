@@ -25,6 +25,8 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceAssessm
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskManagementPlanAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskManagementPlanDetails
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskToTheIndividualAssessment
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskToTheIndividualDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRoshSummary
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRoshSummaryAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
@@ -34,6 +36,8 @@ import uk.gov.justice.digital.hmpps.model.Offence
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
 import uk.gov.justice.digital.hmpps.model.RiskManagementPlan
 import uk.gov.justice.digital.hmpps.model.RiskManagementPlanDetails
+import uk.gov.justice.digital.hmpps.model.RiskToTheIndividual
+import uk.gov.justice.digital.hmpps.model.RiskToTheIndividualDetails
 import uk.gov.justice.digital.hmpps.model.RoshSummary
 import uk.gov.justice.digital.hmpps.model.RoshSummaryDetails
 import java.time.ZonedDateTime
@@ -72,10 +76,7 @@ internal class OasysAssessmentServiceTest {
     fun `should not attempt to retrieve offence details where CRN does not exist`() {
         // Given
         val crn = "D123456"
-        val request = Request.create(
-            Request.HttpMethod.GET, "url",
-            HashMap(), null, RequestTemplate()
-        )
+        val request = createRequest()
         whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
 
         // When
@@ -131,10 +132,7 @@ internal class OasysAssessmentServiceTest {
     fun `should not attempt to retrieve needs details where CRN does not exist`() {
         // Given
         val crn = "D123456"
-        val request = Request.create(
-            Request.HttpMethod.GET, "url",
-            HashMap(), null, RequestTemplate()
-        )
+        val request = createRequest()
         whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
 
         // When
@@ -190,10 +188,7 @@ internal class OasysAssessmentServiceTest {
     fun `should not attempt to retrieve risk management plan details where CRN does not exist`() {
         // Given
         val crn = "D123456"
-        val request = Request.create(
-            Request.HttpMethod.GET, "url",
-            HashMap(), null, RequestTemplate()
-        )
+        val request = createRequest()
         whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
 
         // When
@@ -246,10 +241,7 @@ internal class OasysAssessmentServiceTest {
     fun `should not attempt to retrieve rosh summary details where CRN does not exist`() {
         // Given
         val crn = "D123456"
-        val request = Request.create(
-            Request.HttpMethod.GET, "url",
-            HashMap(), null, RequestTemplate()
-        )
+        val request = createRequest()
         whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
 
         // When
@@ -296,5 +288,71 @@ internal class OasysAssessmentServiceTest {
             )
         )
         assertThat(roshSummary).isEqualTo(expectedRoshSummary)
+    }
+
+    @Test
+    fun `should not attempt to retrieve risk to the individual details where CRN does not exist`() {
+        // Given
+        val crn = "D123456"
+        val request = createRequest()
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+
+        // When
+        val exception = assertThrows<NotFoundException> {
+            oasysAssessmentService.getRiskToIndividual(crn)
+        }
+
+        // Then
+        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        verify(never()) { oasysClient.getRiskToTheIndividual(any(), any(), any()) }
+    }
+
+    @Test
+    fun `should return RiskToIndividual for valid CRN`() {
+        // Given
+        val oasysRiskToTheIndividualAssessmentDetails = OasysRiskToTheIndividualDetails(
+            limitedAccessOffender = false,
+            listOf(
+                OasysRiskToTheIndividualAssessment(
+                    assessmentPk = assessmentPk,
+                    assessmentType = assessmentType,
+                    initiationDate = now,
+                    assessmentStatus = status,
+                    dateCompleted = now,
+                    concernsBreachOfTrust = "trust has been breached",
+                    concernsRiskOfSuicide = "risk is present",
+                    previousVulnerability = "previously vulnerable",
+                    currentConcernsBreachOfTrust = "concerns"
+                )
+            )
+        )
+        whenever(oasysClient.getRiskToTheIndividual(crn, assessmentPk, status)).thenReturn(oasysRiskToTheIndividualAssessmentDetails)
+
+        // When
+        val riskToTheIndividualDetails = oasysAssessmentService.getRiskToIndividual(crn)
+
+        // Then
+        val expectedRiskToTheIndividualDetails = RiskToTheIndividualDetails(
+            assessmentId = assessmentPk,
+            assessmentType = assessmentType,
+            initiationDate = now,
+            dateCompleted = now,
+            assessmentStatus = status,
+            limitedAccessOffender = false,
+            riskToTheIndividual = RiskToTheIndividual(
+                concernsBreachOfTrust = "trust has been breached",
+                concernsRiskOfSuicide = "risk is present",
+                previousVulnerability = "previously vulnerable",
+                currentConcernsBreachOfTrust = "concerns"
+            )
+        )
+        assertThat(riskToTheIndividualDetails).isEqualTo(expectedRiskToTheIndividualDetails)
+    }
+
+    private fun createRequest(): Request? {
+        return Request.create(
+            Request.HttpMethod.GET, "url",
+            HashMap(), null, RequestTemplate()
+        )
     }
 }
