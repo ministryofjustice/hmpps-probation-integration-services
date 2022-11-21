@@ -69,7 +69,7 @@ class ClassPathPlugin : Plugin<Project> {
                     property("sonar.coverage.exclusions", extension.jacocoExclusions)
                 }
                 properties {
-                    property("sonar.exclusions", extension.jacocoExclusions)
+                    property("sonar.exclusions", extension.sonarExclusions)
                 }
             }
         }
