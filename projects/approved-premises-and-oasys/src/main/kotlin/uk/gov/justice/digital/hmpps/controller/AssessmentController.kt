@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
 import uk.gov.justice.digital.hmpps.model.NeedsDetails
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
+import uk.gov.justice.digital.hmpps.model.RiskAssessmentDetails
 import uk.gov.justice.digital.hmpps.model.RiskManagementPlanDetails
 import uk.gov.justice.digital.hmpps.model.RiskToTheIndividualDetails
 import uk.gov.justice.digital.hmpps.model.RoshSummaryDetails
@@ -60,5 +61,13 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
         @PathVariable("crn") crn: String
     ): RiskToTheIndividualDetails {
         return oasysAssessmentService.getRiskToIndividual(crn)
+    }
+
+    @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_ASSESSMENTS')")
+    @GetMapping(value = ["/risk-assessment/{crn}"])
+    fun getRiskAssessment(
+        @PathVariable("crn") crn: String
+    ): RiskAssessmentDetails {
+        return oasysAssessmentService.getRiskAssessment(crn)
     }
 }

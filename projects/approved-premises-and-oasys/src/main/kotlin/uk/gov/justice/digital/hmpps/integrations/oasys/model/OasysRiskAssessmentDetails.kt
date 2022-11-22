@@ -1,0 +1,38 @@
+package uk.gov.justice.digital.hmpps.integrations.oasys.model
+
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.ZonedDateTime
+
+data class OasysRiskAssessmentDetails(
+    val limitedAccessOffender: Boolean,
+    val assessments: List<OasysRiskAssessment>
+
+)
+
+data class OasysRiskAssessment(
+    override val assessmentPk: Long,
+    override val assessmentType: String,
+    override val dateCompleted: ZonedDateTime? = null,
+    override val assessorSignedDate: ZonedDateTime? = null,
+    override val initiationDate: ZonedDateTime,
+    override val assessmentStatus: String,
+    override val superStatus: String? = null,
+    override val laterWIPAssessmentExists: Boolean? = null,
+    val currentOffenceDetails: String? = null,
+    val currentSources: String? = null,
+    val currentWhyDone: String? = null,
+    val currentAnyoneElsePresent: String? = null,
+    val currentWhoVictims: String? = null,
+    val currentHowDone: String? = null,
+    val currentWhereAndWhen: String? = null,
+    val previousSources: String? = null,
+    @JsonProperty("previouswhyDone")
+    val previousWhyDone: String? = null,
+    @JsonProperty("previousanyoneElsePresent")
+    val previousAnyoneElsePresent: String? = null,
+    @JsonProperty("previouswhoVictims")
+    val previousWhoVictims: String? = null,
+    val previousHowDone: String? = null,
+    val previousWhereAndWhen: String? = null,
+    val previousWhatDone: String? = null,
+) : OasysAssessment()

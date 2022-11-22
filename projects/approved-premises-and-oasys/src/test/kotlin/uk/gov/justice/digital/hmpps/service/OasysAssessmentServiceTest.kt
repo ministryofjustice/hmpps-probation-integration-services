@@ -23,6 +23,8 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysNeedsAssessmen
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysNeedsDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceDetails
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskAssessment
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskAssessmentDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskManagementPlanAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskManagementPlanDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskToTheIndividualAssessment
@@ -34,6 +36,8 @@ import uk.gov.justice.digital.hmpps.model.Needs
 import uk.gov.justice.digital.hmpps.model.NeedsDetails
 import uk.gov.justice.digital.hmpps.model.Offence
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
+import uk.gov.justice.digital.hmpps.model.RiskAssessment
+import uk.gov.justice.digital.hmpps.model.RiskAssessmentDetails
 import uk.gov.justice.digital.hmpps.model.RiskManagementPlan
 import uk.gov.justice.digital.hmpps.model.RiskManagementPlanDetails
 import uk.gov.justice.digital.hmpps.model.RiskToTheIndividual
@@ -347,6 +351,69 @@ internal class OasysAssessmentServiceTest {
             )
         )
         assertThat(riskToTheIndividualDetails).isEqualTo(expectedRiskToTheIndividualDetails)
+    }
+
+    @Test
+    fun `should not attempt to retrieve risk assessment details where CRN does not exist`() {
+        // Given
+        val crn = "D123456"
+        val request = createRequest()
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+
+        // When
+        val exception = assertThrows<NotFoundException> {
+            oasysAssessmentService.getRiskAssessment(crn)
+        }
+
+        // Then
+        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        verify(never()) { oasysClient.getRiskAssessment(any(), any(), any()) }
+    }
+
+    @Test
+    fun `should return RiskAssessment for valid CRN`() {
+        // Given
+        val oasysRiskAssessmentDetails = OasysRiskAssessmentDetails(
+            limitedAccessOffender = false,
+            listOf(
+                OasysRiskAssessment(
+                    assessmentPk = assessmentPk,
+                    assessmentType = assessmentType,
+                    initiationDate = now,
+                    assessmentStatus = status,
+                    dateCompleted = now,
+                    currentOffenceDetails = "fight",
+                    previousWhereAndWhen = "in the library",
+                    previousWhatDone = "Stabbing",
+                    currentSources = "witnesses",
+                    currentWhyDone = "for money",
+                    currentAnyoneElsePresent = "gang of people",
+                )
+            )
+        )
+        whenever(oasysClient.getRiskAssessment(crn, assessmentPk, status)).thenReturn(oasysRiskAssessmentDetails)
+
+        // When
+        val riskAssessmentDetails = oasysAssessmentService.getRiskAssessment(crn)
+
+        // Then
+        val expectedRiskAssessmentDetails = RiskAssessmentDetails(
+            assessmentId = assessmentPk,
+            assessmentType = assessmentType,
+            initiationDate = now,
+            dateCompleted = now,
+            assessmentStatus = status,
+            limitedAccessOffender = false,
+            riskAssessment = RiskAssessment(
+                currentOffenceDetails = "fight",
+                previousWhereAndWhen = "in the library",
+                previousWhatDone = "Stabbing",
+                currentSources = "witnesses",
+                currentWhyDone = "for money",
+                currentAnyoneElsePresent = "gang of people",
+            )
+        )
+        assertThat(riskAssessmentDetails).isEqualTo(expectedRiskAssessmentDetails)
     }
 
     private fun createRequest(): Request? {
