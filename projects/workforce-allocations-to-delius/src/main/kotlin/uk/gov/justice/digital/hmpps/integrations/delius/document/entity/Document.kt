@@ -14,6 +14,8 @@ import javax.persistence.DiscriminatorColumn
 import javax.persistence.DiscriminatorType
 import javax.persistence.DiscriminatorValue
 import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
 import javax.persistence.Id
 import javax.persistence.Inheritance
 import javax.persistence.InheritanceType
@@ -54,6 +56,7 @@ abstract class Document : Relatable {
     open var createdDate: ZonedDateTime? = ZonedDateTime.now()
 
     @Column(name = "document_type")
+    @Enumerated(EnumType.STRING)
     open var type: DocumentType = DocumentType.DOCUMENT
 }
 
