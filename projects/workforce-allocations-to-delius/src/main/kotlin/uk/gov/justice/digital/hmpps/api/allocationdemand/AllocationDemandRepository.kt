@@ -113,7 +113,8 @@ SELECT o.CRN                                                       crn,
            WHEN o.CURRENT_DISPOSAL = 1 AND cms.OFFICER_CODE NOT LIKE '%U' THEN 'CURRENTLY_MANAGED'
            WHEN EXISTS(SELECT 1
                        FROM DISPOSAL d
-                       WHERE d.OFFENDER_ID = o.OFFENDER_ID) THEN 'PREVIOUSLY_MANAGED'
+                       WHERE d.OFFENDER_ID = o.OFFENDER_ID
+                       AND d.EVENT_ID <> e.EVENT_ID) THEN 'PREVIOUSLY_MANAGED'
            ELSE 'NEW_TO_PROBATION' END                             management_status,
        sg.CODE_VALUE                                               order_manager_grade,
        (SELECT type

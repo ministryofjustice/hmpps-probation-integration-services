@@ -52,13 +52,26 @@ abstract class Document : Relatable {
 
     @Column(name = "created_datetime")
     open var createdDate: ZonedDateTime? = ZonedDateTime.now()
+
+    @Column(name = "document_type")
+    open var type: DocumentType = DocumentType.DOCUMENT
+}
+
+enum class DocumentType {
+    DOCUMENT,
+    CPS_PACK,
+    PREVIOUS_CONVICTION
 }
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("OFFENDER")
 class OffenderDocument : Document() {
-    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.PERSON, "Person")
+    override fun findRelatedTo(): RelatedTo =
+        if (type == DocumentType.PREVIOUS_CONVICTION)
+            RelatedTo(RelatedType.PRECONS)
+        else
+            RelatedTo(RelatedType.PERSON)
 }
 
 @Entity
@@ -80,11 +93,17 @@ class EventDocument(
     val event: DocEvent?
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
-        RelatedTo(
-            RelatedType.EVENT,
-            if (event == null) entityNotFound else event.disposal?.type?.description ?: "",
-            event?.toDocumentEvent()
-        )
+        if (type == DocumentType.CPS_PACK)
+            RelatedTo(
+                RelatedType.CPSPACK,
+                event = event?.toDocumentEvent()
+            )
+        else
+            RelatedTo(
+                RelatedType.EVENT,
+                if (event == null) entityNotFound else event.disposal?.type?.description ?: "",
+                event?.toDocumentEvent()
+            )
 }
 
 @Entity
