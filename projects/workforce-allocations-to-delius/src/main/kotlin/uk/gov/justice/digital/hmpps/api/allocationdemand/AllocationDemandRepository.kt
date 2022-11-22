@@ -55,7 +55,7 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
                 ),
                 if (iad == null) null else InitialAppointment(iad.toLocalDate()),
                 CaseType.valueOf(rs.getString("case_type")),
-                managementStatus,
+                ProbationStatus(managementStatus),
                 if (managerCode.endsWith("U")) null else
                     Manager(
                         managerCode,

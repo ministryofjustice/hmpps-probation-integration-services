@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.api.allocationdemand.InitialAppointment
 import uk.gov.justice.digital.hmpps.api.allocationdemand.ManagementStatus
 import uk.gov.justice.digital.hmpps.api.allocationdemand.Manager
 import uk.gov.justice.digital.hmpps.api.allocationdemand.Name
+import uk.gov.justice.digital.hmpps.api.allocationdemand.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.allocationdemand.Sentence
 import java.sql.Date
 import java.sql.ResultSet
@@ -45,7 +46,7 @@ class AllocationDemandMapperTest {
             Sentence("Community Service", LocalDate.now().minusDays(10), "3 Months"),
             InitialAppointment(LocalDate.now().plusDays(10)),
             CaseType.COMMUNITY,
-            ManagementStatus.PREVIOUSLY_MANAGED,
+            ProbationStatus(ManagementStatus.PREVIOUSLY_MANAGED),
             Manager(
                 "MAN1",
                 Name("Bob", null, "Smith"), "Team1"

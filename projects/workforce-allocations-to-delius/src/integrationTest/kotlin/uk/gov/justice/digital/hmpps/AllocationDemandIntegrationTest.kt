@@ -31,6 +31,7 @@ import uk.gov.justice.digital.hmpps.api.allocationdemand.InitialAppointment
 import uk.gov.justice.digital.hmpps.api.allocationdemand.ManagementStatus
 import uk.gov.justice.digital.hmpps.api.allocationdemand.Manager
 import uk.gov.justice.digital.hmpps.api.allocationdemand.Name
+import uk.gov.justice.digital.hmpps.api.allocationdemand.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.allocationdemand.Sentence
 import java.time.LocalDate
 
@@ -106,7 +107,7 @@ class AllocationDemandIntegrationTest {
                 Sentence("test", LocalDate.now(), "12 Months"),
                 InitialAppointment(LocalDate.now()),
                 CaseType.CUSTODY,
-                ManagementStatus.CURRENTLY_MANAGED, Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO")
+                ProbationStatus(ManagementStatus.CURRENTLY_MANAGED), Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO")
             ),
             AllocationResponse(
                 "T456789",
@@ -115,7 +116,7 @@ class AllocationDemandIntegrationTest {
                 Sentence("test", LocalDate.now(), "12 Months"),
                 InitialAppointment(LocalDate.now()),
                 CaseType.CUSTODY,
-                ManagementStatus.CURRENTLY_MANAGED, Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO")
+                ProbationStatus(ManagementStatus.CURRENTLY_MANAGED), Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO")
             )
         )
 
