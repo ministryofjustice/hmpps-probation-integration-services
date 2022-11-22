@@ -6,8 +6,8 @@ data class PersonDocument(
     val id: String?,
     val name: String,
     val relatedTo: RelatedTo,
-    val dateSaved: ZonedDateTime,
-    val dateCreated: ZonedDateTime,
+    val dateSaved: ZonedDateTime?,
+    val dateCreated: ZonedDateTime?,
     val sensitive: Boolean
 )
 
@@ -15,7 +15,9 @@ data class RelatedTo(
     val type: RelatedType,
     val name: String = "",
     val event: DocumentEvent? = null
-)
+) {
+    val description: String = type.description()
+}
 
 data class DocumentEvent(
     val eventType: EventType,
@@ -27,23 +29,26 @@ enum class EventType {
     CURRENT, PREVIOUS
 }
 
-enum class RelatedType {
+enum class RelatedType(private val displayName: String = "") {
     ADDRESS_ASSESSMENT,
     APPROVED_PREMISES_REFERRAL,
     ASSESSMENT,
     CASE_ALLOCATION,
     CONTACT,
     COURT_REPORT,
-    DRUGS_TEST,
-    EQUALITY,
+    CPSPACK("Crown Prosecution Service case pack"),
+    PRECONS("PNC previous convictions"),
     EVENT,
     INSTITUTIONAL_REPORT,
-    NSI,
-    OFFENDER,
+    NSI("Non Statutory Intervention"),
+    PERSON,
     OFFENDER_ADDRESS,
     PERSONAL_CONTACT,
     PERSONAL_CIRCUMSTANCE,
     REFERRAL,
     REGISTRATION,
-    UPW_APPOINTMENT
+    UPW_APPOINTMENT("Unpaid Work Appointment");
+
+    fun description(): String =
+        displayName.ifEmpty { name.split("_").joinToString(" ") { it.lowercase().replaceFirstChar(Char::titlecase) } }
 }

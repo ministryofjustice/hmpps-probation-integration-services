@@ -29,6 +29,7 @@ internal class IntegrationTest {
             .perform(get("/approved-premises/${approvedPremises.code.code}/staff").withOAuth2Token(wireMockServer))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.numberOfElements", equalTo(2)))
+            .andExpect(jsonPath("$.size", equalTo(100)))
             .andExpect(jsonPath("$.content[*].name.surname", equalTo(listOf("Key-worker", "Not key-worker"))))
             .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(true, false))))
     }

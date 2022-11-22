@@ -14,7 +14,7 @@ import javax.validation.Valid
 class AllocationDemandResource(private val service: AllocationDemandService) {
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
-    @RequestMapping(method = [RequestMethod.GET, RequestMethod.POST])
+    @RequestMapping(method = [RequestMethod.POST])
     fun findUnallocatedForTeam(@Valid @RequestBody request: AllocationDemandRequest): AllocationDemandResponse =
         if (request.cases.isEmpty()) AllocationDemandResponse(listOf()) else service.findAllocationDemand(request)
 }

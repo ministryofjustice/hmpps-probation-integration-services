@@ -6,7 +6,6 @@ import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
-import javax.persistence.Table
 
 @Entity
 @Immutable
@@ -21,17 +20,6 @@ class ApprovedPremisesReferral(
 
     @JoinColumn(name = "referral_category_id", insertable = false, updatable = false)
     @ManyToOne
-    val category: DocReferenceData
+    val category: StandardReference
 
-)
-
-@Entity
-@Immutable
-@Table(name = "r_standard_reference_list")
-class DocReferenceData(
-    @Id
-    @Column(name = "standard_reference_list_id")
-    val id: Long,
-    @Column(name = "code_description")
-    val description: String
 )

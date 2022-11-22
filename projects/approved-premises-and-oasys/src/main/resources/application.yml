@@ -1,5 +1,7 @@
 # Default config
 spring:
+  jackson:
+    default-property-inclusion: non_empty
   security.oauth2.client:
     registration:
       ords-oasys:
