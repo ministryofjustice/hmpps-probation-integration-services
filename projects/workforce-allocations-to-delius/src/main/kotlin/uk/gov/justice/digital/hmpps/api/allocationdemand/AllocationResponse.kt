@@ -9,8 +9,11 @@ data class AllocationResponse(
     val sentence: Sentence?,
     val initialAppointment: InitialAppointment?,
     val type: CaseType = CaseType.UNKNOWN,
-    val status: ProbationStatus
-)
+    val probationStatus: ManagementStatus,
+    val communityPersonManager: Manager?
+) {
+    val probationStatusDescription = probationStatus.description
+}
 
 data class Name(
     val forename: String,
@@ -25,13 +28,6 @@ data class Sentence(val type: String, val date: LocalDate, val length: String)
 data class InitialAppointment(val date: LocalDate)
 
 data class AllocationDemandResponse(val cases: List<AllocationResponse>)
-
-data class ProbationStatus(
-    val status: ManagementStatus,
-    val previousManager: Manager? = null
-) {
-    val description = status.description
-}
 
 enum class ManagementStatus(
     val description: String

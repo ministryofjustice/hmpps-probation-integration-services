@@ -30,7 +30,7 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
             val sentenceDate: Date? = rs.getDate("sentence_date")
             val iad: Date? = rs.getDate("initial_appointment_date")
             val managementStatus = ManagementStatus.valueOf(rs.getString("management_status"))
-
+            val managerCode = rs.getString("previous_staff_code")
             AllocationResponse(
                 rs.getString("crn"),
                 Name(rs.getString("forename"), rs.getString("middle_name"), rs.getString("surname")),
@@ -55,20 +55,17 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
                 ),
                 if (iad == null) null else InitialAppointment(iad.toLocalDate()),
                 CaseType.valueOf(rs.getString("case_type")),
-                ProbationStatus(
-                    managementStatus,
-                    if (managementStatus == ManagementStatus.PREVIOUSLY_MANAGED) {
-                        Manager(
-                            rs.getString("previous_staff_code"),
-                            Name(
-                                rs.getString("previous_staff_forename"),
-                                rs.getString("previous_staff_middle_name"),
-                                rs.getString("previous_staff_surname")
-                            ),
-                            rs.getString("previous_team_code")
-                        )
-                    } else null
-                )
+                managementStatus,
+                if (managerCode.endsWith("U")) null else
+                    Manager(
+                        managerCode,
+                        Name(
+                            rs.getString("previous_staff_forename"),
+                            rs.getString("previous_staff_middle_name"),
+                            rs.getString("previous_staff_surname")
+                        ),
+                        rs.getString("previous_team_code")
+                    )
             )
         }
     }

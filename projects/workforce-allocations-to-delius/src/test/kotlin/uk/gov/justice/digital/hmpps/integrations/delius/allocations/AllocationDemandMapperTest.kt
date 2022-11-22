@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.api.allocationdemand.InitialAppointment
 import uk.gov.justice.digital.hmpps.api.allocationdemand.ManagementStatus
 import uk.gov.justice.digital.hmpps.api.allocationdemand.Manager
 import uk.gov.justice.digital.hmpps.api.allocationdemand.Name
-import uk.gov.justice.digital.hmpps.api.allocationdemand.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.allocationdemand.Sentence
 import java.sql.Date
 import java.sql.ResultSet
@@ -46,12 +45,10 @@ class AllocationDemandMapperTest {
             Sentence("Community Service", LocalDate.now().minusDays(10), "3 Months"),
             InitialAppointment(LocalDate.now().plusDays(10)),
             CaseType.COMMUNITY,
-            ProbationStatus(
-                ManagementStatus.PREVIOUSLY_MANAGED,
-                Manager(
-                    "MAN1",
-                    Name("Bob", null, "Smith"), "Team1"
-                )
+            ManagementStatus.PREVIOUSLY_MANAGED,
+            Manager(
+                "MAN1",
+                Name("Bob", null, "Smith"), "Team1"
             )
         )
 
@@ -71,11 +68,11 @@ class AllocationDemandMapperTest {
         whenever(resultSet.getString("sentence_length_unit")).thenReturn("Months")
         whenever(resultSet.getDate("initial_appointment_date")).thenReturn(Date.valueOf(expected.initialAppointment?.date))
         whenever(resultSet.getString("case_type")).thenReturn("COMMUNITY")
-        whenever(resultSet.getString("previous_staff_code")).thenReturn(expected.status.previousManager?.code)
-        whenever(resultSet.getString("previous_staff_forename")).thenReturn(expected.status.previousManager?.name?.forename)
-        whenever(resultSet.getString("previous_staff_middle_name")).thenReturn(expected.status.previousManager?.name?.middleName)
-        whenever(resultSet.getString("previous_staff_surname")).thenReturn(expected.status.previousManager?.name?.surname)
-        whenever(resultSet.getString("previous_team_code")).thenReturn(expected.status.previousManager?.teamCode)
+        whenever(resultSet.getString("previous_staff_code")).thenReturn(expected.communityPersonManager?.code)
+        whenever(resultSet.getString("previous_staff_forename")).thenReturn(expected.communityPersonManager?.name?.forename)
+        whenever(resultSet.getString("previous_staff_middle_name")).thenReturn(expected.communityPersonManager?.name?.middleName)
+        whenever(resultSet.getString("previous_staff_surname")).thenReturn(expected.communityPersonManager?.name?.surname)
+        whenever(resultSet.getString("previous_team_code")).thenReturn(expected.communityPersonManager?.teamCode)
         whenever(resultSet.getString("management_status")).thenReturn("PREVIOUSLY_MANAGED")
         whenever(resultSet.getString("order_manager_grade")).thenReturn("PSQ")
     }
