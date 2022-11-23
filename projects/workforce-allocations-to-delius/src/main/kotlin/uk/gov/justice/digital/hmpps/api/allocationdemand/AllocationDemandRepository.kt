@@ -30,7 +30,7 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
             val sentenceDate: Date? = rs.getDate("sentence_date")
             val iad: Date? = rs.getDate("initial_appointment_date")
             val managementStatus = ManagementStatus.valueOf(rs.getString("management_status"))
-            val managerCode = rs.getString("previous_staff_code")
+            val managerCode = rs.getString("community_manager_code")
             AllocationResponse(
                 rs.getString("crn"),
                 Name(rs.getString("forename"), rs.getString("middle_name"), rs.getString("surname")),
@@ -60,11 +60,11 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
                     Manager(
                         managerCode,
                         Name(
-                            rs.getString("previous_staff_forename"),
-                            rs.getString("previous_staff_middle_name"),
-                            rs.getString("previous_staff_surname")
+                            rs.getString("community_manager_forename"),
+                            rs.getString("community_manager_middle_name"),
+                            rs.getString("community_manager_surname")
                         ),
-                        rs.getString("previous_team_code")
+                        rs.getString("community_manager_team_code")
                     )
             )
         }
@@ -72,18 +72,7 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
 }
 
 const val QS_ALLOCATION_DEMAND = """
-WITH previous AS
-         (SELECT pcm.OFFENDER_ID,
-                 ps.OFFICER_CODE,
-                 ps.FORENAME,
-                 ps.FORENAME2,
-                 ps.SURNAME,
-                 pt.CODE,
-                 ROW_NUMBER() OVER (PARTITION BY pcm.OFFENDER_ID ORDER BY pcm.END_DATE DESC ) AS row_number
-          FROM OFFENDER_MANAGER pcm
-                   JOIN STAFF ps ON pcm.ALLOCATION_STAFF_ID = ps.STAFF_ID
-                   JOIN TEAM pt ON pt.TEAM_ID = pcm.TEAM_ID
-          WHERE pcm.ACTIVE_FLAG = 0)
+
 SELECT o.CRN                                                       crn,
        o.FIRST_NAME                                                forename,
        o.SECOND_NAME                                               middle_name,
@@ -139,17 +128,17 @@ SELECT o.CRN                                                       crn,
                 AND l_d.ACTIVE_FLAG = 1
                 AND l_d.SOFT_DELETED = 0)
         ORDER BY end_date DESC, start_date FETCH NEXT 1 ROWS ONLY) case_type,
-       previous.OFFENDER_ID                                        previous_offender_id,
-       previous.OFFICER_CODE                                       previous_staff_code,
-       previous.FORENAME                                           previous_staff_forename,
-       previous.FORENAME2                                          previous_staff_middle_name,
-       previous.SURNAME                                            previous_staff_surname,
-       previous.CODE                                               previous_team_code
+       cms.OFFICER_CODE                                       community_manager_code,
+       cms.FORENAME                                           community_manager_forename,
+       cms.FORENAME2                                          community_manager_middle_name,
+       cms.SURNAME                                            community_manager_surname,
+       cmt.CODE                                               community_manager_team_code
 
 FROM OFFENDER o
          JOIN EVENT e ON e.OFFENDER_ID = o.OFFENDER_ID AND e.ACTIVE_FLAG = 1
          JOIN OFFENDER_MANAGER cm ON cm.OFFENDER_ID = o.OFFENDER_ID AND cm.ACTIVE_FLAG = 1
          JOIN STAFF cms ON cm.ALLOCATION_STAFF_ID = cms.STAFF_ID
+         JOIN TEAM cmt ON cmt.TEAM_ID = cm.ALLOCATION_TEAM_ID
          JOIN ORDER_MANAGER om ON om.EVENT_ID = e.EVENT_ID AND om.ACTIVE_FLAG = 1
          JOIN TEAM t ON t.TEAM_ID = om.ALLOCATION_TEAM_ID
          JOIN STAFF s ON s.STAFF_ID = om.ALLOCATION_STAFF_ID
@@ -159,7 +148,6 @@ FROM OFFENDER o
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST du ON du.STANDARD_REFERENCE_LIST_ID = d.ENTRY_LENGTH_UNITS_ID
          LEFT OUTER JOIN CUSTODY c ON c.DISPOSAL_ID = d.DISPOSAL_ID AND c.SOFT_DELETED = 0
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST cs ON cs.STANDARD_REFERENCE_LIST_ID = c.CUSTODIAL_STATUS_ID
-         LEFT OUTER JOIN previous ON previous.OFFENDER_ID = o.OFFENDER_ID AND previous.row_number = 1
 WHERE (o.CRN, e.EVENT_NUMBER) IN (:values)
   AND e.SOFT_DELETED = 0
   AND d.SOFT_DELETED = 0
