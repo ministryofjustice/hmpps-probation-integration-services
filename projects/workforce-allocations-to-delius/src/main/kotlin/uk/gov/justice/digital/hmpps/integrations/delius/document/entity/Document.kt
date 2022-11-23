@@ -14,6 +14,8 @@ import javax.persistence.DiscriminatorColumn
 import javax.persistence.DiscriminatorType
 import javax.persistence.DiscriminatorValue
 import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
 import javax.persistence.Id
 import javax.persistence.Inheritance
 import javax.persistence.InheritanceType
@@ -52,13 +54,27 @@ abstract class Document : Relatable {
 
     @Column(name = "created_datetime")
     open var createdDate: ZonedDateTime? = ZonedDateTime.now()
+
+    @Column(name = "document_type")
+    @Enumerated(EnumType.STRING)
+    open var type: DocumentType = DocumentType.DOCUMENT
+}
+
+enum class DocumentType {
+    DOCUMENT,
+    CPS_PACK,
+    PREVIOUS_CONVICTION
 }
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("OFFENDER")
 class OffenderDocument : Document() {
-    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.PERSON, "Person")
+    override fun findRelatedTo(): RelatedTo =
+        if (type == DocumentType.PREVIOUS_CONVICTION)
+            RelatedTo(RelatedType.PRECONS)
+        else
+            RelatedTo(RelatedType.PERSON)
 }
 
 @Entity
@@ -80,18 +96,50 @@ class EventDocument(
     val event: DocEvent?
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
-        RelatedTo(
-            RelatedType.EVENT,
-            if (event == null) entityNotFound else event.disposal?.type?.description ?: "",
-            event?.toDocumentEvent()
-        )
+        if (type == DocumentType.CPS_PACK)
+            RelatedTo(
+                RelatedType.CPSPACK,
+                event = event?.toDocumentEvent()
+            )
+        else
+            RelatedTo(
+                RelatedType.EVENT,
+                if (event == null) entityNotFound else event.disposal?.type?.description ?: "",
+                event?.toDocumentEvent()
+            )
 }
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("ADDRESSASSESSMENT")
-class AddressAssessmentDocument : Document() {
-    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.ADDRESS_ASSESSMENT)
+class AddressAssessmentDocument(
+    @JoinColumn(
+        name = "primary_key_id",
+        referencedColumnName = "address_assessment_id",
+        insertable = false,
+        updatable = false
+    )
+    @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    val addressAssessment: AddressAssessment?
+) : Document() {
+    override fun findRelatedTo(): RelatedTo =
+        RelatedTo(
+            RelatedType.ADDRESS_ASSESSMENT,
+            getPersonAddressLine(addressAssessment?.personAddress)
+        )
+
+    private fun getPersonAddressLine(personAddress: PersonAddress?): String {
+        if (personAddress == null) {
+            return entityNotFound
+        } else (
+            return listOfNotNull(
+                personAddress.buildingName,
+                personAddress.addressNumber,
+                personAddress.streetName
+            ).joinToString(", ")
+            )
+    }
 }
 
 @Entity
@@ -209,7 +257,8 @@ class InstitutionalReportDocument(
     val institutionalReport: InstitutionalReport?
 ) : Document() {
 
-    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.INSTITUTIONAL_REPORT, institutionalReport?.type?.description ?: entityNotFound)
+    override fun findRelatedTo(): RelatedTo =
+        RelatedTo(RelatedType.INSTITUTIONAL_REPORT, institutionalReport?.type?.description ?: entityNotFound)
 }
 
 @Entity
@@ -249,14 +298,46 @@ class PersonalCircumstanceDocument(
     val personalCircumstance: PersonalCircumstance?
 ) : Document() {
 
-    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.PERSONAL_CIRCUMSTANCE, personalCircumstance?.type?.description ?: entityNotFound)
+    override fun findRelatedTo(): RelatedTo =
+        RelatedTo(RelatedType.PERSONAL_CIRCUMSTANCE, getCircName())
+
+    private fun getCircName(): String {
+        var circName: String = personalCircumstance?.type?.description ?: entityNotFound
+        if (personalCircumstance?.subType != null)
+            circName += " - ${personalCircumstance.subType.description}"
+        return circName
+    }
 }
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("PERSONALCONTACT")
-class PersonalContactDocument : Document() {
-    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.PERSONAL_CONTACT)
+class PersonalContactDocument(
+    @JoinColumn(
+        name = "primary_key_id",
+        referencedColumnName = "personal_contact_id",
+        insertable = false,
+        updatable = false
+    )
+    @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    val personalContact: DocPersonalContact?
+) : Document() {
+
+    override fun findRelatedTo(): RelatedTo =
+        RelatedTo(RelatedType.PERSONAL_CONTACT, getPersonalContactLine())
+
+    private fun getPersonalContactLine(): String {
+        return if (personalContact == null) {
+            entityNotFound
+        } else {
+            listOfNotNull(
+                personalContact.title?.description,
+                personalContact.forename,
+                personalContact.surname
+            ).joinToString(" ")
+        }
+    }
 }
 
 @Entity
@@ -296,7 +377,8 @@ class RegistrationDocument(
     val registration: Registration?
 ) : Document() {
 
-    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.REGISTRATION, registration?.type?.description ?: entityNotFound)
+    override fun findRelatedTo(): RelatedTo =
+        RelatedTo(RelatedType.REGISTRATION, registration?.type?.description ?: entityNotFound)
 }
 
 @Entity

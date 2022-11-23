@@ -23,15 +23,27 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysNeedsAssessmen
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysNeedsDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceDetails
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskAssessment
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskAssessmentDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskManagementPlanAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskManagementPlanDetails
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskToTheIndividualAssessment
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskToTheIndividualDetails
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRoshSummary
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRoshSummaryAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
 import uk.gov.justice.digital.hmpps.model.Needs
 import uk.gov.justice.digital.hmpps.model.NeedsDetails
 import uk.gov.justice.digital.hmpps.model.Offence
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
+import uk.gov.justice.digital.hmpps.model.RiskAssessment
+import uk.gov.justice.digital.hmpps.model.RiskAssessmentDetails
 import uk.gov.justice.digital.hmpps.model.RiskManagementPlan
 import uk.gov.justice.digital.hmpps.model.RiskManagementPlanDetails
+import uk.gov.justice.digital.hmpps.model.RiskToTheIndividual
+import uk.gov.justice.digital.hmpps.model.RiskToTheIndividualDetails
+import uk.gov.justice.digital.hmpps.model.RoshSummary
+import uk.gov.justice.digital.hmpps.model.RoshSummaryDetails
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -68,10 +80,7 @@ internal class OasysAssessmentServiceTest {
     fun `should not attempt to retrieve offence details where CRN does not exist`() {
         // Given
         val crn = "D123456"
-        val request = Request.create(
-            Request.HttpMethod.GET, "url",
-            HashMap(), null, RequestTemplate()
-        )
+        val request = createRequest()
         whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
 
         // When
@@ -127,10 +136,7 @@ internal class OasysAssessmentServiceTest {
     fun `should not attempt to retrieve needs details where CRN does not exist`() {
         // Given
         val crn = "D123456"
-        val request = Request.create(
-            Request.HttpMethod.GET, "url",
-            HashMap(), null, RequestTemplate()
-        )
+        val request = createRequest()
         whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
 
         // When
@@ -186,10 +192,7 @@ internal class OasysAssessmentServiceTest {
     fun `should not attempt to retrieve risk management plan details where CRN does not exist`() {
         // Given
         val crn = "D123456"
-        val request = Request.create(
-            Request.HttpMethod.GET, "url",
-            HashMap(), null, RequestTemplate()
-        )
+        val request = createRequest()
         whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
 
         // When
@@ -236,5 +239,187 @@ internal class OasysAssessmentServiceTest {
             )
         )
         assertThat(riskManagementPlanDetails).isEqualTo(expectedRiskManagementPlanDetails)
+    }
+
+    @Test
+    fun `should not attempt to retrieve rosh summary details where CRN does not exist`() {
+        // Given
+        val crn = "D123456"
+        val request = createRequest()
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+
+        // When
+        val exception = assertThrows<NotFoundException> {
+            oasysAssessmentService.getRoshSummary(crn)
+        }
+
+        // Then
+        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        verify(never()) { oasysClient.getRoshSummary(any(), any(), any()) }
+    }
+
+    @Test
+    fun `should return RoshSummary for valid CRN`() {
+        // Given
+        val oasysRoshSummary = OasysRoshSummary(
+            limitedAccessOffender = false,
+            listOf(
+                OasysRoshSummaryAssessment(
+                    assessmentPk = assessmentPk,
+                    assessmentType = assessmentType,
+                    initiationDate = now,
+                    assessmentStatus = status,
+                    dateCompleted = now,
+                    whoAtRisk = "I am!"
+                )
+            )
+        )
+        whenever(oasysClient.getRoshSummary(crn, assessmentPk, status)).thenReturn(oasysRoshSummary)
+
+        // When
+        val roshSummary = oasysAssessmentService.getRoshSummary(crn)
+
+        // Then
+        val expectedRoshSummary = RoshSummaryDetails(
+            assessmentId = assessmentPk,
+            assessmentType = assessmentType,
+            initiationDate = now,
+            dateCompleted = now,
+            assessmentStatus = status,
+            limitedAccessOffender = false,
+            roshSummary = RoshSummary(
+                whoIsAtRisk = "I am!"
+            )
+        )
+        assertThat(roshSummary).isEqualTo(expectedRoshSummary)
+    }
+
+    @Test
+    fun `should not attempt to retrieve risk to the individual details where CRN does not exist`() {
+        // Given
+        val crn = "D123456"
+        val request = createRequest()
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+
+        // When
+        val exception = assertThrows<NotFoundException> {
+            oasysAssessmentService.getRiskToIndividual(crn)
+        }
+
+        // Then
+        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        verify(never()) { oasysClient.getRiskToTheIndividual(any(), any(), any()) }
+    }
+
+    @Test
+    fun `should return RiskToIndividual for valid CRN`() {
+        // Given
+        val oasysRiskToTheIndividualAssessmentDetails = OasysRiskToTheIndividualDetails(
+            limitedAccessOffender = false,
+            listOf(
+                OasysRiskToTheIndividualAssessment(
+                    assessmentPk = assessmentPk,
+                    assessmentType = assessmentType,
+                    initiationDate = now,
+                    assessmentStatus = status,
+                    dateCompleted = now,
+                    concernsBreachOfTrust = "trust has been breached",
+                    concernsRiskOfSuicide = "risk is present",
+                    previousVulnerability = "previously vulnerable",
+                    currentConcernsBreachOfTrust = "concerns"
+                )
+            )
+        )
+        whenever(oasysClient.getRiskToTheIndividual(crn, assessmentPk, status)).thenReturn(oasysRiskToTheIndividualAssessmentDetails)
+
+        // When
+        val riskToTheIndividualDetails = oasysAssessmentService.getRiskToIndividual(crn)
+
+        // Then
+        val expectedRiskToTheIndividualDetails = RiskToTheIndividualDetails(
+            assessmentId = assessmentPk,
+            assessmentType = assessmentType,
+            initiationDate = now,
+            dateCompleted = now,
+            assessmentStatus = status,
+            limitedAccessOffender = false,
+            riskToTheIndividual = RiskToTheIndividual(
+                concernsBreachOfTrust = "trust has been breached",
+                concernsRiskOfSuicide = "risk is present",
+                previousVulnerability = "previously vulnerable",
+                currentConcernsBreachOfTrust = "concerns"
+            )
+        )
+        assertThat(riskToTheIndividualDetails).isEqualTo(expectedRiskToTheIndividualDetails)
+    }
+
+    @Test
+    fun `should not attempt to retrieve risk assessment details where CRN does not exist`() {
+        // Given
+        val crn = "D123456"
+        val request = createRequest()
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+
+        // When
+        val exception = assertThrows<NotFoundException> {
+            oasysAssessmentService.getRiskAssessment(crn)
+        }
+
+        // Then
+        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        verify(never()) { oasysClient.getRiskAssessment(any(), any(), any()) }
+    }
+
+    @Test
+    fun `should return RiskAssessment for valid CRN`() {
+        // Given
+        val oasysRiskAssessmentDetails = OasysRiskAssessmentDetails(
+            limitedAccessOffender = false,
+            listOf(
+                OasysRiskAssessment(
+                    assessmentPk = assessmentPk,
+                    assessmentType = assessmentType,
+                    initiationDate = now,
+                    assessmentStatus = status,
+                    dateCompleted = now,
+                    currentOffenceDetails = "fight",
+                    previousWhereAndWhen = "in the library",
+                    previousWhatDone = "Stabbing",
+                    currentSources = "witnesses",
+                    currentWhyDone = "for money",
+                    currentAnyoneElsePresent = "gang of people",
+                )
+            )
+        )
+        whenever(oasysClient.getRiskAssessment(crn, assessmentPk, status)).thenReturn(oasysRiskAssessmentDetails)
+
+        // When
+        val riskAssessmentDetails = oasysAssessmentService.getRiskAssessment(crn)
+
+        // Then
+        val expectedRiskAssessmentDetails = RiskAssessmentDetails(
+            assessmentId = assessmentPk,
+            assessmentType = assessmentType,
+            initiationDate = now,
+            dateCompleted = now,
+            assessmentStatus = status,
+            limitedAccessOffender = false,
+            riskAssessment = RiskAssessment(
+                currentOffenceDetails = "fight",
+                previousWhereAndWhen = "in the library",
+                previousWhatDone = "Stabbing",
+                currentSources = "witnesses",
+                currentWhyDone = "for money",
+                currentAnyoneElsePresent = "gang of people",
+            )
+        )
+        assertThat(riskAssessmentDetails).isEqualTo(expectedRiskAssessmentDetails)
+    }
+
+    private fun createRequest(): Request? {
+        return Request.create(
+            Request.HttpMethod.GET, "url",
+            HashMap(), null, RequestTemplate()
+        )
     }
 }

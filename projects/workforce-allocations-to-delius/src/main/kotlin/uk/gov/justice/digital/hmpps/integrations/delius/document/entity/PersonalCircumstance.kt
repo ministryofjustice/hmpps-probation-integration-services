@@ -17,6 +17,10 @@ class PersonalCircumstance(
     @ManyToOne
     @JoinColumn(name = "circumstance_type_id", updatable = false)
     val type: PersonalCircumstanceType,
+
+    @ManyToOne
+    @JoinColumn(name = "circumstance_sub_type_id", updatable = false)
+    val subType: PersonalCircumstanceSubType?,
 )
 
 @Entity
@@ -24,6 +28,17 @@ class PersonalCircumstance(
 @Immutable
 class PersonalCircumstanceType(
     @Id @Column(name = "circumstance_type_id")
+    var id: Long,
+
+    @Column(name = "code_description")
+    val description: String,
+)
+
+@Entity
+@Table(name = "r_circumstance_sub_type")
+@Immutable
+class PersonalCircumstanceSubType(
+    @Id @Column(name = "circumstance_sub_type_id")
     var id: Long,
 
     @Column(name = "code_description")
