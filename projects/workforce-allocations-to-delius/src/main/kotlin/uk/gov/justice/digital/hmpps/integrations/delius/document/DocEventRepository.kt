@@ -7,5 +7,5 @@ interface DocEventRepository : JpaRepository<DocEvent, Long> {
 
     fun findByPersonId(id: Long): List<DocEvent>
 
-    fun findByPersonIdAndCpsDocumentId(id: Long, cpsDocumentId: String): List<DocEvent>
+    fun findByPersonIdAndCpsDocumentId(id: Long, cpsDocumentId: String): DocEvent?
 }

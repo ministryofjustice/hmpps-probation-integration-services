@@ -72,7 +72,7 @@ class DocumentService(
         if (person.id != documentMetaData?.personId && docPersonRepository.findByCrnAndPreconDocId(
                 crn,
                 id
-            ) == null && docEventRepository.findByPersonIdAndCpsDocumentId(person.id, id).isEmpty()
+            ) == null && docEventRepository.findByPersonIdAndCpsDocumentId(person.id, id) == null
         ) {
             throw ConflictException("Document and CRN do not match")
         }
