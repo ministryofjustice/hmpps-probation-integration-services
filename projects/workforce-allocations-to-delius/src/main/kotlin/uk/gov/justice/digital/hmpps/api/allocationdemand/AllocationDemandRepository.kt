@@ -132,7 +132,7 @@ SELECT o.CRN                                                       crn,
        cms.FORENAME2                                          community_manager_middle_name,
        cms.SURNAME                                            community_manager_surname,
        cmt.CODE                                               community_manager_team_code,
-       cmsg.CODE_VALUE                                        community_manager_grade,
+       cmsg.CODE_VALUE                                        community_manager_grade
 
 FROM OFFENDER o
          JOIN EVENT e ON e.OFFENDER_ID = o.OFFENDER_ID AND e.ACTIVE_FLAG = 1
