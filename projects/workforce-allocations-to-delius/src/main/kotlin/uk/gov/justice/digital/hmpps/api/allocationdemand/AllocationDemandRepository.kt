@@ -43,8 +43,7 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
                             rs.getString("staff_middle_name"),
                             rs.getString("staff_surname")
                         ),
-                        rs.getString("team_code"),
-                        gradeMap[rs.getString("order_manager_grade")]
+                        rs.getString("team_code")
                     )
                 ),
                 if (sentenceDate == null) null
@@ -64,7 +63,8 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
                             rs.getString("community_manager_middle_name"),
                             rs.getString("community_manager_surname")
                         ),
-                        rs.getString("community_manager_team_code")
+                        rs.getString("community_manager_team_code"),
+                        gradeMap[rs.getString("community_manager_grade")]
                     )
             )
         }
@@ -102,7 +102,6 @@ SELECT o.CRN                                                       crn,
                        WHERE d.OFFENDER_ID = o.OFFENDER_ID
                        AND d.EVENT_ID <> e.EVENT_ID) THEN 'PREVIOUSLY_MANAGED'
            ELSE 'NEW_TO_PROBATION' END                             management_status,
-       sg.CODE_VALUE                                               order_manager_grade,
        (SELECT type
         FROM (SELECT CASE
                          WHEN l_dt.SENTENCE_TYPE IN ('SC', 'NC') AND
@@ -132,7 +131,8 @@ SELECT o.CRN                                                       crn,
        cms.FORENAME                                           community_manager_forename,
        cms.FORENAME2                                          community_manager_middle_name,
        cms.SURNAME                                            community_manager_surname,
-       cmt.CODE                                               community_manager_team_code
+       cmt.CODE                                               community_manager_team_code,
+       cmsg.CODE_VALUE                                        community_manager_grade,
 
 FROM OFFENDER o
          JOIN EVENT e ON e.OFFENDER_ID = o.OFFENDER_ID AND e.ACTIVE_FLAG = 1
@@ -142,7 +142,7 @@ FROM OFFENDER o
          JOIN ORDER_MANAGER om ON om.EVENT_ID = e.EVENT_ID AND om.ACTIVE_FLAG = 1
          JOIN TEAM t ON t.TEAM_ID = om.ALLOCATION_TEAM_ID
          JOIN STAFF s ON s.STAFF_ID = om.ALLOCATION_STAFF_ID
-         LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST sg ON s.STAFF_GRADE_ID = sg.STANDARD_REFERENCE_LIST_ID
+         LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST cmsg ON cms.STAFF_GRADE_ID = cmsg.STANDARD_REFERENCE_LIST_ID
          LEFT OUTER JOIN DISPOSAL d ON d.EVENT_ID = e.EVENT_ID AND d.ACTIVE_FLAG = 1
          LEFT OUTER JOIN R_DISPOSAL_TYPE dt ON dt.DISPOSAL_TYPE_ID = d.DISPOSAL_TYPE_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST du ON du.STANDARD_REFERENCE_LIST_ID = d.ENTRY_LENGTH_UNITS_ID

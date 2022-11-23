@@ -39,8 +39,7 @@ class AllocationDemandMapperTest {
                 Manager(
                     "EM123",
                     Name("Emma", "Jane", "Butane"),
-                    "T123",
-                    "PSO"
+                    "T123"
                 )
             ),
             Sentence("Community Service", LocalDate.now().minusDays(10), "3 Months"),
@@ -49,7 +48,7 @@ class AllocationDemandMapperTest {
             ProbationStatus(ManagementStatus.PREVIOUSLY_MANAGED),
             Manager(
                 "MAN1",
-                Name("Bob", null, "Smith"), "Team1"
+                Name("Bob", null, "Smith"), "Team1", "PSO"
             )
         )
 
@@ -75,7 +74,7 @@ class AllocationDemandMapperTest {
         whenever(resultSet.getString("community_manager_surname")).thenReturn(expected.communityPersonManager?.name?.surname)
         whenever(resultSet.getString("community_manager_team_code")).thenReturn(expected.communityPersonManager?.teamCode)
         whenever(resultSet.getString("management_status")).thenReturn("PREVIOUSLY_MANAGED")
-        whenever(resultSet.getString("order_manager_grade")).thenReturn("PSQ")
+        whenever(resultSet.getString("community_manager_grade")).thenReturn("PSQ")
     }
 
     @Test
