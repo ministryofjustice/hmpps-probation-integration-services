@@ -107,7 +107,7 @@ class AllocationDemandIntegrationTest {
                 Sentence("test", LocalDate.now(), "12 Months"),
                 InitialAppointment(LocalDate.now()),
                 CaseType.CUSTODY,
-                ProbationStatus(ManagementStatus.CURRENTLY_MANAGED, null)
+                ProbationStatus(ManagementStatus.CURRENTLY_MANAGED), Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO")
             ),
             AllocationResponse(
                 "T456789",
@@ -116,7 +116,7 @@ class AllocationDemandIntegrationTest {
                 Sentence("test", LocalDate.now(), "12 Months"),
                 InitialAppointment(LocalDate.now()),
                 CaseType.CUSTODY,
-                ProbationStatus(ManagementStatus.CURRENTLY_MANAGED, null)
+                ProbationStatus(ManagementStatus.CURRENTLY_MANAGED), Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO")
             )
         )
 

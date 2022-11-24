@@ -39,19 +39,16 @@ class AllocationDemandMapperTest {
                 Manager(
                     "EM123",
                     Name("Emma", "Jane", "Butane"),
-                    "T123",
-                    "PSO"
+                    "T123"
                 )
             ),
             Sentence("Community Service", LocalDate.now().minusDays(10), "3 Months"),
             InitialAppointment(LocalDate.now().plusDays(10)),
             CaseType.COMMUNITY,
-            ProbationStatus(
-                ManagementStatus.PREVIOUSLY_MANAGED,
-                Manager(
-                    "MAN1",
-                    Name("Bob", null, "Smith"), "Team1"
-                )
+            ProbationStatus(ManagementStatus.PREVIOUSLY_MANAGED),
+            Manager(
+                "MAN1",
+                Name("Bob", null, "Smith"), "Team1", "PSO"
             )
         )
 
@@ -71,13 +68,13 @@ class AllocationDemandMapperTest {
         whenever(resultSet.getString("sentence_length_unit")).thenReturn("Months")
         whenever(resultSet.getDate("initial_appointment_date")).thenReturn(Date.valueOf(expected.initialAppointment?.date))
         whenever(resultSet.getString("case_type")).thenReturn("COMMUNITY")
-        whenever(resultSet.getString("previous_staff_code")).thenReturn(expected.status.previousManager?.code)
-        whenever(resultSet.getString("previous_staff_forename")).thenReturn(expected.status.previousManager?.name?.forename)
-        whenever(resultSet.getString("previous_staff_middle_name")).thenReturn(expected.status.previousManager?.name?.middleName)
-        whenever(resultSet.getString("previous_staff_surname")).thenReturn(expected.status.previousManager?.name?.surname)
-        whenever(resultSet.getString("previous_team_code")).thenReturn(expected.status.previousManager?.teamCode)
+        whenever(resultSet.getString("community_manager_code")).thenReturn(expected.communityPersonManager?.code)
+        whenever(resultSet.getString("community_manager_forename")).thenReturn(expected.communityPersonManager?.name?.forename)
+        whenever(resultSet.getString("community_manager_middle_name")).thenReturn(expected.communityPersonManager?.name?.middleName)
+        whenever(resultSet.getString("community_manager_surname")).thenReturn(expected.communityPersonManager?.name?.surname)
+        whenever(resultSet.getString("community_manager_team_code")).thenReturn(expected.communityPersonManager?.teamCode)
         whenever(resultSet.getString("management_status")).thenReturn("PREVIOUSLY_MANAGED")
-        whenever(resultSet.getString("order_manager_grade")).thenReturn("PSQ")
+        whenever(resultSet.getString("community_manager_grade")).thenReturn("PSQ")
     }
 
     @Test

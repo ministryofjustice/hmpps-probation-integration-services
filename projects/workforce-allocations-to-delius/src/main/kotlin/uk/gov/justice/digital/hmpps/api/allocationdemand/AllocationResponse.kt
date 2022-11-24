@@ -9,7 +9,8 @@ data class AllocationResponse(
     val sentence: Sentence?,
     val initialAppointment: InitialAppointment?,
     val type: CaseType = CaseType.UNKNOWN,
-    val status: ProbationStatus
+    val probationStatus: ProbationStatus,
+    val communityPersonManager: Manager?
 )
 
 data class Name(
@@ -27,8 +28,7 @@ data class InitialAppointment(val date: LocalDate)
 data class AllocationDemandResponse(val cases: List<AllocationResponse>)
 
 data class ProbationStatus(
-    val status: ManagementStatus,
-    val previousManager: Manager? = null
+    val status: ManagementStatus
 ) {
     val description = status.description
 }
