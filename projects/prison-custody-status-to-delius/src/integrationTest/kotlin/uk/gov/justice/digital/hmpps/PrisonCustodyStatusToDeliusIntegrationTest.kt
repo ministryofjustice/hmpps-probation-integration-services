@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.BREACH_PRISON_RECALL
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.CHANGE_OF_INSTITUTION
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.RELEASE_FROM_CUSTODY
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.Custody
@@ -84,7 +85,10 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         assertTrue(getCustody(nomsNumber).isInCustody())
 
         // when they are released
-        val notification = Notification(message = MessageGenerator.PRISONER_RELEASED, attributes = MessageAttributes("prison-offender-events.prisoner.released"))
+        val notification = Notification(
+            message = MessageGenerator.PRISONER_RELEASED,
+            attributes = MessageAttributes("prison-offender-events.prisoner.released")
+        )
         jmsTemplate.convertSendAndWait(queueName, notification)
 
         // then they are no longer in custody
@@ -94,7 +98,10 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         // and the release information is recorded correctly
         val release = getReleases(custody).single()
         assertThat(release.createdDatetime, isCloseTo(ZonedDateTime.now()))
-        assertThat(release.date.withZoneSameInstant(EuropeLondon), equalTo(notification.message.occurredAt.truncatedTo(DAYS)))
+        assertThat(
+            release.date.withZoneSameInstant(EuropeLondon),
+            equalTo(notification.message.occurredAt.truncatedTo(DAYS))
+        )
         assertThat(release.person.nomsNumber, equalTo(notification.message.additionalInformation.nomsNumber()))
 
         // and the history is recorded correctly
@@ -128,7 +135,10 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         assertFalse(getCustody(nomsNumber).isInCustody())
 
         // when they are recalled
-        val notification = Notification(message = MessageGenerator.PRISONER_RECEIVED, attributes = MessageAttributes("prison-offender-events.prisoner.received"))
+        val notification = Notification(
+            message = MessageGenerator.PRISONER_RECEIVED,
+            attributes = MessageAttributes("prison-offender-events.prisoner.received")
+        )
         jmsTemplate.convertSendAndWait(queueName, notification)
 
         // then they are now in custody
@@ -138,7 +148,10 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         // and the recall information is recorded correctly
         val recall = getRecalls(custody).single()
         assertThat(recall.createdDatetime, isCloseTo(ZonedDateTime.now()))
-        assertThat(recall.date.withZoneSameInstant(EuropeLondon), equalTo(notification.message.occurredAt.truncatedTo(DAYS)))
+        assertThat(
+            recall.date.withZoneSameInstant(EuropeLondon),
+            equalTo(notification.message.occurredAt.truncatedTo(DAYS))
+        )
 
         // and the history is recorded correctly
         val custodyHistory = getCustodyHistory(custody)
@@ -157,8 +170,11 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
 
         // and contacts are recorded
         val contacts = getContacts(nomsNumber)
-        assertThat(contacts, hasSize(2))
-        assertThat(contacts.map { it.type.code }, hasItems(BREACH_PRISON_RECALL.code, RESPONSIBLE_OFFICER_CHANGE.code))
+        assertThat(contacts, hasSize(3))
+        assertThat(
+            contacts.map { it.type.code },
+            hasItems(BREACH_PRISON_RECALL.code, RESPONSIBLE_OFFICER_CHANGE.code, CHANGE_OF_INSTITUTION.code)
+        )
 
         // and telemetry is updated
         verify(telemetryService).trackEvent(

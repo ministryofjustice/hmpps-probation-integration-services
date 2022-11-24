@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.custody
 
+import IdGenerator
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -7,13 +8,21 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.CustodyGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyHistory
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
@@ -38,6 +47,12 @@ internal class CustodyServiceTest {
 
     @Mock
     private lateinit var institutionRepository: InstitutionRepository
+
+    @Mock
+    private lateinit var contactTypeRepository: ContactTypeRepository
+
+    @Mock
+    private lateinit var contactRepository: ContactRepository
 
     @InjectMocks
     private lateinit var custodyService: CustodyService
@@ -69,12 +84,17 @@ internal class CustodyServiceTest {
     fun updateLocationCreatesHistoryRecord() {
         val custody = CustodyGenerator.generate(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT)
         val now = ZonedDateTime.now()
+        val om = OrderManagerGenerator.generate(custody.disposal.event)
+        val ct = ContactType(IdGenerator.getAndIncrement(), ContactTypeCode.CHANGE_OF_INSTITUTION.code)
+
         whenever(institutionRepository.findByCode(InstitutionCode.IN_COMMUNITY.code))
             .thenReturn(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY])
         whenever(referenceDataRepository.findByCodeAndSetName(LOCATION_CHANGE.code, "CUSTODY EVENT TYPE"))
             .thenReturn(ReferenceDataGenerator.CUSTODY_EVENT_TYPE[LOCATION_CHANGE])
+        whenever(contactTypeRepository.findByCode(ContactTypeCode.CHANGE_OF_INSTITUTION.code)).thenReturn(ct)
+        doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
-        custodyService.updateLocation(custody, InstitutionCode.IN_COMMUNITY.code, now)
+        custodyService.updateLocation(custody, InstitutionCode.IN_COMMUNITY.code, now, om)
 
         val saved = argumentCaptor<CustodyHistory>()
         verify(custodyHistoryRepository).save(saved.capture())
@@ -86,5 +106,12 @@ internal class CustodyServiceTest {
         assertThat(savedCustody.detail, equalTo("Test institution (COMMUN)"))
         assertThat(savedCustody.person, equalTo(custody.disposal.event.person))
         assertThat(savedCustody.custody, equalTo(custody))
+
+        val contact = argumentCaptor<Contact>()
+        verify(contactRepository).save(contact.capture())
+        assertThat(contact.firstValue.date, equalTo(now))
+        assertThat(contact.firstValue.type.code, equalTo(ContactTypeCode.CHANGE_OF_INSTITUTION.code))
+        assertThat(contact.firstValue.staffId, equalTo(om.staffId))
+        assertThat(contact.firstValue.teamId, equalTo(om.teamId))
     }
 }
