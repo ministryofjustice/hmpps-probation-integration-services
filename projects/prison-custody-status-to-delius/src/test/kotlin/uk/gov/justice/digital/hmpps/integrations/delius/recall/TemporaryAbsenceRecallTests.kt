@@ -18,12 +18,14 @@ import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlert
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.TERMINATED_STATUSES
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
@@ -220,62 +222,27 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
     }
 
     @Test
-    fun `temporary absence with current status Release on Licence`() {
+    fun `temporary absence with current status Released on Licence`() {
         val person = PersonGenerator.generate("A52345B")
-        val event = EventGenerator.previouslyReleasedEvent(
-            person,
-            InstitutionGenerator.generate("TSP"),
-        )
-        val recallDateTime = ZonedDateTime.now()
-        val recallDate = recallDateTime.truncatedTo(DAYS)
+        val event = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]?.let {
+            EventGenerator.previouslyReleasedEvent(
+                person,
+                it,
+            )
+        }
 
         whenever(recallReasonRepository.findByCodeAndSelectableIsTrue(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
             .thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE])
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishmentIsTrue("WSI"))
             .thenReturn(InstitutionGenerator.DEFAULT)
-        whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
-        whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
-        whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id))
-            .thenReturn(PersonManagerGenerator.generate(person))
-        whenever(contactTypeRepository.findByCode(ContactTypeCode.BREACH_PRISON_RECALL.code))
-            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
-        doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
+        whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event!!))
 
-        recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", recallDateTime)
+        val exception = assertThrows<ConflictException> {
+            recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", ZonedDateTime.now())
+        }
 
-        // recall is created
-        val recall = argumentCaptor<Recall>()
-        verify(recallRepository).save(recall.capture())
-        assertThat(recall.firstValue.date, equalTo(recallDate))
-        assertThat(recall.firstValue.createdDatetime, isCloseTo(recallDateTime))
-        assertThat(recall.firstValue.lastUpdatedDatetime, isCloseTo(recallDateTime))
-        assertThat(recall.firstValue.reason.code, equalTo(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
-
-        // custody details are updated
-        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT.code, recallDate)
-        verify(custodyService).updateStatus(
-            event.disposal!!.custody!!,
-            CustodialStatusCode.IN_CUSTODY,
-            recallDate,
-            "Recall added in custody "
-        )
-
-        // licence conditions are terminated
-        verify(licenceConditionService).terminateLicenceConditionsForDisposal(
-            event.disposal!!.id,
-            ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
-            recallDate
-        )
-
-        // contact alert is created
-        val contact = argumentCaptor<Contact>()
-        verify(contactRepository).save(contact.capture())
-        assertThat(contact.firstValue.event, equalTo(event))
-        assertThat(contact.firstValue.date, equalTo(recallDateTime))
-        assertThat(contact.firstValue.notes, equalTo("Reason for Recall: description of EOTL"))
-        val contactAlert = argumentCaptor<ContactAlert>()
-        verify(contactAlertRepository).save(contactAlert.capture())
-        assertThat(contactAlert.firstValue.contactId, equalTo(contact.firstValue.id))
+        verify(recallRepository, never()).save(any())
+        assertThat(exception.message, equalTo("Recall from Temporary Licence, however Released on Licence"))
     }
 
     @ParameterizedTest
