@@ -101,10 +101,6 @@ class RecallService(
 
         val recall = createRecall(custody, recallReason, recallDate, latestRelease, person)
 
-        if (custody.institution.id != toInstitution.id || custody.status.canRecall()) {
-            custodyService.updateLocation(custody, toInstitution.code, recallDate)
-        }
-
         when (toInstitution.code) {
             InstitutionCode.UNLAWFULLY_AT_LARGE.code -> custodyService.updateStatus(
                 custody,
@@ -119,13 +115,19 @@ class RecallService(
                 "Recall added but location unknown "
             )
             else -> if (custody.status.canChange()) {
+                val detail = if (recall == null) "In custody " else "Recall added in custody "
                 custodyService.updateStatus(
                     custody,
                     CustodialStatusCode.IN_CUSTODY,
                     recallDate,
-                    "Recall added in custody "
+                    detail
                 )
             }
+        }
+
+        if (custody.institution.id != toInstitution.id || custody.status.canRecall()) {
+            val orderManager = orderManagerRepository.getByEventId(event.id)
+            custodyService.updateLocation(custody, toInstitution.code, recallDate, orderManager)
         }
 
         allocatePrisonManager(latestRelease, toInstitution, custody, disposal, recallDateTime)
@@ -137,7 +139,18 @@ class RecallService(
             terminationDate = recallDate
         )
 
-        // create alert contact
+        if (recall != null) {
+            createRecallAlertContact(event, person, recallDateTime, recallReason, recall)
+        }
+    }
+
+    private fun createRecallAlertContact(
+        event: Event,
+        person: Person,
+        recallDateTime: ZonedDateTime,
+        recallReason: RecallReason,
+        recall: Recall
+    ) {
         val orderManager = orderManagerRepository.getByEventId(event.id)
         val personManager = personManagerRepository.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)
         val contact = contactRepository.save(
@@ -149,7 +162,7 @@ class RecallService(
                 notes = "Reason for Recall: ${recallReason.description}",
                 staffId = orderManager.staffId,
                 teamId = orderManager.teamId,
-                createdDatetime = recall?.createdDatetime ?: ZonedDateTime.now(),
+                createdDatetime = recall.createdDatetime,
                 alert = true,
             )
         )
