@@ -65,6 +65,7 @@ jobs:
           PRISON_API: https://api-dev.prison.service.justice.gov.uk/
           REFERANDMONITOR_URL: https://hmpps-interventions-ui-dev.apps.live-1.cloud-platform.service.justice.gov.uk
           OASYS_URL: https://ords.t2.oasys.service.justice.gov.uk/
+          APPROVEDPREMISES_URL: https://approved-premises-dev.hmpps.service.justice.gov.uk/
           DELIUS_USERNAME: ${{ secrets.E2E_DELIUS_USERNAME }}
           DELIUS_PASSWORD: ${{ secrets.E2E_DELIUS_PASSWORD }}
           DPS_USERNAME: ${{ secrets.E2E_DPS_USERNAME }}
@@ -75,6 +76,8 @@ jobs:
           REFERANDMONITOR_SUPPLIER_PASSWORD: ${{ secrets.E2E_REFERANDMONITOR_SUPPLIER_PASSWORD }}
           OASYS_USERNAME: ${{ secrets.E2E_OASYS_USERNAME }}
           OASYS_PASSWORD: ${{ secrets.E2E_OASYS_PASSWORD }}
+          APPROVEDPREMISES_USERNAME: ${{ secrets.E2E_DELIUS_USERNAME }}
+          APPROVEDPREMISES_PASSWORD: ${{ secrets.E2E_DELIUS_PASSWORD }}
           PLAYWRIGHT_JUNIT_OUTPUT_NAME: junit.xml
       - name: Publish JUnit report
         uses: mikepenz/action-junit-report@v3
