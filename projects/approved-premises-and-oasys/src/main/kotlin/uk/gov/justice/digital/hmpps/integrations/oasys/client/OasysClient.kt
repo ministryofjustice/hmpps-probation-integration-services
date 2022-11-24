@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import uk.gov.justice.digital.hmpps.config.FeignOAuth2Config
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysAssessmentTimeline
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysHealthDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysNeedsDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskAssessmentDetails
@@ -70,4 +71,11 @@ interface OasysClient {
         @PathVariable("assessmentId") assessmentId: Long,
         @PathVariable("status") status: String,
     ): OasysRoshAssessment
+
+    @GetMapping(value = ["/ap/health/{crn}/ALLOW/{assessmentId}/{status}"])
+    fun getHealthDetails(
+        @PathVariable("crn") crn: String,
+        @PathVariable("assessmentId") assessmentId: Long,
+        @PathVariable("status") status: String,
+    ): OasysHealthDetails
 }

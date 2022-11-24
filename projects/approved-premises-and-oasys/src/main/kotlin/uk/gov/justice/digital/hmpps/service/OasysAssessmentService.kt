@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.oasys.client.OasysClient
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
+import uk.gov.justice.digital.hmpps.model.HealthDetails
 import uk.gov.justice.digital.hmpps.model.NeedsDetails
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
 import uk.gov.justice.digital.hmpps.model.RiskAssessmentDetails
@@ -63,5 +64,10 @@ class OasysAssessmentService(private var oasysClient: OasysClient) {
     fun getRosh(crn: String): RoshDetails {
         val latestAssessment = getLatestAssessment(crn)
         return RoshDetails.from(oasysClient.getRiskOfSeriousHarm(crn, latestAssessment.assessmentPk, latestAssessment.status))
+    }
+
+    fun getHealthDetails(crn: String): HealthDetails {
+        val latestAssessment = getLatestAssessment(crn)
+        return HealthDetails.from(oasysClient.getHealthDetails(crn, latestAssessment.assessmentPk, latestAssessment.status))
     }
 }
