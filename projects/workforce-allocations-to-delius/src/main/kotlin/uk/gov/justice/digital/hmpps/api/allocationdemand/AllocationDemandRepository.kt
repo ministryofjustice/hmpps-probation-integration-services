@@ -30,7 +30,7 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
             val sentenceDate: Date? = rs.getDate("sentence_date")
             val iad: Date? = rs.getDate("initial_appointment_date")
             val managementStatus = ManagementStatus.valueOf(rs.getString("management_status"))
-
+            val managerCode = rs.getString("community_manager_code")
             AllocationResponse(
                 rs.getString("crn"),
                 Name(rs.getString("forename"), rs.getString("middle_name"), rs.getString("surname")),
@@ -43,8 +43,7 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
                             rs.getString("staff_middle_name"),
                             rs.getString("staff_surname")
                         ),
-                        rs.getString("team_code"),
-                        gradeMap[rs.getString("order_manager_grade")]
+                        rs.getString("team_code")
                     )
                 ),
                 if (sentenceDate == null) null
@@ -55,38 +54,25 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
                 ),
                 if (iad == null) null else InitialAppointment(iad.toLocalDate()),
                 CaseType.valueOf(rs.getString("case_type")),
-                ProbationStatus(
-                    managementStatus,
-                    if (managementStatus == ManagementStatus.PREVIOUSLY_MANAGED) {
-                        Manager(
-                            rs.getString("previous_staff_code"),
-                            Name(
-                                rs.getString("previous_staff_forename"),
-                                rs.getString("previous_staff_middle_name"),
-                                rs.getString("previous_staff_surname")
-                            ),
-                            rs.getString("previous_team_code")
-                        )
-                    } else null
-                )
+                ProbationStatus(managementStatus),
+                if (managerCode.endsWith("U")) null else
+                    Manager(
+                        managerCode,
+                        Name(
+                            rs.getString("community_manager_forename"),
+                            rs.getString("community_manager_middle_name"),
+                            rs.getString("community_manager_surname")
+                        ),
+                        rs.getString("community_manager_team_code"),
+                        gradeMap[rs.getString("community_manager_grade")]
+                    )
             )
         }
     }
 }
 
 const val QS_ALLOCATION_DEMAND = """
-WITH previous AS
-         (SELECT pcm.OFFENDER_ID,
-                 ps.OFFICER_CODE,
-                 ps.FORENAME,
-                 ps.FORENAME2,
-                 ps.SURNAME,
-                 pt.CODE,
-                 ROW_NUMBER() OVER (PARTITION BY pcm.OFFENDER_ID ORDER BY pcm.END_DATE DESC ) AS row_number
-          FROM OFFENDER_MANAGER pcm
-                   JOIN STAFF ps ON pcm.ALLOCATION_STAFF_ID = ps.STAFF_ID
-                   JOIN TEAM pt ON pt.TEAM_ID = pcm.TEAM_ID
-          WHERE pcm.ACTIVE_FLAG = 0)
+
 SELECT o.CRN                                                       crn,
        o.FIRST_NAME                                                forename,
        o.SECOND_NAME                                               middle_name,
@@ -116,7 +102,6 @@ SELECT o.CRN                                                       crn,
                        WHERE d.OFFENDER_ID = o.OFFENDER_ID
                        AND d.EVENT_ID <> e.EVENT_ID) THEN 'PREVIOUSLY_MANAGED'
            ELSE 'NEW_TO_PROBATION' END                             management_status,
-       sg.CODE_VALUE                                               order_manager_grade,
        (SELECT type
         FROM (SELECT CASE
                          WHEN l_dt.SENTENCE_TYPE IN ('SC', 'NC') AND
@@ -142,27 +127,27 @@ SELECT o.CRN                                                       crn,
                 AND l_d.ACTIVE_FLAG = 1
                 AND l_d.SOFT_DELETED = 0)
         ORDER BY end_date DESC, start_date FETCH NEXT 1 ROWS ONLY) case_type,
-       previous.OFFENDER_ID                                        previous_offender_id,
-       previous.OFFICER_CODE                                       previous_staff_code,
-       previous.FORENAME                                           previous_staff_forename,
-       previous.FORENAME2                                          previous_staff_middle_name,
-       previous.SURNAME                                            previous_staff_surname,
-       previous.CODE                                               previous_team_code
+       cms.OFFICER_CODE                                       community_manager_code,
+       cms.FORENAME                                           community_manager_forename,
+       cms.FORENAME2                                          community_manager_middle_name,
+       cms.SURNAME                                            community_manager_surname,
+       cmt.CODE                                               community_manager_team_code,
+       cmsg.CODE_VALUE                                        community_manager_grade
 
 FROM OFFENDER o
          JOIN EVENT e ON e.OFFENDER_ID = o.OFFENDER_ID AND e.ACTIVE_FLAG = 1
          JOIN OFFENDER_MANAGER cm ON cm.OFFENDER_ID = o.OFFENDER_ID AND cm.ACTIVE_FLAG = 1
          JOIN STAFF cms ON cm.ALLOCATION_STAFF_ID = cms.STAFF_ID
+         JOIN TEAM cmt ON cmt.TEAM_ID = cm.ALLOCATION_TEAM_ID
          JOIN ORDER_MANAGER om ON om.EVENT_ID = e.EVENT_ID AND om.ACTIVE_FLAG = 1
          JOIN TEAM t ON t.TEAM_ID = om.ALLOCATION_TEAM_ID
          JOIN STAFF s ON s.STAFF_ID = om.ALLOCATION_STAFF_ID
-         LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST sg ON s.STAFF_GRADE_ID = sg.STANDARD_REFERENCE_LIST_ID
+         LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST cmsg ON cms.STAFF_GRADE_ID = cmsg.STANDARD_REFERENCE_LIST_ID
          LEFT OUTER JOIN DISPOSAL d ON d.EVENT_ID = e.EVENT_ID AND d.ACTIVE_FLAG = 1
          LEFT OUTER JOIN R_DISPOSAL_TYPE dt ON dt.DISPOSAL_TYPE_ID = d.DISPOSAL_TYPE_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST du ON du.STANDARD_REFERENCE_LIST_ID = d.ENTRY_LENGTH_UNITS_ID
          LEFT OUTER JOIN CUSTODY c ON c.DISPOSAL_ID = d.DISPOSAL_ID AND c.SOFT_DELETED = 0
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST cs ON cs.STANDARD_REFERENCE_LIST_ID = c.CUSTODIAL_STATUS_ID
-         LEFT OUTER JOIN previous ON previous.OFFENDER_ID = o.OFFENDER_ID AND previous.row_number = 1
 WHERE (o.CRN, e.EVENT_NUMBER) IN (:values)
   AND e.SOFT_DELETED = 0
   AND d.SOFT_DELETED = 0
