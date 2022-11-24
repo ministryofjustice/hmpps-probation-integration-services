@@ -23,10 +23,14 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysNeedsAssessmen
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysNeedsDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceDetails
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskAssessment
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskAssessmentDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskManagementPlanAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskManagementPlanDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskToTheIndividualAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskToTheIndividualDetails
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRoshAssessment
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRoshDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRoshSummary
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRoshSummaryAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
@@ -34,10 +38,15 @@ import uk.gov.justice.digital.hmpps.model.Needs
 import uk.gov.justice.digital.hmpps.model.NeedsDetails
 import uk.gov.justice.digital.hmpps.model.Offence
 import uk.gov.justice.digital.hmpps.model.OffenceDetails
+import uk.gov.justice.digital.hmpps.model.RiskAssessment
+import uk.gov.justice.digital.hmpps.model.RiskAssessmentDetails
+import uk.gov.justice.digital.hmpps.model.RiskLevel
 import uk.gov.justice.digital.hmpps.model.RiskManagementPlan
 import uk.gov.justice.digital.hmpps.model.RiskManagementPlanDetails
 import uk.gov.justice.digital.hmpps.model.RiskToTheIndividual
 import uk.gov.justice.digital.hmpps.model.RiskToTheIndividualDetails
+import uk.gov.justice.digital.hmpps.model.Rosh
+import uk.gov.justice.digital.hmpps.model.RoshDetails
 import uk.gov.justice.digital.hmpps.model.RoshSummary
 import uk.gov.justice.digital.hmpps.model.RoshSummaryDetails
 import java.time.ZonedDateTime
@@ -347,6 +356,136 @@ internal class OasysAssessmentServiceTest {
             )
         )
         assertThat(riskToTheIndividualDetails).isEqualTo(expectedRiskToTheIndividualDetails)
+    }
+
+    @Test
+    fun `should not attempt to retrieve risk assessment details where CRN does not exist`() {
+        // Given
+        val crn = "D123456"
+        val request = createRequest()
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+
+        // When
+        val exception = assertThrows<NotFoundException> {
+            oasysAssessmentService.getRiskAssessment(crn)
+        }
+
+        // Then
+        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        verify(never()) { oasysClient.getRiskAssessment(any(), any(), any()) }
+    }
+
+    @Test
+    fun `should return RiskAssessment for valid CRN`() {
+        // Given
+        val oasysRiskAssessmentDetails = OasysRiskAssessmentDetails(
+            limitedAccessOffender = false,
+            listOf(
+                OasysRiskAssessment(
+                    assessmentPk = assessmentPk,
+                    assessmentType = assessmentType,
+                    initiationDate = now,
+                    assessmentStatus = status,
+                    dateCompleted = now,
+                    currentOffenceDetails = "fight",
+                    previousWhereAndWhen = "in the library",
+                    previousWhatDone = "Stabbing",
+                    currentSources = "witnesses",
+                    currentWhyDone = "for money",
+                    currentAnyoneElsePresent = "gang of people",
+                )
+            )
+        )
+        whenever(oasysClient.getRiskAssessment(crn, assessmentPk, status)).thenReturn(oasysRiskAssessmentDetails)
+
+        // When
+        val riskAssessmentDetails = oasysAssessmentService.getRiskAssessment(crn)
+
+        // Then
+        val expectedRiskAssessmentDetails = RiskAssessmentDetails(
+            assessmentId = assessmentPk,
+            assessmentType = assessmentType,
+            initiationDate = now,
+            dateCompleted = now,
+            assessmentStatus = status,
+            limitedAccessOffender = false,
+            riskAssessment = RiskAssessment(
+                currentOffenceDetails = "fight",
+                previousWhereAndWhen = "in the library",
+                previousWhatDone = "Stabbing",
+                currentSources = "witnesses",
+                currentWhyDone = "for money",
+                currentAnyoneElsePresent = "gang of people",
+            )
+        )
+        assertThat(riskAssessmentDetails).isEqualTo(expectedRiskAssessmentDetails)
+    }
+
+    @Test
+    fun `should not attempt to retrieve ROSH details where CRN does not exist`() {
+        // Given
+        val crn = "D123456"
+        val request = createRequest()
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+
+        // When
+        val exception = assertThrows<NotFoundException> {
+            oasysAssessmentService.getRosh(crn)
+        }
+
+        // Then
+        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        verify(never()) { oasysClient.getRiskOfSeriousHarm(any(), any(), any()) }
+    }
+
+    @Test
+    fun `should return ROSH for valid CRN`() {
+        // Given
+        val oasysRoshDetails = OasysRoshAssessment(
+            limitedAccessOffender = false,
+            listOf(
+                OasysRoshDetails(
+                    assessmentPk = assessmentPk,
+                    assessmentType = assessmentType,
+                    initiationDate = now,
+                    assessmentStatus = status,
+                    dateCompleted = now,
+                    riskChildrenCommunity = "[Low]",
+                    riskPrisonersCustody = "[Medium]",
+                    riskStaffCustody = "[Medium]",
+                    riskStaffCommunity = "[Medium]",
+                    riskKnownAdultCustody = null,
+                    riskKnownAdultCommunity = "[Medium]",
+                    riskPublicCustody = "[High]",
+                    riskChildrenCustody = "[Very High]",
+                )
+            )
+        )
+        whenever(oasysClient.getRiskOfSeriousHarm(crn, assessmentPk, status)).thenReturn(oasysRoshDetails)
+
+        // When
+        val roshDetails = oasysAssessmentService.getRosh(crn)
+
+        // Then
+        val expectedRoshDetails = RoshDetails(
+            assessmentId = assessmentPk,
+            assessmentType = assessmentType,
+            initiationDate = now,
+            dateCompleted = now,
+            assessmentStatus = status,
+            limitedAccessOffender = false,
+            rosh = Rosh(
+                riskChildrenCommunity = RiskLevel.LOW,
+                riskPrisonersCustody = RiskLevel.MEDIUM,
+                riskStaffCustody = RiskLevel.MEDIUM,
+                riskStaffCommunity = RiskLevel.MEDIUM,
+                riskKnownAdultCustody = null,
+                riskKnownAdultCommunity = RiskLevel.MEDIUM,
+                riskPublicCustody = RiskLevel.HIGH,
+                riskChildrenCustody = RiskLevel.VERY_HIGH,
+            )
+        )
+        assertThat(roshDetails).isEqualTo(expectedRoshDetails)
     }
 
     private fun createRequest(): Request? {

@@ -7,8 +7,10 @@ import uk.gov.justice.digital.hmpps.config.FeignOAuth2Config
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysAssessmentTimeline
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysNeedsDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceDetails
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskAssessmentDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskManagementPlanDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRiskToTheIndividualDetails
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRoshAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRoshSummary
 
 @FeignClient(
@@ -54,4 +56,18 @@ interface OasysClient {
         @PathVariable("assessmentId") assessmentId: Long,
         @PathVariable("status") status: String,
     ): OasysRiskToTheIndividualDetails
+
+    @GetMapping(value = ["/ap/riskass/{crn}/ALLOW/{assessmentId}/{status}"])
+    fun getRiskAssessment(
+        @PathVariable("crn") crn: String,
+        @PathVariable("assessmentId") assessmentId: Long,
+        @PathVariable("status") status: String,
+    ): OasysRiskAssessmentDetails
+
+    @GetMapping(value = ["/ap/rosh/{crn}/ALLOW/{assessmentId}/{status}"])
+    fun getRiskOfSeriousHarm(
+        @PathVariable("crn") crn: String,
+        @PathVariable("assessmentId") assessmentId: Long,
+        @PathVariable("status") status: String,
+    ): OasysRoshAssessment
 }

@@ -5,4 +5,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocPerso
 
 interface DocPersonRepository : JpaRepository<DocPerson, Long> {
     fun findByCrn(crn: String): DocPerson?
+
+    fun findByCrnAndPreconDocId(crn: String, preconDocId: String): DocPerson?
 }
