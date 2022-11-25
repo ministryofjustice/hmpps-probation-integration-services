@@ -65,7 +65,7 @@ class CustodyService(
                     date = date,
                     person = person,
                     notes =
-                        "Custodial Status: ${custody.status.description}\n" +
+                    "Custodial Status: ${custody.status.description}\n" +
                         "Custodial Establishment: ${custody.institution.description}\n" +
                         "Location Change Date: ${DeliusDateTimeFormatter.format(date)}\n" +
                         "-------------------------------",
