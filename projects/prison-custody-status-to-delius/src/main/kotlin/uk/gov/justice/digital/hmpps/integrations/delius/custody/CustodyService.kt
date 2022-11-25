@@ -64,8 +64,8 @@ class CustodyService(
                     type = contactTypeRepository.getByCode(ContactTypeCode.CHANGE_OF_INSTITUTION.code),
                     date = date,
                     person = person,
-                    notes = "Comment added by Prison Update System on ${DeliusDateTimeFormatter.format(ZonedDateTime.now())}\n" +
-                        "Custodial Status: ${custody.status.description}\n" +
+                    notes =
+                    "Custodial Status: ${custody.status.description}\n" +
                         "Custodial Establishment: ${custody.institution.description}\n" +
                         "Location Change Date: ${DeliusDateTimeFormatter.format(date)}\n" +
                         "-------------------------------",
