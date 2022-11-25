@@ -19,6 +19,8 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.oasys.client.OasysClient
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.Inputs
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysAssessmentTimeline
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysHealthAssessment
+import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysHealthDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysNeedsAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysNeedsDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysOffenceAssessment
@@ -34,6 +36,9 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRoshDetails
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRoshSummary
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysRoshSummaryAssessment
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
+import uk.gov.justice.digital.hmpps.model.Health
+import uk.gov.justice.digital.hmpps.model.HealthDetail
+import uk.gov.justice.digital.hmpps.model.HealthDetails
 import uk.gov.justice.digital.hmpps.model.Needs
 import uk.gov.justice.digital.hmpps.model.NeedsDetails
 import uk.gov.justice.digital.hmpps.model.Offence
@@ -486,6 +491,83 @@ internal class OasysAssessmentServiceTest {
             )
         )
         assertThat(roshDetails).isEqualTo(expectedRoshDetails)
+    }
+
+    @Test
+    fun `should not attempt to retrieve Health details where CRN does not exist`() {
+        // Given
+        val crn = "D123456"
+        val request = createRequest()
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+
+        // When
+        val exception = assertThrows<NotFoundException> {
+            oasysAssessmentService.getHealthDetails(crn)
+        }
+
+        // Then
+        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        verify(never()) { oasysClient.getHealthDetails(any(), any(), any()) }
+    }
+
+    @Test
+    fun `should return HealthDetails for valid CRN`() {
+        // Given
+        val oasysHealthDetails = OasysHealthDetails(
+            limitedAccessOffender = false,
+            listOf(
+                OasysHealthAssessment(
+                    assessmentPk = assessmentPk,
+                    assessmentType = assessmentType,
+                    initiationDate = now,
+                    assessmentStatus = status,
+                    dateCompleted = now,
+                    generalHealth = "[Yes]",
+                    alcoholProgramme = "Alcohol misuse - Programme",
+                    alcoholEM = "Alcohol misuse - Electronic Monitoring",
+                    alcoholCommunity = "Alcohol misuse - Community",
+                    interpreterProgramme = "Need for interpreter - Programme",
+                    interpreterEM = "Need for interpreter - Electronic Monitoring",
+                    interpreterCommunity = "Need for interpreter - Community",
+                    communicationProgramme = "Poor communication skills - Programme",
+                    communicationEM = "Poor communication skills - Electronic Monitoring",
+                    communicationCommunity = "Poor communication skills - Community",
+                )
+            )
+        )
+        whenever(oasysClient.getHealthDetails(crn, assessmentPk, status)).thenReturn(oasysHealthDetails)
+
+        // When
+        val healthDetails = oasysAssessmentService.getHealthDetails(crn)
+
+        // Then
+        val expectedHealthDetails = HealthDetails(
+            assessmentId = assessmentPk,
+            assessmentType = assessmentType,
+            initiationDate = now,
+            dateCompleted = now,
+            assessmentStatus = status,
+            limitedAccessOffender = false,
+            health = Health(
+                generalHealth = "[Yes]",
+                alcoholMisuse = HealthDetail(
+                    "Alcohol misuse - Community",
+                    "Alcohol misuse - Electronic Monitoring",
+                    "Alcohol misuse - Programme",
+                ),
+                needForInterpreter = HealthDetail(
+                    "Need for interpreter - Community",
+                    "Need for interpreter - Electronic Monitoring",
+                    "Need for interpreter - Programme",
+                ),
+                poorCommunicationSkills = HealthDetail(
+                    "Poor communication skills - Community",
+                    "Poor communication skills - Electronic Monitoring",
+                    "Poor communication skills - Programme",
+                ),
+            )
+        )
+        assertThat(healthDetails).isEqualTo(expectedHealthDetails)
     }
 
     private fun createRequest(): Request? {
