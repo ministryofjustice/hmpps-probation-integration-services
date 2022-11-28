@@ -29,9 +29,9 @@ data class RiskToTheIndividualDetails(
                     laterWIPAssessmentExists,
                     oasysRiskToTheIndividual.limitedAccessOffender,
                     RiskToTheIndividual(
-                        concernsRiskOfSuicide,
+                        stringToBoolean(concernsRiskOfSuicide),
                         currentConcernsBreachOfTrustText,
-                        currentConcernsBreachOfTrust,
+                        stringToBoolean(currentConcernsBreachOfTrust),
                         riskOfSeriousHarm,
                         previousVulnerability,
                         currentVulnerability,
@@ -39,10 +39,10 @@ data class RiskToTheIndividualDetails(
                         currentCustodyHostelCoping,
                         previousConcernsSelfHarmSuicide,
                         currentConcernsSelfHarmSuicide,
-                        currentConcernsRiskOfSelfHarm,
-                        currentConcernsRiskOfSuicide,
-                        concernsBreachOfTrust,
-                        concernsRiskOfSelfHarm
+                        stringToBoolean(currentConcernsRiskOfSelfHarm),
+                        stringToBoolean(currentConcernsRiskOfSuicide),
+                        stringToBoolean(concernsBreachOfTrust),
+                        stringToBoolean(concernsRiskOfSelfHarm),
                     )
                 )
             }
@@ -51,9 +51,9 @@ data class RiskToTheIndividualDetails(
 }
 
 data class RiskToTheIndividual(
-    val concernsRiskOfSuicide: String? = null,
+    val concernsRiskOfSuicide: Boolean? = null,
     val currentConcernsBreachOfTrustText: String? = null,
-    val currentConcernsBreachOfTrust: String? = null,
+    val currentConcernsBreachOfTrust: Boolean? = null,
     val riskOfSeriousHarm: String? = null,
     val previousVulnerability: String? = null,
     val currentVulnerability: String? = null,
@@ -61,8 +61,8 @@ data class RiskToTheIndividual(
     val currentCustodyHostelCoping: String? = null,
     val previousConcernsSelfHarmSuicide: String? = null,
     val currentConcernsSelfHarmSuicide: String? = null,
-    val currentConcernsRiskOfSelfHarm: String? = null,
-    val currentConcernsRiskOfSuicide: String? = null,
-    val concernsBreachOfTrust: String? = null,
-    val concernsRiskOfSelfHarm: String? = null,
+    val currentConcernsRiskOfSelfHarm: Boolean? = null,
+    val currentConcernsRiskOfSuicide: Boolean? = null,
+    val concernsBreachOfTrust: Boolean? = null,
+    val concernsRiskOfSelfHarm: Boolean? = null,
 )
