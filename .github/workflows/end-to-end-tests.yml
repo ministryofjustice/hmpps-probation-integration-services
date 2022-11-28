@@ -43,10 +43,10 @@ jobs:
 
       - name: Update trivyignore file and create pull request
         run: |
-          git switch -c suppress/${{ env.cve_id }}
-          git push origin suppress/${{ env.cve_id }}
-          git pull origin suppress/${{ env.cve_id }}
-          git push origin suppress/${{ env.cve_id }}
+          git switch -c suppress/${{ env.cve_id }}_${{ env.project }}
+          git push origin suppress/${{ env.cve_id }}_${{ env.project }}
+          git pull origin suppress/${{ env.cve_id }}_${{ env.project }}
+          git push origin suppress/${{ env.cve_id }}_${{ env.project }}
           echo -e "\n# ${{ env.reason }}\n# By ${{ github.actor }}\n${{ env.cve_id }} exp:$(date -d "+2 weeks" '+%Y-%m-%d')" >> projects/${{ env.project }}/.trivyignore
           gh api --method PUT /repos/ministryofjustice/contents/projects/${{ env.project }}/.trivyignore \
             --field message="Suppress ${{ env.cve_id }} in ${{ env.project }}" \
