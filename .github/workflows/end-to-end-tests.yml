@@ -48,7 +48,7 @@ jobs:
           git pull origin suppress/${{ env.cve_id }}_${{ env.project }}
           git push origin suppress/${{ env.cve_id }}_${{ env.project }}
           echo -e "\n# ${{ env.reason }}\n# By ${{ github.actor }}\n${{ env.cve_id }} exp:$(date -d "+2 weeks" '+%Y-%m-%d')" >> projects/${{ env.project }}/.trivyignore
-          gh api --method PUT /repos/ministryofjustice/contents/projects/${{ env.project }}/.trivyignore \
+          gh api --method PUT /repos/ministryofjustice/hmpps-probation-integration-services/contents/projects/${{ env.project }}/.trivyignore \
             --field message="Suppress ${{ env.cve_id }} in ${{ env.project }}" \
             --field content=@<( base64 -i projects/${{ env.project }}/.trivyignore ) \
             --field branch='suppress/${{ env.cve_id }}_${{ env.project }}' \
