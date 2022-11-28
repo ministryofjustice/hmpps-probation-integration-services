@@ -6,16 +6,13 @@ on:
       - created
   workflow_dispatch:
     inputs:
-      cve_id:
-        description: CVE ID
+      title:
+        description: CVE ID (project)
         type: string
         required: true
       reason:
         description: Reason
         type: string
-        required: true
-      project:
-        description: Which project
         required: true
 
 jobs:
@@ -31,16 +28,18 @@ jobs:
       - name: Set CVE from Issue Title automatically
         if: github.event_name=='issue_comment'
         run: |
-          echo cve_id=${{ github.event.issue.title }} >> $GITHUB_ENV
+          title=${{ github.event.issue.title }}                                   # Format: 'CVE-123 (project-name)'
+          echo cve_id=$(echo $title | sed -E 's/(.*) .*/\1/') >> $GITHUB_ENV      # CVE-123
+          echo project=$(echo $title | sed -E 's/.* \((.*)\)/\1/') >> $GITHUB_ENV # project-name
           echo reason=${{ github.event.comment.body }} >> $GITHUB_ENV
-          echo project=${{ github.event.label.name }} >> $GITHUB_ENV
 
       - name: Set CVE from manual input
         if: github.event_name=='workflow_dispatch'
         run:  |
-          echo cve_id=${{ inputs.cve_id }} >> $GITHUB_ENV
+          title=${{ inputs.title }}                                               # Format: 'CVE-123 (project-name)'
+          echo cve_id=$(echo $title | sed -E 's/(.*) .*/\1/') >> $GITHUB_ENV      # CVE-123
+          echo project=$(echo $title | sed -E 's/.* \((.*)\)/\1/') >> $GITHUB_ENV # project-name
           echo reason=${{ inputs.reason }} >> $GITHUB_ENV
-          echo project=${{ inputs.project }} >> $GITHUB_ENV
 
       - name: Update trivyignore file and create pull request
         run: |
