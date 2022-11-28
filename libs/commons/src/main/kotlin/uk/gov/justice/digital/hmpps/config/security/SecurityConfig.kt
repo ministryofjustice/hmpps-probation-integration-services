@@ -4,22 +4,29 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true)
 @ConditionalOnDefaultWebSecurity
 class SecurityConfig {
 
     fun filterChain(http: HttpSecurity): HttpSecurity {
-        http.authorizeRequests {
+        http.authorizeHttpRequests {
             it
-                .antMatchers("/health/**", "/info/**", "/hawtio/**", "/jolokia", "/swagger-ui/**", "/v3/api-docs/**")
-                .permitAll()
+                .requestMatchers(
+                    AntPathRequestMatcher("/health/**"),
+                    AntPathRequestMatcher("/info/**"),
+                    AntPathRequestMatcher("/hawtio/**"),
+                    AntPathRequestMatcher("/jolokia"),
+                    AntPathRequestMatcher("/swagger-ui/**"),
+                    AntPathRequestMatcher("/v3/api-docs/**)")
+                ).permitAll()
                 .anyRequest().authenticated()
         }
             .csrf().disable()
