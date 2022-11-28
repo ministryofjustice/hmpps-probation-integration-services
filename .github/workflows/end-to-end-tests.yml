@@ -50,7 +50,7 @@ jobs:
           echo -e "\n# ${{ env.reason }}\n# By ${{ github.actor }}\n${{ env.cve_id }} exp:$(date -d "+2 weeks" '+%Y-%m-%d')" >> projects/${{ env.project }}/.trivyignore
           gh api --method PUT /repos/ministryofjustice/contents/projects/${{ env.project }}/.trivyignore \
             --field message="Suppress ${{ env.cve_id }} in ${{ env.project }}" \
-            --field content=@<( base64 -i .trivyignore ) \
+            --field content=@<( base64 -i projects/${{ env.project }}/.trivyignore ) \
             --field branch='suppress/${{ env.cve_id }}_${{ env.project }}' \
             --field sha="$( git rev-parse 'suppress/${{ env.cve_id }}_${{ env.project }}:projects/${{ env.project }}/.trivyignore' )"
           gh pr create --title "Suppress ${{ env.cve_id }} in ${{ env.project }}" --body "Suppressed by ${{ github.actor }} with reason: ${{ env.reason }}"
