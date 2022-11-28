@@ -104,13 +104,13 @@ SELECT o.CRN                                                       crn,
            ELSE 'NEW_TO_PROBATION' END                             management_status,
        (SELECT type
         FROM (SELECT CASE
-                         WHEN l_dt.SENTENCE_TYPE IN ('SC', 'NC') AND
+                         WHEN l_dt.SENTENCE_TYPE = 'SC' AND
                               l_cs.CODE_VALUE NOT IN ('A', 'C', 'D', 'R', 'I', 'AT') THEN
                              'LICENSE'
                          WHEN l_dt.SENTENCE_TYPE IN ('SC', 'NC') AND l_cs.CODE_VALUE IN ('A', 'C', 'D', 'R', 'I', 'AT')
                              THEN
                              'CUSTODY'
-                         WHEN l_dt.SENTENCE_TYPE IN ('SP', 'NP') THEN
+                         WHEN l_dt.SENTENCE_TYPE = 'SP' THEN
                              'COMMUNITY'
                          ELSE
                              'UNKNOWN' END AS                                       type,

@@ -16,6 +16,7 @@ data class HealthDetails(
     val health: Health
 ) : Assessment() {
     companion object {
+
         fun from(oasysHealthDetails: OasysHealthDetails): HealthDetails {
             with(oasysHealthDetails.assessments[0]) {
                 return HealthDetails(
@@ -29,11 +30,11 @@ data class HealthDetails(
                     laterWIPAssessmentExists,
                     oasysHealthDetails.limitedAccessOffender,
                     Health(
-                        generalHealth,
+                        stringToBoolean(generalHealth),
                         generalHeathSpecify,
                         elecMonSpecify,
-                        elecMonElectricity,
-                        elecMon,
+                        stringToBoolean(elecMonElectricity),
+                        stringToBoolean(elecMon),
                         generalHeathSpecify,
                         HealthDetail.from(healthCommunity, healthEM, healthProgramme),
                         HealthDetail.from(drugsCommunity, drugsEM, drugsProgramme),
@@ -59,13 +60,13 @@ data class HealthDetails(
 }
 
 data class Health(
-    val generalHealth: String? = null,
+    val generalHealth: Boolean? = null,
     val generalHealthSpecify: String? = null,
     val electronicMonitoringSpecify: String? = null,
-    val electronicMonitoringElectricity: String? = null,
-    val electronicMonitoring: String? = null,
+    val electronicMonitoringElectricity: Boolean? = null,
+    val electronicMonitoring: Boolean? = null,
     val generalHeathSpecify: String? = null,
-    val healthMisuse: HealthDetail? = null,
+    val healthIssues: HealthDetail? = null,
     val drugsMisuse: HealthDetail? = null,
     val chaoticLifestyle: HealthDetail? = null,
     val religiousOrCulturalRequirements: HealthDetail? = null,

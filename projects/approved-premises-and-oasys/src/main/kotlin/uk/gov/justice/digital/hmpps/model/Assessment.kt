@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.model
 
 import java.time.ZonedDateTime
+import java.util.Locale
 
 abstract class Assessment {
     abstract val assessmentId: Long
@@ -12,4 +13,14 @@ abstract class Assessment {
     abstract val superStatus: String?
     abstract val laterWIPAssessmentExists: Boolean?
     abstract val limitedAccessOffender: Boolean
+
+    companion object {
+        fun stringToBoolean(string: String?): Boolean? {
+            when (string?.uppercase(Locale.getDefault())) {
+                "[YES]" -> return true
+                "[NO]" -> return false
+            }
+            return null
+        }
+    }
 }
