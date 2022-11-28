@@ -1,0 +1,59 @@
+name: Suppress-Trivy - write to file
+
+on:
+  issue_comment:
+    types:
+      - created
+  workflow_dispatch:
+    inputs:
+      cve_id:
+        description: CVE ID
+        type: string
+        required: true
+      reason:
+        description: Reason
+        type: string
+        required: true
+      project:
+        description: Which project
+        required: true
+
+jobs:
+  build:
+    if: github.event_name=='workflow_dispatch' || (startsWith(github.event.comment.body, 'Suppress') && startsWith(github.event.issue.title, 'CVE-'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: Set CVE from Issue Title automatically
+        if: github.event_name=='issue_comment'
+        run: |
+          echo cve_id=${{ github.event.issue.title }} >> $GITHUB_ENV
+          echo reason=${{ github.event.comment.body }} >> $GITHUB_ENV
+          echo project=${{ github.event.label.name }} >> $GITHUB_ENV
+
+      - name: Set CVE from manual input
+        if: github.event_name=='workflow_dispatch'
+        run:  |
+          echo cve_id=${{ inputs.cve_id }} >> $GITHUB_ENV
+          echo reason=${{ inputs.reason }} >> $GITHUB_ENV
+          echo project=${{ inputs.project }} >> $GITHUB_ENV
+
+      - name: Update trivyignore file and create pull request
+        run: |
+          git switch -c suppress/${{ env.cve_id }}
+          git push origin suppress/${{ env.cve_id }}
+          git pull origin suppress/${{ env.cve_id }}
+          git push origin suppress/${{ env.cve_id }}
+          echo -e "\n# ${{ env.reason }}\n# By ${{ github.actor }}\n${{ env.cve_id }} exp:$(date -d "+2 weeks" '+%Y-%m-%d')" >> .trivyignore
+          gh api --method PUT /repos/ministryofjustice/projects/${{ env.project }}/contents/.trivyignore \
+            --field message="Suppress ${{ env.cve_id }} in ${{ env.project }}" \
+            --field content=@<( base64 -i .trivyignore ) \
+            --field branch='suppress/${{ env.cve_id }}_${{ env.project }}' \
+            --field sha="$( git rev-parse 'suppress/${{ env.cve_id }}_${{ env.project }}:.trivyignore' )"
+          gh pr create --title "Suppress ${{ env.cve_id }} in ${{ env.project }}" --body "Suppressed by ${{ github.actor }} with reason: ${{ env.reason }}"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
