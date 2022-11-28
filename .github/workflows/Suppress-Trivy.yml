@@ -53,7 +53,7 @@ jobs:
             --field message="Suppress ${{ env.cve_id }} in ${{ env.project }}" \
             --field content=@<( base64 -i .trivyignore ) \
             --field branch='suppress/${{ env.cve_id }}_${{ env.project }}' \
-            --field sha="$( git rev-parse 'suppress/${{ env.cve_id }}_${{ env.project }}:.trivyignore' )"
+            --field sha="$( git rev-parse 'suppress/${{ env.cve_id }}_${{ env.project }}:projects/${{ env.project }}/.trivyignore' )"
           gh pr create --title "Suppress ${{ env.cve_id }} in ${{ env.project }}" --body "Suppressed by ${{ github.actor }} with reason: ${{ env.reason }}"
         env:
           GITHUB_TOKEN: ${{ github.token }}
