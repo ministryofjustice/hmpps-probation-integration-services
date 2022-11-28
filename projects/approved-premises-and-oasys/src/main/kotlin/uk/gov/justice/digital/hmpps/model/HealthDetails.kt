@@ -16,6 +16,7 @@ data class HealthDetails(
     val health: Health
 ) : Assessment() {
     companion object {
+
         fun from(oasysHealthDetails: OasysHealthDetails): HealthDetails {
             with(oasysHealthDetails.assessments[0]) {
                 return HealthDetails(

@@ -39,6 +39,8 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssess
 import uk.gov.justice.digital.hmpps.model.Health
 import uk.gov.justice.digital.hmpps.model.HealthDetail
 import uk.gov.justice.digital.hmpps.model.HealthDetails
+import uk.gov.justice.digital.hmpps.model.LinksToHarm
+import uk.gov.justice.digital.hmpps.model.LinksToReOffending
 import uk.gov.justice.digital.hmpps.model.Needs
 import uk.gov.justice.digital.hmpps.model.NeedsDetails
 import uk.gov.justice.digital.hmpps.model.Offence
@@ -160,7 +162,7 @@ internal class OasysAssessmentServiceTest {
     }
 
     @Test
-    fun `should return NeedsDetails for valid CRN`() {
+    fun `should return NeedsDetails without LinksForHarm for valid CRN when links for harm data not present`() {
         // Given
         val oasysNeedsDetails = OasysNeedsDetails(
             limitedAccessOffender = false,
@@ -172,6 +174,11 @@ internal class OasysAssessmentServiceTest {
                     assessmentStatus = status,
                     dateCompleted = now,
                     offenceAnalysisDetails = "analysis",
+                    drugLinkedToReoffending = "[No]",
+                    attLinkedToReoffending = "[No]",
+                    relLinkedToReoffending = "[Yes]",
+                    lifestyleIssuesDetails = "Has lifestyle issues",
+                    thingIssuesDetails = "Thinking issues"
                 )
             )
         )
@@ -192,7 +199,74 @@ internal class OasysAssessmentServiceTest {
             null,
             false,
             Needs(
-                offenceAnalysisDetails = "analysis"
+                offenceAnalysisDetails = "analysis",
+                lifestyleIssuesDetails = "Has lifestyle issues",
+                thinkingBehaviouralIssuesDetails = "Thinking issues"
+            ),
+            linksToHarm = null,
+            LinksToReOffending(
+                drugLinkedToReOffending = false,
+                attitudeLinkedToReOffending = false,
+                relationshipLinkedToReOffending = true
+            )
+        )
+        assertThat(needsDetails).isEqualTo(expectedNeedsDetails)
+    }
+
+    @Test
+    fun `should return NeedsDetails for valid CRN`() {
+        // Given
+        val oasysNeedsDetails = OasysNeedsDetails(
+            limitedAccessOffender = false,
+            listOf(
+                OasysNeedsAssessment(
+                    assessmentPk = assessmentPk,
+                    assessmentType = assessmentType,
+                    initiationDate = now,
+                    assessmentStatus = status,
+                    dateCompleted = now,
+                    offenceAnalysisDetails = "analysis",
+                    emoLinkedToHarm = "[Yes]",
+                    drugLinkedToReoffending = "[No]",
+                    alcoholLinkedToHarm = "[Don't Know]",
+                    attLinkedToReoffending = "[No]",
+                    financeLinkedToHarm = "[Yes]",
+                    relLinkedToReoffending = "[Yes]",
+                    lifestyleIssuesDetails = "Has lifestyle issues",
+                    thingIssuesDetails = "Thinking issues"
+                )
+            )
+        )
+        whenever(oasysClient.getNeedsDetails(crn, assessmentPk, status)).thenReturn(oasysNeedsDetails)
+
+        // When
+        val needsDetails = oasysAssessmentService.getNeedsDetails(crn)
+
+        // Then
+        val expectedNeedsDetails = NeedsDetails(
+            assessmentPk,
+            assessmentType,
+            now,
+            null,
+            now,
+            status,
+            null,
+            null,
+            false,
+            Needs(
+                offenceAnalysisDetails = "analysis",
+                lifestyleIssuesDetails = "Has lifestyle issues",
+                thinkingBehaviouralIssuesDetails = "Thinking issues"
+            ),
+            LinksToHarm(
+                emotionalLinkedToHarm = true,
+                alcoholLinkedToHarm = null,
+                financeLinkedToHarm = true
+            ),
+            LinksToReOffending(
+                drugLinkedToReOffending = false,
+                attitudeLinkedToReOffending = false,
+                relationshipLinkedToReOffending = true
             )
         )
         assertThat(needsDetails).isEqualTo(expectedNeedsDetails)
