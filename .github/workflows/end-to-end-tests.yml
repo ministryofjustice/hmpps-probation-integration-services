@@ -28,7 +28,7 @@ jobs:
       - name: Set CVE from Issue Title automatically
         if: github.event_name=='issue_comment'
         run: |
-          title=${{ github.event.issue.title }}                                   # Format: 'CVE-123 (project-name)'
+          title='${{ github.event.issue.title }}'                                 # Format: 'CVE-123 (project-name)'
           echo cve_id=$(echo $title | sed -E 's/(.*) .*/\1/') >> $GITHUB_ENV      # CVE-123
           echo project=$(echo $title | sed -E 's/.* \((.*)\)/\1/') >> $GITHUB_ENV # project-name
           echo reason=${{ github.event.comment.body }} >> $GITHUB_ENV
@@ -36,7 +36,7 @@ jobs:
       - name: Set CVE from manual input
         if: github.event_name=='workflow_dispatch'
         run:  |
-          title=${{ inputs.title }}                                               # Format: 'CVE-123 (project-name)'
+          title='${{ inputs.title }}'                                             # Format: 'CVE-123 (project-name)'
           echo cve_id=$(echo $title | sed -E 's/(.*) .*/\1/') >> $GITHUB_ENV      # CVE-123
           echo project=$(echo $title | sed -E 's/.* \((.*)\)/\1/') >> $GITHUB_ENV # project-name
           echo reason=${{ inputs.reason }} >> $GITHUB_ENV
