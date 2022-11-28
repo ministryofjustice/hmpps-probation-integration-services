@@ -18,16 +18,14 @@ class SecurityConfig {
 
     fun filterChain(http: HttpSecurity): HttpSecurity {
         http.authorizeHttpRequests {
-            it
-                .requestMatchers(
-                    AntPathRequestMatcher("/health/**"),
-                    AntPathRequestMatcher("/info/**"),
-                    AntPathRequestMatcher("/hawtio/**"),
-                    AntPathRequestMatcher("/jolokia"),
-                    AntPathRequestMatcher("/swagger-ui/**"),
-                    AntPathRequestMatcher("/v3/api-docs/**)")
-                ).permitAll()
-                .anyRequest().authenticated()
+            it.requestMatchers(
+                AntPathRequestMatcher("/health/**"),
+                AntPathRequestMatcher("/info/**"),
+                AntPathRequestMatcher("/hawtio/**"),
+                AntPathRequestMatcher("/jolokia"),
+                AntPathRequestMatcher("/swagger-ui/**"),
+                AntPathRequestMatcher("/v3/api-docs/**)")
+            ).permitAll()
         }
             .csrf().disable()
             .cors().disable()
