@@ -42,11 +42,11 @@ internal class RiskToTheIndividualDetailsTest {
         assertThat(riskToTheIndividualDetails.initiationDate)
             .isEqualTo(ZonedDateTime.parse("2022-11-09T14:33:53Z").withZoneSameInstant(EuropeLondon))
         assertThat(riskToTheIndividualDetails.riskToTheIndividual.concernsRiskOfSuicide)
-            .isEqualTo("[Yes]")
+            .isEqualTo(true)
         assertThat(riskToTheIndividualDetails.riskToTheIndividual.currentConcernsSelfHarmSuicide)
             .isEqualTo("High Risk of Suicide\r\nHigh Risk of Self-harm")
         assertThat(riskToTheIndividualDetails.riskToTheIndividual.concernsRiskOfSelfHarm)
-            .isEqualTo("[Yes]")
+            .isEqualTo(true)
         assertThat(riskToTheIndividualDetails.riskToTheIndividual.riskOfSeriousHarm)
             .isEqualTo("R8.4.1 RoSH")
     }

@@ -407,10 +407,10 @@ internal class OasysAssessmentServiceTest {
                     initiationDate = now,
                     assessmentStatus = status,
                     dateCompleted = now,
-                    concernsBreachOfTrust = "trust has been breached",
-                    concernsRiskOfSuicide = "risk is present",
+                    concernsBreachOfTrust = "[Yes]",
+                    concernsRiskOfSuicide = "[No]",
                     previousVulnerability = "previously vulnerable",
-                    currentConcernsBreachOfTrust = "concerns"
+                    currentConcernsBreachOfTrust = "[Yes]"
                 )
             )
         )
@@ -428,10 +428,10 @@ internal class OasysAssessmentServiceTest {
             assessmentStatus = status,
             limitedAccessOffender = false,
             riskToTheIndividual = RiskToTheIndividual(
-                concernsBreachOfTrust = "trust has been breached",
-                concernsRiskOfSuicide = "risk is present",
+                concernsBreachOfTrust = true,
+                concernsRiskOfSuicide = false,
                 previousVulnerability = "previously vulnerable",
-                currentConcernsBreachOfTrust = "concerns"
+                currentConcernsBreachOfTrust = true
             )
         )
         assertThat(riskToTheIndividualDetails).isEqualTo(expectedRiskToTheIndividualDetails)
