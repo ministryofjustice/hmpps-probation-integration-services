@@ -623,7 +623,7 @@ internal class OasysAssessmentServiceTest {
             assessmentStatus = status,
             limitedAccessOffender = false,
             health = Health(
-                generalHealth = "[Yes]",
+                generalHealth = true,
                 alcoholMisuse = HealthDetail(
                     "Alcohol misuse - Community",
                     "Alcohol misuse - Electronic Monitoring",
