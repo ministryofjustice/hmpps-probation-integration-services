@@ -95,11 +95,14 @@ SELECT o.CRN                                                            crn,
           AND c.SOFT_DELETED = 0
           AND e.SOFT_DELETED = 0)                                       initial_appointment_date,
        CASE
-           WHEN o.CURRENT_DISPOSAL = 1 AND cms.OFFICER_CODE NOT LIKE '%U' THEN 'CURRENTLY_MANAGED'
+           WHEN o.CURRENT_DISPOSAL = 1 AND EXISTS(SELECT 1
+                       FROM DISPOSAL od
+                       WHERE od.OFFENDER_ID = o.OFFENDER_ID
+                         AND od.DISPOSAL_ID <> d.DISPOSAL_ID) THEN 'CURRENTLY_MANAGED'
            WHEN EXISTS(SELECT 1
-                       FROM DISPOSAL d
-                       WHERE d.OFFENDER_ID = o.OFFENDER_ID
-                         AND d.EVENT_ID <> e.EVENT_ID) THEN 'PREVIOUSLY_MANAGED'
+                       FROM DISPOSAL od
+                       WHERE od.OFFENDER_ID = o.OFFENDER_ID
+                         AND od.DISPOSAL_ID <> d.DISPOSAL_ID) THEN 'PREVIOUSLY_MANAGED'
            ELSE 'NEW_TO_PROBATION' END                                  management_status,
        (SELECT type
         FROM (SELECT CASE
