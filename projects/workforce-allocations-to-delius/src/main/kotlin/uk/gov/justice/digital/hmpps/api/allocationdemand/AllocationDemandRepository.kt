@@ -105,8 +105,7 @@ SELECT o.CRN                                                            crn,
                          AND os.OFFICER_CODE LIKE '%U')
                AND (SELECT COUNT(1)
                     FROM DISPOSAL od
-                    WHERE od.OFFENDER_ID = o.OFFENDER_ID
-                      AND od.DISPOSAL_ID <> d.DISPOSAL_ID) = 0 THEN 'NEW_TO_PROBATION'
+                    WHERE od.OFFENDER_ID = o.OFFENDER_ID) = 1 THEN 'NEW_TO_PROBATION'
            WHEN EXISTS(SELECT 1
                        FROM DISPOSAL od
                                 JOIN EVENT oe ON oe.EVENT_ID = od.EVENT_ID
