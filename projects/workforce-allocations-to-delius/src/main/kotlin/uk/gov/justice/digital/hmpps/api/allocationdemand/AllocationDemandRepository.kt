@@ -117,7 +117,11 @@ SELECT o.CRN                                                            crn,
            WHEN EXISTS(SELECT 1
                        FROM DISPOSAL od
                        WHERE od.OFFENDER_ID = o.OFFENDER_ID
-                         AND od.ACTIVE_FLAG = 0) THEN 'PREVIOUSLY_MANAGED'
+                         AND od.ACTIVE_FLAG = 0)
+               AND NOT EXISTS(SELECT 1
+                              FROM DISPOSAL od
+                              WHERE od.OFFENDER_ID = o.OFFENDER_ID
+                                AND od.ACTIVE_FLAG = 1) THEN 'PREVIOUSLY_MANAGED'
            ELSE 'UNKNOWN' END                                           management_status,
        (SELECT type
         FROM (SELECT CASE
