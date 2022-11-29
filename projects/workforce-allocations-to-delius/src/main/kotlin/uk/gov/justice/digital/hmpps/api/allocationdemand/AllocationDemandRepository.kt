@@ -117,9 +117,6 @@ SELECT o.CRN                                                            crn,
                          AND os.OFFICER_CODE NOT LIKE '%U') THEN 'CURRENTLY_MANAGED'
            WHEN EXISTS(SELECT 1
                        FROM DISPOSAL od
-                                JOIN EVENT oe ON oe.EVENT_ID = od.EVENT_ID
-                                JOIN ORDER_MANAGER oom ON oom.EVENT_ID = oe.EVENT_ID
-                                JOIN STAFF os ON os.STAFF_ID = oom.ALLOCATION_STAFF_ID
                        WHERE od.OFFENDER_ID = o.OFFENDER_ID
                          AND od.ACTIVE_FLAG = 0) THEN 'PREVIOUSLY_MANAGED'
            ELSE 'UNKNOWN' END                                           management_status,
