@@ -38,7 +38,8 @@ enum class ManagementStatus(
 ) {
     CURRENTLY_MANAGED("Currently managed"),
     PREVIOUSLY_MANAGED("Previously managed"),
-    NEW_TO_PROBATION("New to probation")
+    NEW_TO_PROBATION("New to probation"),
+    UNKNOWN("Unknown")
 }
 
 enum class CaseType {

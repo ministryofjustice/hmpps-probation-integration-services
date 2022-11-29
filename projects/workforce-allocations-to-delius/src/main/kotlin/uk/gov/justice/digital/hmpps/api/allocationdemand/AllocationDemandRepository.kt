@@ -95,12 +95,34 @@ SELECT o.CRN                                                            crn,
           AND c.SOFT_DELETED = 0
           AND e.SOFT_DELETED = 0)                                       initial_appointment_date,
        CASE
-           WHEN o.CURRENT_DISPOSAL = 1 AND cms.OFFICER_CODE NOT LIKE '%U' THEN 'CURRENTLY_MANAGED'
            WHEN EXISTS(SELECT 1
-                       FROM DISPOSAL d
-                       WHERE d.OFFENDER_ID = o.OFFENDER_ID
-                         AND d.EVENT_ID <> e.EVENT_ID) THEN 'PREVIOUSLY_MANAGED'
-           ELSE 'NEW_TO_PROBATION' END                                  management_status,
+                       FROM DISPOSAL od
+                                JOIN EVENT oe ON oe.EVENT_ID = od.EVENT_ID
+                                JOIN ORDER_MANAGER oom ON oom.EVENT_ID = oe.EVENT_ID
+                                JOIN STAFF os ON os.STAFF_ID = oom.ALLOCATION_STAFF_ID
+                       WHERE od.OFFENDER_ID = o.OFFENDER_ID
+                         AND od.ACTIVE_FLAG = 1
+                         AND os.OFFICER_CODE LIKE '%U')
+               AND (SELECT COUNT(1)
+                    FROM DISPOSAL od
+                    WHERE od.OFFENDER_ID = o.OFFENDER_ID) = 1 THEN 'NEW_TO_PROBATION'
+           WHEN EXISTS(SELECT 1
+                       FROM DISPOSAL od
+                                JOIN EVENT oe ON oe.EVENT_ID = od.EVENT_ID
+                                JOIN ORDER_MANAGER oom ON oom.EVENT_ID = oe.EVENT_ID
+                                JOIN STAFF os ON os.STAFF_ID = oom.ALLOCATION_STAFF_ID
+                       WHERE od.OFFENDER_ID = o.OFFENDER_ID
+                         AND od.ACTIVE_FLAG = 1
+                         AND os.OFFICER_CODE NOT LIKE '%U') THEN 'CURRENTLY_MANAGED'
+           WHEN EXISTS(SELECT 1
+                       FROM DISPOSAL od
+                       WHERE od.OFFENDER_ID = o.OFFENDER_ID
+                         AND od.ACTIVE_FLAG = 0)
+               AND NOT EXISTS(SELECT 1
+                              FROM DISPOSAL od
+                              WHERE od.OFFENDER_ID = o.OFFENDER_ID
+                                AND od.ACTIVE_FLAG = 1) THEN 'PREVIOUSLY_MANAGED'
+           ELSE 'UNKNOWN' END                                           management_status,
        (SELECT type
         FROM (SELECT CASE
                          WHEN l_dt.SENTENCE_TYPE = 'SC' AND
