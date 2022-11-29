@@ -121,6 +121,7 @@ SELECT o.CRN                                                            crn,
                AND NOT EXISTS(SELECT 1
                               FROM DISPOSAL od
                               WHERE od.OFFENDER_ID = o.OFFENDER_ID
+                                AND od.DISPOSAL_ID <> d.DISPOSAL_ID
                                 AND od.ACTIVE_FLAG = 1) THEN 'PREVIOUSLY_MANAGED'
            ELSE 'UNKNOWN' END                                           management_status,
        (SELECT type
