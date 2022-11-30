@@ -56,6 +56,20 @@ abstract class Document : Relatable {
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorValue("EQUALITY")
+class Equality : Document() {
+    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.EQUALITY)
+}
+
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorValue("DRUGS_TEST")
+class DrugTest : Document() {
+    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.DRUGS_TEST)
+}
+
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("OFFENDER")
 class OffenderDocument : Document() {
     override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.PERSON, "Person")
