@@ -72,21 +72,20 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
 }
 
 const val QS_ALLOCATION_DEMAND = """
-
-SELECT o.CRN                                                       crn,
-       o.FIRST_NAME                                                forename,
-       o.SECOND_NAME                                               middle_name,
-       o.SURNAME                                                   surname,
-       e.EVENT_NUMBER                                              event_number,
-       s.OFFICER_CODE                                              staff_code,
-       s.FORENAME                                                  staff_forename,
-       s.FORENAME2                                                 staff_middle_name,
-       s.SURNAME                                                   staff_surname,
-       t.CODE                                                      team_code,
-       dt.DESCRIPTION                                              sentence_type,
-       d.DISPOSAL_DATE                                             sentence_date,
-       d.LENGTH                                                    sentence_length_value,
-       du.CODE_DESCRIPTION                                         sentence_length_unit,
+SELECT o.CRN                                                            crn,
+       o.FIRST_NAME                                                     forename,
+       o.SECOND_NAME                                                    middle_name,
+       o.SURNAME                                                        surname,
+       e.EVENT_NUMBER                                                   event_number,
+       s.OFFICER_CODE                                                   staff_code,
+       s.FORENAME                                                       staff_forename,
+       s.FORENAME2                                                      staff_middle_name,
+       s.SURNAME                                                        staff_surname,
+       t.CODE                                                           team_code,
+       dt.DESCRIPTION                                                   sentence_type,
+       d.DISPOSAL_DATE                                                  sentence_date,
+       d.LENGTH                                                         sentence_length_value,
+       du.CODE_DESCRIPTION                                              sentence_length_unit,
        (SELECT max(to_date(to_char(c.CONTACT_DATE, 'yyyy-mm-dd') || to_char(c.CONTACT_START_TIME, 'hh24:mi:ss'),
                            'yyyy-mm-dd hh24:mi:ss'))
         FROM CONTACT c
@@ -94,14 +93,37 @@ SELECT o.CRN                                                       crn,
         WHERE c.EVENT_ID = e.EVENT_ID
           AND ct.CODE IN ('COAI', 'COVI', 'CODI', 'COHV')
           AND c.SOFT_DELETED = 0
-          AND e.SOFT_DELETED = 0)                                  initial_appointment_date,
+          AND e.SOFT_DELETED = 0)                                       initial_appointment_date,
        CASE
-           WHEN o.CURRENT_DISPOSAL = 1 AND cms.OFFICER_CODE NOT LIKE '%U' THEN 'CURRENTLY_MANAGED'
            WHEN EXISTS(SELECT 1
-                       FROM DISPOSAL d
-                       WHERE d.OFFENDER_ID = o.OFFENDER_ID
-                       AND d.EVENT_ID <> e.EVENT_ID) THEN 'PREVIOUSLY_MANAGED'
-           ELSE 'NEW_TO_PROBATION' END                             management_status,
+                       FROM DISPOSAL od
+                                JOIN EVENT oe ON oe.EVENT_ID = od.EVENT_ID
+                                JOIN ORDER_MANAGER oom ON oom.EVENT_ID = oe.EVENT_ID
+                                JOIN STAFF os ON os.STAFF_ID = oom.ALLOCATION_STAFF_ID
+                       WHERE od.OFFENDER_ID = o.OFFENDER_ID
+                         AND od.ACTIVE_FLAG = 1
+                         AND os.OFFICER_CODE LIKE '%U')
+               AND (SELECT COUNT(1)
+                    FROM DISPOSAL od
+                    WHERE od.OFFENDER_ID = o.OFFENDER_ID) = 1 THEN 'NEW_TO_PROBATION'
+           WHEN EXISTS(SELECT 1
+                       FROM DISPOSAL od
+                                JOIN EVENT oe ON oe.EVENT_ID = od.EVENT_ID
+                                JOIN ORDER_MANAGER oom ON oom.EVENT_ID = oe.EVENT_ID
+                                JOIN STAFF os ON os.STAFF_ID = oom.ALLOCATION_STAFF_ID
+                       WHERE od.OFFENDER_ID = o.OFFENDER_ID
+                         AND od.ACTIVE_FLAG = 1
+                         AND os.OFFICER_CODE NOT LIKE '%U') THEN 'CURRENTLY_MANAGED'
+           WHEN EXISTS(SELECT 1
+                       FROM DISPOSAL od
+                       WHERE od.OFFENDER_ID = o.OFFENDER_ID
+                         AND od.ACTIVE_FLAG = 0)
+               AND NOT EXISTS(SELECT 1
+                              FROM DISPOSAL od
+                              WHERE od.OFFENDER_ID = o.OFFENDER_ID
+                                AND od.DISPOSAL_ID <> d.DISPOSAL_ID
+                                AND od.ACTIVE_FLAG = 1) THEN 'PREVIOUSLY_MANAGED'
+           ELSE 'UNKNOWN' END                                           management_status,
        (SELECT type
         FROM (SELECT CASE
                          WHEN l_dt.SENTENCE_TYPE = 'SC' AND
@@ -113,9 +135,17 @@ SELECT o.CRN                                                       crn,
                          WHEN l_dt.SENTENCE_TYPE = 'SP' THEN
                              'COMMUNITY'
                          ELSE
-                             'UNKNOWN' END AS                                       type,
-                     GREATEST(l_d.NOTIONAL_END_DATE, l_d.ENTERED_NOTIONAL_END_DATE) end_date,
-                     l_d.DISPOSAL_DATE                                              start_date
+                             'UNKNOWN' END AS                                                                  type,
+                     GREATEST(
+                             NVL(l_d.NOTIONAL_END_DATE, TO_DATE('1970-01-01', 'YYYY-MM-DD')),
+                             NVL(l_d.ENTERED_NOTIONAL_END_DATE, TO_DATE('1970-01-01', 'YYYY-MM-DD')),
+                             NVL((SELECT KEY_DATE
+                                  FROM KEY_DATE kd
+                                           JOIN R_STANDARD_REFERENCE_LIST kdt
+                                                on kdt.STANDARD_REFERENCE_LIST_ID = kd.KEY_DATE_TYPE_ID
+                                  WHERE kdt.CODE_VALUE = 'SED'
+                                    AND l_c.CUSTODY_ID = kd.CUSTODY_ID), TO_DATE('1970-01-01', 'YYYY-MM-DD'))) end_date,
+                     l_d.DISPOSAL_DATE                                                                         start_date
               FROM DISPOSAL l_d
                        JOIN R_DISPOSAL_TYPE l_dt ON l_dt.DISPOSAL_TYPE_ID = l_d.DISPOSAL_TYPE_ID
                        LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST l_u
@@ -126,13 +156,13 @@ SELECT o.CRN                                                       crn,
               WHERE l_d.OFFENDER_ID = o.OFFENDER_ID
                 AND l_d.ACTIVE_FLAG = 1
                 AND l_d.SOFT_DELETED = 0)
-        ORDER BY end_date DESC, start_date FETCH NEXT 1 ROWS ONLY) case_type,
-       cms.OFFICER_CODE                                       community_manager_code,
-       cms.FORENAME                                           community_manager_forename,
-       cms.FORENAME2                                          community_manager_middle_name,
-       cms.SURNAME                                            community_manager_surname,
-       cmt.CODE                                               community_manager_team_code,
-       cmsg.CODE_VALUE                                        community_manager_grade
+        ORDER BY end_date DESC, start_date DESC FETCH NEXT 1 ROWS ONLY) case_type,
+       cms.OFFICER_CODE                                                 community_manager_code,
+       cms.FORENAME                                                     community_manager_forename,
+       cms.FORENAME2                                                    community_manager_middle_name,
+       cms.SURNAME                                                      community_manager_surname,
+       cmt.CODE                                                         community_manager_team_code,
+       cmsg.CODE_VALUE                                                  community_manager_grade
 
 FROM OFFENDER o
          JOIN EVENT e ON e.OFFENDER_ID = o.OFFENDER_ID AND e.ACTIVE_FLAG = 1
