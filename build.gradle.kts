@@ -5,9 +5,9 @@ import uk.gov.justice.digital.hmpps.plugins.ClassPathPlugin
 import uk.gov.justice.digital.hmpps.plugins.JibConfigPlugin
 
 plugins {
-    kotlin("jvm") version "1.7.21"
+    kotlin("jvm") version "1.7.22"
     kotlin("plugin.spring") version "1.7.22" apply false
-    kotlin("plugin.jpa") version "1.7.21" apply false
+    kotlin("plugin.jpa") version "1.7.22" apply false
     id("org.springframework.boot") version "2.7.6" apply false
     id("io.spring.dependency-management") version "1.1.0" apply false
     id("com.google.cloud.tools.jib") apply false
