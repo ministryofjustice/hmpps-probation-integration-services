@@ -1,23 +1,23 @@
 ---
 # Values here are the same across all environments
 generic-service:
-  nameOverride: prison-case-notes-to-delius
+  nameOverride: prison-case-notes-to-probation
 
   image:
-    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-case-notes-to-delius
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-case-notes-to-probation
     port: 8080
 
   ingress:
     enabled: true
     v1_2_enabled: true
     v0_47_enabled: false
-    tlsSecretName: prison-case-notes-to-delius-cert
+    tlsSecretName: prison-case-notes-to-probation-cert
 
   env:
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
 
   namespace_secrets:
-    approved-premises-and-oasys:
+    prison-case-notes-to-probation:
       APPLICATIONINSIGHTS_CONNECTION_STRING: APPLICATIONINSIGHTS_CONNECTION_STRING
       SENTRY_DSN: SENTRY_DSN
       AWS_SQS_ACCOUNT-ID: AWS_SQS_ACCOUNT_ID
@@ -33,5 +33,5 @@ generic-service:
 
 
 generic-prometheus-alerts:
-  targetApplication: prison-case-notes-to-delius
+  targetApplication: prison-case-notes-to-probation
   alertSeverity: probation-integration-notifications
