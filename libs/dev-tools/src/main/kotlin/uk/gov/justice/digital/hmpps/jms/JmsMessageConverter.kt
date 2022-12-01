@@ -20,9 +20,6 @@ class JmsMessageConverter(private val converter: NotificationConverter<*>) : Mes
         if (notification !is Notification<*>) {
             throw MessageConversionException("Unexpected type passed to NotificationConverter: ${notification::class}")
         }
-        return session.createTextMessage(
-            @Suppress("UNCHECKED_CAST")
-            (converter as NotificationConverter<Any>).toMessage(notification as Notification<Any>)
-        )
+        return session.createTextMessage(converter.toMessage(notification))
     }
 }

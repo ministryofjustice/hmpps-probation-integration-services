@@ -18,7 +18,7 @@ abstract class NotificationConverter<T : Any>(
         )
     }
 
-    fun toMessage(obj: Notification<T>): String =
+    fun toMessage(obj: Notification<*>): String =
         objectMapper.writeValueAsString(
             Notification(
                 message = objectMapper.writeValueAsString(obj.message),
