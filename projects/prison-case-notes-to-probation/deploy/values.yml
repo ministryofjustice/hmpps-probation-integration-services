@@ -31,7 +31,6 @@ generic-service:
       INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-SECRET: CLIENT_SECRET
       DELIUS_DB_USERNAME: PrisonCaseNotesToProbation
 
-
 generic-prometheus-alerts:
   targetApplication: prison-case-notes-to-probation
   alertSeverity: probation-integration-notifications
