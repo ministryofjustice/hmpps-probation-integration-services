@@ -33,9 +33,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode.STATUS_CHANGE
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseRepository
 import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
-import uk.gov.justice.digital.hmpps.listener.nomsNumber
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.messaging.nomsNumber
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
@@ -45,7 +45,7 @@ import java.time.temporal.ChronoUnit.DAYS
 @ActiveProfiles("integration-test")
 internal class PrisonCustodyStatusToDeliusIntegrationTest {
 
-    @Value("\${spring.jms.template.default-destination}")
+    @Value("\${messaging.consumer.queue}")
     private lateinit var queueName: String
 
     @Autowired

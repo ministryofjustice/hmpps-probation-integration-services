@@ -1,4 +1,4 @@
-package uk.gov.justice.hmpps.listener
+package uk.gov.justice.digital.hmpps.messaging
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallService
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseService
-import uk.gov.justice.digital.hmpps.listener.MessageListener
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
@@ -19,7 +18,7 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
-internal class MessageListenerTest {
+internal class HandlerTest {
     @Mock
     lateinit var releaseService: ReleaseService
 
@@ -30,7 +29,7 @@ internal class MessageListenerTest {
     lateinit var telemetryService: TelemetryService
 
     @InjectMocks
-    lateinit var messageListener: MessageListener
+    lateinit var handler: Handler
 
     private val notification = Notification(
         message = HmppsDomainEvent(
@@ -49,19 +48,19 @@ internal class MessageListenerTest {
 
     @Test
     fun messageIsLoggedToTelemetry() {
-        messageListener.receive(notification)
+        handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
     }
 
     @Test
     fun releaseMessagesAreHandled() {
-        messageListener.receive(notification)
+        handler.handle(notification)
         verify(releaseService).release("Z0001ZZ", "ZZZ", "Test data", notification.message.occurredAt)
     }
 
     @Test
     fun recallMessagesAreHandled() {
-        messageListener.receive(notification.copy(attributes = MessageAttributes("prison-offender-events.prisoner.received")))
+        handler.handle(notification.copy(attributes = MessageAttributes("prison-offender-events.prisoner.received")))
 
         verify(recallService).recall("Z0001ZZ", "ZZZ", "Test data", notification.message.occurredAt)
     }
@@ -69,7 +68,7 @@ internal class MessageListenerTest {
     @Test
     fun unknownMessagesAreThrown() {
         assertThrows<IllegalArgumentException> {
-            messageListener.receive(notification.copy(attributes = MessageAttributes("unknown")))
+            handler.handle(notification.copy(attributes = MessageAttributes("unknown")))
         }
     }
 }

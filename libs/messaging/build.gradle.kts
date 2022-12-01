@@ -4,12 +4,10 @@ dependencies {
     implementation(project(":libs:commons"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation(libs.aws.messaging)
-    implementation(libs.amazon.sqs)
     implementation(libs.insights)
     implementation(libs.sentry)
 
-    api("org.springframework:spring-jms")
+    api(libs.aws.messaging)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.mockito.kotlin)

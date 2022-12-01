@@ -9,15 +9,15 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
-import uk.gov.justice.digital.hmpps.listener.telemetryProperties
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @SpringBootTest
 @ActiveProfiles("integration-test")
 internal class IntegrationTest {
-    @Value("\${spring.jms.template.default-destination}")
+    @Value("\${messaging.consumer.queue}")
     private lateinit var queueName: String
 
     @Autowired

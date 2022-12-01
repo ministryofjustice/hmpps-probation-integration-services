@@ -1,10 +1,8 @@
-package uk.gov.justice.digital.hmpps.listener
+package uk.gov.justice.digital.hmpps.messaging
 
 import feign.FeignException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.jms.annotation.EnableJms
-import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
@@ -19,19 +17,17 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.net.URI
 
 @Component
-@EnableJms
-class MessageListener(
+class Handler(
     val prisonCaseNotesClient: PrisonCaseNotesClient,
     val deliusService: DeliusService,
     val telemetryService: TelemetryService
-) {
+) : NotificationHandler<HmppsDomainEvent> {
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(this::class.java)
     }
 
-    @JmsListener(destination = "\${spring.jms.template.default-destination}")
-    fun receive(notification: Notification<HmppsDomainEvent>) {
+    override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val event = notification.message
         val caseNoteId = event.additionalInformation["caseNoteId"]
@@ -79,6 +75,8 @@ class MessageListener(
 
         deliusService.mergeCaseNote(prisonCaseNote.toDeliusCaseNote())
     }
+
+    override fun getMessageType() = HmppsDomainEvent::class
 
     private fun PrisonCaseNote.properties() = mapOf(
         "caseNoteId" to id,

@@ -5,8 +5,6 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
-  jms:
-    template.default-destination: offender-events
 
 delius.db.username: OffenderEventsAndDelius # Should match value in [deploy/database/access.yml].
 
@@ -31,6 +29,9 @@ hawtio.authenticationEnabled: false
 
 offender-events:
   fixed-delay: 2000
+
+messaging:
+  producer.topic: offender-events
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

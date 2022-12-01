@@ -32,7 +32,7 @@ import java.time.ZonedDateTime
 @ActiveProfiles("integration-test")
 class AllocatePersonIntegrationTest {
 
-    @Value("\${spring.jms.template.default-destination}")
+    @Value("\${messaging.consumer.queue}")
     private lateinit var queueName: String
 
     @Autowired

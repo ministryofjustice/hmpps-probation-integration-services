@@ -1,9 +1,5 @@
-package uk.gov.justice.digital.hmpps.listener
+package uk.gov.justice.digital.hmpps.messaging
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.jms.annotation.EnableJms
-import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallService
@@ -15,19 +11,12 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
 @Component
-@EnableJms
-class MessageListener(
+class Handler(
     private val telemetryService: TelemetryService,
     private val releaseService: ReleaseService,
     private val recallService: RecallService,
-) {
-
-    companion object {
-        val log: Logger = LoggerFactory.getLogger(this::class.java)
-    }
-
-    @JmsListener(destination = "\${spring.jms.template.default-destination}")
-    fun receive(notification: Notification<HmppsDomainEvent>) {
+) : NotificationHandler<HmppsDomainEvent> {
+    override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val hmppsEvent = notification.message
 
@@ -60,6 +49,8 @@ class MessageListener(
             return
         }
     }
+
+    override fun getMessageType() = HmppsDomainEvent::class
 }
 
 fun AdditionalInformation.nomsNumber() = this["nomsNumber"] as String

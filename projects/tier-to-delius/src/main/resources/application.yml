@@ -3,12 +3,6 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
-  jms:
-    template.default-destination: message-queue
-    listener:
-      concurrency: 1
-      max-concurrency: 10
-      acknowledge-mode: client
   security.oauth2.client:
     registration:
       tier-to-delius:
@@ -48,6 +42,7 @@ spring:
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
+messaging.consumer.queue: message-queue
 integrations.tier.url: http://localhost:${wiremock.port}/hmpps-tier
 
 management.endpoints.web:

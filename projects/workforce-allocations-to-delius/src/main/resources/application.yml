@@ -5,12 +5,6 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
-  jms:
-    template.default-destination: workforce-allocations-events
-    listener:
-      concurrency: 1
-      max-concurrency: 10
-      acknowledge-mode: client
   security.oauth2.client:
     registration:
       workforce-allocations:
@@ -56,6 +50,9 @@ spring:
 
 wiremock:
   enabled: true
+
+messaging:
+  consumer.queue: workforce-allocations-events
 
 integrations:
   workforce-allocations:

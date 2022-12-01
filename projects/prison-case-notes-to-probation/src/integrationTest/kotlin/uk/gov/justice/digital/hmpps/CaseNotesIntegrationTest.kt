@@ -36,7 +36,7 @@ const val CASE_NOTE_MERGE = "CaseNoteMerge"
 @SpringBootTest
 class CaseNotesIntegrationTest {
 
-    @Value("\${spring.jms.template.default-destination}")
+    @Value("\${messaging.consumer.queue}")
     private lateinit var queueName: String
 
     @Autowired

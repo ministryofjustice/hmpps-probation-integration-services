@@ -1,4 +1,4 @@
-package uk.gov.justice.hmpps.listener
+package uk.gov.justice.digital.hmpps.messaging
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -10,12 +10,6 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import uk.gov.justice.digital.hmpps.MessageGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
-import uk.gov.justice.digital.hmpps.listener.MessageListener
-import uk.gov.justice.digital.hmpps.listener.assessmentDate
-import uk.gov.justice.digital.hmpps.listener.ospContact
-import uk.gov.justice.digital.hmpps.listener.ospIndecent
-import uk.gov.justice.digital.hmpps.listener.rsr
-import uk.gov.justice.digital.hmpps.listener.telemetryProperties
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonReference
@@ -23,10 +17,10 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
 @ExtendWith(MockitoExtension::class)
-internal class MessageListenerTest {
+internal class HandlerTest {
     @Mock lateinit var telemetryService: TelemetryService
     @Mock lateinit var riskScoreService: RiskScoreService
-    @InjectMocks lateinit var messageListener: MessageListener
+    @InjectMocks lateinit var handler: Handler
 
     @Test
     fun `message is logged to telemetry`() {
@@ -37,7 +31,7 @@ internal class MessageListenerTest {
         )
 
         // When it is received
-        messageListener.receive(message)
+        handler.handle(message)
 
         // Then it is logged to telemetry
         verify(telemetryService).notificationReceived(message)
@@ -52,7 +46,7 @@ internal class MessageListenerTest {
         )
 
         // When it is received
-        messageListener.receive(message)
+        handler.handle(message)
 
         // Then it is processed
         verify(riskScoreService).updateRsrScores(
@@ -75,7 +69,7 @@ internal class MessageListenerTest {
         )
 
         // When it is received
-        messageListener.receive(message)
+        handler.handle(message)
 
         // Then it is not processed
         verifyNoInteractions(riskScoreService)
@@ -85,7 +79,7 @@ internal class MessageListenerTest {
     @Test
     fun `unknown messages are thrown`() {
         assertThrows<IllegalArgumentException> {
-            messageListener.receive(
+            handler.handle(
                 Notification(
                     message = MessageGenerator.RSR_SCORES_DETERMINED.copy(eventType = "unknown"),
                     attributes = MessageAttributes("risk-assessment.scores.determined")
@@ -97,7 +91,7 @@ internal class MessageListenerTest {
     @Test
     fun `missing CRN is thrown`() {
         assertThrows<IllegalArgumentException> {
-            messageListener.receive(
+            handler.handle(
                 Notification(
                     message = MessageGenerator.RSR_SCORES_DETERMINED.copy(personReference = PersonReference()),
                     attributes = MessageAttributes("risk-assessment.scores.determined")

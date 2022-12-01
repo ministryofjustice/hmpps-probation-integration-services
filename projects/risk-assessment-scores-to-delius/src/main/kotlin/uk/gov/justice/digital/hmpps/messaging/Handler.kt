@@ -1,7 +1,5 @@
-package uk.gov.justice.digital.hmpps.listener
+package uk.gov.justice.digital.hmpps.messaging
 
-import org.springframework.jms.annotation.EnableJms
-import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
@@ -11,13 +9,11 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
 @Component
-@EnableJms
-class MessageListener(
+class Handler(
     private val telemetryService: TelemetryService,
     private val riskScoreService: RiskScoreService,
-) {
-    @JmsListener(destination = "\${spring.jms.template.default-destination}")
-    fun receive(notification: Notification<HmppsDomainEvent>) {
+) : NotificationHandler<HmppsDomainEvent> {
+    override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val hmppsEvent = notification.message
         when (hmppsEvent.eventType) {
@@ -37,6 +33,8 @@ class MessageListener(
             else -> throw IllegalArgumentException("Unexpected event type ${notification.eventType}")
         }
     }
+
+    override fun getMessageType() = HmppsDomainEvent::class
 }
 
 fun HmppsDomainEvent.assessmentDate() =

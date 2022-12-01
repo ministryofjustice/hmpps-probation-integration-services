@@ -8,7 +8,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.springframework.boot:spring-boot-starter-activemq")
     implementation(libs.aws.messaging)
-    implementation(libs.amazon.sqs)
     api(libs.wiremock)
 
     testImplementation(libs.mockito.kotlin)

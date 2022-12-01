@@ -25,7 +25,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 @ActiveProfiles("integration-test")
 internal class IntegrationTest {
 
-    @Value("\${spring.jms.template.default-destination}")
+    @Value("\${messaging.consumer.queue}")
     private lateinit var queueName: String
 
     @Autowired

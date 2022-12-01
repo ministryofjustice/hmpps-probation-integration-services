@@ -3,12 +3,6 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
-  jms:
-    template.default-destination: pre-sentence-report-events
-    listener:
-      concurrency: 1
-      max-concurrency: 10
-      acknowledge-mode: client
   security.oauth2:
     client:
       registration:
@@ -55,6 +49,9 @@ spring:
 
 wiremock:
   enabled: true
+
+messaging:
+  consumer.queue: pre-sentence-report-events
 
 integrations:
   pre-sentence-reports:

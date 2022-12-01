@@ -1,4 +1,4 @@
-package uk.gov.justice.hmpps.listener
+package uk.gov.justice.digital.hmpps.messaging
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -10,8 +10,6 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculation
 import uk.gov.justice.digital.hmpps.integrations.tier.TierClient
 import uk.gov.justice.digital.hmpps.integrations.tier.TierService
-import uk.gov.justice.digital.hmpps.listener.MessageListener
-import uk.gov.justice.digital.hmpps.listener.telemetryProperties
 import uk.gov.justice.digital.hmpps.prepMessage
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
@@ -19,11 +17,11 @@ import java.net.URI
 import java.time.ZonedDateTime.now
 
 @ExtendWith(MockitoExtension::class)
-internal class MessageListenerTest {
+internal class HandlerTest {
     @Mock lateinit var telemetryService: TelemetryService
     @Mock lateinit var tierClient: TierClient
     @Mock lateinit var tierService: TierService
-    @InjectMocks lateinit var messageListener: MessageListener
+    @InjectMocks lateinit var handler: Handler
 
     @Test
     fun `should update tier`() {
@@ -34,7 +32,7 @@ internal class MessageListenerTest {
         whenever(tierClient.getTierCalculation(URI.create("http://localhost:1234/hmpps-tier/crn/A000001/tier/123e4567-e89b-12d3-a456-426614174000"))).thenReturn(calculation)
 
         // When the message is received
-        messageListener.receive(message)
+        handler.handle(message)
 
         // Then it is updated in Delius and logged to Telemetry
         verify(telemetryService).notificationReceived(message)
