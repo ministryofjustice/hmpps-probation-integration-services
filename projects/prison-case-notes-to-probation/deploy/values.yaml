@@ -15,6 +15,7 @@ generic-service:
 
   env:
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
+    DELIUS_DB_USERNAME: PrisonCaseNotesToProbation
 
   namespace_secrets:
     prison-case-notes-to-probation:
@@ -29,7 +30,6 @@ generic-service:
       AWS_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
       INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-ID: CLIENT_ID
       INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-SECRET: CLIENT_SECRET
-      DELIUS_DB_USERNAME: PrisonCaseNotesToProbation
 
 generic-prometheus-alerts:
   targetApplication: prison-case-notes-to-probation
