@@ -20,7 +20,7 @@ import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 
 @ExtendWith(MockitoExtension::class)
-class AmazonSQSNotificationHandlerTest {
+class AwsNotificationPublisherTest {
 
     @Mock
     lateinit var notificationTemplate: NotificationMessagingTemplate
