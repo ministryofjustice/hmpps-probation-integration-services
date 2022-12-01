@@ -1,19 +1,37 @@
-# Common values
-image:
-  name: prison-case-notes-to-probation
+---
+# Values here are the same across all environments
+generic-service:
+  nameOverride: prison-case-notes-to-delius
 
-env:
-  DELIUS_DB_USERNAME: PrisonCaseNotesToProbation # Defined in database/access.yml
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-case-notes-to-delius
+    port: 8080
 
-secrets:
-  APPLICATIONINSIGHTS_CONNECTION_STRING:        /application-insights/connection-string
-  AWS_SQS_ACCOUNT-ID:                           /moj-cloud-platform/aws-account-id
-  SPRING_DATASOURCE_URL:                        /delius-database/jdbc-url
-  SPRING_DATASOURCE_USERNAME:                   /prison-case-notes-to-probation/db-username
-  SPRING_DATASOURCE_PASSWORD:                   /prison-case-notes-to-probation/db-password
-  SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION:      /prison-case-notes-to-probation/sqs-queue-name
-  AWS_ACCESS_KEY_ID:                            /prison-case-notes-to-probation/sqs-queue-access-key-id
-  AWS_SECRET_ACCESS_KEY:                        /prison-case-notes-to-probation/sqs-queue-secret-access-key
-  INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-ID:     /prison-case-notes-to-probation/client-id
-  INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-SECRET: /prison-case-notes-to-probation/client-secret
-  SENTRY_DSN:                                   /prison-case-notes-to-probation/sentry-dsn
+  ingress:
+    enabled: true
+    v1_2_enabled: true
+    v0_47_enabled: false
+    tlsSecretName: prison-case-notes-to-delius-cert
+
+  env:
+    APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
+
+  namespace_secrets:
+    approved-premises-and-oasys:
+      APPLICATIONINSIGHTS_CONNECTION_STRING: APPLICATIONINSIGHTS_CONNECTION_STRING
+      SENTRY_DSN: SENTRY_DSN
+      AWS_SQS_ACCOUNT-ID: AWS_SQS_ACCOUNT_ID
+      SPRING_DATASOURCE_URL: DB_URL
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+      SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: SQS_QUEUE_NAME
+      AWS_ACCESS_KEY_ID: SQS_QUEUE_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
+      INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-ID: CLIENT_ID
+      INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-SECRET: CLIENT_SECRET
+      DELIUS_DB_USERNAME: PrisonCaseNotesToProbation
+
+
+generic-prometheus-alerts:
+  targetApplication: prison-case-notes-to-delius
+  alertSeverity: probation-integration-notifications
