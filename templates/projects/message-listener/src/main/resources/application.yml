@@ -3,12 +3,6 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
-  jms:
-    template.default-destination: message-queue
-    listener:
-      concurrency: 1
-      max-concurrency: 10
-      acknowledge-mode: client
 
 delius.db.username: $SERVICE_NAME_CAMELCASE # Should match value in [deploy/database/access.yml].
 
@@ -30,6 +24,8 @@ management.endpoints.web:
   base-path: /
   exposure.include: [ "hawtio", "health", "jolokia" ]
 hawtio.authenticationEnabled: false
+
+messaging.consumer.queue: message-queue
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

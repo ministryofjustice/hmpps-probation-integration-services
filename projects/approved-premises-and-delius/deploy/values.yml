@@ -4,7 +4,6 @@ image:
 
 secrets:
   APPLICATIONINSIGHTS_CONNECTION_STRING:   /application-insights/connection-string
-  AWS_SQS_ACCOUNT-ID:                      /moj-cloud-platform/aws-account-id
   SPRING_DATASOURCE_URL:                   /delius-database/jdbc-url
   SPRING_DATASOURCE_USERNAME:              /approved-premises-and-delius/db-username
   SPRING_DATASOURCE_PASSWORD:              /approved-premises-and-delius/db-password

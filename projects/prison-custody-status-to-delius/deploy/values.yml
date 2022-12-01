@@ -4,11 +4,10 @@ image:
 
 secrets:
   APPLICATIONINSIGHTS_CONNECTION_STRING:   /application-insights/connection-string
-  AWS_SQS_ACCOUNT-ID:                      /moj-cloud-platform/aws-account-id
   SPRING_DATASOURCE_URL:                   /delius-database/jdbc-url
   SPRING_DATASOURCE_USERNAME:              /prison-custody-status-to-delius/db-username
   SPRING_DATASOURCE_PASSWORD:              /prison-custody-status-to-delius/db-password
-  SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: /prison-custody-status-to-delius/sqs-queue-name
+  MESSAGING_CONSUMER_QUEUE:                /prison-custody-status-to-delius/sqs-queue-name
   AWS_ACCESS_KEY_ID:                       /prison-custody-status-to-delius/sqs-queue-access-key-id
   AWS_SECRET_ACCESS_KEY:                   /prison-custody-status-to-delius/sqs-queue-secret-access-key
   SENTRY_DSN:                              /prison-custody-status-to-delius/sentry-dsn
