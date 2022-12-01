@@ -1,15 +1,20 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Spy
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import uk.gov.justice.digital.hmpps.MessageGenerator
+import uk.gov.justice.digital.hmpps.converter.HmppsDomainEventConverter
+import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonReference
@@ -20,6 +25,7 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 internal class HandlerTest {
     @Mock lateinit var telemetryService: TelemetryService
     @Mock lateinit var riskScoreService: RiskScoreService
+    @Spy val converter: NotificationConverter<HmppsDomainEvent> = HmppsDomainEventConverter(ObjectMapper())
     @InjectMocks lateinit var handler: Handler
 
     @Test

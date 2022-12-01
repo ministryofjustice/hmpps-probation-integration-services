@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.integrations.tier.TierCalculation
 import uk.gov.justice.digital.hmpps.integrations.tier.TierClient
 import uk.gov.justice.digital.hmpps.integrations.tier.TierService
@@ -15,6 +16,7 @@ class Handler(
     private val telemetryService: TelemetryService,
     private val tierClient: TierClient,
     private val tierService: TierService,
+    override val converter: NotificationConverter<HmppsDomainEvent>,
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
@@ -23,8 +25,6 @@ class Handler(
         tierService.updateTier(crn, tierCalculation)
         telemetryService.trackEvent("TierUpdateSuccess", tierCalculation.telemetryProperties(crn))
     }
-
-    override fun getMessageType() = HmppsDomainEvent::class
 }
 
 fun TierCalculation.telemetryProperties(crn: String) = mapOf(

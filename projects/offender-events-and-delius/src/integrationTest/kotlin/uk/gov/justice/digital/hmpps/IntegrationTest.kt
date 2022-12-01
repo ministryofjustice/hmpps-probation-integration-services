@@ -1,5 +1,3 @@
-// TODO fix this test...
-
 // package uk.gov.justice.digital.hmpps
 //
 // import org.junit.jupiter.api.Assertions.assertEquals

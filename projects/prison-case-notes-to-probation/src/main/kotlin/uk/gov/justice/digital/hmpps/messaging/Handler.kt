@@ -4,6 +4,7 @@ import feign.FeignException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
@@ -20,7 +21,8 @@ import java.net.URI
 class Handler(
     val prisonCaseNotesClient: PrisonCaseNotesClient,
     val deliusService: DeliusService,
-    val telemetryService: TelemetryService
+    val telemetryService: TelemetryService,
+    override val converter: NotificationConverter<HmppsDomainEvent>
 ) : NotificationHandler<HmppsDomainEvent> {
 
     companion object {
@@ -75,8 +77,6 @@ class Handler(
 
         deliusService.mergeCaseNote(prisonCaseNote.toDeliusCaseNote())
     }
-
-    override fun getMessageType() = HmppsDomainEvent::class
 
     private fun PrisonCaseNote.properties() = mapOf(
         "caseNoteId" to id,

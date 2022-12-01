@@ -5,8 +5,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.jms.annotation.JmsListener
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.converter.NotificationConverter
-import uk.gov.justice.digital.hmpps.listener.NotificationListener
 import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
 import javax.jms.TextMessage
 
@@ -14,12 +12,11 @@ import javax.jms.TextMessage
 @ConditionalOnProperty("messaging.consumer.queue")
 @ConditionalOnClass(ActiveMQConnectionFactory::class)
 class JmsNotificationListener(
-    converter: NotificationConverter<*>,
-    handler: NotificationHandler<*>
-) : NotificationListener(converter, handler) {
+    private val handler: NotificationHandler<*>
+) {
 
     @JmsListener(destination = "\${messaging.consumer.queue}")
     fun receive(message: TextMessage) {
-        convertAndHandle(message.text)
+        handler.handle(message.text)
     }
 }

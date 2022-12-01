@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallService
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseService
@@ -15,6 +16,7 @@ class Handler(
     private val telemetryService: TelemetryService,
     private val releaseService: ReleaseService,
     private val recallService: RecallService,
+    override val converter: NotificationConverter<HmppsDomainEvent>,
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
@@ -49,8 +51,6 @@ class Handler(
             return
         }
     }
-
-    override fun getMessageType() = HmppsDomainEvent::class
 }
 
 fun AdditionalInformation.nomsNumber() = this["nomsNumber"] as String

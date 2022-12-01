@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -12,6 +13,7 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 class Handler(
     private val telemetryService: TelemetryService,
     private val riskScoreService: RiskScoreService,
+    override val converter: NotificationConverter<HmppsDomainEvent>,
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
@@ -33,8 +35,6 @@ class Handler(
             else -> throw IllegalArgumentException("Unexpected event type ${notification.eventType}")
         }
     }
-
-    override fun getMessageType() = HmppsDomainEvent::class
 }
 
 fun HmppsDomainEvent.assessmentDate() =

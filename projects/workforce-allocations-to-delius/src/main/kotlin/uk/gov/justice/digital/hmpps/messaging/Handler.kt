@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocateEventService
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocatePersonService
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocateRequirementService
@@ -20,7 +21,8 @@ class Handler(
     private val allocatePersonService: AllocatePersonService,
     private val allocateEventService: AllocateEventService,
     private val allocateRequirementService: AllocateRequirementService,
-    private val telemetryService: TelemetryService
+    private val telemetryService: TelemetryService,
+    override val converter: NotificationConverter<HmppsDomainEvent>,
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
@@ -36,8 +38,6 @@ class Handler(
             )
         }
     }
-
-    override fun getMessageType() = HmppsDomainEvent::class
 
     fun HmppsDomainEvent.findCrn(): String =
         personReference.findCrn() ?: throw IllegalArgumentException("No CRN available in person reference")
