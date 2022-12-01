@@ -32,13 +32,13 @@ class DocumentServiceTest {
     private lateinit var docPersonRepository: DocPersonRepository
 
     @Mock
+    private lateinit var docEventRepository: DocEventRepository
+
+    @Mock
     private lateinit var documentRepository: DocumentRepository
 
     @Mock
     private lateinit var alfrescoClient: AlfrescoClient
-
-    @Mock
-    private lateinit var docEventRepository: DocEventRepository
 
     @InjectMocks
     private lateinit var service: DocumentService

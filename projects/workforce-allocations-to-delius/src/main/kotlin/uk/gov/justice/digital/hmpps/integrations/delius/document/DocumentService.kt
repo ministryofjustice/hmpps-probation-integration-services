@@ -31,14 +31,13 @@ class DocumentService(
                     it.sensitive
                 )
             }
-
         if (person.preconDocId != null) {
             documents += PersonDocument(
                 person.preconDocId,
                 person.preconDocName!!,
-                RelatedTo(RelatedType.PRECONS),
+                RelatedTo(RelatedType.PRECONS, "Pre Cons"),
                 null,
-                person.preconDocCreatedDate!!,
+                person.preconDocCreatedDate,
                 false
             )
         }
@@ -57,11 +56,11 @@ class DocumentService(
                     it.cpsDocumentName!!,
                     RelatedTo(
                         RelatedType.CPSPACK,
-                        it.disposal?.type?.description ?: "",
+                        "CPS Pack",
                         it.toDocumentEvent()
                     ),
                     null,
-                    it.cpsCreatedDate!!,
+                    it.cpsCreatedDate,
                     false
                 )
             }
@@ -70,7 +69,11 @@ class DocumentService(
     fun getDocument(crn: String, id: String): ResponseEntity<Resource> {
         val person = docPersonRepository.findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
         val documentMetaData = documentRepository.findByAlfrescoIdAndSoftDeletedIsFalse(id)
-        if (person.id != documentMetaData?.personId) {
+        if (person.id != documentMetaData?.personId && docPersonRepository.findByCrnAndPreconDocId(
+                crn,
+                id
+            ) == null && docEventRepository.findByPersonIdAndCpsDocumentId(person.id, id) == null
+        ) {
             throw ConflictException("Document and CRN do not match")
         }
         return alfrescoClient.getDocument(id)

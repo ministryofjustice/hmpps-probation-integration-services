@@ -9,10 +9,13 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.allocationdemand.AllocationDemandRepository
 import uk.gov.justice.digital.hmpps.api.allocationdemand.AllocationResponse
+import uk.gov.justice.digital.hmpps.api.allocationdemand.CaseType
 import uk.gov.justice.digital.hmpps.api.allocationdemand.Event
-import uk.gov.justice.digital.hmpps.api.allocationdemand.EventManager
 import uk.gov.justice.digital.hmpps.api.allocationdemand.InitialAppointment
+import uk.gov.justice.digital.hmpps.api.allocationdemand.ManagementStatus
+import uk.gov.justice.digital.hmpps.api.allocationdemand.Manager
 import uk.gov.justice.digital.hmpps.api.allocationdemand.Name
+import uk.gov.justice.digital.hmpps.api.allocationdemand.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.allocationdemand.Sentence
 import java.sql.Date
 import java.sql.ResultSet
@@ -33,14 +36,20 @@ class AllocationDemandMapperTest {
             Name("John", "William", "Smith"),
             Event(
                 "1",
-                EventManager(
+                Manager(
                     "EM123",
                     Name("Emma", "Jane", "Butane"),
                     "T123"
                 )
             ),
             Sentence("Community Service", LocalDate.now().minusDays(10), "3 Months"),
-            InitialAppointment(LocalDate.now().plusDays(10))
+            InitialAppointment(LocalDate.now().plusDays(10)),
+            CaseType.COMMUNITY,
+            ProbationStatus(ManagementStatus.PREVIOUSLY_MANAGED),
+            Manager(
+                "MAN1",
+                Name("Bob", null, "Smith"), "Team1", "PSO"
+            )
         )
 
         whenever(resultSet.getString("crn")).thenReturn(expected.crn)
@@ -58,6 +67,14 @@ class AllocationDemandMapperTest {
         whenever(resultSet.getString("sentence_length_value")).thenReturn("3")
         whenever(resultSet.getString("sentence_length_unit")).thenReturn("Months")
         whenever(resultSet.getDate("initial_appointment_date")).thenReturn(Date.valueOf(expected.initialAppointment?.date))
+        whenever(resultSet.getString("case_type")).thenReturn("COMMUNITY")
+        whenever(resultSet.getString("community_manager_code")).thenReturn(expected.communityPersonManager?.code)
+        whenever(resultSet.getString("community_manager_forename")).thenReturn(expected.communityPersonManager?.name?.forename)
+        whenever(resultSet.getString("community_manager_middle_name")).thenReturn(expected.communityPersonManager?.name?.middleName)
+        whenever(resultSet.getString("community_manager_surname")).thenReturn(expected.communityPersonManager?.name?.surname)
+        whenever(resultSet.getString("community_manager_team_code")).thenReturn(expected.communityPersonManager?.teamCode)
+        whenever(resultSet.getString("management_status")).thenReturn("PREVIOUSLY_MANAGED")
+        whenever(resultSet.getString("community_manager_grade")).thenReturn("PSQ")
     }
 
     @Test

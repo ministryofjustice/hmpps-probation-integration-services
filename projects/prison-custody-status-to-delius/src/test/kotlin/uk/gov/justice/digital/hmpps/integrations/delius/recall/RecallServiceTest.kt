@@ -4,16 +4,11 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
@@ -23,20 +18,9 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlert
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.CustodyService
-import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
-import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceConditionService
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.PrisonManagerService
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonCode
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
@@ -44,23 +28,7 @@ import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.DAYS
 
-@ExtendWith(MockitoExtension::class)
-internal class RecallServiceTest {
-    @Mock lateinit var auditedInteractionService: AuditedInteractionService
-    @Mock lateinit var eventService: EventService
-    @Mock lateinit var institutionRepository: InstitutionRepository
-    @Mock lateinit var recallReasonRepository: RecallReasonRepository
-    @Mock lateinit var recallRepository: RecallRepository
-    @Mock lateinit var custodyService: CustodyService
-    @Mock lateinit var licenceConditionService: LicenceConditionService
-    @Mock lateinit var orderManagerRepository: OrderManagerRepository
-    @Mock lateinit var personManagerRepository: PersonManagerRepository
-    @Mock lateinit var contactTypeRepository: ContactTypeRepository
-    @Mock lateinit var contactRepository: ContactRepository
-    @Mock lateinit var contactAlertRepository: ContactAlertRepository
-    @Mock lateinit var prisonManagerService: PrisonManagerService
-    @InjectMocks lateinit var recallService: RecallService
-
+internal class RecallServiceTest : RecallServiceTestBase() {
     private val person = PersonGenerator.RECALLABLE
     private val nomsNumber = person.nomsNumber
     private val prisonId = InstitutionGenerator.DEFAULT.code
@@ -70,7 +38,6 @@ internal class RecallServiceTest {
 
     @Test
     fun unsupportedReleaseTypeIsIgnored() {
-        assertThrows<IgnorableMessageException> { recallService.recall("", "", "TEMPORARY_ABSENCE_RETURN", recallDateTime) }
         assertThrows<IgnorableMessageException> { recallService.recall("", "", "RETURN_FROM_COURT", recallDateTime) }
         assertThrows<IgnorableMessageException> { recallService.recall("", "", "TRANSFERRED", recallDateTime) }
         assertThrows<IgnorableMessageException> { recallService.recall("", "", "UNKNOWN", recallDateTime) }
@@ -263,11 +230,12 @@ internal class RecallServiceTest {
     @Test
     fun recallIsSaved() {
         val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
+        val om = OrderManagerGenerator.generate(event)
         whenever(recallReasonRepository.findByCodeAndSelectableIsTrue(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT])
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishmentIsTrue(prisonId)).thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
         doAnswer<Recall> { it.getArgument(0) }.whenever(recallRepository).save(any())
-        whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
+        whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(om)
         whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)).thenReturn(PersonManagerGenerator.generate(person))
         whenever(contactTypeRepository.findByCode(ContactTypeCode.BREACH_PRISON_RECALL.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
@@ -283,7 +251,7 @@ internal class RecallServiceTest {
         assertThat(recall.firstValue.reason.code, equalTo("NN"))
 
         // custody details are updated
-        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT.code, recallDate)
+        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT.code, recallDate, om)
         verify(custodyService).updateStatus(event.disposal!!.custody!!, CustodialStatusCode.IN_CUSTODY, recallDate, "Recall added in custody ")
 
         // licence conditions are terminated

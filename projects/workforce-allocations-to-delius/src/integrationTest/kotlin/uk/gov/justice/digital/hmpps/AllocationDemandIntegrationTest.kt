@@ -25,10 +25,13 @@ import uk.gov.justice.digital.hmpps.api.allocationdemand.AllocationDemandReposit
 import uk.gov.justice.digital.hmpps.api.allocationdemand.AllocationDemandRequest
 import uk.gov.justice.digital.hmpps.api.allocationdemand.AllocationRequest
 import uk.gov.justice.digital.hmpps.api.allocationdemand.AllocationResponse
+import uk.gov.justice.digital.hmpps.api.allocationdemand.CaseType
 import uk.gov.justice.digital.hmpps.api.allocationdemand.Event
-import uk.gov.justice.digital.hmpps.api.allocationdemand.EventManager
 import uk.gov.justice.digital.hmpps.api.allocationdemand.InitialAppointment
+import uk.gov.justice.digital.hmpps.api.allocationdemand.ManagementStatus
+import uk.gov.justice.digital.hmpps.api.allocationdemand.Manager
 import uk.gov.justice.digital.hmpps.api.allocationdemand.Name
+import uk.gov.justice.digital.hmpps.api.allocationdemand.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.allocationdemand.Sentence
 import java.time.LocalDate
 
@@ -100,16 +103,20 @@ class AllocationDemandIntegrationTest {
             AllocationResponse(
                 "T123456",
                 Name("Fred", null, "Flinstone"),
-                Event("2", EventManager("ST001", Name("John", null, "Smith"), "T001")),
+                Event("2", Manager("ST001", Name("John", null, "Smith"), "T001")),
                 Sentence("test", LocalDate.now(), "12 Months"),
-                InitialAppointment(LocalDate.now())
+                InitialAppointment(LocalDate.now()),
+                CaseType.CUSTODY,
+                ProbationStatus(ManagementStatus.CURRENTLY_MANAGED), Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO")
             ),
             AllocationResponse(
                 "T456789",
                 Name("wilma", null, "Flinstone"),
-                Event("1", EventManager("ST001", Name("John", null, "Smith"), "T001")),
+                Event("1", Manager("ST001", Name("John", null, "Smith"), "T001")),
                 Sentence("test", LocalDate.now(), "12 Months"),
-                InitialAppointment(LocalDate.now())
+                InitialAppointment(LocalDate.now()),
+                CaseType.CUSTODY,
+                ProbationStatus(ManagementStatus.CURRENTLY_MANAGED), Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO")
             )
         )
 
