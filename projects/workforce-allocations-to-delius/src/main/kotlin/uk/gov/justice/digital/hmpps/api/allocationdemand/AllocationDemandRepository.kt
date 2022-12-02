@@ -98,21 +98,23 @@ SELECT o.CRN                                                            crn,
            WHEN EXISTS(SELECT 1
                        FROM DISPOSAL od
                                 JOIN EVENT oe ON oe.EVENT_ID = od.EVENT_ID
-                                JOIN ORDER_MANAGER oom ON oom.EVENT_ID = oe.EVENT_ID
+                                JOIN ORDER_MANAGER oom ON oom.EVENT_ID = oe.EVENT_ID AND oom.ACTIVE_FLAG = 1
                                 JOIN STAFF os ON os.STAFF_ID = oom.ALLOCATION_STAFF_ID
                        WHERE od.OFFENDER_ID = o.OFFENDER_ID
                          AND od.ACTIVE_FLAG = 1
                          AND os.OFFICER_CODE LIKE '%U')
                AND (SELECT COUNT(1)
                     FROM DISPOSAL od
-                    WHERE od.OFFENDER_ID = o.OFFENDER_ID) = 1 THEN 'NEW_TO_PROBATION'
+                    WHERE od.OFFENDER_ID = o.OFFENDER_ID
+                      AND od.DISPOSAL_ID <> d.DISPOSAL_ID) = 0 THEN 'NEW_TO_PROBATION'
            WHEN EXISTS(SELECT 1
                        FROM DISPOSAL od
                                 JOIN EVENT oe ON oe.EVENT_ID = od.EVENT_ID
-                                JOIN ORDER_MANAGER oom ON oom.EVENT_ID = oe.EVENT_ID
+                                JOIN ORDER_MANAGER oom ON oom.EVENT_ID = oe.EVENT_ID AND oom.ACTIVE_FLAG = 1
                                 JOIN STAFF os ON os.STAFF_ID = oom.ALLOCATION_STAFF_ID
                        WHERE od.OFFENDER_ID = o.OFFENDER_ID
                          AND od.ACTIVE_FLAG = 1
+                         AND oom.SOFT_DELETED = 0
                          AND os.OFFICER_CODE NOT LIKE '%U') THEN 'CURRENTLY_MANAGED'
            WHEN EXISTS(SELECT 1
                        FROM DISPOSAL od
@@ -120,9 +122,14 @@ SELECT o.CRN                                                            crn,
                          AND od.ACTIVE_FLAG = 0)
                AND NOT EXISTS(SELECT 1
                               FROM DISPOSAL od
+                                       JOIN EVENT oe ON oe.EVENT_ID = od.EVENT_ID
+                                       JOIN ORDER_MANAGER oom ON oom.EVENT_ID = oe.EVENT_ID AND oom.ACTIVE_FLAG = 1
+                                       JOIN STAFF os ON os.STAFF_ID = oom.ALLOCATION_STAFF_ID
                               WHERE od.OFFENDER_ID = o.OFFENDER_ID
                                 AND od.DISPOSAL_ID <> d.DISPOSAL_ID
-                                AND od.ACTIVE_FLAG = 1) THEN 'PREVIOUSLY_MANAGED'
+                                AND od.ACTIVE_FLAG = 1
+                                AND od.SOFT_DELETED = 0
+                                AND os.OFFICER_CODE NOT LIKE '%U') THEN 'PREVIOUSLY_MANAGED'
            ELSE 'UNKNOWN' END                                           management_status,
        (SELECT type
         FROM (SELECT CASE
