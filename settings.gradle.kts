@@ -28,6 +28,7 @@ rootProject.children
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
+            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:2.4.2")
             library("aws-messaging", "io.awspring.cloud:spring-cloud-aws-messaging:2.4.2")
             library("insights", "com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
             library("hawtio", "io.hawt:hawtio-springboot:2.16.1")

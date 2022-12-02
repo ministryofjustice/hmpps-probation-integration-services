@@ -8,6 +8,7 @@ dependencies {
     implementation(libs.sentry)
 
     api(libs.aws.messaging)
+    api(libs.aws.autoconfigure)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.mockito.kotlin)
