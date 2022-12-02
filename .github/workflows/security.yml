@@ -63,7 +63,7 @@ jobs:
           cat results.json | jq -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[]' | while read -r vulnerability; do
             id=$(echo "$vulnerability" | jq -r '.VulnerabilityID')
             if [[ $(gh issue list --state open --label dependencies --label security --search "$id (${{ matrix.project }})") -gt 0 ]]; then
-              echo 'Issue $title already exists'
+              echo 'Issue "$id (${{ matrix.project }})" already exists'
             else
               gh issue create \
                 --title "$id (${{ matrix.project }})" \
