@@ -33,7 +33,7 @@ dependencyResolutionManagement {
             library("insights", "com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:4.1.0")
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:3.1.5")
-            library("sentry", "io.sentry:sentry-spring-boot-starter:6.8.0")
+            library("sentry", "io.sentry:sentry-spring-boot-starter:6.9.1")
             library("springdoc-openapi-ui", "org.springdoc:springdoc-openapi-ui:1.6.13")
             library("springdoc-openapi-kotlin", "org.springdoc:springdoc-openapi-kotlin:1.6.13")
             bundle("swagger-docs", listOf("springdoc-openapi-ui", "springdoc-openapi-kotlin"))
