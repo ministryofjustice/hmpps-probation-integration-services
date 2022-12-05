@@ -35,7 +35,7 @@ spring:
 
 ---
 spring.config.activate.on-profile: localstack
-cloud.aws:
+spring.cloud.aws:
   sqs.endpoint: http://localhost:4566
   sns.endpoint: http://localhost:4566
   credentials:

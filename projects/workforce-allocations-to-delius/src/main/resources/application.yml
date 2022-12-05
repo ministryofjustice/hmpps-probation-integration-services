@@ -45,7 +45,6 @@ spring:
   jpa.hibernate.ddl-auto: create-drop
   security.oauth2:
     resourceserver.jwt.public-key-location: classpath:local-public-key.pub
-cloud.aws.region.static: eu-west-2
 
 wiremock:
   enabled: true
@@ -93,7 +92,7 @@ delius.db.username: NationalUser
 
 ---
 spring.config.activate.on-profile: localstack
-cloud.aws:
+spring.cloud.aws:
   sqs.endpoint: http://localhost:4566
   sns.endpoint: http://localhost:4566
   credentials:
