@@ -38,33 +38,5 @@
       "acceptsResponsibility": "Full responsibility",
       "lastUpdatedDate": "2022-11-17T15:02:17"
     }
-  ],
-  "latest_dates": [
-    {
-      "offenceAnalysis": "2022-11-02T15:22:20",
-      "currentConcernsSelfHarmSuicide": "2022-11-03T11:50:34",
-      "currentSources": "2022-11-04T08:44:11",
-      "currentWhyDone": "2022-11-04T08:44:11",
-      "currentAnyoneElsePresent": "2022-11-04T08:43:50",
-      "currentWhoVictims": "2022-11-04T08:44:24",
-      "currentHowDone": "2022-11-04T08:43:50",
-      "currentWhereAndWhen": "2022-11-04T08:43:50",
-      "currentOffenceDetails": "2022-11-04T08:42:43",
-      "whoAtRisk": "2022-11-02T15:55:22",
-      "attIssuesDetails": "2022-11-02T15:34:17",
-      "thingIssuesDetails": "2022-11-02T15:34:06",
-      "emoIssuesDetails": "2022-11-02T15:28:09",
-      "alcoholIssuesDetails": "2022-11-02T15:26:55",
-      "lifestyleIssuesDetails": "2022-11-02T15:25:11",
-      "relIssuesDetails": "2022-11-02T15:25:16",
-      "offenceAnalysisDetails": "2022-11-04T08:33:53",
-      "issueContributingToRisk": "2022-11-04T08:33:53",
-      "patternOffending": "2022-11-04T08:33:53",
-      "acceptsResponsibility": "2022-11-04T08:33:53",
-      "offenceMotivation": "2022-11-04T08:33:53",
-      "victimImpact": "2022-11-04T08:33:53",
-      "victimInfo": "2022-11-04T08:33:53",
-      "victimPerpetratorRel": "2022-11-04T08:33:53"
-    }
   ]
 }
