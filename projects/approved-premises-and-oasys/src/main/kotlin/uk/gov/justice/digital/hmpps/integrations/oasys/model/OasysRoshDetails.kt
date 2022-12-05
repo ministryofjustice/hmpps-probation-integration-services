@@ -16,6 +16,7 @@ data class OasysRoshDetails(
     override val assessmentStatus: String,
     override val superStatus: String? = null,
     override val laterWIPAssessmentExists: Boolean? = null,
+    override val lastUpdatedDate: ZonedDateTime? = null,
     val riskChildrenCommunity: String? = null,
     val riskPrisonersCustody: String? = null,
     val riskStaffCustody: String? = null,

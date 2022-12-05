@@ -30,7 +30,7 @@
       "latestPartCompSignedDate": null,
       "laterCompleteAssessmentExists": false,
       "latestCompleteDate": "2022-11-09T14:05:13",
-      "generalHealth": "[Yes]",
+      "generalHealth": "Yes",
       "alcoholProgramme": "Alcohol misuse - Programme",
       "alcoholEM": "Alcohol misuse - Electronic Monitoring",
       "alcoholCommunity": "Alcohol misuse - Community",
@@ -80,9 +80,10 @@
       "healthEM": "Chronic health problems - Electronic Monitoring",
       "healthCommunity": "Chronic health problems - Community",
       "elecMonSpecify": "EM - Please Specify..",
-      "elecMonElectricity": "[Yes]",
-      "elecMon": "[Yes]",
-      "generalHeathSpecify": "General Health - Please specify..."
+      "elecMonElectricity": "Yes",
+      "elecMon": "Yes",
+      "generalHeathSpecify": "General Health - Please specify...",
+      "lastUpdatedDate": "2022-11-17T15:02:17"
     }
   ],
   "latest_dates": [

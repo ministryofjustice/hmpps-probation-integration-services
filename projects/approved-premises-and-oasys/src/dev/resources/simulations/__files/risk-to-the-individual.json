@@ -27,9 +27,9 @@
       "latestPartCompSignedDate": null,
       "laterCompleteAssessmentExists": false,
       "latestCompleteDate": "2022-11-09T14:05:13",
-      "concernsRiskOfSuicide": "[Yes]",
+      "concernsRiskOfSuicide": "Yes",
       "currentConcernsBreachOfTrustText": "Current Breach of Trust",
-      "currentConcernsBreachOfTrust": "[Yes]",
+      "currentConcernsBreachOfTrust": "Yes",
       "riskOfSeriousHarm": "R8.4.1 RoSH",
       "previousVulnerability": "Previous Vulnerability",
       "currentVulnerability": "Current Vulnerability",
@@ -37,10 +37,11 @@
       "currentCustodyHostelCoping": "Current custody or hostel concerns",
       "previousConcernsSelfHarmSuicide": "Past concerns for both",
       "currentConcernsSelfHarmSuicide": "High Risk of Suicide\r\nHigh Risk of Self-harm",
-      "currentConcernsRiskOfSelfHarm": "[Yes]",
-      "currentConcernsRiskOfSuicide": "[Yes]",
-      "concernsBreachOfTrust": "[Yes]",
-      "concernsBiskOfSelfHarm": "[Yes]"
+      "currentConcernsRiskOfSelfHarm": "Yes",
+      "currentConcernsRiskOfSuicide": "Yes",
+      "concernsBreachOfTrust": "Yes",
+      "concernsBiskOfSelfHarm": "Yes",
+      "lastUpdatedDate": "2022-11-17T15:02:17"
     }
   ],
   "latest_dates": [

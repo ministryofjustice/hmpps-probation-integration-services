@@ -27,15 +27,16 @@
       "latestPartCompSignedDate": null,
       "laterCompleteAssessmentExists": false,
       "latestCompleteDate": "2022-11-09T14:05:13",
-      "riskChildrenCommunity": "[High]",
-      "riskPrisonersCustody": "[High]",
-      "riskStaffCustody": "[Low]",
-      "riskStaffCommunity": "[High]",
-      "riskKnownAdultCustody": "[Low]",
-      "riskKnownAdultCommunity": "[Medium]",
-      "riskPublicCustody": "[Low]",
-      "riskPublicCommunity": "[Low]",
-      "riskChildrenCustody": "[Medium]"
+      "riskChildrenCommunity": "High",
+      "riskPrisonersCustody": "High",
+      "riskStaffCustody": "Low",
+      "riskStaffCommunity": "High",
+      "riskKnownAdultCustody": "Low",
+      "riskKnownAdultCommunity": "Medium",
+      "riskPublicCustody": "Low",
+      "riskPublicCommunity": "Low",
+      "riskChildrenCustody": "Medium",
+      "lastUpdatedDate": "2022-11-17T15:02:17"
     }
   ],
   "latest_dates": [
