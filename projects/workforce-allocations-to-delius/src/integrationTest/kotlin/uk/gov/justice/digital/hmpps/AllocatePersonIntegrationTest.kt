@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -34,6 +35,9 @@ class AllocatePersonIntegrationTest {
 
     @Value("\${messaging.consumer.queue}")
     private lateinit var queueName: String
+
+    @Autowired
+    private lateinit var embeddedActiveMQ: EmbeddedActiveMQ
 
     @Autowired
     private lateinit var jmsTemplate: JmsTemplate
@@ -129,7 +133,7 @@ class AllocatePersonIntegrationTest {
         originalRoCount: Int
     ) {
         val allocationEvent = prepMessage(messageName, wireMockServer.port())
-        jmsTemplate.convertSendAndWait(queueName, allocationEvent)
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, allocationEvent)
 
         verify(telemetryService).notificationReceived(allocationEvent)
 

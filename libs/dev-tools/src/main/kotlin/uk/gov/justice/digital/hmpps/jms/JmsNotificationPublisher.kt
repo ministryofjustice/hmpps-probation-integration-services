@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.jms
 
-import org.apache.activemq.ActiveMQConnectionFactory
+import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty

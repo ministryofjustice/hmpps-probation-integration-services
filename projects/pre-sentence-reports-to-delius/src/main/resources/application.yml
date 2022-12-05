@@ -19,7 +19,7 @@ delius.db.username: pre-sentence-reports-to-delius
 
 management.endpoints.web:
   base-path: /
-  exposure.include: "health"
+  exposure.include: [ "health", "info" ]
 
 feign.client.config:
   default:
@@ -40,8 +40,6 @@ context:
     classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 spring:
-  activemq.broker-url: vm://localhost?broker.persistent=false&broker.useShutdownHook=false
-
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
   security.oauth2:
@@ -60,14 +58,10 @@ integrations:
   alfresco:
     url: http://localhost:${wiremock.port}
 
-management.endpoints.web:
-  base-path: /
-  exposure.include: [ "hawtio", "health", "jolokia" ]
-hawtio.authenticationEnabled: false
-
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
   org.hibernate.tool.schema: ERROR
+  org.apache.activemq: WARN
 
 ---
 spring.config.activate.on-profile: dev

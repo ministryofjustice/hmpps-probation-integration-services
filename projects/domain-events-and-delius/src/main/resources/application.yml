@@ -18,7 +18,7 @@ delius.db.username: DomainEventsAndDelius # Should match value in [deploy/databa
 
 management.endpoints.web:
   base-path: /
-  exposure.include: "health"
+  exposure.include: [ "health", "info" ]
 
 ---
 # Shared dev/test config
@@ -31,10 +31,6 @@ spring:
 
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
-
-management.endpoints.web:
-  base-path: /
-  exposure.include: [ "health" ]
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

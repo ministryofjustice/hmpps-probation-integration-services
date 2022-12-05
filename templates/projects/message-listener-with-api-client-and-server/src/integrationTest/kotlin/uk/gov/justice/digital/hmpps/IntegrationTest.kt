@@ -42,7 +42,7 @@ internal class IntegrationTest {
 
         // When it is received
         try {
-            jmsTemplate.convertSendAndWait(queueName, notification)
+            jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
         } catch (_: TimeoutException) {
             // Note: Remove this try/catch when the MessageListener logic has been implemented
         }
