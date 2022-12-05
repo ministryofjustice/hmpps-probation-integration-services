@@ -68,7 +68,7 @@ spring.config.activate.on-profile: dev
 
 ---
 spring.config.activate.on-profile: integration-test
-spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH
+spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_ON_EXIT=FALSE
 
 
 

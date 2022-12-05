@@ -10,7 +10,6 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.never
-import org.mockito.kotlin.timeout
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaService
@@ -37,7 +36,7 @@ class OffenderDeltaPollerTest {
         whenever(service.checkAndSendEvents()).thenThrow(RuntimeException("event not processed"))
         poller.checkAndSendEvents()
 
-        verify(telemetryService, timeout(5000)).trackEvent(
+        verify(telemetryService).trackEvent(
             "OffenderEventsProcessingFailed",
             mapOf("Exception" to "event not processed"), mapOf()
         )
