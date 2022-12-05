@@ -17,6 +17,7 @@ data class OasysRiskToTheIndividualAssessment(
     override val assessmentStatus: String,
     override val superStatus: String? = null,
     override val laterWIPAssessmentExists: Boolean? = null,
+    override val lastUpdatedDate: ZonedDateTime? = null,
     val concernsRiskOfSuicide: String? = null,
     val currentConcernsBreachOfTrustText: String? = null,
     val currentConcernsBreachOfTrust: String? = null,

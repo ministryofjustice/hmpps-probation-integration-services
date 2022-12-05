@@ -16,6 +16,7 @@ data class OasysOffenceAssessment(
     override val assessmentStatus: String,
     override val superStatus: String? = null,
     override val laterWIPAssessmentExists: Boolean? = null,
+    override val lastUpdatedDate: ZonedDateTime? = null,
     val offenceAnalysis: String? = null,
     val othersInvolved: String? = null,
     val issueContributingToRisk: String? = null,

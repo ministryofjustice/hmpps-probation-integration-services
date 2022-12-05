@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
 import org.mockito.kotlin.eq
-import org.mockito.kotlin.timeout
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -68,7 +68,6 @@ class CaseNotesIntegrationTest {
             prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS, wireMockserver.port())
         )
 
-        verify(telemetryService, timeout(5000)).trackEvent(eq(CASE_NOTE_MERGE), anyMap(), anyMap())
         val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
 
         assertThat(
@@ -82,6 +81,8 @@ class CaseNotesIntegrationTest {
                 nomisCaseNote.amendments[0].additionalNoteText
             )
         )
+
+        verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGE), anyMap(), anyMap())
     }
 
     @Test
@@ -96,7 +97,7 @@ class CaseNotesIntegrationTest {
             prepMessage(CaseNoteMessageGenerator.NEW_TO_DELIUS, wireMockserver.port())
         )
 
-        verify(telemetryService, timeout(5000)).trackEvent(eq(CASE_NOTE_MERGE), anyMap(), anyMap())
+        verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGE), anyMap(), anyMap())
         val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
         assertNotNull(saved)
 
@@ -136,6 +137,6 @@ class CaseNotesIntegrationTest {
             prepMessage(CaseNoteMessageGenerator.NOT_FOUND, wireMockserver.port())
         )
 
-        verify(telemetryService, timeout(5000).times(0)).trackEvent(eq(CASE_NOTE_MERGE), anyMap(), anyMap())
+        verify(telemetryService, never()).trackEvent(eq(CASE_NOTE_MERGE), anyMap(), anyMap())
     }
 }

@@ -24,7 +24,7 @@ on:
         required: true
         options:
           - '["approved-premises-and-oasys"]'
-          - '["approved-premises-with-delius"]'
+          - '["approved-premises-and-delius"]'
           - '["person-search-index-from-delius"]'
           - '["pre-sentence-reports-to-delius"]'
           - '["prison-case-notes-to-probation"]'

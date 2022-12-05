@@ -13,12 +13,13 @@ abstract class Assessment {
     abstract val superStatus: String?
     abstract val laterWIPAssessmentExists: Boolean?
     abstract val limitedAccessOffender: Boolean
+    abstract val lastUpdatedDate: ZonedDateTime?
 
     companion object {
         fun stringToBoolean(string: String?): Boolean? {
             when (string?.uppercase(Locale.getDefault())) {
-                "[YES]" -> return true
-                "[NO]" -> return false
+                "YES" -> return true
+                "NO" -> return false
             }
             return null
         }

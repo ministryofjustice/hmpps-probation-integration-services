@@ -13,6 +13,7 @@ data class RiskManagementPlanDetails(
     override val superStatus: String? = null,
     override val laterWIPAssessmentExists: Boolean? = null,
     override val limitedAccessOffender: Boolean,
+    override val lastUpdatedDate: ZonedDateTime? = null,
     val riskManagementPlan: RiskManagementPlan
 ) : Assessment() {
     companion object {
@@ -28,6 +29,7 @@ data class RiskManagementPlanDetails(
                     superStatus,
                     laterWIPAssessmentExists,
                     oasysRiskManagementPlan.limitedAccessOffender,
+                    lastUpdatedDate,
                     RiskManagementPlan(
                         furtherConsiderations,
                         additionalComments,

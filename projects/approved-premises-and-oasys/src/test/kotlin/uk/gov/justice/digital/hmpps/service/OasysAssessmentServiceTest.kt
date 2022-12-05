@@ -117,7 +117,8 @@ internal class OasysAssessmentServiceTest {
                     initiationDate = now,
                     assessmentStatus = status,
                     offenceAnalysis = "analysis",
-                    dateCompleted = now
+                    dateCompleted = now,
+                    lastUpdatedDate = now
                 )
             )
         )
@@ -137,6 +138,7 @@ internal class OasysAssessmentServiceTest {
             null,
             null,
             false,
+            lastUpdatedDate = now,
             Offence(
                 offenceAnalysis = "analysis"
             )
@@ -174,11 +176,12 @@ internal class OasysAssessmentServiceTest {
                     assessmentStatus = status,
                     dateCompleted = now,
                     offenceAnalysisDetails = "analysis",
-                    drugLinkedToReoffending = "[No]",
-                    attLinkedToReoffending = "[No]",
-                    relLinkedToReoffending = "[Yes]",
+                    drugLinkedToReoffending = "No",
+                    attLinkedToReoffending = "No",
+                    relLinkedToReoffending = "Yes",
                     lifestyleIssuesDetails = "Has lifestyle issues",
-                    thingIssuesDetails = "Thinking issues"
+                    thingIssuesDetails = "Thinking issues",
+                    lastUpdatedDate = now
                 )
             )
         )
@@ -198,6 +201,7 @@ internal class OasysAssessmentServiceTest {
             null,
             null,
             false,
+            now,
             Needs(
                 offenceAnalysisDetails = "analysis",
                 lifestyleIssuesDetails = "Has lifestyle issues",
@@ -226,14 +230,15 @@ internal class OasysAssessmentServiceTest {
                     assessmentStatus = status,
                     dateCompleted = now,
                     offenceAnalysisDetails = "analysis",
-                    emoLinkedToHarm = "[Yes]",
-                    drugLinkedToReoffending = "[No]",
-                    alcoholLinkedToHarm = "[Don't Know]",
-                    attLinkedToReoffending = "[No]",
-                    financeLinkedToHarm = "[Yes]",
-                    relLinkedToReoffending = "[Yes]",
+                    emoLinkedToHarm = "Yes",
+                    drugLinkedToReoffending = "No",
+                    alcoholLinkedToHarm = "Don't Know",
+                    attLinkedToReoffending = "No",
+                    financeLinkedToHarm = "Yes",
+                    relLinkedToReoffending = "Yes",
                     lifestyleIssuesDetails = "Has lifestyle issues",
-                    thingIssuesDetails = "Thinking issues"
+                    thingIssuesDetails = "Thinking issues",
+                    lastUpdatedDate = now
                 )
             )
         )
@@ -253,6 +258,7 @@ internal class OasysAssessmentServiceTest {
             null,
             null,
             false,
+            lastUpdatedDate = now,
             Needs(
                 offenceAnalysisDetails = "analysis",
                 lifestyleIssuesDetails = "Has lifestyle issues",
@@ -407,10 +413,10 @@ internal class OasysAssessmentServiceTest {
                     initiationDate = now,
                     assessmentStatus = status,
                     dateCompleted = now,
-                    concernsBreachOfTrust = "[Yes]",
-                    concernsRiskOfSuicide = "[No]",
+                    concernsBreachOfTrust = "Yes",
+                    concernsRiskOfSuicide = "No",
                     previousVulnerability = "previously vulnerable",
-                    currentConcernsBreachOfTrust = "[Yes]"
+                    currentConcernsBreachOfTrust = "Yes"
                 )
             )
         )
@@ -529,14 +535,14 @@ internal class OasysAssessmentServiceTest {
                     initiationDate = now,
                     assessmentStatus = status,
                     dateCompleted = now,
-                    riskChildrenCommunity = "[Low]",
-                    riskPrisonersCustody = "[Medium]",
-                    riskStaffCustody = "[Medium]",
-                    riskStaffCommunity = "[Medium]",
+                    riskChildrenCommunity = "Low",
+                    riskPrisonersCustody = "Medium",
+                    riskStaffCustody = "Medium",
+                    riskStaffCommunity = "Medium",
                     riskKnownAdultCustody = null,
-                    riskKnownAdultCommunity = "[Medium]",
-                    riskPublicCustody = "[High]",
-                    riskChildrenCustody = "[Very High]",
+                    riskKnownAdultCommunity = "Medium",
+                    riskPublicCustody = "High",
+                    riskChildrenCustody = "Very High",
                 )
             )
         )
@@ -596,7 +602,7 @@ internal class OasysAssessmentServiceTest {
                     initiationDate = now,
                     assessmentStatus = status,
                     dateCompleted = now,
-                    generalHealth = "[Yes]",
+                    generalHealth = "Yes",
                     alcoholProgramme = "Alcohol misuse - Programme",
                     alcoholEM = "Alcohol misuse - Electronic Monitoring",
                     alcoholCommunity = "Alcohol misuse - Community",

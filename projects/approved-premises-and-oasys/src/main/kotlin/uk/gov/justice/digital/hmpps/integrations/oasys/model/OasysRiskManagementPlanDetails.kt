@@ -18,6 +18,7 @@ data class OasysRiskManagementPlanAssessment(
     override val assessmentStatus: String,
     override val superStatus: String? = null,
     override val laterWIPAssessmentExists: Boolean? = null,
+    override val lastUpdatedDate: ZonedDateTime? = null,
     @JsonProperty("furtherConiderations")
     val furtherConsiderations: String? = null,
     val additionalComments: String? = null,
