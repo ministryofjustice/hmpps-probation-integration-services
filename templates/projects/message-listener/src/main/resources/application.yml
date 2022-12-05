@@ -42,3 +42,12 @@ spring:
       hibernate.dialect: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
 delius.db.username: NationalUser
+
+---
+spring.config.activate.on-profile: localstack
+cloud.aws:
+  sqs.endpoint: http://localhost:4566
+  sns.endpoint: http://localhost:4566
+  credentials:
+    access-key: localstack
+    secret-key: localstack

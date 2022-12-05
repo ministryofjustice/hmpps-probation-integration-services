@@ -18,17 +18,10 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 @SpringBootTest
 @ActiveProfiles("integration-test")
 internal class IntegrationTest {
-    @Value("\${messaging.consumer.queue}")
-    private lateinit var queueName: String
-
-    @Autowired
-    private lateinit var embeddedActiveMQ: EmbeddedActiveMQ
-
-    @Autowired
-    private lateinit var jmsTemplate: JmsTemplate
-
-    @MockBean
-    private lateinit var telemetryService: TelemetryService
+    @Value("\${messaging.consumer.queue}") lateinit var queueName: String
+    @Autowired lateinit var embeddedActiveMQ: EmbeddedActiveMQ
+    @Autowired lateinit var jmsTemplate: JmsTemplate
+    @MockBean lateinit var telemetryService: TelemetryService
 
     @Test
     fun `successfully update RSR scores`() {
