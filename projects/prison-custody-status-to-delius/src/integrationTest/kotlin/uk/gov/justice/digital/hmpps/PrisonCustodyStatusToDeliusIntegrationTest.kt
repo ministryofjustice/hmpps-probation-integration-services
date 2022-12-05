@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.hasItems
 import org.hamcrest.MatcherAssert.assertThat
@@ -49,6 +50,9 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
     private lateinit var queueName: String
 
     @Autowired
+    private lateinit var embeddedActiveMQ: EmbeddedActiveMQ
+
+    @Autowired
     private lateinit var jmsTemplate: JmsTemplate
 
     @Autowired
@@ -89,7 +93,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
             message = MessageGenerator.PRISONER_RELEASED,
             attributes = MessageAttributes("prison-offender-events.prisoner.released")
         )
-        jmsTemplate.convertSendAndWait(queueName, notification)
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
 
         // then they are no longer in custody
         val custody = getCustody(nomsNumber)
@@ -139,7 +143,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
             message = MessageGenerator.PRISONER_RECEIVED,
             attributes = MessageAttributes("prison-offender-events.prisoner.received")
         )
-        jmsTemplate.convertSendAndWait(queueName, notification)
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
 
         // then they are now in custody
         val custody = getCustody(nomsNumber)

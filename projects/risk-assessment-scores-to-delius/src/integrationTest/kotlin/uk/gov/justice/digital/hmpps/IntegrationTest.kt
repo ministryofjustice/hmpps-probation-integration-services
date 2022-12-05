@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,14 +18,10 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 @SpringBootTest
 @ActiveProfiles("integration-test")
 internal class IntegrationTest {
-    @Value("\${messaging.consumer.queue}")
-    private lateinit var queueName: String
-
-    @Autowired
-    private lateinit var jmsTemplate: JmsTemplate
-
-    @MockBean
-    private lateinit var telemetryService: TelemetryService
+    @Value("\${messaging.consumer.queue}") lateinit var queueName: String
+    @Autowired lateinit var embeddedActiveMQ: EmbeddedActiveMQ
+    @Autowired lateinit var jmsTemplate: JmsTemplate
+    @MockBean lateinit var telemetryService: TelemetryService
 
     @Test
     fun `successfully update RSR scores`() {
@@ -32,7 +29,7 @@ internal class IntegrationTest {
             message = MessageGenerator.RSR_SCORES_DETERMINED,
             attributes = MessageAttributes("risk-assessment.scores.determined")
         )
-        jmsTemplate.convertSendAndWait(queueName, notification)
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
         verify(telemetryService).trackEvent("RsrScoresUpdated", notification.message.telemetryProperties())
     }
 }

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.greaterThan
 import org.junit.jupiter.api.Test
@@ -29,6 +30,9 @@ class PsrCompletedIntegrationTest {
     private lateinit var queueName: String
 
     @Autowired
+    private lateinit var embeddedActiveMQ: EmbeddedActiveMQ
+
+    @Autowired
     private lateinit var jmsTemplate: JmsTemplate
 
     @MockBean
@@ -50,7 +54,7 @@ class PsrCompletedIntegrationTest {
 
         val message = prepMessage("psr-message", wireMockServer.port())
 
-        jmsTemplate.convertSendAndWait(queueName, message)
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, message)
 
         verify(telemetryService).notificationReceived(message)
 

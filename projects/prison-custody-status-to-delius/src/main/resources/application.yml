@@ -8,28 +8,23 @@ delius.db.username: PrisonCustodyStatusService # See deploy/database/access.yml
 
 management.endpoints.web:
   base-path: /
-  exposure.include: "health"
+  exposure.include: [ "health", "info" ]
 
 ---
 # Shared dev/test config
 spring.config.activate.on-profile: [ "dev", "integration-test", "oracle" ]
 
 spring:
-  activemq.broker-url: vm://localhost?broker.persistent=false&broker.useShutdownHook=false
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
 
 messaging:
   consumer.queue: prison-custody-status-events
 
-management.endpoints.web:
-  base-path: /
-  exposure.include: [ "hawtio", "health", "jolokia" ]
-hawtio.authenticationEnabled: false
-
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
   org.hibernate.tool.schema: ERROR
+  org.apache.activemq: WARN
 
 ---
 spring.config.activate.on-profile: integration-test
@@ -47,3 +42,12 @@ spring:
       hibernate.dialect: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
 delius.db.username: NationalUser
+
+---
+spring.config.activate.on-profile: localstack
+cloud.aws:
+  sqs.endpoint: http://localhost:4566
+  sns.endpoint: http://localhost:4566
+  credentials:
+    access-key: localstack
+    secret-key: localstack

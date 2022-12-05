@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -29,6 +30,9 @@ internal class IntegrationTest {
     private lateinit var queueName: String
 
     @Autowired
+    private lateinit var embeddedActiveMQ: EmbeddedActiveMQ
+
+    @Autowired
     private lateinit var jmsTemplate: JmsTemplate
 
     @Autowired
@@ -55,7 +59,7 @@ internal class IntegrationTest {
             attributes = MessageAttributes("tier.calculation.complete")
         )
 
-        jmsTemplate.convertSendAndWait(queueName, notification)
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
 
         val expectedTier = referenceDataRepository.findByCodeAndSetName("UD2", "TIER")!!
         val expectedReason = referenceDataRepository.findByCodeAndSetName("ATS", "TIER CHANGE REASON")!!

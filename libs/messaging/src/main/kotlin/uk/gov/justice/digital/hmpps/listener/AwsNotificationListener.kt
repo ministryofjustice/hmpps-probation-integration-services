@@ -1,14 +1,15 @@
 package uk.gov.justice.digital.hmpps.listener
 
 import io.awspring.cloud.messaging.listener.annotation.SqsListener
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.stereotype.Service
+import org.springframework.context.annotation.Conditional
+import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
 
-@Service
+@Component
+@Conditional(AwsCondition::class)
 @ConditionalOnProperty("messaging.consumer.queue")
-@ConditionalOnMissingClass("org.apache.activemq.ActiveMQConnectionFactory")
 class AwsNotificationListener(
     private val handler: NotificationHandler<*>
 ) {

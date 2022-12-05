@@ -23,9 +23,7 @@ dependencies {
     implementation(libs.bundles.swagger.docs)
 
     dev(project(":libs:dev-tools"))
-    dev("org.springframework.boot:spring-boot-starter-activemq")
     dev("com.h2database:h2")
-    dev(libs.hawtio)
 
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 

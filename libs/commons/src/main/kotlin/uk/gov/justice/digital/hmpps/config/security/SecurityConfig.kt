@@ -21,8 +21,6 @@ class SecurityConfig {
             it.requestMatchers(
                 AntPathRequestMatcher("/health/**"),
                 AntPathRequestMatcher("/info/**"),
-                AntPathRequestMatcher("/hawtio/**"),
-                AntPathRequestMatcher("/jolokia"),
                 AntPathRequestMatcher("/swagger-ui/**"),
                 AntPathRequestMatcher("/v3/api-docs/**)")
             ).permitAll()

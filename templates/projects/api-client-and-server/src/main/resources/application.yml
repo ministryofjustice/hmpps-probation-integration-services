@@ -18,7 +18,7 @@ delius.db.username: $SERVICE_NAME_CAMELCASE # Should match value in [deploy/data
 
 management.endpoints.web:
   base-path: /
-  exposure.include: "health"
+  exposure.include: [ "health", "info" ]
 
 feign.client.config:
   default:
@@ -50,13 +50,10 @@ integrations:
   example:
     url: http://localhost:${wiremock.port}/example
 
-management.endpoints.web:
-  base-path: /
-  exposure.include: [ "health" ]
-
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
   org.hibernate.tool.schema: ERROR
+  org.apache.activemq: WARN
 
 ---
 spring.config.activate.on-profile: integration-test

@@ -36,7 +36,7 @@ A full list of decision records can be found in [decisions](doc/adr)
 * Code is written in [Kotlin](https://kotlinlang.org/), using [Spring Boot](https://spring.io/projects/spring-boot)
 * Built and tested as a multi-project [Gradle](https://gradle.org/) build
 * Unit tests with [JUnit](https://junit.org/) and [Mockito](https://mockito.org/)
-* Integration tests with [Wiremock](https://wiremock.org/), [H2](https://www.h2database.com/), and [embedded ActiveMQ](https://activemq.apache.org/)
+* Integration tests with [Wiremock](https://wiremock.org/), [H2](https://www.h2database.com/), and [embedded ActiveMQ Artemis](https://activemq.apache.org/components/artemis/)
 * End-to-end testing with [Playwright](https://playwright.dev/) - see [End-to-end tests](https://github.com/ministryofjustice/hmpps-probation-integration-services#end-to-end-tests)
 * Container images are built with [Jib](https://github.com/GoogleContainerTools/jib#readme), and pushed to 
 [GitHub Packages](https://github.com/orgs/ministryofjustice/packages?repo_name=hmpps-probation-integration-services)
