@@ -1,15 +1,19 @@
 package uk.gov.justice.digital.hmpps.publisher
 
 import io.awspring.cloud.messaging.core.NotificationMessagingTemplate
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.context.annotation.Conditional
+import org.springframework.context.annotation.Primary
 import org.springframework.messaging.MessageHeaders
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.config.aws.AwsConfig
+import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.message.Notification
 
+@Primary
 @Component
-@ConditionalOnBean(AwsConfig::class)
+@Conditional(AwsCondition::class)
+@ConditionalOnProperty("messaging.producer.topic")
 class AwsNotificationPublisher(
     private val notificationTemplate: NotificationMessagingTemplate
 ) : NotificationPublisher {

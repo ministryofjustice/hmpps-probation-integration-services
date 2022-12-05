@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.hasItems
 import org.hamcrest.MatcherAssert.assertThat
@@ -33,9 +34,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode.STATUS_CHANGE
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseRepository
 import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
-import uk.gov.justice.digital.hmpps.listener.nomsNumber
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.messaging.nomsNumber
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
@@ -45,8 +46,11 @@ import java.time.temporal.ChronoUnit.DAYS
 @ActiveProfiles("integration-test")
 internal class PrisonCustodyStatusToDeliusIntegrationTest {
 
-    @Value("\${spring.jms.template.default-destination}")
+    @Value("\${messaging.consumer.queue}")
     private lateinit var queueName: String
+
+    @Autowired
+    private lateinit var embeddedActiveMQ: EmbeddedActiveMQ
 
     @Autowired
     private lateinit var jmsTemplate: JmsTemplate
@@ -89,7 +93,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
             message = MessageGenerator.PRISONER_RELEASED,
             attributes = MessageAttributes("prison-offender-events.prisoner.released")
         )
-        jmsTemplate.convertSendAndWait(queueName, notification)
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
 
         // then they are no longer in custody
         val custody = getCustody(nomsNumber)
@@ -139,7 +143,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
             message = MessageGenerator.PRISONER_RECEIVED,
             attributes = MessageAttributes("prison-offender-events.prisoner.received")
         )
-        jmsTemplate.convertSendAndWait(queueName, notification)
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
 
         // then they are now in custody
         val custody = getCustody(nomsNumber)

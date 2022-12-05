@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.stringContainsInOrder
@@ -36,8 +37,11 @@ const val CASE_NOTE_MERGE = "CaseNoteMerge"
 @SpringBootTest
 class CaseNotesIntegrationTest {
 
-    @Value("\${spring.jms.template.default-destination}")
+    @Value("\${messaging.consumer.queue}")
     private lateinit var queueName: String
+
+    @Autowired
+    private lateinit var embeddedActiveMQ: EmbeddedActiveMQ
 
     @Autowired
     private lateinit var jmsTemplate: JmsTemplate
@@ -58,7 +62,7 @@ class CaseNotesIntegrationTest {
     fun `update an existing case note succesfully`() {
         val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
 
-        jmsTemplate.convertSendAndWait(queueName, prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS, wireMockserver.port()))
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS, wireMockserver.port()))
 
         val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
 
@@ -83,7 +87,7 @@ class CaseNotesIntegrationTest {
         val original = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
         assertNull(original)
 
-        jmsTemplate.convertSendAndWait(queueName, prepMessage(CaseNoteMessageGenerator.NEW_TO_DELIUS, wireMockserver.port()))
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, prepMessage(CaseNoteMessageGenerator.NEW_TO_DELIUS, wireMockserver.port()))
 
         val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
         assertNotNull(saved)
@@ -118,7 +122,7 @@ class CaseNotesIntegrationTest {
     @Test
     fun `case note not found - noop`() {
 
-        jmsTemplate.convertSendAndWait(queueName, prepMessage(CaseNoteMessageGenerator.NOT_FOUND, wireMockserver.port()))
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, prepMessage(CaseNoteMessageGenerator.NOT_FOUND, wireMockserver.port()))
 
         verify(telemetryService, never()).trackEvent(eq(CASE_NOTE_MERGE), anyMap(), anyMap())
     }

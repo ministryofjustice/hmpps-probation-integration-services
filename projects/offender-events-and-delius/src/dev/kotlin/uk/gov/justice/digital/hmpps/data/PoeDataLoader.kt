@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.user.UserRepository
 class PoeDataLoader(
     private val serviceContext: ServiceContext,
     private val userRepository: UserRepository,
-    private val offenderRepository: OffenderRepository,
+    private val offenderRepository: OffenderRepository
 ) : CommandLineRunner {
     override fun run(vararg args: String?) {
         userRepository.save(UserGenerator.APPLICATION_USER)
