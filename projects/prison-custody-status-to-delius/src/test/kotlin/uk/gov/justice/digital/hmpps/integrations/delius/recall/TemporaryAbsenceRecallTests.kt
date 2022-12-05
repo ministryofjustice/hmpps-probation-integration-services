@@ -45,9 +45,9 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         val recallDate = recallDateTime.truncatedTo(DAYS)
         val om = OrderManagerGenerator.generate(event)
 
-        whenever(recallReasonRepository.findByCodeAndSelectableIsTrue(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
             .thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishmentIsTrue("WSI"))
+        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment("WSI"))
             .thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
         doAnswer<Recall> { it.getArgument(0) }.whenever(recallRepository).save(any())
@@ -110,9 +110,9 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         val recallDate = recallDateTime.truncatedTo(DAYS)
         val om = OrderManagerGenerator.generate(event)
 
-        whenever(recallReasonRepository.findByCodeAndSelectableIsTrue(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
             .thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishmentIsTrue("WSI"))
+        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment("WSI"))
             .thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(om)
@@ -149,9 +149,9 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         val recallDateTime = ZonedDateTime.now()
         val recallDate = recallDateTime.truncatedTo(DAYS)
 
-        whenever(recallReasonRepository.findByCodeAndSelectableIsTrue(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
             .thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishmentIsTrue("WSI"))
+        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment("WSI"))
             .thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
@@ -180,9 +180,9 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
             InstitutionGenerator.DEFAULT,
             custodialStatusCode = CustodialStatusCode.IN_CUSTODY_IRC
         )
-        whenever(recallReasonRepository.findByCodeAndSelectableIsTrue(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
             .thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishmentIsTrue("WSI"))
+        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment("WSI"))
             .thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
@@ -202,9 +202,9 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
             )
         }
 
-        whenever(recallReasonRepository.findByCodeAndSelectableIsTrue(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
             .thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishmentIsTrue("WSI"))
+        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment("WSI"))
             .thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event!!))
 
@@ -225,9 +225,9 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
             InstitutionGenerator.DEFAULT,
             custodialStatusCode = status
         )
-        whenever(recallReasonRepository.findByCodeAndSelectableIsTrue(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
             .thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishmentIsTrue("WSI"))
+        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment("WSI"))
             .thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 

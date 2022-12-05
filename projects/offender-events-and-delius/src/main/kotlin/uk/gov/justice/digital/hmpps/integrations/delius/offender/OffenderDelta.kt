@@ -1,15 +1,15 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.offender
 
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.NamedAttributeNode
+import jakarta.persistence.NamedEntityGraph
 import org.hibernate.annotations.NotFound
 import org.hibernate.annotations.NotFoundAction
 import java.time.ZonedDateTime
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
-import javax.persistence.NamedAttributeNode
-import javax.persistence.NamedEntityGraph
 
 @NamedEntityGraph(
     name = "OffenderDelta.withOffender",

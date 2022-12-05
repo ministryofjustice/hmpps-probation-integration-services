@@ -16,7 +16,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation(libs.openfeign)
     implementation(libs.sentry)
-    implementation(libs.bundles.swagger.docs)
+    implementation(libs.springdoc)
 
     dev(project(":libs:dev-tools"))
 

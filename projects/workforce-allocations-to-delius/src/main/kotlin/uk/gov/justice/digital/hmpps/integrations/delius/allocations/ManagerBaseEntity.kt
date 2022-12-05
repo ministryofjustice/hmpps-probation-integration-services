@@ -1,14 +1,14 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
+import jakarta.persistence.Column
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.MappedSuperclass
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamStaffContainer
 import java.time.ZonedDateTime
-import javax.persistence.Column
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
-import javax.persistence.MappedSuperclass
 
 @MappedSuperclass
 abstract class ManagerBaseEntity : BaseEntity() {

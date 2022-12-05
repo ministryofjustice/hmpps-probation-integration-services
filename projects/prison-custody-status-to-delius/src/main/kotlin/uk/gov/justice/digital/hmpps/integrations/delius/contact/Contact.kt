@@ -1,6 +1,18 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.contact
 
-import org.hibernate.annotations.Type
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.Lob
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.SequenceGenerator
+import jakarta.persistence.Version
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
@@ -9,17 +21,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.ZonedDateTime
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.EntityListeners
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.Lob
-import javax.persistence.ManyToOne
-import javax.persistence.SequenceGenerator
-import javax.persistence.Version
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
@@ -68,7 +69,7 @@ class Contact(
     @Column
     val teamId: Long,
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter::class)
     @Column(name = "alert_active")
     val alert: Boolean? = false,
 

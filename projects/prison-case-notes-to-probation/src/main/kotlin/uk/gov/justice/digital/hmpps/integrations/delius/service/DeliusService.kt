@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
+import jakarta.validation.Valid
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -16,7 +17,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepos
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
 import java.time.temporal.ChronoUnit
-import javax.validation.Valid
 
 @Service
 class DeliusService(

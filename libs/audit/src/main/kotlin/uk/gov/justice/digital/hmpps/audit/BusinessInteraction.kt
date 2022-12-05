@@ -1,10 +1,10 @@
 package uk.gov.justice.digital.hmpps.audit
 
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
 import org.hibernate.annotations.Immutable
 import java.time.ZonedDateTime
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
 
 @Immutable
 @Entity

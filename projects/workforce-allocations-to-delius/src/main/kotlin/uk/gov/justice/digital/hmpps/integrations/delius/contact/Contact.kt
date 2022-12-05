@@ -1,21 +1,22 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.contact
 
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.Lob
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.SequenceGenerator
+import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Type
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.BaseEntity
 import java.time.ZonedDateTime
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.EntityListeners
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.Lob
-import javax.persistence.ManyToOne
-import javax.persistence.SequenceGenerator
-import javax.persistence.Table
 
 @EntityListeners(AuditingEntityListener::class)
 @Entity
@@ -62,7 +63,7 @@ class Contact(
     val providerId: Long,
 
     @Column(name = "sensitive")
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter::class)
     val isSensitive: Boolean = type.isSensitive,
 
     @Column(updatable = false)
@@ -87,6 +88,6 @@ class ContactType(
     val code: String,
 
     @Column(name = "sensitive_contact")
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter::class)
     val isSensitive: Boolean,
 )

@@ -7,6 +7,7 @@ import org.hamcrest.Matchers.greaterThan
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.timeout
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -56,7 +57,7 @@ class PsrCompletedIntegrationTest {
 
         jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, message)
 
-        verify(telemetryService).notificationReceived(message)
+        verify(telemetryService, timeout(5000)).notificationReceived(message)
 
         verify(alfrescoClient).releaseDocument(DocumentGenerator.DEFAULT.alfrescoId)
         verify(alfrescoClient).updateDocument(eq(DocumentGenerator.DEFAULT.alfrescoId), any())

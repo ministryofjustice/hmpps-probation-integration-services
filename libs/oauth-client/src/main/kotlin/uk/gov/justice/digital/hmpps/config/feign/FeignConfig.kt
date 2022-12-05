@@ -1,7 +1,10 @@
 package uk.gov.justice.digital.hmpps.config.feign
 
 import feign.RequestInterceptor
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration
+import org.springframework.cloud.openfeign.FeignAutoConfiguration
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.authority.AuthorityUtils
@@ -33,3 +36,7 @@ abstract class FeignConfig(
             ?: throw OAuth2AuthenticationException("Unable to retrieve access token")
     }
 }
+
+@Configuration
+@ImportAutoConfiguration(value = [FeignAutoConfiguration::class])
+class FeignAutoConfig
