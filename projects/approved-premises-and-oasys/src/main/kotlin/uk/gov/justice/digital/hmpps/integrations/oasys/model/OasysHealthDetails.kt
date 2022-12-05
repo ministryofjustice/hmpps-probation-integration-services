@@ -16,6 +16,7 @@ data class OasysHealthAssessment(
     override val assessmentStatus: String,
     override val superStatus: String? = null,
     override val laterWIPAssessmentExists: Boolean? = null,
+    override val lastUpdatedDate: ZonedDateTime? = null,
     val generalHealth: String? = null,
     val alcoholProgramme: String? = null,
     val alcoholEM: String? = null,

@@ -13,6 +13,7 @@ data class NeedsDetails(
     override val superStatus: String? = null,
     override val laterWIPAssessmentExists: Boolean? = null,
     override val limitedAccessOffender: Boolean,
+    override val lastUpdatedDate: ZonedDateTime? = null,
     val needs: Needs? = null,
     val linksToHarm: LinksToHarm? = null,
     val linksToReOffending: LinksToReOffending? = null
@@ -31,6 +32,7 @@ data class NeedsDetails(
                     superStatus,
                     laterWIPAssessmentExists,
                     oasysNeeds.limitedAccessOffender,
+                    lastUpdatedDate,
                     Needs(
                         offenceAnalysisDetails,
                         emoIssuesDetails,

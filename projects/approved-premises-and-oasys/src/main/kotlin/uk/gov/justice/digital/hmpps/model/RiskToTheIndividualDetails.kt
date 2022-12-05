@@ -13,6 +13,7 @@ data class RiskToTheIndividualDetails(
     override val superStatus: String? = null,
     override val laterWIPAssessmentExists: Boolean? = null,
     override val limitedAccessOffender: Boolean,
+    override val lastUpdatedDate: ZonedDateTime? = null,
     val riskToTheIndividual: RiskToTheIndividual
 ) : Assessment() {
     companion object {
@@ -28,6 +29,7 @@ data class RiskToTheIndividualDetails(
                     superStatus,
                     laterWIPAssessmentExists,
                     oasysRiskToTheIndividual.limitedAccessOffender,
+                    lastUpdatedDate,
                     RiskToTheIndividual(
                         stringToBoolean(concernsRiskOfSuicide),
                         currentConcernsBreachOfTrustText,
