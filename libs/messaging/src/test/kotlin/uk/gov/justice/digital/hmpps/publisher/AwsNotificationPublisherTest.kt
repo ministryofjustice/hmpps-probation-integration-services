@@ -29,7 +29,7 @@ class AwsNotificationPublisherTest {
 
     @BeforeEach
     fun setup() {
-        publisher = AwsNotificationPublisher(notificationTemplate)
+        publisher = AwsNotificationPublisher(notificationTemplate, "my-topic")
     }
 
     @Test
@@ -44,9 +44,8 @@ class AwsNotificationPublisherTest {
 
         publisher.publish(notification)
 
-        verify(notificationTemplate).convertAndSend(
-            eq(notification.message), captor.capture()
-        )
+        verify(notificationTemplate).convertAndSend(eq("my-topic"), eq(notification.message), captor.capture())
+
         val message = captor.value.postProcessMessage(
             MessageBuilder.createMessage(notification.message, MessageHeaders(mapOf()))
         )
