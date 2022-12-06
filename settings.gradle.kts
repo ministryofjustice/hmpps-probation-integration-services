@@ -15,7 +15,6 @@ include(
     "tier-to-delius",
     "approved-premises-and-delius",
     "approved-premises-and-oasys",
-    "domain-events-and-delius",
     "offender-events-and-delius",
     // ^ add new projects here
 )
