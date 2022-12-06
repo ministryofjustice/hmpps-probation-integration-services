@@ -29,7 +29,7 @@ dependencyResolutionManagement {
         create("libs") {
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:2.4.2")
             library("aws-messaging", "io.awspring.cloud:spring-cloud-aws-messaging:2.4.2")
-            library("insights", "com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
+            library("insights", "com.microsoft.azure:applicationinsights-web:3.4.5")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:4.1.0")
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:3.1.5")
             library("sentry", "io.sentry:sentry-spring-boot-starter:6.9.1")

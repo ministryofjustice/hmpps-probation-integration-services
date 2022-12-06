@@ -13,7 +13,7 @@ class TelemetryService(private val telemetryClient: TelemetryClient = TelemetryC
     }
 
     fun trackEvent(name: String, properties: Map<String, String> = mapOf(), metrics: Map<String, Double> = mapOf()) {
-        if (telemetryClient.isDisabled) log.debug("$name $properties $metrics")
-        else telemetryClient.trackEvent(name, properties, metrics)
+        log.debug("$name $properties $metrics")
+        telemetryClient.trackEvent(name, properties, metrics)
     }
 }
