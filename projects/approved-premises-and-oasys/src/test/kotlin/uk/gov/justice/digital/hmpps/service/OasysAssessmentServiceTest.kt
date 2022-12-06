@@ -416,7 +416,8 @@ internal class OasysAssessmentServiceTest {
                     concernsBreachOfTrust = "Yes",
                     concernsRiskOfSuicide = "No",
                     previousVulnerability = "previously vulnerable",
-                    currentConcernsBreachOfTrust = "Yes"
+                    currentConcernsBreachOfTrust = "Yes",
+                    concernsRiskOfSelfHarm = "No"
                 )
             )
         )
@@ -437,7 +438,8 @@ internal class OasysAssessmentServiceTest {
                 concernsBreachOfTrust = true,
                 concernsRiskOfSuicide = false,
                 previousVulnerability = "previously vulnerable",
-                currentConcernsBreachOfTrust = true
+                currentConcernsBreachOfTrust = true,
+                concernsRiskOfSelfHarm = false
             )
         )
         assertThat(riskToTheIndividualDetails).isEqualTo(expectedRiskToTheIndividualDetails)
