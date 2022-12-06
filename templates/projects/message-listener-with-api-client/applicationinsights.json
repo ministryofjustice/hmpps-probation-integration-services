@@ -3,11 +3,15 @@
     "name": "$SERVICE_NAME"
   },
   "customDimensions": {
-    "service.version": "${VERSION}"
+    "service.version": "${VERSION}",
+    "service.team": "probation-integration"
   },
   "instrumentation": {
     "logging": {
       "level": "DEBUG"
+    },
+    "springScheduling": {
+      "enabled": false
     }
   },
   "selfDiagnostics": {

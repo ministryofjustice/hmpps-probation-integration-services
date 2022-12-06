@@ -3,11 +3,15 @@
     "name": "pre-sentence-reports-to-delius"
   },
   "customDimensions": {
-    "service.version": "${VERSION}"
+    "service.version": "${VERSION}",
+    "service.team": "probation-integration"
   },
   "instrumentation": {
     "logging": {
       "level": "DEBUG"
+    },
+    "springScheduling": {
+      "enabled": false
     }
   },
   "selfDiagnostics": {
