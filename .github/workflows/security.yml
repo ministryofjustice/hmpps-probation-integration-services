@@ -84,17 +84,11 @@ jobs:
            do
             echo "$cve is already resolved, removing matching issue..."
             issuenumber=$(gh issue list --state open --label dependencies --label security --search "$cve (${{ matrix.project }})" | awk '{print $1}')
-            gh issue close $issuenumber
+            echo $issuenumber | xargs -n 1 | gh issue close
+#            gh issue close $issuenumber
           done
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          
-#          OR get github urls for
-#
-#
-#          For each line, close matching issue >> v2 close each matching issue if they're still open after a day
-#        compare whats in gh issue list and in trivyignore to see if it's already there. if it is then remove issue
-#        OR cron job to check daily that
 
   veracode-scan:
     runs-on: ubuntu-latest
