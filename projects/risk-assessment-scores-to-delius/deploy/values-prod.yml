@@ -1,6 +1,6 @@
 environment_name: delius-prod
 
-enabled: true
+enabled: false # temporarily disabled until Delius SR27 go-live (10/12/2022).
 
 env:
   SENTRY_ENVIRONMENT: prod
