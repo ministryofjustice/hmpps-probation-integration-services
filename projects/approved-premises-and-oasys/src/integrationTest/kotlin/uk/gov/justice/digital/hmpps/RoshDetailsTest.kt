@@ -41,6 +41,8 @@ class RoshDetailsTest {
         val roshDetails = objectMapper.readValue(result.response.contentAsString, RoshDetails::class.java)
         assertThat(roshDetails.initiationDate)
             .isEqualTo(ZonedDateTime.parse("2022-11-09T14:33:53Z").withZoneSameInstant(EuropeLondon))
+        assertThat(roshDetails.lastUpdatedDate)
+            .isEqualTo(ZonedDateTime.parse("2022-11-17T15:02:17Z").withZoneSameInstant(EuropeLondon))
         assertThat(roshDetails.rosh.riskChildrenCommunity)
             .isEqualTo(RiskLevel.HIGH)
         assertThat(roshDetails.rosh.riskPrisonersCustody)

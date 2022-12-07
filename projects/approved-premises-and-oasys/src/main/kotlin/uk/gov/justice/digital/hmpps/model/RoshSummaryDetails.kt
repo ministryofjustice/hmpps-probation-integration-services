@@ -13,6 +13,7 @@ data class RoshSummaryDetails(
     override val superStatus: String? = null,
     override val laterWIPAssessmentExists: Boolean? = null,
     override val limitedAccessOffender: Boolean,
+    override val lastUpdatedDate: ZonedDateTime? = null,
     val roshSummary: RoshSummary
 ) : Assessment() {
     companion object {
@@ -28,6 +29,7 @@ data class RoshSummaryDetails(
                     superStatus,
                     laterWIPAssessmentExists,
                     oasysRoshSummary.limitedAccessOffender,
+                    lastUpdatedDate,
                     RoshSummary(
                         whoAtRisk,
                         riskReductionLikelyTo,

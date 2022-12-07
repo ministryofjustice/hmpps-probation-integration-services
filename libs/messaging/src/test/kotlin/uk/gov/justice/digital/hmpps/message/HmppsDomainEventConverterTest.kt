@@ -9,20 +9,12 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
-import org.springframework.jms.support.converter.MessageConversionException
+import uk.gov.justice.digital.hmpps.converter.HmppsDomainEventConverter
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
 import java.time.ZonedDateTime
-import javax.jms.BytesMessage
-import javax.jms.Session
-import javax.jms.TextMessage
 
 @ExtendWith(MockitoExtension::class)
 class HmppsDomainEventConverterTest {
@@ -33,20 +25,11 @@ class HmppsDomainEventConverterTest {
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .registerModule(SimpleModule().addDeserializer(ZonedDateTime::class.java, ZonedDateTimeDeserializer()))
 
-    @Mock
-    private lateinit var bytesMessage: BytesMessage
-
-    @Mock
-    private lateinit var textMessage: TextMessage
-
-    @Mock
-    private lateinit var session: Session
-
     private val converter = HmppsDomainEventConverter(mapper)
 
     @Test
     fun `can convert from jms message`() {
-        whenever(textMessage.text).thenReturn(
+        val message =
             """
                 {
                   "Type": "Notification",
@@ -62,9 +45,8 @@ class HmppsDomainEventConverterTest {
                   }
                 }
             """.trimIndent()
-        )
 
-        val event: HmppsDomainEvent = converter.fromMessage(textMessage).message
+        val event: HmppsDomainEvent = converter.fromMessage(message).message
         assertThat(event.eventType, equalTo("message.event.type"))
         assertThat(event.version, equalTo(1))
         assertThat(event.description, equalTo("A description for the event"))
@@ -76,7 +58,7 @@ class HmppsDomainEventConverterTest {
         assertThat(event.personReference.findCrn(), equalTo("X123456"))
         assertThat(event.additionalInformation["specialId"], equalTo("6aafe304-861f-4479-8380-fec5f90f6d17"))
 
-        val attributes: MessageAttributes = converter.fromMessage(textMessage).attributes
+        val attributes: MessageAttributes = converter.fromMessage(message).attributes
         assertThat(attributes["eventType"]!!.value, equalTo("attribute.event.type"))
     }
 
@@ -94,32 +76,17 @@ class HmppsDomainEventConverterTest {
             ),
             attributes = MessageAttributes("attribute.event.type")
         )
-        whenever(session.createTextMessage(anyString())).thenAnswer {
-            textMessage.text = it.getArgument(0, String::class.java)
-            textMessage
-        }
 
-        converter.toMessage(hmppsEvent, session)
+        val message = converter.toMessage(hmppsEvent)
 
-        val messageJson = """
+        assertThat(
+            message,
+            equalTo(
+                """
                 |{"Message":"{\"eventType\":\"message.event.type\",\"version\":1,\"detailUrl\":\"http://detail/url\",\"occurredAt\":\"2022-07-27T15:22:08.509+01:00\",\"description\":\"A description for the event\",\"additionalInformation\":{\"specialId\":\"6aafe304-861f-4479-8380-fec5f90f6d17\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"X123456\"}]}}",
                 |"MessageAttributes":{"eventType":{"Type":"String","Value":"attribute.event.type"}}}
-            """.trimMargin()
-
-        verify(textMessage).text = messageJson.replace("\\n".toRegex(), "")
-    }
-
-    @Test
-    fun `attempt to convert non hmmps event throws exception`() {
-        val exception = assertThrows<MessageConversionException> { converter.toMessage("A simple string", session) }
-        assertThat(
-            exception.message,
-            equalTo("Unexpected type passed to NotificationConverter: class kotlin.String")
+            """.trimMargin().replace("\\n".toRegex(), "")
+            )
         )
-    }
-
-    @Test
-    fun `attempt to parse non text message throws exception`() {
-        assertThrows<MessageConversionException> { converter.fromMessage(bytesMessage) }
     }
 }

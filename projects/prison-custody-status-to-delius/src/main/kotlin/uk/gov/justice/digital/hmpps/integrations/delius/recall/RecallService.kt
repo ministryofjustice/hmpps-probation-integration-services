@@ -30,7 +30,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.getByNomisCdeCodeAndIdEstablishmentIsTrue
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.getByNomisCdeCodeAndIdEstablishment
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReason
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonCode
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonRepository
@@ -71,7 +71,7 @@ class RecallService(
         recallDateTime: ZonedDateTime,
     ) {
         val recallReason = recallReasonRepository.getByCodeAndSelectableIsTrue(mapToRecallReason(reason).code)
-        val institution = institutionRepository.getByNomisCdeCodeAndIdEstablishmentIsTrue(prisonId)
+        val institution = institutionRepository.getByNomisCdeCodeAndIdEstablishment(prisonId)
 
         eventService.getActiveCustodialEvents(nomsNumber).forEach {
             addRecallToEvent(it, institution, recallReason, recallDateTime)

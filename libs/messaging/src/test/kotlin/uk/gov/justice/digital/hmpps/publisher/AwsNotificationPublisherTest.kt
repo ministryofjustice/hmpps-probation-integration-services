@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.publisher
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
-import io.awspring.cloud.messaging.core.NotificationMessagingTemplate
+import io.awspring.cloud.sns.core.SnsTemplate
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.BeforeEach
@@ -23,13 +23,13 @@ import uk.gov.justice.digital.hmpps.message.Notification
 class AwsNotificationPublisherTest {
 
     @Mock
-    lateinit var notificationTemplate: NotificationMessagingTemplate
+    lateinit var notificationTemplate: SnsTemplate
 
     lateinit var publisher: NotificationPublisher
 
     @BeforeEach
     fun setup() {
-        publisher = AwsNotificationPublisher(notificationTemplate)
+        publisher = AwsNotificationPublisher(notificationTemplate, "my-topic")
     }
 
     @Test
@@ -44,9 +44,8 @@ class AwsNotificationPublisherTest {
 
         publisher.publish(notification)
 
-        verify(notificationTemplate).convertAndSend(
-            eq(notification.message), captor.capture()
-        )
+        verify(notificationTemplate).convertAndSend(eq("my-topic"), eq(notification.message), captor.capture())
+
         val message = captor.value.postProcessMessage(
             MessageBuilder.createMessage(notification.message, MessageHeaders(mapOf()))
         )

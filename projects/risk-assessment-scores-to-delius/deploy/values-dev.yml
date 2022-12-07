@@ -1,5 +1,7 @@
 environment_name: delius-test
 
+enabled: true
+
 env:
   SENTRY_ENVIRONMENT: dev
   LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG

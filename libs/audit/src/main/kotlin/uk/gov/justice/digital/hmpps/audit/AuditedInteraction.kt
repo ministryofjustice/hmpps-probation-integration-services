@@ -1,16 +1,16 @@
 package uk.gov.justice.digital.hmpps.audit
 
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.IdClass
 import org.hibernate.annotations.Immutable
 import org.springframework.data.domain.Persistable
 import uk.gov.justice.digital.hmpps.audit.converter.AuditedInteractionOutcomeConverter
 import uk.gov.justice.digital.hmpps.audit.converter.AuditedInteractionParamsConverter
 import java.io.Serializable
 import java.time.ZonedDateTime
-import javax.persistence.Column
-import javax.persistence.Convert
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.IdClass
 
 data class AuditedInteractionId(
 

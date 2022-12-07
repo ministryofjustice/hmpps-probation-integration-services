@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.allocationdemand
 
-import javax.validation.Valid
-import javax.validation.constraints.Pattern
+import jakarta.validation.Valid
+import jakarta.validation.constraints.Pattern
 
 data class AllocationDemandRequest(@field:Valid val cases: List<AllocationRequest>)
 

@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.SqlParameter
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.simple.SimpleJdbcCall
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.listener.RiskAssessment
+import uk.gov.justice.digital.hmpps.messaging.RiskAssessment
 import java.sql.Types
 import java.time.ZonedDateTime
 

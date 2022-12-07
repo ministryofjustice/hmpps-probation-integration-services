@@ -14,9 +14,7 @@ import org.mockito.Mockito.anyMap
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.eq
-import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.PersonIdentifier
 import uk.gov.justice.digital.hmpps.message.PersonReference
@@ -77,20 +75,5 @@ class TelemetryServiceTest {
         verify(telemetryClient).trackEvent(any(), propertyCaptor.capture(), anyMap())
 
         assertThat(propertyCaptor.firstValue, not(hasProperty("detailUrl")))
-    }
-
-    @Test
-    fun telemetryClientIsDisabled() {
-        whenever(telemetryClient.isDisabled).thenReturn(true)
-
-        telemetryService.hmppsEventReceived(
-            HmppsDomainEvent(
-                eventType = "some.special.event",
-                version = 1,
-                occurredAt = ZonedDateTime.now()
-            )
-        )
-
-        verify(telemetryClient, never()).trackEvent(any(), anyMap(), anyMap())
     }
 }

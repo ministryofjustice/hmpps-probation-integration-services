@@ -1,13 +1,13 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
+import jakarta.persistence.Column
+import jakarta.persistence.MappedSuperclass
+import jakarta.persistence.Version
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.ZonedDateTime
-import javax.persistence.Column
-import javax.persistence.MappedSuperclass
-import javax.persistence.Version
 
 @MappedSuperclass
 abstract class BaseEntity {

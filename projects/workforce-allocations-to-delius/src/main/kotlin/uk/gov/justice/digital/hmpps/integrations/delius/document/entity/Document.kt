@@ -1,24 +1,25 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.document.entity
 
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.DiscriminatorColumn
+import jakarta.persistence.DiscriminatorType
+import jakarta.persistence.DiscriminatorValue
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Inheritance
+import jakarta.persistence.InheritanceType
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.NotFound
 import org.hibernate.annotations.NotFoundAction
-import org.hibernate.annotations.Type
+import org.hibernate.type.YesNoConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.document.Relatable
 import uk.gov.justice.digital.hmpps.integrations.delius.document.RelatedTo
 import uk.gov.justice.digital.hmpps.integrations.delius.document.RelatedType
 import uk.gov.justice.digital.hmpps.integrations.delius.document.toDocumentEvent
 import java.time.ZonedDateTime
-import javax.persistence.Column
-import javax.persistence.DiscriminatorColumn
-import javax.persistence.DiscriminatorType
-import javax.persistence.DiscriminatorValue
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Inheritance
-import javax.persistence.InheritanceType
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
 
 @Entity
 @Immutable
@@ -42,7 +43,7 @@ abstract class Document : Relatable {
     open var status: String = "N"
     open var softDeleted: Boolean = false
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter::class)
     open var workInProgress: Boolean? = false
 
     @Column(name = "alfresco_document_id")

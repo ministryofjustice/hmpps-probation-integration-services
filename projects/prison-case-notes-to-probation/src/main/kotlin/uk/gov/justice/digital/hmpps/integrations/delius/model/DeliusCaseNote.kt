@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.model
 
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import java.time.ZonedDateTime
-import javax.validation.Valid
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotNull
 
 data class DeliusCaseNote(val header: CaseNoteHeader, val body: CaseNoteBody)
 

@@ -11,4 +11,5 @@ abstract class OasysAssessment {
     abstract val assessmentStatus: String
     abstract val superStatus: String?
     abstract val laterWIPAssessmentExists: Boolean?
+    abstract val lastUpdatedDate: ZonedDateTime?
 }

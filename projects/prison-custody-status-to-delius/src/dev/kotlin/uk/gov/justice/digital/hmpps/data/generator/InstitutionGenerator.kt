@@ -4,7 +4,7 @@ import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionId
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
-import uk.gov.justice.digital.hmpps.listener.prisonId
+import uk.gov.justice.digital.hmpps.messaging.prisonId
 
 object InstitutionGenerator {
     val DEFAULT = generate(MessageGenerator.PRISONER_RELEASED.additionalInformation.prisonId())

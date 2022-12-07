@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.listener.nomsNumber
+import uk.gov.justice.digital.hmpps.messaging.nomsNumber
 
 object PersonGenerator {
     val RELEASABLE = generate(MessageGenerator.PRISONER_RELEASED.additionalInformation.nomsNumber())
