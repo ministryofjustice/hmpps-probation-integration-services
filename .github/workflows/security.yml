@@ -77,11 +77,13 @@ jobs:
       - name: Check & Close GH Issue
         if: always()
         run: |
-          openissues=$(gh issue list --state open --label dependencies --label security --search '${{ matrix.project }}' | awk '{print $3}')
+          openissues=$(gh issue list --state open --label dependencies --label security --search 'approved-premises-and-delius' | awk '{print $3}')
           scanresults=$(cat results.json | jq -r -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[].VulnerabilityID')
           issuestoclose=$(comm -3 <(echo $openissues | sort) <(echo $scanresults | sort)) #print lines present in both lists generate them as files
-            for cve in $issuestoclose
-           do
+          echo "openissues=$openissues"  
+          echo "scanresults=$scanresults"
+          echo "issuestoclose=$issuestoclose"
+          for cve in $issuestoclose; do
             echo "$cve is already resolved, removing matching issue..."
             issuenumber=$(gh issue list --state open --label dependencies --label security --search "$cve (${{ matrix.project }})" | awk '{print $1}')
             echo $issuenumber | xargs -n1 gh issue close
