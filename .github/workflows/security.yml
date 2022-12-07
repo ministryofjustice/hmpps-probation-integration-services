@@ -84,7 +84,7 @@ jobs:
            do
             echo "$cve is already resolved, removing matching issue..."
             issuenumber=$(gh issue list --state open --label dependencies --label security --search "$cve (${{ matrix.project }})" | awk '{print $1}')
-            echo issues=$issuenumber | xargs -n 1 | gh issue close $issues
+            gh issue close $issuenumber
           done
         env:
           GITHUB_TOKEN: ${{ github.token }}
