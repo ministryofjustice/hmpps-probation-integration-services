@@ -78,7 +78,7 @@ jobs:
       - name: Check & Close GH Issue
         if: always()
         run: |
-          openissues=$(gh issue list --state open --label dependencies --label security --search 'approved-premises-and-delius' | awk '{print $3}')
+          openissues=$(gh issue list --state open --label dependencies --label security --search '${{ matrix.project }}' | awk '{print $3}')
           scanresults=$(cat results.json | jq -r -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[].VulnerabilityID')
           issuestoclose=$(comm -3 <(echo $openissues | sort) <(echo $scanresults | sort)) #print lines only present in first file
           for cve in $issuestoclose; do
