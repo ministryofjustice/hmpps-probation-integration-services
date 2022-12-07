@@ -78,12 +78,12 @@ jobs:
         if: always()
         run: |
           openissues=$(gh issue list --state open --label dependencies --label security --search '${{ matrix.project }}' | awk '{print $3}')
-          mergedcve=$(comm -12 $openissues results.json) #print lines present in both lists
-          issuenumber$(gh issue list --state open --label dependencies --label security --search '${{ matrix.project }}' | awk '{print $1}'))
-           if [[ "$mergedcve" == *"$openissues"* ]], then 
-            for $openissues in $mergedcve
+          scanresults=$(cat results.json | jq -r -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[].VulnerabilityID')
+          issuestoclose=$(comm -3 <(echo $openissues | sort) <(echo $scanresults | sort)) #print lines present in both lists generate them as files
+            for cve in $issuestoclose
            do
-            echo "$mergedcve is already merged, removing matching issue..."
+            echo "$cve is already resolved, removing matching issue..."
+            issuenumber$(gh issue list --state open --label dependencies --label security --search "$cve (${{ matrix.project }})" | awk '{print $1}')
             gh issue close $issuenumber
           done
         env:
