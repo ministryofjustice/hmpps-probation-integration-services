@@ -76,7 +76,7 @@ jobs:
 
       - name: Check & Close GH Issue
         if: always()
-        run:
+        run: |
           openissues=$(gh issue list --state open --label dependencies --label security --search '${{ matrix.project }}' | awk '{print $3}')
           mergedcve=$(comm -12 $openissues results.json) #print lines present in both lists
           issuenumber$(gh issue list --state open --label dependencies --label security --search '${{ matrix.project }}' | awk '{print $1}'))
