@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.listener
 
-import io.awspring.cloud.messaging.listener.annotation.SqsListener
+import io.awspring.cloud.sqs.annotation.SqsListener
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Conditional
 import org.springframework.stereotype.Component

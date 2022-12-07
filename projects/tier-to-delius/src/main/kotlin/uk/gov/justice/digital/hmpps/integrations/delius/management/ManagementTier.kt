@@ -1,16 +1,16 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.management
 
+import jakarta.persistence.Column
+import jakarta.persistence.Embeddable
+import jakarta.persistence.EmbeddedId
+import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.Immutable
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
 import java.time.ZonedDateTime
-import javax.persistence.Column
-import javax.persistence.Embeddable
-import javax.persistence.EmbeddedId
-import javax.persistence.Entity
-import javax.persistence.EntityListeners
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)

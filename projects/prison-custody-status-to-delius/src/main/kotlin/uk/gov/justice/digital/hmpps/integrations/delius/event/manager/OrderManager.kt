@@ -1,11 +1,11 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event.manager
 
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.Manager
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
 
 @Entity
 @Immutable

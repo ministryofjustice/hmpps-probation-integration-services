@@ -22,7 +22,7 @@ logging.level:
 
 ---
 spring.config.activate.on-profile: integration-test
-spring.datasource.url: jdbc:h2:file:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH
+spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_ON_EXIT=FALSE
 
 ---
 spring.config.activate.on-profile: oracle
@@ -35,7 +35,7 @@ spring:
 
 ---
 spring.config.activate.on-profile: localstack
-cloud.aws:
+spring.cloud.aws:
   sqs.endpoint: http://localhost:4566
   sns.endpoint: http://localhost:4566
   credentials:

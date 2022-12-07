@@ -1,12 +1,13 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host
 
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Type
+import org.hibernate.type.YesNoConverter
 import java.time.ZonedDateTime
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
 
 @Immutable
 @Entity
@@ -23,7 +24,7 @@ class Host(
     val probationAreaId: Long,
 
     @Column
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter::class)
     val leadHost: Boolean? = false,
 
     @Column(nullable = false)

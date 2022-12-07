@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.publisher
 
-import io.awspring.cloud.messaging.core.NotificationMessagingTemplate
+import io.awspring.cloud.sns.core.SnsTemplate
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Conditional
@@ -16,7 +16,7 @@ import uk.gov.justice.digital.hmpps.message.Notification
 @Conditional(AwsCondition::class)
 @ConditionalOnProperty("messaging.producer.topic")
 class AwsNotificationPublisher(
-    private val notificationTemplate: NotificationMessagingTemplate,
+    private val notificationTemplate: SnsTemplate,
     @Value("\${messaging.producer.topic}") private val topic: String
 ) : NotificationPublisher {
     override fun publish(notification: Notification<*>) {

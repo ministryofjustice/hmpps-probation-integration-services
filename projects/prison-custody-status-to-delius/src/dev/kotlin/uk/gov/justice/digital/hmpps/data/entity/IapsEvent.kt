@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.data.entity
 
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
 
 @Immutable
 @Entity
