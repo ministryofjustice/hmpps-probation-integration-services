@@ -23,7 +23,7 @@ class SecurityConfig {
                 AntPathRequestMatcher("/health/**"),
                 AntPathRequestMatcher("/info/**"),
                 AntPathRequestMatcher("/swagger-ui/**"),
-                AntPathRequestMatcher("/v3/api-docs/**)")
+                AntPathRequestMatcher("/v3/api-docs/**")
             ).permitAll().anyRequest().authenticated()
         }
             .csrf().disable()
