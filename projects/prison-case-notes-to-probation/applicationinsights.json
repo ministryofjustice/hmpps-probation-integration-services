@@ -16,5 +16,22 @@
   },
   "selfDiagnostics": {
     "destination": "console"
+  },
+  "preview": {
+    "sampling": {
+      "overrides": [
+        {
+          "telemetryType": "request",
+          "attributes": [
+            {
+              "key": "http.url",
+              "value": "https?://[^/]+/health",
+              "matchType": "regexp"
+            }
+          ],
+          "percentage": 0
+        }
+      ]
+    }
   }
 }
