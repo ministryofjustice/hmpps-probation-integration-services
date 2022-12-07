@@ -86,7 +86,8 @@ jobs:
             echo "$mergedcve is already merged, removing matching issue..."
             gh issue close $issuenumber
           done
-          
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
           
 #          OR get github urls for
 #
