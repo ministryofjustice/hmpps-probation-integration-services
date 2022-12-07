@@ -44,7 +44,7 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
       - name: Get Trivy results
-        if: failure()
+        if: always()
         uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5 # v0.8.0
         with:
           image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
@@ -86,6 +86,7 @@ jobs:
             issuenumber=$(gh issue list --state open --label dependencies --label security --search "$cve (${{ matrix.project }})" | awk '{print $1}')
             echo $issuenumber | xargs -n1 gh issue close
           done
+
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
