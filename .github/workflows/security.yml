@@ -80,12 +80,12 @@ jobs:
           openissues=$(gh issue list --state open --label dependencies --label security --search '${{ matrix.project }}' | awk '{print $3}')
           mergedcve=$(comm -12 $openissues results.json) #print lines present in both lists
           issuenumber$(gh issue list --state open --label dependencies --label security --search '${{ matrix.project }}' | awk '{print $1}'))
-          if [[ "$mergedcve" == *"$openissues"* ]], then 
+           if [[ "$mergedcve" == *"$openissues"* ]], then 
             for $openissues in $mergedcve
-            do
-              echo "$mergedcve is already merged, removing matching issue..."
-              gh issue close $issuenumber
-            done
+           do
+            echo "$mergedcve is already merged, removing matching issue..."
+            gh issue close $issuenumber
+          done
           
           
 #          OR get github urls for
