@@ -44,7 +44,7 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
       - name: Get Trivy results
-        if: failure()
+        if: always()
         uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5 # v0.8.0
         with:
           image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
@@ -55,49 +55,40 @@ jobs:
           trivyignores: 'projects/${{ matrix.project }}/.trivyignore'
 
       - name: Output Trivy results
-        id: trivy
+        if: always()
+        run: cat results.json
+
+      - name: Create GitHub issues
         if: failure()
         run: |
-          results=$(cat results.json | jq -r '.Results[].Vulnerabilities[]? | ("><" + .PrimaryURL + "|" + .VulnerabilityID + "> (" + .Severity + ") - " + .PkgName + ":" + .InstalledVersion)')
-          echo "results=${results//$'\n'/\\n}" >> $GITHUB_OUTPUT
-          echo $results
-
-      - name: Send message to Slack
-        if: failure()
-        uses: slackapi/slack-github-action@v1.23.0
-        with:
-          channel-id: 'probation-integration-notifications'
-          payload: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": ":trivy: *${{ matrix.project }}* failed security scan"
-                  },
-                  "accessory": {
-                    "type": "button",
-                    "text": {
-                      "type": "plain_text",
-                      "text": "View job"
-                    },
-                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                  }
-                },
-                {
-                  "type": "context",
-                  "elements": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "${{ steps.trivy.outputs.results }}"
-                    }
-                  ]
-                }
-              ]
-            }
+          cat results.json | jq -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[]' | while read -r vulnerability; do
+            id=$(echo "$vulnerability" | jq -r '.VulnerabilityID')
+            if [[ $(gh issue list --state open --label dependencies --label security --search "$id (${{ matrix.project }})" | wc -l) -gt 0 ]]; then
+              echo 'Issue "$id (${{ matrix.project }})" already exists'
+            else
+              gh issue create \
+                --title "$id (${{ matrix.project }})" \
+                --body "$(echo $vulnerability | jq -r '.Title + "\n* Project: ${{ matrix.project }}\n* Package: `" + .PkgName + ":" + .InstalledVersion + "`\n* Location: `" + .PkgPath + "`\n\n>" + .Description + "\n\n" + .PrimaryURL')" \
+                --label 'dependencies,security'
+            fi
+          done
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Check & Close GH Issue
+        if: always()
+        run: |
+          openissues=$(gh issue list --state open --label dependencies --label security --search '${{ matrix.project }}' | awk '{print $3}')
+          scanresults=$(cat results.json | jq -r -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[].VulnerabilityID')
+          issuestoclose=$(comm -3 <(echo $openissues | sort) <(echo $scanresults | sort)) #print lines only present in first file
+          for cve in $issuestoclose; do
+            echo "$cve is already resolved, removing matching issue..."
+            issuenumber=$(gh issue list --state open --label dependencies --label security --search "$cve (${{ matrix.project }})" | awk '{print $1}')
+            echo $issuenumber | xargs -n1 gh issue close
+          done
+
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
   veracode-scan:
     runs-on: ubuntu-latest
