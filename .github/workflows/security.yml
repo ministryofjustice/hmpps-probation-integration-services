@@ -74,6 +74,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
+      - name: Check & Close GH Issue
+        if: always()
+        run:
+          openissues=$(gh issue list --state open --label dependencies --label security --search '${{ matrix.project }}' | awk '{print $3}')
+          mergedcve=$(comm -12 $openissues results.json) #print lines present in both lists
+          issuenumber$(gh issue list --state open --label dependencies --label security --search '${{ matrix.project }}' | awk '{print $1}'))
+          if [[ "$mergedcve" == *"$openissues"* ]], then 
+            for $openissues in $mergedcve
+            do
+              echo "$mergedcve is already merged, removing matching issue..."
+              gh issue close $issuenumber
+            done
+          
+          
+#          OR get github urls for
+#
+#
+#          For each line, close matching issue >> v2 close each matching issue if they're still open after a day
+#        compare whats in gh issue list and in trivyignore to see if it's already there. if it is then remove issue
+#        OR cron job to check daily that
+
   veracode-scan:
     runs-on: ubuntu-latest
     needs:
