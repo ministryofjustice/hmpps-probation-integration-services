@@ -62,7 +62,7 @@ jobs:
         run: |
           cat results.json | jq -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[]' | while read -r vulnerability; do
             id=$(echo "$vulnerability" | jq -r '.VulnerabilityID')
-            if [[ $(gh issue list --state open --label dependencies --label security --search "$id (${{ matrix.project }})") -gt 0 ]]; then
+            if [[ $(gh issue list --state open --label dependencies --label security --search "$id (${{ matrix.project }})" | wc -l) -gt 0 ]]; then
               echo 'Issue "$id (${{ matrix.project }})" already exists'
             else
               gh issue create \
@@ -85,7 +85,6 @@ jobs:
             echo "$cve is already resolved, removing matching issue..."
             issuenumber=$(gh issue list --state open --label dependencies --label security --search "$cve (${{ matrix.project }})" | awk '{print $1}')
             echo $issuenumber | xargs -n 1 | gh issue close
-#            gh issue close $issuenumber
           done
         env:
           GITHUB_TOKEN: ${{ github.token }}
