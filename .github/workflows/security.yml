@@ -29,7 +29,7 @@ jobs:
       - name: Scan image
         uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5 # v0.8.0
         with:
-          image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:2022-11-30.457.f014e03'
+          image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
           exit-code: '1'
@@ -47,7 +47,7 @@ jobs:
         if: always()
         uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5 # v0.8.0
         with:
-          image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:2022-11-30.457.f014e03'
+          image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
           format: 'json'
@@ -55,6 +55,7 @@ jobs:
           trivyignores: 'projects/${{ matrix.project }}/.trivyignore'
 
       - name: Output Trivy results
+        if: always()
         run: cat results.json
 
       - name: Create GitHub issues
@@ -79,10 +80,7 @@ jobs:
         run: |
           openissues=$(gh issue list --state open --label dependencies --label security --search 'approved-premises-and-delius' | awk '{print $3}')
           scanresults=$(cat results.json | jq -r -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[].VulnerabilityID')
-          issuestoclose=$(comm -3 <(echo $openissues | sort) <(echo $scanresults | sort)) #print lines present in both lists generate them as files
-          echo "openissues=$openissues"  
-          echo "scanresults=$scanresults"
-          echo "issuestoclose=$issuestoclose"
+          issuestoclose=$(comm -3 <(echo $openissues | sort) <(echo $scanresults | sort)) #print lines only present in first file
           for cve in $issuestoclose; do
             echo "$cve is already resolved, removing matching issue..."
             issuenumber=$(gh issue list --state open --label dependencies --label security --search "$cve (${{ matrix.project }})" | awk '{print $1}')
