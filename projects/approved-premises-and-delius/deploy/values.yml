@@ -3,8 +3,11 @@ image:
   name: approved-premises-and-delius
 
 secrets:
-  APPLICATIONINSIGHTS_CONNECTION_STRING:   /application-insights/connection-string
-  SPRING_DATASOURCE_URL:                   /delius-database/jdbc-url
-  SPRING_DATASOURCE_USERNAME:              /approved-premises-and-delius/db-username
-  SPRING_DATASOURCE_PASSWORD:              /approved-premises-and-delius/db-password
-  SENTRY_DSN:                              /approved-premises-and-delius/sentry-dsn
+  APPLICATIONINSIGHTS_CONNECTION_STRING: /application-insights/connection-string
+  SPRING_DATASOURCE_URL:                 /delius-database/jdbc-url
+  SPRING_DATASOURCE_USERNAME:            /approved-premises-and-delius/db-username
+  SPRING_DATASOURCE_PASSWORD:            /approved-premises-and-delius/db-password
+  MESSAGING_CONSUMER_QUEUE:              /approved-premises-and-delius/sqs-queue-name
+  OAUTH2_CLIENT-ID:                      /approved-premises-and-delius/client-id
+  OAUTH2_CLIENT-SECRET:                  /approved-premises-and-delius/client-secret
+  SENTRY_DSN:                            /approved-premises-and-delius/sentry-dsn

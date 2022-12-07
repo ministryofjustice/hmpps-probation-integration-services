@@ -12,12 +12,13 @@ object StaffGenerator {
     private val staffCodeGenerator = AtomicLong(1)
 
     fun generate(
-        name: String,
-        teams: List<Team>,
-        approvedPremises: List<ApprovedPremises>
+        name: String = "TEST",
+        code: String = "TEST${staffCodeGenerator.getAndIncrement().toString().padStart(3, '0')}",
+        teams: List<Team> = listOf(),
+        approvedPremises: List<ApprovedPremises> = listOf()
     ) = Staff(
         id = IdGenerator.getAndIncrement(),
-        code = "TEST${staffCodeGenerator.getAndIncrement().toString().padStart(3, '0')}",
+        code = code,
         grade = STAFF_GRADE,
         forename = "Test",
         middleName = null,

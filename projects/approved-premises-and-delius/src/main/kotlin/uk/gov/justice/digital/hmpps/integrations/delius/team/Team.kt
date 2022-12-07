@@ -19,6 +19,9 @@ class Team(
     @Column(name = "code", columnDefinition = "char(6)")
     val code: String,
 
+    @Column(name = "description")
+    val description: String,
+
     @OneToOne
     @JoinTable(
         name = "r_approved_premises_team",
@@ -26,4 +29,6 @@ class Team(
         inverseJoinColumns = [JoinColumn(name = "approved_premises_id")]
     )
     val approvedPremises: ApprovedPremises?,
-)
+) {
+    fun isCentralReferralsUnit() = description == "Central Referrals Unit" // TODO how do we determine what is a central referrals unit team?
+}

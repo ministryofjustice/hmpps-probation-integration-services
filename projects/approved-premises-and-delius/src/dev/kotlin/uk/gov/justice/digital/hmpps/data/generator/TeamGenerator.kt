@@ -13,10 +13,12 @@ object TeamGenerator {
     val NON_APPROVED_PREMISES_TEAM = generate()
 
     fun generate(
-        approvedPremises: ApprovedPremises? = null
+        approvedPremises: ApprovedPremises? = null,
+        code: String = "TEST${teamCodeGenerator.getAndIncrement().toString().padStart(2, '0')}"
     ) = Team(
         id = IdGenerator.getAndIncrement(),
-        code = "TEST${teamCodeGenerator.getAndIncrement().toString().padStart(2, '0')}",
-        approvedPremises = approvedPremises
+        code = code,
+        approvedPremises = approvedPremises,
+        description = "Description of $code"
     )
 }

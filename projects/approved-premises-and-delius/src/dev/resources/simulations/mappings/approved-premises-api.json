@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/approved-premises-api/events/application-submitted/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200,
+    "bodyFileName": "approved-premises-application-submitted.json"
+  }
+}
