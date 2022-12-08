@@ -47,6 +47,8 @@ internal class RiskManagementPlanDetailsTest {
             .isEqualTo("tagging and Alcohol monitoring")
         assertThat(riskManagementPlanDetails.riskManagementPlan.monitoringAndControl)
             .isEqualTo("Monitored and Controlled by us")
+        assertThat(riskManagementPlanDetails.riskManagementPlan.furtherConsiderations)
+            .isEqualTo("Consider High Risk to Children")
         assertThat(riskManagementPlanDetails.riskManagementPlan.keyInformationAboutCurrentSituation)
             .isEqualTo("Paul Grimes is currently in the community having received a CJA2003 - Community Order on the 12/12/2021.\r\rThe end of their sentence is currently unknown. \r\rThey have accommodation and education, training & employability linked to risk.\r\rPaul Grimes has been assessed as high risk to children, staff and prisoners and medium risk to a known adult.\r\rThey are very motivated to address offending behaviour.\r")
     }
