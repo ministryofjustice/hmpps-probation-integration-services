@@ -35,7 +35,7 @@ dependencyResolutionManagement {
             library("insights", "com.microsoft.azure:applicationinsights-web:3.4.6")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:4.1.0")
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.0-RC3")
-            library("sentry", "io.sentry:sentry-spring-boot-starter:6.9.2")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.9.2")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0")
             library("wiremock", "com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
         }
