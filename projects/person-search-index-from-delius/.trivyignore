@@ -22,3 +22,6 @@ CVE-2022-42004
 # Suppression for Xstream to serialise XML data was vulnerable to Denial of Service attacks
 # can be suppressed as  it’s not receiving data from untrusted source
 CVE-2022-40153 exp:2022-12-01
+# Suppressed as we are not serving anything from the indexer
+# By izzyL-DJ
+CVE-2022-45442 exp:2022-12-22
