@@ -144,6 +144,7 @@ class DocumentServiceTest {
         val id = "123-123"
         val document = OffenderDocument()
         document.personId = 1L
+        document.name = "filename.pdf"
         val expectedResponse = ResponseEntity<Resource>(HttpStatus.OK)
 
         whenever(docPersonRepository.findByCrn(crn)).thenReturn(DocPerson(1L, crn, false, null, null, null))
