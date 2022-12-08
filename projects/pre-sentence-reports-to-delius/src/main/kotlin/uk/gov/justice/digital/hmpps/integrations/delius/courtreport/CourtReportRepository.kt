@@ -7,37 +7,37 @@ interface CourtReportRepository : JpaRepository<CourtReport, Long> {
 
     @Query(
         """
-SELECT json_object(
-       'crn' value o.CRN,
-       'pnc' value o.PNC_NUMBER,
-       'name' value json_object(
-       'forename' value o.FIRST_NAME,
-       'surname' value o.SURNAME,
-       'middleName' value o.SECOND_NAME),
-       'dateOfBirth' value o.DATE_OF_BIRTH_DATE,
-       'address' value json_object(
-       'noFixedAbode' value CASE WHEN a.NO_FIXED_ABODE = 'Y' THEN 'true' ELSE 'false' END FORMAT JSON,
-       'buildingName' value a.BUILDING_NAME,
-       'addressNumber' value a.ADDRESS_NUMBER,
-       'streetName' value a.STREET_NAME,
-       'town' value a.TOWN_CITY,
-       'district' value a.DISTRICT,
-       'county' value a.COUNTY,
-       'postcode' value a.POSTCODE ABSENT ON NULL),
-       'court' value json_object(
-       'name' value c.COURT_NAME,
-       'localJusticeArea' value json_object(
-       'name' value lja.DESCRIPTION)),
-       'mainOffence' value json_object(
-       'description' value moo.DESCRIPTION),
-       'otherOffences' value (      
-       SELECT json_array(json_object('description' VALUE aoo.DESCRIPTION))
-       FROM ADDITIONAL_OFFENCE ao
-       JOIN R_OFFENCE aoo ON aoo.OFFENCE_ID = ao.OFFENCE_ID
-       WHERE ao.EVENT_ID = e.EVENT_ID
-       AND ao.SOFT_DELETED = 0
-       )
-    )
+    SELECT json_object(
+           'crn' value o.CRN,
+           'pnc' value o.PNC_NUMBER,
+           'name' value json_object(
+           'forename' value o.FIRST_NAME,
+           'surname' value o.SURNAME,
+           'middleName' value o.SECOND_NAME),
+           'dateOfBirth' value o.DATE_OF_BIRTH_DATE,
+           'address' value json_object(
+           'noFixedAbode' value CASE WHEN a.NO_FIXED_ABODE = 'Y' THEN 'true' ELSE 'false' END FORMAT JSON,
+           'buildingName' value a.BUILDING_NAME,
+           'addressNumber' value a.ADDRESS_NUMBER,
+           'streetName' value a.STREET_NAME,
+           'town' value a.TOWN_CITY,
+           'district' value a.DISTRICT,
+           'county' value a.COUNTY,
+           'postcode' value a.POSTCODE ABSENT ON NULL),
+           'court' value json_object(
+           'name' value c.COURT_NAME,
+           'localJusticeArea' value json_object(
+           'name' value lja.DESCRIPTION)),
+           'mainOffence' value json_object(
+           'description' value moo.DESCRIPTION),
+           'otherOffences' value (      
+           SELECT json_array(json_object('description' VALUE aoo.DESCRIPTION))
+           FROM ADDITIONAL_OFFENCE ao
+           JOIN R_OFFENCE aoo ON aoo.OFFENCE_ID = ao.OFFENCE_ID
+           WHERE ao.EVENT_ID = e.EVENT_ID
+           AND ao.SOFT_DELETED = 0
+           )
+        )
 FROM OFFENDER o
          JOIN COURT_REPORT cr ON cr.OFFENDER_ID = o.OFFENDER_ID
          JOIN DOCUMENT d ON d.primary_key_id = cr.court_report_id
@@ -51,7 +51,7 @@ FROM OFFENDER o
          JOIN R_STANDARD_REFERENCE_LIST ast ON ast.STANDARD_REFERENCE_LIST_ID = a.ADDRESS_STATUS_ID AND ast.CODE_VALUE = 'M')
          ON a.OFFENDER_ID = o.OFFENDER_ID AND a.SOFT_DELETED = 0
 WHERE
-  d.external_reference like ('%'||:reportId)
+  lower(substr(d.external_reference, -36, 36)) = lower(:reportId)
   AND cr.SOFT_DELETED = 0
   AND ca.SOFT_DELETED = 0
   AND o.SOFT_DELETED = 0
