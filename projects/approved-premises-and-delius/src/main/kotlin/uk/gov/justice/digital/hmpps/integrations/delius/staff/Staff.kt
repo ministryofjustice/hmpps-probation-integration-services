@@ -50,7 +50,4 @@ class Staff(
         inverseJoinColumns = [JoinColumn(name = "approved_premises_id")]
     )
     val approvedPremises: List<ApprovedPremises>,
-) {
-    fun defaultTeam() = teams.singleOrNull() ?: teams.firstOrNull { it.isCentralReferralsUnit() }
-        ?: throw IllegalStateException("Unable to identify a single central referral unit team for $code")
-}
+)

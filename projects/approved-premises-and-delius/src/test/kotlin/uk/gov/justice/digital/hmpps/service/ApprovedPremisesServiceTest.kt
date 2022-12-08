@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventDetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSubmitted
@@ -32,6 +33,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.prepEvent
 import java.net.URI
@@ -45,6 +47,7 @@ internal class ApprovedPremisesServiceTest {
     @Mock lateinit var personRepository: PersonRepository
     @Mock lateinit var personManagerRepository: PersonManagerRepository
     @Mock lateinit var staffRepository: StaffRepository
+    @Mock lateinit var teamRepository: TeamRepository
     @InjectMocks lateinit var approvedPremisesService: ApprovedPremisesService
 
     private val applicationSubmittedEvent = prepEvent("application-submitted", 1234).message
@@ -79,6 +82,7 @@ internal class ApprovedPremisesServiceTest {
         val person = givenAPerson(crn)
         val manager = givenAPersonManager(person)
         val submitter = givenStaff()
+        val unallocatedTeam = givenUnallocatedTeam()
         val details = givenApplicationSubmittedDetails(submittedBy = submitter)
         givenContactTypes(listOf(ContactTypeCode.APPLICATION_SUBMITTED))
 
@@ -91,7 +95,7 @@ internal class ApprovedPremisesServiceTest {
                 assertThat(contact.startTime, equalTo(details.eventDetails.submittedAt))
                 assertThat(contact.person.crn, equalTo(person.crn))
                 assertThat(contact.staff, equalTo(submitter))
-                assertThat(contact.team, equalTo(submitter.teams.single()))
+                assertThat(contact.team, equalTo(unallocatedTeam))
 
                 verify(contactAlertRepository).save(
                     check { alert ->
@@ -119,12 +123,18 @@ internal class ApprovedPremisesServiceTest {
         return manager
     }
 
-    private fun givenStaff(
-        teams: List<Team> = listOf(TeamGenerator.generate()),
-        staff: Staff = StaffGenerator.generate(teams = teams)
-    ): Staff {
+    private fun givenStaff(staff: Staff = StaffGenerator.generate()): Staff {
         whenever(staffRepository.findByCode(staff.code)).thenReturn(staff)
         return staff
+    }
+
+    private fun givenUnallocatedTeam(
+        probationAreaCode: String = ProbationAreaGenerator.DEFAULT.code,
+    ): Team {
+        val team = TeamGenerator.generate(code = "${probationAreaCode}UAT")
+        whenever(teamRepository.findByCodeAndProbationAreaCode("${probationAreaCode}UAT", probationAreaCode))
+            .thenReturn(team)
+        return team
     }
 
     private fun givenApplicationSubmittedDetails(

@@ -5,9 +5,11 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.JoinTable
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremises
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 
 @Entity
 @Immutable
@@ -19,8 +21,9 @@ class Team(
     @Column(name = "code", columnDefinition = "char(6)")
     val code: String,
 
-    @Column(name = "description")
-    val description: String,
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id", nullable = false)
+    val probationArea: ProbationArea,
 
     @OneToOne
     @JoinTable(
@@ -29,6 +32,4 @@ class Team(
         inverseJoinColumns = [JoinColumn(name = "approved_premises_id")]
     )
     val approvedPremises: ApprovedPremises?,
-) {
-    fun isCentralReferralsUnit() = description == "Central Referrals Unit" // TODO how do we determine what is a central referrals unit team?
-}
+)

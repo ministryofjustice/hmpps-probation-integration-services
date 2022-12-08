@@ -17,6 +17,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.team.getUnallocatedTeam
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import java.net.URI
 import java.time.ZonedDateTime
@@ -30,6 +32,7 @@ class ApprovedPremisesService(
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
     private val staffRepository: StaffRepository,
+    private val teamRepository: TeamRepository,
 ) {
     @Transactional
     fun applicationSubmitted(event: HmppsDomainEvent) {
@@ -40,11 +43,13 @@ class ApprovedPremisesService(
             type = APPLICATION_SUBMITTED,
             date = details.submittedAt,
             staffCode = details.submittedBy.staffCode,
+            probationAreaCode = details.probationArea.code
         )
     }
 
-    fun createAlertContact(date: ZonedDateTime, type: ContactTypeCode, crn: String, staffCode: String) {
+    fun createAlertContact(date: ZonedDateTime, type: ContactTypeCode, crn: String, staffCode: String, probationAreaCode: String) {
         val staff = staffRepository.getByCode(staffCode)
+        val team = teamRepository.getUnallocatedTeam(probationAreaCode)
         val person = personRepository.getByCrnAndSoftDeletedIsFalse(crn)
         val personManager = personManagerRepository.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)
         val contact = contactRepository.save(
@@ -54,7 +59,7 @@ class ApprovedPremisesService(
                 type = contactTypeRepository.getByCode(APPLICATION_SUBMITTED.code),
                 person = person,
                 staff = staff,
-                team = staff.defaultTeam(),
+                team = team,
                 alert = true
             )
         )

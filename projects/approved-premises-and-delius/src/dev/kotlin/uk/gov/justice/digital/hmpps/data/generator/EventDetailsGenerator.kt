@@ -22,7 +22,7 @@ object EventDetailsGenerator {
             deliusEventNumber = "123",
             targetLocation = "TEST",
             probationArea = ProbationArea(
-                code = "TEST",
+                code = ProbationAreaGenerator.DEFAULT.code,
                 name = "TEST"
             ),
             submittedAt = ZonedDateTime.now(),
