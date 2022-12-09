@@ -68,7 +68,7 @@ jobs:
             else
               gh issue create \
                 --title "$id (${{ matrix.project }})" \
-                --body "$(echo $vulnerability | jq -r '.Title + "\n* Project: ${{ matrix.project }}\n* Package: `" + .PkgName + ":" + .InstalledVersion + "`\n* Location: `" + .PkgPath + "`\n\n>" + .Description + "\n\n" + .PrimaryURL')" \
+                --body "$(echo $vulnerability | jq -r '.Title + "\n* Project: ${{ matrix.project }}\n* Package: `" + .PkgName + ":" + .InstalledVersion + "`\n* Location: `" + .PkgPath + "`\n\n>" + .Description + "\n\n" + .PrimaryURL + "\n\nIf the vulnerability does not impact the `${{ matrix.project }}` project, you can suppress this alert by adding a comment starting with `Suppress`. For example, "Suppressed because we do not process any untrusted XML content".."')" \
                 --label 'dependencies,security'
             fi
           done
@@ -78,9 +78,12 @@ jobs:
       - name: Check & Close GH Issue
         if: always()
         run: |
-          openissues=$(gh issue list --state open --label dependencies --label security --search '${{ matrix.project }}' | awk '{print $3}')
+          openissues=$(gh issue list --state open --label dependencies --label security --search '(${{ matrix.project }})' | awk '{print $3}')
           scanresults=$(cat results.json | jq -r -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[].VulnerabilityID')
           issuestoclose=$(comm -3 <(echo $openissues | sort) <(echo $scanresults | sort)) #print lines only present in first file
+          echo "openissues=$openissues"  
+          echo "scanresults=$scanresults"
+          echo "issuestoclose=$issuestoclose"
           for cve in $issuestoclose; do
             echo "$cve is already resolved, removing matching issue..."
             issuenumber=$(gh issue list --state open --label dependencies --label security --search "$cve (${{ matrix.project }})" | awk '{print $1}')
