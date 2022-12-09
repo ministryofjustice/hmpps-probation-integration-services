@@ -1,6 +1,9 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -19,6 +22,20 @@ internal class HandlerTest {
     @Mock lateinit var approvedPremisesService: ApprovedPremisesService
     @Mock lateinit var converter: NotificationConverter<HmppsDomainEvent>
     @InjectMocks lateinit var handler: Handler
+
+    @Test
+    fun `should reject unknown event types`() {
+        // Given a message
+        val message = prepEvent("application-submitted", 1234)
+
+        // When the message is received
+        val exception = assertThrows<IllegalArgumentException> {
+            handler.handle(message.copy(message = message.message.copy(eventType = "UNKNOWN")))
+        }
+
+        // Then it is updated in Delius and logged to Telemetry
+        assertThat(exception.message, equalTo("Unexpected event type UNKNOWN"))
+    }
 
     @Test
     fun `should handle submitted applications`() {

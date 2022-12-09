@@ -7,5 +7,5 @@ interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrnAndSoftDeletedIsFalse(crn: String): Person?
 }
 
-fun PersonRepository.getByCrnAndSoftDeletedIsFalse(crn: String) =
+fun PersonRepository.getByCrn(crn: String) =
     findByCrnAndSoftDeletedIsFalse(crn) ?: throw NotFoundException("Person", "crn", crn)

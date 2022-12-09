@@ -7,5 +7,5 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     fun findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(personId: Long): PersonManager?
 }
 
-fun PersonManagerRepository.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(personId: Long) =
+fun PersonManagerRepository.getActiveManager(personId: Long) =
     findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(personId) ?: throw NotFoundException("PersonManager", "personId", personId)

@@ -12,9 +12,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrnAndSoftDeletedIsFalse
+import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.getActiveManager
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
@@ -50,8 +50,8 @@ class ApprovedPremisesService(
     fun createAlertContact(date: ZonedDateTime, type: ContactTypeCode, crn: String, staffCode: String, probationAreaCode: String) {
         val staff = staffRepository.getByCode(staffCode)
         val team = teamRepository.getUnallocatedTeam(probationAreaCode)
-        val person = personRepository.getByCrnAndSoftDeletedIsFalse(crn)
-        val personManager = personManagerRepository.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)
+        val person = personRepository.getByCrn(crn)
+        val personManager = personManagerRepository.getActiveManager(person.id)
         val contact = contactRepository.save(
             Contact(
                 date = date,
