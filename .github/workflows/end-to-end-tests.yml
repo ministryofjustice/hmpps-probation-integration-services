@@ -5,12 +5,22 @@ on:
     - cron: "0 8 * * MON-FRI" # Every weekday at 08:00 UTC
   workflow_call:
     inputs:
+      test-branch:
+        description: The branch to run in the e2e repo
+        default: main
+        type: string
+        required: true
       projects:
         description: A JSON array of projects to deploy
         type: string
         required: true
   workflow_dispatch:
     inputs:
+      test-branch:
+        description: Test branch
+        default: main
+        type: string
+        required: true
       projects:
         description: Project
         type: choice
@@ -39,6 +49,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: ministryofjustice/hmpps-probation-integration-e2e-tests
+          ref: ${{ inputs.test-branch }}
       - name: Check tests are present
         if: github.event_name != 'schedule'
         run: |
