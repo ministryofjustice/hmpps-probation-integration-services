@@ -9,7 +9,7 @@ on:
         description: The branch to run in the e2e repo
         default: main
         type: string
-        required: true
+        required: false
       projects:
         description: A JSON array of projects to deploy
         type: string
