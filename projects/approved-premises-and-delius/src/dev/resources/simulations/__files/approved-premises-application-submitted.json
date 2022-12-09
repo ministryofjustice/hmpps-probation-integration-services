@@ -1,0 +1,27 @@
+{
+  "id": "364145f9-0af8-488e-9901-b4c46cd9ba37",
+  "timestamp": "2022-11-30T14:53:44",
+  "eventType": "approved-premises.application.submitted",
+  "eventDetails": {
+    "applicationId": "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+    "applicationUrl": "https://approved-premises/application/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+    "personReference": {
+      "crn": "A000001",
+      "noms": "A0001AA"
+    },
+    "deliusEventNumber": "7",
+    "targetLocation": "Gateshead",
+    "probationArea": {
+      "code": "N54",
+      "name": "North East Region"
+    },
+    "submittedAt": "2022-11-30T14:51:30",
+    "submittedBy": {
+      "staffCode": "N54A001",
+      "staffIdentifier": 1501234567,
+      "forenames": "John",
+      "surname": "Smith",
+      "username": "JohnSmithNPS"
+    }
+  }
+}

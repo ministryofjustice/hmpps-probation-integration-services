@@ -8,8 +8,8 @@ spring:
       approved-premises-and-delius:
         provider: hmpps-auth
         authorization-grant-type: client_credentials
-        client-id: approved-premises-and-delius
-        client-secret: approved-premises-and-delius
+        client-id: ${oauth2.client-id}
+        client-secret: ${oauth2.client-secret}
     provider:
       hmpps-auth:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
@@ -19,6 +19,16 @@ delius.db.username: ApprovedPremisesAndDelius # Should match value in [deploy/da
 management.endpoints.web:
   base-path: /
   exposure.include: [ "health", "info" ]
+
+feign.client.config:
+  default:
+    logger-level: full
+    connect-timeout: 5000
+    read-timeout: 5000
+    default-request-headers:
+      Accept: application/json
+      Content-Type: application/json
+
 
 ---
 # Shared dev/test config
@@ -31,6 +41,16 @@ spring:
 
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+
+messaging.consumer.queue: message-queue
+
+integrations:
+  approved-premises-api:
+    url: http://localhost:${wiremock.port}/approved-premises-api
+
+oauth2:
+  client-id: $SERVICE_NAME
+  client-secret: $SERVICE_NAME
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
@@ -53,3 +73,12 @@ spring:
       hibernate.dialect: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
 delius.db.username: NationalUser
+
+---
+spring.config.activate.on-profile: localstack
+cloud.aws:
+  sqs.endpoint: http://localhost:4566
+  sns.endpoint: http://localhost:4566
+  credentials:
+    access-key: localstack
+    secret-key: localstack
