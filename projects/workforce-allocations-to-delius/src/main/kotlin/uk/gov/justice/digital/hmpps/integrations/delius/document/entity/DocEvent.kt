@@ -9,7 +9,6 @@ import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import java.time.ZonedDateTime
 
 @Immutable
 @Entity
