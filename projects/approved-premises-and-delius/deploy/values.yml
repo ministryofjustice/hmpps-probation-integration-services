@@ -8,6 +8,8 @@ secrets:
   SPRING_DATASOURCE_USERNAME:            /approved-premises-and-delius/db-username
   SPRING_DATASOURCE_PASSWORD:            /approved-premises-and-delius/db-password
   MESSAGING_CONSUMER_QUEUE:              /approved-premises-and-delius/sqs-queue-name
+  AWS_ACCESS_KEY_ID:                     /approved-premises-and-delius/sqs-queue-access-key-id
+  AWS_SECRET_ACCESS_KEY:                 /approved-premises-and-delius/sqs-queue-secret-access-key
   OAUTH2_CLIENT-ID:                      /approved-premises-and-delius/client-id
   OAUTH2_CLIENT-SECRET:                  /approved-premises-and-delius/client-secret
   SENTRY_DSN:                            /approved-premises-and-delius/sentry-dsn
