@@ -20,14 +20,5 @@ class DocPerson(
     val crn: String,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
-
-    @Column(name = "prev_conviction_document_name")
-    val preconDocName: String?,
-
-    @Column(name = "prev_con_alfresco_document_id")
-    val preconDocId: String?,
-
-    @Column(name = "prev_con_created_datetime")
-    val preconDocCreatedDate: ZonedDateTime?
+    val softDeleted: Boolean = false
 )

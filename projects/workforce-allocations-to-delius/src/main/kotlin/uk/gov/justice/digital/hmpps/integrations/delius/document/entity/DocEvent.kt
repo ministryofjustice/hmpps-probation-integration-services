@@ -32,16 +32,7 @@ class DocEvent(
     val disposal: DocDisposal? = null,
 
     @OneToOne(mappedBy = "event")
-    val mainOffence: DocMainOffence? = null,
-
-    @Column(name = "CPS_ALFRESCO_DOCUMENT_ID")
-    val cpsDocumentId: String?,
-
-    @Column(name = "CPS_DOCUMENT_NAME")
-    val cpsDocumentName: String?,
-
-    @Column(name = "CPS_CREATED_DATETIME")
-    val cpsCreatedDate: ZonedDateTime?
+    val mainOffence: DocMainOffence? = null
 )
 
 @Immutable
