@@ -25,7 +25,7 @@ dependencies {
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.bundles.mockito)
 }
 
 configure<ClassPathExtension> {

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 
-class HmppsEventTest {
+class HmppsDomainEventTest {
 
     @Test
     fun `can find crn successfully`() {

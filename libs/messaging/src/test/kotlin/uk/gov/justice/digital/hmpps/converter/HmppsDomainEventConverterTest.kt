@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.message
+package uk.gov.justice.digital.hmpps.converter
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -11,9 +11,14 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.junit.jupiter.MockitoExtension
-import uk.gov.justice.digital.hmpps.converter.HmppsDomainEventConverter
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
+import uk.gov.justice.digital.hmpps.message.AdditionalInformation
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.message.MessageAttributes
+import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.message.PersonIdentifier
+import uk.gov.justice.digital.hmpps.message.PersonReference
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
