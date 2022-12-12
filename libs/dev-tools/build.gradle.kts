@@ -11,7 +11,7 @@ dependencies {
     api("org.apache.activemq:artemis-jakarta-server")
     api(libs.wiremock)
 
-    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.bundles.mockito)
 }
 configure<ClassPathExtension> {
     jacocoExclusions = listOf(
