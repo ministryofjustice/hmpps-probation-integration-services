@@ -7,15 +7,10 @@ generic-service:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-case-notes-to-probation
     port: 8080
 
-  ingress:
-    enabled: true
-    v1_2_enabled: true
-    v0_47_enabled: false
-    tlsSecretName: prison-case-notes-to-probation-cert
-
   env:
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
     DELIUS_DB_USERNAME: PrisonCaseNotesToProbation
+    AWS_REGION: eu-west-2
 
   namespace_secrets:
     prison-case-notes-to-probation:
@@ -28,7 +23,6 @@ generic-service:
       SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: SQS_QUEUE_NAME
       AWS_ACCESS_KEY_ID: SQS_QUEUE_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
-      AWS_REGION: AWS_REGION
       INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-ID: CLIENT_ID
       INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-SECRET: CLIENT_SECRET
 

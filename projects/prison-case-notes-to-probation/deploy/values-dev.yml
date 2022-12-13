@@ -1,8 +1,5 @@
-enabled: true
 generic-service:
   replicaCount: 2
-  ingress:
-    host: prison-case-notes-to-delius-dev.hmpps.service.justice.gov.uk
 
   env:
     SENTRY_ENVIRONMENT: dev
