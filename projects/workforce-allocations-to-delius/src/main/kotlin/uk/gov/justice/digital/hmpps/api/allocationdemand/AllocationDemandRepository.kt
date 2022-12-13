@@ -84,7 +84,7 @@ SELECT o.CRN                                                            crn,
        t.CODE                                                           team_code,
        dt.DESCRIPTION                                                   sentence_type,
        d.DISPOSAL_DATE                                                  sentence_date,
-       d.LENGTH                                                         sentence_length_value,
+       d.ENTRY_LENGTH                                                   sentence_length_value,
        du.CODE_DESCRIPTION                                              sentence_length_unit,
        (SELECT max(to_date(to_char(c.CONTACT_DATE, 'yyyy-mm-dd') || to_char(c.CONTACT_START_TIME, 'hh24:mi:ss'),
                            'yyyy-mm-dd hh24:mi:ss'))
