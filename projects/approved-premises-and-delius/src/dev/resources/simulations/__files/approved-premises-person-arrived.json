@@ -1,0 +1,38 @@
+{
+  "MessageAttributes": {
+    "eventType": {
+      "Value": "approved-premises.person.arrived"
+    }
+  },
+  "Message": {
+    "id": "364145f9-0af8-488e-9901-b4c46cd9ba37",
+    "timestamp": "2022-11-12T15:13:44",
+    "eventType": "approved-premises.person.arrived",
+    "eventDetails": {
+      "personReference": {
+        "crn": "T123456",
+        "noms": "A1234YZ"
+      },
+      "bookingId": "14c80733-4b6d-4f35-b724-66955aac320c",
+      "premises": {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "name": "Hope House",
+        "apCode": "NEHOPE1",
+        "legacyApCode": "Q057",
+        "probationArea": {
+          "code": "N54",
+          "name": "North East Region"
+        }
+      },
+      "keyWorker": {
+        "staffCode": "N54A999",
+        "forenames": "John",
+        "surname": "Smith",
+        "username": "JohnSmithNPS"
+      },
+      "arrivedAt": "2022-12-12T14:51:30",
+      "expectedDepartureOn": "2023-03-28",
+      "notes": "Some notes about the person that arrived"
+    }
+  }
+}
