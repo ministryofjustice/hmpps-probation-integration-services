@@ -58,7 +58,7 @@ runs:
           value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
           secret_command="${secret_command} --from-literal='$name=$value'"
         done
-        kubectl -n ${{ inputs.namespace }} delete secret ${{ inputs.project }}
+        kubectl -n ${{ inputs.namespace }} delete secret ${{ inputs.project }} --ignore-not-found
         eval $secret_command
 
     - name: deploy to k8s

@@ -1,8 +1,8 @@
-enabled: false
+enabled: true
 generic-service:
   replicaCount: 2
   ingress:
-    host: prison-case-notes-to-delius-prod.hmpps.service.justice.gov.uk
+    host: prison-case-notes-to-delius.hmpps.service.justice.gov.uk
 
   env:
     SENTRY_ENVIRONMENT: prod
