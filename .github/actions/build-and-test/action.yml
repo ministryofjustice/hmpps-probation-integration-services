@@ -37,7 +37,9 @@ runs:
     - name: Compile and test
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: check
+        arguments: |
+        check 
+        -Djava.util.logging.manager=org.jboss.logmanager.LogManager
 
     - name: Build standalone docker images
       uses: gradle/gradle-build-action@v2

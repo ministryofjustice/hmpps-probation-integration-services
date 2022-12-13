@@ -12,7 +12,6 @@ class JibConfigPlugin : Plugin<Project> {
         project.pluginManager.withPlugin("com.google.cloud.tools.jib") {
             project.extensions.configure<JibExtension> {
                 container {
-                    creationTime.set("USE_CURRENT_TIMESTAMP")
                     jvmFlags = mutableListOf("-Duser.timezone=Europe/London")
                     mainClass = "uk.gov.justice.digital.hmpps.AppKt"
                     user = "2000:2000"
