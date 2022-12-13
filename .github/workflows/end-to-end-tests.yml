@@ -14,6 +14,13 @@ on:
         description: A JSON array of projects to deploy
         type: string
         required: true
+    outputs:
+      failed-projects:
+        description: The projects that failed end-to-end testing
+        value: ${{ jobs.test.outputs.failed-projects }}
+      passed-projects:
+        description: The projects that passed end-to-end testing
+        value: ${{ jobs.test.outputs.passed-projects }}
   workflow_dispatch:
     inputs:
       test-branch:
@@ -41,21 +48,17 @@ on:
           # See https://github.com/community/community/discussions/11795
 
 jobs:
-  end-to-end-tests:
-    name: Run end-to-end tests
+  test:
     runs-on: moj-cloud-platform
     timeout-minutes: 60
+    outputs:
+      failed-projects: ${{ steps.json.outputs.failed-projects }}
+      passed-projects: ${{ steps.json.outputs.passed-projects }}
     steps:
       - uses: actions/checkout@v3
         with:
           repository: ministryofjustice/hmpps-probation-integration-e2e-tests
           ref: ${{ inputs.test-branch }}
-      - name: Check tests are present
-        if: github.event_name != 'schedule'
-        run: |
-          for project in $(echo '${{ inputs.projects }}' | jq -r '.[]'); do
-            if [ ! -d "tests/$project" ]; then echo "No tests found for $project" >&2; exit 1; fi
-          done
       - uses: actions/setup-node@v3
         with:
           node-version: 16
@@ -65,7 +68,8 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install
       - name: Run Playwright tests
-        run: npx playwright test --reporter=html,junit,line $(echo '${{ inputs.projects }}' | jq -r 'join(" ")')
+        run: npx playwright test --reporter=html,junit,json,line $(echo '${{ inputs.projects }}' | jq -r 'join(" ")')
+        continue-on-error: true
         env:
           ENV: test
           DELIUS_URL: https://ndelius.test.probation.service.justice.gov.uk
@@ -89,25 +93,35 @@ jobs:
           APPROVEDPREMISES_USERNAME: ${{ secrets.E2E_DELIUS_USERNAME }}
           APPROVEDPREMISES_PASSWORD: ${{ secrets.E2E_DELIUS_PASSWORD }}
           PLAYWRIGHT_JUNIT_OUTPUT_NAME: junit.xml
+          PLAYWRIGHT_JSON_OUTPUT_NAME: results.json
+      - name: Parse JSON results
+        id: json
+        run: |
+          skipped_projects=$(echo '${{ inputs.projects }}' | jq -r '.[]' | while read project; do if [ ! -d "tests/$project" ]; then echo $project; fi; done | jq --raw-input . | jq --slurp --compact-output .)
+          failed_projects=$(cat results.json | jq -r '.suites[].specs[] | select(.ok == false).file' | xargs -n1 dirname | jq --raw-input . | jq --slurp --compact-output .)
+          passed_projects=$(jq --compact-output --null-input --argjson all '${{ inputs.projects }}' --argjson failed "$failed_projects" --argjson skipped "$skipped_projects" '{all: $all, failed: $failed, skipped: $skipped} | .all - .failed - .skipped')
+          echo skipped-projects=$skipped_projects >> $GITHUB_OUTPUT
+          echo failed-projects=$failed_projects >> $GITHUB_OUTPUT
+          echo passed-projects=$passed_projects >> $GITHUB_OUTPUT
+          echo All tests passed for: $passed_projects
+          echo Failures detected in: $failed_projects
+          echo No tests found for: $skipped_projects
       - name: Publish JUnit report
         uses: mikepenz/action-junit-report@v3
         id: junit
-        if: always()
         with:
           check_name: End-to-end test results
           report_paths: junit.xml
       - name: Publish HTML report
         uses: JamesIves/github-pages-deploy-action@v4
-        if: always()
         with:
           folder: playwright-report
-          target-folder: playwright-report/test/${{ github.ref_name }}/${{ github.sha }}/${{ github.run_attempt }}
+          target-folder: playwright-report/test/${{ github.ref_name }}/${{ github.sha }}/${{ github.run_id }}/${{ github.run_attempt }}
       - name: Add HTML report URL to the job summary
-        if: always()
         run: echo '[🎭 Playwright HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/playwright-report/test/${{ github.ref_name }}/${{ github.sha }}/${{ github.run_attempt }})' >> $GITHUB_STEP_SUMMARY
       - name: Send message to Slack
         uses: slackapi/slack-github-action@v1.23.0
-        if: ${{ failure() && github.event_name == 'schedule' }}
+        if: ${{ steps.junit.outputs.failed > 0 && github.event_name == 'schedule' }}
         with:
           channel-id: 'probation-integration-notifications'
           payload: |

@@ -65,6 +65,18 @@ jobs:
       projects: ${{ needs.build.outputs.changed-projects }}
     secrets: inherit
 
+  report-test-failures:
+    name: Failed testing
+    needs:
+      - end-to-end-tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.end-to-end-tests.outputs.failed-projects) }}
+    steps:
+      - run: echo Tests failed for '${{ matrix.project }}'; exit 1
+
   deploy-to-prod:
     name: Deploy to production
     uses: ./.github/workflows/deploy.yml
@@ -75,5 +87,5 @@ jobs:
     with:
       environment: prod
       version: ${{ needs.build.outputs.version }}
-      projects: ${{ needs.build.outputs.changed-projects }}
+      projects: ${{ needs.end-to-end-tests.outputs.passed-projects }}
     secrets: inherit
