@@ -8,7 +8,6 @@ generic-service:
     port: 8080
 
   env:
-    APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
     DELIUS_DB_USERNAME: PrisonCaseNotesToProbation
     AWS_REGION: eu-west-2
 
