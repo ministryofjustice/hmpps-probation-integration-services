@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
@@ -37,6 +38,7 @@ class DataLoader(
     private val referenceDataSetRepository: ReferenceDataSetRepository,
     private val contactTypeRepository: ContactTypeRepository,
 ) : CommandLineRunner {
+    @Transactional
     override fun run(vararg args: String?) {
         userRepository.save(User(IdGenerator.getAndIncrement(), deliusDbUsername))
         serviceContext.setUp()

@@ -5,6 +5,7 @@ apply(plugin = "com.google.cloud.tools.jib")
 dependencies {
     implementation(project(":libs:audit"))
     implementation(project(":libs:commons"))
+    implementation(project(":libs:messaging"))
     implementation(project(":libs:oauth-client"))
     implementation(project(":libs:oauth-server"))
 
@@ -16,8 +17,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation(libs.openfeign)
     implementation(libs.sentry)
-    implementation(libs.bundles.swagger.docs)
+    implementation(libs.springdoc)
 
     dev(project(":libs:dev-tools"))
     dev("com.h2database:h2")
@@ -25,7 +27,7 @@ dependencies {
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.bundles.mockito)
 }
 
 configure<ClassPathExtension> {

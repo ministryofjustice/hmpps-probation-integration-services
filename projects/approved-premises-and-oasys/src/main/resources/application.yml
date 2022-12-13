@@ -15,7 +15,7 @@ spring:
 
 management.endpoints.web:
   base-path: /
-  exposure.include: "health"
+  exposure.include: [ "health", "info" ]
 
 feign.client.config:
   default:
@@ -44,10 +44,6 @@ ords:
 integrations:
   ords-oasys:
     url: http://localhost:${wiremock.port}/eor/oasys
-
-management.endpoints.web:
-  base-path: /
-  exposure.include: [ "health" ]
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

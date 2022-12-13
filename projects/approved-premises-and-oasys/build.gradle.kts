@@ -16,12 +16,12 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation(libs.openfeign)
     implementation(libs.sentry)
-    implementation(libs.bundles.swagger.docs)
+    implementation(libs.springdoc)
 
     dev(project(":libs:dev-tools"))
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.bundles.mockito)
 }
 
 configure<ClassPathExtension> {

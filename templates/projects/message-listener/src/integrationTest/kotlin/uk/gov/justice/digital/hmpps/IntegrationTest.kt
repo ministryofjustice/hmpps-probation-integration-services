@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.verify
@@ -19,7 +20,8 @@ import java.util.concurrent.TimeoutException
 @SpringBootTest
 @ActiveProfiles("integration-test")
 internal class IntegrationTest {
-    @Value("\${spring.jms.template.default-destination}") lateinit var queueName: String
+    @Value("\${messaging.consumer.queue}") lateinit var queueName: String
+    @Autowired lateinit var embeddedActiveMQ: EmbeddedActiveMQ
     @Autowired lateinit var jmsTemplate: JmsTemplate
     @MockBean lateinit var telemetryService: TelemetryService
 
@@ -30,7 +32,7 @@ internal class IntegrationTest {
 
         // When it is received
         try {
-            jmsTemplate.convertSendAndWait(queueName, notification)
+            jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
         } catch (_: TimeoutException) {
             // Note: Remove this try/catch when the MessageListener logic has been implemented
         }

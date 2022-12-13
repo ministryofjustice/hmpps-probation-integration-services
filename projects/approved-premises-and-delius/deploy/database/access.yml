@@ -2,6 +2,9 @@ database:
   access:
     username_key: /approved-premises-and-delius/db-username
     password_key: /approved-premises-and-delius/db-password
+    tables:
+      - contact
+      - contact_alert
 
   audit:
     username: ApprovedPremisesAndDelius

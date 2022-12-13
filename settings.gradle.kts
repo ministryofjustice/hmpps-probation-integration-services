@@ -15,7 +15,6 @@ include(
     "tier-to-delius",
     "approved-premises-and-delius",
     "approved-premises-and-oasys",
-    "domain-events-and-delius",
     "offender-events-and-delius",
     // ^ add new projects here
 )
@@ -28,22 +27,24 @@ rootProject.children
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("amazon-sqs", "com.amazonaws:amazon-sqs-java-messaging-lib:2.0.1")
-            library("aws-messaging", "io.awspring.cloud:spring-cloud-aws-messaging:2.4.2")
-            library("insights", "com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
-            library("hawtio", "io.hawt:hawtio-springboot:2.16.1")
+            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.0.0-M3")
+            library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.0.0-M3")
+            library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.0.0-M3")
+            library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.0.0-M3")
+            bundle("aws-messaging", listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs"))
+            library("insights", "com.microsoft.azure:applicationinsights-web:3.4.6")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:4.1.0")
-            library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:3.1.5")
-            library("sentry", "io.sentry:sentry-spring-boot-starter:6.8.0")
-            library("springdoc-openapi-ui", "org.springdoc:springdoc-openapi-ui:1.6.13")
-            library("springdoc-openapi-kotlin", "org.springdoc:springdoc-openapi-kotlin:1.6.13")
-            bundle("swagger-docs", listOf("springdoc-openapi-ui", "springdoc-openapi-kotlin"))
-            library("wiremock", "com.github.tomakehurst:wiremock-jre8:2.35.0")
+            library("mockito-inline", "org.mockito:mockito-inline:4.1.0")
+            bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
+            library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.0-RC3")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.9.2")
+            library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0")
+            library("wiremock", "com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
         }
     }
 }
 
-plugins { id("com.gradle.enterprise") version "3.11.4" }
+plugins { id("com.gradle.enterprise") version "3.12" }
 gradleEnterprise {
     buildScan {
         publishAlwaysIf(!System.getenv("CI").isNullOrEmpty())

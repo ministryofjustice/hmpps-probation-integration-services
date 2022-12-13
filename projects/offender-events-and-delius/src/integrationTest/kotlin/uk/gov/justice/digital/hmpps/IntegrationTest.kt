@@ -22,7 +22,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 @SpringBootTest
 @ActiveProfiles("integration-test")
 internal class IntegrationTest {
-    @Value("\${spring.jms.template.default-destination}")
+    @Value("\${messaging.producer.topic}")
     lateinit var topicName: String
 
     @Autowired

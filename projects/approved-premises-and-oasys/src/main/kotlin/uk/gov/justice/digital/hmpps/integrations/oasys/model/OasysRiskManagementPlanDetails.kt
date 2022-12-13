@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.integrations.oasys.model
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.ZonedDateTime
 
 data class OasysRiskManagementPlanDetails(
@@ -18,7 +17,7 @@ data class OasysRiskManagementPlanAssessment(
     override val assessmentStatus: String,
     override val superStatus: String? = null,
     override val laterWIPAssessmentExists: Boolean? = null,
-    @JsonProperty("furtherConiderations")
+    override val lastUpdatedDate: ZonedDateTime? = null,
     val furtherConsiderations: String? = null,
     val additionalComments: String? = null,
     val contingencyPlans: String? = null,

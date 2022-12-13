@@ -13,6 +13,7 @@ data class HealthDetails(
     override val superStatus: String? = null,
     override val laterWIPAssessmentExists: Boolean? = null,
     override val limitedAccessOffender: Boolean,
+    override val lastUpdatedDate: ZonedDateTime? = null,
     val health: Health
 ) : Assessment() {
     companion object {
@@ -29,6 +30,7 @@ data class HealthDetails(
                     superStatus,
                     laterWIPAssessmentExists,
                     oasysHealthDetails.limitedAccessOffender,
+                    lastUpdatedDate,
                     Health(
                         stringToBoolean(generalHealth),
                         generalHeathSpecify,

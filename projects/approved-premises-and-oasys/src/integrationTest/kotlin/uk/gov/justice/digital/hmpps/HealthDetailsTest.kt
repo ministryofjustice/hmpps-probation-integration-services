@@ -42,6 +42,9 @@ internal class HealthDetailsTest {
         val healthDetails = objectMapper.readValue(result.response.contentAsString, HealthDetails::class.java)
         assertThat(healthDetails.initiationDate)
             .isEqualTo(ZonedDateTime.parse("2022-11-09T14:33:53Z").withZoneSameInstant(EuropeLondon))
+        assertThat(healthDetails.lastUpdatedDate)
+            .isEqualTo(ZonedDateTime.parse("2022-11-17T15:02:17Z").withZoneSameInstant(EuropeLondon))
+
         assertThat(healthDetails.health.generalHealth).isTrue
         assertThat(healthDetails.health.alcoholMisuse).isEqualTo(
             HealthDetail(

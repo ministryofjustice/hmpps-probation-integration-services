@@ -1,24 +1,25 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.Lob
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.SequenceGenerator
+import jakarta.persistence.Table
+import jakarta.persistence.Version
 import org.hibernate.Hibernate
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Type
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.ZonedDateTime
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.EntityListeners
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.Lob
-import javax.persistence.ManyToOne
-import javax.persistence.SequenceGenerator
-import javax.persistence.Table
-import javax.persistence.Version
 
 @EntityListeners(AuditingEntityListener::class)
 @Entity
@@ -68,7 +69,7 @@ data class CaseNote(
     val probationAreaId: Long,
 
     @Column(name = "sensitive")
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter::class)
     val isSensitive: Boolean = type.isSensitive,
 
     @Column(name = "created_datetime", updatable = false)
@@ -130,7 +131,7 @@ class CaseNoteType(
     val code: String,
 
     @Column(name = "sensitive_contact")
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter::class)
     val isSensitive: Boolean,
 ) {
     companion object {

@@ -16,19 +16,16 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation(libs.amazon.sqs)
     implementation(libs.openfeign)
     implementation(libs.sentry)
 
     dev(project(":libs:dev-tools"))
-    dev("org.springframework.boot:spring-boot-starter-activemq")
     dev("com.h2database:h2")
-    dev(libs.hawtio)
 
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.bundles.mockito)
 }
 
 configure<ClassPathExtension> {

@@ -1,16 +1,17 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution
 
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.Embeddable
+import jakarta.persistence.EmbeddedId
+import jakarta.persistence.Entity
+import jakarta.persistence.OneToOne
+import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Type
 import org.hibernate.annotations.Where
+import org.hibernate.type.YesNoConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import java.io.Serializable
-import javax.persistence.Column
-import javax.persistence.Embeddable
-import javax.persistence.EmbeddedId
-import javax.persistence.Entity
-import javax.persistence.OneToOne
-import javax.persistence.Table
 
 @Immutable
 @Entity
@@ -30,7 +31,7 @@ class Institution(
     val description: String,
 
     @Column
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter::class)
     val selectable: Boolean = true,
 
     @OneToOne(mappedBy = "institution")
@@ -43,6 +44,6 @@ data class InstitutionId(
     val institutionId: Long,
 
     @Column(name = "establishment")
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter::class)
     val establishment: Boolean,
 ) : Serializable

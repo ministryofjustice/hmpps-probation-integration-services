@@ -6,12 +6,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-test")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.springframework.boot:spring-boot-starter-activemq")
-    implementation(libs.aws.messaging)
-    implementation(libs.amazon.sqs)
+
+    api("org.springframework.boot:spring-boot-starter-artemis")
+    api("org.apache.activemq:artemis-jakarta-server")
     api(libs.wiremock)
 
-    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.bundles.mockito)
 }
 configure<ClassPathExtension> {
     jacocoExclusions = listOf(

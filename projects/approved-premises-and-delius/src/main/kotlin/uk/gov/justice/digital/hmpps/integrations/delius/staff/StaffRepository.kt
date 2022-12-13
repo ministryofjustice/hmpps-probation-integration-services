@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 interface StaffRepository : JpaRepository<Staff, Long> {
     @Query(
@@ -30,4 +31,9 @@ interface StaffRepository : JpaRepository<Staff, Long> {
         approvedPremisesCode: String,
         pageable: Pageable
     ): Page<Staff>
+
+    fun findByCode(code: String): Staff?
 }
+
+fun StaffRepository.getByCode(code: String): Staff =
+    findByCode(code) ?: throw NotFoundException("Staff", "code", code)

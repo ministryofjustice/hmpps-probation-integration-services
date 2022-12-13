@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.integrations.oasys.model
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.ZonedDateTime
 
 data class OasysRiskToTheIndividualDetails(
@@ -17,6 +16,7 @@ data class OasysRiskToTheIndividualAssessment(
     override val assessmentStatus: String,
     override val superStatus: String? = null,
     override val laterWIPAssessmentExists: Boolean? = null,
+    override val lastUpdatedDate: ZonedDateTime? = null,
     val concernsRiskOfSuicide: String? = null,
     val currentConcernsBreachOfTrustText: String? = null,
     val currentConcernsBreachOfTrust: String? = null,
@@ -30,7 +30,6 @@ data class OasysRiskToTheIndividualAssessment(
     val currentConcernsRiskOfSelfHarm: String? = null,
     val currentConcernsRiskOfSuicide: String? = null,
     val concernsBreachOfTrust: String? = null,
-    @JsonProperty("concernsBiskOfSelfHarm")
     val concernsRiskOfSelfHarm: String? = null,
 
 ) : OasysAssessment()

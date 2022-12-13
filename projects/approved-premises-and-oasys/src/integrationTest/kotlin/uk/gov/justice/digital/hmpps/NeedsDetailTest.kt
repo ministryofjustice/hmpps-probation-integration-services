@@ -40,11 +40,16 @@ class NeedsDetailTest {
         val needsDetails = objectMapper.readValue(result.response.contentAsString, NeedsDetails::class.java)
         assertThat(needsDetails.initiationDate)
             .isEqualTo(ZonedDateTime.parse("2022-11-09T14:33:53Z").withZoneSameInstant(EuropeLondon))
+        assertThat(needsDetails.lastUpdatedDate)
+            .isEqualTo(ZonedDateTime.parse("2022-11-17T15:02:17Z").withZoneSameInstant(EuropeLondon))
         assertThat(needsDetails.needs?.financeIssuesDetails)
             .isEqualTo("no money")
         assertThat(needsDetails.needs?.attitudeIssuesDetails)
             .isEqualTo("likes to behave badly")
         assertThat(needsDetails.dateCompleted).isNull()
+        assertThat(needsDetails.linksToHarm?.alcoholLinkedToHarm).isFalse
+        assertThat(needsDetails.linksToHarm?.drugLinkedToHarm).isFalse
+        assertThat(needsDetails.linksToHarm?.educationTrainingEmploymentLinkedToHarm).isTrue
     }
 
     @Test

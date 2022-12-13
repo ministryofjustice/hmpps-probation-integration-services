@@ -7,7 +7,6 @@ import org.hamcrest.Matchers.`is`
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
-import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -55,7 +54,7 @@ class AllocationDemandIntegrationTest {
     @Test
     fun `get allocation demand unauthorised`() {
         mockMvc.perform(
-            post("/allocation-demand/")
+            post("/allocation-demand")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(AllocationDemandRequest(listOf())))
         )
@@ -64,13 +63,9 @@ class AllocationDemandIntegrationTest {
 
     @Test
     fun `get allocation demand no results`() {
-        val crn = "D123123"
-        val eventNumber = "1"
-        whenever(allocationDemandRepository.findAllocationDemand(listOf(Pair(crn, eventNumber))))
-            .thenReturn(listOf())
 
         mockMvc.perform(
-            post("/allocation-demand/")
+            post("/allocation-demand")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer ${getToken()}")
                 .content(objectMapper.writeValueAsString(AllocationDemandRequest(listOf())))
@@ -82,7 +77,7 @@ class AllocationDemandIntegrationTest {
     @MethodSource("allocationRequests")
     fun `get allocation demand invalid inputs`(allocationRequest: AllocationRequest) {
         mockMvc.perform(
-            post("/allocation-demand/")
+            post("/allocation-demand")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer ${getToken()}")
                 .content(objectMapper.writeValueAsString(AllocationDemandRequest(listOf(allocationRequest))))
@@ -120,11 +115,11 @@ class AllocationDemandIntegrationTest {
             )
         )
 
-        whenever(allocationDemandRepository.findAllocationDemand(any()))
+        whenever(allocationDemandRepository.findAllocationDemand(listOf(Pair("T123456", "2"), Pair("T456789", "1"))))
             .thenReturn(allocationResponse)
 
         mockMvc.perform(
-            post("/allocation-demand/")
+            post("/allocation-demand")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer ${getToken()}")
                 .content(objectMapper.writeValueAsString(request))

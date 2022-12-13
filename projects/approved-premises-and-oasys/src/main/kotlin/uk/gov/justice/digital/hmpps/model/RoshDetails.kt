@@ -13,6 +13,7 @@ data class RoshDetails(
     override val superStatus: String? = null,
     override val laterWIPAssessmentExists: Boolean? = null,
     override val limitedAccessOffender: Boolean,
+    override val lastUpdatedDate: ZonedDateTime? = null,
     val rosh: Rosh
 
 ) : Assessment() {
@@ -30,6 +31,7 @@ data class RoshDetails(
                     superStatus,
                     laterWIPAssessmentExists,
                     oasysRosh.limitedAccessOffender,
+                    lastUpdatedDate,
                     Rosh(
                         RiskLevel.fromString(riskChildrenCommunity),
                         RiskLevel.fromString(riskPrisonersCustody),
@@ -60,7 +62,7 @@ data class Rosh(
 )
 
 enum class RiskLevel(val value: String) {
-    VERY_HIGH("[Very High]"), HIGH("[High]"), MEDIUM("[Medium]"), LOW("[Low]");
+    VERY_HIGH("Very High"), HIGH("High"), MEDIUM("Medium"), LOW("Low");
 
     companion object {
         fun fromString(enumValue: String?): RiskLevel? {

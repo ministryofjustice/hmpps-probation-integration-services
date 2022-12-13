@@ -1,15 +1,14 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.document.entity
 
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
+import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import java.time.ZonedDateTime
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
-import javax.persistence.OneToOne
-import javax.persistence.Table
 
 @Immutable
 @Entity
@@ -32,16 +31,7 @@ class DocEvent(
     val disposal: DocDisposal? = null,
 
     @OneToOne(mappedBy = "event")
-    val mainOffence: DocMainOffence? = null,
-
-    @Column(name = "CPS_ALFRESCO_DOCUMENT_ID")
-    val cpsDocumentId: String?,
-
-    @Column(name = "CPS_DOCUMENT_NAME")
-    val cpsDocumentName: String?,
-
-    @Column(name = "CPS_CREATED_DATETIME")
-    val cpsCreatedDate: ZonedDateTime?
+    val mainOffence: DocMainOffence? = null
 )
 
 @Immutable

@@ -6,6 +6,4 @@ import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocEvent
 interface DocEventRepository : JpaRepository<DocEvent, Long> {
 
     fun findByPersonId(id: Long): List<DocEvent>
-
-    fun findByPersonIdAndCpsDocumentId(id: Long, cpsDocumentId: String): DocEvent?
 }
