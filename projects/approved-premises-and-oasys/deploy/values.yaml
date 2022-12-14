@@ -14,7 +14,7 @@ generic-service:
     tlsSecretName: approved-premises-and-oasys-cert
 
   env:
-    APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
+    JDK_JAVA_OPTIONS: -javaagent:/agent/agent.jar -XX:MaxRAMPercentage=75.0
 
   namespace_secrets:
     approved-premises-and-oasys:

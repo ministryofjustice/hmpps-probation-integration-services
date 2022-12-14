@@ -1,5 +1,7 @@
 generic-service:
   replicaCount: 2
+  ingress:
+    host: prison-case-notes-to-probation-preprod.hmpps.service.justice.gov.uk
 
   env:
     SENTRY_ENVIRONMENT: preprod
