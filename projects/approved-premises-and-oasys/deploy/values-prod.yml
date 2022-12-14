@@ -3,7 +3,7 @@ enabled: false # TODO set this to true when you're ready to deploy your service
 generic-service:
   replicaCount: 2
   ingress:
-    host: approved-premises-and-oasys-prod.hmpps.service.justice.gov.uk
+    host: approved-premises-and-oasys.hmpps.service.justice.gov.uk
 
   env:
     SENTRY_ENVIRONMENT: prod

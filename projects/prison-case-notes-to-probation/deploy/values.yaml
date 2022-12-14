@@ -1,0 +1,30 @@
+---
+# Values here are the same across all environments
+generic-service:
+  nameOverride: prison-case-notes-to-probation
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-case-notes-to-probation
+    port: 8080
+
+  env:
+    DELIUS_DB_USERNAME: PrisonCaseNotesToProbation
+    AWS_REGION: eu-west-2
+
+  namespace_secrets:
+    prison-case-notes-to-probation:
+      APPLICATIONINSIGHTS_CONNECTION_STRING: APPLICATIONINSIGHTS_CONNECTION_STRING
+      SENTRY_DSN: SENTRY_DSN
+      AWS_SQS_ACCOUNT-ID: AWS_SQS_ACCOUNT_ID
+      SPRING_DATASOURCE_URL: DB_URL
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+      SPRING_JMS_TEMPLATE_DEFAULT-DESTINATION: SQS_QUEUE_NAME
+      AWS_ACCESS_KEY_ID: SQS_QUEUE_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
+      INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-ID: CLIENT_ID
+      INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-SECRET: CLIENT_SECRET
+
+generic-prometheus-alerts:
+  targetApplication: prison-case-notes-to-probation
+  alertSeverity: probation-integration-notifications
