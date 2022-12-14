@@ -7,6 +7,12 @@ generic-service:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-case-notes-to-probation
     port: 8080
 
+  ingress:
+    enabled: true
+    v1_2_enabled: true
+    v0_47_enabled: false
+    tlsSecretName: prison-case-notes-to-probation-cert
+
   env:
     AWS_REGION: eu-west-2
     DELIUS_DB_USERNAME: PrisonCaseNotesToProbation

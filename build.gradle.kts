@@ -69,9 +69,18 @@ subprojects {
         plugin("org.sonarqube")
     }
 
-    tasks.withType<BootRun> {
-        if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
-            classpath = sourceSets.getByName("dev").runtimeClasspath
+    tasks {
+        withType<BootRun> {
+            if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
+                classpath = sourceSets.getByName("dev").runtimeClasspath
+            }
+        }
+
+        withType<Test> {
+            systemProperty(
+                "java.util.logging.manager",
+                System.getProperty("java.util.logging.manager")
+            )
         }
     }
 }
