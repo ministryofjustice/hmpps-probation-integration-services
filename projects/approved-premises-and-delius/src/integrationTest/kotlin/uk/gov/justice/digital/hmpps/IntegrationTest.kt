@@ -93,8 +93,28 @@ internal class IntegrationTest {
         verify(telemetryService).trackEvent("ApplicationSubmitted", event.message.telemetryProperties())
 
         // And a contact alert is created
-        val contact = contactRepository.findAll().filter { it.person.crn == event.message.personReference.findCrn() }.single()
-        assertThat(contact.type.code, equalTo(ContactTypeCode.APPLICATION_SUBMITTED.code))
+        val contact = contactRepository.findAll()
+            .single { it.person.crn == event.message.personReference.findCrn() && it.type.code == ContactTypeCode.APPLICATION_SUBMITTED.code }
         assertThat(contact.alert, equalTo(true))
+    }
+
+    @Test
+    fun `application assessed creates an alert contact`() {
+        // Given an application-assessed event
+        val event = prepEvent("application-assessed", wireMockServer.port())
+
+        // When it is received
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, event)
+
+        // Then it is logged to telemetry
+        verify(telemetryService).notificationReceived(event)
+        verify(telemetryService).trackEvent("ApplicationAssessed", event.message.telemetryProperties())
+
+        // And a contact alert is created
+        val contact = contactRepository.findAll()
+            .single { it.person.crn == event.message.personReference.findCrn() && it.type.code == ContactTypeCode.APPLICATION_ASSESSED.code }
+        assertThat(contact.alert, equalTo(true))
+        assertThat(contact.description, equalTo("Approved Premises Application Rejected"))
+        assertThat(contact.notes, equalTo("Risk too low"))
     }
 }

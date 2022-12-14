@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
@@ -60,7 +61,7 @@ class DataLoader(
         val person = PersonGenerator.generate(crn = "A000001")
         personRepository.save(person)
         personManagerRepository.save(PersonManagerGenerator.generate(person, staff = personManagerStaff, team = TeamGenerator.NON_APPROVED_PREMISES_TEAM))
-        contactTypeRepository.save(ContactTypeGenerator.APPLICATION_SUBMITTED)
+        contactTypeRepository.saveAll(ContactTypeCode.values().map { ContactTypeGenerator.generate(it.code) })
     }
 }
 

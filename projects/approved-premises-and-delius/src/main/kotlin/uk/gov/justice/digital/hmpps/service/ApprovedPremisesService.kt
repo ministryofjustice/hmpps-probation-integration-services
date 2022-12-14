@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepositor
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlert
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_ASSESSED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_SUBMITTED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.getByCode
@@ -47,7 +48,30 @@ class ApprovedPremisesService(
         )
     }
 
-    fun createAlertContact(date: ZonedDateTime, type: ContactTypeCode, crn: String, staffCode: String, probationAreaCode: String) {
+    @Transactional
+    fun applicationAssessed(event: HmppsDomainEvent) {
+        val detailUrl = URI.create(event.detailUrl ?: throw IllegalArgumentException("Missing detail url"))
+        val details = approvedPremisesApiClient.getApplicationAssessedDetails(detailUrl).eventDetails
+        createAlertContact(
+            crn = event.personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN"),
+            type = APPLICATION_ASSESSED,
+            description = "Approved Premises Application ${details.decision}",
+            notes = details.decisionRationale,
+            date = details.assessedAt,
+            staffCode = details.assessedBy.staffCode,
+            probationAreaCode = details.assessmentArea.code,
+        )
+    }
+
+    fun createAlertContact(
+        date: ZonedDateTime,
+        type: ContactTypeCode,
+        crn: String,
+        staffCode: String,
+        probationAreaCode: String,
+        description: String? = null,
+        notes: String? = null,
+    ) {
         val staff = staffRepository.getByCode(staffCode)
         val team = teamRepository.getUnallocatedTeam(probationAreaCode)
         val person = personRepository.getByCrn(crn)
@@ -56,10 +80,12 @@ class ApprovedPremisesService(
             Contact(
                 date = date,
                 startTime = date,
-                type = contactTypeRepository.getByCode(APPLICATION_SUBMITTED.code),
+                type = contactTypeRepository.getByCode(type.code),
+                description = description,
                 person = person,
                 staff = staff,
                 team = team,
+                notes = notes,
                 alert = true
             )
         )

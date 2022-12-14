@@ -11,6 +11,6 @@ import java.net.URI
     configuration = [FeignOAuth2Config::class]
 )
 interface ApprovedPremisesApiClient {
-    @GetMapping
-    fun getApplicationSubmittedDetails(uri: URI): EventDetails<ApplicationSubmitted>
+    @GetMapping fun getApplicationSubmittedDetails(uri: URI): EventDetails<ApplicationSubmitted>
+    @GetMapping fun getApplicationAssessedDetails(uri: URI): EventDetails<ApplicationAssessed>
 }

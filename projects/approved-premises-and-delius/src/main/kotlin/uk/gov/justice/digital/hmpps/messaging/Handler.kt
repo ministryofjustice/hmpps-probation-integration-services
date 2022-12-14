@@ -23,6 +23,10 @@ class Handler(
                 approvedPremisesService.applicationSubmitted(event)
                 telemetryService.trackEvent("ApplicationSubmitted", event.telemetryProperties())
             }
+            "approved-premises.application.assessed" -> {
+                approvedPremisesService.applicationAssessed(event)
+                telemetryService.trackEvent("ApplicationAssessed", event.telemetryProperties())
+            }
             else -> throw IllegalArgumentException("Unexpected event type ${event.eventType}")
         }
     }

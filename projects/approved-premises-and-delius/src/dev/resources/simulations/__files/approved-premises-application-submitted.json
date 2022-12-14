@@ -4,7 +4,7 @@
   "eventType": "approved-premises.application.submitted",
   "eventDetails": {
     "applicationId": "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
-    "applicationUrl": "https://approved-premises/application/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+    "applicationUrl": "https://approved-premises-dev.hmpps.service.justice.gov.uk/application/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
     "personReference": {
       "crn": "A000001",
       "noms": "A0001AA"
