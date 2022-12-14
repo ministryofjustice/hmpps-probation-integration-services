@@ -49,6 +49,12 @@ allprojects {
                 jvmTarget = "17"
             }
         }
+
+        withType<Test> {
+            try {
+                systemProperty("java.util.logging.manager", System.getProperty("java.util.logging.manager"))
+            } catch (ignore: ClassNotFoundException) { }
+        }
     }
 }
 
