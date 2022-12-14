@@ -21,6 +21,9 @@ on:
       passed-projects:
         description: The projects that passed end-to-end testing
         value: ${{ jobs.test.outputs.passed-projects }}
+      report-url:
+        description: The URL of the Playwright HTML report
+        value: ${{ jobs.test.outputs.report-url }}
   workflow_dispatch:
     inputs:
       test-branch:
@@ -54,11 +57,20 @@ jobs:
     outputs:
       failed-projects: ${{ steps.json.outputs.failed-projects }}
       passed-projects: ${{ steps.json.outputs.passed-projects }}
+      report-url: ${{ steps.html.outputs.report-url }}
+    env:
+      report-dir: playwright-report/test/${{ github.ref_name }}/${{ github.sha }}/${{ github.run_id }}/${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v3
         with:
           repository: ministryofjustice/hmpps-probation-integration-e2e-tests
           ref: ${{ inputs.test-branch }}
+      - name: Get tests to run - all tests
+        if: inputs.projects == ''
+        run: echo "projects=$(cd tests && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_ENV
+      - name: Get tests to run - specific tests
+        if: inputs.projects != ''
+        run: echo 'projects=${{ inputs.projects }}' >> $GITHUB_ENV
       - uses: actions/setup-node@v3
         with:
           node-version: 16
@@ -68,8 +80,8 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install
       - name: Run Playwright tests
-        run: npx playwright test --reporter=html,junit,json,line $(echo '${{ inputs.projects }}' | jq -r 'join(" ")')
-        continue-on-error: true
+        id: tests
+        run: npx playwright test --reporter=html,junit,json,line $(echo '${{ env.projects }}' | jq -r 'join(" ")')
         env:
           ENV: test
           DELIUS_URL: https://ndelius.test.probation.service.justice.gov.uk
@@ -95,35 +107,44 @@ jobs:
           PLAYWRIGHT_JUNIT_OUTPUT_NAME: junit.xml
           PLAYWRIGHT_JSON_OUTPUT_NAME: results.json
       - name: Parse JSON results
+        if: always()
         id: json
         run: |
-          skipped_projects=$(echo '${{ inputs.projects }}' | jq -r '.[]' | while read project; do if [ ! -d "tests/$project" ]; then echo $project; fi; done | jq --raw-input . | jq --slurp --compact-output .)
-          failed_projects=$(cat results.json | jq -r '.suites[].specs[] | select(.ok == false).file' | xargs -n1 dirname | jq --raw-input . | jq --slurp --compact-output .)
-          passed_projects=$(jq --compact-output --null-input --argjson all '${{ inputs.projects }}' --argjson failed "$failed_projects" --argjson skipped "$skipped_projects" '{all: $all, failed: $failed, skipped: $skipped} | .all - .failed - .skipped')
+          skipped_projects=$(echo "$all_projects" | jq -r '.[]' | while read project; do if [ ! -d "tests/$project" ]; then echo $project; fi; done | jq --raw-input . | jq --slurp --compact-output .)
+          failed_projects=$(cat results.json | jq -r '.suites[].specs[] | select(.ok == false).file' | xargs -n1 dirname | sort -u | jq --raw-input . | jq --slurp --compact-output .)
+          passed_projects=$(jq --compact-output --null-input --argjson all "$all_projects" --argjson failed "$failed_projects" --argjson skipped "$skipped_projects" '{all: $all, failed: $failed, skipped: $skipped} | .all - .failed - .skipped')
           echo skipped-projects=$skipped_projects >> $GITHUB_OUTPUT
           echo failed-projects=$failed_projects >> $GITHUB_OUTPUT
           echo passed-projects=$passed_projects >> $GITHUB_OUTPUT
           echo All tests passed for: $passed_projects
           echo Failures detected in: $failed_projects
-          echo No tests found for: $skipped_projects
+          echo No results found for: $skipped_projects
+        env:
+          all_projects: ${{ env.projects }}
       - name: Publish JUnit report
+        if: always()
         uses: mikepenz/action-junit-report@v3
         id: junit
         with:
           check_name: End-to-end test results
           report_paths: junit.xml
       - name: Publish HTML report
+        if: always()
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: playwright-report
-          target-folder: playwright-report/test/${{ github.ref_name }}/${{ github.sha }}/${{ github.run_id }}/${{ github.run_attempt }}
-      - name: Add HTML report URL to the job summary
-        run: echo '[🎭 Playwright HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/playwright-report/test/${{ github.ref_name }}/${{ github.sha }}/${{ github.run_attempt }})' >> $GITHUB_STEP_SUMMARY
+          target-folder: ${{ env.test-report }}
+      - name: Output HTML report URL
+        id: html
+        if: always()
+        run: |
+          echo '[🎭 Playwright HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.test-report }})' >> $GITHUB_STEP_SUMMARY
+          echo 'report-url=https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.test-report }}' >> $GITHUB_OUTPUT
       - name: Send message to Slack
         uses: slackapi/slack-github-action@v1.23.0
-        if: ${{ steps.junit.outputs.failed > 0 && github.event_name == 'schedule' }}
+        if: ${{ always() && github.event_name == 'schedule' }}
         with:
-          channel-id: 'probation-integration-notifications'
+          channel-id: probation-integration-notifications
           payload: |
             {
               "blocks": [
@@ -139,7 +160,7 @@ jobs:
                       "type": "plain_text",
                       "text": "View report"
                     },
-                    "url": "https://ministryofjustice.github.io/hmpps-probation-integration-services/playwright-report/test/${{ github.ref_name }}/${{ github.sha }}/${{ github.run_attempt }}"
+                    "url": "https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.test-report }}"
                   }
                 },
                 {
