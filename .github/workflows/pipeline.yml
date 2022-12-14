@@ -67,6 +67,7 @@ jobs:
 
   report-test-failures:
     name: Failed testing
+    if: ${{ failure() && needs.end-to-end-tests.outputs.failed-projects != '[]' }}
     needs:
       - end-to-end-tests
     runs-on: ubuntu-latest
@@ -75,12 +76,12 @@ jobs:
       matrix:
         project: ${{ fromJson(needs.end-to-end-tests.outputs.failed-projects) }}
     steps:
-      - run: echo Tests failed for '${{ matrix.project }}'; exit 1
+      - run: 'echo Tests failed for ${{ matrix.project }}. View the full report here: ${{ needs.end-to-end-tests.outputs.report-url }}; exit 1'
 
   deploy-to-prod:
     name: Deploy to production
     uses: ./.github/workflows/deploy.yml
-    if: github.ref == 'refs/heads/main'
+    if: ${{ (success() || (failure() && needs.end-to-end-tests.outputs.passed-projects != '[]')) && github.ref == 'refs/heads/main' }}
     needs:
       - build
       - end-to-end-tests
