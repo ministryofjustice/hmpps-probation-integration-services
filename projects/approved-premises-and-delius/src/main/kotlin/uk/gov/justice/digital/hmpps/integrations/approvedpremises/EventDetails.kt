@@ -18,3 +18,16 @@ data class ApplicationSubmitted(
     val submittedAt: ZonedDateTime,
     val submittedBy: StaffMember,
 )
+
+enum class Decision { Accepted, Rejected }
+
+data class ApplicationAssessed(
+    val applicationId: String,
+    val applicationUrl: String,
+    val deliusEventNumber: String,
+    val assessedAt: ZonedDateTime,
+    val assessedBy: StaffMember,
+    val assessmentArea: ProbationArea,
+    val decision: Decision,
+    val decisionRationale: String,
+)

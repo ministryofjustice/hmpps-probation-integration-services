@@ -47,6 +47,9 @@ class Contact(
     @JoinColumn(name = "contact_type_id", nullable = false)
     val type: ContactType,
 
+    @Column(name = "description")
+    val description: String? = null,
+
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,

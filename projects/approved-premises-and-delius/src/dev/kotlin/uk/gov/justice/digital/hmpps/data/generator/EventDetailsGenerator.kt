@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationAssessed
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSubmitted
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Decision
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.StaffMember
@@ -9,13 +11,10 @@ import java.time.ZonedDateTime
 import java.util.UUID
 
 object EventDetailsGenerator {
-    fun generate(
-        submittedBy: Staff,
-        eventType: String = "approved-premises.application.submitted",
-    ) = EventDetails(
+    fun applicationSubmitted(submittedBy: Staff) = EventDetails(
         id = UUID.randomUUID().toString(),
         timestamp = ZonedDateTime.now(),
-        eventType = eventType,
+        eventType = "approved-premises.application.submitted",
         eventDetails = ApplicationSubmitted(
             applicationId = UUID.randomUUID().toString(),
             applicationUrl = "http://example.com",
@@ -33,6 +32,31 @@ object EventDetailsGenerator {
                 forenames = submittedBy.forename,
                 surname = submittedBy.surname,
             ),
+        )
+    )
+
+    fun applicationAssessed(assessedBy: Staff) = EventDetails(
+        id = UUID.randomUUID().toString(),
+        timestamp = ZonedDateTime.now(),
+        eventType = "approved-premises.application.assessed",
+        eventDetails = ApplicationAssessed(
+            applicationId = UUID.randomUUID().toString(),
+            applicationUrl = "http://example.com",
+            deliusEventNumber = "123",
+            assessmentArea = ProbationArea(
+                code = ProbationAreaGenerator.DEFAULT.code,
+                name = "TEST"
+            ),
+            assessedAt = ZonedDateTime.now(),
+            assessedBy = StaffMember(
+                username = "TEST",
+                staffCode = assessedBy.code,
+                staffIdentifier = assessedBy.id,
+                forenames = assessedBy.forename,
+                surname = assessedBy.surname,
+            ),
+            decision = Decision.Accepted,
+            decisionRationale = "Test decision rationale"
         )
     )
 }

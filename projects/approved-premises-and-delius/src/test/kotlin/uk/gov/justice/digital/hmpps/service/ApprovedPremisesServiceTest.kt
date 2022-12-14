@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationAssessed
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSubmitted
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremisesApiClient
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
@@ -37,6 +38,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.prepEvent
 import java.net.URI
+import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class ApprovedPremisesServiceTest {
@@ -51,14 +53,13 @@ internal class ApprovedPremisesServiceTest {
     @InjectMocks lateinit var approvedPremisesService: ApprovedPremisesService
 
     private val applicationSubmittedEvent = prepEvent("application-submitted", 1234).message
+    private val applicationAssessedEvent = prepEvent("application-assessed", 1234).message
 
     @Test
     fun `throws when no detail url is provided`() {
         val exception = assertThrows<IllegalArgumentException> {
-            approvedPremisesService.applicationSubmitted(
-                applicationSubmittedEvent
-                    .copy(detailUrl = null)
-            )
+            approvedPremisesService
+                .applicationSubmitted(applicationSubmittedEvent.copy(detailUrl = null))
         }
         assertThat(exception.message, equalTo("Missing detail url"))
     }
@@ -68,10 +69,8 @@ internal class ApprovedPremisesServiceTest {
         givenApplicationSubmittedDetails()
 
         val exception = assertThrows<IllegalArgumentException> {
-            approvedPremisesService.applicationSubmitted(
-                applicationSubmittedEvent
-                    .copy(personReference = PersonReference())
-            )
+            approvedPremisesService
+                .applicationSubmitted(applicationSubmittedEvent.copy(personReference = PersonReference()))
         }
         assertThat(exception.message, equalTo("Missing CRN"))
     }
@@ -88,23 +87,69 @@ internal class ApprovedPremisesServiceTest {
 
         approvedPremisesService.applicationSubmitted(applicationSubmittedEvent)
 
+        verifyAlertContactIsCreated(
+            type = ContactTypeCode.APPLICATION_SUBMITTED,
+            date = details.eventDetails.submittedAt,
+            person = person,
+            staff = submitter,
+            team = unallocatedTeam,
+            alertManager = manager
+        )
+    }
+
+    @Test
+    fun `creates alert contact for application assessment`() {
+        val crn = applicationAssessedEvent.personReference.findCrn()!!
+        val person = givenAPerson(crn)
+        val manager = givenAPersonManager(person)
+        val assessor = givenStaff()
+        val unallocatedTeam = givenUnallocatedTeam()
+        val details = givenApplicationAssessedDetails(assessedBy = assessor)
+        givenContactTypes(listOf(ContactTypeCode.APPLICATION_ASSESSED))
+
+        approvedPremisesService.applicationAssessed(applicationAssessedEvent)
+
+        verifyAlertContactIsCreated(
+            type = ContactTypeCode.APPLICATION_ASSESSED,
+            date = details.eventDetails.assessedAt,
+            person = person,
+            staff = assessor,
+            team = unallocatedTeam,
+            alertManager = manager,
+            description = "Approved Premises Application Accepted",
+            notes = "Test decision rationale"
+        )
+    }
+
+    private fun verifyAlertContactIsCreated(
+        type: ContactTypeCode,
+        date: ZonedDateTime,
+        person: Person,
+        staff: Staff,
+        team: Team,
+        alertManager: PersonManager,
+        description: String? = null,
+        notes: String? = null,
+    ) {
         verify(contactRepository).save(
             check { contact ->
-                assertThat(contact.type.code, equalTo(ContactTypeCode.APPLICATION_SUBMITTED.code))
-                assertThat(contact.date, equalTo(details.eventDetails.submittedAt))
-                assertThat(contact.startTime, equalTo(details.eventDetails.submittedAt))
+                assertThat(contact.type.code, equalTo(type.code))
+                assertThat(contact.date, equalTo(date))
+                assertThat(contact.startTime, equalTo(date))
                 assertThat(contact.person.crn, equalTo(person.crn))
-                assertThat(contact.staff, equalTo(submitter))
-                assertThat(contact.team, equalTo(unallocatedTeam))
+                assertThat(contact.staff, equalTo(staff))
+                assertThat(contact.team, equalTo(team))
+                assertThat(contact.description, equalTo(description))
+                assertThat(contact.notes, equalTo(notes))
 
                 verify(contactAlertRepository).save(
                     check { alert ->
                         assertThat(alert.contactId, equalTo(contact.id))
                         assertThat(alert.typeId, equalTo(contact.type.id))
                         assertThat(alert.personId, equalTo(person.id))
-                        assertThat(alert.personManagerId, equalTo(manager.id))
-                        assertThat(alert.staffId, equalTo(manager.staff.id))
-                        assertThat(alert.teamId, equalTo(manager.team.id))
+                        assertThat(alert.personManagerId, equalTo(alertManager.id))
+                        assertThat(alert.staffId, equalTo(alertManager.staff.id))
+                        assertThat(alert.teamId, equalTo(alertManager.team.id))
                     }
                 )
             }
@@ -140,8 +185,17 @@ internal class ApprovedPremisesServiceTest {
     private fun givenApplicationSubmittedDetails(
         submittedBy: Staff = StaffGenerator.generate()
     ): EventDetails<ApplicationSubmitted> {
-        val details = EventDetailsGenerator.generate(submittedBy = submittedBy)
+        val details = EventDetailsGenerator.applicationSubmitted(submittedBy = submittedBy)
         whenever(approvedPremisesApiClient.getApplicationSubmittedDetails(URI.create(applicationSubmittedEvent.detailUrl!!)))
+            .thenReturn(details)
+        return details
+    }
+
+    private fun givenApplicationAssessedDetails(
+        assessedBy: Staff = StaffGenerator.generate()
+    ): EventDetails<ApplicationAssessed> {
+        val details = EventDetailsGenerator.applicationAssessed(assessedBy = assessedBy)
+        whenever(approvedPremisesApiClient.getApplicationAssessedDetails(URI.create(applicationAssessedEvent.detailUrl!!)))
             .thenReturn(details)
         return details
     }

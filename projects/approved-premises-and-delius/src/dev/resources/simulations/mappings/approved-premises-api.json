@@ -1,13 +1,30 @@
 {
-  "request": {
-    "method": "GET",
-    "urlPath": "/approved-premises-api/events/application-submitted/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080"
-  },
-  "response": {
-    "headers": {
-      "Content-Type": "application/json"
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/approved-premises-api/events/application-submitted/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "approved-premises-application-submitted.json"
+      }
     },
-    "status": 200,
-    "bodyFileName": "approved-premises-application-submitted.json"
-  }
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/approved-premises-api/events/application-assessed/484b8b5e-6c3b-4400-b200-425bbe410713"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "approved-premises-application-assessed.json"
+      }
+    }
+  ]
 }
