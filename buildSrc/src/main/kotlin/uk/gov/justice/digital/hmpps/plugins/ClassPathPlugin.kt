@@ -55,7 +55,6 @@ class ClassPathPlugin : Plugin<Project> {
             project.tasks.create("integrationTest", Test::class.java) {
                 testClassesDirs = getByName("integrationTest").output.classesDirs
                 classpath = getByName("integrationTest").runtimeClasspath
-                systemProperty("java.util.logging.manager", System.getProperty("java.util.logging.manager"))
             }
             project.tasks.withType(Test::class.java) {
                 useJUnitPlatform()
