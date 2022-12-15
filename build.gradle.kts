@@ -77,10 +77,12 @@ subprojects {
         }
 
         withType<Test> {
-            systemProperty(
-                "java.util.logging.manager",
-                System.getProperty("java.util.logging.manager")
-            )
+            if (!project.path.startsWith(":libs")) {
+                systemProperty(
+                    "java.util.logging.manager",
+                    System.getProperty("java.util.logging.manager")
+                )
+            }
         }
     }
 }
