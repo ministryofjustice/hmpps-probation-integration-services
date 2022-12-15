@@ -35,7 +35,7 @@ dependencyResolutionManagement {
             bundle("aws-messaging", listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs"))
             library("insights", "com.microsoft.azure:applicationinsights-web:3.4.6")
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:4.1.0")
-            library("mockito-inline", "org.mockito:mockito-inline:4.9.0")
+            library("mockito-inline", "org.mockito:mockito-inline:4.10.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.0-RC3")
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.9.2")
