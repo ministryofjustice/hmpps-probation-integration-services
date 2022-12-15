@@ -62,7 +62,7 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate) {
 
     private fun parseValidationMessage(e: SQLException) = if (!isValidationMessage(e)) null else e.message
         ?.replace(Regex("\\n.*"), "") // take the first line
-        ?.replace(Regex("\\[.+?]"), "") // remove anything inside square brackets
+        ?.replace(Regex("\\[[^]]++]"), "") // remove anything inside square brackets
         ?.removePrefix("ORA-20000: INTERNAL ERROR: An unexpected error in PL/SQL: ERROR : ") // remove Oracle prefix
         ?.trim()
 
