@@ -135,13 +135,13 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: playwright-report
-          target-folder: ${{ env.test-report }}
+          target-folder: ${{ env.report-dir }}
       - name: Output HTML report URL
         id: html
         if: always()
         run: |
-          echo '[🎭 Playwright HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.test-report }})' >> $GITHUB_STEP_SUMMARY
-          echo 'report-url=https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.test-report }}' >> $GITHUB_OUTPUT
+          echo '[🎭 Playwright HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.report-dir }})' >> $GITHUB_STEP_SUMMARY
+          echo 'report-url=https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.report-dir }}' >> $GITHUB_OUTPUT
       - name: Send message to Slack
         uses: slackapi/slack-github-action@v1.23.0
         if: ${{ always() && github.event_name == 'schedule' }}
@@ -162,7 +162,7 @@ jobs:
                       "type": "plain_text",
                       "text": "View report"
                     },
-                    "url": "https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.test-report }}"
+                    "url": "https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.report-dir }}"
                   }
                 },
                 {
