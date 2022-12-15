@@ -10,7 +10,7 @@ abstract class NotificationConverter<T : Any>(
 ) {
     abstract fun getMessageType(): KClass<T>
 
-    fun fromMessage(message: String): Notification<T> {
+    open fun fromMessage(message: String): Notification<T> {
         val stringMessage = objectMapper.readValue(message, jacksonTypeRef<Notification<String>>())
         return Notification(
             message = objectMapper.readValue(stringMessage.message, getMessageType().java),
