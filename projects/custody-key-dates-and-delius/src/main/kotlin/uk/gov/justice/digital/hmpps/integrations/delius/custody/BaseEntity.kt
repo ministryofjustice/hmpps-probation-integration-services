@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.custody
+package uk.gov.justice.digital.hmpps.integrations.delius.custody
 
 import jakarta.persistence.Column
 import jakarta.persistence.MappedSuperclass

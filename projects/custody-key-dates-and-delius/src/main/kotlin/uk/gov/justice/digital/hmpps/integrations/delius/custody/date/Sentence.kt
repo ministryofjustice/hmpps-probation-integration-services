@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.custody.date
+package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -7,9 +7,11 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
+import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
-import uk.gov.justice.digital.hmpps.custody.date.reference.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 
 @Immutable
 @Entity
@@ -18,20 +20,20 @@ class Event(
     @Column(name = "event_id", nullable = false)
     val id: Long,
 
+    val eventNumber: String,
+
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
     @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
-    val active: Boolean,
-
-    val eventNumber: String,
+    val active: Boolean = true,
 
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
 
     @OneToOne(mappedBy = "event")
-    val manager: OrderManager,
+    val manager: OrderManager? = null,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false,
@@ -83,6 +85,7 @@ class Custody(
 @Immutable
 @Entity
 @Where(clause = "active_flag = 1")
+@Table(name = "order_manager")
 class OrderManager(
     @Id
     @Column(name = "order_manager_id")
@@ -100,4 +103,7 @@ class OrderManager(
 
     @Column(name = "allocation_staff_id")
     val staffId: Long,
+
+    @Column(name = "active_flag", columnDefinition = "number")
+    val active: Boolean = true,
 )

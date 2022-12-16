@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.custody.date.reference
+package uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query

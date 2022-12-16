@@ -1,9 +1,9 @@
-package uk.gov.justice.digital.hmpps.custody.date.contact
+package uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.custody.date.Custody
-import uk.gov.justice.digital.hmpps.custody.date.KeyDate
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDate
 import java.lang.System.lineSeparator
 
 @Service
@@ -23,13 +23,14 @@ class ContactService(
         }
 
         val event = custody.disposal?.event!!
+        val om = event.manager!!
         val contact = Contact(
             personId = event.person.id,
             eventId = event.id,
             type = contactTypeRepository.edssType(),
             notes = notes(),
-            staffId = event.manager.staffId,
-            teamId = event.manager.teamId,
+            staffId = om.staffId,
+            teamId = om.teamId,
             providerId = event.manager.providerId
         )
 

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.custody.date.contact
+package uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact
 
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
@@ -15,7 +15,7 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import uk.gov.justice.digital.hmpps.custody.BaseEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.BaseEntity
 import java.time.ZonedDateTime
 
 @Entity
@@ -86,9 +86,9 @@ class ContactType(
 
     @Column(name = "sensitive_contact")
     @Convert(converter = YesNoConverter::class)
-    val isSensitive: Boolean,
+    val isSensitive: Boolean = false,
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "contact_alert_flag")
-    val alert: String? = null
+    val alert: Boolean? = false
 )

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.custody.date
+package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -11,8 +11,8 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.SequenceGenerator
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import uk.gov.justice.digital.hmpps.custody.BaseEntity
-import uk.gov.justice.digital.hmpps.custody.date.reference.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.BaseEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
 import java.time.LocalDate
 
 @Entity

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.custody.date
+package uk.gov.justice.digital.hmpps.integrations.delius.person
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

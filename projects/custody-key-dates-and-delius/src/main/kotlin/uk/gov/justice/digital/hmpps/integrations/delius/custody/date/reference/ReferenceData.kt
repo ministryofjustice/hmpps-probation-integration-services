@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.custody.date.reference
+package uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference
 
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Column

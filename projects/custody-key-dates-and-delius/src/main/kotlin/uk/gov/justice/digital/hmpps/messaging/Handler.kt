@@ -5,7 +5,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
-import uk.gov.justice.digital.hmpps.custody.date.CustodyDateUpdateService
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateUpdateService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService

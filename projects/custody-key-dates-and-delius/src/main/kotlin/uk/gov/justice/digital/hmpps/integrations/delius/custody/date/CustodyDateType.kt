@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.custody.date
+package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 
 import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
 import java.time.LocalDate
