@@ -1,6 +1,10 @@
 package uk.gov.justice.digital.hmpps
 
 import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.verify
@@ -10,34 +14,102 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.DEFAULT_CUSTODY
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
-import java.util.concurrent.TimeoutException
+import java.time.LocalDate
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 @SpringBootTest
 @ActiveProfiles("integration-test")
 internal class IntegrationTest {
-    @Value("\${messaging.consumer.queue}") lateinit var queueName: String
-    @Autowired lateinit var embeddedActiveMQ: EmbeddedActiveMQ
-    @Autowired lateinit var jmsTemplate: JmsTemplate
-    @MockBean lateinit var telemetryService: TelemetryService
+    @Value("\${messaging.consumer.queue}")
+    lateinit var queueName: String
+
+    @Autowired
+    lateinit var embeddedActiveMQ: EmbeddedActiveMQ
+
+    @Autowired
+    lateinit var jmsTemplate: JmsTemplate
+
+    @MockBean
+    lateinit var telemetryService: TelemetryService
+
+    @Autowired
+    lateinit var contactRepository: ContactRepository
+
+    @Autowired
+    lateinit var custodyRepository: CustodyRepository
 
     @Test
-    fun `message is logged to telemetry`() {
-        // Given a message
-        val notification = Notification(message = MessageGenerator.EXAMPLE)
+    @Transactional
+    fun `Custody Key Dates updated as expected`() {
+        val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED)
 
-        // When it is received
-        try {
-            jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
-        } catch (_: TimeoutException) {
-            // Note: Remove this try/catch when the MessageListener logic has been implemented
-        }
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
 
-        // Then it is logged to telemetry
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
+
+        val custody = custodyRepository.findById(DEFAULT_CUSTODY.id).orElseThrow()
+        verifyUpdatedKeyDates(custody)
+        verifyDeletedKeyDate(custody)
+        verifyContactCreated()
     }
+
+    private fun verifyUpdatedKeyDates(custody: Custody) {
+        val sed = custody.keyDate(CustodyDateType.SENTENCE_EXPIRY_DATE.code)
+        val crd = custody.keyDate(CustodyDateType.AUTOMATIC_CONDITIONAL_RELEASE_DATE.code)
+        val led = custody.keyDate(CustodyDateType.LICENCE_EXPIRY_DATE.code)
+        val erd = custody.keyDate(CustodyDateType.EXPECTED_RELEASE_DATE.code)
+        val hde = custody.keyDate(CustodyDateType.HDC_EXPECTED_DATE.code)
+
+        assertThat(sed?.date, equalTo(LocalDate.parse("2025-09-10")))
+        assertThat(crd?.date, equalTo(LocalDate.parse("2022-11-26")))
+        assertThat(led?.date, equalTo(LocalDate.parse("2025-09-11")))
+        assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
+        assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
+    }
+
+    private fun verifyDeletedKeyDate(custody: Custody) {
+        assertNull(custody.keyDate(CustodyDateType.PAROLE_ELIGIBILITY_DATE.code))
+    }
+
+    private fun verifyContactCreated() {
+        val event = DEFAULT_CUSTODY.disposal!!.event
+        val contact = contactRepository.findAll()
+            .firstOrNull { it.personId == PersonGenerator.DEFAULT.id && it.eventId == event.id }
+        assertNotNull(contact)
+        assertThat(
+            contact!!.date.truncatedTo(ChronoUnit.DAYS),
+            equalTo(ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS))
+        )
+        assertThat(contact.staffId, equalTo(3))
+        assertThat(contact.teamId, equalTo(2))
+        assertThat(contact.providerId, equalTo(1))
+        assertThat(
+            contact.notes,
+            equalTo(
+                """
+            LED 11/09/2025
+            ACR 26/11/2022
+            SED 10/09/2025
+            EXP 27/11/2022
+            HDE 28/10/2022
+            Removed PED 26/10/2022
+                """.trimIndent()
+            )
+        )
+    }
+
+    private fun Custody.keyDate(code: String) = keyDates.firstOrNull { it.type.code == code }
 }

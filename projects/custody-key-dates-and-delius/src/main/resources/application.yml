@@ -45,7 +45,7 @@ messaging.consumer.queue: message-queue
 
 integrations:
   prison-api:
-    url: http://localhost:${wiremock.port}/api
+    url: http://localhost:${wiremock.port}
 
 oauth2:
   client-id: custody-key-dates-and-delius

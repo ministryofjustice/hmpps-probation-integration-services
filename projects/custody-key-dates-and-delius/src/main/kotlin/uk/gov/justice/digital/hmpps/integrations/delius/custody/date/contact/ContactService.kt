@@ -12,6 +12,7 @@ class ContactService(
     private val contactRepository: ContactRepository
 ) {
     fun createForKeyDateChanges(custody: Custody, updates: List<KeyDate>, deleted: List<KeyDate>) {
+        if (updates.isEmpty() && deleted.isEmpty()) return
         fun notes(): String {
             val updateNotes = updates.joinToString(lineSeparator()) {
                 "${it.type.description} ${DeliusDateFormatter.format(it.date)}"

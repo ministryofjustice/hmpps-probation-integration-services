@@ -7,8 +7,10 @@ interface CustodyRepository : JpaRepository<Custody, Long> {
     @Query(
         """
         SELECT c FROM Custody c
-        JOIN c.disposal d
-        JOIN d.event e
+        JOIN FETCH c.disposal d
+        JOIN FETCH d.event e
+        JOIN FETCH e.manager
+        LEFT OUTER JOIN FETCH c.keyDates
         WHERE e.person.id = :personId
         AND c.softDeleted = false AND c.status.code <> 'P' AND c.bookingRef = :bookingRef
         AND e.active = true AND e.softDeleted = false 
