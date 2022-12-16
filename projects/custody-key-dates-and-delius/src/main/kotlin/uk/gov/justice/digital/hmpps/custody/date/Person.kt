@@ -15,7 +15,7 @@ class Person(
     @Column(name = "offender_id")
     val id: Long,
 
-    @Column(columnDefinition = "char(7)")
+    @Column(name = "NOMS_NUMBER", columnDefinition = "char(7)")
     val nomsId: String,
 
     @Column(updatable = false, columnDefinition = "NUMBER")

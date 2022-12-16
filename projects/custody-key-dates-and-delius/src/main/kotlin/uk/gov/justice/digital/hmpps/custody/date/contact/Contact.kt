@@ -68,8 +68,9 @@ class Contact(
     @Column(updatable = false, columnDefinition = "NUMBER")
     val trustProviderFlag: Boolean = false,
 
+    @Convert(converter = YesNoConverter::class)
     @Column(name = "alert_active")
-    val alert: String? = type.alert
+    val alert: Boolean? = false,
 
 ) : BaseEntity()
 
@@ -87,6 +88,7 @@ class ContactType(
     @Convert(converter = YesNoConverter::class)
     val isSensitive: Boolean,
 
+    @Convert(converter = YesNoConverter::class)
     @Column(name = "contact_alert_flag")
     val alert: String? = null
 )

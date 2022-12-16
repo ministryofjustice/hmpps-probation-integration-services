@@ -32,9 +32,9 @@ class CustodyDateUpdateService(
     private fun updateCustodyKeyDates(booking: Booking) {
         if (booking.active) {
             val sentenceDetail = prisonApi.getSentenceDetail(booking.id)
-            val person = personRepository.findByNomsIdAAndSoftDeletedIsFalse(booking.offenderNo) ?: return
+            val person = personRepository.findByNomsIdAndSoftDeletedIsFalse(booking.offenderNo) ?: return
             val custody = findCustody(person.id, booking.bookingNo)
-            val changes = calculateKeyDateChanges(sentenceDetail, custody).groupBy { it.deleted }
+            val changes = calculateKeyDateChanges(sentenceDetail, custody).groupBy { it.softDeleted }
             changes[true]?.let {
                 if (it.isNotEmpty()) keyDateRepository.deleteAll(it)
             }
@@ -60,7 +60,7 @@ class CustodyDateUpdateService(
                 return@mapNotNull KeyDate(null, custody, kdt, date)
             }
         } else {
-            return@mapNotNull custody.keyDates.find(cdt.code)?.let { it.deleted = true; it }
+            return@mapNotNull custody.keyDates.find(cdt.code)?.let { it.softDeleted = true; it }
         }
     }
 

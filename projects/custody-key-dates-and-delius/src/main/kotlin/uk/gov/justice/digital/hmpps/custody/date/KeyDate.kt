@@ -37,7 +37,4 @@ class KeyDate(
     @Column(name = "key_date")
     var date: LocalDate,
 
-    @Column(name = "softDeleted", columnDefinition = "number", nullable = false)
-    var deleted: Boolean = false
-
 ) : BaseEntity()

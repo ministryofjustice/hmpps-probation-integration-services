@@ -85,6 +85,7 @@ class Custody(
 @Where(clause = "active_flag = 1")
 class OrderManager(
     @Id
+    @Column(name = "order_manager_id")
     val id: Long,
 
     @OneToOne

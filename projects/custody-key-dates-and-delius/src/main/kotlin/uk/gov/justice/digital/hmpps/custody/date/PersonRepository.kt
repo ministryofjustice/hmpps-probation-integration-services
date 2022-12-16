@@ -3,5 +3,5 @@ package uk.gov.justice.digital.hmpps.custody.date
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface PersonRepository : JpaRepository<Person, Long> {
-    fun findByNomsIdAAndSoftDeletedIsFalse(nomsId: String): Person?
+    fun findByNomsIdAndSoftDeletedIsFalse(nomsId: String): Person?
 }
