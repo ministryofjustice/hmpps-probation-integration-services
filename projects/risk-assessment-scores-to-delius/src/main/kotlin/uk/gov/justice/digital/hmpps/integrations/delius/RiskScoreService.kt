@@ -62,7 +62,7 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate) {
 
     private fun parseValidationMessage(e: SQLException) = if (!isValidationMessage(e)) null else e.message
         ?.replace(Regex("\\n.*"), "") // take the first line
-        ?.replace(Regex("\\[.+?]"), "") // remove anything inside square brackets
+        ?.replace(Regex("\\[[^]]++]"), "") // remove anything inside square brackets
         ?.removePrefix("ORA-20000: INTERNAL ERROR: An unexpected error in PL/SQL: ERROR : ") // remove Oracle prefix
         ?.trim()
 
@@ -70,6 +70,7 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate) {
         private val KNOWN_VALIDATION_MESSAGES = listOf(
             "The existing CAS Assessment Date is greater than a specified P_ASSESSMENT_DATE value",
             "The Event is Soft Deleted",
+            "The event number does not exist against the specified Offender",
             "CRN/Offender does not exist",
         )
     }
