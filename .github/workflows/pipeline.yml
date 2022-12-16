@@ -38,6 +38,7 @@ jobs:
     name: Deploy to test
     uses: ./.github/workflows/deploy.yml
     needs: build
+    if: ${{ needs.build.outputs.changed-projects != '[]' }}
     with:
       environment: test
       version: ${{ needs.build.outputs.version }}
@@ -48,6 +49,7 @@ jobs:
     name: Deploy to preprod
     uses: ./.github/workflows/deploy.yml
     needs: build
+    if: ${{ needs.build.outputs.changed-projects != '[]' }}
     with:
       environment: preprod
       version: ${{ needs.build.outputs.version }}

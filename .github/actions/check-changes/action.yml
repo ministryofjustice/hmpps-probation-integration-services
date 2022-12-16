@@ -17,8 +17,11 @@ runs:
         filters: |
           commons:
             - '*'
+            - '.github/**'
+            - 'buildSrc/**'
+            - 'gradle/**'
             - 'libs/**'
-          projects: 
+          projects:
             - 'projects/**'
     - name: Check for changes
       id: check-changes
