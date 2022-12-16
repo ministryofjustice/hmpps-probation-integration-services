@@ -1,11 +1,13 @@
 package uk.gov.justice.digital.hmpps.integrations.delius
 
+import org.springframework.jdbc.UncategorizedSQLException
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.SqlParameter
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.simple.SimpleJdbcCall
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.messaging.RiskAssessment
+import java.sql.SQLException
 import java.sql.Types
 import java.time.ZonedDateTime
 
@@ -35,17 +37,41 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate) {
         ospIndecent: RiskAssessment,
         ospContact: RiskAssessment,
     ) {
-        updateRsrScoresProcedure.execute(
-            MapSqlParameterSource()
-                .addValue("p_crn", crn)
-                .addValue("p_event_number", eventNumber)
-                .addValue("p_rsr_assessor_date", assessmentDate)
-                .addValue("p_rsr_score", rsr.score)
-                .addValue("p_rsr_level_code", rsr.band)
-                .addValue("p_osp_score_i", ospIndecent.score)
-                .addValue("p_osp_score_c", ospContact.score)
-                .addValue("p_osp_level_i_code", ospIndecent.band)
-                .addValue("p_osp_level_c_code", ospContact.band)
+        try {
+            updateRsrScoresProcedure.execute(
+                MapSqlParameterSource()
+                    .addValue("p_crn", crn)
+                    .addValue("p_event_number", eventNumber)
+                    .addValue("p_rsr_assessor_date", assessmentDate)
+                    .addValue("p_rsr_score", rsr.score)
+                    .addValue("p_rsr_level_code", rsr.band)
+                    .addValue("p_osp_score_i", ospIndecent.score)
+                    .addValue("p_osp_score_c", ospContact.score)
+                    .addValue("p_osp_level_i_code", ospIndecent.band)
+                    .addValue("p_osp_level_c_code", ospContact.band)
+            )
+        } catch (e: UncategorizedSQLException) {
+            parseValidationMessage(e.sqlException)
+                ?.takeIf { KNOWN_VALIDATION_MESSAGES.contains(it) }
+                ?.let { throw DeliusValidationError(it) }
+            throw e
+        }
+    }
+
+    private fun isValidationMessage(e: SQLException) = e.errorCode == 20000
+
+    private fun parseValidationMessage(e: SQLException) = if (!isValidationMessage(e)) null else e.message
+        ?.replace(Regex("\\n.*"), "") // take the first line
+        ?.replace(Regex("\\[[^]]++]\\s*"), "") // remove anything inside square brackets
+        ?.removePrefix("ORA-20000: INTERNAL ERROR: An unexpected error in PL/SQL: ERROR : ") // remove Oracle prefix
+        ?.trim()
+
+    companion object {
+        private val KNOWN_VALIDATION_MESSAGES = listOf(
+            "The existing CAS Assessment Date is greater than a specified P_ASSESSMENT_DATE value",
+            "The Event is Soft Deleted",
+            "The event number does not exist against the specified Offender",
+            "CRN/Offender does not exist",
         )
     }
 }

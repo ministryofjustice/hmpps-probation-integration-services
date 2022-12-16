@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
+import uk.gov.justice.digital.hmpps.integrations.delius.DeliusValidationError
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -17,22 +18,29 @@ class Handler(
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
-        val hmppsEvent = notification.message
-        when (hmppsEvent.eventType) {
-            "risk-assessment.scores.rsr.determined" -> {
-                riskScoreService.updateRsrScores(
-                    hmppsEvent.personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN in ${hmppsEvent.personReference}"),
-                    hmppsEvent.additionalInformation["EventNumber"] as Int,
-                    hmppsEvent.assessmentDate(),
-                    hmppsEvent.rsr(),
-                    hmppsEvent.ospIndecent(),
-                    hmppsEvent.ospContact()
-                )
-                telemetryService.trackEvent("RsrScoresUpdated", hmppsEvent.telemetryProperties())
+        val message = notification.message
+        try {
+            when (message.eventType) {
+                "risk-assessment.scores.rsr.determined" -> {
+                    riskScoreService.updateRsrScores(
+                        message.personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
+                        message.additionalInformation["EventNumber"] as Int,
+                        message.assessmentDate(),
+                        message.rsr(),
+                        message.ospIndecent(),
+                        message.ospContact()
+                    )
+                    telemetryService.trackEvent("RsrScoresUpdated", message.telemetryProperties())
+                }
+
+                "risk-assessment.scores.ogrs.determined" ->
+                    telemetryService.trackEvent("UnsupportedEventType", message.telemetryProperties())
+
+                else -> throw IllegalArgumentException("Unexpected event type ${message.eventType}")
             }
-            "risk-assessment.scores.ogrs.determined" ->
-                telemetryService.trackEvent("UnsupportedEventType", hmppsEvent.telemetryProperties())
-            else -> throw IllegalArgumentException("Unexpected event type ${notification.eventType}")
+        } catch (e: DeliusValidationError) {
+            telemetryService.trackEvent("UpdateRejected", mapOf("reason" to e.message) + message.telemetryProperties())
+            throw e
         }
     }
 }
@@ -56,6 +64,12 @@ fun HmppsDomainEvent.ospContact() = RiskAssessment(
 
 fun HmppsDomainEvent.telemetryProperties() = mapOf(
     "occurredAt" to occurredAt.toString(),
-    "personReference" to personReference.toString(),
-    "additionalInformation" to additionalInformation.toString(),
+    "crn" to (personReference.findCrn() ?: "unknown"),
+    "eventNumber" to additionalInformation["EventNumber"].toString(),
+    "rsrScore" to additionalInformation["RSRScore"].toString(),
+    "rsrBand" to additionalInformation["RSRBand"].toString(),
+    "ospIndecentScore" to additionalInformation["OSPIndecentScore"].toString(),
+    "ospIndecentBand" to additionalInformation["OSPIndecentBand"].toString(),
+    "ospContactScore" to additionalInformation["OSPContactScore"].toString(),
+    "ospContactBand" to additionalInformation["OSPContactBand"].toString(),
 )
