@@ -16,4 +16,7 @@ elif [ -n "$PROJECT_FILES" ]; then
   projects=$(echo $PROJECT_FILES | xargs -n1 | topLevelChanges | toJsonArray)
   echo "Changes detected in: $projects"
   echo "projects=$projects" >> $GITHUB_OUTPUT
+else
+  echo "No changes detected"
+  echo "projects=[]" >> $GITHUB_OUTPUT
 fi
