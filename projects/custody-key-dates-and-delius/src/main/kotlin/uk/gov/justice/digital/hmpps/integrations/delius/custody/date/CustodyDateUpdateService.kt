@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
@@ -12,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
 
 @Service
+@Transactional
 class CustodyDateUpdateService(
     private val prisonApi: PrisonApiClient,
     private val personRepository: PersonRepository,
