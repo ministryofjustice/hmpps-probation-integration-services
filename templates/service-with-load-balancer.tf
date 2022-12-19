@@ -1,4 +1,4 @@
-module "$SERVICE_NAME" {
+module "SERVICE_NAME" {
   source                   = "../../modules/ecs_service"
   region                   = var.region
   environment_name         = var.environment_name
@@ -7,7 +7,7 @@ module "$SERVICE_NAME" {
   tags                     = var.tags
 
   # Application Container
-  service_name                   = "$SERVICE_NAME"
+  service_name                   = "SERVICE_NAME"
   health_check_path              = "/health"
   ignore_task_definition_changes = true
 
@@ -15,7 +15,7 @@ module "$SERVICE_NAME" {
   task_role_arn      = aws_iam_role.ecs_sqs_task.arn
   target_group_count = 1
   security_groups = [
-    aws_security_group.$SERVICE_NAME-instances.id,
+    aws_security_group.SERVICE_NAME-instances.id,
     data.terraform_remote_state.delius_core_security_groups.outputs.sg_common_out_id,
     data.terraform_remote_state.delius_core_security_groups.outputs.sg_delius_db_access_id,
   ]
@@ -28,25 +28,25 @@ module "$SERVICE_NAME" {
   max_capacity = local.max_capacity
 }
 
-resource "aws_iam_role_policy_attachment" "$SERVICE_NAME" {
-  role       = module.$SERVICE_NAME.exec_role.name
+resource "aws_iam_role_policy_attachment" "SERVICE_NAME" {
+  role       = module.SERVICE_NAME.exec_role.name
   policy_arn = aws_iam_policy.access_ssm_parameters.arn
 }
 
-resource "aws_lb" "$SERVICE_NAME" {
+resource "aws_lb" "SERVICE_NAME" {
   internal = false
   subnets = [
     data.terraform_remote_state.vpc.outputs.vpc_public-subnet-az1,
     data.terraform_remote_state.vpc.outputs.vpc_public-subnet-az2,
     data.terraform_remote_state.vpc.outputs.vpc_public-subnet-az3
   ]
-  security_groups = [aws_security_group.$SERVICE_NAME-lb.id]
-  tags            = merge(var.tags, { Name = "${var.short_environment_name}-$SERVICE_NAME-lb" })
+  security_groups = [aws_security_group.SERVICE_NAME-lb.id]
+  tags            = merge(var.tags, { Name = "${var.short_environment_name}-SERVICE_NAME-lb" })
 
   access_logs {
     enabled = true
     bucket  = data.terraform_remote_state.access_logs.outputs.bucket_name
-    prefix  = "$SERVICE_NAME"
+    prefix  = "SERVICE_NAME"
   }
 
   lifecycle {
@@ -54,31 +54,31 @@ resource "aws_lb" "$SERVICE_NAME" {
   }
 }
 
-resource "aws_lb_listener" "$SERVICE_NAME" {
-  load_balancer_arn = aws_lb.$SERVICE_NAME.arn
+resource "aws_lb_listener" "SERVICE_NAME" {
+  load_balancer_arn = aws_lb.SERVICE_NAME.arn
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
   certificate_arn   = local.certificate_arn
   default_action {
     type = "forward"
-    target_group_arn = module.$SERVICE_NAME.primary_target_group["arn"]
+    target_group_arn = module.SERVICE_NAME.primary_target_group["arn"]
   }
 }
 
-resource "aws_route53_record" "$SERVICE_NAME" {
+resource "aws_route53_record" "SERVICE_NAME" {
   zone_id = local.route53_zone_id
-  name    = "$SERVICE_NAME"
+  name    = "SERVICE_NAME"
   type    = "CNAME"
   ttl     = 300
-  records = [aws_lb.$SERVICE_NAME.dns_name]
+  records = [aws_lb.SERVICE_NAME.dns_name]
 }
 
-resource "aws_security_group" "$SERVICE_NAME-lb" {
-  name        = "${var.environment_name}-$SERVICE_NAME-lb"
+resource "aws_security_group" "SERVICE_NAME-lb" {
+  name        = "${var.environment_name}-SERVICE_NAME-lb"
   vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
-  description = "$SERVICE_NAME load balancer"
-  tags        = merge(var.tags, { Name = "${var.environment_name}-$SERVICE_NAME-lb" })
+  description = "SERVICE_NAME load balancer"
+  tags        = merge(var.tags, { Name = "${var.environment_name}-SERVICE_NAME-lb" })
   lifecycle {
     create_before_destroy = true
   }
@@ -100,33 +100,33 @@ resource "aws_security_group" "$SERVICE_NAME-lb" {
     from_port       = 8080
     protocol        = "tcp"
     to_port         = 8080
-    security_groups = [aws_security_group.$SERVICE_NAME-instances.id]
+    security_groups = [aws_security_group.SERVICE_NAME-instances.id]
     description     = "Egress to instances"
   }
 }
 
-resource "aws_security_group" "$SERVICE_NAME-instances" {
-  name        = "${var.environment_name}-$SERVICE_NAME-instances"
+resource "aws_security_group" "SERVICE_NAME-instances" {
+  name        = "${var.environment_name}-SERVICE_NAME-instances"
   vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
-  description = "$SERVICE_NAME instances"
-  tags        = merge(var.tags, { Name = "${var.environment_name}-$SERVICE_NAME-instances" })
+  description = "SERVICE_NAME instances"
+  tags        = merge(var.tags, { Name = "${var.environment_name}-SERVICE_NAME-instances" })
   lifecycle {
     create_before_destroy = true
   }
 }
 
-resource "aws_security_group_rule" "$SERVICE_NAME" {
-  security_group_id        = aws_security_group.$SERVICE_NAME-instances.id
+resource "aws_security_group_rule" "SERVICE_NAME" {
+  security_group_id        = aws_security_group.SERVICE_NAME-instances.id
   type                     = "ingress"
   protocol                 = "tcp"
   from_port                = 8080
   to_port                  = 8080
-  source_security_group_id = aws_security_group.$SERVICE_NAME-lb.id
+  source_security_group_id = aws_security_group.SERVICE_NAME-lb.id
   description              = "Ingress from load balancer"
 }
 
-output "$SERVICE_NAME" {
+output "SERVICE_NAME" {
   value = {
-    url = "https://${aws_route53_record.$SERVICE_NAME.fqdn}"
+    url = "https://${aws_route53_record.SERVICE_NAME.fqdn}"
   }
 }
