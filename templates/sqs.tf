@@ -8,14 +8,14 @@ resource "aws_sns_topic_subscription" "$SERVICE_NAME-queue-subscription" {
 }
 
 module "$SERVICE_NAME-queue" {
-  source                 = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=4.9.1"
+  source                 = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=4.8"
   namespace              = var.namespace
   team_name              = var.team_name
   environment-name       = var.environment_name
   infrastructure-support = var.infrastructure_support
 
-  application = "$SERVICE_NAME-queue"
-  sqs_name    = "$SERVICE_NAME-queue-queue"
+  application = "$SERVICE_NAME"
+  sqs_name    = "$SERVICE_NAME-queue"
 
   redrive_policy = jsonencode({
     deadLetterTargetArn = module.$SERVICE_NAME-dlq.sqs_arn
@@ -29,7 +29,7 @@ resource "aws_sqs_queue_policy" "$SERVICE_NAME-queue-policy" {
 }
 
 module "$SERVICE_NAME-dlq" {
-  source                 = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=4.9.1"
+  source                 = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=4.8"
   namespace              = var.namespace
   team_name              = var.team_name
   environment-name       = var.environment_name
