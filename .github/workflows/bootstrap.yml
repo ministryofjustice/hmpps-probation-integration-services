@@ -274,9 +274,9 @@ jobs:
 
       - name: Render Terraform queue template
         run: |
-          sed 's/$SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/$SERVICE_NAME/${{ inputs.project_name }}/g' templates/sqs.tf > 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/${{ inputs.project_name }}-queue.tf'
-          sed 's/$SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/$SERVICE_NAME/${{ inputs.project_name }}/g' templates/sqs.tf > 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/${{ inputs.project_name }}-queue.tf'
-          sed 's/$SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/$SERVICE_NAME/${{ inputs.project_name }}/g' templates/sqs.tf > 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/${{ inputs.project_name }}-queue.tf'
+          sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/${{ inputs.project_name }}/g' templates/sqs.tf > 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/${{ inputs.project_name }}-queue.tf'
+          sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/${{ inputs.project_name }}/g' templates/sqs.tf > 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/${{ inputs.project_name }}-queue.tf'
+          sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/${{ inputs.project_name }}/g' templates/sqs.tf > 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/${{ inputs.project_name }}-queue.tf'
 
       - name: Create dev pull request
         id: dev-pr
