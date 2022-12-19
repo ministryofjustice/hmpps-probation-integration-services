@@ -17,6 +17,7 @@ include(
     "approved-premises-and-oasys",
     "offender-events-and-delius",
     "custody-key-dates-and-delius",
+    "make-recall-decisions-and-delius",
     // ^ add new projects here
 )
 
