@@ -1,6 +1,19 @@
 name: Check for changes
 description: Check which projects have changed since branching from main
 
+inputs:
+  filters:
+    description: Path patterns to use for matching changes
+    default: |
+      commons:
+        - '*'
+        - '.github/**'
+        - 'buildSrc/**'
+        - 'gradle/**'
+        - 'libs/**'
+      projects:
+        - 'projects/**'
+
 outputs:
   projects:
     description: A JSON array of projects that have changed
@@ -14,15 +27,7 @@ runs:
       id: paths-filter
       with:
         list-files: shell
-        filters: |
-          commons:
-            - '*'
-            - '.github/**'
-            - 'buildSrc/**'
-            - 'gradle/**'
-            - 'libs/**'
-          projects:
-            - 'projects/**'
+        filters: ${{ inputs.filters }}
     - name: Check for changes
       id: check-changes
       shell: bash

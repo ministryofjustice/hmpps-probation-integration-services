@@ -65,16 +65,6 @@ runs:
           fi
         done
 
-    - name: Configure database access
-      shell: bash
-      run: |
-        test -f database/access.yml && \
-        aws ssm start-automation-execution --document-name oracle-${{ steps.env.outputs.short-name }}-probation-integration-access \
-                                           --parameters "Configuration='$(yq database/access.yml -o json)'" \
-                                           --region eu-west-2 && \
-        echo 'Execution started. Follow the logs in AWS: https://eu-west-2.console.aws.amazon.com/systems-manager/automation/executions?region=eu-west-2'
-      working-directory: projects/${{ inputs.project }}/deploy
-
     - name: Render values
       shell: bash
       run: |
