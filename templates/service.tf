@@ -1,4 +1,4 @@
-module "$SERVICE_NAME" {
+module "SERVICE_NAME" {
   source                   = "../../modules/ecs_service"
   region                   = var.region
   environment_name         = var.environment_name
@@ -7,7 +7,7 @@ module "$SERVICE_NAME" {
   tags                     = var.tags
 
   # Application Container
-  service_name                   = "$SERVICE_NAME"
+  service_name                   = "SERVICE_NAME"
   ignore_task_definition_changes = true
 
   # Security & Networking
@@ -26,7 +26,7 @@ module "$SERVICE_NAME" {
   max_capacity = local.max_capacity
 }
 
-resource "aws_iam_role_policy_attachment" "$SERVICE_NAME" {
-  role       = module.$SERVICE_NAME.exec_role.name
+resource "aws_iam_role_policy_attachment" "SERVICE_NAME" {
+  role       = module.SERVICE_NAME.exec_role.name
   policy_arn = aws_iam_policy.access_ssm_parameters.arn
 }

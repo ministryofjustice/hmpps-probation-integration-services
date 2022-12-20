@@ -158,11 +158,11 @@ jobs:
 
       - name: Render Terraform service template
         if: ${{ ! inputs.create_ingress }}
-        run: sed 's/$SERVICE_NAME/${{ inputs.project_name }}/g' templates/service.tf > 'hmpps-delius-core-terraform/application/probation-integration-services/${{ inputs.project_name }}.tf'
+        run: sed 's/SERVICE_NAME/${{ inputs.project_name }}/g' templates/service.tf > 'hmpps-delius-core-terraform/application/probation-integration-services/${{ inputs.project_name }}.tf'
 
       - name: Render Terraform service with load-balancer template
         if: ${{ inputs.create_ingress }}
-        run: sed 's/$SERVICE_NAME/${{ inputs.project_name }}/g' templates/service-with-load-balancer.tf > 'hmpps-delius-core-terraform/application/probation-integration-services/${{ inputs.project_name }}.tf'
+        run: sed 's/SERVICE_NAME/${{ inputs.project_name }}/g' templates/service-with-load-balancer.tf > 'hmpps-delius-core-terraform/application/probation-integration-services/${{ inputs.project_name }}.tf'
 
       - name: Create pull request
         id: pr
@@ -274,9 +274,15 @@ jobs:
 
       - name: Render Terraform queue template
         run: |
-          sed 's/$SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/$SERVICE_NAME/${{ inputs.project_name }}/g' templates/sqs.tf > 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/${{ inputs.project_name }}-queue.tf'
-          sed 's/$SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/$SERVICE_NAME/${{ inputs.project_name }}/g' templates/sqs.tf > 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/${{ inputs.project_name }}-queue.tf'
-          sed 's/$SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/$SERVICE_NAME/${{ inputs.project_name }}/g' templates/sqs.tf > 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/${{ inputs.project_name }}-queue.tf'
+          sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/${{ inputs.project_name }}/g' templates/sqs.tf > 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/${{ inputs.project_name }}-queue.tf'
+          sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/${{ inputs.project_name }}/g' templates/sqs.tf > 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/${{ inputs.project_name }}-queue.tf'
+          sed 's/SERVICE_NAME_UPPERCASE/${{ steps.project_name.outputs.with_underscores_uppercase }}/g;s/SERVICE_NAME/${{ inputs.project_name }}/g' templates/sqs.tf > 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/${{ inputs.project_name }}-queue.tf'
+
+      - name: Update IAM access to queues
+        run: |
+          sed -i '/managed_sqs_queues = \[/a \    module.${{ inputs.project_name }}-queue.sqs_arn,\n    module.${{ inputs.project_name }}-dlq.sqs_arn,' 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/iam.tf'
+          sed -i '/managed_sqs_queues = \[/a \    module.${{ inputs.project_name }}-queue.sqs_arn,\n    module.${{ inputs.project_name }}-dlq.sqs_arn,' 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/iam.tf'
+          sed -i '/managed_sqs_queues = \[/a \    module.${{ inputs.project_name }}-queue.sqs_arn,\n    module.${{ inputs.project_name }}-dlq.sqs_arn,' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/iam.tf'
 
       - name: Create dev pull request
         id: dev-pr
