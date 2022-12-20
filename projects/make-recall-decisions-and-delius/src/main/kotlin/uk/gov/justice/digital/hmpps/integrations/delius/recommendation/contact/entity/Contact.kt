@@ -64,15 +64,6 @@ class Contact(
     @Column(name = "alert_active")
     val alert: Boolean? = false,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
-    val trustProviderFlag: Boolean = false,
-
-    @Column(updatable = false)
-    val trustProviderTeamId: Long = teamId,
-
-    @Column(updatable = false)
-    val staffEmployeeId: Long = staffId,
-
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
     var softDeleted: Boolean = false,
 

@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.contact.C
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.entity.Person
+import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class RecommendationStartedTest {
@@ -36,7 +37,13 @@ internal class RecommendationStartedTest {
         val person = Person(IdGenerator.getAndIncrement(), crn)
         whenever(personRepository.findByCrn(crn)).thenReturn(person)
 
-        val ex = assertThrows<IllegalStateException> { recommendationStarted.recommended(crn, "anyUrl") }
+        val ex = assertThrows<IllegalStateException> {
+            recommendationStarted.recommended(
+                crn,
+                "anyUrl",
+                ZonedDateTime.now()
+            )
+        }
         assertThat(ex.message, equalTo("No Active Person Manager"))
     }
 }

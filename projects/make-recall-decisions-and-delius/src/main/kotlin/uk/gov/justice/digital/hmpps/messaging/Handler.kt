@@ -16,17 +16,18 @@ class Handler(
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
-        notification.message.personReference.findCrn()?.let {
-            when (notification.eventType) {
-                "prison-recall.recommendation.started" -> recommendationStarted.recommended(
-                    it,
-                    notification.recommendationUrl()
-                )
-                else -> throw NotImplementedError("Unhandled message type received: ${notification.eventType}")
-            }
+        val crn = notification.message.personReference.findCrn()
+            ?: throw IllegalArgumentException("CRN not found in message")
+        when (notification.eventType) {
+            "prison-recall.recommendation.started" -> recommendationStarted.recommended(
+                crn,
+                notification.recommendationUrl(),
+                notification.message.occurredAt
+            )
+            else -> throw NotImplementedError("Unhandled message type received: ${notification.eventType}")
         }
     }
-
-    private fun Notification<HmppsDomainEvent>.recommendationUrl() =
-        message.additionalInformation["recommendationUrl"] as String
 }
+
+private fun Notification<HmppsDomainEvent>.recommendationUrl() =
+    message.additionalInformation["recommendationUrl"] as String

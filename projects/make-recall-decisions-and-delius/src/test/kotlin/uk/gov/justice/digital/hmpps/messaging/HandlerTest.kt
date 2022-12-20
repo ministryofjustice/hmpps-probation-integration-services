@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.Recommend
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
@@ -46,5 +47,13 @@ internal class HandlerTest {
         val notification = Notification(message, MessageAttributes(message.eventType))
 
         assertThrows<NotImplementedError> { handler.handle(notification) }
+    }
+
+    @Test
+    fun `message without crn throws exception`() {
+        val message = MessageGenerator.RECOMMENDATION_STARTED.copy(personReference = PersonReference())
+        val notification = Notification(message, MessageAttributes(message.eventType))
+
+        assertThrows<IllegalArgumentException> { handler.handle(notification) }
     }
 }

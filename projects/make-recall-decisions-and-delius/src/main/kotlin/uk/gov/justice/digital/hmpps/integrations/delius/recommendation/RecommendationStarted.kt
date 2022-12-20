@@ -18,19 +18,18 @@ class RecommendationStarted(
     private val contactRepository: ContactRepository
 ) {
 
-    fun recommended(crn: String, recommendationUrl: String) {
+    fun recommended(crn: String, recommendationUrl: String, occurredAt: ZonedDateTime) {
         val person = personRepository.getPerson(crn)
-        contactRepository.save(person.recommendationStarted(recommendationUrl))
+        contactRepository.save(person.recommendationStarted(recommendationUrl, occurredAt))
     }
 
-    private fun Person.recommendationStarted(recommendationUrl: String): Contact {
-        val now = ZonedDateTime.now()
+    private fun Person.recommendationStarted(recommendationUrl: String, occurredAt: ZonedDateTime): Contact {
         if (manager == null) throw IllegalStateException("No Active Person Manager")
         return Contact(
             0,
             id,
-            now,
-            now,
+            occurredAt,
+            occurredAt,
             type = contactTypeRepository.getByCode(ContactType.RECOMMENDATION_STARTED),
             notes = "View details of this Recommendation: $recommendationUrl",
             providerId = manager.providerId,
