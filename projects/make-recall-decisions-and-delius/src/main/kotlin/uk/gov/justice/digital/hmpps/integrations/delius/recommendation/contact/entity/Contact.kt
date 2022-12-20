@@ -58,7 +58,7 @@ class Contact(
 
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)
-    val isSensitive: Boolean = type.isSensitive,
+    val isSensitive: Boolean = false,
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "alert_active")
@@ -98,15 +98,7 @@ class ContactType(
     @Column(name = "contact_type_id")
     val id: Long,
 
-    val code: String,
-
-    @Column(name = "sensitive_contact")
-    @Convert(converter = YesNoConverter::class)
-    val isSensitive: Boolean = false,
-
-    @Convert(converter = YesNoConverter::class)
-    @Column(name = "contact_alert_flag")
-    val alert: Boolean? = false
+    val code: String
 ) {
     companion object {
         const val RECOMMENDATION_STARTED = "MRD01"
