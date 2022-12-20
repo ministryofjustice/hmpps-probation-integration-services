@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
+import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -94,7 +95,7 @@ internal class IntegrationTest {
 
         // And a contact alert is created
         val contact = contactRepository.findAll()
-            .single { it.person.crn == event.message.personReference.findCrn() && it.type.code == ContactTypeCode.APPLICATION_SUBMITTED.code }
+            .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.APPLICATION_SUBMITTED.code }
         assertThat(contact.alert, equalTo(true))
     }
 
@@ -112,9 +113,29 @@ internal class IntegrationTest {
 
         // And a contact alert is created
         val contact = contactRepository.findAll()
-            .single { it.person.crn == event.message.personReference.findCrn() && it.type.code == ContactTypeCode.APPLICATION_ASSESSED.code }
+            .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.APPLICATION_ASSESSED.code }
         assertThat(contact.alert, equalTo(true))
         assertThat(contact.description, equalTo("Approved Premises Application Rejected"))
         assertThat(contact.notes, equalTo("Risk too low"))
+    }
+
+    @Test
+    fun `booking made creates an alert contact`() {
+        // Given a booking-made event
+        val event = prepEvent("booking-made", wireMockServer.port())
+
+        // When it is received
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, event)
+
+        // Then it is logged to telemetry
+        verify(telemetryService).notificationReceived(event)
+        verify(telemetryService).trackEvent("BookingMade", event.message.telemetryProperties())
+
+        // And a contact alert is created
+        val contact = contactRepository.findAll()
+            .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.BOOKING_MADE.code }
+        assertThat(contact.alert, equalTo(true))
+        assertThat(contact.description, equalTo("Approved Premises Booking for Hope House"))
+        assertThat(contact.notes, equalTo("To view details of the Approved Premises booking, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713"))
     }
 }
