@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.service.ApprovedPremisesService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
+import java.net.URI
 
 @Component
 class Handler(
@@ -27,6 +28,10 @@ class Handler(
                 approvedPremisesService.applicationAssessed(event)
                 telemetryService.trackEvent("ApplicationAssessed", event.telemetryProperties())
             }
+            "approved-premises.booking.made" -> {
+                approvedPremisesService.bookingMade(event)
+                telemetryService.trackEvent("BookingMade", event.telemetryProperties())
+            }
             else -> throw IllegalArgumentException("Unexpected event type ${event.eventType}")
         }
     }
@@ -34,5 +39,8 @@ class Handler(
 
 fun HmppsDomainEvent.telemetryProperties() = mapOf(
     "occurredAt" to occurredAt.toString(),
-    "crn" to (personReference.findCrn() ?: "Unknown"),
+    "crn" to crn(),
 )
+
+fun HmppsDomainEvent.crn(): String = personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN")
+fun HmppsDomainEvent.url(): URI = URI.create(detailUrl ?: throw IllegalArgumentException("Missing detail url"))

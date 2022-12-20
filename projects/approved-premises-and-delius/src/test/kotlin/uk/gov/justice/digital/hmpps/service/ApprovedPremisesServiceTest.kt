@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.service
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -22,6 +21,7 @@ import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationAssessed
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSubmitted
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremisesApiClient
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlertRepository
@@ -35,9 +35,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
-import uk.gov.justice.digital.hmpps.message.PersonReference
+import uk.gov.justice.digital.hmpps.messaging.crn
+import uk.gov.justice.digital.hmpps.messaging.url
 import uk.gov.justice.digital.hmpps.prepEvent
-import java.net.URI
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -54,31 +54,11 @@ internal class ApprovedPremisesServiceTest {
 
     private val applicationSubmittedEvent = prepEvent("application-submitted", 1234).message
     private val applicationAssessedEvent = prepEvent("application-assessed", 1234).message
-
-    @Test
-    fun `throws when no detail url is provided`() {
-        val exception = assertThrows<IllegalArgumentException> {
-            approvedPremisesService
-                .applicationSubmitted(applicationSubmittedEvent.copy(detailUrl = null))
-        }
-        assertThat(exception.message, equalTo("Missing detail url"))
-    }
-
-    @Test
-    fun `throws when no crn is provided`() {
-        givenApplicationSubmittedDetails()
-
-        val exception = assertThrows<IllegalArgumentException> {
-            approvedPremisesService
-                .applicationSubmitted(applicationSubmittedEvent.copy(personReference = PersonReference()))
-        }
-        assertThat(exception.message, equalTo("Missing CRN"))
-    }
+    private val bookingMadeEvent = prepEvent("booking-made", 1234).message
 
     @Test
     fun `creates alert contact for application submission`() {
-        val crn = applicationSubmittedEvent.personReference.findCrn()!!
-        val person = givenAPerson(crn)
+        val person = givenAPerson(applicationSubmittedEvent.crn())
         val manager = givenAPersonManager(person)
         val submitter = givenStaff()
         val unallocatedTeam = givenUnallocatedTeam()
@@ -99,8 +79,7 @@ internal class ApprovedPremisesServiceTest {
 
     @Test
     fun `creates alert contact for application assessment`() {
-        val crn = applicationAssessedEvent.personReference.findCrn()!!
-        val person = givenAPerson(crn)
+        val person = givenAPerson(applicationAssessedEvent.crn())
         val manager = givenAPersonManager(person)
         val assessor = givenStaff()
         val unallocatedTeam = givenUnallocatedTeam()
@@ -118,6 +97,30 @@ internal class ApprovedPremisesServiceTest {
             alertManager = manager,
             description = "Approved Premises Application Accepted",
             notes = "Test decision rationale"
+        )
+    }
+
+    @Test
+    fun `creates alert contact for booking made`() {
+        val crn = bookingMadeEvent.crn()
+        val person = givenAPerson(crn)
+        val manager = givenAPersonManager(person)
+        val booker = givenStaff()
+        val unallocatedTeam = givenUnallocatedTeam()
+        val details = givenBookingMadeDetails(bookedBy = booker)
+        givenContactTypes(listOf(ContactTypeCode.BOOKING_MADE))
+
+        approvedPremisesService.bookingMade(bookingMadeEvent)
+
+        verifyAlertContactIsCreated(
+            type = ContactTypeCode.BOOKING_MADE,
+            date = details.eventDetails.createdAt,
+            person = person,
+            staff = booker,
+            team = unallocatedTeam,
+            alertManager = manager,
+            description = "Approved Premises Booking for Test Premises",
+            notes = "To view details of the Approved Premises booking, click here: https://example.com"
         )
     }
 
@@ -186,8 +189,7 @@ internal class ApprovedPremisesServiceTest {
         submittedBy: Staff = StaffGenerator.generate()
     ): EventDetails<ApplicationSubmitted> {
         val details = EventDetailsGenerator.applicationSubmitted(submittedBy = submittedBy)
-        whenever(approvedPremisesApiClient.getApplicationSubmittedDetails(URI.create(applicationSubmittedEvent.detailUrl!!)))
-            .thenReturn(details)
+        whenever(approvedPremisesApiClient.getApplicationSubmittedDetails(applicationSubmittedEvent.url())).thenReturn(details)
         return details
     }
 
@@ -195,8 +197,15 @@ internal class ApprovedPremisesServiceTest {
         assessedBy: Staff = StaffGenerator.generate()
     ): EventDetails<ApplicationAssessed> {
         val details = EventDetailsGenerator.applicationAssessed(assessedBy = assessedBy)
-        whenever(approvedPremisesApiClient.getApplicationAssessedDetails(URI.create(applicationAssessedEvent.detailUrl!!)))
-            .thenReturn(details)
+        whenever(approvedPremisesApiClient.getApplicationAssessedDetails(applicationAssessedEvent.url())).thenReturn(details)
+        return details
+    }
+
+    private fun givenBookingMadeDetails(
+        bookedBy: Staff = StaffGenerator.generate()
+    ): EventDetails<BookingMade> {
+        val details = EventDetailsGenerator.bookingMade(bookedBy = bookedBy)
+        whenever(approvedPremisesApiClient.getBookingMadeDetails(bookingMadeEvent.url())).thenReturn(details)
         return details
     }
 

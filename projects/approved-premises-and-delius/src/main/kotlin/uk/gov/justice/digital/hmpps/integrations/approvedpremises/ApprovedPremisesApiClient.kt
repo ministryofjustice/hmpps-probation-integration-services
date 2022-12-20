@@ -13,4 +13,5 @@ import java.net.URI
 interface ApprovedPremisesApiClient {
     @GetMapping fun getApplicationSubmittedDetails(uri: URI): EventDetails<ApplicationSubmitted>
     @GetMapping fun getApplicationAssessedDetails(uri: URI): EventDetails<ApplicationAssessed>
+    @GetMapping fun getBookingMadeDetails(uri: URI): EventDetails<BookingMade>
 }
