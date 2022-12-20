@@ -32,7 +32,7 @@ class ContactService(
             notes = notes(),
             staffId = om.staffId,
             teamId = om.teamId,
-            providerId = event.manager.providerId
+            providerId = om.providerId
         )
 
         contactRepository.save(contact)

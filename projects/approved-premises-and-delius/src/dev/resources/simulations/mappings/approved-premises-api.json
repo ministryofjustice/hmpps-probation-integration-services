@@ -25,6 +25,19 @@
         "status": 200,
         "bodyFileName": "approved-premises-application-assessed.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/approved-premises-api/events/booking-made/364145f9-0af8-488e-9901-b4c46cd9ba37"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "approved-premises-booking-made.json"
+      }
     }
   ]
 }
