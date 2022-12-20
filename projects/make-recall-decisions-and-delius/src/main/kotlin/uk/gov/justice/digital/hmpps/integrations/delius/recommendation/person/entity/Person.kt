@@ -44,7 +44,7 @@ class PersonManager(
     @Column(name = "probation_area_id")
     val providerId: Long,
 
-    @Column(name = "allocation_team_id")
+    @Column(name = "team_id")
     val teamId: Long,
 
     @Column(name = "allocation_staff_id")
