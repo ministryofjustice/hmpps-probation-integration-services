@@ -2,8 +2,10 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationAssessed
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSubmitted
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Decision
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Premises
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.StaffMember
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
@@ -17,21 +19,11 @@ object EventDetailsGenerator {
         eventType = "approved-premises.application.submitted",
         eventDetails = ApplicationSubmitted(
             applicationId = UUID.randomUUID().toString(),
-            applicationUrl = "http://example.com",
-            deliusEventNumber = "123",
+            applicationUrl = "https://example.com",
             targetLocation = "TEST",
-            probationArea = ProbationArea(
-                code = ProbationAreaGenerator.DEFAULT.code,
-                name = "TEST"
-            ),
+            probationArea = probationArea(),
             submittedAt = ZonedDateTime.now(),
-            submittedBy = StaffMember(
-                username = "TEST",
-                staffCode = submittedBy.code,
-                staffIdentifier = submittedBy.id,
-                forenames = submittedBy.forename,
-                surname = submittedBy.surname,
-            ),
+            submittedBy = staffMember(submittedBy),
         )
     )
 
@@ -41,22 +33,45 @@ object EventDetailsGenerator {
         eventType = "approved-premises.application.assessed",
         eventDetails = ApplicationAssessed(
             applicationId = UUID.randomUUID().toString(),
-            applicationUrl = "http://example.com",
-            deliusEventNumber = "123",
-            assessmentArea = ProbationArea(
-                code = ProbationAreaGenerator.DEFAULT.code,
-                name = "TEST"
-            ),
+            applicationUrl = "https://example.com",
+            assessmentArea = probationArea(),
             assessedAt = ZonedDateTime.now(),
-            assessedBy = StaffMember(
-                username = "TEST",
-                staffCode = assessedBy.code,
-                staffIdentifier = assessedBy.id,
-                forenames = assessedBy.forename,
-                surname = assessedBy.surname,
-            ),
+            assessedBy = staffMember(assessedBy),
             decision = Decision.Accepted,
             decisionRationale = "Test decision rationale"
         )
+    )
+
+    fun bookingMade(bookedBy: Staff) = EventDetails(
+        id = UUID.randomUUID().toString(),
+        timestamp = ZonedDateTime.now(),
+        eventType = "approved-premises.booking.made",
+        eventDetails = BookingMade(
+            bookingId = UUID.randomUUID().toString(),
+            applicationId = UUID.randomUUID().toString(),
+            applicationUrl = "https://example.com",
+            premises = Premises(
+                id = UUID.randomUUID().toString(),
+                name = "Test Premises",
+                apCode = "TEST",
+                legacyApCode = "TEST",
+                probationArea = probationArea()
+            ),
+            createdAt = ZonedDateTime.now(),
+            bookedBy = staffMember(bookedBy),
+        )
+    )
+
+    private fun probationArea() = ProbationArea(
+        code = ProbationAreaGenerator.DEFAULT.code,
+        name = "TEST"
+    )
+
+    private fun staffMember(staff: Staff) = StaffMember(
+        username = "TEST",
+        staffCode = staff.code,
+        staffIdentifier = staff.id,
+        forenames = staff.forename,
+        surname = staff.surname,
     )
 }

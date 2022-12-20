@@ -11,10 +11,12 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.prepEvent
 import uk.gov.justice.digital.hmpps.service.ApprovedPremisesService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
+import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class HandlerTest {
@@ -24,17 +26,24 @@ internal class HandlerTest {
     @InjectMocks lateinit var handler: Handler
 
     @Test
-    fun `should reject unknown event types`() {
-        // Given a message
-        val message = prepEvent("application-submitted", 1234)
+    fun `throws when no detail url is provided`() {
+        val event = HmppsDomainEvent(eventType = "test", version = 1, occurredAt = ZonedDateTime.now())
+        val exception = assertThrows<IllegalArgumentException> { event.url() }
+        assertThat(exception.message, equalTo("Missing detail url"))
+    }
 
-        // When the message is received
-        val exception = assertThrows<IllegalArgumentException> {
-            handler.handle(message.copy(message = message.message.copy(eventType = "UNKNOWN")))
-        }
+    @Test
+    fun `throws when no crn is provided`() {
+        val event = HmppsDomainEvent(eventType = "test", version = 1, occurredAt = ZonedDateTime.now())
+        val exception = assertThrows<IllegalArgumentException> { event.crn() }
+        assertThat(exception.message, equalTo("Missing CRN"))
+    }
 
-        // Then it is updated in Delius and logged to Telemetry
-        assertThat(exception.message, equalTo("Unexpected event type UNKNOWN"))
+    @Test
+    fun `rejects unknown event types`() {
+        val event = HmppsDomainEvent(eventType = "test", version = 1, occurredAt = ZonedDateTime.now())
+        val exception = assertThrows<IllegalArgumentException> { handler.handle(Notification(event)) }
+        assertThat(exception.message, equalTo("Unexpected event type test"))
     }
 
     @Test
@@ -49,5 +58,33 @@ internal class HandlerTest {
         verify(telemetryService).notificationReceived(message)
         verify(approvedPremisesService).applicationSubmitted(message.message)
         verify(telemetryService).trackEvent("ApplicationSubmitted", message.message.telemetryProperties())
+    }
+
+    @Test
+    fun `should handle assessed applications`() {
+        // Given a message
+        val message = prepEvent("application-assessed", 1234)
+
+        // When the message is received
+        handler.handle(message)
+
+        // Then it is updated in Delius and logged to Telemetry
+        verify(telemetryService).notificationReceived(message)
+        verify(approvedPremisesService).applicationAssessed(message.message)
+        verify(telemetryService).trackEvent("ApplicationAssessed", message.message.telemetryProperties())
+    }
+
+    @Test
+    fun `should handle bookings made`() {
+        // Given a message
+        val message = prepEvent("booking-made", 1234)
+
+        // When the message is received
+        handler.handle(message)
+
+        // Then it is updated in Delius and logged to Telemetry
+        verify(telemetryService).notificationReceived(message)
+        verify(approvedPremisesService).bookingMade(message.message)
+        verify(telemetryService).trackEvent("BookingMade", message.message.telemetryProperties())
     }
 }
