@@ -11,7 +11,6 @@ plugins {
     id("io.spring.dependency-management") version "1.1.0" apply false
     id("com.google.cloud.tools.jib") apply false
     id("com.palantir.docker") version "0.34.0" apply false
-    id("com.gorylenko.gradle-git-properties") version "2.4.1" apply false
     id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
     id("base")
     id("org.sonarqube")
@@ -60,7 +59,6 @@ subprojects {
         plugin("org.jetbrains.kotlin.plugin.spring")
         plugin("org.jetbrains.kotlin.plugin.jpa")
         plugin("org.jlleitschuh.gradle.ktlint")
-        plugin("com.gorylenko.gradle-git-properties")
         plugin("jacoco")
         plugin("test-report-aggregation")
         plugin("jacoco-report-aggregation")
