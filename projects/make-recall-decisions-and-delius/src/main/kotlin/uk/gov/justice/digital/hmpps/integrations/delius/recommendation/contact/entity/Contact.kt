@@ -34,6 +34,12 @@ class Contact(
     @Column(name = "offender_id", updatable = false)
     val personId: Long,
 
+    @Column(name = "contact_date")
+    val date: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(name = "contact_start_time")
+    val startTime: ZonedDateTime = ZonedDateTime.now(),
+
     @ManyToOne
     @JoinColumn(name = "contact_type_id", updatable = false)
     val type: ContactType,
@@ -41,54 +47,44 @@ class Contact(
     @Lob
     val notes: String,
 
-    @Column(name = "contact_date")
-    val date: ZonedDateTime = ZonedDateTime.now(),
-
-    @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime = ZonedDateTime.now(),
-
-    @Column(updatable = false)
-    val staffId: Long,
-
-    @Column(updatable = false)
-    val staffEmployeeId: Long = staffId,
+    @Column(name = "probation_area_id", updatable = false)
+    val providerId: Long,
 
     @Column(updatable = false)
     val teamId: Long,
 
-    @Column(name = "probation_area_id", updatable = false)
-    val providerId: Long,
+    @Column(updatable = false)
+    val staffId: Long,
 
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)
     val isSensitive: Boolean = type.isSensitive,
 
-    @Column(updatable = false)
-    val trustProviderTeamId: Long = teamId,
-
-    @Column(updatable = false, columnDefinition = "NUMBER")
-    val trustProviderFlag: Boolean = false,
-
     @Convert(converter = YesNoConverter::class)
     @Column(name = "alert_active")
     val alert: Boolean? = false,
 
+    @Column(updatable = false, columnDefinition = "NUMBER")
+    val trustProviderFlag: Boolean = false,
+
+    @Column(updatable = false)
+    val trustProviderTeamId: Long = teamId,
+
+    @Column(updatable = false)
+    val staffEmployeeId: Long = staffId,
+
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
     var softDeleted: Boolean = false,
-
-    val partitionAreaId: Long = 0,
 
     @Column(name = "row_version", nullable = false)
     @Version
     var version: Long = 0,
 
+    val partitionAreaId: Long = 0,
+
     @Column(name = "created_datetime", nullable = false)
     @CreatedDate
     var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
-
-    @Column(name = "last_updated_datetime", nullable = false)
-    @LastModifiedDate
-    var lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @Column(name = "created_by_user_id")
     @CreatedBy
@@ -97,6 +93,10 @@ class Contact(
     @Column(name = "last_updated_user_id")
     @LastModifiedBy
     var lastModifiedUserId: Long = 0,
+
+    @Column(name = "last_updated_datetime", nullable = false)
+    @LastModifiedDate
+    var lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
 )
 
 @Immutable

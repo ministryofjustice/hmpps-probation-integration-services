@@ -29,13 +29,13 @@ class RecommendationStarted(
         return Contact(
             0,
             id,
-            contactTypeRepository.getByCode(ContactType.RECOMMENDATION_STARTED),
-            "View details of this Recommendation: $recommendationUrl",
             now,
             now,
-            staffId = manager.staffId,
+            type = contactTypeRepository.getByCode(ContactType.RECOMMENDATION_STARTED),
+            notes = "View details of this Recommendation: $recommendationUrl",
+            providerId = manager.providerId,
             teamId = manager.teamId,
-            providerId = manager.providerId
+            staffId = manager.staffId
         )
     }
 }
