@@ -2,8 +2,10 @@ database:
   access:
     username_key: /make-recall-decisions-and-delius/db-username
     password_key: /make-recall-decisions-and-delius/db-password
+    tables:
+      - contact
 
   audit:
     username: MakeRecallDecisionsAndDelius
-    forename: Probation Integration # TODO change this to something meaningful for your service
+    forename: Recall Decision
     surname: Service
