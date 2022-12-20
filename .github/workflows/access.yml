@@ -1,0 +1,93 @@
+name: Database access
+# Configure credentials and audit user in the Delius database
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'projects/**/deploy/database/access.yml'
+
+jobs:
+  check-changes:
+    outputs:
+      changed-projects: ${{ steps.check-changes.outputs.projects }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - id: check-changes
+        uses: ./.github/actions/check-changes
+        with:
+          filters: |
+            projects:
+              - 'projects/**/deploy/database/access.yml'
+
+  setup-access:
+    runs-on: ubuntu-latest
+    needs: check-changes
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: ["test", "preprod", "prod"]
+        project: ${{ fromJson(needs.check-changes.outputs.changed-projects) }}
+    environment: ${{ matrix.environment }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-region: eu-west-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-skip-session-tagging: true
+          role-duration-seconds: 1200
+
+      - name: Map GitHub environment to values file
+        id: values
+        shell: bash
+        run: |
+          if [ '${{ matrix.environment }}' == 'test' ];    then echo 'filename=values-dev.yml' >> $GITHUB_OUTPUT; fi
+          if [ '${{ matrix.environment }}' == 'preprod' ]; then echo 'filename=values-preprod.yml' >> $GITHUB_OUTPUT; fi
+          if [ '${{ matrix.environment }}' == 'prod' ];    then echo 'filename=values-prod.yml' >> $GITHUB_OUTPUT; fi
+
+      - name: Get Delius environment name from values file
+        id: env
+        shell: bash
+        run: |
+          environment_name=$(cat ${{ steps.values.outputs.filename }} | yq '.environment_name')
+          echo "name=${environment_name}" >> $GITHUB_OUTPUT
+          echo "short-name=${environment_name/delius-/del-}" >> $GITHUB_OUTPUT
+        working-directory: projects/${{ matrix.project }}/deploy
+
+      - name: Add DB credentials to parameter store
+        shell: bash
+        env:
+          ALL_SECRETS: ${{ toJson(secrets) }}
+        run: |
+          secret_prefix=$(echo '${{ inputs.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')_DB_
+          namespace=/${{ steps.env.outputs.name }}/delius/probation-integration/${{ inputs.project }}
+          echo "${ALL_SECRETS}" | jq -r ". | keys[] | select(. | startswith(\"${secret_prefix}\"))" | while read -r key; do
+            name=$(echo "${key}" | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g' | sed 's/${{ inputs.project }}-//')
+            value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
+            existing=$(aws ssm get-parameter --name "${namespace}/${name}" --region eu-west-2 --with-decryption --query 'Parameter.Value' --output text || echo "")
+            if [ "${existing}" != "${value}" ]; then
+             echo "Updating secret in parameter store: ${key} (${namespace}/${name})"
+             aws ssm put-parameter --name "${namespace}/${name}" --value "${value}" --overwrite --type SecureString --region eu-west-2
+            fi
+          done
+
+      - name: Disable audit user creation in preprod
+        if: ${{ matrix.environment == 'preprod' }}
+        shell: bash
+        run: yq -i 'del(.database.audit)' database/access.yml
+        working-directory: projects/${{ matrix.project }}/deploy
+
+      - name: Configure database access and audit
+        shell: bash
+        run: |
+          test -f database/access.yml && \
+          aws ssm start-automation-execution --document-name oracle-${{ steps.env.outputs.short-name }}-probation-integration-access \
+                                             --parameters "Configuration='$(yq database/access.yml -o json)'" \
+                                             --region eu-west-2 && \
+          echo 'Execution started. Follow the logs in AWS: https://eu-west-2.console.aws.amazon.com/systems-manager/automation/executions?region=eu-west-2'
+        working-directory: projects/${{ matrix.project }}/deploy
