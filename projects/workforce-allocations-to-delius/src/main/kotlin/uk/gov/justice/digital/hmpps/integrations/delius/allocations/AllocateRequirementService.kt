@@ -45,10 +45,10 @@ class AllocateRequirementService(
 
             if (requirement.person.crn != crn)
                 throw ConflictException("Requirement ${allocationDetail.requirementId} not for $crn")
-            if (requirement.disposal.event.id != allocationDetail.eventId)
-                throw ConflictException("Requirement ${allocationDetail.requirementId} not for event ${allocationDetail.eventId}")
+            if (requirement.disposal.event.number != allocationDetail.eventNumber.toString())
+                throw ConflictException("Requirement ${allocationDetail.requirementId} not for event ${allocationDetail.eventNumber}")
             if (!requirement.disposal.active || !requirement.disposal.event.active)
-                throw NotActiveException("Event", "id", requirement.disposal.event.id)
+                throw NotActiveException("Event", "number", requirement.disposal.event.number)
             if (!requirement.active) throw NotActiveException("Requirement", "id", allocationDetail.requirementId)
 
             val activeRequirementManager = requirementManagerRepository.findActiveManagerAtDate(
@@ -88,8 +88,8 @@ class AllocateRequirementService(
                     ContactContext(
                         contactTypeRepository.findByCodeOrThrow(ContactTypeCode.SENTENCE_COMPONENT_TRANSFER.value),
                         requirement.person.id,
-                        allocationDetail.eventId,
-                        allocationDetail.requirementId
+                        requirement.disposal.event.id,
+                        requirement.id
                     )
                 )
             )

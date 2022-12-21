@@ -13,7 +13,7 @@ class AllocationDetailDeserialiser : JsonDeserializer<AllocationDetail>() {
             om.treeToValue(node, AllocationDetail.PersonAllocationDetail::class.java)
         } else if (node.has("requirementId")) {
             om.treeToValue(node, AllocationDetail.RequirementAllocationDetail::class.java)
-        } else if (node.has("eventId")) {
+        } else if (node.has("eventNumber")) {
             om.treeToValue(node, AllocationDetail.EventAllocationDetail::class.java)
         } else {
             throw IllegalArgumentException("Unexpected response from allocation service.")

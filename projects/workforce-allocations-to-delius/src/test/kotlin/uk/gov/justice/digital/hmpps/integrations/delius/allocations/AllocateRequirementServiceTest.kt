@@ -91,17 +91,14 @@ internal class AllocateRequirementServiceTest {
     }
 
     @Test
-    fun `when disposal event id not matching allocation detail event id`() {
-        whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(
-            Optional.of(
-                RequirementGenerator.DEFAULT
-            )
-        )
+    fun `when disposal event number not matching allocation detail event number`() {
+        whenever(requirementRepository.findById(allocationDetail.requirementId))
+            .thenReturn(Optional.of(RequirementGenerator.DEFAULT))
 
         assertThrows<ConflictException> {
             allocateRequirementService.createRequirementAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail
+                allocationDetail.copy(eventNumber = 3)
             )
         }
     }
@@ -113,7 +110,7 @@ internal class AllocateRequirementServiceTest {
                 RequirementGenerator.generate(
                     disposal = DisposalGenerator.generate
                     (
-                        EventGenerator.generate(id = allocationDetail.eventId),
+                        EventGenerator.generate(),
                         active = false
                     )
                 )
@@ -135,7 +132,7 @@ internal class AllocateRequirementServiceTest {
                 RequirementGenerator.generate(
                     disposal = DisposalGenerator.generate
                     (
-                        EventGenerator.generate(id = allocationDetail.eventId, active = false)
+                        EventGenerator.generate(active = false)
                     )
                 )
             )
@@ -157,7 +154,7 @@ internal class AllocateRequirementServiceTest {
                     active = false,
                     disposal = DisposalGenerator.generate
                     (
-                        EventGenerator.generate(id = allocationDetail.eventId)
+                        EventGenerator.generate()
                     )
                 )
             )
@@ -178,7 +175,7 @@ internal class AllocateRequirementServiceTest {
                 RequirementGenerator.generate(
                     disposal = DisposalGenerator.generate
                     (
-                        EventGenerator.generate(id = allocationDetail.eventId)
+                        EventGenerator.generate()
                     )
                 )
             )
@@ -208,10 +205,7 @@ internal class AllocateRequirementServiceTest {
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(
             Optional.of(
                 RequirementGenerator.generate(
-                    disposal = DisposalGenerator.generate
-                    (
-                        EventGenerator.generate(id = allocationDetail.eventId)
-                    )
+                    disposal = DisposalGenerator.generate(EventGenerator.generate())
                 )
             )
         )
@@ -221,8 +215,7 @@ internal class AllocateRequirementServiceTest {
                 allocationDetail.requirementId,
                 allocationDetail.createdDate
             )
-        )
-            .thenReturn(RequirementManagerGenerator.DEFAULT)
+        ).thenReturn(RequirementManagerGenerator.DEFAULT)
 
         assertDoesNotThrow {
             allocateRequirementService.createRequirementAllocation(
@@ -238,7 +231,7 @@ internal class AllocateRequirementServiceTest {
         val requirement = RequirementGenerator.generate(
             disposal = DisposalGenerator.generate
             (
-                EventGenerator.generate(id = allocationDetail.eventId)
+                EventGenerator.generate()
             )
         )
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(
@@ -268,7 +261,7 @@ internal class AllocateRequirementServiceTest {
         val requirement = RequirementGenerator.generate(
             disposal = DisposalGenerator.generate
             (
-                EventGenerator.generate(id = allocationDetail.eventId)
+                EventGenerator.generate()
             )
         )
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(
