@@ -7,7 +7,9 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallService
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseService
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
@@ -64,9 +66,10 @@ internal class HandlerTest {
 
     @Test
     fun recallMessagesAreHandled() {
+        whenever(recallService.recall("Z0001ZZ", "ZZZ", "Test data", notification.message.occurredAt)).thenReturn(RecallOutcome.PrisonerRecalled)
         handler.handle(notification.copy(attributes = MessageAttributes("prison-offender-events.prisoner.received")))
-
         verify(recallService).recall("Z0001ZZ", "ZZZ", "Test data", notification.message.occurredAt)
+        verify(telemetryService).trackEvent("PrisonerRecalled", notification.message.telemetryProperties())
     }
 
     @Test
