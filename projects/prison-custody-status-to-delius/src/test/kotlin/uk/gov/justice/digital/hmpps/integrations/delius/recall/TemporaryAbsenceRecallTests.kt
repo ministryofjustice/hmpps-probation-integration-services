@@ -58,7 +58,9 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
-        recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", recallDateTime)
+        val outcome = recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", recallDateTime)
+
+        assertThat(outcome, equalTo(RecallOutcome.PrisonerRecalled))
 
         // recall is created
         val recall = argumentCaptor<Recall>()
@@ -117,7 +119,9 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(om)
 
-        recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", recallDateTime)
+        val outcome = recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", recallDateTime)
+
+        assertThat(outcome, equalTo(RecallOutcome.CustodialDetailsUpdated))
 
         // recall is not created
         verify(recallRepository, never()).save(any())
@@ -155,7 +159,9 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
             .thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
-        recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", recallDateTime)
+        val outcome = recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", recallDateTime)
+
+        assertThat(outcome, equalTo(RecallOutcome.NoCustodialUpdates))
 
         // recall is not created
         verify(recallRepository, never()).save(any())
