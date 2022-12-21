@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /community-api/db-username
+    password_key: /community-api/db-password
+
+  audit:
+    username: CommunityApi
+    forename: Probation Integration # TODO change this to something meaningful for your service
+    surname: Service

@@ -18,6 +18,7 @@ include(
     "offender-events-and-delius",
     "custody-key-dates-and-delius",
     "make-recall-decisions-and-delius",
+    "community-api",
     // ^ add new projects here
 )
 

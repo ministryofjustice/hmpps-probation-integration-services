@@ -1,0 +1,15 @@
+# Common values
+image:
+  name: community-api
+
+secrets:
+  APPLICATIONINSIGHTS_CONNECTION_STRING: /application-insights/connection-string
+  SPRING_DATASOURCE_URL:                 /delius-database/jdbc-url
+  SPRING_DATASOURCE_USERNAME:            /community-api/db-username
+  SPRING_DATASOURCE_PASSWORD:            /community-api/db-password
+  MESSAGING_CONSUMER_QUEUE:              /community-api/sqs-queue-name
+  AWS_ACCESS_KEY_ID:                     /community-api/sqs-queue-access-key-id
+  AWS_SECRET_ACCESS_KEY:                 /community-api/sqs-queue-secret-access-key
+  OAUTH2_CLIENT-ID:                      /community-api/client-id
+  OAUTH2_CLIENT-SECRET:                  /community-api/client-secret
+  SENTRY_DSN:                            /community-api/sentry-dsn

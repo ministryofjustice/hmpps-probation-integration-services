@@ -1,0 +1,37 @@
+{
+  "role": {
+    "name": "community-api"
+  },
+  "customDimensions": {
+    "service.version": "${VERSION}",
+    "service.team": "probation-integration"
+  },
+  "instrumentation": {
+    "logging": {
+      "level": "DEBUG"
+    },
+    "springScheduling": {
+      "enabled": false
+    }
+  },
+  "selfDiagnostics": {
+    "destination": "console"
+  },
+  "preview": {
+    "sampling": {
+      "overrides": [
+        {
+          "telemetryType": "request",
+          "attributes": [
+            {
+              "key": "http.url",
+              "value": "https?://[^/]+/health/?.*",
+              "matchType": "regexp"
+            }
+          ],
+          "percentage": 0
+        }
+      ]
+    }
+  }
+}
