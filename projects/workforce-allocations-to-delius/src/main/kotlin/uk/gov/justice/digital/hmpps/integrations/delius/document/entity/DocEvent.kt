@@ -25,6 +25,7 @@ class DocEvent(
     @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
     val active: Boolean,
 
+    @Column(name = "event_number", nullable = false)
     val eventNumber: String,
 
     @OneToOne(mappedBy = "event")

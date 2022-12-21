@@ -27,4 +27,6 @@ interface EventRepository : JpaRepository<Event, Long> {
         nativeQuery = true
     )
     fun updateIaps(eventId: Long, iapsFlagValue: Long = 1)
+
+    fun findByPersonCrnAndNumber(crn: String, number: String): Event?
 }

@@ -15,6 +15,9 @@ class Event(
     @Column(name = "event_id", nullable = false)
     val id: Long,
 
+    @Column(name = "event_number", nullable = false)
+    val number: String,
+
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,

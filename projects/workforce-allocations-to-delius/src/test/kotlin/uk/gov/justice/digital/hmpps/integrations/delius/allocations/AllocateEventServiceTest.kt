@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -26,7 +28,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonRepository
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocationDetail
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
-import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
 internal class AllocateEventServiceTest {
@@ -59,26 +60,26 @@ internal class AllocateEventServiceTest {
 
     @Test
     fun `when event not found exception thrown`() {
-        whenever(eventRepository.findById(allocationDetail.eventId)).thenReturn(Optional.empty())
+        whenever(eventRepository.findByPersonCrnAndNumber(any(), any())).thenReturn(null)
 
-        assertThrows<NotFoundException> {
+        val ex = assertThrows<NotFoundException> {
             allocateEventService.createEventAllocation(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail
             )
         }
+        assertThat(ex.message, equalTo("Event 1 not found for X123456"))
     }
 
     @Test
     fun `when event not active exception thrown`() {
-        whenever(eventRepository.findById(allocationDetail.eventId)).thenReturn(
-            Optional.of(
-                EventGenerator.generate(
-                    id = allocationDetail.eventId,
-                    active = false
-                )
+        whenever(
+            eventRepository.findByPersonCrnAndNumber(
+                PersonGenerator.DEFAULT.crn,
+                allocationDetail.eventNumber.toString()
             )
         )
+            .thenReturn(EventGenerator.generate(active = false))
 
         assertThrows<NotActiveException> {
             allocateEventService.createEventAllocation(
@@ -89,32 +90,16 @@ internal class AllocateEventServiceTest {
     }
 
     @Test
-    fun `when event not for person with crn exception thrown`() {
-        whenever(eventRepository.findById(allocationDetail.eventId)).thenReturn(
-            Optional.of(
-                EventGenerator.generate(
-                    id = allocationDetail.eventId,
-                    person = PersonGenerator.generate("NX999")
-                )
-            )
-        )
-
-        assertThrows<ConflictException> {
-            allocateEventService.createEventAllocation(
-                PersonGenerator.DEFAULT.crn,
-                allocationDetail
-            )
-        }
-    }
-
-    @Test
     fun `when order manager not found for event and date exception thrown`() {
-        val event = EventGenerator.generate(id = allocationDetail.eventId, person = PersonGenerator.DEFAULT)
-        whenever(eventRepository.findById(allocationDetail.eventId)).thenReturn(
-            Optional.of(event)
-        )
+        val event = EventGenerator.generate()
+        whenever(
+            eventRepository.findByPersonCrnAndNumber(
+                PersonGenerator.DEFAULT.crn,
+                allocationDetail.eventNumber.toString()
+            )
+        ).thenReturn(event)
 
-        whenever(orderManagerRepository.findActiveManagerAtDate(allocationDetail.eventId, allocationDetail.createdDate))
+        whenever(orderManagerRepository.findActiveManagerAtDate(event.id, allocationDetail.createdDate))
             .thenReturn(null)
 
         assertThrows<NotFoundException> {
@@ -132,11 +117,15 @@ internal class AllocateEventServiceTest {
             staffCode = OrderManagerGenerator.DEFAULT.staff.code,
             teamCode = OrderManagerGenerator.DEFAULT.team.code
         )
-        whenever(eventRepository.findById(allocationDetail.eventId)).thenReturn(
-            Optional.of(EventGenerator.generate(id = allocationDetail.eventId))
-        )
+        val event = EventGenerator.generate()
+        whenever(
+            eventRepository.findByPersonCrnAndNumber(
+                PersonGenerator.DEFAULT.crn,
+                allocationDetail.eventNumber.toString()
+            )
+        ).thenReturn(event)
 
-        whenever(orderManagerRepository.findActiveManagerAtDate(allocationDetail.eventId, allocationDetail.createdDate))
+        whenever(orderManagerRepository.findActiveManagerAtDate(event.id, allocationDetail.createdDate))
             .thenReturn(OrderManagerGenerator.DEFAULT)
 
         assertDoesNotThrow {
@@ -150,14 +139,19 @@ internal class AllocateEventServiceTest {
 
     @Test
     fun `when pending transfer for event exception thrown`() {
-        whenever(eventRepository.findById(allocationDetail.eventId)).thenReturn(
-            Optional.of(EventGenerator.generate(id = allocationDetail.eventId))
-        )
+        println("Allocation Detail : $allocationDetail")
+        val event = EventGenerator.generate()
+        whenever(
+            eventRepository.findByPersonCrnAndNumber(
+                PersonGenerator.DEFAULT.crn,
+                "1"
+            )
+        ).thenReturn(event)
 
-        whenever(orderManagerRepository.findActiveManagerAtDate(allocationDetail.eventId, allocationDetail.createdDate))
+        whenever(orderManagerRepository.findActiveManagerAtDate(event.id, allocationDetail.createdDate))
             .thenReturn(OrderManagerGenerator.DEFAULT)
 
-        whenever(eventRepository.countPendingTransfers(allocationDetail.eventId)).thenReturn(1)
+        whenever(eventRepository.countPendingTransfers(event.id)).thenReturn(1)
 
         assertThrows<ConflictException> {
             allocateEventService.createEventAllocation(
@@ -169,12 +163,16 @@ internal class AllocateEventServiceTest {
 
     @Test
     fun `when transfer reason not found exception thrown`() {
-        whenever(eventRepository.findById(allocationDetail.eventId)).thenReturn(
-            Optional.of(EventGenerator.generate(id = allocationDetail.eventId))
-        )
-        whenever(orderManagerRepository.findActiveManagerAtDate(allocationDetail.eventId, allocationDetail.createdDate))
+        val event = EventGenerator.generate()
+        whenever(
+            eventRepository.findByPersonCrnAndNumber(
+                PersonGenerator.DEFAULT.crn,
+                allocationDetail.eventNumber.toString()
+            )
+        ).thenReturn(event)
+        whenever(orderManagerRepository.findActiveManagerAtDate(event.id, allocationDetail.createdDate))
             .thenReturn(OrderManagerGenerator.DEFAULT)
-        whenever(eventRepository.countPendingTransfers(allocationDetail.eventId)).thenReturn(0)
+        whenever(eventRepository.countPendingTransfers(event.id)).thenReturn(0)
         whenever(transferReasonRepository.findByCode(TransferReasonCode.CASE_ORDER.value)).thenReturn(null)
 
         assertThrows<NotFoundException> {

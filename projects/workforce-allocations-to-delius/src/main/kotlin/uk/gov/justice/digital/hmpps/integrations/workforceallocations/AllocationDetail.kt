@@ -37,7 +37,7 @@ sealed interface AllocationDetail {
         override val providerCode: String,
         override val createdBy: String,
         override val createdDate: ZonedDateTime,
-        val eventId: Long,
+        val eventNumber: Long,
         override val datasetCode: DatasetCode = DatasetCode.ORDER_ALLOCATION_REASON,
         override val code: String = "INT"
     ) : AllocationDetail
@@ -50,7 +50,7 @@ sealed interface AllocationDetail {
         override val providerCode: String,
         override val createdBy: String,
         override val createdDate: ZonedDateTime,
-        val eventId: Long,
+        val eventNumber: Long,
         val requirementId: Long,
         override val datasetCode: DatasetCode = DatasetCode.RM_ALLOCATION_REASON,
         override val code: String = "IN1"

@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
@@ -35,20 +34,19 @@ class AllocateEventService(
     @Transactional
     fun createEventAllocation(crn: String, allocationDetail: EventAllocationDetail) =
         audit(BusinessInteractionCode.ADD_EVENT_ALLOCATION) {
-            val event = eventRepository.findByIdOrNull(allocationDetail.eventId)
-                ?: throw NotFoundException("Event", "id", allocationDetail.eventId)
+            val event = eventRepository.findByPersonCrnAndNumber(crn, allocationDetail.eventNumber.toString())
+                ?: throw NotFoundException("Event ${allocationDetail.eventNumber} not found for $crn")
 
             it["offenderId"] = event.person.id
             it["eventId"] = event.id
             OptimisationContext.offenderId.set(event.person.id)
 
-            if (!event.active) throw NotActiveException("Event", "id", allocationDetail.eventId)
-            if (event.person.crn != crn) throw ConflictException("Event ${allocationDetail.eventId} not for $crn")
+            if (!event.active) throw NotActiveException("Event", "number", allocationDetail.eventNumber)
 
             val activeOrderManager = orderManagerRepository.findActiveManagerAtDate(
-                allocationDetail.eventId, allocationDetail.createdDate
+                event.id, allocationDetail.createdDate
             ) ?: throw NotFoundException(
-                "Order Manager for event ${allocationDetail.eventId} at ${allocationDetail.createdDate} not found"
+                "Order Manager for event ${allocationDetail.eventNumber} at ${allocationDetail.createdDate} not found"
             )
 
             if (allocationDetail.isDuplicate(activeOrderManager)) {
