@@ -16,7 +16,7 @@ object PersonGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ): Person {
         val person = Person(id, crn)
-        val personManager = PersonManager(IdGenerator.getAndIncrement(), person, 1, 2, 3)
+        val personManager = PersonManager(IdGenerator.getAndIncrement(), person, providerId, teamId, staffId)
         person.set("manager", personManager)
         return person
     }
