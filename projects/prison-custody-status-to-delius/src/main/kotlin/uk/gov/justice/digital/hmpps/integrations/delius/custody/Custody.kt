@@ -53,8 +53,8 @@ class Custody(
     @Column(nullable = false)
     var statusChangeDate: ZonedDateTime,
 
-    @Column(nullable = false)
-    var locationChangeDate: ZonedDateTime,
+    @Column
+    var locationChangeDate: ZonedDateTime?,
 
     @Column(columnDefinition = "number", nullable = false)
     val softDeleted: Boolean = false,

@@ -35,13 +35,13 @@ class Handler(
                 }
 
                 "prison-offender-events.prisoner.received" -> {
-                    recallService.recall(
+                    val outcome = recallService.recall(
                         hmppsEvent.additionalInformation.nomsNumber(),
                         hmppsEvent.additionalInformation.prisonId(),
                         hmppsEvent.additionalInformation.reason(),
                         hmppsEvent.occurredAt,
                     )
-                    telemetryService.trackEvent("PrisonerRecalled", hmppsEvent.telemetryProperties())
+                    telemetryService.trackEvent(outcome.toString(), hmppsEvent.telemetryProperties())
                 }
 
                 else -> throw IllegalArgumentException("Unknown event type ${notification.eventType}")

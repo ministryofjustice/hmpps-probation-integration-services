@@ -66,7 +66,7 @@ class ReleaseService(
         fromInstitution: Institution,
         releaseType: ReferenceData,
         releaseDateTime: ZonedDateTime
-    ) = audit(BusinessInteractionCode.ADD_RELEASE) {
+    ): Unit = audit(BusinessInteractionCode.ADD_RELEASE) {
         it["eventId"] = event.id
         OptimisationContext.offenderId.set(event.person.id)
 

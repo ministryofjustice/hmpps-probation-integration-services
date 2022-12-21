@@ -46,6 +46,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.release.Release
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.DAYS
 
+enum class RecallOutcome {
+    PrisonerRecalled,
+    CustodialDetailsUpdated,
+    NoCustodialUpdates,
+}
+
 @Service
 class RecallService(
     auditedInteractionService: AuditedInteractionService,
@@ -69,13 +75,13 @@ class RecallService(
         prisonId: String,
         reason: String,
         recallDateTime: ZonedDateTime,
-    ) {
+    ): RecallOutcome {
         val recallReason = recallReasonRepository.getByCodeAndSelectableIsTrue(mapToRecallReason(reason).code)
         val institution = institutionRepository.getByNomisCdeCodeAndIdEstablishment(prisonId)
 
-        eventService.getActiveCustodialEvents(nomsNumber).forEach {
-            addRecallToEvent(it, institution, recallReason, recallDateTime)
-        }
+        return eventService.getActiveCustodialEvents(nomsNumber)
+            .map { addRecallToEvent(it, institution, recallReason, recallDateTime) }
+            .minBy { it.ordinal } // return the most relevant outcome
     }
 
     private fun addRecallToEvent(
@@ -83,7 +89,7 @@ class RecallService(
         toInstitution: Institution,
         recallReason: RecallReason,
         recallDateTime: ZonedDateTime
-    ) = audit(BusinessInteractionCode.ADD_RECALL) { audit ->
+    ): RecallOutcome = audit(BusinessInteractionCode.ADD_RECALL) { audit ->
         audit["eventId"] = event.id
         OptimisationContext.offenderId.set(event.person.id)
 
@@ -101,34 +107,9 @@ class RecallService(
 
         val recall = createRecall(custody, recallReason, recallDate, latestRelease, person)
 
-        when (toInstitution.code) {
-            InstitutionCode.UNLAWFULLY_AT_LARGE.code -> custodyService.updateStatus(
-                custody,
-                CustodialStatusCode.RECALLED,
-                recallDate,
-                "Recall added unlawfully at large "
-            )
-            InstitutionCode.UNKNOWN.code -> custodyService.updateStatus(
-                custody,
-                CustodialStatusCode.RECALLED,
-                recallDate,
-                "Recall added but location unknown "
-            )
-            else -> if (custody.status.canChange()) {
-                val detail = if (recall == null) "In custody " else "Recall added in custody "
-                custodyService.updateStatus(
-                    custody,
-                    CustodialStatusCode.IN_CUSTODY,
-                    recallDate,
-                    detail
-                )
-            }
-        }
+        val custodialStatusUpdated = updateCustodialStatus(toInstitution, custody, recallDate, recall)
 
-        if (custody.institution.id != toInstitution.id || custody.status.canRecall()) {
-            val orderManager = orderManagerRepository.getByEventId(event.id)
-            custodyService.updateLocation(custody, toInstitution.code, recallDate, orderManager)
-        }
+        val custodialLocationUpdated = updateCustodialLocation(custody, toInstitution, event, recallDate)
 
         allocatePrisonManager(latestRelease, toInstitution, custody, disposal, recallDateTime)
 
@@ -141,7 +122,44 @@ class RecallService(
 
         if (recall != null) {
             createRecallAlertContact(event, person, recallDateTime, recallReason, recall)
+            RecallOutcome.PrisonerRecalled
+        } else if (custodialStatusUpdated || custodialLocationUpdated) {
+            RecallOutcome.CustodialDetailsUpdated
+        } else {
+            RecallOutcome.NoCustodialUpdates
         }
+    }
+
+    private fun updateCustodialLocation(
+        custody: Custody,
+        toInstitution: Institution,
+        event: Event,
+        recallDate: ZonedDateTime
+    ) = if (custody.institution.id != toInstitution.id || custody.status.canRecall()) {
+        val orderManager = orderManagerRepository.getByEventId(event.id)
+        custodyService.updateLocation(custody, toInstitution.code, recallDate, orderManager)
+        true
+    } else false
+
+    private fun updateCustodialStatus(
+        toInstitution: Institution,
+        custody: Custody,
+        recallDate: ZonedDateTime,
+        recall: Recall?
+    ) = when (toInstitution.code) {
+        InstitutionCode.UNLAWFULLY_AT_LARGE.code -> {
+            custodyService.updateStatus(custody, CustodialStatusCode.RECALLED, recallDate, "Recall added unlawfully at large ")
+            true
+        }
+        InstitutionCode.UNKNOWN.code -> {
+            custodyService.updateStatus(custody, CustodialStatusCode.RECALLED, recallDate, "Recall added but location unknown ")
+            true
+        }
+        else -> if (custody.status.canChange()) {
+            val detail = if (recall == null) "In custody " else "Recall added in custody "
+            custodyService.updateStatus(custody, CustodialStatusCode.IN_CUSTODY, recallDate, detail)
+            true
+        } else false
     }
 
     private fun createRecallAlertContact(

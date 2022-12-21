@@ -240,7 +240,8 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(contactTypeRepository.findByCode(ContactTypeCode.BREACH_PRISON_RECALL.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
-        recallService.recall(nomsNumber, prisonId, reason, recallDateTime)
+        val outcome = recallService.recall(nomsNumber, prisonId, reason, recallDateTime)
+        assertThat(outcome, equalTo(RecallOutcome.PrisonerRecalled))
 
         // recall is created
         val recall = argumentCaptor<Recall>()
