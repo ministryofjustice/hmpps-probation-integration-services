@@ -71,6 +71,7 @@ runs:
         helm upgrade ${{ inputs.project }} projects/${{ inputs.project }}/deploy \
           --install \
           --namespace=${{ inputs.namespace }} \
+          --values templates/helm-defaults.yml \
           --values projects/${{ inputs.project }}/deploy/${{ inputs.values-file }} \
           --set generic-service.image.tag=${{ inputs.version }} \
           --wait \

@@ -1,5 +1,4 @@
 generic-service:
-  replicaCount: 2
   ingress:
     host: prison-case-notes-to-probation-dev.hmpps.service.justice.gov.uk
 

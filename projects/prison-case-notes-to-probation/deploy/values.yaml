@@ -1,26 +1,20 @@
 ---
 # Values here are the same across all environments
+# An additional set of default values can be found in templates/helm-defaults.yml, which is the same across all projects
 generic-service:
   nameOverride: prison-case-notes-to-probation
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-case-notes-to-probation
-    port: 8080
 
   ingress:
-    enabled: true
-    v1_2_enabled: true
-    v0_47_enabled: false
     tlsSecretName: prison-case-notes-to-probation-cert
 
   env:
-    AWS_REGION: eu-west-2
     DELIUS_DB_USERNAME: PrisonCaseNotesToProbation
-    JDK_JAVA_OPTIONS: -javaagent:/agent/agent.jar -XX:MaxRAMPercentage=75.0
 
   namespace_secrets:
     prison-case-notes-to-probation:
-      APPLICATIONINSIGHTS_CONNECTION_STRING: APPLICATIONINSIGHTS_CONNECTION_STRING
       AWS_ACCESS_KEY_ID: SQS_QUEUE_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
       AWS_SQS_ACCOUNT-ID: AWS_SQS_ACCOUNT_ID
@@ -34,4 +28,3 @@ generic-service:
 
 generic-prometheus-alerts:
   targetApplication: prison-case-notes-to-probation
-  alertSeverity: probation-integration-notifications
