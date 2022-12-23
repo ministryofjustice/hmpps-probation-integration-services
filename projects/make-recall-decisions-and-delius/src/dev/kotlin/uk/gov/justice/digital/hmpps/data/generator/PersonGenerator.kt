@@ -7,6 +7,8 @@ import uk.gov.justice.digital.hmpps.set
 
 object PersonGenerator {
     val RECOMMENDATION_STARTED = generate("X08769")
+    val DECISION_TO_RECALL = generate("X08770")
+    val DECISION_NOT_TO_RECALL = generate("X08771")
 
     fun generate(
         crn: String,

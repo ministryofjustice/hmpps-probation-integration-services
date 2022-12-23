@@ -15,6 +15,7 @@ import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
@@ -50,6 +51,38 @@ internal class IntegrationTest {
         assertThat(contact.teamId, equalTo(2))
         assertThat(contact.staffId, equalTo(3))
         assertThat(contact.notes, equalTo("View details of this Recommendation: http://mrd.case.crn/overview"))
+        verify(telemetryService, atLeastOnce()).notificationReceived(notification)
+    }
+
+    @Test
+    fun `management overview decision to recall`() {
+        val message = MessageGenerator.DECISION_TO_RECALL
+        val notification = Notification(message, MessageAttributes(message.eventType))
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
+
+        val person = PersonGenerator.DECISION_TO_RECALL
+        val contact = contactRepository.findAll().firstOrNull { it.personId == person.id }
+        assertNotNull(contact!!)
+        assertThat(contact.providerId, equalTo(1))
+        assertThat(contact.teamId, equalTo(2))
+        assertThat(contact.staffId, equalTo(StaffGenerator.DEFAULT.id))
+        assertThat(contact.notes, equalTo("View details of the Manage a Recall Oversight Decision: http://mrd.case.crn/overview"))
+        verify(telemetryService, atLeastOnce()).notificationReceived(notification)
+    }
+
+    @Test
+    fun `management overview decision not to recall`() {
+        val message = MessageGenerator.DECISION_NOT_TO_RECALL
+        val notification = Notification(message, MessageAttributes(message.eventType))
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
+
+        val person = PersonGenerator.DECISION_NOT_TO_RECALL
+        val contact = contactRepository.findAll().firstOrNull { it.personId == person.id }
+        assertNotNull(contact!!)
+        assertThat(contact.providerId, equalTo(1))
+        assertThat(contact.teamId, equalTo(2))
+        assertThat(contact.staffId, equalTo(StaffGenerator.DEFAULT.id))
+        assertThat(contact.notes, equalTo("View details of the Manage a Recall Oversight Decision: http://mrd.case.crn/overview"))
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
     }
 }

@@ -56,6 +56,10 @@ class Contact(
     @Column(updatable = false)
     val staffId: Long,
 
+    @ManyToOne
+    @JoinColumn(name = "contact_outcome_type_id", updatable = false)
+    val outcome: ContactOutcome? = null,
+
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)
     val isSensitive: Boolean = false,
@@ -101,6 +105,23 @@ class ContactType(
     val code: String
 ) {
     companion object {
+        const val MANAGEMENT_OVERSIGHT_RECALL = "MO5"
         const val RECOMMENDATION_STARTED = "MRD01"
+    }
+}
+
+@Immutable
+@Entity
+@Table(name = "r_contact_outcome_type")
+class ContactOutcome(
+    @Id
+    @Column(name = "contact_outcome_type_id")
+    val id: Long,
+
+    val code: String
+) {
+    companion object {
+        const val DECISION_TO_RECALL = "MO10"
+        const val DECISION_NOT_TO_RECALL = "MO11"
     }
 }
