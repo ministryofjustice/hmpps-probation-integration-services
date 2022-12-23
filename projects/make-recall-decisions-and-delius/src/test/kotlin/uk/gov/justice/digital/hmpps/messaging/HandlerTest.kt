@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.ManagementOversightRecall
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.RecommendationStarted
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
@@ -27,6 +28,9 @@ internal class HandlerTest {
 
     @Mock
     lateinit var recommendationStarted: RecommendationStarted
+
+    @Mock
+    lateinit var managementOversightRecall: ManagementOversightRecall
 
     @InjectMocks
     lateinit var handler: Handler
