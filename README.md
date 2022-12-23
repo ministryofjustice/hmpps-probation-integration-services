@@ -48,7 +48,7 @@ The project is configured to enable developers to build/test/run integration ser
 Docker or remote dependencies.
 
 To set up your development environment,
-1. Open the project in [IntelliJ IDEA](https://www.jetbrains.com/idea/)
+1. Open the project in [IntelliJ IDEA](https://www.jetbrains.com/idea/). Select "Import project from external model", then "Gradle".
 2. To run tests for a service, right-click the `src/test` folder in the project view and select "Run tests".  See [Test](#test).
 3. To start the service, use the pre-defined run configuration in `.idea/runConfigurations` (See [Run](#run)).
 
