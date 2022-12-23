@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
 import uk.gov.justice.digital.hmpps.plugins.ClassPathPlugin
 import uk.gov.justice.digital.hmpps.plugins.JibConfigPlugin
@@ -47,6 +48,10 @@ allprojects {
                 freeCompilerArgs = listOf("-Xjsr305=strict")
                 jvmTarget = "17"
             }
+        }
+
+        withType<BootJar> {
+            enabled = false
         }
     }
 }
