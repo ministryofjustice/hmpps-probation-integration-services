@@ -32,6 +32,10 @@ class Handler(
                 approvedPremisesService.bookingMade(event)
                 telemetryService.trackEvent("BookingMade", event.telemetryProperties())
             }
+            "approved-premises.person.not-arrived" -> {
+                approvedPremisesService.personNotArrived(event)
+                telemetryService.trackEvent("PersonNotArrived", event.telemetryProperties())
+            }
             else -> throw IllegalArgumentException("Unexpected event type ${event.eventType}")
         }
     }

@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_ASSESSED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_SUBMITTED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.BOOKING_MADE
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.NOT_ARRIVED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
@@ -74,6 +75,22 @@ class ApprovedPremisesService(
             date = details.createdAt,
             staffCode = details.bookedBy.staffCode,
             probationAreaCode = details.premises.probationArea.code,
+        )
+    }
+
+    @Transactional
+    fun personNotArrived(event: HmppsDomainEvent) {
+        val details = approvedPremisesApiClient.getPersonNotArrivedDetails(event.url())
+        createAlertContact(
+            crn = event.crn(),
+            type = NOT_ARRIVED,
+            notes = listOfNotNull(
+                details.eventDetails.notes,
+                "For more details, click here: ${details.eventDetails.applicationUrl}"
+            ).joinToString("\n\n"),
+            date = details.timestamp,
+            staffCode = details.eventDetails.recordedBy.staffCode,
+            probationAreaCode = details.eventDetails.premises.probationArea.code,
         )
     }
 

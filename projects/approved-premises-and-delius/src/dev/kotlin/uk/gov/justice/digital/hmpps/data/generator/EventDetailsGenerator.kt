@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSub
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Decision
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Premises
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.StaffMember
@@ -59,6 +60,26 @@ object EventDetailsGenerator {
             ),
             createdAt = ZonedDateTime.now(),
             bookedBy = staffMember(bookedBy),
+        )
+    )
+
+    fun personNotArrived(recordedBy: Staff) = EventDetails(
+        id = UUID.randomUUID().toString(),
+        timestamp = ZonedDateTime.now(),
+        eventType = "approved-premises.person.not-arrived",
+        eventDetails = PersonNotArrived(
+            bookingId = UUID.randomUUID().toString(),
+            applicationId = UUID.randomUUID().toString(),
+            applicationUrl = "https://example.com",
+            premises = Premises(
+                id = UUID.randomUUID().toString(),
+                name = "Test Premises",
+                apCode = "TEST",
+                legacyApCode = "TEST",
+                probationArea = probationArea()
+            ),
+            recordedBy = staffMember(recordedBy),
+            notes = "TEST"
         )
     )
 
