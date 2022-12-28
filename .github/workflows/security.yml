@@ -64,7 +64,7 @@ jobs:
           cat results.json | jq -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[]' | while read -r vulnerability; do
             id=$(echo "$vulnerability" | jq -r '.VulnerabilityID')
             if [[ $(gh issue list --state open --label dependencies --label security --search "$id (${{ matrix.project }})" | wc -l) -gt 0 ]]; then
-              echo 'Issue "$id (${{ matrix.project }})" already exists'
+              echo "Issue '$id (${{ matrix.project }})' already exists"
             else
               gh issue create \
                 --title "$id (${{ matrix.project }})" \
@@ -78,10 +78,10 @@ jobs:
       - name: Check & Close GH Issue
         if: always()
         run: |
-          openissues=$(gh issue list --state open --label dependencies --label security --search '(${{ matrix.project }})' | awk '{print $3}')
-          scanresults=$(cat results.json | jq -r -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[].VulnerabilityID')
-          issuestoclose=$(comm -23 <(echo $openissues | sort -u) <(echo $scanresults | sort -u)) #print lines only present in first file
-          echo "openissues=$openissues"  
+          openissues="$(gh issue list --state open --label dependencies --label security --search '(${{ matrix.project }})' | awk '{print $3}')"
+          scanresults="$(cat results.json | jq -r -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[].VulnerabilityID')"
+          issuestoclose="$(comm -23 <(echo "$openissues" | sort -u) <(echo "$scanresults" | sort -u))" #print lines only present in first file
+          echo "openissues=$openissues"
           echo "scanresults=$scanresults"
           echo "issuestoclose=$issuestoclose"
           for cve in $issuestoclose; do
