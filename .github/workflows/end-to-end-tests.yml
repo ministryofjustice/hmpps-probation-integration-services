@@ -145,7 +145,7 @@ jobs:
           echo 'report-url=https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.report-dir }}' >> $GITHUB_OUTPUT
       - name: Send message to Slack
         uses: slackapi/slack-github-action@v1.23.0
-        if: ${{ always() && github.event_name == 'schedule' }}
+        if: ${{ failure() && github.event_name == 'schedule' }}
         with:
           channel-id: probation-integration-notifications
           payload: |
@@ -155,15 +155,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "🎭 *hmpps-probation-integration-services* end-to-end test failure"
-                  },
-                  "accessory": {
-                    "type": "button",
-                    "text": {
-                      "type": "plain_text",
-                      "text": "View report"
-                    },
-                    "url": "https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.report-dir }}"
+                    "text": "🎭 *Probation Integration Services* end-to-end test failure"
                   }
                 },
                 {
@@ -172,6 +164,27 @@ jobs:
                     {
                       "type": "mrkdwn",
                       "text": ">${{ steps.junit.outputs.total }} tests run, ${{ steps.junit.outputs.passed }} passed, ${{ steps.junit.outputs.skipped }} skipped, ${{ steps.junit.outputs.failed }} failed."
+                    }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "📈 Report"
+                      },
+                      "url": "https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.report-dir }}"
+                    },
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "📝 Logs"
+                      },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                     }
                   ]
                 }
