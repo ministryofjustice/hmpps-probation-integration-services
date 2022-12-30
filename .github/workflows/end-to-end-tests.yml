@@ -36,6 +36,7 @@ on:
         type: choice
         required: true
         options:
+          - 'All'
           - '["approved-premises-and-oasys"]'
           - '["approved-premises-and-delius"]'
           - '["person-search-index-from-delius"]'
@@ -69,10 +70,10 @@ jobs:
           repository: ministryofjustice/hmpps-probation-integration-e2e-tests
           ref: ${{ inputs.test-branch }}
       - name: Get tests to run - all tests
-        if: inputs.projects == ''
+        if: inputs.projects == '' || inputs.projects == 'All'
         run: echo "projects=$(cd tests && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_ENV
       - name: Get tests to run - specific tests
-        if: inputs.projects != ''
+        if: inputs.projects != '' && inputs.projects != 'All'
         run: echo 'projects=${{ inputs.projects }}' >> $GITHUB_ENV
       - uses: actions/setup-node@v3
         with:
