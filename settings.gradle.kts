@@ -39,7 +39,7 @@ dependencyResolutionManagement {
             library("mockito-inline", "org.mockito:mockito-inline:4.11.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.0")
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.10.0")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.11.0")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
             library("wiremock", "com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
         }
