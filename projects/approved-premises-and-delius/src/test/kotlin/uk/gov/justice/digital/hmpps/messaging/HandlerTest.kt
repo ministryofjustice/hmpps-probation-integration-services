@@ -47,9 +47,9 @@ internal class HandlerTest {
     }
 
     @Test
-    fun `should handle submitted applications`() {
+    fun `handles submitted applications`() {
         // Given a message
-        val message = prepEvent("application-submitted", 1234)
+        val message = prepEvent("application-submitted")
 
         // When the message is received
         handler.handle(message)
@@ -61,9 +61,9 @@ internal class HandlerTest {
     }
 
     @Test
-    fun `should handle assessed applications`() {
+    fun `handles assessed applications`() {
         // Given a message
-        val message = prepEvent("application-assessed", 1234)
+        val message = prepEvent("application-assessed")
 
         // When the message is received
         handler.handle(message)
@@ -75,9 +75,9 @@ internal class HandlerTest {
     }
 
     @Test
-    fun `should handle bookings made`() {
+    fun `handles bookings made`() {
         // Given a message
-        val message = prepEvent("booking-made", 1234)
+        val message = prepEvent("booking-made")
 
         // When the message is received
         handler.handle(message)
@@ -86,5 +86,19 @@ internal class HandlerTest {
         verify(telemetryService).notificationReceived(message)
         verify(approvedPremisesService).bookingMade(message.message)
         verify(telemetryService).trackEvent("BookingMade", message.message.telemetryProperties())
+    }
+
+    @Test
+    fun `handles person not arrived`() {
+        // Given a message
+        val message = prepEvent("person-not-arrived")
+
+        // When the message is received
+        handler.handle(message)
+
+        // Then it is updated in Delius and logged to Telemetry
+        verify(telemetryService).notificationReceived(message)
+        verify(approvedPremisesService).personNotArrived(message.message)
+        verify(telemetryService).trackEvent("PersonNotArrived", message.message.telemetryProperties())
     }
 }

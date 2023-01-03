@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSub
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremisesApiClient
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArrived
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
@@ -55,6 +56,7 @@ internal class ApprovedPremisesServiceTest {
     private val applicationSubmittedEvent = prepEvent("application-submitted", 1234).message
     private val applicationAssessedEvent = prepEvent("application-assessed", 1234).message
     private val bookingMadeEvent = prepEvent("booking-made", 1234).message
+    private val personNotArrivedEvent = prepEvent("person-not-arrived", 1234).message
 
     @Test
     fun `creates alert contact for application submission`() {
@@ -121,6 +123,33 @@ internal class ApprovedPremisesServiceTest {
             alertManager = manager,
             description = "Approved Premises Booking for Test Premises",
             notes = "To view details of the Approved Premises booking, click here: https://example.com"
+        )
+    }
+
+    @Test
+    fun `creates alert contact for person not arrived`() {
+        val crn = personNotArrivedEvent.crn()
+        val person = givenAPerson(crn)
+        val manager = givenAPersonManager(person)
+        val staff = givenStaff()
+        val unallocatedTeam = givenUnallocatedTeam()
+        val details = givenPersonNotArrivedDetails(recordedBy = staff)
+        givenContactTypes(listOf(ContactTypeCode.NOT_ARRIVED))
+
+        approvedPremisesService.personNotArrived(personNotArrivedEvent)
+
+        verifyAlertContactIsCreated(
+            type = ContactTypeCode.NOT_ARRIVED,
+            date = details.timestamp,
+            person = person,
+            staff = staff,
+            team = unallocatedTeam,
+            alertManager = manager,
+            notes = """
+                TEST
+                
+                For more details, click here: https://example.com
+            """.trimIndent()
         )
     }
 
@@ -206,6 +235,14 @@ internal class ApprovedPremisesServiceTest {
     ): EventDetails<BookingMade> {
         val details = EventDetailsGenerator.bookingMade(bookedBy = bookedBy)
         whenever(approvedPremisesApiClient.getBookingMadeDetails(bookingMadeEvent.url())).thenReturn(details)
+        return details
+    }
+
+    private fun givenPersonNotArrivedDetails(
+        recordedBy: Staff = StaffGenerator.generate()
+    ): EventDetails<PersonNotArrived> {
+        val details = EventDetailsGenerator.personNotArrived(recordedBy = recordedBy)
+        whenever(approvedPremisesApiClient.getPersonNotArrivedDetails(personNotArrivedEvent.url())).thenReturn(details)
         return details
     }
 

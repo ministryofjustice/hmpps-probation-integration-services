@@ -38,3 +38,12 @@ data class BookingMade(
     val bookedBy: StaffMember,
     val premises: Premises,
 )
+
+data class PersonNotArrived(
+    val bookingId: String,
+    val applicationId: String,
+    val applicationUrl: String,
+    val recordedBy: StaffMember,
+    val premises: Premises,
+    val notes: String,
+)

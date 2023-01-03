@@ -135,4 +135,32 @@ internal class IntegrationTest {
         assertThat(contact.description, equalTo("Approved Premises Booking for Hope House"))
         assertThat(contact.notes, equalTo("To view details of the Approved Premises booking, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713"))
     }
+
+    @Test
+    fun `person not arrived creates an alert contact`() {
+        // Given a person-not-arrived event
+        val event = prepEvent("person-not-arrived", wireMockServer.port())
+
+        // When it is received
+        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, event)
+
+        // Then it is logged to telemetry
+        verify(telemetryService).notificationReceived(event)
+        verify(telemetryService).trackEvent("PersonNotArrived", event.message.telemetryProperties())
+
+        // And a contact alert is created
+        val contact = contactRepository.findAll()
+            .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.NOT_ARRIVED.code }
+        assertThat(contact.alert, equalTo(true))
+        assertThat(
+            contact.notes,
+            equalTo(
+                """
+            We learnt that Mr Smith is in hospital.
+            
+            For more details, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713
+                """.trimIndent()
+            )
+        )
+    }
 }
