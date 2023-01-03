@@ -22,7 +22,8 @@ abstract class NotificationConverter<T : Any>(
         objectMapper.writeValueAsString(
             Notification(
                 message = objectMapper.writeValueAsString(obj.message),
-                attributes = obj.attributes
+                attributes = obj.attributes,
+                obj.id
             )
         )
 }

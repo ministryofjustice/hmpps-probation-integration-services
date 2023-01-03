@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -12,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -21,7 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
+import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
@@ -33,10 +31,9 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest {
     @Value("\${messaging.consumer.queue}") lateinit var queueName: String
-    @Autowired lateinit var embeddedActiveMQ: EmbeddedActiveMQ
+    @Autowired lateinit var channelManager: HmppsChannelManager
     @Autowired lateinit var mockMvc: MockMvc
     @Autowired lateinit var wireMockServer: WireMockServer
-    @Autowired lateinit var jmsTemplate: JmsTemplate
     @Autowired lateinit var contactRepository: ContactRepository
     @MockBean lateinit var telemetryService: TelemetryService
 
@@ -87,7 +84,7 @@ internal class IntegrationTest {
         val event = prepEvent("application-submitted", wireMockServer.port())
 
         // When it is received
-        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, event)
+        channelManager.getChannel(queueName).publishAndWait(event)
 
         // Then it is logged to telemetry
         verify(telemetryService).notificationReceived(event)
@@ -105,7 +102,7 @@ internal class IntegrationTest {
         val event = prepEvent("application-assessed", wireMockServer.port())
 
         // When it is received
-        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, event)
+        channelManager.getChannel(queueName).publishAndWait(event)
 
         // Then it is logged to telemetry
         verify(telemetryService).notificationReceived(event)
@@ -125,7 +122,7 @@ internal class IntegrationTest {
         val event = prepEvent("booking-made", wireMockServer.port())
 
         // When it is received
-        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, event)
+        channelManager.getChannel(queueName).publishAndWait(event)
 
         // Then it is logged to telemetry
         verify(telemetryService).notificationReceived(event)

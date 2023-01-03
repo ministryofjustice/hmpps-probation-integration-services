@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.UUID
 
 data class Notification<T>(
     @JsonProperty("Message") val message: T,
-    @JsonProperty("MessageAttributes") val attributes: MessageAttributes = MessageAttributes()
+    @JsonProperty("MessageAttributes") val attributes: MessageAttributes = MessageAttributes(),
+    @JsonProperty("MessageId") val id: UUID = UUID.randomUUID()
 ) {
     val eventType: String? @JsonIgnore get() = attributes["eventType"]?.value
 }

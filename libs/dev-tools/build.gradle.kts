@@ -7,8 +7,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-test")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    api("org.springframework.boot:spring-boot-starter-artemis")
-    api("org.apache.activemq:artemis-jakarta-server")
     api(libs.wiremock)
 
     testImplementation(libs.bundles.mockito)

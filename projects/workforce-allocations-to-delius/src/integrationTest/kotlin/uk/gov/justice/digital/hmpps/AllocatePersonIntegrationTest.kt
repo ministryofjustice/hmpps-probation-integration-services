@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
@@ -23,7 +21,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficerRepository
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
-import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
+import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
@@ -37,10 +35,7 @@ class AllocatePersonIntegrationTest {
     private lateinit var queueName: String
 
     @Autowired
-    private lateinit var embeddedActiveMQ: EmbeddedActiveMQ
-
-    @Autowired
-    private lateinit var jmsTemplate: JmsTemplate
+    private lateinit var channelManager: HmppsChannelManager
 
     @Autowired
     private lateinit var wireMockServer: WireMockServer
@@ -133,7 +128,7 @@ class AllocatePersonIntegrationTest {
         originalRoCount: Int
     ) {
         val allocationEvent = prepMessage(messageName, wireMockServer.port())
-        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, allocationEvent)
+        channelManager.getChannel(queueName).publishAndWait(allocationEvent)
 
         verify(telemetryService).notificationReceived(allocationEvent)
 

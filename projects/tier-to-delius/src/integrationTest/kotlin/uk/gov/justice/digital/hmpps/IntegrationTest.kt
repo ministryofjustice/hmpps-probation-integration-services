@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.repository.ContactDevRepository
 import uk.gov.justice.digital.hmpps.data.repository.ManagementTierDevRepository
@@ -18,8 +16,8 @@ import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
-import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
+import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @SpringBootTest
@@ -30,10 +28,7 @@ internal class IntegrationTest {
     private lateinit var queueName: String
 
     @Autowired
-    private lateinit var embeddedActiveMQ: EmbeddedActiveMQ
-
-    @Autowired
-    private lateinit var jmsTemplate: JmsTemplate
+    private lateinit var channelManager: HmppsChannelManager
 
     @Autowired
     private lateinit var referenceDataRepository: ReferenceDataRepository
@@ -59,7 +54,7 @@ internal class IntegrationTest {
             attributes = MessageAttributes("tier.calculation.complete")
         )
 
-        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
+        channelManager.getChannel(queueName).publishAndWait(notification)
 
         val expectedTier = referenceDataRepository.findByCodeAndSetName("UD2", "TIER")!!
         val expectedReason = referenceDataRepository.findByCodeAndSetName("ATS", "TIER CHANGE REASON")!!

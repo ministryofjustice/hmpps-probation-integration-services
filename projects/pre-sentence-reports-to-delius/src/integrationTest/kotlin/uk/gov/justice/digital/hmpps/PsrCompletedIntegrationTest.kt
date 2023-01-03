@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.greaterThan
 import org.junit.jupiter.api.Test
@@ -13,12 +12,11 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
-import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
-import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
+import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
@@ -30,10 +28,7 @@ class PsrCompletedIntegrationTest {
     private lateinit var queueName: String
 
     @Autowired
-    private lateinit var embeddedActiveMQ: EmbeddedActiveMQ
-
-    @Autowired
-    private lateinit var jmsTemplate: JmsTemplate
+    private lateinit var channelManager: HmppsChannelManager
 
     @MockBean
     private lateinit var telemetryService: TelemetryService
@@ -54,7 +49,7 @@ class PsrCompletedIntegrationTest {
 
         val message = prepMessage("psr-message", wireMockServer.port())
 
-        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, message)
+        channelManager.getChannel(queueName).publishAndWait(message)
 
         verify(telemetryService).notificationReceived(message)
 

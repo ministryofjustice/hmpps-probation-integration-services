@@ -1,6 +1,6 @@
 {
   "Type": "Notification",
-  "MessageId": "857152a-5b14-247a-c6bf-abc567901a11",
+  "MessageId": "3f3ae2ee-8ac7-42ca-a56e-63cf4cb0281e",
   "TopicArn": "arn:aws:sns:eu-west-2:000000000000:hmpps-domain-events",
   "Message": "{\n\"eventType\": \"prison-recall.recommendation.managementOversight\",\n\"version\": 1,\n\"description\": \"Management Oversight - Recall\",\n\"occurredAt\": \"2022-11-21T06:27:57.028Z\",\n\"additionalInformation\": {\n\"contactOutcome\": \"DECISION_NOT_TO_RECALL\",\n\"recommendationUrl\": \"http://mrd.case.crn/overview\"\n,\n\"bookedBy\": { \n\"staffCode\": \"N54A999\"} \n},\n\"personReference\": {\n\"identifiers\": [\n{\"type\": \"CRN\", \"value\":\"X08771\"}\n]\n}}",
   "Timestamp": "2022-10-21T06:27:57.028Z",

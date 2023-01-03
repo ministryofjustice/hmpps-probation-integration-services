@@ -1,17 +1,16 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.timeout
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
@@ -20,7 +19,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
-import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
+import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
@@ -34,10 +33,7 @@ class AllocateEventIntegrationTest {
     private lateinit var queueName: String
 
     @Autowired
-    private lateinit var embeddedActiveMQ: EmbeddedActiveMQ
-
-    @Autowired
-    private lateinit var jmsTemplate: JmsTemplate
+    private lateinit var channelManager: HmppsChannelManager
 
     @Autowired
     private lateinit var wireMockServer: WireMockServer
@@ -101,9 +97,9 @@ class AllocateEventIntegrationTest {
         originalOmCount: Int,
     ) {
         val allocationEvent = prepMessage(messageName, wireMockServer.port())
-        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, allocationEvent)
+        channelManager.getChannel(queueName).publishAndWait(allocationEvent)
 
-        verify(telemetryService).notificationReceived(allocationEvent)
+        verify(telemetryService, timeout(30000)).notificationReceived(allocationEvent)
 
         val allocationDetail = ResourceLoader.file<AllocationDetail>(jsonFile)
 

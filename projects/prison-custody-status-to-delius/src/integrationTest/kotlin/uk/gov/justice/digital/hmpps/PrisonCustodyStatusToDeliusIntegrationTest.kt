@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.hasItems
 import org.hamcrest.MatcherAssert.assertThat
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
@@ -33,9 +31,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode.LOCATION_CHANGE
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode.STATUS_CHANGE
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseRepository
-import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.nomsNumber
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
@@ -50,10 +48,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
     private lateinit var queueName: String
 
     @Autowired
-    private lateinit var embeddedActiveMQ: EmbeddedActiveMQ
-
-    @Autowired
-    private lateinit var jmsTemplate: JmsTemplate
+    private lateinit var channelManager: HmppsChannelManager
 
     @Autowired
     private lateinit var eventRepository: EventRepository
@@ -93,7 +88,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
             message = MessageGenerator.PRISONER_RELEASED,
             attributes = MessageAttributes("prison-offender-events.prisoner.released")
         )
-        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
+        channelManager.getChannel(queueName).publishAndWait(notification)
 
         // then they are no longer in custody
         val custody = getCustody(nomsNumber)
@@ -143,7 +138,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
             message = MessageGenerator.PRISONER_RECEIVED,
             attributes = MessageAttributes("prison-offender-events.prisoner.received")
         )
-        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
+        channelManager.getChannel(queueName).publishAndWait(notification)
 
         // then they are now in custody
         val custody = getCustody(nomsNumber)
