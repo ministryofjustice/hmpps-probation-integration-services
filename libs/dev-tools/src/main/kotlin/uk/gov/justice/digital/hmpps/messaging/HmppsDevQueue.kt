@@ -33,7 +33,7 @@ abstract class NotificationChannel(
         } catch (ignore: InterruptedException) {
             null
         }
-        notification?.let { processing[it.id] = it }
+        notification?.also { processing[it.id] = it }
         return notification
     }
 
