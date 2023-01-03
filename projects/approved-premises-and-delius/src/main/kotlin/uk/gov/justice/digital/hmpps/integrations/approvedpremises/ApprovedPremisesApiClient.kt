@@ -14,4 +14,5 @@ interface ApprovedPremisesApiClient {
     @GetMapping fun getApplicationSubmittedDetails(uri: URI): EventDetails<ApplicationSubmitted>
     @GetMapping fun getApplicationAssessedDetails(uri: URI): EventDetails<ApplicationAssessed>
     @GetMapping fun getBookingMadeDetails(uri: URI): EventDetails<BookingMade>
+    @GetMapping fun getPersonNotArrivedDetails(uri: URI): EventDetails<PersonNotArrived>
 }
