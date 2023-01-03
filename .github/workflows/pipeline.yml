@@ -83,8 +83,7 @@ jobs:
   deploy-to-prod:
     name: Deploy to production
     uses: ./.github/workflows/deploy.yml
-    if: false # disabled until 03/01/2022
-#    if: ${{ (success() || (failure() && needs.end-to-end-tests.outputs.passed-projects != '[]')) && github.ref == 'refs/heads/main' }}
+    if: ${{ (success() || (failure() && needs.end-to-end-tests.outputs.passed-projects != '[]')) && github.ref == 'refs/heads/main' }}
     needs:
       - build
       - end-to-end-tests
