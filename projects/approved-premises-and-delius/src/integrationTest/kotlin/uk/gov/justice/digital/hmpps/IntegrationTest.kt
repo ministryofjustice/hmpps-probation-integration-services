@@ -142,7 +142,7 @@ internal class IntegrationTest {
         val event = prepEvent("person-not-arrived", wireMockServer.port())
 
         // When it is received
-        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, event)
+        channelManager.getChannel(queueName).publishAndWait(event)
 
         // Then it is logged to telemetry
         verify(telemetryService).notificationReceived(event)
