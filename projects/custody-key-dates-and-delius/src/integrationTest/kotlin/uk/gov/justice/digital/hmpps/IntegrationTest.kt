@@ -1,20 +1,16 @@
 package uk.gov.justice.digital.hmpps
 
-import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.DEFAULT_CUSTODY
@@ -22,8 +18,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.time.LocalDate
@@ -37,10 +33,7 @@ internal class IntegrationTest {
     lateinit var queueName: String
 
     @Autowired
-    lateinit var embeddedActiveMQ: EmbeddedActiveMQ
-
-    @Autowired
-    lateinit var jmsTemplate: JmsTemplate
+    lateinit var channelManager: HmppsChannelManager
 
     @MockBean
     lateinit var telemetryService: TelemetryService
@@ -52,17 +45,18 @@ internal class IntegrationTest {
     lateinit var custodyRepository: CustodyRepository
 
     @Test
-    @Transactional
     fun `Custody Key Dates updated as expected`() {
         val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED)
 
-        jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
+        channelManager.getChannel(queueName).publishAndWait(notification)
 
-        verify(telemetryService, atLeastOnce()).notificationReceived(notification)
+        verify(telemetryService).notificationReceived(notification)
 
-        val custody = custodyRepository.findById(DEFAULT_CUSTODY.id).orElseThrow()
-        verifyUpdatedKeyDates(custody)
-        verifyDeletedKeyDate(custody)
+        val custody = custodyRepository.findCustody(
+            PersonGenerator.DEFAULT.id, DEFAULT_CUSTODY.bookingRef
+        )
+        verifyUpdatedKeyDates(custody[0])
+        verifyDeletedKeyDate(custody[0])
         verifyContactCreated()
     }
 

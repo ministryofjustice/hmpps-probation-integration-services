@@ -11,12 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.OffenderDeltaGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDelta
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaRepository
-import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @SpringBootTest
@@ -26,7 +25,7 @@ internal class IntegrationTest {
     lateinit var topicName: String
 
     @Autowired
-    lateinit var jmsTemplate: JmsTemplate
+    lateinit var channelManager: HmppsChannelManager
 
     @Autowired
     lateinit var offenderDeltaRepository: OffenderDeltaRepository
@@ -37,15 +36,17 @@ internal class IntegrationTest {
     @ParameterizedTest
     @MethodSource("deltas")
     fun `offender delta test`(delta: OffenderDelta, eventTypes: List<String>) {
+
         offenderDeltaRepository.save(delta)
 
+        val topic = channelManager.getChannel(topicName)
         val messages = (1..eventTypes.size).mapNotNull {
-            (jmsTemplate.receiveAndConvert(topicName) as Notification<*>).eventType
+            topic.receive()?.eventType
         }
 
         assertEquals(eventTypes.size, messages.size)
         assertEquals(eventTypes.sorted(), messages.sorted())
-        verify(telemetryService, timeout(5000)).trackEvent(any(), any(), any())
+        verify(telemetryService, timeout(3000)).trackEvent(any(), any(), any())
         assertEquals(0, offenderDeltaRepository.count())
     }
 

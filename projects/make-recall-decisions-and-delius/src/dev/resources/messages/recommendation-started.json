@@ -1,6 +1,6 @@
 {
   "Type": "Notification",
-  "MessageId": "6584074d-6c22-426b-a1cf-cbc472080d99",
+  "MessageId": "262f4195-2967-42d8-aafa-077cda53bdd4",
   "TopicArn": "arn:aws:sns:eu-west-2:000000000000:hmpps-domain",
   "Message": "{\n\"eventType\": \"prison-recall.recommendation.started\",\n\"version\": 1,\n\"description\": \"Recommendation started (recall or no recall)\",\n\"occurredAt\": \"2022-11-21T06:27:57.028Z\",\n\"additionalInformation\": {\n\"recommendationUrl\": \"http://mrd.case.crn/overview\"\n},\n\"personReference\": {\n\"identifiers\": [\n{\"type\": \"CRN\", \"value\":\"X08769\"}\n]\n}\n}",
   "Timestamp": "2022-10-21T06:27:57.028Z",

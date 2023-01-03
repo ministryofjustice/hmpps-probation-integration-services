@@ -38,7 +38,7 @@ class HmppsDomainEventConverterTest {
             """
                 {
                   "Type": "Notification",
-                  "MessageId": "aa2c2828-167f-529b-8e19-73735a2fb85c",
+                  "MessageId": "20d491ef-1213-4c50-92a7-96977ee66abd",
                   "TopicArn": "arn:aws:sns:eu-west-2:000000000000:QueueName",
                   "Message": "{\"eventType\":\"message.event.type\",\"version\":1,\"description\":\"A description for the event\",\"detailUrl\":\"http://detail/url\",\"occurredAt\":\"2022-07-27T15:22:08.509+01:00\",\"additionalInformation\":{\"specialId\":\"6aafe304-861f-4479-8380-fec5f90f6d17\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"X123456\"}]}}",
                   "Timestamp": "2022-07-27T14:22:08.509Z",
@@ -89,7 +89,7 @@ class HmppsDomainEventConverterTest {
             equalTo(
                 """
                 |{"Message":"{\"eventType\":\"message.event.type\",\"version\":1,\"detailUrl\":\"http://detail/url\",\"occurredAt\":\"2022-07-27T15:22:08.509+01:00\",\"description\":\"A description for the event\",\"additionalInformation\":{\"specialId\":\"6aafe304-861f-4479-8380-fec5f90f6d17\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"X123456\"}]}}",
-                |"MessageAttributes":{"eventType":{"Type":"String","Value":"attribute.event.type"}}}
+                |"MessageAttributes":{"eventType":{"Type":"String","Value":"attribute.event.type"}},"MessageId":"${hmppsEvent.id}"}
             """.trimMargin().replace("\\n".toRegex(), "")
             )
         )

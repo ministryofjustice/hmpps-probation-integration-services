@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.stringContainsInOrder
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
@@ -28,7 +26,7 @@ import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
-import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
+import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 const val CASE_NOTE_MERGE = "CaseNoteMerge"
@@ -41,10 +39,7 @@ class CaseNotesIntegrationTest {
     private lateinit var queueName: String
 
     @Autowired
-    private lateinit var embeddedActiveMQ: EmbeddedActiveMQ
-
-    @Autowired
-    private lateinit var jmsTemplate: JmsTemplate
+    private lateinit var channelManager: HmppsChannelManager
 
     @Autowired
     private lateinit var caseNoteRepository: CaseNoteRepository
@@ -62,9 +57,7 @@ class CaseNotesIntegrationTest {
     fun `update an existing case note succesfully`() {
         val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
 
-        jmsTemplate.convertSendAndWait(
-            embeddedActiveMQ,
-            queueName,
+        channelManager.getChannel(queueName).publishAndWait(
             prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS, wireMockserver.port())
         )
 
@@ -91,9 +84,7 @@ class CaseNotesIntegrationTest {
         val original = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
         assertNull(original)
 
-        jmsTemplate.convertSendAndWait(
-            embeddedActiveMQ,
-            queueName,
+        channelManager.getChannel(queueName).publishAndWait(
             prepMessage(CaseNoteMessageGenerator.NEW_TO_DELIUS, wireMockserver.port())
         )
 
@@ -131,9 +122,7 @@ class CaseNotesIntegrationTest {
     @Test
     fun `case note not found - noop`() {
 
-        jmsTemplate.convertSendAndWait(
-            embeddedActiveMQ,
-            queueName,
+        channelManager.getChannel(queueName).publishAndWait(
             prepMessage(CaseNoteMessageGenerator.NOT_FOUND, wireMockserver.port())
         )
 

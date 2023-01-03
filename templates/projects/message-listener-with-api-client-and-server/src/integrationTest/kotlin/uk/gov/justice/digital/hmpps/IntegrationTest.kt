@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.verify
@@ -11,14 +10,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
-import uk.gov.justice.digital.hmpps.jms.convertSendAndWait
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
@@ -29,10 +27,9 @@ import java.util.concurrent.TimeoutException
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest {
     @Value("\${messaging.consumer.queue}") lateinit var queueName: String
-    @Autowired lateinit var embeddedActiveMQ: EmbeddedActiveMQ
+    @Autowired lateinit var channelManager: HmppsChannelManager
     @Autowired lateinit var mockMvc: MockMvc
     @Autowired lateinit var wireMockServer: WireMockServer
-    @Autowired lateinit var jmsTemplate: JmsTemplate
 
     @MockBean lateinit var telemetryService: TelemetryService
 
@@ -43,7 +40,7 @@ internal class IntegrationTest {
 
         // When it is received
         try {
-            jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
+            channelManager.getChannel(queueName).publishAndWait(notification)
         } catch (_: TimeoutException) {
             // Note: Remove this try/catch when the MessageListener logic has been implemented
         }

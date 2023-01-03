@@ -6,10 +6,10 @@ import org.springframework.core.type.AnnotatedTypeMetadata
 
 class AwsCondition : Condition {
     override fun matches(context: ConditionContext, metadata: AnnotatedTypeMetadata) =
-        context.environment.activeProfiles.contains("localstack") || !activeMQConfigured()
+        context.environment.activeProfiles.contains("localstack") || !devMessagingConfigured()
 
-    private fun activeMQConfigured() = try {
-        Class.forName("org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory")
+    private fun devMessagingConfigured() = try {
+        Class.forName("uk.gov.justice.digital.hmpps.messaging.HmppsNotificationListener")
         true
     } catch (e: ClassNotFoundException) {
         false
