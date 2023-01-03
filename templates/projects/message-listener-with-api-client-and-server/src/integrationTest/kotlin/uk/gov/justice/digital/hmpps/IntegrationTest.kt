@@ -29,10 +29,9 @@ import java.util.concurrent.TimeoutException
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest {
     @Value("\${messaging.consumer.queue}") lateinit var queueName: String
-    @Autowired lateinit var embeddedActiveMQ: EmbeddedActiveMQ
+    @Autowired lateinit var channelManager: HmppsChannelManager
     @Autowired lateinit var mockMvc: MockMvc
     @Autowired lateinit var wireMockServer: WireMockServer
-    @Autowired lateinit var jmsTemplate: JmsTemplate
 
     @MockBean lateinit var telemetryService: TelemetryService
 
@@ -43,7 +42,7 @@ internal class IntegrationTest {
 
         // When it is received
         try {
-            jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
+            channelManager.getChannel(queueName).publishAndWait(notification)
         } catch (_: TimeoutException) {
             // Note: Remove this try/catch when the MessageListener logic has been implemented
         }

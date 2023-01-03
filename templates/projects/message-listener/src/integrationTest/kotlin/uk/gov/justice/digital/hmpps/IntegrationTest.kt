@@ -21,8 +21,7 @@ import java.util.concurrent.TimeoutException
 @ActiveProfiles("integration-test")
 internal class IntegrationTest {
     @Value("\${messaging.consumer.queue}") lateinit var queueName: String
-    @Autowired lateinit var embeddedActiveMQ: EmbeddedActiveMQ
-    @Autowired lateinit var jmsTemplate: JmsTemplate
+    @Autowired lateinit var channelManager: HmppsChannelManager
     @MockBean lateinit var telemetryService: TelemetryService
 
     @Test
@@ -32,7 +31,7 @@ internal class IntegrationTest {
 
         // When it is received
         try {
-            jmsTemplate.convertSendAndWait(embeddedActiveMQ, queueName, notification)
+            channelManager.getChannel(queueName).publishAndWait(notification)
         } catch (_: TimeoutException) {
             // Note: Remove this try/catch when the MessageListener logic has been implemented
         }
