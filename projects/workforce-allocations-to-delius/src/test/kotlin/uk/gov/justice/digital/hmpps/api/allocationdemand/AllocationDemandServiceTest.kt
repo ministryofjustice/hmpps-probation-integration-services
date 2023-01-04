@@ -33,7 +33,7 @@ class AllocationDemandServiceTest {
     @Test
     fun `missing crn for choose practitioner is thrown`() {
         val exception = assertThrows<NotFoundException> {
-            allocationDemandService.getChoosePractitionerResponse("ABC", "123", listOf())
+            allocationDemandService.getChoosePractitionerResponse("ABC", listOf())
         }
         assertThat(exception.message, equalTo("Person with crn of ABC not found"))
     }
@@ -44,7 +44,7 @@ class AllocationDemandServiceTest {
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
         whenever(personRepository.getProbationStatus(person.crn)).thenReturn(CURRENTLY_MANAGED)
 
-        val response = allocationDemandService.getChoosePractitionerResponse(person.crn, "1", listOf())
+        val response = allocationDemandService.getChoosePractitionerResponse(person.crn, listOf())
 
         assertThat(response.communityPersonManager, nullValue())
     }
@@ -60,7 +60,7 @@ class AllocationDemandServiceTest {
         whenever(personManagerRepository.findActiveManager(eq(person.id), any())).thenReturn(manager)
         whenever(staffRepository.findAllByTeamsCode(team.code)).thenReturn(listOf(staff))
 
-        val response = allocationDemandService.getChoosePractitionerResponse(person.crn, "1", listOf(team.code))
+        val response = allocationDemandService.getChoosePractitionerResponse(person.crn, listOf(team.code))
 
         assertThat(response.probationStatus.description, equalTo("Currently managed"))
         assertThat(response.communityPersonManager!!.code, equalTo(manager.staff.code))

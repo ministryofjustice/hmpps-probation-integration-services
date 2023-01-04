@@ -23,7 +23,7 @@ class AllocationDemandResourceTest {
 
     @Test
     fun `choose practitioner resource calls service`() {
-        allocationDemandResource.choosePractitioner("ABC", "123")
-        verify(allocationDemandService).getChoosePractitionerResponse("ABC", "123", listOf())
+        allocationDemandResource.choosePractitioner("ABC")
+        verify(allocationDemandService).getChoosePractitionerResponse("ABC", listOf())
     }
 }

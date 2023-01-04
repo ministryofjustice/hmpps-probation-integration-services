@@ -26,7 +26,6 @@ class AllocationDemandResource(private val service: AllocationDemandService) {
     @GetMapping("/choose-practitioner")
     fun choosePractitioner(
         @RequestParam crn: String,
-        @RequestParam eventNumber: String,
         @RequestParam("teamCode", defaultValue = "") teamCodes: List<String> = listOf()
-    ) = service.getChoosePractitionerResponse(crn, eventNumber, teamCodes)
+    ) = service.getChoosePractitionerResponse(crn, teamCodes)
 }

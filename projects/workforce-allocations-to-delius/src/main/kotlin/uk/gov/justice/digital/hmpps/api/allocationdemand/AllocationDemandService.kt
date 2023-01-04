@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.allocationdemand.model.AllocationDemandRequest
 import uk.gov.justice.digital.hmpps.api.allocationdemand.model.AllocationDemandResponse
 import uk.gov.justice.digital.hmpps.api.allocationdemand.model.ChoosePractitionerResponse
-import uk.gov.justice.digital.hmpps.api.allocationdemand.model.Event
 import uk.gov.justice.digital.hmpps.api.allocationdemand.model.Manager
 import uk.gov.justice.digital.hmpps.api.allocationdemand.model.Name
 import uk.gov.justice.digital.hmpps.api.allocationdemand.model.ProbationStatus
@@ -38,7 +37,6 @@ class AllocationDemandService(
 
     fun getChoosePractitionerResponse(
         crn: String,
-        eventNumber: String,
         teamCodes: List<String>
     ): ChoosePractitionerResponse {
         val person = personRepository.findByCrnAndSoftDeletedFalse(crn) ?: throw NotFoundException("Person", "crn", crn)
@@ -49,7 +47,6 @@ class AllocationDemandService(
         return ChoosePractitionerResponse(
             crn = crn,
             name = person.name(),
-            event = Event(eventNumber),
             probationStatus = ProbationStatus(personRepository.getProbationStatus(person.crn)),
             communityPersonManager = personManager?.toManager(),
             teams = staffInTeams + mapOf("all" to staffInTeams.values.flatten())

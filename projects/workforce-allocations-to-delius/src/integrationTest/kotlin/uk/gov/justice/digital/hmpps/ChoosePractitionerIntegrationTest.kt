@@ -11,7 +11,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
@@ -26,19 +25,16 @@ class ChoosePractitionerIntegrationTest {
     @Test
     fun `successful response`() {
         val person = PersonGenerator.DEFAULT
-        val event = EventGenerator.DEFAULT
         val team1 = TeamGenerator.DEFAULT.code
         val team2 = TeamGenerator.ALLOCATION_TEAM.code
         mockMvc.perform(
             get("/allocation-demand/choose-practitioner").withOAuth2Token(wireMockserver)
                 .param("crn", person.crn)
-                .param("eventNumber", event.number)
                 .param("teamCode", team1)
                 .param("teamCode", team2)
         )
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.crn").value(person.crn))
-            .andExpect(jsonPath("$.event.number").value(event.number))
             .andExpect(jsonPath("$.name.forename").value(person.forename))
             .andExpect(jsonPath("$.name.middleName").value(person.secondName))
             .andExpect(jsonPath("$.name.surname").value(person.surname))
@@ -56,11 +52,9 @@ class ChoosePractitionerIntegrationTest {
     @Test
     fun `team codes can be empty`() {
         val person = PersonGenerator.DEFAULT
-        val event = EventGenerator.DEFAULT
         mockMvc.perform(
             get("/allocation-demand/choose-practitioner").withOAuth2Token(wireMockserver)
                 .param("crn", person.crn)
-                .param("eventNumber", event.number)
         )
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.teams.keys()").value(setOf("all")))

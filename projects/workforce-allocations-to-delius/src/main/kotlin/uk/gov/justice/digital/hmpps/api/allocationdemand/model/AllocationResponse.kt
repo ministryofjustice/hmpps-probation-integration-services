@@ -19,7 +19,7 @@ data class Name(
     val surname: String,
 )
 
-data class Event(val number: String, val manager: Manager? = null)
+data class Event(val number: String, val manager: Manager)
 data class Manager(val code: String, val name: Name, val teamCode: String, val grade: String? = null)
 data class Sentence(val type: String, val date: LocalDate, val length: String)
 
