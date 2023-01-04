@@ -9,6 +9,7 @@ object ReferenceDataGenerator {
     val INITIAL_ORDER_ALLOCATION = generate(DatasetGenerator.ORDER_ALLOCATION_REASON, "INT")
     val INITIAL_RM_ALLOCATION = generate(DatasetGenerator.RM_ALLOCATION_REASON, "IN1")
     val PENDING_TRANSFER = generate(DatasetGenerator.TRANSFER_STATUS, "PN")
+    val PSQ_GRADE = generate(DatasetGenerator.OFFICER_GRADE, "PSQ")
 
     fun generate(
         dataset: Dataset,

@@ -71,16 +71,16 @@ internal class AllocatePersonServiceTest {
 
     @Test
     fun `when person not found exception thrown`() {
-        whenever(personRepository.findByCrn(allocationDetail.crn)).thenReturn(null)
+        whenever(personRepository.findIdByCrn(allocationDetail.crn)).thenReturn(null)
 
         assertThrows<NotFoundException> { allocatePersonService.createPersonAllocation(allocationDetail) }
     }
 
     @Test
     fun `when person manager not found for date exception thrown`() {
-        whenever(personRepository.findByCrn(allocationDetail.crn)).thenReturn(PersonGenerator.DEFAULT)
+        whenever(personRepository.findIdByCrn(allocationDetail.crn)).thenReturn(PersonGenerator.DEFAULT.id)
         whenever(
-            personManagerRepository.findActiveManagerAtDate(
+            personManagerRepository.findActiveManager(
                 PersonGenerator.DEFAULT.id,
                 allocationDetail.createdDate
             )
@@ -91,13 +91,13 @@ internal class AllocatePersonServiceTest {
 
     @Test
     fun `when duplicate allocation noop`() {
-        whenever(personRepository.findByCrn(allocationDetail.crn)).thenReturn(PersonGenerator.DEFAULT)
+        whenever(personRepository.findIdByCrn(allocationDetail.crn)).thenReturn(PersonGenerator.DEFAULT.id)
         val allocationDetail = allocationDetail.copy(
             staffCode = OrderManagerGenerator.DEFAULT.staff.code,
             teamCode = OrderManagerGenerator.DEFAULT.team.code
         )
         whenever(
-            personManagerRepository.findActiveManagerAtDate(
+            personManagerRepository.findActiveManager(
                 PersonGenerator.DEFAULT.id,
                 allocationDetail.createdDate
             )
@@ -109,10 +109,10 @@ internal class AllocatePersonServiceTest {
 
     @Test
     fun `when pending transfer for person exception thrown`() {
-        whenever(personRepository.findByCrn(allocationDetail.crn)).thenReturn(PersonGenerator.DEFAULT)
+        whenever(personRepository.findIdByCrn(allocationDetail.crn)).thenReturn(PersonGenerator.DEFAULT.id)
 
         whenever(
-            personManagerRepository.findActiveManagerAtDate(
+            personManagerRepository.findActiveManager(
                 PersonGenerator.DEFAULT.id,
                 allocationDetail.createdDate
             )
@@ -125,10 +125,10 @@ internal class AllocatePersonServiceTest {
 
     @Test
     fun `when responsible officer not found exception thrown`() {
-        whenever(personRepository.findByCrn(allocationDetail.crn)).thenReturn(PersonGenerator.DEFAULT)
+        whenever(personRepository.findIdByCrn(allocationDetail.crn)).thenReturn(PersonGenerator.DEFAULT.id)
 
         whenever(
-            personManagerRepository.findActiveManagerAtDate(
+            personManagerRepository.findActiveManager(
                 PersonGenerator.DEFAULT.id,
                 allocationDetail.createdDate
             )
@@ -158,10 +158,10 @@ internal class AllocatePersonServiceTest {
 
     @Test
     fun `when responsible officer is prison manager detail noted in contact notes`() {
-        whenever(personRepository.findByCrn(allocationDetail.crn)).thenReturn(PersonGenerator.DEFAULT)
+        whenever(personRepository.findIdByCrn(allocationDetail.crn)).thenReturn(PersonGenerator.DEFAULT.id)
 
         whenever(
-            personManagerRepository.findActiveManagerAtDate(
+            personManagerRepository.findActiveManager(
                 PersonGenerator.DEFAULT.id,
                 allocationDetail.createdDate
             )

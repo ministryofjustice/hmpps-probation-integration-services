@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.api.allocationdemand
+package uk.gov.justice.digital.hmpps.api.allocationdemand.model
 
 import java.time.LocalDate
 

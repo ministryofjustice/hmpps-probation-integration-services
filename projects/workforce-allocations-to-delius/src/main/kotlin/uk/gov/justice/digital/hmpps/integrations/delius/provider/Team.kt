@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.provider
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
+import jakarta.persistence.ManyToMany
 import org.hibernate.annotations.Immutable
 import java.time.ZonedDateTime
 
@@ -24,4 +25,7 @@ class Team(
 
     @Column(name = "end_date")
     val endDate: ZonedDateTime? = null,
+
+    @ManyToMany(mappedBy = "teams")
+    val staff: List<Staff> = listOf()
 )

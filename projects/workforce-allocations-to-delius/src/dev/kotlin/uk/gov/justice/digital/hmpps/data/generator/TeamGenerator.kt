@@ -10,6 +10,7 @@ object TeamGenerator {
         "Unallocated Team(N02)",
         ProviderGenerator.DEFAULT.id,
     )
+    val ALLOCATION_TEAM = generate("N02ABS")
 
     fun generate(
         code: String,

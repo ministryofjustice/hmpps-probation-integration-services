@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.Matchers.`is`
@@ -12,26 +11,25 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.web.client.RestTemplate
 import uk.gov.justice.digital.hmpps.api.allocationdemand.AllocationDemandRepository
-import uk.gov.justice.digital.hmpps.api.allocationdemand.AllocationDemandRequest
-import uk.gov.justice.digital.hmpps.api.allocationdemand.AllocationRequest
-import uk.gov.justice.digital.hmpps.api.allocationdemand.AllocationResponse
-import uk.gov.justice.digital.hmpps.api.allocationdemand.CaseType
-import uk.gov.justice.digital.hmpps.api.allocationdemand.Event
-import uk.gov.justice.digital.hmpps.api.allocationdemand.InitialAppointment
-import uk.gov.justice.digital.hmpps.api.allocationdemand.ManagementStatus
-import uk.gov.justice.digital.hmpps.api.allocationdemand.Manager
-import uk.gov.justice.digital.hmpps.api.allocationdemand.Name
-import uk.gov.justice.digital.hmpps.api.allocationdemand.ProbationStatus
-import uk.gov.justice.digital.hmpps.api.allocationdemand.Sentence
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.AllocationDemandRequest
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.AllocationRequest
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.AllocationResponse
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.CaseType
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.Event
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.InitialAppointment
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.ManagementStatus
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.Manager
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.Name
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.ProbationStatus
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.Sentence
+import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import java.time.LocalDate
 
 @ActiveProfiles("integration-test")
@@ -57,17 +55,15 @@ class AllocationDemandIntegrationTest {
             post("/allocation-demand")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(AllocationDemandRequest(listOf())))
-        )
-            .andExpect(status().isUnauthorized)
+        ).andExpect(status().isUnauthorized)
     }
 
     @Test
     fun `get allocation demand no results`() {
 
         mockMvc.perform(
-            post("/allocation-demand")
+            post("/allocation-demand").withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer ${getToken()}")
                 .content(objectMapper.writeValueAsString(AllocationDemandRequest(listOf())))
         )
             .andExpect(status().is2xxSuccessful)
@@ -77,9 +73,8 @@ class AllocationDemandIntegrationTest {
     @MethodSource("allocationRequests")
     fun `get allocation demand invalid inputs`(allocationRequest: AllocationRequest) {
         mockMvc.perform(
-            post("/allocation-demand")
+            post("/allocation-demand").withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer ${getToken()}")
                 .content(objectMapper.writeValueAsString(AllocationDemandRequest(listOf(allocationRequest))))
         )
             .andExpect(status().is4xxClientError)
@@ -119,22 +114,12 @@ class AllocationDemandIntegrationTest {
             .thenReturn(allocationResponse)
 
         mockMvc.perform(
-            post("/allocation-demand")
+            post("/allocation-demand").withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer ${getToken()}")
                 .content(objectMapper.writeValueAsString(request))
         )
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("\$.cases.length()", `is`(2)))
-    }
-
-    private fun getToken(): String {
-        val authResponse = RestTemplate().postForObject(
-            "http://localhost:${wireMockserver.port()}/auth/oauth/token",
-            null,
-            JsonNode::class.java
-        )!!
-        return authResponse["access_token"].asText()
     }
 
     companion object {

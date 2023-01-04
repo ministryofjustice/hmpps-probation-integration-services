@@ -110,7 +110,7 @@ class AllocatePersonIntegrationTest {
             2
         )
 
-        val insertedPm = personManagerRepository.findActiveManagerAtDate(person.id, ZonedDateTime.now().minusDays(2))
+        val insertedPm = personManagerRepository.findActiveManager(person.id, ZonedDateTime.now().minusDays(2))
         assert(secondPm.startDate.closeTo(insertedPm?.endDate))
 
         val insertedRo =
