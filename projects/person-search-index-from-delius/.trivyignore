@@ -21,7 +21,7 @@ CVE-2022-42004
 
 # Suppressed as we are not serving any HTTP requests from the indexer
 # By izzyL-DJ
-CVE-2022-45442 exp:2022-06-01
+CVE-2022-45442 exp:2023-06-01
 
 # Suppressed as we do not process any XML as part of search indexing
 # By marcus-bcl
