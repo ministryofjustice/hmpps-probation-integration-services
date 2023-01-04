@@ -8,11 +8,14 @@ interface StaffRepository : JpaRepository<Staff, Long> {
 
     @Query(
         """
-        select case when count(st) > 0 then true else false end
-        from StaffTeam st 
-        where st.staffId = :staffId
-        and st.teamId = :teamId
+        select case when count(t) > 0 then true else false end
+        from Staff s 
+        left join fetch Team t
+        where s.id = :staffId
+        and t.id = :teamId
         """
     )
     fun verifyTeamMembership(staffId: Long, teamId: Long): Boolean
+
+    fun findAllByTeamsCode(teamCode: String): List<Staff>
 }

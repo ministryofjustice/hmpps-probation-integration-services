@@ -11,6 +11,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
@@ -21,7 +22,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.EventDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.OffenderDocument
-import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 
 @ExtendWith(MockitoExtension::class)
 class DocumentServiceTest {
@@ -67,7 +67,7 @@ class DocumentServiceTest {
             EventDocument(
                 DocEvent(
                     1L,
-                    Person(1L, crn, false),
+                    PersonGenerator.DEFAULT,
                     true,
                     "1",
                     null,
@@ -77,7 +77,7 @@ class DocumentServiceTest {
             EventDocument(
                 DocEvent(
                     1L,
-                    Person(1L, crn, false),
+                    PersonGenerator.DEFAULT,
                     false,
                     "1",
                     null,

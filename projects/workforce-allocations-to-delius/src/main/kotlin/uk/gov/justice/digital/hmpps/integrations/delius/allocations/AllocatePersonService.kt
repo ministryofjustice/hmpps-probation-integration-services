@@ -35,14 +35,14 @@ class AllocatePersonService(
     @Transactional
     fun createPersonAllocation(allocationDetail: PersonAllocationDetail) =
         audit(BusinessInteractionCode.ADD_PERSON_ALLOCATION) {
-            val person = personRepository.findByCrn(allocationDetail.crn)
+            val personId = personRepository.findIdByCrn(allocationDetail.crn)
                 ?: throw NotFoundException("Person", "crn", allocationDetail.crn)
 
-            it["offenderId"] = person.id
-            OptimisationContext.offenderId.set(person.id)
+            it["offenderId"] = personId
+            OptimisationContext.offenderId.set(personId)
 
-            val activeOffenderManager = personManagerRepository.findActiveManagerAtDate(
-                person.id, allocationDetail.createdDate
+            val activeOffenderManager = personManagerRepository.findActiveManager(
+                personId, allocationDetail.createdDate
             ) ?: throw NotFoundException(
                 "Person Manager for ${allocationDetail.crn} at ${allocationDetail.createdDate} not found"
             )
@@ -51,15 +51,15 @@ class AllocatePersonService(
                 return@audit
             }
 
-            if (personRepository.countPendingTransfers(person.id) > 0) {
-                throw ConflictException("Pending transfer exists for this person: ${person.crn}")
+            if (personRepository.countPendingTransfers(personId) > 0) {
+                throw ConflictException("Pending transfer exists for this person: ${allocationDetail.crn}")
             }
             val ts = allocationValidator.initialValidations(
                 activeOffenderManager.provider.id,
                 allocationDetail,
             )
 
-            val newOffenderManager = PersonManager(personId = person.id).apply {
+            val newOffenderManager = PersonManager(personId = personId).apply {
                 populate(allocationDetail.createdDate, ts, activeOffenderManager)
             }
 
@@ -72,12 +72,12 @@ class AllocatePersonService(
                     newOm,
                     ContactContext(
                         contactTypeRepository.findByCodeOrThrow(ContactTypeCode.OFFENDER_MANAGER_TRANSFER.value),
-                        person.id
+                        personId
                     )
                 )
             )
 
-            personRepository.updateIaps(person.id)
+            personRepository.updateIaps(personId)
         }
 
     private fun updateResponsibleOfficer(

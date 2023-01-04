@@ -9,6 +9,7 @@ object DatasetGenerator {
     val OM_ALLOCATION_REASON = generate(DatasetCode.OM_ALLOCATION_REASON)
     val ORDER_ALLOCATION_REASON = generate(DatasetCode.ORDER_ALLOCATION_REASON)
     val RM_ALLOCATION_REASON = generate(DatasetCode.RM_ALLOCATION_REASON)
+    val OFFICER_GRADE = generate(DatasetCode.OFFICER_GRADE)
 
     fun generate(code: DatasetCode, id: Long = IdGenerator.getAndIncrement()) = Dataset(id, code)
 }

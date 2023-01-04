@@ -8,15 +8,15 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.allocationdemand.AllocationDemandRepository
-import uk.gov.justice.digital.hmpps.api.allocationdemand.AllocationResponse
-import uk.gov.justice.digital.hmpps.api.allocationdemand.CaseType
-import uk.gov.justice.digital.hmpps.api.allocationdemand.Event
-import uk.gov.justice.digital.hmpps.api.allocationdemand.InitialAppointment
-import uk.gov.justice.digital.hmpps.api.allocationdemand.ManagementStatus
-import uk.gov.justice.digital.hmpps.api.allocationdemand.Manager
-import uk.gov.justice.digital.hmpps.api.allocationdemand.Name
-import uk.gov.justice.digital.hmpps.api.allocationdemand.ProbationStatus
-import uk.gov.justice.digital.hmpps.api.allocationdemand.Sentence
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.AllocationResponse
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.CaseType
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.Event
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.InitialAppointment
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.ManagementStatus
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.Manager
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.Name
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.ProbationStatus
+import uk.gov.justice.digital.hmpps.api.allocationdemand.model.Sentence
 import java.sql.Date
 import java.sql.ResultSet
 import java.time.LocalDate
@@ -57,11 +57,11 @@ class AllocationDemandMapperTest {
         whenever(resultSet.getString("middle_name")).thenReturn(expected.name.middleName)
         whenever(resultSet.getString("surname")).thenReturn(expected.name.surname)
         whenever(resultSet.getString("event_number")).thenReturn(expected.event.number)
-        whenever(resultSet.getString("staff_code")).thenReturn(expected.event.manager.code)
-        whenever(resultSet.getString("staff_forename")).thenReturn(expected.event.manager.name.forename)
-        whenever(resultSet.getString("staff_middle_name")).thenReturn(expected.event.manager.name.middleName)
-        whenever(resultSet.getString("staff_surname")).thenReturn(expected.event.manager.name.surname)
-        whenever(resultSet.getString("team_code")).thenReturn(expected.event.manager.teamCode)
+        whenever(resultSet.getString("staff_code")).thenReturn(expected.event.manager!!.code)
+        whenever(resultSet.getString("staff_forename")).thenReturn(expected.event.manager!!.name.forename)
+        whenever(resultSet.getString("staff_middle_name")).thenReturn(expected.event.manager!!.name.middleName)
+        whenever(resultSet.getString("staff_surname")).thenReturn(expected.event.manager!!.name.surname)
+        whenever(resultSet.getString("team_code")).thenReturn(expected.event.manager!!.teamCode)
         whenever(resultSet.getString("sentence_type")).thenReturn(expected.sentence?.type)
         whenever(resultSet.getDate("sentence_date")).thenReturn(Date.valueOf(expected.sentence?.date))
         whenever(resultSet.getString("sentence_length_value")).thenReturn("3")
