@@ -92,7 +92,7 @@ class HmppsNotificationListener(
     private val handler: NotificationHandler<*>
 ) {
 
-    @Scheduled(fixedDelay = 10)
+    @Scheduled(fixedDelay = 10, initialDelay = 1000)
     fun receive() {
         val queue = channelManager.getChannel(queueName)
         val notification = queue.receive()
