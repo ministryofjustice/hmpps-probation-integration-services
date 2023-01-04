@@ -40,11 +40,11 @@ internal class IntegrationTest {
         offenderDeltaRepository.save(delta)
 
         val topic = channelManager.getChannel(topicName)
-        val messages = (1..eventTypes.size).mapNotNull {
-            topic.receive()?.eventType
+        val messages = mutableListOf<String>()
+        while (messages.size < eventTypes.size) {
+            topic.receive()?.eventType?.let { messages.add(it) }
         }
 
-        assertEquals(eventTypes.size, messages.size)
         assertEquals(eventTypes.sorted(), messages.sorted())
         verify(telemetryService, timeout(3000)).trackEvent(any(), any(), any())
         assertEquals(0, offenderDeltaRepository.count())

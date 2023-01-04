@@ -11,43 +11,64 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
 import java.time.Duration
 import java.time.LocalDateTime
+import java.util.LinkedList
+import java.util.Queue
 import java.util.UUID
-import java.util.concurrent.BlockingQueue
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import java.util.concurrent.locks.ReentrantLock
 
 abstract class NotificationChannel(
     val name: String
 ) {
-    private val messages: BlockingQueue<Notification<*>> = LinkedBlockingQueue()
-    private val processing: MutableMap<UUID, Notification<*>> = ConcurrentHashMap()
+    private val lock = ReentrantLock()
+    private val messages: Queue<Notification<*>> = LinkedList()
+    private val processing: MutableMap<UUID, Notification<*>> = HashMap()
     fun publish(notification: Notification<*>) {
-        messages.put(notification)
+        lock.lock()
+        try {
+            messages.add(notification)
+        } finally {
+            lock.unlock()
+        }
     }
 
     fun receive(): Notification<*>? {
+        lock.lock()
         val notification = try {
-            messages.poll(30, TimeUnit.SECONDS)
+            val peek = messages.peek()
+            val notification = peek?.let {
+                processing[it.id] = it
+                messages.poll()
+            }
+            notification
         } catch (ignore: InterruptedException) {
             null
+        } finally {
+            lock.unlock()
         }
-        notification?.also { processing[it.id] = it }
         return notification
     }
 
     fun confirm(notificationId: UUID) {
-        processing.remove(notificationId)
-    }
-
-    fun fail(notificationId: UUID) {
-        processing.remove(notificationId)?.let {
-            messages.put(it)
+        lock.lock()
+        try {
+            processing.remove(notificationId)
+        } finally {
+            lock.unlock()
         }
     }
 
-    fun publishAndWait(notification: Notification<*>, timeout: Duration = Duration.ofSeconds(10)) {
+    fun fail(notificationId: UUID) {
+        lock.lock()
+        try {
+            messages.add(processing.remove(notificationId))
+        } finally {
+            lock.unlock()
+        }
+    }
+
+    fun publishAndWait(notification: Notification<*>, timeout: Duration = Duration.ofSeconds(20)) {
         publish(notification)
         val start = LocalDateTime.now()
         val end = start.plus(timeout)
