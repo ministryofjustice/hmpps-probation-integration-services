@@ -13,6 +13,7 @@ object EventGenerator {
         person: Person = PersonGenerator.DEFAULT,
         eventNumber: String = "1",
         id: Long = IdGenerator.getAndIncrement(),
-        active: Boolean = true
-    ) = Event(id, eventNumber, person, active)
+        active: Boolean = true,
+        softDeleted: Boolean = false,
+    ) = Event(id, eventNumber, person, active, softDeleted)
 }

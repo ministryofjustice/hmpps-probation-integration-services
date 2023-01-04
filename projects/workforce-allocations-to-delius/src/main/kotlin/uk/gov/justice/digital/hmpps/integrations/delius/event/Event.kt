@@ -22,6 +22,9 @@ class Event(
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
-    @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     val active: Boolean,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean,
 )
