@@ -42,7 +42,7 @@ SELECT json_object(
                        'offenderDetails' VALUE o.OFFENDER_DETAILS,
                        'remandStatus' VALUE o.CURRENT_REMAND_STATUS,
                        'previousConviction' VALUE
-                       json_object('convictionDate' VALUE to_char(pre_con.CREATED_DATETIME, 'yyyy-MM-dd'),
+                       json_object('convictionDate' VALUE to_char(pre_con.DATE_PRODUCED, 'yyyy-MM-dd'),
                                    'detail' VALUE json_object('documentName' VALUE pre_con.DOCUMENT_NAME)
                                    ABSENT ON NULL),
                        'riskColour' VALUE o.CURRENT_HIGHEST_RISK_COLOUR,
@@ -319,8 +319,15 @@ FROM OFFENDER o
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST lan ON lan.STANDARD_REFERENCE_LIST_ID = o.LANGUAGE_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST genDes ON genDes.STANDARD_REFERENCE_LIST_ID = o.GENDER_IDENTITY_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST tier ON tier.STANDARD_REFERENCE_LIST_ID = o.CURRENT_TIER
-         LEFT OUTER JOIN DOCUMENT pre_con
-                         ON pre_con.OFFENDER_ID = o.OFFENDER_ID AND pre_con.DOCUMENT_TYPE = 'PREVIOUS_CONVICTION'
+         LEFT OUTER JOIN (SELECT *
+                          FROM DOCUMENT odoc
+                          WHERE odoc.DOCUMENT_TYPE = 'PREVIOUS_CONVICTION'
+                            AND odoc.SOFT_DELETED = 0
+                          ORDER BY odoc.DATE_PRODUCED DESC
+                              FETCH NEXT 1 ROW ONLY) pre_con
+                         ON pre_con.OFFENDER_ID = o.OFFENDER_ID
+
+
 WHERE o.SOFT_DELETED = 0
   AND om.SOFT_DELETED = 0
   AND (:offender_id = 0 OR o.OFFENDER_ID = :offender_id)
