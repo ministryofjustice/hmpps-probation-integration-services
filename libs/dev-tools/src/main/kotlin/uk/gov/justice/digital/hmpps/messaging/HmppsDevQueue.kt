@@ -42,12 +42,13 @@ abstract class NotificationChannel(
     }
 
     fun fail(notificationId: UUID) {
-        processing.remove(notificationId)?.let {
+        processing[notificationId]?.let {
             messages.put(it)
+            processing.remove(it.id)
         }
     }
 
-    fun publishAndWait(notification: Notification<*>, timeout: Duration = Duration.ofSeconds(10)) {
+    fun publishAndWait(notification: Notification<*>, timeout: Duration = Duration.ofSeconds(20)) {
         publish(notification)
         val start = LocalDateTime.now()
         val end = start.plus(timeout)
