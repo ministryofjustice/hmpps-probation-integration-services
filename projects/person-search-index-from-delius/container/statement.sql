@@ -1,3 +1,9 @@
+WITH pre_con AS (SELECT doc.*,
+                        ROW_NUMBER() over (PARTITION BY OFFENDER_ID ORDER BY LAST_SAVED DESC) row_number
+                 FROM DOCUMENT doc
+                 WHERE (:offender_id = 0 OR doc.OFFENDER_ID = :offender_id)
+                   AND doc.DOCUMENT_TYPE = 'PREVIOUS_CONVICTION'
+                   AND doc.SOFT_DELETED = 0)
 SELECT json_object(
                'otherIds' VALUE json_object(
                 'crn' VALUE o.CRN,
@@ -42,7 +48,8 @@ SELECT json_object(
                        'offenderDetails' VALUE o.OFFENDER_DETAILS,
                        'remandStatus' VALUE o.CURRENT_REMAND_STATUS,
                        'previousConviction' VALUE
-                       json_object('convictionDate' VALUE to_char(o.PREVIOUS_CONVICTION_DATE, 'yyyy-MM-dd')
+                       json_object('convictionDate' VALUE to_char(pre_con.DATE_PRODUCED, 'yyyy-MM-dd'),
+                                   'detail' VALUE json_object('documentName' VALUE pre_con.DOCUMENT_NAME)
                                    ABSENT ON NULL),
                        'riskColour' VALUE o.CURRENT_HIGHEST_RISK_COLOUR,
                        'genderIdentity' VALUE genDes.CODE_DESCRIPTION,
@@ -318,6 +325,9 @@ FROM OFFENDER o
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST lan ON lan.STANDARD_REFERENCE_LIST_ID = o.LANGUAGE_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST genDes ON genDes.STANDARD_REFERENCE_LIST_ID = o.GENDER_IDENTITY_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST tier ON tier.STANDARD_REFERENCE_LIST_ID = o.CURRENT_TIER
+         LEFT OUTER JOIN pre_con ON pre_con.OFFENDER_ID = o.OFFENDER_ID AND row_number = 1
+
+
 WHERE o.SOFT_DELETED = 0
   AND om.SOFT_DELETED = 0
   AND (:offender_id = 0 OR o.OFFENDER_ID = :offender_id)
@@ -329,7 +339,8 @@ SELECT json_object('activeOffenders' VALUE (SELECT COUNT(1)
                                             WHERE SOFT_DELETED = 0
                                               AND EXISTS(SELECT 1
                                                          FROM OFFENDER_MANAGER om
-                                                         WHERE o.OFFENDER_ID = om.OFFENDER_ID AND om.ACTIVE_FLAG = 1
+                                                         WHERE o.OFFENDER_ID = om.OFFENDER_ID
+                                                           AND om.ACTIVE_FLAG = 1
                                                            AND om.SOFT_DELETED = 0)) RETURNING CLOB) "json",
        -1                                                                                            "offenderId"
 FROM DUAL
