@@ -38,7 +38,7 @@ class ChoosePractitionerIntegrationTest {
         )
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.crn").value(person.crn))
-            .andExpect(jsonPath("$.event.eventNumber").value(event.number))
+            .andExpect(jsonPath("$.event.number").value(event.number))
             .andExpect(jsonPath("$.name.forename").value(person.forename))
             .andExpect(jsonPath("$.name.middleName").value(person.secondName))
             .andExpect(jsonPath("$.name.surname").value(person.surname))
