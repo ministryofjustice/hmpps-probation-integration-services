@@ -15,7 +15,11 @@ data class ApplicationSubmitted(
     val targetLocation: String,
     val probationArea: ProbationArea,
     val submittedAt: ZonedDateTime,
-    val submittedBy: StaffMember,
+    val submittedBy: SubmittedBy
+)
+
+data class SubmittedBy(
+    val staffMember: StaffMember
 )
 
 enum class Decision { Accepted, Rejected }

@@ -45,7 +45,7 @@ class ApprovedPremisesService(
             crn = event.crn(),
             type = APPLICATION_SUBMITTED,
             date = details.submittedAt,
-            staffCode = details.submittedBy.staffCode,
+            staffCode = details.submittedBy.staffMember.staffCode,
             probationAreaCode = details.probationArea.code
         )
     }

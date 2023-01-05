@@ -9,12 +9,13 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArriv
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Premises
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.StaffMember
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.SubmittedBy
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import java.time.ZonedDateTime
 import java.util.UUID
 
 object EventDetailsGenerator {
-    fun applicationSubmitted(submittedBy: Staff) = EventDetails(
+    fun applicationSubmitted(submittedBy: SubmittedBy) = EventDetails(
         id = UUID.randomUUID().toString(),
         timestamp = ZonedDateTime.now(),
         eventType = "approved-premises.application.submitted",
@@ -24,7 +25,7 @@ object EventDetailsGenerator {
             targetLocation = "TEST",
             probationArea = probationArea(),
             submittedAt = ZonedDateTime.now(),
-            submittedBy = staffMember(submittedBy),
+            submittedBy = submittedBy
         )
     )
 
