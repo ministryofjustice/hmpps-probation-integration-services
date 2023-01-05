@@ -57,4 +57,7 @@ class KeyDate(
 
     @Column(name = "key_date")
     var date: LocalDate,
+
+    @Column(columnDefinition = "number", nullable = false)
+    val softDeleted: Boolean = false,
 )

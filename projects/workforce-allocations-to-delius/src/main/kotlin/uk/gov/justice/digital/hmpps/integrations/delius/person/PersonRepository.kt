@@ -85,7 +85,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
                        join r_disposal_type dt on dt.disposal_type_id = d.disposal_type_id
                        left join custody c on d.disposal_id = c.disposal_id and c.soft_deleted = 0
                        left join r_standard_reference_list cs on c.custodial_status_id = cs.standard_reference_list_id
-                       left join key_date kd on c.custody_id = kd.custody_id
+                       left join key_date kd on c.custody_id = kd.custody_id and kd.soft_deleted = 0
                        left join r_standard_reference_list kdt on kd.key_date_type_id = kdt.standard_reference_list_id and
                                                                   kdt.code_value = :sentenceEndDateKeyDateTypeCode
               where crn = :crn
