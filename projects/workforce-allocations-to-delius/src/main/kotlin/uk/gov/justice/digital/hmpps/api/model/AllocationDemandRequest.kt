@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.api.allocationdemand.model
+package uk.gov.justice.digital.hmpps.api.model
 
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Pattern

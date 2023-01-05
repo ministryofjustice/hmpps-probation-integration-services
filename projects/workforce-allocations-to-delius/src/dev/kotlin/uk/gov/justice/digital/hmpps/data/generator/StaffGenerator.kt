@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
 
 object StaffGenerator {
-    var DEFAULT = generate(
+    val DEFAULT = generate(
         "${TeamGenerator.DEFAULT.code}U",
         "Unallocated",
         "Staff",

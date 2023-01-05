@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.allocations
+package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -7,6 +7,8 @@ import uk.gov.justice.digital.hmpps.datasource.OptimisationContext
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationValidator
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactContext
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -18,6 +20,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonCode.CASE_ORDER
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.getByPersonCrnAndNumber
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocationDetail
 
 @Service
@@ -34,8 +37,7 @@ class AllocateEventService(
     @Transactional
     fun createEventAllocation(crn: String, allocationDetail: EventAllocationDetail) =
         audit(BusinessInteractionCode.ADD_EVENT_ALLOCATION) {
-            val event = eventRepository.findByPersonCrnAndNumber(crn, allocationDetail.eventNumber.toString())
-                ?: throw NotFoundException("Event ${allocationDetail.eventNumber} not found for $crn")
+            val event = eventRepository.getByPersonCrnAndNumber(crn, allocationDetail.eventNumber.toString())
 
             it["offenderId"] = event.person.id
             it["eventId"] = event.id

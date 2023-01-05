@@ -3,7 +3,9 @@ package uk.gov.justice.digital.hmpps.integrations.delius.person
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.api.allocationdemand.model.ManagementStatus
+import uk.gov.justice.digital.hmpps.api.model.CaseType
+import uk.gov.justice.digital.hmpps.api.model.ManagementStatus
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrnAndSoftDeletedFalse(crn: String): Person?
@@ -63,4 +65,40 @@ interface PersonRepository : JpaRepository<Person, Long> {
         nativeQuery = true
     )
     fun getProbationStatus(crn: String): ManagementStatus
+
+    @Query(
+        """
+        select case
+           when sentence_type in ('SC', 'NC') and custodial_status in :custodialStatusCodes then 'CUSTODY'
+           when sentence_type = 'SC' then 'LICENSE'
+           when sentence_type = 'SP' then 'COMMUNITY'
+           else 'UNKNOWN' end as type
+        from (select dt.sentence_type,
+                     cs.code_value                                                   as custodial_status,
+                     greatest(nvl(d.notional_end_date, to_date('1970-01-01', 'YYYY-MM-DD')),
+                              nvl(d.entered_notional_end_date, to_date('1970-01-01', 'YYYY-MM-DD')),
+                              nvl(kd.key_date, to_date('1970-01-01', 'YYYY-MM-DD'))) as end_date,
+                     d.disposal_date                                                 as start_date
+              from offender o
+                       join event e on e.offender_id = o.offender_id and e.soft_deleted = 0
+                       join disposal d on d.event_id = e.event_id and d.soft_deleted = 0 and d.active_flag = 1
+                       join r_disposal_type dt on dt.disposal_type_id = d.disposal_type_id
+                       left join custody c on d.disposal_id = c.disposal_id and c.soft_deleted = 0
+                       left join r_standard_reference_list cs on c.custodial_status_id = cs.standard_reference_list_id
+                       left join key_date kd on c.custody_id = kd.custody_id
+                       left join r_standard_reference_list kdt on kd.key_date_type_id = kdt.standard_reference_list_id and
+                                                                  kdt.code_value = :sentenceEndDateKeyDateTypeCode
+              where crn = :crn
+              order by end_date desc, start_date desc fetch next 1 rows only)
+        """,
+        nativeQuery = true
+    )
+    fun getCaseType(
+        crn: String,
+        sentenceEndDateKeyDateTypeCode: String = "SED",
+        custodialStatusCodes: List<String> = listOf("A", "C", "D", "R", "I", "AT")
+    ): CaseType
 }
+
+fun PersonRepository.getByCrnAndSoftDeletedFalse(crn: String) = findByCrnAndSoftDeletedFalse(crn)
+    ?: throw NotFoundException("Person", "crn", crn)

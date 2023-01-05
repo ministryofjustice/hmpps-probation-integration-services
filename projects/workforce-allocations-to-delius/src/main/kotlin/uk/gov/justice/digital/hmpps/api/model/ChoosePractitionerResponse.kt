@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.api.allocationdemand.model
+package uk.gov.justice.digital.hmpps.api.model
 
 data class ChoosePractitionerResponse(
     val crn: String,

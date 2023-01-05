@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.event.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 

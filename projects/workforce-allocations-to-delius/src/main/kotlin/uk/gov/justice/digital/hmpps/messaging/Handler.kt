@@ -2,15 +2,15 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocateEventService
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocatePersonService
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocateRequirementService
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocationDetail
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.PersonAllocationDetail
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.RequirementAllocationDetail
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.WorkforceAllocationsClient
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.service.AllocateEventService
+import uk.gov.justice.digital.hmpps.service.AllocatePersonService
+import uk.gov.justice.digital.hmpps.service.AllocateRequirementService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.net.URI

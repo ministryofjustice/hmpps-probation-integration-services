@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.allocations
+package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationValidator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
@@ -68,7 +69,7 @@ internal class AllocateEventServiceTest {
                 allocationDetail
             )
         }
-        assertThat(ex.message, equalTo("Event 1 not found for X123456"))
+        assertThat(ex.message, equalTo("Event 1 not found for crn X123456"))
     }
 
     @Test
