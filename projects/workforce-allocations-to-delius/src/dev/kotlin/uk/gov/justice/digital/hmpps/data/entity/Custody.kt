@@ -15,6 +15,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.Disposal
 import java.time.LocalDate
 
 @Entity
+@Immutable
+@Where(clause = "soft_deleted = 0")
 class Custody(
     @Id
     @Column(name = "custody_id")
