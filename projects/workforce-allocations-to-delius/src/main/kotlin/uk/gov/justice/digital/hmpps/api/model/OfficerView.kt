@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.api.staff.model
+package uk.gov.justice.digital.hmpps.api.model
 
 data class OfficerView(
     val code: String,

@@ -6,16 +6,16 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
-import uk.gov.justice.digital.hmpps.service.AllocationCompletedService
+import uk.gov.justice.digital.hmpps.service.StaffService
 
 @ExtendWith(MockitoExtension::class)
-class AllocationCompletedResourceTest {
-    @Mock lateinit var allocationCompletedService: AllocationCompletedService
-    @InjectMocks lateinit var allocationCompletedResource: AllocationCompletedResource
+class StaffResourceTest {
+    @Mock lateinit var staffService: StaffService
+    @InjectMocks lateinit var staffResource: StaffResource
 
     @Test
     fun `details resource calls service`() {
-        allocationCompletedResource.details("ABC", "123", "DEF")
-        verify(allocationCompletedService).getDetails("ABC", "123", "DEF")
+        staffResource.officerView("ABC")
+        verify(staffService).getOfficerView("ABC")
     }
 }

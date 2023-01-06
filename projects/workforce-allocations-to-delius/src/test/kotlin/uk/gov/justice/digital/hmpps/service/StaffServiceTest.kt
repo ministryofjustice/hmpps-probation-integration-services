@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -10,76 +9,41 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.api.model.CaseType.COMMUNITY
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
-class AllocationCompletedServiceTest {
-    @Mock lateinit var personRepository: PersonRepository
-    @Mock lateinit var eventRepository: EventRepository
+class StaffServiceTest {
     @Mock lateinit var staffRepository: StaffRepository
-    @Mock lateinit var contactRepository: ContactRepository
-    @InjectMocks lateinit var allocationCompletedService: AllocationCompletedService
+    @InjectMocks lateinit var staffService: StaffService
 
     @Test
-    fun `missing crn is thrown`() {
+    fun `staff not found`() {
         val exception = assertThrows<NotFoundException> {
-            allocationCompletedService.getDetails("X", "Y", "Z")
+            staffService.getOfficerView("UNK")
         }
-        assertThat(exception.message, equalTo("Person with crn of X not found"))
-    }
-
-    @Test
-    fun `missing event number is thrown`() {
-        whenever(personRepository.findByCrnAndSoftDeletedFalse("X")).thenReturn(PersonGenerator.DEFAULT)
-
-        val exception = assertThrows<NotFoundException> {
-            allocationCompletedService.getDetails("X", "Y", "Z")
-        }
-        assertThat(exception.message, equalTo("Event Y not found for crn X"))
-    }
-
-    @Test
-    fun `missing staff or initial appointment is handled`() {
-        val person = PersonGenerator.DEFAULT
-        val event = EventGenerator.DEFAULT
-        whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
-        whenever(personRepository.getCaseType(person.crn)).thenReturn(COMMUNITY)
-        whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
-
-        val response = allocationCompletedService.getDetails(person.crn, event.number, "MISSING")
-
-        assertThat(response.staff, nullValue())
-        assertThat(response.initialAppointment, nullValue())
+        assertThat(exception.message, equalTo("Staff with code of UNK not found"))
     }
 
     @Test
     fun `details response is mapped and returned`() {
-        val person = PersonGenerator.DEFAULT
-        val event = EventGenerator.DEFAULT
         val staff = StaffGenerator.DEFAULT
-        val initialAppointmentDate = LocalDate.now()
-        whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
-        whenever(personRepository.getCaseType(person.crn)).thenReturn(COMMUNITY)
-        whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
         whenever(staffRepository.findByCode(staff.code)).thenReturn(staff)
-        whenever(contactRepository.getInitialAppointmentDate(person.id, event.id)).thenReturn(initialAppointmentDate)
+        whenever(staffRepository.getParoleReportsDueCountByStaffId(staff.id, LocalDate.now().minusWeeks(4))).thenReturn(1L)
+        whenever(staffRepository.getSentencesDueCountByStaffId(staff.id, LocalDate.now().minusWeeks(4))).thenReturn(2L)
+        whenever(staffRepository.getKeyDateCountByCodeAndStaffId(staff.id, "EXP", LocalDate.now().minusWeeks(4))).thenReturn(3L)
 
-        val response = allocationCompletedService.getDetails(person.crn, event.number, staff.code)
+        val response = staffService.getOfficerView(staff.code)
 
-        assertThat(response.type, equalTo(COMMUNITY))
-        assertThat(response.staff!!.code, equalTo(staff.code))
-        assertThat(response.staff!!.grade, equalTo("PSO"))
-        assertThat(response.event.number, equalTo(event.number))
-        assertThat(response.event.manager, nullValue())
-        assertThat(response.initialAppointment?.date, equalTo(initialAppointmentDate))
+        assertThat(response.code, equalTo(staff.code))
+        assertThat(response.name.forename, equalTo(staff.forename))
+        assertThat(response.name.middleName, equalTo(staff.middleName))
+        assertThat(response.name.surname, equalTo(staff.surname))
+        assertThat(response.grade, equalTo(staff.grade?.description))
+        assertThat(response.paroleReportsToCompleteInNext4Weeks, equalTo(1L))
+        assertThat(response.casesDueToEndInNext4Weeks, equalTo(2L))
+        assertThat(response.releasesWithinNext4Weeks, equalTo(3L))
     }
 }
