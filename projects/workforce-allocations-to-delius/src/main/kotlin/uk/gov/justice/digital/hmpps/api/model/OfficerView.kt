@@ -9,8 +9,3 @@ data class OfficerView(
     val releasesWithinNext4Weeks: Long,
     val paroleReportsToCompleteInNext4Weeks: Long,
 )
-
-data class Team(
-    val code: String,
-    val description: String,
-)

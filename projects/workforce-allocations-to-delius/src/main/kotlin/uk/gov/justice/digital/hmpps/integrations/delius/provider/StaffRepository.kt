@@ -29,9 +29,9 @@ interface StaffRepository : JpaRepository<Staff, Long> {
         join key_date k on c.custody_id = k.custody_id
         join r_standard_reference_list r on k.key_date_type_id = r.standard_reference_list_id
         where om.allocation_staff_id = :staffId 
-        and om.end_date is null
+        and om.active_flag = 1
         and r.code_value = :keyDateCode
-        and k.key_date >= :dateFrom
+        and k.key_date <= :toDate
         and k.soft_deleted = 0 
         and om.soft_deleted = 0
         and e.soft_deleted = 0 and e.active_flag = 1
@@ -40,7 +40,7 @@ interface StaffRepository : JpaRepository<Staff, Long> {
     """,
         nativeQuery = true
     )
-    fun getKeyDateCountByCodeAndStaffId(staffId: Long, keyDateCode: String, dateFrom: LocalDate): Long
+    fun getKeyDateCountByCodeAndStaffId(staffId: Long, keyDateCode: String, toDate: LocalDate): Long
 
     @Query(
         """
@@ -56,12 +56,13 @@ interface StaffRepository : JpaRepository<Staff, Long> {
                                   kdt.code_value = 'SED'
         where greatest(nvl(d.notional_end_date, to_date('1970-01-01', 'YYYY-MM-DD')),
             nvl(d.entered_notional_end_date, to_date('1970-01-01', 'YYYY-MM-DD')),
-            nvl(kd.key_date, to_date('1970-01-01', 'YYYY-MM-DD'))) >= :dateFrom
+            nvl(kd.key_date, to_date('1970-01-01', 'YYYY-MM-DD'))) <= :dateFrom
             and om.allocation_staff_id = :staffId 
+            and om.active_flag = 1
     """,
         nativeQuery = true
     )
-    fun getSentencesDueCountByStaffId(staffId: Long, dateFrom: LocalDate): Long
+    fun getSentencesDueCountByStaffId(staffId: Long, toDate: LocalDate): Long
 
     @Query(
         """
@@ -74,9 +75,9 @@ interface StaffRepository : JpaRepository<Staff, Long> {
                 join Institutional_report i on i.custody_id = c.custody_id
                 join r_standard_reference_list r on i.institution_report_type_id = r.standard_reference_list_id
                 where om.allocation_staff_id = :staffId
-                and om.end_date is null
+                and om.active_flag = 1
                 and r.code_value = 'PAR'
-                and i.date_required >= :dateFrom
+                and i.date_required <= :dateFrom
                 and i.date_completed is null
                 and i.soft_deleted = 0 
                 and om.soft_deleted = 0
@@ -86,5 +87,5 @@ interface StaffRepository : JpaRepository<Staff, Long> {
     """,
         nativeQuery = true
     )
-    fun getParoleReportsDueCountByStaffId(staffId: Long, dateFrom: LocalDate): Long
+    fun getParoleReportsDueCountByStaffId(staffId: Long, toDate: LocalDate): Long
 }

@@ -31,9 +31,9 @@ class StaffServiceTest {
     fun `details response is mapped and returned`() {
         val staff = StaffGenerator.DEFAULT
         whenever(staffRepository.findByCode(staff.code)).thenReturn(staff)
-        whenever(staffRepository.getParoleReportsDueCountByStaffId(staff.id, LocalDate.now().minusWeeks(4))).thenReturn(1L)
-        whenever(staffRepository.getSentencesDueCountByStaffId(staff.id, LocalDate.now().minusWeeks(4))).thenReturn(2L)
-        whenever(staffRepository.getKeyDateCountByCodeAndStaffId(staff.id, "EXP", LocalDate.now().minusWeeks(4))).thenReturn(3L)
+        whenever(staffRepository.getParoleReportsDueCountByStaffId(staff.id, LocalDate.now().plusWeeks(4))).thenReturn(1L)
+        whenever(staffRepository.getSentencesDueCountByStaffId(staff.id, LocalDate.now().plusWeeks(4))).thenReturn(2L)
+        whenever(staffRepository.getKeyDateCountByCodeAndStaffId(staff.id, "EXP", LocalDate.now().plusWeeks(4))).thenReturn(3L)
 
         val response = staffService.getOfficerView(staff.code)
 
@@ -41,7 +41,7 @@ class StaffServiceTest {
         assertThat(response.name.forename, equalTo(staff.forename))
         assertThat(response.name.middleName, equalTo(staff.middleName))
         assertThat(response.name.surname, equalTo(staff.surname))
-        assertThat(response.grade, equalTo(staff.grade?.description))
+        assertThat(response.grade, equalTo("PSO"))
         assertThat(response.paroleReportsToCompleteInNext4Weeks, equalTo(1L))
         assertThat(response.casesDueToEndInNext4Weeks, equalTo(2L))
         assertThat(response.releasesWithinNext4Weeks, equalTo(3L))
