@@ -1,0 +1,16 @@
+package uk.gov.justice.digital.hmpps.api.staff.model
+
+data class OfficerView(
+    val code: String,
+    val name: Name,
+    val grade: String?,
+    val email: String?,
+    val casesDueToEndInNext4Weeks: Long,
+    val releasesWithinNext4Weeks: Long,
+    val paroleReportsToCompleteInNext4Weeks: Long,
+)
+
+data class Team(
+    val code: String,
+    val description: String,
+)
