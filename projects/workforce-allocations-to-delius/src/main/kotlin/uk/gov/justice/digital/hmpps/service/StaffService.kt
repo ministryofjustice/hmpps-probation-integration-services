@@ -15,8 +15,8 @@ class StaffService(
         val staff = staffRepository.findByCode(code) ?: throw NotFoundException("Staff", "code", code)
         return OfficerView(
             code,
-            Name(staff.forename, staff.middleName, staff.surname),
-            staff.grade?.description,
+            staff.name(),
+            staff.grade(),
             null,
             staffRepository.getSentencesDueCountByStaffId(staff.id, LocalDate.now().minusWeeks(4)),
             staffRepository.getKeyDateCountByCodeAndStaffId(staff.id, "EXP", LocalDate.now().minusWeeks(4)),
