@@ -7,8 +7,10 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.JoinTable
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.user.StaffUser
 import java.time.ZonedDateTime
 
 @Immutable
@@ -34,6 +36,9 @@ class Staff(
     @ManyToOne
     @JoinColumn(name = "staff_grade_id")
     val grade: ReferenceData? = null,
+
+    @OneToOne(mappedBy = "staff")
+    val user: StaffUser? = null,
 
     @ManyToMany
     @JoinTable(

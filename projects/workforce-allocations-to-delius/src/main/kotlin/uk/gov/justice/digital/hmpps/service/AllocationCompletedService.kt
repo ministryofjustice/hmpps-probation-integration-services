@@ -12,12 +12,15 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.getByPersonCrnAndN
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrnAndSoftDeletedFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.LdapUserRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.findEmailForStaff
 
 @Service
 class AllocationCompletedService(
     private val personRepository: PersonRepository,
     private val eventRepository: EventRepository,
     private val staffRepository: StaffRepository,
+    private val ldapUserRepository: LdapUserRepository,
     private val contactRepository: ContactRepository,
 ) {
     fun getDetails(
@@ -28,6 +31,7 @@ class AllocationCompletedService(
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val event = eventRepository.getByPersonCrnAndNumber(crn, eventNumber)
         val staff = staffRepository.findByCode(staffCode)
+        val email = ldapUserRepository.findEmailForStaff(staff)
         val initialAppointmentDate = contactRepository.getInitialAppointmentDate(person.id, event.id)
         return AllocationCompletedResponse(
             crn = crn,
@@ -35,7 +39,7 @@ class AllocationCompletedService(
             event = Event(eventNumber),
             type = personRepository.getCaseType(crn),
             initialAppointment = initialAppointmentDate?.let { InitialAppointment(it) },
-            staff = staff?.toStaffMember(),
+            staff = staff?.toStaffMember(email),
         )
     }
 }

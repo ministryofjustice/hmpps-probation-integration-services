@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data
 
-import UserGenerator
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
@@ -14,12 +13,15 @@ import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.data.repository.DatasetRepository
 import uk.gov.justice.digital.hmpps.data.repository.ProviderRepository
+import uk.gov.justice.digital.hmpps.data.repository.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.LdapUserRepository
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
@@ -35,7 +37,9 @@ class AllocationsDataLoader(
     private val providerRepository: ProviderRepository,
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
-    private val personAllocationDataLoader: PersonAllocationDataLoader
+    private val staffUserRepository: StaffUserRepository,
+    private val ldapUserRepository: LdapUserRepository,
+    private val personAllocationDataLoader: PersonAllocationDataLoader,
 ) : CommandLineRunner {
     override fun run(vararg args: String?) {
         userRepository.save(UserGenerator.APPLICATION_USER)
@@ -82,8 +86,9 @@ class AllocationsDataLoader(
         teamRepository.save(TeamGenerator.DEFAULT)
         staffRepository.save(StaffGenerator.DEFAULT)
 
-        val team = teamRepository.save(TeamGenerator.ALLOCATION_TEAM)
-        staffRepository.save(StaffGenerator.generate("N02ABS1", "Brian", "Jones", listOf(team)))
+        teamRepository.save(TeamGenerator.ALLOCATION_TEAM)
+        staffRepository.save(StaffGenerator.STAFF_WITH_USER)
+        staffUserRepository.save(StaffGenerator.STAFF_WITH_USER.user!!)
 
         personAllocationDataLoader.loadData()
     }
