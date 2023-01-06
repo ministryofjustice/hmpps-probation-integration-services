@@ -17,7 +17,7 @@ class StaffService(
             code,
             Name(staff.forename, staff.middleName, staff.surname),
             staff.grade?.description,
-            "email",
+            null,
             staffRepository.getSentencesDueCountByStaffId(staff.id, LocalDate.now().minusWeeks(4)),
             staffRepository.getKeyDateCountByCodeAndStaffId(staff.id, "EXP", LocalDate.now().minusWeeks(4)),
             staffRepository.getParoleReportsDueCountByStaffId(staff.id, LocalDate.now().minusWeeks(4))
