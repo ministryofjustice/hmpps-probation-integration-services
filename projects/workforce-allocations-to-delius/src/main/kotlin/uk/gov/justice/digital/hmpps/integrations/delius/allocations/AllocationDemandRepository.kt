@@ -1,18 +1,18 @@
-package uk.gov.justice.digital.hmpps.api.allocationdemand
+package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
-import uk.gov.justice.digital.hmpps.api.allocationdemand.model.AllocationResponse
-import uk.gov.justice.digital.hmpps.api.allocationdemand.model.CaseType
-import uk.gov.justice.digital.hmpps.api.allocationdemand.model.Event
-import uk.gov.justice.digital.hmpps.api.allocationdemand.model.InitialAppointment
-import uk.gov.justice.digital.hmpps.api.allocationdemand.model.ManagementStatus
-import uk.gov.justice.digital.hmpps.api.allocationdemand.model.Manager
-import uk.gov.justice.digital.hmpps.api.allocationdemand.model.Name
-import uk.gov.justice.digital.hmpps.api.allocationdemand.model.ProbationStatus
-import uk.gov.justice.digital.hmpps.api.allocationdemand.model.Sentence
+import uk.gov.justice.digital.hmpps.api.model.AllocationResponse
+import uk.gov.justice.digital.hmpps.api.model.CaseType
+import uk.gov.justice.digital.hmpps.api.model.Event
+import uk.gov.justice.digital.hmpps.api.model.InitialAppointment
+import uk.gov.justice.digital.hmpps.api.model.ManagementStatus
+import uk.gov.justice.digital.hmpps.api.model.Manager
+import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
+import uk.gov.justice.digital.hmpps.api.model.Sentence
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 import java.sql.Date
 

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ManagerGenerator
@@ -13,6 +14,8 @@ import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TransferReasonGenerator
 import uk.gov.justice.digital.hmpps.data.repository.DisposalRepository
+import uk.gov.justice.digital.hmpps.data.repository.DisposalTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
@@ -39,8 +42,10 @@ class PersonAllocationDataLoader(
     private val eventRepository: EventRepository,
     private val orderManagerRepository: OrderManagerRepository,
     private val disposalRepository: DisposalRepository,
+    private val disposalTypeRepository: DisposalTypeRepository,
     private val requirementRepository: RequirementRepository,
-    private val requirementManagerRepository: RequirementManagerRepository
+    private val requirementManagerRepository: RequirementManagerRepository,
+    private val contactRepository: ContactRepository,
 ) {
     fun loadData() {
         transferReasonRepository.saveAll(listOf(TransferReasonGenerator.CASE_ORDER, TransferReasonGenerator.COMPONENT))
@@ -61,10 +66,13 @@ class PersonAllocationDataLoader(
         OrderManagerGenerator.NEW = createEventWithManager(EventGenerator.NEW)
         OrderManagerGenerator.HISTORIC = createEventWithManager(EventGenerator.HISTORIC)
 
+        disposalTypeRepository.save(DisposalGenerator.DEFAULT.type)
         disposalRepository.save(DisposalGenerator.DEFAULT)
         RequirementManagerGenerator.DEFAULT = createRequirementWithManager(RequirementGenerator.DEFAULT)
         RequirementManagerGenerator.NEW = createRequirementWithManager(RequirementGenerator.NEW)
         RequirementManagerGenerator.HISTORIC = createRequirementWithManager(RequirementGenerator.HISTORIC)
+
+        contactRepository.save(ContactGenerator.INITIAL_APPOINTMENT)
     }
 
     fun createPersonWithManagers(person: Person): Pair<PersonManager, ResponsibleOfficer> {

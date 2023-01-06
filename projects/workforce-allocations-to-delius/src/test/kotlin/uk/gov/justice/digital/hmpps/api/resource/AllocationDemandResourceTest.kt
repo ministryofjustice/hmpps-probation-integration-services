@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.api.allocationdemand
+package uk.gov.justice.digital.hmpps.api.resource
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.empty
@@ -8,7 +8,8 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
-import uk.gov.justice.digital.hmpps.api.allocationdemand.model.AllocationDemandRequest
+import uk.gov.justice.digital.hmpps.api.model.AllocationDemandRequest
+import uk.gov.justice.digital.hmpps.service.AllocationDemandService
 
 @ExtendWith(MockitoExtension::class)
 class AllocationDemandResourceTest {

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.api.documents
+package uk.gov.justice.digital.hmpps.api.resource
 
 import org.springframework.core.io.Resource
 import org.springframework.http.ResponseEntity

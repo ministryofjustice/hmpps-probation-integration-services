@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.api.allocationdemand
+package uk.gov.justice.digital.hmpps.api.resource
 
 import jakarta.validation.Valid
 import org.springframework.security.access.prepost.PreAuthorize
@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.api.allocationdemand.model.AllocationDemandRequest
-import uk.gov.justice.digital.hmpps.api.allocationdemand.model.AllocationDemandResponse
+import uk.gov.justice.digital.hmpps.api.model.AllocationDemandRequest
+import uk.gov.justice.digital.hmpps.api.model.AllocationDemandResponse
+import uk.gov.justice.digital.hmpps.service.AllocationDemandService
 
 @Validated
 @RestController

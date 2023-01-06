@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.allocations
+package uk.gov.justice.digital.hmpps.service
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationValidator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonCode

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.allocations
+package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsString
@@ -27,6 +27,7 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationValidator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeCode

@@ -1,8 +1,9 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.event.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.event.DisposalType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Disposal
 
 object DisposalGenerator {
     val DEFAULT = generate()
@@ -11,5 +12,5 @@ object DisposalGenerator {
         event: Event = EventGenerator.DEFAULT,
         id: Long = IdGenerator.getAndIncrement(),
         active: Boolean = true
-    ) = Disposal(id, event, active)
+    ) = Disposal(id, DisposalType(IdGenerator.getAndIncrement(), "SC"), event, active = active)
 }

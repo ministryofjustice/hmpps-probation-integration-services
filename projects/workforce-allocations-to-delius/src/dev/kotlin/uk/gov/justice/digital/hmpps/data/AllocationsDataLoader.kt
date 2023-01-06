@@ -71,6 +71,10 @@ class AllocationsDataLoader(
                 ContactTypeGenerator.ORDER_SUPERVISOR_TRANSFER,
                 ContactTypeGenerator.RESPONSIBLE_OFFICER_CHANGE,
                 ContactTypeGenerator.SENTENCE_COMPONENT_TRANSFER,
+                ContactTypeGenerator.INITIAL_APPOINTMENT_IN_OFFICE,
+                ContactTypeGenerator.INITIAL_APPOINTMENT_ON_DOORSTEP,
+                ContactTypeGenerator.INITIAL_APPOINTMENT_HOME_VISIT,
+                ContactTypeGenerator.INITIAL_APPOINTMENT_BY_VIDEO,
             )
         )
 

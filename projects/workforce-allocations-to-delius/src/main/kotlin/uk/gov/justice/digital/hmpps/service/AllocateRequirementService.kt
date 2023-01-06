@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.allocations
+package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -8,6 +8,8 @@ import uk.gov.justice.digital.hmpps.datasource.OptimisationContext
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationValidator
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactContext
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
