@@ -56,7 +56,7 @@ interface StaffRepository : JpaRepository<Staff, Long> {
                                   kdt.code_value = 'SED'
         where greatest(nvl(d.notional_end_date, to_date('1970-01-01', 'YYYY-MM-DD')),
             nvl(d.entered_notional_end_date, to_date('1970-01-01', 'YYYY-MM-DD')),
-            nvl(kd.key_date, to_date('1970-01-01', 'YYYY-MM-DD'))) <= :dateFrom
+            nvl(kd.key_date, to_date('1970-01-01', 'YYYY-MM-DD'))) <= :toDate
             and om.allocation_staff_id = :staffId 
             and om.active_flag = 1
     """,
@@ -77,7 +77,7 @@ interface StaffRepository : JpaRepository<Staff, Long> {
                 where om.allocation_staff_id = :staffId
                 and om.active_flag = 1
                 and r.code_value = 'PAR'
-                and i.date_required <= :dateFrom
+                and i.date_required <= :toDate
                 and i.date_completed is null
                 and i.soft_deleted = 0 
                 and om.soft_deleted = 0
