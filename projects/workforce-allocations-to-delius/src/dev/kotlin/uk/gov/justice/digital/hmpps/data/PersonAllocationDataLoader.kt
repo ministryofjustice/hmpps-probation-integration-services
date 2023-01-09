@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TransferReasonGenerator
 import uk.gov.justice.digital.hmpps.data.repository.DisposalRepository
 import uk.gov.justice.digital.hmpps.data.repository.DisposalTypeRepository
+import uk.gov.justice.digital.hmpps.data.repository.InstitutionalReportRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
@@ -46,6 +47,7 @@ class PersonAllocationDataLoader(
     private val requirementRepository: RequirementRepository,
     private val requirementManagerRepository: RequirementManagerRepository,
     private val contactRepository: ContactRepository,
+    private val institutionalReportRepository: InstitutionalReportRepository,
 ) {
     fun loadData() {
         transferReasonRepository.saveAll(listOf(TransferReasonGenerator.CASE_ORDER, TransferReasonGenerator.COMPONENT))
