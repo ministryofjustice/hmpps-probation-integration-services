@@ -47,6 +47,9 @@ class AllocationsDataLoader(
 
         datasetRepository.saveAll(
             listOf(
+                DatasetGenerator.CUSTODY_STATUS,
+                DatasetGenerator.IREPORTTYPE,
+                DatasetGenerator.THROUGHCARE_DATE_TYPE,
                 DatasetGenerator.OM_ALLOCATION_REASON,
                 DatasetGenerator.ORDER_ALLOCATION_REASON,
                 DatasetGenerator.RM_ALLOCATION_REASON,
@@ -57,9 +60,12 @@ class AllocationsDataLoader(
 
         referenceDataRepository.saveAll(
             listOf(
+                ReferenceDataGenerator.CUSTODY_STATUS,
+                ReferenceDataGenerator.KEY_DATE_EXP_REL_DATE,
                 ReferenceDataGenerator.INITIAL_OM_ALLOCATION,
                 ReferenceDataGenerator.INITIAL_ORDER_ALLOCATION,
                 ReferenceDataGenerator.INITIAL_RM_ALLOCATION,
+                ReferenceDataGenerator.INS_RPT_PAR,
                 ReferenceDataGenerator.PENDING_TRANSFER,
                 ReferenceDataGenerator.PSQ_GRADE,
             )

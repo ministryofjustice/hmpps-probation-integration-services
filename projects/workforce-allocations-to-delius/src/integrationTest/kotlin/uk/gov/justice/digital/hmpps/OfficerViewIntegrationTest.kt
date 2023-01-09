@@ -32,7 +32,7 @@ class OfficerViewIntegrationTest {
             .andExpect(jsonPath("$.name.forename").value(staff.forename))
             .andExpect(jsonPath("$.name.surname").value(staff.surname))
             .andExpect(jsonPath("$.casesDueToEndInNext4Weeks").value(1))
-            .andExpect(jsonPath("$.releasesWithinNext4Weeks").value(0))
-            .andExpect(jsonPath("$.paroleReportsToCompleteInNext4Weeks").value(0))
+            .andExpect(jsonPath("$.releasesWithinNext4Weeks").value(1))
+            .andExpect(jsonPath("$.paroleReportsToCompleteInNext4Weeks").value(1))
     }
 }

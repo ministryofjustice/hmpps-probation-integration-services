@@ -42,7 +42,7 @@ class AllocationCompletedIntegrationTest {
             .andExpect(jsonPath("$.name.middleName").value(person.secondName))
             .andExpect(jsonPath("$.name.surname").value(person.surname))
             .andExpect(jsonPath("$.initialAppointment.date").value(contact.date.toLocalDate().toString()))
-            .andExpect(jsonPath("$.type").value("LICENSE"))
+            .andExpect(jsonPath("$.type").value("CUSTODY"))
             .andExpect(jsonPath("$.staff.code").value(staff.code))
     }
 }
