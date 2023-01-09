@@ -46,7 +46,7 @@ class ApprovedPremisesService(
             type = APPLICATION_SUBMITTED,
             date = details.submittedAt,
             staffCode = details.submittedBy.staffMember.staffCode,
-            probationAreaCode = details.probationArea.code
+            probationAreaCode = details.submittedBy.probationArea.code
         )
     }
 

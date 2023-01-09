@@ -23,7 +23,6 @@ object EventDetailsGenerator {
             applicationId = UUID.randomUUID().toString(),
             applicationUrl = "https://example.com",
             targetLocation = "TEST",
-            probationArea = probationArea(),
             submittedAt = ZonedDateTime.now(),
             submittedBy = submittedBy
         )

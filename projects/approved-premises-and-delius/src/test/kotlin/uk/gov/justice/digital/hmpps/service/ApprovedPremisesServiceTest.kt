@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffMemberGenerator
+import uk.gov.justice.digital.hmpps.data.generator.SubmittedByGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationAssessed
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSubmitted
@@ -65,7 +66,9 @@ internal class ApprovedPremisesServiceTest {
         val person = givenAPerson(applicationSubmittedEvent.crn())
         val manager = givenAPersonManager(person)
         val submitter = givenStaff()
-        val submittedBy = SubmittedBy(staffMember = StaffMemberGenerator.generate(staffCode = submitter.code))
+        val submittedBy = SubmittedByGenerator.generate(
+            staffMember = StaffMemberGenerator.generate(staffCode = submitter.code)
+        )
         val unallocatedTeam = givenUnallocatedTeam()
         val details = givenApplicationSubmittedDetails(submittedBy = submittedBy)
         givenContactTypes(listOf(ContactTypeCode.APPLICATION_SUBMITTED))
@@ -218,7 +221,7 @@ internal class ApprovedPremisesServiceTest {
     }
 
     private fun givenApplicationSubmittedDetails(
-        submittedBy: SubmittedBy = SubmittedBy(staffMember = StaffMemberGenerator.generate())
+        submittedBy: SubmittedBy = SubmittedByGenerator.generate()
     ): EventDetails<ApplicationSubmitted> {
         val details = EventDetailsGenerator.applicationSubmitted(submittedBy = submittedBy)
         whenever(approvedPremisesApiClient.getApplicationSubmittedDetails(applicationSubmittedEvent.url())).thenReturn(details)

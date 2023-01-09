@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.approvedpremises
 
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import java.time.ZonedDateTime
 
 data class EventDetails<T>(
@@ -13,13 +14,13 @@ data class ApplicationSubmitted(
     val applicationId: String,
     val applicationUrl: String,
     val targetLocation: String,
-    val probationArea: ProbationArea,
     val submittedAt: ZonedDateTime,
     val submittedBy: SubmittedBy
 )
 
 data class SubmittedBy(
-    val staffMember: StaffMember
+    val staffMember: StaffMember,
+    val probationArea: ProbationArea
 )
 
 enum class Decision { Accepted, Rejected }

@@ -17,10 +17,6 @@
     "age": 43,
     "gender": "Male",
     "targetLocation": "LS2",
-    "probationArea": {
-      "code": "N54",
-      "name": "North East Region"
-    },
     "submittedAt": "2022-11-30T14:51:30",
     "submittedBy": {
       "staffMember": {
@@ -31,8 +27,8 @@
         "username": "JohnSmithNPS"
       },
       "probationArea": {
-        "code": "N02",
-        "name": "NPS North East"
+        "code": "N54",
+        "name": "North East Region"
       },
       "cru": {
         "code": "N02",
