@@ -4,6 +4,7 @@ import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.user.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.user.StaffUser
 import uk.gov.justice.digital.hmpps.user.User
+import javax.naming.ldap.LdapName
 
 object UserGenerator {
     val APPLICATION_USER = User(IdGenerator.getAndIncrement(), "workforce-allocations-to-delius")
@@ -24,5 +25,5 @@ object LdapUserGenerator {
     fun generate(
         username: String,
         email: String,
-    ) = LdapUser(username = username, surname = username, email = email)
+    ) = LdapUser(LdapName("cn=$username"), username, username, email)
 }

@@ -9,15 +9,15 @@ import javax.naming.Name
 @Entry(objectClasses = ["inetOrgPerson", "top"], base = "ou=Users")
 class LdapUser(
     @Id
-    val dn: Name? = null,
+    val dn: Name,
 
     @Attribute(name = "cn")
     @DnAttribute(value = "cn", index = 1)
-    val username: String? = null,
+    val username: String,
 
     @Attribute(name = "sn")
-    val surname: String? = null,
+    val surname: String?,
 
     @Attribute(name = "mail")
-    val email: String? = null
+    val email: String?,
 )
