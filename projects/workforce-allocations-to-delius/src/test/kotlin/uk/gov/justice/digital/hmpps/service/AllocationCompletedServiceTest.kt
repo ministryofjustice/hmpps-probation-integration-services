@@ -20,7 +20,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepositor
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.LdapUserRepository
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
@@ -28,7 +27,7 @@ class AllocationCompletedServiceTest {
     @Mock lateinit var personRepository: PersonRepository
     @Mock lateinit var eventRepository: EventRepository
     @Mock lateinit var staffRepository: StaffRepository
-    @Mock lateinit var ldapUserRepository: LdapUserRepository
+    @Mock lateinit var ldapService: LdapService
     @Mock lateinit var contactRepository: ContactRepository
     @InjectMocks lateinit var allocationCompletedService: AllocationCompletedService
 
@@ -90,7 +89,7 @@ class AllocationCompletedServiceTest {
         whenever(personRepository.getCaseType(person.crn)).thenReturn(COMMUNITY)
         whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
         whenever(staffRepository.findByCode(staff.code)).thenReturn(staff)
-        whenever(ldapUserRepository.findByUsername(staff.user!!.username)).thenReturn(user)
+        whenever(ldapService.findEmailForStaff(staff)).thenReturn(user.email)
         whenever(contactRepository.getInitialAppointmentDate(person.id, event.id)).thenReturn(initialAppointmentDate)
 
         val response = allocationCompletedService.getDetails(person.crn, event.number, staff.code)

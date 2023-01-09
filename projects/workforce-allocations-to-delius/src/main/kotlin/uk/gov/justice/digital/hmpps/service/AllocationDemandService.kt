@@ -13,8 +13,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrnAndSoftDeletedFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.LdapUserRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.findEmailForStaff
 
 @Service
 class AllocationDemandService(
@@ -22,7 +20,7 @@ class AllocationDemandService(
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
     private val staffRepository: StaffRepository,
-    private val ldapUserRepository: LdapUserRepository,
+    private val ldapService: LdapService,
 ) {
     fun findAllocationDemand(allocationDemandRequest: AllocationDemandRequest): AllocationDemandResponse {
         return AllocationDemandResponse(
@@ -43,9 +41,10 @@ class AllocationDemandService(
     ): ChoosePractitionerResponse {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val personManager = personManagerRepository.findActiveManager(person.id)
-        val staffInTeams = teamCodes.associateWith {
-            staffRepository.findAllByTeamsCode(it)
-                .map { staff -> staff.toStaffMember(email = ldapUserRepository.findEmailForStaff(staff)) }
+        val staffInTeams = teamCodes.associateWith { teamCode ->
+            val staff = staffRepository.findAllByTeamsCode(teamCode)
+            val emails = ldapService.findEmailsForStaffIn(staff)
+            staff.map { it.toStaffMember(emails[it.user?.username]) }
         }
         return ChoosePractitionerResponse(
             crn = crn,

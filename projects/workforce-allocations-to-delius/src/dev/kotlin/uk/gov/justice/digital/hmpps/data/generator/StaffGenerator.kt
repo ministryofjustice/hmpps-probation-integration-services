@@ -17,6 +17,16 @@ object StaffGenerator {
         StaffUserGenerator.DEFAULT
     )
 
+    fun generateStaffWithUser(
+        code: String,
+        forename: String = "Test",
+        surname: String = "Test",
+        teams: List<Team> = listOf(),
+        user: StaffUser? = StaffUserGenerator.generate(code),
+        grade: ReferenceData = ReferenceDataGenerator.PSQ_GRADE,
+        id: Long = IdGenerator.getAndIncrement(),
+    ) = generate(code, forename, surname, teams, user, grade, id)
+
     fun generate(
         code: String,
         forename: String,
