@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import UserGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ManagerBaseEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider

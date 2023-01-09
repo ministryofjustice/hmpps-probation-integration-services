@@ -13,6 +13,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.ManagementStatus.CURRENTLY_MANAGED
+import uk.gov.justice.digital.hmpps.data.generator.LdapUserGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
@@ -31,6 +32,7 @@ class AllocationDemandServiceTest {
     @Mock lateinit var personRepository: PersonRepository
     @Mock lateinit var personManagerRepository: PersonManagerRepository
     @Mock lateinit var staffRepository: StaffRepository
+    @Mock lateinit var ldapService: LdapService
     @Mock lateinit var disposalRepository: DisposalRepository
     @Mock lateinit var additionalOffenceRepository: AdditionalOffenceRepository
     @InjectMocks lateinit var allocationDemandService: AllocationDemandService
@@ -59,11 +61,13 @@ class AllocationDemandServiceTest {
         val person = PersonGenerator.DEFAULT
         val manager = PersonManagerGenerator.DEFAULT
         val team = TeamGenerator.DEFAULT
-        val staff = StaffGenerator.DEFAULT
+        val staff = StaffGenerator.STAFF_WITH_USER
+        val user = LdapUserGenerator.DEFAULT
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
         whenever(personRepository.getProbationStatus(person.crn)).thenReturn(CURRENTLY_MANAGED)
         whenever(personManagerRepository.findActiveManager(eq(person.id), any())).thenReturn(manager)
         whenever(staffRepository.findAllByTeamsCode(team.code)).thenReturn(listOf(staff))
+        whenever(ldapService.findEmailsForStaffIn(listOf(staff))).thenReturn(mapOf(user.username to user.email))
 
         val response = allocationDemandService.getChoosePractitionerResponse(person.crn, listOf(team.code))
 
@@ -71,6 +75,9 @@ class AllocationDemandServiceTest {
         assertThat(response.communityPersonManager!!.code, equalTo(manager.staff.code))
         assertThat(response.communityPersonManager!!.grade, equalTo("PSO"))
         assertThat(response.teams.keys, equalTo(setOf(team.code, "all")))
-        assertThat(response.teams[team.code]!!.map { it.code }, equalTo(listOf(staff.code)))
+        with(response.teams[team.code]!!) {
+            assertThat(this.map { it.code }, equalTo(listOf(staff.code)))
+            assertThat(this.map { it.email }, equalTo(listOf("example@example.com")))
+        }
     }
 }

@@ -45,8 +45,9 @@ class ChoosePractitionerIntegrationTest {
             .andExpect(jsonPath("$.teams.all.size()").value(2))
             .andExpect(jsonPath("$.teams.$team1.size()").value(1))
             .andExpect(jsonPath("$.teams.$team2.size()").value(1))
-            .andExpect(jsonPath("$.teams.$team2[0].name.forename").value("Brian"))
-            .andExpect(jsonPath("$.teams.$team2[0].name.surname").value("Jones"))
+            .andExpect(jsonPath("$.teams.$team2[0].name.forename").value("Joe"))
+            .andExpect(jsonPath("$.teams.$team2[0].name.surname").value("Bloggs"))
+            .andExpect(jsonPath("$.teams.$team2[0].email").value("example@example.com"))
     }
 
     @Test

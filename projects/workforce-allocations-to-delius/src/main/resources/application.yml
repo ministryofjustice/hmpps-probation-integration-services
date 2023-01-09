@@ -5,6 +5,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
+  ldap.base: dc=moj,dc=com
   security.oauth2.client:
     registration:
       workforce-allocations:
@@ -43,6 +44,7 @@ context:
 spring:
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
+  ldap.embedded.base-dn: ${spring.ldap.base}
   security.oauth2:
     resourceserver.jwt.public-key-location: classpath:local-public-key.pub
 

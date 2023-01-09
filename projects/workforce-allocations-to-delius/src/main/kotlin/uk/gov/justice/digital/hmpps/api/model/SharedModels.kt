@@ -17,7 +17,7 @@ data class Sentence(val type: String, val date: LocalDate, val length: String)
 data class StaffMember(
     val code: String,
     val name: Name,
-    val email: String? = null, // TODO get from LDAP
+    val email: String? = null,
     val grade: String? = null,
 )
 data class Manager(val code: String, val name: Name, val teamCode: String, val grade: String? = null)
@@ -50,7 +50,7 @@ fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToSt
 fun Staff.name() = Name(forename, middleName, surname)
 fun Staff.grade() = grade?.code?.let { Mappings.toAllocationsGradeCode[it] }
 fun Staff.toManager(teamCode: String) = Manager(code, name(), teamCode, grade())
-fun Staff.toStaffMember() = StaffMember(code, name(), null, grade())
+fun Staff.toStaffMember(email: String? = null) = StaffMember(code, name(), email, grade())
 fun PersonManager.toManager() = staff.toManager(team.code)
 
 object Mappings {

@@ -3,8 +3,11 @@ package uk.gov.justice.digital.hmpps.data
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CustodyGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.InstitutionalReportGenerator
+import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
@@ -15,7 +18,10 @@ import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TransferReasonGenerator
+import uk.gov.justice.digital.hmpps.data.repository.CustodyRepository
 import uk.gov.justice.digital.hmpps.data.repository.DisposalTypeRepository
+import uk.gov.justice.digital.hmpps.data.repository.InstitutionalReportRepository
+import uk.gov.justice.digital.hmpps.data.repository.KeyDateRepository
 import uk.gov.justice.digital.hmpps.data.repository.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
@@ -51,6 +57,9 @@ class PersonAllocationDataLoader(
     private val requirementRepository: RequirementRepository,
     private val requirementManagerRepository: RequirementManagerRepository,
     private val contactRepository: ContactRepository,
+    private val keyDateRepository: KeyDateRepository,
+    private val custodyRepository: CustodyRepository,
+    private val institutionalReportRepository: InstitutionalReportRepository,
     private val mainOffenceRepository: MainOffenceRepository,
     private val additionalOffenceRepository: AdditionalOffenceRepository
 ) {
@@ -72,13 +81,17 @@ class PersonAllocationDataLoader(
         OrderManagerGenerator.DEFAULT = createEventWithManager(EventGenerator.DEFAULT)
         OrderManagerGenerator.NEW = createEventWithManager(EventGenerator.NEW)
         OrderManagerGenerator.HISTORIC = createEventWithManager(EventGenerator.HISTORIC)
-        OrderManagerGenerator.INACTIVE_EVENT = createEventWithManager(EventGenerator.INACTIVE, StaffGenerator.BRIAN_JONES)
+        OrderManagerGenerator.INACTIVE_EVENT = createEventWithManager(EventGenerator.INACTIVE, StaffGenerator.STAFF_WITH_USER)
 
         disposalTypeRepository.save(DisposalGenerator.DEFAULT.type)
         disposalRepository.saveAll(listOf(DisposalGenerator.DEFAULT, DisposalGenerator.INACTIVE))
         RequirementManagerGenerator.DEFAULT = createRequirementWithManager(RequirementGenerator.DEFAULT)
         RequirementManagerGenerator.NEW = createRequirementWithManager(RequirementGenerator.NEW)
         RequirementManagerGenerator.HISTORIC = createRequirementWithManager(RequirementGenerator.HISTORIC)
+
+        custodyRepository.save(CustodyGenerator.DEFAULT)
+        keyDateRepository.save(KeyDateGenerator.DEFAULT)
+        institutionalReportRepository.save(InstitutionalReportGenerator.DEFAULT)
 
         contactRepository.save(ContactGenerator.INITIAL_APPOINTMENT)
     }

@@ -4,32 +4,48 @@ import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.user.StaffUser
+import uk.gov.justice.digital.hmpps.set
 
 object StaffGenerator {
-    val DEFAULT = generate(
-        "${TeamGenerator.DEFAULT.code}U",
-        "Unallocated",
-        "Staff",
-        listOf(TeamGenerator.DEFAULT)
+    val DEFAULT = generate("${TeamGenerator.DEFAULT.code}U", "Unallocated", "Staff", listOf(TeamGenerator.DEFAULT))
+    val STAFF_WITH_USER = generate(
+        "${TeamGenerator.ALLOCATION_TEAM.code}1",
+        "Joe",
+        "Bloggs",
+        listOf(TeamGenerator.ALLOCATION_TEAM),
+        StaffUserGenerator.DEFAULT
     )
 
-    var BRIAN_JONES = generate("N02ABS1", "Brian", "Jones", listOf(TeamGenerator.ALLOCATION_TEAM))
+    fun generateStaffWithUser(
+        code: String,
+        forename: String = "Test",
+        surname: String = "Test",
+        teams: List<Team> = listOf(),
+        user: StaffUser? = StaffUserGenerator.generate(code),
+        grade: ReferenceData = ReferenceDataGenerator.PSQ_GRADE,
+        id: Long = IdGenerator.getAndIncrement(),
+    ) = generate(code, forename, surname, teams, user, grade, id)
 
     fun generate(
         code: String,
         forename: String,
         surname: String,
         teams: List<Team> = listOf(),
+        user: StaffUser? = null,
         grade: ReferenceData = ReferenceDataGenerator.PSQ_GRADE,
         id: Long = IdGenerator.getAndIncrement(),
     ): Staff {
-        return Staff(
+        val staff = Staff(
             id = id,
             code = code,
             forename = forename,
             surname = surname,
             grade = grade,
+            user = user,
             teams = teams,
         )
+        user?.set("staff", staff)
+        return staff
     }
 }

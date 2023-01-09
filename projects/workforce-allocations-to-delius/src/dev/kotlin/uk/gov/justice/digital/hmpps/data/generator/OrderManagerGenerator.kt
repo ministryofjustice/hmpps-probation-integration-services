@@ -1,9 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
-import UserGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator.build
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.BRIAN_JONES
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.STAFF_WITH_USER
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
@@ -17,7 +16,7 @@ object OrderManagerGenerator {
     var INACTIVE_EVENT = generate(
         eventId = EventGenerator.INACTIVE.id,
         startDateTime = ManagerGenerator.START_DATE_TIME.minusDays(2),
-        staff = BRIAN_JONES
+        staff = STAFF_WITH_USER
     )
 
     fun generate(

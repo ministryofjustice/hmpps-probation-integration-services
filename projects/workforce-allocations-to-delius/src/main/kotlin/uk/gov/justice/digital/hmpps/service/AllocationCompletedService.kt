@@ -18,6 +18,7 @@ class AllocationCompletedService(
     private val personRepository: PersonRepository,
     private val eventRepository: EventRepository,
     private val staffRepository: StaffRepository,
+    private val ldapService: LdapService,
     private val contactRepository: ContactRepository,
 ) {
     fun getDetails(
@@ -28,6 +29,7 @@ class AllocationCompletedService(
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val event = eventRepository.getByPersonCrnAndNumber(crn, eventNumber)
         val staff = staffRepository.findByCode(staffCode)
+        val email = ldapService.findEmailForStaff(staff)
         val initialAppointmentDate = contactRepository.getInitialAppointmentDate(person.id, event.id)
         return AllocationCompletedResponse(
             crn = crn,
@@ -35,7 +37,7 @@ class AllocationCompletedService(
             event = Event(eventNumber),
             type = personRepository.getCaseType(crn),
             initialAppointment = initialAppointmentDate?.let { InitialAppointment(it) },
-            staff = staff?.toStaffMember(),
+            staff = staff?.toStaffMember(email),
         )
     }
 }

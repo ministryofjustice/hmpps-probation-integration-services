@@ -10,6 +10,9 @@ secrets:
   SPRING_DATASOURCE_URL:                            /delius-database/jdbc-url
   SPRING_DATASOURCE_USERNAME:                       /workforce-allocations-to-delius/db-username
   SPRING_DATASOURCE_PASSWORD:                       /workforce-allocations-to-delius/db-password
+  SPRING_LDAP_URLS:                                 /delius-ldap/url
+  SPRING_LDAP_USERNAME:                             /delius-ldap/username
+  SPRING_LDAP_PASSWORD:                             /delius-ldap/password
   MESSAGING_CONSUMER_QUEUE:                         /workforce-allocations-to-delius/sqs-queue-name
   AWS_ACCESS_KEY_ID:                                /workforce-allocations-to-delius/sqs-queue-access-key-id
   AWS_SECRET_ACCESS_KEY:                            /workforce-allocations-to-delius/sqs-queue-secret-access-key
