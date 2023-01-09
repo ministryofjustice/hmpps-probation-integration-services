@@ -8,6 +8,7 @@ object EventGenerator {
     val DEFAULT = generate(eventNumber = "1")
     val NEW = generate(eventNumber = "2")
     val HISTORIC = generate(eventNumber = "3")
+    val INACTIVE = generate(eventNumber = "99", active = false)
 
     fun generate(
         person: Person = PersonGenerator.DEFAULT,

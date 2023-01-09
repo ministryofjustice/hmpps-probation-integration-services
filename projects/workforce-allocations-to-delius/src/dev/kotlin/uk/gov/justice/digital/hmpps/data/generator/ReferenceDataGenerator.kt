@@ -10,7 +10,7 @@ object ReferenceDataGenerator {
     val INITIAL_RM_ALLOCATION = generate(DatasetGenerator.RM_ALLOCATION_REASON, "IN1")
     val PENDING_TRANSFER = generate(DatasetGenerator.TRANSFER_STATUS, "PN")
     val PSQ_GRADE = generate(DatasetGenerator.OFFICER_GRADE, "PSQ")
-
+    val UNIT_MONTHS = generate(DatasetGenerator.UNITS, "M", "Months")
     fun generate(
         dataset: Dataset,
         code: String,

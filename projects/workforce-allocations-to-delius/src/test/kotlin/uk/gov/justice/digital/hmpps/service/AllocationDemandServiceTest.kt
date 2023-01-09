@@ -19,6 +19,8 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffenceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
@@ -29,6 +31,8 @@ class AllocationDemandServiceTest {
     @Mock lateinit var personRepository: PersonRepository
     @Mock lateinit var personManagerRepository: PersonManagerRepository
     @Mock lateinit var staffRepository: StaffRepository
+    @Mock lateinit var disposalRepository: DisposalRepository
+    @Mock lateinit var additionalOffenceRepository: AdditionalOffenceRepository
     @InjectMocks lateinit var allocationDemandService: AllocationDemandService
 
     @Test

@@ -13,6 +13,8 @@ object StaffGenerator {
         listOf(TeamGenerator.DEFAULT)
     )
 
+    var BRIAN_JONES = generate("N02ABS1", "Brian", "Jones", listOf(TeamGenerator.ALLOCATION_TEAM))
+
     fun generate(
         code: String,
         forename: String,

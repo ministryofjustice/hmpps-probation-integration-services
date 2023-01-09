@@ -4,10 +4,21 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.AllocationDemandRequest
 import uk.gov.justice.digital.hmpps.api.model.AllocationDemandResponse
 import uk.gov.justice.digital.hmpps.api.model.ChoosePractitionerResponse
+import uk.gov.justice.digital.hmpps.api.model.Event
+import uk.gov.justice.digital.hmpps.api.model.PrEvent
+import uk.gov.justice.digital.hmpps.api.model.PrOffence
+import uk.gov.justice.digital.hmpps.api.model.PrSentence
+import uk.gov.justice.digital.hmpps.api.model.ProbationRecord
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.api.model.toManager
+import uk.gov.justice.digital.hmpps.api.model.toStaffMember
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffence
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffenceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.MainOffence
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.SentenceWithManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrnAndSoftDeletedFalse
@@ -19,6 +30,8 @@ class AllocationDemandService(
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
     private val staffRepository: StaffRepository,
+    private val disposalRepository: DisposalRepository,
+    private val additionalOffenceRepository: AdditionalOffenceRepository
 ) {
     fun findAllocationDemand(allocationDemandRequest: AllocationDemandRequest): AllocationDemandResponse {
         return AllocationDemandResponse(
@@ -49,5 +62,39 @@ class AllocationDemandService(
             communityPersonManager = personManager?.toManager(),
             teams = staffInTeams + mapOf("all" to staffInTeams.values.flatten())
         )
+    }
+
+    fun getProbationRecord(crn: String, eventNumber: String): ProbationRecord {
+        val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
+        val sentences: Map<Boolean, List<SentenceWithManager>> =
+            disposalRepository.findAllSentencesWithManagers(person.id, eventNumber)
+                .groupBy { it.disposal.active && it.disposal.event.active }
+        val additionalOffences = additionalOffenceRepository.findAllByEventIdIn(
+            sentences.values.flatMap { s -> s.map { it.disposal.event.id } }
+        ).groupBy { it.event.id }
+
+        return ProbationRecord(
+            person.crn, person.name(), Event(eventNumber),
+            sentences[true].toPrEvent(additionalOffences),
+            sentences[false].toPrEvent(additionalOffences)
+        )
+    }
+
+    private fun List<SentenceWithManager>?.toPrEvent(aos: Map<Long, List<AdditionalOffence>>): List<PrEvent> {
+        if (this == null || isEmpty()) return listOf()
+        return map {
+            PrEvent(
+                PrSentence(it.disposal.type.description, it.disposal.length, it.disposal.date.toLocalDate()),
+                listOf(it.mainOffence.toOffence()) + aos[it.disposal.event.id].toOffences(),
+                if (it.manager.code.endsWith("U")) null else it.manager.toStaffMember()
+            )
+        }
+    }
+
+    private fun MainOffence.toOffence(): PrOffence = PrOffence(offence.description, true)
+
+    private fun List<AdditionalOffence>?.toOffences(): List<PrOffence> {
+        if (this == null || isEmpty()) return listOf()
+        return map { PrOffence(it.offence.description) }
     }
 }
