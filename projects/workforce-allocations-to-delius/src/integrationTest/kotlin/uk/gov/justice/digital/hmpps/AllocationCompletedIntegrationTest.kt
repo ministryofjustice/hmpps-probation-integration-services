@@ -44,5 +44,6 @@ class AllocationCompletedIntegrationTest {
             .andExpect(jsonPath("$.initialAppointment.date").value(contact.date.toLocalDate().toString()))
             .andExpect(jsonPath("$.type").value("CUSTODY"))
             .andExpect(jsonPath("$.staff.code").value(staff.code))
+            .andExpect(jsonPath("$.staff.email").doesNotExist())
     }
 }

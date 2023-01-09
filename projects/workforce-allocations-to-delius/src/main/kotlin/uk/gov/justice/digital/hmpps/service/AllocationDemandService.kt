@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.api.model.ChoosePractitionerResponse
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.api.model.toManager
+import uk.gov.justice.digital.hmpps.api.model.toStaffMember
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
@@ -19,6 +20,7 @@ class AllocationDemandService(
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
     private val staffRepository: StaffRepository,
+    private val ldapService: LdapService,
 ) {
     fun findAllocationDemand(allocationDemandRequest: AllocationDemandRequest): AllocationDemandResponse {
         return AllocationDemandResponse(
@@ -40,7 +42,9 @@ class AllocationDemandService(
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val personManager = personManagerRepository.findActiveManager(person.id)
         val staffInTeams = teamCodes.associateWith { teamCode ->
-            staffRepository.findAllByTeamsCode(teamCode).map { it.toManager(teamCode) }
+            val staff = staffRepository.findAllByTeamsCode(teamCode)
+            val emails = ldapService.findEmailsForStaffIn(staff)
+            staff.map { it.toStaffMember(emails[it.user?.username]) }
         }
         return ChoosePractitionerResponse(
             crn = crn,

@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.CaseType.COMMUNITY
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.LdapUserGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -26,6 +27,7 @@ class AllocationCompletedServiceTest {
     @Mock lateinit var personRepository: PersonRepository
     @Mock lateinit var eventRepository: EventRepository
     @Mock lateinit var staffRepository: StaffRepository
+    @Mock lateinit var ldapService: LdapService
     @Mock lateinit var contactRepository: ContactRepository
     @InjectMocks lateinit var allocationCompletedService: AllocationCompletedService
 
@@ -62,15 +64,32 @@ class AllocationCompletedServiceTest {
     }
 
     @Test
-    fun `details response is mapped and returned`() {
+    fun `missing email address is handled`() {
         val person = PersonGenerator.DEFAULT
         val event = EventGenerator.DEFAULT
         val staff = StaffGenerator.DEFAULT
+        whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
+        whenever(personRepository.getCaseType(person.crn)).thenReturn(COMMUNITY)
+        whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
+        whenever(staffRepository.findByCode(staff.code)).thenReturn(staff)
+
+        val response = allocationCompletedService.getDetails(person.crn, event.number, staff.code)
+
+        assertThat(response.staff!!.email, nullValue())
+    }
+
+    @Test
+    fun `details response is mapped and returned`() {
+        val person = PersonGenerator.DEFAULT
+        val event = EventGenerator.DEFAULT
+        val staff = StaffGenerator.STAFF_WITH_USER
+        val user = LdapUserGenerator.DEFAULT
         val initialAppointmentDate = LocalDate.now()
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
         whenever(personRepository.getCaseType(person.crn)).thenReturn(COMMUNITY)
         whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
         whenever(staffRepository.findByCode(staff.code)).thenReturn(staff)
+        whenever(ldapService.findEmailForStaff(staff)).thenReturn(user.email)
         whenever(contactRepository.getInitialAppointmentDate(person.id, event.id)).thenReturn(initialAppointmentDate)
 
         val response = allocationCompletedService.getDetails(person.crn, event.number, staff.code)
@@ -78,6 +97,7 @@ class AllocationCompletedServiceTest {
         assertThat(response.type, equalTo(COMMUNITY))
         assertThat(response.staff!!.code, equalTo(staff.code))
         assertThat(response.staff!!.grade, equalTo("PSO"))
+        assertThat(response.staff!!.email, equalTo(user.email))
         assertThat(response.event.number, equalTo(event.number))
         assertThat(response.event.manager, nullValue())
         assertThat(response.initialAppointment?.date, equalTo(initialAppointmentDate))
