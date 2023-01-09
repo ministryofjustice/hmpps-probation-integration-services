@@ -34,6 +34,5 @@ class OfficerViewIntegrationTest {
             .andExpect(jsonPath("$.casesDueToEndInNext4Weeks").value(1))
             .andExpect(jsonPath("$.releasesWithinNext4Weeks").value(0))
             .andExpect(jsonPath("$.paroleReportsToCompleteInNext4Weeks").value(0))
-
     }
 }
