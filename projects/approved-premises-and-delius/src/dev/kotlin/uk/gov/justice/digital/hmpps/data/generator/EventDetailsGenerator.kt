@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationAssessed
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSubmitted
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.AssessedBy
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Decision
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
@@ -28,16 +29,15 @@ object EventDetailsGenerator {
         )
     )
 
-    fun applicationAssessed(assessedBy: Staff) = EventDetails(
+    fun applicationAssessed(assessedBy: AssessedBy) = EventDetails(
         id = UUID.randomUUID().toString(),
         timestamp = ZonedDateTime.now(),
         eventType = "approved-premises.application.assessed",
         eventDetails = ApplicationAssessed(
             applicationId = UUID.randomUUID().toString(),
             applicationUrl = "https://example.com",
-            assessmentArea = probationArea(),
             assessedAt = ZonedDateTime.now(),
-            assessedBy = staffMember(assessedBy),
+            assessedBy = assessedBy,
             decision = Decision.Accepted,
             decisionRationale = "Test decision rationale"
         )

@@ -59,8 +59,8 @@ class ApprovedPremisesService(
             description = "Approved Premises Application ${details.decision}",
             notes = details.decisionRationale,
             date = details.assessedAt,
-            staffCode = details.assessedBy.staffCode,
-            probationAreaCode = details.assessmentArea.code,
+            staffCode = details.assessedBy.staffMember.staffCode,
+            probationAreaCode = details.assessedBy.probationArea.code,
         )
     }
 

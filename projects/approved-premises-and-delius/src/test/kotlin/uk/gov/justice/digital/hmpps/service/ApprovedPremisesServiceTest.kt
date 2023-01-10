@@ -11,6 +11,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.check
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.data.generator.AssessedByGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventDetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -23,6 +24,7 @@ import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationAssessed
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSubmitted
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremisesApiClient
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.AssessedBy
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArrived
@@ -91,7 +93,8 @@ internal class ApprovedPremisesServiceTest {
         val manager = givenAPersonManager(person)
         val assessor = givenStaff()
         val unallocatedTeam = givenUnallocatedTeam()
-        val details = givenApplicationAssessedDetails(assessedBy = assessor)
+        val assessedBy = AssessedByGenerator.generate(staffMember = StaffMemberGenerator.generate(staffCode = assessor.code))
+        val details = givenApplicationAssessedDetails(assessedBy = assessedBy)
         givenContactTypes(listOf(ContactTypeCode.APPLICATION_ASSESSED))
 
         approvedPremisesService.applicationAssessed(applicationAssessedEvent)
@@ -229,7 +232,7 @@ internal class ApprovedPremisesServiceTest {
     }
 
     private fun givenApplicationAssessedDetails(
-        assessedBy: Staff = StaffGenerator.generate()
+        assessedBy: AssessedBy = AssessedByGenerator.generate()
     ): EventDetails<ApplicationAssessed> {
         val details = EventDetailsGenerator.applicationAssessed(assessedBy = assessedBy)
         whenever(approvedPremisesApiClient.getApplicationAssessedDetails(applicationAssessedEvent.url())).thenReturn(details)

@@ -12,15 +12,21 @@
     "deliusEventNumber": "7",
     "assessedAt": "2022-11-30T14:51:30",
     "assessedBy": {
-      "staffCode": "N54A001",
-      "staffIdentifier": 1501234567,
-      "forenames": "John",
-      "surname": "Smith",
-      "username": "JohnSmithNPS"
-    },
-    "assessmentArea": {
-      "code": "N54",
-      "name": "North East Region"
+      "staffMember": {
+        "staffCode": "N54A001",
+        "staffIdentifier": 1501234567,
+        "forenames": "John",
+        "surname": "Smith",
+        "username": "JohnSmithNPS"
+      },
+      "probationArea": {
+        "code": "N54",
+        "name": "North East Region"
+      },
+      "cru": {
+        "code": "N02",
+        "name": "NPS North East"
+      }
     },
     "decision": "Rejected",
     "decisionRationale": "Risk too low"

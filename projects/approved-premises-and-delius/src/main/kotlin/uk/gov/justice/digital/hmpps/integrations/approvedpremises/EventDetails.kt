@@ -29,10 +29,14 @@ data class ApplicationAssessed(
     val applicationId: String,
     val applicationUrl: String,
     val assessedAt: ZonedDateTime,
-    val assessedBy: StaffMember,
-    val assessmentArea: ProbationArea,
+    val assessedBy: AssessedBy,
     val decision: Decision,
     val decisionRationale: String,
+)
+
+data class AssessedBy(
+    val staffMember: StaffMember,
+    val probationArea: ProbationArea
 )
 
 data class BookingMade(
