@@ -35,4 +35,8 @@ class AllocationDemandResource(private val service: AllocationDemandService) {
     @GetMapping("/{crn}/{eventNumber}/probation-record")
     fun getProbationRecord(@PathVariable crn: String, @PathVariable eventNumber: String) =
         service.getProbationRecord(crn, eventNumber)
+
+    @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
+    @GetMapping("/impact")
+    fun getImpact(@RequestParam crn: String, @RequestParam staff: String) = service.getImpact(crn, staff)
 }

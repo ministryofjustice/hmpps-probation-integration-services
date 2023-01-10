@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.AllocationDemandRequest
 import uk.gov.justice.digital.hmpps.api.model.AllocationDemandResponse
+import uk.gov.justice.digital.hmpps.api.model.AllocationImpact
 import uk.gov.justice.digital.hmpps.api.model.ChoosePractitionerResponse
 import uk.gov.justice.digital.hmpps.api.model.Event
 import uk.gov.justice.digital.hmpps.api.model.PrEvent
@@ -23,6 +24,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrnAndSoftDeletedFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.getByCode
 
 @Service
 class AllocationDemandService(
@@ -101,5 +103,11 @@ class AllocationDemandService(
     private fun List<AdditionalOffence>?.toOffences(): List<PrOffence> {
         if (this == null || isEmpty()) return listOf()
         return map { PrOffence(it.offence.description) }
+    }
+
+    fun getImpact(crn: String, staffCode: String): AllocationImpact {
+        val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
+        val staff = staffRepository.getByCode(staffCode)
+        return AllocationImpact(person.crn, person.name(), staff.toStaffMember())
     }
 }

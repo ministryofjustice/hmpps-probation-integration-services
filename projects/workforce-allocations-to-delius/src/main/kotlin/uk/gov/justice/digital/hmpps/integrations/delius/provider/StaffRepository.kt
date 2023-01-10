@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.provider
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
 interface StaffRepository : JpaRepository<Staff, Long> {
@@ -89,3 +90,6 @@ interface StaffRepository : JpaRepository<Staff, Long> {
     )
     fun getParoleReportsDueCountByStaffId(staffId: Long, toDate: LocalDate): Long
 }
+
+fun StaffRepository.getByCode(code: String): Staff =
+    findByCode(code) ?: throw NotFoundException("Staff", "code", code)
