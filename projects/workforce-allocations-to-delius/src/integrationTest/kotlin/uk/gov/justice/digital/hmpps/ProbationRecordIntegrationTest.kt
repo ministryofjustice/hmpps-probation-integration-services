@@ -48,7 +48,6 @@ class ProbationRecordIntegrationTest {
         mockMvc.perform(
             get("/allocation-demand/N452321/1/probation-record")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(AllocationDemandRequest(listOf())))
         ).andExpect(status().isUnauthorized)
     }
 
@@ -58,7 +57,6 @@ class ProbationRecordIntegrationTest {
         mockMvc.perform(
             get("/allocation-demand/N452321/1/probation-record").withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(AllocationDemandRequest(listOf())))
         ).andExpect(status().isNotFound)
     }
 
