@@ -140,7 +140,6 @@ internal class AllocateEventServiceTest {
 
     @Test
     fun `when pending transfer for event exception thrown`() {
-        println("Allocation Detail : $allocationDetail")
         val event = EventGenerator.generate()
         whenever(
             eventRepository.findByPersonCrnAndNumber(

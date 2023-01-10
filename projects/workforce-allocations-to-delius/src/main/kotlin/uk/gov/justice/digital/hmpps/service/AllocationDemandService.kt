@@ -72,9 +72,11 @@ class AllocationDemandService(
         val sentences: Map<Boolean, List<SentenceWithManager>> =
             disposalRepository.findAllSentencesWithManagers(person.id, eventNumber)
                 .groupBy { it.disposal.active && it.disposal.event.active }
-        val additionalOffences = additionalOffenceRepository.findAllByEventIdIn(
-            sentences.values.flatMap { s -> s.map { it.disposal.event.id } }
-        ).groupBy { it.event.id }
+        val additionalOffences = if (sentences.isNotEmpty()) {
+            additionalOffenceRepository.findAllByEventIdIn(
+                sentences.values.flatMap { s -> s.map { it.disposal.event.id } }
+            ).groupBy { it.event.id }
+        } else mapOf()
 
         return ProbationRecord(
             person.crn, person.name(), Event(eventNumber),
