@@ -40,6 +40,7 @@ class Disposal(
     val entryLength: Long? = null,
 
     @ManyToOne
+    @JoinColumn(name = "entry_length_units_id")
     val entryLengthUnit: ReferenceData? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
