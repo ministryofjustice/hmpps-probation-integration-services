@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.licencecondition
 
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.matchesPattern
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -11,6 +12,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
+import org.mockito.kotlin.check
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -142,6 +144,7 @@ internal class LicenceConditionServiceTest {
             assertEquals(it.terminationReason, ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON)
             assertFalse(it.pendingTransfer!!)
             verify(licenceConditionRepository).save(it)
+            verify(contactRepository).save(check { contact -> assertThat(contact.licenceConditionId, equalTo(it.id)) })
         }
     }
 
