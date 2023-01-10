@@ -35,7 +35,8 @@ enum class DatasetCode(val value: String) {
     ORDER_ALLOCATION_REASON("ORDER ALLOCATION REASON"),
     RM_ALLOCATION_REASON("RM ALLOCATION REASON"),
     TRANSFER_STATUS("TRANSFER STATUS"),
-    THROUGHCARE_DATE_TYPE("THROUGHCARE DATE TYPE");
+    THROUGHCARE_DATE_TYPE("THROUGHCARE DATE TYPE"),
+    UNITS("UNITS");
 
     companion object {
         private val index = DatasetCode.values().associateBy { it.value }

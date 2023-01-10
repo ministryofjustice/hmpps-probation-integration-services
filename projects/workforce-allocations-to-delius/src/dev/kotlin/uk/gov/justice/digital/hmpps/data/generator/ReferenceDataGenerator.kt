@@ -13,6 +13,7 @@ object ReferenceDataGenerator {
     val INS_RPT_PAR = generate(DatasetGenerator.IREPORTTYPE, "PAR")
     val PENDING_TRANSFER = generate(DatasetGenerator.TRANSFER_STATUS, "PN")
     val PSQ_GRADE = generate(DatasetGenerator.OFFICER_GRADE, "PSQ")
+    val UNIT_MONTHS = generate(DatasetGenerator.UNITS, "M", "Months")
 
     fun generate(
         dataset: Dataset,

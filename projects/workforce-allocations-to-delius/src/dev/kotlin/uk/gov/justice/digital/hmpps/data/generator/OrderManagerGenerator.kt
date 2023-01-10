@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator.build
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator.STAFF_WITH_USER
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
@@ -12,6 +13,11 @@ object OrderManagerGenerator {
     var DEFAULT = generate(startDateTime = ManagerGenerator.START_DATE_TIME)
     var NEW = generate(eventId = EventGenerator.NEW.id, startDateTime = ManagerGenerator.START_DATE_TIME)
     var HISTORIC = generate(eventId = EventGenerator.HISTORIC.id, startDateTime = ManagerGenerator.START_DATE_TIME)
+    var INACTIVE_EVENT = generate(
+        eventId = EventGenerator.INACTIVE.id,
+        startDateTime = ManagerGenerator.START_DATE_TIME.minusDays(2),
+        staff = STAFF_WITH_USER
+    )
 
     fun generate(
         id: Long = IdGenerator.getAndIncrement(),

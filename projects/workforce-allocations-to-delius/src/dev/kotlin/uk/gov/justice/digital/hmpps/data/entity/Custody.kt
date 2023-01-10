@@ -11,7 +11,7 @@ import jakarta.persistence.Version
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceData
-import uk.gov.justice.digital.hmpps.integrations.delius.event.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.Disposal
 import java.time.LocalDate
 
 @Entity

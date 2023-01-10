@@ -9,12 +9,14 @@ import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator.
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator.CREATE_COMPONENT_TRANSFER
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.data.repository.DatasetRepository
+import uk.gov.justice.digital.hmpps.data.repository.OffenceRepository
 import uk.gov.justice.digital.hmpps.data.repository.ProviderRepository
 import uk.gov.justice.digital.hmpps.data.repository.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceDataRepository
@@ -33,6 +35,7 @@ class AllocationsDataLoader(
     private val businessInteractionRepository: BusinessInteractionRepository,
     private val datasetRepository: DatasetRepository,
     private val referenceDataRepository: ReferenceDataRepository,
+    private val offenceRepository: OffenceRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val providerRepository: ProviderRepository,
     private val teamRepository: TeamRepository,
@@ -59,6 +62,7 @@ class AllocationsDataLoader(
                 DatasetGenerator.RM_ALLOCATION_REASON,
                 DatasetGenerator.TRANSFER_STATUS,
                 DatasetGenerator.OFFICER_GRADE,
+                DatasetGenerator.UNITS,
             )
         )
 
@@ -72,8 +76,11 @@ class AllocationsDataLoader(
                 ReferenceDataGenerator.INS_RPT_PAR,
                 ReferenceDataGenerator.PENDING_TRANSFER,
                 ReferenceDataGenerator.PSQ_GRADE,
+                ReferenceDataGenerator.UNIT_MONTHS,
             )
         )
+
+        offenceRepository.saveAll(listOf(OffenceGenerator.MAIN_OFFENCE_TYPE, OffenceGenerator.ADDITIONAL_OFFENCE_TYPE))
 
         contactTypeRepository.saveAll(
             listOf(

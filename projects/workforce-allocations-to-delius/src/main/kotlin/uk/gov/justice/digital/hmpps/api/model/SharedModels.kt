@@ -17,8 +17,8 @@ data class Sentence(val type: String, val date: LocalDate, val length: String)
 data class StaffMember(
     val code: String,
     val name: Name,
-    val email: String?,
-    val grade: String?,
+    val email: String? = null,
+    val grade: String? = null,
 )
 data class Manager(val code: String, val name: Name, val teamCode: String, val grade: String? = null)
 

@@ -8,7 +8,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import uk.gov.justice.digital.hmpps.integrations.delius.event.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 
 @Immutable
