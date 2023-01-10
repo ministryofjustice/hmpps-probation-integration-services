@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import com.fasterxml.jackson.databind.JsonMappingException
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
@@ -23,8 +24,10 @@ class Handler(
             when (message.eventType) {
                 "risk-assessment.scores.rsr.determined" -> {
                     riskScoreService.updateRsrScores(
-                        message.personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
-                        message.additionalInformation["EventNumber"] as Int,
+                        message.personReference.findCrn()
+                            ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
+                        message.additionalInformation["EventNumber"] as Int?
+                            ?: throw DeliusValidationError("No event number provided"),
                         message.assessmentDate(),
                         message.rsr(),
                         message.ospIndecent(),
@@ -43,20 +46,31 @@ class Handler(
             throw e
         }
     }
+
+    override fun handle(message: String) {
+        try {
+            handle(converter.fromMessage(message))
+        } catch (e: JsonMappingException) {
+            telemetryService.trackEvent("JsonMappingException", mapOf("cause" to message))
+        }
+    }
 }
 
 fun HmppsDomainEvent.assessmentDate() =
     ZonedDateTimeDeserializer.deserialize(additionalInformation["AssessmentDate"] as String)
 
 data class RiskAssessment(val score: Double, val band: String)
+
 fun HmppsDomainEvent.rsr() = RiskAssessment(
     additionalInformation["RSRScore"] as Double,
     additionalInformation["RSRBand"] as String
 )
+
 fun HmppsDomainEvent.ospIndecent() = RiskAssessment(
     additionalInformation["OSPIndecentScore"] as Double,
     additionalInformation["OSPIndecentBand"] as String
 )
+
 fun HmppsDomainEvent.ospContact() = RiskAssessment(
     additionalInformation["OSPContactScore"] as Double,
     additionalInformation["OSPContactBand"] as String
@@ -65,7 +79,7 @@ fun HmppsDomainEvent.ospContact() = RiskAssessment(
 fun HmppsDomainEvent.telemetryProperties() = mapOf(
     "occurredAt" to occurredAt.toString(),
     "crn" to (personReference.findCrn() ?: "unknown"),
-    "eventNumber" to additionalInformation["EventNumber"].toString(),
+    "eventNumber" to (additionalInformation["EventNumber"]?.toString() ?: "Not Provided"),
     "rsrScore" to additionalInformation["RSRScore"].toString(),
     "rsrBand" to additionalInformation["RSRBand"].toString(),
     "ospIndecentScore" to additionalInformation["OSPIndecentScore"].toString(),
