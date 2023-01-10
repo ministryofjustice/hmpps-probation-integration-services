@@ -70,7 +70,7 @@ class AllocationDemandService(
     fun getProbationRecord(crn: String, eventNumber: String): ProbationRecord {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val sentences: Map<Boolean, List<SentenceWithManager>> =
-            disposalRepository.findAllSentencesWithManagers(person.id, eventNumber)
+            disposalRepository.findAllSentencesExcludingEventNumber(person.id, eventNumber)
                 .groupBy { it.disposal.active && it.disposal.event.active }
         val additionalOffences = if (sentences.isNotEmpty()) {
             additionalOffenceRepository.findAllByEventIdIn(

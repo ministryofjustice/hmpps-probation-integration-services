@@ -21,5 +21,5 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
         and d.event.number <> :eventNumber
     """
     )
-    fun findAllSentencesWithManagers(personId: Long, eventNumber: String): List<SentenceWithManager>
+    fun findAllSentencesExcludingEventNumber(personId: Long, eventNumber: String): List<SentenceWithManager>
 }

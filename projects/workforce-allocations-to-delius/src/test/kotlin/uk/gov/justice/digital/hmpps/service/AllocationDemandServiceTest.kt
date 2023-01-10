@@ -114,7 +114,7 @@ class AllocationDemandServiceTest {
         val person = PersonGenerator.DEFAULT
         val eventNumber = "2"
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
-        whenever(disposalRepository.findAllSentencesWithManagers(person.id, eventNumber))
+        whenever(disposalRepository.findAllSentencesExcludingEventNumber(person.id, eventNumber))
             .thenReturn(sentences)
         if (sentences.isNotEmpty()) {
             whenever(additionalOffenceRepository.findAllByEventIdIn(sentences.map { it.disposal.event.id }))
