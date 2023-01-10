@@ -17,6 +17,7 @@ import java.time.LocalDate
 @ExtendWith(MockitoExtension::class)
 class StaffServiceTest {
     @Mock lateinit var staffRepository: StaffRepository
+    @Mock lateinit var ldapService: LdapService
     @InjectMocks lateinit var staffService: StaffService
 
     @Test
@@ -30,6 +31,7 @@ class StaffServiceTest {
     @Test
     fun `details response is mapped and returned`() {
         val staff = StaffGenerator.DEFAULT
+        whenever(ldapService.findEmailForStaff(staff)).thenReturn("test@test.com")
         whenever(staffRepository.findByCode(staff.code)).thenReturn(staff)
         whenever(staffRepository.getParoleReportsDueCountByStaffId(staff.id, LocalDate.now().plusWeeks(4))).thenReturn(1L)
         whenever(staffRepository.getSentencesDueCountByStaffId(staff.id, LocalDate.now().plusWeeks(4))).thenReturn(2L)
@@ -42,6 +44,7 @@ class StaffServiceTest {
         assertThat(response.name.middleName, equalTo(staff.middleName))
         assertThat(response.name.surname, equalTo(staff.surname))
         assertThat(response.grade, equalTo("PSO"))
+        assertThat(response.email, equalTo("test@test.com"))
         assertThat(response.paroleReportsToCompleteInNext4Weeks, equalTo(1L))
         assertThat(response.casesDueToEndInNext4Weeks, equalTo(2L))
         assertThat(response.releasesWithinNext4Weeks, equalTo(3L))
