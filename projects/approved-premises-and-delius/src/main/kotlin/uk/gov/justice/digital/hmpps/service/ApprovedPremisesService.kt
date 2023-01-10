@@ -73,7 +73,7 @@ class ApprovedPremisesService(
             description = "Approved Premises Booking for ${details.premises.name}",
             notes = "To view details of the Approved Premises booking, click here: ${details.applicationUrl}",
             date = details.createdAt,
-            staffCode = details.bookedBy.staffCode,
+            staffCode = details.bookedBy.staffMember.staffCode,
             probationAreaCode = details.premises.probationArea.code,
         )
     }

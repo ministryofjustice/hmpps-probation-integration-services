@@ -44,8 +44,12 @@ data class BookingMade(
     val applicationId: String,
     val applicationUrl: String,
     val createdAt: ZonedDateTime,
-    val bookedBy: StaffMember,
+    val bookedBy: BookedBy,
     val premises: Premises,
+)
+
+data class BookedBy(
+    val staffMember: StaffMember
 )
 
 data class PersonNotArrived(

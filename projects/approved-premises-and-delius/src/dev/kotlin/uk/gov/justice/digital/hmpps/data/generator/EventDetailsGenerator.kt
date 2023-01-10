@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationAssessed
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSubmitted
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.AssessedBy
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookedBy
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Decision
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
@@ -43,7 +44,7 @@ object EventDetailsGenerator {
         )
     )
 
-    fun bookingMade(bookedBy: Staff) = EventDetails(
+    fun bookingMade(bookedBy: BookedBy) = EventDetails(
         id = UUID.randomUUID().toString(),
         timestamp = ZonedDateTime.now(),
         eventType = "approved-premises.booking.made",
@@ -59,7 +60,7 @@ object EventDetailsGenerator {
                 probationArea = probationArea()
             ),
             createdAt = ZonedDateTime.now(),
-            bookedBy = staffMember(bookedBy),
+            bookedBy = bookedBy
         )
     )
 
