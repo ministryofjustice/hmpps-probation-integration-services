@@ -24,10 +24,8 @@ class Handler(
             when (message.eventType) {
                 "risk-assessment.scores.rsr.determined" -> {
                     riskScoreService.updateRsrScores(
-                        message.personReference.findCrn()
-                            ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
-                        message.additionalInformation["EventNumber"] as Int?
-                            ?: throw DeliusValidationError("No event number provided"),
+                        message.personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
+                        message.additionalInformation["EventNumber"] as Int?,
                         message.assessmentDate(),
                         message.rsr(),
                         message.ospIndecent(),

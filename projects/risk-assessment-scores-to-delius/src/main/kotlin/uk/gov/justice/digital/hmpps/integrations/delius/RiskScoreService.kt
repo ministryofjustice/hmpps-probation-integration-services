@@ -31,7 +31,7 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate) {
 
     fun updateRsrScores(
         crn: String,
-        eventNumber: Int,
+        eventNumber: Int?,
         assessmentDate: ZonedDateTime,
         rsr: RiskAssessment,
         ospIndecent: RiskAssessment,
