@@ -67,6 +67,7 @@ class LicenceConditionService(
                 date = terminationDate,
                 event = event,
                 person = event.person,
+                licenceConditionId = licenceCondition.id,
                 notes = "Termination reason: ${terminationReason.description}",
                 staffId = manager.staffId,
                 teamId = manager.teamId,
