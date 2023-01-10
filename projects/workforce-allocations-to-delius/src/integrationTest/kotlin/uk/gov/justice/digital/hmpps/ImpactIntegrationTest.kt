@@ -62,6 +62,22 @@ class ImpactIntegrationTest {
     }
 
     @Test
+    fun `get impact no crn provided`() {
+        mockMvc.perform(
+            get("/allocation-demand/impact?staff=N01DTT1").withOAuth2Token(wireMockserver)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `get impact no staff code provided`() {
+        mockMvc.perform(
+            get("/allocation-demand/impact?crn=${PersonGenerator.DEFAULT.crn}").withOAuth2Token(wireMockserver)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isBadRequest)
+    }
+
+    @Test
     fun `get impact returns person and staff`() {
         val person = PersonGenerator.DEFAULT
         val staff = StaffGenerator.STAFF_WITH_USER.toStaffMember()
