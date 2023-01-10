@@ -48,8 +48,8 @@ class Disposal(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
 ) {
-    @Transient
-    val length: String = "$entryLength ${entryLengthUnit?.description}"
+    val length
+        get() = "$entryLength ${entryLengthUnit?.description}"
 }
 
 @Entity
