@@ -8,6 +8,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
@@ -63,6 +64,7 @@ class Offence(
 )
 
 interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long> {
+    @EntityGraph(attributePaths = ["offence"])
     fun findAllByEventIdIn(eventIds: List<Long>): List<AdditionalOffence>
 }
 
