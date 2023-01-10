@@ -10,6 +10,9 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrnAndSoftDeletedFalse(crn: String): Person?
 
+    @Query("select p from Person p where p.crn in :crns")
+    fun findAllByCrnAndSoftDeletedFalse(crns: List<String>): List<Person>
+
     @Query("select p.id from Person p where p.crn = :crn")
     fun findIdByCrn(crn: String): Long?
 
