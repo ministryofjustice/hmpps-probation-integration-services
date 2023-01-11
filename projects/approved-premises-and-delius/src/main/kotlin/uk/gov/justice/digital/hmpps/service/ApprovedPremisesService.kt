@@ -45,8 +45,8 @@ class ApprovedPremisesService(
             crn = event.crn(),
             type = APPLICATION_SUBMITTED,
             date = details.submittedAt,
-            staffCode = details.submittedBy.staffCode,
-            probationAreaCode = details.probationArea.code
+            staffCode = details.submittedBy.staffMember.staffCode,
+            probationAreaCode = details.submittedBy.probationArea.code
         )
     }
 
@@ -59,8 +59,8 @@ class ApprovedPremisesService(
             description = "Approved Premises Application ${details.decision}",
             notes = details.decisionRationale,
             date = details.assessedAt,
-            staffCode = details.assessedBy.staffCode,
-            probationAreaCode = details.assessmentArea.code,
+            staffCode = details.assessedBy.staffMember.staffCode,
+            probationAreaCode = details.assessedBy.probationArea.code,
         )
     }
 
@@ -73,7 +73,7 @@ class ApprovedPremisesService(
             description = "Approved Premises Booking for ${details.premises.name}",
             notes = "To view details of the Approved Premises booking, click here: ${details.applicationUrl}",
             date = details.createdAt,
-            staffCode = details.bookedBy.staffCode,
+            staffCode = details.bookedBy.staffMember.staffCode,
             probationAreaCode = details.premises.probationArea.code,
         )
     }

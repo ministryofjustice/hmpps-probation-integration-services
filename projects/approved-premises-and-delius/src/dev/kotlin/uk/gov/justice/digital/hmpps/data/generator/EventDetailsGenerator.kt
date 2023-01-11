@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationAssessed
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSubmitted
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.AssessedBy
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookedBy
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Decision
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
@@ -9,12 +11,13 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArriv
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Premises
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.StaffMember
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.SubmittedBy
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import java.time.ZonedDateTime
 import java.util.UUID
 
 object EventDetailsGenerator {
-    fun applicationSubmitted(submittedBy: Staff) = EventDetails(
+    fun applicationSubmitted(submittedBy: SubmittedBy) = EventDetails(
         id = UUID.randomUUID().toString(),
         timestamp = ZonedDateTime.now(),
         eventType = "approved-premises.application.submitted",
@@ -22,28 +25,26 @@ object EventDetailsGenerator {
             applicationId = UUID.randomUUID().toString(),
             applicationUrl = "https://example.com",
             targetLocation = "TEST",
-            probationArea = probationArea(),
             submittedAt = ZonedDateTime.now(),
-            submittedBy = staffMember(submittedBy),
+            submittedBy = submittedBy
         )
     )
 
-    fun applicationAssessed(assessedBy: Staff) = EventDetails(
+    fun applicationAssessed(assessedBy: AssessedBy) = EventDetails(
         id = UUID.randomUUID().toString(),
         timestamp = ZonedDateTime.now(),
         eventType = "approved-premises.application.assessed",
         eventDetails = ApplicationAssessed(
             applicationId = UUID.randomUUID().toString(),
             applicationUrl = "https://example.com",
-            assessmentArea = probationArea(),
             assessedAt = ZonedDateTime.now(),
-            assessedBy = staffMember(assessedBy),
+            assessedBy = assessedBy,
             decision = Decision.Accepted,
             decisionRationale = "Test decision rationale"
         )
     )
 
-    fun bookingMade(bookedBy: Staff) = EventDetails(
+    fun bookingMade(bookedBy: BookedBy) = EventDetails(
         id = UUID.randomUUID().toString(),
         timestamp = ZonedDateTime.now(),
         eventType = "approved-premises.booking.made",
@@ -59,7 +60,7 @@ object EventDetailsGenerator {
                 probationArea = probationArea()
             ),
             createdAt = ZonedDateTime.now(),
-            bookedBy = staffMember(bookedBy),
+            bookedBy = bookedBy
         )
     )
 

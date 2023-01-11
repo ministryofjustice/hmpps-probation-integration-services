@@ -11,19 +11,26 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.check
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.data.generator.AssessedByGenerator
+import uk.gov.justice.digital.hmpps.data.generator.BookedByGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventDetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
+import uk.gov.justice.digital.hmpps.data.generator.StaffMemberGenerator
+import uk.gov.justice.digital.hmpps.data.generator.SubmittedByGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationAssessed
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSubmitted
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremisesApiClient
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.AssessedBy
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookedBy
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArrived
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.SubmittedBy
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
@@ -63,8 +70,11 @@ internal class ApprovedPremisesServiceTest {
         val person = givenAPerson(applicationSubmittedEvent.crn())
         val manager = givenAPersonManager(person)
         val submitter = givenStaff()
+        val submittedBy = SubmittedByGenerator.generate(
+            staffMember = StaffMemberGenerator.generate(staffCode = submitter.code)
+        )
         val unallocatedTeam = givenUnallocatedTeam()
-        val details = givenApplicationSubmittedDetails(submittedBy = submitter)
+        val details = givenApplicationSubmittedDetails(submittedBy = submittedBy)
         givenContactTypes(listOf(ContactTypeCode.APPLICATION_SUBMITTED))
 
         approvedPremisesService.applicationSubmitted(applicationSubmittedEvent)
@@ -85,7 +95,8 @@ internal class ApprovedPremisesServiceTest {
         val manager = givenAPersonManager(person)
         val assessor = givenStaff()
         val unallocatedTeam = givenUnallocatedTeam()
-        val details = givenApplicationAssessedDetails(assessedBy = assessor)
+        val assessedBy = AssessedByGenerator.generate(staffMember = StaffMemberGenerator.generate(staffCode = assessor.code))
+        val details = givenApplicationAssessedDetails(assessedBy = assessedBy)
         givenContactTypes(listOf(ContactTypeCode.APPLICATION_ASSESSED))
 
         approvedPremisesService.applicationAssessed(applicationAssessedEvent)
@@ -108,8 +119,9 @@ internal class ApprovedPremisesServiceTest {
         val person = givenAPerson(crn)
         val manager = givenAPersonManager(person)
         val booker = givenStaff()
+        val bookedBy = BookedByGenerator.generate(staffMember = StaffMemberGenerator.generate(staffCode = booker.code))
         val unallocatedTeam = givenUnallocatedTeam()
-        val details = givenBookingMadeDetails(bookedBy = booker)
+        val details = givenBookingMadeDetails(bookedBy = bookedBy)
         givenContactTypes(listOf(ContactTypeCode.BOOKING_MADE))
 
         approvedPremisesService.bookingMade(bookingMadeEvent)
@@ -215,7 +227,7 @@ internal class ApprovedPremisesServiceTest {
     }
 
     private fun givenApplicationSubmittedDetails(
-        submittedBy: Staff = StaffGenerator.generate()
+        submittedBy: SubmittedBy = SubmittedByGenerator.generate()
     ): EventDetails<ApplicationSubmitted> {
         val details = EventDetailsGenerator.applicationSubmitted(submittedBy = submittedBy)
         whenever(approvedPremisesApiClient.getApplicationSubmittedDetails(applicationSubmittedEvent.url())).thenReturn(details)
@@ -223,7 +235,7 @@ internal class ApprovedPremisesServiceTest {
     }
 
     private fun givenApplicationAssessedDetails(
-        assessedBy: Staff = StaffGenerator.generate()
+        assessedBy: AssessedBy = AssessedByGenerator.generate()
     ): EventDetails<ApplicationAssessed> {
         val details = EventDetailsGenerator.applicationAssessed(assessedBy = assessedBy)
         whenever(approvedPremisesApiClient.getApplicationAssessedDetails(applicationAssessedEvent.url())).thenReturn(details)
@@ -231,7 +243,7 @@ internal class ApprovedPremisesServiceTest {
     }
 
     private fun givenBookingMadeDetails(
-        bookedBy: Staff = StaffGenerator.generate()
+        bookedBy: BookedBy = BookedByGenerator.generate()
     ): EventDetails<BookingMade> {
         val details = EventDetailsGenerator.bookingMade(bookedBy = bookedBy)
         whenever(approvedPremisesApiClient.getBookingMadeDetails(bookingMadeEvent.url())).thenReturn(details)
