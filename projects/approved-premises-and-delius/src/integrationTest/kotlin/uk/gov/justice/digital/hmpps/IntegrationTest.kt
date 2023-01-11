@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
@@ -35,6 +36,7 @@ internal class IntegrationTest {
     @Autowired lateinit var mockMvc: MockMvc
     @Autowired lateinit var wireMockServer: WireMockServer
     @Autowired lateinit var contactRepository: ContactRepository
+    @Autowired lateinit var nsiRepository: NsiRepository
     @MockBean lateinit var telemetryService: TelemetryService
 
     @Test
@@ -163,4 +165,47 @@ internal class IntegrationTest {
             )
         )
     }
+
+    // @Test
+    // fun `person arrived creates an alert contact and nsi`() {
+    //     // Given a person-not-arrived event
+    //     val event = prepEvent("person-arrived", wireMockServer.port())
+    //
+    //     // When it is received
+    //     channelManager.getChannel(queueName).publishAndWait(event)
+    //
+    //     // Then it is logged to telemetry
+    //     verify(telemetryService).notificationReceived(event)
+    //     verify(telemetryService).trackEvent("PersonArrived", event.message.telemetryProperties())
+    //
+    //     // And a contact alert is created
+    //     val contact = contactRepository.findAll()
+    //         .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.ARRIVED.code }
+    //     assertThat(contact.alert, equalTo(true))
+    //     assertThat(
+    //         contact.notes,
+    //         equalTo(
+    //             """
+    //             Arrived a day late due to rail strike. Informed in advance by COM.
+    //
+    //             For more details, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713
+    //             """.trimIndent()
+    //         )
+    //     )
+    //
+    //     // And a residence NSI is created
+    //     val nsi = nsiRepository.findAll()
+    //         .single { it.person.crn == event.message.crn() && it.type.code == NsiTypeCode.APPROVED_PREMISES_RESIDENCE.code }
+    //     assertThat(contact.alert, equalTo(true))
+    //     assertThat(
+    //         nsi.notes,
+    //         equalTo(
+    //             """
+    //             Arrived a day late due to rail strike. Informed in advance by COM.
+    //
+    //             For more details, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713
+    //             """.trimIndent()
+    //         )
+    //     )
+    // }
 }

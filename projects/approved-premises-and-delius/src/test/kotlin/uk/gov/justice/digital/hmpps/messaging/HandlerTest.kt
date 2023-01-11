@@ -101,4 +101,18 @@ internal class HandlerTest {
         verify(approvedPremisesService).personNotArrived(message.message)
         verify(telemetryService).trackEvent("PersonNotArrived", message.message.telemetryProperties())
     }
+
+    @Test
+    fun `handles person arrived`() {
+        // Given a message
+        val message = prepEvent("person-arrived")
+
+        // When the message is received
+        handler.handle(message)
+
+        // Then it is updated in Delius and logged to Telemetry
+        verify(telemetryService).notificationReceived(message)
+        verify(approvedPremisesService).personArrived(message.message)
+        verify(telemetryService).trackEvent("PersonArrived", message.message.telemetryProperties())
+    }
 }

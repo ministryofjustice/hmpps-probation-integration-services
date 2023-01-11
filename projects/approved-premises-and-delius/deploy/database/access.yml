@@ -5,6 +5,8 @@ database:
     tables:
       - contact
       - contact_alert
+      - nsi
+      - nsi_manager
 
   audit:
     username: ApprovedPremisesAndDelius
