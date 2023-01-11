@@ -39,4 +39,8 @@ class AllocationDemandResource(private val service: AllocationDemandService) {
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @GetMapping("/impact")
     fun getImpact(@RequestParam crn: String, @RequestParam staff: String) = service.getImpact(crn, staff)
+
+    @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
+    @GetMapping("/{crn}/{eventNumber}/case-view")
+    fun caseView(@PathVariable crn: String, @PathVariable eventNumber: String) = service.caseView(crn, eventNumber)
 }

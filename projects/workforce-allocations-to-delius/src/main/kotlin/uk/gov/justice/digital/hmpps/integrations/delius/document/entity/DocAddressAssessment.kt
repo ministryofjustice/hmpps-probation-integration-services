@@ -16,13 +16,13 @@ class AddressAssessment(
 
     @ManyToOne
     @JoinColumn(name = "offender_address_id", insertable = false, updatable = false)
-    val personAddress: PersonAddress?,
+    val personAddress: DocPersonAddress?,
 )
 
 @Entity
 @Table(name = "offender_address")
 @Immutable
-class PersonAddress(
+class DocPersonAddress(
     @Id @Column(name = "offender_address_id")
     var id: Long,
 

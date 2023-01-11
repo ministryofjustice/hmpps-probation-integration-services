@@ -2,9 +2,12 @@ package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CustodyGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionalReportGenerator
 import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
@@ -18,12 +21,14 @@ import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TransferReasonGenerator
+import uk.gov.justice.digital.hmpps.data.repository.CourtReportRepository
 import uk.gov.justice.digital.hmpps.data.repository.CustodyRepository
 import uk.gov.justice.digital.hmpps.data.repository.DisposalTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.InstitutionalReportRepository
 import uk.gov.justice.digital.hmpps.data.repository.KeyDateRepository
 import uk.gov.justice.digital.hmpps.data.repository.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
@@ -36,6 +41,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requir
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
@@ -48,6 +54,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 class PersonAllocationDataLoader(
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
+    private val personAddressRepository: PersonAddressRepository,
     private val responsibleOfficerRepository: ResponsibleOfficerRepository,
     private val transferReasonRepository: TransferReasonRepository,
     private val eventRepository: EventRepository,
@@ -61,7 +68,9 @@ class PersonAllocationDataLoader(
     private val custodyRepository: CustodyRepository,
     private val institutionalReportRepository: InstitutionalReportRepository,
     private val mainOffenceRepository: MainOffenceRepository,
-    private val additionalOffenceRepository: AdditionalOffenceRepository
+    private val additionalOffenceRepository: AdditionalOffenceRepository,
+    private val courtReportRepository: CourtReportRepository,
+    private val documentRepository: DocumentRepository
 ) {
     fun loadData() {
         transferReasonRepository.saveAll(listOf(TransferReasonGenerator.CASE_ORDER, TransferReasonGenerator.COMPONENT))
@@ -78,10 +87,13 @@ class PersonAllocationDataLoader(
         PersonManagerGenerator.HISTORIC = hpm
         ResponsibleOfficerGenerator.HISTORIC = hro
 
+        personAddressRepository.save(AddressGenerator.DEFAULT)
+
         OrderManagerGenerator.DEFAULT = createEventWithManager(EventGenerator.DEFAULT)
         OrderManagerGenerator.NEW = createEventWithManager(EventGenerator.NEW)
         OrderManagerGenerator.HISTORIC = createEventWithManager(EventGenerator.HISTORIC)
-        OrderManagerGenerator.INACTIVE_EVENT = createEventWithManager(EventGenerator.INACTIVE, StaffGenerator.STAFF_WITH_USER)
+        OrderManagerGenerator.INACTIVE_EVENT =
+            createEventWithManager(EventGenerator.INACTIVE, StaffGenerator.STAFF_WITH_USER)
 
         disposalTypeRepository.save(DisposalGenerator.DEFAULT.type)
         disposalRepository.saveAll(listOf(DisposalGenerator.DEFAULT, DisposalGenerator.INACTIVE))
@@ -94,6 +106,15 @@ class PersonAllocationDataLoader(
         institutionalReportRepository.save(InstitutionalReportGenerator.DEFAULT)
 
         contactRepository.save(ContactGenerator.INITIAL_APPOINTMENT)
+
+        courtReportRepository.save(CourtReportGenerator.DEFAULT)
+        documentRepository.saveAll(
+            listOf(
+                DocumentGenerator.PREVIOUS_CONVICTION,
+                DocumentGenerator.CPS_PACK,
+                DocumentGenerator.COURT_REPORT,
+            )
+        )
     }
 
     fun createPersonWithManagers(person: Person): Pair<PersonManager, ResponsibleOfficer> {

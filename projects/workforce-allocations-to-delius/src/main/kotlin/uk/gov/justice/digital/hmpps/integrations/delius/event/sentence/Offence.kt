@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 interface EventOffence {
     val offence: Offence
     val event: Event
+    val softDeleted: Boolean
 }
 
 @Immutable
@@ -33,6 +34,9 @@ class MainOffence(
     @OneToOne
     @JoinColumn(name = "event_id")
     override val event: Event,
+
+    @Column(updatable = false, columnDefinition = "NUMBER")
+    override val softDeleted: Boolean = false,
 ) : EventOffence
 
 @Immutable
@@ -50,6 +54,9 @@ class AdditionalOffence(
     @OneToOne
     @JoinColumn(name = "event_id")
     override val event: Event,
+
+    @Column(updatable = false, columnDefinition = "NUMBER")
+    override val softDeleted: Boolean = false,
 ) : EventOffence
 
 @Immutable
@@ -60,12 +67,14 @@ class Offence(
     @Column(name = "offence_id")
     val id: Long,
 
-    val description: String
+    val description: String,
+    val mainCategoryDescription: String,
+    val subCategoryDescription: String
 )
 
 interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long> {
-    @EntityGraph(attributePaths = ["offence"])
-    fun findAllByEventIdIn(eventIds: List<Long>): List<AdditionalOffence>
+    @EntityGraph(attributePaths = ["offence", "event"])
+    fun findAllByEventIdInAndSoftDeletedFalse(eventIds: List<Long>): List<AdditionalOffence>
 }
 
 data class SentenceWithManager(

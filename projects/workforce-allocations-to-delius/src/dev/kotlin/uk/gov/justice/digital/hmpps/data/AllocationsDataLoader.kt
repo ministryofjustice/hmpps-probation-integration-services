@@ -8,22 +8,25 @@ import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator.
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator.ADD_PERSON_ALLOCATION
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator.CREATE_COMPONENT_TRANSFER
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CourtReportTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RequirementMainCategoryGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.data.repository.CourtReportTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.DatasetRepository
 import uk.gov.justice.digital.hmpps.data.repository.OffenceRepository
 import uk.gov.justice.digital.hmpps.data.repository.ProviderRepository
+import uk.gov.justice.digital.hmpps.data.repository.RequirementMainCategoryRepository
 import uk.gov.justice.digital.hmpps.data.repository.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.LdapUserRepository
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
@@ -36,12 +39,13 @@ class AllocationsDataLoader(
     private val datasetRepository: DatasetRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val offenceRepository: OffenceRepository,
+    private val requirementMainCategoryRepository: RequirementMainCategoryRepository,
     private val contactTypeRepository: ContactTypeRepository,
+    private val courtReportTypeRepository: CourtReportTypeRepository,
     private val providerRepository: ProviderRepository,
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
     private val staffUserRepository: StaffUserRepository,
-    private val ldapUserRepository: LdapUserRepository,
     private val personAllocationDataLoader: PersonAllocationDataLoader,
 ) : CommandLineRunner {
     override fun run(vararg args: String?) {
@@ -63,6 +67,10 @@ class AllocationsDataLoader(
                 DatasetGenerator.TRANSFER_STATUS,
                 DatasetGenerator.OFFICER_GRADE,
                 DatasetGenerator.UNITS,
+                DatasetGenerator.GENDER,
+                DatasetGenerator.REQUIREMENT_SUB_CATEGORY,
+                DatasetGenerator.ADDRESS_TYPE,
+                DatasetGenerator.ADDRESS_STATUS
             )
         )
 
@@ -77,10 +85,16 @@ class AllocationsDataLoader(
                 ReferenceDataGenerator.PENDING_TRANSFER,
                 ReferenceDataGenerator.PSQ_GRADE,
                 ReferenceDataGenerator.UNIT_MONTHS,
+                ReferenceDataGenerator.GENDER_MALE,
+                ReferenceDataGenerator.REQUIREMENT_SUB_CATEGORY,
+                ReferenceDataGenerator.ADDRESS_TYPE,
+                ReferenceDataGenerator.ADDRESS_STATUS_MAIN
             )
         )
 
         offenceRepository.saveAll(listOf(OffenceGenerator.MAIN_OFFENCE_TYPE, OffenceGenerator.ADDITIONAL_OFFENCE_TYPE))
+
+        requirementMainCategoryRepository.save(RequirementMainCategoryGenerator.DEFAULT)
 
         contactTypeRepository.saveAll(
             listOf(
@@ -94,6 +108,8 @@ class AllocationsDataLoader(
                 ContactTypeGenerator.INITIAL_APPOINTMENT_BY_VIDEO,
             )
         )
+
+        courtReportTypeRepository.save(CourtReportTypeGenerator.DEFAULT)
 
         providerRepository.save(ProviderGenerator.DEFAULT)
         teamRepository.save(TeamGenerator.DEFAULT)

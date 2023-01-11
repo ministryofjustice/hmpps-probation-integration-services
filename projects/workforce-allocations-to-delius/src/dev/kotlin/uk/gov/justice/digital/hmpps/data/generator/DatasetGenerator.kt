@@ -14,6 +14,10 @@ object DatasetGenerator {
     val THROUGHCARE_DATE_TYPE = generate(DatasetCode.THROUGHCARE_DATE_TYPE)
     val IREPORTTYPE = generate(DatasetCode.IREPORTTYPE)
     val UNITS = generate(DatasetCode.UNITS)
+    val GENDER = generate(DatasetCode.GENDER)
+    val REQUIREMENT_SUB_CATEGORY = generate(DatasetCode.REQUIREMENT_SUB_CATEGORY)
+    val ADDRESS_TYPE = generate(DatasetCode.ADDRESS_TYPE)
+    val ADDRESS_STATUS = generate(DatasetCode.ADDRESS_STATUS)
 
     fun generate(code: DatasetCode, id: Long = IdGenerator.getAndIncrement()) = Dataset(id, code)
 }
