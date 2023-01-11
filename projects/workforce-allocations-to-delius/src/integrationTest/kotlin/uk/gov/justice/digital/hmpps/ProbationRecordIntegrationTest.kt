@@ -16,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.api.model.AllocationDemandRequest
 import uk.gov.justice.digital.hmpps.api.model.PrEvent
 import uk.gov.justice.digital.hmpps.api.model.PrOffence
 import uk.gov.justice.digital.hmpps.api.model.PrSentence
@@ -69,7 +68,6 @@ class ProbationRecordIntegrationTest {
         val res = mockMvc.perform(
             get("/allocation-demand/${person.crn}/$eventNumber/probation-record").withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(AllocationDemandRequest(listOf())))
         )
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsString

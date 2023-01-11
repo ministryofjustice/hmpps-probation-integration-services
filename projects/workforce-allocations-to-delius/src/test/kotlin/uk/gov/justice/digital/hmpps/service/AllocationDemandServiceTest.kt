@@ -27,9 +27,12 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.SentenceWithManager
+import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
@@ -46,6 +49,9 @@ class AllocationDemandServiceTest {
     lateinit var personManagerRepository: PersonManagerRepository
 
     @Mock
+    lateinit var personAddressRepository: PersonAddressRepository
+
+    @Mock
     lateinit var staffRepository: StaffRepository
 
     @Mock
@@ -56,6 +62,12 @@ class AllocationDemandServiceTest {
 
     @Mock
     lateinit var additionalOffenceRepository: AdditionalOffenceRepository
+
+    @Mock
+    lateinit var requirementRepository: RequirementRepository
+
+    @Mock
+    lateinit var documentRepository: DocumentRepository
 
     @InjectMocks
     lateinit var allocationDemandService: AllocationDemandService
@@ -117,7 +129,7 @@ class AllocationDemandServiceTest {
         whenever(disposalRepository.findAllSentencesExcludingEventNumber(person.id, eventNumber))
             .thenReturn(sentences)
         if (sentences.isNotEmpty()) {
-            whenever(additionalOffenceRepository.findAllByEventIdIn(sentences.map { it.disposal.event.id }))
+            whenever(additionalOffenceRepository.findAllByEventIdInAndSoftDeletedFalse(sentences.map { it.disposal.event.id }))
                 .thenAnswer { args ->
                     args.arguments
                         .mapNotNull { eventId -> sentences.firstOrNull { it.disposal.event.id == eventId } }

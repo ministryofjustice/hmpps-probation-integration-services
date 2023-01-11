@@ -52,6 +52,7 @@ abstract class Document : Relatable {
     open var alfrescoId: String? = null
     open var sensitive: Boolean = false
     open var lastSaved: ZonedDateTime? = ZonedDateTime.now()
+    open var dateProduced: ZonedDateTime? = ZonedDateTime.now()
 
     @Column(name = "created_datetime")
     open var createdDate: ZonedDateTime? = ZonedDateTime.now()
@@ -144,7 +145,7 @@ class AddressAssessmentDocument(
             getPersonAddressLine(addressAssessment?.personAddress)
         )
 
-    private fun getPersonAddressLine(personAddress: PersonAddress?): String {
+    private fun getPersonAddressLine(personAddress: DocPersonAddress?): String {
         if (personAddress == null) {
             return entityNotFound
         } else (
