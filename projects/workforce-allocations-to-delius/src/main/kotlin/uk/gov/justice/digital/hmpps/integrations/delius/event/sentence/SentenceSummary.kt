@@ -8,4 +8,6 @@ interface SentenceSummary {
     val startDate: LocalDate
     val length: String
     val endDate: LocalDate
+    val offenceMainCategory: String
+    val offenceSubCategory: String
 }

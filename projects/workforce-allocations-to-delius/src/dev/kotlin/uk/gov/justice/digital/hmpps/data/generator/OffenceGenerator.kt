@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.MainOffen
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.Offence
 
 object OffenceGenerator {
-    val MAIN_OFFENCE_TYPE = generateOffence("A main offence")
+    val MAIN_OFFENCE_TYPE = generateOffence("A main offence", "Main Offence Category", "Main Offence Sub Category")
     val ADDITIONAL_OFFENCE_TYPE = generateOffence("An additional offence")
 
     fun generateOffence(

@@ -149,7 +149,7 @@ class AllocationDemandService(
             person.pncNumber,
             address?.toCvAddress(),
             sentence.toCvSentence(),
-            additionalOffences.map { it.toCvOffence() },
+            listOf(sentence.mainOffence()) + additionalOffences.map { it.toCvOffence() },
             requirements.map { it.toCvRequirement() },
             cpsPack?.toCvDocument(),
             preCon?.toCvDocument(),
@@ -171,6 +171,7 @@ class AllocationDemandService(
     )
 
     private fun SentenceSummary.toCvSentence() = CvSentence(description, startDate, length, endDate)
+    private fun SentenceSummary.mainOffence() = CvOffence(offenceMainCategory, offenceSubCategory)
     private fun AdditionalOffence.toCvOffence() =
         CvOffence(offence.mainCategoryDescription, offence.subCategoryDescription)
 
