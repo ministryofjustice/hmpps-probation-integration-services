@@ -5,7 +5,6 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
-    show-sql: true
   ldap.base: dc=moj,dc=com
   security.oauth2.client:
     registration:
