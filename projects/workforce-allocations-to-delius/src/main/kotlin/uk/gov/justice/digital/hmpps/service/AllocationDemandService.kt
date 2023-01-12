@@ -178,7 +178,7 @@ class AllocationDemandService(
     private fun Requirement.toCvRequirement() = CvRequirement(
         mainCategory.description,
         subCategory.description,
-        "$length ${mainCategory.units?.description ?: ""}"
+        length?.let { "$length ${mainCategory.units?.description ?: ""}" } ?: ""
     )
 
     private fun Document.toCvDocument() = CvDocument(
