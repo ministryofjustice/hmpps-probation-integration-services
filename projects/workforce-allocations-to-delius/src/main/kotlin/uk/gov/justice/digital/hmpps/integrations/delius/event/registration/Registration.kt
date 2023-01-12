@@ -71,4 +71,3 @@ class DeRegistration(
     @JoinColumn(name = "registration_id", nullable = false)
     val registration: Registration,
 ) : BaseEntity()
-

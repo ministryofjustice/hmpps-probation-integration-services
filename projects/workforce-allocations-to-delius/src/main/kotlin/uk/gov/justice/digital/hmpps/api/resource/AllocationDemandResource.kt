@@ -13,40 +13,43 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.api.model.AllocationDemandRequest
 import uk.gov.justice.digital.hmpps.api.model.AllocationDemandResponse
 import uk.gov.justice.digital.hmpps.service.AllocationDemandService
+import uk.gov.justice.digital.hmpps.service.AllocationRiskService
 
 @Validated
 @RestController
 @RequestMapping("/allocation-demand")
-class AllocationDemandResource(private val service: AllocationDemandService) {
+class AllocationDemandResource(
+    private val allocationDemand: AllocationDemandService,
+    private val allocationRisk: AllocationRiskService
+) {
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @PostMapping
     fun findUnallocatedForTeam(@Valid @RequestBody request: AllocationDemandRequest): AllocationDemandResponse =
-        if (request.cases.isEmpty()) AllocationDemandResponse(listOf()) else service.findAllocationDemand(request)
+        if (request.cases.isEmpty()) AllocationDemandResponse(listOf()) else allocationDemand.findAllocationDemand(request)
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @GetMapping("/choose-practitioner")
     fun choosePractitioner(
         @RequestParam crn: String,
         @RequestParam("teamCode", defaultValue = "") teamCodes: List<String> = listOf()
-    ) = service.getChoosePractitionerResponse(crn, teamCodes)
+    ) = allocationDemand.getChoosePractitionerResponse(crn, teamCodes)
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @GetMapping("/{crn}/{eventNumber}/probation-record")
     fun getProbationRecord(@PathVariable crn: String, @PathVariable eventNumber: String) =
-        service.getProbationRecord(crn, eventNumber)
+        allocationDemand.getProbationRecord(crn, eventNumber)
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @GetMapping("/impact")
-    fun getImpact(@RequestParam crn: String, @RequestParam staff: String) = service.getImpact(crn, staff)
+    fun getImpact(@RequestParam crn: String, @RequestParam staff: String) = allocationDemand.getImpact(crn, staff)
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @GetMapping("/{crn}/{eventNumber}/case-view")
-    fun caseView(@PathVariable crn: String, @PathVariable eventNumber: String) = service.caseView(crn, eventNumber)
+    fun caseView(@PathVariable crn: String, @PathVariable eventNumber: String) = allocationDemand.caseView(crn, eventNumber)
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @GetMapping("/{crn}/{eventNumber}/risk")
     fun getRisk(@PathVariable crn: String, @PathVariable eventNumber: String) =
-        service.getRiskRecord(crn, eventNumber)
-
+        allocationRisk.getRiskRecord(crn, eventNumber)
 }

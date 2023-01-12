@@ -12,7 +12,9 @@ import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionalReportGenerator
 import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ManagerGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OasysAssessmentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OgrsAssessmentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
@@ -34,6 +36,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OASYSAssessmentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OGRSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManagerRepository
@@ -70,7 +74,9 @@ class PersonAllocationDataLoader(
     private val mainOffenceRepository: MainOffenceRepository,
     private val additionalOffenceRepository: AdditionalOffenceRepository,
     private val courtReportRepository: CourtReportRepository,
-    private val documentRepository: DocumentRepository
+    private val documentRepository: DocumentRepository,
+    private val oasysAssessmentRepository: OASYSAssessmentRepository,
+    private val ogrsAssessmentRepository: OGRSAssessmentRepository
 ) {
     fun loadData() {
         transferReasonRepository.saveAll(listOf(TransferReasonGenerator.CASE_ORDER, TransferReasonGenerator.COMPONENT))
@@ -115,6 +121,9 @@ class PersonAllocationDataLoader(
                 DocumentGenerator.COURT_REPORT,
             )
         )
+
+        ogrsAssessmentRepository.save(OgrsAssessmentGenerator.DEFAULT)
+        oasysAssessmentRepository.save(OasysAssessmentGenerator.DEFAULT)
     }
 
     fun createPersonWithManagers(person: Person): Pair<PersonManager, ResponsibleOfficer> {

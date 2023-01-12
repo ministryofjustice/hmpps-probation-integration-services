@@ -10,10 +10,12 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import uk.gov.justice.digital.hmpps.api.model.AllocationDemandRequest
 import uk.gov.justice.digital.hmpps.service.AllocationDemandService
+import uk.gov.justice.digital.hmpps.service.AllocationRiskService
 
 @ExtendWith(MockitoExtension::class)
 class AllocationDemandResourceTest {
     @Mock lateinit var allocationDemandService: AllocationDemandService
+    @Mock lateinit var allocationRisk: AllocationRiskService
     @InjectMocks lateinit var allocationDemandResource: AllocationDemandResource
 
     @Test
@@ -26,5 +28,11 @@ class AllocationDemandResourceTest {
     fun `choose practitioner resource calls service`() {
         allocationDemandResource.choosePractitioner("ABC")
         verify(allocationDemandService).getChoosePractitionerResponse("ABC", listOf())
+    }
+
+    @Test
+    fun `allocation risk practitioner resource calls service`() {
+        allocationDemandResource.getRisk("ABC", "1")
+        verify(allocationRisk).getRiskRecord("ABC", "1")
     }
 }
