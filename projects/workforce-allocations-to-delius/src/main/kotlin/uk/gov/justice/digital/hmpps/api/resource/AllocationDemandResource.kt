@@ -43,4 +43,10 @@ class AllocationDemandResource(private val service: AllocationDemandService) {
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @GetMapping("/{crn}/{eventNumber}/case-view")
     fun caseView(@PathVariable crn: String, @PathVariable eventNumber: String) = service.caseView(crn, eventNumber)
+
+    @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
+    @GetMapping("/{crn}/{eventNumber}/risk")
+    fun getRisk(@PathVariable crn: String, @PathVariable eventNumber: String) =
+        service.getRiskRecord(crn, eventNumber)
+
 }

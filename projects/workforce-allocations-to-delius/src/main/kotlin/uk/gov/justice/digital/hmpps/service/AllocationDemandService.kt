@@ -17,6 +17,8 @@ import uk.gov.justice.digital.hmpps.api.model.PrOffence
 import uk.gov.justice.digital.hmpps.api.model.PrSentence
 import uk.gov.justice.digital.hmpps.api.model.ProbationRecord
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
+import uk.gov.justice.digital.hmpps.api.model.RiskRecord
+import uk.gov.justice.digital.hmpps.api.model.RiskRegistration
 import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.api.model.toManager
 import uk.gov.justice.digital.hmpps.api.model.toStaffMember
@@ -25,6 +27,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDe
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.Document
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocumentType
+import uk.gov.justice.digital.hmpps.integrations.delius.event.registration.Registration
+import uk.gov.justice.digital.hmpps.integrations.delius.event.registration.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffence
@@ -52,7 +56,8 @@ class AllocationDemandService(
     private val disposalRepository: DisposalRepository,
     private val additionalOffenceRepository: AdditionalOffenceRepository,
     private val requirementRepository: RequirementRepository,
-    private val documentRepository: DocumentRepository
+    private val documentRepository: DocumentRepository,
+    private val registrationRepository: RegistrationRepository,
 ) {
     fun findAllocationDemand(allocationDemandRequest: AllocationDemandRequest): AllocationDemandResponse {
         return AllocationDemandResponse(
@@ -187,4 +192,20 @@ class AllocationDemandService(
         dateProduced?.toLocalDate() ?: lastSaved!!.toLocalDate(),
         findRelatedTo().description
     )
+
+    fun getRiskRecord(crn: String, eventNumber: String): RiskRecord {
+        val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
+        val registrations = registrationRepository.findAllByPersonCrn(crn)
+
+        val riskRegistrations = registrations.map { it.forRisk() }.groupBy { it.endDate == null }
+
+        return RiskRecord(
+            person.crn,
+            person.name(),
+            riskRegistrations[true] ?: listOf(),
+            riskRegistrations[false] ?: listOf()
+        )
+    }
+
+    fun Registration.forRisk() = RiskRegistration(registerType.description, startDate, endDate, notes)
 }
