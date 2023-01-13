@@ -83,7 +83,7 @@ class AllocationDemandService(
             name = person.name(),
             probationStatus = ProbationStatus(personRepository.getProbationStatus(person.crn)),
             communityPersonManager = personManager?.toManager(),
-            teams = staffInTeams + mapOf("all" to staffInTeams.values.flatten())
+            teams = staffInTeams
         )
     }
 
