@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,13 +17,20 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
+import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
@@ -31,13 +39,22 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 @ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest {
-    @Value("\${messaging.consumer.queue}") lateinit var queueName: String
-    @Autowired lateinit var channelManager: HmppsChannelManager
-    @Autowired lateinit var mockMvc: MockMvc
-    @Autowired lateinit var wireMockServer: WireMockServer
-    @Autowired lateinit var contactRepository: ContactRepository
-    @Autowired lateinit var nsiRepository: NsiRepository
-    @MockBean lateinit var telemetryService: TelemetryService
+    @Value("\${messaging.consumer.queue}")
+    lateinit var queueName: String
+    @Autowired
+    lateinit var channelManager: HmppsChannelManager
+    @Autowired
+    lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var wireMockServer: WireMockServer
+    @Autowired
+    lateinit var contactRepository: ContactRepository
+    @Autowired
+    lateinit var nsiRepository: NsiRepository
+    @Autowired
+    lateinit var personAddressRepository: PersonAddressRepository
+    @MockBean
+    lateinit var telemetryService: TelemetryService
 
     @Test
     fun `approved premises key worker staff are returned successfully`() {
@@ -73,7 +90,11 @@ internal class IntegrationTest {
     fun `approved premises key workers only are returned successfully`() {
         val approvedPremises = ApprovedPremisesGenerator.DEFAULT
         mockMvc
-            .perform(get("/approved-premises/${approvedPremises.code.code}/staff?keyWorker=true").withOAuth2Token(wireMockServer))
+            .perform(
+                get("/approved-premises/${approvedPremises.code.code}/staff?keyWorker=true").withOAuth2Token(
+                    wireMockServer
+                )
+            )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.numberOfElements", equalTo(1)))
             .andExpect(jsonPath("$.content[*].name.surname", equalTo(listOf("Key-worker"))))
@@ -135,7 +156,10 @@ internal class IntegrationTest {
             .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.BOOKING_MADE.code }
         assertThat(contact.alert, equalTo(true))
         assertThat(contact.description, equalTo("Approved Premises Booking for Hope House"))
-        assertThat(contact.notes, equalTo("To view details of the Approved Premises booking, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713"))
+        assertThat(
+            contact.notes,
+            equalTo("To view details of the Approved Premises booking, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713")
+        )
     }
 
     @Test
@@ -166,46 +190,68 @@ internal class IntegrationTest {
         )
     }
 
-    // @Test
-    // fun `person arrived creates an alert contact and nsi`() {
-    //     // Given a person-not-arrived event
-    //     val event = prepEvent("person-arrived", wireMockServer.port())
-    //
-    //     // When it is received
-    //     channelManager.getChannel(queueName).publishAndWait(event)
-    //
-    //     // Then it is logged to telemetry
-    //     verify(telemetryService).notificationReceived(event)
-    //     verify(telemetryService).trackEvent("PersonArrived", event.message.telemetryProperties())
-    //
-    //     // And a contact alert is created
-    //     val contact = contactRepository.findAll()
-    //         .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.ARRIVED.code }
-    //     assertThat(contact.alert, equalTo(true))
-    //     assertThat(
-    //         contact.notes,
-    //         equalTo(
-    //             """
-    //             Arrived a day late due to rail strike. Informed in advance by COM.
-    //
-    //             For more details, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713
-    //             """.trimIndent()
-    //         )
-    //     )
-    //
-    //     // And a residence NSI is created
-    //     val nsi = nsiRepository.findAll()
-    //         .single { it.person.crn == event.message.crn() && it.type.code == NsiTypeCode.APPROVED_PREMISES_RESIDENCE.code }
-    //     assertThat(contact.alert, equalTo(true))
-    //     assertThat(
-    //         nsi.notes,
-    //         equalTo(
-    //             """
-    //             Arrived a day late due to rail strike. Informed in advance by COM.
-    //
-    //             For more details, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713
-    //             """.trimIndent()
-    //         )
-    //     )
-    // }
+    @Test
+    fun `person arrived creates an alert contact and nsi`() {
+        // Given a person-not-arrived event
+        val event = prepEvent("person-arrived", wireMockServer.port())
+
+        // When it is received
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        // Then it is logged to telemetry
+        verify(telemetryService).notificationReceived(event)
+        verify(telemetryService).trackEvent("PersonArrived", event.message.telemetryProperties())
+
+        // And a contact alert is created
+        val contact = contactRepository.findAll()
+            .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.ARRIVED.code }
+        assertThat(contact.alert, equalTo(true))
+        assertThat(
+            contact.notes,
+            equalTo(
+                """
+                Arrived a day late due to rail strike. Informed in advance by COM.
+
+                For more details, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713
+                """.trimIndent()
+            )
+        )
+
+        // And a residence NSI is created
+        val nsi = nsiRepository.findAll()
+            .single { it.person.crn == event.message.crn() && it.type.code == NsiTypeCode.APPROVED_PREMISES_RESIDENCE.code }
+        assertThat(contact.alert, equalTo(true))
+        assertThat(
+            nsi.notes,
+            equalTo(
+                """
+                Arrived a day late due to rail strike. Informed in advance by COM.
+
+                For more details, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713
+                """.trimIndent()
+            )
+        )
+
+        val arrival = ResourceLoader.file<EventDetails<PersonArrived>>("approved-premises-person-arrived")
+        val details = arrival.eventDetails
+
+        val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
+            .associateBy { it.id == AddressGenerator.PERSON_ADDRESS.id }
+        assertThat(addresses.size, equalTo(2))
+        val previous = addresses[true]!!
+        assertThat(previous.endDate, equalTo(details.arrivedAt.toLocalDate()))
+        assertThat(previous.status.code, equalTo("P"))
+
+        val main = addresses[false]!!
+        val ap = AddressGenerator.Q001
+        assertThat(main.status.code, equalTo("M"))
+        assertNull(main.endDate)
+        assertThat(main.startDate, equalTo(details.arrivedAt.toLocalDate()))
+        assertThat(main.buildingName, equalTo(details.premises.name))
+        assertThat(main.addressNumber, equalTo(ap.addressNumber))
+        assertThat(main.streetName, equalTo(ap.streetName))
+        assertThat(main.town, equalTo(ap.town))
+        assertThat(main.postcode, equalTo(ap.postcode))
+        assertThat(main.telephoneNumber, equalTo(ap.telephoneNumber))
+    }
 }

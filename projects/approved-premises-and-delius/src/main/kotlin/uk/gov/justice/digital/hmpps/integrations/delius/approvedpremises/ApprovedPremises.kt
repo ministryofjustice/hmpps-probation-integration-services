@@ -20,4 +20,8 @@ class ApprovedPremises(
     @ManyToOne
     @JoinColumn(name = "national_hostel_code")
     val code: ReferenceData,
+
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    val address: Address
 )

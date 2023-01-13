@@ -3,7 +3,11 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremisesApiClient
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Premises
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremises
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.getApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlert
@@ -29,11 +33,17 @@ import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.getNsiTransferReason
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.getActiveManager
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationAreaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.approvedPremisesAddressType
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.mainAddressStatus
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.previousAddressStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
@@ -49,11 +59,13 @@ import java.time.ZonedDateTime
 @Service
 class ApprovedPremisesService(
     private val approvedPremisesApiClient: ApprovedPremisesApiClient,
+    private val approvedPremisesRepository: ApprovedPremisesRepository,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactAlertRepository: ContactAlertRepository,
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
+    private val personAddressRepository: PersonAddressRepository,
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
     private val probationAreaRepository: ProbationAreaRepository,
@@ -62,6 +74,7 @@ class ApprovedPremisesService(
     private val nsiStatusRepository: NsiStatusRepository,
     private val nsiManagerRepository: NsiManagerRepository,
     private val transferReasonRepository: TransferReasonRepository,
+    private val referenceDataRepository: ReferenceDataRepository
 ) {
     @Transactional
     fun applicationSubmitted(event: HmppsDomainEvent) {
@@ -145,8 +158,9 @@ class ApprovedPremisesService(
                 details.notes,
                 "For more details, click here: ${details.applicationUrl}"
             ).joinToString("\n\n"),
+            details.bookingId
         )
-        // updateMainAddress()
+        updateMainAddress(person, details)
     }
 
     fun createAlertContact(
@@ -192,6 +206,7 @@ class ApprovedPremisesService(
         arrivalDate: ZonedDateTime,
         expectedDepartureDate: LocalDate?,
         notes: String,
+        bookingId: String
     ) {
         val nsi = nsiRepository.save(
             Nsi(
@@ -203,6 +218,7 @@ class ApprovedPremisesService(
                 actualStartDate = arrivalDate,
                 expectedEndDate = expectedDepartureDate,
                 notes = notes,
+                externalReference = "urn:uk:gov:hmpps:approved-premises-service:booking:$bookingId"
             )
         )
         val team = teamRepository.getApprovedPremisesTeam(premises.legacyApCode)
@@ -218,4 +234,31 @@ class ApprovedPremisesService(
             )
         )
     }
+
+    private fun updateMainAddress(person: Person, details: PersonArrived) {
+        val currentMain = personAddressRepository.findMainAddress(person.id)
+        val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
+        currentMain?.apply {
+            val previousStatus = referenceDataRepository.previousAddressStatus()
+            currentMain.status = previousStatus
+            currentMain.endDate = details.arrivedAt.toLocalDate()
+        }
+        ap.arrival(person, details).apply(personAddressRepository::save)
+    }
+
+    private fun ApprovedPremises.arrival(person: Person, details: PersonArrived) = PersonAddress(
+        0,
+        person.id,
+        referenceDataRepository.approvedPremisesAddressType(),
+        referenceDataRepository.mainAddressStatus(),
+        details.premises.name,
+        address.addressNumber,
+        address.streetName,
+        address.district,
+        address.town,
+        address.county,
+        address.postcode,
+        address.telephoneNumber,
+        startDate = details.arrivedAt.toLocalDate()
+    )
 }

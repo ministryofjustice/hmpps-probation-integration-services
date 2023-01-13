@@ -65,19 +65,19 @@ class NsiManager(
 
     @Column
     @CreatedDate
-    val createdDatetime: ZonedDateTime = ZonedDateTime.now(),
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @Column
     @CreatedBy
-    val createdByUserId: Long = 0,
+    var createdByUserId: Long = 0,
 
     @Column
     @LastModifiedDate
-    val lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @Column
     @LastModifiedBy
-    val lastUpdatedUserId: Long = 0,
+    var lastUpdatedUserId: Long = 0,
 
     @Column
     val partitionAreaId: Long = 0, // this is no longer used but the Delius database still requires it to be populated

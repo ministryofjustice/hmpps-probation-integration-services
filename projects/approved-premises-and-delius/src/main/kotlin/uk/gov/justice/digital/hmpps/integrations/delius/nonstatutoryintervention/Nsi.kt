@@ -67,24 +67,26 @@ class Nsi(
     @Column
     val notes: String? = null,
 
+    val externalReference: String? = null,
+
     @Column(columnDefinition = "number")
     val pendingTransfer: Boolean = false,
 
     @Column
     @CreatedDate
-    val createdDatetime: ZonedDateTime = ZonedDateTime.now(),
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @Column
     @CreatedBy
-    val createdByUserId: Long = 0,
+    var createdByUserId: Long = 0,
 
     @Column
     @LastModifiedDate
-    val lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @Column
     @LastModifiedBy
-    val lastUpdatedUserId: Long = 0,
+    var lastUpdatedUserId: Long = 0,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
