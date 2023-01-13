@@ -7,12 +7,14 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookedBy
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Decision
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Premises
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.StaffMember
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.SubmittedBy
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
+import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.UUID
 
@@ -52,13 +54,7 @@ object EventDetailsGenerator {
             bookingId = UUID.randomUUID().toString(),
             applicationId = UUID.randomUUID().toString(),
             applicationUrl = "https://example.com",
-            premises = Premises(
-                id = UUID.randomUUID().toString(),
-                name = "Test Premises",
-                apCode = "TEST",
-                legacyApCode = "TEST",
-                probationArea = probationArea()
-            ),
+            premises = premises(),
             createdAt = ZonedDateTime.now(),
             bookedBy = bookedBy
         )
@@ -72,15 +68,25 @@ object EventDetailsGenerator {
             bookingId = UUID.randomUUID().toString(),
             applicationId = UUID.randomUUID().toString(),
             applicationUrl = "https://example.com",
-            premises = Premises(
-                id = UUID.randomUUID().toString(),
-                name = "Test Premises",
-                apCode = "TEST",
-                legacyApCode = "TEST",
-                probationArea = probationArea()
-            ),
+            premises = premises(),
             recordedBy = staffMember(recordedBy),
             notes = "TEST"
+        )
+    )
+
+    fun personArrived(keyWorker: Staff) = EventDetails(
+        id = UUID.randomUUID().toString(),
+        timestamp = ZonedDateTime.now(),
+        eventType = "approved-premises.person.arrived",
+        eventDetails = PersonArrived(
+            bookingId = UUID.randomUUID().toString(),
+            applicationId = UUID.randomUUID().toString(),
+            applicationUrl = "https://example.com",
+            premises = premises(),
+            arrivedAt = ZonedDateTime.now(),
+            expectedDepartureOn = LocalDate.now().plusMonths(6),
+            keyWorker = staffMember(keyWorker),
+            notes = "Arrived on time",
         )
     )
 
@@ -95,5 +101,13 @@ object EventDetailsGenerator {
         staffIdentifier = staff.id,
         forenames = staff.forename,
         surname = staff.surname,
+    )
+
+    private fun premises() = Premises(
+        id = UUID.randomUUID().toString(),
+        name = "Test Premises",
+        apCode = "TEST",
+        legacyApCode = ApprovedPremisesGenerator.DEFAULT.code.code,
+        probationArea = probationArea()
     )
 }

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.approvedpremises
 
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 data class EventDetails<T>(
@@ -58,5 +59,16 @@ data class PersonNotArrived(
     val applicationUrl: String,
     val recordedBy: StaffMember,
     val premises: Premises,
+    val notes: String,
+)
+
+data class PersonArrived(
+    val bookingId: String,
+    val applicationId: String,
+    val applicationUrl: String,
+    val premises: Premises,
+    val keyWorker: StaffMember,
+    val arrivedAt: ZonedDateTime,
+    val expectedDepartureOn: LocalDate?,
     val notes: String,
 )

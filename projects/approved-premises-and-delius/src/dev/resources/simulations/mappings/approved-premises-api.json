@@ -51,6 +51,19 @@
         "status": 200,
         "bodyFileName": "approved-premises-person-not-arrived.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/approved-premises-api/events/person-arrived/364145f9-0af8-488e-9901-b4c46cd9ba37"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "approved-premises-person-arrived.json"
+      }
     }
   ]
 }
