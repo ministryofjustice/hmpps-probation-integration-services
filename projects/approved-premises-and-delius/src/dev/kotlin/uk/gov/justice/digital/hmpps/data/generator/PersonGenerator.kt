@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 
 object PersonGenerator {
+    val DEFAULT = PersonGenerator.generate(crn = "A000001")
     fun generate(
         crn: String,
         id: Long = IdGenerator.getAndIncrement()
