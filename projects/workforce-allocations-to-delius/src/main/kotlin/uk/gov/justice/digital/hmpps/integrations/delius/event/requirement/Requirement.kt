@@ -36,7 +36,7 @@ class Requirement(
     @JoinColumn(name = "rqmnt_type_sub_category_id")
     val subCategory: ReferenceData,
 
-    val length: Long,
+    val length: Long?,
 
     @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
     val active: Boolean,
