@@ -10,6 +10,7 @@ import org.hibernate.annotations.Immutable
 
 @Entity
 @Immutable
+@Table(name = "Registration")
 class DocRegistration(
     @Id @Column(name = "registration_id")
     var id: Long,
