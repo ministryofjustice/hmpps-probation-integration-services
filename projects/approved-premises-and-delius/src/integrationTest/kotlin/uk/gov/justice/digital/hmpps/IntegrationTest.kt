@@ -194,6 +194,8 @@ internal class IntegrationTest {
     fun `person arrived creates an alert contact and nsi`() {
         // Given a person-not-arrived event
         val event = prepEvent("person-arrived", wireMockServer.port())
+        val arrival = ResourceLoader.file<EventDetails<PersonArrived>>("approved-premises-person-arrived")
+        val details = arrival.eventDetails
 
         // When it is received
         channelManager.getChannel(queueName).publishAndWait(event)
@@ -231,10 +233,9 @@ internal class IntegrationTest {
                 """.trimIndent()
             )
         )
+        assertThat(nsi.externalReference, equalTo("urn:uk:gov:hmpps:approved-premises-service:booking:${details.bookingId}"))
 
-        val arrival = ResourceLoader.file<EventDetails<PersonArrived>>("approved-premises-person-arrived")
-        val details = arrival.eventDetails
-
+        // And the main address is updated to be that of the approved premises - consequently any existing main address is made previous
         val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
             .associateBy { it.id == AddressGenerator.PERSON_ADDRESS.id }
         assertThat(addresses.size, equalTo(2))
