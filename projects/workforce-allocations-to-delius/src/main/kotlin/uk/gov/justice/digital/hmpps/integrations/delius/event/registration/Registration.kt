@@ -29,7 +29,7 @@ class Registration(
     @Column(name = "registration_date")
     val startDate: LocalDate,
 
-    @Column(name = "registration_notes")
+    @Column(name = "registration_notes", columnDefinition = "clob")
     val notes: String?,
 
     @ManyToOne
