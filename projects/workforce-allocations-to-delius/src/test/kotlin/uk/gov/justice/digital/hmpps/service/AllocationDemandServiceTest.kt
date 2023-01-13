@@ -109,7 +109,7 @@ class AllocationDemandServiceTest {
         assertThat(response.probationStatus.description, equalTo("Currently managed"))
         assertThat(response.communityPersonManager!!.code, equalTo(manager.staff.code))
         assertThat(response.communityPersonManager!!.grade, equalTo("PSO"))
-        assertThat(response.teams.keys, equalTo(setOf(team.code, "all")))
+        assertThat(response.teams.keys, equalTo(setOf(team.code)))
         with(response.teams[team.code]!!) {
             assertThat(this.map { it.code }, equalTo(listOf(staff.code)))
             assertThat(this.map { it.email }, equalTo(listOf("example@example.com")))
