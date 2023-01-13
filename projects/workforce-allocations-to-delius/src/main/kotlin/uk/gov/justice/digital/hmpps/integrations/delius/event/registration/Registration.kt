@@ -10,7 +10,6 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.BaseEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.LocalDate
 
@@ -38,8 +37,11 @@ class Registration(
     val registerType: RegisterType,
 
     @OneToMany(mappedBy = "registration")
-    val deRegistrations: List<DeRegistration>
-) : BaseEntity() {
+    val deRegistrations: List<DeRegistration>,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean,
+) {
     val endDate: LocalDate?
         get() = if (deRegistrations.isEmpty()) null else deRegistrations.maxOf { it.deRegistrationDate }
 }
@@ -51,7 +53,6 @@ class RegisterType(
     @Id
     @Column(name = "register_type_id")
     val id: Long,
-
     val description: String,
 )
 
@@ -70,4 +71,7 @@ class DeRegistration(
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "registration_id", nullable = false)
     val registration: Registration,
-) : BaseEntity()
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean
+)

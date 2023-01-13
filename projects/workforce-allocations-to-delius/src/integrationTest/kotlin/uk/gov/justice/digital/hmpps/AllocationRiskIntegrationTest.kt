@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RegisterTypeGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 
 @AutoConfigureMockMvc
@@ -34,5 +35,6 @@ class AllocationRiskIntegrationTest {
             .andExpect(jsonPath("$.name.forename").value(person.forename))
             .andExpect(jsonPath("$.name.surname").value(person.surname))
             .andExpect(jsonPath("$.ogrs.score").value(88L))
+            .andExpect(jsonPath("$.activeRegistrations[0].description").value(RegisterTypeGenerator.DEFAULT.description))
     }
 }
