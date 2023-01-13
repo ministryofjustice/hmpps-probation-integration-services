@@ -44,4 +44,3 @@ object DatasetGenerator {
 
     fun all() = listOf(ADDRESS_TYPE, ADDRESS_STATUS, HOSTEL_CODE, STAFF_GRADE)
 }
-
