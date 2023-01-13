@@ -41,8 +41,7 @@ class ChoosePractitionerIntegrationTest {
             .andExpect(jsonPath("$.probationStatus.status").value("UNKNOWN"))
             .andExpect(jsonPath("$.communityPersonManager.code").value("N02UATU"))
             .andExpect(jsonPath("$.communityPersonManager.teamCode").value("N02UAT"))
-            .andExpect(jsonPath("$.teams.keys()").value(setOf(team1, team2, "all")))
-            .andExpect(jsonPath("$.teams.all.size()").value(2))
+            .andExpect(jsonPath("$.teams.keys()").value(setOf(team1, team2)))
             .andExpect(jsonPath("$.teams.$team1.size()").value(1))
             .andExpect(jsonPath("$.teams.$team2.size()").value(1))
             .andExpect(jsonPath("$.teams.$team2[0].name.forename").value("Joe"))
@@ -58,8 +57,7 @@ class ChoosePractitionerIntegrationTest {
                 .param("crn", person.crn)
         )
             .andExpect(status().is2xxSuccessful)
-            .andExpect(jsonPath("$.teams.keys()").value(setOf("all")))
-            .andExpect(jsonPath("$.teams.all.size()").value(0))
+            .andExpect(jsonPath("$.teams.keys()").isEmpty)
     }
 
     @Test
