@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RegisterTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementMainCategoryGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
@@ -21,6 +22,7 @@ import uk.gov.justice.digital.hmpps.data.repository.CourtReportTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.DatasetRepository
 import uk.gov.justice.digital.hmpps.data.repository.OffenceRepository
 import uk.gov.justice.digital.hmpps.data.repository.ProviderRepository
+import uk.gov.justice.digital.hmpps.data.repository.RegisterTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.RequirementMainCategoryRepository
 import uk.gov.justice.digital.hmpps.data.repository.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceDataRepository
@@ -47,6 +49,8 @@ class AllocationsDataLoader(
     private val staffRepository: StaffRepository,
     private val staffUserRepository: StaffUserRepository,
     private val personAllocationDataLoader: PersonAllocationDataLoader,
+    private val registerTypeRepository: RegisterTypeRepository
+
 ) : CommandLineRunner {
     override fun run(vararg args: String?) {
         userRepository.save(UserGenerator.APPLICATION_USER)
@@ -95,6 +99,7 @@ class AllocationsDataLoader(
         offenceRepository.saveAll(listOf(OffenceGenerator.MAIN_OFFENCE_TYPE, OffenceGenerator.ADDITIONAL_OFFENCE_TYPE))
 
         requirementMainCategoryRepository.save(RequirementMainCategoryGenerator.DEFAULT)
+        registerTypeRepository.save(RegisterTypeGenerator.DEFAULT)
 
         contactTypeRepository.saveAll(
             listOf(

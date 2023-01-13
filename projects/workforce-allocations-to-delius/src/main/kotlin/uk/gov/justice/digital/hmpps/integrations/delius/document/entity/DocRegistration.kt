@@ -10,19 +10,19 @@ import org.hibernate.annotations.Immutable
 
 @Entity
 @Immutable
-class Registration(
+class DocRegistration(
     @Id @Column(name = "registration_id")
     var id: Long,
 
     @ManyToOne
     @JoinColumn(name = "register_type_id", updatable = false)
-    val type: RegistrationType,
+    val type: DocRegistrationType,
 )
 
 @Entity
 @Table(name = "r_register_type")
 @Immutable
-class RegistrationType(
+class DocRegistrationType(
     @Id @Column(name = "REGISTER_TYPE_ID")
     var id: Long,
 

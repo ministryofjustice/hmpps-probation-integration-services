@@ -390,7 +390,7 @@ class RegistrationDocument(
     )
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    val registration: Registration?
+    val registration: DocRegistration?
 ) : Document() {
 
     override fun findRelatedTo(): RelatedTo =
