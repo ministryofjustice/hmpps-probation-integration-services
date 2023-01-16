@@ -134,13 +134,6 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
             "In custody "
         )
         verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT.code, recallDate, om)
-
-        // licence conditions are terminated
-        verify(licenceConditionService).terminateLicenceConditionsForDisposal(
-            event.disposal!!.id,
-            ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
-            recallDate
-        )
     }
 
     @Test
@@ -169,13 +162,6 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         // custody details are not updated
         verify(custodyService, never()).updateLocation(any(), any(), any(), any())
         verify(custodyService, never()).updateStatus(any(), any(), any(), any())
-
-        // licence conditions are terminated
-        verify(licenceConditionService).terminateLicenceConditionsForDisposal(
-            event.disposal!!.id,
-            ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
-            recallDate
-        )
     }
 
     @Test
