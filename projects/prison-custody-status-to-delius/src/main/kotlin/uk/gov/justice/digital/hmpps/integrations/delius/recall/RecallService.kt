@@ -113,14 +113,12 @@ class RecallService(
 
         allocatePrisonManager(latestRelease, toInstitution, custody, disposal, recallDateTime)
 
-        // terminate any licence conditions
-        licenceConditionService.terminateLicenceConditionsForDisposal(
-            disposalId = disposal.id,
-            terminationReason = recallReason.licenceConditionTerminationReason,
-            terminationDate = recallDate
-        )
-
         if (recall != null) {
+            licenceConditionService.terminateLicenceConditionsForDisposal(
+                disposalId = disposal.id,
+                terminationReason = recallReason.licenceConditionTerminationReason,
+                terminationDate = recallDate
+            )
             createRecallAlertContact(event, person, recallDateTime, recallReason, recall)
             RecallOutcome.PrisonerRecalled
         } else if (custodialStatusUpdated || custodialLocationUpdated) {
