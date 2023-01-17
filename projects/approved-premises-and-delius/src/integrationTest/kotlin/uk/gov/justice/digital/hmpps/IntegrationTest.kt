@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
@@ -260,9 +261,9 @@ internal class IntegrationTest {
             nsi.externalReference,
             equalTo("urn:uk:gov:hmpps:approved-premises-service:booking:${details.bookingId}")
         )
-        assertThat(nsi.referralDate, isCloseTo(details.applicationSubmittedOn))
+        assertThat(nsi.referralDate, equalTo(details.applicationSubmittedOn.withZoneSameInstant(EuropeLondon)))
         assertNotNull(nsi.actualStartDate)
-        assertThat(nsi.actualStartDate!!, isCloseTo(details.arrivedAt))
+        assertThat(nsi.actualStartDate!!, equalTo(details.arrivedAt.withZoneSameInstant(EuropeLondon)))
 
         // And the main address is updated to be that of the approved premises - consequently any existing main address is made previous
         val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
