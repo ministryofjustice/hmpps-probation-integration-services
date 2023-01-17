@@ -63,8 +63,7 @@ class Nsi(
     @Column
     val actualStartDate: ZonedDateTime? = null,
 
-    @Column
-    var actualEndDate: ZonedDateTime? = null,
+    actualEndDate: ZonedDateTime? = null,
 
     @Lob
     @Column
@@ -97,8 +96,15 @@ class Nsi(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
 ) {
+
+    var actualEndDate: ZonedDateTime? = actualEndDate
+        set(value) {
+            field = value
+            active = value == null || value.isAfter(ZonedDateTime.now())
+        }
+
     companion object {
-        val EXT_REF_BOOKING_PREFIX = "urn:uk:gov:hmpps:approved-premises-service:booking:"
+        const val EXT_REF_BOOKING_PREFIX = "urn:uk:gov:hmpps:approved-premises-service:booking:"
     }
 }
 

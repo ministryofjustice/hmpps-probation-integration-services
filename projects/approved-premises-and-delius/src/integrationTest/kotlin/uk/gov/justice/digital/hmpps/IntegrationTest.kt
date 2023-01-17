@@ -306,6 +306,7 @@ internal class IntegrationTest {
         assertNotNull(nsi)
         assertNotNull(nsi!!.actualEndDate)
         assertThat(nsi.actualEndDate!!, isCloseTo(details.departedAt))
+        assertThat(nsi.active, equalTo(false))
 
         val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
         assertThat(addresses.size, equalTo(2))
