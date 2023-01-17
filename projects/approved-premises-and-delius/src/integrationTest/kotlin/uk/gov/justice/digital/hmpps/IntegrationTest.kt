@@ -260,6 +260,8 @@ internal class IntegrationTest {
             nsi.externalReference,
             equalTo("urn:uk:gov:hmpps:approved-premises-service:booking:${details.bookingId}")
         )
+        assertThat(nsi.referralDate, equalTo(details.applicationSubmittedOn))
+        assertThat(nsi.actualStartDate, equalTo(details.arrivedAt))
 
         // And the main address is updated to be that of the approved premises - consequently any existing main address is made previous
         val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
