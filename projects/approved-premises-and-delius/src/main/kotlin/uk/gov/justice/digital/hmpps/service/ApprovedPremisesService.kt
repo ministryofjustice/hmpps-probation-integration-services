@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremisesApiClient
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Premises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
@@ -17,10 +18,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_SUBMITTED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.ARRIVED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.BOOKING_MADE
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.DEPARTED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.NOT_ARRIVED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.Nsi
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.Nsi.Companion.EXT_REF_BOOKING_PREFIX
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiManager
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiRepository
@@ -79,7 +82,7 @@ class ApprovedPremisesService(
     @Transactional
     fun applicationSubmitted(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getApplicationSubmittedDetails(event.url()).eventDetails
-        createAlertContact(
+        createContact(
             person = personRepository.getByCrn(event.crn()),
             type = APPLICATION_SUBMITTED,
             date = details.submittedAt,
@@ -91,7 +94,7 @@ class ApprovedPremisesService(
     @Transactional
     fun applicationAssessed(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getApplicationAssessedDetails(event.url()).eventDetails
-        createAlertContact(
+        createContact(
             person = personRepository.getByCrn(event.crn()),
             type = APPLICATION_ASSESSED,
             description = "Approved Premises Application ${details.decision}",
@@ -105,7 +108,7 @@ class ApprovedPremisesService(
     @Transactional
     fun bookingMade(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getBookingMadeDetails(event.url()).eventDetails
-        createAlertContact(
+        createContact(
             person = personRepository.getByCrn(event.crn()),
             type = BOOKING_MADE,
             description = "Approved Premises Booking for ${details.premises.name}",
@@ -119,7 +122,7 @@ class ApprovedPremisesService(
     @Transactional
     fun personNotArrived(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getPersonNotArrivedDetails(event.url())
-        createAlertContact(
+        createContact(
             person = personRepository.getByCrn(event.crn()),
             type = NOT_ARRIVED,
             notes = listOfNotNull(
@@ -137,7 +140,7 @@ class ApprovedPremisesService(
         val details = approvedPremisesApiClient.getPersonArrivedDetails(event.url()).eventDetails
         val person = personRepository.getByCrn(event.crn())
         val staff = staffRepository.getByCode(details.keyWorker.staffCode)
-        createAlertContact(
+        createContact(
             person = person,
             type = ARRIVED,
             notes = listOfNotNull(
@@ -163,7 +166,30 @@ class ApprovedPremisesService(
         updateMainAddress(person, details)
     }
 
-    fun createAlertContact(
+    @Transactional
+    fun personDeparted(event: HmppsDomainEvent) {
+        val details = approvedPremisesApiClient.getPersonDepartedDetails(event.url()).eventDetails
+        val person = personRepository.getByCrn(event.crn())
+        val staff = staffRepository.getByCode(details.keyWorker.staffCode)
+        createContact(
+            person = person,
+            type = DEPARTED,
+            notes = "For details, see the referral on the AP Service: ${details.applicationUrl}",
+            date = details.departedAt,
+            staff = staff,
+            probationAreaCode = details.premises.probationArea.code,
+            createAlert = false
+        )
+        closeNsi(details)
+        endMainAddress(person, details.departedAt.toLocalDate())
+    }
+
+    private fun closeNsi(details: PersonDeparted) {
+        val nsi = nsiRepository.findByExternalReference(EXT_REF_BOOKING_PREFIX + details.bookingId)
+        nsi?.actualEndDate = details.departedAt
+    }
+
+    private fun createContact(
         date: ZonedDateTime,
         type: ContactTypeCode,
         person: Person,
@@ -171,6 +197,7 @@ class ApprovedPremisesService(
         probationAreaCode: String,
         description: String? = null,
         notes: String? = null,
+        createAlert: Boolean = true
     ) {
         val team = teamRepository.getUnallocatedTeam(probationAreaCode)
         val personManager = personManagerRepository.getActiveManager(person.id)
@@ -184,19 +211,22 @@ class ApprovedPremisesService(
                 staff = staff,
                 team = team,
                 notes = notes,
-                alert = true
+                alert = createAlert
             )
         )
-        contactAlertRepository.save(
-            ContactAlert(
-                contactId = contact.id,
-                typeId = contact.type.id,
-                personId = person.id,
-                personManagerId = personManager.id,
-                staffId = personManager.staff.id,
-                teamId = personManager.team.id,
+        if (createAlert) {
+            contactAlertRepository.save(
+                ContactAlert(
+                    contactId = contact.id,
+                    typeId = contact.type.id,
+                    personId = person.id,
+                    personManagerId = personManager.id,
+                    staffId = personManager.staff.id,
+                    teamId = personManager.team.id,
+                )
+
             )
-        )
+        }
     }
 
     private fun createResidenceNsi(
@@ -218,7 +248,7 @@ class ApprovedPremisesService(
                 actualStartDate = arrivalDate,
                 expectedEndDate = expectedDepartureDate,
                 notes = notes,
-                externalReference = "urn:uk:gov:hmpps:approved-premises-service:booking:$bookingId"
+                externalReference = EXT_REF_BOOKING_PREFIX + bookingId
             )
         )
         val team = teamRepository.getApprovedPremisesTeam(premises.legacyApCode)
@@ -236,14 +266,18 @@ class ApprovedPremisesService(
     }
 
     private fun updateMainAddress(person: Person, details: PersonArrived) {
-        val currentMain = personAddressRepository.findMainAddress(person.id)
+        endMainAddress(person, details.arrivedAt.toLocalDate())
         val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
+        ap.arrival(person, details).apply(personAddressRepository::save)
+    }
+
+    private fun endMainAddress(person: Person, endDate: LocalDate) {
+        val currentMain = personAddressRepository.findMainAddress(person.id)
         currentMain?.apply {
             val previousStatus = referenceDataRepository.previousAddressStatus()
             currentMain.status = previousStatus
-            currentMain.endDate = details.arrivedAt.toLocalDate()
+            currentMain.endDate = endDate
         }
-        ap.arrival(person, details).apply(personAddressRepository::save)
     }
 
     private fun ApprovedPremises.arrival(person: Person, details: PersonArrived) = PersonAddress(

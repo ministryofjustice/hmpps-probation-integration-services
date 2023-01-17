@@ -40,6 +40,10 @@ class Handler(
                 approvedPremisesService.personArrived(event)
                 telemetryService.trackEvent("PersonArrived", event.telemetryProperties())
             }
+            "approved-premises.person.departed" -> {
+                approvedPremisesService.personDeparted(event)
+                telemetryService.trackEvent("PersonDeparted", event.telemetryProperties())
+            }
             else -> throw IllegalArgumentException("Unexpected event type ${event.eventType}")
         }
     }

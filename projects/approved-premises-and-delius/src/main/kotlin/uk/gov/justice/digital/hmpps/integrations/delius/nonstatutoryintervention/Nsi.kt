@@ -63,6 +63,9 @@ class Nsi(
     @Column
     val actualStartDate: ZonedDateTime? = null,
 
+    @Column
+    var actualEndDate: ZonedDateTime? = null,
+
     @Lob
     @Column
     val notes: String? = null,
@@ -89,10 +92,16 @@ class Nsi(
     var lastUpdatedUserId: Long = 0,
 
     @Column(name = "active_flag", columnDefinition = "number")
-    val active: Boolean = true,
+    var active: Boolean = true,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
-)
+) {
+    companion object {
+        val EXT_REF_BOOKING_PREFIX = "urn:uk:gov:hmpps:approved-premises-service:booking:"
+    }
+}
 
-interface NsiRepository : JpaRepository<Nsi, Long>
+interface NsiRepository : JpaRepository<Nsi, Long> {
+    fun findByExternalReference(externalReference: String): Nsi?
+}
