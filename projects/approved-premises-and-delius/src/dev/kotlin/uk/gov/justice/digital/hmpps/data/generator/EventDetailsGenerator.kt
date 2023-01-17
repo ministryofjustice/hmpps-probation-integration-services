@@ -87,6 +87,7 @@ object EventDetailsGenerator {
             expectedDepartureOn = LocalDate.now().plusMonths(6),
             keyWorker = staffMember(keyWorker),
             notes = "Arrived on time",
+            applicationSubmittedOn = ZonedDateTime.now().minusDays(1)
         )
     )
 

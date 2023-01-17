@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremisesApiClient
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Premises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.getApprovedPremises
@@ -154,14 +153,7 @@ class ApprovedPremisesService(
         createResidenceNsi(
             person = person,
             staff = staff,
-            premises = details.premises,
-            arrivalDate = details.arrivedAt,
-            expectedDepartureDate = details.expectedDepartureOn,
-            notes = listOfNotNull(
-                details.notes,
-                "For more details, click here: ${details.applicationUrl}"
-            ).joinToString("\n\n"),
-            details.bookingId
+            details
         )
         updateMainAddress(person, details)
     }
@@ -232,27 +224,26 @@ class ApprovedPremisesService(
     private fun createResidenceNsi(
         person: Person,
         staff: Staff,
-        premises: Premises,
-        arrivalDate: ZonedDateTime,
-        expectedDepartureDate: LocalDate?,
-        notes: String,
-        bookingId: String
+        details: PersonArrived,
     ) {
         val nsi = nsiRepository.save(
             Nsi(
                 person = person,
                 type = nsiTypeRepository.getByCode(NsiTypeCode.APPROVED_PREMISES_RESIDENCE.code),
                 status = nsiStatusRepository.getByCode(NsiStatusCode.IN_RESIDENCE.code),
-                referralDate = arrivalDate,
-                expectedStartDate = arrivalDate,
-                actualStartDate = arrivalDate,
-                expectedEndDate = expectedDepartureDate,
-                notes = notes,
-                externalReference = EXT_REF_BOOKING_PREFIX + bookingId
+                referralDate = details.applicationSubmittedOn,
+                expectedStartDate = details.arrivedAt,
+                actualStartDate = details.arrivedAt,
+                expectedEndDate = details.expectedDepartureOn,
+                notes = listOfNotNull(
+                    details.notes,
+                    "For more details, click here: ${details.applicationUrl}"
+                ).joinToString("\n\n"),
+                externalReference = EXT_REF_BOOKING_PREFIX + details.bookingId
             )
         )
-        val team = teamRepository.getApprovedPremisesTeam(premises.legacyApCode)
-        val probationArea = probationAreaRepository.getByCode(premises.probationArea.code)
+        val team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode)
+        val probationArea = probationAreaRepository.getByCode(details.premises.probationArea.code)
         nsiManagerRepository.save(
             NsiManager(
                 nsi = nsi,

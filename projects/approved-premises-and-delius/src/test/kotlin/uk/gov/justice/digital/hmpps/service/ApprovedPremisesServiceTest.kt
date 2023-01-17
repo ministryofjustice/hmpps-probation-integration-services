@@ -249,7 +249,7 @@ internal class ApprovedPremisesServiceTest {
         verifyNsiIsCreated(
             type = NsiTypeCode.APPROVED_PREMISES_RESIDENCE,
             status = NsiStatusCode.IN_RESIDENCE,
-            referralDate = details.eventDetails.arrivedAt,
+            referralDate = details.eventDetails.applicationSubmittedOn,
             actualStartDate = details.eventDetails.arrivedAt,
             expectedStartDate = details.eventDetails.arrivedAt,
             expectedEndDate = details.eventDetails.expectedDepartureOn,
