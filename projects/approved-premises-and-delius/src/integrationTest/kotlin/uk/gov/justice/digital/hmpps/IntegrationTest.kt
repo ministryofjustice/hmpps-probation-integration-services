@@ -3,8 +3,12 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
+import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -22,8 +26,10 @@ import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.Nsi.Companion.EXT_REF_BOOKING_PREFIX
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
@@ -34,29 +40,39 @@ import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
+import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@TestMethodOrder(OrderAnnotation::class)
 internal class IntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
+
     @Autowired
     lateinit var channelManager: HmppsChannelManager
+
     @Autowired
     lateinit var mockMvc: MockMvc
+
     @Autowired
     lateinit var wireMockServer: WireMockServer
+
     @Autowired
     lateinit var contactRepository: ContactRepository
+
     @Autowired
     lateinit var nsiRepository: NsiRepository
+
     @Autowired
     lateinit var personAddressRepository: PersonAddressRepository
+
     @MockBean
     lateinit var telemetryService: TelemetryService
 
     @Test
+    @Order(1)
     fun `approved premises key worker staff are returned successfully`() {
         val approvedPremises = ApprovedPremisesGenerator.DEFAULT
         mockMvc
@@ -69,6 +85,7 @@ internal class IntegrationTest {
     }
 
     @Test
+    @Order(2)
     fun `empty approved premises returns 200 with empty results`() {
         val approvedPremises = ApprovedPremisesGenerator.NO_STAFF
         mockMvc
@@ -79,6 +96,7 @@ internal class IntegrationTest {
     }
 
     @Test
+    @Order(3)
     fun `non-existent approved premises returns 404`() {
         mockMvc
             .perform(get("/approved-premises/NOTFOUND/staff").withOAuth2Token(wireMockServer))
@@ -87,6 +105,7 @@ internal class IntegrationTest {
     }
 
     @Test
+    @Order(4)
     fun `approved premises key workers only are returned successfully`() {
         val approvedPremises = ApprovedPremisesGenerator.DEFAULT
         mockMvc
@@ -102,6 +121,7 @@ internal class IntegrationTest {
     }
 
     @Test
+    @Order(5)
     fun `application submission creates an alert contact`() {
         // Given an application-submitted event
         val event = prepEvent("application-submitted", wireMockServer.port())
@@ -120,6 +140,7 @@ internal class IntegrationTest {
     }
 
     @Test
+    @Order(6)
     fun `application assessed creates an alert contact`() {
         // Given an application-assessed event
         val event = prepEvent("application-assessed", wireMockServer.port())
@@ -140,6 +161,7 @@ internal class IntegrationTest {
     }
 
     @Test
+    @Order(7)
     fun `booking made creates an alert contact`() {
         // Given a booking-made event
         val event = prepEvent("booking-made", wireMockServer.port())
@@ -163,6 +185,7 @@ internal class IntegrationTest {
     }
 
     @Test
+    @Order(8)
     fun `person not arrived creates an alert contact`() {
         // Given a person-not-arrived event
         val event = prepEvent("person-not-arrived", wireMockServer.port())
@@ -191,6 +214,7 @@ internal class IntegrationTest {
     }
 
     @Test
+    @Order(9)
     fun `person arrived creates an alert contact and nsi`() {
         // Given a person-not-arrived event
         val event = prepEvent("person-arrived", wireMockServer.port())
@@ -222,7 +246,6 @@ internal class IntegrationTest {
         // And a residence NSI is created
         val nsi = nsiRepository.findAll()
             .single { it.person.crn == event.message.crn() && it.type.code == NsiTypeCode.APPROVED_PREMISES_RESIDENCE.code }
-        assertThat(contact.alert, equalTo(true))
         assertThat(
             nsi.notes,
             equalTo(
@@ -233,7 +256,10 @@ internal class IntegrationTest {
                 """.trimIndent()
             )
         )
-        assertThat(nsi.externalReference, equalTo("urn:uk:gov:hmpps:approved-premises-service:booking:${details.bookingId}"))
+        assertThat(
+            nsi.externalReference,
+            equalTo("urn:uk:gov:hmpps:approved-premises-service:booking:${details.bookingId}")
+        )
 
         // And the main address is updated to be that of the approved premises - consequently any existing main address is made previous
         val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
@@ -254,5 +280,41 @@ internal class IntegrationTest {
         assertThat(main.town, equalTo(ap.town))
         assertThat(main.postcode, equalTo(ap.postcode))
         assertThat(main.telephoneNumber, equalTo(ap.telephoneNumber))
+    }
+
+    @Test
+    @Order(10)
+    fun `person departed creates a contact and closes nsi`() {
+        val event = prepEvent("person-departed", wireMockServer.port())
+        val departure = ResourceLoader.file<EventDetails<PersonDeparted>>("approved-premises-person-departed")
+        val details = departure.eventDetails
+
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        verify(telemetryService).notificationReceived(event)
+        verify(telemetryService).trackEvent("PersonDeparted", event.message.telemetryProperties())
+
+        val contact = contactRepository.findAll()
+            .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.DEPARTED.code }
+        assertThat(contact.alert, equalTo(false))
+        assertThat(
+            contact.notes,
+            equalTo("For details, see the referral on the AP Service: ${details.applicationUrl}")
+        )
+
+        val nsi = nsiRepository.findByExternalReference(EXT_REF_BOOKING_PREFIX + details.bookingId)
+        assertNotNull(nsi)
+        assertNotNull(nsi!!.actualEndDate)
+        assertThat(nsi.actualEndDate!!, isCloseTo(details.departedAt))
+        assertThat(nsi.active, equalTo(false))
+
+        val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
+        assertThat(addresses.size, equalTo(2))
+        addresses.forEach {
+            assertNotNull(it.endDate)
+            assertThat(it.status.code, equalTo("P"))
+        }
+
+        assertNull(personAddressRepository.findMainAddress(PersonGenerator.DEFAULT.id))
     }
 }

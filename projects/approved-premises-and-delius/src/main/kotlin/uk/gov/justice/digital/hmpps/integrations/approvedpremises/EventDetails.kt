@@ -72,3 +72,12 @@ data class PersonArrived(
     val expectedDepartureOn: LocalDate?,
     val notes: String,
 )
+
+data class PersonDeparted(
+    val applicationId: String,
+    val applicationUrl: String,
+    val bookingId: String,
+    val keyWorker: StaffMember,
+    val departedAt: ZonedDateTime,
+    val premises: Premises,
+)
