@@ -1,7 +1,6 @@
 enabled: true
 
 generic-service:
-  replicaCount: 2
   ingress:
     host: approved-premises-and-oasys-preprod.hmpps.service.justice.gov.uk
 
