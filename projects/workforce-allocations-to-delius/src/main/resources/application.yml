@@ -5,6 +5,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.Oracle12cDialect
     hibernate.ddl-auto: validate
+    show-sql: true
   ldap.base: dc=moj,dc=com
   security.oauth2.client:
     registration:
@@ -16,21 +17,20 @@ spring:
     provider:
       hmpps-auth:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
+  cloud.openfeign.client.config:
+    default:
+      logger-level: full
+      connect-timeout: 5000
+      read-timeout: 5000
+      default-request-headers:
+        Accept: application/json
+        Content-Type: application/json
 
 delius.db.username: workforce-allocations-to-delius
 
 management.endpoints.web:
   base-path: /
   exposure.include: [ "health", "info" ]
-
-feign.client.config:
-  default:
-    logger-level: full
-    connect-timeout: 5000
-    read-timeout: 5000
-    default-request-headers:
-      Accept: application/json
-      Content-Type: application/json
 
 
 ---
