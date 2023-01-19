@@ -69,7 +69,15 @@ jobs:
     environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v3
+
+      - name: Check if DB access is required
+        id: check_file
+        uses: andstor/file-existence-action@v2
+        with:
+          files: projects/${{ matrix.project }}/deploy/database/access.yml
+
       - uses: aws-actions/configure-aws-credentials@v1.7.0
+        if: ${{ steps.check_file.outputs.files_exists == 'true' }}
         with:
           aws-region: eu-west-2
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -79,6 +87,7 @@ jobs:
           role-duration-seconds: 1200
 
       - name: Map GitHub environment to values file
+        if: ${{ steps.check_file.outputs.files_exists == 'true' }}
         id: values
         shell: bash
         run: |
@@ -87,6 +96,7 @@ jobs:
           if [ '${{ matrix.environment }}' == 'prod' ];    then echo 'filename=values-prod.yml' >> $GITHUB_OUTPUT; fi
 
       - name: Get Delius environment name from values file
+        if: ${{ steps.check_file.outputs.files_exists == 'true' }}
         id: env
         shell: bash
         run: |
@@ -96,6 +106,7 @@ jobs:
         working-directory: projects/${{ matrix.project }}/deploy
 
       - name: Add DB credentials to parameter store
+        if: ${{ steps.check_file.outputs.files_exists == 'true' }}
         shell: bash
         env:
           ALL_SECRETS: ${{ toJson(secrets) }}
@@ -113,15 +124,15 @@ jobs:
           done
 
       - name: Disable audit user creation in preprod
-        if: ${{ matrix.environment == 'preprod' }}
+        if: ${{ matrix.environment == 'preprod' && steps.check_file.outputs.files_exists == 'true' }}
         shell: bash
         run: yq -i 'del(.database.audit)' database/access.yml
         working-directory: projects/${{ matrix.project }}/deploy
 
       - name: Configure database access and audit
+        if: ${{ steps.check_file.outputs.files_exists == 'true' }}
         shell: bash
         run: |
-          if [ ! -f database/access.yml ]; then echo 'No DB access required'; exit 0; fi
           aws ssm start-automation-execution --document-name oracle-${{ steps.env.outputs.short-name }}-probation-integration-access \
                                              --parameters "Configuration='$(yq database/access.yml -o json)'" \
                                              --region eu-west-2 \
