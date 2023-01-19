@@ -12,19 +12,18 @@ spring:
     provider:
       ords-oasys-auth:
           token-uri: http://localhost:${wiremock.port}/eor/oasys/oauth/token
+  cloud.openfeign.client.config:
+    default:
+      logger-level: full
+      connect-timeout: 90000
+      read-timeout: 90000
+      default-request-headers:
+        Accept: application/json
+        Content-Type: application/json
 
 management.endpoints.web:
   base-path: /
   exposure.include: [ "health", "info" ]
-
-feign.client.config:
-  default:
-    logger-level: full
-    connect-timeout: 20000
-    read-timeout: 20000
-    default-request-headers:
-      Accept: application/json
-      Content-Type: application/json
 
 
 ---
