@@ -64,14 +64,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Map GitHub environment to values file
-        id: values
-        shell: bash
-        run: |
-          if [ '${{ inputs.environment }}' == 'test' ];    then echo 'filename=values-dev.yml' >> $GITHUB_OUTPUT; fi
-          if [ '${{ inputs.environment }}' == 'preprod' ]; then echo 'filename=values-preprod.yml' >> $GITHUB_OUTPUT; fi
-          if [ '${{ inputs.environment }}' == 'prod' ];    then echo 'filename=values-prod.yml' >> $GITHUB_OUTPUT; fi
-
       - name: Get enabled flag from values file
         id: enabled
         shell: bash
@@ -91,7 +83,6 @@ jobs:
           project: ${{ matrix.project }}
           environment: ${{ inputs.environment }}
           version: ${{ inputs.version }}
-          values-file: ${{ steps.values.outputs.filename }}
           api: ${{ secrets.KUBE_ENV_API }}
           cert: ${{ secrets.KUBE_CERT }}
           cluster: ${{ secrets.KUBE_CLUSTER }}
@@ -106,7 +97,6 @@ jobs:
           project: ${{ matrix.project }}
           environment: ${{ inputs.environment }}
           version: ${{ inputs.version }}
-          values-file: ${{ steps.values.outputs.filename }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}

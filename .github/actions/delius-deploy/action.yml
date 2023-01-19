@@ -1,5 +1,5 @@
-name: Cloud Platform Deploy
-description: Deploy to Cloud Platform using Helm
+name: Delius Deploy
+description: Deploy to Delius using ECS
 
 inputs:
   project:
@@ -11,8 +11,6 @@ inputs:
   version:
     description: The version of the service to deploy
     required: true
-  values-file:
-    description: The name of the values file
   aws-access-key-id:
     description: AWS_ACCESS_KEY_ID
     required: true
@@ -30,6 +28,12 @@ runs:
   using: composite
   steps:
     - uses: actions/checkout@v3
+    - name: Get environment details
+      uses: ./.github/actions/get-env-details
+      id: env
+      with:
+        environment: ${{ inputs.environment }}
+
     - uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         aws-region: eu-west-2
@@ -39,22 +43,13 @@ runs:
         role-skip-session-tagging: true
         role-duration-seconds: 1200
 
-    - name: Get Delius environment name from values file
-      id: env
-      shell: bash
-      run: |
-        environment_name=$(cat ${{ inputs.values-file }} | yq '.environment_name')
-        echo "name=${environment_name}" >> $GITHUB_OUTPUT
-        echo "short-name=${environment_name/delius-/del-}" >> $GITHUB_OUTPUT
-      working-directory: projects/${{ matrix.project }}/deploy
-
     - name: Add secrets to parameter store
       shell: bash
       env:
         ALL_SECRETS: ${{ inputs.json-secrets }}
       run: |
         project_name=$(echo '${{ inputs.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
-        namespace=/${{ steps.env.outputs.name }}/delius/probation-integration/${{ inputs.project }}
+        namespace=/${{ steps.env.outputs.delius-name }}/delius/probation-integration/${{ inputs.project }}
         echo "${ALL_SECRETS}" | jq -r ". | keys[] | select(. | startswith(\"${project_name}\"))" | while read -r key; do
           name=$(echo "${key}" | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g' | sed 's/${{ inputs.project }}-//')
           value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
@@ -71,7 +66,7 @@ runs:
         yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1) *d select(fileIndex == 2)' \
           templates/defaults.yml \
           projects/${{ inputs.project }}/deploy/values.yml \
-          projects/${{ inputs.project }}/deploy/${{ inputs.values-file }} \
+          projects/${{ inputs.project }}/deploy/${{ steps.env.outputs.values-file }} \
         > projects/${{ inputs.project }}/deploy/merged.yml
 
     - name: Update task definition
@@ -81,7 +76,7 @@ runs:
       run: |
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         brew install gomplate
-        old_task_definition=$(aws ecs describe-task-definition --task-definition "${{ steps.env.outputs.short-name }}-${{ inputs.project }}-task-definition" --include TAGS | jq '.taskDefinition | del(.containerDefinitions[0].command, .compatibilities, .taskDefinitionArn, .requiresAttributes, .revision, .status, .registeredAt, .registeredBy)')
+        old_task_definition=$(aws ecs describe-task-definition --task-definition "${{ steps.env.outputs.delius-short-name }}-${{ inputs.project }}-task-definition" --include TAGS | jq '.taskDefinition | del(.containerDefinitions[0].command, .compatibilities, .taskDefinitionArn, .requiresAttributes, .revision, .status, .registeredAt, .registeredBy)')
         new_task_definition=$(yq eval-all 'select(fileIndex == 0) *d select(fileIndex == 1)' <(echo "${old_task_definition}") <(gomplate --file templates/task-definition.yml --context values=projects/${{ inputs.project }}/deploy/merged.yml) --output-format json | tee task-definition.json)
         echo "Deploying new task definition: ${new_task_definition}"
 
@@ -89,7 +84,7 @@ runs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: task-definition.json
-        service: ${{ steps.env.outputs.short-name }}-${{ inputs.project }}-service
+        service: ${{ steps.env.outputs.delius-short-name }}-${{ inputs.project }}-service
         cluster: del-delius-ecscluster-private-ecs
         wait-for-service-stability: true
         wait-for-minutes: 10

@@ -1,5 +1,3 @@
-environment_name: delius-prod
-
 enabled: false # temporarily disable deployments to this environment until temp recall testing is complete.
 
 env:

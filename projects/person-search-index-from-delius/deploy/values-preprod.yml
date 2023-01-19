@@ -1,5 +1,3 @@
-environment_name: delius-pre-prod
-
 env:
   SEARCH_INDEX_HOST: "https://probation-search-preprod.hmpps.service.justice.gov.uk:443"
   INDEX_SCHEDULE: "0 7 * * 1-5"
