@@ -2,6 +2,29 @@ name: Database access
 # Configure credentials and audit user in the Delius database
 
 on:
+  workflow_dispatch:
+    inputs:
+      projects:
+        description: Project
+        type: choice
+        required: true
+        options:
+          - 'All'
+          - '["approved-premises-and-oasys"]'
+          - '["approved-premises-and-delius"]'
+          - '["person-search-index-from-delius"]'
+          - '["pre-sentence-reports-to-delius"]'
+          - '["prison-case-notes-to-probation"]'
+          - '["prison-custody-status-to-delius"]'
+          - '["risk-assessment-scores-to-delius"]'
+          - '["tier-to-delius"]'
+          - '["workforce-allocations-to-delius"]'
+          - '["offender-events-and-delius"]'
+          - '["custody-key-dates-and-delius"]'
+          - '["make-recall-decisions-and-delius"]'
+          # ^ add new projects here
+          # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
+          # See https://github.com/community/community/discussions/11795
   push:
     branches:
       - main
@@ -9,27 +32,39 @@ on:
       - 'projects/**/deploy/database/access.yml'
 
 jobs:
-  check-changes:
+  get-projects:
     outputs:
-      changed-projects: ${{ steps.check-changes.outputs.projects }}
+      projects: ${{ steps.output.outputs.projects }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - id: check-changes
+        if: github.event_name == 'push'
         uses: ./.github/actions/check-changes
         with:
           filters: |
             projects:
               - 'projects/**/deploy/database/access.yml'
+      - name: Get projects - changed
+        if: github.event_name == 'push'
+        run: echo 'projects=${{ steps.check-changes.outputs.projects }}' >> $GITHUB_ENV
+      - name: Get projects - all
+        if: github.event_name == 'workflow_dispatch' && inputs.projects == 'All'
+        run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_ENV
+      - name: Get projects - selected
+        if: github.event_name == 'workflow_dispatch' && inputs.projects != 'All'
+        run: echo 'projects=${{ inputs.projects }}' >> $GITHUB_ENV
+      - id: output
+        run: echo 'projects=${{ env.projects }}' >> $GITHUB_OUTPUT
 
   setup-access:
     runs-on: ubuntu-latest
-    needs: check-changes
+    needs: get-projects
     strategy:
       fail-fast: false
       matrix:
         environment: ["test", "preprod", "prod"]
-        project: ${{ fromJson(needs.check-changes.outputs.changed-projects) }}
+        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
     environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v3

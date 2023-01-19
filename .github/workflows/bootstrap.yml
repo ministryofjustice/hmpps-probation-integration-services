@@ -124,11 +124,9 @@ jobs:
         with:
           add-paths: |
             settings.gradle.kts
-            .idea/runConfigurations/*
-            .github/workflows/deploy.yml
-            .github/workflows/end-to-end-tests.yml
-            .github/workflows/suppress-trivy.yml
-            projects/${{ inputs.project_name }}/*
+            .github/workflows
+            .idea/runConfigurations
+            projects/${{ inputs.project_name }}
           branch: bootstrap/${{ inputs.project_name }}
           commit-message: ${{ inputs.issue_number }} Create initial project for ${{ inputs.project_name }}
           private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
