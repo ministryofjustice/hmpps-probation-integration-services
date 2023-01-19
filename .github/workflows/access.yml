@@ -62,6 +62,7 @@ jobs:
     needs: get-projects
     strategy:
       fail-fast: false
+      max-parallel: 3
       matrix:
         environment: ["test", "preprod", "prod"]
         project: ${{ fromJson(needs.get-projects.outputs.projects) }}
@@ -99,10 +100,10 @@ jobs:
         env:
           ALL_SECRETS: ${{ toJson(secrets) }}
         run: |
-          secret_prefix=$(echo '${{ inputs.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')_DB_
-          namespace=/${{ steps.env.outputs.name }}/delius/probation-integration/${{ inputs.project }}
+          secret_prefix=$(echo '${{ matrix.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')_DB_
+          namespace=/${{ steps.env.outputs.name }}/delius/probation-integration/${{ matrix.project }}
           echo "${ALL_SECRETS}" | jq -r ". | keys[] | select(. | startswith(\"${secret_prefix}\"))" | while read -r key; do
-            name=$(echo "${key}" | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g' | sed 's/${{ inputs.project }}-//')
+            name=$(echo "${key}" | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g' | sed 's/${{ matrix.project }}-//')
             value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
             existing=$(aws ssm get-parameter --name "${namespace}/${name}" --region eu-west-2 --with-decryption --query 'Parameter.Value' --output text || echo "")
             if [ "${existing}" != "${value}" ]; then
@@ -120,9 +121,16 @@ jobs:
       - name: Configure database access and audit
         shell: bash
         run: |
-          test -f database/access.yml && \
+          if [ ! -f database/access.yml ]; then echo 'No DB access required'; exit 0; fi
           aws ssm start-automation-execution --document-name oracle-${{ steps.env.outputs.short-name }}-probation-integration-access \
                                              --parameters "Configuration='$(yq database/access.yml -o json)'" \
-                                             --region eu-west-2 && \
-          echo 'Execution started. Follow the logs in AWS: https://eu-west-2.console.aws.amazon.com/systems-manager/automation/executions?region=eu-west-2'
+                                             --region eu-west-2 \
+          | jq --raw-output '.AutomationExecutionId' > id
+          while [ -z "$status" ] || [ "$status" == "InProgress" ] || [ "$status" == "Pending" ] || [ "$status" == "Waiting" ]; do
+            sleep 5
+            echo "Execution $status. Follow the logs in AWS: https://eu-west-2.console.aws.amazon.com/systems-manager/automation/execution/$(cat id)?region=eu-west-2"
+            status=$(aws ssm get-automation-execution --automation-execution-id "$(cat id)" | jq -r '.AutomationExecution.AutomationExecutionStatus')
+          done
+          echo "Completed with status: $status"
+          if [ "$status" != "Success" ]; then exit 1; fi
         working-directory: projects/${{ matrix.project }}/deploy
