@@ -12,7 +12,7 @@ object DatasetGenerator {
     val OFFICER_GRADE = generate(DatasetCode.OFFICER_GRADE)
     val CUSTODY_STATUS = generate(DatasetCode.CUSTODY_STATUS)
     val THROUGHCARE_DATE_TYPE = generate(DatasetCode.THROUGHCARE_DATE_TYPE)
-    val IREPORTTYPE = generate(DatasetCode.IREPORTTYPE)
+    val IREPORTTYPE = generate(DatasetCode.INSTITUTIONAL_REPORT_TYPE)
     val UNITS = generate(DatasetCode.UNITS)
     val GENDER = generate(DatasetCode.GENDER)
     val REQUIREMENT_SUB_CATEGORY = generate(DatasetCode.REQUIREMENT_SUB_CATEGORY)
