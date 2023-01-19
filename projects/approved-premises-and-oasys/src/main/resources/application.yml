@@ -20,8 +20,8 @@ management.endpoints.web:
 feign.client.config:
   default:
     logger-level: full
-    connect-timeout: 5000
-    read-timeout: 5000
+    connect-timeout: 20000
+    read-timeout: 20000
     default-request-headers:
       Accept: application/json
       Content-Type: application/json
