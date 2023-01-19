@@ -25,6 +25,7 @@ class Dataset(
 enum class DatasetCode(val value: String) {
     ADDRESS_STATUS("ADDRESS STATUS"),
     ADDRESS_TYPE("ADDRESS TYPE"),
+    AP_REFERRAL_CATEGORY("AP REFERRAL CATEGORY"),
     BULK_ALLOCATION_REASON("BULK ALLOCATION REASON"),
     BULK_TRANSFER_REASON("BULK TRANSFER REASON"),
     CUSTODY_STATUS("CUSTODY STATUS"),
@@ -38,6 +39,7 @@ enum class DatasetCode(val value: String) {
     ORDER_ALLOCATION_REASON("ORDER ALLOCATION REASON"),
     REQUIREMENT_SUB_CATEGORY("REQUIREMENT SUB CATEGORY"),
     RM_ALLOCATION_REASON("RM ALLOCATION REASON"),
+    TITLE("TITLE"),
     TRANSFER_STATUS("TRANSFER STATUS"),
     THROUGHCARE_DATE_TYPE("THROUGHCARE DATE TYPE"),
     UNITS("UNITS");
@@ -45,7 +47,7 @@ enum class DatasetCode(val value: String) {
     companion object {
         private val index = DatasetCode.values().associateBy { it.value }
         fun fromString(value: String): DatasetCode =
-            index[value] ?: throw IllegalArgumentException("Invalid DatasetCode")
+            index[value] ?: throw IllegalArgumentException("Invalid DatasetCode: $value")
     }
 }
 
