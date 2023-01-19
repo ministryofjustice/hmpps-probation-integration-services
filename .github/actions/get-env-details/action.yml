@@ -1,0 +1,47 @@
+name: Get environment details
+description: Map the GitHub environment name to the corresponding MOJ Cloud Platform namespace and Delius environment details
+
+inputs:
+  environment:
+    description: GitHub environment name
+    required: true
+
+outputs:
+  values-file:
+    description: The filename for the values file containing environment configuration
+    value: ${{ steps.cloud-platform.outputs.values-file }}
+  cloud-platform-namespace:
+    description: The name of the corresponding Cloud Platform namespace
+    value: ${{ steps.cloud-platform.outputs.namespace }}
+  delius-name:
+    description: The full name of the corresponding Delius environment
+    value: ${{ steps.delius.outputs.name }}
+  delius-short-name:
+    description: The short name of the corresponding Delius environment
+    value: ${{ steps.delius.outputs.short-name }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+
+    - name: Map GitHub environment to Cloud Platform namespace
+      id: cloud-platform
+      shell: bash
+      run: |
+        if [ '${{ matrix.environment }}' == 'test' ];    then namespace='dev'; fi
+        if [ '${{ matrix.environment }}' == 'preprod' ]; then namespace='preprod'; fi
+        if [ '${{ matrix.environment }}' == 'prod' ];    then namespace='prod'; fi
+        echo "namespace=${namespace}" >> $GITHUB_OUTPUT
+        echo "values-file=values-${namespace}.yml" >> $GITHUB_OUTPUT
+
+    - name: Map GitHub environment to Delius environment name
+      id: delius
+      shell: bash
+      run: |
+        if [ '${{ matrix.environment }}' == 'test' ];    then environment_name='delius-test'; fi
+        if [ '${{ matrix.environment }}' == 'preprod' ]; then environment_name='delius-pre-prod'; fi
+        if [ '${{ matrix.environment }}' == 'prod' ];    then environment_name='delius-prod'; fi
+        echo "name=${environment_name}" >> $GITHUB_OUTPUT
+        echo "short-name=${environment_name/delius-/del-}" >> $GITHUB_OUTPUT
+
