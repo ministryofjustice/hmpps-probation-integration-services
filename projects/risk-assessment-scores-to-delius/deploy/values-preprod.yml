@@ -1,4 +1,2 @@
-environment_name: delius-pre-prod
-
 env:
   SENTRY_ENVIRONMENT: preprod

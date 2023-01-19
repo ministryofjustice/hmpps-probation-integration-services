@@ -230,13 +230,10 @@ secrets:
 `<project>/deploy/values-<environment>.yml`
 
 This file should only contain values that differ between environments.
-Additionally, it must specify the Delius environment in the `environment_name` value.
 
 Example:
 
 ```yaml
-environment_name: delius-pre-prod
-
 memory: 2048
 
 env:

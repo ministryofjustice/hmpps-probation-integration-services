@@ -86,24 +86,12 @@ jobs:
           role-skip-session-tagging: true
           role-duration-seconds: 1200
 
-      - name: Map GitHub environment to values file
+      - name: Get environment details
         if: ${{ steps.check_file.outputs.files_exists == 'true' }}
-        id: values
-        shell: bash
-        run: |
-          if [ '${{ matrix.environment }}' == 'test' ];    then echo 'filename=values-dev.yml' >> $GITHUB_OUTPUT; fi
-          if [ '${{ matrix.environment }}' == 'preprod' ]; then echo 'filename=values-preprod.yml' >> $GITHUB_OUTPUT; fi
-          if [ '${{ matrix.environment }}' == 'prod' ];    then echo 'filename=values-prod.yml' >> $GITHUB_OUTPUT; fi
-
-      - name: Get Delius environment name from values file
-        if: ${{ steps.check_file.outputs.files_exists == 'true' }}
+        uses: ./.github/actions/get-env-details
         id: env
-        shell: bash
-        run: |
-          environment_name=$(cat ${{ steps.values.outputs.filename }} | yq '.environment_name')
-          echo "name=${environment_name}" >> $GITHUB_OUTPUT
-          echo "short-name=${environment_name/delius-/del-}" >> $GITHUB_OUTPUT
-        working-directory: projects/${{ matrix.project }}/deploy
+        with:
+          environment: ${{ matrix.environment }}
 
       - name: Add DB credentials to parameter store
         if: ${{ steps.check_file.outputs.files_exists == 'true' }}
@@ -112,7 +100,7 @@ jobs:
           ALL_SECRETS: ${{ toJson(secrets) }}
         run: |
           secret_prefix=$(echo '${{ matrix.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')_DB_
-          namespace=/${{ steps.env.outputs.name }}/delius/probation-integration/${{ matrix.project }}
+          namespace=/${{ steps.env.outputs.delius-name }}/delius/probation-integration/${{ matrix.project }}
           echo "${ALL_SECRETS}" | jq -r ". | keys[] | select(. | startswith(\"${secret_prefix}\"))" | while read -r key; do
             name=$(echo "${key}" | tr '[:upper:]' '[:lower:]' | sed 's/_/-/g' | sed 's/${{ matrix.project }}-//')
             value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
@@ -133,7 +121,7 @@ jobs:
         if: ${{ steps.check_file.outputs.files_exists == 'true' }}
         shell: bash
         run: |
-          aws ssm start-automation-execution --document-name oracle-${{ steps.env.outputs.short-name }}-probation-integration-access \
+          aws ssm start-automation-execution --document-name oracle-${{ steps.env.outputs.delius-short-name }}-probation-integration-access \
                                              --parameters "Configuration='$(yq database/access.yml -o json)'" \
                                              --region eu-west-2 \
           | jq --raw-output '.AutomationExecutionId' > id
