@@ -3,12 +3,8 @@ package uk.gov.justice.digital.hmpps.integrations.delius.person
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceData
-import java.time.LocalDate
 
 @Immutable
 @Entity
@@ -33,16 +29,6 @@ class Person(
 
     @Column(name = "surname", length = 35)
     val surname: String,
-
-    @Column(name = "date_of_birth_date")
-    val dateOfBirth: LocalDate,
-
-    @ManyToOne
-    @JoinColumn(name = "gender_id")
-    val gender: ReferenceData?,
-
-    @Column(columnDefinition = "char(13)")
-    val pncNumber: String?,
 
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,

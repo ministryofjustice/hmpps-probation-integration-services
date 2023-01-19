@@ -32,7 +32,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requir
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.SentenceWithManager
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
@@ -47,9 +46,6 @@ class AllocationDemandServiceTest {
 
     @Mock
     lateinit var personManagerRepository: PersonManagerRepository
-
-    @Mock
-    lateinit var personAddressRepository: PersonAddressRepository
 
     @Mock
     lateinit var staffRepository: StaffRepository

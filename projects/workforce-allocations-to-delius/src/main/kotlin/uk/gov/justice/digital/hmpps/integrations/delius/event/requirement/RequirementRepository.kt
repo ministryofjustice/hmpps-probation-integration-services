@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event.requirement
 
-import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -28,7 +27,4 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
         nativeQuery = true
     )
     fun updateIaps(requirementId: Long, iapsFlagValue: Long = 1)
-
-    @EntityGraph(attributePaths = ["person", "disposal.type", "mainCategory.units.dataset", "subCategory.dataset"])
-    fun findAllByDisposalEventIdAndActiveTrueAndSoftDeletedFalse(eventId: Long): List<Requirement>
 }
