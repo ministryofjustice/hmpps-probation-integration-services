@@ -5,5 +5,4 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.MainOffen
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.Offence
 
 interface OffenceRepository : JpaRepository<Offence, Long>
-
 interface MainOffenceRepository : JpaRepository<MainOffence, Long>

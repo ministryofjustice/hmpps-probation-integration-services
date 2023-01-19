@@ -1,13 +1,14 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.CourtReport
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.CourtReportDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocumentType
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.EventDocument
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.OffenderDocument
-import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.time.ZonedDateTime
 import java.util.UUID
 
@@ -17,7 +18,7 @@ object DocumentGenerator {
     val CPS_PACK = generateCpsPackDoc()
 
     fun generateCourtReportDoc(
-        personId: Long = PersonGenerator.DEFAULT.id,
+        personId: Long = PersonGenerator.CASE_VIEW.id,
         courtReport: CourtReport = CourtReportGenerator.DEFAULT,
         id: Long = IdGenerator.getAndIncrement()
     ): CourtReportDocument {
@@ -32,7 +33,7 @@ object DocumentGenerator {
     }
 
     fun generatePreConDoc(
-        personId: Long = PersonGenerator.DEFAULT.id,
+        personId: Long = PersonGenerator.CASE_VIEW.id,
         id: Long = IdGenerator.getAndIncrement()
     ): OffenderDocument {
         val doc = OffenderDocument()
@@ -47,8 +48,8 @@ object DocumentGenerator {
     }
 
     fun generateCpsPackDoc(
-        personId: Long = PersonGenerator.DEFAULT.id,
-        event: Event = EventGenerator.DEFAULT,
+        personId: Long = PersonGenerator.CASE_VIEW.id,
+        event: CaseViewEvent = EventGenerator.CASE_VIEW,
         id: Long = IdGenerator.getAndIncrement()
     ): EventDocument {
         val doc = EventDocument(event.toDocEvent())
@@ -63,5 +64,6 @@ object DocumentGenerator {
         return doc
     }
 
-    private fun Event.toDocEvent() = DocEvent(id, person, true, number, null, null)
+    private fun CaseViewEvent.toDocEvent() =
+        DocEvent(id, Person(personId, "", "", surname = ""), true, number, null, null)
 }

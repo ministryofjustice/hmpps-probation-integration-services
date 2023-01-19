@@ -54,7 +54,3 @@ data class CvDocument(
     val dateCreated: LocalDate,
     val description: String? = null
 )
-
-data class CvAssessment(
-    val completedDate: LocalDate
-)

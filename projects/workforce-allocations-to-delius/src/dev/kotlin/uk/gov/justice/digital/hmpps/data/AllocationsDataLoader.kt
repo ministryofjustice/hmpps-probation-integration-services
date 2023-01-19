@@ -49,6 +49,7 @@ class AllocationsDataLoader(
     private val staffRepository: StaffRepository,
     private val staffUserRepository: StaffUserRepository,
     private val personAllocationDataLoader: PersonAllocationDataLoader,
+    private val caseViewDataLoader: CaseViewDataLoader,
     private val registerTypeRepository: RegisterTypeRepository
 
 ) : CommandLineRunner {
@@ -125,5 +126,6 @@ class AllocationsDataLoader(
         staffUserRepository.save(StaffGenerator.STAFF_WITH_USER.user!!)
 
         personAllocationDataLoader.loadData()
+        caseViewDataLoader.loadData()
     }
 }

@@ -2,12 +2,10 @@ package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CustodyGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionalReportGenerator
 import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
@@ -31,7 +29,6 @@ import uk.gov.justice.digital.hmpps.data.repository.InstitutionalReportRepositor
 import uk.gov.justice.digital.hmpps.data.repository.KeyDateRepository
 import uk.gov.justice.digital.hmpps.data.repository.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
@@ -47,7 +44,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requir
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
@@ -60,7 +56,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 class PersonAllocationDataLoader(
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
-    private val personAddressRepository: PersonAddressRepository,
     private val responsibleOfficerRepository: ResponsibleOfficerRepository,
     private val transferReasonRepository: TransferReasonRepository,
     private val eventRepository: EventRepository,
@@ -76,7 +71,6 @@ class PersonAllocationDataLoader(
     private val mainOffenceRepository: MainOffenceRepository,
     private val additionalOffenceRepository: AdditionalOffenceRepository,
     private val courtReportRepository: CourtReportRepository,
-    private val documentRepository: DocumentRepository,
     private val oasysAssessmentRepository: OASYSAssessmentRepository,
     private val ogrsAssessmentRepository: OGRSAssessmentRepository,
     private val registrationRepository: RegistrationRepository
@@ -95,8 +89,6 @@ class PersonAllocationDataLoader(
         val (hpm, hro) = createPersonWithManagers(PersonGenerator.HISTORIC_PM)
         PersonManagerGenerator.HISTORIC = hpm
         ResponsibleOfficerGenerator.HISTORIC = hro
-
-        personAddressRepository.save(AddressGenerator.DEFAULT)
 
         OrderManagerGenerator.DEFAULT = createEventWithManager(EventGenerator.DEFAULT)
         OrderManagerGenerator.NEW = createEventWithManager(EventGenerator.NEW)
@@ -117,13 +109,6 @@ class PersonAllocationDataLoader(
         contactRepository.save(ContactGenerator.INITIAL_APPOINTMENT)
 
         courtReportRepository.save(CourtReportGenerator.DEFAULT)
-        documentRepository.saveAll(
-            listOf(
-                DocumentGenerator.PREVIOUS_CONVICTION,
-                DocumentGenerator.CPS_PACK,
-                DocumentGenerator.COURT_REPORT,
-            )
-        )
 
         registrationRepository.save(RegistrationGenerator.DEFAULT)
         ogrsAssessmentRepository.save(OgrsAssessmentGenerator.DEFAULT)

@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person
 
-import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -9,7 +8,6 @@ import uk.gov.justice.digital.hmpps.api.model.ManagementStatus
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 interface PersonRepository : JpaRepository<Person, Long> {
-    @EntityGraph(attributePaths = ["gender.dataset"])
     fun findByCrnAndSoftDeletedFalse(crn: String): Person?
 
     @Query("select p from Person p where p.crn in :crns")

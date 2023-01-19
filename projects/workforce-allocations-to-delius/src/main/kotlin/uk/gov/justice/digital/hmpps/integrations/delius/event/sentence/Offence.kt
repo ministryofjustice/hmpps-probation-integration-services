@@ -67,9 +67,7 @@ class Offence(
     @Column(name = "offence_id")
     val id: Long,
 
-    val description: String,
-    val mainCategoryDescription: String,
-    val subCategoryDescription: String
+    val description: String
 )
 
 interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long> {
