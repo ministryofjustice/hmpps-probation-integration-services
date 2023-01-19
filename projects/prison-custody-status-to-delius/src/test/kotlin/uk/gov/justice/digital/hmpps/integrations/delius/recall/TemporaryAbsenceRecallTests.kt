@@ -144,7 +144,6 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
             InstitutionGenerator.DEFAULT
         )
         val recallDateTime = ZonedDateTime.now()
-        val recallDate = recallDateTime.truncatedTo(DAYS)
 
         whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
             .thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE])
