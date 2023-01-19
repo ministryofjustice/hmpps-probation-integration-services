@@ -29,9 +29,9 @@ runs:
       id: cloud-platform
       shell: bash
       run: |
-        if [ '${{ matrix.environment }}' == 'test' ];    then namespace='dev'; fi
-        if [ '${{ matrix.environment }}' == 'preprod' ]; then namespace='preprod'; fi
-        if [ '${{ matrix.environment }}' == 'prod' ];    then namespace='prod'; fi
+        if [ '${{ inputs.environment }}' == 'test' ];    then namespace='dev'; fi
+        if [ '${{ inputs.environment }}' == 'preprod' ]; then namespace='preprod'; fi
+        if [ '${{ inputs.environment }}' == 'prod' ];    then namespace='prod'; fi
         echo "namespace=${namespace}" >> $GITHUB_OUTPUT
         echo "values-file=values-${namespace}.yml" >> $GITHUB_OUTPUT
 
@@ -39,9 +39,9 @@ runs:
       id: delius
       shell: bash
       run: |
-        if [ '${{ matrix.environment }}' == 'test' ];    then environment_name='delius-test'; fi
-        if [ '${{ matrix.environment }}' == 'preprod' ]; then environment_name='delius-pre-prod'; fi
-        if [ '${{ matrix.environment }}' == 'prod' ];    then environment_name='delius-prod'; fi
+        if [ '${{ inputs.environment }}' == 'test' ];    then environment_name='delius-test'; fi
+        if [ '${{ inputs.environment }}' == 'preprod' ]; then environment_name='delius-pre-prod'; fi
+        if [ '${{ inputs.environment }}' == 'prod' ];    then environment_name='delius-prod'; fi
         echo "name=${environment_name}" >> $GITHUB_OUTPUT
         echo "short-name=${environment_name/delius-/del-}" >> $GITHUB_OUTPUT
 
