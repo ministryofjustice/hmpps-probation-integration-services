@@ -119,7 +119,7 @@ class AllocationsDataLoader(
 
         providerRepository.save(ProviderGenerator.DEFAULT)
         teamRepository.save(TeamGenerator.DEFAULT)
-        staffRepository.save(StaffGenerator.DEFAULT)
+        staffRepository.saveAll(listOf(StaffGenerator.DEFAULT, StaffGenerator.STAFF_FOR_INACTIVE_EVENT))
 
         teamRepository.save(TeamGenerator.ALLOCATION_TEAM)
         staffRepository.save(StaffGenerator.STAFF_WITH_USER)

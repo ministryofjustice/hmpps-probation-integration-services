@@ -16,7 +16,7 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
         join fetch mo.offence
         join OrderManager om on d.event.id = om.eventId
         join fetch Staff s on om.staff.id = s.id
-        join fetch s.grade.dataset
+        left join fetch s.grade.dataset
         where d.event.person.id = :personId
         and d.event.number <> :eventNumber
     """

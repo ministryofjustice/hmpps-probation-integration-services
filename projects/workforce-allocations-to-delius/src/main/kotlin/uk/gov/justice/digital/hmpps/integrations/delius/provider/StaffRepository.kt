@@ -1,17 +1,23 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.provider
 
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
-interface StaffRepository : JpaRepository<Staff, Long> {
+interface StaffRepository : JpaRepository<StaffRecord, Long> {
+    @EntityGraph(attributePaths = ["grade.dataset", "user"])
+    @Query("select s from StaffWithUser s where s.code = :code")
+    fun findStaffWithUserByCode(code: String): StaffWithUser?
+
+    @EntityGraph(attributePaths = ["grade.dataset"])
     fun findByCode(code: String): Staff?
 
     @Query(
         """
         select case when count(t) > 0 then true else false end
-        from Staff s 
+        from StaffWithUser s 
         left join fetch Team t
         where s.id = :staffId
         and t.id = :teamId
@@ -19,7 +25,8 @@ interface StaffRepository : JpaRepository<Staff, Long> {
     )
     fun verifyTeamMembership(staffId: Long, teamId: Long): Boolean
 
-    fun findAllByTeamsCode(teamCode: String): List<Staff>
+    @Query("select s from StaffWithUser s join s.teams t where t.code = :teamCode")
+    fun findAllByTeamsCode(teamCode: String): List<StaffWithUser>
 
     @Query(
         """
@@ -90,6 +97,9 @@ interface StaffRepository : JpaRepository<Staff, Long> {
     )
     fun getParoleReportsDueCountByStaffId(staffId: Long, toDate: LocalDate): Long
 }
+
+fun StaffRepository.getWithUserByCode(code: String): StaffWithUser =
+    findStaffWithUserByCode(code) ?: throw NotFoundException("Staff", "code", code)
 
 fun StaffRepository.getByCode(code: String): Staff =
     findByCode(code) ?: throw NotFoundException("Staff", "code", code)

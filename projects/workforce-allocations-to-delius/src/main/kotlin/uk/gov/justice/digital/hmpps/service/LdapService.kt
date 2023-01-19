@@ -6,7 +6,7 @@ import org.springframework.ldap.filter.OrFilter
 import org.springframework.ldap.query.LdapQueryBuilder
 import org.springframework.ldap.query.SearchScope
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithUser
 import uk.gov.justice.digital.hmpps.integrations.delius.user.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.user.LdapUserRepository
 
@@ -19,9 +19,9 @@ class LdapService(
         const val LDAP_MAX_RESULTS_PER_QUERY = 500
     }
 
-    fun findEmailForStaff(staff: Staff?) = staff?.user?.username?.let { ldapUserRepository.findByUsername(it)?.email }
+    fun findEmailForStaff(staff: StaffWithUser?) = staff?.user?.username?.let { ldapUserRepository.findByUsername(it)?.email }
 
-    fun findEmailsForStaffIn(staff: List<Staff>): Map<String, String?> {
+    fun findEmailsForStaffIn(staff: List<StaffWithUser>): Map<String, String?> {
         return staff.mapNotNull { it.user?.username }
             .distinct()
             .chunked(LDAP_MAX_RESULTS_PER_QUERY)

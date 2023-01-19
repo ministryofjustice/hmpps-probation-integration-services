@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.api.model
 
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManager
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRecord
 import java.time.LocalDate
 
 data class Name(
@@ -20,6 +20,7 @@ data class StaffMember(
     val email: String? = null,
     val grade: String? = null,
 )
+
 data class Manager(val code: String, val name: Name, val teamCode: String, val grade: String? = null)
 
 data class InitialAppointment(val date: LocalDate)
@@ -47,10 +48,10 @@ enum class CaseType {
 }
 
 fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
-fun Staff.name() = Name(forename, middleName, surname)
-fun Staff.grade() = grade?.code?.let { Mappings.toAllocationsGradeCode[it] }
-fun Staff.toManager(teamCode: String) = Manager(code, name(), teamCode, grade())
-fun Staff.toStaffMember(email: String? = null) = StaffMember(code, name(), email, grade())
+fun StaffRecord.name() = Name(forename, middleName, surname)
+fun StaffRecord.grade() = grade?.code?.let { Mappings.toAllocationsGradeCode[it] }
+fun StaffRecord.toManager(teamCode: String) = Manager(code, name(), teamCode, grade())
+fun StaffRecord.toStaffMember(email: String? = null) = StaffMember(code, name(), email, grade())
 fun PersonManager.toManager() = staff.toManager(team.code)
 
 object Mappings {

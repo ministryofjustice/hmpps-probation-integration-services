@@ -63,7 +63,7 @@ class ProbationRecordIntegrationTest {
     fun `get probation record successful retrieval of active and inactive events`() {
         val person = PersonGenerator.DEFAULT
         val eventNumber = "2"
-        val staff = StaffGenerator.STAFF_WITH_USER
+        val staff = StaffGenerator.STAFF_FOR_INACTIVE_EVENT
 
         val res = mockMvc.perform(
             get("/allocation-demand/${person.crn}/$eventNumber/probation-record").withOAuth2Token(wireMockserver)
