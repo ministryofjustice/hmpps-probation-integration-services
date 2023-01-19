@@ -17,7 +17,7 @@ interface StaffRepository : JpaRepository<StaffRecord, Long> {
     @Query(
         """
         select case when count(t) > 0 then true else false end
-        from StaffWithUser s 
+        from Staff s 
         left join fetch Team t
         where s.id = :staffId
         and t.id = :teamId
