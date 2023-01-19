@@ -26,3 +26,7 @@ CVE-2022-45442 exp:2023-06-01
 # Suppressed as we do not process any XML as part of search indexing
 # By marcus-bcl
 CVE-2022-23476 exp:2023-06-01
+
+# Suppressed because this service does not handle any TLS requests
+# By marcus-bcl
+CVE-2022-41881 exp:2023-02-02
