@@ -73,6 +73,7 @@ runs:
       shell: bash
       env:
         VERSION: ${{ inputs.version }}
+        ENVIRONMENT_NAME: ${{ steps.env.outputs.delius-name }}
       run: |
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         brew install gomplate
