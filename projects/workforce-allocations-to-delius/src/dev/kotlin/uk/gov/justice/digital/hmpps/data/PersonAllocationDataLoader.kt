@@ -94,7 +94,7 @@ class PersonAllocationDataLoader(
         OrderManagerGenerator.NEW = createEventWithManager(EventGenerator.NEW)
         OrderManagerGenerator.HISTORIC = createEventWithManager(EventGenerator.HISTORIC)
         OrderManagerGenerator.INACTIVE_EVENT =
-            createEventWithManager(EventGenerator.INACTIVE, StaffGenerator.STAFF_WITH_USER)
+            createEventWithManager(EventGenerator.INACTIVE, StaffGenerator.STAFF_FOR_INACTIVE_EVENT)
 
         disposalTypeRepository.save(DisposalGenerator.DEFAULT.type)
         disposalRepository.saveAll(listOf(DisposalGenerator.DEFAULT, DisposalGenerator.INACTIVE))

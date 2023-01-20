@@ -27,5 +27,5 @@ class Team(
     val endDate: ZonedDateTime? = null,
 
     @ManyToMany(mappedBy = "teams")
-    val staff: List<Staff> = listOf()
+    val staff: List<StaffWithUser> = listOf()
 )

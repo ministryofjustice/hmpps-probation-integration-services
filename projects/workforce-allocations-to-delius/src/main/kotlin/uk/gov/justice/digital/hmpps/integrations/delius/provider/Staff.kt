@@ -7,16 +7,16 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.JoinTable
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.MappedSuperclass
 import jakarta.persistence.OneToOne
+import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.user.StaffUser
 import java.time.ZonedDateTime
 
-@Immutable
-@Entity
-class Staff(
-
+@MappedSuperclass
+abstract class StaffRecord(
     @Id
     @Column(name = "staff_id")
     val id: Long = 0,
@@ -37,9 +37,6 @@ class Staff(
     @JoinColumn(name = "staff_grade_id")
     val grade: ReferenceData? = null,
 
-    @OneToOne(mappedBy = "staff")
-    val user: StaffUser? = null,
-
     @ManyToMany
     @JoinTable(
         name = "staff_team",
@@ -51,3 +48,33 @@ class Staff(
     @Transient
     val displayName = listOfNotNull(forename, middleName, surname).joinToString(" ")
 }
+
+@Immutable
+@Entity
+@Table(name = "staff")
+class Staff(
+    id: Long,
+    code: String,
+    forename: String,
+    surname: String,
+    middleName: String? = null,
+    endDate: ZonedDateTime? = null,
+    grade: ReferenceData? = null,
+    teams: List<Team> = mutableListOf()
+) : StaffRecord(id, code, forename, surname, middleName, endDate, grade, teams)
+
+@Immutable
+@Entity
+@Table(name = "staff")
+class StaffWithUser(
+    id: Long,
+    code: String,
+    forename: String,
+    surname: String,
+    middleName: String? = null,
+    endDate: ZonedDateTime? = null,
+    grade: ReferenceData? = null,
+    @OneToOne(mappedBy = "staff")
+    val user: StaffUser? = null,
+    teams: List<Team> = mutableListOf()
+) : StaffRecord(id, code, forename, surname, middleName, endDate, grade, teams)

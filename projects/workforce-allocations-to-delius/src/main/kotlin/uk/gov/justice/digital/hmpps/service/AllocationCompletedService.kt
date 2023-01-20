@@ -28,7 +28,7 @@ class AllocationCompletedService(
     ): AllocationCompletedResponse {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val event = eventRepository.getByPersonCrnAndNumber(crn, eventNumber)
-        val staff = staffRepository.findByCode(staffCode)
+        val staff = staffRepository.findStaffWithUserByCode(staffCode)
         val email = ldapService.findEmailForStaff(staff)
         val initialAppointmentDate = contactRepository.getInitialAppointmentDate(person.id, event.id)
         return AllocationCompletedResponse(

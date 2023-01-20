@@ -67,11 +67,11 @@ class AllocationCompletedServiceTest {
     fun `missing email address is handled`() {
         val person = PersonGenerator.DEFAULT
         val event = EventGenerator.DEFAULT
-        val staff = StaffGenerator.DEFAULT
+        val staff = StaffGenerator.STAFF_WITH_USER
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
         whenever(personRepository.getCaseType(person.crn)).thenReturn(COMMUNITY)
         whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
-        whenever(staffRepository.findByCode(staff.code)).thenReturn(staff)
+        whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
 
         val response = allocationCompletedService.getDetails(person.crn, event.number, staff.code)
 
@@ -88,7 +88,7 @@ class AllocationCompletedServiceTest {
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
         whenever(personRepository.getCaseType(person.crn)).thenReturn(COMMUNITY)
         whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
-        whenever(staffRepository.findByCode(staff.code)).thenReturn(staff)
+        whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
         whenever(ldapService.findEmailForStaff(staff)).thenReturn(user.email)
         whenever(contactRepository.getInitialAppointmentDate(person.id, event.id)).thenReturn(initialAppointmentDate)
 

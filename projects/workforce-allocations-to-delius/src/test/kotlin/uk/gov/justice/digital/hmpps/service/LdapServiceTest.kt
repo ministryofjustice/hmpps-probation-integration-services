@@ -1,10 +1,14 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasEntry
 import org.hamcrest.Matchers.hasSize
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
@@ -16,14 +20,21 @@ import org.mockito.kotlin.whenever
 import org.springframework.ldap.core.LdapTemplate
 import uk.gov.justice.digital.hmpps.data.generator.LdapUserGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
+import uk.gov.justice.digital.hmpps.data.generator.StaffUserGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithUser
 import uk.gov.justice.digital.hmpps.integrations.delius.user.LdapUser
 import uk.gov.justice.digital.hmpps.integrations.delius.user.LdapUserRepository
 
 @ExtendWith(MockitoExtension::class)
 class LdapServiceTest {
-    @Mock lateinit var ldapUserRepository: LdapUserRepository
-    @Mock lateinit var ldapTemplate: LdapTemplate
-    @InjectMocks lateinit var ldapService: LdapService
+    @Mock
+    lateinit var ldapUserRepository: LdapUserRepository
+
+    @Mock
+    lateinit var ldapTemplate: LdapTemplate
+
+    @InjectMocks
+    lateinit var ldapService: LdapService
 
     @Test
     fun `searches are split into chunks of 500`() {
@@ -42,5 +53,32 @@ class LdapServiceTest {
         assertThat(emails.keys, hasSize(10000))
         assertThat(emails, hasEntry("TEST1", "TEST1@example.com"))
         assertThat(emails, hasEntry("TEST9999", "TEST9999@example.com"))
+    }
+
+    @Test
+    fun `email found for single staff`() {
+        val staff = StaffGenerator.generateStaffWithUser("email", user = StaffUserGenerator.generate("HasEmail"))
+        val ldapUser = LdapUserGenerator.generate("HasEmail", "email@user.com")
+        whenever(ldapUserRepository.findByUsername(staff.user!!.username)).thenReturn(ldapUser)
+
+        val email = ldapService.findEmailForStaff(staff)
+
+        assertThat(email, equalTo(ldapUser.email))
+    }
+
+    @ParameterizedTest
+    @MethodSource("noEmail")
+    fun `find email returns null`(staff: StaffWithUser?) {
+        val email = ldapService.findEmailForStaff(staff)
+        assertNull(email)
+    }
+
+    companion object {
+        @JvmStatic
+        fun noEmail(): List<StaffWithUser?> = listOf(
+            null,
+            StaffGenerator.generateStaffWithUser("NoUser", user = null),
+            StaffGenerator.generateStaffWithUser("NoLdapUser", user = StaffUserGenerator.generate("NoLdapUser"))
+        )
     }
 }

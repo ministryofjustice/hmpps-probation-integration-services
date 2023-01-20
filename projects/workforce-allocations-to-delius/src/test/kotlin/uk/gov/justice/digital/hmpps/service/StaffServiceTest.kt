@@ -42,9 +42,9 @@ class StaffServiceTest {
 
     @Test
     fun `officer view response is mapped and returned`() {
-        val staff = StaffGenerator.DEFAULT
+        val staff = StaffGenerator.STAFF_WITH_USER
         whenever(ldapService.findEmailForStaff(staff)).thenReturn("test@test.com")
-        whenever(staffRepository.findByCode(staff.code)).thenReturn(staff)
+        whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
         whenever(staffRepository.getParoleReportsDueCountByStaffId(staff.id, LocalDate.now().plusWeeks(4))).thenReturn(1L)
         whenever(staffRepository.getSentencesDueCountByStaffId(staff.id, LocalDate.now().plusWeeks(4))).thenReturn(2L)
         whenever(staffRepository.getKeyDateCountByCodeAndStaffId(staff.id, "EXP", LocalDate.now().plusWeeks(4))).thenReturn(3L)
@@ -64,10 +64,10 @@ class StaffServiceTest {
 
     @Test
     fun `active cases response is mapped and returned`() {
-        val staff = StaffGenerator.DEFAULT
+        val staff = StaffGenerator.STAFF_WITH_USER
         val person = PersonGenerator.DEFAULT
         whenever(ldapService.findEmailForStaff(staff)).thenReturn("test@test.com")
-        whenever(staffRepository.findByCode(staff.code)).thenReturn(staff)
+        whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
         whenever(personRepository.findAllByCrnAndSoftDeletedFalse(listOf(person.crn))).thenReturn(listOf(person))
         whenever(personRepository.getCaseType(person.crn)).thenReturn(CaseType.CUSTODY)
 

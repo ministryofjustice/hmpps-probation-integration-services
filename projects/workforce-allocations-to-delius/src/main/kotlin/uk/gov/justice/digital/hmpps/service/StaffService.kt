@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.api.model.grade
 import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.getWithUserByCode
 import java.time.LocalDate
 
 @Service
@@ -18,7 +18,7 @@ class StaffService(
     private val personRepository: PersonRepository
 ) {
     fun getOfficerView(code: String): OfficerView {
-        val staff = staffRepository.getByCode(code)
+        val staff = staffRepository.getWithUserByCode(code)
         return OfficerView(
             code,
             staff.name(),
@@ -31,7 +31,7 @@ class StaffService(
     }
 
     fun getActiveCases(code: String, crns: List<String>): ActiveCasesResponse {
-        val staff = staffRepository.getByCode(code)
+        val staff = staffRepository.getWithUserByCode(code)
         val cases = personRepository.findAllByCrnAndSoftDeletedFalse(crns).map {
             Case(
                 it.crn,
