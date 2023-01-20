@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.document
 
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.CourtReportDocument
@@ -19,7 +20,7 @@ interface DocumentRepository : JpaRepository<Document, Long> {
         order by crd.lastSaved desc
     """
     )
-    fun findLatestCourtReport(personId: Long): CourtReportDocument?
+    fun findLatestCourtReport(personId: Long, page: PageRequest = PageRequest.of(0, 1)): CourtReportDocument?
 
     @Query(
         """
