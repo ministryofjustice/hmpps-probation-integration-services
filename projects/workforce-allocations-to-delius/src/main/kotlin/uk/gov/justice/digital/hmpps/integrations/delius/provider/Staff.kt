@@ -52,8 +52,8 @@ abstract class StaffRecord(
 @Immutable
 @Entity
 @Table(name = "staff")
-open class Staff(
-    id: Long = 0,
+class Staff(
+    id: Long,
     code: String,
     forename: String,
     surname: String,
