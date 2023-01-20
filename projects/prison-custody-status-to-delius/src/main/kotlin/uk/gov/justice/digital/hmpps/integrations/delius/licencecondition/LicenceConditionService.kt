@@ -19,6 +19,11 @@ import uk.gov.justice.digital.hmpps.integrations.delius.transfer.RejectedTransfe
 import uk.gov.justice.digital.hmpps.integrations.delius.transfer.RejectedTransferDiaryRepository
 import java.time.ZonedDateTime
 
+val EOTL_TERMINATE_LICENCE_CONTACT_NOTES = """${System.lineSeparator()}
+    |The date of the termination of licence condition has been identified from the case being updated following a Temporary Absence Return in NOMIS.
+    |The date may reflect an update after the date the actual Recall/Return to Custody occurred.
+""".trimMargin()
+
 @Service
 class LicenceConditionService(
     private val licenceConditionRepository: LicenceConditionRepository,
@@ -32,19 +37,21 @@ class LicenceConditionService(
     fun terminateLicenceConditionsForDisposal(
         disposalId: Long,
         terminationReason: ReferenceData,
-        terminationDate: ZonedDateTime
+        terminationDate: ZonedDateTime,
+        endOfTemporaryLicence: Boolean = false
     ) {
         licenceConditionRepository
             .findAllByDisposalIdAndMainCategoryCodeNotAndTerminationReasonIsNull(disposalId)
             .forEach {
-                terminateLicenceCondition(it, terminationReason, terminationDate)
+                terminateLicenceCondition(it, terminationReason, terminationDate, endOfTemporaryLicence)
             }
     }
 
     fun terminateLicenceCondition(
         licenceCondition: LicenceCondition,
         terminationReason: ReferenceData,
-        terminationDate: ZonedDateTime
+        terminationDate: ZonedDateTime,
+        endOfTemporaryLicence: Boolean = false
     ) {
         // terminate the licence condition
         licenceCondition.terminationDate = terminationDate
@@ -56,11 +63,13 @@ class LicenceConditionService(
         terminatePendingTransfers(licenceCondition, terminationDate)
 
         // delete any future-dated contacts
-        contactRepository.deleteAllByLicenceConditionIdAndDateAfterAndOutcomeIdIsNull(licenceCondition.id)
+        contactRepository.deleteAllByLicenceConditionIdAndDateAfterAndOutcomeIdIsNull(licenceCondition.id, terminationDate)
 
         // create "component terminated" contact
         val event = licenceCondition.disposal.event
         val manager = licenceCondition.manager ?: orderManagerRepository.getByEventId(event.id)
+        val notes = "Termination reason: ${terminationReason.description}" +
+            if (endOfTemporaryLicence) EOTL_TERMINATE_LICENCE_CONTACT_NOTES else ""
         contactRepository.save(
             Contact(
                 type = contactTypeRepository.getByCode(ContactTypeCode.COMPONENT_TERMINATED.code),
@@ -68,7 +77,7 @@ class LicenceConditionService(
                 event = event,
                 person = event.person,
                 licenceConditionId = licenceCondition.id,
-                notes = "Termination reason: ${terminationReason.description}",
+                notes = notes,
                 staffId = manager.staffId,
                 teamId = manager.teamId,
             )

@@ -135,16 +135,23 @@ internal class LicenceConditionServiceTest {
             ReferenceDataGenerator.generate("TWR", ReferenceDataSetGenerator.generate("LICENCE AREA TRANSFER REJECTION REASON")),
         )
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
-        whenever(contactTypeRepository.findByCode(ContactTypeCode.COMPONENT_TERMINATED.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.COMPONENT_TERMINATED])
+        whenever(contactTypeRepository.findByCode(ContactTypeCode.COMPONENT_TERMINATED.code))
+            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.COMPONENT_TERMINATED])
 
-        licenceConditionService.terminateLicenceConditionsForDisposal(event.disposal!!.id, ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON, now)
+        licenceConditionService.terminateLicenceConditionsForDisposal(event.disposal!!.id, ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON, now, true)
 
         licenceConditions.forEach {
             assertEquals(it.terminationDate, now)
             assertEquals(it.terminationReason, ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON)
             assertFalse(it.pendingTransfer!!)
             verify(licenceConditionRepository).save(it)
-            verify(contactRepository).save(check { contact -> assertThat(contact.licenceConditionId, equalTo(it.id)) })
+            verify(contactRepository).deleteAllByLicenceConditionIdAndDateAfterAndOutcomeIdIsNull(it.id, it.terminationDate!!)
+            verify(contactRepository).save(
+                check { contact ->
+                    assertThat(contact.licenceConditionId, equalTo(it.id))
+                    assertThat(contact.notes, equalTo("Termination reason: ${it.terminationReason!!.description}$EOTL_TERMINATE_LICENCE_CONTACT_NOTES"))
+                }
+            )
         }
     }
 

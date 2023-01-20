@@ -12,12 +12,19 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyH
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReason
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.isEotl
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustodialStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustodyEventType
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode
 import java.time.ZonedDateTime
+
+val EOTL_LOCATION_CHANGE_CONTACT_NOTES = """${System.lineSeparator()}
+    |The date of the change to the custody location has been identified from the case being updated following a Temporary Absence Return in NOMIS.
+    |The date may reflect an update after the date the actual change to location occurred.
+""".trimMargin()
 
 @Service
 class CustodyService(
@@ -43,7 +50,13 @@ class CustodyService(
         )
     }
 
-    fun updateLocation(custody: Custody, institutionCode: String, date: ZonedDateTime, orderManager: OrderManager? = null) {
+    fun updateLocation(
+        custody: Custody,
+        institutionCode: String,
+        date: ZonedDateTime,
+        orderManager: OrderManager? = null,
+        recallReason: RecallReason? = null,
+    ) {
         custody.institution = institutionRepository.getByCode(institutionCode)
         custody.locationChangeDate = date
         custodyRepository.save(custody)
@@ -59,16 +72,17 @@ class CustodyService(
 
         if (orderManager != null) {
             val person = custody.disposal.event.person
+            val notes = "Custodial Status: ${custody.status.description}\n" +
+                "Custodial Establishment: ${custody.institution.description}\n" +
+                "Location Change Date: ${DeliusDateTimeFormatter.format(date)}\n" +
+                "-------------------------------" +
+                if (recallReason.isEotl()) EOTL_LOCATION_CHANGE_CONTACT_NOTES else ""
             contactRepository.save(
                 Contact(
                     type = contactTypeRepository.getByCode(ContactTypeCode.CHANGE_OF_INSTITUTION.code),
                     date = date,
                     person = person,
-                    notes =
-                    "Custodial Status: ${custody.status.description}\n" +
-                        "Custodial Establishment: ${custody.institution.description}\n" +
-                        "Location Change Date: ${DeliusDateTimeFormatter.format(date)}\n" +
-                        "-------------------------------",
+                    notes = notes,
                     staffId = orderManager.staffId,
                     teamId = orderManager.teamId,
                     createdDatetime = ZonedDateTime.now(),

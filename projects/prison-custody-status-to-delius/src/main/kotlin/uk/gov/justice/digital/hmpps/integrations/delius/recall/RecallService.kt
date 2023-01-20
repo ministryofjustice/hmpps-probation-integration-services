@@ -35,6 +35,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReas
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonCode
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.getByCodeAndSelectableIsTrue
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.isEotl
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
@@ -51,6 +52,11 @@ enum class RecallOutcome {
     CustodialDetailsUpdated,
     NoCustodialUpdates,
 }
+
+val EOTL_RECALL_CONTACT_NOTES = """${System.lineSeparator()}
+    |The date of the change to this Recall/Return to Custody has been identified from the case being updated following a Temporary Absence Return in NOMIS.
+    |The date may reflect an update after the date the actual Recall/Return to Custody occurred
+    """.trimMargin()
 
 @Service
 class RecallService(
@@ -109,7 +115,7 @@ class RecallService(
 
         val custodialStatusUpdated = updateCustodialStatus(toInstitution, custody, recallDate, recall)
 
-        val custodialLocationUpdated = updateCustodialLocation(custody, toInstitution, event, recallDate)
+        val custodialLocationUpdated = updateCustodialLocation(custody, toInstitution, event, recallDate, recallReason)
 
         allocatePrisonManager(latestRelease, toInstitution, custody, disposal, recallDateTime)
 
@@ -117,7 +123,8 @@ class RecallService(
             licenceConditionService.terminateLicenceConditionsForDisposal(
                 disposalId = disposal.id,
                 terminationReason = recallReason.licenceConditionTerminationReason,
-                terminationDate = recallDate
+                terminationDate = recallDate,
+                endOfTemporaryLicence = recallReason.isEotl()
             )
             createRecallAlertContact(event, person, recallDateTime, recallReason, recall)
             RecallOutcome.PrisonerRecalled
@@ -132,10 +139,11 @@ class RecallService(
         custody: Custody,
         toInstitution: Institution,
         event: Event,
-        recallDate: ZonedDateTime
+        recallDate: ZonedDateTime,
+        recallReason: RecallReason
     ) = if (custody.institution.id != toInstitution.id || custody.status.canRecall()) {
         val orderManager = orderManagerRepository.getByEventId(event.id)
-        custodyService.updateLocation(custody, toInstitution.code, recallDate, orderManager)
+        custodyService.updateLocation(custody, toInstitution.code, recallDate, orderManager, recallReason)
         true
     } else false
 
@@ -169,13 +177,15 @@ class RecallService(
     ) {
         val orderManager = orderManagerRepository.getByEventId(event.id)
         val personManager = personManagerRepository.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)
+        val notes = "Reason for Recall: ${recallReason.description}" +
+            if (recallReason.isEotl()) EOTL_RECALL_CONTACT_NOTES else ""
         val contact = contactRepository.save(
             Contact(
                 type = contactTypeRepository.getByCode(ContactTypeCode.BREACH_PRISON_RECALL.code),
                 date = recallDateTime,
                 event = event,
                 person = person,
-                notes = "Reason for Recall: ${recallReason.description}",
+                notes = notes,
                 staffId = orderManager.staffId,
                 teamId = orderManager.teamId,
                 createdDatetime = recall.createdDatetime,
