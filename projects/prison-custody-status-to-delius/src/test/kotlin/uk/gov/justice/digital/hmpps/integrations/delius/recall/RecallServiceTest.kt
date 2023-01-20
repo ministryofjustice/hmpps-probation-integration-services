@@ -232,7 +232,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
         val om = OrderManagerGenerator.generate(event)
         val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code))
+        whenever(recallReasonRepository.findByCodeAndSelectable(recallReason!!.code))
             .thenReturn(recallReason)
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(prisonId)).thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
