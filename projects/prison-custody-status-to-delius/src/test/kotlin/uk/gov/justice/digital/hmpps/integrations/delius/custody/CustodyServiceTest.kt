@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
@@ -26,6 +27,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyHistory
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode.IN_CUSTODY
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode.LOCATION_CHANGE
@@ -94,7 +96,8 @@ internal class CustodyServiceTest {
         whenever(contactTypeRepository.findByCode(ContactTypeCode.CHANGE_OF_INSTITUTION.code)).thenReturn(ct)
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
-        custodyService.updateLocation(custody, InstitutionCode.IN_COMMUNITY.code, now, om)
+        val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE]
+        custodyService.updateLocation(custody, InstitutionCode.IN_COMMUNITY.code, now, om, recallReason)
 
         val saved = argumentCaptor<CustodyHistory>()
         verify(custodyHistoryRepository).save(saved.capture())
@@ -113,5 +116,15 @@ internal class CustodyServiceTest {
         assertThat(contact.firstValue.type.code, equalTo(ContactTypeCode.CHANGE_OF_INSTITUTION.code))
         assertThat(contact.firstValue.staffId, equalTo(om.staffId))
         assertThat(contact.firstValue.teamId, equalTo(om.teamId))
+        assertThat(
+            contact.firstValue.notes,
+            equalTo(
+                "Custodial Status: ${custody.status.description}\n" +
+                    "Custodial Establishment: ${custody.institution.description}\n" +
+                    "Location Change Date: ${DeliusDateTimeFormatter.format(now)}\n" +
+                    "-------------------------------" +
+                    EOTL_LOCATION_CHANGE_CONTACT_NOTES
+            )
+        )
     }
 }
