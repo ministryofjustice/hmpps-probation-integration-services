@@ -4,6 +4,7 @@ import io.awspring.cloud.sqs.annotation.SqsListener
 import io.awspring.cloud.sqs.listener.AsyncAdapterBlockingExecutionFailedException
 import io.awspring.cloud.sqs.listener.ListenerExecutionFailedException
 import io.sentry.Sentry
+import io.sentry.spring.jakarta.tracing.SentryTransaction
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Conditional
 import org.springframework.stereotype.Component
@@ -18,6 +19,7 @@ class AwsNotificationListener(
     private val handler: NotificationHandler<*>
 ) {
     @SqsListener("\${messaging.consumer.queue}")
+    @SentryTransaction(operation = "messaging")
     fun receive(message: String) {
         try {
             handler.handle(message)
