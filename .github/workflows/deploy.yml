@@ -64,11 +64,15 @@ jobs:
       name: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@v3
+      - uses: ./.github/actions/get-env-details
+        id: env
+        with:
+          environment: ${{ inputs.environment }}
 
       - name: Get enabled flag from values file
         id: enabled
         shell: bash
-        run: echo "enabled=$(cat ${{ steps.values.outputs.filename }} | yq '.enabled' | sed 's/^null$/true/')" >> $GITHUB_OUTPUT
+        run: echo "enabled=$(cat ${{ steps.env.outputs.values-file }} | yq '.enabled' | sed 's/^null$/true/')" >> $GITHUB_OUTPUT
         working-directory: projects/${{ matrix.project }}/deploy
 
       - name: Check Chart.yaml file exists
