@@ -77,7 +77,7 @@ runs:
           --namespace=${{ inputs.namespace }} \
           --values templates/helm-defaults.yml \
           --values templates/values.yaml \
-          --values projects/offender-events-and-delius/deploy/values-dev.yml \
+          --values projects/${{ inputs.project }}/deploy/${{ steps.env.outputs.values-file }} \
           --set generic-service.image.tag=${{ inputs.version }} \
           --wait \
           --timeout 10m \
