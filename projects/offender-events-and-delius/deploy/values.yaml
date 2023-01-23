@@ -1,14 +1,12 @@
 generic-service:
   nameOverride: offender-events-and-delius
+  replicaCount: 1
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/offender-events-and-delius
 
   ingress:
     tlsSecretName: offender-events-and-delius-cert
-
-  env:
-    DELIUS_DB_USERNAME: OffenderEventsAndDelius
 
   namespace_secrets:
     offender-events-and-delius:
