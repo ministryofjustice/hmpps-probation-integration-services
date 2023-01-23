@@ -1,0 +1,25 @@
+generic-service:
+  nameOverride: offender-events-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/offender-events-and-delius
+
+  ingress:
+    tlsSecretName: offender-events-and-delius-cert
+
+  env:
+    DELIUS_DB_USERNAME: OffenderEventsAndDelius
+
+  namespace_secrets:
+    offender-events-and-delius:
+      AWS_ACCESS_KEY_ID: SQS_QUEUE_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
+      AWS_SQS_ACCOUNT-ID: AWS_SQS_ACCOUNT_ID
+      MESSAGING_PRODUCER_TOPIC: SQS_QUEUE_NAME
+      SENTRY_DSN: SENTRY_DSN
+      SPRING_DATASOURCE_URL: DB_URL
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+
+generic-prometheus-alerts:
+  targetApplication: offender-events-and-delius
