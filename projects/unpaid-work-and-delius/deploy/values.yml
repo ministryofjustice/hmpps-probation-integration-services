@@ -1,0 +1,13 @@
+# Common values
+image:
+  name: unpaid-work-and-delius
+
+secrets:
+  APPLICATIONINSIGHTS_CONNECTION_STRING:   /application-insights/connection-string
+  SPRING_DATASOURCE_URL:                   /delius-database/jdbc-url
+  SPRING_DATASOURCE_USERNAME:              /unpaid-work-and-delius/db-username
+  SPRING_DATASOURCE_PASSWORD:              /unpaid-work-and-delius/db-password
+  MESSAGING_CONSUMER_QUEUE:                /unpaid-work-and-delius/sqs-queue-name
+  OAUTH2_CLIENT-ID:                        /unpaid-work-and-delius/client-id
+  OAUTH2_CLIENT-SECRET:                    /unpaid-work-and-delius/client-secret
+  SENTRY_DSN:                              /unpaid-work-and-delius/sentry-dsn
