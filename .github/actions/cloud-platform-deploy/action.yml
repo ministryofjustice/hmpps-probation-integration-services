@@ -76,6 +76,7 @@ runs:
           --install \
           --namespace=${{ inputs.namespace }} \
           --values templates/helm-defaults.yml \
+          --values projects/${{ inputs.project }}/deploy/values.yaml \
           --values projects/${{ inputs.project }}/deploy/${{ steps.env.outputs.values-file }} \
           --set generic-service.image.tag=${{ inputs.version }} \
           --wait \
