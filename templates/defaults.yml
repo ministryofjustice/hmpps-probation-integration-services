@@ -13,3 +13,4 @@ healthcheck:
 env:
   AWS_REGION: eu-west-2
   JDK_JAVA_OPTIONS: -javaagent:/agent/agent.jar -XX:MaxRAMPercentage=75.0
+  SENTRY_TRACES-SAMPLE-RATE: '0.05'
