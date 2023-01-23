@@ -1,3 +1,4 @@
+enabled: false
 generic-service:
   ingress:
     host: offender-events-and-delius-preprod.hmpps.service.justice.gov.uk
