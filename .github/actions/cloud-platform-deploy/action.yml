@@ -54,15 +54,15 @@ runs:
       env:
         ALL_SECRETS: ${{ inputs.json-secrets }}
       run: |
-        project_name=$(echo '${{ inputs.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
-        secret_command='kubectl -n ${{ inputs.namespace }} create secret generic ${{ inputs.project }}'
+        project_name=$(echo 'offender-events-and-delius' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
+        secret_command='kubectl -n ${{ inputs.namespace }} create secret generic offender-events-and-delius'
         for key in $(echo "${ALL_SECRETS}" | jq -r ". | keys[] | select(. | startswith(\"${project_name}\"))");
         do
           name="${key##${project_name}_}"
           value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
           secret_command="${secret_command} --from-literal='$name=$value'"
         done
-        kubectl -n ${{ inputs.namespace }} delete secret ${{ inputs.project }} --ignore-not-found
+        kubectl -n ${{ inputs.namespace }} delete secret offender-events-and-delius --ignore-not-found
         eval $secret_command
 
     - name: deploy to k8s
@@ -70,14 +70,14 @@ runs:
       run: |        
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         brew install helm
-        yq -i '.appVersion = "${{ inputs.version }}"' projects/${{ inputs.project }}/deploy/Chart.yaml
-        helm dependency update projects/${{ inputs.project }}/deploy
-        helm upgrade ${{ inputs.project }} projects/${{ inputs.project }}/deploy \
+        yq -i '.appVersion = "${{ inputs.version }}"' projects/offender-events-and-delius/deploy/Chart.yaml
+        helm dependency update projects/offender-events-and-delius/deploy
+        helm upgrade offender-events-and-delius projects/offender-events-and-delius/deploy \
           --install \
           --namespace=${{ inputs.namespace }} \
           --values templates/helm-defaults.yml \
           --values templates/values.yaml \
-          --values projects/${{ inputs.project }}/deploy/${{ steps.env.outputs.values-file }} \
+          --values projects/offender-events-and-delius/deploy/values-dev.yml \
           --set generic-service.image.tag=${{ inputs.version }} \
           --wait \
           --timeout 10m \
