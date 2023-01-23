@@ -14,7 +14,7 @@ containerDefinitions:
         value: {{ .Env.VERSION }}
     {{- range $key, $val := .values.env }}
       - name: {{ $key }}
-        value: {{ $val }}
+        value: {{ $val | strings.Quote }}
     {{- end }}
     secrets:
     {{- range $key, $val := .values.secrets }}
