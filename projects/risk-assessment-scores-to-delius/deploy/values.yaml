@@ -2,28 +2,24 @@
 # Values here are the same across all environments
 # An additional set of default values can be found in templates/helm-defaults.yml, which is the same across all projects
 generic-service:
-  nameOverride: prison-case-notes-to-probation
+  nameOverride: risk-assessment-scores-to-delius
 
   image:
-    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-case-notes-to-probation
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/risk-assessment-scores-to-delius
 
   ingress:
-    tlsSecretName: prison-case-notes-to-probation-cert
-
-  env:
-    DELIUS_DB_USERNAME: PrisonCaseNotesToProbation
+    tlsSecretName: risk-assessment-scores-to-delius-cert
 
   namespace_secrets:
-    prison-case-notes-to-probation:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    risk-assessment-scores-to-delius:
       AWS_ACCESS_KEY_ID: SQS_QUEUE_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
       MESSAGING_CONSUMER_QUEUE: SQS_QUEUE_NAME
       SENTRY_DSN: SENTRY_DSN
-      SPRING_DATASOURCE_URL: DB_URL
       SPRING_DATASOURCE_USERNAME: DB_USERNAME
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
-      INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-ID: CLIENT_ID
-      INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-SECRET: CLIENT_SECRET
 
 generic-prometheus-alerts:
-  targetApplication: prison-case-notes-to-probation
+  targetApplication: risk-assessment-scores-to-delius
