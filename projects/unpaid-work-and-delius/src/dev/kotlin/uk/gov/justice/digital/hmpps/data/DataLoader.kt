@@ -45,6 +45,5 @@ class DataLoader(
         personalCircumstanceRepository.save(PersonalCircumstanceGenerator.DEFAULT)
         addressRepository.save(AddressGenerator.DEFAULT)
         personalContactRepository.save(PersonalContactGenerator.DEFAULT)
-
     }
 }

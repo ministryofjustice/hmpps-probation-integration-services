@@ -2,7 +2,5 @@ package uk.gov.justice.digital.hmpps.data.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.controller.personaldetails.entity.PersonalCircumstanceSubType
-import uk.gov.justice.digital.hmpps.controller.personaldetails.entity.PersonalCircumstanceType
 
-interface PersonalCircumstanceSubTypeRepository: JpaRepository<PersonalCircumstanceSubType, Long>
-
+interface PersonalCircumstanceSubTypeRepository : JpaRepository<PersonalCircumstanceSubType, Long>

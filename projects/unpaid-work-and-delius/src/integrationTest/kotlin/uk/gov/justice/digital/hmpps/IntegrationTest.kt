@@ -45,5 +45,4 @@ internal class IntegrationTest {
         // Then it is logged to telemetry
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
     }
-
 }
