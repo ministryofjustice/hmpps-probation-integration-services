@@ -17,7 +17,7 @@ class JibConfigPlugin : Plugin<Project> {
                     user = "2000:2000"
                 }
                 from {
-                    image = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/eclipse-temurin:17-jre-alpine@sha256:e4e2f36571f8a913963fc177dcdc070b20a631b89e5199f3e8f9d13772f0dddb"
+                    image = "docker://ghcr.io/ministryofjustice/hmpps-probation-integration-services/eclipse-temurin:17-jre-alpine"
                 }
                 to {
                     image = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}:${project.version}"
