@@ -4,10 +4,10 @@ generic-service:
   resources:
     limits:
       cpu: 2
-      memory: 2GB
+      memory: 2G
     requests:
       cpu: 1
-      memory: 1GB
+      memory: 1G
 
   readinessProbe:
     httpGet:
