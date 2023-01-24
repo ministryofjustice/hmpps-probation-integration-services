@@ -1,2 +1,6 @@
-env:
-  SENTRY_ENVIRONMENT: prod
+generic-service:
+  ingress:
+    host: risk-assessment-scores-to-delius.hmpps.service.justice.gov.uk
+
+  env:
+    SENTRY_ENVIRONMENT: prod

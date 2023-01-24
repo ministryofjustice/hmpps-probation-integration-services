@@ -97,6 +97,7 @@ jobs:
           REFERANDMONITOR_URL: https://hmpps-interventions-ui-dev.apps.live-1.cloud-platform.service.justice.gov.uk
           OASYS_URL: https://ords.t2.oasys.service.justice.gov.uk/
           APPROVEDPREMISES_URL: https://approved-premises-dev.hmpps.service.justice.gov.uk/
+          MAKE_RECALL_DECISIONS_URL: https://make-recall-decision-dev.hmpps.service.justice.gov.uk
           DELIUS_USERNAME: ${{ secrets.E2E_DELIUS_USERNAME }}
           DELIUS_PASSWORD: ${{ secrets.E2E_DELIUS_PASSWORD }}
           DPS_USERNAME: ${{ secrets.E2E_DPS_USERNAME }}
