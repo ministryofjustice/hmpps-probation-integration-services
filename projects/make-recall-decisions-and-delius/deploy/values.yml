@@ -1,15 +1,21 @@
-# Common values
-image:
-  name: make-recall-decisions-and-delius
+generic-service:
+  nameOverride: make-recall-decisions-and-delius
 
-secrets:
-  APPLICATIONINSIGHTS_CONNECTION_STRING: /application-insights/connection-string
-  SPRING_DATASOURCE_URL:                 /delius-database/jdbc-url
-  SPRING_DATASOURCE_USERNAME:            /make-recall-decisions-and-delius/db-username
-  SPRING_DATASOURCE_PASSWORD:            /make-recall-decisions-and-delius/db-password
-  MESSAGING_CONSUMER_QUEUE:              /make-recall-decisions-and-delius/sqs-queue-name
-  AWS_ACCESS_KEY_ID:                     /make-recall-decisions-and-delius/sqs-queue-access-key-id
-  AWS_SECRET_ACCESS_KEY:                 /make-recall-decisions-and-delius/sqs-queue-secret-access-key
-  OAUTH2_CLIENT-ID:                      /make-recall-decisions-and-delius/client-id
-  OAUTH2_CLIENT-SECRET:                  /make-recall-decisions-and-delius/client-secret
-  SENTRY_DSN:                            /make-recall-decisions-and-delius/sentry-dsn
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/make-recall-decisions-and-delius
+
+  ingress:
+    tlsSecretName: make-recall-decisions-and-delius-cert
+
+  namespace_secrets:
+    make-recall-decisions-and-delius:
+      AWS_ACCESS_KEY_ID: SQS_QUEUE_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
+      MESSAGING_CONSUMER_QUEUE: SQS_QUEUE_NAME
+      SENTRY_DSN: SENTRY_DSN
+      SPRING_DATASOURCE_URL: DB_URL
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+
+generic-prometheus-alerts:
+  targetApplication: make-recall-decisions-and-delius
