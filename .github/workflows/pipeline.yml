@@ -34,7 +34,7 @@ jobs:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         with:
-          arguments: jib dockerTagsPush
+          arguments: jib dockerTagsPush -Dorg.gradle.parallel=false
 
   deploy-to-test:
     name: Deploy to test
