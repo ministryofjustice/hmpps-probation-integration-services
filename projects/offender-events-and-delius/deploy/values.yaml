@@ -9,12 +9,13 @@ generic-service:
     tlsSecretName: offender-events-and-delius-cert
 
   namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
     offender-events-and-delius:
       AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
       MESSAGING_PRODUCER_TOPIC: AWS_TOPIC_ARN
       SENTRY_DSN: SENTRY_DSN
-      SPRING_DATASOURCE_URL: DB_URL
       SPRING_DATASOURCE_USERNAME: DB_USERNAME
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
 
