@@ -70,9 +70,9 @@ class CaseViewService(
     )
 
     private fun SentenceSummary.toCvSentence() = CvSentence(description, startDate, length, endDate)
-    private fun SentenceSummary.mainOffence() = CvOffence(offenceMainCategory, offenceSubCategory)
+    private fun SentenceSummary.mainOffence() = CvOffence(offenceMainCategory, offenceSubCategory, true)
     private fun CaseViewAdditionalOffence.toCvOffence() =
-        CvOffence(offence.mainCategoryDescription, offence.subCategoryDescription)
+        CvOffence(offence.mainCategoryDescription, offence.subCategoryDescription, false)
 
     private fun CaseViewRequirement.toCvRequirement() = CvRequirement(
         mainCategory.description,

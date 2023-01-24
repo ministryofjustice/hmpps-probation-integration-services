@@ -33,7 +33,7 @@ data class CvAddress(
     val startDate: LocalDate
 )
 
-data class CvOffence(val mainCategory: String, val subCategory: String)
+data class CvOffence(val mainCategory: String, val subCategory: String, val mainOffence: Boolean)
 
 data class CvSentence(
     val description: String,

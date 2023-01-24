@@ -106,8 +106,8 @@ class CaseViewIntegrationTest {
         assertThat(
             cv.offences,
             hasItems(
-                CvOffence("Main Offence Category", "Main Offence Sub Category"),
-                CvOffence("Offence Main Category", "Offence Sub Category")
+                CvOffence("Main Offence Category", "Main Offence Sub Category", true),
+                CvOffence("Offence Main Category", "Offence Sub Category", false)
             )
         )
         assertThat(
