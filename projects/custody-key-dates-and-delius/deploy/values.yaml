@@ -8,12 +8,13 @@ generic-service:
     tlsSecretName: custody-key-dates-and-delius-cert
 
   namespace_secrets:
+    common:
+       SPRING_DATASOURCE_URL: DB_URL
     custody-key-dates-and-delius:
       AWS_ACCESS_KEY_ID: SQS_QUEUE_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
       MESSAGING_CONSUMER_QUEUE: SQS_QUEUE_NAME
       SENTRY_DSN: SENTRY_DSN
-      SPRING_DATASOURCE_URL: DB_URL
       SPRING_DATASOURCE_USERNAME: DB_USERNAME
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
       OAUTH2_CLIENT-ID: CLIENT_ID
