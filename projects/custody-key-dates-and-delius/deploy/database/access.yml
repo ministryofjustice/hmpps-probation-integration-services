@@ -2,6 +2,8 @@ database:
   access:
     username_key: /custody-key-dates-and-delius/db-username
     password_key: /custody-key-dates-and-delius/db-password
+    tables:
+      - key_date
 
   audit:
     username: CustodyKeyDatesAndDelius
