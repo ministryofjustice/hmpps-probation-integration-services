@@ -17,6 +17,14 @@ generic-service:
     periodSeconds: 10
     timeoutSeconds: 60
 
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 60
+
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius
     port: 9600
