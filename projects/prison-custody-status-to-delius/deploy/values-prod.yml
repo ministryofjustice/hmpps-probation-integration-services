@@ -1,4 +1,8 @@
 enabled: false # temporarily disable deployments to this environment until temp recall testing is complete.
 
-env:
-  SENTRY_ENVIRONMENT: prod
+generic-service:
+  ingress:
+    host: prison-custody-status-to-delius.hmpps.service.justice.gov.uk
+
+  env:
+    SENTRY_ENVIRONMENT: prod
