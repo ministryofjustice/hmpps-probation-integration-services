@@ -3,11 +3,11 @@ generic-service:
   replicaCount: 1
   resources:
     limits:
-     cpu: 2
-     memory: 2GB
+      cpu: 2
+      memory: 2GB
     requests:
-    cpu: 1
-    memory: 1GB
+      cpu: 1
+      memory: 1GB
 
   readinessProbe:
     httpGet:
