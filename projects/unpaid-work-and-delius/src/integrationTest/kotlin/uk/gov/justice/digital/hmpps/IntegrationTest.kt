@@ -12,12 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.util.concurrent.TimeoutException
@@ -49,10 +46,4 @@ internal class IntegrationTest {
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
     }
 
-    @Test
-    fun `API call retuns a success response`() {
-        mockMvc
-            .perform(get("/example/123").withOAuth2Token(wireMockServer))
-            .andExpect(status().is2xxSuccessful)
-    }
 }
