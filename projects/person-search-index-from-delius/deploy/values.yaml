@@ -11,7 +11,7 @@ generic-service:
 
   readinessProbe:
     httpGet:
-      path: localhost:9600
+      path: /
       port: http
     initialDelaySeconds: 30
     periodSeconds: 10
