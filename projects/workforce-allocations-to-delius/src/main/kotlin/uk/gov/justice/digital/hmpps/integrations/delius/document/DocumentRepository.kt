@@ -16,7 +16,9 @@ interface DocumentRepository : JpaRepository<Document, Long> {
         """
         select crd from CourtReportDocument crd
         join fetch crd.courtReport.type
-        where crd.personId = :personId and crd.alfrescoId is not null
+        where crd.personId = :personId 
+        and crd.alfrescoId is not null
+        and crd.softDeleted = false
         order by crd.lastSaved desc
     """
     )
@@ -27,6 +29,7 @@ interface DocumentRepository : JpaRepository<Document, Long> {
         select d from Document d
         where d.personId = :personId and d.alfrescoId is not null
         and (d.type = 'CPS_PACK' OR d.type = 'PREVIOUS_CONVICTION')
+        and d.softDeleted = false
     """
     )
     fun findCpsAndPreCons(personId: Long): List<Document>
