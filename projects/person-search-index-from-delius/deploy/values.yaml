@@ -19,6 +19,7 @@ generic-service:
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius
+    port: 9600
 
   ingress:
     tlsSecretName: person-search-index-from-delius-cert
