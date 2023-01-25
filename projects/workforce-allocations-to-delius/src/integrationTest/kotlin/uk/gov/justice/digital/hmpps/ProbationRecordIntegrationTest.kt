@@ -78,7 +78,7 @@ class ProbationRecordIntegrationTest {
         assertThat(pr.name, equalTo(person.name()))
         assertThat(pr.event.number, equalTo(eventNumber))
 
-        val sentence = PrSentence("Sentenced - In Custody", "12 Months", LocalDate.now().minusDays(2))
+        val sentence = PrSentence("Sentenced - In Custody", "12 Months", LocalDate.now().minusDays(2), null)
         val offences = listOf(
             PrOffence("A main offence", true),
             PrOffence("An additional offence", false)

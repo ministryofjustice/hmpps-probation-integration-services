@@ -19,7 +19,8 @@ data class PrEvent(
 data class PrSentence(
     val description: String,
     val length: String,
-    val startDate: LocalDate
+    val startDate: LocalDate,
+    val terminationDate: LocalDate?,
 )
 
 data class PrOffence(
