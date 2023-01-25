@@ -54,7 +54,7 @@ class PersonalCircumstanceEntity(
 @Immutable
 class PersonalCircumstanceType(
     @Id @Column(name = "circumstance_type_id")
-    var id: Long,
+    val id: Long,
 
     @Column(name = "code_value")
     val code: String,
@@ -68,7 +68,7 @@ class PersonalCircumstanceType(
 @Immutable
 class PersonalCircumstanceSubType(
     @Id @Column(name = "circumstance_sub_type_id")
-    var id: Long,
+    val id: Long,
 
     @Column(name = "code_value")
     val code: String,
