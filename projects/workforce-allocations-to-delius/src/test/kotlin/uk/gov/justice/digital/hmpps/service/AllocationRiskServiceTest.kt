@@ -56,7 +56,7 @@ class AllocationRiskServiceTest {
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
         whenever(registrationRepository.findAllByPersonCrn(person.crn)).thenReturn(listOf(registration))
         whenever(
-            oasysAssessmentRepository.findByPersonIdOrderByAssessmentDateDesc(
+            oasysAssessmentRepository.findFirstByPersonIdOrderByAssessmentDateDesc(
                 person.id
             )
         ).thenReturn(OasysAssessmentGenerator.DEFAULT)
@@ -77,7 +77,7 @@ class AllocationRiskServiceTest {
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
         whenever(registrationRepository.findAllByPersonCrn(person.crn)).thenReturn(listOf(registration))
         whenever(
-            ogrsAssessmentRepository.findByEventPersonIdOrderByAssessmentDateDesc(
+            ogrsAssessmentRepository.findFirstByEventPersonIdOrderByAssessmentDateDesc(
                 person.id
             )
         ).thenReturn(OgrsAssessmentGenerator.DEFAULT)
