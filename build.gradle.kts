@@ -8,6 +8,7 @@ plugins {
     kotlin("jvm") version "1.8.0"
     kotlin("plugin.spring") version "1.8.0" apply false
     kotlin("plugin.jpa") version "1.8.0" apply false
+    kotlin("kapt") version "1.8.0" apply false
     id("org.springframework.boot") version "3.0.2" apply false
     id("io.spring.dependency-management") version "1.1.0" apply false
     id("com.google.cloud.tools.jib") apply false
@@ -70,6 +71,7 @@ subprojects {
         plugin(JibConfigPlugin::class.java)
         plugin(ClassPathPlugin::class.java)
         plugin("org.sonarqube")
+        plugin("org.jetbrains.kotlin.kapt")
     }
 
     tasks {
