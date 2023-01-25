@@ -13,17 +13,17 @@ generic-service:
     httpGet:
       path: /
       port: http
-    initialDelaySeconds: 30
-    periodSeconds: 10
-    timeoutSeconds: 60
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 120
 
   livenessProbe:
     httpGet:
       path: /
       port: http
-    initialDelaySeconds: 30
-    periodSeconds: 10
-    timeoutSeconds: 60
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 120
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius
