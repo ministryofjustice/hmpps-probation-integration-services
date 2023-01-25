@@ -18,10 +18,10 @@ import java.time.LocalDate
 @Table(name = "personal_circumstance")
 class PersonalCircumstanceEntity(
     @Id @Column(name = "personal_circumstance_id")
-    var id: Long,
+    val id: Long,
 
     @ManyToOne
-    @JoinColumn(name = "offender_id", nullable = false)
+    @JoinColumn(name = "offÏender_id", nullable = false)
     val person: Person,
 
     @ManyToOne
