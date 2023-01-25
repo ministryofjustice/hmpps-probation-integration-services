@@ -14,7 +14,7 @@ import java.time.LocalDate
 
 @Entity
 @Immutable
-@Where(clause = "soft_deleted = 0 and end_date is null")
+@Where(clause = "soft_deleted = 0 and (end_date is null or end_date > current_date)")
 @Table(name = "personal_circumstance")
 class PersonalCircumstanceEntity(
     @Id @Column(name = "personal_circumstance_id")
