@@ -10,6 +10,7 @@ generic-service:
       memory: 1G
 
   readinessProbe:
+    httpGet: null
     exec:
       command:
         - curl
@@ -20,6 +21,7 @@ generic-service:
     timeoutSeconds: 60
 
   livenessProbe:
+    httpGet: null
     exec:
       command:
         - curl
