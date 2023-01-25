@@ -142,46 +142,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
-  delius-aws-setup:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
-
-      - uses: actions/checkout@v3
-        with:
-          path: hmpps-delius-core-terraform
-          repository: ministryofjustice/hmpps-delius-core-terraform
-
-      - name: Render Terraform service template
-        if: ${{ ! inputs.create_ingress }}
-        run: sed 's/SERVICE_NAME/${{ inputs.project_name }}/g' templates/service.tf > 'hmpps-delius-core-terraform/application/probation-integration-services/${{ inputs.project_name }}.tf'
-
-      - name: Render Terraform service with load-balancer template
-        if: ${{ inputs.create_ingress }}
-        run: sed 's/SERVICE_NAME/${{ inputs.project_name }}/g' templates/service-with-load-balancer.tf > 'hmpps-delius-core-terraform/application/probation-integration-services/${{ inputs.project_name }}.tf'
-
-      - name: Create pull request
-        id: pr
-        uses: ./.github/actions/create-signed-pull-request
-        with:
-          path: hmpps-delius-core-terraform
-          branch: probation-integration/create-${{ inputs.project_name }}
-          commit-message: ${{ inputs.issue_number }} Create ECS service for ${{ inputs.project_name }}
-          private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
-
-      - name: Create issue for manual steps
-        run: |
-          gh issue create \
-            --title "${{ inputs.issue_number }} Complete infrastructure setup for ${{ inputs.project_name }}" \
-            --body "- [ ] Merge pull request: ${{ steps.pr.outputs.pull-request-url }}" \
-            --label bootstrap
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
   sentry-setup:
     runs-on: ubuntu-latest
     if: ${{ inputs.create_sentry_project }}
