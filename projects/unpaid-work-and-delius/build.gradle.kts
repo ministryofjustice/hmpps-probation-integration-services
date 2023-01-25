@@ -20,6 +20,8 @@ dependencies {
     implementation(libs.openfeign)
     implementation(libs.sentry)
     implementation(libs.springdoc)
+    implementation(libs.mapstruct)
+    kapt(libs.mapstructprocessor)
 
     dev(project(":libs:dev-tools"))
     dev("com.h2database:h2")
