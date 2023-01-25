@@ -11,7 +11,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegisterTypeGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
@@ -27,7 +26,7 @@ class AllocationRiskIntegrationTest {
     fun `successful response`() {
         val person = PersonGenerator.DEFAULT
         mockMvc.perform(
-            get("/allocation-demand/${person.crn}/${EventGenerator.DEFAULT.number}/risk")
+            get("/allocation-demand/${person.crn}/risk")
                 .withOAuth2Token(wireMockserver)
         )
             .andExpect(status().is2xxSuccessful)
