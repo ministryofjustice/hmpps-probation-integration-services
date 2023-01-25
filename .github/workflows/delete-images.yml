@@ -1,0 +1,23 @@
+name: Delete old images
+# Delete unused images from GitHub Container Registry
+# Note: deleted images are still retained by GitHub for 30 days.  To recover them, see: https://docs.github.com/en/rest/packages#restore-package-version-for-an-organization
+
+on:
+  schedule:
+    - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
+  workflow_dispatch:
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete untagged images older than 1 week
+        uses: snok/container-retention-policy@v1
+        with:
+          account-type: org
+          org-name: ministryofjustice
+          image-names: hmpps-probation-integration-services/*
+          cut-off: A week ago UTC
+          keep-at-least: 1
+          untagged-only: true
+          token: ${{ secrets.BOT_GITHUB_PACKAGES_TOKEN }}

@@ -26,13 +26,15 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Pull base image
+        run: docker pull ghcr.io/ministryofjustice/hmpps-probation-integration-services/eclipse-temurin:17-jre-alpine
       - name: Push images
         uses: gradle/gradle-build-action@v2
         env:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         with:
-          arguments: jib dockerTagsPush
+          arguments: jib dockerTagsPush -Dorg.gradle.parallel=false
 
   deploy-to-test:
     name: Deploy to test

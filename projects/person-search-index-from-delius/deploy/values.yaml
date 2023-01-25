@@ -1,0 +1,62 @@
+generic-service:
+  nameOverride: person-search-index-from-delius
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 2
+      memory: 2G
+    requests:
+      cpu: 1
+      memory: 1G
+
+  readinessProbe:
+    httpGet: null
+    exec:
+      command:
+        - curl
+        - -sf
+        - localhost:9600
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 60
+
+  livenessProbe:
+    httpGet: null
+    exec:
+      command:
+        - curl
+        - -sf
+        - localhost:9600
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 60
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius
+    port: 9600
+
+  ingress:
+    tlsSecretName: person-search-index-from-delius-cert
+
+  env:
+    PRIMARY_INDEX_NAME: person-search-primary
+    STANDBY_INDEX_NAME: person-search-standby
+    JDK_JAVA_OPTIONS: -XX:MaxRAMPercentage=75.0
+
+  namespace_secrets:
+    common:
+      JDBC_CONNECTION_STRING: DB_STANDBY_URL
+    person-search-index-from-delius:
+      JDBC_USER: DB_USERNAME
+      JDBC_PASSWORD: DB_PASSWORD
+      SEARCH_INDEX_USERNAME: INGRESS_USERNAME
+      SEARCH_INDEX_PASSWORD: INGRESS_PASSWORD
+      SQS_QUEUE_NAME: SQS_QUEUE_NAME
+      SQS_QUEUE_ACCESS_KEY_ID: SQS_QUEUE_ACCESS_KEY_ID
+      SQS_QUEUE_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
+      SQS_DLQ_NAME: SQS_DLQ_NAME
+      SQS_DLQ_ACCESS_KEY_ID: SQS_DLQ_ACCESS_KEY_ID
+      SQS_DLQ_SECRET_ACCESS_KEY: SQS_DLQ_SECRET_ACCESS_KEY
+
+generic-prometheus-alerts:
+  targetApplication: person-search-index-from-delius

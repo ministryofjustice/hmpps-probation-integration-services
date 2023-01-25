@@ -16,7 +16,7 @@ RUN apt-get update && apt-get -y install \
   && rm -rf /var/lib/apt/lists/* \
   && chmod u+s /usr/sbin/cron
 
-USER logstash
+USER 1000
 
 RUN mkdir -p /usr/share/logstash/data/dead_letter_queue/incremental /usr/share/logstash/data/dead_letter_queue/full-load
 
