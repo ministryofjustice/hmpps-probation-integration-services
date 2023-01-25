@@ -1,4 +1,8 @@
 enabled: false # TODO set this to true when you're ready to deploy your service
 
-env:
-  SENTRY_ENVIRONMENT: prod
+generic-service:
+  ingress:
+    host: $SERVICE_NAME.hmpps.service.justice.gov.uk
+
+  env:
+    SENTRY_ENVIRONMENT: prod
