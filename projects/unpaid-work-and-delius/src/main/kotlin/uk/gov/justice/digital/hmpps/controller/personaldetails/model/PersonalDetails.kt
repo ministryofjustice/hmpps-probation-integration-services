@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.controller.personaldetails.model
 import uk.gov.justice.digital.hmpps.controller.personaldetails.entity.PersonalContactEntity
 
 data class PersonalDetails(
-
     val crn: String,
     val personalCircumstances: List<PersonalCircumstance>,
     val personalContacts: List<PersonalContact>,
