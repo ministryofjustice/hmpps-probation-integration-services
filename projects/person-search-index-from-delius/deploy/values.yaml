@@ -10,20 +10,24 @@ generic-service:
       memory: 1G
 
   readinessProbe:
-    httpGet:
-      path: /
-      port: http
-    initialDelaySeconds: 60
-    periodSeconds: 30
-    timeoutSeconds: 120
+    exec:
+      command:
+        - curl
+        - -sf
+        - localhost:9600
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 60
 
   livenessProbe:
-    httpGet:
-      path: /
-      port: http
-    initialDelaySeconds: 60
-    periodSeconds: 30
-    timeoutSeconds: 120
+    exec:
+      command:
+        - curl
+        - -sf
+        - localhost:9600
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 60
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius
