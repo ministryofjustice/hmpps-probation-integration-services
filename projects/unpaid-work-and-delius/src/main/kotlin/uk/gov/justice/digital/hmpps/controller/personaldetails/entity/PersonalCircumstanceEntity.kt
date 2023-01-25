@@ -21,7 +21,7 @@ class PersonalCircumstanceEntity(
     val id: Long,
 
     @ManyToOne
-    @JoinColumn(name = "offÏender_id", nullable = false)
+    @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
     @ManyToOne
