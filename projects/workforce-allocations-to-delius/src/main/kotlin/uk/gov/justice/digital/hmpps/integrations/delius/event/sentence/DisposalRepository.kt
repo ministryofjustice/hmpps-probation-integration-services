@@ -19,6 +19,7 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
         left join fetch s.grade.dataset
         where d.event.person.id = :personId
         and d.event.number <> :eventNumber
+        and om.active = true
     """
     )
     fun findAllSentencesExcludingEventNumber(personId: Long, eventNumber: String): List<SentenceWithManager>
