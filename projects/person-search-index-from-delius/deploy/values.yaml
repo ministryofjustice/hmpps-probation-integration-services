@@ -35,6 +35,7 @@ generic-service:
   env:
     PRIMARY_INDEX_NAME: person-search-primary
     STANDBY_INDEX_NAME: person-search-standby
+    JDK_JAVA_OPTIONS: -XX:MaxRAMPercentage=75.0
 
   namespace_secrets:
     common:
