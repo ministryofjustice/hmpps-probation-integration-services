@@ -9,16 +9,17 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
         select new uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.SentenceWithManager(
             d, mo, s
         ) from Disposal d
-        join fetch d.event
+        join fetch d.event e
         join fetch d.type
         join fetch d.entryLengthUnit.dataset
-        join fetch MainOffence mo on d.event.id = mo.event.id
+        join fetch MainOffence mo on e.id = mo.event.id
         join fetch mo.offence
-        join OrderManager om on d.event.id = om.eventId
+        join OrderManager om on e.id = om.eventId
         join fetch Staff s on om.staff.id = s.id
         left join fetch s.grade.dataset
-        where d.event.person.id = :personId
-        and d.event.number <> :eventNumber
+        where e.person.id = :personId
+        and e.number <> :eventNumber
+        and e.softDeleted = false and d.softDeleted = false
         and om.active = true
     """
     )
