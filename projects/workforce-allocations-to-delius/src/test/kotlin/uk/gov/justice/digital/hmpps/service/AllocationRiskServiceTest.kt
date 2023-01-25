@@ -9,13 +9,11 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OasysAssessmentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OgrsAssessmentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OASYSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OGRSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.registration.RegistrationRepository
@@ -26,38 +24,23 @@ class AllocationRiskServiceTest {
     @Mock lateinit var registrationRepository: RegistrationRepository
     @Mock lateinit var ogrsAssessmentRepository: OGRSAssessmentRepository
     @Mock lateinit var oasysAssessmentRepository: OASYSAssessmentRepository
-    @Mock lateinit var eventRepository: EventRepository
     @Mock lateinit var personRepository: PersonRepository
     @InjectMocks lateinit var allocationRiskService: AllocationRiskService
 
     @Test
     fun `person not found`() {
         val exception = assertThrows<NotFoundException> {
-            allocationRiskService.getRiskRecord("UNK", "1")
+            allocationRiskService.getRiskRecord("UNK")
         }
         assertThat(exception.message, equalTo("Person with crn of UNK not found"))
     }
 
     @Test
-    fun `Risk record retrieved event not found`() {
-        val person = PersonGenerator.DEFAULT
-        val event = EventGenerator.DEFAULT
-        whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
-
-        val exception = assertThrows<NotFoundException> {
-            allocationRiskService.getRiskRecord(person.crn, event.number)
-        }
-        assertThat(exception.message, equalTo("Event with crn of ${person.crn} not found"))
-    }
-
-    @Test
     fun `Risk record retrieved no registrations or ogrs`() {
         val person = PersonGenerator.DEFAULT
-        val event = EventGenerator.DEFAULT
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
-        whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
 
-        val response = allocationRiskService.getRiskRecord(person.crn, event.number)
+        val response = allocationRiskService.getRiskRecord(person.crn)
 
         assertThat(response.name.forename, equalTo(person.forename))
         assertThat(response.name.surname, equalTo(person.surname))
@@ -68,19 +51,16 @@ class AllocationRiskServiceTest {
     @Test
     fun `Risk record retrieved with active registrations and ogrs`() {
         val person = PersonGenerator.DEFAULT
-        val event = EventGenerator.DEFAULT
         val registration = RegistrationGenerator.DEFAULT
 
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
-        whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
         whenever(registrationRepository.findAllByPersonCrn(person.crn)).thenReturn(listOf(registration))
         whenever(
-            oasysAssessmentRepository.findByPersonIdAndEventNumberOrderByAssessmentDateDesc(
-                person.id,
-                event.number
+            oasysAssessmentRepository.findByPersonIdOrderByAssessmentDateDesc(
+                person.id
             )
         ).thenReturn(OasysAssessmentGenerator.DEFAULT)
-        val response = allocationRiskService.getRiskRecord(person.crn, event.number)
+        val response = allocationRiskService.getRiskRecord(person.crn)
 
         assertThat(response.name.forename, equalTo(person.forename))
         assertThat(response.name.surname, equalTo(person.surname))
@@ -92,18 +72,16 @@ class AllocationRiskServiceTest {
     @Test
     fun `Risk record retrieved with inactive registrations and ogrs`() {
         val person = PersonGenerator.DEFAULT
-        val event = EventGenerator.DEFAULT
         val registration = RegistrationGenerator.WITH_DEREGISTRATION
 
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
-        whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
         whenever(registrationRepository.findAllByPersonCrn(person.crn)).thenReturn(listOf(registration))
         whenever(
-            ogrsAssessmentRepository.findByEventIdOrderByAssessmentDateDesc(
-                event.id
+            ogrsAssessmentRepository.findByEventPersonIdOrderByAssessmentDateDesc(
+                person.id
             )
         ).thenReturn(OgrsAssessmentGenerator.DEFAULT)
-        val response = allocationRiskService.getRiskRecord(person.crn, event.number)
+        val response = allocationRiskService.getRiskRecord(person.crn)
 
         assertThat(response.name.forename, equalTo(person.forename))
         assertThat(response.name.surname, equalTo(person.surname))

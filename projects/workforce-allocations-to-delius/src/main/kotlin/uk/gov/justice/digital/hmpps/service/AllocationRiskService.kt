@@ -5,8 +5,6 @@ import uk.gov.justice.digital.hmpps.api.model.RiskOGRS
 import uk.gov.justice.digital.hmpps.api.model.RiskRecord
 import uk.gov.justice.digital.hmpps.api.model.RiskRegistration
 import uk.gov.justice.digital.hmpps.api.model.name
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OASYSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OGRSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.registration.Registration
@@ -20,16 +18,15 @@ class AllocationRiskService(
     private val registrationRepository: RegistrationRepository,
     private val ogrsAssessmentRepository: OGRSAssessmentRepository,
     private val oasysAssessmentRepository: OASYSAssessmentRepository,
-    private val eventRepository: EventRepository,
     private val personRepository: PersonRepository
 ) {
 
-    fun getRiskRecord(crn: String, eventNumber: String): RiskRecord {
+    fun getRiskRecord(crn: String): RiskRecord {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val registrations = registrationRepository.findAllByPersonCrn(crn)
 
         val riskRegistrations = registrations.map { it.forRisk() }.groupBy { it.endDate == null }
-        val riskOGRS = getRiskOgrs(person, eventNumber)
+        val riskOGRS = getRiskOgrs(person)
 
         return RiskRecord(
             person.crn,
@@ -40,17 +37,12 @@ class AllocationRiskService(
         )
     }
 
-    private fun getRiskOgrs(person: Person, eventNumber: String): RiskOGRS? {
-        val event = eventRepository.findByPersonCrnAndNumber(person.crn, eventNumber) ?: throw NotFoundException(
-            "Event",
-            "crn",
-            person.crn
+    private fun getRiskOgrs(person: Person): RiskOGRS? {
+
+        val oasysAssessment = oasysAssessmentRepository.findByPersonIdOrderByAssessmentDateDesc(
+            person.id
         )
-        val oasysAssessment = oasysAssessmentRepository.findByPersonIdAndEventNumberOrderByAssessmentDateDesc(
-            person.id,
-            eventNumber
-        )
-        val ogrsAssessment = ogrsAssessmentRepository.findByEventIdOrderByAssessmentDateDesc(event.id)
+        val ogrsAssessment = ogrsAssessmentRepository.findByEventPersonIdOrderByAssessmentDateDesc(person.id)
         val assessment = listOfNotNull(oasysAssessment, ogrsAssessment).maxByOrNull { it.assessmentDate }
         return assessment?.let {
             RiskOGRS(assessment.lastModifiedDateTime.toLocalDate(), assessment.score)
