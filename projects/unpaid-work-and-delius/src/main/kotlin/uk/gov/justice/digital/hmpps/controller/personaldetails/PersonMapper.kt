@@ -10,17 +10,17 @@ import uk.gov.justice.digital.hmpps.controller.personaldetails.model.PersonalCir
 import uk.gov.justice.digital.hmpps.controller.personaldetails.model.PersonalContact
 import uk.gov.justice.digital.hmpps.controller.personaldetails.model.PersonalDetails
 
-@Mapper(uses = [PersonalCircumstanceMapper::class, PersonalContactMapper::class, AddressMapper::class])
+@Mapper(componentModel = "spring", uses = [PersonalCircumstanceMapper::class, PersonalContactMapper::class, AddressMapper::class])
 interface PersonMapper {
     fun convertToModel(person: Person): PersonalDetails
 }
 
-@Mapper
+@Mapper(componentModel = "spring")
 interface PersonalCircumstanceMapper {
     fun convertToModel(personalCircumstanceEntity: PersonalCircumstanceEntity): PersonalCircumstance
 }
 
-@Mapper
+@Mapper(componentModel = "spring")
 interface PersonalContactMapper {
 
     @Mapping(source = "surname", target = "name.surname")
@@ -30,7 +30,7 @@ interface PersonalContactMapper {
     fun convertToModel(personalContactEntity: PersonalContactEntity): PersonalContact
 }
 
-@Mapper
+@Mapper(componentModel = "spring")
 interface AddressMapper {
     fun convertToModel(addressEntity: AddressEntity): Address
 }
