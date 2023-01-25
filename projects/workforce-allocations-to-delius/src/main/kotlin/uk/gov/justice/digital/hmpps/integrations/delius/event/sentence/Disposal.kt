@@ -48,6 +48,9 @@ class Disposal(
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
+
+    @Column
+    val terminationDate: ZonedDateTime? = null
 ) {
     val length
         get() = "$entryLength ${entryLengthUnit?.description}"
