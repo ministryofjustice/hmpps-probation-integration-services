@@ -39,7 +39,7 @@ class PersonalContactEntity(
 
     @ManyToOne
     @JoinColumn(name = "address_id")
-    val addressEntity: AddressEntity?,
+    val address: AddressEntity?,
 
     @Column(name = "start_date")
     val start: LocalDate? = null,

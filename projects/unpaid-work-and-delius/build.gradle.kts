@@ -20,6 +20,8 @@ dependencies {
     implementation(libs.openfeign)
     implementation(libs.sentry)
     implementation(libs.springdoc)
+    implementation("org.mapstruct:mapstruct:1.5.3.Final")
+    kapt("org.mapstruct:mapstruct-processor:1.5.3.Final")
 
     dev(project(":libs:dev-tools"))
     dev("com.h2database:h2")
