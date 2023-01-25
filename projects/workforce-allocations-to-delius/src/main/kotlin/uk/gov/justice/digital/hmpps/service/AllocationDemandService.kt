@@ -91,7 +91,7 @@ class AllocationDemandService(
         if (this == null || isEmpty()) return listOf()
         return map {
             PrEvent(
-                PrSentence(it.disposal.type.description, it.disposal.length, it.disposal.date.toLocalDate()),
+                PrSentence(it.disposal.type.description, it.disposal.length, it.disposal.date.toLocalDate(), it.disposal.terminationDate?.toLocalDate()),
                 listOf(it.mainOffence.toOffence()) + aos[it.disposal.event.id].toOffences(),
                 if (it.manager.code.endsWith("U")) null else it.manager.toStaffMember()
             )
