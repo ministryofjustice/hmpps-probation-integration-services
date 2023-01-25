@@ -10,17 +10,23 @@ generic-service:
       memory: 1G
 
   readinessProbe:
-    httpGet:
-      path: /
-      port: http
+    httpGet: null
+    exec:
+      command:
+        - curl
+        - -sf
+        - localhost:9600
     initialDelaySeconds: 30
     periodSeconds: 10
     timeoutSeconds: 60
 
   livenessProbe:
-    httpGet:
-      path: /
-      port: http
+    httpGet: null
+    exec:
+      command:
+        - curl
+        - -sf
+        - localhost:9600
     initialDelaySeconds: 30
     periodSeconds: 10
     timeoutSeconds: 60
