@@ -32,7 +32,7 @@ class AllocationDemandResourceTest {
 
     @Test
     fun `allocation risk practitioner resource calls service`() {
-        allocationDemandResource.getRisk("ABC", "1")
-        verify(allocationRisk).getRiskRecord("ABC", "1")
+        allocationDemandResource.getRisk("ABC")
+        verify(allocationRisk).getRiskRecord("ABC")
     }
 }

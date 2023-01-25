@@ -45,7 +45,6 @@ class AllocationDemandResource(
     fun getImpact(@RequestParam crn: String, @RequestParam staff: String) = allocationDemand.getImpact(crn, staff)
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
-    @GetMapping("/{crn}/{eventNumber}/risk")
-    fun getRisk(@PathVariable crn: String, @PathVariable eventNumber: String) =
-        allocationRisk.getRiskRecord(crn, eventNumber)
+    @GetMapping("/{crn}/risk")
+    fun getRisk(@PathVariable crn: String) = allocationRisk.getRiskRecord(crn)
 }
