@@ -7,7 +7,7 @@ COPY --chown=logstash logstash-incremental.conf /usr/share/logstash/incremental/
 COPY --chown=logstash logstash-incremental-dlq.conf /usr/share/logstash/incremental-dlq/logstash.conf
 COPY --chown=logstash logstash.yml pipelines.yml /usr/share/logstash/config/
 
-COPY --chown=1000 management/* /search-management/
+COPY --chown=logstash management/* /search-management/
 
 USER root
 RUN apt-get update && apt-get -y install \
@@ -15,6 +15,8 @@ RUN apt-get update && apt-get -y install \
   jq \
   && rm -rf /var/lib/apt/lists/* \
   && chmod gu+s /usr/sbin/cron
+
+RUN echo '1000' > /etc/cron.allow
 
 USER 1000
 
