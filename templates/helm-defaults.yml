@@ -4,10 +4,10 @@ generic-service:
   replicaCount: 2
 
   readinessProbe:
-    initialDelaySeconds: 30
+    initialDelaySeconds: 45
 
   livenessProbe:
-    initialDelaySeconds: 30
+    initialDelaySeconds: 45
 
   image:
     port: 8080
