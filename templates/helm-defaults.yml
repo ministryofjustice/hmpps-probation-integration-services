@@ -5,13 +5,9 @@ generic-service:
 
   readinessProbe:
     initialDelaySeconds: 30
-    periodSeconds: 10
-    timeoutSeconds: 60
 
   livenessProbe:
     initialDelaySeconds: 30
-    periodSeconds: 10
-    timeoutSeconds: 60
 
   image:
     port: 8080
