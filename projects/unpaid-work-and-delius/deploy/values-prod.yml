@@ -1,3 +1,5 @@
+enabled: false # TODO set this to true when you're ready to deploy your service
+
 generic-service:
   ingress:
     host: unpaid-work-and-delius.hmpps.service.justice.gov.uk
@@ -5,4 +7,5 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: prod
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in.hmpps.service.justice.gov.uk/auth/oauth/token
-    INTEGRATIONS_TIER_URL: https://hmpps-tier.hmpps.service.justice.gov.uk
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/issuer
