@@ -3,6 +3,14 @@
 generic-service:
   replicaCount: 2
 
+  startupProbe:
+    httpGet:
+      path: /health/liveness
+      port: http
+    periodSeconds: 10
+    timeoutSeconds: 10
+    failureThreshold: 30
+
   image:
     port: 8080
 
