@@ -5,8 +5,8 @@ import jakarta.persistence.Embeddable
 import jakarta.persistence.EmbeddedId
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
+import org.hibernate.annotations.Immutable
 import org.springframework.data.annotation.CreatedBy
-import org.springframework.data.annotation.Immutable
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
