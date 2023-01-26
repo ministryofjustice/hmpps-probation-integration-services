@@ -29,7 +29,7 @@ data class CvAddress(
     val postcode: String?,
     val noFixedAbode: Boolean,
     val typeVerified: Boolean,
-    val typeDescription: String,
+    val typeDescription: String?,
     val startDate: LocalDate
 )
 

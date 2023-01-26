@@ -65,7 +65,7 @@ class CaseViewService(
         postcode,
         noFixedAbode ?: false,
         typeVerified ?: false,
-        type.description,
+        type?.description,
         startDate
     )
 

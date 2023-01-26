@@ -27,7 +27,7 @@ class CaseViewPersonAddress(
     val person: CaseViewPerson,
     @ManyToOne
     @JoinColumn(name = "address_type_id")
-    val type: ReferenceData,
+    val type: ReferenceData?,
     @ManyToOne
     @JoinColumn(name = "address_status_id")
     val status: ReferenceData,
