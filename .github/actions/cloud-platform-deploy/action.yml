@@ -82,4 +82,5 @@ runs:
           --wait \
           --timeout 10m \
           --history-max 10 \
-          --reset-values
+          --reset-values \
+          --atomic
