@@ -30,13 +30,13 @@ With this in mind, we aim to:
 * Services have a single well-defined purpose
 * Entities/projections are defined using domain-specific language (e.g. CaseNote, not Contact)
 
-A full list of decision records can be found in [decisions](doc/adr)
+Additional decision records can be found in [this repository](doc/adr), and in [Confluence](https://dsdmoj.atlassian.net/wiki/spaces/PINT/pages/4029808725/Architecture+Decisions).
 
 ## Tooling
 * Code is written in [Kotlin](https://kotlinlang.org/), using [Spring Boot](https://spring.io/projects/spring-boot)
 * Built and tested as a multi-project [Gradle](https://gradle.org/) build
-* Unit tests with [JUnit](https://junit.org/) and [Mockito](https://mockito.org/)
-* Integration tests with [Wiremock](https://wiremock.org/), [H2](https://www.h2database.com/), and [embedded ActiveMQ Artemis](https://activemq.apache.org/components/artemis/)
+* Unit tests with [JUnit 5](https://junit.org/) and [Mockito](https://mockito.org/)
+* Integration tests with [Spring Boot Test](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing), [Wiremock](https://wiremock.org/) and [H2](https://www.h2database.com/)
 * End-to-end testing with [Playwright](https://playwright.dev/) - see [End-to-end tests](https://github.com/ministryofjustice/hmpps-probation-integration-services#end-to-end-tests)
 * Container images are built with [Jib](https://github.com/GoogleContainerTools/jib#readme), and pushed to 
 [GitHub Packages](https://github.com/orgs/ministryofjustice/packages?repo_name=hmpps-probation-integration-services)
@@ -49,7 +49,7 @@ Docker or remote dependencies.
 
 To set up your development environment,
 1. Open the project in [IntelliJ IDEA](https://www.jetbrains.com/idea/). Select "Import project from external model", then "Gradle".
-2. To run tests for a service, right-click the `src/test` folder in the project view and select "Run tests".  See [Test](#test).
+2. To run the tests for a service, right-click the `src/test` folder in the project view and select "Run tests" (See [Test](#test)).
 3. To start the service, use the pre-defined run configuration in `.idea/runConfigurations` (See [Run](#run)).
 
 ## Code formatting
@@ -68,8 +68,11 @@ Or, to add a pre-commit hook to automatically fix any formatting issues, run:
 ```
 
 # Build
-IntelliJ will automatically build your code as needed. Any tasks you run from the root project, without specifying a 
-project name will be run on all the children. To build the entire repository using Gradle, run:
+IntelliJ will automatically build your code as needed. To build using Gradle, follow the instructions below. 
+
+## Gradle
+Any tasks you run from the root project, without specifying a project name will be run on all the children. To build the
+entire repository using Gradle, run:
 ```shell
 ./gradlew build
 ```
@@ -77,30 +80,39 @@ project name will be run on all the children. To build the entire repository usi
 To build just a specific project.
 ```shell
 ./gradlew <project-name>:build
+
+# For example,
+./gradlew tier-to-delius:build
+./gradlew workforce-allocations-to-delius:build
 ```
 
 Use buildDependents to build and test all projects that depend on a given project (for instance a shared library)
 ```shell
 ./gradlew <project-name>:buildDependents
+
+# For example,
+./gradlew libs:audit:buildDependents
 ```
 
 ## Docker
-To build Docker images and push to your local repository, run:
+To build Docker images locally, run:
 ```shell
-./gradlew <project-name>:jibDockerBuild
+./gradlew jibDockerBuild
 ```
 
 # Run
 ## IntelliJ
-In IntelliJ IDEA, a [run configuration](https://www.jetbrains.com/help/idea/run-debug-configuration.html) is available 
-for each service. Select it from the toolbar, and click either Run or Debug. The service will start in the `dev` 
-profile, which typically auto-configures embedded test data and services.
+In IntelliJ IDEA, a Spring Boot [run configuration](https://www.jetbrains.com/help/idea/run-debug-configuration.html) is
+automatically made available for each service. Select it from the toolbar, and click either Run or Debug. The service 
+will start in the `dev` profile, which configures any embedded test data and services.
 
-Run configurations are stored in [.idea/runConfigurations](.idea/runConfigurations).
+<img alt="IntelliJ run configuration toolbar" src="./doc/img/intellij-run-config.png" width="350">
+
+Run configuration files are stored in [.idea/runConfigurations](.idea/runConfigurations).
 
 ## Gradle
-To run Gradle tasks in a sub-project, prepend the task name with the name of the project. Environment variables can be 
-used to set the dev profile. For example,
+To run Gradle tasks in a subproject, prepend the task name with the name of the project. Environment variables can be 
+used to set the Spring profile. For example,
 ```shell
 SPRING_PROFILES_ACTIVE=dev ./gradlew <project-name>:bootRun
 ```
@@ -157,72 +169,80 @@ See [06-github-actions-runner.yaml](https://github.com/ministryofjustice/cloud-p
 For more information on how this is implemented, see [PI-340](https://dsdmoj.atlassian.net/browse/PI-340).
 
 # Deployment
-Once the code is built and tested, GitHub Actions deploys the updated images for each service to an Amazon Elastic 
-Container Service (ECS) cluster in the Delius AWS account. Deploying the services to the Delius AWS account enables 
-secure access to the Delius database.
-
-For documentation on the Delius ECS cluster, see the [ECS Cluster Confluence page](https://dsdmoj.atlassian.net/wiki/spaces/DAM/pages/3107979730/ECS+Cluster).
-The infrastructure code for the ECS services can be found in the [hmpps-delius-core-terraform](https://github.com/ministryofjustice/hmpps-delius-core-terraform/tree/main/application/probation-integration-services) 
-repository.
+Once the code is built and tested, GitHub Actions deploys the updated images for each service
+to [MOJ Cloud Platform](https://user-guide.cloud-platform.service.justice.gov.uk/documentation/concepts/what-is-the-cloud-platform.html).
+An AWS Transit Gateway connection enables secure access to dependencies in the Delius account, such as the Delius database.
 
 ## Environments
-Although the services are deployed to the Delius environments, they typically need to interact with resources in MOJ 
-Cloud Platform.
+Although the services are deployed to MOJ Cloud Platform namespaces, they typically need to interact with resources in
+the Delius environments.
 
-We map Delius environments to MOJ Cloud Platform namespaces as follows:
+We map MOJ Cloud Platform namespaces to Delius environments as follows:
 
-| Delius          | MOJ Cloud Platform | Used for               |
-|-----------------|--------------------|------------------------|
-| delius-test     | dev                | End-to-end testing     |
-| delius-pre-prod | preprod            | Testing with live data |
-| delius-prod     | prod               | Live service           |
+| MOJ Cloud Platform                           | Delius          | Used for               |
+|----------------------------------------------|-----------------|------------------------|
+| hmpps-probation-integration-services-dev     | delius-test     | End-to-end testing     |
+| hmpps-probation-integration-services-preprod | delius-pre-prod | Testing with live data |
+| hmpps-probation-integration-services-prod    | delius-prod     | Live service           |
 
 ## Configuration
-Each subproject has a `deploy` folder containing YAML files used for configuration.
-The standard `values.yml` file provides common configuration across all environments, while additional files (e.g. 
-`values-dev.yml`) can be used to set environment-specific configuration.
+Each subproject has a `deploy` folder containing YAML files used for configuration. The standard `values.yaml` file
+provides common configuration across all environments, while additional files (e.g. `values-dev.yml`) can be used to set
+environment-specific configuration.
 
-There is also a repository-level [defaults.yml](templates/defaults.yml) containing the default configuration across all 
-projects.
+There is also a repository-level [helm-defaults.yml](templates/helm-defaults.yml) containing the default configuration
+across all projects.
 
 ```bash
 ├── templates
-│   └── defaults.yml                      # default values across all projects
+│   └── helm-defaults.yml                 # default values across all projects
 └── projects
     └── workforce-allocations-to-delius
         └── deploy
-            ├── values.yml                # common values across each environment
+            ├── values.yaml               # common values across each environment
             └── values-<environment>.yml  # 1 per environment
 ```
 
 ### Setting project wide values
 
-`<project>/deploy/values.yml`
+`<project>/deploy/values.yaml`
+> :memo: the file extension for this file must be `.yaml`, not `.yml`, due to [restrictions in Helm](https://github.com/helm/helm/issues/7747). 
 
 This file contains values that are the same across all environments.
 Example:
 
 ```yaml
-# Image
-image:
-  name: project-name
+generic-service:
+  # Image
+  nameOverride: project-name
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/project-name
+    port: 1234
 
-# Container resources
-# See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#ContainerDefinition-taskcpu
-limits:
-  cpu: 1024    # = 1 vCPU
-  memory: 1024 # = 1 GB
+  # Container resources
+  replicaCount: 2
+  resources:
+    limits:
+      cpu: 1
+      memory: 1G
 
-# Environment variables
-env:
-  JAVA_OPTS: "-Xmx512m"
-  SERVER_PORT: "8080"
-  SPRING_PROFILES_ACTIVE: "my-profile"
+  # Environment variables
+  env:
+    JAVA_OPTS: "-Xmx512m"
+    SERVER_PORT: "8080"
+    SPRING_PROFILES_ACTIVE: "my-profile"
 
-# Secrets
-# These are stored in the AWS Parameter Store, and referenced by their name
-secrets:
-  CLIENT_SECRET: /parameters/client-secret
+  # Secrets
+  # These are stored in the Kubernetes namespaces
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    project-name:
+      CLIENT_SECRET: CLIENT_SECRET
+
+# Slack alerts
+generic-prometheus-alerts:
+  targetApplication: project-name
 ```
 
 ### Setting environment specific values
@@ -234,23 +254,40 @@ This file should only contain values that differ between environments.
 Example:
 
 ```yaml
-memory: 2048
+generic-service:
+  resources:
+    limits:
+      memory: 2G
 
-env:
-  SERVICE_URL: https://example.com
+  env:
+    SERVICE_URL: https://example.com
 ```
 
 ### Secrets
 Add secrets for each environment here: https://github.com/ministryofjustice/hmpps-probation-integration-services/settings/secrets/actions.
 
-The deployment job pushes GitHub secrets to AWS Parameter Store. 
-Then at runtime, ECS passes these secrets from AWS Parameter Store as environment variables to the container.
+The deployment job pushes GitHub secrets to the Kubernetes namespaces. Then at runtime, Kubernetes passes these secrets
+as environment variables to the container.
 
-GitHub secret names should be uppercase and prefixed with the project name. (e.g. `PRISON_CASE_NOTES_TO_PROBATION_CLIENT_ID`).
-When the secrets are pushed to parameter store, their names will be converted to paths (e.g. `prison-case-notes-to-probation/client-id`),
-which is how they should be referenced in the `values*.yml` files.
+GitHub secret names should be uppercase and prefixed with the project name. (
+e.g. `PRISON_CASE_NOTES_TO_PROBATION_CLIENT_ID`). The project name will be used as the Kubernetes secret name, and
+anything after it will be used as the key.
 
-For more details, see the "Add secrets to parameter store" step in [deploy.yml](.github/workflows/deploy.yml).
+For example, `PRISON_CASE_NOTES_TO_PROBATION_CLIENT_ID` will be converted into a secret
+named `prison-case-notes-to-probation`, containing a key of `CLIENT_ID`. This can be referenced in the `values*.yml`
+files like so:
+```yaml
+namespace_secrets:
+  prison-case-notes-to-probation:
+    MY_ENV_VAR: CLIENT_ID
+```
+
+Additionally, there are some shared values defined in a `common` secret in each namespace. This secret contains:
+```yaml
+APPLICATIONINSIGHTS_CONNECTION_STRING: Connection string for pushing Telemetry to Azure Application Insights.
+DB_URL: URL for the Delius probation database
+DB_STANDBY_URL: URL for the standby (read-only) Delius probation database
+```
 
 ## Accessing the Delius Database
 To configure access to the Delius probation database, add an `access.yml` file to the project's `deploy/database` 
@@ -274,40 +311,13 @@ database:
     surname: Service
 ```
 
-Before each deployment, GitHub Actions will invoke a pre-defined [Systems Manager Automation Runbook](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation.html)
-in AWS to create/update the access account and the audit user in the Delius database.  The runbook is in the 
-[hmpps-delius-pipelines](https://github.com/ministryofjustice/hmpps-delius-pipelines/tree/master/components/oracle/playbooks/probation_integration_access) 
+When this file is merged to main,
+the [Database Access](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/access.yml)
+workflow in GitHub Actions will invoke
+a [Systems Manager Automation Runbook](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation.html)
+in AWS to create/update the access account and the audit user in the Delius database. The runbook is in
+the [hmpps-delius-pipelines](https://github.com/ministryofjustice/hmpps-delius-pipelines/tree/master/components/oracle/playbooks/probation_integration_access)
 repository.
-
-## Accessing MOJ Cloud Platform
-To access SQS queues or other AWS resources in MOJ Cloud Platform, add an IAM policy to [cloud-platform-environments](https://github.com/ministryofjustice/cloud-platform-environments)
-that grants access to one of the following roles:
-* Dev/Test: `arn:aws:iam::728765553488:role/delius-test-ecs-sqs-consumer`
-* Pre-Prod: `arn:aws:iam::010587221707:role/delius-pre-prod-ecs-sqs-consumer`
-* Production: `arn:aws:iam::050243167760:role/delius-prod-ecs-sqs-consumer`
-
-Example: [case-notes-sub-queue.tf](https://github.com/ministryofjustice/cloud-platform-environments/blob/7a028911f8ed459a30e98d8dbba8cdcf7283ac93/namespaces/live.cloud-platform.service.justice.gov.uk/offender-events-dev/resources/case-notes-sub-queue.tf#L42-L57).
-
-To access HTTP endpoints in MOJ Cloud Platform, the following IP ranges should be added to their allow list:
-```yaml
-# values-dev.yml
-  allowlist:
-    delius-test-1: "35.176.126.163/32"
-    delius-test-2: "35.178.162.73/32"
-    delius-test-3: "52.56.195.113/32"
---- 
-# values-preprod.yml
-  allowlist:
-    delius-pre-prod-1: "52.56.240.62/32"
-    delius-pre-prod-2: "18.130.110.168/32"
-    delius-pre-prod-3: "35.178.44.184/32"
---- 
-# values-prod.yml
-  allowlist:
-    delius-prod-1: "52.56.115.146/32"
-    delius-prod-2: "35.178.104.253/32"
-    delius-prod-3: "35.177.47.45/32"
-```
 
 # Support
 For any issues or questions, please contact the Probation Integration team via the [#probation-integration-tech](https://mojdt.slack.com/archives/C02HQ4M2YQN)
