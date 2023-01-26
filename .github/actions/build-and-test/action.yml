@@ -44,11 +44,11 @@ runs:
       with:
         arguments: docker
 
-    - name: Sonar analysis
-      uses: gradle/gradle-build-action@v2
-      if: ${{ github.actor != 'dependabot[bot]' }}
-      with:
-        arguments: sonar
+#    - name: Sonar analysis
+#      uses: gradle/gradle-build-action@v2
+#      if: ${{ github.actor != 'dependabot[bot]' }}
+#      with:
+#        arguments: sonar
 
     - name: Publish test reports
       uses: mikepenz/action-junit-report@v3.3.3
