@@ -17,7 +17,7 @@ object CaseloadGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = Caseload(
         id = id,
-        person = CaseloadPerson(person.id, person.crn),
-        team = CaseloadTeam(team.id, team.code, staffInTeam.map { CaseloadStaff(it.id, it.code) })
+        person = CaseloadPerson(id = person.id, crn = person.crn),
+        team = CaseloadTeam(id = team.id, code = team.code, staff = staffInTeam.map { CaseloadStaff(it.id, it.code) })
     )
 }

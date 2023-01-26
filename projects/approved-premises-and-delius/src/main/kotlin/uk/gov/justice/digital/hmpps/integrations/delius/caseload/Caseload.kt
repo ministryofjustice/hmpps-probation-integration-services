@@ -15,15 +15,15 @@ import org.hibernate.annotations.Immutable
 data class Caseload(
     @Id
     @Column(name = "caseload_id")
-    val id: Long,
+    private val id: Long,
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
-    val person: CaseloadPerson,
+    private val person: CaseloadPerson,
 
     @ManyToOne
     @JoinColumn(name = "trust_provider_team_id")
-    val team: CaseloadTeam,
+    private val team: CaseloadTeam,
 )
 
 @Entity
@@ -32,10 +32,10 @@ data class Caseload(
 class CaseloadPerson(
     @Id
     @Column(name = "offender_id")
-    val id: Long,
+    private val id: Long,
 
     @Column(columnDefinition = "char(7)")
-    val crn: String,
+    private val crn: String,
 )
 
 @Entity
@@ -44,10 +44,10 @@ class CaseloadPerson(
 class CaseloadTeam(
     @Id
     @Column(name = "team_id")
-    val id: Long,
+    private val id: Long,
 
     @Column(name = "code", columnDefinition = "char(6)")
-    val code: String,
+    private val code: String,
 
     @ManyToMany
     @JoinTable(
@@ -55,7 +55,7 @@ class CaseloadTeam(
         joinColumns = [JoinColumn(name = "team_id")],
         inverseJoinColumns = [JoinColumn(name = "staff_id")]
     )
-    val staff: List<CaseloadStaff>,
+    private val staff: List<CaseloadStaff>,
 )
 
 @Entity
@@ -64,8 +64,8 @@ class CaseloadTeam(
 class CaseloadStaff(
     @Id
     @Column(name = "staff_id")
-    val id: Long,
+    private val id: Long,
 
     @Column(name = "officer_code", columnDefinition = "char(7)")
-    val code: String,
+    private val code: String,
 )
