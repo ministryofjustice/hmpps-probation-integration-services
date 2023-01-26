@@ -31,6 +31,17 @@ generic-service:
     periodSeconds: 10
     timeoutSeconds: 60
 
+  startupProbe:
+    httpGet: null
+    exec:
+      command:
+        - curl
+        - -sf
+        - localhost:9600
+    periodSeconds: 10
+    timeoutSeconds: 10
+    failureThreshold: 20
+
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius
     port: 9600

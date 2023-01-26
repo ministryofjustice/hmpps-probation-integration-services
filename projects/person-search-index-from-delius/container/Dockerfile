@@ -7,14 +7,14 @@ COPY --chown=logstash logstash-incremental.conf /usr/share/logstash/incremental/
 COPY --chown=logstash logstash-incremental-dlq.conf /usr/share/logstash/incremental-dlq/logstash.conf
 COPY --chown=logstash logstash.yml pipelines.yml /usr/share/logstash/config/
 
-COPY --chown=logstash management/* /search-management/
+COPY --chown=1000 management/* /search-management/
 
 USER root
 RUN apt-get update && apt-get -y install \
   cron \
   jq \
   && rm -rf /var/lib/apt/lists/* \
-  && chmod u+s /usr/sbin/cron
+  && chmod gu+s /usr/sbin/cron
 
 USER 1000
 
@@ -25,6 +25,6 @@ RUN mkdir -p /usr/share/logstash/data/dead_letter_queue/incremental /usr/share/l
 RUN sed -i "s/\${INCREMENTAL_STATEMENT_SQL}/$(cat /etc/logstash/statement.sql | tr '\n' ' ' | sed 's/"/\\\\"/g')/" /usr/share/logstash/incremental/logstash.conf
 
 ENTRYPOINT /search-management/init-script.sh -p /search-management/person-search-pipeline.json -t /search-management/person-search-template.json \
-            && echo "${MANAGEMENT_SCHEDULE} SEARCH_INDEX_HOST=${SEARCH_INDEX_HOST} SEARCH_INDEX_USERNAME=${SEARCH_INDEX_USERNAME} SEARCH_INDEX_PASSWORD=${SEARCH_INDEX_PASSWORD} APPLICATIONINSIGHTS_CONNECTION_STRING='${APPLICATIONINSIGHTS_CONNECTION_STRING}'  /search-management/index-alias-management.sh >> /tmp/cron.log 2>&1" | crontab - \
+            && echo "${MANAGEMENT_SCHEDULE} SEARCH_INDEX_HOST=${SEARCH_INDEX_HOST} APPLICATIONINSIGHTS_CONNECTION_STRING='${APPLICATIONINSIGHTS_CONNECTION_STRING}'  /search-management/index-alias-management.sh >> /tmp/cron.log 2>&1" | crontab - \
             && cron \
             && tail --retry -F /tmp/cron.log & /usr/local/bin/docker-entrypoint
