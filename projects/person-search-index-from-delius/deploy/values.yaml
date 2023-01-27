@@ -4,7 +4,7 @@ generic-service:
   resources:
     limits:
       cpu: 2
-      memory: 2G
+      memory: 2Gi
     requests:
       cpu: 1
       memory: 1G
