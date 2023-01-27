@@ -1,5 +1,4 @@
-#FROM ghcr.io/ministryofjustice/hmpps-probation-integration-services/opensearch-logstash:8
-FROM opensearchproject/logstash-oss-with-opensearch-output-plugin:8.4.0
+FROM ghcr.io/ministryofjustice/hmpps-probation-integration-services/opensearch-logstash:8
 
 COPY --chown=logstash ojdbc11.jar statement.sql /etc/logstash/
 COPY --chown=logstash logstash-full-load.conf /usr/share/logstash/full-load/logstash.conf
