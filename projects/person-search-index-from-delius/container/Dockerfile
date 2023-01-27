@@ -1,4 +1,5 @@
-FROM ghcr.io/ministryofjustice/hmpps-probation-integration-services/opensearch-logstash:8
+#FROM ghcr.io/ministryofjustice/hmpps-probation-integration-services/opensearch-logstash:8
+FROM opensearchproject/logstash-oss-with-opensearch-output-plugin:8.4.0
 
 COPY --chown=logstash ojdbc11.jar statement.sql /etc/logstash/
 COPY --chown=logstash logstash-full-load.conf /usr/share/logstash/full-load/logstash.conf
@@ -16,7 +17,6 @@ RUN apt-get update && apt-get -y install \
   && rm -rf /var/lib/apt/lists/* \
   && chmod gu+rw /var/run \
   && chmod gu+s /usr/sbin/cron \
-  && crontab -u logstash /etc/cron.d/restart-cron \
   && usermod -a -G crontab logstash
 
 USER 1000
