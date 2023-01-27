@@ -79,6 +79,8 @@ runs:
           --values projects/${{ inputs.project }}/deploy/values.yaml \
           --values projects/${{ inputs.project }}/deploy/${{ steps.env.outputs.values-file }} \
           --set generic-service.image.tag=${{ inputs.version }} \
+          --set generic-service.env.VERSION=${{ inputs.version }} \
+          --set version=${{ inputs.version }} \
           --wait \
           --timeout 10m \
           --history-max 10 \
