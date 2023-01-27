@@ -2,6 +2,10 @@
 # Values here are the same across all projects and all environments
 generic-service:
   replicaCount: 2
+  resources:
+    requests:
+      cpu: 128m
+      memory: 512Mi
 
   startupProbe:
     httpGet:
