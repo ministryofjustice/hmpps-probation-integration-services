@@ -11,6 +11,7 @@ include(
     "pre-sentence-reports-to-delius",
     "prison-custody-status-to-delius",
     "person-search-index-from-delius",
+    "person-search-index-from-delius:management",
     "risk-assessment-scores-to-delius",
     "tier-to-delius",
     "approved-premises-and-delius",
@@ -23,7 +24,8 @@ include(
 )
 
 // load children from the "projects" directory (and drop the prefix)
-rootProject.children
+fun ProjectDescriptor.allChildren(): Set<ProjectDescriptor> = children + children.flatMap { it.allChildren() }
+rootProject.allChildren()
     .filter { !it.path.startsWith(":libs") }
     .forEach { it.projectDir = File(rootDir, "projects/${it.projectDir.relativeTo(rootDir)}") }
 
