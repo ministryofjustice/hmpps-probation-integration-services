@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiStatusGenerator
@@ -20,6 +21,7 @@ import uk.gov.justice.digital.hmpps.data.generator.TransferReasonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.Address
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiStatusCode
@@ -56,7 +58,8 @@ class DataLoader(
     private val contactTypeRepository: ContactTypeRepository,
     private val nsiTypeRepository: NsiTypeRepository,
     private val nsiStatusRepository: NsiStatusRepository,
-    private val transferReasonRepository: TransferReasonRepository
+    private val transferReasonRepository: TransferReasonRepository,
+    private val caseloadRepository: CaseloadRepository,
 ) : CommandLineRunner {
     override fun run(vararg args: String?) {
         userRepository.save(UserGenerator.APPLICATION_USER)
@@ -74,25 +77,9 @@ class DataLoader(
         teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM_WITH_NO_STAFF)
         teamRepository.save(TeamGenerator.NON_APPROVED_PREMISES_TEAM)
         teamRepository.save(TeamGenerator.UNALLOCATED)
-        staffRepository.save(
-            StaffGenerator.generate(
-                "Key-worker",
-                teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM),
-                approvedPremises = listOf(ApprovedPremisesGenerator.DEFAULT)
-            )
-        )
-        staffRepository.save(
-            StaffGenerator.generate(
-                "Not key-worker",
-                teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM)
-            )
-        )
-        staffRepository.save(
-            StaffGenerator.generate(
-                "Not key-worker and not in AP team",
-                teams = listOf(TeamGenerator.NON_APPROVED_PREMISES_TEAM)
-            )
-        )
+        staffRepository.save(StaffGenerator.generate("Key-worker", "KEY0001", teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM), approvedPremises = listOf(ApprovedPremisesGenerator.DEFAULT)))
+        staffRepository.save(StaffGenerator.generate("Not key-worker", "KEY0002", teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM)))
+        staffRepository.save(StaffGenerator.generate("Not key-worker and not in AP team", "KEY0003", teams = listOf(TeamGenerator.NON_APPROVED_PREMISES_TEAM)))
 
         val personManagerStaff = StaffGenerator.generate(code = "N54A001")
         staffRepository.save(personManagerStaff)
@@ -110,6 +97,10 @@ class DataLoader(
         nsiTypeRepository.saveAll(NsiTypeCode.values().map { NsiTypeGenerator.generate(it.code) })
         nsiStatusRepository.saveAll(NsiStatusCode.values().map { NsiStatusGenerator.generate(it.code) })
         transferReasonRepository.save(TransferReasonGenerator.NSI)
+
+        caseloadRepository.save(CaseloadGenerator.generate(person, TeamGenerator.NON_APPROVED_PREMISES_TEAM))
+        caseloadRepository.save(CaseloadGenerator.generate(person, TeamGenerator.APPROVED_PREMISES_TEAM))
+        caseloadRepository.save(CaseloadGenerator.generate(person, TeamGenerator.UNALLOCATED))
     }
 }
 

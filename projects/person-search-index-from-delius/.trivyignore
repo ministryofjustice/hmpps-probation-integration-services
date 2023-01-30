@@ -29,4 +29,8 @@ CVE-2022-23476 exp:2023-06-01
 
 # Suppressed because this service does not handle any TLS requests
 # By marcus-bcl
-CVE-2022-41881 exp:2023-02-02
+CVE-2022-41881 exp:2023-06-01
+
+# Suppressed because git is not used at runtime
+# By marcus-bcl
+CVE-2022-47318 exp:2023-06-01

@@ -51,7 +51,6 @@ on:
         description: Image version
         type: string
         required: true
-        default: latest
 
 jobs:
   deploy:

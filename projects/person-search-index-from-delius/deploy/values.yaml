@@ -4,7 +4,7 @@ generic-service:
   resources:
     limits:
       cpu: 2
-      memory: 2G
+      memory: 2Gi
     requests:
       cpu: 1
       memory: 1G
@@ -31,6 +31,17 @@ generic-service:
     periodSeconds: 10
     timeoutSeconds: 60
 
+  startupProbe:
+    httpGet: null
+    exec:
+      command:
+        - curl
+        - -sf
+        - localhost:9600
+    periodSeconds: 10
+    timeoutSeconds: 10
+    failureThreshold: 20
+
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius
     port: 9600
@@ -49,8 +60,6 @@ generic-service:
     person-search-index-from-delius:
       JDBC_USER: DB_USERNAME
       JDBC_PASSWORD: DB_PASSWORD
-      SEARCH_INDEX_USERNAME: INGRESS_USERNAME
-      SEARCH_INDEX_PASSWORD: INGRESS_PASSWORD
       SQS_QUEUE_NAME: SQS_QUEUE_NAME
       SQS_QUEUE_ACCESS_KEY_ID: SQS_QUEUE_ACCESS_KEY_ID
       SQS_QUEUE_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
