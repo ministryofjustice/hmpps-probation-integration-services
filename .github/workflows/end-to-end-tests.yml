@@ -63,8 +63,6 @@ jobs:
       failed-projects: ${{ steps.json.outputs.failed-projects }}
       passed-projects: ${{ steps.json.outputs.passed-projects }}
       report-url: ${{ steps.html.outputs.report-url }}
-    env:
-      report-dir: playwright-report/test/${{ github.ref_name }}/${{ github.sha }}/${{ github.run_id }}/${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -76,6 +74,8 @@ jobs:
       - name: Get tests to run - specific tests
         if: inputs.projects != '' && inputs.projects != 'All'
         run: echo 'projects=${{ inputs.projects }}' >> $GITHUB_ENV
+      - name: Get report output directory
+        run: echo "report-dir=playwright-report/test/${{ github.ref_name }}/$(date '+%Y-%m-%d')/${{ github.sha }}/${{ github.run_id }}/${{ github.run_attempt }}" >> $GITHUB_ENV
       - uses: actions/setup-node@v3
         with:
           node-version: 16
@@ -140,6 +140,8 @@ jobs:
         with:
           folder: playwright-report
           target-folder: ${{ env.report-dir }}
+          single-commit: true
+          force: true
       - name: Output HTML report URL
         id: html
         if: always()
