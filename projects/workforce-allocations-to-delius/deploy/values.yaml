@@ -1,0 +1,30 @@
+---
+# Values here are the same across all environments
+# An additional set of default values can be found in templates/helm-defaults.yml, which is the same across all projects
+generic-service:
+  nameOverride: workforce-allocations-to-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/workforce-allocations-to-delius
+
+  ingress:
+    tlsSecretName: workforce-allocations-to-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+      SPRING_LDAP_URLS: LDAP_URL
+      SPRING_LDAP_USERNAME: LDAP_USERNAME
+      SPRING_LDAP_PASSWORD: LDAP_PASSWORD
+    workforce-allocations-to-delius:
+      AWS_ACCESS_KEY_ID: SQS_QUEUE_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
+      INTEGRATIONS_WORKFORCE-ALLOCATIONS_CLIENT-ID: CLIENT_ID
+      INTEGRATIONS_WORKFORCE-ALLOCATIONS_CLIENT-SECRET: CLIENT_SECRET
+      MESSAGING_CONSUMER_QUEUE: SQS_QUEUE_NAME
+      SENTRY_DSN: SENTRY_DSN
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+
+generic-prometheus-alerts:
+  targetApplication: workforce-allocations-to-delius
