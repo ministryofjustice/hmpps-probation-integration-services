@@ -34,7 +34,7 @@ dependencyResolutionManagement {
         create("libs") {
             library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.0.0-M3")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.0.0-RC1")
-            library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.0.0-M3")
+            library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.0.0-RC1")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.0.0-M3")
             bundle("aws-messaging", listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs"))
             library("insights", "com.microsoft.azure:applicationinsights-web:3.4.8")
