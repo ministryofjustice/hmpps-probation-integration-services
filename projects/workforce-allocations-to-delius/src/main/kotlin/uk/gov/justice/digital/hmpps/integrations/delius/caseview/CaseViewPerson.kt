@@ -5,10 +5,10 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -40,29 +40,24 @@ class CaseViewPerson(
     val gender: ReferenceData?,
     @Column(columnDefinition = "char(13)")
     val pncNumber: String? = null,
-    @OneToOne(mappedBy = "person")
-    val address: CaseViewPersonAddress? = null,
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
 )
 
 interface CaseViewPersonRepository : JpaRepository<CaseViewPerson, Long> {
 
-    @Query(
-        """
-        select p from CaseViewPerson p
-        left join fetch p.gender.dataset
-        left join fetch p.address pa
-        left join fetch pa.status.dataset
-        left join fetch pa.type.dataset
-        where p.crn = :crn
-        and (p.address is null 
-        OR (pa.softDeleted = false  
-        and pa.endDate is null 
-        and pa.status.code = 'M'))
-    """
-    )
+    @EntityGraph(attributePaths = ["gender.dataset"])
     fun findByCrn(crn: String): CaseViewPerson?
+
+    @Query("""
+        select ma from CaseViewPersonAddress ma
+        join fetch ma.status.dataset
+        left join fetch ma.type.dataset
+        where ma.personId = :personId 
+        and ma.status.code = 'M'
+        and ma.endDate is null
+    """)
+    fun findMainAddress(personId: Long): CaseViewPersonAddress?
 
     @Query(
         """
