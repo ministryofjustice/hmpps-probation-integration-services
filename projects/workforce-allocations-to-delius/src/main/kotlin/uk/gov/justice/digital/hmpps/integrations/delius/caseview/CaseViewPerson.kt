@@ -49,14 +49,16 @@ interface CaseViewPersonRepository : JpaRepository<CaseViewPerson, Long> {
     @EntityGraph(attributePaths = ["gender.dataset"])
     fun findByCrn(crn: String): CaseViewPerson?
 
-    @Query("""
+    @Query(
+        """
         select ma from CaseViewPersonAddress ma
         join fetch ma.status.dataset
         left join fetch ma.type.dataset
         where ma.personId = :personId 
         and ma.status.code = 'M'
         and ma.endDate is null
-    """)
+    """
+    )
     fun findMainAddress(personId: Long): CaseViewPersonAddress?
 
     @Query(
