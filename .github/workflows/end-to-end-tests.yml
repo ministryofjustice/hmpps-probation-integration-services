@@ -140,8 +140,6 @@ jobs:
         with:
           folder: playwright-report
           target-folder: ${{ env.report-dir }}
-          single-commit: true
-          force: true
       - name: Output HTML report URL
         id: html
         if: always()

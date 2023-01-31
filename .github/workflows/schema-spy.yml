@@ -44,9 +44,6 @@ jobs:
         with:
           folder: schema-spy-report
           target-folder: schema-spy-report
-          single-commit: true
-          force: true
 
       - name: Add HTML report URL to the job summary
         run: echo '[Schema Spy HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/schema-spy-report)' >> $GITHUB_STEP_SUMMARY
-
