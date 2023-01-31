@@ -93,7 +93,8 @@ class AllocationsDataLoader(
                 ReferenceDataGenerator.GENDER_MALE,
                 ReferenceDataGenerator.REQUIREMENT_SUB_CATEGORY,
                 ReferenceDataGenerator.ADDRESS_TYPE,
-                ReferenceDataGenerator.ADDRESS_STATUS_MAIN
+                ReferenceDataGenerator.ADDRESS_STATUS_MAIN,
+                ReferenceDataGenerator.ADDRESS_STATUS_PREVIOUS
             )
         )
 
