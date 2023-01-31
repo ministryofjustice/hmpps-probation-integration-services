@@ -18,17 +18,17 @@ data class CaseDetails(
     val genderIdentity: String?,
     val croNumber: String?,
     val pncNumber: String?,
-    val aliases: List<Alias>,
-    val emailAddresses: List<String>?,
-    val phoneNumbers: List<PhoneNumber>?,
+    val aliases: List<Alias>? = listOf(),
+    val emailAddress: String?,
+    val phoneNumbers: List<PhoneNumber>? = listOf(),
     val mainAddress: Address?,
     val ethnicity: String?,
-    val disabilities: List<Disability>,
+    val disabilities: List<Disability>? = listOf(),
     val language: Language?,
-    val personalCircumstances: List<PersonalCircumstance>?,
-    val personalContacts: List<PersonalContact>?,
+    val personalCircumstances: List<PersonalCircumstance>? = listOf(),
+    val personalContacts: List<PersonalContact>? = listOf(),
     val mappaRegistration: MappaRegistration?,
-    val registerFlags: List<RegisterFlag>?,
+    val registerFlags: List<RegisterFlag>? = listOf(),
     val sentence: Sentence?
 
 )
@@ -49,8 +49,8 @@ data class Disability(
     val notes: String
 )
 data class Language(
-    val primaryLanguage: String,
     val requiresInterpreter: Boolean = false,
+    val primaryLanguage: String = "",
 )
 
 data class MappaRegistration(

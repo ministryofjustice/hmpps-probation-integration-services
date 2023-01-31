@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.controller.casedetails.model.Alias
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.CaseDetails
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.Disability
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.Language
-import uk.gov.justice.digital.hmpps.controller.common.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.controller.common.mapper.AddressMapper
 import uk.gov.justice.digital.hmpps.controller.common.model.Address
 import uk.gov.justice.digital.hmpps.controller.common.model.PersonalCircumstance
@@ -26,8 +25,7 @@ import uk.gov.justice.digital.hmpps.controller.common.model.PersonalContact
         AddressMapper::class,
         CaseAddressMapper::class,
         AliasMapper::class,
-        DisabilityMapper::class,
-        LanguageMapper::class
+        DisabilityMapper::class
     ]
 )
 interface CaseMapper {
@@ -37,14 +35,16 @@ interface CaseMapper {
     @Mapping(source = "gender.description", target = "gender")
     @Mapping(source = "genderIdentity.description", target = "genderIdentity")
     @Mapping(source = "ethnicity.description", target = "ethnicity")
-    // @Mapping(source = "emailAddress", target = "emailAddresses") TODO how to map single to list?
     fun convertToModel(case: CaseEntity): CaseDetails
 }
 
-interface LanguageMapper {
-    @Mapping(source = "primaryLanguage.description", target = "primaryLanguage")
-    @Mapping(source = "requiresInterpreter", target = "requiresInterpreter")
-    fun convertToModel(primaryLanguage: ReferenceData, requiresInterpreter: Boolean): Language
+fun CaseMapper.withLanguage(case: CaseEntity): CaseDetails {
+    fun String.language(requiresInterpreter: Boolean) = Language(requiresInterpreter, this)
+    val model = convertToModel(case)
+
+    return model.copy(
+        language = case.primaryLanguage?.description?.language(case.requiresInterpreter ?: false)
+    )
 }
 
 @Mapper(componentModel = "spring")
