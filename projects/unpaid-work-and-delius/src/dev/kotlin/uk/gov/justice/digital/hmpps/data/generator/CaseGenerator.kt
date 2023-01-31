@@ -8,7 +8,8 @@ object CaseGenerator {
     val DEFAULT = generate("D001022")
 
     fun generate(crn: String, id: Long = IdGenerator.getAndIncrement()) =
-        CaseEntity(id,
+        CaseEntity(
+            id,
             crn,
             false,
             "David",
@@ -17,12 +18,11 @@ object CaseGenerator {
             "Banner",
             LocalDate.now().minusYears(19),
             ReferenceDataGenerator.GENDER_MALE,
-            personalCircumstances =  listOf(),
+            personalCircumstances = listOf(),
             personalContacts = listOf(),
             aliases = listOf(),
             disabilities = listOf(),
             ethnicity = ReferenceDataGenerator.ETHNICITY_INDIAN,
             primaryLanguage = ReferenceDataGenerator.LANGUAGE_ENGLISH
         )
-
 }

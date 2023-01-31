@@ -33,4 +33,3 @@ class AliasEntity(
     val case: CaseEntity,
     val softDeleted: Boolean = false,
 )
-

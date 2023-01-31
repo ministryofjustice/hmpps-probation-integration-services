@@ -82,4 +82,4 @@ class CaseEntity(
     @Convert(converter = YesNoConverter::class)
     val requiresInterpreter: Boolean? = false,
 
-    )
+)

@@ -20,13 +20,15 @@ import uk.gov.justice.digital.hmpps.controller.common.model.PersonalContact
 
 @Mapper(
     componentModel = "spring",
-    uses = [CasePersonalCircumstanceMapper::class,
+    uses = [
+        CasePersonalCircumstanceMapper::class,
         CasePersonalContactMapper::class,
         AddressMapper::class,
         CaseAddressMapper::class,
         AliasMapper::class,
         DisabilityMapper::class,
-        LanguageMapper::class]
+        LanguageMapper::class
+    ]
 )
 interface CaseMapper {
     @Mapping(source = "surname", target = "name.surname")
@@ -35,7 +37,7 @@ interface CaseMapper {
     @Mapping(source = "gender.description", target = "gender")
     @Mapping(source = "genderIdentity.description", target = "genderIdentity")
     @Mapping(source = "ethnicity.description", target = "ethnicity")
-    //@Mapping(source = "emailAddress", target = "emailAddresses") TODO how to map single to list?
+    // @Mapping(source = "emailAddress", target = "emailAddresses") TODO how to map single to list?
     fun convertToModel(case: CaseEntity): CaseDetails
 }
 
@@ -69,7 +71,7 @@ interface CasePersonalContactMapper {
 interface AliasMapper {
     @Mapping(source = "surname", target = "name.surname")
     @Mapping(source = "forename", target = "name.forename")
-    @Mapping(source = "secondName", target = "name.middleName") //TODO make this do both middlenames
+    @Mapping(source = "secondName", target = "name.middleName") // TODO make this do both middlenames
     fun convertToModel(alias: AliasEntity): Alias
 }
 
@@ -77,5 +79,3 @@ interface AliasMapper {
 interface DisabilityMapper {
     fun convertToModel(disabilityEntity: DisabilityEntity): Disability
 }
-
-

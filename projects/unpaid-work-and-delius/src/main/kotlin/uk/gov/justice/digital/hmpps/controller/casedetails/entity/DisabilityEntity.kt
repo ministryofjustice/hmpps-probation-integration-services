@@ -39,5 +39,3 @@ class DisabilityEntity(
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
 )
-
-

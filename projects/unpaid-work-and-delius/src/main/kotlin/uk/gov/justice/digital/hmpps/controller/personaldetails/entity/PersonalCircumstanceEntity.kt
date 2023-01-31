@@ -50,4 +50,3 @@ class PersonalCircumstanceEntity(
     val evidenced: Boolean = false,
 
 )
-
