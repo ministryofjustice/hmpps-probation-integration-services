@@ -1,0 +1,80 @@
+package uk.gov.justice.digital.hmpps.controller.casedetails.model
+
+import uk.gov.justice.digital.hmpps.controller.casedetails.entity.AliasEntity
+import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CaseEntity
+import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CasePersonalContactEntity
+import uk.gov.justice.digital.hmpps.controller.common.model.Address
+import uk.gov.justice.digital.hmpps.controller.common.model.Name
+import uk.gov.justice.digital.hmpps.controller.common.model.PersonalCircumstance
+import uk.gov.justice.digital.hmpps.controller.common.model.PersonalContact
+import uk.gov.justice.digital.hmpps.controller.common.model.Type
+import java.time.LocalDate
+
+data class CaseDetails(
+    val crn: String,
+    val name: Name,
+    val dateOfBirth: LocalDate,
+    val gender: String?,
+    val genderIdentity: String?,
+    val croNumber: String?,
+    val pncNumber: String?,
+    val aliases: List<Alias>,
+    val emailAddresses: List<String>?,
+    val phoneNumbers: List<PhoneNumber>?,
+    val mainAddress: Address?,
+    val ethnicity: String?,
+    val disabilities: List<Disability>,
+    val language: Language?,
+    val personalCircumstances: List<PersonalCircumstance>?,
+    val personalContacts: List<PersonalContact>?,
+    val mappaRegistration: MappaRegistration?,
+    val registerFlags: List<RegisterFlag>?,
+    val sentence: Sentence?
+
+)
+
+data class Alias(
+    val name: Name,
+    val dateOfBirth: LocalDate
+)
+
+data class PhoneNumber(
+    val type: String,
+    val number: String
+)
+
+data class Disability(
+    val type: Type,
+    val provisions: List<String>?, //TODO should not be null but need to work out how to resolve this relationship
+    val notes: String
+)
+data class Language(
+    val primaryLanguage: String,
+    val requiresInterpreter: Boolean = false,
+)
+
+data class MappaRegistration(
+    val startDate: LocalDate,
+    val level: Type,
+    val category: Type
+)
+
+data class RegisterFlag(
+    val code: String,
+    val description: String,
+    val riskColour: String
+)
+
+data class Sentence(
+    val startDate: LocalDate,
+    val mainOffence: MainOffence,
+)
+
+data class MainOffence(
+    val category: Type,
+    val subCategory: Type
+)
+
+fun CaseEntity.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
+fun AliasEntity.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
+fun CasePersonalContactEntity.name() = Name(forename, middleName, surname)
