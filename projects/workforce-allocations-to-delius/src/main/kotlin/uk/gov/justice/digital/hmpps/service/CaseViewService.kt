@@ -31,6 +31,7 @@ class CaseViewService(
 ) {
     fun caseView(crn: String, eventNumber: String): CaseView {
         val person = personRepository.getByCrn(crn)
+        val address = personRepository.findMainAddress(person.id)
         val sentence = personRepository.findSentenceSummary(person.id, eventNumber)
             ?: throw NotFoundException("Event", "number", eventNumber)
         val additionalOffences = additionalOffenceRepository.findAllByEventId(sentence.eventId)
@@ -44,7 +45,7 @@ class CaseViewService(
             person.dateOfBirth,
             person.gender?.description,
             person.pncNumber,
-            person.address?.toCvAddress(),
+            address?.toCvAddress(),
             sentence.toCvSentence(),
             listOf(sentence.mainOffence()) + additionalOffences.map { it.toCvOffence() },
             requirements.map { it.toCvRequirement() },

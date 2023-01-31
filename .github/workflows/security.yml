@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/.trivyignore'
 
 jobs:
   get-projects:

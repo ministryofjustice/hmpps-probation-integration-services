@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
 import uk.gov.justice.digital.hmpps.data.repository.CaseViewDisposalRepository
 import uk.gov.justice.digital.hmpps.data.repository.CaseViewEventRepository
@@ -46,7 +47,17 @@ class CaseViewDataLoader(
 ) {
     fun loadData() {
         personRepository.save(PersonGenerator.CASE_VIEW)
-        addressRepository.save(AddressGenerator.CASE_VIEW)
+        addressRepository.saveAll(
+            listOf(
+                AddressGenerator.forCaseView(
+                    "Previous House",
+                    postcode = "SM3 8WR",
+                    person = PersonGenerator.CASE_VIEW,
+                    status = ReferenceDataGenerator.ADDRESS_STATUS_PREVIOUS
+                ),
+                AddressGenerator.CASE_VIEW
+            )
+        )
         caseViewEventRepository.save(EventGenerator.CASE_VIEW)
 
         offenceRepository.saveAll(
