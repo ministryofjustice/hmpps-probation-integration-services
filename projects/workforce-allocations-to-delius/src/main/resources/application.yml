@@ -25,7 +25,7 @@ spring:
         Accept: application/json
         Content-Type: application/json
 
-delius.db.username: workforce-allocations-to-delius
+delius.db.username: HMPPSAllocations
 
 management.endpoints.web:
   base-path: /

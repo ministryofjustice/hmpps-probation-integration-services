@@ -27,11 +27,8 @@ object RegistrationGenerator {
 }
 
 object DeRegistrationGenerator {
-    val DEFAULT = DeRegistrationGenerator.generate()
-    fun generate(
-        person: Person = PersonGenerator.DEFAULT,
-        id: Long = IdGenerator.getAndIncrement(),
-    ) = DeRegistration(
+    val DEFAULT = generate()
+    fun generate(id: Long = IdGenerator.getAndIncrement()) = DeRegistration(
         id,
         LocalDate.now(),
         RegistrationGenerator.DEFAULT,
