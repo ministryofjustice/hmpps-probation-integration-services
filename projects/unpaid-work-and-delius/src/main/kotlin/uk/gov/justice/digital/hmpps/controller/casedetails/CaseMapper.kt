@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.controller.casedetails
 
-import org.mapstruct.BeforeMapping
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.AliasEntity
@@ -41,7 +40,6 @@ interface CaseMapper {
 }
 
 interface LanguageMapper {
-    @BeforeMapping()
     @Mapping(source = "primaryLanguage.description", target = "primaryLanguage")
     @Mapping(source = "requiresInterpreter", target = "requiresInterpreter")
     fun convertToModel(primaryLanguage: ReferenceData, requiresInterpreter: Boolean): Language
