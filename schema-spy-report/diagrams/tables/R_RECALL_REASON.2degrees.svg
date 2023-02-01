@@ -6453,72 +6453,72 @@
 <g id="node118" class="node">
 <title>RECALL</title>
 <g id="a_node118"><a xlink:href="../../tables/RECALL.html" xlink:title="RECALL" target="_top">
-<polygon fill="#ffffff" stroke="transparent" points="2085,-6295.2 2085,-6554.2 2295,-6554.2 2295,-6295.2 2085,-6295.2"/>
-<polygon fill="#f5f5f5" stroke="transparent" points="2085,-6530.7 2085,-6553.7 2295,-6553.7 2295,-6530.7 2085,-6530.7"/>
-<polygon fill="none" stroke="#000000" points="2085,-6530.7 2085,-6553.7 2295,-6553.7 2295,-6530.7 2085,-6530.7"/>
-<text text-anchor="start" x="2090" y="-6539.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">RECALL</text>
-<text text-anchor="start" x="2260.0437" y="-6538.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">[table]</text>
-<polygon fill="none" stroke="#000000" points="2085,-6508.7 2085,-6530.7 2295,-6530.7 2295,-6508.7 2085,-6508.7"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2090" y="-6525.7"/>
-<text text-anchor="start" x="2105" y="-6515.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">RECALL_ID</text>
-<polygon fill="none" stroke="#000000" points="2085,-6486.7 2085,-6508.7 2295,-6508.7 2295,-6486.7 2085,-6486.7"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2090" y="-6503.7"/>
-<text text-anchor="start" x="2105" y="-6493.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">RECALL_DATE</text>
-<polygon fill="none" stroke="#000000" points="2085,-6464.7 2085,-6486.7 2295,-6486.7 2295,-6464.7 2085,-6464.7"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2090" y="-6481.7"/>
-<text text-anchor="start" x="2105" y="-6471.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">PARTITION_AREA_ID</text>
-<polygon fill="none" stroke="#000000" points="2085,-6442.7 2085,-6464.7 2295,-6464.7 2295,-6442.7 2085,-6442.7"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2090" y="-6459.7"/>
-<text text-anchor="start" x="2105" y="-6449.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">SOFT_DELETED</text>
-<polygon fill="none" stroke="#000000" points="2085,-6420.7 2085,-6442.7 2295,-6442.7 2295,-6420.7 2085,-6420.7"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2090" y="-6437.7"/>
-<text text-anchor="start" x="2105" y="-6427.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">CREATED_DATETIME</text>
-<polygon fill="none" stroke="#000000" points="2085,-6398.7 2085,-6420.7 2295,-6420.7 2295,-6398.7 2085,-6398.7"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2090" y="-6415.7"/>
-<text text-anchor="start" x="2105" y="-6405.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">TRAINING_SESSION_ID</text>
-<polygon fill="none" stroke="#000000" points="2085,-6376.7 2085,-6398.7 2295,-6398.7 2295,-6376.7 2085,-6376.7"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2090" y="-6393.7"/>
-<text text-anchor="start" x="2105" y="-6383.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">RECALL_REASON_ID</text>
-<polygon fill="none" stroke="#000000" points="2085,-6354.7 2085,-6376.7 2295,-6376.7 2295,-6354.7 2085,-6354.7"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2090" y="-6371.7"/>
-<text text-anchor="start" x="2105" y="-6361.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">RELEASE_ID</text>
-<polygon fill="none" stroke="#000000" points="2085,-6332.7 2085,-6354.7 2295,-6354.7 2295,-6332.7 2085,-6332.7"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2090" y="-6349.7"/>
-<text text-anchor="start" x="2105" y="-6339.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">OFFENDER_ID</text>
-<polygon fill="none" stroke="#000000" points="2085,-6313.7 2085,-6332.7 2295,-6332.7 2295,-6313.7 2085,-6313.7"/>
-<text text-anchor="start" x="2088" y="-6319.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">...</text>
-<polygon fill="#ffffff" stroke="transparent" points="2085,-6294.7 2085,-6313.7 2172,-6313.7 2172,-6294.7 2085,-6294.7"/>
-<polygon fill="none" stroke="#000000" points="2085,-6294.7 2085,-6313.7 2172,-6313.7 2172,-6294.7 2085,-6294.7"/>
-<text text-anchor="start" x="2088" y="-6300.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 4</text>
-<polygon fill="#ffffff" stroke="transparent" points="2172,-6294.7 2172,-6313.7 2249,-6313.7 2249,-6294.7 2172,-6294.7"/>
-<polygon fill="none" stroke="#000000" points="2172,-6294.7 2172,-6313.7 2249,-6313.7 2249,-6294.7 2172,-6294.7"/>
-<text text-anchor="start" x="2207.4956" y="-6300.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">70 rows</text>
-<polygon fill="#ffffff" stroke="transparent" points="2249,-6294.7 2249,-6313.7 2295,-6313.7 2295,-6294.7 2249,-6294.7"/>
-<polygon fill="none" stroke="#000000" points="2249,-6294.7 2249,-6313.7 2295,-6313.7 2295,-6294.7 2249,-6294.7"/>
-<text text-anchor="start" x="2285.8862" y="-6300.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000"> &#160;</text>
+<polygon fill="#ffffff" stroke="transparent" points="2109.5,-6295.2 2109.5,-6554.2 2270.5,-6554.2 2270.5,-6295.2 2109.5,-6295.2"/>
+<polygon fill="#f5f5f5" stroke="transparent" points="2110,-6530.7 2110,-6553.7 2271,-6553.7 2271,-6530.7 2110,-6530.7"/>
+<polygon fill="none" stroke="#000000" points="2110,-6530.7 2110,-6553.7 2271,-6553.7 2271,-6530.7 2110,-6530.7"/>
+<text text-anchor="start" x="2115" y="-6539.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">RECALL</text>
+<text text-anchor="start" x="2236.0437" y="-6538.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">[table]</text>
+<polygon fill="none" stroke="#000000" points="2110,-6508.7 2110,-6530.7 2271,-6530.7 2271,-6508.7 2110,-6508.7"/>
+<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2115" y="-6525.7"/>
+<text text-anchor="start" x="2130" y="-6515.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">RECALL_ID</text>
+<polygon fill="none" stroke="#000000" points="2110,-6486.7 2110,-6508.7 2271,-6508.7 2271,-6486.7 2110,-6486.7"/>
+<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2115" y="-6503.7"/>
+<text text-anchor="start" x="2130" y="-6493.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">RECALL_DATE</text>
+<polygon fill="none" stroke="#000000" points="2110,-6464.7 2110,-6486.7 2271,-6486.7 2271,-6464.7 2110,-6464.7"/>
+<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2115" y="-6481.7"/>
+<text text-anchor="start" x="2130" y="-6471.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">PARTITION_AREA_ID</text>
+<polygon fill="none" stroke="#000000" points="2110,-6442.7 2110,-6464.7 2271,-6464.7 2271,-6442.7 2110,-6442.7"/>
+<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2115" y="-6459.7"/>
+<text text-anchor="start" x="2130" y="-6449.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">SOFT_DELETED</text>
+<polygon fill="none" stroke="#000000" points="2110,-6420.7 2110,-6442.7 2271,-6442.7 2271,-6420.7 2110,-6420.7"/>
+<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2115" y="-6437.7"/>
+<text text-anchor="start" x="2130" y="-6427.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">CREATED_DATETIME</text>
+<polygon fill="none" stroke="#000000" points="2110,-6398.7 2110,-6420.7 2271,-6420.7 2271,-6398.7 2110,-6398.7"/>
+<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2115" y="-6415.7"/>
+<text text-anchor="start" x="2130" y="-6405.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">TRAINING_SESSION_ID</text>
+<polygon fill="none" stroke="#000000" points="2110,-6376.7 2110,-6398.7 2271,-6398.7 2271,-6376.7 2110,-6376.7"/>
+<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2115" y="-6393.7"/>
+<text text-anchor="start" x="2130" y="-6383.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">RECALL_REASON_ID</text>
+<polygon fill="none" stroke="#000000" points="2110,-6354.7 2110,-6376.7 2271,-6376.7 2271,-6354.7 2110,-6354.7"/>
+<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2115" y="-6371.7"/>
+<text text-anchor="start" x="2130" y="-6361.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">RELEASE_ID</text>
+<polygon fill="none" stroke="#000000" points="2110,-6332.7 2110,-6354.7 2271,-6354.7 2271,-6332.7 2110,-6332.7"/>
+<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="2115" y="-6349.7"/>
+<text text-anchor="start" x="2130" y="-6339.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">OFFENDER_ID</text>
+<polygon fill="none" stroke="#000000" points="2110,-6313.7 2110,-6332.7 2271,-6332.7 2271,-6313.7 2110,-6313.7"/>
+<text text-anchor="start" x="2113" y="-6319.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">...</text>
+<polygon fill="#ffffff" stroke="transparent" points="2110,-6294.7 2110,-6313.7 2173,-6313.7 2173,-6294.7 2110,-6294.7"/>
+<polygon fill="none" stroke="#000000" points="2110,-6294.7 2110,-6313.7 2173,-6313.7 2173,-6294.7 2110,-6294.7"/>
+<text text-anchor="start" x="2113" y="-6300.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 4</text>
+<polygon fill="#ffffff" stroke="transparent" points="2173,-6294.7 2173,-6313.7 2238,-6313.7 2238,-6294.7 2173,-6294.7"/>
+<polygon fill="none" stroke="#000000" points="2173,-6294.7 2173,-6313.7 2238,-6313.7 2238,-6294.7 2173,-6294.7"/>
+<text text-anchor="start" x="2196.4956" y="-6300.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">70 rows</text>
+<polygon fill="#ffffff" stroke="transparent" points="2238,-6294.7 2238,-6313.7 2271,-6313.7 2271,-6294.7 2238,-6294.7"/>
+<polygon fill="none" stroke="#000000" points="2238,-6294.7 2238,-6313.7 2271,-6313.7 2271,-6294.7 2238,-6294.7"/>
+<text text-anchor="start" x="2261.8862" y="-6300.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000"> &#160;</text>
 </a>
 </g>
 </g>
 <!-- RECALL&#45;&gt;OFFENDER -->
 <g id="edge494" class="edge">
 <title>RECALL:w&#45;&gt;OFFENDER:e</title>
-<path fill="none" stroke="#000000" d="M2071.051,-6347.5761C2016.5105,-6382.0399 2076.8057,-6635.955 2028,-6689.7 1938.3496,-6788.4234 1867.3888,-6734.4192 1738,-6766.7 1616.6636,-6796.9719 1568.7153,-6762.3362 1464,-6830.7 1443.5314,-6844.063 1452.6189,-6863.2915 1431,-6874.7 1354.7693,-6914.9277 1129.6939,-6891.7 1043.5,-6891.7"/>
-<polygon fill="#000000" stroke="#000000" points="2077.292,-6345.8419 2085.9638,-6347.1686 2081.146,-6344.7709 2085,-6343.7 2085,-6343.7 2085,-6343.7 2081.146,-6344.7709 2084.0362,-6340.2314 2077.292,-6345.8419 2077.292,-6345.8419"/>
-<ellipse fill="none" stroke="#000000" cx="2074.2089" cy="-6346.6986" rx="3.2" ry="3.2"/>
+<path fill="none" stroke="#000000" d="M2095.3733,-6344.4569C1964.0058,-6359.0251 2134.5799,-6580.2217 2028,-6689.7 1934.9772,-6785.2525 1867.3888,-6734.4192 1738,-6766.7 1616.6636,-6796.9719 1568.7153,-6762.3362 1464,-6830.7 1443.5314,-6844.063 1452.6189,-6863.2915 1431,-6874.7 1354.7693,-6914.9277 1129.6939,-6891.7 1043.5,-6891.7"/>
+<polygon fill="#000000" stroke="#000000" points="2102.0107,-6344.1135 2110.1861,-6347.2952 2106.0053,-6343.9067 2110,-6343.7 2110,-6343.7 2110,-6343.7 2106.0053,-6343.9067 2109.8139,-6340.1048 2102.0107,-6344.1135 2102.0107,-6344.1135"/>
+<ellipse fill="none" stroke="#000000" cx="2098.815" cy="-6344.2789" rx="3.2" ry="3.2"/>
 </g>
 <!-- RECALL&#45;&gt;PARTITION_AREA -->
 <g id="edge495" class="edge">
 <title>RECALL:w&#45;&gt;PARTITION_AREA:e</title>
-<path fill="none" stroke="#000000" d="M2071.1501,-6471.0926C1964.7138,-6394.4763 2108.7064,-5386.774 2028,-5288.7 1953.4041,-5198.0514 1864.1738,-5299.1169 1771,-5227.7 1746.5357,-5208.9484 1763.4545,-5184.0837 1738,-5166.7 1636.6648,-5097.4949 1558.1532,-5211.3979 1464,-5132.7 1426.1418,-5101.0563 1470.7381,-5055.948 1431,-5026.7 1380.53,-4989.5531 1206.3618,-5001.4664 1149,-5026.7 1129.1323,-5035.4398 1135.8677,-5053.9602 1116,-5062.7 1005.7514,-5111.1986 965.3087,-5068.4161 845,-5062.7 798.175,-5060.4753 786.8778,-5052.7 740,-5052.7"/>
-<polygon fill="#000000" stroke="#000000" points="2077.409,-6473.1747 2083.8636,-6479.1159 2081.2045,-6474.4373 2085,-6475.7 2085,-6475.7 2085,-6475.7 2081.2045,-6474.4373 2086.1364,-6472.2841 2077.409,-6473.1747 2077.409,-6473.1747"/>
-<ellipse fill="none" stroke="#000000" cx="2074.3726" cy="-6472.1646" rx="3.2" ry="3.2"/>
+<path fill="none" stroke="#000000" d="M2096.0273,-6471.0931C1987.7031,-6394.4854 2108.8056,-5386.8946 2028,-5288.7 1953.4041,-5198.0514 1864.1738,-5299.1169 1771,-5227.7 1746.5357,-5208.9484 1763.4545,-5184.0837 1738,-5166.7 1636.6648,-5097.4949 1558.1532,-5211.3979 1464,-5132.7 1426.1418,-5101.0563 1470.7381,-5055.948 1431,-5026.7 1380.53,-4989.5531 1206.3618,-5001.4664 1149,-5026.7 1129.1323,-5035.4398 1135.8677,-5053.9602 1116,-5062.7 1005.7514,-5111.1986 965.3087,-5068.4161 845,-5062.7 798.175,-5060.4753 786.8778,-5052.7 740,-5052.7"/>
+<polygon fill="#000000" stroke="#000000" points="2102.4023,-6473.1949 2108.8727,-6479.119 2106.2012,-6474.4475 2110,-6475.7 2110,-6475.7 2110,-6475.7 2106.2012,-6474.4475 2111.1273,-6472.281 2102.4023,-6473.1949 2102.4023,-6473.1949"/>
+<ellipse fill="none" stroke="#000000" cx="2099.3632" cy="-6472.1929" rx="3.2" ry="3.2"/>
 </g>
 <!-- RECALL&#45;&gt;R_RECALL_REASON -->
 <g id="edge496" class="edge">
 <title>RECALL:w&#45;&gt;R_RECALL_REASON:e</title>
-<path fill="none" stroke="#000000" d="M2072.0386,-6380.6077C2013.6288,-6308.7217 2083.6213,-5713.5138 2028,-5661.7 1944.4228,-5583.8439 1876.6206,-5618.2143 1771,-5661.7 1566.704,-5745.8119 1638.9336,-6011.7 1418,-6011.7"/>
-<polygon fill="#000000" stroke="#000000" points="2077.9819,-6383.8598 2083.2719,-6390.8581 2081.491,-6385.7799 2085,-6387.7 2085,-6387.7 2085,-6387.7 2081.491,-6385.7799 2086.7281,-6384.5419 2077.9819,-6383.8598 2077.9819,-6383.8598"/>
-<ellipse fill="none" stroke="#000000" cx="2075.1747" cy="-6382.3237" rx="3.2" ry="3.2"/>
+<path fill="none" stroke="#000000" d="M2095.5854,-6386.8806C1999.175,-6375.1007 2075.4281,-6238.6136 2061,-6126.7 2054.3771,-6075.3285 2065.8999,-5697.0056 2028,-5661.7 1944.4228,-5583.8439 1876.6206,-5618.2143 1771,-5661.7 1566.704,-5745.8119 1638.9336,-6011.7 1418,-6011.7"/>
+<polygon fill="#000000" stroke="#000000" points="2102.0129,-6387.2459 2109.7957,-6391.2942 2106.0064,-6387.4729 2110,-6387.7 2110,-6387.7 2110,-6387.7 2106.0064,-6387.4729 2110.2043,-6384.1058 2102.0129,-6387.2459 2102.0129,-6387.2459"/>
+<ellipse fill="none" stroke="#000000" cx="2098.8181" cy="-6387.0643" rx="3.2" ry="3.2"/>
 </g>
 <!-- RELEASE -->
 <g id="node119" class="node">
@@ -6546,9 +6546,9 @@
 <!-- RECALL&#45;&gt;RELEASE -->
 <g id="edge497" class="edge">
 <title>RECALL:w&#45;&gt;RELEASE:e</title>
-<path fill="none" stroke="#000000" d="M2070.9138,-6369.2291C2012.3765,-6401.645 2054.885,-6647.9989 2028,-6716.7 2005.2698,-6774.784 2012.8732,-6833.7 1950.5,-6833.7"/>
-<polygon fill="#000000" stroke="#000000" points="2077.2398,-6367.6442 2085.8749,-6369.1921 2081.1199,-6366.6721 2085,-6365.7 2085,-6365.7 2085,-6365.7 2081.1199,-6366.6721 2084.1251,-6362.2079 2077.2398,-6367.6442 2077.2398,-6367.6442"/>
-<ellipse fill="none" stroke="#000000" cx="2074.1358" cy="-6368.4219" rx="3.2" ry="3.2"/>
+<path fill="none" stroke="#000000" d="M2095.4354,-6366.3266C1958.7167,-6378.7832 2089.4111,-6574.3434 2028,-6716.7 2003.2937,-6773.9714 2012.8732,-6833.7 1950.5,-6833.7"/>
+<polygon fill="#000000" stroke="#000000" points="2102.0074,-6366.0439 2110.1548,-6369.2967 2106.0037,-6365.8719 2110,-6365.7 2110,-6365.7 2110,-6365.7 2106.0037,-6365.8719 2109.8452,-6362.1033 2102.0074,-6366.0439 2102.0074,-6366.0439"/>
+<ellipse fill="none" stroke="#000000" cx="2098.8103" cy="-6366.1814" rx="3.2" ry="3.2"/>
 </g>
 <!-- RELEASE&#45;&gt;OFFENDER -->
 <g id="edge534" class="edge">
