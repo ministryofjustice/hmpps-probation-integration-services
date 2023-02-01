@@ -67,6 +67,5 @@ class CaseDetailsIntegrationTest {
             .andExpect(jsonPath("$.language.primaryLanguage").value(ReferenceDataGenerator.LANGUAGE_ENGLISH.description))
             .andExpect(jsonPath("$.phoneNumbers[0].type").value("MOBILE"))
             .andExpect(jsonPath("$.phoneNumbers[1].type").value("TELEPHONE"))
-
     }
 }
