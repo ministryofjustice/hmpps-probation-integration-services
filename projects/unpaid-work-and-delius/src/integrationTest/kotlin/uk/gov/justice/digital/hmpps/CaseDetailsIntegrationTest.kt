@@ -65,5 +65,8 @@ class CaseDetailsIntegrationTest {
             .andExpect(jsonPath("$.disabilities[0].type.code").value(ReferenceDataGenerator.DISABILITY_HEARING.code))
             .andExpect(jsonPath("$.disabilities[0].notes").value(DisabilityGenerator.DEFAULT.notes))
             .andExpect(jsonPath("$.language.primaryLanguage").value(ReferenceDataGenerator.LANGUAGE_ENGLISH.description))
+            .andExpect(jsonPath("$.phoneNumbers[0].type").value("MOBILE"))
+            .andExpect(jsonPath("$.phoneNumbers[1].type").value("TELEPHONE"))
+
     }
 }

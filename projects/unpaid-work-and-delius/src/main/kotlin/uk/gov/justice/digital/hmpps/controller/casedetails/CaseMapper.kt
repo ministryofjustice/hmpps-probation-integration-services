@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.controller.casedetails.model.Alias
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.CaseDetails
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.Disability
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.Language
+import uk.gov.justice.digital.hmpps.controller.casedetails.model.PhoneNumber
 import uk.gov.justice.digital.hmpps.controller.common.mapper.AddressMapper
 import uk.gov.justice.digital.hmpps.controller.common.model.Address
 import uk.gov.justice.digital.hmpps.controller.common.model.PersonalCircumstance
@@ -38,11 +39,18 @@ interface CaseMapper {
     fun convertToModel(case: CaseEntity): CaseDetails
 }
 
-fun CaseMapper.withLanguage(case: CaseEntity): CaseDetails {
+fun CaseMapper.withAdditionalMappings(case: CaseEntity): CaseDetails {
     fun String.language(requiresInterpreter: Boolean) = Language(requiresInterpreter, this)
+
+    val phoneNumbers = listOfNotNull(
+        case.mobileNumber?.let { PhoneNumber("MOBILE", it) },
+        case.telephoneNumber?.let { PhoneNumber("TELEPHONE", it) }
+    )
+
     val model = convertToModel(case)
 
     return model.copy(
+        phoneNumbers = phoneNumbers,
         language = case.primaryLanguage?.description?.language(case.requiresInterpreter ?: false)
     )
 }
