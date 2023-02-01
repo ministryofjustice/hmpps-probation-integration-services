@@ -7,7 +7,6 @@ spring:
     hibernate.ddl-auto: validate
     properties:
       hibernate.hql.bulk_id_strategy: org.hibernate.hql.spi.id.inline.InlineIdsInClauseBulkIdStrategy
-    show-sql: true
   ldap.base: dc=moj,dc=com
   security.oauth2.client:
     registration:
