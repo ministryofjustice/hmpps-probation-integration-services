@@ -29,7 +29,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffReposito
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
-const val CASE_NOTE_MERGE = "CaseNoteMerge"
+const val CASE_NOTE_MERGED = "CaseNoteMerged"
 
 @ActiveProfiles("integration-test")
 @SpringBootTest
@@ -75,7 +75,7 @@ class CaseNotesIntegrationTest {
             )
         )
 
-        verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGE), anyMap(), anyMap())
+        verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
     }
 
     @Test
@@ -88,7 +88,7 @@ class CaseNotesIntegrationTest {
             prepMessage(CaseNoteMessageGenerator.NEW_TO_DELIUS, wireMockserver.port())
         )
 
-        verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGE), anyMap(), anyMap())
+        verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
         val saved = caseNoteRepository.findByNomisId(nomisCaseNote.eventId)
         assertNotNull(saved)
 
@@ -126,6 +126,6 @@ class CaseNotesIntegrationTest {
             prepMessage(CaseNoteMessageGenerator.NOT_FOUND, wireMockserver.port())
         )
 
-        verify(telemetryService, never()).trackEvent(eq(CASE_NOTE_MERGE), anyMap(), anyMap())
+        verify(telemetryService, never()).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
     }
 }

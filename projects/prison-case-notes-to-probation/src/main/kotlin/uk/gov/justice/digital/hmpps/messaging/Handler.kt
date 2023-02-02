@@ -79,10 +79,10 @@ class Handler(
 
         try {
             deliusService.mergeCaseNote(prisonCaseNote.toDeliusCaseNote())
-            telemetryService.trackEvent("CaseNoteMerge", prisonCaseNote.properties())
+            telemetryService.trackEvent("CaseNoteMerged", prisonCaseNote.properties())
         } catch (e: Exception) {
             telemetryService.trackEvent(
-                "CaseNoteMergeFailure",
+                "CaseNoteMergeFailed",
                 prisonCaseNote.properties() + ("exception" to (e.message ?: ""))
             )
             if (e !is OffenderNotFoundException) throw e
