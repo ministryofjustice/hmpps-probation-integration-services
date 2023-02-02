@@ -138,4 +138,3 @@ interface DisabilityMapper {
     @Mapping(target = "provisions", ignore = true)
     fun convertToModel(disabilityEntity: DisabilityEntity): Disability
 }
-
