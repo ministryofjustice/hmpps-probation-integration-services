@@ -19,7 +19,6 @@ class DataLoader(
         userRepository.save(UserGenerator.APPLICATION_USER)
     }
 
-    @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         // Perform dev/test database setup here, using JPA repositories and generator classes...
     }
