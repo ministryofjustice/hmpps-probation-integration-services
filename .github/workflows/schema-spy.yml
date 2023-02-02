@@ -1,4 +1,4 @@
-name: Schema Spy report generation
+name: SchemaSpy report
 
 on:
   schedule:
@@ -17,7 +17,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 8
-      - name: run schema spy
+      - name: Run SchemaSpy
         env:
           DB: ${{ secrets.SCHEMA_SPY_DB }}
           HOST: ${{ secrets.SCHEMA_SPY_HOST }}
@@ -25,15 +25,25 @@ jobs:
           SCHEMA: ${{ secrets.SCHEMA_SPY_SCHEMA }}
           USERNAME: ${{ secrets.SCHEMA_SPY_USERNAME }}
           PASSWORD: ${{ secrets.SCHEMA_SPY_PASSWORD }}
-        run: ./run.sh
-        working-directory: schema-spy
+        run: |
+          java -Xss2048k -Xmx2G -Xms2G -jar ./tools/schema-spy/schemaspy-6.1.0.jar -t orathin-service \
+                    -dp ./tools/schema-spy/ojdbc8.jar \
+                    -db "${DB}" \
+                    -host "${HOST}" \
+                    -port "${PORT}" \
+                    -s "${SCHEMA}" \
+                    -u "${USERNAME}" \
+                    -p "${PASSWORD}" \
+                    -cat "${SCHEMA}" \
+                    -I "^(^Z.*$|^.*[0-9]$|^SPG.*$|^R_SPG.*$|^PRF_.*$|^PERF_.*$|^MIS_.*$|^.*_MV$|^.*\\$.*$|^.*TRAINING.*$|^PDT_THREAD$|^CHANGE_CAPTURE$)$" \
+                    -vizjs \
+                    -o ./schema-spy-report
 
       - name: Publish HTML report
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: schema-spy/DeliusSchema
-          target-folder: schema-spy/${{ github.ref_name }}/${{ github.sha }}
+          folder: schema-spy-report
+          target-folder: schema-spy-report
 
       - name: Add HTML report URL to the job summary
-        run: echo '[Schema Spy HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/schema-spy/${{ github.ref_name }}/${{ github.sha }})' >> $GITHUB_STEP_SUMMARY
-
+        run: echo '[Schema Spy HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/schema-spy-report)' >> $GITHUB_STEP_SUMMARY

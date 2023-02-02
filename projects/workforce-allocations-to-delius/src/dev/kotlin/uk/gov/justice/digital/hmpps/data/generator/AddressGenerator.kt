@@ -4,7 +4,6 @@ import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewPersonAddress
-import uk.gov.justice.digital.hmpps.set
 import java.time.LocalDate
 
 object AddressGenerator {
@@ -32,7 +31,7 @@ object AddressGenerator {
     ): CaseViewPersonAddress {
         val address = CaseViewPersonAddress(
             id,
-            person,
+            person.id,
             type,
             status,
             buildingName,
@@ -43,7 +42,6 @@ object AddressGenerator {
             postcode,
             startDate = startDate
         )
-        person.set("address", address)
         return address
     }
 }

@@ -13,7 +13,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.0" apply false
     id("com.google.cloud.tools.jib") apply false
     id("com.palantir.docker") version "0.34.0" apply false
-    id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
+    id("org.jlleitschuh.gradle.ktlint") version "11.1.0"
     id("base")
     id("org.sonarqube")
 }
@@ -21,7 +21,7 @@ plugins {
 val agentDeps: Configuration by configurations.creating
 
 dependencies {
-    agentDeps("com.microsoft.azure:applicationinsights-agent:3.4.8")
+    agentDeps("com.microsoft.azure:applicationinsights-agent:3.4.9")
 }
 
 val copyAgentTask = project.tasks.register<Copy>("copyAgent") {

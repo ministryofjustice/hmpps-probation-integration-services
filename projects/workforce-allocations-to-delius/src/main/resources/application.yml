@@ -3,8 +3,10 @@ spring:
   jackson:
     default-property-inclusion: non_null
   jpa:
-    database-platform: org.hibernate.dialect.Oracle12cDialect
+    database-platform: org.hibernate.dialect.OracleDialect
     hibernate.ddl-auto: validate
+    properties:
+      hibernate.hql.bulk_id_strategy: org.hibernate.hql.spi.id.inline.InlineIdsInClauseBulkIdStrategy
   ldap.base: dc=moj,dc=com
   security.oauth2.client:
     registration:
@@ -25,7 +27,7 @@ spring:
         Accept: application/json
         Content-Type: application/json
 
-delius.db.username: workforce-allocations-to-delius
+delius.db.username: HMPPSAllocations
 
 management.endpoints.web:
   base-path: /

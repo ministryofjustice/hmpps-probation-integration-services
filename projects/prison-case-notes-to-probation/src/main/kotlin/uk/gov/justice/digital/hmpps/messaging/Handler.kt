@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
+import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNoteFilters
@@ -58,7 +59,10 @@ class Handler(
 
         if (prisonCaseNote == null || reasonToIgnore.value != null) {
             val reason = if (prisonCaseNote == null) "case note was not found" else {
-                telemetryService.trackEvent("CaseNoteIgnored", prisonCaseNote.properties())
+                telemetryService.trackEvent(
+                    "CaseNoteIgnored",
+                    prisonCaseNote.properties() + ("reason" to (reasonToIgnore.value!!))
+                )
                 reasonToIgnore.value
             }
             log.warn("Ignoring case note id {} and type {} because $reason", caseNoteId, notification.eventType)
@@ -73,9 +77,16 @@ class Handler(
             prisonCaseNote.eventId
         )
 
-        telemetryService.trackEvent("CaseNoteMerge", prisonCaseNote.properties())
-
-        deliusService.mergeCaseNote(prisonCaseNote.toDeliusCaseNote())
+        try {
+            deliusService.mergeCaseNote(prisonCaseNote.toDeliusCaseNote())
+            telemetryService.trackEvent("CaseNoteMerged", prisonCaseNote.properties())
+        } catch (e: Exception) {
+            telemetryService.trackEvent(
+                "CaseNoteMergeFailed",
+                prisonCaseNote.properties() + ("exception" to (e.message ?: ""))
+            )
+            if (e !is OffenderNotFoundException) throw e
+        }
     }
 
     private fun PrisonCaseNote.properties() = mapOf(

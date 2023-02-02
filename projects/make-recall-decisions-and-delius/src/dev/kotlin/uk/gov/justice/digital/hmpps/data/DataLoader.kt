@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.data
 
 import UserGenerator
-import org.springframework.boot.CommandLineRunner
+import jakarta.annotation.PostConstruct
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -14,25 +16,26 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.contact.C
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.provider.StaffRepository
-import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
 @Profile("dev", "integration-test")
 class DataLoader(
-    private val serviceContext: ServiceContext,
     private val userRepository: UserRepository,
     private val staffRepository: StaffRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactOutcomeRepository: ContactOutcomeRepository,
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository
-) : CommandLineRunner {
-    @Transactional
-    override fun run(vararg args: String?) {
-        userRepository.save(UserGenerator.APPLICATION_USER)
-        serviceContext.setUp()
+) : ApplicationListener<ApplicationReadyEvent> {
 
+    @PostConstruct
+    fun saveUserToDb() {
+        userRepository.save(UserGenerator.APPLICATION_USER)
+    }
+
+    @Transactional
+    override fun onApplicationEvent(ape: ApplicationReadyEvent) {
         staffRepository.save(StaffGenerator.DEFAULT)
 
         contactTypeRepository.saveAll(

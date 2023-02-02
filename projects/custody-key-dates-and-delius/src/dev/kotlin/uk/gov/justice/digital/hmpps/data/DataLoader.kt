@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.data
 
 import UserGenerator
-import org.springframework.boot.CommandLineRunner
+import jakarta.annotation.PostConstruct
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -23,14 +25,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
-import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.user.UserRepository
 import java.time.LocalDate
 
 @Component
 @Profile("dev", "integration-test")
 class DataLoader(
-    private val serviceContext: ServiceContext,
     private val userRepository: UserRepository,
     private val datasetRepository: DatasetRepository,
     private val referenceDataRepository: ReferenceDataRepository,
@@ -41,12 +41,15 @@ class DataLoader(
     private val disposalRepository: DisposalRepository,
     private val custodyRepository: CustodyRepository,
     private val keyDateRepository: KeyDateRepository
-) : CommandLineRunner {
-    @Transactional
-    override fun run(vararg args: String?) {
-        userRepository.save(UserGenerator.APPLICATION_USER)
-        serviceContext.setUp()
+) : ApplicationListener<ApplicationReadyEvent> {
 
+    @PostConstruct
+    fun saveUserToDb() {
+        userRepository.save(UserGenerator.APPLICATION_USER)
+    }
+
+    @Transactional
+    override fun onApplicationEvent(are: ApplicationReadyEvent) {
         datasetRepository.saveAll(
             listOf(
                 ReferenceDataGenerator.DS_CUSTODY_STATUS,

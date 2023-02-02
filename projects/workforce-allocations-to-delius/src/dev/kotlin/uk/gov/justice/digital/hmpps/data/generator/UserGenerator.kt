@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.user.User
 import javax.naming.ldap.LdapName
 
 object UserGenerator {
-    val APPLICATION_USER = User(IdGenerator.getAndIncrement(), "workforce-allocations-to-delius")
+    val APPLICATION_USER = User(IdGenerator.getAndIncrement(), "HMPPSAllocations")
 }
 
 object StaffUserGenerator {

@@ -37,7 +37,7 @@ done
 
 get_current_indices() {
   echo "Search URL: ${SEARCH_URL}"
-  export PRIMARY_INDEX=$(curl -sSf -XGET -H "Content-Type: application/json" "${SEARCH_URL}/_alias/${PERSON_SEARCH_PRIMARY}" | jq keys | jq -r '.[0]')
+  export PRIMARY_INDEX=$(curl --retry 3 -sSf -XGET -H "Content-Type: application/json" "${SEARCH_URL}/_alias/${PERSON_SEARCH_PRIMARY}" | jq keys | jq -r '.[0]')
   echo "Primary Index => ${PRIMARY_INDEX}"
   export STANDBY_INDEX=$(curl -sSf -XGET -H "Content-Type: application/json" "${SEARCH_URL}/_alias/${PERSON_SEARCH_STANDBY}" | jq keys | jq -r '.[0]')
   echo "Standby Index => ${STANDBY_INDEX}"

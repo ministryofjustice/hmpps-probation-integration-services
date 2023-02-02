@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.data
 
-import org.springframework.boot.CommandLineRunner
+import jakarta.annotation.PostConstruct
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
@@ -29,13 +31,11 @@ import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceDat
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamRepository
-import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
 @Profile("dev", "integration-test")
 class AllocationsDataLoader(
-    private val serviceContext: ServiceContext,
     private val userRepository: UserRepository,
     private val businessInteractionRepository: BusinessInteractionRepository,
     private val datasetRepository: DatasetRepository,
@@ -52,11 +52,14 @@ class AllocationsDataLoader(
     private val caseViewDataLoader: CaseViewDataLoader,
     private val registerTypeRepository: RegisterTypeRepository
 
-) : CommandLineRunner {
-    override fun run(vararg args: String?) {
-        userRepository.save(UserGenerator.APPLICATION_USER)
-        serviceContext.setUp()
+) : ApplicationListener<ApplicationReadyEvent> {
 
+    @PostConstruct
+    fun saveUserToDb() {
+        userRepository.save(UserGenerator.APPLICATION_USER)
+    }
+
+    override fun onApplicationEvent(are: ApplicationReadyEvent) {
         businessInteractionRepository.saveAll(
             listOf(ADD_PERSON_ALLOCATION, ADD_EVENT_ALLOCATION, CREATE_COMPONENT_TRANSFER)
         )
@@ -93,11 +96,17 @@ class AllocationsDataLoader(
                 ReferenceDataGenerator.GENDER_MALE,
                 ReferenceDataGenerator.REQUIREMENT_SUB_CATEGORY,
                 ReferenceDataGenerator.ADDRESS_TYPE,
-                ReferenceDataGenerator.ADDRESS_STATUS_MAIN
+                ReferenceDataGenerator.ADDRESS_STATUS_MAIN,
+                ReferenceDataGenerator.ADDRESS_STATUS_PREVIOUS
             )
         )
 
-        offenceRepository.saveAll(listOf(OffenceGenerator.MAIN_OFFENCE_TYPE, OffenceGenerator.ADDITIONAL_OFFENCE_TYPE))
+        offenceRepository.saveAll(
+            listOf(
+                OffenceGenerator.MAIN_OFFENCE_TYPE,
+                OffenceGenerator.ADDITIONAL_OFFENCE_TYPE
+            )
+        )
 
         requirementMainCategoryRepository.save(RequirementMainCategoryGenerator.DEFAULT)
         registerTypeRepository.save(RegisterTypeGenerator.DEFAULT)

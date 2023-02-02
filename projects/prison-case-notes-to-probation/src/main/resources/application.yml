@@ -1,8 +1,12 @@
 # Default config
 spring:
+  jackson:
+    default-property-inclusion: non_null
   jpa:
-    database-platform: org.hibernate.dialect.Oracle12cDialect
+    database-platform: org.hibernate.dialect.OracleDialect
     hibernate.ddl-auto: validate
+    properties:
+      hibernate.hql.bulk_id_strategy: org.hibernate.hql.spi.id.inline.InlineIdsInClauseBulkIdStrategy
   security.oauth2.client:
     registration:
       prison-case-notes:
@@ -22,7 +26,7 @@ spring:
         Accept: application/json
         Content-Type: application/json
 
-delius.db.username: prison-case-notes-to-probation
+delius.db.username: PrisonCaseNotesToProbation
 
 management.endpoints.web:
   base-path: /
