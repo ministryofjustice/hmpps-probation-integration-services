@@ -7,13 +7,16 @@ import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CaseEntity
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CasePersonalCircumstanceEntity
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CasePersonalContactEntity
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.DisabilityEntity
+import uk.gov.justice.digital.hmpps.controller.casedetails.entity.Event
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.Alias
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.CaseDetails
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.Disability
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.Language
+import uk.gov.justice.digital.hmpps.controller.casedetails.model.MainOffence
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.MappaRegistration
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.PhoneNumber
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.RegisterFlag
+import uk.gov.justice.digital.hmpps.controller.casedetails.model.Sentence
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.name
 import uk.gov.justice.digital.hmpps.controller.common.mapper.AddressMapper
 import uk.gov.justice.digital.hmpps.controller.common.model.Address
@@ -42,7 +45,7 @@ interface CaseMapper {
     fun convertToModel(case: CaseEntity): CaseDetails
 }
 
-fun CaseMapper.withAdditionalMappings(case: CaseEntity): CaseDetails {
+fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetails {
     fun String.language(requiresInterpreter: Boolean) = Language(requiresInterpreter, this)
 
     val phoneNumbers = listOfNotNull(
@@ -51,8 +54,18 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity): CaseDetails {
     )
 
     val aliases = case.aliases.map {
-        Alias(it.name(),it.dateOfBirth)
+        Alias(it.name(), it.dateOfBirth)
     }
+
+    val sentence = if (event.mainOffence != null && event.disposal != null) {
+        Sentence(
+            event.disposal.disposalDate,
+            MainOffence(
+                Type(event.mainOffence.offence.mainCategoryCode, event.mainOffence.offence.mainCategoryDescription),
+                Type(event.mainOffence.offence.mainCategoryCode, event.mainOffence.offence.mainCategoryDescription)
+            )
+        )
+    } else null
 
     val model = convertToModel(case)
 
@@ -61,7 +74,8 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity): CaseDetails {
         phoneNumbers = phoneNumbers,
         mappaRegistration = populateMappaRegistration(case),
         registerFlags = populateRegisterFlags(case),
-        language = case.primaryLanguage?.description?.language(case.requiresInterpreter ?: false)
+        language = case.primaryLanguage?.description?.language(case.requiresInterpreter ?: false),
+        sentence = sentence
     )
 }
 

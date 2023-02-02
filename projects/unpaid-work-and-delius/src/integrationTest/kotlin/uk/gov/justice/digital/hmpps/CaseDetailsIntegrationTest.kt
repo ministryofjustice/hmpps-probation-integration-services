@@ -17,6 +17,8 @@ import uk.gov.justice.digital.hmpps.data.generator.AliasGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseAddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisabilityGenerator
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceSubTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceTypeGenerator
@@ -35,9 +37,10 @@ class CaseDetailsIntegrationTest {
     @Test
     fun `successful response`() {
         val person = CaseGenerator.DEFAULT
+        val event = EventGenerator.DEFAULT
 
         mockMvc.perform(
-            get("/case-data/${person.crn}/1").withOAuth2Token(wireMockserver)
+            get("/case-data/${person.crn}/${event.id}").withOAuth2Token(wireMockserver)
         )
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.crn").value(person.crn))
@@ -71,5 +74,7 @@ class CaseDetailsIntegrationTest {
             .andExpect(jsonPath("$.mappaRegistration.level.code").value(ReferenceDataGenerator.MAPPA_LEVEL_1.code))
             .andExpect(jsonPath("$.mappaRegistration.category.code").value(ReferenceDataGenerator.MAPPA_CATEGORY_2.code))
             .andExpect(jsonPath("$.registerFlags[0].riskColour").value(RegisterTypeGenerator.DEFAULT.riskColour))
+            // .andExpect(jsonPath("$.sentence.startDate").value(DisposalGenerator.DEFAULT.disposalDate))
+            .andExpect(jsonPath("$.sentence.mainOffence.category.code").value(OffenceGenerator.DEFAULT.mainCategoryCode))
     }
 }
