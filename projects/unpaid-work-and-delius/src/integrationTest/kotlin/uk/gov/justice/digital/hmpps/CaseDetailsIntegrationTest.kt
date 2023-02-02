@@ -71,6 +71,5 @@ class CaseDetailsIntegrationTest {
             .andExpect(jsonPath("$.mappaRegistration.level.code").value(ReferenceDataGenerator.MAPPA_LEVEL_1.code))
             .andExpect(jsonPath("$.mappaRegistration.category.code").value(ReferenceDataGenerator.MAPPA_CATEGORY_2.code))
             .andExpect(jsonPath("$.registerFlags[0].riskColour").value(RegisterTypeGenerator.DEFAULT.riskColour))
-
     }
 }

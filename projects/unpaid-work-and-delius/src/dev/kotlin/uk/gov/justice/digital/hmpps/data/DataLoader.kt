@@ -93,6 +93,5 @@ class DataLoader(
         disabilityRepository.save(DisabilityGenerator.DEFAULT)
         registerTypeRepository.save(RegisterTypeGenerator.DEFAULT)
         registrationRepository.save(RegistrationGenerator.DEFAULT)
-
     }
 }

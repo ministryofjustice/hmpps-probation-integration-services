@@ -76,13 +76,13 @@ fun populateMappaRegistration(case: CaseEntity): MappaRegistration? {
             it.type.code == "MAPPA"
         }
 
-        return mappaRegistrations.findFirst().map {
-            MappaRegistration(
-                it.startDate,
-                Type(it.level.code, it.level.description),
-                Type(it.category.code, it.category.description)
-            )
-        }.orElse(null)
+    return mappaRegistrations.findFirst().map {
+        MappaRegistration(
+            it.startDate,
+            Type(it.level.code, it.level.description),
+            Type(it.category.code, it.category.description)
+        )
+    }.orElse(null)
 }
 
 @Mapper(componentModel = "spring")
