@@ -7,7 +7,7 @@ import java.sql.Connection
 open class DeliusConnectionProvider : DatasourceConnectionProviderImpl() {
     override fun getConnection(): Connection {
         return super.getConnection().also { con ->
-            ServiceContext.servicePrincipal().username.let { username ->
+            ServiceContext.servicePrincipal()?.username.let { username ->
                 con.prepareStatement("call PKG_VPD_CTX.SET_CLIENT_IDENTIFIER(?)").use {
                     it.setString(1, username)
                     it.execute()
