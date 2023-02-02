@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps.data
 
 import IdGenerator
+import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.CommandLineRunner
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
@@ -35,7 +37,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
-import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.user.User
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
@@ -43,7 +44,6 @@ import uk.gov.justice.digital.hmpps.user.UserRepository
 @Profile("dev", "integration-test")
 class DataLoader(
     @Value("\${delius.db.username}") private val deliusDbUsername: String,
-    private val serviceContext: ServiceContext,
     private val userRepository: UserRepository,
     private val businessInteractionRepository: BusinessInteractionRepository,
     private val referenceDataRepository: ReferenceDataRepository,
@@ -62,10 +62,14 @@ class DataLoader(
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
     private val probationAreaRepository: ProbationAreaRepository,
-) : CommandLineRunner {
-    override fun run(vararg args: String?) {
+) : ApplicationListener<ApplicationReadyEvent> {
+
+    @PostConstruct
+    fun saveUserToDb() {
         userRepository.save(User(IdGenerator.getAndIncrement(), deliusDbUsername))
-        serviceContext.setUp()
+    }
+
+    override fun onApplicationEvent(are: ApplicationReadyEvent) {
         businessInteractionRepository.saveAll(BusinessInteractionGenerator.ALL.values)
 
         probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
@@ -94,7 +98,11 @@ class DataLoader(
         staffRepository.save(StaffGenerator.unallocated(team))
         institutionRepository.saveAll(InstitutionGenerator.STANDARD_INSTITUTIONS.values)
         probationAreaRepository.saveAll(InstitutionGenerator.STANDARD_INSTITUTIONS.values.mapNotNull { it.probationArea })
-        val teams = teamRepository.saveAll(InstitutionGenerator.STANDARD_INSTITUTIONS.values.mapNotNull { it.probationArea }.map { TeamGenerator.allStaff(it) })
+        val teams =
+            teamRepository.saveAll(
+                InstitutionGenerator.STANDARD_INSTITUTIONS.values.mapNotNull { it.probationArea }
+                    .map { TeamGenerator.allStaff(it) }
+            )
         staffRepository.saveAll(teams.map { StaffGenerator.unallocated(it) })
 
         val releasablePerson = PersonGenerator.RELEASABLE

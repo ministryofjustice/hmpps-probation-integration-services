@@ -10,13 +10,15 @@ import uk.gov.justice.digital.hmpps.user.UserRepository
 @Component
 @Profile("dev", "integration-test")
 class DataLoader(
-    private val serviceContext: ServiceContext,
     private val userRepository: UserRepository,
-) : CommandLineRunner {
-    override fun run(vararg args: String?) {
-        userRepository.save(UserGenerator.APPLICATION_USER)
-        serviceContext.setUp()
+) : ApplicationListener<ApplicationReadyEvent> {
 
+    @PostConstruct
+    fun saveUserToDb() {
+        userRepository.save(UserGenerator.APPLICATION_USER)
+    }
+
+    override fun onApplicationEvent(are: ApplicationReadyEvent) {
         // Perform dev/test database setup here, using JPA repositories and generator classes...
     }
 }

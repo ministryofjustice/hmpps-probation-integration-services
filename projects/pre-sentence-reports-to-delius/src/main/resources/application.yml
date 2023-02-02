@@ -27,7 +27,7 @@ spring:
         Accept: application/json
         Content-Type: application/json
 
-delius.db.username: pre-sentence-reports-to-delius
+delius.db.username: PreSentenceService
 
 management.endpoints.web:
   base-path: /

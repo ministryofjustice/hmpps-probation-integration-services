@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.data
 
 import UserGenerator
-import org.springframework.boot.CommandLineRunner
+import jakarta.annotation.PostConstruct
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -17,28 +19,27 @@ import uk.gov.justice.digital.hmpps.data.repository.PersonalCircumstanceReposito
 import uk.gov.justice.digital.hmpps.data.repository.PersonalCircumstanceSubTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.PersonalCircumstanceTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.PersonalContactRepository
-import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
 @Profile("dev", "integration-test")
 class DataLoader(
-    private val serviceContext: ServiceContext,
     private val userRepository: UserRepository,
     private val personRepository: PersonRepository,
     private val personalCircumstanceTypeRepository: PersonalCircumstanceTypeRepository,
     private val personalCircumstanceSubTypeRepository: PersonalCircumstanceSubTypeRepository,
     private val personalCircumstanceRepository: PersonalCircumstanceRepository,
     private val addressRepository: AddressRepository,
-    private val personalContactRepository: PersonalContactRepository,
+    private val personalContactRepository: PersonalContactRepository
+) : ApplicationListener<ApplicationReadyEvent> {
 
-) : CommandLineRunner {
-    @Transactional
-    override fun run(vararg args: String?) {
+    @PostConstruct
+    fun saveUserToDb() {
         userRepository.save(UserGenerator.APPLICATION_USER)
-        serviceContext.setUp()
+    }
 
-        // Perform dev/test database setup here, using JPA repositories and generator classes...
+    @Transactional
+    override fun onApplicationEvent(are: ApplicationReadyEvent) {
         personalCircumstanceTypeRepository.save(PersonalCircumstanceTypeGenerator.DEFAULT)
         personalCircumstanceSubTypeRepository.save(PersonalCircumstanceSubTypeGenerator.DEFAULT)
         personRepository.save(PersonGenerator.DEFAULT)
