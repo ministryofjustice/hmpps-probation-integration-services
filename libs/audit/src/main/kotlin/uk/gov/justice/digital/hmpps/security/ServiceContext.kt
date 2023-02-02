@@ -12,7 +12,7 @@ class ServiceContext(
     private val userService: UserService,
 ) : ApplicationListener<ApplicationStartedEvent> {
     companion object {
-        private lateinit var servicePrincipal: ServicePrincipal
+        private var servicePrincipal: ServicePrincipal? = null
 
         fun servicePrincipal() = servicePrincipal
     }
