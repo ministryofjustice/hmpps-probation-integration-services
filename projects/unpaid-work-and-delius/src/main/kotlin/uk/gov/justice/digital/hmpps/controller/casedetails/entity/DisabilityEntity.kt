@@ -42,5 +42,5 @@ class DisabilityEntity(
     val softDeleted: Boolean = false,
 
     @OneToMany(mappedBy = "disability", fetch = FetchType.EAGER)
-    val provisions: List<Provision>? = listOf(),
+    val provisions: List<ProvisionEntity>? = listOf(),
 )

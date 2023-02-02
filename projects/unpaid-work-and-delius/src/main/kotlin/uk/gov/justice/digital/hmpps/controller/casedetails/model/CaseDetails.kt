@@ -45,7 +45,7 @@ data class PhoneNumber(
 
 data class Disability(
     val type: Type,
-    val provisions: List<String>?, // TODO should not be null but need to work out how to resolve this relationship
+    val provisions: List<String>?,
     val notes: String
 )
 data class Language(

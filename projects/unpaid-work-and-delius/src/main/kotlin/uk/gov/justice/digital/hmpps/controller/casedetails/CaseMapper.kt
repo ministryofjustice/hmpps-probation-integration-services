@@ -69,13 +69,22 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetai
 
     val model = convertToModel(case)
 
+    val disabilities = case.disabilities.map { d ->
+        Disability(
+            Type(d.type.code, d.type.description),
+            d.provisions?.map { it -> it.type.description },
+            d.notes
+        )
+    }
+
     return model.copy(
         aliases = aliases,
         phoneNumbers = phoneNumbers,
         mappaRegistration = populateMappaRegistration(case),
         registerFlags = populateRegisterFlags(case),
         language = case.primaryLanguage?.description?.language(case.requiresInterpreter ?: false),
-        sentence = sentence
+        sentence = sentence,
+        disabilities = disabilities
     )
 }
 
@@ -125,8 +134,8 @@ interface CasePersonalContactMapper {
 }
 
 @Mapper(componentModel = "spring")
-
 interface DisabilityMapper {
     @Mapping(target = "provisions", ignore = true)
     fun convertToModel(disabilityEntity: DisabilityEntity): Disability
 }
+

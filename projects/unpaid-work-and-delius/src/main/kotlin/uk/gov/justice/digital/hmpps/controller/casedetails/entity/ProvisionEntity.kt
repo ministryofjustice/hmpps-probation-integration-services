@@ -15,7 +15,7 @@ import java.time.LocalDate
 @Immutable
 @Table(name = "provision")
 @Where(clause = "soft_deleted = 0 and (finish_date is null or finish_date > current_date) and start_date < current_date")
-class Provision(
+class ProvisionEntity(
     @Id @Column(name = "provision_id")
     val id: Long,
 

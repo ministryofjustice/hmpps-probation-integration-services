@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceSubTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ProvisionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegisterTypeGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
@@ -68,6 +69,7 @@ class CaseDetailsIntegrationTest {
             .andExpect(jsonPath("$.ethnicity").value(ReferenceDataGenerator.ETHNICITY_INDIAN.description))
             .andExpect(jsonPath("$.disabilities[0].type.code").value(ReferenceDataGenerator.DISABILITY_HEARING.code))
             .andExpect(jsonPath("$.disabilities[0].notes").value(DisabilityGenerator.DEFAULT.notes))
+            .andExpect(jsonPath("$.disabilities[0].provisions[0]").value(ProvisionGenerator.DEFAULT.type.description))
             .andExpect(jsonPath("$.language.primaryLanguage").value(ReferenceDataGenerator.LANGUAGE_ENGLISH.description))
             .andExpect(jsonPath("$.phoneNumbers[0].type").value("MOBILE"))
             .andExpect(jsonPath("$.phoneNumbers[1].type").value("TELEPHONE"))
