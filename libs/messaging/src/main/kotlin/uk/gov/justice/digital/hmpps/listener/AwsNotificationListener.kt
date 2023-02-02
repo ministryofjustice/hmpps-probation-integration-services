@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.listener
 import io.awspring.cloud.sqs.annotation.SqsListener
 import io.awspring.cloud.sqs.listener.AsyncAdapterBlockingExecutionFailedException
 import io.awspring.cloud.sqs.listener.ListenerExecutionFailedException
+import io.opentelemetry.api.trace.SpanKind
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import io.sentry.Sentry
 import io.sentry.spring.jakarta.tracing.SentryTransaction
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -20,6 +22,7 @@ class AwsNotificationListener(
 ) {
     @SqsListener("\${messaging.consumer.queue}")
     @SentryTransaction(operation = "messaging")
+    @WithSpan(kind = SpanKind.CONSUMER)
     fun receive(message: String) {
         try {
             handler.handle(message)
