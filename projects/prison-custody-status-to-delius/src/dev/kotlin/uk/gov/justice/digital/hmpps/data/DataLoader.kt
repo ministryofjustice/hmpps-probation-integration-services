@@ -98,11 +98,11 @@ class DataLoader(
         staffRepository.save(StaffGenerator.unallocated(team))
         institutionRepository.saveAll(InstitutionGenerator.STANDARD_INSTITUTIONS.values)
         probationAreaRepository.saveAll(InstitutionGenerator.STANDARD_INSTITUTIONS.values.mapNotNull { it.probationArea })
-        val teams =
-            teamRepository.saveAll(
-                InstitutionGenerator.STANDARD_INSTITUTIONS.values.mapNotNull { it.probationArea }
-                    .map { TeamGenerator.allStaff(it) }
-            )
+        val teams = teamRepository.saveAll(
+            InstitutionGenerator.STANDARD_INSTITUTIONS.values
+                .mapNotNull { it.probationArea }
+                .map { TeamGenerator.allStaff(it) }
+        )
         staffRepository.saveAll(teams.map { StaffGenerator.unallocated(it) })
 
         val releasablePerson = PersonGenerator.RELEASABLE
