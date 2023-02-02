@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.controller.casedetails
 
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
-import uk.gov.justice.digital.hmpps.controller.casedetails.entity.AliasEntity
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CaseAddress
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CaseEntity
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CasePersonalCircumstanceEntity
@@ -15,6 +14,7 @@ import uk.gov.justice.digital.hmpps.controller.casedetails.model.Language
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.MappaRegistration
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.PhoneNumber
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.RegisterFlag
+import uk.gov.justice.digital.hmpps.controller.casedetails.model.name
 import uk.gov.justice.digital.hmpps.controller.common.mapper.AddressMapper
 import uk.gov.justice.digital.hmpps.controller.common.model.Address
 import uk.gov.justice.digital.hmpps.controller.common.model.PersonalCircumstance
@@ -28,7 +28,6 @@ import uk.gov.justice.digital.hmpps.controller.common.model.Type
         CasePersonalContactMapper::class,
         AddressMapper::class,
         CaseAddressMapper::class,
-        AliasMapper::class,
         DisabilityMapper::class
     ]
 )
@@ -39,6 +38,7 @@ interface CaseMapper {
     @Mapping(source = "gender.description", target = "gender")
     @Mapping(source = "genderIdentity.description", target = "genderIdentity")
     @Mapping(source = "ethnicity.description", target = "ethnicity")
+    @Mapping(target = "aliases", ignore = true)
     fun convertToModel(case: CaseEntity): CaseDetails
 }
 
@@ -50,9 +50,14 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity): CaseDetails {
         case.telephoneNumber?.let { PhoneNumber("TELEPHONE", it) }
     )
 
+    val aliases = case.aliases.map {
+        Alias(it.name(),it.dateOfBirth)
+    }
+
     val model = convertToModel(case)
 
     return model.copy(
+        aliases = aliases,
         phoneNumbers = phoneNumbers,
         mappaRegistration = populateMappaRegistration(case),
         registerFlags = populateRegisterFlags(case),
@@ -103,14 +108,6 @@ interface CasePersonalContactMapper {
     @Mapping(source = "middleName", target = "name.middleName")
     @Mapping(source = "address.telephoneNumber", target = "telephoneNumber")
     fun convertToModel(personalContactEntity: CasePersonalContactEntity): PersonalContact
-}
-
-@Mapper(componentModel = "spring")
-interface AliasMapper {
-    @Mapping(source = "surname", target = "name.surname")
-    @Mapping(source = "forename", target = "name.forename")
-    @Mapping(source = "secondName", target = "name.middleName") // TODO make this do both middlenames
-    fun convertToModel(alias: AliasEntity): Alias
 }
 
 @Mapper(componentModel = "spring")

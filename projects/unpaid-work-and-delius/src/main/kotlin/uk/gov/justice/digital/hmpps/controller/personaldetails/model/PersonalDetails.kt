@@ -13,5 +13,4 @@ data class PersonalDetails(
 )
 
 fun PersonalContactEntity.name() = Name(forename, middleName, surname)
-
 fun CasePersonalContactEntity.name() = Name(forename, middleName, surname)

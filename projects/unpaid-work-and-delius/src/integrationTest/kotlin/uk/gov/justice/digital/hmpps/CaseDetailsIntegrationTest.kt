@@ -55,7 +55,7 @@ class CaseDetailsIntegrationTest {
             .andExpect(jsonPath("$.personalContacts[0].address.streetName").value(AddressGenerator.DEFAULT.streetName))
             .andExpect(jsonPath("$.personalContacts[0].address.town").value(AddressGenerator.DEFAULT.town))
             .andExpect(jsonPath("$.aliases[0].name.forename").value(AliasGenerator.DEFAULT.forename))
-            .andExpect(jsonPath("$.aliases[0].name.middleName").value(AliasGenerator.DEFAULT.secondName))
+            .andExpect(jsonPath("$.aliases[0].name.middleName").value("${AliasGenerator.DEFAULT.secondName} ${AliasGenerator.DEFAULT.thirdName}"))
             .andExpect(jsonPath("$.aliases[0].name.surname").value(AliasGenerator.DEFAULT.surname))
             .andExpect(jsonPath("$.mainAddress.addressNumber").value(CaseAddressGenerator.DEFAULT.addressNumber))
             .andExpect(jsonPath("$.mainAddress.town").value(CaseAddressGenerator.DEFAULT.town))

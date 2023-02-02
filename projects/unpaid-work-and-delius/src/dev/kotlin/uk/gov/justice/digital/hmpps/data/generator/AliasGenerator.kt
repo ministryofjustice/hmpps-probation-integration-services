@@ -10,8 +10,8 @@ object AliasGenerator {
     fun generate(id: Long = IdGenerator.getAndIncrement()) = AliasEntity(
         id,
         "Tony",
-        null,
-        null,
+        "Second",
+        "Third",
         "Stark",
         LocalDate.now().minusYears(18),
         CaseGenerator.DEFAULT
