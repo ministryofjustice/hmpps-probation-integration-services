@@ -62,7 +62,7 @@ data class MappaRegistration(
 data class RegisterFlag(
     val code: String,
     val description: String,
-    val riskColour: String
+    val riskColour: String?
 )
 
 data class Sentence(

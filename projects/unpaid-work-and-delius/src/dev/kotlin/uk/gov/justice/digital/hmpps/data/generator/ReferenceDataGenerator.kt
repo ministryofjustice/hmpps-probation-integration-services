@@ -9,6 +9,9 @@ object ReferenceDataGenerator {
     val ETHNICITY_INDIAN = generate(DatasetGenerator.ETHNICITY, "A1", "Asian or Asian British: Indian")
     val DISABILITY_HEARING = generate(DatasetGenerator.DISABILITY, "HD", "Hearing Difficulties")
     val LANGUAGE_ENGLISH = generate(DatasetGenerator.LANGUAGE, "001", "English")
+    val MAPPA_LEVEL_1 = generate(DatasetGenerator.REGISTER_LEVEL, "M1", "MAPPA Level 1")
+    val MAPPA_CATEGORY_2 = generate(DatasetGenerator.REGISTER_CATEGORY, "M2", "MAPPA Cat 2")
+
     fun generate(
         dataset: Dataset,
         code: String,

@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceSubTypeGe
 import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RegisterTypeGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 
 @AutoConfigureMockMvc
@@ -67,5 +68,9 @@ class CaseDetailsIntegrationTest {
             .andExpect(jsonPath("$.language.primaryLanguage").value(ReferenceDataGenerator.LANGUAGE_ENGLISH.description))
             .andExpect(jsonPath("$.phoneNumbers[0].type").value("MOBILE"))
             .andExpect(jsonPath("$.phoneNumbers[1].type").value("TELEPHONE"))
+            .andExpect(jsonPath("$.mappaRegistration.level.code").value(ReferenceDataGenerator.MAPPA_LEVEL_1.code))
+            .andExpect(jsonPath("$.mappaRegistration.category.code").value(ReferenceDataGenerator.MAPPA_CATEGORY_2.code))
+            .andExpect(jsonPath("$.registerFlags[0].riskColour").value(RegisterTypeGenerator.DEFAULT.riskColour))
+
     }
 }

@@ -82,4 +82,7 @@ class CaseEntity(
     @Convert(converter = YesNoConverter::class)
     val requiresInterpreter: Boolean? = false,
 
+    @OneToMany(mappedBy = "case", fetch = FetchType.EAGER)
+    val registrations: List<RegistrationEntity>,
+
 )

@@ -9,6 +9,8 @@ object DatasetGenerator {
     val ETHNICITY = generate(DatasetCode.ETHNICITY)
     val DISABILITY = generate(DatasetCode.DISABILITY)
     val LANGUAGE = generate(DatasetCode.LANGUAGE)
+    val REGISTER_LEVEL = generate(DatasetCode.REGISTER_LEVEL)
+    val REGISTER_CATEGORY = generate(DatasetCode.REGISTER_CATEGORY)
 
     fun generate(code: DatasetCode, id: Long = IdGenerator.getAndIncrement()) = Dataset(id, code)
 }

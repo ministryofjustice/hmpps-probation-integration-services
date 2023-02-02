@@ -18,6 +18,8 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceSubTypeGe
 import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RegisterTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.data.repository.AddressRepository
 import uk.gov.justice.digital.hmpps.data.repository.AliasRepository
 import uk.gov.justice.digital.hmpps.data.repository.CaseAddressRepository
@@ -27,6 +29,8 @@ import uk.gov.justice.digital.hmpps.data.repository.PersonalCircumstanceReposito
 import uk.gov.justice.digital.hmpps.data.repository.PersonalCircumstanceSubTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.PersonalCircumstanceTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.PersonalContactRepository
+import uk.gov.justice.digital.hmpps.data.repository.RegisterTypeRepository
+import uk.gov.justice.digital.hmpps.data.repository.RegistrationRepository
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
@@ -46,6 +50,8 @@ class DataLoader(
     private val personalContactRepository: PersonalContactRepository,
     private val caseAddressRepository: CaseAddressRepository,
     private val disabilityRepository: DisabilityRepository,
+    private val registrationRepository: RegistrationRepository,
+    private val registerTypeRepository: RegisterTypeRepository,
 
 ) : CommandLineRunner {
     @Transactional
@@ -59,6 +65,8 @@ class DataLoader(
                 DatasetGenerator.ETHNICITY,
                 DatasetGenerator.DISABILITY,
                 DatasetGenerator.LANGUAGE,
+                DatasetGenerator.REGISTER_LEVEL,
+                DatasetGenerator.REGISTER_CATEGORY
             )
         )
 
@@ -67,7 +75,9 @@ class DataLoader(
                 ReferenceDataGenerator.GENDER_MALE,
                 ReferenceDataGenerator.ETHNICITY_INDIAN,
                 ReferenceDataGenerator.DISABILITY_HEARING,
-                ReferenceDataGenerator.LANGUAGE_ENGLISH
+                ReferenceDataGenerator.LANGUAGE_ENGLISH,
+                ReferenceDataGenerator.MAPPA_LEVEL_1,
+                ReferenceDataGenerator.MAPPA_CATEGORY_2,
             )
         )
 
@@ -81,5 +91,8 @@ class DataLoader(
         personalContactRepository.save(PersonalContactGenerator.DEFAULT)
         caseAddressRepository.save(CaseAddressGenerator.DEFAULT)
         disabilityRepository.save(DisabilityGenerator.DEFAULT)
+        registerTypeRepository.save(RegisterTypeGenerator.DEFAULT)
+        registrationRepository.save(RegistrationGenerator.DEFAULT)
+
     }
 }

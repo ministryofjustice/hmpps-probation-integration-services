@@ -12,11 +12,14 @@ import uk.gov.justice.digital.hmpps.controller.casedetails.model.Alias
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.CaseDetails
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.Disability
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.Language
+import uk.gov.justice.digital.hmpps.controller.casedetails.model.MappaRegistration
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.PhoneNumber
+import uk.gov.justice.digital.hmpps.controller.casedetails.model.RegisterFlag
 import uk.gov.justice.digital.hmpps.controller.common.mapper.AddressMapper
 import uk.gov.justice.digital.hmpps.controller.common.model.Address
 import uk.gov.justice.digital.hmpps.controller.common.model.PersonalCircumstance
 import uk.gov.justice.digital.hmpps.controller.common.model.PersonalContact
+import uk.gov.justice.digital.hmpps.controller.common.model.Type
 
 @Mapper(
     componentModel = "spring",
@@ -51,8 +54,35 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity): CaseDetails {
 
     return model.copy(
         phoneNumbers = phoneNumbers,
+        mappaRegistration = populateMappaRegistration(case),
+        registerFlags = populateRegisterFlags(case),
         language = case.primaryLanguage?.description?.language(case.requiresInterpreter ?: false)
     )
+}
+
+fun populateRegisterFlags(case: CaseEntity): List<RegisterFlag> {
+    return case.registrations.map {
+        RegisterFlag(
+            it.type.code,
+            it.type.description,
+            it.type.riskColour
+        )
+    }
+}
+
+fun populateMappaRegistration(case: CaseEntity): MappaRegistration? {
+    val mappaRegistrations =
+        case.registrations.sortedByDescending { it.startDate }.stream().filter {
+            it.type.code == "MAPPA"
+        }
+
+        return mappaRegistrations.findFirst().map {
+            MappaRegistration(
+                it.startDate,
+                Type(it.level.code, it.level.description),
+                Type(it.category.code, it.category.description)
+            )
+        }.orElse(null)
 }
 
 @Mapper(componentModel = "spring")
