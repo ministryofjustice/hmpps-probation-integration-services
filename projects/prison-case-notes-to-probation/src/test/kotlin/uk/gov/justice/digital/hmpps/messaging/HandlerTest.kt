@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -14,6 +15,8 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
+import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
+import uk.gov.justice.digital.hmpps.exceptions.StaffCodeExhaustedException
 import uk.gov.justice.digital.hmpps.integrations.delius.service.DeliusService
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNote
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonCaseNotesClient
@@ -50,7 +53,7 @@ internal class HandlerTest {
             .thenReturn(null)
 
         assertDoesNotThrow { handler.handle(Notification(message = message)) }
-        verify(telemetryService, never()).trackEvent(eq("CaseNoteMerge"), any(), any())
+        verify(telemetryService, never()).trackEvent(eq("CaseNoteMerged"), any(), any())
         verify(deliusService, never()).mergeCaseNote(any())
     }
 
@@ -104,5 +107,53 @@ internal class HandlerTest {
         handler.handle(prisonOffenderEvent)
         verify(deliusService, times(0)).mergeCaseNote(any())
         verify(prisonCaseNotesClient, times(0)).getCaseNote(any())
+    }
+
+    @Test
+    fun `offender not found sends alert to telemetry without throwing exception`() {
+        val prisonCaseNote = PrisonCaseNote(
+            "1",
+            1L,
+            "1",
+            "type",
+            "subType",
+            creationDateTime = ZonedDateTime.now(),
+            occurrenceDateTime = ZonedDateTime.now(),
+            locationId = "EXI",
+            authorName = "bob",
+            text = "Notes for an offender without noms number in delius",
+            amendments = listOf()
+        )
+        val poe = Notification(prepMessage(CaseNoteMessageGenerator.NEW_TO_DELIUS).message)
+        whenever(prisonCaseNotesClient.getCaseNote(URI.create(poe.message.detailUrl!!))).thenReturn(prisonCaseNote)
+        whenever(deliusService.mergeCaseNote(any())).thenThrow(OffenderNotFoundException("A001"))
+
+        handler.handle(poe)
+        verify(telemetryService).trackEvent(eq("PRISON_CASE-NOTE_PUBLISHED_RECEIVED"), any(), any())
+        verify(telemetryService).trackEvent(eq("CaseNoteMergeFailed"), any(), any())
+    }
+
+    @Test
+    fun `non offender not found exceptions are thrown`() {
+        val prisonCaseNote = PrisonCaseNote(
+            "1",
+            1L,
+            "1",
+            "type",
+            "subType",
+            creationDateTime = ZonedDateTime.now(),
+            occurrenceDateTime = ZonedDateTime.now(),
+            locationId = "EXI",
+            authorName = "bob",
+            text = "Notes for an exceptional case note",
+            amendments = listOf()
+        )
+        val poe = Notification(prepMessage(CaseNoteMessageGenerator.NEW_TO_DELIUS).message)
+        whenever(prisonCaseNotesClient.getCaseNote(URI.create(poe.message.detailUrl!!))).thenReturn(prisonCaseNote)
+        whenever(deliusService.mergeCaseNote(any())).thenThrow(StaffCodeExhaustedException("A999"))
+
+        assertThrows<StaffCodeExhaustedException> { handler.handle(poe) }
+        verify(telemetryService).trackEvent(eq("PRISON_CASE-NOTE_PUBLISHED_RECEIVED"), any(), any())
+        verify(telemetryService).trackEvent(eq("CaseNoteMergeFailed"), any(), any())
     }
 }

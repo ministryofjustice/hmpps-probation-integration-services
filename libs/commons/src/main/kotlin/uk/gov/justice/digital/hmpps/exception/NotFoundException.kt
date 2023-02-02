@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.exception
 
-class NotFoundException(message: String) : RuntimeException(message) {
+open class NotFoundException(message: String) : RuntimeException(message) {
     constructor(
         entity: String,
         field: String,

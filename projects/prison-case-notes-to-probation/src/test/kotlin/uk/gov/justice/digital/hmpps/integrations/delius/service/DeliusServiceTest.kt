@@ -28,6 +28,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteRelatedIds
@@ -185,7 +186,7 @@ class DeliusServiceTest {
         )
         whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId)).thenReturn(null)
 
-        deliusService.mergeCaseNote(deliusCaseNote)
+        assertThrows<OffenderNotFoundException> { deliusService.mergeCaseNote(deliusCaseNote) }
         verify(caseNoteRepository, never()).save(any())
     }
 
