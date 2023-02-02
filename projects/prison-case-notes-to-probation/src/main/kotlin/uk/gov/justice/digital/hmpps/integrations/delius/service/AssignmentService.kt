@@ -32,10 +32,7 @@ class AssignmentService(
     }
 
     private fun getStaff(probationArea: ProbationArea, team: Team, staffName: StaffName): Staff {
-        val findStaff = {
-            staffService.findStaff(probationArea.id, staffName)
-        }
-
+        val findStaff = { staffService.findStaff(probationArea.id, staffName) }
         return retry(3) {
             findStaff() ?: staffService.create(probationArea, team, staffName)
         }

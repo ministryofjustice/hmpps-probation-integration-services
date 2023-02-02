@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.CASE_NOTES_MERGE
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
@@ -65,7 +66,8 @@ class DeliusService(
                     ?: throw NotFoundException("Case note type ${body.typeLookup()} not found and no default type is set")
             }
 
-        val offender = offenderRepository.findByNomsIdAndSoftDeletedIsFalse(header.nomisId) ?: return null
+        val offender = offenderRepository.findByNomsIdAndSoftDeletedIsFalse(header.nomisId)
+            ?: throw OffenderNotFoundException(header.nomisId)
 
         val relatedIds = relatedService.findRelatedCaseNoteIds(offender.id, body.typeLookup())
 

@@ -1,8 +1,13 @@
 # Default config
 spring:
+  jackson:
+    default-property-inclusion: non_null
   jpa:
-    database-platform: org.hibernate.dialect.Oracle12cDialect
-    hibernate.ddl-auto: validate
+    database-platform: org.hibernate.dialect.OracleDialect
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.hql.bulk_id_strategy: org.hibernate.hql.spi.id.inline.InlineIdsInClauseBulkIdStrategy
   security.oauth2.client:
     registration:
       approved-premises-and-delius:
