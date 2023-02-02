@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.data
 
-import org.springframework.boot.CommandLineRunner
+import jakarta.annotation.PostConstruct
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
@@ -30,13 +32,11 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepos
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.ProbationAreaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.TeamRepository
-import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
 @Profile("dev", "integration-test")
 class CaseNotesDataLoader(
-    private val serviceContext: ServiceContext,
     private val userRepository: UserRepository,
     private val businessInteractionRepository: BusinessInteractionRepository,
     private val caseNoteTypeRepository: CaseNoteTypeRepository,
@@ -53,10 +53,14 @@ class CaseNotesDataLoader(
     private val nsiTypeRepository: NsiTypeRepository,
     private val nomisTypeNsiTypeRepository: NomisTypeNsiTypeRepository,
     private val nsiRepository: NsiRepository
-) : CommandLineRunner {
-    override fun run(vararg args: String?) {
+) : ApplicationListener<ApplicationReadyEvent> {
+
+    @PostConstruct
+    fun saveUserToDb() {
         userRepository.save(UserGenerator.APPLICATION_USER)
-        serviceContext.setUp()
+    }
+
+    override fun onApplicationEvent(are: ApplicationReadyEvent) {
 
         businessInteractionRepository.save(BusinessInteractionGenerator.CASE_NOTES_MERGE)
 
