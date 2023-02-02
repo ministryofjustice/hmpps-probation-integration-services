@@ -62,7 +62,7 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetai
             event.disposal.disposalDate,
             MainOffence(
                 Type(event.mainOffence.offence.mainCategoryCode, event.mainOffence.offence.mainCategoryDescription),
-                Type(event.mainOffence.offence.mainCategoryCode, event.mainOffence.offence.mainCategoryDescription)
+                Type(event.mainOffence.offence.subCategoryCode, event.mainOffence.offence.subCategoryDescription)
             )
         )
     } else null
@@ -125,6 +125,8 @@ interface CasePersonalContactMapper {
 }
 
 @Mapper(componentModel = "spring")
+
 interface DisabilityMapper {
+    @Mapping(target = "provisions", ignore = true)
     fun convertToModel(disabilityEntity: DisabilityEntity): Disability
 }
