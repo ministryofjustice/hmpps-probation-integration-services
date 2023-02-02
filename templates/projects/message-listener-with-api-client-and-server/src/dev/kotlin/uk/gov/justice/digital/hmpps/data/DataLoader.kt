@@ -5,8 +5,8 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.user.UserRepository
-import UserGenerator
 
 @Component
 @Profile("dev", "integration-test")
