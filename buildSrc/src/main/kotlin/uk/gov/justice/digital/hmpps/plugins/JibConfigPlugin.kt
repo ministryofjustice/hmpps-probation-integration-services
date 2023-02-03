@@ -60,6 +60,7 @@ class JibConfigPlugin : Plugin<Project> {
                     jib!!.to.tags = setOf("${project.version}")
                 }
                 dependsOn(copyAgent, `copyAppInsightsConfig`, assemble)
+                inputs.dir("deploy")
                 inputs.dir("src")
                 inputs.file("build.gradle.kts")
                 outputs.file("${project.buildDir}/jib-image.id")
