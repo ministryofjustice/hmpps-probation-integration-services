@@ -1,3 +1,5 @@
+enabled: false
+
 generic-service:
   ingress:
     host: unpaid-work-and-delius-preprod.hmpps.service.justice.gov.uk
