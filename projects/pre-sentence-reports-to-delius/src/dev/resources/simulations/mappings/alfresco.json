@@ -9,7 +9,7 @@
             "equalTo": "N00"
           },
           "X-DocRepository-Real-Remote-User": {
-            "equalTo": "pre-sentence-reports-to-delius"
+            "equalTo": "PreSentenceService"
           },
           "Authorization": {
             "doesNotMatch": "^Bearer (.*)$"
@@ -29,7 +29,7 @@
             "equalTo": "N00"
           },
           "X-DocRepository-Real-Remote-User": {
-            "equalTo": "pre-sentence-reports-to-delius"
+            "equalTo": "PreSentenceService"
           },
           "Authorization": {
             "doesNotMatch": "^Bearer (.*)$"

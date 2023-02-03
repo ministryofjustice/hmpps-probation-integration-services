@@ -7,6 +7,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.springframework.boot.context.event.ApplicationStartedEvent
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.user.User
 import uk.gov.justice.digital.hmpps.user.UserService
@@ -29,6 +30,9 @@ class DeliusConnectionProviderTest {
     @Mock
     private lateinit var userService: UserService
 
+    @Mock
+    private lateinit var applicationStartedEvent: ApplicationStartedEvent
+
     private lateinit var serviceContext: ServiceContext
 
     private val deliusConnectionProvider = DeliusConnectionProvider()
@@ -36,11 +40,11 @@ class DeliusConnectionProviderTest {
     @Test
     fun `retrieving a connection with oracle sets client identifier with security context`() {
         val user = User(1, "ServiceUserName")
-        serviceContext = ServiceContext(user.username, userService)
         whenever(userService.findUser(user.username)).thenReturn(user)
         whenever(connection.prepareStatement(anyString())).thenReturn(preparedStatement)
         whenever(dataSource.connection).thenReturn(connection)
-        serviceContext.setUp()
+        serviceContext = ServiceContext(user.username, userService)
+        serviceContext.onApplicationEvent(applicationStartedEvent)
         deliusConnectionProvider.dataSource = dataSource
         deliusConnectionProvider.configure(mapOf<String, Any>())
 

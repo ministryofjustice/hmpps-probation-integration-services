@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.data
 
-import org.springframework.boot.CommandLineRunner
+import jakarta.annotation.PostConstruct
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Profile
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
@@ -37,13 +39,11 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
-import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
 @Profile("dev", "integration-test")
 class DataLoader(
-    private val serviceContext: ServiceContext,
     private val userRepository: UserRepository,
     private val datasetRepository: DatasetRepository,
     private val referenceDataRepository: ReferenceDataRepository,
@@ -60,11 +60,14 @@ class DataLoader(
     private val nsiStatusRepository: NsiStatusRepository,
     private val transferReasonRepository: TransferReasonRepository,
     private val caseloadRepository: CaseloadRepository,
-) : CommandLineRunner {
-    override fun run(vararg args: String?) {
-        userRepository.save(UserGenerator.APPLICATION_USER)
-        serviceContext.setUp()
+) : ApplicationListener<ApplicationReadyEvent> {
 
+    @PostConstruct
+    fun saveUserToDb() {
+        userRepository.save(UserGenerator.APPLICATION_USER)
+    }
+
+    override fun onApplicationEvent(are: ApplicationReadyEvent) {
         datasetRepository.saveAll(DatasetGenerator.all())
         referenceDataRepository.saveAll(ReferenceDataGenerator.all())
 
@@ -77,9 +80,28 @@ class DataLoader(
         teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM_WITH_NO_STAFF)
         teamRepository.save(TeamGenerator.NON_APPROVED_PREMISES_TEAM)
         teamRepository.save(TeamGenerator.UNALLOCATED)
-        staffRepository.save(StaffGenerator.generate("Key-worker", "KEY0001", teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM), approvedPremises = listOf(ApprovedPremisesGenerator.DEFAULT)))
-        staffRepository.save(StaffGenerator.generate("Not key-worker", "KEY0002", teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM)))
-        staffRepository.save(StaffGenerator.generate("Not key-worker and not in AP team", "KEY0003", teams = listOf(TeamGenerator.NON_APPROVED_PREMISES_TEAM)))
+        staffRepository.save(
+            StaffGenerator.generate(
+                "Key-worker",
+                "KEY0001",
+                teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM),
+                approvedPremises = listOf(ApprovedPremisesGenerator.DEFAULT)
+            )
+        )
+        staffRepository.save(
+            StaffGenerator.generate(
+                "Not key-worker",
+                "KEY0002",
+                teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM)
+            )
+        )
+        staffRepository.save(
+            StaffGenerator.generate(
+                "Not key-worker and not in AP team",
+                "KEY0003",
+                teams = listOf(TeamGenerator.NON_APPROVED_PREMISES_TEAM)
+            )
+        )
 
         val personManagerStaff = StaffGenerator.generate(code = "N54A001")
         staffRepository.save(personManagerStaff)

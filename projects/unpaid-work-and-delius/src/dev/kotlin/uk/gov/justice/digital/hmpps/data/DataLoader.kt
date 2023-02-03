@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.data
 
 import UserGenerator
-import org.springframework.boot.CommandLineRunner
+import jakarta.annotation.PostConstruct
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -47,7 +49,6 @@ import uk.gov.justice.digital.hmpps.user.UserRepository
 @Component
 @Profile("dev", "integration-test")
 class DataLoader(
-    private val serviceContext: ServiceContext,
     private val userRepository: UserRepository,
     private val caseRepository: CaseRepository,
     private val datasetRepository: DatasetRepository,
@@ -67,12 +68,13 @@ class DataLoader(
     private val eventRepository: EventRepository,
     private val disposalRepository: DisposalRepository,
     private val mainOffenceRepository: MainOffenceRepository
+    private val personalContactRepository: PersonalContactRepository
+) : ApplicationListener<ApplicationReadyEvent> {
 
-) : CommandLineRunner {
-    @Transactional
-    override fun run(vararg args: String?) {
+    @PostConstruct
+    fun saveUserToDb() {
         userRepository.save(UserGenerator.APPLICATION_USER)
-        serviceContext.setUp()
+    }
 
         datasetRepository.saveAll(
             listOf(
@@ -99,6 +101,8 @@ class DataLoader(
         )
         offenceRepository.save(OffenceGenerator.DEFAULT)
         // Perform dev/test database setup here, using JPA repositories and generator classes...
+    @Transactional
+    override fun onApplicationEvent(are: ApplicationReadyEvent) {
         personalCircumstanceTypeRepository.save(PersonalCircumstanceTypeGenerator.DEFAULT)
         personalCircumstanceSubTypeRepository.save(PersonalCircumstanceSubTypeGenerator.DEFAULT)
         caseRepository.save(CaseGenerator.DEFAULT)
