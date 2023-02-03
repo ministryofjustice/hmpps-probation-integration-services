@@ -22,7 +22,7 @@ class JibConfigPlugin : Plugin<Project> {
                     user = "2000:2000"
                 }
                 from {
-                    image = "docker://ghcr.io/ministryofjustice/hmpps-probation-integration-services/eclipse-temurin:17-jre-jammy@${System.getenv("JRE_17_JAMMY_SHA")}"
+                    image = "docker://ghcr.io/ministryofjustice/hmpps-probation-integration-services/eclipse-temurin:17-jre-alpine@${System.getenv("JRE_17_ALPINE_SHA")}"
                 }
                 to {
                     image = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}"
