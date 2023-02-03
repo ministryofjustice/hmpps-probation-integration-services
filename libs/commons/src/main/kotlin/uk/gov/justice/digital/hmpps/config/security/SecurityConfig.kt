@@ -23,6 +23,7 @@ class SecurityConfig {
                 AntPathRequestMatcher("/health/**"),
                 AntPathRequestMatcher("/info/**"),
                 AntPathRequestMatcher("/swagger-ui/**"),
+                AntPathRequestMatcher("/v3/api-docs.yaml"),
                 AntPathRequestMatcher("/v3/api-docs/**")
             ).permitAll().anyRequest().authenticated()
         }
