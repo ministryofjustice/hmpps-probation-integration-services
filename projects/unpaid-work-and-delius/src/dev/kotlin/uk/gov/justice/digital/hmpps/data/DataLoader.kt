@@ -43,7 +43,6 @@ import uk.gov.justice.digital.hmpps.data.repository.PersonalContactRepository
 import uk.gov.justice.digital.hmpps.data.repository.ProvisionRepository
 import uk.gov.justice.digital.hmpps.data.repository.RegisterTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.RegistrationRepository
-import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
@@ -58,7 +57,6 @@ class DataLoader(
     private val personalCircumstanceRepository: PersonalCircumstanceRepository,
     private val addressRepository: AddressRepository,
     private val aliasRepository: AliasRepository,
-    private val personalContactRepository: PersonalContactRepository,
     private val caseAddressRepository: CaseAddressRepository,
     private val disabilityRepository: DisabilityRepository,
     private val provisionRepository: ProvisionRepository,
@@ -67,7 +65,7 @@ class DataLoader(
     private val offenceRepository: OffenceRepository,
     private val eventRepository: EventRepository,
     private val disposalRepository: DisposalRepository,
-    private val mainOffenceRepository: MainOffenceRepository
+    private val mainOffenceRepository: MainOffenceRepository,
     private val personalContactRepository: PersonalContactRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
@@ -75,6 +73,8 @@ class DataLoader(
     fun saveUserToDb() {
         userRepository.save(UserGenerator.APPLICATION_USER)
     }
+    @Transactional
+    override fun onApplicationEvent(are: ApplicationReadyEvent) {
 
         datasetRepository.saveAll(
             listOf(
@@ -100,9 +100,7 @@ class DataLoader(
             )
         )
         offenceRepository.save(OffenceGenerator.DEFAULT)
-        // Perform dev/test database setup here, using JPA repositories and generator classes...
-    @Transactional
-    override fun onApplicationEvent(are: ApplicationReadyEvent) {
+
         personalCircumstanceTypeRepository.save(PersonalCircumstanceTypeGenerator.DEFAULT)
         personalCircumstanceSubTypeRepository.save(PersonalCircumstanceSubTypeGenerator.DEFAULT)
         caseRepository.save(CaseGenerator.DEFAULT)
