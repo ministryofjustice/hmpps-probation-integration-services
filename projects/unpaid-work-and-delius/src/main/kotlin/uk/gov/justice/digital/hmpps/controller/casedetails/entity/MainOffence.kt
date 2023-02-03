@@ -14,6 +14,7 @@ import java.time.LocalDate
 @Immutable
 @Entity
 @Table(name = "event")
+@Where(clause = "active_flag = 1 and soft_deleted = 0")
 class Event(
     @Id
     @Column(name = "event_id", nullable = false)
@@ -32,12 +33,15 @@ class Event(
     val disposal: Disposal? = null,
 
     @OneToOne(mappedBy = "event")
-    val mainOffence: MainOffence? = null
+    val mainOffence: MainOffence? = null,
+
+    @Column(updatable = false, columnDefinition = "NUMBER")
+    val softDeleted: Boolean = false,
 )
 @Immutable
 @Entity
 @Table(name = "disposal")
-@Where(clause = "active_flag = 1")
+@Where(clause = "active_flag = 1 and soft_deleted = 0")
 class Disposal(
     @Id
     @Column(name = "disposal_id")
@@ -51,6 +55,9 @@ class Disposal(
 
     @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
     val active: Boolean = true,
+
+    @Column(updatable = false, columnDefinition = "NUMBER")
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
