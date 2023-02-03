@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.controller.personaldetails.entity
+package uk.gov.justice.digital.hmpps.controller.casedetails.entity
 
 import jakarta.persistence.Entity
 import jakarta.persistence.JoinColumn
@@ -14,11 +14,11 @@ import java.time.LocalDate
 @Immutable
 @Table(name = "personal_contact")
 @Where(clause = "soft_deleted = 0 and (end_date is null or end_date > current_date)")
-class PersonalContactEntity(
+class CasePersonalContactEntity(
     id: Long = 0,
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
-    val person: Person,
+    val case: CaseEntity,
     relationship: String,
     forename: String,
     middleName: String?,
