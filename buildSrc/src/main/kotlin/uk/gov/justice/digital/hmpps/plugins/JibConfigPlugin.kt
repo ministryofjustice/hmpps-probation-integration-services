@@ -1,12 +1,15 @@
 package uk.gov.justice.digital.hmpps.plugins
 
+import com.google.cloud.tools.jib.gradle.BuildImageTask
 import com.google.cloud.tools.jib.gradle.JibExtension
+import com.google.cloud.tools.jib.gradle.JibTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
 
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.withType
 
 class JibConfigPlugin : Plugin<Project> {
 
@@ -19,10 +22,10 @@ class JibConfigPlugin : Plugin<Project> {
                     user = "2000:2000"
                 }
                 from {
-                    image = "docker://ghcr.io/ministryofjustice/hmpps-probation-integration-services/eclipse-temurin:17-jre-alpine@${System.getenv("JRE_17_ALPINE_SHA")}"
+                    image = "docker://ghcr.io/ministryofjustice/hmpps-probation-integration-services/eclipse-temurin:17-jre-jammy@${System.getenv("JRE_17_JAMMY_SHA")}"
                 }
                 to {
-                    image = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}:${project.version}"
+                    image = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}"
                     auth {
                         username = System.getenv("GITHUB_USERNAME")
                         password = System.getenv("GITHUB_PASSWORD")
@@ -52,22 +55,11 @@ class JibConfigPlugin : Plugin<Project> {
                 outputs.cacheIf { true }
             }
             val assemble = project.tasks.named("assemble")
-            project.tasks.named("jib") {
-                dependsOn(copyAgent, copyAppInsightsConfig, assemble)
-                inputs.dir("src")
-                inputs.file("build.gradle.kts")
-                outputs.file("${project.buildDir}/jib-image.id")
-                outputs.cacheIf { true }
-            }
-            project.tasks.named("jibBuildTar") {
-                dependsOn(copyAgent, copyAppInsightsConfig, assemble)
-                inputs.dir("src")
-                inputs.file("build.gradle.kts")
-                outputs.file("${project.buildDir}/jib-image.id")
-                outputs.cacheIf { true }
-            }
-            project.tasks.named("jibDockerBuild") {
-                dependsOn(copyAgent, copyAppInsightsConfig, assemble)
+            project.tasks.withType<BuildImageTask>().named("jib") {
+                doFirst {
+                    jib!!.to.tags = setOf("${project.version}")
+                }
+                dependsOn(copyAgent, `copyAppInsightsConfig`, assemble)
                 inputs.dir("src")
                 inputs.file("build.gradle.kts")
                 outputs.file("${project.buildDir}/jib-image.id")
