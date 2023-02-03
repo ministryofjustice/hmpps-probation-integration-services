@@ -112,6 +112,20 @@ jobs:
             fi
           done
 
+      - name: Create GitHub issue for manual step
+        # TODO remove this step once the DBAs implement automated user copying from production to pre-prod
+        if: ${{ matrix.environment == 'preprod' && steps.check_file.outputs.files_exists == 'true' }}
+        shell: bash
+        run: |
+          username=$(yq '.database.audit.username' database/access.yml)
+          gh issue create \
+                --title 'Complete database access setup for ${{ inputs.project_name }}' \
+                --body "- [ ] Ask a DBA to copy the *$username* user from Production to Pre-Production" \
+                --label bootstrap
+        working-directory: projects/${{ matrix.project }}/deploy
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
       - name: Disable audit user creation in preprod
         if: ${{ matrix.environment == 'preprod' && steps.check_file.outputs.files_exists == 'true' }}
         shell: bash
