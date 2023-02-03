@@ -38,11 +38,11 @@ class CaseEntity(
     val thirdName: String? = null,
     @Column(name = "surname", length = 35)
     val surname: String,
-    @Column(name = "date_of_birth_date")
-    val dateOfBirth: LocalDate,
     @ManyToOne
     @JoinColumn(name = "gender_id")
     val gender: ReferenceData?,
+    @Column(name = "date_of_birth_date")
+    val dateOfBirth: LocalDate,
     @Column(columnDefinition = "char(12)")
     val croNumber: String? = null,
     @Column(columnDefinition = "char(13)")
