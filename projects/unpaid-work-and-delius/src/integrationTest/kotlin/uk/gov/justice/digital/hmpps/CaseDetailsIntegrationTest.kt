@@ -11,27 +11,37 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.controller.personaldetails.model.name
+import uk.gov.justice.digital.hmpps.controller.casedetails.model.name
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
+import uk.gov.justice.digital.hmpps.data.generator.AliasGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CaseAddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseGenerator
+import uk.gov.justice.digital.hmpps.data.generator.DisabilityGenerator
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceSubTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ProvisionGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RegisterTypeGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-class PersonalDetailsIntegrationTest {
+class CaseDetailsIntegrationTest {
     @Autowired lateinit var mockMvc: MockMvc
     @Autowired lateinit var wireMockserver: WireMockServer
 
     @Test
     fun `successful response`() {
         val person = CaseGenerator.DEFAULT
+        val event = EventGenerator.DEFAULT
+
         mockMvc.perform(
-            get("/case-data/${person.crn}/personal-details").withOAuth2Token(wireMockserver)
+            get("/case-data/${person.crn}/${event.id}").withOAuth2Token(wireMockserver)
         )
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.crn").value(person.crn))
@@ -48,5 +58,25 @@ class PersonalDetailsIntegrationTest {
             .andExpect(jsonPath("$.personalContacts[0].address.addressNumber").value(AddressGenerator.DEFAULT.addressNumber))
             .andExpect(jsonPath("$.personalContacts[0].address.streetName").value(AddressGenerator.DEFAULT.streetName))
             .andExpect(jsonPath("$.personalContacts[0].address.town").value(AddressGenerator.DEFAULT.town))
+            .andExpect(jsonPath("$.aliases[0].name.forename").value(AliasGenerator.DEFAULT.forename))
+            .andExpect(jsonPath("$.aliases[0].name.middleName").value("${AliasGenerator.DEFAULT.secondName} ${AliasGenerator.DEFAULT.thirdName}"))
+            .andExpect(jsonPath("$.aliases[0].name.surname").value(AliasGenerator.DEFAULT.surname))
+            .andExpect(jsonPath("$.mainAddress.addressNumber").value(CaseAddressGenerator.DEFAULT.addressNumber))
+            .andExpect(jsonPath("$.mainAddress.town").value(CaseAddressGenerator.DEFAULT.town))
+            .andExpect(jsonPath("$.mainAddress.county").value(CaseAddressGenerator.DEFAULT.county))
+            .andExpect(jsonPath("$.mainAddress.streetName").value(CaseAddressGenerator.DEFAULT.streetName))
+            .andExpect(jsonPath("$.mainAddress.postcode").value(CaseAddressGenerator.DEFAULT.postcode))
+            .andExpect(jsonPath("$.ethnicity").value(ReferenceDataGenerator.ETHNICITY_INDIAN.description))
+            .andExpect(jsonPath("$.disabilities[0].type.code").value(ReferenceDataGenerator.DISABILITY_HEARING.code))
+            .andExpect(jsonPath("$.disabilities[0].notes").value(DisabilityGenerator.DEFAULT.notes))
+            .andExpect(jsonPath("$.disabilities[0].provisions[0]").value(ProvisionGenerator.DEFAULT.type.description))
+            .andExpect(jsonPath("$.language.primaryLanguage").value(ReferenceDataGenerator.LANGUAGE_ENGLISH.description))
+            .andExpect(jsonPath("$.phoneNumbers[0].type").value("MOBILE"))
+            .andExpect(jsonPath("$.phoneNumbers[1].type").value("TELEPHONE"))
+            .andExpect(jsonPath("$.mappaRegistration.level.code").value(ReferenceDataGenerator.MAPPA_LEVEL_1.code))
+            .andExpect(jsonPath("$.mappaRegistration.category.code").value(ReferenceDataGenerator.MAPPA_CATEGORY_2.code))
+            .andExpect(jsonPath("$.registerFlags[0].riskColour").value(RegisterTypeGenerator.DEFAULT.riskColour))
+            .andExpect(jsonPath("$.sentence.mainOffence.category.code").value(OffenceGenerator.DEFAULT.mainCategoryCode))
+            .andExpect(jsonPath("$.sentence.mainOffence.subCategory.code").value(OffenceGenerator.DEFAULT.subCategoryCode))
     }
 }

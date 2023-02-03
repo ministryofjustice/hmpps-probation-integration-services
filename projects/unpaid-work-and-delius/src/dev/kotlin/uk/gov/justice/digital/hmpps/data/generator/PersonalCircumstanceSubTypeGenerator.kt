@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
-import uk.gov.justice.digital.hmpps.controller.personaldetails.entity.PersonalCircumstanceSubType
+import uk.gov.justice.digital.hmpps.controller.common.entity.PersonalCircumstanceSubType
 
 object PersonalCircumstanceSubTypeGenerator {
     val DEFAULT = generate()

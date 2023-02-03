@@ -1,14 +1,14 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
-import uk.gov.justice.digital.hmpps.controller.personaldetails.entity.Person
-import uk.gov.justice.digital.hmpps.controller.personaldetails.entity.PersonalCircumstanceEntity
+import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CaseEntity
+import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CasePersonalCircumstanceEntity
 import java.time.LocalDate
 
 object PersonalCircumstanceGenerator {
     val DEFAULT = generate()
 
-    fun generate(person: Person = PersonGenerator.DEFAULT, id: Long = IdGenerator.getAndIncrement()) = PersonalCircumstanceEntity(
+    fun generate(person: CaseEntity = CaseGenerator.DEFAULT, id: Long = IdGenerator.getAndIncrement()) = CasePersonalCircumstanceEntity(
         id,
         person,
         PersonalCircumstanceTypeGenerator.DEFAULT,

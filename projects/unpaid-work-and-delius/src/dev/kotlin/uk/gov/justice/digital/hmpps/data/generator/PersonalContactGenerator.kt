@@ -1,15 +1,15 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
-import uk.gov.justice.digital.hmpps.controller.personaldetails.entity.PersonalContactEntity
+import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CasePersonalContactEntity
 import java.time.LocalDate
 
 object PersonalContactGenerator {
     val DEFAULT = generate()
 
-    fun generate(id: Long = IdGenerator.getAndIncrement()) = PersonalContactEntity(
+    fun generate(id: Long = IdGenerator.getAndIncrement()) = CasePersonalContactEntity(
         id,
-        PersonGenerator.DEFAULT,
+        CaseGenerator.DEFAULT,
         "Captains mate",
         "Shiver",
         "Me",
