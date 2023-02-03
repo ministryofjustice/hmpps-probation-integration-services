@@ -3,8 +3,10 @@ package uk.gov.justice.digital.hmpps.plugins
 import com.google.cloud.tools.jib.gradle.JibExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.Copy
 
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.register
 
 class JibConfigPlugin : Plugin<Project> {
 
@@ -17,7 +19,7 @@ class JibConfigPlugin : Plugin<Project> {
                     user = "2000:2000"
                 }
                 from {
-                    image = "docker://ghcr.io/ministryofjustice/hmpps-probation-integration-services/eclipse-temurin:17-jre-alpine"
+                    image = "docker://ghcr.io/ministryofjustice/hmpps-probation-integration-services/eclipse-temurin:17-jre-alpine@${System.getenv("JRE_17_ALPINE_SHA")}"
                 }
                 to {
                     image = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}:${project.version}"
@@ -25,7 +27,6 @@ class JibConfigPlugin : Plugin<Project> {
                         username = System.getenv("GITHUB_USERNAME")
                         password = System.getenv("GITHUB_PASSWORD")
                     }
-                    tags = mutableSetOf("latest")
                 }
                 extraDirectories {
                     paths {
@@ -34,7 +35,7 @@ class JibConfigPlugin : Plugin<Project> {
                             includes.add("agent/agent.jar")
                         }
                         path {
-                            setFrom("${project.projectDir}")
+                            setFrom("${project.buildDir}/agent")
                             includes.add("applicationinsights*.json")
                             into = "/agent"
                         }
@@ -42,15 +43,35 @@ class JibConfigPlugin : Plugin<Project> {
                 }
             }
 
-            val copyAgentTask = project.rootProject.tasks.named("copyAgent")
+            val copyAgent = project.rootProject.tasks.named("copyAgent")
+            val copyAppInsightsConfig = project.tasks.register<Copy>("copyAppInsightsConfig") {
+                from("${project.projectDir}/applicationinsights.json")
+                into("${project.buildDir}/agent")
+                inputs.file("${project.projectDir}/applicationinsights.json")
+                outputs.file("${project.buildDir}/agent/applicationinsights.json")
+                outputs.cacheIf { true }
+            }
+            val assemble = project.tasks.named("assemble")
             project.tasks.named("jib") {
-                dependsOn(copyAgentTask)
+                dependsOn(copyAgent, copyAppInsightsConfig, assemble)
+                inputs.dir("src")
+                inputs.file("build.gradle.kts")
+                outputs.file("${project.buildDir}/jib-image.id")
+                outputs.cacheIf { true }
             }
             project.tasks.named("jibBuildTar") {
-                dependsOn(copyAgentTask)
+                dependsOn(copyAgent, copyAppInsightsConfig, assemble)
+                inputs.dir("src")
+                inputs.file("build.gradle.kts")
+                outputs.file("${project.buildDir}/jib-image.id")
+                outputs.cacheIf { true }
             }
             project.tasks.named("jibDockerBuild") {
-                dependsOn(copyAgentTask)
+                dependsOn(copyAgent, copyAppInsightsConfig, assemble)
+                inputs.dir("src")
+                inputs.file("build.gradle.kts")
+                outputs.file("${project.buildDir}/jib-image.id")
+                outputs.cacheIf { true }
             }
         }
     }
