@@ -37,64 +37,63 @@ jobs:
           GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           JRE_17_ALPINE_SHA: ${{ vars.JRE_17_ALPINE_SHA }}
         with:
-          cache-read-only: false
           arguments: jib dockerTagsPush
 
-#  deploy-to-test:
-#    name: Deploy to test
-#    uses: ./.github/workflows/deploy.yml
-#    needs: build
-#    if: ${{ needs.build.outputs.changed-projects != '[]' }}
-#    with:
-#      environment: test
-#      version: ${{ needs.build.outputs.version }}
-#      projects: ${{ needs.build.outputs.changed-projects }}
-#    secrets: inherit
-#
-#  deploy-to-preprod:
-#    name: Deploy to preprod
-#    uses: ./.github/workflows/deploy.yml
-#    needs: build
-#    if: ${{ needs.build.outputs.changed-projects != '[]' }}
-#    with:
-#      environment: preprod
-#      version: ${{ needs.build.outputs.version }}
-#      projects: ${{ needs.build.outputs.changed-projects }}
-#    secrets: inherit
-#
-#  end-to-end-tests:
-#    name: Run end-to-end tests
-#    uses: ./.github/workflows/end-to-end-tests.yml
-#    needs:
-#      - build
-#      - deploy-to-test
-#      - deploy-to-preprod
-#    with:
-#      projects: ${{ needs.build.outputs.changed-projects }}
-#    secrets: inherit
-#
-#  report-test-failures:
-#    name: Failed testing
-#    if: ${{ failure() && needs.end-to-end-tests.outputs.failed-projects != '[]' }}
-#    needs:
-#      - end-to-end-tests
-#    runs-on: ubuntu-latest
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        project: ${{ fromJson(needs.end-to-end-tests.outputs.failed-projects) }}
-#    steps:
-#      - run: 'echo Tests failed for ${{ matrix.project }}. View the full report here: ${{ needs.end-to-end-tests.outputs.report-url }}; exit 1'
-#
-#  deploy-to-prod:
-#    name: Deploy to production
-#    uses: ./.github/workflows/deploy.yml
-#    if: ${{ (success() || (failure() && needs.end-to-end-tests.outputs.passed-projects != '[]')) && github.ref == 'refs/heads/main' }}
-#    needs:
-#      - build
-#      - end-to-end-tests
-#    with:
-#      environment: prod
-#      version: ${{ needs.build.outputs.version }}
-#      projects: ${{ needs.end-to-end-tests.outputs.passed-projects }}
-#    secrets: inherit
+  deploy-to-test:
+    name: Deploy to test
+    uses: ./.github/workflows/deploy.yml
+    needs: build
+    if: ${{ needs.build.outputs.changed-projects != '[]' }}
+    with:
+      environment: test
+      version: ${{ needs.build.outputs.version }}
+      projects: ${{ needs.build.outputs.changed-projects }}
+    secrets: inherit
+
+  deploy-to-preprod:
+    name: Deploy to preprod
+    uses: ./.github/workflows/deploy.yml
+    needs: build
+    if: ${{ needs.build.outputs.changed-projects != '[]' }}
+    with:
+      environment: preprod
+      version: ${{ needs.build.outputs.version }}
+      projects: ${{ needs.build.outputs.changed-projects }}
+    secrets: inherit
+
+  end-to-end-tests:
+    name: Run end-to-end tests
+    uses: ./.github/workflows/end-to-end-tests.yml
+    needs:
+      - build
+      - deploy-to-test
+      - deploy-to-preprod
+    with:
+      projects: ${{ needs.build.outputs.changed-projects }}
+    secrets: inherit
+
+  report-test-failures:
+    name: Failed testing
+    if: ${{ failure() && needs.end-to-end-tests.outputs.failed-projects != '[]' }}
+    needs:
+      - end-to-end-tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.end-to-end-tests.outputs.failed-projects) }}
+    steps:
+      - run: 'echo Tests failed for ${{ matrix.project }}. View the full report here: ${{ needs.end-to-end-tests.outputs.report-url }}; exit 1'
+
+  deploy-to-prod:
+    name: Deploy to production
+    uses: ./.github/workflows/deploy.yml
+    if: ${{ (success() || (failure() && needs.end-to-end-tests.outputs.passed-projects != '[]')) && github.ref == 'refs/heads/main' }}
+    needs:
+      - build
+      - end-to-end-tests
+    with:
+      environment: prod
+      version: ${{ needs.build.outputs.version }}
+      projects: ${{ needs.end-to-end-tests.outputs.passed-projects }}
+    secrets: inherit

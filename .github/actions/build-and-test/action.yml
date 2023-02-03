@@ -37,7 +37,6 @@ runs:
     - name: Compile and test
       uses: gradle/gradle-build-action@v2
       with:
-        cache-read-only: false
         arguments: check
 
     - name: Build standalone docker images
@@ -45,12 +44,12 @@ runs:
       with:
         arguments: docker
 
-#    - name: Sonar analysis
-#      uses: gradle/gradle-build-action@v2
-#      if: ${{ github.actor != 'dependabot[bot]' }}
-#      continue-on-error: true # don't fail the build when sonarcloud.io is down
-#      with:
-#        arguments: sonar
+    - name: Sonar analysis
+      uses: gradle/gradle-build-action@v2
+      if: ${{ github.actor != 'dependabot[bot]' }}
+      continue-on-error: true # don't fail the build when sonarcloud.io is down
+      with:
+        arguments: sonar
 
     - name: Publish test reports
       uses: mikepenz/action-junit-report@v3.3.3
