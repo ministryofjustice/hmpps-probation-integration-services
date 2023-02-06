@@ -1,10 +1,17 @@
 package uk.gov.justice.digital.hmpps.plugins
 
+import com.google.cloud.tools.jib.gradle.BuildImageTask
 import com.google.cloud.tools.jib.gradle.JibExtension
+import com.google.cloud.tools.jib.gradle.JibTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.Copy
 
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.withType
+import java.security.MessageDigest
 
 class JibConfigPlugin : Plugin<Project> {
 
@@ -17,15 +24,14 @@ class JibConfigPlugin : Plugin<Project> {
                     user = "2000:2000"
                 }
                 from {
-                    image = "docker://ghcr.io/ministryofjustice/hmpps-probation-integration-services/eclipse-temurin:17-jre-alpine"
+                    image = "docker://ghcr.io/ministryofjustice/hmpps-probation-integration-services/eclipse-temurin:17-jre-alpine@${System.getenv("JRE_17_ALPINE_SHA")}"
                 }
                 to {
-                    image = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}:${project.version}"
+                    image = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}"
                     auth {
                         username = System.getenv("GITHUB_USERNAME")
                         password = System.getenv("GITHUB_PASSWORD")
                     }
-                    tags = mutableSetOf("latest")
                 }
                 extraDirectories {
                     paths {
@@ -34,7 +40,7 @@ class JibConfigPlugin : Plugin<Project> {
                             includes.add("agent/agent.jar")
                         }
                         path {
-                            setFrom("${project.projectDir}")
+                            setFrom("${project.buildDir}/agent")
                             includes.add("applicationinsights*.json")
                             into = "/agent"
                         }
@@ -42,15 +48,27 @@ class JibConfigPlugin : Plugin<Project> {
                 }
             }
 
-            val copyAgentTask = project.rootProject.tasks.named("copyAgent")
-            project.tasks.named("jib") {
-                dependsOn(copyAgentTask)
+            val copyAgent = project.rootProject.tasks.named("copyAgent")
+            val copyAppInsightsConfig = project.tasks.register<Copy>("copyAppInsightsConfig") {
+                from("${project.projectDir}/applicationinsights.json")
+                into("${project.buildDir}/agent")
             }
-            project.tasks.named("jibBuildTar") {
-                dependsOn(copyAgentTask)
-            }
-            project.tasks.named("jibDockerBuild") {
-                dependsOn(copyAgentTask)
+            val assemble = project.tasks.named("assemble")
+            project.tasks.withType<BuildImageTask>().named("jib") {
+                doFirst {
+                    jib!!.to.tags = setOf("${project.version}")
+                }
+                dependsOn(copyAgent, copyAppInsightsConfig, assemble)
+                inputs.dir("deploy")
+                inputs.files(
+                    "${project.buildDir}/agent",
+                    "${project.buildDir}/classes",
+                    "${project.buildDir}/generated",
+                    "${project.buildDir}/resources",
+                    project.configurations.get(jib!!.configurationName.get()).resolvedConfiguration.files
+                )
+                outputs.file("${project.buildDir}/jib-image.id")
+                outputs.cacheIf { true }
             }
         }
     }

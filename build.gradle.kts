@@ -80,6 +80,11 @@ subprojects {
                 classpath = sourceSets.getByName("dev").runtimeClasspath
             }
         }
+        withType<Jar> {
+            isPreserveFileTimestamps = false
+            isReproducibleFileOrder = true
+            archiveFileName.set("${archiveBaseName.get()}-${archiveClassifier.get()}.${archiveExtension.get()}")
+        }
     }
 }
 tasks.named("check") { dependsOn("ktlintCheck") }

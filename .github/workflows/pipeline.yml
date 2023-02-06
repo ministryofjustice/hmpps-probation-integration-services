@@ -27,14 +27,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull base image
-        run: docker pull ghcr.io/ministryofjustice/hmpps-probation-integration-services/eclipse-temurin:17-jre-alpine
+        env:
+          JRE_17_ALPINE_SHA: ${{ vars.JRE_17_ALPINE_SHA }}
+        run: docker pull ghcr.io/ministryofjustice/hmpps-probation-integration-services/eclipse-temurin:17-jre-alpine@${JRE_17_ALPINE_SHA}
       - name: Push images
         uses: gradle/gradle-build-action@v2
         env:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          JRE_17_ALPINE_SHA: ${{ vars.JRE_17_ALPINE_SHA }}
         with:
-          arguments: jib dockerTagsPush -Dorg.gradle.parallel=false
+          arguments: jib dockerTagsPush
 
   deploy-to-test:
     name: Deploy to test
