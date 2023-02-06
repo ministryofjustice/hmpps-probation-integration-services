@@ -29,13 +29,14 @@ jobs:
       - name: Pull base image
         env:
           JRE_17_ALPINE_SHA: ${{ vars.JRE_17_ALPINE_SHA }}
-        run: docker pull ghcr.io/ministryofjustice/hmpps-probation-integration-services/eclipse-temurin:17-jre-alpine@${JRE_17_ALPINE_SHA}
+        run: |
+          docker pull eclipse-temurin:17-jre-alpine
+          export JIB_FROM_IMAGE=docker://$(docker inspect --format='{{index .RepoDigests 0}}' eclipse-temurin:17-jre-alpine)
       - name: Push images
         uses: gradle/gradle-build-action@v2
         env:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          JRE_17_ALPINE_SHA: ${{ vars.JRE_17_ALPINE_SHA }}
         with:
           arguments: jib dockerTagsPush
 
