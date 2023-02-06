@@ -1,11 +1,13 @@
 name: Documentation
 
 on:
-  workflow_dispatch:
   push:
     paths:
       - .github/workflows/docs.yml
       - projects/**/tech-docs/**
+  schedule:
+    - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
+  workflow_dispatch:
 
 jobs:
   get-projects:
