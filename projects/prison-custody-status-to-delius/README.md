@@ -17,7 +17,7 @@ the custody status of a person as they move in and out of prison.
 
 ## Context Map
 
-![Context Map](./img/prison-custody-status-to-delius-context-map.png)
+![Context Map](tech-docs/source/img/prison-custody-status-to-delius-context-map.png)
 
 ## Interfaces
 

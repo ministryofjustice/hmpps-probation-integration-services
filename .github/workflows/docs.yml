@@ -14,8 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - id: get-projects
-#        run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_OUTPUT
-        run: echo 'projects=["workforce-allocations-to-delius"]' >> $GITHUB_OUTPUT # TODO testing
+        run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_OUTPUT
 
   deploy:
     runs-on: moj-cloud-platform
