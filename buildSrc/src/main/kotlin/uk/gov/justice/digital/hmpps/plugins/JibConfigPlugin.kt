@@ -58,7 +58,8 @@ class JibConfigPlugin : Plugin<Project> {
                 doFirst {
                     jib!!.to.tags = setOf("${project.version}")
                 }
-                dependsOn(copyAgent, `copyAppInsightsConfig`, assemble)
+                dependsOn(copyAgent, copyAppInsightsConfig, assemble)
+                inputs.dir("deploy")
                 inputs.files(
                     "${project.buildDir}/agent",
                     "${project.buildDir}/classes",
