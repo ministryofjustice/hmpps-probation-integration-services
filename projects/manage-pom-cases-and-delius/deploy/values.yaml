@@ -1,0 +1,21 @@
+# Common values
+generic-service:
+  nameOverride: manage-pom-cases-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/manage-pom-cases-and-delius
+
+  ingress:
+    tlsSecretName: manage-pom-cases-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    manage-pom-cases-and-delius:
+      SENTRY_DSN: SENTRY_DSN
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+
+generic-prometheus-alerts:
+  targetApplication: manage-pom-cases-and-delius
+
