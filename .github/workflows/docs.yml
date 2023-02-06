@@ -43,7 +43,7 @@ jobs:
         working-directory: projects/${{ matrix.project }}/tech-docs
 
       - name: Deploy
-#        if: github.ref == 'refs/heads/main'  # TODO testing
+        if: github.ref == 'refs/heads/main'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: projects/${{ matrix.project }}/tech-docs/build
