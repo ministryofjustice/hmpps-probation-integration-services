@@ -26,7 +26,6 @@ spring:
         Accept: application/json
         Content-Type: application/json
 
-
 delius.db.username: CustodyKeyDatesAndDelius # Should match value in [deploy/database/access.yml].
 
 management.endpoints.web:
