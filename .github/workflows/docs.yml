@@ -1,0 +1,51 @@
+name: Documentation
+
+on:
+  push:
+    paths:
+      - .github/workflows/docs.yml
+      - projects/**/tech-docs/**
+
+jobs:
+  get-projects:
+    runs-on: ubuntu-latest
+    outputs:
+      projects: ${{ steps.get-projects.outputs.projects }}
+    steps:
+      - uses: actions/checkout@v3
+      - id: get-projects
+#        run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_OUTPUT
+        run: echo 'projects=["workforce-allocations-to-delius"]' >> $GITHUB_OUTPUT # TODO testing
+
+  deploy:
+    runs-on: moj-cloud-platform
+    timeout-minutes: 30
+    needs:
+      - get-projects
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+          bundler-cache: true
+          working-directory: projects/${{ matrix.project }}/tech-docs
+
+      - name: Install Middleman
+        run: gem install middleman
+        working-directory: projects/${{ matrix.project }}/tech-docs
+
+      - name: Build
+        run: bundle exec middleman build --verbose
+        working-directory: projects/${{ matrix.project }}/tech-docs
+
+      - name: Deploy
+#        if: github.ref == 'refs/heads/main'  # TODO testing
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: projects/${{ matrix.project }}/tech-docs/build
+          target-folder: tech-docs/${{ matrix.project }}
