@@ -20,6 +20,7 @@ include(
     "custody-key-dates-and-delius",
     "make-recall-decisions-and-delius",
     "unpaid-work-and-delius",
+    "manage-pom-cases-and-delius",
     // ^ add new projects here
 )
 
