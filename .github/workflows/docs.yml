@@ -19,7 +19,7 @@ jobs:
       - id: get-projects
         run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_OUTPUT
 
-  deploy:
+  tech-docs:
     runs-on: moj-cloud-platform
     timeout-minutes: 30
     needs:

@@ -60,8 +60,6 @@ jobs:
   test:
     runs-on: moj-cloud-platform
     timeout-minutes: 60
-    env:
-      ImageOS: ubuntu20
     outputs:
       failed-projects: ${{ steps.json.outputs.failed-projects }}
       passed-projects: ${{ steps.json.outputs.passed-projects }}
