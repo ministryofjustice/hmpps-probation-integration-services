@@ -42,6 +42,11 @@ interface CaseMapper {
     @Mapping(source = "genderIdentity.description", target = "genderIdentity")
     @Mapping(source = "ethnicity.description", target = "ethnicity")
     @Mapping(target = "aliases", ignore = true)
+    @Mapping(target = "phoneNumbers", ignore = true)
+    @Mapping(target = "registerFlags", ignore = true)
+    @Mapping(target = "language", ignore = true)
+    @Mapping(target = "mappaRegistration", ignore = true)
+    @Mapping(target = "sentence", ignore = true)
     fun convertToModel(case: CaseEntity): CaseDetails
 }
 
