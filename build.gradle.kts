@@ -20,18 +20,14 @@ plugins {
 
 val agentDeps: Configuration by configurations.creating
 
-val applicationInsightsVersion = "3.4.9"
 dependencies {
-    agentDeps("com.microsoft.azure:applicationinsights-agent:$applicationInsightsVersion")
+    agentDeps("com.microsoft.azure:applicationinsights-agent:3.4.9")
 }
 
 val copyAgentTask = project.tasks.register<Copy>("copyAgent") {
     from(agentDeps)
     into("${project.buildDir}/agent")
     rename("applicationinsights-agent(.+).jar", "agent.jar")
-    inputs.property("app.insights.agent.version", applicationInsightsVersion)
-    outputs.file("${project.buildDir}/agent/agent.jar")
-    outputs.cacheIf { true }
 }
 
 allprojects {
@@ -83,6 +79,11 @@ subprojects {
             if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
                 classpath = sourceSets.getByName("dev").runtimeClasspath
             }
+        }
+        withType<Jar> {
+            isPreserveFileTimestamps = false
+            isReproducibleFileOrder = true
+            archiveFileName.set("${archiveBaseName.get()}-${archiveClassifier.get()}.${archiveExtension.get()}")
         }
     }
 }

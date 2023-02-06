@@ -8,8 +8,10 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
 
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
+import java.security.MessageDigest
 
 class JibConfigPlugin : Plugin<Project> {
 
@@ -50,9 +52,6 @@ class JibConfigPlugin : Plugin<Project> {
             val copyAppInsightsConfig = project.tasks.register<Copy>("copyAppInsightsConfig") {
                 from("${project.projectDir}/applicationinsights.json")
                 into("${project.buildDir}/agent")
-                inputs.file("${project.projectDir}/applicationinsights.json")
-                outputs.file("${project.buildDir}/agent/applicationinsights.json")
-                outputs.cacheIf { true }
             }
             val assemble = project.tasks.named("assemble")
             project.tasks.withType<BuildImageTask>().named("jib") {
@@ -60,9 +59,13 @@ class JibConfigPlugin : Plugin<Project> {
                     jib!!.to.tags = setOf("${project.version}")
                 }
                 dependsOn(copyAgent, `copyAppInsightsConfig`, assemble)
-                inputs.dir("deploy")
-                inputs.dir("src")
-                inputs.file("build.gradle.kts")
+                inputs.files(
+                    "${project.buildDir}/agent",
+                    "${project.buildDir}/classes",
+                    "${project.buildDir}/generated",
+                    "${project.buildDir}/resources",
+                    project.configurations.get(jib!!.configurationName.get()).resolvedConfiguration.files
+                )
                 outputs.file("${project.buildDir}/jib-image.id")
                 outputs.cacheIf { true }
             }
