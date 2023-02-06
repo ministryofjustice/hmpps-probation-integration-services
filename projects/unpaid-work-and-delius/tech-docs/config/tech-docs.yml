@@ -1,9 +1,9 @@
 # Host to use for canonical URL generation (without trailing slash)
-host: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/unpaid-work-to-delius
+host: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/unpaid-work-and-delius
 
 # Header-related options
 service_name: HMPPS Unpaid Work And Delius
-service_link: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/unpaid-work-to-delius
+service_link: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/unpaid-work-and-delius
 
 # Links to show on right-hand-side of header
 header_links:
@@ -40,4 +40,4 @@ owner_slack_workspace: mojdt
 default_owner_slack: '#probation-integration-tech'
 
 # OpenAPI
-api_path: https://unpaid-work-to-delius-dev.hmpps.service.justice.gov.uk/v3/api-docs.yaml
+api_path: https://unpaid-work-and-delius-dev.hmpps.service.justice.gov.uk/v3/api-docs.yaml
