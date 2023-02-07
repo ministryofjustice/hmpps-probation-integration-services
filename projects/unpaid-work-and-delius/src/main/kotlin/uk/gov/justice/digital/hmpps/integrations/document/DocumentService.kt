@@ -22,7 +22,7 @@ class DocumentService(
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
-    fun createDeliusDocument(hmppsEvent: HmppsDomainEvent, file: ByteArray, filename:String, contactId: Long, episodeId: String, offenderId: Long) =
+    fun createDeliusDocument(hmppsEvent: HmppsDomainEvent, file: ByteArray, filename: String, contactId: Long, episodeId: String, offenderId: Long) =
         audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
             val alfrescoDocument = alfrescoClient.addDocument(populateBodyValues(hmppsEvent, file, filename, contactId))
             documentRepository.save(

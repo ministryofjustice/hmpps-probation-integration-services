@@ -42,13 +42,14 @@ class UPWAssessmentService(
     }
 
     private fun createContact(
-        person: PersonWithManager, notification: Notification<HmppsDomainEvent>
-    ):Long {
+        person: PersonWithManager,
+        notification: Notification<HmppsDomainEvent>
+    ): Long {
 
         val staffId = person.managers[0].staff.id
         val teamId = person.managers[0].team.id
 
-        val contact =  contactRepository.save(
+        val contact = contactRepository.save(
             Contact(
                 notes = "CP/UPW Assessment",
                 date = notification.message.occurredAt,
@@ -63,15 +64,13 @@ class UPWAssessmentService(
     }
 
     private fun uploadDocument(notification: Notification<HmppsDomainEvent>, contactId: Long, offenderId: Long) {
-        //get the episode id from the message then get the document content from the UPW/ARN Service
+        // get the episode id from the message then get the document content from the UPW/ARN Service
         val episodeId = notification.message.additionalInformation.episodeId()
-        val response = arnClient.getUPWAssessment(URI(notification.message.detailUrl!!) )
+        val response = arnClient.getUPWAssessment(URI(notification.message.detailUrl!!))
         val filename = ContentDisposition.parse(response.headers()["Content-Disposition"]!!.first()).filename
         val fileData = response.body().asInputStream().readAllBytes()
-        //Then upload the document content to Alfresco AND create a delius document that links to the alfresco id
-        //and contact id.
-        documentService.createDeliusDocument(notification.message, fileData, filename!!,  contactId, episodeId, offenderId)
-
-
+        // Then upload the document content to Alfresco AND create a delius document that links to the alfresco id
+        // and contact id.
+        documentService.createDeliusDocument(notification.message, fileData, filename!!, contactId, episodeId, offenderId)
     }
 }
