@@ -1,0 +1,22 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "https://dev.hmpps-assessments.service.justice.gov.uk/api/upw/download/12345",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer (.*)$"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "upw.pdf",
+        "headers": {
+          "Content-Type": "application/octet-stream"
+        }
+      }
+    }
+  ]
+}

@@ -33,7 +33,7 @@ internal class IntegrationTest {
     @Test
     fun `message is logged to telemetry`() {
         // Given a message
-        val notification = Notification(message = MessageGenerator.EXAMPLE)
+        val notification = Notification(message = MessageGenerator.UPW_COMPLETE)
 
         // When it is received
         try {

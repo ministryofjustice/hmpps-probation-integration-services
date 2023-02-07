@@ -1,0 +1,91 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "POST",
+        "url": "/uploadnew",
+        "headers": {
+          "X-DocRepository-Remote-User": {
+            "equalTo": "N00"
+          },
+          "X-DocRepository-Real-Remote-User": {
+            "equalTo": "UPWService"
+          },
+          "Authorization": {
+            "doesNotMatch": "^Bearer (.*)$"
+          }
+        },
+        "multipartPatterns": [
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"CRN\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "D001022"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"author\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "Service,UPW"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"entityType\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "UPWASSESSMENT"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"docType\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "DOCUMENT"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"entityId\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "4"
+              }
+            ]
+          }
+        ]
+      },
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}
