@@ -12,7 +12,7 @@ import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
-import uk.gov.justice.digital.hmpps.controller.common.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.common.entity.ReferenceData
 import java.time.LocalDate
 
 @Immutable

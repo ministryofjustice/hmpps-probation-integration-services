@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CaseRepository
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.EventRepository
-import uk.gov.justice.digital.hmpps.controller.common.entity.ReferenceDataRepository
+import uk.gov.justice.digital.hmpps.integrations.common.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.AliasGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseAddressGenerator

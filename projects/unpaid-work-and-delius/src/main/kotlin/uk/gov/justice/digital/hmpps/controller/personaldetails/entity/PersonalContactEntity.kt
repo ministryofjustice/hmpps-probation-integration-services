@@ -6,8 +6,8 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
-import uk.gov.justice.digital.hmpps.controller.common.entity.AddressEntity
-import uk.gov.justice.digital.hmpps.controller.common.entity.PersonalContactBase
+import uk.gov.justice.digital.hmpps.integrations.common.entity.AddressEntity
+import uk.gov.justice.digital.hmpps.integrations.common.entity.PersonalContactBase
 import java.time.LocalDate
 
 @Entity
