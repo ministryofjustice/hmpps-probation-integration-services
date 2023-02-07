@@ -95,7 +95,7 @@ class AllocationValidatorTest {
             )
         )
             .thenReturn(INITIAL_OM_ALLOCATION)
-        whenever(staffRepository.verifyTeamMembership(staff.id, team.id)).thenReturn(true)
+        whenever(staffRepository.countTeamMembership(staff.id, team.id)).thenReturn(1)
         whenever(staffRepository.findByCode(allocationDetail.staffCode)).thenReturn(staff)
         assertDoesNotThrow {
             allocationValidator.initialValidations(
@@ -182,7 +182,7 @@ class AllocationValidatorTest {
         )
             .thenReturn(INITIAL_OM_ALLOCATION)
         val futureEndDatedStaff = Staff(1L, "code", "old", "staff", "", ZonedDateTime.now().plusYears(5))
-        whenever(staffRepository.verifyTeamMembership(futureEndDatedStaff.id, team.id)).thenReturn(true)
+        whenever(staffRepository.countTeamMembership(futureEndDatedStaff.id, team.id)).thenReturn(1)
         whenever(staffRepository.findByCode(allocationDetail.staffCode)).thenReturn(futureEndDatedStaff)
         assertDoesNotThrow {
             allocationValidator.initialValidations(
@@ -205,7 +205,7 @@ class AllocationValidatorTest {
         )
             .thenReturn(INITIAL_OM_ALLOCATION)
         whenever(staffRepository.findByCode(allocationDetail.staffCode)).thenReturn(staff)
-        whenever(staffRepository.verifyTeamMembership(staff.id, team.id)).thenReturn(false)
+        whenever(staffRepository.countTeamMembership(staff.id, team.id)).thenReturn(0)
         val exception =
             assertThrows<StaffNotInTeamException> {
                 allocationValidator.initialValidations(
