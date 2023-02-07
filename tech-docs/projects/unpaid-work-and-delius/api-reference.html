@@ -1,0 +1,1281 @@
+<!doctype html>
+<html lang="en" class="govuk-template no-js">
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <title>API Reference - HMPPS Unpaid Work And Delius</title>
+
+    <link href="stylesheets/manifest.css" rel="stylesheet" />
+
+    <link rel="canonical" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/unpaid-work-and-delius/api-reference.html">
+
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:domain" content="ministryofjustice.github.io" />
+      <meta name="twitter:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/unpaid-work-and-delius/images/govuk-large.png" />
+      <meta name="twitter:title" content="API Reference - HMPPS Unpaid Work And Delius" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/unpaid-work-and-delius/api-reference.html" />
+
+      <meta property="og:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/unpaid-work-and-delius/images/govuk-large.png" />
+      <meta property="og:site_name" content="HMPPS Unpaid Work And Delius" />
+      <meta property="og:title" content="API Reference" />
+      <meta property="og:type" content="object" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/unpaid-work-and-delius/api-reference.html" />
+
+    
+  </head>
+
+  <body class="govuk-template__body">
+    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+
+    <div class="app-pane">
+      <div class="app-pane__header toc-open-disabled">
+        <a href="#content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+        <header class="govuk-header app-header" role="banner" data-module="govuk-header">
+  <div class="govuk-header__container govuk-header__container--full-width">
+    <div class="govuk-header__logo">
+      <a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/unpaid-work-and-delius" class="govuk-header__link govuk-header__link--homepage">
+        <span class="govuk-header__product-name">
+          HMPPS Unpaid Work And Delius
+        </span>
+      </a>
+    </div>
+    <div class="govuk-header__content">
+      <nav class="govuk-header__navigation govuk-header__navigation--end" aria-label="Menu">
+        <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide menu">Menu</button>
+        <ul id="navigation" class="govuk-header__navigation-list">
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://github.com/ministryofjustice/hmpps-probation-integration-services#readme">GitHub</a>
+            </li>
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://mojdt.slack.com/archives/C02HQ4M2YQN">Slack</a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+      </div>
+
+        <div id="toc-heading" class="toc-show fixedsticky">
+          <button type="button" class="toc-show__label js-toc-show" aria-controls="toc">
+            Table of contents <span class="toc-show__icon"></span>
+          </button>
+        </div>
+
+      <div class="app-pane__body" data-module="in-page-navigation">
+          <div class="app-pane__toc">
+            <div class="toc" data-module="table-of-contents" tabindex="-1" aria-label="Table of contents" role="dialog">
+              <div class="search" data-module="search" data-path-to-site-root="./">
+  <form action="https://www.google.co.uk/search" method="get" role="search" class="search__form govuk-!-margin-bottom-4">
+    <input type="hidden" name="as_sitesearch" value="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/unpaid-work-and-delius"/>
+    <label class="govuk-label search__label" for="search" aria-hidden="true">
+      Search (via Google)
+    </label>
+    <input
+      type="text"
+      id="search" name="q"
+      class="govuk-input govuk-!-margin-bottom-0 search__input"
+      aria-controls="search-results"
+      placeholder="Search">
+    <button type="submit" class="search__button">Search</button>
+  </form>
+</div>
+
+              <button type="button" class="toc__close js-toc-close" aria-controls="toc" aria-label="Hide table of contents"></button>
+              <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
+                      <ul>
+  <li>
+    <a href="./index.html"><span>unpaid-work-and-delius</span></a>
+  </li>
+  <li>
+    <a href="./api-reference.html"><span>API Reference v1.0</span></a>
+    <ul>
+      <li>
+        <a href="./api-reference.html#case-data-crn-eventid"><span>/case-data/{crn}/{eventId}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#case-data-crn-personal-details"><span>/case-data/{crn}/personal-details</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#schemas"><span>Schemas</span></a>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+              </nav>
+            </div>
+          </div>
+
+        <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
+          <main id="content" class="technical-documentation" data-module="anchored-headings">
+            <header id="api" class="anchored-heading govuk-heading-xl" style="padding-top: 30px">
+    <a href="#api" class="anchored-heading__icon" aria-hidden="true" tabindex="-1"></a>
+    API Reference
+</header>
+
+<style>.technical-documentation > h1 { display: none !important }</style>
+<p>The following documentation is also available in these formats:</p>
+
+<ul>
+<li><a href="https://unpaid-work-and-delius-dev.hmpps.service.justice.gov.uk/v3/api-docs">OpenAPI JSON</a></li>
+<li><a href="https://unpaid-work-and-delius-dev.hmpps.service.justice.gov.uk/v3/api-docs.yaml">OpenAPI YAML</a></li>
+<li><a href="https://unpaid-work-and-delius-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html">Swagger UI</a></li>
+</ul>
+<h1 id="api-reference">API Reference v1.0</h1>
+
+
+
+
+
+
+<h2 id="case-data-crn-eventid">/case-data/{crn}/{eventId}</h2>
+
+<h3 id="case-data-crn-eventid-get">get</h3>
+
+
+
+
+<h4 id="case-data-crn-eventid-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>eventId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="case-data-crn-eventid-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "dateOfBirth": "string",
+  "gender": "string",
+  "genderIdentity": "string",
+  "croNumber": "string",
+  "pncNumber": "string",
+  "aliases": [
+    {
+      "name": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "dateOfBirth": "string"
+    }
+  ],
+  "emailAddress": "string",
+  "phoneNumbers": [
+    {
+      "type": "string",
+      "number": "string"
+    }
+  ],
+  "mainAddress": {
+    "buildingName": "string",
+    "addressNumber": "string",
+    "streetName": "string",
+    "district": "string",
+    "town": "string",
+    "county": "string",
+    "postcode": "string"
+  },
+  "ethnicity": "string",
+  "disabilities": [
+    {
+      "type": {
+        "code": "string",
+        "description": "string"
+      },
+      "provisions": [
+        {
+        }
+      ],
+      "notes": "string"
+    }
+  ],
+  "language": {
+    "requiresInterpreter": "boolean",
+    "primaryLanguage": "string"
+  },
+  "personalCircumstances": [
+    {
+      "type": {
+        "code": "string",
+        "description": "string"
+      },
+      "subType": {
+        "code": "string",
+        "description": "string"
+      },
+      "notes": "string",
+      "evidenced": "boolean"
+    }
+  ],
+  "personalContacts": [
+    {
+      "relationship": "string",
+      "name": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "telephoneNumber": "string",
+      "mobileNumber": "string",
+      "address": {
+        "buildingName": "string",
+        "addressNumber": "string",
+        "streetName": "string",
+        "district": "string",
+        "town": "string",
+        "county": "string",
+        "postcode": "string"
+      }
+    }
+  ],
+  "mappaRegistration": {
+    "startDate": "string",
+    "level": {
+      "code": "string",
+      "description": "string"
+    },
+    "category": {
+      "code": "string",
+      "description": "string"
+    }
+  },
+  "registerFlags": [
+    {
+      "code": "string",
+      "description": "string",
+      "riskColour": "string"
+    }
+  ],
+  "sentence": {
+    "startDate": "string",
+    "mainOffence": {
+      "category": {
+        "code": "string",
+        "description": "string"
+      },
+      "subCategory": {
+        "code": "string",
+        "description": "string"
+      }
+    }
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-casedetails'>CaseDetails</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="case-data-crn-personal-details">/case-data/{crn}/personal-details</h2>
+
+<h3 id="case-data-crn-personal-details-get">get</h3>
+
+
+
+
+<h4 id="case-data-crn-personal-details-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="case-data-crn-personal-details-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "personalCircumstances": [
+    {
+      "type": {
+        "code": "string",
+        "description": "string"
+      },
+      "subType": {
+        "code": "string",
+        "description": "string"
+      },
+      "notes": "string",
+      "evidenced": "boolean"
+    }
+  ],
+  "personalContacts": [
+    {
+      "relationship": "string",
+      "name": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "telephoneNumber": "string",
+      "mobileNumber": "string",
+      "address": {
+        "buildingName": "string",
+        "addressNumber": "string",
+        "streetName": "string",
+        "district": "string",
+        "town": "string",
+        "county": "string",
+        "postcode": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personaldetails'>PersonalDetails</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+
+<h2 id="schemas">Schemas</h2>
+<h3 id="schema-address">Address</h3>
+
+
+<table class='schema-address'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>buildingName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>addressNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>streetName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>district</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>town</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>county</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-alias">Alias</h3>
+
+
+<table class='schema-alias'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-casedetails">CaseDetails</h3>
+
+
+<table class='schema-casedetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>gender</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>genderIdentity</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>croNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pncNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>aliases</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-alias'>Alias</a>
+</td>
+</tr>
+
+<tr>
+<td>emailAddress</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>phoneNumbers</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-phonenumber'>PhoneNumber</a>
+</td>
+</tr>
+
+<tr>
+<td>mainAddress</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-address'>Address</a>
+</td>
+</tr>
+
+<tr>
+<td>ethnicity</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>disabilities</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-disability'>Disability</a>
+</td>
+</tr>
+
+<tr>
+<td>language</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-language'>Language</a>
+</td>
+</tr>
+
+<tr>
+<td>personalCircumstances</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-personalcircumstance'>PersonalCircumstance</a>
+</td>
+</tr>
+
+<tr>
+<td>personalContacts</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-personalcontact'>PersonalContact</a>
+</td>
+</tr>
+
+<tr>
+<td>mappaRegistration</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-mapparegistration'>MappaRegistration</a>
+</td>
+</tr>
+
+<tr>
+<td>registerFlags</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-registerflag'>RegisterFlag</a>
+</td>
+</tr>
+
+<tr>
+<td>sentence</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-sentence'>Sentence</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-disability">Disability</h3>
+
+
+<table class='schema-disability'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>type</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-type'>Type</a>
+</td>
+</tr>
+
+<tr>
+<td>provisions</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-language">Language</h3>
+
+
+<table class='schema-language'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>requiresInterpreter</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>primaryLanguage</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-mainoffence">MainOffence</h3>
+
+
+<table class='schema-mainoffence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>category</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-type'>Type</a>
+</td>
+</tr>
+
+<tr>
+<td>subCategory</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-type'>Type</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-mapparegistration">MappaRegistration</h3>
+
+
+<table class='schema-mapparegistration'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>level</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-type'>Type</a>
+</td>
+</tr>
+
+<tr>
+<td>category</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-type'>Type</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-name">Name</h3>
+
+
+<table class='schema-name'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personalcircumstance">PersonalCircumstance</h3>
+
+
+<table class='schema-personalcircumstance'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>type</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-type'>Type</a>
+</td>
+</tr>
+
+<tr>
+<td>subType</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-type'>Type</a>
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>evidenced</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personalcontact">PersonalContact</h3>
+
+
+<table class='schema-personalcontact'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>relationship</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>telephoneNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mobileNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>address</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-address'>Address</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-phonenumber">PhoneNumber</h3>
+
+
+<table class='schema-phonenumber'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>number</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-registerflag">RegisterFlag</h3>
+
+
+<table class='schema-registerflag'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>riskColour</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-sentence">Sentence</h3>
+
+
+<table class='schema-sentence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-mainoffence'>MainOffence</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-type">Type</h3>
+
+
+<table class='schema-type'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personaldetails">PersonalDetails</h3>
+
+
+<table class='schema-personaldetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>personalCircumstances</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personalcircumstance'>PersonalCircumstance</a>
+</td>
+</tr>
+
+<tr>
+<td>personalContacts</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personalcontact'>PersonalContact</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+            
+          </main>
+
+          <aside>
+              <ul class="contribution-banner">
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/unpaid-work-and-delius/tech-docs/source/api-reference.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new?body=Problem+with+%27API+Reference%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fhmpps-probation-integration-services%2Ftech-docs%2Fprojects%2Funpaid-work-and-delius%2Fapi-reference.html%29&amp;labels=bug&amp;title=Re%3A+%27API+Reference%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services">GitHub Repo</a></li>
+              </ul>
+          </aside>
+
+          <footer class="govuk-footer app-footer" role="contentinfo">
+  <div class="govuk-footer__meta">
+    <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+
+
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        class="govuk-footer__licence-logo"
+        xmlns="http://www.w3.org/2000/svg"
+        viewbox="0 0 483.2 195.7"
+        height="17"
+        width="41"
+      >
+        <path
+          fill="currentColor"
+          d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"
+        />
+      </svg>
+      <span class="govuk-footer__licence-description">
+        All content is available under the
+        <a
+          class="govuk-footer__link"
+          href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+          rel="license"
+        >Open Government Licence v3.0</a>, except where otherwise stated
+      </span>
+    </div>
+    <div class="govuk-footer__meta-item">
+      <a
+        class="govuk-footer__link govuk-footer__copyright-logo"
+        href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+      >© Crown copyright</a>
+    </div>
+  </div>
+</footer>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <script src="javascripts/application.js"></script>
+  </body>
+</html>
