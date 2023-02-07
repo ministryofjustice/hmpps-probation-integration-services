@@ -42,8 +42,8 @@ object PersonManagerGenerator {
     val ALL = listOf(DEFAULT, PREVIOUS, DELETED)
 
     fun generate(
-        team: Team,
-        staff: Staff,
+        team: Team = ProviderGenerator.DEFAULT_TEAM,
+        staff: Staff = ProviderGenerator.DEFAULT_STAFF,
         person: Person = PersonGenerator.DEFAULT,
         active: Boolean = true,
         softDeleted: Boolean = false,

@@ -41,8 +41,9 @@ internal class IntegrationTest {
 
     @Test
     fun `API call retuns a success response`() {
+        val person = PersonGenerator.DEFAULT
         val res = mockMvc
-            .perform(get("/case-records/A00123Y").withOAuth2Token(wireMockServer))
+            .perform(get("/case-records/${person.nomsId}").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsString
 
@@ -54,8 +55,8 @@ internal class IntegrationTest {
             record,
             equalTo(
                 ProbationRecord(
-                    PersonGenerator.DEFAULT.crn,
-                    PersonGenerator.DEFAULT.nomsId!!,
+                    person.crn,
+                    person.nomsId!!,
                     ReferenceDataGenerator.TIER_2.description,
                     Resourcing.NORMAL,
                     Manager(
