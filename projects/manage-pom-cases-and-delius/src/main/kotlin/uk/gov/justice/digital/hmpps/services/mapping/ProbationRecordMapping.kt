@@ -1,0 +1,45 @@
+package uk.gov.justice.digital.hmpps.services.mapping
+
+import uk.gov.justice.digital.hmpps.api.model.Manager
+import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.ProbationRecord
+import uk.gov.justice.digital.hmpps.api.model.Resourcing
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.Registration
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.LocalDeliveryUnit
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
+
+fun Person.record(decision: ReferenceData?, registration: Registration?): ProbationRecord =
+    ProbationRecord(
+        crn,
+        nomsId!!,
+        currentTier?.description,
+        decision?.resourcing(),
+        manager.manager(),
+        registration.level()
+    )
+
+fun ReferenceData?.resourcing() = when (this?.code) {
+    "R" -> Resourcing.ENHANCED
+    "A" -> Resourcing.NORMAL
+    else -> null
+}
+
+fun LocalDeliveryUnit.forManager() =
+    uk.gov.justice.digital.hmpps.api.model.LocalDeliveryUnit(code, description)
+
+fun Team.forManager() =
+    uk.gov.justice.digital.hmpps.api.model.Team(code, description, ldu?.forManager())
+
+fun Staff.name() = Name(forename, middleName, surname)
+fun PersonManager.manager() = Manager(staff.code, staff.name(), team.forManager())
+
+fun Registration?.level(): Int = when (this?.level?.code) {
+    "M1" -> 1
+    "M2" -> 2
+    "M3" -> 3
+    else -> 0
+}
