@@ -5,6 +5,7 @@ on:
     paths:
       - .github/workflows/docs.yml
       - projects/**/tech-docs/**
+      - doc/tech-docs/**
   schedule:
     - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
   workflow_dispatch:
@@ -19,11 +20,37 @@ jobs:
       - id: get-projects
         run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_OUTPUT
 
-  tech-docs:
+  tech-docs-index:
+    runs-on: moj-cloud-platform
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+          bundler-cache: true
+          working-directory: doc/tech-docs
+      - name: Build
+        run: |
+          gem install middleman
+          bundle exec middleman build --verbose
+        working-directory: doc/tech-docs
+      - name: Deploy
+        if: github.ref == 'refs/heads/main'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: doc/tech-docs/build
+          target-folder: tech-docs
+          clean-exclude: |
+            projects
+            tech-docs/projects
+
+  tech-docs-project:
     runs-on: moj-cloud-platform
     timeout-minutes: 30
     needs:
       - get-projects
+      - tech-docs-index
     strategy:
       fail-fast: false
       max-parallel: 1
@@ -36,18 +63,14 @@ jobs:
           ruby-version: 3.1
           bundler-cache: true
           working-directory: projects/${{ matrix.project }}/tech-docs
-
-      - name: Install Middleman
-        run: gem install middleman
-        working-directory: projects/${{ matrix.project }}/tech-docs
-
       - name: Build
-        run: bundle exec middleman build --verbose
+        run: |
+          gem install middleman
+          bundle exec middleman build --verbose
         working-directory: projects/${{ matrix.project }}/tech-docs
-
       - name: Deploy
         if: github.ref == 'refs/heads/main'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: projects/${{ matrix.project }}/tech-docs/build
-          target-folder: tech-docs/${{ matrix.project }}
+          target-folder: tech-docs/projects/${{ matrix.project }}

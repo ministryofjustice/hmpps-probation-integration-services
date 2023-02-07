@@ -1,9 +1,9 @@
 # Host to use for canonical URL generation (without trailing slash)
-host: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/workforce-allocations-to-delius
+host: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius
 
 # Header-related options
 service_name: HMPPS Workforce Allocations to Delius
-service_link: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/workforce-allocations-to-delius
+service_link: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius
 
 # Links to show on right-hand-side of header
 header_links:

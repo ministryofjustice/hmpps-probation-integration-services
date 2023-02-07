@@ -1,9 +1,9 @@
 # Host to use for canonical URL generation (without trailing slash)
-host: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/approved-premises-and-oasys
+host: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/approved-premises-and-oasys
 
 # Header-related options
 service_name: HMPPS Approved Premises And OASys
-service_link: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/approved-premises-and-oasys
+service_link: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/approved-premises-and-oasys
 
 # Links to show on right-hand-side of header
 header_links:
