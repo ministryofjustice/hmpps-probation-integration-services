@@ -16,13 +16,15 @@ runs:
     - id: project_name
       shell: bash
       run: |
-        echo "camel_case=$(echo '${{ inputs.project_name }}' | sed -E 's/-(.)/\U\1/g' | sed -E 's/^(.)/\U\1/')" >> $GITHUB_OUTPUT
+        echo "camel_case=$(echo '${{ inputs.project_name }}' | sed -E 's/-(.)/\U\1/g;s/^(.)/\U\1/')" >> $GITHUB_OUTPUT
+        echo "title_case=$(echo '${{ inputs.project_name }}' | tr '-' ' ' | sed -E 's/ (.)/ \U\1/g;s/^(.)/\U\1/')" >> $GITHUB_OUTPUT
         echo "underscore=$(echo '${{ inputs.project_name }}' | tr '-' '_')" >> $GITHUB_OUTPUT
 
     - name: Render project template
       shell: bash
       run: |
         find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME_CAMELCASE/${{ steps.project_name.outputs.camel_case }}/g' {} \;
+        find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME_TITLECASE/${{ steps.project_name.outputs.title_case }}/g' {} \;
         find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME/${{ inputs.project_name }}/g' {} \;
         cp -R templates/projects/${{ inputs.project_template }} projects/${{ inputs.project_name }}
         sed -i '/add new projects here/i \    "${{ inputs.project_name }}",' settings.gradle.kts
@@ -30,4 +32,5 @@ runs:
         sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' .github/workflows/deploy.yml
         sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' .github/workflows/end-to-end-tests.yml
         sed -i '/add new projects here/i \          - ${{ inputs.project_name }}' .github/workflows/suppress-trivy.yml
+        sed -i '/add new projects here/i \* [${{ steps.project_name.outputs.title_case }}](https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/${{ inputs.project_name }})' doc/tech-docs/source/index.html.md.erb
         sed 's/$SERVICE_NAME/${{ inputs.project_name }}/g' templates/runConfiguration.xml > '.idea/runConfigurations/${{ steps.project_name.outputs.underscore }}.xml'
