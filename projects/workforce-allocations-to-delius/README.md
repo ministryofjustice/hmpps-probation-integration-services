@@ -14,7 +14,7 @@ reflected in Delius for the case management activity to proceed.
 
 ## Context Map
 
-![Context Map](./img/workforce-allocations-to-delius-context-map.png)
+![Context Map](tech-docs/source/img/workforce-allocations-to-delius-context-map.png)
 
 ## Interfaces
 
