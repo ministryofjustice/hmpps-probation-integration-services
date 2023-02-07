@@ -29,7 +29,7 @@ class DocumentService(
                 Document(
                     contactId = contactId,
                     offenderId = offenderId,
-                    alfrescoId = alfrescoDocument.ID,
+                    alfrescoId = alfrescoDocument.id,
                     name = filename,
                     externalReference = episodeId
                 )

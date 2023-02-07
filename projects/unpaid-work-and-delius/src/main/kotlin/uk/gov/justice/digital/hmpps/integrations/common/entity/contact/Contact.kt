@@ -40,13 +40,6 @@ class Contact(
     @Column(name = "contact_date", nullable = false)
     val date: ZonedDateTime,
 
-    @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime? = null,
-
-    @ManyToOne
-    @JoinColumn(name = "contact_type_id", nullable = false)
-    val type: ContactType,
-
     @Lob
     @Column
     val notes: String? = null,
@@ -56,6 +49,13 @@ class Contact(
 
     @Column
     val teamId: Long,
+
+    @Column(name = "contact_start_time")
+    val startTime: ZonedDateTime? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "contact_type_id", nullable = false)
+    val type: ContactType,
 
     @Column(nullable = false)
     @CreatedDate
