@@ -49,8 +49,8 @@ internal class ProbationRecordMappingKtTest {
     @MethodSource("levelMapping")
     fun `level mapping`(code: String?, level: Int) {
         val registration = code?.let {
-            val level = ReferenceDataGenerator.generate(it)
-            RegistrationGenerator.generate(RegistrationGenerator.TYPE_MAPPA, level, LocalDate.now())
+            val rLevel = ReferenceDataGenerator.generate(it)
+            RegistrationGenerator.generate(RegistrationGenerator.TYPE_MAPPA, rLevel, LocalDate.now())
         }
         assertThat(registration.level(), equalTo(level))
     }
