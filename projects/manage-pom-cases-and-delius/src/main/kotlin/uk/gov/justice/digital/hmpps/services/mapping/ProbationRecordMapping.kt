@@ -35,7 +35,9 @@ fun Team.forManager() =
     uk.gov.justice.digital.hmpps.api.model.Team(code, description, ldu?.forManager())
 
 fun Staff.name() = Name(forename, middleName, surname)
-fun PersonManager.manager() = Manager(staff.code, staff.name(), team.forManager())
+fun PersonManager.manager() =
+    if (staff.isUnallocated()) Manager(null, null, team.forManager())
+    else Manager(staff.code, staff.name(), team.forManager())
 
 fun Registration?.level(): Int = when (this?.level?.code) {
     "M1" -> 1
