@@ -10,8 +10,6 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.document.Document
-import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 
 @Service
@@ -31,7 +29,8 @@ class DocumentService(
                     offenderId = offenderId,
                     alfrescoId = alfrescoDocument.id,
                     name = filename,
-                    externalReference = episodeId
+                    externalReference = episodeId,
+                    tableName = "CONTACT"
                 )
             )
         }

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.document
+package uk.gov.justice.digital.hmpps.integrations.document
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
