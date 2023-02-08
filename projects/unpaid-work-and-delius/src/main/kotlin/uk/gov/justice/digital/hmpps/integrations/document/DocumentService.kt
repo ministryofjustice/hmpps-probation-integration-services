@@ -45,7 +45,7 @@ class DocumentService(
         val crn = hmppsEvent.personReference.findCrn()!!
         val bodyBuilder = MultipartBodyBuilder()
         bodyBuilder.part("CRN", crn, MediaType.TEXT_PLAIN)
-        bodyBuilder.part("entityId", contactId, MediaType.TEXT_PLAIN)
+        bodyBuilder.part("entityId", contactId.toString(), MediaType.TEXT_PLAIN)
         bodyBuilder.part("author", "Service,UPW", MediaType.TEXT_PLAIN)
         bodyBuilder.part("filedata", file, MediaType.APPLICATION_OCTET_STREAM)
             .filename(filename)

@@ -3,7 +3,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "https://dev.hmpps-assessments.service.justice.gov.uk/api/upw/download/12345",
+        "url": "/api/upw/download/12345",
         "headers": {
           "Authorization": {
             "matches": "^Bearer (.*)$"
@@ -14,7 +14,8 @@
         "status": 200,
         "bodyFileName": "upw.pdf",
         "headers": {
-          "Content-Type": "application/octet-stream"
+          "Content-Type": "application/octet-stream",
+          "Content-Disposition": "attachment; filename=\"upw.pdf\"; filename*=UTF-8''upw.pdf"
         }
       }
     }

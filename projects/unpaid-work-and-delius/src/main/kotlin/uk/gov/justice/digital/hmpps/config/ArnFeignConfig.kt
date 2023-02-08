@@ -12,5 +12,5 @@ import uk.gov.justice.digital.hmpps.integrations.arn.ArnClient
 class ArnFeignConfig(
     authorizedClientManager: OAuth2AuthorizedClientManager
 ) : FeignConfig(authorizedClientManager) {
-    override fun registrationId() = "arn-service"
+    override fun registrationId() = "unpaid-work-and-delius"
 }

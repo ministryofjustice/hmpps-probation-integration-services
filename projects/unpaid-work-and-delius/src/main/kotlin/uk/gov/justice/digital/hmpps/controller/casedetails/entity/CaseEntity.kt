@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.controller.casedetails.entity
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
@@ -62,16 +61,16 @@ class CaseEntity(
     @JoinColumn(name = "ethnicity_id")
     val ethnicity: ReferenceData? = null,
 
-    @OneToMany(mappedBy = "case", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "case")
     val personalCircumstances: List<CasePersonalCircumstanceEntity>,
 
-    @OneToMany(mappedBy = "case", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "case")
     val personalContacts: List<CasePersonalContactEntity>,
 
-    @OneToMany(mappedBy = "case", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "case")
     val aliases: List<AliasEntity>,
 
-    @OneToMany(mappedBy = "case", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "case")
     val disabilities: List<DisabilityEntity>,
 
     @ManyToOne
@@ -82,7 +81,7 @@ class CaseEntity(
     @Convert(converter = YesNoConverter::class)
     val requiresInterpreter: Boolean? = false,
 
-    @OneToMany(mappedBy = "case", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "case")
     val registrations: List<RegistrationEntity>,
 
 )

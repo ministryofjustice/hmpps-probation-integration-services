@@ -9,7 +9,7 @@
             "equalTo": "N00"
           },
           "X-DocRepository-Real-Remote-User": {
-            "equalTo": "UPWService"
+            "equalTo": "UnpaidWorkAndDelius"
           },
           "Authorization": {
             "doesNotMatch": "^Bearer (.*)$"
@@ -51,7 +51,7 @@
             },
             "bodyPatterns": [
               {
-                "contains": "UPWASSESSMENT"
+                "contains": "CONTACT"
               }
             ]
           },
@@ -77,14 +77,18 @@
             },
             "bodyPatterns": [
               {
-                "contains": "4"
+                "contains": "1"
               }
             ]
           }
         ]
       },
       "response": {
-        "status": 200
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "alfresco-upload-response.json"
       }
     }
   ]

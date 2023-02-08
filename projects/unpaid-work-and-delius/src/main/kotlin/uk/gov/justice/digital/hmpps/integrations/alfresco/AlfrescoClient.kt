@@ -9,6 +9,6 @@ import uk.gov.justice.digital.hmpps.config.AlfrescoFeignConfig
 
 @FeignClient(name = "alfresco", url = "\${integrations.alfresco.url}", configuration = [AlfrescoFeignConfig::class])
 interface AlfrescoClient {
-    @PostMapping(value = ["/uploadnew/"])
+    @PostMapping(value = ["/uploadnew"])
     fun addDocument(@RequestBody body: MultiValueMap<String, HttpEntity<*>>): AlfrescoDocument
 }
