@@ -45,7 +45,7 @@ internal class UPWAssessmentServiceTest {
     private lateinit var arnClient: ArnClient
 
     @Test
-    fun `when person not found exception thrown`() {
+    fun `when person not found`() {
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(CaseGenerator.DEFAULT.crn)).thenReturn(null)
         val notification = prepMessage("upw-assessment-complete")
         upwAssessmentService.processMessage(notification)
