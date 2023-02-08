@@ -36,6 +36,7 @@ configure<ClassPathExtension> {
     jacocoExclusions = listOf(
         "**/config/**",
         "**/entity/**",
+        "**/ldap/**",
         "**/AppKt.class"
     )
 }
