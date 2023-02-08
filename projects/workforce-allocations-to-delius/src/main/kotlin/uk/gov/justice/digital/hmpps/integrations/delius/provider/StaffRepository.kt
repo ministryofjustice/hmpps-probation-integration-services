@@ -16,13 +16,13 @@ interface StaffRepository : JpaRepository<StaffRecord, Long> {
 
     @Query(
         """
-        select case when count(team_id) > 0 then true else false end
+        select count(team_id)
         from staff_team
         where staff_id = :staffId and team_id = :teamId
         """,
         nativeQuery = true
     )
-    fun verifyTeamMembership(staffId: Long, teamId: Long): Boolean
+    fun countTeamMembership(staffId: Long, teamId: Long): Int
 
     @Query("select s from StaffWithUser s join s.teams t where t.code = :teamCode")
     fun findAllByTeamsCode(teamCode: String): List<StaffWithUser>
@@ -102,3 +102,5 @@ fun StaffRepository.getWithUserByCode(code: String): StaffWithUser =
 
 fun StaffRepository.getByCode(code: String): Staff =
     findByCode(code) ?: throw NotFoundException("Staff", "code", code)
+
+fun StaffRepository.verifyTeamMembership(staffId: Long, teamId: Long) = countTeamMembership(staffId, teamId) > 0

@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.exceptions.StaffNotInTeamException
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamStaffContainer
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.verifyTeamMembership
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail
 
 @Component
