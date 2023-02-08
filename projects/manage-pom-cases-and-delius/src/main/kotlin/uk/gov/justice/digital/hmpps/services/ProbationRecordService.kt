@@ -7,16 +7,22 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByNomsId
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.findMappaRegistration
+import uk.gov.justice.digital.hmpps.integrations.ldap.LdapUserRepository
 import uk.gov.justice.digital.hmpps.services.mapping.record
 
 @Service
 class ProbationRecordService(
     val personRepository: PersonRepository,
     val caseAllocationRepository: CaseAllocationRepository,
-    val registrationRepository: RegistrationRepository
+    val registrationRepository: RegistrationRepository,
+    val ldap: LdapUserRepository
 ) {
     fun findByNomsId(nomsId: String): ProbationRecord {
         val person = personRepository.getByNomsId(nomsId)
+        val user = person.manager.staff.user
+        user?.username?.also {
+            user.email = ldap.findByUsername(it)?.email
+        }
         val decision = caseAllocationRepository.findLatestActiveDecision(person.id)
         val registration = registrationRepository.findMappaRegistration(person.id)
         return person.record(decision, registration)
