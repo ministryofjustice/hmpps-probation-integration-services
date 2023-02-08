@@ -364,6 +364,10 @@
                                                 <td class="constraint detail">R_788<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
+                                                <td title="DISABILITY.DISABILITY_CONDITION_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1380"><a href='DISABILITY.html'>DISABILITY</a><span class='relatedKey'>.DISABILITY_CONDITION_ID</span></td>
+                                                <td class="constraint detail">R_1380<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="DISABILITY.DISABILITY_TYPE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0021881"><a href='DISABILITY.html'>DISABILITY</a><span class='relatedKey'>.DISABILITY_TYPE_ID</span></td>
                                                 <td class="constraint detail">SYS_C0021881<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -838,6 +842,14 @@
                                             <tr>
                                                 <td title="R_COURT_TRANSFER_REASON.TRANSFER_REASON_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1036"><a href='R_COURT_TRANSFER_REASON.html'>R_COURT_TRANSFER_REASON</a><span class='relatedKey'>.TRANSFER_REASON_ID</span></td>
                                                 <td class="constraint detail">R_1036<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="R_DISABILITY_TYPE_CONDITION.DISABILITY_CONDITION_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1382"><a href='R_DISABILITY_TYPE_CONDITION.html'>R_DISABILITY_TYPE_CONDITION</a><span class='relatedKey'>.DISABILITY_CONDITION_ID</span></td>
+                                                <td class="constraint detail">R_1382<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="R_DISABILITY_TYPE_CONDITION.DISABILITY_TYPE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1381"><a href='R_DISABILITY_TYPE_CONDITION.html'>R_DISABILITY_TYPE_CONDITION</a><span class='relatedKey'>.DISABILITY_TYPE_ID</span></td>
+                                                <td class="constraint detail">R_1381<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="R_DISPOSAL_TYPE.OUTCOME_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0020987"><a href='R_DISPOSAL_TYPE.html'>R_DISPOSAL_TYPE</a><span class='relatedKey'>.OUTCOME_ID</span></td>
@@ -1546,12 +1558,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>TRUE_OR_FALSE_1684532474</td>
-                                    <td>SPG_OVERRIDE IN (0, 1)</td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE_1883892480</td>
                                     <td>SPG_INTEREST IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE_1684532474</td>
+                                    <td>SPG_OVERRIDE IN (0, 1)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO27</td>

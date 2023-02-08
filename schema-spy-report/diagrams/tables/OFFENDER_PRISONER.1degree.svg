@@ -129,14 +129,14 @@
 <text text-anchor="start" x="219" y="-140.6826" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">GENDER_IDENTITY_ID</text>
 <polygon fill="none" stroke="#000000" points="199,-114.5826 199,-133.5826 417,-133.5826 417,-114.5826 199,-114.5826"/>
 <text text-anchor="start" x="202" y="-120.6826" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">...</text>
-<polygon fill="#ffffff" stroke="transparent" points="199,-95.5826 199,-114.5826 272,-114.5826 272,-95.5826 199,-95.5826"/>
-<polygon fill="none" stroke="#000000" points="199,-95.5826 199,-114.5826 272,-114.5826 272,-95.5826 199,-95.5826"/>
+<polygon fill="#ffffff" stroke="transparent" points="199,-95.5826 199,-114.5826 275,-114.5826 275,-95.5826 199,-95.5826"/>
+<polygon fill="none" stroke="#000000" points="199,-95.5826 199,-114.5826 275,-114.5826 275,-95.5826 199,-95.5826"/>
 <text text-anchor="start" x="202" y="-101.6826" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 16</text>
-<polygon fill="#ffffff" stroke="transparent" points="272,-95.5826 272,-114.5826 367,-114.5826 367,-95.5826 272,-95.5826"/>
-<polygon fill="none" stroke="#000000" points="272,-95.5826 272,-114.5826 367,-114.5826 367,-95.5826 272,-95.5826"/>
-<text text-anchor="start" x="297.9791" y="-101.6826" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">494,119 rows</text>
-<polygon fill="#ffffff" stroke="transparent" points="367,-95.5826 367,-114.5826 417,-114.5826 417,-95.5826 367,-95.5826"/>
-<polygon fill="none" stroke="#000000" points="367,-95.5826 367,-114.5826 417,-114.5826 417,-95.5826 367,-95.5826"/>
+<polygon fill="#ffffff" stroke="transparent" points="275,-95.5826 275,-114.5826 365,-114.5826 365,-95.5826 275,-95.5826"/>
+<polygon fill="none" stroke="#000000" points="275,-95.5826 275,-114.5826 365,-114.5826 365,-95.5826 275,-95.5826"/>
+<text text-anchor="start" x="302.094" y="-101.6826" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">18,527 rows</text>
+<polygon fill="#ffffff" stroke="transparent" points="365,-95.5826 365,-114.5826 417,-114.5826 417,-95.5826 365,-95.5826"/>
+<polygon fill="none" stroke="#000000" points="365,-95.5826 365,-114.5826 417,-114.5826 417,-95.5826 365,-95.5826"/>
 <text text-anchor="start" x="392.2904" y="-101.6826" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">96 &gt;</text>
 </a>
 </g>

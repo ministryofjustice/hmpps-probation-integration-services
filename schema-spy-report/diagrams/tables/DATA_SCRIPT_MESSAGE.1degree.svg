@@ -151,14 +151,14 @@
 <text text-anchor="start" x="302" y="-614.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">COURT_ID</text>
 <polygon fill="none" stroke="#000000" points="282,-588.7 282,-607.7 466,-607.7 466,-588.7 282,-588.7"/>
 <text text-anchor="start" x="285" y="-594.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">...</text>
-<polygon fill="#ffffff" stroke="transparent" points="282,-569.7 282,-588.7 335,-588.7 335,-569.7 282,-569.7"/>
-<polygon fill="none" stroke="#000000" points="282,-569.7 282,-588.7 335,-588.7 335,-569.7 282,-569.7"/>
+<polygon fill="#ffffff" stroke="transparent" points="282,-569.7 282,-588.7 338,-588.7 338,-569.7 282,-569.7"/>
+<polygon fill="none" stroke="#000000" points="282,-569.7 282,-588.7 338,-588.7 338,-569.7 282,-569.7"/>
 <text text-anchor="start" x="285" y="-575.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 5</text>
-<polygon fill="#ffffff" stroke="transparent" points="335,-569.7 335,-588.7 423,-588.7 423,-569.7 335,-569.7"/>
-<polygon fill="none" stroke="#000000" points="335,-569.7 335,-588.7 423,-588.7 423,-569.7 335,-569.7"/>
-<text text-anchor="start" x="353.9791" y="-575.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">410,679 rows</text>
-<polygon fill="#ffffff" stroke="transparent" points="423,-569.7 423,-588.7 466,-588.7 466,-569.7 423,-569.7"/>
-<polygon fill="none" stroke="#000000" points="423,-569.7 423,-588.7 466,-588.7 466,-569.7 423,-569.7"/>
+<polygon fill="#ffffff" stroke="transparent" points="338,-569.7 338,-588.7 421,-588.7 421,-569.7 338,-569.7"/>
+<polygon fill="none" stroke="#000000" points="338,-569.7 338,-588.7 421,-588.7 421,-569.7 338,-569.7"/>
+<text text-anchor="start" x="358.094" y="-575.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">14,604 rows</text>
+<polygon fill="#ffffff" stroke="transparent" points="421,-569.7 421,-588.7 466,-588.7 466,-569.7 421,-569.7"/>
+<polygon fill="none" stroke="#000000" points="421,-569.7 421,-588.7 466,-588.7 466,-569.7 421,-569.7"/>
 <text text-anchor="start" x="441.2904" y="-575.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">26 &gt;</text>
 </a>
 </g>
@@ -289,14 +289,14 @@
 <text text-anchor="start" x="28" y="-82.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">GENDER_IDENTITY_ID</text>
 <polygon fill="none" stroke="#000000" points="8,-56.7 8,-75.7 226,-75.7 226,-56.7 8,-56.7"/>
 <text text-anchor="start" x="11" y="-62.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">...</text>
-<polygon fill="#ffffff" stroke="transparent" points="8,-37.7 8,-56.7 81,-56.7 81,-37.7 8,-37.7"/>
-<polygon fill="none" stroke="#000000" points="8,-37.7 8,-56.7 81,-56.7 81,-37.7 8,-37.7"/>
+<polygon fill="#ffffff" stroke="transparent" points="8,-37.7 8,-56.7 84,-56.7 84,-37.7 8,-37.7"/>
+<polygon fill="none" stroke="#000000" points="8,-37.7 8,-56.7 84,-56.7 84,-37.7 8,-37.7"/>
 <text text-anchor="start" x="11" y="-43.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 16</text>
-<polygon fill="#ffffff" stroke="transparent" points="81,-37.7 81,-56.7 176,-56.7 176,-37.7 81,-37.7"/>
-<polygon fill="none" stroke="#000000" points="81,-37.7 81,-56.7 176,-56.7 176,-37.7 81,-37.7"/>
-<text text-anchor="start" x="106.9791" y="-43.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">494,119 rows</text>
-<polygon fill="#ffffff" stroke="transparent" points="176,-37.7 176,-56.7 226,-56.7 226,-37.7 176,-37.7"/>
-<polygon fill="none" stroke="#000000" points="176,-37.7 176,-56.7 226,-56.7 226,-37.7 176,-37.7"/>
+<polygon fill="#ffffff" stroke="transparent" points="84,-37.7 84,-56.7 174,-56.7 174,-37.7 84,-37.7"/>
+<polygon fill="none" stroke="#000000" points="84,-37.7 84,-56.7 174,-56.7 174,-37.7 84,-37.7"/>
+<text text-anchor="start" x="111.094" y="-43.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">18,527 rows</text>
+<polygon fill="#ffffff" stroke="transparent" points="174,-37.7 174,-56.7 226,-56.7 226,-37.7 174,-37.7"/>
+<polygon fill="none" stroke="#000000" points="174,-37.7 174,-56.7 226,-56.7 226,-37.7 174,-37.7"/>
 <text text-anchor="start" x="201.2904" y="-43.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">96 &gt;</text>
 </a>
 </g>

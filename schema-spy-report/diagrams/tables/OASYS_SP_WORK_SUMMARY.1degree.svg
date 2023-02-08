@@ -167,14 +167,14 @@
 <text text-anchor="start" x="219" y="-82.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">GENDER_IDENTITY_ID</text>
 <polygon fill="none" stroke="#000000" points="199,-56.7 199,-75.7 417,-75.7 417,-56.7 199,-56.7"/>
 <text text-anchor="start" x="202" y="-62.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">...</text>
-<polygon fill="#ffffff" stroke="transparent" points="199,-37.7 199,-56.7 272,-56.7 272,-37.7 199,-37.7"/>
-<polygon fill="none" stroke="#000000" points="199,-37.7 199,-56.7 272,-56.7 272,-37.7 199,-37.7"/>
+<polygon fill="#ffffff" stroke="transparent" points="199,-37.7 199,-56.7 275,-56.7 275,-37.7 199,-37.7"/>
+<polygon fill="none" stroke="#000000" points="199,-37.7 199,-56.7 275,-56.7 275,-37.7 199,-37.7"/>
 <text text-anchor="start" x="202" y="-43.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 16</text>
-<polygon fill="#ffffff" stroke="transparent" points="272,-37.7 272,-56.7 367,-56.7 367,-37.7 272,-37.7"/>
-<polygon fill="none" stroke="#000000" points="272,-37.7 272,-56.7 367,-56.7 367,-37.7 272,-37.7"/>
-<text text-anchor="start" x="297.9791" y="-43.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">494,119 rows</text>
-<polygon fill="#ffffff" stroke="transparent" points="367,-37.7 367,-56.7 417,-56.7 417,-37.7 367,-37.7"/>
-<polygon fill="none" stroke="#000000" points="367,-37.7 367,-56.7 417,-56.7 417,-37.7 367,-37.7"/>
+<polygon fill="#ffffff" stroke="transparent" points="275,-37.7 275,-56.7 365,-56.7 365,-37.7 275,-37.7"/>
+<polygon fill="none" stroke="#000000" points="275,-37.7 275,-56.7 365,-56.7 365,-37.7 275,-37.7"/>
+<text text-anchor="start" x="302.094" y="-43.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">18,527 rows</text>
+<polygon fill="#ffffff" stroke="transparent" points="365,-37.7 365,-56.7 417,-56.7 417,-37.7 365,-37.7"/>
+<polygon fill="none" stroke="#000000" points="365,-37.7 365,-56.7 417,-56.7 417,-37.7 365,-37.7"/>
 <text text-anchor="start" x="392.2904" y="-43.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">96 &gt;</text>
 </a>
 </g>
