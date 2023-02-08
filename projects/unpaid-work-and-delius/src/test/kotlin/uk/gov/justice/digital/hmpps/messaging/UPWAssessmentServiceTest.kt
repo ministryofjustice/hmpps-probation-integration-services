@@ -39,9 +39,6 @@ internal class UPWAssessmentServiceTest {
     private lateinit var documentService: DocumentService
 
     @Mock
-    private lateinit var personWithManagerRepository: PersonWithManagerRepository
-
-    @Mock
     private lateinit var arnClient: ArnClient
 
     @Test
