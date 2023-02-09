@@ -7,6 +7,7 @@ service_link: https://ministryofjustice.github.io/hmpps-probation-integration-se
 
 # Links to show on right-hand-side of header
 header_links:
+  Home: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs
   GitHub: https://github.com/ministryofjustice/hmpps-probation-integration-services#readme
   Slack: https://mojdt.slack.com/archives/C02HQ4M2YQN # #probation-integration-tech channel
 
