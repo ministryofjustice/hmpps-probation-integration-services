@@ -15,4 +15,4 @@ service when interacting with the probation case via Delius.
 
 ## Context Maps
 
-![Context Maps](./tech-docs/img/approved-premises-and-delius-context-maps.png)
+![Context Maps](./tech-docs/source/img/approved-premises-and-delius-context-maps.png)
