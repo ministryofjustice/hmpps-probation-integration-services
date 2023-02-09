@@ -52,12 +52,12 @@ class DataLoader(
     }
 
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        staffUserRepository.save(UserGenerator.DEFAULT_STAFF_USER)
         referenceDataRepository.saveAll(ReferenceDataGenerator.ALL)
         registerTypeRepository.saveAll(listOf(RegistrationGenerator.TYPE_MAPPA, RegistrationGenerator.TYPE_OTH))
         lduRepository.save(ProviderGenerator.DEFAULT_LDU)
         teamRepository.saveAll(PersonManagerGenerator.ALL.map { it.team })
         staffRepository.saveAll(PersonManagerGenerator.ALL.map { it.staff })
+        staffUserRepository.save(UserGenerator.DEFAULT_STAFF_USER)
 
         personRepository.save(PersonGenerator.DEFAULT)
         personManagerRepository.saveAll(PersonManagerGenerator.ALL)

@@ -47,4 +47,7 @@ class StaffUser(
     @Id
     @Column(name = "user_id")
     val id: Long
-)
+) {
+    @Transient
+    var email: String? = null
+}

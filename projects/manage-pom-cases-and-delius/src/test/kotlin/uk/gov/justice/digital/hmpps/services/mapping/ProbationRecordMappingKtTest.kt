@@ -14,6 +14,8 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.set
 import java.time.LocalDate
 
@@ -43,6 +45,15 @@ internal class ProbationRecordMappingKtTest {
             ProviderGenerator.generateTeam("TEST", ldu = null).forManager(),
             equalTo(Team("TEST", "Team TEST", null))
         )
+    }
+
+    @Test
+    fun `unallocated om provides null staff details`() {
+        val unallocated = Staff("N07UATU", "Unallocated", "Staff", id = 99)
+        val om = PersonManager(PersonGenerator.DEFAULT, ProviderGenerator.DEFAULT_TEAM, unallocated, id = 99)
+        assertNull(om.manager().code)
+        assertNull(om.manager().name)
+        assertNull(om.manager().email)
     }
 
     @ParameterizedTest

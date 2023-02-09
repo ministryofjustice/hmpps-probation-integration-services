@@ -13,7 +13,7 @@ enum class Resourcing {
     ENHANCED, NORMAL
 }
 
-data class Manager(val code: String?, val name: Name?, val team: Team)
+data class Manager(val team: Team, val code: String? = null, val name: Name? = null, val email: String? = null)
 data class Name(val forename: String, val middleName: String?, val surname: String)
 data class Team(val code: String, val description: String, val localDeliveryUnit: LocalDeliveryUnit?)
 data class LocalDeliveryUnit(val code: String, val description: String)
