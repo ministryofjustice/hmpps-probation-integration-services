@@ -12,10 +12,10 @@ import uk.gov.justice.digital.hmpps.services.mapping.record
 
 @Service
 class ProbationRecordService(
-    val personRepository: PersonRepository,
-    val caseAllocationRepository: CaseAllocationRepository,
-    val registrationRepository: RegistrationRepository,
-    val ldap: LdapUserRepository
+    private val personRepository: PersonRepository,
+    private val caseAllocationRepository: CaseAllocationRepository,
+    private val registrationRepository: RegistrationRepository,
+    private val ldap: LdapUserRepository
 ) {
     fun findByNomsId(nomsId: String): ProbationRecord {
         val person = personRepository.getByNomsId(nomsId)
