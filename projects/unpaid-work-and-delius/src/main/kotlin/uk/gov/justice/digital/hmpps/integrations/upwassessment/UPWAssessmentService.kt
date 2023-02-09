@@ -46,8 +46,9 @@ class UPWAssessmentService(
         notification: Notification<HmppsDomainEvent>
     ): Long {
 
-        val staffId = person.managers[0].staff.id
-        val teamId = person.managers[0].team.id
+        val manager = person.managers.first()
+        val staffId = manager.staff.id
+        val teamId = manager.team.id
 
         val contact = contactRepository.save(
             Contact(
