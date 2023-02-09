@@ -18,11 +18,11 @@ import uk.gov.justice.digital.hmpps.controller.casedetails.model.PhoneNumber
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.RegisterFlag
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.Sentence
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.name
-import uk.gov.justice.digital.hmpps.controller.common.mapper.AddressMapper
-import uk.gov.justice.digital.hmpps.controller.common.model.Address
-import uk.gov.justice.digital.hmpps.controller.common.model.PersonalCircumstance
-import uk.gov.justice.digital.hmpps.controller.common.model.PersonalContact
-import uk.gov.justice.digital.hmpps.controller.common.model.Type
+import uk.gov.justice.digital.hmpps.integrations.common.mapper.AddressMapper
+import uk.gov.justice.digital.hmpps.integrations.common.model.Address
+import uk.gov.justice.digital.hmpps.integrations.common.model.PersonalCircumstance
+import uk.gov.justice.digital.hmpps.integrations.common.model.PersonalContact
+import uk.gov.justice.digital.hmpps.integrations.common.model.Type
 
 @Mapper(
     componentModel = "spring",

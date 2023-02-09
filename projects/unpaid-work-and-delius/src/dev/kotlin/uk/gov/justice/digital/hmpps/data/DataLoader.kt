@@ -9,17 +9,18 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CaseRepository
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.EventRepository
-import uk.gov.justice.digital.hmpps.controller.common.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.AliasGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseAddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisabilityGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.MainOffenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceSubTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceTypeGenerator
@@ -28,6 +29,8 @@ import uk.gov.justice.digital.hmpps.data.generator.ProvisionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegisterTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
+import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.data.repository.AddressRepository
 import uk.gov.justice.digital.hmpps.data.repository.AliasRepository
 import uk.gov.justice.digital.hmpps.data.repository.CaseAddressRepository
@@ -36,6 +39,7 @@ import uk.gov.justice.digital.hmpps.data.repository.DisabilityRepository
 import uk.gov.justice.digital.hmpps.data.repository.DisposalRepository
 import uk.gov.justice.digital.hmpps.data.repository.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.data.repository.OffenceRepository
+import uk.gov.justice.digital.hmpps.data.repository.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.data.repository.PersonalCircumstanceRepository
 import uk.gov.justice.digital.hmpps.data.repository.PersonalCircumstanceSubTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.PersonalCircumstanceTypeRepository
@@ -43,6 +47,11 @@ import uk.gov.justice.digital.hmpps.data.repository.PersonalContactRepository
 import uk.gov.justice.digital.hmpps.data.repository.ProvisionRepository
 import uk.gov.justice.digital.hmpps.data.repository.RegisterTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.RegistrationRepository
+import uk.gov.justice.digital.hmpps.integrations.common.entity.ReferenceDataRepository
+import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.type.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonWithManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.common.entity.staff.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.common.entity.team.TeamRepository
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
@@ -66,7 +75,13 @@ class DataLoader(
     private val eventRepository: EventRepository,
     private val disposalRepository: DisposalRepository,
     private val mainOffenceRepository: MainOffenceRepository,
-    private val personalContactRepository: PersonalContactRepository
+    private val personalContactRepository: PersonalContactRepository,
+    private val staffRepository: StaffRepository,
+    private val teamRepository: TeamRepository,
+    private val personManagerRepository: PersonManagerRepository,
+    private val personWithManagerRepository: PersonWithManagerRepository,
+    private val contactTypeRepository: ContactTypeRepository
+
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -99,11 +114,13 @@ class DataLoader(
                 ReferenceDataGenerator.HEARING_PROVISION
             )
         )
+        contactTypeRepository.save(ContactTypeGenerator.DEFAULT)
+        staffRepository.save(StaffGenerator.DEFAULT)
+        teamRepository.save(TeamGenerator.DEFAULT)
         offenceRepository.save(OffenceGenerator.DEFAULT)
-
         personalCircumstanceTypeRepository.save(PersonalCircumstanceTypeGenerator.DEFAULT)
         personalCircumstanceSubTypeRepository.save(PersonalCircumstanceSubTypeGenerator.DEFAULT)
-        caseRepository.save(CaseGenerator.DEFAULT)
+        caseRepository.saveAndFlush(CaseGenerator.DEFAULT)
         aliasRepository.save(AliasGenerator.DEFAULT)
         personalCircumstanceRepository.save(PersonalCircumstanceGenerator.DEFAULT)
         addressRepository.save(AddressGenerator.DEFAULT)
@@ -116,5 +133,6 @@ class DataLoader(
         eventRepository.save(EventGenerator.DEFAULT)
         disposalRepository.save(DisposalGenerator.DEFAULT)
         mainOffenceRepository.save(MainOffenceGenerator.DEFAULT)
+        personManagerRepository.save(PersonManagerGenerator.DEFAULT)
     }
 }

@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
-import uk.gov.justice.digital.hmpps.controller.common.entity.AddressEntity
+import uk.gov.justice.digital.hmpps.integrations.common.entity.AddressEntity
 
 object AddressGenerator {
     val DEFAULT = generate("", "1", "Promise Street", "", "Make Believe", "", "MB01 1PS", "01234567890")

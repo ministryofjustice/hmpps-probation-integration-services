@@ -60,13 +60,14 @@ internal class IntegrationTest {
                     ReferenceDataGenerator.TIER_2.description,
                     Resourcing.NORMAL,
                     Manager(
-                        ProviderGenerator.DEFAULT_STAFF.code,
-                        Name(staff.forename, staff.middleName, staff.surname),
                         Team(
                             team.code,
                             team.description,
                             LocalDeliveryUnit(ldu.code, ldu.description)
-                        )
+                        ),
+                        ProviderGenerator.DEFAULT_STAFF.code,
+                        Name(staff.forename, staff.middleName, staff.surname),
+                        "default.staff@moj.gov.uk"
                     ),
                     2
                 )
