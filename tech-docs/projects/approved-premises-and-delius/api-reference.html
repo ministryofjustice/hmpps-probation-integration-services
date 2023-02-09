@@ -146,6 +146,17 @@
 
 <h3 id="teams-managingcase-crn-get">get</h3>
 
+  <p><em>List all teams involved in managing the probation case</em></p>
+
+
+  <p>A probation case may be managed by staff members who
+            are associated with multiple teams in Delius. Approve Premises users
+            need to view all applications that may be covered by direct colleagues
+            in order to cover absence and other workload-related issues. Respond
+            with a list of every team code that covers the probation case identified
+            by the CRN to enable the Approved Premises service to present the
+            relevant list of Approved Premises applications to it&rsquo;s users.</p>
+
 
 
 
@@ -218,6 +229,16 @@
 <h2 id="approved-premises-code-staff">/approved-premises/{code}/staff</h2>
 
 <h3 id="approved-premises-code-staff-get">get</h3>
+
+  <p><em>List all members of staff that are keyworkers in the Approved Premises</em></p>
+
+
+  <p>An Approved Premises is defined in Delius as part of reference data.
+            Probation staff members can be linked to an Approved Premises as either staff
+            members or keyworkers via the &ldquo;Approved Premises and Teams&rdquo; screen of the Delius
+            user interface. Keyworkers are defined via the &ldquo;Approved Premises and Key Workers&rdquo;
+            screen of the Delius user interface. Respond with a list of all members of staff
+            defined as keyworkers for the Approved Premises identified by the requested code.</p>
 
 
 
@@ -304,8 +325,8 @@
     "unsorted": "boolean",
     "sorted": "boolean"
   },
-  "last": "boolean",
   "first": "boolean",
+  "last": "boolean",
   "pageable": {
     "offset": "integer",
     "sort": {
@@ -470,7 +491,7 @@
 </tr>
 
 <tr>
-<td>last</td>
+<td>first</td>
 <td>boolean</td>
 <td>false</td>
 <td></td>
@@ -480,7 +501,7 @@
 </tr>
 
 <tr>
-<td>first</td>
+<td>last</td>
 <td>boolean</td>
 <td>false</td>
 <td></td>
