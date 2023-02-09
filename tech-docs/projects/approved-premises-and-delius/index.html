@@ -89,7 +89,15 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>approved-premises-and-delius</span></a>
+    <a href="./index.html"><span>Approved Premises and Delius</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#business-need"><span>Business Need</span></a>
+      </li>
+      <li>
+        <a href="./index.html#context-maps"><span>Context Maps</span></a>
+      </li>
+    </ul>
   </li>
   <li>
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
@@ -114,8 +122,19 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="approved-premises-and-delius">approved-premises-and-delius</h1>
-<p>// TODO Describe the service</p>
+            <h1 id="approved-premises-and-delius">Approved Premises and Delius</h1>
+<p>Service that responds to Approved Premises domain events, calls the
+<a href="https://github.com/ministryofjustice/hmpps-approved-premises-api">HMPPS Approved Premises API</a>
+and records referral progress against the probation case record in Delius. We
+also provide an API to give probation case information to support making
+approved premises referrals.</p>
+<h2 id="business-need">Business Need</h2>
+<p>Supporting the Approved Premises service with the correct information required
+to make an Approved Premises application and ensuring the Probation
+Practitioner has an up-to-date view of activity in the Approved Premises
+service when interacting with the probation case via Delius.</p>
+<h2 id="context-maps">Context Maps</h2>
+<p><a href="././img/approved-premises-and-delius-context-maps.png" rel="noopener noreferrer"><img src="img/approved-premises-and-delius-context-maps.png" alt="Context Maps" /></a></p>
 
             
           </main>
