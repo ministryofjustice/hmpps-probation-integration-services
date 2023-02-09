@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.controller.common.entity
+package uk.gov.justice.digital.hmpps.integrations.common.entity
 
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Column

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.controller.common.entity
+package uk.gov.justice.digital.hmpps.integrations.common.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Convert

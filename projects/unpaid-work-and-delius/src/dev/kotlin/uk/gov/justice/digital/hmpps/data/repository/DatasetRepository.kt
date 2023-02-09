@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.controller.common.entity.Dataset
+import uk.gov.justice.digital.hmpps.integrations.common.entity.Dataset
 
 interface DatasetRepository : JpaRepository<Dataset, Long>
