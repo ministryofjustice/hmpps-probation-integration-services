@@ -62,7 +62,7 @@ abstract class NotificationChannel(
     fun fail(notificationId: UUID) {
         lock.lock()
         try {
-            messages.add(processing.remove(notificationId))
+            processing.remove(notificationId)
         } finally {
             lock.unlock()
         }

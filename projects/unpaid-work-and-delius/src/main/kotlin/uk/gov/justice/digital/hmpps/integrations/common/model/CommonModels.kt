@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.controller.common.model
+package uk.gov.justice.digital.hmpps.integrations.common.model
 
 data class Address(
     val buildingName: String?,
