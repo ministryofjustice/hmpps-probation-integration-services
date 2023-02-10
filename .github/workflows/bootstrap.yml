@@ -126,6 +126,7 @@ jobs:
             settings.gradle.kts
             .github/workflows
             .idea/runConfigurations
+            doc/tech-docs
             projects/${{ inputs.project_name }}
           branch: bootstrap/${{ inputs.project_name }}
           commit-message: ${{ inputs.issue_number }} Create initial project for ${{ inputs.project_name }}

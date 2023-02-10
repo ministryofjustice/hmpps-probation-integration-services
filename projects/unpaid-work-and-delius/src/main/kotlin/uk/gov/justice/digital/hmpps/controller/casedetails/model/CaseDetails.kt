@@ -3,11 +3,11 @@ package uk.gov.justice.digital.hmpps.controller.casedetails.model
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.AliasEntity
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CaseEntity
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CasePersonalContactEntity
-import uk.gov.justice.digital.hmpps.controller.common.model.Address
-import uk.gov.justice.digital.hmpps.controller.common.model.Name
-import uk.gov.justice.digital.hmpps.controller.common.model.PersonalCircumstance
-import uk.gov.justice.digital.hmpps.controller.common.model.PersonalContact
-import uk.gov.justice.digital.hmpps.controller.common.model.Type
+import uk.gov.justice.digital.hmpps.integrations.common.model.Address
+import uk.gov.justice.digital.hmpps.integrations.common.model.Name
+import uk.gov.justice.digital.hmpps.integrations.common.model.PersonalCircumstance
+import uk.gov.justice.digital.hmpps.integrations.common.model.PersonalContact
+import uk.gov.justice.digital.hmpps.integrations.common.model.Type
 import java.time.LocalDate
 
 data class CaseDetails(

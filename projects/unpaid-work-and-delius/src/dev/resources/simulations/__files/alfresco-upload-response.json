@@ -1,0 +1,15 @@
+{
+  "ID": "alfresco-uuid",
+  "name": "upw.pdf",
+  "creationDate": "2023-02-06T15:55:04Z",
+  "lastModifiedDate": "2023-02-06T15:55:04Z",
+  "modifier": "N00",
+  "author": "stevo,smith",
+  "entityType": "OFFENDER",
+  "entityId": 2500032035,
+  "docType": "DOCUMENT",
+  "crn": "X012777",
+  "url": "/noms-spg/fetch/aa63c433-c478-4c4d-8794-a7ee867506c4",
+  "locked": false,
+  "reserved": false
+}

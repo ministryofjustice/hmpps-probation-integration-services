@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
-import uk.gov.justice.digital.hmpps.controller.common.entity.Dataset
-import uk.gov.justice.digital.hmpps.controller.common.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.common.entity.Dataset
+import uk.gov.justice.digital.hmpps.integrations.common.entity.ReferenceData
 
 object ReferenceDataGenerator {
     val GENDER_MALE = generate(DatasetGenerator.GENDER, "M", "Male")

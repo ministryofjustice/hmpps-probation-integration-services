@@ -18,11 +18,11 @@ import uk.gov.justice.digital.hmpps.controller.casedetails.model.PhoneNumber
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.RegisterFlag
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.Sentence
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.name
-import uk.gov.justice.digital.hmpps.controller.common.mapper.AddressMapper
-import uk.gov.justice.digital.hmpps.controller.common.model.Address
-import uk.gov.justice.digital.hmpps.controller.common.model.PersonalCircumstance
-import uk.gov.justice.digital.hmpps.controller.common.model.PersonalContact
-import uk.gov.justice.digital.hmpps.controller.common.model.Type
+import uk.gov.justice.digital.hmpps.integrations.common.mapper.AddressMapper
+import uk.gov.justice.digital.hmpps.integrations.common.model.Address
+import uk.gov.justice.digital.hmpps.integrations.common.model.PersonalCircumstance
+import uk.gov.justice.digital.hmpps.integrations.common.model.PersonalContact
+import uk.gov.justice.digital.hmpps.integrations.common.model.Type
 
 @Mapper(
     componentModel = "spring",
@@ -42,6 +42,11 @@ interface CaseMapper {
     @Mapping(source = "genderIdentity.description", target = "genderIdentity")
     @Mapping(source = "ethnicity.description", target = "ethnicity")
     @Mapping(target = "aliases", ignore = true)
+    @Mapping(target = "phoneNumbers", ignore = true)
+    @Mapping(target = "registerFlags", ignore = true)
+    @Mapping(target = "language", ignore = true)
+    @Mapping(target = "mappaRegistration", ignore = true)
+    @Mapping(target = "sentence", ignore = true)
     fun convertToModel(case: CaseEntity): CaseDetails
 }
 

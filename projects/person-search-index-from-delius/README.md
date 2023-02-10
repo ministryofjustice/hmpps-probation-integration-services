@@ -47,7 +47,7 @@ searchable index.
 
 ## Processing Pipeline
 
-![Processing Pipeline](./img/person-search-index-from-delius-pipeline.png)
+![Processing Pipeline](tech-docs/source/img/person-search-index-from-delius-pipeline.png)
 
 
 ## Downstream Business Functionality

@@ -23,6 +23,7 @@ on:
           - '["custody-key-dates-and-delius"]'
           - '["make-recall-decisions-and-delius"]'
           - '["unpaid-work-and-delius"]'
+          - '["manage-pom-cases-and-delius"]'
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
@@ -119,9 +120,11 @@ jobs:
         run: |
           username=$(yq '.database.audit.username' database/access.yml)
           gh issue create \
-                --title 'Complete database access setup for ${{ inputs.project_name }}' \
-                --body "- [ ] Ask a DBA to copy the *$username* user from Production to Pre-Production" \
-                --label bootstrap
+            --title 'Complete database access setup for ${{ matrix.project }}' \
+            --body '
+          - [ ] Approve the [Database Access workflow](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/access.yml) to Production
+          - [ ] Ask a DBA to copy the *'"$username"'* user from Production to Pre-Production' \
+            --label bootstrap
         working-directory: projects/${{ matrix.project }}/deploy
         env:
           GITHUB_TOKEN: ${{ github.token }}

@@ -2,16 +2,13 @@ package uk.gov.justice.digital.hmpps.plugins
 
 import com.google.cloud.tools.jib.gradle.BuildImageTask
 import com.google.cloud.tools.jib.gradle.JibExtension
-import com.google.cloud.tools.jib.gradle.JibTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
-
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
-import java.security.MessageDigest
 
 class JibConfigPlugin : Plugin<Project> {
 
@@ -24,7 +21,7 @@ class JibConfigPlugin : Plugin<Project> {
                     user = "2000:2000"
                 }
                 from {
-                    image = "docker://ghcr.io/ministryofjustice/hmpps-probation-integration-services/eclipse-temurin:17-jre-alpine@${System.getenv("JRE_17_ALPINE_SHA")}"
+                    image = System.getenv("JIB_FROM_IMAGE") ?: "eclipse-temurin:17-jre-alpine"
                 }
                 to {
                     image = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}"

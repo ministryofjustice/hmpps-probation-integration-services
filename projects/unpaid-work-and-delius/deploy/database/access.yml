@@ -2,8 +2,11 @@ database:
   access:
     username_key: /unpaid-work-and-delius/db-username
     password_key: /unpaid-work-and-delius/db-password
+    tables:
+      - contact
+      - document
 
   audit:
     username: UnpaidWorkAndDelius
-    forename: Probation Integration # TODO change this to something meaningful for your service
+    forename: UPW
     surname: Service

@@ -6,9 +6,9 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
-import uk.gov.justice.digital.hmpps.controller.common.entity.PersonalCircumstanceBase
-import uk.gov.justice.digital.hmpps.controller.common.entity.PersonalCircumstanceSubType
-import uk.gov.justice.digital.hmpps.controller.common.entity.PersonalCircumstanceType
+import uk.gov.justice.digital.hmpps.integrations.common.entity.PersonalCircumstanceBase
+import uk.gov.justice.digital.hmpps.integrations.common.entity.PersonalCircumstanceSubType
+import uk.gov.justice.digital.hmpps.integrations.common.entity.PersonalCircumstanceType
 import java.time.LocalDate
 
 @Entity
