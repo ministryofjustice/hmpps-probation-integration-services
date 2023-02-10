@@ -10,8 +10,6 @@ sealed interface AllocationDetail {
     val id: String
     val staffCode: String
     val teamCode: String
-    val providerCode: String
-    val createdBy: String
     val createdDate: ZonedDateTime
     val datasetCode: DatasetCode
     val code: String
@@ -21,8 +19,6 @@ sealed interface AllocationDetail {
         override val id: String,
         override val staffCode: String,
         override val teamCode: String,
-        override val providerCode: String,
-        override val createdBy: String,
         override val createdDate: ZonedDateTime,
         val crn: String,
         override val datasetCode: DatasetCode = DatasetCode.OM_ALLOCATION_REASON,
@@ -34,8 +30,6 @@ sealed interface AllocationDetail {
         override val id: String,
         override val staffCode: String,
         override val teamCode: String,
-        override val providerCode: String,
-        override val createdBy: String,
         override val createdDate: ZonedDateTime,
         val eventNumber: Long,
         override val datasetCode: DatasetCode = DatasetCode.ORDER_ALLOCATION_REASON,
@@ -47,8 +41,6 @@ sealed interface AllocationDetail {
         override val id: String,
         override val staffCode: String,
         override val teamCode: String,
-        override val providerCode: String,
-        override val createdBy: String,
         override val createdDate: ZonedDateTime,
         val eventNumber: Long,
         val requirementId: Long,
