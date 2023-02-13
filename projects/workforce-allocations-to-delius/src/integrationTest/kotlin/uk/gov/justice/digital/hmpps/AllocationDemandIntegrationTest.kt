@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -28,6 +29,10 @@ import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.model.Sentence
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
+import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import java.time.LocalDate
@@ -122,6 +127,23 @@ class AllocationDemandIntegrationTest {
             .andExpect(jsonPath("\$.cases.length()", `is`(2)))
     }
 
+    @Test
+    fun `unallocated events successful response`() {
+        val person = PersonGenerator.DEFAULT
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/allocation-demand/${person.crn}/unallocated-events")
+                .withOAuth2Token(wireMockserver)
+        )
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("$.crn").value(person.crn))
+            .andExpect(jsonPath("$.name.forename").value(person.forename))
+            .andExpect(jsonPath("$.name.surname").value(person.surname))
+            .andExpect(jsonPath("$.activeEvents[0].eventNumber").value(EventGenerator.DEFAULT.number))
+            .andExpect(jsonPath("$.activeEvents[0].teamCode").value(TeamGenerator.DEFAULT.code))
+            .andExpect(jsonPath("$.activeEvents[0].providerCode").value(ProviderGenerator.DEFAULT.code))
+    }
+
+
     companion object {
         @JvmStatic
         fun allocationRequests(): List<AllocationRequest> = listOf(
@@ -130,3 +152,4 @@ class AllocationDemandIntegrationTest {
         )
     }
 }
+

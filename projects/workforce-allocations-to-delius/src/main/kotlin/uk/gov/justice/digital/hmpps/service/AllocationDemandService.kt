@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.api.model.PrOffence
 import uk.gov.justice.digital.hmpps.api.model.PrSentence
 import uk.gov.justice.digital.hmpps.api.model.ProbationRecord
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
+import uk.gov.justice.digital.hmpps.api.model.UnallocatedEventsResponse
 import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.api.model.toManager
 import uk.gov.justice.digital.hmpps.api.model.toStaffMember
@@ -109,5 +110,11 @@ class AllocationDemandService(
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val staff = staffRepository.getByCode(staffCode)
         return AllocationImpact(person.crn, person.name(), staff.toStaffMember())
+    }
+
+    fun getUnallocatedEvents(crn: String): UnallocatedEventsResponse {
+        val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
+        val events = disposalRepository.findAllUnallocatedActiveEvents(person.id)
+        return UnallocatedEventsResponse(person.crn, person.name(), events)
     }
 }
