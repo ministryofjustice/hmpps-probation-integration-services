@@ -45,10 +45,11 @@ class FindPersonIntegrationTest {
         ).andExpect(MockMvcResultMatchers.status().isUnauthorized)
     }
 
-    @Test
-    fun `get person no matching crn`() {
+    @ParameterizedTest
+    @MethodSource("notFound")
+    fun `get person no matching crn`(value: String, type: String) {
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/person/Z999999?type=CRN")
+            MockMvcRequestBuilders.get("/person/$value?type=$type")
                 .withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isNotFound)
@@ -74,6 +75,12 @@ class FindPersonIntegrationTest {
         fun searchCriteria() = listOf(
             Arguments.of("X123456", "CRN"),
             Arguments.of("A1234YZ", "NOMS")
+        )
+
+        @JvmStatic
+        fun notFound() = listOf(
+            Arguments.of("Z999999", "CRN"),
+            Arguments.of("Z9999AB", "NOMS")
         )
     }
 }
