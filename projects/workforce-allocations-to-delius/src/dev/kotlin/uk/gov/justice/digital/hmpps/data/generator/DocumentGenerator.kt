@@ -65,5 +65,5 @@ object DocumentGenerator {
     }
 
     private fun CaseViewEvent.toDocEvent() =
-        DocEvent(id, Person(personId, "", "", surname = ""), true, number, null, null)
+        DocEvent(id, Person(personId, "", null, "", surname = ""), true, number, null, null)
 }
