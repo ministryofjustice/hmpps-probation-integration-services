@@ -84,6 +84,14 @@
             }
           }
         },
+        "otherIds.previousCrn": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
         "firstName": {
           "type": "text",
           "fields": {

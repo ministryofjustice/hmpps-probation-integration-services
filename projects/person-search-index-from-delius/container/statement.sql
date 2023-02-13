@@ -11,6 +11,7 @@ SELECT json_object(
                 'croNumber' VALUE o.CRO_NUMBER,
                 'niNumber' VALUE o.NI_NUMBER,
                 'pncNumber' VALUE o.PNC_NUMBER,
+                'previousCrn' VALUE prev.IDENTIFIER,
                 'immigrationNumber' VALUE o.IMMIGRATION_NUMBER,
                 'mostRecentPrisonerNumber' VALUE o.MOST_RECENT_PRISONER_NUMBER
                 ABSENT ON NULL),
@@ -325,6 +326,12 @@ FROM OFFENDER o
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST lan ON lan.STANDARD_REFERENCE_LIST_ID = o.LANGUAGE_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST genDes ON genDes.STANDARD_REFERENCE_LIST_ID = o.GENDER_IDENTITY_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST tier ON tier.STANDARD_REFERENCE_LIST_ID = o.CURRENT_TIER
+         LEFT OUTER JOIN (SELECT ai.OFFENDER_ID, ai.IDENTIFIER
+                          FROM ADDITIONAL_IDENTIFIER ai
+                                   JOIN R_STANDARD_REFERENCE_LIST ait
+                                        ON ait.STANDARD_REFERENCE_LIST_ID = ai.IDENTIFIER_NAME_ID AND
+                                           ait.CODE_VALUE = 'MTCRN') prev
+                         ON prev.OFFENDER_ID = o.OFFENDER_ID
          LEFT OUTER JOIN pre_con ON pre_con.OFFENDER_ID = o.OFFENDER_ID AND row_number = 1
 
 
