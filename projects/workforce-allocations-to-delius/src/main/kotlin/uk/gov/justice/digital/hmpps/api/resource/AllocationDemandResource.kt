@@ -47,4 +47,8 @@ class AllocationDemandResource(
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @GetMapping("/{crn}/risk")
     fun getRisk(@PathVariable crn: String) = allocationRisk.getRiskRecord(crn)
+
+    @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
+    @GetMapping("/{crn}/unallocated-events")
+    fun getUnallocatedEvents(@PathVariable crn: String) = allocationDemand.getUnallocatedEvents(crn)
 }
