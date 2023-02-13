@@ -143,7 +143,6 @@ class AllocationDemandIntegrationTest {
             .andExpect(jsonPath("$.activeEvents[0].providerCode").value(ProviderGenerator.DEFAULT.code))
     }
 
-
     companion object {
         @JvmStatic
         fun allocationRequests(): List<AllocationRequest> = listOf(
@@ -152,4 +151,3 @@ class AllocationDemandIntegrationTest {
         )
     }
 }
-
