@@ -6,6 +6,9 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -51,11 +54,12 @@ class FindPersonIntegrationTest {
         ).andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 
-    @Test
-    fun `get person by crn`() {
+    @ParameterizedTest
+    @MethodSource("searchCriteria")
+    fun `find person`(value: String, type: String) {
         val wanted = PersonGenerator.DEFAULT
         val res = mockMvc.perform(
-            MockMvcRequestBuilders.get("/person/X123456?type=CRN")
+            MockMvcRequestBuilders.get("/person/$value?type=$type")
                 .withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
@@ -65,17 +69,11 @@ class FindPersonIntegrationTest {
         assertThat(person, equalTo(Person(wanted.crn, wanted.name(), CaseType.CUSTODY)))
     }
 
-    @Test
-    fun `get person by noms`() {
-        val wanted = PersonGenerator.DEFAULT
-        val res = mockMvc.perform(
-            MockMvcRequestBuilders.get("/person/A1234YZ?type=NOMS")
-                .withOAuth2Token(wireMockserver)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
-            .andReturn().response.contentAsString
-
-        val person = objectMapper.readValue<Person>(res)
-        assertThat(person, equalTo(Person(wanted.crn, wanted.name(), CaseType.CUSTODY)))
+    companion object {
+        @JvmStatic
+        fun searchCriteria() = listOf(
+            Arguments.of("X123456", "CRN"),
+            Arguments.of("A1234YZ", "NOMS")
+        )
     }
 }
