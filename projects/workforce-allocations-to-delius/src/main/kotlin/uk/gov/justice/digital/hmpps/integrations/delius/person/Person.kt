@@ -18,6 +18,9 @@ class Person(
     @Column(columnDefinition = "char(7)")
     val crn: String,
 
+    @Column(name = "noms_number", columnDefinition = "char(7)")
+    val nomsId: String? = null,
+
     @Column(name = "first_name", length = 35)
     val forename: String,
 
