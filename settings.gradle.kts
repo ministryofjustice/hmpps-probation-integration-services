@@ -21,6 +21,7 @@ include(
     "make-recall-decisions-and-delius",
     "unpaid-work-and-delius",
     "manage-pom-cases-and-delius",
+    "refer-and-monitor-and-delius",
     // ^ add new projects here
 )
 

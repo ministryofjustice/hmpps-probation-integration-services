@@ -1,0 +1,26 @@
+# Common values
+generic-service:
+  nameOverride: refer-and-monitor-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/refer-and-monitor-and-delius
+
+  ingress:
+    tlsSecretName: refer-and-monitor-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    refer-and-monitor-and-delius:
+      AWS_ACCESS_KEY_ID: SQS_QUEUE_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
+      MESSAGING_CONSUMER_QUEUE: SQS_QUEUE_NAME
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
+      SENTRY_DSN: SENTRY_DSN
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+
+generic-prometheus-alerts:
+  targetApplication: refer-and-monitor-and-delius
+
