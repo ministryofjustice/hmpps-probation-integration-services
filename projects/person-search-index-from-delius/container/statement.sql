@@ -330,7 +330,7 @@ FROM OFFENDER o
                           FROM ADDITIONAL_IDENTIFIER ai
                                    JOIN R_STANDARD_REFERENCE_LIST ait
                                         ON ait.STANDARD_REFERENCE_LIST_ID = ai.IDENTIFIER_NAME_ID AND
-                                           ait.CODE_VALUE = 'MTCRN') prev
+                                           ait.CODE_VALUE = 'MFCRN') prev
                          ON prev.OFFENDER_ID = o.OFFENDER_ID
          LEFT OUTER JOIN pre_con ON pre_con.OFFENDER_ID = o.OFFENDER_ID AND row_number = 1
 
