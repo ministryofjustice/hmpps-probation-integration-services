@@ -2,7 +2,7 @@
 
 reservations:
   cpu: 128
-  memory: 128
+  memory: 256
 limits:
   cpu: 1024    # = 1 vCPU
   memory: 1024 # = 1 GB
