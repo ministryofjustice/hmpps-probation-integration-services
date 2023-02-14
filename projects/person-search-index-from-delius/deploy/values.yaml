@@ -7,7 +7,7 @@ generic-service:
       memory: 2Gi
     requests:
       cpu: 1
-      memory: 1G
+      memory: 2Gi
 
   readinessProbe:
     httpGet: null
