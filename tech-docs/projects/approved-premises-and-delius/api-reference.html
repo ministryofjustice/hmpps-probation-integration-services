@@ -325,24 +325,24 @@
   "number": "integer",
   "sort": {
     "empty": "boolean",
-    "unsorted": "boolean",
-    "sorted": "boolean"
+    "sorted": "boolean",
+    "unsorted": "boolean"
   },
-  "first": "boolean",
+  "numberOfElements": "integer",
   "pageable": {
     "offset": "integer",
     "sort": {
       "empty": "boolean",
-      "unsorted": "boolean",
-      "sorted": "boolean"
+      "sorted": "boolean",
+      "unsorted": "boolean"
     },
     "paged": "boolean",
-    "unpaged": "boolean",
     "pageNumber": "integer",
-    "pageSize": "integer"
+    "pageSize": "integer",
+    "unpaged": "boolean"
   },
+  "first": "boolean",
   "last": "boolean",
-  "numberOfElements": "integer",
   "empty": "boolean"
 }</code></pre>
 
@@ -494,8 +494,8 @@
 </tr>
 
 <tr>
-<td>first</td>
-<td>boolean</td>
+<td>numberOfElements</td>
+<td>integer</td>
 <td>false</td>
 <td></td>
 <td>
@@ -514,7 +514,7 @@
 </tr>
 
 <tr>
-<td>last</td>
+<td>first</td>
 <td>boolean</td>
 <td>false</td>
 <td></td>
@@ -524,8 +524,8 @@
 </tr>
 
 <tr>
-<td>numberOfElements</td>
-<td>integer</td>
+<td>last</td>
+<td>boolean</td>
 <td>false</td>
 <td></td>
 <td>
@@ -586,16 +586,6 @@
 </tr>
 
 <tr>
-<td>unpaged</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
 <td>pageNumber</td>
 <td>integer</td>
 <td>false</td>
@@ -608,6 +598,16 @@
 <tr>
 <td>pageSize</td>
 <td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>unpaged</td>
+<td>boolean</td>
 <td>false</td>
 <td></td>
 <td>
@@ -680,7 +680,7 @@
 </tr>
 
 <tr>
-<td>unsorted</td>
+<td>sorted</td>
 <td>boolean</td>
 <td>false</td>
 <td></td>
@@ -690,7 +690,7 @@
 </tr>
 
 <tr>
-<td>sorted</td>
+<td>unsorted</td>
 <td>boolean</td>
 <td>false</td>
 <td></td>
