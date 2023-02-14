@@ -52,6 +52,7 @@ on:
           - '["make-recall-decisions-and-delius"]'
           - '["unpaid-work-and-delius"]'
           - '["manage-pom-cases-and-delius"]'
+          - '["refer-and-monitor-and-delius"]'
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
