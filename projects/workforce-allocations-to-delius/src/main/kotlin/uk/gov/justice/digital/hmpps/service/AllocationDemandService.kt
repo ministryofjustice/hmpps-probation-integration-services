@@ -101,7 +101,7 @@ class AllocationDemandService(
     }
 
     private fun List<SentenceWithManager>?.toPrEvent(aos: Map<Long, List<AdditionalOffence>>): List<PrEvent> {
-        if (this == null || isEmpty()) return listOf()
+        if (isNullOrEmpty()) return listOf()
         return map {
             PrEvent(
                 PrSentence(
@@ -142,12 +142,8 @@ class AllocationDemandService(
         allocatingStaffCode: String
     ): AllocationDemandStaffResponse {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
-        val riskOGRS = allocationRiskService.getRiskOgrs(person)
         val staff = staffRepository.findStaffWithUserByCode(staffCode)
-        val email = ldapService.findEmailForStaff(staff)
-
         val allocatingStaff = staffRepository.findStaffWithUserByCode(allocatingStaffCode)
-        val allocatingStaffEmail = ldapService.findEmailForStaff(staff)
         val eventId = eventRepository.findByPersonCrnAndNumber(crn, eventNumber)!!.id
         val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId).map {
             Requirement(
@@ -155,20 +151,19 @@ class AllocationDemandService(
                 it.subCategory.description,
                 it.length.toString(),
                 it.id
-            ) // TODO not UPW ones how do we know which ones are UPW?
-            // - double check with Carlo how he thinks it's possible
+            )
         }
 
         return AllocationDemandStaffResponse(
             person.crn,
             person.name(),
-            staff?.toStaffMember(email),
-            allocatingStaff?.toStaffMember(allocatingStaffEmail),
+            staff?.toStaffMember(ldapService.findEmailForStaff(staff)),
+            allocatingStaff?.toStaffMember(ldapService.findEmailForStaff(allocatingStaff)),
             InitialAppointment(contactRepository.getInitialAppointmentDate(person.id, eventId)),
-            riskOGRS,
+            allocationRiskService.getRiskOgrs(person),
             disposalRepository.findSentenceForEventNumberAndPersonId(person.id, eventNumber),
             courtAppearanceRepository.findLatestByEventId(eventId),
-            eventRepository.findAllOffencesByEventId(eventId),
+            eventRepository.findAllOffencesByEventId(eventId).sortedByDescending { it.mainOffence },
             requirements
         )
     }

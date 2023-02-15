@@ -34,10 +34,10 @@ interface EventRepository : JpaRepository<Event, Long> {
 
     @Query(
         """
-            select mo.offence.description, true from MainOffence mo 
+            select mo.offence.description as mainCategory, true as mainOffence from MainOffence mo 
             where mo.event.id = :eventId
-            union
-            select ao.offence.description, false from AdditionalOffence ao
+            union all
+            select ao.offence.description as mainCategory, false as mainOffence from AdditionalOffence ao
             where ao.event.id = :eventId
         """
     )

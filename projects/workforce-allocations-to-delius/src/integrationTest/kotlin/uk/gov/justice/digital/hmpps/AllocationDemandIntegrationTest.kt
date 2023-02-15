@@ -32,6 +32,7 @@ import uk.gov.justice.digital.hmpps.api.model.Sentence
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
@@ -132,6 +133,24 @@ class AllocationDemandIntegrationTest {
         val person = PersonGenerator.DEFAULT
         mockMvc.perform(
             MockMvcRequestBuilders.get("/allocation-demand/${person.crn}/unallocated-events")
+                .withOAuth2Token(wireMockserver)
+        )
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("$.crn").value(person.crn))
+            .andExpect(jsonPath("$.name.forename").value(person.forename))
+            .andExpect(jsonPath("$.name.surname").value(person.surname))
+            .andExpect(jsonPath("$.activeEvents[0].eventNumber").value(EventGenerator.DEFAULT.number))
+            .andExpect(jsonPath("$.activeEvents[0].teamCode").value(TeamGenerator.DEFAULT.code))
+            .andExpect(jsonPath("$.activeEvents[0].providerCode").value(ProviderGenerator.DEFAULT.code))
+    }
+
+    @Test
+    fun `allocation demand allocation staff endpoint`() {
+        val person = PersonGenerator.CASE_VIEW
+        val event = EventGenerator.CASE_VIEW
+        val staff = StaffGenerator.DEFAULT
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/allocation-demand/${person.crn}/${event.number}/allocation?staff=${staff.code}&allocatingStaff=${staff.code}")
                 .withOAuth2Token(wireMockserver)
         )
             .andExpect(status().is2xxSuccessful)
