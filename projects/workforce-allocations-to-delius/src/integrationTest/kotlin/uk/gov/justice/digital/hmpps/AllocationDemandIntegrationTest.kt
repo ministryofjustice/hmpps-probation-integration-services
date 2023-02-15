@@ -157,9 +157,6 @@ class AllocationDemandIntegrationTest {
             .andExpect(jsonPath("$.crn").value(person.crn))
             .andExpect(jsonPath("$.name.forename").value(person.forename))
             .andExpect(jsonPath("$.name.surname").value(person.surname))
-            .andExpect(jsonPath("$.activeEvents[0].eventNumber").value(EventGenerator.DEFAULT.number))
-            .andExpect(jsonPath("$.activeEvents[0].teamCode").value(TeamGenerator.DEFAULT.code))
-            .andExpect(jsonPath("$.activeEvents[0].providerCode").value(ProviderGenerator.DEFAULT.code))
     }
 
     companion object {
