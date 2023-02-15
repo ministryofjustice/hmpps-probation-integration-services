@@ -1,0 +1,62 @@
+package uk.gov.justice.digital.hmpps.integrations.delius.courtappearance
+
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.Where
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
+import java.time.LocalDate
+
+@Entity
+@Immutable
+@Where(clause = "soft_deleted = 0")
+class CourtAppearance(
+
+    @Id
+    @Column(name = "court_appearance_id")
+    val id: Long,
+
+    @Column(name = "appearance_date")
+    val appearanceDate: LocalDate,
+
+    @JoinColumn(name = "event_id", insertable = false, updatable = false)
+    @ManyToOne
+    val event: Event,
+
+    @JoinColumn(name = "court_id", insertable = false, updatable = false)
+    @ManyToOne
+    val court: Court,
+
+    @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
+    var softDeleted: Boolean = false
+)
+
+@Entity
+@Immutable
+class Court(
+
+    @Id
+    @Column(name = "court_id")
+    val id: Long,
+
+    @Column(name = "court_name")
+    val name: String,
+
+)
+
+interface ContactAppearanceRepository : JpaRepository<CourtAppearance, Long> {
+
+    @Query(
+        """
+        select ca.court.name, ca.appearanceDate from CourtAppearance ca
+        where ca.event.id = :eventId
+        order by ca.appearanceDate desc
+    """
+    )
+    fun findLatestByEventId(eventId: Long): uk.gov.justice.digital.hmpps.api.model.Court?
+}

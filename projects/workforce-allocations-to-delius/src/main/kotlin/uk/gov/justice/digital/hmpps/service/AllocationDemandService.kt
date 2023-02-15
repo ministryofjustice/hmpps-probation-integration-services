@@ -3,19 +3,26 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.AllocationDemandRequest
 import uk.gov.justice.digital.hmpps.api.model.AllocationDemandResponse
+import uk.gov.justice.digital.hmpps.api.model.AllocationDemandStaffResponse
 import uk.gov.justice.digital.hmpps.api.model.AllocationImpact
 import uk.gov.justice.digital.hmpps.api.model.ChoosePractitionerResponse
 import uk.gov.justice.digital.hmpps.api.model.Event
+import uk.gov.justice.digital.hmpps.api.model.InitialAppointment
 import uk.gov.justice.digital.hmpps.api.model.PrEvent
 import uk.gov.justice.digital.hmpps.api.model.PrOffence
 import uk.gov.justice.digital.hmpps.api.model.PrSentence
 import uk.gov.justice.digital.hmpps.api.model.ProbationRecord
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
+import uk.gov.justice.digital.hmpps.api.model.Requirement
 import uk.gov.justice.digital.hmpps.api.model.UnallocatedEventsResponse
 import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.api.model.toManager
 import uk.gov.justice.digital.hmpps.api.model.toStaffMember
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.ContactAppearanceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffence
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalRepository
@@ -36,6 +43,11 @@ class AllocationDemandService(
     private val ldapService: LdapService,
     private val disposalRepository: DisposalRepository,
     private val additionalOffenceRepository: AdditionalOffenceRepository,
+    private val allocationRiskService: AllocationRiskService,
+    private val caseViewRequirementRepository: CaseViewRequirementRepository,
+    private val eventRepository: EventRepository,
+    private val contactRepository: ContactRepository,
+    private val courtAppearanceRepository: ContactAppearanceRepository
 ) {
     fun findAllocationDemand(allocationDemandRequest: AllocationDemandRequest): AllocationDemandResponse {
         return AllocationDemandResponse(
@@ -92,7 +104,12 @@ class AllocationDemandService(
         if (this == null || isEmpty()) return listOf()
         return map {
             PrEvent(
-                PrSentence(it.disposal.type.description, it.disposal.length, it.disposal.date.toLocalDate(), it.disposal.terminationDate?.toLocalDate()),
+                PrSentence(
+                    it.disposal.type.description,
+                    it.disposal.length,
+                    it.disposal.date.toLocalDate(),
+                    it.disposal.terminationDate?.toLocalDate()
+                ),
                 listOf(it.mainOffence.toOffence()) + aos[it.disposal.event.id].toOffences(),
                 if (it.manager.code.endsWith("U")) null else it.manager.toStaffMember()
             )
@@ -102,7 +119,7 @@ class AllocationDemandService(
     private fun MainOffence.toOffence(): PrOffence = PrOffence(offence.description, true)
 
     private fun List<AdditionalOffence>?.toOffences(): List<PrOffence> {
-        if (this == null || isEmpty()) return listOf()
+        if (isNullOrEmpty()) return listOf()
         return map { PrOffence(it.offence.description) }
     }
 
@@ -116,5 +133,43 @@ class AllocationDemandService(
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val events = disposalRepository.findAllUnallocatedActiveEvents(person.id)
         return UnallocatedEventsResponse(person.crn, person.name(), events)
+    }
+
+    fun getAllocationDemandStaff(
+        crn: String,
+        eventNumber: String,
+        staffCode: String,
+        allocatingStaffCode: String
+    ): AllocationDemandStaffResponse {
+        val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
+        val riskOGRS = allocationRiskService.getRiskOgrs(person)
+        val staff = staffRepository.findStaffWithUserByCode(staffCode)
+        val email = ldapService.findEmailForStaff(staff)
+
+        val allocatingStaff = staffRepository.findStaffWithUserByCode(allocatingStaffCode)
+        val allocatingStaffEmail = ldapService.findEmailForStaff(staff)
+        val eventId = eventRepository.findByPersonCrnAndNumber(crn, eventNumber)!!.id
+        val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId).map {
+            Requirement(
+                it.mainCategory.description,
+                it.subCategory.description,
+                it.length.toString(),
+                it.id
+            ) // TODO not UPW ones how do we know which ones are UPW?
+            // - double check with Carlo how he thinks it's possible
+        }
+
+        return AllocationDemandStaffResponse(
+            person.crn,
+            person.name(),
+            staff?.toStaffMember(email),
+            allocatingStaff?.toStaffMember(allocatingStaffEmail),
+            InitialAppointment(contactRepository.getInitialAppointmentDate(person.id, eventId)),
+            riskOGRS,
+            disposalRepository.findSentenceForEventNumberAndPersonId(person.id, eventNumber),
+            courtAppearanceRepository.findLatestByEventId(eventId),
+            eventRepository.findAllOffencesByEventId(eventId),
+            requirements
+        )
     }
 }

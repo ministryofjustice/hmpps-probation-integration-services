@@ -37,7 +37,7 @@ class AllocationRiskService(
         )
     }
 
-    private fun getRiskOgrs(person: Person): RiskOGRS? {
+    public fun getRiskOgrs(person: Person): RiskOGRS? {
 
         val oasysAssessment = oasysAssessmentRepository.findFirstByPersonIdAndScoreIsNotNullOrderByAssessmentDateDesc(
             person.id

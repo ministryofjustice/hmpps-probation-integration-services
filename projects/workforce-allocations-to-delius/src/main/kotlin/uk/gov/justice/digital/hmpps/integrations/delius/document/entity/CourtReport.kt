@@ -17,7 +17,7 @@ class CourtReport(
 
     @JoinColumn(name = "court_appearance_id", insertable = false, updatable = false)
     @ManyToOne
-    val courtAppearance: CourtAppearance? = null,
+    val documentCourtAppearance: DocumentCourtAppearance? = null,
 
     @ManyToOne
     @JoinColumn(name = "court_report_type_id", updatable = false)
@@ -37,7 +37,7 @@ class CourtReportType(
 
 @Entity
 @Immutable
-class CourtAppearance(
+class DocumentCourtAppearance(
 
     @Id
     @Column(name = "court_appearance_id")
