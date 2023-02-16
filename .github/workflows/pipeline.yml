@@ -20,23 +20,8 @@ jobs:
         uses: ./.github/actions/build-and-test
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Pull base image and set env var for base image
-        run: |
-          docker pull eclipse-temurin:17-jre-alpine
-          echo "JIB_FROM_IMAGE=docker://$(docker inspect --format='{{index .RepoDigests 0}}' eclipse-temurin:17-jre-alpine)" >> $GITHUB_ENV
-      - name: Push images
-        uses: gradle/gradle-build-action@v2
-        env:
-          GITHUB_USERNAME: ${{ github.actor }}
-          GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          arguments: jib dockerTagsPush
+          push-images: true
 
   deploy-to-test:
     name: Deploy to test

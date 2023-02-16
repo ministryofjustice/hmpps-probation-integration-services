@@ -7,7 +7,6 @@ import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonWith
 object PersonManagerGenerator {
     val DEFAULT = generate()
     fun generate(
-        code: String = "STAFF1",
         id: Long = IdGenerator.getAndIncrement()
     ) = PersonManager(
         id,

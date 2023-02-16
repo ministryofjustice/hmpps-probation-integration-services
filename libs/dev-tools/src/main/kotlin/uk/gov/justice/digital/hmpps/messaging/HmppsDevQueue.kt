@@ -50,16 +50,7 @@ abstract class NotificationChannel(
         return notification
     }
 
-    fun confirm(notificationId: UUID) {
-        lock.lock()
-        try {
-            processing.remove(notificationId)
-        } finally {
-            lock.unlock()
-        }
-    }
-
-    fun fail(notificationId: UUID) {
+    fun done(notificationId: UUID) {
         lock.lock()
         try {
             processing.remove(notificationId)
@@ -120,10 +111,8 @@ class HmppsNotificationListener(
             val toHandle = Notification(objectMapper.writeValueAsString(it.message), it.attributes, it.id)
             try {
                 handler.handle(objectMapper.writeValueAsString(toHandle))
-                queue.confirm(notification.id)
-            } catch (e: Exception) {
-                queue.fail(notification.id)
-                throw e
+            } finally {
+                queue.done(notification.id)
             }
         }
     }
