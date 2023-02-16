@@ -42,7 +42,7 @@ runs:
     - name: Configure Gradle
       uses: gradle/gradle-build-action@v2
       with:
-        cache-read-only: false
+        cache-read-only: ${{ inputs.push-images != 'true' }}
 
     - name: Compile and Test
       shell: bash
