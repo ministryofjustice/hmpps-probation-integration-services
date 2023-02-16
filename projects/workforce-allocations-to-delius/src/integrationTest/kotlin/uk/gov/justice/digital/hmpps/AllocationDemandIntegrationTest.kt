@@ -29,6 +29,7 @@ import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.model.Sentence
+import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
@@ -157,6 +158,7 @@ class AllocationDemandIntegrationTest {
             .andExpect(jsonPath("$.crn").value(person.crn))
             .andExpect(jsonPath("$.name.forename").value(person.forename))
             .andExpect(jsonPath("$.name.surname").value(person.surname))
+            .andExpect(jsonPath("$.court.name").value(CourtGenerator.DEFAULT.name))
     }
 
     companion object {

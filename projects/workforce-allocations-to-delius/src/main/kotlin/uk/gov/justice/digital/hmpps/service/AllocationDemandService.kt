@@ -21,7 +21,7 @@ import uk.gov.justice.digital.hmpps.api.model.toStaffMember
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.ContactAppearanceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffence
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffenceRepository
@@ -47,7 +47,7 @@ class AllocationDemandService(
     private val caseViewRequirementRepository: CaseViewRequirementRepository,
     private val eventRepository: EventRepository,
     private val contactRepository: ContactRepository,
-    private val courtAppearanceRepository: ContactAppearanceRepository
+    private val courtAppearanceRepository: CourtAppearanceRepository
 ) {
     fun findAllocationDemand(allocationDemandRequest: AllocationDemandRequest): AllocationDemandResponse {
         return AllocationDemandResponse(
@@ -145,14 +145,17 @@ class AllocationDemandService(
         val staff = staffRepository.findStaffWithUserByCode(staffCode)
         val allocatingStaff = staffRepository.findStaffWithUserByCode(allocatingStaffCode)
         val eventId = eventRepository.findByPersonCrnAndNumber(crn, eventNumber)!!.id
-        val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId).map {
-            Requirement(
-                it.mainCategory.description,
-                it.subCategory.description,
-                it.length.toString(),
-                it.id
-            )
-        }
+        val requirements =
+            caseViewRequirementRepository.findAllByDisposalEventId(eventId)
+                .filter { it.mainCategory.code != "W" && it.mainCategory.code != "W2" }
+                .map {
+                    Requirement(
+                        it.mainCategory.description,
+                        it.subCategory.description,
+                        it.length.toString(),
+                        it.id
+                    )
+                }
 
         return AllocationDemandStaffResponse(
             person.crn,

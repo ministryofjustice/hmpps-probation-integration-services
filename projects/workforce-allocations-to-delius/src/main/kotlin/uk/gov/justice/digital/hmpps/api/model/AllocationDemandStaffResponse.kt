@@ -23,10 +23,10 @@ data class Requirement(
     val id: Long
 )
 
-data class Court(
-    val name: String,
+interface Court {
+    val name: String
     val appearanceDate: LocalDate
-)
+}
 
 data class AllocationDemandSentence(
     val description: String,

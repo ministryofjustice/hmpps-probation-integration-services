@@ -24,11 +24,11 @@ class CourtAppearance(
     @Column(name = "appearance_date")
     val appearanceDate: LocalDate,
 
-    @JoinColumn(name = "event_id", insertable = false, updatable = false)
+    @JoinColumn(name = "event_id")
     @ManyToOne
     val event: Event,
 
-    @JoinColumn(name = "court_id", insertable = false, updatable = false)
+    @JoinColumn(name = "court_id")
     @ManyToOne
     val court: Court,
 
@@ -49,11 +49,12 @@ class Court(
 
 )
 
-interface ContactAppearanceRepository : JpaRepository<CourtAppearance, Long> {
+interface CourtRepository : JpaRepository<Court, Long>
+interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
 
     @Query(
         """
-        select ca.court.name, ca.appearanceDate from CourtAppearance ca
+        select ca.court.name as name, ca.appearanceDate as appearanceDate from CourtAppearance ca
         where ca.event.id = :eventId
         order by ca.appearanceDate desc
     """

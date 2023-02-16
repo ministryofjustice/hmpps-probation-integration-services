@@ -29,7 +29,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.ContactAppearanceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementRepository
@@ -82,7 +82,7 @@ class AllocationDemandServiceTest {
     lateinit var contactRepository: ContactRepository
 
     @Mock
-    lateinit var courtAppearanceRepository: ContactAppearanceRepository
+    lateinit var courtAppearanceRepository: CourtAppearanceRepository
 
     @InjectMocks
     lateinit var allocationDemandService: AllocationDemandService
