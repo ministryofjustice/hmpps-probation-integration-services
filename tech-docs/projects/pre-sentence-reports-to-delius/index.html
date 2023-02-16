@@ -92,7 +92,15 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>pre-sentence-reports-to-delius</span></a>
+    <a href="./index.html"><span>Pre-Sentence Reports to Delius</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#business-need"><span>Business Need</span></a>
+      </li>
+      <li>
+        <a href="./index.html#context-maps"><span>Context Maps</span></a>
+      </li>
+    </ul>
   </li>
   <li>
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
@@ -117,8 +125,22 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="pre-sentence-reports-to-delius">pre-sentence-reports-to-delius</h1>
-<p>In progress &hellip;</p>
+            <h1 id="pre-sentence-reports-to-delius">Pre-Sentence Reports to Delius</h1>
+<p>Service that supports integration between the <a href="https://github.com/ministryofjustice/pre-sentence-service">Pre-Sentence Service</a>
+and <a href="https://github.com/ministryofjustice/delius">Delius</a>. The workflow for a
+pre-sentence report involves initiating a report in Delius, completing the
+report in the Pre-Sentence Service and uploading the completed report to
+Delius and Alfresco. The integration service enables the Pre-Sentence Service
+to gather probation case information to be used in the document creation
+workflow and also enables asynchronous upload of the final document to the
+probation case record when the Pre-Sentence Service workflow is complete.</p>
+<h2 id="business-need">Business Need</h2>
+<p>Supporting the Pre-Sentence Service with probation case information, ensuring
+this cross-system workflow requires minimal double-keying. Automatically
+uploading the completed document to the correct location in the Delius case
+record, removing a manual step from the overall process.</p>
+<h2 id="context-maps">Context Maps</h2>
+<p><a href="././img/pre-sentence-reports-to-delius-context-maps.png" rel="noopener noreferrer"><img src="img/pre-sentence-reports-to-delius-context-maps.png" alt="Context Maps" /></a></p>
 
             
           </main>
