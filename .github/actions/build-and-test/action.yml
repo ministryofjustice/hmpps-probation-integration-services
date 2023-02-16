@@ -43,6 +43,19 @@ runs:
       shell: bash
       run: ./gradlew check
 
+    - name: Pull base image and set env var for base image
+      shell: bash
+      run: |
+        docker pull eclipse-temurin:17-jre-alpine
+        echo "JIB_FROM_IMAGE=docker://$(docker inspect --format='{{index .RepoDigests 0}}' eclipse-temurin:17-jre-alpine)" >> $GITHUB_ENV
+
+    - name: Jib Image Push
+      shell: bash
+      env:
+        GITHUB_USERNAME: ${{ github.actor }}
+        GITHUB_PASSWORD: ${{ github.token }}
+      run: ./gradlew jib
+
     - name: Build standalone docker images
       shell: bash
       run: ./gradlew docker
