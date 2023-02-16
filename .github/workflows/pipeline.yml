@@ -33,11 +33,11 @@ jobs:
           echo "JIB_FROM_IMAGE=docker://$(docker inspect --format='{{index .RepoDigests 0}}' eclipse-temurin:17-jre-alpine)" >> $GITHUB_ENV
 
       - name: Jib Image Push
-          shell: bash
-          env:
-            GITHUB_USERNAME: ${{ github.actor }}
-            GITHUB_PASSWORD: ${{ github.token }}
-          run: ./gradlew jib
+        shell: bash
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_PASSWORD: ${{ github.token }}
+        run: ./gradlew jib
 
       - name: Docker Image Push
         shell: bash
