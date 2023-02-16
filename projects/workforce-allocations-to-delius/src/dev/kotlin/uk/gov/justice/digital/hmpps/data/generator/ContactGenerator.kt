@@ -15,6 +15,15 @@ object ContactGenerator {
         ProviderGenerator.DEFAULT.id,
     )
 
+    val INITIAL_APPOINTMENT_CASE_VIEW = generate(
+        ContactTypeGenerator.INITIAL_APPOINTMENT_IN_OFFICE,
+        PersonGenerator.CASE_VIEW.id,
+        EventGenerator.CASE_VIEW.id,
+        TeamGenerator.DEFAULT.id,
+        StaffGenerator.DEFAULT.id,
+        ProviderGenerator.DEFAULT.id,
+    )
+
     fun generate(
         type: ContactType,
         personId: Long,

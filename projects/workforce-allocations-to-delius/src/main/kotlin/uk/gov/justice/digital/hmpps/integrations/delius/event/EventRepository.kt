@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.api.model.Offence
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 interface EventRepository : JpaRepository<Event, Long> {
@@ -30,6 +31,17 @@ interface EventRepository : JpaRepository<Event, Long> {
     fun updateIaps(eventId: Long, iapsFlagValue: Long = 1)
 
     fun findByPersonCrnAndNumber(crn: String, number: String): Event?
+
+    @Query(
+        """
+            select mo.offence.description as mainCategory, true as mainOffence from MainOffence mo 
+            where mo.event.id = :eventId
+            union all
+            select ao.offence.description as mainCategory, false as mainOffence from AdditionalOffence ao
+            where ao.event.id = :eventId
+        """
+    )
+    fun findAllOffencesByEventId(eventId: Long): List<Offence>
 }
 
 fun EventRepository.getByPersonCrnAndNumber(crn: String, number: String) = findByPersonCrnAndNumber(crn, number)

@@ -26,7 +26,9 @@ class AllocationDemandResource(
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @PostMapping
     fun findUnallocatedForTeam(@Valid @RequestBody request: AllocationDemandRequest): AllocationDemandResponse =
-        if (request.cases.isEmpty()) AllocationDemandResponse(listOf()) else allocationDemand.findAllocationDemand(request)
+        if (request.cases.isEmpty()) AllocationDemandResponse(listOf()) else allocationDemand.findAllocationDemand(
+            request
+        )
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @GetMapping("/choose-practitioner")
@@ -51,4 +53,13 @@ class AllocationDemandResource(
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @GetMapping("/{crn}/unallocated-events")
     fun getUnallocatedEvents(@PathVariable crn: String) = allocationDemand.getUnallocatedEvents(crn)
+
+    @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
+    @GetMapping("/{crn}/{eventNumber}/allocation")
+    fun getAllocationDemandStaff(
+        @PathVariable crn: String,
+        @PathVariable eventNumber: String,
+        @RequestParam staff: String,
+        @RequestParam allocatingStaff: String
+    ) = allocationDemand.getAllocationDemandStaff(crn, eventNumber, staff, allocatingStaff)
 }

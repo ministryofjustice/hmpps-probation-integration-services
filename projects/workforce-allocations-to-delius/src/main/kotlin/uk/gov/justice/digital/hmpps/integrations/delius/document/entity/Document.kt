@@ -254,7 +254,7 @@ class CourtReportDocument(
         RelatedTo(
             RelatedType.COURT_REPORT,
             courtReport?.type?.description ?: entityNotFound,
-            courtReport?.courtAppearance?.event?.toDocumentEvent()
+            courtReport?.documentCourtAppearance?.event?.toDocumentEvent()
         )
 }
 
