@@ -1,6 +1,11 @@
 name: Build and test
 description: Build projects, run tests and check coverage using Gradle
 
+inputs:
+  push-images:
+    description: Whether to push images to git hub packages or not
+    required: false
+    default: 'false'
 outputs:
   version:
     description: The image tag used in the build
@@ -44,12 +49,14 @@ runs:
       run: ./gradlew check
 
     - name: Pull base image and set env var for base image
+      if: ${{ inputs.push-images == 'true' }}
       shell: bash
       run: |
         docker pull eclipse-temurin:17-jre-alpine
         echo "JIB_FROM_IMAGE=docker://$(docker inspect --format='{{index .RepoDigests 0}}' eclipse-temurin:17-jre-alpine)" >> $GITHUB_ENV
 
     - name: Jib Image Push
+      if: ${{ inputs.push-images == 'true' }}
       shell: bash
       env:
         GITHUB_USERNAME: ${{ github.actor }}
@@ -59,6 +66,19 @@ runs:
     - name: Build standalone docker images
       shell: bash
       run: ./gradlew docker
+
+    - name: Login to GitHub Container Registry
+      if: ${{ inputs.push-images == 'true' }}
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+
+    - name: Docker Image Push
+      if: ${{ inputs.push-images == 'true' }}
+      shell: bash
+      run: ./gradlew dockerTagsPush
 
     - name: Sonar analysis
       uses: gradle/gradle-build-action@v2
