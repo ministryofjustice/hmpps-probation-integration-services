@@ -26,17 +26,25 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Pull base image and set env var for base image
         run: |
           docker pull eclipse-temurin:17-jre-alpine
           echo "JIB_FROM_IMAGE=docker://$(docker inspect --format='{{index .RepoDigests 0}}' eclipse-temurin:17-jre-alpine)" >> $GITHUB_ENV
-      - name: Push images
-        uses: gradle/gradle-build-action@v2
+
+      - name: Jib Image Push
+          shell: bash
+          env:
+            GITHUB_USERNAME: ${{ github.actor }}
+            GITHUB_PASSWORD: ${{ github.token }}
+          run: ./gradlew jib
+
+      - name: Docker Image Push
+        shell: bash
         env:
           GITHUB_USERNAME: ${{ github.actor }}
-          GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          arguments: jib dockerTagsPush
+          GITHUB_PASSWORD: ${{ github.token }}
+        run: ./gradlew dockerTagsPush
 
   deploy-to-test:
     name: Deploy to test

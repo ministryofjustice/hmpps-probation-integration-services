@@ -9,6 +9,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
+import java.security.MessageDigest
 
 class JibConfigPlugin : Plugin<Project> {
 
@@ -25,10 +26,6 @@ class JibConfigPlugin : Plugin<Project> {
                 }
                 to {
                     image = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}"
-                    auth {
-                        username = System.getenv("GITHUB_USERNAME")
-                        password = System.getenv("GITHUB_PASSWORD")
-                    }
                 }
                 extraDirectories {
                     paths {
@@ -53,7 +50,13 @@ class JibConfigPlugin : Plugin<Project> {
             val assemble = project.tasks.named("assemble")
             project.tasks.withType<BuildImageTask>().named("jib") {
                 doFirst {
-                    jib!!.to.tags = setOf("${project.version}")
+                    jib!!.to {
+                        tags = setOf("${project.version}")
+                        auth {
+                            username = System.getenv("GITHUB_USERNAME")
+                            password = System.getenv("GITHUB_PASSWORD")
+                        }
+                    }
                 }
                 dependsOn(copyAgent, copyAppInsightsConfig, assemble)
                 inputs.dir("deploy")

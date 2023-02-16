@@ -34,15 +34,18 @@ runs:
       shell: bash
       run: echo -e "\norg.gradle.jvmargs=-Xmx1g -XX:MaxMetaspaceSize=512m" >> gradle.properties
 
-    - name: Compile and test
+    - name: Configure Gradle
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: check
+        cache-read-only: false
+
+    - name: Compile and Test
+      shell: bash
+      run: ./gradlew check
 
     - name: Build standalone docker images
-      uses: gradle/gradle-build-action@v2
-      with:
-        arguments: docker
+      shell: bash
+      run: ./gradlew docker
 
     - name: Sonar analysis
       uses: gradle/gradle-build-action@v2
