@@ -9,7 +9,6 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
-import java.security.MessageDigest
 
 class JibConfigPlugin : Plugin<Project> {
 
