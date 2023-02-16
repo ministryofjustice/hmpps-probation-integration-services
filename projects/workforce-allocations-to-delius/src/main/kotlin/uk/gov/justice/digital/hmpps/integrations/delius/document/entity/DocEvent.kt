@@ -55,7 +55,7 @@ class DocDisposal(
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
 
 @Immutable
@@ -65,7 +65,7 @@ class DocDisposalType(
     @Id
     @Column(name = "disposal_type_id")
     val id: Long,
-    val description: String,
+    val description: String
 )
 
 @Immutable
@@ -93,5 +93,5 @@ class DocMainOffence(
 
     @JoinColumn(name = "event_id")
     @OneToOne
-    val event: DocEvent,
+    val event: DocEvent
 )

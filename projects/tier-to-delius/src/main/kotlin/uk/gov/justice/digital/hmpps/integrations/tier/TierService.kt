@@ -34,7 +34,7 @@ class TierService(
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
     private val contactTypeRepository: ContactTypeRepository,
-    private val telemetryService: TelemetryService,
+    private val telemetryService: TelemetryService
 ) {
     @Transactional
     fun updateTier(crn: String, tierCalculation: TierCalculation) {

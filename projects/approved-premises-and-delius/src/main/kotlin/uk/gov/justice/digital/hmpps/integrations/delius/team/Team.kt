@@ -31,5 +31,5 @@ class Team(
         joinColumns = [JoinColumn(name = "team_id")],
         inverseJoinColumns = [JoinColumn(name = "approved_premises_id")]
     )
-    val approvedPremises: ApprovedPremises?,
+    val approvedPremises: ApprovedPremises?
 )

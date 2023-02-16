@@ -38,7 +38,7 @@ class Custody(
     val disposal: Disposal,
 
     @Column(columnDefinition = "number", nullable = false)
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
 
 @Entity
@@ -61,5 +61,5 @@ class KeyDate(
     var date: LocalDate,
 
     @Column(columnDefinition = "number", nullable = false)
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )

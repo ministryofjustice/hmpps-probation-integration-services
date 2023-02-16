@@ -18,7 +18,8 @@ import java.time.LocalDate
 @Where(clause = "soft_deleted = 0 and (finish_date is null or finish_date > current_date)")
 @Table(name = "disability")
 class DisabilityEntity(
-    @Id @Column(name = "disability_id")
+    @Id
+    @Column(name = "disability_id")
     val id: Long,
 
     @ManyToOne
@@ -42,5 +43,5 @@ class DisabilityEntity(
     val softDeleted: Boolean = false,
 
     @OneToMany(mappedBy = "disability", fetch = FetchType.EAGER)
-    val provisions: List<ProvisionEntity>? = listOf(),
+    val provisions: List<ProvisionEntity>? = listOf()
 )

@@ -13,5 +13,5 @@ class LicenceConditionCategory(
     val id: Long = 0,
 
     @Column(nullable = false)
-    val code: String,
+    val code: String
 )

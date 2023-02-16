@@ -17,8 +17,11 @@ class WireMockInitialiser : ApplicationContextInitializer<ConfigurableApplicatio
     }
 
     override fun initialize(ctx: ConfigurableApplicationContext) {
-        val wmPort = if (ctx.environment.activeProfiles.contains("integration-test")) 0
-        else ctx.environment["wiremock.port"]?.toInt() ?: 0
+        val wmPort = if (ctx.environment.activeProfiles.contains("integration-test")) {
+            0
+        } else {
+            ctx.environment["wiremock.port"]?.toInt() ?: 0
+        }
 
         val wireMockServer = WireMockServer(
             WireMockConfiguration()

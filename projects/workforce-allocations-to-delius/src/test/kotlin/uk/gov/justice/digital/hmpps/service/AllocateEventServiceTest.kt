@@ -113,7 +113,6 @@ internal class AllocateEventServiceTest {
 
     @Test
     fun `when duplicate allocation noop`() {
-
         val allocationDetail = allocationDetail.copy(
             staffCode = OrderManagerGenerator.DEFAULT.staff.code,
             teamCode = OrderManagerGenerator.DEFAULT.team.code

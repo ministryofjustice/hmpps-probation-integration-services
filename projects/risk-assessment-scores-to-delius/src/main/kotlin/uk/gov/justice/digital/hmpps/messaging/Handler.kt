@@ -15,7 +15,7 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 class Handler(
     private val telemetryService: TelemetryService,
     private val riskScoreService: RiskScoreService,
-    override val converter: NotificationConverter<HmppsDomainEvent>,
+    override val converter: NotificationConverter<HmppsDomainEvent>
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
@@ -83,5 +83,5 @@ fun HmppsDomainEvent.telemetryProperties() = mapOf(
     "ospIndecentScore" to additionalInformation["OSPIndecentScore"].toString(),
     "ospIndecentBand" to additionalInformation["OSPIndecentBand"].toString(),
     "ospContactScore" to additionalInformation["OSPContactScore"].toString(),
-    "ospContactBand" to additionalInformation["OSPContactBand"].toString(),
+    "ospContactBand" to additionalInformation["OSPContactBand"].toString()
 )

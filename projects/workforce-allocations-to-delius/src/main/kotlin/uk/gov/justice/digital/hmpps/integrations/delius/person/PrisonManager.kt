@@ -32,5 +32,5 @@ class PrisonManager(
 
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id", nullable = false)
-    val staff: Staff,
+    val staff: Staff
 )

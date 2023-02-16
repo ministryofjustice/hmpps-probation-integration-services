@@ -43,7 +43,7 @@ abstract class StaffRecord(
         joinColumns = [JoinColumn(name = "staff_id")],
         inverseJoinColumns = [JoinColumn(name = "team_id")]
     )
-    val teams: List<Team> = mutableListOf(),
+    val teams: List<Team> = mutableListOf()
 ) {
     @Transient
     val displayName = listOfNotNull(forename, middleName, surname).joinToString(" ")

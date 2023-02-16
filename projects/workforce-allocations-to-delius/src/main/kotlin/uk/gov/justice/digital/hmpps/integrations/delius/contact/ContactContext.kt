@@ -4,7 +4,7 @@ data class ContactContext(
     val contactType: ContactType,
     val offenderId: Long,
     val eventId: Long? = null,
-    val requirementId: Long? = null,
+    val requirementId: Long? = null
 )
 
 enum class ContactTypeCode(val value: String) {
@@ -15,5 +15,5 @@ enum class ContactTypeCode(val value: String) {
     INITIAL_APPOINTMENT_IN_OFFICE("COAI"),
     INITIAL_APPOINTMENT_ON_DOORSTEP("CODI"),
     INITIAL_APPOINTMENT_HOME_VISIT("COHV"),
-    INITIAL_APPOINTMENT_BY_VIDEO("COVI"),
+    INITIAL_APPOINTMENT_BY_VIDEO("COVI")
 }

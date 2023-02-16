@@ -33,7 +33,7 @@ class ThreadConfig {
 }
 
 internal class ContextRunnable(
-    private val delegate: Runnable,
+    private val delegate: Runnable
 ) : Runnable {
 
     private val securityContext: SecurityContext? =

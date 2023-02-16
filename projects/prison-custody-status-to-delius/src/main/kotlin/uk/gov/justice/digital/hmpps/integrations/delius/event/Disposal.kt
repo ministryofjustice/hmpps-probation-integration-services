@@ -42,7 +42,7 @@ class Disposal(
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 ) {
     fun isLongerThan20Months(): Boolean? {
         val endDate = if (lengthInDays != null) date.plusDays(lengthInDays) else notionalEndDate ?: return null
@@ -59,5 +59,5 @@ class DisposalType(
     val id: Long,
 
     @Column
-    val sentenceType: String,
+    val sentenceType: String
 )

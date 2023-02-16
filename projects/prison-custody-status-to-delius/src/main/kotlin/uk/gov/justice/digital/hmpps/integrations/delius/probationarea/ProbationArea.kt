@@ -27,5 +27,5 @@ class ProbationArea(
         JoinColumn(name = "institution_id", referencedColumnName = "institution_id"),
         JoinColumn(name = "establishment", referencedColumnName = "establishment")
     )
-    var institution: Institution? = null,
+    var institution: Institution? = null
 )

@@ -55,16 +55,21 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
                         rs.getString("team_code")
                     )
                 ),
-                if (sentenceDate == null) null
-                else Sentence(
-                    rs.getString("sentence_type"),
-                    rs.getDate("sentence_date").toLocalDate(),
-                    "${rs.getString("sentence_length_value")} ${rs.getString("sentence_length_unit")}"
-                ),
+                if (sentenceDate == null) {
+                    null
+                } else {
+                    Sentence(
+                        rs.getString("sentence_type"),
+                        rs.getDate("sentence_date").toLocalDate(),
+                        "${rs.getString("sentence_length_value")} ${rs.getString("sentence_length_unit")}"
+                    )
+                },
                 if (iad == null) null else InitialAppointment(iad.toLocalDate()),
                 CaseType.valueOf(rs.getString("case_type")),
                 ProbationStatus(managementStatus),
-                if (managerCode.endsWith("U")) null else
+                if (managerCode.endsWith("U")) {
+                    null
+                } else {
                     Manager(
                         managerCode,
                         Name(
@@ -75,6 +80,7 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
                         rs.getString("community_manager_team_code"),
                         gradeMap[rs.getString("community_manager_grade")]
                     )
+                }
             )
         }
     }

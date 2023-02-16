@@ -42,7 +42,7 @@ class CaseViewRequirement(
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
 
 @Immutable
@@ -56,7 +56,7 @@ class CaseViewRequirementMainCategory(
     val description: String,
     @ManyToOne
     @JoinColumn(name = "units_id")
-    val units: ReferenceData? = null,
+    val units: ReferenceData? = null
 )
 
 interface CaseViewRequirementRepository : JpaRepository<CaseViewRequirement, Long> {

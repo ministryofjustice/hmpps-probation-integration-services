@@ -18,7 +18,7 @@ class StaffResource(private val service: StaffService) {
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @GetMapping("{code}/officer-view")
     fun officerView(
-        @PathVariable code: String,
+        @PathVariable code: String
     ) = service.getOfficerView(code)
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")

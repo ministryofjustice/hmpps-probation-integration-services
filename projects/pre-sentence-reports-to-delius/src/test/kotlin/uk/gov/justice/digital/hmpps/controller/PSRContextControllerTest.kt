@@ -45,7 +45,6 @@ class PSRContextControllerTest {
     }
 
     private fun getPreSentenceReportContext(): PreSentenceReportContext {
-
         return PreSentenceReportContext(
             "X123123",
             Name("forename", "surename", "middlename"),

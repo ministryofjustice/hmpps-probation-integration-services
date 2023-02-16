@@ -17,7 +17,7 @@ data class AuditedInteractionId(
     val dateTime: ZonedDateTime = ZonedDateTime.now(),
 
     val businessInteractionId: Long = 0,
-    val userId: Long = 0,
+    val userId: Long = 0
 
 ) : Serializable {
 
@@ -45,7 +45,7 @@ class AuditedInteraction(
 
     @Column(name = "interaction_parameters", length = 500)
     @Convert(converter = AuditedInteractionParamsConverter::class)
-    val parameters: Parameters = Parameters(),
+    val parameters: Parameters = Parameters()
 
 ) : Persistable<AuditedInteractionId> {
     enum class Outcome {

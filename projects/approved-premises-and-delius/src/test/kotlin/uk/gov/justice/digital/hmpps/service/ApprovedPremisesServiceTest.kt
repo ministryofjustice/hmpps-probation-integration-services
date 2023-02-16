@@ -74,38 +74,55 @@ import java.time.ZonedDateTime
 internal class ApprovedPremisesServiceTest {
     @Mock
     lateinit var approvedPremisesApiClient: ApprovedPremisesApiClient
+
     @Mock
     lateinit var approvedPremisesRepository: ApprovedPremisesRepository
+
     @Mock
     lateinit var contactRepository: ContactRepository
+
     @Mock
     lateinit var contactTypeRepository: ContactTypeRepository
+
     @Mock
     lateinit var contactAlertRepository: ContactAlertRepository
+
     @Mock
     lateinit var personRepository: PersonRepository
+
     @Mock
     lateinit var personManagerRepository: PersonManagerRepository
+
     @Mock
     lateinit var personAddressRepository: PersonAddressRepository
+
     @Mock
     lateinit var staffRepository: StaffRepository
+
     @Mock
     lateinit var teamRepository: TeamRepository
+
     @Mock
     lateinit var probationAreaRepository: ProbationAreaRepository
+
     @Mock
     lateinit var nsiRepository: NsiRepository
+
     @Mock
     lateinit var nsiTypeRepository: NsiTypeRepository
+
     @Mock
     lateinit var nsiStatusRepository: NsiStatusRepository
+
     @Mock
     lateinit var nsiManagerRepository: NsiManagerRepository
+
     @Mock
     lateinit var transferReasonRepository: TransferReasonRepository
+
     @Mock
     lateinit var referenceDataRepository: ReferenceDataRepository
+
     @InjectMocks
     lateinit var approvedPremisesService: ApprovedPremisesService
 
@@ -272,7 +289,7 @@ internal class ApprovedPremisesServiceTest {
         team: Team,
         alertManager: PersonManager,
         description: String? = null,
-        notes: String? = null,
+        notes: String? = null
     ) {
         verify(contactRepository).save(
             check { contact ->
@@ -309,7 +326,7 @@ internal class ApprovedPremisesServiceTest {
         person: Person,
         staff: Staff,
         team: Team,
-        notes: String? = null,
+        notes: String? = null
     ) {
         verify(nsiRepository).save(
             check { nsi ->
@@ -353,7 +370,7 @@ internal class ApprovedPremisesServiceTest {
     }
 
     private fun givenUnallocatedTeam(
-        probationAreaCode: String = ProbationAreaGenerator.DEFAULT.code,
+        probationAreaCode: String = ProbationAreaGenerator.DEFAULT.code
     ): Team {
         val team = TeamGenerator.generate(code = "${probationAreaCode}UAT")
         whenever(teamRepository.findByCodeAndProbationAreaCode("${probationAreaCode}UAT", probationAreaCode))

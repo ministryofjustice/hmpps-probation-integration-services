@@ -17,5 +17,5 @@ class Provider(
     @Column(name = "code", columnDefinition = "char(3)")
     val code: String,
 
-    val description: String,
+    val description: String
 )

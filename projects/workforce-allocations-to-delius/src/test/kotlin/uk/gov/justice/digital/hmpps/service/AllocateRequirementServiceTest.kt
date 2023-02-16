@@ -109,8 +109,7 @@ internal class AllocateRequirementServiceTest {
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(
             Optional.of(
                 RequirementGenerator.generate(
-                    disposal = DisposalGenerator.generate
-                    (
+                    disposal = DisposalGenerator.generate(
                         EventGenerator.generate(),
                         active = false
                     )
@@ -131,8 +130,7 @@ internal class AllocateRequirementServiceTest {
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(
             Optional.of(
                 RequirementGenerator.generate(
-                    disposal = DisposalGenerator.generate
-                    (
+                    disposal = DisposalGenerator.generate(
                         EventGenerator.generate(active = false)
                     )
                 )
@@ -153,8 +151,7 @@ internal class AllocateRequirementServiceTest {
             Optional.of(
                 RequirementGenerator.generate(
                     active = false,
-                    disposal = DisposalGenerator.generate
-                    (
+                    disposal = DisposalGenerator.generate(
                         EventGenerator.generate()
                     )
                 )
@@ -174,8 +171,7 @@ internal class AllocateRequirementServiceTest {
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(
             Optional.of(
                 RequirementGenerator.generate(
-                    disposal = DisposalGenerator.generate
-                    (
+                    disposal = DisposalGenerator.generate(
                         EventGenerator.generate()
                     )
                 )
@@ -184,7 +180,8 @@ internal class AllocateRequirementServiceTest {
 
         whenever(
             requirementManagerRepository.findActiveManagerAtDate(
-                allocationDetail.requirementId, allocationDetail.createdDate
+                allocationDetail.requirementId,
+                allocationDetail.createdDate
             )
         ).thenReturn(null)
 
@@ -198,7 +195,6 @@ internal class AllocateRequirementServiceTest {
 
     @Test
     fun `when duplicate allocation noop`() {
-
         val allocationDetail = allocationDetail.copy(
             staffCode = OrderManagerGenerator.DEFAULT.staff.code,
             teamCode = OrderManagerGenerator.DEFAULT.team.code
@@ -230,8 +226,7 @@ internal class AllocateRequirementServiceTest {
     @Test
     fun `when pending transfers exist`() {
         val requirement = RequirementGenerator.generate(
-            disposal = DisposalGenerator.generate
-            (
+            disposal = DisposalGenerator.generate(
                 EventGenerator.generate()
             )
         )
@@ -243,7 +238,8 @@ internal class AllocateRequirementServiceTest {
 
         whenever(
             requirementManagerRepository.findActiveManagerAtDate(
-                allocationDetail.requirementId, allocationDetail.createdDate
+                allocationDetail.requirementId,
+                allocationDetail.createdDate
             )
         ).thenReturn(RequirementManagerGenerator.DEFAULT)
 
@@ -260,8 +256,7 @@ internal class AllocateRequirementServiceTest {
     @Test
     fun `when  transfer reason not found`() {
         val requirement = RequirementGenerator.generate(
-            disposal = DisposalGenerator.generate
-            (
+            disposal = DisposalGenerator.generate(
                 EventGenerator.generate()
             )
         )
@@ -273,7 +268,8 @@ internal class AllocateRequirementServiceTest {
 
         whenever(
             requirementManagerRepository.findActiveManagerAtDate(
-                allocationDetail.requirementId, allocationDetail.createdDate
+                allocationDetail.requirementId,
+                allocationDetail.createdDate
             )
         ).thenReturn(RequirementManagerGenerator.DEFAULT)
 

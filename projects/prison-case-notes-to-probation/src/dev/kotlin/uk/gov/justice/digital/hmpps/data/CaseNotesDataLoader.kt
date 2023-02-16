@@ -61,7 +61,6 @@ class CaseNotesDataLoader(
     }
 
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
-
         businessInteractionRepository.save(BusinessInteractionGenerator.CASE_NOTES_MERGE)
 
         caseNoteTypeRepository.save(CaseNoteTypeGenerator.DEFAULT)

@@ -8,6 +8,6 @@ object InstitutionalReportGenerator {
     val DEFAULT = generate()
 
     fun generate(
-        id: Long = IdGenerator.getAndIncrement(),
+        id: Long = IdGenerator.getAndIncrement()
     ) = InstitutionalReport(id, ReferenceDataGenerator.INS_RPT_PAR, LocalDate.now().plusWeeks(1), custodyId = CustodyGenerator.DEFAULT.id)
 }

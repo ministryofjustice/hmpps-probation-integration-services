@@ -41,12 +41,19 @@ import java.time.ZonedDateTime
 @ExtendWith(MockitoExtension::class)
 internal class LicenceConditionServiceTest {
     @Mock lateinit var licenceConditionRepository: LicenceConditionRepository
+
     @Mock lateinit var orderManagerRepository: OrderManagerRepository
+
     @Mock lateinit var contactRepository: ContactRepository
+
     @Mock lateinit var contactTypeRepository: ContactTypeRepository
+
     @Mock lateinit var licenceConditionTransferRepository: LicenceConditionTransferRepository
+
     @Mock lateinit var referenceDataRepository: ReferenceDataRepository
+
     @Mock lateinit var rejectedTransferDiaryRepository: RejectedTransferDiaryRepository
+
     @InjectMocks lateinit var licenceConditionService: LicenceConditionService
 
     @Test
@@ -82,7 +89,7 @@ internal class LicenceConditionServiceTest {
         withLicenceConditions()
         withReferenceData(
             ReferenceDataGenerator.TRANSFER_STATUS[TransferStatusCode.REJECTED],
-            ReferenceDataGenerator.generate("R", ReferenceDataSetGenerator.generate("ACCEPTED DECISION")),
+            ReferenceDataGenerator.generate("R", ReferenceDataSetGenerator.generate("ACCEPTED DECISION"))
         )
 
         val exception = assertThrows<NotFoundException> {
@@ -97,7 +104,7 @@ internal class LicenceConditionServiceTest {
         withReferenceData(
             ReferenceDataGenerator.TRANSFER_STATUS[TransferStatusCode.REJECTED],
             ReferenceDataGenerator.generate("R", ReferenceDataSetGenerator.generate("ACCEPTED DECISION")),
-            ReferenceDataGenerator.generate("TWR", ReferenceDataSetGenerator.generate("LICENCE AREA TRANSFER REJECTION REASON")),
+            ReferenceDataGenerator.generate("TWR", ReferenceDataSetGenerator.generate("LICENCE AREA TRANSFER REJECTION REASON"))
         )
 
         val exception = assertThrows<NotFoundException> {
@@ -113,7 +120,7 @@ internal class LicenceConditionServiceTest {
         withReferenceData(
             ReferenceDataGenerator.TRANSFER_STATUS[TransferStatusCode.REJECTED],
             ReferenceDataGenerator.generate("R", ReferenceDataSetGenerator.generate("ACCEPTED DECISION")),
-            ReferenceDataGenerator.generate("TWR", ReferenceDataSetGenerator.generate("LICENCE AREA TRANSFER REJECTION REASON")),
+            ReferenceDataGenerator.generate("TWR", ReferenceDataSetGenerator.generate("LICENCE AREA TRANSFER REJECTION REASON"))
         )
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
 
@@ -132,7 +139,7 @@ internal class LicenceConditionServiceTest {
         withReferenceData(
             ReferenceDataGenerator.TRANSFER_STATUS[TransferStatusCode.REJECTED],
             ReferenceDataGenerator.generate("R", ReferenceDataSetGenerator.generate("ACCEPTED DECISION")),
-            ReferenceDataGenerator.generate("TWR", ReferenceDataSetGenerator.generate("LICENCE AREA TRANSFER REJECTION REASON")),
+            ReferenceDataGenerator.generate("TWR", ReferenceDataSetGenerator.generate("LICENCE AREA TRANSFER REJECTION REASON"))
         )
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
         whenever(contactTypeRepository.findByCode(ContactTypeCode.COMPONENT_TERMINATED.code))
@@ -166,7 +173,7 @@ internal class LicenceConditionServiceTest {
         withReferenceData(
             ReferenceDataGenerator.TRANSFER_STATUS[TransferStatusCode.REJECTED],
             ReferenceDataGenerator.generate("R", ReferenceDataSetGenerator.generate("ACCEPTED DECISION")),
-            ReferenceDataGenerator.generate("TWR", ReferenceDataSetGenerator.generate("LICENCE AREA TRANSFER REJECTION REASON")),
+            ReferenceDataGenerator.generate("TWR", ReferenceDataSetGenerator.generate("LICENCE AREA TRANSFER REJECTION REASON"))
         )
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
         whenever(contactTypeRepository.findByCode(ContactTypeCode.COMPONENT_TERMINATED.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.COMPONENT_TERMINATED])
@@ -191,7 +198,7 @@ internal class LicenceConditionServiceTest {
 
     private fun withLicenceConditions(
         event: Event,
-        licenceConditions: List<LicenceCondition> = List(3) { LicenceConditionGenerator.generate(event) },
+        licenceConditions: List<LicenceCondition> = List(3) { LicenceConditionGenerator.generate(event) }
     ) {
         withLicenceConditions(event.disposal!!.id, licenceConditions)
     }

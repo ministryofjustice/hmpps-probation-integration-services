@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.user.UserService
 @Component
 class ServiceContext(
     @Value("\${delius.db.username}") private val deliusDbName: String,
-    private val userService: UserService,
+    private val userService: UserService
 ) : ApplicationListener<ApplicationStartedEvent> {
     companion object {
         private var servicePrincipal: ServicePrincipal? = null

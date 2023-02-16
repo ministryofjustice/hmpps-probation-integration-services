@@ -41,7 +41,7 @@ data class RoshDetails(
                         RiskLevel.fromString(riskKnownAdultCommunity),
                         RiskLevel.fromString(riskPublicCustody),
                         RiskLevel.fromString(riskPublicCommunity),
-                        RiskLevel.fromString(riskChildrenCustody),
+                        RiskLevel.fromString(riskChildrenCustody)
                     )
                 )
             }
@@ -58,7 +58,7 @@ data class Rosh(
     val riskKnownAdultCommunity: RiskLevel? = null,
     val riskPublicCustody: RiskLevel? = null,
     val riskPublicCommunity: RiskLevel? = null,
-    val riskChildrenCustody: RiskLevel? = null,
+    val riskChildrenCustody: RiskLevel? = null
 )
 
 enum class RiskLevel(val value: String) {

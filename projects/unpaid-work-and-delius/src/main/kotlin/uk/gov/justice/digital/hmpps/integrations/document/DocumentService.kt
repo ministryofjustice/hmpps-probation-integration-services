@@ -39,7 +39,7 @@ class DocumentService(
         hmppsEvent: HmppsDomainEvent,
         file: ByteArray,
         filename: String,
-        contactId: Long,
+        contactId: Long
     ): MultiValueMap<String, HttpEntity<*>> {
         val crn = hmppsEvent.personReference.findCrn()!!
         val bodyBuilder = MultipartBodyBuilder()

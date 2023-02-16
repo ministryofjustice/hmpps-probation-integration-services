@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.service.StaffService
 @ExtendWith(MockitoExtension::class)
 class StaffResourceTest {
     @Mock lateinit var staffService: StaffService
+
     @InjectMocks lateinit var staffResource: StaffResource
 
     @Test

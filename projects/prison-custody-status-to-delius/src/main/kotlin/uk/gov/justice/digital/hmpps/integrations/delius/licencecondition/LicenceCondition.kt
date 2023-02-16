@@ -72,5 +72,5 @@ class LicenceCondition(
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )

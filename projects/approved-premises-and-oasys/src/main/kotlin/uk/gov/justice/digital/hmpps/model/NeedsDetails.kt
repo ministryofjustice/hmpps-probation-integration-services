@@ -44,7 +44,7 @@ data class NeedsDetails(
                         eTEIssuesDetails,
                         accIssuesDetails,
                         attIssuesDetails,
-                        thingIssuesDetails,
+                        thingIssuesDetails
                     ),
                     LinksToHarm.from(
                         LinksToHarm(
@@ -90,7 +90,7 @@ data class LinksToReOffending(
     val alcoholLinkedToReOffending: Boolean? = null,
     val emotionalLinkedToReOffending: Boolean? = null,
     val thinkingBehaviouralLinkedToReOffending: Boolean? = null,
-    val attitudeLinkedToReOffending: Boolean? = null,
+    val attitudeLinkedToReOffending: Boolean? = null
 ) {
     companion object {
         fun from(linksToReOffending: LinksToReOffending?): LinksToReOffending? {
@@ -105,8 +105,11 @@ data class LinksToReOffending(
                     this?.emotionalLinkedToReOffending == null &&
                     this?.thinkingBehaviouralLinkedToReOffending == null &&
                     this?.attitudeLinkedToReOffending == null
-                ) null
-                else linksToReOffending
+                ) {
+                    null
+                } else {
+                    linksToReOffending
+                }
             }
         }
     }
@@ -122,7 +125,7 @@ data class LinksToHarm(
     val alcoholLinkedToHarm: Boolean? = null,
     val emotionalLinkedToHarm: Boolean? = null,
     val thinkingBehaviouralLinkedToHarm: Boolean? = null,
-    val attitudeLinkedToHarm: Boolean? = null,
+    val attitudeLinkedToHarm: Boolean? = null
 ) {
     companion object {
         fun from(linksToHarm: LinksToHarm?): LinksToHarm? {
@@ -137,8 +140,11 @@ data class LinksToHarm(
                     this?.emotionalLinkedToHarm == null &&
                     this?.thinkingBehaviouralLinkedToHarm == null &&
                     this?.attitudeLinkedToHarm == null
-                ) null
-                else linksToHarm
+                ) {
+                    null
+                } else {
+                    linksToHarm
+                }
             }
         }
     }
@@ -155,5 +161,5 @@ data class Needs(
     val educationTrainingEmploymentIssuesDetails: String? = null,
     val accommodationIssuesDetails: String? = null,
     val attitudeIssuesDetails: String? = null,
-    val thinkingBehaviouralIssuesDetails: String? = null,
+    val thinkingBehaviouralIssuesDetails: String? = null
 )

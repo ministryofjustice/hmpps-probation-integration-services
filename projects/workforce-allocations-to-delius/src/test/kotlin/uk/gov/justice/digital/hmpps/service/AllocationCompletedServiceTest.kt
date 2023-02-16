@@ -25,10 +25,15 @@ import java.time.LocalDate
 @ExtendWith(MockitoExtension::class)
 class AllocationCompletedServiceTest {
     @Mock lateinit var personRepository: PersonRepository
+
     @Mock lateinit var eventRepository: EventRepository
+
     @Mock lateinit var staffRepository: StaffRepository
+
     @Mock lateinit var ldapService: LdapService
+
     @Mock lateinit var contactRepository: ContactRepository
+
     @InjectMocks lateinit var allocationCompletedService: AllocationCompletedService
 
     @Test

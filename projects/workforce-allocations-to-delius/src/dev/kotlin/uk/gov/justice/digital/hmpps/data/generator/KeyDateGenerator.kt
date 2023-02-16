@@ -8,6 +8,6 @@ object KeyDateGenerator {
     val DEFAULT = generate()
 
     fun generate(
-        id: Long = IdGenerator.getAndIncrement(),
+        id: Long = IdGenerator.getAndIncrement()
     ) = KeyDate(id, CustodyGenerator.DEFAULT, ReferenceDataGenerator.KEY_DATE_EXP_REL_DATE, LocalDate.now().plusWeeks(1))
 }

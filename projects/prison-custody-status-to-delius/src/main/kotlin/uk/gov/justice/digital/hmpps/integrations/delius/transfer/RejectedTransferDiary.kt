@@ -56,5 +56,5 @@ class RejectedTransferDiary(
     val originStaffId: Long,
 
     @Column
-    val masterTransferId: Long? = null,
+    val masterTransferId: Long? = null
 )

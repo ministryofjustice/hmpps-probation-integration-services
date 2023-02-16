@@ -8,7 +8,7 @@ object StaffGenerator {
     var DEFAULT = generate(
         "${ProbationAreaGenerator.DEFAULT.code}A001",
         "Joe",
-        "Bloggs",
+        "Bloggs"
     )
 
     var UNALLOCATED = unallocated(TeamGenerator.DEFAULT)
@@ -20,6 +20,6 @@ object StaffGenerator {
         forename: String,
         surname: String,
         teams: List<Team> = listOf(TeamGenerator.DEFAULT),
-        id: Long = IdGenerator.getAndIncrement(),
+        id: Long = IdGenerator.getAndIncrement()
     ) = Staff(id, code, forename, null, surname, teams)
 }

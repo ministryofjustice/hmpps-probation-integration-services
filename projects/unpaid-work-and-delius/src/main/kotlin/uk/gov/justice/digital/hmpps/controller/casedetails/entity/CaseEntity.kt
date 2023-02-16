@@ -82,6 +82,6 @@ class CaseEntity(
     val requiresInterpreter: Boolean? = false,
 
     @OneToMany(mappedBy = "case")
-    val registrations: List<RegistrationEntity>,
+    val registrations: List<RegistrationEntity>
 
 )

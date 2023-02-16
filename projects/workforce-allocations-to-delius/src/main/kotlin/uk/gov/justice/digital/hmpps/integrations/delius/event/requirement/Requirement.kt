@@ -31,7 +31,7 @@ class Requirement(
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
 
 @Immutable
@@ -42,5 +42,5 @@ class RequirementMainCategory(
     @Column(name = "rqmnt_type_main_category_id", nullable = false)
     val id: Long,
     val code: String,
-    val description: String,
+    val description: String
 )

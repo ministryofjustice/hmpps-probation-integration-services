@@ -13,7 +13,7 @@ import java.net.URI
 class Handler(
     private val telemetryService: TelemetryService,
     private val approvedPremisesService: ApprovedPremisesService,
-    override val converter: NotificationConverter<HmppsDomainEvent>,
+    override val converter: NotificationConverter<HmppsDomainEvent>
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
@@ -51,7 +51,7 @@ class Handler(
 
 fun HmppsDomainEvent.telemetryProperties() = mapOf(
     "occurredAt" to occurredAt.toString(),
-    "crn" to crn(),
+    "crn" to crn()
 )
 
 fun HmppsDomainEvent.crn(): String = personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN")

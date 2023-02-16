@@ -17,6 +17,6 @@ class CourtReport(
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "offender_id")
-    val person: Person,
+    val person: Person
 
 )

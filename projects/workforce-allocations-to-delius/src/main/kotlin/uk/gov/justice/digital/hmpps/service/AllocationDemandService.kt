@@ -91,10 +91,14 @@ class AllocationDemandService(
             additionalOffenceRepository.findAllByEventIdInAndSoftDeletedFalse(
                 sentences.values.flatMap { s -> s.map { it.disposal.event.id } }
             ).groupBy { it.event.id }
-        } else mapOf()
+        } else {
+            mapOf()
+        }
 
         return ProbationRecord(
-            person.crn, person.name(), Event(eventNumber),
+            person.crn,
+            person.name(),
+            Event(eventNumber),
             sentences[true].toPrEvent(additionalOffences),
             sentences[false].toPrEvent(additionalOffences)
         )

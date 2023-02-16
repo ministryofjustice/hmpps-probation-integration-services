@@ -30,5 +30,5 @@ class Person(
 
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
     @Where(clause = "soft_deleted = 0")
-    val personalContacts: List<PersonalContactEntity>,
+    val personalContacts: List<PersonalContactEntity>
 )

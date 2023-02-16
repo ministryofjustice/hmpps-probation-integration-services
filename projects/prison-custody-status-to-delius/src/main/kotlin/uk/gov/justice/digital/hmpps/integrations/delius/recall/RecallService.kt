@@ -50,13 +50,13 @@ import java.time.temporal.ChronoUnit.DAYS
 enum class RecallOutcome {
     PrisonerRecalled,
     CustodialDetailsUpdated,
-    NoCustodialUpdates,
+    NoCustodialUpdates
 }
 
 val EOTL_RECALL_CONTACT_NOTES = """${System.lineSeparator()}
     |The date of the change to this Recall/Return to Custody has been identified from the case being updated following a Temporary Absence Return in NOMIS.
     |The date may reflect an update after the date the actual Recall/Return to Custody occurred
-    """.trimMargin()
+""".trimMargin()
 
 @Service
 class RecallService(
@@ -72,7 +72,7 @@ class RecallService(
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val contactAlertRepository: ContactAlertRepository,
-    private val prisonManagerService: PrisonManagerService,
+    private val prisonManagerService: PrisonManagerService
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -80,7 +80,7 @@ class RecallService(
         nomsNumber: String,
         prisonId: String,
         reason: String,
-        recallDateTime: ZonedDateTime,
+        recallDateTime: ZonedDateTime
     ): RecallOutcome {
         val recallReason = recallReasonRepository.getByCodeAndSelectableIsTrue(mapToRecallReason(reason).code)
         val institution = institutionRepository.getByNomisCdeCodeAndIdEstablishment(prisonId)
@@ -103,8 +103,9 @@ class RecallService(
         val disposal = event.disposal ?: throw NotFoundException("Disposal", "eventId", event.id)
         val custody = disposal.custody ?: throw NotFoundException("Custody", "disposalId", disposal.id)
         val latestRelease = custody.mostRecentRelease()
-        if (latestRelease == null && custody.status.canRecall())
+        if (latestRelease == null && custody.status.canRecall()) {
             throw IgnorableMessageException("MissingRelease")
+        }
 
         val recallDate = recallDateTime.truncatedTo(DAYS)
 
@@ -145,7 +146,9 @@ class RecallService(
         val orderManager = orderManagerRepository.getByEventId(event.id)
         custodyService.updateLocation(custody, toInstitution.code, recallDate, orderManager, recallReason)
         true
-    } else false
+    } else {
+        false
+    }
 
     private fun updateCustodialStatus(
         toInstitution: Institution,
@@ -165,7 +168,9 @@ class RecallService(
             val detail = if (recall == null) "In custody " else "Recall added in custody "
             custodyService.updateStatus(custody, CustodialStatusCode.IN_CUSTODY, recallDate, detail)
             true
-        } else false
+        } else {
+            false
+        }
     }
 
     private fun createRecallAlertContact(
@@ -189,7 +194,7 @@ class RecallService(
                 staffId = orderManager.staffId,
                 teamId = orderManager.teamId,
                 createdDatetime = recall.createdDatetime,
-                alert = true,
+                alert = true
             )
         )
         contactAlertRepository.save(
@@ -199,7 +204,7 @@ class RecallService(
                 personId = person.id,
                 personManagerId = personManager.id,
                 staffId = personManager.staff.id,
-                teamId = personManager.team.id,
+                teamId = personManager.team.id
             )
         )
     }
@@ -229,15 +234,18 @@ class RecallService(
         latestRelease: Release?,
         person: Person
     ): Recall? {
-        return if (!custody.status.canRecall()) null
-        else recallRepository.save(
-            Recall(
-                date = recallDate,
-                reason = recallReason,
-                release = latestRelease!!, // Only possible to be null if no recall to be created
-                person = person,
+        return if (!custody.status.canRecall()) {
+            null
+        } else {
+            recallRepository.save(
+                Recall(
+                    date = recallDate,
+                    reason = recallReason,
+                    release = latestRelease!!, // Only possible to be null if no recall to be created
+                    person = person
+                )
             )
-        )
+        }
     }
 
     private fun validateRecall(

@@ -26,7 +26,7 @@ data class Event(
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    var softDeleted: Boolean = false,
+    var softDeleted: Boolean = false
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -63,7 +63,7 @@ class Disposal(
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
 
 @Immutable
@@ -75,7 +75,7 @@ class DisposalType(
     val id: Long,
 
     @Column(name = "sentence_type")
-    val sentenceType: String,
+    val sentenceType: String
 ) {
     companion object {
         val CUSTODIAL_CODES = listOf("NC", "SC")

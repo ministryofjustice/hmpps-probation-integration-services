@@ -36,7 +36,7 @@ class Event(
     val manager: OrderManager? = null,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
 
 @Immutable
@@ -54,7 +54,7 @@ class Disposal(
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
 
 @Immutable
@@ -79,7 +79,7 @@ class Custody(
     val keyDates: List<KeyDate> = listOf(),
 
     @Column(columnDefinition = "number", nullable = false)
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
 
 @Immutable
@@ -105,5 +105,5 @@ class OrderManager(
     val staffId: Long,
 
     @Column(name = "active_flag", columnDefinition = "number")
-    val active: Boolean = true,
+    val active: Boolean = true
 )

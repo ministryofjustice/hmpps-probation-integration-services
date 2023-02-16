@@ -38,7 +38,7 @@ class MainOffence(
     override val event: Event,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    override val softDeleted: Boolean = false,
+    override val softDeleted: Boolean = false
 ) : EventOffence
 
 @Immutable
@@ -59,7 +59,7 @@ class AdditionalOffence(
     override val event: Event,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    override val softDeleted: Boolean = false,
+    override val softDeleted: Boolean = false
 ) : EventOffence
 
 @Immutable

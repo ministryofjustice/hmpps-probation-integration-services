@@ -30,7 +30,7 @@ class ReferenceData(
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean = true,
+    val selectable: Boolean = true
 )
 
 @Immutable
@@ -42,5 +42,5 @@ class ReferenceDataSet(
     val id: Long,
 
     @Column(name = "code_set_name")
-    val name: String,
+    val name: String
 )

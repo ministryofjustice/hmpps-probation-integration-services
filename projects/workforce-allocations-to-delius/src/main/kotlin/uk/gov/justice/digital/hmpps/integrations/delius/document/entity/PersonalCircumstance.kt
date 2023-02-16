@@ -11,7 +11,8 @@ import org.hibernate.annotations.Immutable
 @Entity
 @Immutable
 class PersonalCircumstance(
-    @Id @Column(name = "personal_circumstance_id")
+    @Id
+    @Column(name = "personal_circumstance_id")
     var id: Long,
 
     @ManyToOne
@@ -20,27 +21,29 @@ class PersonalCircumstance(
 
     @ManyToOne
     @JoinColumn(name = "circumstance_sub_type_id", updatable = false)
-    val subType: PersonalCircumstanceSubType?,
+    val subType: PersonalCircumstanceSubType?
 )
 
 @Entity
 @Table(name = "r_circumstance_type")
 @Immutable
 class PersonalCircumstanceType(
-    @Id @Column(name = "circumstance_type_id")
+    @Id
+    @Column(name = "circumstance_type_id")
     var id: Long,
 
     @Column(name = "code_description")
-    val description: String,
+    val description: String
 )
 
 @Entity
 @Table(name = "r_circumstance_sub_type")
 @Immutable
 class PersonalCircumstanceSubType(
-    @Id @Column(name = "circumstance_sub_type_id")
+    @Id
+    @Column(name = "circumstance_sub_type_id")
     var id: Long,
 
     @Column(name = "code_description")
-    val description: String,
+    val description: String
 )

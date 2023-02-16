@@ -54,7 +54,6 @@ class PsrContextIntegrationTest {
 
     @Test
     fun `get PSR Context not found`() {
-
         val reportId = UUID.randomUUID().toString()
         whenever(courtReportRepository.getCourtReportContextJson(reportId))
             .thenReturn(null)
@@ -68,7 +67,6 @@ class PsrContextIntegrationTest {
 
     @Test
     fun `get PSR Context`() {
-
         val reportId = UUID.randomUUID().toString()
         whenever(courtReportRepository.getCourtReportContextJson(reportId))
             .thenReturn(objectMapper.writeValueAsString(getPreSentenceReportContext()))
@@ -94,7 +92,6 @@ class PsrContextIntegrationTest {
     }
 
     private fun getPreSentenceReportContext(): PreSentenceReportContext {
-
         return PreSentenceReportContext(
             "X123456",
             Name("John", "Smith", "Hannibal"),

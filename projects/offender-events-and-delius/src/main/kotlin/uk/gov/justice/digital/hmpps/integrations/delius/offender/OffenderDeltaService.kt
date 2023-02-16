@@ -25,7 +25,6 @@ class OffenderDeltaService(
     }
 
     fun OffenderDelta.asNotifications(): List<Notification<OffenderEvent>> {
-
         fun sourceToEventType(sourceTable: String, action: String): String = when (sourceTable) {
             "ALIAS" -> "OFFENDER_ALIAS_CHANGED"
             "DEREGISTRATION" -> "OFFENDER_REGISTRATION_DEREGISTERED"
@@ -49,6 +48,8 @@ class OffenderDeltaService(
             }
             list += Notification(oe, MessageAttributes(sourceToEventType(sourceTable, action)))
             list
-        } else listOf()
+        } else {
+            listOf()
+        }
     }
 }

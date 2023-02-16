@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadReposit
 @ExtendWith(MockitoExtension::class)
 internal class TeamServiceTest {
     @Mock lateinit var caseloadRepository: CaseloadRepository
+
     @InjectMocks lateinit var teamService: TeamService
 
     @Test

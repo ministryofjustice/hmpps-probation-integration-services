@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class TeamControllerIntegrationTest {
     @Autowired lateinit var mockMvc: MockMvc
+
     @Autowired lateinit var wireMockServer: WireMockServer
 
     @Test
@@ -29,7 +30,7 @@ class TeamControllerIntegrationTest {
         val allTeams = listOf(
             TeamGenerator.APPROVED_PREMISES_TEAM.code,
             TeamGenerator.NON_APPROVED_PREMISES_TEAM.code,
-            TeamGenerator.UNALLOCATED.code,
+            TeamGenerator.UNALLOCATED.code
         )
         mockMvc
             .perform(get("/teams/managingCase/${person.crn}").withOAuth2Token(wireMockServer))

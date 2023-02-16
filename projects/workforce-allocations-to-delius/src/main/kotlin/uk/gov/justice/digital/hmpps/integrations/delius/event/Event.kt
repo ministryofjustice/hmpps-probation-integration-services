@@ -26,5 +26,5 @@ class Event(
     val active: Boolean,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean,
+    val softDeleted: Boolean
 )

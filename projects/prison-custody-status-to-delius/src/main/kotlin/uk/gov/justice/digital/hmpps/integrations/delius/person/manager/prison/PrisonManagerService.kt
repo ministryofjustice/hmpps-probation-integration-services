@@ -31,7 +31,7 @@ class PrisonManagerService(
     private val prisonManagerRepository: PrisonManagerRepository,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
-    private val responsibleOfficerRepository: ResponsibleOfficerRepository,
+    private val responsibleOfficerRepository: ResponsibleOfficerRepository
 ) {
     fun allocateToProbationArea(
         disposal: Disposal,
@@ -46,7 +46,7 @@ class PrisonManagerService(
             team = allStaffTeam,
             probationArea = probationArea,
             allocationReason = referenceDataRepository.getByCodeAndSetName("AUT", "POM ALLOCATION REASON"),
-            allocationDate = allocationDate,
+            allocationDate = allocationDate
         )
     }
 
@@ -80,7 +80,7 @@ class PrisonManagerService(
                     From Establishment: ${activePrisonManager.probationArea.description}
                     From Team: ${activePrisonManager.team.description}
                     From Officer: ${activePrisonManager.staff.displayName()}
-                    """.trimIndent(),
+                    """.trimIndent()
                 )
             )
         }
@@ -95,7 +95,7 @@ class PrisonManagerService(
                 personId = person.id,
                 staff = staff,
                 team = team,
-                probationArea = probationArea,
+                probationArea = probationArea
             )
         )
 
@@ -122,7 +122,7 @@ class PrisonManagerService(
                 personId = person.id,
                 prisonManager = prisonManager,
                 startDate = allocationDate,
-                endDate = activeResponsibleOfficerEndDate,
+                endDate = activeResponsibleOfficerEndDate
             )
         )
 
@@ -134,7 +134,7 @@ class PrisonManagerService(
                 person = person,
                 staffId = prisonManager.staff.id,
                 teamId = prisonManager.team.id,
-                notes = generateResponsibleOfficerChangeNotes(activeResponsibleOfficer, newResponsibleOfficer),
+                notes = generateResponsibleOfficerChangeNotes(activeResponsibleOfficer, newResponsibleOfficer)
             )
         )
     }

@@ -45,16 +45,20 @@ class AllocateRequirementService(
             it["requirementId"] = requirement.id
             OptimisationContext.offenderId.set(requirement.person.id)
 
-            if (requirement.person.crn != crn)
+            if (requirement.person.crn != crn) {
                 throw ConflictException("Requirement ${allocationDetail.requirementId} not for $crn")
-            if (requirement.disposal.event.number != allocationDetail.eventNumber.toString())
+            }
+            if (requirement.disposal.event.number != allocationDetail.eventNumber.toString()) {
                 throw ConflictException("Requirement ${allocationDetail.requirementId} not for event ${allocationDetail.eventNumber}")
-            if (!requirement.disposal.active || !requirement.disposal.event.active)
+            }
+            if (!requirement.disposal.active || !requirement.disposal.event.active) {
                 throw NotActiveException("Event", "number", requirement.disposal.event.number)
+            }
             if (!requirement.active) throw NotActiveException("Requirement", "id", allocationDetail.requirementId)
 
             val activeRequirementManager = requirementManagerRepository.findActiveManagerAtDate(
-                allocationDetail.requirementId, allocationDetail.createdDate
+                allocationDetail.requirementId,
+                allocationDetail.createdDate
             ) ?: throw NotFoundException(
                 "Requirement Manager for requirement ${allocationDetail.requirementId} at ${allocationDetail.createdDate} not found"
             )
@@ -68,7 +72,7 @@ class AllocateRequirementService(
             }
             val ts = allocationValidator.initialValidations(
                 activeRequirementManager.provider.id,
-                allocationDetail,
+                allocationDetail
             )
 
             val transferReason = transferReasonRepository.findByCode(TransferReasonCode.COMPONENT.value)

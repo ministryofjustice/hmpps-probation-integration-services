@@ -35,7 +35,7 @@ class Institution(
     val selectable: Boolean = true,
 
     @OneToOne(mappedBy = "institution")
-    val probationArea: ProbationArea? = null,
+    val probationArea: ProbationArea? = null
 )
 
 @Embeddable
@@ -45,5 +45,5 @@ data class InstitutionId(
 
     @Column(name = "establishment")
     @Convert(converter = YesNoConverter::class)
-    val establishment: Boolean,
+    val establishment: Boolean
 ) : Serializable

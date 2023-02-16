@@ -17,6 +17,6 @@ class AllocationCompletedResource(private val service: AllocationCompletedServic
     fun details(
         @RequestParam crn: String,
         @RequestParam eventNumber: String,
-        @RequestParam staffCode: String,
+        @RequestParam staffCode: String
     ) = service.getDetails(crn, eventNumber, staffCode)
 }

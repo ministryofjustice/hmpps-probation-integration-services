@@ -22,7 +22,7 @@ class DocContact(
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id", updatable = false)
-    val type: DocContactType,
+    val type: DocContactType
 )
 
 @Immutable

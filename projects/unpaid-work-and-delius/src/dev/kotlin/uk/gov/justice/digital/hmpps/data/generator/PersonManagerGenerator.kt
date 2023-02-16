@@ -14,6 +14,7 @@ object PersonManagerGenerator {
             CaseGenerator.DEFAULT.id,
             CaseGenerator.DEFAULT.crn
         ),
-        StaffGenerator.DEFAULT, TeamGenerator.DEFAULT
+        StaffGenerator.DEFAULT,
+        TeamGenerator.DEFAULT
     )
 }

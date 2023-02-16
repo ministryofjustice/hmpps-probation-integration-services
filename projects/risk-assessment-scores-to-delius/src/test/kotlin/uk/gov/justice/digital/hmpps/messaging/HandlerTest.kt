@@ -21,8 +21,11 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 @ExtendWith(MockitoExtension::class)
 internal class HandlerTest {
     @Mock lateinit var telemetryService: TelemetryService
+
     @Mock lateinit var riskScoreService: RiskScoreService
+
     @Mock lateinit var converter: NotificationConverter<HmppsDomainEvent>
+
     @InjectMocks lateinit var handler: Handler
 
     @Test

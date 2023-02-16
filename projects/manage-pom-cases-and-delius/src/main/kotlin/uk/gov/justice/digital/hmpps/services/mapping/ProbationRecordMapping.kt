@@ -36,8 +36,11 @@ fun Team.forManager() =
 
 fun Staff.name() = Name(forename, middleName, surname)
 fun PersonManager.manager() =
-    if (staff.isUnallocated()) Manager(team.forManager())
-    else Manager(team.forManager(), staff.code, staff.name(), staff.user?.email)
+    if (staff.isUnallocated()) {
+        Manager(team.forManager())
+    } else {
+        Manager(team.forManager(), staff.code, staff.name(), staff.user?.email)
+    }
 
 fun Registration?.level(): Int = when (this?.level?.code) {
     "M1" -> 1

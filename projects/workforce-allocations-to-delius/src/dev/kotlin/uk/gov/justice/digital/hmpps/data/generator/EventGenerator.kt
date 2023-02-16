@@ -18,7 +18,7 @@ object EventGenerator {
         eventNumber: String = "1",
         id: Long = IdGenerator.getAndIncrement(),
         active: Boolean = true,
-        softDeleted: Boolean = false,
+        softDeleted: Boolean = false
     ) = Event(id, eventNumber, person, active, softDeleted)
 
     private fun forCaseView(
@@ -26,6 +26,6 @@ object EventGenerator {
         eventNumber: String = "1",
         id: Long = IdGenerator.getAndIncrement(),
         active: Boolean = true,
-        softDeleted: Boolean = false,
+        softDeleted: Boolean = false
     ) = CaseViewEvent(id, personId, eventNumber, active, softDeleted)
 }

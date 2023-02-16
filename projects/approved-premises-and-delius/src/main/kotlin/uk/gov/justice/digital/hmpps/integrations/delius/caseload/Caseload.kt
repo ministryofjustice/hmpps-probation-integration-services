@@ -23,7 +23,7 @@ data class Caseload(
 
     @ManyToOne
     @JoinColumn(name = "trust_provider_team_id")
-    private val team: CaseloadTeam,
+    private val team: CaseloadTeam
 )
 
 @Entity
@@ -35,7 +35,7 @@ class CaseloadPerson(
     private val id: Long,
 
     @Column(columnDefinition = "char(7)")
-    private val crn: String,
+    private val crn: String
 )
 
 @Entity
@@ -55,7 +55,7 @@ class CaseloadTeam(
         joinColumns = [JoinColumn(name = "team_id")],
         inverseJoinColumns = [JoinColumn(name = "staff_id")]
     )
-    private val staff: List<CaseloadStaff>,
+    private val staff: List<CaseloadStaff>
 )
 
 @Entity
@@ -67,5 +67,5 @@ class CaseloadStaff(
     private val id: Long,
 
     @Column(name = "officer_code", columnDefinition = "char(7)")
-    private val code: String,
+    private val code: String
 )

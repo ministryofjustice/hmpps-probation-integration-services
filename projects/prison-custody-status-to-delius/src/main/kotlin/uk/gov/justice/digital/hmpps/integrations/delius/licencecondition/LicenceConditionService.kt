@@ -32,7 +32,7 @@ class LicenceConditionService(
     private val contactTypeRepository: ContactTypeRepository,
     private val licenceConditionTransferRepository: LicenceConditionTransferRepository,
     private val referenceDataRepository: ReferenceDataRepository,
-    private val rejectedTransferDiaryRepository: RejectedTransferDiaryRepository,
+    private val rejectedTransferDiaryRepository: RejectedTransferDiaryRepository
 ) {
     fun terminateLicenceConditionsForDisposal(
         disposalId: Long,
@@ -79,7 +79,7 @@ class LicenceConditionService(
                 licenceConditionId = licenceCondition.id,
                 notes = notes,
                 staffId = manager.staffId,
-                teamId = manager.teamId,
+                teamId = manager.teamId
             )
         )
     }
@@ -109,7 +109,7 @@ class LicenceConditionService(
 
     private fun createRejectedTransferContact(
         transfer: LicenceConditionTransfer,
-        terminationDate: ZonedDateTime,
+        terminationDate: ZonedDateTime
     ) {
         contactRepository.save(
             Contact(

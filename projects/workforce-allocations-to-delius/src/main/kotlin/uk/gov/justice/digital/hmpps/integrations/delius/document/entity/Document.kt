@@ -87,10 +87,11 @@ class DrugTest : Document() {
 @DiscriminatorValue("OFFENDER")
 class OffenderDocument : Document() {
     override fun findRelatedTo(): RelatedTo =
-        if (type == DocumentType.PREVIOUS_CONVICTION)
+        if (type == DocumentType.PREVIOUS_CONVICTION) {
             RelatedTo(RelatedType.PRECONS)
-        else
+        } else {
             RelatedTo(RelatedType.PERSON)
+        }
 }
 
 @Entity
@@ -112,17 +113,18 @@ class EventDocument(
     val event: DocEvent?
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
-        if (type == DocumentType.CPS_PACK)
+        if (type == DocumentType.CPS_PACK) {
             RelatedTo(
                 RelatedType.CPSPACK,
                 event = event?.toDocumentEvent()
             )
-        else
+        } else {
             RelatedTo(
                 RelatedType.EVENT,
                 if (event == null) entityNotFound else event.disposal?.type?.description ?: "",
                 event?.toDocumentEvent()
             )
+        }
 }
 
 @Entity
@@ -148,13 +150,15 @@ class AddressAssessmentDocument(
     private fun getPersonAddressLine(personAddress: DocPersonAddress?): String {
         if (personAddress == null) {
             return entityNotFound
-        } else (
-            return listOfNotNull(
-                personAddress.buildingName,
-                personAddress.addressNumber,
-                personAddress.streetName
-            ).joinToString(", ")
-            )
+        } else {
+            (
+                return listOfNotNull(
+                    personAddress.buildingName,
+                    personAddress.addressNumber,
+                    personAddress.streetName
+                ).joinToString(", ")
+                )
+        }
     }
 }
 
@@ -319,8 +323,9 @@ class PersonalCircumstanceDocument(
 
     private fun getCircName(): String {
         var circName: String = personalCircumstance?.type?.description ?: entityNotFound
-        if (personalCircumstance?.subType != null)
+        if (personalCircumstance?.subType != null) {
             circName += " - ${personalCircumstance.subType.description}"
+        }
         return circName
     }
 }

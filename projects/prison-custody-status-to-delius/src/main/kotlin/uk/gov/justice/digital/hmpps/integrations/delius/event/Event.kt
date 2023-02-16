@@ -34,5 +34,5 @@ class Event(
     val softDeleted: Boolean = false,
 
     @Column
-    var firstReleaseDate: ZonedDateTime? = null,
+    var firstReleaseDate: ZonedDateTime? = null
 )

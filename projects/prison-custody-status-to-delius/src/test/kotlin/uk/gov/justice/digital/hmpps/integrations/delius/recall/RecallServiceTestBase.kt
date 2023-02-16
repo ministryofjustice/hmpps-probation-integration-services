@@ -21,30 +21,43 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReas
 abstract class RecallServiceTestBase {
     @Mock
     lateinit var auditedInteractionService: AuditedInteractionService
+
     @Mock
     lateinit var eventService: EventService
+
     @Mock
     lateinit var institutionRepository: InstitutionRepository
+
     @Mock
     lateinit var recallReasonRepository: RecallReasonRepository
+
     @Mock
     lateinit var recallRepository: RecallRepository
+
     @Mock
     lateinit var custodyService: CustodyService
+
     @Mock
     lateinit var licenceConditionService: LicenceConditionService
+
     @Mock
     lateinit var orderManagerRepository: OrderManagerRepository
+
     @Mock
     lateinit var personManagerRepository: PersonManagerRepository
+
     @Mock
     lateinit var contactTypeRepository: ContactTypeRepository
+
     @Mock
     lateinit var contactRepository: ContactRepository
+
     @Mock
     lateinit var contactAlertRepository: ContactAlertRepository
+
     @Mock
     lateinit var prisonManagerService: PrisonManagerService
+
     @InjectMocks
     lateinit var recallService: RecallService
 }

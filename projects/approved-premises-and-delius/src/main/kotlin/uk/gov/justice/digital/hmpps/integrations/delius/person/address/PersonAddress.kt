@@ -68,5 +68,5 @@ class PersonAddress(
     var lastUpdatedUserId: Long = 0,
 
     @Column(nullable = false)
-    val partitionAreaId: Long = 0,
+    val partitionAreaId: Long = 0
 )

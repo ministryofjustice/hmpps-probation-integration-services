@@ -16,6 +16,8 @@ class AuditorAware : AuditorAware<Long> {
             SecurityContextHolder.getContext().authentication?.principal ?: ServiceContext.servicePrincipal()
         return if (principal is ServicePrincipal) {
             Optional.ofNullable(principal.userId)
-        } else Optional.empty()
+        } else {
+            Optional.empty()
+        }
     }
 }

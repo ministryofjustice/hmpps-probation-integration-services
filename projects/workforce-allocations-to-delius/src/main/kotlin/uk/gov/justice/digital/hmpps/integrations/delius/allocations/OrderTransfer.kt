@@ -21,5 +21,5 @@ class OrderTransfer(
     val statusId: Long,
 
     @Column(columnDefinition = "NUMBER", nullable = false)
-    val softDeleted: Boolean,
+    val softDeleted: Boolean
 )

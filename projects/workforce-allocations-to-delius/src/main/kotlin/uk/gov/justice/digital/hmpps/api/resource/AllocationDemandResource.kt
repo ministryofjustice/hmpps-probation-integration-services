@@ -25,10 +25,17 @@ class AllocationDemandResource(
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @PostMapping
-    fun findUnallocatedForTeam(@Valid @RequestBody request: AllocationDemandRequest): AllocationDemandResponse =
-        if (request.cases.isEmpty()) AllocationDemandResponse(listOf()) else allocationDemand.findAllocationDemand(
-            request
-        )
+    fun findUnallocatedForTeam(
+        @Valid @RequestBody
+        request: AllocationDemandRequest
+    ): AllocationDemandResponse =
+        if (request.cases.isEmpty()) {
+            AllocationDemandResponse(listOf())
+        } else {
+            allocationDemand.findAllocationDemand(
+                request
+            )
+        }
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @GetMapping("/choose-practitioner")

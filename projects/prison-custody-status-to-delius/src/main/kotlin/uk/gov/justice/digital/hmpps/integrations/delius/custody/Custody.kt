@@ -76,7 +76,7 @@ class Custody(
 
     @Column(nullable = false)
     @LastModifiedDate
-    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
 ) {
     fun isInCustody() = status.code in listOf(
         CustodialStatusCode.RECALLED.code,

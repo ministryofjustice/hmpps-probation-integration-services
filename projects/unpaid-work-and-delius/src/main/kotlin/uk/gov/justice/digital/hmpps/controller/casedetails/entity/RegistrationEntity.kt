@@ -34,14 +34,15 @@ class RegistrationEntity(
     @JoinColumn(name = "registration_level", updatable = false)
     val level: ReferenceData,
     val softDeleted: Boolean = false,
-    val deregistered: Boolean = false,
+    val deregistered: Boolean = false
 )
 
 @Entity
 @Table(name = "r_register_type")
 @Immutable
 class RegisterType(
-    @Id @Column(name = "register_type_id")
+    @Id
+    @Column(name = "register_type_id")
     val id: Long,
 
     @Column(name = "code")

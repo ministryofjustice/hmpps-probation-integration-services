@@ -98,7 +98,7 @@ class CaseViewDataLoader(
             listOf(
                 DocumentGenerator.PREVIOUS_CONVICTION,
                 DocumentGenerator.CPS_PACK,
-                DocumentGenerator.COURT_REPORT,
+                DocumentGenerator.COURT_REPORT
             )
         )
 

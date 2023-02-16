@@ -12,7 +12,7 @@ object EventGenerator {
     fun custodialEvent(offenderId: Long): Event {
         val event = Event(
             IdGenerator.getAndIncrement(),
-            offenderId,
+            offenderId
         )
         val disposal = Disposal(
             IdGenerator.getAndIncrement(),
