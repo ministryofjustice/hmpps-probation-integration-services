@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.sentence
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.api.model.ActiveEvent
+import uk.gov.justice.digital.hmpps.api.model.AllocationDemandSentence
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {
     @Query(
@@ -42,4 +43,19 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
     """
     )
     fun findAllUnallocatedActiveEvents(personId: Long): List<ActiveEvent>
+
+    @Query(
+        """
+        select new uk.gov.justice.digital.hmpps.api.model.AllocationDemandSentence(
+            d.type.description, d.type.sentenceType, d.date, d.entryLength, d.entryLengthUnit.description
+        ) from Disposal d
+        join d.event e
+        join d.type
+        join d.entryLengthUnit.dataset
+        where e.person.id = :personId
+        and e.number = :eventNumber
+        and e.softDeleted = false and d.softDeleted = false
+    """
+    )
+    fun findSentenceForEventNumberAndPersonId(personId: Long, eventNumber: String): AllocationDemandSentence
 }
