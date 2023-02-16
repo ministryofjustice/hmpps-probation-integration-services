@@ -145,24 +145,23 @@ class AllocationDemandService(
         val staff = staffRepository.findStaffWithUserByCode(staffCode)
         val allocatingStaff = staffRepository.findStaffWithUserByCode(allocatingStaffCode)
         val eventId = eventRepository.findByPersonCrnAndNumber(crn, eventNumber)!!.id
-        val requirements =
-            caseViewRequirementRepository.findAllByDisposalEventId(eventId)
-                .filter { it.mainCategory.code != "W" && it.mainCategory.code != "W2" }
-                .map {
-                    Requirement(
-                        it.mainCategory.description,
-                        it.subCategory.description,
-                        it.length.toString(),
-                        it.id
-                    )
-                }
+        val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId)
+            .filter { it.mainCategory.code !in listOf("W", "W2") }
+            .map {
+                Requirement(
+                    it.mainCategory.description,
+                    it.subCategory.description,
+                    it.length.toString(),
+                    it.id
+                )
+            }
 
         return AllocationDemandStaffResponse(
             person.crn,
             person.name(),
             staff?.toStaffMember(ldapService.findEmailForStaff(staff)),
             allocatingStaff?.toStaffMember(ldapService.findEmailForStaff(allocatingStaff)),
-            InitialAppointment(contactRepository.getInitialAppointmentDate(person.id, eventId)),
+            contactRepository.getInitialAppointmentDate(person.id, eventId)?.let { InitialAppointment(it) },
             allocationRiskService.getRiskOgrs(person),
             disposalRepository.findSentenceForEventNumberAndPersonId(person.id, eventNumber),
             courtAppearanceRepository.findLatestByEventId(eventId),

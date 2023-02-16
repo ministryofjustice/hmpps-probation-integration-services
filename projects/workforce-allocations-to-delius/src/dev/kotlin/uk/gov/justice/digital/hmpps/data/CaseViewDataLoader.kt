@@ -4,6 +4,7 @@ import IdGenerator
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
@@ -23,6 +24,7 @@ import uk.gov.justice.digital.hmpps.data.repository.DisposalTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewAdditionalOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewPersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.CourtRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
@@ -49,7 +51,8 @@ class CaseViewDataLoader(
     val requirementRepository: CaseViewRequirementRepository,
     val documentRepository: DocumentRepository,
     val courtRepository: CourtRepository,
-    val courtAppearanceRepository: CourtAppearanceRepository
+    val courtAppearanceRepository: CourtAppearanceRepository,
+    val contactRepository: ContactRepository
 ) {
     fun loadData() {
         personRepository.save(PersonGenerator.CASE_VIEW)
@@ -78,7 +81,7 @@ class CaseViewDataLoader(
         val event = eventRepository.findById(EventGenerator.CASE_VIEW.id).orElseThrow()
         val disposalType = DisposalType(IdGenerator.getAndIncrement(), "CV", "Case View Sentence Type")
         disposalTypeRepository.save(disposalType)
-        val disposal = disposalRepository.saveAndFlush(
+        val disposal = disposalRepository.save(
             DisposalGenerator.generate(
                 event = event,
                 type = disposalType,
@@ -98,5 +101,7 @@ class CaseViewDataLoader(
                 DocumentGenerator.COURT_REPORT,
             )
         )
+
+        contactRepository.save(ContactGenerator.INITIAL_APPOINTMENT_CASE_VIEW)
     }
 }

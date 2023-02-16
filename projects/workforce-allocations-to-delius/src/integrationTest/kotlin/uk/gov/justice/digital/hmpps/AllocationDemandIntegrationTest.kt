@@ -30,6 +30,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.model.Sentence
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
+import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
@@ -38,6 +39,7 @@ import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -150,7 +152,9 @@ class AllocationDemandIntegrationTest {
         val person = PersonGenerator.CASE_VIEW
         val event = EventGenerator.CASE_VIEW
         val staff = StaffGenerator.DEFAULT
-        mockMvc.perform(
+        val disposal = DisposalGenerator.CASE_VIEW
+
+        val res = mockMvc.perform(
             MockMvcRequestBuilders.get("/allocation-demand/${person.crn}/${event.number}/allocation?staff=${staff.code}&allocatingStaff=${staff.code}")
                 .withOAuth2Token(wireMockserver)
         )
@@ -159,6 +163,26 @@ class AllocationDemandIntegrationTest {
             .andExpect(jsonPath("$.name.forename").value(person.forename))
             .andExpect(jsonPath("$.name.surname").value(person.surname))
             .andExpect(jsonPath("$.court.name").value(CourtGenerator.DEFAULT.name))
+            .andExpect(jsonPath("$.staff.name.forename").value(staff.forename))
+            .andExpect(jsonPath("$.staff.name.surname").value(staff.surname))
+            .andExpect(jsonPath("$.staff.grade").value("PSO"))
+            .andExpect(jsonPath("$.staff.code").value(staff.code))
+            .andExpect(jsonPath("$.allocatingStaff.name.forename").value(staff.forename))
+            .andExpect(jsonPath("$.allocatingStaff.name.surname").value(staff.surname))
+            .andExpect(jsonPath("$.allocatingStaff.grade").value("PSO"))
+            .andExpect(jsonPath("$.allocatingStaff.code").value(staff.code))
+            .andExpect(jsonPath("$.initialAppointment.date").value(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)))
+            .andExpect(jsonPath("$.sentence.description").value("Case View Sentence Type"))
+            .andExpect(jsonPath("$.sentence.code").value("CV"))
+            .andExpect(jsonPath("$.offences[0].mainOffence").value(true))
+            .andExpect(jsonPath("$.offences[0].mainCategory").value("Case View Main Offence"))
+            .andExpect(jsonPath("$.offences[1].mainOffence").value(false))
+            .andExpect(jsonPath("$.offences[1].mainCategory").value("Case View Additional Offence"))
+            .andExpect(jsonPath("$.activeRequirements[0].mainCategory").value("Main Category for Case View"))
+            .andExpect(jsonPath("$.activeRequirements[0].subCategory").value("Rqmnt Sub Category"))
+            .andExpect(jsonPath("$.activeRequirements[0].length").value("12"))
+
+
     }
 
     companion object {
