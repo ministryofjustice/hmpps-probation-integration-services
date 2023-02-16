@@ -5,6 +5,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
@@ -14,6 +15,7 @@ import java.time.LocalDate
 
 @Entity
 @Immutable
+@Table(name = "court_appearance")
 @Where(clause = "soft_deleted = 0")
 class CourtAppearance(
 

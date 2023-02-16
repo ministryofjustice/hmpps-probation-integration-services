@@ -37,6 +37,7 @@ class CourtReportType(
 
 @Entity
 @Immutable
+@Table(name = "court_appearance")
 class DocumentCourtAppearance(
 
     @Id
