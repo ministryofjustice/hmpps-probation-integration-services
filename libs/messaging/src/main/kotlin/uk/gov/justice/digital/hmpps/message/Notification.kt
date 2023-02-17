@@ -15,7 +15,8 @@ data class Notification<T>(
 }
 
 data class MessageAttributes(
-    @JsonAnyGetter @JsonAnySetter private val attributes: MutableMap<String, MessageAttribute> = mutableMapOf()
+    @JsonAnyGetter @JsonAnySetter
+    private val attributes: MutableMap<String, MessageAttribute> = mutableMapOf()
 ) : MutableMap<String, MessageAttribute> by attributes {
     constructor(eventType: String) : this(mutableMapOf("eventType" to MessageAttribute("String", eventType)))
 

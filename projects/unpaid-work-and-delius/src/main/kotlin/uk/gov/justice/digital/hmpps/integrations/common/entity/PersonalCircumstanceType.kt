@@ -10,26 +10,28 @@ import org.hibernate.annotations.Immutable
 @Table(name = "r_circumstance_type")
 @Immutable
 class PersonalCircumstanceType(
-    @Id @Column(name = "circumstance_type_id")
+    @Id
+    @Column(name = "circumstance_type_id")
     val id: Long,
 
     @Column(name = "code_value")
     val code: String,
 
     @Column(name = "code_description")
-    val description: String,
+    val description: String
 )
 
 @Entity
 @Table(name = "r_circumstance_sub_type")
 @Immutable
 class PersonalCircumstanceSubType(
-    @Id @Column(name = "circumstance_sub_type_id")
+    @Id
+    @Column(name = "circumstance_sub_type_id")
     val id: Long,
 
     @Column(name = "code_value")
     val code: String,
 
     @Column(name = "code_description")
-    val description: String,
+    val description: String
 )

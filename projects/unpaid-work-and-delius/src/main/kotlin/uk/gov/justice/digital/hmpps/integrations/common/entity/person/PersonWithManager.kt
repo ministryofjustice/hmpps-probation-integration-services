@@ -25,6 +25,6 @@ class PersonWithManager(
 
     @OneToMany(mappedBy = "person")
     @Where(clause = "active_flag = 1")
-    val managers: List<PersonManager> = listOf(),
+    val managers: List<PersonManager> = listOf()
 
 )

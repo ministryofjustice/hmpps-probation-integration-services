@@ -5,5 +5,5 @@ data class Premises(
     val name: String,
     val apCode: String,
     val legacyApCode: String,
-    val probationArea: ProbationArea,
+    val probationArea: ProbationArea
 )

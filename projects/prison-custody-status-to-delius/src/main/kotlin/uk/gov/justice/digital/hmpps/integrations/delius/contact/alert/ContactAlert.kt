@@ -42,5 +42,5 @@ class ContactAlert(
     val personManagerId: Long,
 
     @Column(name = "trust_provider_flag", columnDefinition = "number")
-    val trustProviderFlag: Boolean = false,
+    val trustProviderFlag: Boolean = false
 )

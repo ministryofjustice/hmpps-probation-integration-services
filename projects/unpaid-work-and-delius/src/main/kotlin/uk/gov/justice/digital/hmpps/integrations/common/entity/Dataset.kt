@@ -19,7 +19,7 @@ class Dataset(
 
     @Convert(converter = DatasetCodeConverter::class)
     @Column(name = "code_set_name", nullable = false)
-    val code: DatasetCode,
+    val code: DatasetCode
 )
 
 enum class DatasetCode(val value: String) {

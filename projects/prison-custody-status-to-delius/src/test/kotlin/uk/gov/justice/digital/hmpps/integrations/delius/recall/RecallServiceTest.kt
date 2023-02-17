@@ -267,7 +267,8 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         verify(contactRepository).save(contact.capture())
         assertThat(
             "Contact and recall must have the same created datetime, so that Delius can link them",
-            contact.firstValue.createdDatetime, equalTo(recall.firstValue.createdDatetime)
+            contact.firstValue.createdDatetime,
+            equalTo(recall.firstValue.createdDatetime)
         )
         assertThat(contact.firstValue.event, equalTo(event))
         assertThat(contact.firstValue.date, equalTo(recallDateTime))

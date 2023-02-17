@@ -12,21 +12,23 @@ import org.hibernate.annotations.Immutable
 @Immutable
 @Table(name = "Registration")
 class DocRegistration(
-    @Id @Column(name = "registration_id")
+    @Id
+    @Column(name = "registration_id")
     var id: Long,
 
     @ManyToOne
     @JoinColumn(name = "register_type_id", updatable = false)
-    val type: DocRegistrationType,
+    val type: DocRegistrationType
 )
 
 @Entity
 @Table(name = "r_register_type")
 @Immutable
 class DocRegistrationType(
-    @Id @Column(name = "REGISTER_TYPE_ID")
+    @Id
+    @Column(name = "REGISTER_TYPE_ID")
     var id: Long,
 
     @Column
-    val description: String,
+    val description: String
 )

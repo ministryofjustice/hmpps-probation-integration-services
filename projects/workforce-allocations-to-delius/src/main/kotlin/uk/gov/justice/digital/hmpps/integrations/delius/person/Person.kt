@@ -34,5 +34,5 @@ class Person(
     val surname: String,
 
     @Column(updatable = false, columnDefinition = "number")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )

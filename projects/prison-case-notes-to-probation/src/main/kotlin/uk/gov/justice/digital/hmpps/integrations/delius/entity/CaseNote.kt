@@ -132,7 +132,7 @@ class CaseNoteType(
 
     @Column(name = "sensitive_contact")
     @Convert(converter = YesNoConverter::class)
-    val isSensitive: Boolean,
+    val isSensitive: Boolean
 ) {
     companion object {
         const val DEFAULT_CODE = "NOMISD"
@@ -148,5 +148,5 @@ class CaseNoteNomisType(
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
-    val type: CaseNoteType,
+    val type: CaseNoteType
 )

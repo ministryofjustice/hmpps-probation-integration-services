@@ -19,5 +19,5 @@ class LdapUser(
     val surname: String?,
 
     @Attribute(name = "mail")
-    val email: String?,
+    val email: String?
 )

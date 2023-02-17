@@ -101,7 +101,7 @@ object EventDetailsGenerator {
         staffCode = staff.code,
         staffIdentifier = staff.id,
         forenames = staff.forename,
-        surname = staff.surname,
+        surname = staff.surname
     )
 
     private fun premises() = Premises(

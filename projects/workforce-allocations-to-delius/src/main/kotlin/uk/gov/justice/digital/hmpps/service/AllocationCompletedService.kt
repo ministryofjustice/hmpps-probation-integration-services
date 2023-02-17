@@ -19,7 +19,7 @@ class AllocationCompletedService(
     private val eventRepository: EventRepository,
     private val staffRepository: StaffRepository,
     private val ldapService: LdapService,
-    private val contactRepository: ContactRepository,
+    private val contactRepository: ContactRepository
 ) {
     fun getDetails(
         crn: String,
@@ -37,7 +37,7 @@ class AllocationCompletedService(
             event = Event(eventNumber),
             type = personRepository.getCaseType(crn),
             initialAppointment = initialAppointmentDate?.let { InitialAppointment(it) },
-            staff = staff?.toStaffMember(email),
+            staff = staff?.toStaffMember(email)
         )
     }
 }

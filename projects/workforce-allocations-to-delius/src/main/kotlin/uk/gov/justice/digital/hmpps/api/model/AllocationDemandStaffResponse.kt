@@ -33,7 +33,7 @@ data class AllocationDemandSentence(
     val code: String,
     val date: ZonedDateTime,
     val length: Long,
-    val lengthDescription: String,
+    val lengthDescription: String
 )
 
 interface Offence {

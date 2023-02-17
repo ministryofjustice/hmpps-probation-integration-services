@@ -18,6 +18,6 @@ object PrisonManagerGenerator {
         allocationReason = ReferenceDataGenerator.PERSON_MANAGER_ALLOCATION_REASON,
         staff = StaffGenerator.UNALLOCATED,
         team = TeamGenerator.DEFAULT,
-        probationArea = ProbationAreaGenerator.DEFAULT,
+        probationArea = ProbationAreaGenerator.DEFAULT
     )
 }

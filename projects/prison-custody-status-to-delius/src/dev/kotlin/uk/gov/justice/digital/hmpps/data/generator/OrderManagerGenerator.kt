@@ -13,6 +13,6 @@ object OrderManagerGenerator {
         event.id,
         Random.nextLong(),
         Random.nextLong(),
-        Random.nextLong(),
+        Random.nextLong()
     )
 }

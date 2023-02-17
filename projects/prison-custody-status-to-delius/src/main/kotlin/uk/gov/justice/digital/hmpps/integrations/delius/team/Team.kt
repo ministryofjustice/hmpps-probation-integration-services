@@ -23,5 +23,5 @@ class Team(
 
     @ManyToOne
     @JoinColumn(name = "probation_area_id", nullable = false)
-    val probationArea: ProbationArea,
+    val probationArea: ProbationArea
 )

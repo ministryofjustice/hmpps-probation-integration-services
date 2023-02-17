@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.security.ServicePrincipal
 @Service
 class AuditedInteractionService(
     private val businessInteractionRepository: BusinessInteractionRepository,
-    private val auditedInteractionRepository: AuditedInteractionRepository,
+    private val auditedInteractionRepository: AuditedInteractionRepository
 ) {
     @Async
     @Transactional
@@ -32,7 +32,7 @@ class AuditedInteractionService(
                     bi?.id ?: throw BusinessInteractionNotFoundException(interactionCode.code),
                     principal.userId ?: throw IllegalArgumentException("No user id in security context"),
                     parameters = params,
-                    outcome = outcome,
+                    outcome = outcome
                 )
             )
         }

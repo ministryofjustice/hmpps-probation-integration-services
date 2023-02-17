@@ -119,12 +119,15 @@ class PersonAllocationDataLoader(
         personRepository.save(person)
         val pm = personManagerRepository.save(
             PersonManagerGenerator.generate(
-                personId = person.id, startDateTime = ManagerGenerator.START_DATE_TIME
+                personId = person.id,
+                startDateTime = ManagerGenerator.START_DATE_TIME
             )
         )
         val ro = responsibleOfficerRepository.save(
             ResponsibleOfficerGenerator.generate(
-                personId = person.id, communityManager = pm, startDateTime = ManagerGenerator.START_DATE_TIME
+                personId = person.id,
+                communityManager = pm,
+                startDateTime = ManagerGenerator.START_DATE_TIME
             )
         )
         return Pair(pm, ro)
@@ -147,7 +150,8 @@ class PersonAllocationDataLoader(
         requirementRepository.save(requirement)
         return requirementManagerRepository.save(
             RequirementManagerGenerator.generate(
-                requirementId = requirement.id, startDateTime = ManagerGenerator.START_DATE_TIME
+                requirementId = requirement.id,
+                startDateTime = ManagerGenerator.START_DATE_TIME
             )
         )
     }

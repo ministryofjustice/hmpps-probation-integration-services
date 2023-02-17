@@ -27,7 +27,7 @@ import org.springframework.http.HttpHeaders
         version = "1.0"
     ),
     servers = [Server(url = "/")],
-    security = [SecurityRequirement(name = "hmpps-auth-token")],
+    security = [SecurityRequirement(name = "hmpps-auth-token")]
 )
 @SecurityScheme(
     name = "hmpps-auth-token",

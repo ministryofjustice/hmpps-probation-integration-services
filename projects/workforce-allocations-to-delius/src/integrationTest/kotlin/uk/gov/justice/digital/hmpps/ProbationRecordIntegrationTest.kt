@@ -52,7 +52,6 @@ class ProbationRecordIntegrationTest {
 
     @Test
     fun `get probation record no results`() {
-
         mockMvc.perform(
             get("/allocation-demand/N452321/1/probation-record").withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)

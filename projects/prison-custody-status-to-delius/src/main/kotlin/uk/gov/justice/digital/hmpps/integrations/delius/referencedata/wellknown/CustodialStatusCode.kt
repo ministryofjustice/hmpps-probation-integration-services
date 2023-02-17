@@ -9,15 +9,15 @@ enum class CustodialStatusCode(val code: String) {
     POST_SENTENCE_SUPERVISION("P"),
     CUSTODY_ROTL("R"),
     TERMINATED("T"),
-    AUTO_TERMINATED("AT"),
+    AUTO_TERMINATED("AT")
 }
 
 val TERMINATED_STATUSES = listOf(CustodialStatusCode.TERMINATED, CustodialStatusCode.AUTO_TERMINATED)
 val NO_CHANGE_STATUSES = listOf(
     CustodialStatusCode.SENTENCED_IN_CUSTODY,
     CustodialStatusCode.IN_CUSTODY,
-    CustodialStatusCode.IN_CUSTODY_IRC,
+    CustodialStatusCode.IN_CUSTODY_IRC
 )
 val NO_RECALL_STATUSES = listOf(
-    CustodialStatusCode.RECALLED,
+    CustodialStatusCode.RECALLED
 ) + NO_CHANGE_STATUSES + TERMINATED_STATUSES

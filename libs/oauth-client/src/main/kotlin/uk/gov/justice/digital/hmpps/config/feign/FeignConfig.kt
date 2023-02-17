@@ -23,7 +23,9 @@ abstract class FeignConfig(
 
     private fun getAccessToken(): String {
         val authentication = SecurityContextHolder.getContext().authentication ?: AnonymousAuthenticationToken(
-            "hmpps-auth", "anonymous", AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS")
+            "hmpps-auth",
+            "anonymous",
+            AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS")
         )
         val request = OAuth2AuthorizeRequest
             .withClientRegistrationId(registrationId())

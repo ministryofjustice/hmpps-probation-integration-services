@@ -42,13 +42,21 @@ import java.time.ZonedDateTime.now
 @ExtendWith(MockitoExtension::class)
 internal class TierServiceTest {
     @Mock lateinit var personRepository: PersonRepository
+
     @Mock lateinit var referenceDataRepository: ReferenceDataRepository
+
     @Mock lateinit var managementTierRepository: ManagementTierRepository
+
     @Mock lateinit var contactRepository: ContactRepository
+
     @Mock lateinit var staffRepository: StaffRepository
+
     @Mock lateinit var teamRepository: TeamRepository
+
     @Mock lateinit var contactTypeRepository: ContactTypeRepository
+
     @Mock lateinit var telemetryService: TelemetryService
+
     @InjectMocks lateinit var tierService: TierService
 
     private val tierScore = ReferenceDataGenerator.generate("someTierCode", ReferenceDataSetGenerator.TIER)

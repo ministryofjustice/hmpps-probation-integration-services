@@ -52,7 +52,7 @@ class OffenderDeltaServiceTest {
                 ),
                 Pair(2, 1)
             ),
-            Arguments.of(listOf(OffenderDeltaGenerator.generate(offender = null)), Pair(0, 1)),
+            Arguments.of(listOf(OffenderDeltaGenerator.generate(offender = null)), Pair(0, 1))
         )
     }
 }

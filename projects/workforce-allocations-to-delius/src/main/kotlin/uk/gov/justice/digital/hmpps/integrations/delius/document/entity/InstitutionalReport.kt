@@ -30,5 +30,5 @@ class InstitutionalReport(
     val softDeleted: Boolean = false,
 
     @Column(name = "custody_id")
-    val custodyId: Long,
+    val custodyId: Long
 )

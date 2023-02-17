@@ -12,7 +12,7 @@ object ContactGenerator {
         EventGenerator.DEFAULT.id,
         TeamGenerator.DEFAULT.id,
         StaffGenerator.DEFAULT.id,
-        ProviderGenerator.DEFAULT.id,
+        ProviderGenerator.DEFAULT.id
     )
 
     val INITIAL_APPOINTMENT_CASE_VIEW = generate(
@@ -21,7 +21,7 @@ object ContactGenerator {
         EventGenerator.CASE_VIEW.id,
         TeamGenerator.DEFAULT.id,
         StaffGenerator.DEFAULT.id,
-        ProviderGenerator.DEFAULT.id,
+        ProviderGenerator.DEFAULT.id
     )
 
     fun generate(
@@ -32,7 +32,7 @@ object ContactGenerator {
         staffId: Long,
         providerId: Long,
         date: ZonedDateTime = ZonedDateTime.now(),
-        id: Long = IdGenerator.getAndIncrement(),
+        id: Long = IdGenerator.getAndIncrement()
     ) = Contact(
         id = id,
         type = type,
@@ -43,6 +43,6 @@ object ContactGenerator {
         teamId = teamId,
         staffId = staffId,
         providerId = providerId,
-        notes = "Test notes",
+        notes = "Test notes"
     )
 }

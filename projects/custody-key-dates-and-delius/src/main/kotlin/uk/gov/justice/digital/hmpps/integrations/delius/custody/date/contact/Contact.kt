@@ -70,7 +70,7 @@ class Contact(
 
     @Convert(converter = YesNoConverter::class)
     @Column(name = "alert_active")
-    val alert: Boolean? = false,
+    val alert: Boolean? = false
 
 ) : BaseEntity()
 

@@ -20,7 +20,7 @@ class AllocationValidator(
 
     fun initialValidations(
         providerId: Long,
-        allocationDetail: AllocationDetail,
+        allocationDetail: AllocationDetail
     ): TeamStaffContainer {
         val team = teamRepository.findByCode(allocationDetail.teamCode)
             ?: throw NotFoundException("Team", "code", allocationDetail.teamCode)
@@ -34,7 +34,8 @@ class AllocationValidator(
         }
 
         val allocationReason = referenceDataRepository.findByDatasetAndCode(
-            allocationDetail.datasetCode, allocationDetail.code
+            allocationDetail.datasetCode,
+            allocationDetail.code
         ) ?: throw NotFoundException("$allocationDetail.datasetCode.value with code ${allocationDetail.code} not found")
 
         val staff = staffRepository.findByCode(allocationDetail.staffCode)

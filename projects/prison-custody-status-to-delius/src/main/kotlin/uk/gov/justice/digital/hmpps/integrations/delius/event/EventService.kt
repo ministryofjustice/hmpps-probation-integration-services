@@ -8,7 +8,7 @@ import java.time.ZonedDateTime
 @Service
 class EventService(
     private val personRepository: PersonRepository,
-    private val eventRepository: EventRepository,
+    private val eventRepository: EventRepository
 ) {
     fun getActiveCustodialEvents(nomsNumber: String): List<Event> {
         val persons = personRepository.findByNomsNumberAndSoftDeletedIsFalse(nomsNumber)

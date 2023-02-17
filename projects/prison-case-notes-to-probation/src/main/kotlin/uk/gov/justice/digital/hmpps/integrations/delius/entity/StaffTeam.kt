@@ -44,7 +44,7 @@ class StaffTeam(
 
     @Version
     @Column(name = "row_version")
-    var version: Long = 0,
+    var version: Long = 0
 )
 
 data class StaffTeamId(val staffId: Long = 0, val teamId: Long = 0) : Serializable

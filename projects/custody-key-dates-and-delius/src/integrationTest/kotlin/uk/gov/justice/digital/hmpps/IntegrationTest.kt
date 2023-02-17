@@ -53,7 +53,8 @@ internal class IntegrationTest {
         verify(telemetryService).notificationReceived(notification)
 
         val custody = custodyRepository.findCustody(
-            PersonGenerator.DEFAULT.id, DEFAULT_CUSTODY.bookingRef
+            PersonGenerator.DEFAULT.id,
+            DEFAULT_CUSTODY.bookingRef
         )
         verifyUpdatedKeyDates(custody[0])
         verifyDeletedKeyDate(custody[0])

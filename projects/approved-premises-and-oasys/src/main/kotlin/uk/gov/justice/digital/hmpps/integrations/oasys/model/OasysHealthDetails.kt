@@ -69,5 +69,5 @@ data class OasysHealthAssessment(
     val elecMonSpecify: String? = null,
     val elecMonElectricity: String? = null,
     val elecMon: String? = null,
-    val generalHeathSpecify: String? = null,
+    val generalHeathSpecify: String? = null
 ) : OasysAssessment()

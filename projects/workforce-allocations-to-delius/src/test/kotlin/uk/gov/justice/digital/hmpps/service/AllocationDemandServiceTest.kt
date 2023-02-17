@@ -172,7 +172,8 @@ class AllocationDemandServiceTest {
                         OrderManagerGenerator.DEFAULT.staff
                     )
                 ),
-                1, 0
+                1,
+                0
             ),
             Arguments.of(
                 listOf(
@@ -182,7 +183,8 @@ class AllocationDemandServiceTest {
                         OrderManagerGenerator.DEFAULT.staff
                     )
                 ),
-                0, 1
+                0,
+                1
             )
         )
     }

@@ -41,7 +41,7 @@ class CaseViewPerson(
     @Column(columnDefinition = "char(13)")
     val pncNumber: String? = null,
     @Column(updatable = false, columnDefinition = "number")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
 
 interface CaseViewPersonRepository : JpaRepository<CaseViewPerson, Long> {

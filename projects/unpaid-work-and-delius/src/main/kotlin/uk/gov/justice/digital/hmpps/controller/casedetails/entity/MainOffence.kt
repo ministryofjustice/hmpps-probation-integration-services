@@ -36,8 +36,9 @@ class Event(
     val mainOffence: MainOffence? = null,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
+
 @Immutable
 @Entity
 @Table(name = "disposal")
@@ -57,7 +58,7 @@ class Disposal(
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
 
 @Immutable
@@ -78,7 +79,7 @@ class MainOffence(
     val offence: Offence,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
 
 @Immutable

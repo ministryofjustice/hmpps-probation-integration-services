@@ -69,7 +69,6 @@ class AllocationDemandIntegrationTest {
 
     @Test
     fun `get allocation demand no results`() {
-
         mockMvc.perform(
             post("/allocation-demand").withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -94,7 +93,7 @@ class AllocationDemandIntegrationTest {
         val request = AllocationDemandRequest(
             listOf(
                 AllocationRequest("T123456", "2"),
-                AllocationRequest("T456789", "1"),
+                AllocationRequest("T456789", "1")
             )
         )
 
@@ -106,7 +105,8 @@ class AllocationDemandIntegrationTest {
                 Sentence("test", LocalDate.now(), "12 Months"),
                 InitialAppointment(LocalDate.now()),
                 CaseType.CUSTODY,
-                ProbationStatus(ManagementStatus.CURRENTLY_MANAGED), Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO")
+                ProbationStatus(ManagementStatus.CURRENTLY_MANAGED),
+                Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO")
             ),
             AllocationResponse(
                 "T456789",
@@ -115,7 +115,8 @@ class AllocationDemandIntegrationTest {
                 Sentence("test", LocalDate.now(), "12 Months"),
                 InitialAppointment(LocalDate.now()),
                 CaseType.CUSTODY,
-                ProbationStatus(ManagementStatus.CURRENTLY_MANAGED), Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO")
+                ProbationStatus(ManagementStatus.CURRENTLY_MANAGED),
+                Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO")
             )
         )
 
@@ -187,7 +188,7 @@ class AllocationDemandIntegrationTest {
         @JvmStatic
         fun allocationRequests(): List<AllocationRequest> = listOf(
             AllocationRequest("D123123!", "1"),
-            AllocationRequest("D123123", "1!"),
+            AllocationRequest("D123123", "1!")
         )
     }
 }

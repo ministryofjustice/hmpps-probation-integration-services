@@ -52,12 +52,19 @@ import java.time.ZonedDateTime
 @MockitoSettings(strictness = Strictness.LENIENT)
 internal class PrisonManagerServiceTest {
     @Mock lateinit var teamRepository: TeamRepository
+
     @Mock lateinit var staffRepository: StaffRepository
+
     @Mock lateinit var referenceDataRepository: ReferenceDataRepository
+
     @Mock lateinit var prisonManagerRepository: PrisonManagerRepository
+
     @Mock lateinit var contactRepository: ContactRepository
+
     @Mock lateinit var contactTypeRepository: ContactTypeRepository
+
     @Mock lateinit var responsibleOfficerRepository: ResponsibleOfficerRepository
+
     @InjectMocks lateinit var prisonManagerService: PrisonManagerService
 
     @BeforeEach
@@ -178,7 +185,8 @@ internal class PrisonManagerServiceTest {
     fun newResponsibleOfficerIsCreatedForDisposalsLongerThan20Months() {
         val allocationDate = ZonedDateTime.now()
         val event = EventGenerator.custodialEvent(
-            PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT,
+            PersonGenerator.RECALLABLE,
+            InstitutionGenerator.DEFAULT,
             lengthInDays = 1000
         )
         val prisonManager = PrisonManagerGenerator.generate(PersonGenerator.RECALLABLE)
@@ -220,7 +228,8 @@ internal class PrisonManagerServiceTest {
     fun existingResponsibleOfficerIsUpdatedForDisposalsLongerThan20Months() {
         val allocationDate = ZonedDateTime.now()
         val event = EventGenerator.custodialEvent(
-            PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT,
+            PersonGenerator.RECALLABLE,
+            InstitutionGenerator.DEFAULT,
             lengthInDays = 1000
         )
         val personManager = PersonManagerGenerator.generate(PersonGenerator.RECALLABLE, staff = StaffGenerator.DEFAULT)
@@ -268,7 +277,8 @@ internal class PrisonManagerServiceTest {
     fun historicalResponsibleOfficerIsInsertedWithEndDate() {
         val allocationDate = ZonedDateTime.now().minusDays(1)
         val event = EventGenerator.custodialEvent(
-            PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT,
+            PersonGenerator.RECALLABLE,
+            InstitutionGenerator.DEFAULT,
             lengthInDays = 1000
         )
         val personManager = PersonManagerGenerator.generate(PersonGenerator.RECALLABLE, staff = StaffGenerator.DEFAULT)
@@ -282,7 +292,8 @@ internal class PrisonManagerServiceTest {
         whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.RECALLABLE.id, allocationDate)).thenReturn(prisonManager)
         whenever(responsibleOfficerRepository.findActiveManagerAtDate(eq(event.person.id), any())).thenReturn(
             ResponsibleOfficer(
-                personId = event.person.id, communityManager = personManager,
+                personId = event.person.id,
+                communityManager = personManager,
                 startDate = ZonedDateTime.now().minusDays(2),
                 endDate = ZonedDateTime.now()
             )

@@ -16,7 +16,8 @@ import java.time.LocalDate
 @Table(name = "provision")
 @Where(clause = "soft_deleted = 0 and (finish_date is null or finish_date > current_date) and start_date < current_date")
 class ProvisionEntity(
-    @Id @Column(name = "provision_id")
+    @Id
+    @Column(name = "provision_id")
     val id: Long,
 
     @ManyToOne
@@ -34,6 +35,6 @@ class ProvisionEntity(
     val endDate: LocalDate? = null,
 
     @Column(updatable = false, columnDefinition = "number")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 
 )

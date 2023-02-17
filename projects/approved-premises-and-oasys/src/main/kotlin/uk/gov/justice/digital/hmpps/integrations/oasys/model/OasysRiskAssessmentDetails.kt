@@ -31,5 +31,5 @@ data class OasysRiskAssessment(
     val previousWhoVictims: String? = null,
     val previousHowDone: String? = null,
     val previousWhereAndWhen: String? = null,
-    val previousWhatDone: String? = null,
+    val previousWhatDone: String? = null
 ) : OasysAssessment()

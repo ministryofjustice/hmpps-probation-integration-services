@@ -8,7 +8,7 @@ object TeamGenerator {
     val DEFAULT = generate(
         "${ProviderGenerator.DEFAULT.code}UAT",
         "Unallocated Team(N02)",
-        ProviderGenerator.DEFAULT.id,
+        ProviderGenerator.DEFAULT.id
     )
     val ALLOCATION_TEAM = generate("N02ABS")
 

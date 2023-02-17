@@ -91,7 +91,8 @@ class AllocationValidatorTest {
             .thenReturn(team)
         whenever(
             referenceDataRepository.findByDatasetAndCode(
-                allocationDetail.datasetCode, allocationDetail.code
+                allocationDetail.datasetCode,
+                allocationDetail.code
             )
         )
             .thenReturn(INITIAL_OM_ALLOCATION)
@@ -112,7 +113,8 @@ class AllocationValidatorTest {
             .thenReturn(team)
         whenever(
             referenceDataRepository.findByDatasetAndCode(
-                allocationDetail.datasetCode, allocationDetail.code
+                allocationDetail.datasetCode,
+                allocationDetail.code
             )
         ).thenReturn(null)
         val exception =
@@ -132,7 +134,8 @@ class AllocationValidatorTest {
             .thenReturn(team)
         whenever(
             referenceDataRepository.findByDatasetAndCode(
-                allocationDetail.datasetCode, allocationDetail.code
+                allocationDetail.datasetCode,
+                allocationDetail.code
             )
         )
             .thenReturn(INITIAL_OM_ALLOCATION)
@@ -154,7 +157,8 @@ class AllocationValidatorTest {
             .thenReturn(team)
         whenever(
             referenceDataRepository.findByDatasetAndCode(
-                allocationDetail.datasetCode, allocationDetail.code
+                allocationDetail.datasetCode,
+                allocationDetail.code
             )
         )
             .thenReturn(INITIAL_OM_ALLOCATION)
@@ -177,7 +181,8 @@ class AllocationValidatorTest {
             .thenReturn(team)
         whenever(
             referenceDataRepository.findByDatasetAndCode(
-                allocationDetail.datasetCode, allocationDetail.code
+                allocationDetail.datasetCode,
+                allocationDetail.code
             )
         )
             .thenReturn(INITIAL_OM_ALLOCATION)
@@ -200,7 +205,8 @@ class AllocationValidatorTest {
             .thenReturn(team)
         whenever(
             referenceDataRepository.findByDatasetAndCode(
-                allocationDetail.datasetCode, allocationDetail.code
+                allocationDetail.datasetCode,
+                allocationDetail.code
             )
         )
             .thenReturn(INITIAL_OM_ALLOCATION)

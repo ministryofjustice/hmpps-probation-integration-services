@@ -27,8 +27,9 @@ data class PrisonCaseNote(
     fun getStaffName(): StaffName =
         if (authorName.contains(',')) {
             StaffName(authorName.substringAfterLast(",").trim(), authorName.substringBeforeLast(",").trim())
-        } else
+        } else {
             StaffName(authorName.substringBeforeLast(" ").trim(), authorName.substringAfterLast(" ").trim())
+        }
 }
 
 data class CaseNoteAmendment(
@@ -38,7 +39,6 @@ data class CaseNoteAmendment(
 )
 
 fun PrisonCaseNote.toDeliusCaseNote(): DeliusCaseNote {
-
     fun amendments(): (CaseNoteAmendment) -> String = { a ->
         "${System.lineSeparator()}[${a.authorName} updated the case notes on ${DeliusDateTimeFormatter.format(a.creationDateTime)}]${System.lineSeparator()}${a.additionalNoteText}"
     }

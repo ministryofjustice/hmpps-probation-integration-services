@@ -27,7 +27,7 @@ class CaseViewDisposal(
     val active: Boolean = true,
 
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
 
 @Immutable
@@ -49,7 +49,7 @@ class CaseViewEvent(
     val active: Boolean,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean,
+    val softDeleted: Boolean
 )
 
 interface SentenceSummary {

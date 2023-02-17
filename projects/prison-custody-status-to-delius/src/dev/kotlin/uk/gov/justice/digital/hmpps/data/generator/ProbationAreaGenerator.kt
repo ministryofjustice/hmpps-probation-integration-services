@@ -8,6 +8,6 @@ object ProbationAreaGenerator {
 
     fun generate(
         code: String,
-        description: String = "description for $code",
+        description: String = "description for $code"
     ) = ProbationArea(IdGenerator.getAndIncrement(), code, description)
 }

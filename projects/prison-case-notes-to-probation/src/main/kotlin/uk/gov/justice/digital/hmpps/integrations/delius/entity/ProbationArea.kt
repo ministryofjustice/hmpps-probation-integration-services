@@ -24,7 +24,6 @@ class ProbationArea(
         referencedColumnName = "institution_id",
         updatable = false
     )
-
     val institution: Institution? = null
 )
 
@@ -37,6 +36,6 @@ class Institution(
     val id: Long,
 
     @Column(name = "nomis_cde_code")
-    val nomisCode: String,
+    val nomisCode: String
 
 )

@@ -86,7 +86,8 @@ class AllocateRequirementIntegrationTest {
         )
 
         val insertedRm = requirementManagerRepository.findActiveManagerAtDate(
-            requirement.id, ZonedDateTime.now().minusDays(2)
+            requirement.id,
+            ZonedDateTime.now().minusDays(2)
         )
         assert(secondRm.startDate.closeTo(insertedRm?.endDate))
     }
@@ -96,7 +97,7 @@ class AllocateRequirementIntegrationTest {
         jsonFile: String,
         existingRm: RequirementManager,
         requirement: Requirement,
-        originalRmCount: Int,
+        originalRmCount: Int
     ) {
         val allocationEvent = prepMessage(messageName, wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(allocationEvent)

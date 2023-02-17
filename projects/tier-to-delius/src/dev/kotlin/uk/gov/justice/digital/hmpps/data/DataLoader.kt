@@ -36,7 +36,7 @@ class DataLoader(
     private val personManagerRepository: PersonManagerRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val referenceDataSetRepository: ReferenceDataSetRepository,
-    private val contactTypeRepository: ContactTypeRepository,
+    private val contactTypeRepository: ContactTypeRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct

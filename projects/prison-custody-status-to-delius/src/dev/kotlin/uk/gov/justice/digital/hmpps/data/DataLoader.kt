@@ -61,7 +61,7 @@ class DataLoader(
     private val personManagerRepository: PersonManagerRepository,
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
-    private val probationAreaRepository: ProbationAreaRepository,
+    private val probationAreaRepository: ProbationAreaRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -120,7 +120,7 @@ class DataLoader(
             person = recallablePerson,
             institution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]!!,
             releaseDate = MessageGenerator.PRISONER_RECEIVED.occurredAt.minusMonths(6),
-            lengthInDays = 999,
+            lengthInDays = 999
         )
         eventRepository.save(recallableEvent)
         disposalTypeRepository.save(recallableEvent.disposal!!.type)

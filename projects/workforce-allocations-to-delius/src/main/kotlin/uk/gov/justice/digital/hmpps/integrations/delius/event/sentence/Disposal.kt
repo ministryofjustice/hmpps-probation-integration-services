@@ -67,5 +67,5 @@ class DisposalType(
     @Column
     val sentenceType: String,
 
-    val description: String,
+    val description: String
 )

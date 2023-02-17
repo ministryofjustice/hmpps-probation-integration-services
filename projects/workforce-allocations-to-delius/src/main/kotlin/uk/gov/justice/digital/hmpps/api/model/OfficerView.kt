@@ -7,5 +7,5 @@ data class OfficerView(
     val email: String?,
     val casesDueToEndInNext4Weeks: Long,
     val releasesWithinNext4Weeks: Long,
-    val paroleReportsToCompleteInNext4Weeks: Long,
+    val paroleReportsToCompleteInNext4Weeks: Long
 )

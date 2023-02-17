@@ -45,7 +45,7 @@ class Court(
     val id: Long,
 
     @Column(name = "court_name")
-    val name: String,
+    val name: String
 
 )
 

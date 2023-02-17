@@ -11,6 +11,6 @@ class CaseDetailsController(val service: CaseDetailsService) {
     @PreAuthorize("hasRole('UPW_DETAILS')")
     fun personDetails(
         @PathVariable crn: String,
-        @PathVariable eventId: Long,
+        @PathVariable eventId: Long
     ) = service.getCaseDetails(crn, eventId)
 }

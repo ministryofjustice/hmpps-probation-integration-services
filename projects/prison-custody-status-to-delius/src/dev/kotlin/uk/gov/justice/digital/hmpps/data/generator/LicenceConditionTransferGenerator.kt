@@ -17,6 +17,6 @@ object LicenceConditionTransferGenerator {
         originTeam = TeamGenerator.DEFAULT,
         originStaff = StaffGenerator.UNALLOCATED,
         receivingTeam = TeamGenerator.DEFAULT,
-        receivingStaff = StaffGenerator.UNALLOCATED,
+        receivingStaff = StaffGenerator.UNALLOCATED
     )
 }

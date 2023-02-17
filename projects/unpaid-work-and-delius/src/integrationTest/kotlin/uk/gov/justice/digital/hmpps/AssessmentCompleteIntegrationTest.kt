@@ -28,16 +28,22 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 internal class AssessmentCompleteIntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
+
     @Autowired
     lateinit var channelManager: HmppsChannelManager
+
     @Autowired
     lateinit var mockMvc: MockMvc
+
     @Autowired
     lateinit var wireMockServer: WireMockServer
+
     @Autowired
     lateinit var contactRepository: ContactRepository
+
     @Autowired
     lateinit var documentRepository: DocumentRepository
+
     @MockBean
     lateinit var telemetryService: TelemetryService
 

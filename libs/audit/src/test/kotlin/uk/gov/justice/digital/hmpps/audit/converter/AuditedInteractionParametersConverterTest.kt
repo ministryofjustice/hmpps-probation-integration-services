@@ -33,7 +33,7 @@ internal class AuditedInteractionParametersConverterTest {
                 AuditedInteraction.Parameters(
                     "param1" to "value1",
                     "param2" to "value2",
-                    "param3" to "value3",
+                    "param3" to "value3"
                 ),
                 "param1='value1',param2='value2',param3='value3'"
             ),

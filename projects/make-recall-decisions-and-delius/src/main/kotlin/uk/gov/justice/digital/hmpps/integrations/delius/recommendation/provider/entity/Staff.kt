@@ -14,5 +14,5 @@ class Staff(
     val id: Long,
 
     @Column(name = "officer_code", columnDefinition = "char(7)")
-    val code: String,
+    val code: String
 )

@@ -62,5 +62,5 @@ class Staff(
 
     @Version
     @Column(name = "row_version")
-    var version: Long = 0,
+    var version: Long = 0
 )

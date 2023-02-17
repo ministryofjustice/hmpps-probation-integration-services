@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.PreSen
 @RestController
 @RequestMapping(value = ["context"])
 class PSRContextController(
-    private val service: PreSentenceReportService,
+    private val service: PreSentenceReportService
 ) {
 
     @PreAuthorize("hasRole('ROLE_PSR_CONTEXT')")
@@ -33,7 +33,8 @@ class PSRContextController(
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun getPreSentenceReportContext(
-        @NotNull @PathVariable reportId: String
+        @NotNull @PathVariable
+        reportId: String
     ): PreSentenceReportContext {
         return service.getPreSentenceReportContext(reportId)
     }

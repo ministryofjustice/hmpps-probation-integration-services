@@ -22,7 +22,7 @@ class TeamController(
             with a list of every team code that covers the probation case identified
             by the CRN to enable the Approved Premises service to present the
             relevant list of Approved Premises applications to it's users.
-        """,
+        """
     )
     @GetMapping(value = ["/teams/managingCase/{crn}"])
     fun getTeamsManagingCase(

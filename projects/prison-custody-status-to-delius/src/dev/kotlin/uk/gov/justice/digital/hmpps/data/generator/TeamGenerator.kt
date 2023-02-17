@@ -11,7 +11,7 @@ object TeamGenerator {
     )
 
     fun allStaff(
-        probationArea: ProbationArea = ProbationAreaGenerator.DEFAULT,
+        probationArea: ProbationArea = ProbationAreaGenerator.DEFAULT
     ) = generate("${probationArea.code}ALL", probationArea = probationArea)
 
     fun generate(

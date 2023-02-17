@@ -15,7 +15,9 @@ import uk.gov.justice.digital.hmpps.service.AllocationRiskService
 @ExtendWith(MockitoExtension::class)
 class AllocationDemandResourceTest {
     @Mock lateinit var allocationDemandService: AllocationDemandService
+
     @Mock lateinit var allocationRisk: AllocationRiskService
+
     @InjectMocks lateinit var allocationDemandResource: AllocationDemandResource
 
     @Test

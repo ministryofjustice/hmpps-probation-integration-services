@@ -13,7 +13,7 @@ import java.time.temporal.ChronoUnit
 
 abstract class ManagerService<T : ManagerBaseEntity>(
     auditedInteractionService: AuditedInteractionService,
-    private val managerRepository: JpaRepository<T, Long>,
+    private val managerRepository: JpaRepository<T, Long>
 ) : AuditableService(auditedInteractionService) {
     companion object {
         private val log = LoggerFactory.getLogger(this::class.java)

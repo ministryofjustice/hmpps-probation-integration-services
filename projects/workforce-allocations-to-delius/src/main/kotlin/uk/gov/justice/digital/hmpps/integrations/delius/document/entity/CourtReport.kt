@@ -21,7 +21,7 @@ class CourtReport(
 
     @ManyToOne
     @JoinColumn(name = "court_report_type_id", updatable = false)
-    val type: CourtReportType,
+    val type: CourtReportType
 )
 
 @Immutable

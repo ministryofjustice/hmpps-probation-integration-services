@@ -24,6 +24,6 @@ object PersonManagerGenerator {
         id = id,
         personId = person.id,
         staff = staff,
-        team = team,
+        team = team
     )
 }

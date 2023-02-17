@@ -18,8 +18,8 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 @ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest {
-
     @Autowired lateinit var mockMvc: MockMvc
+
     @Autowired lateinit var wireMockServer: WireMockServer
 
     @MockBean lateinit var telemetryService: TelemetryService

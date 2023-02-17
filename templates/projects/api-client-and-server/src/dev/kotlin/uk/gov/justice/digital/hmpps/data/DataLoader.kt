@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.user.UserRepository
 @Component
 @Profile("dev", "integration-test")
 class DataLoader(
-    private val userRepository: UserRepository,
+    private val userRepository: UserRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct

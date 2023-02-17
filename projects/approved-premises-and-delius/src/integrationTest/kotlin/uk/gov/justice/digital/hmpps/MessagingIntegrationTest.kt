@@ -42,12 +42,19 @@ import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @TestMethodOrder(OrderAnnotation::class)
 internal class MessagingIntegrationTest {
-    @Value("\${messaging.consumer.queue}") lateinit var queueName: String
+    @Value("\${messaging.consumer.queue}")
+    lateinit var queueName: String
+
     @Autowired lateinit var channelManager: HmppsChannelManager
+
     @Autowired lateinit var wireMockServer: WireMockServer
+
     @Autowired lateinit var contactRepository: ContactRepository
+
     @Autowired lateinit var nsiRepository: NsiRepository
+
     @Autowired lateinit var personAddressRepository: PersonAddressRepository
+
     @MockBean lateinit var telemetryService: TelemetryService
 
     @Test

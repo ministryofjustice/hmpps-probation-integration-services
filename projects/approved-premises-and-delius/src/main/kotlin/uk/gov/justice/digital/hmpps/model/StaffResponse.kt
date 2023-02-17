@@ -4,16 +4,16 @@ data class StaffResponse(
     val code: String,
     val name: PersonName,
     val grade: StaffGrade?,
-    val keyWorker: Boolean,
+    val keyWorker: Boolean
 )
 
 data class PersonName(
     val forename: String,
     val surname: String,
-    val middleName: String?,
+    val middleName: String?
 )
 
 data class StaffGrade(
     val code: String,
-    val description: String,
+    val description: String
 )

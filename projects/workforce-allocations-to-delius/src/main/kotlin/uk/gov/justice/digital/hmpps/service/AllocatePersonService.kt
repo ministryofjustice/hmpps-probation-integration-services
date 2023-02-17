@@ -44,7 +44,8 @@ class AllocatePersonService(
             OptimisationContext.offenderId.set(personId)
 
             val activeOffenderManager = personManagerRepository.findActiveManager(
-                personId, allocationDetail.createdDate
+                personId,
+                allocationDetail.createdDate
             ) ?: throw NotFoundException(
                 "Person Manager for ${allocationDetail.crn} at ${allocationDetail.createdDate} not found"
             )
@@ -58,7 +59,7 @@ class AllocatePersonService(
             }
             val ts = allocationValidator.initialValidations(
                 activeOffenderManager.provider.id,
-                allocationDetail,
+                allocationDetail
             )
 
             val newOffenderManager = PersonManager(personId = personId).apply {
@@ -83,7 +84,7 @@ class AllocatePersonService(
         }
 
     private fun updateResponsibleOfficer(
-        newPersonManager: PersonManager,
+        newPersonManager: PersonManager
     ) {
         val activeResponsibleOfficer = responsibleOfficerRepository
             .findActiveManagerAtDate(newPersonManager.personId, newPersonManager.startDate)
@@ -136,7 +137,7 @@ class AllocatePersonService(
       |Previous Details:
       |${oldResponsibleOfficer.stringDetails()}
       |Allocation Reason: ${newResponsibleOfficer.communityManager!!.allocationReason.description}
-    """.trimMargin()
+        """.trimMargin()
     }
 
     private fun ResponsibleOfficer.stringDetails(): String {
@@ -147,24 +148,24 @@ class AllocatePersonService(
             string += """
         |Responsible Officer Type: Offender Manager
         |Responsible Officer: ${communityManager.staff.displayName}(${communityManager.team.description},${communityManager.provider.description})
-      """.trimMargin()
+            """.trimMargin()
         }
         if (prisonManager != null) {
             string += """
         |Responsible Officer Type: Prison Offender Manager
         |Responsible Officer: ${prisonManager.staff.displayName}(${prisonManager.team.description},${prisonManager.provider.description})
-      """.trimMargin()
+            """.trimMargin()
         }
         string += """
       |
       |Start Date: ${DeliusDateTimeFormatter.format(startDate)}
-      """.trimMargin()
+        """.trimMargin()
 
         if (endDate != null) {
             string += """
         |
         |End Date: ${DeliusDateTimeFormatter.format(endDate)}
-        """.trimMargin()
+            """.trimMargin()
         }
 
         return string

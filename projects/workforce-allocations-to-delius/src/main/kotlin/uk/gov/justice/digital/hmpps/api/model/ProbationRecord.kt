@@ -7,7 +7,7 @@ data class ProbationRecord(
     val name: Name,
     val event: Event,
     val activeEvents: List<PrEvent>,
-    val inactiveEvents: List<PrEvent>,
+    val inactiveEvents: List<PrEvent>
 )
 
 data class PrEvent(
@@ -20,10 +20,10 @@ data class PrSentence(
     val description: String,
     val length: String,
     val startDate: LocalDate,
-    val terminationDate: LocalDate?,
+    val terminationDate: LocalDate?
 )
 
 data class PrOffence(
     val description: String,
-    val main: Boolean = false,
+    val main: Boolean = false
 )

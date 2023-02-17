@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class OfficerViewIntegrationTest {
     @Autowired lateinit var mockMvc: MockMvc
+
     @Autowired lateinit var wireMockserver: WireMockServer
 
     @Test

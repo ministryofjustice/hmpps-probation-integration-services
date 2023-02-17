@@ -15,12 +15,13 @@ import uk.gov.justice.digital.hmpps.model.StaffResponse
 @Service
 class StaffService(
     private val approvedPremisesRepository: ApprovedPremisesRepository,
-    private val staffRepository: StaffRepository,
+    private val staffRepository: StaffRepository
 ) {
     @Transactional
     fun getStaffInApprovedPremises(approvedPremisesCode: String, keyWorkersOnly: Boolean, pageable: Pageable): Page<StaffResponse> {
-        if (!approvedPremisesRepository.existsByCodeCode(approvedPremisesCode))
+        if (!approvedPremisesRepository.existsByCodeCode(approvedPremisesCode)) {
             throw NotFoundException("Approved Premises", "code", approvedPremisesCode)
+        }
 
         return if (keyWorkersOnly) {
             staffRepository.findKeyWorkersLinkedToApprovedPremises(approvedPremisesCode, pageable).map {

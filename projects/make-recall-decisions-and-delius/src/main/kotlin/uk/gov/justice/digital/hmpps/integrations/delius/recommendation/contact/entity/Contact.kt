@@ -91,7 +91,7 @@ class Contact(
 
     @Column(name = "last_updated_datetime", nullable = false)
     @LastModifiedDate
-    var lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
+    var lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now()
 )
 
 @Immutable

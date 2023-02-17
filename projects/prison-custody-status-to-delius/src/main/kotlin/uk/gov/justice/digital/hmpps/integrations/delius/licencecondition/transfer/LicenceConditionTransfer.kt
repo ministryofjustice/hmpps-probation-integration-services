@@ -97,5 +97,5 @@ class LicenceConditionTransfer(
 
     @LastModifiedDate
     @Column(nullable = false)
-    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
 )

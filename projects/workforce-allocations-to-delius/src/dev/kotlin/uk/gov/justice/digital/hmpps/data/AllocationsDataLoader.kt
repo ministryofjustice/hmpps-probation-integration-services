@@ -120,7 +120,7 @@ class AllocationsDataLoader(
                 ContactTypeGenerator.INITIAL_APPOINTMENT_IN_OFFICE,
                 ContactTypeGenerator.INITIAL_APPOINTMENT_ON_DOORSTEP,
                 ContactTypeGenerator.INITIAL_APPOINTMENT_HOME_VISIT,
-                ContactTypeGenerator.INITIAL_APPOINTMENT_BY_VIDEO,
+                ContactTypeGenerator.INITIAL_APPOINTMENT_BY_VIDEO
             )
         )
 

@@ -40,7 +40,7 @@ class Registration(
     val deRegistrations: List<DeRegistration>,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean,
+    val softDeleted: Boolean
 ) {
     val endDate: LocalDate?
         get() = if (deRegistrations.isEmpty()) null else deRegistrations.maxOf { it.deRegistrationDate }
@@ -53,7 +53,7 @@ class RegisterType(
     @Id
     @Column(name = "register_type_id")
     val id: Long,
-    val description: String,
+    val description: String
 )
 
 @Immutable

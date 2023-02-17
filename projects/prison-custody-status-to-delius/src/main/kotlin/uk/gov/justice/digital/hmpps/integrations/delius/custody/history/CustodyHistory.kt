@@ -47,5 +47,5 @@ class CustodyHistory(
     val custody: Custody,
 
     @Column(nullable = false)
-    val partitionAreaId: Long = 0,
+    val partitionAreaId: Long = 0
 )

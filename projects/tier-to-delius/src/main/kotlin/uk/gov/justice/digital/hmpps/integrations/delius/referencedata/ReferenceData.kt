@@ -24,7 +24,7 @@ class ReferenceData(
 
     @ManyToOne
     @JoinColumn(name = "reference_data_master_id")
-    val set: ReferenceDataSet,
+    val set: ReferenceDataSet
 )
 
 @Immutable
@@ -36,5 +36,5 @@ class ReferenceDataSet(
     val id: Long,
 
     @Column(name = "code_set_name")
-    val name: String,
+    val name: String
 )

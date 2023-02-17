@@ -52,7 +52,6 @@ class CaseViewIntegrationTest {
 
     @Test
     fun `get case view no matching crn`() {
-
         mockMvc.perform(
             get("/allocation-demand/N452321/1/case-view")
                 .withOAuth2Token(wireMockserver)
@@ -62,7 +61,6 @@ class CaseViewIntegrationTest {
 
     @Test
     fun `get case view no matching event`() {
-
         mockMvc.perform(
             get("/allocation-demand/${PersonGenerator.DEFAULT.crn}/107/case-view")
                 .withOAuth2Token(wireMockserver)

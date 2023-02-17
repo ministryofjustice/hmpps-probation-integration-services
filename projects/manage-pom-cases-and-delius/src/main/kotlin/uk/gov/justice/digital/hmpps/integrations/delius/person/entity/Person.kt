@@ -41,7 +41,7 @@ class Person(
 
     @Id
     @Column(name = "offender_id")
-    val id: Long,
+    val id: Long
 ) {
     val manager: PersonManager
         get() = managers.first()

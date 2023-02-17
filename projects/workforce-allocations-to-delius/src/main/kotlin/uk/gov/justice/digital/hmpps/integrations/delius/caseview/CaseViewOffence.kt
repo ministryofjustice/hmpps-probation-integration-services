@@ -28,7 +28,7 @@ class CaseViewMainOffence(
     val offence: CaseViewOffence,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
 
 @Immutable
@@ -48,7 +48,7 @@ class CaseViewAdditionalOffence(
     val offence: CaseViewOffence,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
 
 @Immutable

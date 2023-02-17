@@ -20,8 +20,11 @@ import java.time.LocalDate
 @ExtendWith(MockitoExtension::class)
 class StaffServiceTest {
     @Mock lateinit var staffRepository: StaffRepository
+
     @Mock lateinit var ldapService: LdapService
+
     @Mock lateinit var personRepository: PersonRepository
+
     @InjectMocks lateinit var staffService: StaffService
 
     @Test

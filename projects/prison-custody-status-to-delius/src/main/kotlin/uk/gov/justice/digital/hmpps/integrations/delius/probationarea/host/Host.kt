@@ -31,5 +31,5 @@ class Host(
     val startDate: ZonedDateTime,
 
     @Column
-    val endDate: ZonedDateTime? = null,
+    val endDate: ZonedDateTime? = null
 )

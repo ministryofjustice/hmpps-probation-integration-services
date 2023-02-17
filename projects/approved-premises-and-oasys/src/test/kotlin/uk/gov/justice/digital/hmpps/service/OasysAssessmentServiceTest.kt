@@ -63,6 +63,7 @@ internal class OasysAssessmentServiceTest {
 
     @Mock
     lateinit var oasysClient: OasysClient
+
     @InjectMocks
     lateinit var oasysAssessmentService: OasysAssessmentService
 
@@ -479,7 +480,7 @@ internal class OasysAssessmentServiceTest {
                     previousWhatDone = "Stabbing",
                     currentSources = "witnesses",
                     currentWhyDone = "for money",
-                    currentAnyoneElsePresent = "gang of people",
+                    currentAnyoneElsePresent = "gang of people"
                 )
             )
         )
@@ -502,7 +503,7 @@ internal class OasysAssessmentServiceTest {
                 previousWhatDone = "Stabbing",
                 currentSources = "witnesses",
                 currentWhyDone = "for money",
-                currentAnyoneElsePresent = "gang of people",
+                currentAnyoneElsePresent = "gang of people"
             )
         )
         assertThat(riskAssessmentDetails).isEqualTo(expectedRiskAssessmentDetails)
@@ -544,7 +545,7 @@ internal class OasysAssessmentServiceTest {
                     riskKnownAdultCustody = null,
                     riskKnownAdultCommunity = "Medium",
                     riskPublicCustody = "High",
-                    riskChildrenCustody = "Very High",
+                    riskChildrenCustody = "Very High"
                 )
             )
         )
@@ -569,7 +570,7 @@ internal class OasysAssessmentServiceTest {
                 riskKnownAdultCustody = null,
                 riskKnownAdultCommunity = RiskLevel.MEDIUM,
                 riskPublicCustody = RiskLevel.HIGH,
-                riskChildrenCustody = RiskLevel.VERY_HIGH,
+                riskChildrenCustody = RiskLevel.VERY_HIGH
             )
         )
         assertThat(roshDetails).isEqualTo(expectedRoshDetails)
@@ -613,7 +614,7 @@ internal class OasysAssessmentServiceTest {
                     interpreterCommunity = "Need for interpreter - Community",
                     communicationProgramme = "Poor communication skills - Programme",
                     communicationEM = "Poor communication skills - Electronic Monitoring",
-                    communicationCommunity = "Poor communication skills - Community",
+                    communicationCommunity = "Poor communication skills - Community"
                 )
             )
         )
@@ -635,18 +636,18 @@ internal class OasysAssessmentServiceTest {
                 alcoholMisuse = HealthDetail(
                     "Alcohol misuse - Community",
                     "Alcohol misuse - Electronic Monitoring",
-                    "Alcohol misuse - Programme",
+                    "Alcohol misuse - Programme"
                 ),
                 needForInterpreter = HealthDetail(
                     "Need for interpreter - Community",
                     "Need for interpreter - Electronic Monitoring",
-                    "Need for interpreter - Programme",
+                    "Need for interpreter - Programme"
                 ),
                 poorCommunicationSkills = HealthDetail(
                     "Poor communication skills - Community",
                     "Poor communication skills - Electronic Monitoring",
-                    "Poor communication skills - Programme",
-                ),
+                    "Poor communication skills - Programme"
+                )
             )
         )
         assertThat(healthDetails).isEqualTo(expectedHealthDetails)
@@ -654,8 +655,11 @@ internal class OasysAssessmentServiceTest {
 
     private fun createRequest(): Request? {
         return Request.create(
-            Request.HttpMethod.GET, "url",
-            HashMap(), null, RequestTemplate()
+            Request.HttpMethod.GET,
+            "url",
+            HashMap(),
+            null,
+            RequestTemplate()
         )
     }
 }

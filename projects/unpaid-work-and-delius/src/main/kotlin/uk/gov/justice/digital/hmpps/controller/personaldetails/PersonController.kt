@@ -10,6 +10,6 @@ class PersonController(val service: PersonalDetailsService) {
     @GetMapping(value = ["/case-data/{crn}/personal-details"])
     @PreAuthorize("hasRole('UPW_DETAILS')")
     fun personDetails(
-        @PathVariable crn: String,
+        @PathVariable crn: String
     ) = service.getPersonalDetails(crn)
 }
