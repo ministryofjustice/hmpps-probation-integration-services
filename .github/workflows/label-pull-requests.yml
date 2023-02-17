@@ -1,0 +1,41 @@
+name: Label pull request
+# Label pull request based on Jira issue type
+
+on:
+  pull_request:
+    types: opened
+
+jobs:
+  label:
+    if: startsWith(github.event.pull_request.title, 'PI-')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check if PR is already labelled
+        id: labels
+        run: echo "count=$(gh pr view '${{ github.event.pull_request.number }}' --json 'labels' --jq '.labels | length')" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Get Jira issue type
+        if: ${{ steps.labels.outputs.count == '0' }}
+        id: jira
+        run: |
+          jira_issue_number=$(echo '${{ github.event.pull_request.title }}' | sed -E 's/^(PI-[0-9]+).*/\1/')
+          jira_issue_type=$(curl -s -u "$JIRA_USERNAME:$JIRA_TOKEN" "https://dsdmoj.atlassian.net/rest/api/2/issue/$jira_issue_number" | jq -r '.fields.issuetype.name')
+          echo "issue-type=$jira_issue_type" >> $GITHUB_OUTPUT
+        env:
+          JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
+          JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
+
+      - name: Label as bug
+        if: ${{ steps.labels.outputs.count == '0' && steps.jira.outputs.issue-type == 'Bug' }}
+        run: gh pr edit '${{ github.event.pull_request.number }}' --add-label bug
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Label as enhancement
+        if: ${{ steps.labels.outputs.count == '0' && steps.jira.outputs.issue-type == 'Story' }}
+        run: gh pr edit '${{ github.event.pull_request.number }}' --add-label enhancement
+        env:
+          GH_TOKEN: ${{ github.token }}
