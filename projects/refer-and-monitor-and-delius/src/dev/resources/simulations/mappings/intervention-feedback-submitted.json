@@ -1,0 +1,17 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/referral/f56c5f7c-632f-4cad-a1b3-693541cb5f22/sessions/2"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "session-appointment-feedback-submitted.json"
+      }
+    }
+  ]
+}
