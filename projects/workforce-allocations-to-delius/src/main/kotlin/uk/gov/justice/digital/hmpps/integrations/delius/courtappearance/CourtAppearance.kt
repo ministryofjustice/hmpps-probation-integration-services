@@ -8,6 +8,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
@@ -61,5 +62,5 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
         order by ca.appearanceDate desc
     """
     )
-    fun findLatestByEventId(eventId: Long): uk.gov.justice.digital.hmpps.api.model.Court?
+    fun findLatestByEventId(eventId: Long, pr: PageRequest = PageRequest.of(0, 1)): uk.gov.justice.digital.hmpps.api.model.Court?
 }
