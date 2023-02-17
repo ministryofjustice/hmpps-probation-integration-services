@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datasource.OptimisationContext
-import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
@@ -258,10 +257,6 @@ class RecallService(
             (reason.code == RecallReasonCode.END_OF_TEMPORARY_LICENCE.code && custody.status.code == CustodialStatusCode.IN_CUSTODY_IRC.code)
         ) {
             throw IgnorableMessageException("UnexpectedCustodialStatus")
-        }
-
-        if (reason.code == RecallReasonCode.END_OF_TEMPORARY_LICENCE.code && custody.status.code == CustodialStatusCode.RELEASED_ON_LICENCE.code) {
-            throw ConflictException("Recall from Temporary Licence, however Released on Licence")
         }
 
         if (custody.status.isTerminated()) {
