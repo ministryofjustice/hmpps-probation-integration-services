@@ -139,6 +139,9 @@
         <a href="./api-reference.html#allocation-demand-crn-eventnumber-case-view"><span>/allocation-demand/{crn}/{eventNumber}/case-view</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#allocation-demand-crn-eventnumber-allocation"><span>/allocation-demand/{crn}/{eventNumber}/allocation</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#allocation-demand-crn-unallocated-events"><span>/allocation-demand/{crn}/unallocated-events</span></a>
       </li>
       <li>
@@ -892,6 +895,153 @@
 </td>
 <td>
 <a href='#schema-caseview'>CaseView</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="allocation-demand-crn-eventnumber-allocation">/allocation-demand/{crn}/{eventNumber}/allocation</h2>
+
+<h3 id="allocation-demand-crn-eventnumber-allocation-get">get</h3>
+
+
+
+
+<h4 id="allocation-demand-crn-eventnumber-allocation-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>eventNumber</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>staff</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>allocatingStaff</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="allocation-demand-crn-eventnumber-allocation-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "staff": {
+    "code": "string",
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "email": "string",
+    "grade": "string"
+  },
+  "allocatingStaff": {
+    "code": "string",
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "email": "string",
+    "grade": "string"
+  },
+  "initialAppointment": {
+    "date": "string"
+  },
+  "ogrs": {
+    "lastUpdatedDate": "string",
+    "score": "integer"
+  },
+  "sentence": {
+    "description": "string",
+    "code": "string",
+    "date": "string",
+    "length": "integer",
+    "lengthDescription": "string"
+  },
+  "court": {
+    "name": "string",
+    "appearanceDate": "string"
+  },
+  "offences": [
+    {
+      "mainCategory": "string",
+      "mainOffence": "boolean"
+    }
+  ],
+  "activeRequirements": [
+    {
+      "mainCategory": "string",
+      "subCategory": "string",
+      "length": "string",
+      "id": "integer"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-allocationdemandstaffresponse'>AllocationDemandStaffResponse</a>
 </td>
 </tr>
 
@@ -2804,6 +2954,328 @@
 </tbody>
 </table>
 
+<h3 id="schema-allocationdemandsentence">AllocationDemandSentence</h3>
+
+
+<table class='schema-allocationdemandsentence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>date</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lengthDescription</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-allocationdemandstaffresponse">AllocationDemandStaffResponse</h3>
+
+
+<table class='schema-allocationdemandstaffresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>staff</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-staffmember'>StaffMember</a>
+</td>
+</tr>
+
+<tr>
+<td>allocatingStaff</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-staffmember'>StaffMember</a>
+</td>
+</tr>
+
+<tr>
+<td>initialAppointment</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-initialappointment'>InitialAppointment</a>
+</td>
+</tr>
+
+<tr>
+<td>ogrs</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-riskogrs'>RiskOGRS</a>
+</td>
+</tr>
+
+<tr>
+<td>sentence</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-allocationdemandsentence'>AllocationDemandSentence</a>
+</td>
+</tr>
+
+<tr>
+<td>court</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-court'>Court</a>
+</td>
+</tr>
+
+<tr>
+<td>offences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+<tr>
+<td>activeRequirements</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-requirement'>Requirement</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-court">Court</h3>
+
+
+<table class='schema-court'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>appearanceDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offence">Offence</h3>
+
+
+<table class='schema-offence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>mainCategory</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-requirement">Requirement</h3>
+
+
+<table class='schema-requirement'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>mainCategory</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>subCategory</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-riskogrs">RiskOGRS</h3>
+
+
+<table class='schema-riskogrs'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>lastUpdatedDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>score</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-activeevent">ActiveEvent</h3>
 
 
@@ -2882,38 +3354,6 @@
 <td></td>
 <td>
   <a href='#schema-activeevent'>ActiveEvent</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-riskogrs">RiskOGRS</h3>
-
-
-<table class='schema-riskogrs'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>lastUpdatedDate</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>score</td>
-<td>integer</td>
-<td>true</td>
-<td></td>
-<td>
-  
 </td>
 </tr>
 
