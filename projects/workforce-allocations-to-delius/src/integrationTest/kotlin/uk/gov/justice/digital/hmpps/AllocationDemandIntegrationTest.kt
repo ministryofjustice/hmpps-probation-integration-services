@@ -30,7 +30,6 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.model.Sentence
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
@@ -154,9 +153,8 @@ class AllocationDemandIntegrationTest {
         val event = EventGenerator.CASE_VIEW
         val staff = StaffGenerator.DEFAULT
         val loggedInStaff = StaffGenerator.STAFF_WITH_USER
-        val disposal = DisposalGenerator.CASE_VIEW
 
-        val res = mockMvc.perform(
+        mockMvc.perform(
             MockMvcRequestBuilders.get("/allocation-demand/${person.crn}/${event.number}/allocation?staff=${staff.code}&allocatingStaffUsername=${loggedInStaff.user!!.username}")
                 .withOAuth2Token(wireMockserver)
         )
