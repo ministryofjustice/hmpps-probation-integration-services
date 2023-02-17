@@ -13,6 +13,8 @@ jobs:
       - name: Check if PR is already labelled
         id: labels
         run: echo "count=$(gh pr view '${{ github.event.pull_request.number }}' --json 'labels' --jq '.labels | length')" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       - name: Get Jira issue type
         if: ${{ steps.labels.outputs.count == '0' }}
@@ -28,7 +30,11 @@ jobs:
       - name: Label as bug
         if: ${{ steps.labels.outputs.count == '0' && steps.jira.outputs.issue-type == 'Bug' }}
         run: gh pr edit '${{ github.event.pull_request.number }}' --add-label bug
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       - name: Label as enhancement
         if: ${{ steps.labels.outputs.count == '0' && steps.jira.outputs.issue-type == 'Story' }}
         run: gh pr edit '${{ github.event.pull_request.number }}' --add-label enhancement
+        env:
+          GH_TOKEN: ${{ github.token }}
