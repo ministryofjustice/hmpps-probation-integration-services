@@ -60,6 +60,6 @@ class AllocationDemandResource(
         @PathVariable crn: String,
         @PathVariable eventNumber: String,
         @RequestParam staff: String,
-        @RequestParam allocatingStaff: String
-    ) = allocationDemand.getAllocationDemandStaff(crn, eventNumber, staff, allocatingStaff)
+        @RequestParam allocatingStaffUsername: String
+    ) = allocationDemand.getAllocationDemandStaff(crn, eventNumber, staff, allocatingStaffUsername)
 }
