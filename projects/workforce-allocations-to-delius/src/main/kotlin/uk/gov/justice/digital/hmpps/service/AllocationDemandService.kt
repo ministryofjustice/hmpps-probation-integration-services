@@ -143,11 +143,11 @@ class AllocationDemandService(
         crn: String,
         eventNumber: String,
         staffCode: String,
-        allocatingStaffCode: String
+        allocatingStaffUsername: String
     ): AllocationDemandStaffResponse {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val staff = staffRepository.findStaffWithUserByCode(staffCode)
-        val allocatingStaff = staffRepository.findStaffWithUserByCode(allocatingStaffCode)
+        val allocatingStaff = staffRepository.findStaffWithUserByUsername(allocatingStaffUsername)
         val eventId = eventRepository.findByPersonCrnAndNumber(crn, eventNumber)!!.id
         val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId)
             .filter { it.mainCategory.code !in listOf("W", "W2") }

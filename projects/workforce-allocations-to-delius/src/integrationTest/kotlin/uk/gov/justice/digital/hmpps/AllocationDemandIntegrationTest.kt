@@ -153,10 +153,11 @@ class AllocationDemandIntegrationTest {
         val person = PersonGenerator.CASE_VIEW
         val event = EventGenerator.CASE_VIEW
         val staff = StaffGenerator.DEFAULT
+        val loggedInStaff = StaffGenerator.STAFF_WITH_USER
         val disposal = DisposalGenerator.CASE_VIEW
 
         val res = mockMvc.perform(
-            MockMvcRequestBuilders.get("/allocation-demand/${person.crn}/${event.number}/allocation?staff=${staff.code}&allocatingStaff=${staff.code}")
+            MockMvcRequestBuilders.get("/allocation-demand/${person.crn}/${event.number}/allocation?staff=${staff.code}&allocatingStaffUsername=${loggedInStaff.user!!.username}")
                 .withOAuth2Token(wireMockserver)
         )
             .andExpect(status().is2xxSuccessful)
@@ -168,10 +169,10 @@ class AllocationDemandIntegrationTest {
             .andExpect(jsonPath("$.staff.name.surname").value(staff.surname))
             .andExpect(jsonPath("$.staff.grade").value("PSO"))
             .andExpect(jsonPath("$.staff.code").value(staff.code))
-            .andExpect(jsonPath("$.allocatingStaff.name.forename").value(staff.forename))
-            .andExpect(jsonPath("$.allocatingStaff.name.surname").value(staff.surname))
+            .andExpect(jsonPath("$.allocatingStaff.name.forename").value(loggedInStaff.forename))
+            .andExpect(jsonPath("$.allocatingStaff.name.surname").value(loggedInStaff.surname))
             .andExpect(jsonPath("$.allocatingStaff.grade").value("PSO"))
-            .andExpect(jsonPath("$.allocatingStaff.code").value(staff.code))
+            .andExpect(jsonPath("$.allocatingStaff.code").value(loggedInStaff.code))
             .andExpect(jsonPath("$.initialAppointment.date").value(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)))
             .andExpect(jsonPath("$.sentence.description").value("Case View Sentence Type"))
             .andExpect(jsonPath("$.sentence.code").value("CV"))
