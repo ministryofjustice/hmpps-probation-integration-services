@@ -16,7 +16,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffTeamRepo
 class StaffService(
     private val staffRepository: StaffRepository,
     private val officerCodeGenerator: OfficerCodeGenerator,
-    private val staffTeamRepository: StaffTeamRepository,
+    private val staffTeamRepository: StaffTeamRepository
 ) {
 
     companion object {
@@ -33,7 +33,7 @@ class StaffService(
                 forename = staffName.forename,
                 surname = staffName.surname,
                 probationAreaId = pa.id,
-                code = officerCodeGenerator.generateFor(pa.code),
+                code = officerCodeGenerator.generateFor(pa.code)
             )
         )
         staffTeamRepository.save(StaffTeam(staff.id, team.id))

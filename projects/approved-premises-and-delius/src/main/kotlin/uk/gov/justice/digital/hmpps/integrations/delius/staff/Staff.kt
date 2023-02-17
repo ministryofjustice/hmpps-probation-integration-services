@@ -49,5 +49,5 @@ class Staff(
         joinColumns = [JoinColumn(name = "staff_id")],
         inverseJoinColumns = [JoinColumn(name = "approved_premises_id")]
     )
-    val approvedPremises: List<ApprovedPremises>,
+    val approvedPremises: List<ApprovedPremises>
 )

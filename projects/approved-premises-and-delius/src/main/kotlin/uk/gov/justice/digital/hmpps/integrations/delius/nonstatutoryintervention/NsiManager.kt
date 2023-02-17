@@ -86,7 +86,7 @@ class NsiManager(
     val active: Boolean = true,
 
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )
 
 interface NsiManagerRepository : JpaRepository<NsiManager, Long>
@@ -100,7 +100,7 @@ class TransferReason(
     val id: Long,
 
     @Column(name = "code")
-    val code: String,
+    val code: String
 )
 
 interface TransferReasonRepository : JpaRepository<TransferReason, Long> {

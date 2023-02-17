@@ -21,7 +21,7 @@ class Nsi(
 
     @ManyToOne
     @JoinColumn(name = "nsi_type_id", updatable = false)
-    val type: NsiType,
+    val type: NsiType
 )
 
 @Immutable

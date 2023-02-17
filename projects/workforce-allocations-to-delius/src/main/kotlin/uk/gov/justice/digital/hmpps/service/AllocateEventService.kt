@@ -46,7 +46,8 @@ class AllocateEventService(
             if (!event.active) throw NotActiveException("Event", "number", allocationDetail.eventNumber)
 
             val activeOrderManager = orderManagerRepository.findActiveManagerAtDate(
-                event.id, allocationDetail.createdDate
+                event.id,
+                allocationDetail.createdDate
             ) ?: throw NotFoundException(
                 "Order Manager for event ${allocationDetail.eventNumber} at ${allocationDetail.createdDate} not found"
             )
@@ -60,7 +61,7 @@ class AllocateEventService(
             }
             val ts = allocationValidator.initialValidations(
                 activeOrderManager.provider.id,
-                allocationDetail,
+                allocationDetail
             )
 
             val transferReason = transferReasonRepository.findByCode(CASE_ORDER.value)

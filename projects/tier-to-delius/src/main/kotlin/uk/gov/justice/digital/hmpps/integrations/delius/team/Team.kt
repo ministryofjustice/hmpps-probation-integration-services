@@ -13,5 +13,5 @@ class Team(
     val id: Long = 0,
 
     @Column(columnDefinition = "char(6)")
-    val code: String,
+    val code: String
 )

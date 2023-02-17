@@ -73,7 +73,7 @@ class Contact(
     val trustProviderFlag: Boolean = false,
 
     @Column(updatable = false)
-    val partitionAreaId: Long = 0L,
+    val partitionAreaId: Long = 0L
 
 ) : BaseEntity()
 
@@ -89,5 +89,5 @@ class ContactType(
 
     @Column(name = "sensitive_contact")
     @Convert(converter = YesNoConverter::class)
-    val isSensitive: Boolean,
+    val isSensitive: Boolean
 )

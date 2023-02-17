@@ -15,7 +15,7 @@ object StaffUserGenerator {
 
     fun generate(
         username: String,
-        id: Long = IdGenerator.getAndIncrement(),
+        id: Long = IdGenerator.getAndIncrement()
     ) = StaffUser(id, username)
 }
 
@@ -24,6 +24,6 @@ object LdapUserGenerator {
 
     fun generate(
         username: String,
-        email: String,
+        email: String
     ) = LdapUser(LdapName("cn=$username"), username, username, email)
 }

@@ -40,6 +40,6 @@ open class PersonalContactBase(
     val endDate: LocalDate? = null,
 
     @Column(updatable = false, columnDefinition = "number")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 
 )

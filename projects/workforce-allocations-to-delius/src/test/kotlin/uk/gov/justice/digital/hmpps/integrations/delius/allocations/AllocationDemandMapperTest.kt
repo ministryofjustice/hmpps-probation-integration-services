@@ -47,7 +47,9 @@ class AllocationDemandMapperTest {
             ProbationStatus(ManagementStatus.PREVIOUSLY_MANAGED),
             Manager(
                 "MAN1",
-                Name("Bob", null, "Smith"), "Team1", "PSO"
+                Name("Bob", null, "Smith"),
+                "Team1",
+                "PSO"
             )
         )
 

@@ -135,7 +135,10 @@ class AuditedInteractionServiceTest {
     fun `test audit interaction class`() {
         val dateTime = ZonedDateTime.now()
         val auditedInteraction = AuditedInteraction(
-            111, 222, dateTime, AuditedInteraction.Outcome.SUCCESS,
+            111,
+            222,
+            dateTime,
+            AuditedInteraction.Outcome.SUCCESS,
             AuditedInteraction.Parameters(
                 Pair("key", "value")
             )
@@ -145,21 +148,24 @@ class AuditedInteractionServiceTest {
         assertThat(auditedInteraction.dateTime, Matchers.equalTo(dateTime))
         assertThat(auditedInteraction.outcome, Matchers.equalTo(AuditedInteraction.Outcome.SUCCESS))
         assertThat(
-            auditedInteraction.parameters, Matchers.equalTo(AuditedInteraction.Parameters(Pair("key", "value")))
+            auditedInteraction.parameters,
+            Matchers.equalTo(AuditedInteraction.Parameters(Pair("key", "value")))
         )
     }
 
     @Test
     fun `test audit interaction class defaults`() {
         val auditedInteraction = AuditedInteraction(
-            111, 222
+            111,
+            222
         )
         assertThat(auditedInteraction.businessInteractionId, Matchers.equalTo(111))
         assertThat(auditedInteraction.userId, Matchers.equalTo(222))
         assertThat(auditedInteraction.dateTime, Matchers.equalTo(auditedInteraction.dateTime))
         assertThat(auditedInteraction.outcome, Matchers.equalTo(AuditedInteraction.Outcome.SUCCESS))
         assertThat(
-            auditedInteraction.parameters, Matchers.equalTo(AuditedInteraction.Parameters())
+            auditedInteraction.parameters,
+            Matchers.equalTo(AuditedInteraction.Parameters())
         )
     }
 

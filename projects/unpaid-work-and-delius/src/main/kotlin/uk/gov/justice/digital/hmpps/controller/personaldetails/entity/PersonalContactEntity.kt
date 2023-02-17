@@ -27,7 +27,7 @@ class PersonalContactEntity(
     address: AddressEntity?,
     start: LocalDate? = null,
     endDate: LocalDate? = null,
-    softDeleted: Boolean = false,
+    softDeleted: Boolean = false
 ) : PersonalContactBase(
     id,
     relationship,

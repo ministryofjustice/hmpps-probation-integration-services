@@ -8,13 +8,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 object PersonManagerGenerator {
     fun generate(
         person: Person,
-        staff: Staff = StaffGenerator.UNALLOCATED,
+        staff: Staff = StaffGenerator.UNALLOCATED
     ): PersonManager = PersonManager(
         IdGenerator.getAndIncrement(),
         person.id,
         ReferenceDataGenerator.PERSON_MANAGER_ALLOCATION_REASON,
         staff,
         TeamGenerator.DEFAULT,
-        ProbationAreaGenerator.DEFAULT,
+        ProbationAreaGenerator.DEFAULT
     )
 }

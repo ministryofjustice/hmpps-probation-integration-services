@@ -22,9 +22,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 @ExtendWith(MockitoExtension::class)
 class AllocationRiskServiceTest {
     @Mock lateinit var registrationRepository: RegistrationRepository
+
     @Mock lateinit var ogrsAssessmentRepository: OGRSAssessmentRepository
+
     @Mock lateinit var oasysAssessmentRepository: OASYSAssessmentRepository
+
     @Mock lateinit var personRepository: PersonRepository
+
     @InjectMocks lateinit var allocationRiskService: AllocationRiskService
 
     @Test
@@ -69,6 +73,7 @@ class AllocationRiskServiceTest {
         assertThat(response.ogrs!!.score, equalTo(OasysAssessmentGenerator.DEFAULT.score))
         assertThat(response.ogrs!!.lastUpdatedDate, equalTo(OasysAssessmentGenerator.DEFAULT.lastModifiedDateTime.toLocalDate()))
     }
+
     @Test
     fun `Risk record retrieved with inactive registrations and ogrs`() {
         val person = PersonGenerator.DEFAULT

@@ -21,8 +21,11 @@ import java.time.ZonedDateTime
 @ExtendWith(MockitoExtension::class)
 internal class HandlerTest {
     @Mock lateinit var telemetryService: TelemetryService
+
     @Mock lateinit var approvedPremisesService: ApprovedPremisesService
+
     @Mock lateinit var converter: NotificationConverter<HmppsDomainEvent>
+
     @InjectMocks lateinit var handler: Handler
 
     @Test

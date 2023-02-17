@@ -61,5 +61,5 @@ class ResponsibleOfficer(
     var createdDatetime: ZonedDateTime? = null,
 
     @LastModifiedDate
-    var lastUpdatedDatetime: ZonedDateTime? = null,
+    var lastUpdatedDatetime: ZonedDateTime? = null
 )

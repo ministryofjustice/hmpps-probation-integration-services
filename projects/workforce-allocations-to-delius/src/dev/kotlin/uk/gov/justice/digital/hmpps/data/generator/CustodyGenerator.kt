@@ -7,6 +7,6 @@ object CustodyGenerator {
     val DEFAULT = generate()
 
     fun generate(
-        id: Long = IdGenerator.getAndIncrement(),
+        id: Long = IdGenerator.getAndIncrement()
     ) = Custody(id, status = ReferenceDataGenerator.CUSTODY_STATUS, disposal = DisposalGenerator.DEFAULT)
 }

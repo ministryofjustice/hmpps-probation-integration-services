@@ -27,7 +27,7 @@ runs:
         find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME_TITLECASE/${{ steps.project_name.outputs.title_case }}/g' {} \;
         find templates/projects/${{ inputs.project_template }} -type f -exec sed -i 's/$SERVICE_NAME/${{ inputs.project_name }}/g' {} \;
         cp -R templates/projects/${{ inputs.project_template }} projects/${{ inputs.project_name }}
-        sed -i '/add new projects here/i \    "${{ inputs.project_name }}",' settings.gradle.kts
+        sed -i '/add new projects here/a \    "${{ inputs.project_name }}",' settings.gradle.kts
         sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' .github/workflows/access.yml
         sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' .github/workflows/deploy.yml
         sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' .github/workflows/end-to-end-tests.yml

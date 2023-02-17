@@ -29,5 +29,5 @@ class PersonManager(
     val active: Boolean = true,
 
     @Column(columnDefinition = "number", nullable = false)
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 )

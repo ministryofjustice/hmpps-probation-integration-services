@@ -22,7 +22,7 @@ object RegistrationGenerator {
         "Registration notes",
         RegisterTypeGenerator.DEFAULT,
         listOfNotNull(deRegistration),
-        false,
+        false
     )
 }
 

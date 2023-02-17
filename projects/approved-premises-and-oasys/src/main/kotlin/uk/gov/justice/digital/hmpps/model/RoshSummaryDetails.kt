@@ -35,7 +35,7 @@ data class RoshSummaryDetails(
                         riskReductionLikelyTo,
                         riskIncreaseLikelyTo,
                         riskGreatest,
-                        natureOfRisk,
+                        natureOfRisk
                     )
                 )
             }
@@ -48,5 +48,5 @@ data class RoshSummary(
     val riskReductionLikelyTo: String? = null,
     val riskIncreaseLikelyTo: String? = null,
     val riskGreatest: String? = null,
-    val natureOfRisk: String? = null,
+    val natureOfRisk: String? = null
 )

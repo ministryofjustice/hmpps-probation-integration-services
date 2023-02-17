@@ -27,55 +27,55 @@ interface OasysClient {
     fun getOffenceDetails(
         @PathVariable("crn") crn: String,
         @PathVariable("assessmentId") assessmentId: Long,
-        @PathVariable("status") status: String,
+        @PathVariable("status") status: String
     ): OasysOffenceDetails
 
     @GetMapping(value = ["/ap/needs/{crn}/ALLOW/{assessmentId}/{status}"])
     fun getNeedsDetails(
         @PathVariable("crn") crn: String,
         @PathVariable("assessmentId") assessmentId: Long,
-        @PathVariable("status") status: String,
+        @PathVariable("status") status: String
     ): OasysNeedsDetails
 
     @GetMapping(value = ["/ap/rmp/{crn}/ALLOW/{assessmentId}/{status}"])
     fun getRiskManagementPlanDetails(
         @PathVariable("crn") crn: String,
         @PathVariable("assessmentId") assessmentId: Long,
-        @PathVariable("status") status: String,
+        @PathVariable("status") status: String
     ): OasysRiskManagementPlanDetails
 
     @GetMapping(value = ["/ap/roshsum/{crn}/ALLOW/{assessmentId}/{status}"])
     fun getRoshSummary(
         @PathVariable("crn") crn: String,
         @PathVariable("assessmentId") assessmentId: Long,
-        @PathVariable("status") status: String,
+        @PathVariable("status") status: String
     ): OasysRoshSummary
 
     @GetMapping(value = ["/ap/riskind/{crn}/ALLOW/{assessmentId}/{status}"])
     fun getRiskToTheIndividual(
         @PathVariable("crn") crn: String,
         @PathVariable("assessmentId") assessmentId: Long,
-        @PathVariable("status") status: String,
+        @PathVariable("status") status: String
     ): OasysRiskToTheIndividualDetails
 
     @GetMapping(value = ["/ap/riskass/{crn}/ALLOW/{assessmentId}/{status}"])
     fun getRiskAssessment(
         @PathVariable("crn") crn: String,
         @PathVariable("assessmentId") assessmentId: Long,
-        @PathVariable("status") status: String,
+        @PathVariable("status") status: String
     ): OasysRiskAssessmentDetails
 
     @GetMapping(value = ["/ap/rosh/{crn}/ALLOW/{assessmentId}/{status}"])
     fun getRiskOfSeriousHarm(
         @PathVariable("crn") crn: String,
         @PathVariable("assessmentId") assessmentId: Long,
-        @PathVariable("status") status: String,
+        @PathVariable("status") status: String
     ): OasysRoshAssessment
 
     @GetMapping(value = ["/ap/health/{crn}/ALLOW/{assessmentId}/{status}"])
     fun getHealthDetails(
         @PathVariable("crn") crn: String,
         @PathVariable("assessmentId") assessmentId: Long,
-        @PathVariable("status") status: String,
+        @PathVariable("status") status: String
     ): OasysHealthDetails
 }

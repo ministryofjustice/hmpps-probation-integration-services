@@ -24,7 +24,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             ContactTypeCode.INITIAL_APPOINTMENT_IN_OFFICE.value,
             ContactTypeCode.INITIAL_APPOINTMENT_ON_DOORSTEP.value,
             ContactTypeCode.INITIAL_APPOINTMENT_HOME_VISIT.value,
-            ContactTypeCode.INITIAL_APPOINTMENT_BY_VIDEO.value,
+            ContactTypeCode.INITIAL_APPOINTMENT_BY_VIDEO.value
         ),
         page: PageRequest = PageRequest.of(0, 1)
     ): LocalDate?

@@ -23,6 +23,6 @@ object SentenceGenerator {
     fun generateCustodialSentence(
         custodyStatus: ReferenceData = ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS,
         disposal: Disposal,
-        bookingRef: String,
+        bookingRef: String
     ) = Custody(IdGenerator.getAndIncrement(), custodyStatus, bookingRef, disposal)
 }

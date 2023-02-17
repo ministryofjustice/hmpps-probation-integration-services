@@ -13,7 +13,8 @@ import java.time.LocalDate
 @MappedSuperclass
 @Immutable
 open class PersonalCircumstanceBase(
-    @Id @Column(name = "personal_circumstance_id")
+    @Id
+    @Column(name = "personal_circumstance_id")
     val id: Long,
 
     @ManyToOne

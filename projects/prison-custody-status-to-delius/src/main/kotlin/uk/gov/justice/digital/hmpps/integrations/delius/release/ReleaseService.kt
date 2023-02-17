@@ -43,7 +43,7 @@ class ReleaseService(
     private val custodyService: CustodyService,
     private val orderManagerRepository: OrderManagerRepository,
     private val contactRepository: ContactRepository,
-    private val contactTypeRepository: ContactTypeRepository,
+    private val contactTypeRepository: ContactTypeRepository
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -51,7 +51,7 @@ class ReleaseService(
         nomsNumber: String,
         prisonId: String,
         reason: String,
-        releaseDateTime: ZonedDateTime,
+        releaseDateTime: ZonedDateTime
     ) {
         val releaseType = referenceDataRepository.getReleaseType(mapToReleaseType(reason).code)
         val institution = institutionRepository.getByNomisCdeCode(prisonId)
@@ -87,7 +87,7 @@ class ReleaseService(
                 institutionId = fromInstitution.id,
                 probationAreaId = hostRepository
                     .findLeadHostProviderIdByInstitutionId(fromInstitution.id.institutionId, releaseDate),
-                recall = custody.mostRecentRelease()?.recall,
+                recall = custody.mostRecentRelease()?.recall
             )
         )
 
@@ -108,7 +108,7 @@ class ReleaseService(
                 person = event.person,
                 notes = "Release Type: ${releaseType.description}",
                 staffId = orderManager.staffId,
-                teamId = orderManager.teamId,
+                teamId = orderManager.teamId
             )
         )
     }

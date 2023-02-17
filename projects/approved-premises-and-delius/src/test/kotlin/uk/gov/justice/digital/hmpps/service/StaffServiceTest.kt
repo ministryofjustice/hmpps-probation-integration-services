@@ -22,7 +22,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 @ExtendWith(MockitoExtension::class)
 internal class StaffServiceTest {
     @Mock lateinit var approvedPremisesRepository: ApprovedPremisesRepository
+
     @Mock lateinit var staffRepository: StaffRepository
+
     @InjectMocks lateinit var staffService: StaffService
 
     @Test
@@ -40,7 +42,7 @@ internal class StaffServiceTest {
         val approvedPremises = ApprovedPremisesGenerator.DEFAULT
         val staffEntities = listOf(
             StaffGenerator.generate("Staff 1", teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM), approvedPremises = emptyList()),
-            StaffGenerator.generate("Staff 2", teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM), approvedPremises = listOf(approvedPremises)),
+            StaffGenerator.generate("Staff 2", teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM), approvedPremises = listOf(approvedPremises))
         )
         whenever(approvedPremisesRepository.existsByCodeCode(approvedPremises.code.code)).thenReturn(true)
         whenever(staffRepository.findAllStaffLinkedToApprovedPremisesTeam(approvedPremises.code.code, Pageable.unpaged()))

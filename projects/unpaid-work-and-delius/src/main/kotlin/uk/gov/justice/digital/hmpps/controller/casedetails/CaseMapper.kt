@@ -70,7 +70,9 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetai
                 Type(event.mainOffence.offence.subCategoryCode, event.mainOffence.offence.subCategoryDescription)
             )
         )
-    } else null
+    } else {
+        null
+    }
 
     val model = convertToModel(case)
 

@@ -39,13 +39,16 @@ internal class HandlerTest {
 
     private val notification = Notification(
         message = HmppsDomainEvent(
-            "prison-offender-events.prisoner.released", 1, "https//detail/url", ZonedDateTime.now(),
+            "prison-offender-events.prisoner.released",
+            1,
+            "https//detail/url",
+            ZonedDateTime.now(),
             additionalInformation = AdditionalInformation(
                 mutableMapOf(
                     "nomsNumber" to "Z0001ZZ",
                     "prisonId" to "ZZZ",
                     "reason" to "Test data",
-                    "details" to "Test data",
+                    "details" to "Test data"
                 )
             )
         ),

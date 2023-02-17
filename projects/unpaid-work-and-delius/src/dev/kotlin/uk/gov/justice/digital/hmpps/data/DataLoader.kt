@@ -88,9 +88,9 @@ class DataLoader(
     fun saveUserToDb() {
         userRepository.save(UserGenerator.APPLICATION_USER)
     }
+
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
-
         datasetRepository.saveAll(
             listOf(
                 DatasetGenerator.GENDER,

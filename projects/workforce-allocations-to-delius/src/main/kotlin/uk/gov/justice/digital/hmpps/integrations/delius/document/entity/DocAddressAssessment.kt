@@ -11,19 +11,21 @@ import org.hibernate.annotations.Immutable
 @Entity
 @Immutable
 class AddressAssessment(
-    @Id @Column(name = "address_assessment_id")
+    @Id
+    @Column(name = "address_assessment_id")
     var id: Long,
 
     @ManyToOne
     @JoinColumn(name = "offender_address_id", insertable = false, updatable = false)
-    val personAddress: DocPersonAddress?,
+    val personAddress: DocPersonAddress?
 )
 
 @Entity
 @Table(name = "offender_address")
 @Immutable
 class DocPersonAddress(
-    @Id @Column(name = "offender_address_id")
+    @Id
+    @Column(name = "offender_address_id")
     var id: Long,
 
     @Column(name = "building_name")
@@ -33,5 +35,5 @@ class DocPersonAddress(
     val addressNumber: String?,
 
     @Column(name = "street_name")
-    val streetName: String?,
+    val streetName: String?
 )

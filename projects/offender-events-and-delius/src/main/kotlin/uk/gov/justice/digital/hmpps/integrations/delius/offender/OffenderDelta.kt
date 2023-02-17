@@ -17,7 +17,8 @@ import java.time.ZonedDateTime
 )
 @Entity
 class OffenderDelta(
-    @Id @Column(name = "offender_delta_id")
+    @Id
+    @Column(name = "offender_delta_id")
     val id: Long,
 
     @ManyToOne
@@ -28,5 +29,5 @@ class OffenderDelta(
     val dateChanged: ZonedDateTime,
     val action: String,
     val sourceTable: String,
-    val sourceRecordId: Long,
+    val sourceRecordId: Long
 )

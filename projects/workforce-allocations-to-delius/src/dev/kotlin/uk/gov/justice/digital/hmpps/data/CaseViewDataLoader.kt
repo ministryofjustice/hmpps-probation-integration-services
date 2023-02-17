@@ -4,6 +4,9 @@ import IdGenerator
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
@@ -21,6 +24,9 @@ import uk.gov.justice.digital.hmpps.data.repository.DisposalTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewAdditionalOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewPersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.CourtAppearanceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.CourtRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalRepository
@@ -43,7 +49,10 @@ class CaseViewDataLoader(
     val additionalOffenceRepository: CaseViewAdditionalOffenceRepository,
     val requirementMainCategoryRepository: CaseViewRequirementMainCategoryRepository,
     val requirementRepository: CaseViewRequirementRepository,
-    val documentRepository: DocumentRepository
+    val documentRepository: DocumentRepository,
+    val courtRepository: CourtRepository,
+    val courtAppearanceRepository: CourtAppearanceRepository,
+    val contactRepository: ContactRepository
 ) {
     fun loadData() {
         personRepository.save(PersonGenerator.CASE_VIEW)
@@ -83,13 +92,16 @@ class CaseViewDataLoader(
         RequirementGenerator.CASE_VIEW.set("disposal", DisposalGenerator.CASE_VIEW)
         requirementMainCategoryRepository.save(RequirementGenerator.CASE_VIEW.mainCategory)
         requirementRepository.save(RequirementGenerator.CASE_VIEW)
-
+        courtRepository.save(CourtGenerator.DEFAULT)
+        CourtAppearanceGenerator.DEFAULT = courtAppearanceRepository.save(CourtAppearanceGenerator.generate(event))
         documentRepository.saveAll(
             listOf(
                 DocumentGenerator.PREVIOUS_CONVICTION,
                 DocumentGenerator.CPS_PACK,
-                DocumentGenerator.COURT_REPORT,
+                DocumentGenerator.COURT_REPORT
             )
         )
+
+        contactRepository.save(ContactGenerator.INITIAL_APPOINTMENT_CASE_VIEW)
     }
 }

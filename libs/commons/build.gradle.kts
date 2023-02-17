@@ -13,6 +13,6 @@ dependencies {
 configure<ClassPathExtension> {
     jacocoExclusions = listOf(
         "**/exception/**",
-        "**/config/**",
+        "**/config/**"
     )
 }

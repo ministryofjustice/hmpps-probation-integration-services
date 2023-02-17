@@ -50,7 +50,7 @@ data class Disability(
 )
 data class Language(
     val requiresInterpreter: Boolean = false,
-    val primaryLanguage: String = "",
+    val primaryLanguage: String = ""
 )
 
 data class MappaRegistration(
@@ -67,7 +67,7 @@ data class RegisterFlag(
 
 data class Sentence(
     val startDate: LocalDate,
-    val mainOffence: MainOffence,
+    val mainOffence: MainOffence
 )
 
 data class MainOffence(

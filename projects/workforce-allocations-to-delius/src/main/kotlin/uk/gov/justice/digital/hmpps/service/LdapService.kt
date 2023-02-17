@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.LdapUserRepository
 @Service
 class LdapService(
     private val ldapUserRepository: LdapUserRepository,
-    private val ldapTemplate: LdapTemplate,
+    private val ldapTemplate: LdapTemplate
 ) {
     companion object {
         const val LDAP_MAX_RESULTS_PER_QUERY = 500

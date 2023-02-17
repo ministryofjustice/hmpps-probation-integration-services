@@ -94,7 +94,7 @@ class Nsi(
     var active: Boolean = true,
 
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
 ) {
 
     var actualEndDate: ZonedDateTime? = actualEndDate

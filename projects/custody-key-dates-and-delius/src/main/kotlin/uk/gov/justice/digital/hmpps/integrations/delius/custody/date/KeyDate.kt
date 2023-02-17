@@ -35,6 +35,6 @@ class KeyDate(
     val type: ReferenceData,
 
     @Column(name = "key_date")
-    var date: LocalDate,
+    var date: LocalDate
 
 ) : BaseEntity()

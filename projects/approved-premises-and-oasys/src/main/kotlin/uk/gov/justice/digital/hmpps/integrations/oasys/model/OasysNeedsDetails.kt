@@ -48,5 +48,5 @@ data class OasysNeedsAssessment(
     val attIssuesDetails: String? = null,
     val thinkLinkedToReoffending: String? = null,
     val thinkLinkedToHarm: String? = null,
-    val thingIssuesDetails: String? = null,
+    val thingIssuesDetails: String? = null
 ) : OasysAssessment()

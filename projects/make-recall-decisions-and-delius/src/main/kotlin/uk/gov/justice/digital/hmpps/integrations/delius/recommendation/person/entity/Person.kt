@@ -25,7 +25,7 @@ class Person(
     val softDeleted: Boolean = false,
 
     @OneToOne(mappedBy = "person")
-    val manager: PersonManager? = null,
+    val manager: PersonManager? = null
 )
 
 @Immutable
@@ -51,5 +51,5 @@ class PersonManager(
     val staffId: Long,
 
     @Column(name = "active_flag", columnDefinition = "number")
-    val active: Boolean = true,
+    val active: Boolean = true
 )

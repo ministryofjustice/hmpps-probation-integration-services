@@ -10,7 +10,7 @@ object PersonGenerator {
         crn: String,
         id: Long = IdGenerator.getAndIncrement()
     ): Person {
-        val person = Person(id = id, crn = crn,)
+        val person = Person(id = id, crn = crn)
         person.managers.add(PersonManagerGenerator.generate(person))
         return person
     }

@@ -31,7 +31,7 @@ class RecallReason(
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean = true,
+    val selectable: Boolean = true
 )
 
 fun RecallReason?.isEotl() = this != null && RecallReasonCode.END_OF_TEMPORARY_LICENCE.code == code

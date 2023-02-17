@@ -59,7 +59,7 @@ class DataLoader(
     private val nsiTypeRepository: NsiTypeRepository,
     private val nsiStatusRepository: NsiStatusRepository,
     private val transferReasonRepository: TransferReasonRepository,
-    private val caseloadRepository: CaseloadRepository,
+    private val caseloadRepository: CaseloadRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct

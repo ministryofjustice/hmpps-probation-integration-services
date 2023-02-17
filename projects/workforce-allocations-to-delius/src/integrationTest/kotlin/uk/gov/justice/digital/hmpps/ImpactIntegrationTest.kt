@@ -45,7 +45,6 @@ class ImpactIntegrationTest {
 
     @Test
     fun `get impact no matching crn`() {
-
         mockMvc.perform(
             get("/allocation-demand/impact?crn=N542873&staff=N012DT").withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -54,7 +53,6 @@ class ImpactIntegrationTest {
 
     @Test
     fun `get impact no matching staff`() {
-
         mockMvc.perform(
             get("/allocation-demand/impact?crn=${PersonGenerator.DEFAULT.crn}&staff=N01DTT1").withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)

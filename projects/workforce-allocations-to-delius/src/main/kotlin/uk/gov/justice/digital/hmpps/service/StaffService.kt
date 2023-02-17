@@ -36,7 +36,7 @@ class StaffService(
             Case(
                 it.crn,
                 it.name(),
-                personRepository.getCaseType(it.crn).name,
+                personRepository.getCaseType(it.crn).name
             )
         }
         return ActiveCasesResponse(

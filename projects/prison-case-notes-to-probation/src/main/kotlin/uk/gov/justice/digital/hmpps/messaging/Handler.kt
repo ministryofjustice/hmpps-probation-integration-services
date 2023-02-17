@@ -40,7 +40,7 @@ class Handler(
                 "MissingCaseNoteId",
                 mapOf(
                     "eventType" to event.eventType,
-                    "nomsNumber" to event.personReference.findNomsNumber()!!,
+                    "nomsNumber" to event.personReference.findNomsNumber()!!
                 )
             )
             return
@@ -58,7 +58,9 @@ class Handler(
         }
 
         if (prisonCaseNote == null || reasonToIgnore.value != null) {
-            val reason = if (prisonCaseNote == null) "case note was not found" else {
+            val reason = if (prisonCaseNote == null) {
+                "case note was not found"
+            } else {
                 telemetryService.trackEvent(
                     "CaseNoteIgnored",
                     prisonCaseNote.properties() + ("reason" to (reasonToIgnore.value!!))

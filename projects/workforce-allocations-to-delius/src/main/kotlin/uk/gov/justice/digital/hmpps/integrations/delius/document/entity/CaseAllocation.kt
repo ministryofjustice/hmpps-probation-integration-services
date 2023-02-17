@@ -16,5 +16,5 @@ class CaseAllocation(
 
     @JoinColumn(name = "event_id", insertable = false, updatable = false)
     @ManyToOne
-    val event: DocEvent,
+    val event: DocEvent
 )

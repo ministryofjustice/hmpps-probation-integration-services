@@ -94,5 +94,5 @@ class Contact(
     val softDeleted: Boolean = false,
 
     @Column(nullable = false)
-    val partitionAreaId: Long = 0,
+    val partitionAreaId: Long = 0
 )

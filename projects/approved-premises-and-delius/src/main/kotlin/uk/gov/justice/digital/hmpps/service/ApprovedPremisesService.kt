@@ -100,7 +100,7 @@ class ApprovedPremisesService(
             notes = details.decisionRationale,
             date = details.assessedAt,
             staff = staffRepository.getByCode(details.assessedBy.staffMember.staffCode),
-            probationAreaCode = details.assessedBy.probationArea.code,
+            probationAreaCode = details.assessedBy.probationArea.code
         )
     }
 
@@ -114,7 +114,7 @@ class ApprovedPremisesService(
             notes = "To view details of the Approved Premises booking, click here: ${details.applicationUrl}",
             date = details.createdAt,
             staff = staffRepository.getByCode(details.bookedBy.staffMember.staffCode),
-            probationAreaCode = details.premises.probationArea.code,
+            probationAreaCode = details.premises.probationArea.code
         )
     }
 
@@ -130,7 +130,7 @@ class ApprovedPremisesService(
             ).joinToString("\n\n"),
             date = details.timestamp,
             staff = staffRepository.getByCode(details.eventDetails.recordedBy.staffCode),
-            probationAreaCode = details.eventDetails.premises.probationArea.code,
+            probationAreaCode = details.eventDetails.premises.probationArea.code
         )
     }
 
@@ -148,7 +148,7 @@ class ApprovedPremisesService(
             ).joinToString("\n\n"),
             date = details.arrivedAt,
             staff = staff,
-            probationAreaCode = details.premises.probationArea.code,
+            probationAreaCode = details.premises.probationArea.code
         )
         createResidenceNsi(
             person = person,
@@ -214,7 +214,7 @@ class ApprovedPremisesService(
                     personId = person.id,
                     personManagerId = personManager.id,
                     staffId = personManager.staff.id,
-                    teamId = personManager.team.id,
+                    teamId = personManager.team.id
                 )
 
             )
@@ -224,7 +224,7 @@ class ApprovedPremisesService(
     private fun createResidenceNsi(
         person: Person,
         staff: Staff,
-        details: PersonArrived,
+        details: PersonArrived
     ) {
         val nsi = nsiRepository.save(
             Nsi(

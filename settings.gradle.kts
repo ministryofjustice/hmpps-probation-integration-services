@@ -1,28 +1,28 @@
 rootProject.name = "probation-integration-services"
 include(
-    "libs:audit",
-    "libs:commons",
-    "libs:messaging",
-    "libs:dev-tools",
-    "libs:oauth-client",
-    "libs:oauth-server",
-    "prison-case-notes-to-probation",
-    "workforce-allocations-to-delius",
-    "pre-sentence-reports-to-delius",
-    "prison-custody-status-to-delius",
-    "person-search-index-from-delius",
-    "person-search-index-from-delius:management",
-    "risk-assessment-scores-to-delius",
-    "tier-to-delius",
-    "approved-premises-and-delius",
-    "approved-premises-and-oasys",
-    "offender-events-and-delius",
-    "custody-key-dates-and-delius",
-    "make-recall-decisions-and-delius",
-    "unpaid-work-and-delius",
-    "manage-pom-cases-and-delius",
+    // ⌄ add new projects here
     "refer-and-monitor-and-delius",
-    // ^ add new projects here
+    "manage-pom-cases-and-delius",
+    "unpaid-work-and-delius",
+    "make-recall-decisions-and-delius",
+    "custody-key-dates-and-delius",
+    "offender-events-and-delius",
+    "approved-premises-and-oasys",
+    "approved-premises-and-delius",
+    "tier-to-delius",
+    "risk-assessment-scores-to-delius",
+    "person-search-index-from-delius:management",
+    "person-search-index-from-delius",
+    "prison-custody-status-to-delius",
+    "pre-sentence-reports-to-delius",
+    "workforce-allocations-to-delius",
+    "prison-case-notes-to-probation",
+    "libs:oauth-server",
+    "libs:oauth-client",
+    "libs:dev-tools",
+    "libs:messaging",
+    "libs:commons",
+    "libs:audit"
 )
 
 // load children from the "projects" directory (and drop the prefix)
@@ -44,7 +44,7 @@ dependencyResolutionManagement {
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
             library("insights", "com.microsoft.azure:applicationinsights-web:3.4.9")
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.14.0")
-            library("opentelemetry-annotations", "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.22.1")
+            library("opentelemetry-annotations", "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.23.0")
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.1")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")

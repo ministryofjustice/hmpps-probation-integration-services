@@ -36,7 +36,7 @@ data class ManagementTier(
 
     @Column(nullable = false)
     @LastModifiedBy
-    var lastUpdatedUserId: Long = 0,
+    var lastUpdatedUserId: Long = 0
 )
 
 @Immutable

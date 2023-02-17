@@ -38,7 +38,8 @@ class OffenderDeltaPollerTest {
 
         verify(telemetryService).trackEvent(
             "OffenderEventsProcessingFailed",
-            mapOf("Exception" to "event not processed"), mapOf()
+            mapOf("Exception" to "event not processed"),
+            mapOf()
         )
     }
 
@@ -70,7 +71,7 @@ class OffenderDeltaPollerTest {
         private fun counts() = listOf(
             Arguments.of(Pair(0, 1), mapOf("EventsSent" to "0", "PersonNotFound" to "1")),
             Arguments.of(Pair(1, 0), mapOf("EventsSent" to "1", "PersonNotFound" to "0")),
-            Arguments.of(Pair(1, 1), mapOf("EventsSent" to "1", "PersonNotFound" to "1")),
+            Arguments.of(Pair(1, 1), mapOf("EventsSent" to "1", "PersonNotFound" to "1"))
         )
     }
 }

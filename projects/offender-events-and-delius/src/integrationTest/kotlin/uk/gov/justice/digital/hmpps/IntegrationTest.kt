@@ -36,7 +36,6 @@ internal class IntegrationTest {
     @ParameterizedTest
     @MethodSource("deltas")
     fun `offender delta test`(delta: OffenderDelta, eventTypes: List<String>) {
-
         offenderDeltaRepository.save(delta)
 
         val topic = channelManager.getChannel(topicName)

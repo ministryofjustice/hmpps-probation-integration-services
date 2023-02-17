@@ -53,5 +53,5 @@ class Person(
 
     @Column(nullable = false)
     @LastModifiedDate
-    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
 )

@@ -35,7 +35,7 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate) {
         assessmentDate: ZonedDateTime,
         rsr: RiskAssessment,
         ospIndecent: RiskAssessment,
-        ospContact: RiskAssessment,
+        ospContact: RiskAssessment
     ) {
         try {
             updateRsrScoresProcedure.execute(
@@ -60,18 +60,22 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate) {
 
     private fun isValidationMessage(e: SQLException) = e.errorCode == 20000
 
-    private fun parseValidationMessage(e: SQLException) = if (!isValidationMessage(e)) null else e.message
-        ?.replace(Regex("\\n.*"), "") // take the first line
-        ?.replace(Regex("\\[[^]]++]\\s*"), "") // remove anything inside square brackets
-        ?.removePrefix("ORA-20000: INTERNAL ERROR: An unexpected error in PL/SQL: ERROR : ") // remove Oracle prefix
-        ?.trim()
+    private fun parseValidationMessage(e: SQLException) = if (!isValidationMessage(e)) {
+        null
+    } else {
+        e.message
+            ?.replace(Regex("\\n.*"), "") // take the first line
+            ?.replace(Regex("\\[[^]]++]\\s*"), "") // remove anything inside square brackets
+            ?.removePrefix("ORA-20000: INTERNAL ERROR: An unexpected error in PL/SQL: ERROR : ") // remove Oracle prefix
+            ?.trim()
+    }
 
     companion object {
         private val KNOWN_VALIDATION_MESSAGES = listOf(
             "The existing CAS Assessment Date is greater than a specified P_ASSESSMENT_DATE value",
             "The Event is Soft Deleted",
             "The event number does not exist against the specified Offender",
-            "CRN/Offender does not exist",
+            "CRN/Offender does not exist"
         )
     }
 }

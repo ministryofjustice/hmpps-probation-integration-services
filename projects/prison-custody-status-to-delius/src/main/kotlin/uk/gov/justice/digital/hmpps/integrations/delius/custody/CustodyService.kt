@@ -45,7 +45,7 @@ class CustodyService(
                 type = referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.STATUS_CHANGE.code),
                 detail = detail,
                 person = custody.disposal.event.person,
-                custody = custody,
+                custody = custody
             )
         )
     }
@@ -55,7 +55,7 @@ class CustodyService(
         institutionCode: String,
         date: ZonedDateTime,
         orderManager: OrderManager? = null,
-        recallReason: RecallReason? = null,
+        recallReason: RecallReason? = null
     ) {
         custody.institution = institutionRepository.getByCode(institutionCode)
         custody.locationChangeDate = date
@@ -66,7 +66,7 @@ class CustodyService(
                 type = referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.LOCATION_CHANGE.code),
                 detail = custody.institution.description,
                 person = custody.disposal.event.person,
-                custody = custody,
+                custody = custody
             )
         )
 
@@ -86,7 +86,7 @@ class CustodyService(
                     staffId = orderManager.staffId,
                     teamId = orderManager.teamId,
                     createdDatetime = ZonedDateTime.now(),
-                    alert = false,
+                    alert = false
                 )
             )
         }

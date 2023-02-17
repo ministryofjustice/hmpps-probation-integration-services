@@ -31,7 +31,7 @@ class Nsi(
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    var softDeleted: Boolean = false,
+    var softDeleted: Boolean = false
 )
 
 @Immutable
@@ -42,7 +42,7 @@ class NsiType(
     @Column(name = "nsi_type_id")
     val id: Long,
 
-    val code: String,
+    val code: String
 )
 
 @Immutable
@@ -61,7 +61,7 @@ class NomisTypeNsiType(
     val nsiType: NsiType,
 
     @Enumerated(EnumType.STRING)
-    val nsiLevel: NsiLevel = NsiLevel.OFFENDER,
+    val nsiLevel: NsiLevel = NsiLevel.OFFENDER
 
 ) {
     enum class NsiLevel {

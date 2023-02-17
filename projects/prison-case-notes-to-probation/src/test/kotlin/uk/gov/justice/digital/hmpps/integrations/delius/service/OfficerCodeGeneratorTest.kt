@@ -57,8 +57,11 @@ class OfficerCodeGeneratorTest {
             .thenAnswer {
                 val regex = it.arguments[0] as String
                 val prefix = regex.substring(1, regex.length - 6)
-                if (prefix == "${probationAreaCode}A") prefix + "999"
-                else "${probationAreaCode}B001"
+                if (prefix == "${probationAreaCode}A") {
+                    prefix + "999"
+                } else {
+                    "${probationAreaCode}B001"
+                }
             }
 
         val code = officerCodeGenerator.generateFor(probationAreaCode)

@@ -121,7 +121,6 @@ class CaseNotesIntegrationTest {
 
     @Test
     fun `case note not found - noop`() {
-
         channelManager.getChannel(queueName).publishAndWait(
             prepMessage(CaseNoteMessageGenerator.NOT_FOUND, wireMockserver.port())
         )

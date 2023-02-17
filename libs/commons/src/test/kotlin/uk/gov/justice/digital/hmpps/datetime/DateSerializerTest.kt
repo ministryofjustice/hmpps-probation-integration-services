@@ -53,7 +53,7 @@ class DateSerializerTest {
             Arguments.of(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(utcDateTime), utcDateTime),
             Arguments.of(DateTimeFormatter.ISO_INSTANT.format(utcDateTime), utcDateTime),
             Arguments.of(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(utcDateTime), utcDateTime),
-            Arguments.of(DateTimeFormatter.ISO_ZONED_DATE_TIME.format(utcDateTime), utcDateTime),
+            Arguments.of(DateTimeFormatter.ISO_ZONED_DATE_TIME.format(utcDateTime), utcDateTime)
         )
     }
 }

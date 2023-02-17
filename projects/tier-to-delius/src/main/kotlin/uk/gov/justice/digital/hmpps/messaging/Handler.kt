@@ -16,7 +16,7 @@ class Handler(
     private val telemetryService: TelemetryService,
     private val tierClient: TierClient,
     private val tierService: TierService,
-    override val converter: NotificationConverter<HmppsDomainEvent>,
+    override val converter: NotificationConverter<HmppsDomainEvent>
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)

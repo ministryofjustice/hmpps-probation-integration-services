@@ -6,5 +6,5 @@ enum class ContactTypeCode(val code: String) {
     BOOKING_MADE("EAPB"),
     ARRIVED("EAPA"),
     NOT_ARRIVED("EAPX"),
-    DEPARTED("EAPD"),
+    DEPARTED("EAPD")
 }

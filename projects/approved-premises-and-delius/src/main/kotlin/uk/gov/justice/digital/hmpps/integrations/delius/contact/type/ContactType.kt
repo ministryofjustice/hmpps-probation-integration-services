@@ -15,5 +15,5 @@ class ContactType(
     val id: Long,
 
     @Column(nullable = false)
-    val code: String,
+    val code: String
 )

@@ -35,6 +35,6 @@ class OGRSAssessment(
     override val lastModifiedDateTime: ZonedDateTime,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean,
+    val softDeleted: Boolean
 
 ) : Assessment

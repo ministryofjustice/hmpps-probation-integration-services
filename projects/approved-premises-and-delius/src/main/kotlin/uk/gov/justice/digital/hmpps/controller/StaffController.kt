@@ -23,7 +23,7 @@ class StaffController(
             user interface. Keyworkers are defined via the "Approved Premises and Key Workers"
             screen of the Delius user interface. Respond with a list of all members of staff
             defined as keyworkers for the Approved Premises identified by the requested code.
-            """,
+            """
     )
     @GetMapping(value = ["/approved-premises/{code}/staff"])
     fun getStaff(

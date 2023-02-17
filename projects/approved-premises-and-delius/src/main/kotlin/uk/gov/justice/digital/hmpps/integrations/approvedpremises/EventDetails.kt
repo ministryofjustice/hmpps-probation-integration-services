@@ -32,7 +32,7 @@ data class ApplicationAssessed(
     val assessedAt: ZonedDateTime,
     val assessedBy: AssessedBy,
     val decision: Decision,
-    val decisionRationale: String,
+    val decisionRationale: String
 )
 
 data class AssessedBy(
@@ -46,7 +46,7 @@ data class BookingMade(
     val applicationUrl: String,
     val createdAt: ZonedDateTime,
     val bookedBy: BookedBy,
-    val premises: Premises,
+    val premises: Premises
 )
 
 data class BookedBy(
@@ -59,7 +59,7 @@ data class PersonNotArrived(
     val applicationUrl: String,
     val recordedBy: StaffMember,
     val premises: Premises,
-    val notes: String,
+    val notes: String
 )
 
 data class PersonArrived(
@@ -71,7 +71,7 @@ data class PersonArrived(
     val applicationSubmittedOn: ZonedDateTime,
     val arrivedAt: ZonedDateTime,
     val expectedDepartureOn: LocalDate?,
-    val notes: String,
+    val notes: String
 )
 
 data class PersonDeparted(
@@ -80,5 +80,5 @@ data class PersonDeparted(
     val bookingId: String,
     val keyWorker: StaffMember,
     val departedAt: ZonedDateTime,
-    val premises: Premises,
+    val premises: Premises
 )

@@ -11,7 +11,10 @@ import uk.gov.justice.digital.hmpps.set
 
 object StaffGenerator {
     val DEFAULT = generateStaff(
-        "${TeamGenerator.DEFAULT.code}U", "Unallocated", "Staff", listOf(TeamGenerator.DEFAULT)
+        "${TeamGenerator.DEFAULT.code}U",
+        "Unallocated",
+        "Staff",
+        listOf(TeamGenerator.DEFAULT)
     )
     val STAFF_FOR_INACTIVE_EVENT = generateStaff(
         "INACTI1",
@@ -33,7 +36,7 @@ object StaffGenerator {
         teams: List<Team> = listOf(),
         user: StaffUser? = StaffUserGenerator.generate(code),
         grade: ReferenceData = ReferenceDataGenerator.PSQ_GRADE,
-        id: Long = IdGenerator.getAndIncrement(),
+        id: Long = IdGenerator.getAndIncrement()
     ): StaffWithUser = generate(code, forename, surname, grade, teams, id, user, true) as StaffWithUser
 
     fun generateStaff(
@@ -42,7 +45,7 @@ object StaffGenerator {
         surname: String = "Test",
         teams: List<Team> = listOf(),
         grade: ReferenceData = ReferenceDataGenerator.PSQ_GRADE,
-        id: Long = IdGenerator.getAndIncrement(),
+        id: Long = IdGenerator.getAndIncrement()
     ): Staff = generate(code, forename, surname, grade, teams, id) as Staff
 
     fun generate(
@@ -63,7 +66,7 @@ object StaffGenerator {
                 surname = surname,
                 grade = grade,
                 user = user,
-                teams = teams,
+                teams = teams
             )
             user?.set("staff", staff)
             staff

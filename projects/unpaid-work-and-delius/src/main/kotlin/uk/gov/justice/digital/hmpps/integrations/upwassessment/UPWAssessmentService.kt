@@ -25,9 +25,10 @@ class UPWAssessmentService(
     private val personWithManagerRepository: PersonWithManagerRepository,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
-    private val arnClient: ArnClient,
+    private val arnClient: ArnClient
 ) {
     fun AdditionalInformation.episodeId() = this["episodeId"] as String
+
     @Transactional
     fun processMessage(notification: Notification<HmppsDomainEvent>) {
         val crn = notification.message.personReference.findCrn()!!
@@ -45,7 +46,6 @@ class UPWAssessmentService(
         person: PersonWithManager,
         notification: Notification<HmppsDomainEvent>
     ): Long {
-
         val manager = person.managers.first()
         val staffId = manager.staff.id
         val teamId = manager.team.id

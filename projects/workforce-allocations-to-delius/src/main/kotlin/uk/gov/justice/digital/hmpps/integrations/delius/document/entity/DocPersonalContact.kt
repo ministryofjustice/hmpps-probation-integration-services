@@ -13,7 +13,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceDat
 @Immutable
 @Table(name = "personal_contact")
 class DocPersonalContact(
-    @Id @Column(name = "personal_contact_id")
+    @Id
+    @Column(name = "personal_contact_id")
     var id: Long,
 
     @Column(name = "first_name")
@@ -24,5 +25,5 @@ class DocPersonalContact(
 
     @ManyToOne
     @JoinColumn(name = "title_id", insertable = false, updatable = false)
-    val title: ReferenceData?,
+    val title: ReferenceData?
 )

@@ -8,7 +8,7 @@ import java.time.LocalDate
 data class Name(
     val forename: String,
     val middleName: String?,
-    val surname: String,
+    val surname: String
 )
 
 data class Event(val number: String, val manager: Manager? = null)
@@ -18,7 +18,7 @@ data class StaffMember(
     val code: String,
     val name: Name,
     val email: String? = null,
-    val grade: String? = null,
+    val grade: String? = null
 )
 
 data class Manager(val code: String, val name: Name, val teamCode: String, val grade: String? = null)

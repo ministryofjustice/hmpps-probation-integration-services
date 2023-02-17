@@ -96,7 +96,9 @@ internal class EventServiceTest {
         val firstReleaseDate = ZonedDateTime.now().minusWeeks(1)
         val releaseDate = ZonedDateTime.now()
         val event = EventGenerator.previouslyReleasedEvent(
-            PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT, releaseDate = firstReleaseDate
+            PersonGenerator.RELEASABLE,
+            InstitutionGenerator.DEFAULT,
+            releaseDate = firstReleaseDate
         )
 
         eventService.updateReleaseDateAndIapsFlag(event, releaseDate)

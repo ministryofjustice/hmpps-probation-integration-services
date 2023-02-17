@@ -64,7 +64,7 @@ class ResponsibleOfficer(
 
     @Column
     @LastModifiedDate
-    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
 ) {
     fun stringDetails() = if (prisonManager != null) {
         """
@@ -80,5 +80,7 @@ class ResponsibleOfficer(
             Start Date: ${DeliusDateTimeFormatter.format(startDate)}
             Allocation Reason: ${communityManager.allocationReason.description}
         """.trimIndent()
-    } else null
+    } else {
+        null
+    }
 }

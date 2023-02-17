@@ -94,7 +94,7 @@ class AllocateEventIntegrationTest {
         jsonFile: String,
         existingOm: OrderManager,
         event: Event,
-        originalOmCount: Int,
+        originalOmCount: Int
     ) {
         val allocationEvent = prepMessage(messageName, wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(allocationEvent)
