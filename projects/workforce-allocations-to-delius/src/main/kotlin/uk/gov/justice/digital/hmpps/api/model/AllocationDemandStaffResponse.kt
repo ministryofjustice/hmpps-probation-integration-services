@@ -32,10 +32,10 @@ data class AllocationDemandSentence(
     val description: String,
     val code: String,
     val date: ZonedDateTime,
-    private val length: Long,
-    val lengthDescription: String
+    private val lengthValue: Long,
+    private val lengthDescription: String
 ) {
-    fun getLength(): String = "$length $lengthDescription"
+    val length: String = "$lengthValue $lengthDescription"
 }
 
 interface Offence {

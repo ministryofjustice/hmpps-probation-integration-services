@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.api.model.toManager
 import uk.gov.justice.digital.hmpps.api.model.toStaffMember
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirement
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.CourtAppearanceRepository
@@ -151,15 +152,7 @@ class AllocationDemandService(
         val eventId = eventRepository.findByPersonCrnAndNumber(crn, eventNumber)!!.id
         val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId)
             .filter { it.mainCategory.code !in listOf("W", "W2") }
-            .map {
-                val cvRequirement = it.toCvRequirement()
-                Requirement(
-                    cvRequirement.mainCategory,
-                    cvRequirement.subCategory,
-                    cvRequirement.length,
-                    it.id
-                )
-            }
+            .map { it.toRequirement() }
         val emails = ldapService.findEmailsForStaffIn(listOf(staff, allocatingStaff))
         return AllocationDemandStaffResponse(
             person.crn,
@@ -174,4 +167,11 @@ class AllocationDemandService(
             requirements
         )
     }
+
+    private fun CaseViewRequirement.toRequirement() = Requirement(
+        mainCategory.description,
+        subCategory.description,
+        length?.let { "$length ${mainCategory.units?.description ?: ""}" } ?: "",
+        id
+    )
 }
