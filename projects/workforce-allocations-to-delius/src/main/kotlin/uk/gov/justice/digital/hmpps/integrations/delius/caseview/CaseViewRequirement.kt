@@ -10,6 +10,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.api.model.CvRequirement
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceData
 
 @Immutable
@@ -43,7 +44,13 @@ class CaseViewRequirement(
 
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false
-)
+) {
+    fun toCvRequirement() = CvRequirement(
+        mainCategory.description,
+        subCategory.description,
+        length?.let { "$length ${mainCategory.units?.description ?: ""}" } ?: ""
+    )
+}
 
 @Immutable
 @Entity

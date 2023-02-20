@@ -146,25 +146,26 @@ class AllocationDemandService(
         allocatingStaffUsername: String
     ): AllocationDemandStaffResponse {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
-        val staff = staffRepository.findStaffWithUserByCode(staffCode)
-        val allocatingStaff = staffRepository.findStaffWithUserByUsername(allocatingStaffUsername)
+        val staff = staffRepository.findStaffWithUserByCode(staffCode)!!
+        val allocatingStaff = staffRepository.findStaffWithUserByUsername(allocatingStaffUsername)!!
         val eventId = eventRepository.findByPersonCrnAndNumber(crn, eventNumber)!!.id
         val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId)
             .filter { it.mainCategory.code !in listOf("W", "W2") }
             .map {
+                val cvRequirement = it.toCvRequirement()
                 Requirement(
-                    it.mainCategory.description,
-                    it.subCategory.description,
-                    it.length.toString(),
+                    cvRequirement.mainCategory,
+                    cvRequirement.subCategory,
+                    cvRequirement.length,
                     it.id
                 )
             }
-
+        val emails = ldapService.findEmailsForStaffIn(listOf(staff, allocatingStaff))
         return AllocationDemandStaffResponse(
             person.crn,
             person.name(),
-            staff?.toStaffMember(ldapService.findEmailForStaff(staff)),
-            allocatingStaff?.toStaffMember(ldapService.findEmailForStaff(allocatingStaff)),
+            staff.toStaffMember(emails[staff.user?.username]),
+            allocatingStaff.toStaffMember(emails[allocatingStaff.user?.username]),
             contactRepository.getInitialAppointmentDate(person.id, eventId)?.let { InitialAppointment(it) },
             allocationRiskService.getRiskOgrs(person),
             disposalRepository.findSentenceForEventNumberAndPersonId(person.id, eventNumber),

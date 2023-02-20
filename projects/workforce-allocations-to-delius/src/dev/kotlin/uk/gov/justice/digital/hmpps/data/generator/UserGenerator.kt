@@ -25,5 +25,5 @@ object LdapUserGenerator {
     fun generate(
         username: String,
         email: String
-    ) = LdapUser(LdapName("cn=$username"), username, username, email)
+    ) = LdapUser(LdapName("cn=$username"), username, email)
 }

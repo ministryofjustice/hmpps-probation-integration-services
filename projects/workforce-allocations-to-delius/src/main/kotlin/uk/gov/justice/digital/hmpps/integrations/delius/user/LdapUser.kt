@@ -15,9 +15,6 @@ class LdapUser(
     @DnAttribute(value = "cn", index = 1)
     val username: String,
 
-    @Attribute(name = "sn")
-    val surname: String?,
-
     @Attribute(name = "mail")
     val email: String?
 )
