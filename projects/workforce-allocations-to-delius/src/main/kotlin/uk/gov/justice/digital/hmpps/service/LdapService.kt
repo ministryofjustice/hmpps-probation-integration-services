@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
+import io.opentelemetry.instrumentation.annotations.SpanAttribute
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.ldap.filter.EqualsFilter
 import org.springframework.ldap.filter.OrFilter
@@ -19,9 +21,11 @@ class LdapService(
         const val LDAP_MAX_RESULTS_PER_QUERY = 500
     }
 
-    fun findEmailForStaff(staff: StaffWithUser?) = staff?.user?.username?.let { ldapUserRepository.findByUsername(it)?.email }
+    @WithSpan
+    fun findEmailForStaff(@SpanAttribute staff: StaffWithUser?) = staff?.user?.username?.let { ldapUserRepository.findByUsername(it)?.email }
 
-    fun findEmailsForStaffIn(staff: List<StaffWithUser>): Map<String, String?> {
+    @WithSpan
+    fun findEmailsForStaffIn(@SpanAttribute staff: List<StaffWithUser>): Map<String, String?> {
         return staff.mapNotNull { it.user?.username }
             .distinct()
             .chunked(LDAP_MAX_RESULTS_PER_QUERY)
