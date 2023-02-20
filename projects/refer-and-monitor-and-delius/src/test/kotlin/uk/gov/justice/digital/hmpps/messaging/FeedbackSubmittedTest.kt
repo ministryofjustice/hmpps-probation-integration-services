@@ -57,7 +57,9 @@ internal class FeedbackSubmittedTest {
                 additionalInformation = AdditionalInformation(
                     mutableMapOf(
                         "referralId" to "a-123-b",
-                        "contractType" to mapOf("code" to "ACC", "name" to "Accommodation")
+                        "contractType" to mapOf("code" to "ACC", "name" to "Accommodation"),
+                        "providerName" to "Provider XYZ",
+                        "url" to "http://baseUrl/path/to/ui"
                     )
                 ),
                 personReference = PersonReference(listOf(PersonIdentifier("CRN", "X123456")))
@@ -72,7 +74,7 @@ internal class FeedbackSubmittedTest {
     }
 
     @Test
-    fun `appointment not found raises failure`() {
+    fun `session not found raises failure`() {
         whenever(ramClient.getSession(any())).thenReturn(null)
 
         val res = feedbackSubmitted.sessionAppointmentSubmitted(
@@ -80,7 +82,7 @@ internal class FeedbackSubmittedTest {
                 SessionAppointmentSubmitted.name,
                 1,
                 "DetailUrl",
-                ZonedDateTime.now(),
+                ZonedDateTime.now()
             )
         )
 

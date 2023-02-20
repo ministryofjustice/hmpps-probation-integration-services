@@ -30,9 +30,9 @@ internal class ReferAndMonitorIntegrationTest {
 
     @Test
     fun `session appointment feedback submitted`() {
-
         val notification = prepNotification(
-            notification("session-appointment-feedback-submitted"), wireMockServer.port()
+            notification("session-appointment-feedback-submitted"),
+            wireMockServer.port()
         )
 
         channelManager.getChannel(queueName).publishAndWait(notification)

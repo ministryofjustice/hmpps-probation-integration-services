@@ -46,7 +46,7 @@ internal class ReferAndMonitorHandlerTest {
             HmppsDomainEvent(
                 unknownEventType,
                 1,
-                occurredAt = ZonedDateTime.now(),
+                occurredAt = ZonedDateTime.now()
             )
         )
 

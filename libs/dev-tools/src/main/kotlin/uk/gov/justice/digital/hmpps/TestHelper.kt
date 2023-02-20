@@ -30,7 +30,7 @@ fun prepNotification(
             "{wiremock.port}",
             port.toString()
         )
-    ),
+    )
 )
 
 fun ZonedDateTime.closeTo(dateTime: ZonedDateTime?, unit: ChronoUnit = ChronoUnit.SECONDS, number: Int = 1): Boolean {

@@ -26,7 +26,11 @@ class FeedbackSubmitted(
 
     fun sessionAppointmentSubmitted(event: HmppsDomainEvent): EventProcessingResult = handle {
         val appointment = ramClient.getSession(URI(event.detailUrl!!))?.appointmentOutcome(
-            event.personReference.findCrn()!!, event.referralId(), event.contractType()
+            event.personReference.findCrn()!!,
+            event.referralId(),
+            event.contractType(),
+            event.providerName(),
+            event.url()
         )
         if (appointment == null) {
             Failure(IllegalArgumentException("Unable to retrieve session: ${event.detailUrl}"))
@@ -50,23 +54,37 @@ private fun HmppsDomainEvent.contractType(): ContractType {
 }
 
 private fun HmppsDomainEvent.referralId() = additionalInformation["referralId"] as String
+private fun HmppsDomainEvent.providerName() = additionalInformation["providerName"] as String
+private fun HmppsDomainEvent.url() = additionalInformation["url"] as String
 
-private fun ReferralSession.appointmentOutcome(crn: String, referralId: String, contractType: ContractType) =
-    UpdateAppointmentOutcome(
-        appointmentId,
-        crn,
-        Referral(referralId, contractType),
-        Attended.of(sessionFeedback.attendance.attended),
-        sessionFeedback.behaviour.notifyProbationPractitioner
-    )
+private fun ReferralSession.appointmentOutcome(
+    crn: String,
+    referralId: String,
+    contractType: ContractType,
+    providerName: String,
+    url: String
+) = UpdateAppointmentOutcome(
+    appointmentId,
+    crn,
+    Referral(referralId, contractType),
+    Attended.of(sessionFeedback.attendance.attended),
+    sessionFeedback.behaviour.notifyProbationPractitioner,
+    Provider(providerName),
+    url
+)
 
 data class UpdateAppointmentOutcome(
     val id: Long,
     val crn: String,
     val referral: Referral,
     val attended: Attended,
-    val notify: Boolean
-)
+    val notify: Boolean,
+    val provider: Provider,
+    val url: String
+) {
+    val notes =
+        "Session Feedback Submitted for ${referral.contractType.name} Referral ${referral.id} with Prime Provider ${provider.name}${System.lineSeparator()}$url"
+}
 
 data class Referral(
     val id: String,
@@ -75,6 +93,10 @@ data class Referral(
 
 data class ContractType(
     val code: String,
+    val name: String
+)
+
+data class Provider(
     val name: String
 )
 
