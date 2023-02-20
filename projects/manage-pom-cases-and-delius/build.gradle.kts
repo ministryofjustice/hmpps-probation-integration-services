@@ -21,6 +21,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation(libs.springdoc)
+    implementation(libs.opentelemetry.annotations)
 
     dev(project(":libs:dev-tools"))
     dev("com.h2database:h2")

@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.integrations.ldap
 
-import org.springframework.data.ldap.repository.LdapRepository
 import org.springframework.ldap.odm.annotations.Attribute
 import org.springframework.ldap.odm.annotations.DnAttribute
 import org.springframework.ldap.odm.annotations.Entry
@@ -16,13 +15,6 @@ class LdapUser(
     @DnAttribute(value = "cn", index = 1)
     val username: String,
 
-    @Attribute(name = "sn")
-    val surname: String?,
-
     @Attribute(name = "mail")
     val email: String?
 )
-
-interface LdapUserRepository : LdapRepository<LdapUser> {
-    fun findByUsername(username: String): LdapUser?
-}
