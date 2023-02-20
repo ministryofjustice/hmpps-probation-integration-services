@@ -15,7 +15,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.CaseAllocationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.integrations.ldap.LdapUserRepository
+import uk.gov.justice.digital.hmpps.integrations.ldap.LdapService
 import uk.gov.justice.digital.hmpps.set
 
 @ExtendWith(MockitoExtension::class)
@@ -25,7 +25,7 @@ internal class ProbationRecordServiceTest {
     private lateinit var personRepository: PersonRepository
 
     @Mock
-    private lateinit var ldap: LdapUserRepository
+    private lateinit var ldap: LdapService
 
     @Mock
     private lateinit var caseAllocationRepository: CaseAllocationRepository
@@ -48,6 +48,6 @@ internal class ProbationRecordServiceTest {
 
         service.findByNomsId(person.nomsId!!)
 
-        verify(ldap, never()).findByUsername(any())
+        verify(ldap, never()).findEmailByUsername(any())
     }
 }
