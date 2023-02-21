@@ -8,7 +8,7 @@ tasks {
     }
     named("docker") {
         doLast {
-            val dir = File("${project.parent?.projectDir}/changed")
+            val dir = File("${project.rootProject.projectDir}/changed")
             if (!dir.exists()) dir.mkdirs()
             val file = File(dir, project.name)
             if (!file.exists()) file.createNewFile()

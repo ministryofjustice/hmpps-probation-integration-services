@@ -68,11 +68,7 @@ runs:
     - name: Check Changed Images
       id: changed-images
       shell: bash
-      run: |
-        echo "Changed Projects: $(ls changed)"
-        for file in $(ls changed); do projects=(${projects[@]} "$file"); done; \
-        projects_array=$(jq --compact-output --null-input '$ARGS.positional' --args -- ${projects[@]}) \
-        && echo "projects=${projects_array}" >> "$GITHUB_OUTPUT"
+      run: echo "projects=$(ls changed | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_OUTPUT
 
     - name: Login to GitHub Container Registry
       if: ${{ inputs.push-images == 'true' }}
