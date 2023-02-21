@@ -9,6 +9,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
+import java.io.File
 
 class JibConfigPlugin : Plugin<Project> {
 
@@ -56,6 +57,12 @@ class JibConfigPlugin : Plugin<Project> {
                             password = System.getenv("GITHUB_PASSWORD")
                         }
                     }
+                }
+                doLast {
+                    val dir = File("${project.parent?.projectDir}/changed")
+                    if (!dir.exists()) dir.mkdirs()
+                    val file = File(dir, project.name)
+                    if (!file.exists()) file.createNewFile()
                 }
                 dependsOn(copyAgent, copyAppInsightsConfig, assemble)
                 inputs.dir("deploy")

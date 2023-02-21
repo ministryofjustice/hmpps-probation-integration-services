@@ -6,4 +6,12 @@ tasks {
         tag("latest", "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}:latest")
         files("container")
     }
+    named("docker") {
+        doLast {
+            val dir = File("${project.parent?.projectDir}/changed")
+            if (!dir.exists()) dir.mkdirs()
+            val file = File(dir, project.name)
+            if (!file.exists()) file.createNewFile()
+        }
+    }
 }

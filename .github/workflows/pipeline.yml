@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.build.outputs.version }}
-      changed-projects: ${{ steps.build.outputs.changed-projects }}
+      changed-images: ${{ steps.build.outputs.changed-images }}
     steps:
       - uses: actions/checkout@v3
       - name: Build and test
@@ -27,22 +27,22 @@ jobs:
     name: Deploy to test
     uses: ./.github/workflows/deploy.yml
     needs: build
-    if: ${{ needs.build.outputs.changed-projects != '[]' }}
+    if: ${{ needs.build.outputs.changed-images != '[]'}}
     with:
       environment: test
       version: ${{ needs.build.outputs.version }}
-      projects: ${{ needs.build.outputs.changed-projects }}
+      projects: ${{ needs.build.outputs.changed-images }}
     secrets: inherit
 
   deploy-to-preprod:
     name: Deploy to preprod
     uses: ./.github/workflows/deploy.yml
     needs: build
-    if: ${{ needs.build.outputs.changed-projects != '[]' }}
+    if: ${{ needs.build.outputs.changed-images != '[]'}}
     with:
       environment: preprod
       version: ${{ needs.build.outputs.version }}
-      projects: ${{ needs.build.outputs.changed-projects }}
+      projects: ${{ needs.build.outputs.changed-images }}
     secrets: inherit
 
   end-to-end-tests:
@@ -53,7 +53,7 @@ jobs:
       - deploy-to-test
       - deploy-to-preprod
     with:
-      projects: ${{ needs.build.outputs.changed-projects }}
+      projects: ${{ needs.build.outputs.changed-images }}
     secrets: inherit
 
   report-test-failures:

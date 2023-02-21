@@ -10,16 +10,14 @@ outputs:
   version:
     description: The image tag used in the build
     value: ${{ steps.version.outputs.version }}
-  changed-projects:
-    description: A JSON array of projects that changed
-    value: ${{ steps.check-changes.outputs.projects }}
+  changed-images:
+    description: A JSON array of projects where images have changed
+    value: ${{ steps.changed-images.outputs.projects }}
 
 runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v3
-    - id: check-changes
-      uses: ./.github/actions/check-changes
     - uses: actions/setup-java@v3
       with:
         java-version: '17'
@@ -66,6 +64,15 @@ runs:
     - name: Build standalone docker images
       shell: bash
       run: ./gradlew docker
+
+    - name: Check Changed Images
+      id: changed-images
+      shell: bash
+      run: |
+        echo "Changed Projects: $(ls changed)"
+        for file in $(ls changed); do projects=(${projects[@]} "$file"); done; \
+        projects_array=$(jq --compact-output --null-input '$ARGS.positional' --args -- ${projects[@]}) \
+        && echo "projects=${projects_array}" >> "$GITHUB_OUTPUT"
 
     - name: Login to GitHub Container Registry
       if: ${{ inputs.push-images == 'true' }}
