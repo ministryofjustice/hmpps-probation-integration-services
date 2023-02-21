@@ -1,4 +1,4 @@
-FROM opensearchproject/logstash-oss-with-opensearch-output-plugin:8.4.0
+FROM opensearchproject/logstash-oss-with-opensearch-output-plugin:8.6.1
 
 COPY --chown=logstash ojdbc11.jar statement.sql /etc/logstash/
 COPY --chown=logstash logstash-full-load.conf /usr/share/logstash/full-load/logstash.conf
