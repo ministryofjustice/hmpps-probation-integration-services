@@ -10,6 +10,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import uk.gov.justice.digital.hmpps.MessageGenerator
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
@@ -23,6 +24,8 @@ internal class HandlerTest {
     @Mock lateinit var telemetryService: TelemetryService
 
     @Mock lateinit var riskScoreService: RiskScoreService
+
+    @Mock lateinit var riskAssessmentService: RiskAssessmentService
 
     @Mock lateinit var converter: NotificationConverter<HmppsDomainEvent>
 
