@@ -104,35 +104,33 @@ class RiskAssessmentService(
                 date = assessmentDate,
                 event = event,
                 person = person,
-                notes = generateNotes(assessment, person, event, assessmentDate, ogrsScore, personManager),
+                notes = generateNotes(person, assessmentDate, ogrsScore, personManager, event),
                 staffId = personManager.staff.id,
                 teamId = personManager.team.id
-
             )
         )
     }
 
     private fun generateNotes(
-        assessment: OGRSAssessment,
         person: Person,
-        event: Event,
         assessmentDate: ZonedDateTime,
         ogrsScore: OgrsScore,
-        personManager: PersonManager
+        personManager: PersonManager,
+        event: Event
     ): String {
         return """
             CRN: ${person.crn}
             PNC Number: ${person.pncNumber}
             Name: ${person.forename} ${person.surname}
-            Order: TODO()
+            Order: ${event.disposal?.disposalType?.description}
             Offender manager: ${personManager.staff.forename} ${personManager.staff.surname}
             Gender: ${person.gender?.description}
             Date of Birth: ${DeliusDateFormatter.format(person.dateOfBirth)}
-            Date of Current Conviction: TODO()
+            Date of Current Conviction: ${DeliusDateFormatter.format(event.disposal?.disposalDate)}
             Date of Assessment: ${DeliusDateFormatter.format(assessmentDate)}
             Date of First Sanction: TODO()
             Previous Sanctions: TODO()
-            Offence Category: TODO()
+            Offence Category: ${event.mainOffence?.offence?.mainCategoryDescription}
             Reconviction calculation is ${ogrsScore.ogrs3Yr1}% within one year and ${ogrsScore.ogrs3Yr2}% within 2 years.
         """.trimIndent()
     }

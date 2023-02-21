@@ -12,6 +12,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import java.time.ZonedDateTime
 
 @Immutable
 @Entity
@@ -54,7 +55,10 @@ class Disposal(
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
+
+    @Column(name = "disposal_date", nullable = false)
+    val disposalDate: ZonedDateTime
 )
 
 @Immutable
