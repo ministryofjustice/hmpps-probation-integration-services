@@ -3,11 +3,14 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.stringContainsInOrder
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyMap
+import org.mockito.kotlin.atLeastOnce
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
@@ -15,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.test.context.ActiveProfiles
+import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
@@ -53,6 +58,9 @@ class CaseNotesIntegrationTest {
     @Autowired
     lateinit var wireMockserver: WireMockServer
 
+    @SpyBean
+    lateinit var air: AuditedInteractionRepository
+
     @Test
     fun `update an existing case note succesfully`() {
         val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
@@ -76,6 +84,10 @@ class CaseNotesIntegrationTest {
         )
 
         verify(telemetryService).trackEvent(eq(CASE_NOTE_MERGED), anyMap(), anyMap())
+
+        verify(air, atLeastOnce()).save(any())
+        val savedAudits = air.findAll()
+        assertThat(savedAudits.size, greaterThan(0))
     }
 
     @Test
@@ -117,6 +129,10 @@ class CaseNotesIntegrationTest {
 
         assertThat(saved.createdByUserId, equalTo(UserGenerator.APPLICATION_USER.id))
         assertThat(saved.lastModifiedUserId, equalTo(UserGenerator.APPLICATION_USER.id))
+
+        verify(air, atLeastOnce()).save(any())
+        val savedAudits = air.findAll()
+        assertThat(savedAudits.size, greaterThan(0))
     }
 
     @Test

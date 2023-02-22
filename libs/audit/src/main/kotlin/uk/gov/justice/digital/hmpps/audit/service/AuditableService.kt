@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.audit.service
 
-import uk.gov.justice.digital.hmpps.audit.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.InteractionCode
+import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 
-abstract class AuditableService(protected val auditedInteractionService: AuditedInteractionService) {
+abstract class AuditableService(private val auditedInteractionService: AuditedInteractionService) {
     protected fun <T> audit(
         interactionCode: InteractionCode,
         params: AuditedInteraction.Parameters = AuditedInteraction.Parameters(),
