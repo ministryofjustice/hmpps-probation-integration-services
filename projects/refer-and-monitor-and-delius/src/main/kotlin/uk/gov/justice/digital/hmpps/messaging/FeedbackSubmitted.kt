@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.messaging
 
-import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.integrations.randm.ReferAndMonitorClient
 import uk.gov.justice.digital.hmpps.integrations.randm.ReferralSession
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -10,7 +9,7 @@ import uk.gov.justice.digital.hmpps.messaging.EventProcessingResult.Failure
 import uk.gov.justice.digital.hmpps.service.AppointmentService
 import java.net.URI
 
-@Component
+// @Component deactivated until completed
 class FeedbackSubmitted(
     private val ramClient: ReferAndMonitorClient,
     private val appointmentService: AppointmentService

@@ -36,9 +36,12 @@ class Appointment(
     @JoinColumn(name = "contact_type_id")
     val type: AppointmentType,
 
+    @Column(name = "contact_date")
+    val date: ZonedDateTime = ZonedDateTime.now(),
+
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")
-    var outcome: AppointmentOutcome?,
+    var outcome: AppointmentOutcome? = null,
 
     @Lob
     @Column
@@ -48,6 +51,8 @@ class Appointment(
     var enforcementActionId: Long? = null,
 
     var enforcement: Boolean? = null,
+
+    val nsiId: Long? = null,
 
     @Id
     @Column(name = "contact_id")

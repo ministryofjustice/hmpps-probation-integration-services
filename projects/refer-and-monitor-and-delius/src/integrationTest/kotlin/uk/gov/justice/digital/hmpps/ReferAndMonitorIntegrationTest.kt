@@ -2,13 +2,13 @@ package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
+import uk.gov.justice.digital.hmpps.messaging.DomainEventType
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -37,12 +37,10 @@ internal class ReferAndMonitorIntegrationTest {
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        verify(telemetryService, atLeastOnce()).trackEvent(
-            "SessionAppointmentSubmitted",
+        verify(telemetryService).trackEvent(
+            "UnhandledEventReceived",
             mapOf(
-                "appointmentId" to "1824573421",
-                "crn" to "T140223",
-                "referralId" to "f56c5f7c-632f-4cad-a1b3-693541cb5f22"
+                "eventType" to DomainEventType.SessionAppointmentSubmitted.name
             )
         )
     }

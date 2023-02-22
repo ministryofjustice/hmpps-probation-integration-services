@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentTypeRepository
@@ -15,7 +14,7 @@ import uk.gov.justice.digital.hmpps.messaging.Attended
 import uk.gov.justice.digital.hmpps.messaging.UpdateAppointmentOutcome
 import java.time.ZonedDateTime
 
-@Service
+// @Service deactivated until completed
 class AppointmentService(
     private val appointmentRepository: AppointmentRepository,
     private val typeRepository: AppointmentTypeRepository,
