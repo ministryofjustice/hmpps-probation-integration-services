@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.audit.converter
 
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Converter
-import uk.gov.justice.digital.hmpps.audit.AuditedInteraction
+import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 
 @Converter
 class AuditedInteractionParamsConverter : AttributeConverter<AuditedInteraction.Parameters, String> {

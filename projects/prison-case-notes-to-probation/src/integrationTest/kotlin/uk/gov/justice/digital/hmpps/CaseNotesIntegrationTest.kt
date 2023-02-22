@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
+import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteMessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
@@ -52,6 +53,9 @@ class CaseNotesIntegrationTest {
 
     @Autowired
     lateinit var wireMockserver: WireMockServer
+
+    @Autowired
+    lateinit var aiService: AuditedInteractionRepository
 
     @Test
     fun `update an existing case note succesfully`() {
@@ -117,6 +121,8 @@ class CaseNotesIntegrationTest {
 
         assertThat(saved.createdByUserId, equalTo(UserGenerator.APPLICATION_USER.id))
         assertThat(saved.lastModifiedUserId, equalTo(UserGenerator.APPLICATION_USER.id))
+
+        aiService.findAll().forEach { println("Found a record: $it") }
     }
 
     @Test
