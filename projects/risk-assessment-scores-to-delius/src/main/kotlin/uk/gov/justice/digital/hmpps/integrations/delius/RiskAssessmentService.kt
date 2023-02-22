@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
@@ -31,6 +32,7 @@ class RiskAssessmentService(
     private val contactRepository: ContactRepository
 ) {
 
+    @Transactional
     fun addOrUpdateRiskAssessment(
         crn: String,
         eventNumber: Int?,

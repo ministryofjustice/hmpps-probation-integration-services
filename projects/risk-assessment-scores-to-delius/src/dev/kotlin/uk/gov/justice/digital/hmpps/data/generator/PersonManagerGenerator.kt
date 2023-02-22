@@ -10,7 +10,7 @@ object PersonManagerGenerator {
     ) = PersonManager(
         id,
         PersonGenerator.DEFAULT.id,
-        StaffGenerator.DEFAULT,
-        TeamGenerator.DEFAULT
+        TeamGenerator.DEFAULT,
+        StaffGenerator.DEFAULT
     )
 }

@@ -13,5 +13,5 @@ object EventGenerator {
         id: Long = IdGenerator.getAndIncrement(),
         active: Boolean = true,
         softDeleted: Boolean = false
-    ) = Event(id, eventNumber, person, active, softDeleted)
+    ) = Event(id, eventNumber, person, active = active, softDeleted = softDeleted)
 }

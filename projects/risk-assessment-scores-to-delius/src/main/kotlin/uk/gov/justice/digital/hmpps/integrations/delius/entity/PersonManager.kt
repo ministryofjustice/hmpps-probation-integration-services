@@ -23,12 +23,12 @@ class PersonManager(
     val personId: Long,
 
     @ManyToOne
-    @JoinColumn(name = "allocation_staff_id", nullable = false)
-    val staff: Staff,
-
-    @ManyToOne
     @JoinColumn(name = "team_id", nullable = false)
     val team: Team,
+
+    @ManyToOne
+    @JoinColumn(name = "allocation_staff_id", nullable = false)
+    val staff: Staff,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,

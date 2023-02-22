@@ -33,13 +33,6 @@ class Contact(
     @Column(name = "contact_id", nullable = false)
     val id: Long = 0,
 
-    @Version
-    @Column(name = "row_version", nullable = false)
-    val version: Long = 0,
-
-    @Column(name = "contact_date", nullable = false)
-    val date: ZonedDateTime,
-
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime? = null,
 
@@ -89,7 +82,14 @@ class Contact(
     val softDeleted: Boolean = false,
 
     @Column(nullable = false)
-    val partitionAreaId: Long = 0
+    val partitionAreaId: Long = 0,
+
+    @Version
+    @Column(name = "row_version", nullable = false)
+    val version: Long = 0,
+
+    @Column(name = "contact_date", nullable = false)
+    val date: ZonedDateTime
 )
 
 const val OGRS_ASSESSMENT_CT = "EOGR"

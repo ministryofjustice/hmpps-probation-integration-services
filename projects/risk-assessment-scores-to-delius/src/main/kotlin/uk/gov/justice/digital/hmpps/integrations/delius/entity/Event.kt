@@ -30,17 +30,17 @@ class Event(
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
-    @Column(name = "active_flag", columnDefinition = "number", nullable = false)
-    val active: Boolean,
-
-    @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean,
-
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
 
     @OneToOne(mappedBy = "event")
-    val mainOffence: MainOffence? = null
+    val mainOffence: MainOffence? = null,
+
+    @Column(name = "active_flag", columnDefinition = "number", nullable = false)
+    val active: Boolean,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean
 )
 
 @Immutable
@@ -58,14 +58,14 @@ class Disposal(
     @JoinColumn(name = "disposal_type_id", updatable = false)
     val disposalType: DisposalType,
 
+    @Column(name = "disposal_date", nullable = false)
+    val disposalDate: ZonedDateTime,
+
     @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
-
-    @Column(name = "disposal_date", nullable = false)
-    val disposalDate: ZonedDateTime
+    val softDeleted: Boolean = false
 )
 
 @Immutable
@@ -130,6 +130,6 @@ interface EventRepository : JpaRepository<Event, Long> {
     fun findByCrn(crn: String, eventNumber: String): Event?
 
     @Lock(LockModeType.PESSIMISTIC_READ)
-    @Query("select e.id from Event e where e.id = : id")
+    @Query("select e.id from Event e where e.id = :id")
     fun findForUpdate(id: Long): Long
 }

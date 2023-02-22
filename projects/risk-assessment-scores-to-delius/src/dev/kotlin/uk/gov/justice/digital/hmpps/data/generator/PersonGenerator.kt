@@ -5,7 +5,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
 import java.time.LocalDate
 
 object PersonGenerator {
-    val DEFAULT = generate("X123456", "A1234YZ")
+    val DEFAULT = generate("X552020", "A1234YZ")
 
     fun generate(crn: String, nomsId: String? = null, id: Long = IdGenerator.getAndIncrement()) = Person(
         id = id,

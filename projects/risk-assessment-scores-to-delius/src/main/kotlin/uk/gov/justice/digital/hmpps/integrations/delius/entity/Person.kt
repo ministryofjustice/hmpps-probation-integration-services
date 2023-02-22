@@ -28,6 +28,10 @@ class Person(
     @Column(columnDefinition = "char(13)")
     val pncNumber: String? = null,
 
+    @ManyToOne
+    @JoinColumn(name = "gender_id")
+    val gender: ReferenceData?,
+
     @Column(name = "first_name", length = 35)
     val forename: String,
 
@@ -39,10 +43,6 @@ class Person(
 
     @Column(name = "surname", length = 35)
     val surname: String,
-
-    @ManyToOne
-    @JoinColumn(name = "gender_id")
-    val gender: ReferenceData?,
 
     @Column(name = "date_of_birth_date")
     val dateOfBirth: LocalDate,

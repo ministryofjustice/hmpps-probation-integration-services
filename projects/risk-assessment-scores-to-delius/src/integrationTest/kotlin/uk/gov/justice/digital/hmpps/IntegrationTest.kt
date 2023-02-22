@@ -46,6 +46,19 @@ internal class IntegrationTest {
     }
 
     @Test
+    fun `successfully update OGRS scores`() {
+        val notification = Notification(
+            message = MessageGenerator.OGRS_SCORES_DETERMINED,
+            attributes = MessageAttributes("risk-assessment.scores.determined")
+        )
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        verify(telemetryService).trackEvent("AddOrUpdateRiskAssessment", notification.message.telemetryProperties())
+
+        // Verify that the OGRS assessment has been created
+        // Verify that the Contact has been created
+    }
+
+    @Test
     fun `JsonMappingException handled gracefully`() {
         val message = Files.readString(ResourceUtils.getFile("classpath:messages/no-event-number.json").toPath())
         assertDoesNotThrow { handler.handle(message) }
