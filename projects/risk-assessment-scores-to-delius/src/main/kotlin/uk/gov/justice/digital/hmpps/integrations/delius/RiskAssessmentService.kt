@@ -66,7 +66,7 @@ class RiskAssessmentService(
         if (ogrsAssessment != null) {
             if (assessmentDate.toLocalDate() > ogrsAssessment.assessmentDate) {
                 // if there is one and this assessment has a greater date then update the existing with the new scores
-                val assessment = ogrsAssessmentRepository.save(
+                ogrsAssessmentRepository.save(
                     ogrsAssessment.copy(
                         ogrs3Score1 = ogrsScore.ogrs3Yr1.toLong(),
                         ogrs3Score2 = ogrsScore.ogrs3Yr2.toLong(),

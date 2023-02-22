@@ -114,12 +114,7 @@ class Offence(
     @Id
     @Column(name = "offence_id")
     val id: Long,
-    @Column(name = "main_category_code", columnDefinition = "char(3)")
-    val mainCategoryCode: String,
-    val mainCategoryDescription: String,
-    @Column(name = "sub_category_code", columnDefinition = "char(2)")
-    val subCategoryCode: String,
-    val subCategoryDescription: String
+    val mainCategoryDescription: String
 )
 
 interface EventRepository : JpaRepository<Event, Long> {
