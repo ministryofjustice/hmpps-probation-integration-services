@@ -4,13 +4,16 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.LockModeType
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Immutable
@@ -94,6 +97,12 @@ class MainOffence(
     @JoinColumn(name = "offence_id")
     val offence: Offence,
 
+    @Column(name = "offence_date")
+    val date: LocalDate,
+
+    @Column(name = "offence_count")
+    val offenceCount: Int,
+
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false
 )
@@ -124,4 +133,7 @@ interface EventRepository : JpaRepository<Event, Long> {
     """
     )
     fun findByCrn(crn: String, eventNumber: String): Event?
+    @Lock(LockModeType.PESSIMISTIC_READ)
+    @Query("select e.id from Event e where e.id = : id")
+    fun findForUpdate(id: Long): Long
 }

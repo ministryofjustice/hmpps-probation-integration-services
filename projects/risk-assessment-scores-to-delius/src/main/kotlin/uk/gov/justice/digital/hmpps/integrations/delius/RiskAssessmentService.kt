@@ -73,11 +73,12 @@ class RiskAssessmentService(
                         assessmentDate = assessmentDate.toLocalDate()
                     )
                 )
-                createContact(assessment, person, event, assessmentDate, ogrsScore)
+                createContact(person, event, assessmentDate, ogrsScore)
             }
         } else {
             // if there is no OGRS_ASSESSMENT for this crn/event then create a new one
-            val assessment = ogrsAssessmentRepository.save(
+            eventRepository.findForUpdate(event.id)
+            ogrsAssessmentRepository.save(
                 OGRSAssessment(
                     0,
                     assessmentDate.toLocalDate(),
@@ -86,12 +87,11 @@ class RiskAssessmentService(
                     ogrsScore.ogrs3Yr2.toLong()
                 )
             )
-            createContact(assessment, person, event, assessmentDate, ogrsScore)
+            createContact(person, event, assessmentDate, ogrsScore)
         }
     }
 
     private fun createContact(
-        assessment: OGRSAssessment,
         person: Person,
         event: Event,
         assessmentDate: ZonedDateTime,
@@ -128,8 +128,8 @@ class RiskAssessmentService(
             Date of Birth: ${DeliusDateFormatter.format(person.dateOfBirth)}
             Date of Current Conviction: ${DeliusDateFormatter.format(event.disposal?.disposalDate)}
             Date of Assessment: ${DeliusDateFormatter.format(assessmentDate)}
-            Date of First Sanction: TODO()
-            Previous Sanctions: TODO()
+            Date of First Sanction: ${event.mainOffence?.date}
+            Previous Sanctions: ${event.mainOffence?.offenceCount}
             Offence Category: ${event.mainOffence?.offence?.mainCategoryDescription}
             Reconviction calculation is ${ogrsScore.ogrs3Yr1}% within one year and ${ogrsScore.ogrs3Yr2}% within 2 years.
         """.trimIndent()
