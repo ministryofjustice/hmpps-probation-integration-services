@@ -41,7 +41,7 @@ data class ApplicationAssessed(
     val assessedAt: ZonedDateTime,
     val assessedBy: AssessedBy,
     val decision: Decision,
-    val decisionRationale: String
+    val decisionRationale: String?
 )
 
 data class AssessedBy(
