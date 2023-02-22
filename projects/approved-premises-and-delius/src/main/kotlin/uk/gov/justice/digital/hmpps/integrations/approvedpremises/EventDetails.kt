@@ -68,7 +68,7 @@ data class PersonNotArrived(
     val applicationUrl: String,
     val recordedBy: StaffMember,
     val premises: Premises,
-    val notes: String
+    val notes: String?
 )
 
 data class PersonArrived(
@@ -80,7 +80,7 @@ data class PersonArrived(
     val applicationSubmittedOn: ZonedDateTime,
     val arrivedAt: ZonedDateTime,
     val expectedDepartureOn: LocalDate?,
-    val notes: String
+    val notes: String?
 )
 
 data class PersonDeparted(
