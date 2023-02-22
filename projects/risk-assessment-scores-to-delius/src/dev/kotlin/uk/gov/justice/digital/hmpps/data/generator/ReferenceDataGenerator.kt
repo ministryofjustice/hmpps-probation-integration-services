@@ -13,8 +13,8 @@ object ReferenceDataGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = ReferenceData(
         id,
+        dataset,
         code,
-        description,
-        dataset
+        description
     )
 }

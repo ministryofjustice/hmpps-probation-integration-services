@@ -62,14 +62,6 @@ class Contact(
     @Column(name = "alert_active")
     val alert: Boolean? = false,
 
-    @CreatedDate
-    @Column(nullable = false)
-    var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
-
-    @Column(nullable = false)
-    @CreatedBy
-    var createdByUserId: Long = 0,
-
     @Column(nullable = false)
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
@@ -77,6 +69,14 @@ class Contact(
     @Column(nullable = false)
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
+
+    @CreatedDate
+    @Column(nullable = false)
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(nullable = false)
+    @CreatedBy
+    var createdByUserId: Long = 0,
 
     @Column(nullable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
