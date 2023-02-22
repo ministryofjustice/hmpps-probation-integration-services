@@ -55,10 +55,7 @@ class Disposal(
     val active: Boolean = true,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false,
-
-    @Column(name = "disposal_date", nullable = false)
-    val disposalDate: ZonedDateTime
+    val softDeleted: Boolean = false
 )
 
 @Immutable
