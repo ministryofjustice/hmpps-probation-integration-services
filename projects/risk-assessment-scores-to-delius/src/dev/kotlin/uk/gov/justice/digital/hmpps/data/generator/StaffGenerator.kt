@@ -17,6 +17,6 @@ object StaffGenerator {
         forename = "Test",
         middleName = null,
         surname = name,
-        teams = teams,
+        teams = teams
     )
 }

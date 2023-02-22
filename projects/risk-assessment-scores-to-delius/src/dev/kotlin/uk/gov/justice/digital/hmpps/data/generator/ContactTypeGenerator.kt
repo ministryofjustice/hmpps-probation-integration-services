@@ -7,5 +7,5 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRS_ASSESSMENT_C
 object ContactTypeGenerator {
     val DEFAULT = generate()
 
-    fun generate(id: Long = IdGenerator.getAndIncrement()) = ContactType(id, OGRS_ASSESSMENT_CT )
+    fun generate(id: Long = IdGenerator.getAndIncrement()) = ContactType(id, OGRS_ASSESSMENT_CT)
 }

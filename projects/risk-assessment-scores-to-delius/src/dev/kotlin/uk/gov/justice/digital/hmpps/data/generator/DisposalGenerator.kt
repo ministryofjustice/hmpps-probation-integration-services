@@ -9,5 +9,5 @@ object DisposalGenerator {
 
     fun generate(
         id: Long = IdGenerator.getAndIncrement()
-    ) = Disposal(id, EventGenerator.DEFAULT, DisposalTypeGenerator.DEFAULT, disposalDate = ZonedDateTime.now().minusMonths(5) )
+    ) = Disposal(id, EventGenerator.DEFAULT, DisposalTypeGenerator.DEFAULT, disposalDate = ZonedDateTime.now().minusMonths(5))
 }

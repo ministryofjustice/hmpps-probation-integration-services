@@ -46,7 +46,7 @@ class Handler(
                     riskAssessmentService.addOrUpdateRiskAssessment(
                         message.personReference.findCrn()
                             ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
-                        message.additionalInformation["EventNumber"] as String?,
+                        message.additionalInformation["EventNumber"] as Int?,
                         message.assessmentDate(),
                         message.ogrsScore()
                     )

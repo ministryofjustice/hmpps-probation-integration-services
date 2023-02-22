@@ -12,7 +12,6 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import java.time.ZonedDateTime
 
 @Immutable
 @Entity

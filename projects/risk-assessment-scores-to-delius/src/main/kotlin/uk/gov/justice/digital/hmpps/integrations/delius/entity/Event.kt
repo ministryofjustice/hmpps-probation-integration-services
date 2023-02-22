@@ -128,6 +128,7 @@ interface EventRepository : JpaRepository<Event, Long> {
     """
     )
     fun findByCrn(crn: String, eventNumber: String): Event?
+
     @Lock(LockModeType.PESSIMISTIC_READ)
     @Query("select e.id from Event e where e.id = : id")
     fun findForUpdate(id: Long): Long

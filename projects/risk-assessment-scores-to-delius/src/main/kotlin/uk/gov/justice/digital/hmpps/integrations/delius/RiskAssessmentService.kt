@@ -33,7 +33,7 @@ class RiskAssessmentService(
 
     fun addOrUpdateRiskAssessment(
         crn: String,
-        eventNumber: String?,
+        eventNumber: Int?,
         assessmentDate: ZonedDateTime,
         ogrsScore: OgrsScore
     ) {
@@ -55,10 +55,10 @@ class RiskAssessmentService(
         }
 
         // validate that the offender has an event with this event number
-        val event = eventRepository.findByCrn(crn, eventNumber) ?: return let {
+        val event = eventRepository.findByCrn(crn, eventNumber.toString()) ?: return let {
             telemetryService.trackEvent(
                 "event not found",
-                mapOf("crn" to crn, "eventNumber" to eventNumber)
+                mapOf("crn" to crn, "eventNumber" to eventNumber.toString())
             )
         }
 
