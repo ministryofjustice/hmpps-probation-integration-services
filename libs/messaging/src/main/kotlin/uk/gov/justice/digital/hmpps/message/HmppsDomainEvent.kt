@@ -30,4 +30,7 @@ data class AdditionalInformation(
     operator fun set(key: String, value: Any) {
         info[key] = value
     }
+    fun containsKey(key: String): Boolean {
+        return info.containsKey(key)
+    }
 }
