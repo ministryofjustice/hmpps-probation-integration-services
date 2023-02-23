@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.allocations
+package uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity
 
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Column

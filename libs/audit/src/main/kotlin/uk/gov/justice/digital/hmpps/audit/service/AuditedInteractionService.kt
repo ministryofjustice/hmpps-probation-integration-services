@@ -22,7 +22,7 @@ class AuditedInteractionService(
         params: AuditedInteraction.Parameters,
         outcome: AuditedInteraction.Outcome
     ) {
-        ServiceContext.servicePrincipal()?.let {
+        ServiceContext.servicePrincipal()!!.let {
             val bi = businessInteractionRepository.findByCode(interactionCode.code)
             auditedInteractionRepository.save(
                 AuditedInteraction(

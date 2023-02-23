@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.audit
+package uk.gov.justice.digital.hmpps.audit.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

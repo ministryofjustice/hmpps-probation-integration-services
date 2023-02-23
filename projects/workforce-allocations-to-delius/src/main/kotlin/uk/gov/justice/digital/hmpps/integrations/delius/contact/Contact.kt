@@ -15,7 +15,7 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.BaseEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.BaseEntity
 import java.time.ZonedDateTime
 
 @EntityListeners(AuditingEntityListener::class)
