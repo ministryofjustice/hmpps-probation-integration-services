@@ -78,7 +78,7 @@ class RiskAssessmentService(
         } else {
             // if there is no OGRS_ASSESSMENT for this crn/event then create a new one
             eventRepository.findForUpdate(event.id)
-            ogrsAssessmentRepository.findByEvent(event)?.let{ throw ConflictException("Assessment has been created")}
+            ogrsAssessmentRepository.findByEvent(event)?.let { throw ConflictException("Assessment has been created") }
             ogrsAssessmentRepository.save(
                 OGRSAssessment(
                     0,
