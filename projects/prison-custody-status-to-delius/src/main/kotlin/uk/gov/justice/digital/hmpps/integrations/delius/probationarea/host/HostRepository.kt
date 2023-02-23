@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host.entity.Host
 import java.time.ZonedDateTime
 
 interface HostRepository : JpaRepository<Host, Long> {

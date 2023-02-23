@@ -1,15 +1,14 @@
 package uk.gov.justice.digital.hmpps.audit.service
 
 import org.springframework.scheduling.annotation.Async
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.audit.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.BusinessInteractionNotFoundException
 import uk.gov.justice.digital.hmpps.audit.InteractionCode
+import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
-import uk.gov.justice.digital.hmpps.security.ServicePrincipal
+import uk.gov.justice.digital.hmpps.security.ServiceContext
 
 @Service
 class AuditedInteractionService(
@@ -23,14 +22,12 @@ class AuditedInteractionService(
         params: AuditedInteraction.Parameters,
         outcome: AuditedInteraction.Outcome
     ) {
-        val principal = SecurityContextHolder.getContext().authentication?.principal
-
-        if (principal is ServicePrincipal) {
+        ServiceContext.servicePrincipal()!!.let {
             val bi = businessInteractionRepository.findByCode(interactionCode.code)
             auditedInteractionRepository.save(
                 AuditedInteraction(
                     bi?.id ?: throw BusinessInteractionNotFoundException(interactionCode.code),
-                    principal.userId ?: throw IllegalArgumentException("No user id in security context"),
+                    it.userId,
                     parameters = params,
                     outcome = outcome
                 )

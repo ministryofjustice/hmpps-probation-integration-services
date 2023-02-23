@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.transfer
+package uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.transfer.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

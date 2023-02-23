@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.referencedata
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.address.AddressTypeCode.APPROVED_PREMISES
 
 interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
 
@@ -26,4 +27,5 @@ fun ReferenceDataRepository.mainAddressStatus() = getAddressStatus("M")
 fun ReferenceDataRepository.previousAddressStatus() = getAddressStatus("P")
 
 fun ReferenceDataRepository.approvedPremisesAddressType() =
-    findByCodeAndDatasetCode("A02", DatasetCode.ADDRESS_TYPE) ?: throw NotFoundException("Address Type", "code", "A02")
+    findByCodeAndDatasetCode(APPROVED_PREMISES.code, DatasetCode.ADDRESS_TYPE)
+        ?: throw NotFoundException("Address Type", "code", APPROVED_PREMISES.code)

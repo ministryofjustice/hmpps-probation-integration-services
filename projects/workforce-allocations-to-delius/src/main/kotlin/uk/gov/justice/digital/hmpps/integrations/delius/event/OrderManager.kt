@@ -9,7 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ManagerBaseEntity
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ManagerBaseEntity
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)

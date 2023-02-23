@@ -8,8 +8,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.getByEventId
-import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.transfer.LicenceConditionTransfer
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.transfer.LicenceConditionTransferRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.transfer.entity.LicenceConditionTransfer
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getByCodeAndSetName

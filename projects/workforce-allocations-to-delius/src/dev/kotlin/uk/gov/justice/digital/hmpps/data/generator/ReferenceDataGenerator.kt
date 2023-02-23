@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.Dataset
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.Dataset
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 
 object ReferenceDataGenerator {
     val CUSTODY_STATUS = generate(DatasetGenerator.CUSTODY_STATUS, "A")

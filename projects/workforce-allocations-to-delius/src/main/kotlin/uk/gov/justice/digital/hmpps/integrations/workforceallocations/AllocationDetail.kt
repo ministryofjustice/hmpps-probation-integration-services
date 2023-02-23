@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.workforceallocations
 
 import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.DatasetCode
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.DatasetCode
 import java.time.ZonedDateTime
 
 @JsonDeserialize(using = AllocationDetailDeserialiser::class)

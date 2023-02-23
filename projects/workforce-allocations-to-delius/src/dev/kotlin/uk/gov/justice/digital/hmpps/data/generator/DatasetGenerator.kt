@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.Dataset
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.DatasetCode
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.Dataset
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.DatasetCode
 
 object DatasetGenerator {
     val TRANSFER_STATUS = generate(DatasetCode.TRANSFER_STATUS)

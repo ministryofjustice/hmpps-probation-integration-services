@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.boot.context.event.ApplicationStartedEvent
@@ -68,5 +69,13 @@ class DeliusConnectionProviderTest {
         verify(connection).prepareStatement("call PKG_VPD_CTX.CLEAR_CLIENT_IDENTIFIER()")
         verify(preparedStatement).execute()
         verify(preparedStatement).close()
+    }
+
+    @Test
+    fun `when offender id in optimisation context sp called`() {
+        OptimisationContext.offenderId.set(765)
+        whenever(connection.prepareStatement(anyString())).thenReturn(preparedStatement)
+        deliusConnectionProvider.closeConnection(connection)
+        verify(connection, times(2)).prepareStatement(anyString())
     }
 }

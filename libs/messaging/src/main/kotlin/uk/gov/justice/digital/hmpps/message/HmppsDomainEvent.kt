@@ -8,7 +8,7 @@ data class HmppsDomainEvent(
     val eventType: String,
     val version: Int,
     val detailUrl: String? = null,
-    val occurredAt: ZonedDateTime,
+    val occurredAt: ZonedDateTime = ZonedDateTime.now(),
     val description: String? = null,
     val additionalInformation: AdditionalInformation = AdditionalInformation(),
     val personReference: PersonReference = PersonReference()

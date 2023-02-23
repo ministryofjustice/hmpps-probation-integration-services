@@ -21,10 +21,11 @@ jobs:
         if: ${{ steps.labels.outputs.count == '0' }}
         id: jira
         run: |
-          jira_issue_number=$(echo '${{ github.event.pull_request.title }}' | sed -E 's/^(PI-[0-9]+).*/\1/')
+          jira_issue_number=$(echo "$PR_TITLE" | sed -E 's/^(PI-[0-9]+).*/\1/')
           jira_issue_type=$(curl -s -u "$JIRA_USERNAME:$JIRA_TOKEN" "https://dsdmoj.atlassian.net/rest/api/2/issue/$jira_issue_number" | jq -r '.fields.issuetype.name')
           echo "issue-type=$jira_issue_type" >> $GITHUB_OUTPUT
         env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
           JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
           JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
 
