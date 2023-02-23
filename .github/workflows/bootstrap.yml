@@ -295,3 +295,91 @@ jobs:
             --label bootstrap
         env:
           GITHUB_TOKEN: ${{ github.token }}
+
+  infra-setup:
+    runs-on: ubuntu-latest
+    steps:
+      - id: project_name
+        run: echo "hash=$(echo -n '${{ inputs.project_name }}' | sha1sum | head -c 8)" >> $GITHUB_OUTPUT
+
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+      - uses: actions/checkout@v3
+        with:
+          path: cloud-platform-environments-dev
+          repository: ministryofjustice/cloud-platform-environments
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+      - uses: actions/checkout@v3
+        with:
+          path: cloud-platform-environments-preprod
+          repository: ministryofjustice/cloud-platform-environments
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+      - uses: actions/checkout@v3
+        with:
+          path: cloud-platform-environments-prod
+          repository: ministryofjustice/cloud-platform-environments
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+      - name: Add Pingdom check
+        run: sed -i '/add new projects here/i \    "${{ inputs.project_name }}",' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/pingdom.tf'
+
+      - name: Render certificate templates
+        run: |
+          sed 's/$SERVICE_NAME/${{ inputs.project_name }}/g;s/$SERVICE_URL/${{ inputs.project_name }}-dev.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}-dev.hmpps.service.justice.gov.uk/g;s/$ENV/dev/g' templates/certificate.yml >> 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/05-certificates.yml'
+          sed 's/$SERVICE_NAME/${{ inputs.project_name }}/g;s/$SERVICE_URL/${{ inputs.project_name }}-preprod.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}-preprod.hmpps.service.justice.gov.uk/g;s/$ENV/preprod/g' templates/certificate.yml >> 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/05-certificates.yml'
+          sed 's/$SERVICE_NAME/${{ inputs.project_name }}/g;s/$SERVICE_URL/${{ inputs.project_name }}.hmpps.service.justice.gov.uk/g;s/$SERVICE_SHORT_URL/${{ steps.project_name.outputs.hash }}.hmpps.service.justice.gov.uk/g;s/$ENV/prod/g' templates/certificate.yml >> 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/05-certificates.yml'
+
+      - name: Create dev pull request
+        id: dev-pr
+        uses: ./.github/actions/create-signed-pull-request
+        with:
+          path: cloud-platform-environments-dev
+          add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev
+          branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-infra-dev
+          commit-message: ${{ inputs.issue_number }} Create certificate for ${{ inputs.project_name }} (dev)
+          private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+      - name: Create preprod pull request
+        id: preprod-pr
+        uses: ./.github/actions/create-signed-pull-request
+        with:
+          path: cloud-platform-environments-preprod
+          add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod
+          branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-infra-preprod
+          commit-message: ${{ inputs.issue_number }} Create certificate for ${{ inputs.project_name }} (preprod)
+          private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+      - name: Create prod pull request
+        id: prod-pr
+        uses: ./.github/actions/create-signed-pull-request
+        with:
+          path: cloud-platform-environments-prod
+          add-paths: namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod
+          branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-infra-prod
+          commit-message: ${{ inputs.issue_number }} Create Pingdom check and certificate for ${{ inputs.project_name }} (prod)
+          private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+      - name: Create issue for manual steps
+        run: |
+          gh issue create \
+            --title '${{ inputs.issue_number }} Complete infrastructure setup for ${{ inputs.project_name }}' \
+            --body '
+          - [ ] Request approval in [#ask-cloud-platform](https://mojdt.slack.com/archives/C57UPMZLY) for the following pull requests
+          > Hi there, please could you review these 3 PRs:
+          > ${{ steps.dev-pr.outputs.pull-request-url }}
+          > ${{ steps.preprod-pr.outputs.pull-request-url }}
+          > ${{ steps.prod-pr.outputs.pull-request-url }}
+          - [ ] Merge the pull requests' \
+            --label bootstrap
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
