@@ -31,7 +31,7 @@ interface CourtReportRepository : JpaRepository<CourtReport, Long> {
            'mainOffence' value json_object(
            'description' value moo.DESCRIPTION),
            'otherOffences' value (      
-           SELECT json_array(json_object('description' VALUE aoo.DESCRIPTION))
+           SELECT json_arrayagg(json_object('description' VALUE aoo.DESCRIPTION))
            FROM ADDITIONAL_OFFENCE ao
            JOIN R_OFFENCE aoo ON aoo.OFFENCE_ID = ao.OFFENCE_ID
            WHERE ao.EVENT_ID = e.EVENT_ID
