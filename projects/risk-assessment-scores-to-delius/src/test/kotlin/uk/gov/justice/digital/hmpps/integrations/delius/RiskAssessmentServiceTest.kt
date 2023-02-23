@@ -56,12 +56,12 @@ class RiskAssessmentServiceTest {
         whenever(personRepository.findByCrn(crn))
             .thenReturn(null)
 
-            riskAssessmentService.addOrUpdateRiskAssessment(
-                crn,
-                1,
-                ZonedDateTime.now(),
-                OgrsScore(1, 1)
-            )
+        riskAssessmentService.addOrUpdateRiskAssessment(
+            crn,
+            1,
+            ZonedDateTime.now(),
+            OgrsScore(1, 1)
+        )
         verify(telemetryService).trackEvent(eq("PersonNotFound"), any(), any())
     }
 
@@ -109,8 +109,7 @@ class RiskAssessmentServiceTest {
             .thenReturn(event)
 
         whenever(ogrsAssessmentRepository.findByEvent(event))
-            .thenReturn(OGRSAssessment(1, LocalDate.now().minusYears(1), event, 1, 1, 1,))
-
+            .thenReturn(OGRSAssessment(1, LocalDate.now().minusYears(1), event, 1, 1, 1))
 
         riskAssessmentService.addOrUpdateRiskAssessment(
             crn,

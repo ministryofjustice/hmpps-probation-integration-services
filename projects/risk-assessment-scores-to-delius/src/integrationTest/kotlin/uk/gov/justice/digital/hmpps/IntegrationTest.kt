@@ -78,7 +78,6 @@ internal class IntegrationTest {
         // Verify that the Contact has been created
         MatcherAssert.assertThat(contactRepository.findAll().size, Matchers.equalTo(1))
         MatcherAssert.assertThat(contactRepository.findAll()[0].notes, Matchers.containsString("Reconviction calculation is 4% within one year and 8% within 2 years."))
-
     }
 
     @Test
@@ -100,7 +99,6 @@ internal class IntegrationTest {
         // Verify that the Contact has been created
         MatcherAssert.assertThat(contactRepository.findAll().size, Matchers.equalTo(2))
         MatcherAssert.assertThat(contactRepository.findAll()[1].notes, Matchers.containsString("Reconviction calculation is 5% within one year and 9% within 2 years."))
-
     }
 
     @Test
