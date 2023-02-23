@@ -1,17 +1,18 @@
 package uk.gov.justice.digital.hmpps.integrations.delius
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.EventRepository
@@ -20,7 +21,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessmentRep
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.messaging.OgrsScore
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -34,9 +34,6 @@ class RiskAssessmentServiceTest {
 
     @Mock
     private lateinit var ogrsAssessmentRepository: OGRSAssessmentRepository
-
-    @Mock
-    private lateinit var telemetryService: TelemetryService
 
     @Mock
     private lateinit var personManagerRepository: PersonManagerRepository
@@ -56,28 +53,14 @@ class RiskAssessmentServiceTest {
         whenever(personRepository.findByCrn(crn))
             .thenReturn(null)
 
-        riskAssessmentService.addOrUpdateRiskAssessment(
-            crn,
-            1,
-            ZonedDateTime.now(),
-            OgrsScore(1, 1)
-        )
-        verify(telemetryService).trackEvent(eq("PersonNotFound"), any(), any())
-    }
-
-    @Test
-    fun `when event number not present tracked`() {
-        val crn = PersonGenerator.DEFAULT.crn
-        whenever(personRepository.findByCrn(crn))
-            .thenReturn(PersonGenerator.DEFAULT)
-
-        riskAssessmentService.addOrUpdateRiskAssessment(
-            crn,
-            null,
-            ZonedDateTime.now(),
-            OgrsScore(1, 1)
-        )
-        verify(telemetryService).trackEvent(eq("Event number not present"), any(), any())
+        assertThrows<NotFoundException> {
+            riskAssessmentService.addOrUpdateRiskAssessment(
+                crn,
+                1,
+                ZonedDateTime.now(),
+                OgrsScore(1, 1)
+            )
+        }
     }
 
     @Test
@@ -89,13 +72,14 @@ class RiskAssessmentServiceTest {
         whenever(eventRepository.findByCrn(crn, "1"))
             .thenReturn(null)
 
-        riskAssessmentService.addOrUpdateRiskAssessment(
-            crn,
-            1,
-            ZonedDateTime.now(),
-            OgrsScore(1, 1)
-        )
-        verify(telemetryService).trackEvent(eq("event not found"), any(), any())
+        assertThrows<NotFoundException> {
+            riskAssessmentService.addOrUpdateRiskAssessment(
+                crn,
+                1,
+                ZonedDateTime.now(),
+                OgrsScore(1, 1)
+            )
+        }
     }
 
     @Test

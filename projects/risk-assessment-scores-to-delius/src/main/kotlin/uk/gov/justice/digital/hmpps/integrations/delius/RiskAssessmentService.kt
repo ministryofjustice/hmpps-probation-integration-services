@@ -17,9 +17,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.getManager
 import uk.gov.justice.digital.hmpps.messaging.OgrsScore
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
 @Service
@@ -27,7 +27,6 @@ class RiskAssessmentService(
     private val eventRepository: EventRepository,
     private val personRepository: PersonRepository,
     private val ogrsAssessmentRepository: OGRSAssessmentRepository,
-    private val telemetryService: TelemetryService,
     private val personManagerRepository: PersonManagerRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository
@@ -41,29 +40,10 @@ class RiskAssessmentService(
         ogrsScore: OgrsScore
     ) {
         // validate that the CRN is for a real offender
-        val person = personRepository.findByCrn(crn) ?: return let {
-            telemetryService.trackEvent(
-                "PersonNotFound",
-                mapOf("crn" to crn)
-            )
-        }
-
-        // validate that the event number is present
-        if (eventNumber == null) {
-            telemetryService.trackEvent(
-                "Event number not present",
-                mapOf("crn" to crn)
-            )
-            return
-        }
+        val person = personRepository.getByCrn(crn)
 
         // validate that the offender has an event with this event number
-        val event = eventRepository.findByCrn(crn, eventNumber.toString()) ?: return let {
-            telemetryService.trackEvent(
-                "event not found",
-                mapOf("crn" to crn, "eventNumber" to eventNumber.toString())
-            )
-        }
+        val event = eventRepository.getByCrn(crn, eventNumber.toString())
 
         val ogrsAssessment = ogrsAssessmentRepository.findByEvent(event)
         if (ogrsAssessment != null) {

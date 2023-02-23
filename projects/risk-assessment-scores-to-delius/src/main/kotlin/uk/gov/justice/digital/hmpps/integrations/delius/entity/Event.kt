@@ -13,6 +13,7 @@ import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -133,3 +134,6 @@ interface EventRepository : JpaRepository<Event, Long> {
     @Query("select e.id from Event e where e.id = :id")
     fun findForUpdate(id: Long): Long
 }
+
+fun EventRepository.getByCrn(crn: String, eventNumber: String) =
+    findByCrn(crn, eventNumber) ?: throw NotFoundException("Event number $eventNumber does not exist for crn $crn")

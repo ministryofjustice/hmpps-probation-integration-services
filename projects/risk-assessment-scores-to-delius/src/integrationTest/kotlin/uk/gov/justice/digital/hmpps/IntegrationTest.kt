@@ -3,21 +3,19 @@ package uk.gov.justice.digital.hmpps
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
 import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -36,6 +34,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.nio.file.Files
 import java.time.ZonedDateTime
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.CompletionException
 
 @SpringBootTest
 @ActiveProfiles("integration-test")
@@ -61,10 +60,6 @@ internal class IntegrationTest {
 
     @Autowired
     private lateinit var riskAssessmentService: RiskAssessmentService
-
-    @Autowired
-    @Qualifier("asyncTaskExecutor")
-    private lateinit var threadPoolTaskExecutor: ThreadPoolTaskExecutor
 
     @Test
     fun `successfully update RSR scores`() {
@@ -127,31 +122,30 @@ internal class IntegrationTest {
     @Test
     @Order(3)
     fun `locking test`() {
-        Assertions.assertNotNull(threadPoolTaskExecutor)
         val crn = PersonGenerator.DEFAULT.crn
-        val res1 = CompletableFuture.runAsync({
+        val res1 = CompletableFuture.runAsync {
             riskAssessmentService.addOrUpdateRiskAssessment(
                 crn,
                 1,
                 ZonedDateTime.now().minusMonths(1),
                 OgrsScore(1, 2)
             )
-        }, threadPoolTaskExecutor)
-
-        val res2 = CompletableFuture.runAsync({
-            riskAssessmentService.addOrUpdateRiskAssessment(
-                crn,
-                1,
-                ZonedDateTime.now().minusMonths(1),
-                OgrsScore(1, 2)
-            )
-        }, threadPoolTaskExecutor)
-
-        try {
-            CompletableFuture.allOf(res1, res2).join()
-        } catch (ex: Exception) {
-            assertThat(ex.cause is ConflictException)
         }
+
+        val res2 = CompletableFuture.runAsync {
+            riskAssessmentService.addOrUpdateRiskAssessment(
+                crn,
+                1,
+                ZonedDateTime.now().minusMonths(1),
+                OgrsScore(1, 2)
+            )
+        }
+
+        val ce = assertThrows<CompletionException> {
+            CompletableFuture.allOf(res1, res2).join()
+        }
+
+        assertThat(ce.cause is ConflictException)
     }
 
     @Test
