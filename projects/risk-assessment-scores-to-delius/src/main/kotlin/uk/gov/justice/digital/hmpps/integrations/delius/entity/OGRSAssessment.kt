@@ -23,23 +23,23 @@ import java.time.ZonedDateTime
 @Table(name = "ogrs_assessment")
 @EntityListeners(AuditingEntityListener::class)
 @Where(clause = "soft_deleted = 0")
-data class OGRSAssessment(
+class OGRSAssessment(
     @Id
     @Column(name = "ogrs_assessment_id")
     val id: Long,
 
     @Column(name = "assessment_date")
-    val assessmentDate: LocalDate,
+    var assessmentDate: LocalDate,
 
     @JoinColumn(name = "event_id", referencedColumnName = "event_id")
     @OneToOne
     val event: Event,
 
     @Column(name = "ogrs3_score_1")
-    val ogrs3Score1: Long,
+    var ogrs3Score1: Long,
 
     @Column(name = "ogrs3_score_2")
-    val ogrs3Score2: Long,
+    var ogrs3Score2: Long,
 
     @Column(name = "ogrs2_score")
     val ogrs2Score: Long? = null,
