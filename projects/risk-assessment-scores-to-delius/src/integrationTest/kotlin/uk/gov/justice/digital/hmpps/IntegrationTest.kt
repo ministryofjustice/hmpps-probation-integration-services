@@ -127,7 +127,6 @@ internal class IntegrationTest {
     @Test
     @Order(3)
     fun `locking test`() {
-
         Assertions.assertNotNull(threadPoolTaskExecutor)
         val crn = PersonGenerator.DEFAULT.crn
         val res1 = CompletableFuture.runAsync({

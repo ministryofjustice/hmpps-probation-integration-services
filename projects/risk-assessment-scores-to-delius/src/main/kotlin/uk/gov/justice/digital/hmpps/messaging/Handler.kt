@@ -109,5 +109,5 @@ fun HmppsDomainEvent.telemetryProperties() = mapOf(
     "ospContactScore" to additionalInformation["OSPContactScore"].toString(),
     "ospContactBand" to additionalInformation["OSPContactBand"].toString(),
     "OGRS3Yr1" to additionalInformation["OGRS3Yr1"].toString(),
-    "OGRS3Yr2" to additionalInformation["OGRS3Yr2"].toString(),
+    "OGRS3Yr2" to additionalInformation["OGRS3Yr2"].toString()
 )
