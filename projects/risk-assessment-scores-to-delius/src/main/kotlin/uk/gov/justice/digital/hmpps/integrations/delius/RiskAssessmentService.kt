@@ -71,7 +71,7 @@ class RiskAssessmentService(
                 ogrsAssessment.ogrs3Score1 = ogrsScore.ogrs3Yr1.toLong()
                 ogrsAssessment.ogrs3Score2 = ogrsScore.ogrs3Yr2.toLong()
                 ogrsAssessment.assessmentDate = assessmentDate.toLocalDate()
-                ogrsAssessmentRepository.save(ogrsAssessment)
+                ogrsAssessmentRepository.saveAndFlush(ogrsAssessment)
                 createContact(person, event, assessmentDate, ogrsScore)
             }
         } else {

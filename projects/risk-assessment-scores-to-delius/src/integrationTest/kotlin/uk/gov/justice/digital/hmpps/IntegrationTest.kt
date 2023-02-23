@@ -14,9 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.util.ResourceUtils
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessmentRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
@@ -43,8 +43,11 @@ internal class IntegrationTest {
     @Autowired
     private lateinit var handler: NotificationHandler<HmppsDomainEvent>
 
-    @SpyBean
+    @Autowired
     private lateinit var ogrsAssessmentRepository: OGRSAssessmentRepository
+
+    @Autowired
+    private lateinit var contactRepository: ContactRepository
 
     @Test
     fun `successfully update RSR scores`() {
@@ -69,8 +72,13 @@ internal class IntegrationTest {
         // Verify that the OGRS assessment has been created
         ogrsAssessmentRepository.findAll().size
         MatcherAssert.assertThat(ogrsAssessmentRepository.findAll().size, Matchers.equalTo(1))
+        MatcherAssert.assertThat(ogrsAssessmentRepository.findAll()[0].ogrs3Score1, Matchers.equalTo(4))
+        MatcherAssert.assertThat(ogrsAssessmentRepository.findAll()[0].ogrs3Score2, Matchers.equalTo(8))
 
         // Verify that the Contact has been created
+        MatcherAssert.assertThat(contactRepository.findAll().size, Matchers.equalTo(1))
+        MatcherAssert.assertThat(contactRepository.findAll()[0].notes, Matchers.containsString("Reconviction calculation is 4% within one year and 8% within 2 years."))
+
     }
 
     @Test
@@ -86,8 +94,13 @@ internal class IntegrationTest {
         // Verify that the OGRS assessment has been created
         ogrsAssessmentRepository.findAll().size
         MatcherAssert.assertThat(ogrsAssessmentRepository.findAll().size, Matchers.equalTo(1))
+        MatcherAssert.assertThat(ogrsAssessmentRepository.findAll()[0].ogrs3Score1, Matchers.equalTo(5))
+        MatcherAssert.assertThat(ogrsAssessmentRepository.findAll()[0].ogrs3Score2, Matchers.equalTo(9))
 
         // Verify that the Contact has been created
+        MatcherAssert.assertThat(contactRepository.findAll().size, Matchers.equalTo(2))
+        MatcherAssert.assertThat(contactRepository.findAll()[1].notes, Matchers.containsString("Reconviction calculation is 5% within one year and 9% within 2 years."))
+
     }
 
     @Test

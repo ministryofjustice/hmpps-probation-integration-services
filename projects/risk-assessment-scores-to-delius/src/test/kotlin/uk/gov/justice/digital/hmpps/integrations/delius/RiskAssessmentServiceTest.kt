@@ -1,0 +1,123 @@
+package uk.gov.justice.digital.hmpps.integrations.delius
+
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessment
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessmentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.messaging.OgrsScore
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.LocalDate
+import java.time.ZonedDateTime
+
+@ExtendWith(MockitoExtension::class)
+class RiskAssessmentServiceTest {
+    @Mock
+    private lateinit var eventRepository: EventRepository
+
+    @Mock
+    private lateinit var personRepository: PersonRepository
+
+    @Mock
+    private lateinit var ogrsAssessmentRepository: OGRSAssessmentRepository
+
+    @Mock
+    private lateinit var telemetryService: TelemetryService
+
+    @Mock
+    private lateinit var personManagerRepository: PersonManagerRepository
+
+    @Mock
+    private lateinit var contactTypeRepository: ContactTypeRepository
+
+    @Mock
+    private lateinit var contactRepository: ContactRepository
+
+    @InjectMocks
+    private lateinit var riskAssessmentService: RiskAssessmentService
+
+    @Test
+    fun `when person not found tracked`() {
+        val crn = PersonGenerator.DEFAULT.crn
+        whenever(personRepository.findByCrn(crn))
+            .thenReturn(null)
+
+            riskAssessmentService.addOrUpdateRiskAssessment(
+                crn,
+                1,
+                ZonedDateTime.now(),
+                OgrsScore(1, 1)
+            )
+        verify(telemetryService).trackEvent(eq("PersonNotFound"), any(), any())
+    }
+
+    @Test
+    fun `when event number not present tracked`() {
+        val crn = PersonGenerator.DEFAULT.crn
+        whenever(personRepository.findByCrn(crn))
+            .thenReturn(PersonGenerator.DEFAULT)
+
+        riskAssessmentService.addOrUpdateRiskAssessment(
+            crn,
+            null,
+            ZonedDateTime.now(),
+            OgrsScore(1, 1)
+        )
+        verify(telemetryService).trackEvent(eq("Event number not present"), any(), any())
+    }
+
+    @Test
+    fun `when event not found tracked`() {
+        val crn = PersonGenerator.DEFAULT.crn
+        whenever(personRepository.findByCrn(crn))
+            .thenReturn(PersonGenerator.DEFAULT)
+
+        whenever(eventRepository.findByCrn(crn, "1"))
+            .thenReturn(null)
+
+        riskAssessmentService.addOrUpdateRiskAssessment(
+            crn,
+            1,
+            ZonedDateTime.now(),
+            OgrsScore(1, 1)
+        )
+        verify(telemetryService).trackEvent(eq("event not found"), any(), any())
+    }
+
+    @Test
+    fun `when update assessment with older assessment date nothing happens`() {
+        val crn = PersonGenerator.DEFAULT.crn
+        val event = EventGenerator.DEFAULT
+        whenever(personRepository.findByCrn(crn))
+            .thenReturn(PersonGenerator.DEFAULT)
+
+        whenever(eventRepository.findByCrn(crn, "1"))
+            .thenReturn(event)
+
+        whenever(ogrsAssessmentRepository.findByEvent(event))
+            .thenReturn(OGRSAssessment(1, LocalDate.now().minusYears(1), event, 1, 1, 1,))
+
+
+        riskAssessmentService.addOrUpdateRiskAssessment(
+            crn,
+            1,
+            ZonedDateTime.now().minusYears(2),
+            OgrsScore(1, 1)
+        )
+        verify(ogrsAssessmentRepository, Mockito.times(0)).save(any())
+    }
+}

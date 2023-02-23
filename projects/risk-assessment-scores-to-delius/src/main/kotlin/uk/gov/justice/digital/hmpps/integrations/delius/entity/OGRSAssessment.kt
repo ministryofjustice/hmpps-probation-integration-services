@@ -3,11 +3,14 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
+import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
-import org.hibernate.annotations.Immutable
+import jakarta.persistence.Version
 import org.hibernate.annotations.Where
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
@@ -19,13 +22,14 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
-@Immutable
 @Table(name = "ogrs_assessment")
 @EntityListeners(AuditingEntityListener::class)
 @Where(clause = "soft_deleted = 0")
 class OGRSAssessment(
     @Id
-    @Column(name = "ogrs_assessment_id")
+    @Column(name = "ogrs_assessment_id", updatable = false)
+    @SequenceGenerator(name = "ogrs_assessment_id_seq", sequenceName = "ogrs_assessment_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ogrs_assessment_id_seq")
     val id: Long,
 
     @Column(name = "assessment_date")
@@ -63,6 +67,7 @@ class OGRSAssessment(
     val softDeleted: Boolean = false,
 
     @Column
+    @Version
     val rowVersion: Long = 0L
 )
 
