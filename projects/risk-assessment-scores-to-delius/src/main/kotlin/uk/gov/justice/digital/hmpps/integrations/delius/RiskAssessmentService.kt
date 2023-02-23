@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
+import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
@@ -71,12 +72,13 @@ class RiskAssessmentService(
                 ogrsAssessment.ogrs3Score1 = ogrsScore.ogrs3Yr1.toLong()
                 ogrsAssessment.ogrs3Score2 = ogrsScore.ogrs3Yr2.toLong()
                 ogrsAssessment.assessmentDate = assessmentDate.toLocalDate()
-                ogrsAssessmentRepository.saveAndFlush(ogrsAssessment)
+                ogrsAssessmentRepository.save(ogrsAssessment)
                 createContact(person, event, assessmentDate, ogrsScore)
             }
         } else {
             // if there is no OGRS_ASSESSMENT for this crn/event then create a new one
             eventRepository.findForUpdate(event.id)
+            ogrsAssessmentRepository.findByEvent(event)?.let{ throw ConflictException("Assessment has been created")}
             ogrsAssessmentRepository.save(
                 OGRSAssessment(
                     0,

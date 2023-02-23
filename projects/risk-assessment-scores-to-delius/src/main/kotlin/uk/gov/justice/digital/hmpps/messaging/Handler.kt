@@ -41,6 +41,7 @@ class Handler(
                     // if the message doesn't contain the event number then the event is coming from the prison side
                     // so ignore the message
                     if (!message.additionalInformation.containsKey("EventNumber")) {
+                        telemetryService.trackEvent("AddOrUpdateRiskAssessment - ignored due to no event number", message.telemetryProperties())
                         return
                     }
                     riskAssessmentService.addOrUpdateRiskAssessment(
@@ -106,5 +107,7 @@ fun HmppsDomainEvent.telemetryProperties() = mapOf(
     "ospIndecentScore" to additionalInformation["OSPIndecentScore"].toString(),
     "ospIndecentBand" to additionalInformation["OSPIndecentBand"].toString(),
     "ospContactScore" to additionalInformation["OSPContactScore"].toString(),
-    "ospContactBand" to additionalInformation["OSPContactBand"].toString()
+    "ospContactBand" to additionalInformation["OSPContactBand"].toString(),
+    "OGRS3Yr1" to additionalInformation["OGRS3Yr1"].toString(),
+    "OGRS3Yr2" to additionalInformation["OGRS3Yr2"].toString(),
 )

@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps
 
+import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
@@ -11,11 +13,16 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.util.ResourceUtils
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessmentRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -23,9 +30,12 @@ import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
+import uk.gov.justice.digital.hmpps.messaging.OgrsScore
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.nio.file.Files
+import java.time.ZonedDateTime
+import java.util.concurrent.CompletableFuture
 
 @SpringBootTest
 @ActiveProfiles("integration-test")
@@ -48,6 +58,13 @@ internal class IntegrationTest {
 
     @Autowired
     private lateinit var contactRepository: ContactRepository
+
+    @Autowired
+    private lateinit var riskAssessmentService: RiskAssessmentService
+
+    @Autowired
+    @Qualifier("asyncTaskExecutor")
+    private lateinit var threadPoolTaskExecutor: ThreadPoolTaskExecutor
 
     @Test
     fun `successfully update RSR scores`() {
@@ -77,7 +94,10 @@ internal class IntegrationTest {
 
         // Verify that the Contact has been created
         MatcherAssert.assertThat(contactRepository.findAll().size, Matchers.equalTo(1))
-        MatcherAssert.assertThat(contactRepository.findAll()[0].notes, Matchers.containsString("Reconviction calculation is 4% within one year and 8% within 2 years."))
+        MatcherAssert.assertThat(
+            contactRepository.findAll()[0].notes,
+            Matchers.containsString("Reconviction calculation is 4% within one year and 8% within 2 years.")
+        )
     }
 
     @Test
@@ -98,7 +118,41 @@ internal class IntegrationTest {
 
         // Verify that the Contact has been created
         MatcherAssert.assertThat(contactRepository.findAll().size, Matchers.equalTo(2))
-        MatcherAssert.assertThat(contactRepository.findAll()[1].notes, Matchers.containsString("Reconviction calculation is 5% within one year and 9% within 2 years."))
+        MatcherAssert.assertThat(
+            contactRepository.findAll()[1].notes,
+            Matchers.containsString("Reconviction calculation is 5% within one year and 9% within 2 years.")
+        )
+    }
+
+    @Test
+    @Order(3)
+    fun `locking test`() {
+
+        Assertions.assertNotNull(threadPoolTaskExecutor)
+        val crn = PersonGenerator.DEFAULT.crn
+        val res1 = CompletableFuture.runAsync({
+            riskAssessmentService.addOrUpdateRiskAssessment(
+                crn,
+                1,
+                ZonedDateTime.now().minusMonths(1),
+                OgrsScore(1, 2)
+            )
+        }, threadPoolTaskExecutor)
+
+        val res2 = CompletableFuture.runAsync({
+            riskAssessmentService.addOrUpdateRiskAssessment(
+                crn,
+                1,
+                ZonedDateTime.now().minusMonths(1),
+                OgrsScore(1, 2)
+            )
+        }, threadPoolTaskExecutor)
+
+        try {
+            CompletableFuture.allOf(res1, res2).join()
+        } catch (ex: Exception) {
+            assertThat(ex.cause is ConflictException)
+        }
     }
 
     @Test
