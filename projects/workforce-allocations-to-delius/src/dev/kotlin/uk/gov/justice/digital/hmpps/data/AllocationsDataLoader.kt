@@ -27,7 +27,7 @@ import uk.gov.justice.digital.hmpps.data.repository.ProviderRepository
 import uk.gov.justice.digital.hmpps.data.repository.RegisterTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.RequirementMainCategoryRepository
 import uk.gov.justice.digital.hmpps.data.repository.StaffUserRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceDataRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamRepository

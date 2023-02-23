@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import java.time.LocalDate
 
 @Immutable

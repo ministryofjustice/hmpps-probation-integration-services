@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.datasource
+package uk.gov.justice.digital.hmpps.audit.config
 
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer
 import org.springframework.context.annotation.Bean
@@ -7,6 +7,7 @@ import org.springframework.context.annotation.ConditionContext
 import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.type.AnnotatedTypeMetadata
+import uk.gov.justice.digital.hmpps.datasource.DeliusConnectionProvider
 
 @Configuration
 class ConnectionProviderConfig {
