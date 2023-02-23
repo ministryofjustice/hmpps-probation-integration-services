@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentOutcomeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.appointment.AppointmentTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.appointment.EnforcementActionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementActionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
@@ -20,11 +20,11 @@ import uk.gov.justice.digital.hmpps.user.UserRepository
 @Profile("dev", "integration-test")
 class DataLoader(
     private val userRepository: UserRepository,
-    private val appointmentTypeRepository: AppointmentTypeRepository,
-    private val appointmentOutcomeRepository: AppointmentOutcomeRepository,
+    private val contactTypeRepository: ContactTypeRepository,
+    private val contactOutcomeRepository: ContactOutcomeRepository,
     private val enforcementActionRepository: EnforcementActionRepository,
     private val personRepository: PersonRepository,
-    private val appointmentRepository: AppointmentRepository
+    private val contactRepository: ContactRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -34,11 +34,11 @@ class DataLoader(
 
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        appointmentTypeRepository.saveAll(AppointmentGenerator.APPT_TYPES.values)
-        appointmentOutcomeRepository.saveAll(AppointmentGenerator.APPT_OUTCOMES.values)
+        contactTypeRepository.saveAll(AppointmentGenerator.APPT_TYPES.values)
+        contactOutcomeRepository.saveAll(AppointmentGenerator.APPT_OUTCOMES.values)
         enforcementActionRepository.saveAll(AppointmentGenerator.ENFORCEMENT_ACTIONS.values)
 
         personRepository.saveAndFlush(PersonGenerator.DEFAULT)
-        appointmentRepository.save(AppointmentGenerator.CRSAPT)
+        contactRepository.save(AppointmentGenerator.CRSAPT)
     }
 }

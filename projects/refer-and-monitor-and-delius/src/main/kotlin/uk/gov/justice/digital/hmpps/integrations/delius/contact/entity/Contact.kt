@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.appointment.entity
+package uk.gov.justice.digital.hmpps.integrations.delius.contact.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -26,7 +26,7 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "contact")
 @Where(clause = "soft_deleted = 0")
-class Appointment(
+class Contact(
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
@@ -34,10 +34,13 @@ class Appointment(
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
-    val type: AppointmentType,
+    val type: ContactType,
 
     @Column(name = "contact_date")
     val date: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(name = "contact_start_time")
+    val startTime: ZonedDateTime = date,
 
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")
@@ -52,7 +55,17 @@ class Appointment(
 
     var enforcement: Boolean? = null,
 
+    val eventId: Long? = null,
+
+    @Column(name = "rqmnt_id")
+    val requirementId: Long? = null,
+
     val nsiId: Long? = null,
+
+    @Column(name = "probation_area_id")
+    val providerId: Long,
+    val teamId: Long,
+    val staffId: Long,
 
     @Id
     @Column(name = "contact_id")
@@ -83,14 +96,16 @@ class Appointment(
 @Immutable
 @Entity
 @Table(name = "r_contact_type")
-class AppointmentType(
+class ContactType(
     val code: String,
     @Id
     @Column(name = "contact_type_id")
     val id: Long
 ) {
-    enum class Code(val rar: Boolean) {
-        CRSAPT(true), CRSSAA(false);
+    enum class Code(val rar: Boolean = false) {
+        CRSAPT(true),
+        CRSSAA,
+        NTER
     }
 }
 
@@ -118,7 +133,7 @@ class Enforcement(
 
     @ManyToOne
     @JoinColumn(name = "contact_id")
-    var appointment: Appointment,
+    var contact: Contact,
 
     @ManyToOne
     @JoinColumn(name = "enforcement_action_id")

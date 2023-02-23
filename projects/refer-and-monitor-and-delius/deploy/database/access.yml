@@ -3,10 +3,13 @@ database:
     username_key: /refer-and-monitor-and-delius/db-username
     password_key: /refer-and-monitor-and-delius/db-password
     tables:
+      - audited_interaction
       - contact
       - enforcement
+      - nsi
+      - nsi_status_history
 
   audit:
     username: ReferAndMonitorAndDelius
-    forename: "Refer & Monitor"
+    forename: "Refer And Monitor"
     surname: Service

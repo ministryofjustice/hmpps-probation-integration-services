@@ -9,6 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.persistence.Version
@@ -34,7 +35,11 @@ class Nsi(
 
     @ManyToOne
     @JoinColumn(name = "nsi_status_id")
-    val status: NsiStatus,
+    var status: NsiStatus,
+
+    @JoinColumn(name = "nsi_outcome_id")
+    @ManyToOne
+    var outcome: NsiOutcome? = null,
 
     @Column(name = "nsi_status_date")
     val statusDate: ZonedDateTime = ZonedDateTime.now(),
@@ -46,18 +51,27 @@ class Nsi(
     var actualEndDate: ZonedDateTime? = null,
 
     @Lob
-    val notes: String? = null,
+    var notes: String? = null,
 
     val externalReference: String? = null,
+
+    @OneToMany(mappedBy = "nsi")
+    @Where(clause = "active_flag = 1")
+    val managers: List<NsiManager> = listOf(),
+
+    val eventId: Long? = null,
+
+    @Column(name = "rqmnt_id")
+    val requirementId: Long? = null,
 
     @Id
     @SequenceGenerator(name = "nsi_id_generator", sequenceName = "nsi_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nsi_id_generator")
-    @Column(name = "nsi_id", nullable = false)
+    @Column(name = "nsi_id")
     val id: Long = 0,
 
     @Version
-    @Column(name = "row_version", nullable = false)
+    @Column(name = "row_version")
     val version: Long = 0,
 
     @CreatedDate
@@ -77,6 +91,39 @@ class Nsi(
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
+) {
+    val manager
+        get() = managers.first()
+}
+
+@Immutable
+@Entity
+@Table(name = "nsi_manager")
+@Where(clause = "soft_deleted = 0")
+class NsiManager(
+
+    @ManyToOne
+    @JoinColumn(name = "nsi_id")
+    val nsi: Nsi,
+
+    @Column(name = "probation_area_id")
+    val providerId: Long,
+    val teamId: Long,
+    val staffId: Long,
+
+    @Column(name = "active_flag", columnDefinition = "number")
+    val active: Boolean = true,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean = false,
+
+    @Id
+    @Column(name = "nsi_manager_id")
+    val id: Long = 0,
+
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0
 )
 
 @Entity
@@ -84,6 +131,7 @@ class Nsi(
 @Table(name = "r_nsi_status")
 class NsiStatus(
     val code: String,
+    val contactTypeId: Long,
     @Id
     @Column(name = "nsi_status_id")
     val id: Long
@@ -92,3 +140,78 @@ class NsiStatus(
         END("COMP")
     }
 }
+
+@Entity
+@Immutable
+@Table(name = "r_standard_reference_list")
+class NsiOutcome(
+    val code: String,
+    val description: String,
+    @Id
+    @Column(name = "standard_reference_list_id")
+    val id: Long,
+
+    @Column(name = "reference_data_master_id")
+    val datasetId: Long
+)
+
+@Entity
+@Immutable
+@Table(name = "r_reference_data_master")
+class Dataset(
+    @Column(name = "code_set_name")
+    val name: String,
+    @Id
+    @Column(name = "reference_data_master_id")
+    val id: Long
+) {
+    enum class Code(val value: String) {
+        NSI_OUTCOME("NSI OUTCOME")
+    }
+}
+
+@EntityListeners(AuditingEntityListener::class)
+@Entity
+@Table(name = "nsi_status_history")
+@Where(clause = "soft_deleted = 0")
+class NsiStatusHistory(
+    val nsiId: Long,
+
+    @Column(name = "nsi_status_id")
+    val statusId: Long,
+
+    @Column(name = "nsi_status_date")
+    val date: ZonedDateTime = ZonedDateTime.now(),
+
+    @Lob
+    val notes: String? = null,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean = false,
+
+    @Id
+    @SequenceGenerator(
+        name = "nsi_status_history_id_generator",
+        sequenceName = "nsi_status_history_id_seq",
+        allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nsi_status_history_id_generator")
+    @Column(name = "nsi_status_history_id")
+    val id: Long = 0,
+
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0,
+
+    @CreatedBy
+    var createdByUserId: Long = 0,
+
+    @CreatedDate
+    var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
+
+    @LastModifiedBy
+    var lastUpdatedUserId: Long = 0,
+
+    @LastModifiedDate
+    var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now()
+)

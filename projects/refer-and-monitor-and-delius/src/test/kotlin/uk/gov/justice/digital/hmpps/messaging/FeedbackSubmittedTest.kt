@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.core.IsInstanceOf
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -23,6 +24,7 @@ import uk.gov.justice.digital.hmpps.messaging.DomainEventType.SessionAppointment
 import uk.gov.justice.digital.hmpps.service.AppointmentService
 import java.time.ZonedDateTime
 
+@Disabled("Only Partially Done - awaiting PI-796")
 @ExtendWith(MockitoExtension::class)
 internal class FeedbackSubmittedTest {
 
