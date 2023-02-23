@@ -46,7 +46,6 @@ internal class IntegrationTest {
     @SpyBean
     private lateinit var ogrsAssessmentRepository: OGRSAssessmentRepository
 
-
     @Test
     fun `successfully update RSR scores`() {
         val notification = Notification(
@@ -71,7 +70,6 @@ internal class IntegrationTest {
         ogrsAssessmentRepository.findAll().size
         MatcherAssert.assertThat(ogrsAssessmentRepository.findAll().size, Matchers.equalTo(1))
 
-
         // Verify that the Contact has been created
     }
 
@@ -88,7 +86,6 @@ internal class IntegrationTest {
         // Verify that the OGRS assessment has been created
         ogrsAssessmentRepository.findAll().size
         MatcherAssert.assertThat(ogrsAssessmentRepository.findAll().size, Matchers.equalTo(1))
-
 
         // Verify that the Contact has been created
     }
