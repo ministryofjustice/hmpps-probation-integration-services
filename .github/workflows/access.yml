@@ -114,23 +114,7 @@ jobs:
             fi
           done
 
-      - name: Create GitHub issue for manual step
-        # TODO remove this step once the DBAs implement automated user copying from production to pre-prod
-        if: ${{ matrix.environment == 'preprod' && steps.check_file.outputs.files_exists == 'true' }}
-        shell: bash
-        run: |
-          username=$(yq '.database.audit.username' database/access.yml)
-          gh issue create \
-            --title 'Complete database access setup for ${{ matrix.project }}' \
-            --body '
-          - [ ] Approve the [Database Access workflow](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/access.yml) to Production
-          - [ ] Ask a DBA to copy the *'"$username"'* user from Production to Pre-Production' \
-            --label bootstrap
-        working-directory: projects/${{ matrix.project }}/deploy
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - name: Disable audit user creation in preprod
+      - name: Disable audit user creation in preprod # user_ table records are automatically copied from prod to preprod within 1 hour of creation
         if: ${{ matrix.environment == 'preprod' && steps.check_file.outputs.files_exists == 'true' }}
         shell: bash
         run: yq -i 'del(.database.audit)' database/access.yml
