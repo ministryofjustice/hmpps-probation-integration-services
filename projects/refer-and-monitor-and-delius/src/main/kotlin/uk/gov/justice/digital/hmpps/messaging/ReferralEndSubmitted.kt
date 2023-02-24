@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.randm.ReferAndMonitorClient
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -21,7 +20,6 @@ class ReferralEndSubmitted(
         ReferralEnded as DomainEventType to ::referralEnded
     )
 
-    @Transactional
     fun referralEnded(event: HmppsDomainEvent): EventProcessingResult = handle {
         val sentReferral = ramClient.getReferral(URI(event.detailUrl!!))
             ?: throw NotFoundException("Unable to retrieve session: ${event.detailUrl}")
@@ -39,7 +37,9 @@ class ReferralEndSubmitted(
             ReferralEnded,
             mapOf(
                 "crn" to event.personReference.findCrn()!!,
-                "referralId" to event.referralId()
+                "referralUrn" to event.referralUrn(),
+                "endDate" to sentReferral.endDate.toString(),
+                "endType" to termination.endType.toString()
             )
         )
     }
@@ -47,8 +47,6 @@ class ReferralEndSubmitted(
 
 fun HmppsDomainEvent.deliveryState() = additionalInformation["deliveryState"] as String
 fun HmppsDomainEvent.referralUrn() = additionalInformation["referralURN"] as String
-
-fun HmppsDomainEvent.referralId() = additionalInformation["referralId"] as String
 fun HmppsDomainEvent.referralUiUrl() = additionalInformation["referralProbationUserURL"] as String
 
 data class SentReferral(

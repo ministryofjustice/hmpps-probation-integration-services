@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.contact
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.AppointmentOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
@@ -16,18 +17,19 @@ import java.time.temporal.ChronoUnit
 
 interface ContactRepository : JpaRepository<Contact, Long> {
     @Modifying
+    @Transactional
     @Query(
         """
-        delete from Contact a 
-        where a.nsiId = :nsiId 
-        and a.type.code in :contactTypes 
-        and a.outcome is null
-        and a.date >= :date
+        delete from Contact c
+        where c.nsiId = :nsiId
+        and c.type.id in (select ct.id from ContactType ct where ct.code in :contactTypes)
+        and c.outcome is null
+        and c.date >= :date
     """
     )
     fun deleteFutureAppointmentsForNsi(
         nsiId: Long,
-        contactTypes: List<String> = listOf(CRSAPT.name, CRSSAA.name),
+        contactTypes: List<String> = listOf(CRSAPT.value, CRSSAA.value),
         date: ZonedDateTime = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
     )
 }

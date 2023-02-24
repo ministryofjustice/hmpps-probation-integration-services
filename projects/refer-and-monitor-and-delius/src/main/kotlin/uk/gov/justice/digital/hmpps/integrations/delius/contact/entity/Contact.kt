@@ -26,6 +26,7 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "contact")
 @Where(clause = "soft_deleted = 0")
+@SequenceGenerator(name = "contact_id_generator", sequenceName = "contact_id_seq", allocationSize = 1)
 class Contact(
 
     @ManyToOne
@@ -69,6 +70,7 @@ class Contact(
 
     @Id
     @Column(name = "contact_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
     val id: Long = 0,
 
     @Version
@@ -102,10 +104,12 @@ class ContactType(
     @Column(name = "contact_type_id")
     val id: Long
 ) {
-    enum class Code(val rar: Boolean = false) {
-        CRSAPT(true),
-        CRSSAA,
-        NTER
+    enum class Code(val value: String, val rar: Boolean = false) {
+        CRSAPT("CRSAPT", true),
+        CRSSAA("CRSSAA"),
+        NSI_TERMINATED("NTER"),
+        IN_PROGRESS("C091"),
+        COMPLETED("C092")
     }
 }
 

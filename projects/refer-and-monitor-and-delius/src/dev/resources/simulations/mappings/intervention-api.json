@@ -12,6 +12,19 @@
         "status": 200,
         "bodyFileName": "session-appointment-feedback-submitted.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/sent-referral/f56c5f7c-632f-4cad-a1b3-693541cb5f22"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "referral-prematurely-ended.json"
+      }
     }
   ]
 }

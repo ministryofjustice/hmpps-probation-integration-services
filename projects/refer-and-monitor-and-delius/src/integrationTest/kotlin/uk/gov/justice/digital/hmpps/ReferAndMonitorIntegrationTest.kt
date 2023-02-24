@@ -44,4 +44,24 @@ internal class ReferAndMonitorIntegrationTest {
             )
         )
     }
+
+    @Test
+    fun `referral end submitted`() {
+        val notification = prepNotification(
+            notification("referral-prematurely-ended"),
+            wireMockServer.port()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).trackEvent(
+            "ReferralEnded",
+            mapOf(
+                "crn" to "T140223",
+                "referralUrn" to "urn:hmpps:interventions-referral:68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+                "endDate" to "2023-02-23T15:29:54.197Z[Europe/London]",
+                "endType" to "PREMATURELY_ENDED"
+            )
+        )
+    }
 }

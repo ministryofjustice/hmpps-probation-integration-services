@@ -27,6 +27,7 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "nsi")
 @Where(clause = "soft_deleted = 0")
+@SequenceGenerator(name = "nsi_id_generator", sequenceName = "nsi_id_seq", allocationSize = 1)
 class Nsi(
 
     @ManyToOne
@@ -65,7 +66,6 @@ class Nsi(
     val requirementId: Long? = null,
 
     @Id
-    @SequenceGenerator(name = "nsi_id_generator", sequenceName = "nsi_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nsi_id_generator")
     @Column(name = "nsi_id")
     val id: Long = 0,
@@ -137,26 +137,28 @@ class NsiStatus(
     val id: Long
 ) {
     enum class Code(val value: String) {
+        IN_PROGRESS("INPROG"),
         END("COMP")
     }
 }
 
-@Entity
 @Immutable
+@Entity
 @Table(name = "r_standard_reference_list")
 class NsiOutcome(
+    @Column(name = "code_value")
     val code: String,
+    @Column(name = "code_description")
     val description: String,
     @Id
     @Column(name = "standard_reference_list_id")
     val id: Long,
-
     @Column(name = "reference_data_master_id")
     val datasetId: Long
 )
 
-@Entity
 @Immutable
+@Entity
 @Table(name = "r_reference_data_master")
 class Dataset(
     @Column(name = "code_set_name")

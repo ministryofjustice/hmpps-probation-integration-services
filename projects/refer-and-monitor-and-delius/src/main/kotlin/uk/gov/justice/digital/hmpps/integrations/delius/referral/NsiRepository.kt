@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Dataset
+import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Dataset.Code.NSI_OUTCOME
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
@@ -25,7 +25,7 @@ interface NsiStatusRepository : JpaRepository<NsiStatus, Long> {
     fun findByCode(code: String): NsiStatus?
 }
 
-fun NsiStatusRepository.getByCode(code: String) =
+fun NsiStatusRepository.nsiOutcome(code: String) =
     findByCode(code) ?: throw NotFoundException("NsiStatus", "code", code)
 
 interface NsiOutcomeRepository : JpaRepository<NsiOutcome, Long> {
@@ -33,12 +33,12 @@ interface NsiOutcomeRepository : JpaRepository<NsiOutcome, Long> {
         """
         select oc from NsiOutcome oc
         join Dataset ds on oc.datasetId = ds.id
-        where ds.name = :dataset
-        and oc.code = :code
+        where oc.code = :code
+        and ds.name = :datasetName
     """
     )
-    fun findByCode(code: String, dataset: String): NsiOutcome?
+    fun findByCode(code: String, datasetName: String): NsiOutcome?
 }
 
-fun NsiOutcomeRepository.getByCode(code: String, datasetCode: Dataset.Code = Dataset.Code.NSI_OUTCOME) =
-    findByCode(code, datasetCode.value) ?: throw NotFoundException("NsiOutcome", "code", code)
+fun NsiOutcomeRepository.nsiOutcome(code: String) =
+    findByCode(code, NSI_OUTCOME.value) ?: throw NotFoundException("NsiOutcome", "code", code)
