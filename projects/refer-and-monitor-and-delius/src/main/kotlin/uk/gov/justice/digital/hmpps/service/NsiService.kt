@@ -40,6 +40,7 @@ class NsiService(
 
         nsi.status = status
         nsi.actualEndDate = termination.endDate
+        nsi.statusDate = termination.endDate
         nsi.outcome = outcome
         nsi.notes = listOfNotNull(nsi.notes, termination.notes).joinToString(System.lineSeparator())
         statusHistoryRepository.save(nsi.statusHistory())

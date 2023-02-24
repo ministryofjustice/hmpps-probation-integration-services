@@ -43,7 +43,7 @@ class Nsi(
     var outcome: NsiOutcome? = null,
 
     @Column(name = "nsi_status_date")
-    val statusDate: ZonedDateTime = ZonedDateTime.now(),
+    var statusDate: ZonedDateTime = ZonedDateTime.now(),
 
     val referralDate: ZonedDateTime,
 

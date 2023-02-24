@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -15,8 +16,10 @@ import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
 import uk.gov.justice.digital.hmpps.messaging.DomainEventType
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
@@ -42,6 +45,9 @@ internal class ReferAndMonitorIntegrationTest {
 
     @Autowired
     lateinit var nsiRepository: NsiRepository
+
+    @Autowired
+    lateinit var statusHistoryRepo: NsiStatusHistoryRepository
 
     @Autowired
     lateinit var contactRepository: ContactRepository
@@ -101,5 +107,17 @@ internal class ReferAndMonitorIntegrationTest {
         assertThat(saved.outcome?.code, equalTo(ReferralEndType.PREMATURELY_ENDED.outcome))
 
         assertTrue(contactRepository.findById(futureAppt.id).isEmpty)
+
+        val sh = statusHistoryRepo.findAll().firstOrNull { it.nsiId == nsi.id }
+        assertNotNull(sh)
+        assertThat(sh!!.statusId, equalTo(saved.status.id))
+        assertThat(sh.date, equalTo(saved.actualEndDate))
+
+        val contacts = contactRepository.findAll().filter { it.nsiId == nsi.id }
+        assertThat(contacts.size, equalTo(2))
+        assertTrue(contacts have ContactType.Code.COMPLETED.value)
+        assertTrue(contacts have ContactType.Code.NSI_TERMINATED.value)
     }
+
+    private infix fun List<Contact>.have(type: String) = any { it.type.code == type }
 }
