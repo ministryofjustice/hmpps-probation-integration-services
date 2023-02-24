@@ -97,12 +97,14 @@ interface PersonRepository : JpaRepository<Person, Long> {
         """,
         nativeQuery = true
     )
-    fun getCaseType(
+    fun findCaseType(
         crn: String,
         sentenceEndDateKeyDateTypeCode: String = "SED",
         custodialStatusCodes: List<String> = listOf("A", "C", "D", "R", "I", "AT")
-    ): CaseType
+    ): CaseType?
 }
+
+fun PersonRepository.getCaseType(crn: String) = findCaseType(crn) ?: CaseType.UNKNOWN
 
 fun PersonRepository.getByCrnAndSoftDeletedFalse(crn: String) = findByCrnAndSoftDeletedFalse(crn)
     ?: throw NotFoundException("Person", "crn", crn)

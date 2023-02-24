@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.api.resource.IdentifierType.NOMS
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrnAndSoftDeletedFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByNomsIdAndSoftDeletedFalse
+import uk.gov.justice.digital.hmpps.integrations.delius.person.getCaseType
 
 @Service
 class PersonService(private val personRepository: PersonRepository) {
