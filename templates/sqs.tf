@@ -8,7 +8,7 @@ resource "aws_sns_topic_subscription" "SERVICE_NAME-queue-subscription" {
 }
 
 module "SERVICE_NAME-queue" {
-  source                 = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=4.9.1"
+  source                 = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=4.10.0"
   namespace              = var.namespace
   team_name              = var.team_name
   environment-name       = var.environment_name
