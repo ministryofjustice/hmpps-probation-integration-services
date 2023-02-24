@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.audit.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.audit.AuditedInteraction
-import uk.gov.justice.digital.hmpps.audit.AuditedInteractionId
+import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
+import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteractionId
 
 interface AuditedInteractionRepository : JpaRepository<AuditedInteraction, AuditedInteractionId>

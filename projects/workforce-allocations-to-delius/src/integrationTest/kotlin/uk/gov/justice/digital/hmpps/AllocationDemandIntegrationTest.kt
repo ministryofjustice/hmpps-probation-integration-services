@@ -180,7 +180,7 @@ class AllocationDemandIntegrationTest {
             .andExpect(jsonPath("$.offences[1].mainCategory").value("Case View Additional Offence"))
             .andExpect(jsonPath("$.activeRequirements[0].mainCategory").value("Main Category for Case View"))
             .andExpect(jsonPath("$.activeRequirements[0].subCategory").value("Rqmnt Sub Category"))
-            .andExpect(jsonPath("$.activeRequirements[0].length").value("12"))
+            .andExpect(jsonPath("$.activeRequirements[0].length").value("12 Months"))
     }
 
     companion object {

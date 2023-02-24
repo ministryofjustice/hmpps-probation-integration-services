@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewDisposal
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirement
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirementMainCategory

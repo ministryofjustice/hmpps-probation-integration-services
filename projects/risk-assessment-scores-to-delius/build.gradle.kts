@@ -3,11 +3,12 @@ import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
 apply(plugin = "com.google.cloud.tools.jib")
 
 dependencies {
+    implementation(project(":libs:audit"))
     implementation(project(":libs:commons"))
     implementation(project(":libs:messaging"))
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.jetbrains.kotlin:kotlin-reflect")

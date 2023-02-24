@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceCondition
-import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.category.LicenceConditionCategory
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.category.entity.LicenceConditionCategory
 
 object LicenceConditionGenerator {
     val DEFAULT = generate(EventGenerator.nonCustodialEvent(PersonGenerator.RELEASABLE))

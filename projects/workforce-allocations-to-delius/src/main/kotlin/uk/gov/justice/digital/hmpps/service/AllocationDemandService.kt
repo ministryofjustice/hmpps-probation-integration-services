@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.api.model.toManager
 import uk.gov.justice.digital.hmpps.api.model.toStaffMember
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirement
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.CourtAppearanceRepository
@@ -146,25 +147,18 @@ class AllocationDemandService(
         allocatingStaffUsername: String
     ): AllocationDemandStaffResponse {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
-        val staff = staffRepository.findStaffWithUserByCode(staffCode)
-        val allocatingStaff = staffRepository.findStaffWithUserByUsername(allocatingStaffUsername)
+        val staff = staffRepository.findStaffWithUserByCode(staffCode)!!
+        val allocatingStaff = staffRepository.findStaffWithUserByUsername(allocatingStaffUsername)!!
         val eventId = eventRepository.findByPersonCrnAndNumber(crn, eventNumber)!!.id
         val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId)
             .filter { it.mainCategory.code !in listOf("W", "W2") }
-            .map {
-                Requirement(
-                    it.mainCategory.description,
-                    it.subCategory.description,
-                    it.length.toString(),
-                    it.id
-                )
-            }
-
+            .map { it.toRequirement() }
+        val emails = ldapService.findEmailsForStaffIn(listOf(staff, allocatingStaff))
         return AllocationDemandStaffResponse(
             person.crn,
             person.name(),
-            staff?.toStaffMember(ldapService.findEmailForStaff(staff)),
-            allocatingStaff?.toStaffMember(ldapService.findEmailForStaff(allocatingStaff)),
+            staff.toStaffMember(emails[staff.user?.username]),
+            allocatingStaff.toStaffMember(emails[allocatingStaff.user?.username]),
             contactRepository.getInitialAppointmentDate(person.id, eventId)?.let { InitialAppointment(it) },
             allocationRiskService.getRiskOgrs(person),
             disposalRepository.findSentenceForEventNumberAndPersonId(person.id, eventNumber),
@@ -173,4 +167,11 @@ class AllocationDemandService(
             requirements
         )
     }
+
+    private fun CaseViewRequirement.toRequirement() = Requirement(
+        mainCategory.description,
+        subCategory.description,
+        length?.let { "$length ${mainCategory.units?.description ?: ""}" } ?: "",
+        id
+    )
 }

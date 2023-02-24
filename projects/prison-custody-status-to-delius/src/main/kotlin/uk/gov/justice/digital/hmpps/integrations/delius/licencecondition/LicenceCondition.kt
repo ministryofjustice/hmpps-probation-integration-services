@@ -16,8 +16,8 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Disposal
-import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.category.LicenceConditionCategory
-import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.manager.LicenceConditionManager
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.category.entity.LicenceConditionCategory
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.manager.entity.LicenceConditionManager
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import java.time.ZonedDateTime
 

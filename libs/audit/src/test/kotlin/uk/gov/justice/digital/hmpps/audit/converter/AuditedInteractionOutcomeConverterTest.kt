@@ -7,7 +7,7 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import uk.gov.justice.digital.hmpps.audit.AuditedInteraction
+import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 
 internal class AuditedInteractionOutcomeConverterTest {
 

@@ -23,13 +23,9 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffUserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithUser
 import uk.gov.justice.digital.hmpps.integrations.delius.user.LdapUser
-import uk.gov.justice.digital.hmpps.integrations.delius.user.LdapUserRepository
 
 @ExtendWith(MockitoExtension::class)
 class LdapServiceTest {
-    @Mock
-    lateinit var ldapUserRepository: LdapUserRepository
-
     @Mock
     lateinit var ldapTemplate: LdapTemplate
 
@@ -59,7 +55,7 @@ class LdapServiceTest {
     fun `email found for single staff`() {
         val staff = StaffGenerator.generateStaffWithUser("email", user = StaffUserGenerator.generate("HasEmail"))
         val ldapUser = LdapUserGenerator.generate("HasEmail", "email@user.com")
-        whenever(ldapUserRepository.findByUsername(staff.user!!.username)).thenReturn(ldapUser)
+        whenever(ldapTemplate.find(any(), eq(LdapUser::class.java))).thenReturn(listOf(ldapUser))
 
         val email = ldapService.findEmailForStaff(staff)
 

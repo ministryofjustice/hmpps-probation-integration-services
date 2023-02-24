@@ -12,21 +12,19 @@ import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
-import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.context.SecurityContext
-import org.springframework.security.core.context.SecurityContextHolder
-import uk.gov.justice.digital.hmpps.audit.AuditedInteraction
-import uk.gov.justice.digital.hmpps.audit.AuditedInteractionId
+import org.springframework.boot.context.event.ApplicationStartedEvent
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.audit.BusinessInteractionNotFoundException
+import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
+import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteractionId
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
-import uk.gov.justice.digital.hmpps.security.ServicePrincipal
+import uk.gov.justice.digital.hmpps.security.ServiceContext
 import uk.gov.justice.digital.hmpps.user.User
+import uk.gov.justice.digital.hmpps.user.UserService
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -38,24 +36,25 @@ class AuditedInteractionServiceTest {
     @Mock
     lateinit var auditedInteractionRepository: AuditedInteractionRepository
 
-    private val user = User(1, "ServiceUserName")
-    private val principal = ServicePrincipal(user.username, user.id)
+    @Mock
+    lateinit var userService: UserService
 
     @Mock
-    private lateinit var authentication: Authentication
-
-    @Mock
-    private lateinit var securityContext: SecurityContext
+    lateinit var applicationStartedEvent: ApplicationStartedEvent
 
     @InjectMocks
     lateinit var auditedInteractionService: AuditedInteractionService
 
+    private val user = User(1, "ServiceUserName")
+
+    private fun setupUser() {
+        whenever(userService.findUser(user.username)).thenReturn(user)
+        ServiceContext(user.username, userService).onApplicationEvent(applicationStartedEvent)
+    }
+
     @Test
     fun `create audited interaction`() {
-        val userId = 123L
-        whenever(securityContext.authentication).thenReturn(authentication)
-        whenever(authentication.principal).thenReturn(ServicePrincipal("username", userId))
-        SecurityContextHolder.setContext(securityContext)
+        setupUser()
 
         val bi = BusinessInteraction(1, BusinessInteractionCode.TEST_BI_CODE.code, ZonedDateTime.now())
         whenever(businessInteractionRepository.findByCode(eq(BusinessInteractionCode.TEST_BI_CODE.code), any()))
@@ -75,15 +74,13 @@ class AuditedInteractionServiceTest {
 
         assertThat(saved.businessInteractionId, Matchers.equalTo(1))
         assertThat(saved.outcome, Matchers.equalTo(AuditedInteraction.Outcome.SUCCESS))
-        assertThat(saved.userId, Matchers.equalTo(userId))
+        assertThat(saved.userId, Matchers.equalTo(user.id))
         assertThat(saved.parameters, Matchers.equalTo(parameters))
     }
 
     @Test
     fun `create audited interaction no bi code`() {
-        whenever(securityContext.authentication).thenReturn(authentication)
-        whenever(authentication.principal).thenReturn(principal)
-        SecurityContextHolder.setContext(securityContext)
+        setupUser()
         whenever(businessInteractionRepository.findByCode(any(), any())).thenReturn(null)
 
         val parameters = AuditedInteraction.Parameters(
@@ -96,39 +93,6 @@ class AuditedInteractionServiceTest {
                 AuditedInteraction.Outcome.SUCCESS
             )
         }
-    }
-
-    @Test
-    fun `create audited interaction no service principal`() {
-        whenever(securityContext.authentication).thenReturn(authentication)
-        whenever(authentication.principal).thenReturn(null)
-        SecurityContextHolder.setContext(securityContext)
-
-        val parameters = AuditedInteraction.Parameters(
-            Pair("key", "value")
-        )
-        auditedInteractionService.createAuditedInteraction(
-            BusinessInteractionCode.TEST_BI_CODE,
-            parameters,
-            AuditedInteraction.Outcome.FAIL
-        )
-        verify(auditedInteractionRepository, times(0)).save(any())
-    }
-
-    @Test
-    fun `create audited interaction no authentication`() {
-        whenever(securityContext.authentication).thenReturn(null)
-        SecurityContextHolder.setContext(securityContext)
-
-        val parameters = AuditedInteraction.Parameters(
-            Pair("key", "value")
-        )
-        auditedInteractionService.createAuditedInteraction(
-            BusinessInteractionCode.TEST_BI_CODE,
-            parameters,
-            AuditedInteraction.Outcome.FAIL
-        )
-        verify(auditedInteractionRepository, times(0)).save(any())
     }
 
     @Test

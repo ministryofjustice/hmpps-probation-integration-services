@@ -8,7 +8,7 @@ data class HmppsDomainEvent(
     val eventType: String,
     val version: Int,
     val detailUrl: String? = null,
-    val occurredAt: ZonedDateTime,
+    val occurredAt: ZonedDateTime = ZonedDateTime.now(),
     val description: String? = null,
     val additionalInformation: AdditionalInformation = AdditionalInformation(),
     val personReference: PersonReference = PersonReference()
@@ -29,5 +29,8 @@ data class AdditionalInformation(
     operator fun get(key: String): Any? = info[key]
     operator fun set(key: String, value: Any) {
         info[key] = value
+    }
+    fun containsKey(key: String): Boolean {
+        return info.containsKey(key)
     }
 }

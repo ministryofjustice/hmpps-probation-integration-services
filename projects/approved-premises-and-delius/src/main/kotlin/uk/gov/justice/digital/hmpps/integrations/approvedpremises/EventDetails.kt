@@ -24,7 +24,16 @@ data class SubmittedBy(
     val probationArea: ProbationArea
 )
 
-enum class Decision { Accepted, Rejected }
+enum class Decision {
+    ACCEPTED, REJECTED;
+
+    override fun toString(): String {
+        return when (this) {
+            ACCEPTED -> "Accepted"
+            REJECTED -> "Rejected"
+        }
+    }
+}
 
 data class ApplicationAssessed(
     val applicationId: String,
@@ -32,7 +41,7 @@ data class ApplicationAssessed(
     val assessedAt: ZonedDateTime,
     val assessedBy: AssessedBy,
     val decision: Decision,
-    val decisionRationale: String
+    val decisionRationale: String?
 )
 
 data class AssessedBy(
@@ -59,7 +68,7 @@ data class PersonNotArrived(
     val applicationUrl: String,
     val recordedBy: StaffMember,
     val premises: Premises,
-    val notes: String
+    val notes: String?
 )
 
 data class PersonArrived(
@@ -71,7 +80,7 @@ data class PersonArrived(
     val applicationSubmittedOn: ZonedDateTime,
     val arrivedAt: ZonedDateTime,
     val expectedDepartureOn: LocalDate?,
-    val notes: String
+    val notes: String?
 )
 
 data class PersonDeparted(

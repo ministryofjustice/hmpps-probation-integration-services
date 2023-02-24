@@ -7,9 +7,9 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoInteractions
 import uk.gov.justice.digital.hmpps.MessageGenerator
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
@@ -23,6 +23,8 @@ internal class HandlerTest {
     @Mock lateinit var telemetryService: TelemetryService
 
     @Mock lateinit var riskScoreService: RiskScoreService
+
+    @Mock lateinit var riskAssessmentService: RiskAssessmentService
 
     @Mock lateinit var converter: NotificationConverter<HmppsDomainEvent>
 
@@ -67,7 +69,7 @@ internal class HandlerTest {
     }
 
     @Test
-    fun `OGRS messages are ignored`() {
+    fun `OGRS messages are processed`() {
         // Given an OGRS message
         val message = Notification(
             message = MessageGenerator.OGRS_SCORES_DETERMINED,
@@ -77,9 +79,14 @@ internal class HandlerTest {
         // When it is received
         handler.handle(message)
 
-        // Then it is not processed
-        verifyNoInteractions(riskScoreService)
-        verify(telemetryService).trackEvent("UnsupportedEventType", message.message.telemetryProperties())
+        // Then it is processed
+        verify(riskAssessmentService).addOrUpdateRiskAssessment(
+            message.message.personReference.findCrn()!!,
+            message.message.additionalInformation["EventNumber"] as Int,
+            message.message.assessmentDate(),
+            message.message.ogrsScore()
+        )
+        verify(telemetryService).trackEvent("AddOrUpdateRiskAssessment", message.message.telemetryProperties())
     }
 
     @Test

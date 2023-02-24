@@ -41,7 +41,7 @@ object EventDetailsGenerator {
             applicationUrl = "https://example.com",
             assessedAt = ZonedDateTime.now(),
             assessedBy = assessedBy,
-            decision = Decision.Accepted,
+            decision = Decision.ACCEPTED,
             decisionRationale = "Test decision rationale"
         )
     )
