@@ -137,20 +137,20 @@ class Enforcement(
 
     @ManyToOne
     @JoinColumn(name = "contact_id")
-    var contact: Contact,
+    val contact: Contact,
 
     @ManyToOne
     @JoinColumn(name = "enforcement_action_id")
-    var action: EnforcementAction? = null,
+    val action: EnforcementAction? = null,
 
     @Column(name = "response_date")
-    var responseDate: ZonedDateTime? = null,
+    val responseDate: ZonedDateTime? = null,
 
     @Column(name = "action_taken_date")
-    var actionTakenDate: ZonedDateTime? = ZonedDateTime.now(),
+    val actionTakenDate: ZonedDateTime? = null,
 
     @Column(name = "action_taken_time")
-    var actionTakenTime: ZonedDateTime? = ZonedDateTime.now(),
+    val actionTakenTime: ZonedDateTime? = null,
 
     @Id
     @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
@@ -162,11 +162,11 @@ class Enforcement(
     val partitionAreaId: Long = 0,
 
     @Column(columnDefinition = "number")
-    var softDeleted: Boolean = false,
+    val softDeleted: Boolean = false,
 
     @Column(name = "row_version")
     @Version
-    var version: Long = 0,
+    val version: Long = 0,
 
     @CreatedDate
     var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
@@ -185,12 +185,12 @@ class Enforcement(
 @Entity
 @Table(name = "r_enforcement_action")
 class EnforcementAction(
-    var code: String,
-    var responseByPeriod: Long?,
+    val code: String,
+    val responseByPeriod: Long?,
 
     @Id
     @Column(name = "enforcement_action_id")
-    var id: Long = 0
+    val id: Long = 0
 ) {
     enum class Code(val value: String) {
         REFER_TO_PERSON_MANAGER("ROM")
