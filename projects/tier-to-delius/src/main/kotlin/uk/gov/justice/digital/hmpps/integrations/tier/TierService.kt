@@ -48,11 +48,6 @@ class TierService(
         if (person.currentTier == null || person.currentTier != tier.id) {
             createTier(person, tier, tierCalculation.calculationDate, changeReason)
             createContact(person, tier, tierCalculation.calculationDate, changeReason)
-            // TODO: Update the MANAGEMENT_TIER.DATE_CHANGED column type from DATE to TIMESTAMP
-            // Currently, the database only stores the dateChanged to date precision (no time), so this check will
-            // always succeed for multiple tier updates in the same day. This could lead to an incorrect
-            // OFFENDER.CURRENT_TIER value if messages are processed out of order on the same day. There's nothing we
-            // can do here to remedy this without updating the Delius data model.
             if (latestTierChangeDate == null || tierCalculation.calculationDate > latestTierChangeDate) {
                 updatePerson(person, tier)
             }
