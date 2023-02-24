@@ -15,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
@@ -103,7 +104,12 @@ internal class ReferAndMonitorIntegrationTest {
 
         val saved = nsiRepository.findById(NsiGenerator.END_PREMATURELY.id).orElseThrow()
         assertThat(saved.status.code, equalTo(NsiStatus.Code.END.value))
-        assertThat(saved.actualEndDate, equalTo(ZonedDateTime.parse("2023-02-23T15:29:54Z[Europe/London]")))
+        assertThat(
+            saved.actualEndDate,
+            equalTo(
+                ZonedDateTime.parse("2023-02-23T15:29:54Z").withZoneSameInstant(EuropeLondon)
+            )
+        )
         assertThat(saved.outcome?.code, equalTo(ReferralEndType.PREMATURELY_ENDED.outcome))
 
         assertTrue(contactRepository.findById(futureAppt.id).isEmpty)
