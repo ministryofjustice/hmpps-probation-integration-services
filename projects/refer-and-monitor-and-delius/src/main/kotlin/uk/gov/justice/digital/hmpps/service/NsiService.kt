@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusReposi
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus.Code.END
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatusHistory
+import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCrnAndExternalReference
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.nsiOutcome
 import uk.gov.justice.digital.hmpps.messaging.NsiTermination
@@ -34,10 +35,11 @@ class NsiService(
     @Transactional
     fun terminateNsi(termination: NsiTermination) = audit(MANAGE_NSI) {
         val nsi = nsiRepository.getByCrnAndExternalReference(termination.crn, termination.urn)
-        val status = nsiStatusRepository.nsiOutcome(END.value)
+        val status = nsiStatusRepository.getByCode(END.value)
         val outcome = nsiOutcomeRepository.nsiOutcome(termination.endType.outcome)
 
         nsi.status = status
+        nsi.actualEndDate = termination.endDate
         nsi.outcome = outcome
         nsi.notes = listOfNotNull(nsi.notes, termination.notes).joinToString(System.lineSeparator())
         statusHistoryRepository.save(nsi.statusHistory())

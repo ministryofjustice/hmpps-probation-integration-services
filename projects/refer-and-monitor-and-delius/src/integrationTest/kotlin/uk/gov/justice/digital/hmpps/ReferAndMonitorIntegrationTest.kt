@@ -1,6 +1,10 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,10 +12,18 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
+import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
 import uk.gov.justice.digital.hmpps.messaging.DomainEventType
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
+import uk.gov.justice.digital.hmpps.messaging.ReferralEndType
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.ZonedDateTime
 
 @SpringBootTest
 @ActiveProfiles("integration-test")
@@ -27,6 +39,12 @@ internal class ReferAndMonitorIntegrationTest {
 
     @MockBean
     lateinit var telemetryService: TelemetryService
+
+    @Autowired
+    lateinit var nsiRepository: NsiRepository
+
+    @Autowired
+    lateinit var contactRepository: ContactRepository
 
     @Test
     fun `session appointment feedback submitted`() {
@@ -47,6 +65,19 @@ internal class ReferAndMonitorIntegrationTest {
 
     @Test
     fun `referral end submitted`() {
+        val nsi = nsiRepository.findById(NsiGenerator.END_PREMATURELY.id).orElseThrow()
+        assertThat(nsi.status.code, equalTo(NsiStatus.Code.IN_PROGRESS.value))
+        assertNull(nsi.actualEndDate)
+        assertNull(nsi.outcome)
+
+        val futureAppt = ContactGenerator.generate(
+            type = ContactGenerator.TYPES[ContactType.Code.CRSAPT.value]!!,
+            date = ZonedDateTime.now().plusDays(7),
+            nsi = nsi,
+            person = nsi.person,
+            id = 0
+        ).let { contactRepository.save(it) }
+
         val notification = prepNotification(
             notification("referral-prematurely-ended"),
             wireMockServer.port()
@@ -63,5 +94,12 @@ internal class ReferAndMonitorIntegrationTest {
                 "endType" to "PREMATURELY_ENDED"
             )
         )
+
+        val saved = nsiRepository.findById(NsiGenerator.END_PREMATURELY.id).orElseThrow()
+        assertThat(saved.status.code, equalTo(NsiStatus.Code.END.value))
+        assertThat(saved.actualEndDate, equalTo(ZonedDateTime.parse("2023-02-23T15:29:54Z[Europe/London]")))
+        assertThat(saved.outcome?.code, equalTo(ReferralEndType.PREMATURELY_ENDED.outcome))
+
+        assertTrue(contactRepository.findById(futureAppt.id).isEmpty)
     }
 }

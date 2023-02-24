@@ -25,7 +25,7 @@ interface NsiStatusRepository : JpaRepository<NsiStatus, Long> {
     fun findByCode(code: String): NsiStatus?
 }
 
-fun NsiStatusRepository.nsiOutcome(code: String) =
+fun NsiStatusRepository.getByCode(code: String) =
     findByCode(code) ?: throw NotFoundException("NsiStatus", "code", code)
 
 interface NsiOutcomeRepository : JpaRepository<NsiOutcome, Long> {

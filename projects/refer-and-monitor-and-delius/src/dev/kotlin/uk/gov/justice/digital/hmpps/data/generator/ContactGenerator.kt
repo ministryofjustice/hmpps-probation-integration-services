@@ -7,6 +7,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.EnforcementAction
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Nsi
+import java.time.ZonedDateTime
 
 object ContactGenerator {
     val TYPES = Code.values().map { generateType(it.value) }.associateBy { it.code }
@@ -25,6 +27,8 @@ object ContactGenerator {
 
     fun generate(
         type: ContactType,
+        date: ZonedDateTime = ZonedDateTime.now().minusDays(1),
+        nsi: Nsi? = null,
         outcome: AppointmentOutcome? = null,
         notes: String? = null,
         person: Person = PersonGenerator.DEFAULT,
@@ -32,6 +36,10 @@ object ContactGenerator {
     ) = Contact(
         person,
         type,
+        date = date,
+        startTime = date,
+        nsiId = nsi?.id,
+        eventId = nsi?.eventId,
         outcome = outcome,
         notes = notes,
         id = id,

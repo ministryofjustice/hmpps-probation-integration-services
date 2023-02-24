@@ -52,16 +52,6 @@ class DataLoader(
         datasetRepository.save(NsiGenerator.NSI_OUTCOME_DS)
         nsiOutcomeRepository.saveAll(NsiGenerator.OUTCOMES)
 
-        println("***********")
-        println("NSI Outcomes: ${NsiGenerator.OUTCOMES.map { it.code }}")
-        println("***********")
-
-        println(datasetRepository.findAll().map { "${it.name} => ${it.id}" })
-
-        println("***********")
-        println("NSI Outcomes Saved: ${nsiOutcomeRepository.findAll().map { "${it.code} => ${it.datasetId}" }}")
-        println("***********")
-
         personRepository.save(PersonGenerator.DEFAULT)
         contactRepository.save(ContactGenerator.CRSAPT)
 
