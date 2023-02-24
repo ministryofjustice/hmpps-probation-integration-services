@@ -14,7 +14,7 @@ import java.time.ZonedDateTime
 
 object NsiGenerator {
     val NSI_OUTCOME_DS = Dataset(Dataset.Code.NSI_OUTCOME.value, IdGenerator.getAndIncrement())
-    val OUTCOMES = ReferralEndType.values().map { generateOutcome(it.outcome) }
+    val OUTCOMES = ReferralEndType.values().map { generateOutcome(it.outcome) }.associateBy { it.code }
     val INPROG_STATUS = generateStatus(
         NsiStatus.Code.IN_PROGRESS.value,
         ContactGenerator.TYPES[ContactType.Code.IN_PROGRESS.value]!!.id

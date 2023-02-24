@@ -50,7 +50,7 @@ class DataLoader(
         nsiStatusRepository.saveAll(listOf(NsiGenerator.INPROG_STATUS, NsiGenerator.COMP_STATUS))
 
         datasetRepository.save(NsiGenerator.NSI_OUTCOME_DS)
-        nsiOutcomeRepository.saveAll(NsiGenerator.OUTCOMES)
+        nsiOutcomeRepository.saveAll(NsiGenerator.OUTCOMES.values)
 
         personRepository.save(PersonGenerator.DEFAULT)
         contactRepository.save(ContactGenerator.CRSAPT)
