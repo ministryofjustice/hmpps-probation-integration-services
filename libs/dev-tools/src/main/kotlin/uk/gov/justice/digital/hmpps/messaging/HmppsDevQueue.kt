@@ -59,7 +59,7 @@ abstract class NotificationChannel(
         }
     }
 
-    fun publishAndWait(notification: Notification<*>, timeout: Duration = Duration.ofSeconds(60)) {
+    fun publishAndWait(notification: Notification<*>, timeout: Duration = Duration.ofSeconds(20)) {
         publish(notification)
         val start = LocalDateTime.now()
         val end = start.plus(timeout)
