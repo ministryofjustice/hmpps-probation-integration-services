@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.getByPersonCrnAndNumber
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrnAndSoftDeletedFalse
+import uk.gov.justice.digital.hmpps.integrations.delius.person.getCaseType
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 
 @Service

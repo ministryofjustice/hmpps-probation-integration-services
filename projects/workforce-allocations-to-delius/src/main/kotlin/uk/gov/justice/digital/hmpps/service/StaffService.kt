@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.api.model.OfficerView
 import uk.gov.justice.digital.hmpps.api.model.grade
 import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.getCaseType
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.getWithUserByCode
 import java.time.LocalDate

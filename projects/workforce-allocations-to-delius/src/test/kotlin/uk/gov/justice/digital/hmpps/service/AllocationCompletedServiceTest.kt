@@ -59,7 +59,7 @@ class AllocationCompletedServiceTest {
         val person = PersonGenerator.DEFAULT
         val event = EventGenerator.DEFAULT
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
-        whenever(personRepository.getCaseType(person.crn)).thenReturn(COMMUNITY)
+        whenever(personRepository.findCaseType(person.crn)).thenReturn(COMMUNITY)
         whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
 
         val response = allocationCompletedService.getDetails(person.crn, event.number, "MISSING")
@@ -74,7 +74,7 @@ class AllocationCompletedServiceTest {
         val event = EventGenerator.DEFAULT
         val staff = StaffGenerator.STAFF_WITH_USER
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
-        whenever(personRepository.getCaseType(person.crn)).thenReturn(COMMUNITY)
+        whenever(personRepository.findCaseType(person.crn)).thenReturn(COMMUNITY)
         whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
         whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
 
@@ -91,7 +91,7 @@ class AllocationCompletedServiceTest {
         val user = LdapUserGenerator.DEFAULT
         val initialAppointmentDate = LocalDate.now()
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
-        whenever(personRepository.getCaseType(person.crn)).thenReturn(COMMUNITY)
+        whenever(personRepository.findCaseType(person.crn)).thenReturn(COMMUNITY)
         whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
         whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
         whenever(ldapService.findEmailForStaff(staff)).thenReturn(user.email)
