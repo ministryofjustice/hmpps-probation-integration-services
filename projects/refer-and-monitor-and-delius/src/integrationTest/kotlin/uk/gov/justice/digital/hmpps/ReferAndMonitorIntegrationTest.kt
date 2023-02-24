@@ -105,7 +105,7 @@ internal class ReferAndMonitorIntegrationTest {
         val saved = nsiRepository.findById(NsiGenerator.END_PREMATURELY.id).orElseThrow()
         assertThat(saved.status.code, equalTo(NsiStatus.Code.END.value))
         assertThat(
-            saved.actualEndDate,
+            saved.actualEndDate?.withZoneSameInstant(EuropeLondon),
             equalTo(
                 ZonedDateTime.parse("2023-02-23T15:29:54Z").withZoneSameInstant(EuropeLondon)
             )
