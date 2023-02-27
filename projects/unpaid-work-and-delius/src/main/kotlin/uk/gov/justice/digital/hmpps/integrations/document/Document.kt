@@ -49,5 +49,8 @@ class Document(
     val softDeleted: Boolean = false,
 
     @Column(columnDefinition = "char(1)")
-    var status: String = "N"
+    var status: String = "N",
+
+    var sensitive: Boolean = false,
+    val partitionAreaId: Long = 0
 )
