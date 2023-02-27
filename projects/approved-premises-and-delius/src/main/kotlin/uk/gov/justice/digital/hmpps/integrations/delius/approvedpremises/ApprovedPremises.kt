@@ -28,5 +28,8 @@ class ApprovedPremises(
 
     @ManyToOne
     @JoinColumn(name = "probation_area_id", nullable = false)
-    val probationArea: ProbationArea
+    val probationArea: ProbationArea,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean = false
 )

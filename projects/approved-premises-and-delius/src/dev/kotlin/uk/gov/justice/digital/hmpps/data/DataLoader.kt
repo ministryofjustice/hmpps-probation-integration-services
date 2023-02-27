@@ -75,7 +75,16 @@ class DataLoader(
 
         probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
         approvedPremisesRepository.save(ApprovedPremisesGenerator.DEFAULT)
+        // add a duplicate AP for testing soft deleted query
+        approvedPremisesRepository.save(
+            ApprovedPremisesGenerator.generate(
+                ApprovedPremisesGenerator.DEFAULT.code,
+                ApprovedPremisesGenerator.DEFAULT.address,
+                softDeleted = true
+            )
+        )
         approvedPremisesRepository.save(ApprovedPremisesGenerator.NO_STAFF)
+
         teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM)
         teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM_WITH_NO_STAFF)
         teamRepository.save(TeamGenerator.NON_APPROVED_PREMISES_TEAM)

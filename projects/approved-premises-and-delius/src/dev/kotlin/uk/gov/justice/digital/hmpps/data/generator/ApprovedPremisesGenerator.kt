@@ -14,6 +14,7 @@ object ApprovedPremisesGenerator {
         code: ReferenceData,
         address: Address,
         pa: ProbationArea = ProbationAreaGenerator.DEFAULT,
+        softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = ApprovedPremises(id, code, address, pa)
+    ) = ApprovedPremises(id, code, address, pa, softDeleted)
 }
