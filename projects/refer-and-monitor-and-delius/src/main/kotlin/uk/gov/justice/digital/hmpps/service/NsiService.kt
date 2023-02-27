@@ -38,16 +38,21 @@ class NsiService(
         val status = nsiStatusRepository.getByCode(END.value)
         val outcome = nsiOutcomeRepository.nsiOutcome(termination.endType.outcome)
 
-        nsi.status = status
-        nsi.actualEndDate = termination.endDate
-        nsi.statusDate = termination.endDate
-        nsi.outcome = outcome
-        nsi.notes = listOfNotNull(nsi.notes, termination.notes).joinToString(System.lineSeparator())
-        statusHistoryRepository.save(nsi.statusHistory())
-
-        contactRepository.deleteFutureAppointmentsForNsi(nsi.id)
-        contactRepository.save(nsi.statusChangeContact())
-        contactRepository.save(nsi.terminationContact())
+        if (nsi.status.id != status.id) {
+            nsi.status = status
+            nsi.statusDate = termination.endDate
+            nsi.notes = listOfNotNull(nsi.notes, termination.notes).joinToString(System.lineSeparator())
+            statusHistoryRepository.save(nsi.statusHistory())
+            contactRepository.deleteFutureAppointmentsForNsi(nsi.id)
+            contactRepository.save(nsi.statusChangeContact())
+        }
+        if (nsi.outcome?.id != outcome.id) {
+            nsi.outcome = outcome
+            contactRepository.save(nsi.terminationContact())
+        }
+        if (nsi.actualEndDate != termination.endDate) {
+            nsi.actualEndDate = termination.endDate
+        }
     }
 
     private fun Nsi.statusHistory() = NsiStatusHistory(id, status.id, statusDate, notes)
