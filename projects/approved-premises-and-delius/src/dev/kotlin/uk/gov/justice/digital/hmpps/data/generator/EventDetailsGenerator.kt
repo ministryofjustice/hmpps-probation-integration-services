@@ -10,7 +10,6 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Premises
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.StaffMember
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.SubmittedBy
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
@@ -91,11 +90,6 @@ object EventDetailsGenerator {
         )
     )
 
-    private fun probationArea() = ProbationArea(
-        code = ProbationAreaGenerator.DEFAULT.code,
-        name = "TEST"
-    )
-
     private fun staffMember(staff: Staff) = StaffMember(
         username = "TEST",
         staffCode = staff.code,
@@ -108,7 +102,6 @@ object EventDetailsGenerator {
         id = UUID.randomUUID().toString(),
         name = "Test Premises",
         apCode = "TEST",
-        legacyApCode = ApprovedPremisesGenerator.DEFAULT.code.code,
-        probationArea = probationArea()
+        legacyApCode = ApprovedPremisesGenerator.DEFAULT.code.code
     )
 }

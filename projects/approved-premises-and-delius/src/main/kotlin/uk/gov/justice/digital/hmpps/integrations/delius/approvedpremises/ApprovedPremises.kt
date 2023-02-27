@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 
 @Entity
@@ -23,5 +24,9 @@ class ApprovedPremises(
 
     @ManyToOne
     @JoinColumn(name = "address_id")
-    val address: Address
+    val address: Address,
+
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id", nullable = false)
+    val probationArea: ProbationArea
 )

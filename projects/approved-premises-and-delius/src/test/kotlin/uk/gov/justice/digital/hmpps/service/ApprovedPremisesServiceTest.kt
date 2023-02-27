@@ -56,7 +56,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationAreaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
@@ -101,9 +100,6 @@ internal class ApprovedPremisesServiceTest {
 
     @Mock
     lateinit var teamRepository: TeamRepository
-
-    @Mock
-    lateinit var probationAreaRepository: ProbationAreaRepository
 
     @Mock
     lateinit var nsiRepository: NsiRepository
@@ -190,6 +186,7 @@ internal class ApprovedPremisesServiceTest {
         val bookedBy = BookedByGenerator.generate(staffMember = StaffMemberGenerator.generate(staffCode = booker.code))
         val unallocatedTeam = givenUnallocatedTeam()
         val details = givenBookingMadeDetails(bookedBy = bookedBy)
+        givenAnApprovedPremises(ApprovedPremisesGenerator.DEFAULT)
         givenContactTypes(listOf(ContactTypeCode.BOOKING_MADE))
 
         approvedPremisesService.bookingMade(bookingMadeEvent)
@@ -214,6 +211,7 @@ internal class ApprovedPremisesServiceTest {
         val staff = givenStaff()
         val unallocatedTeam = givenUnallocatedTeam()
         val details = givenPersonNotArrivedDetails(recordedBy = staff)
+        givenAnApprovedPremises(ApprovedPremisesGenerator.DEFAULT)
         givenContactTypes(listOf(ContactTypeCode.NOT_ARRIVED))
 
         approvedPremisesService.personNotArrived(personNotArrivedEvent)
@@ -380,7 +378,6 @@ internal class ApprovedPremisesServiceTest {
 
     private fun givenApprovedPremisesTeam(team: Team = TeamGenerator.APPROVED_PREMISES_TEAM): Team {
         whenever(teamRepository.findByApprovedPremisesCodeCode(team.approvedPremises!!.code.code)).thenReturn(team)
-        whenever(probationAreaRepository.findByCode(team.probationArea.code)).thenReturn(team.probationArea)
         return team
     }
 
