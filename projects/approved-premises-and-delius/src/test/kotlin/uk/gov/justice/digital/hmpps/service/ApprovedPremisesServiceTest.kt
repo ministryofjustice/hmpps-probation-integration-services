@@ -433,7 +433,7 @@ internal class ApprovedPremisesServiceTest {
     }
 
     private fun givenAnApprovedPremises(ap: ApprovedPremises) {
-        whenever(approvedPremisesRepository.findByCodeCodeAndSoftDeletedIsFalse(ap.code.code)).thenReturn(ap)
+        whenever(approvedPremisesRepository.findByCodeCodeAndSelectable(ap.code.code)).thenReturn(ap)
     }
 
     private fun givenAddressStatuses(statuses: List<ReferenceData>) {
