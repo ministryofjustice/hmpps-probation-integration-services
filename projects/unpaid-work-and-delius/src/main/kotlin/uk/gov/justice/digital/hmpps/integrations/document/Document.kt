@@ -46,5 +46,8 @@ class Document(
     var rowVersion: Long? = null,
 
     @Column(columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
+
+    @Column(columnDefinition = "char(1)")
+    var status: String = "N"
 )
