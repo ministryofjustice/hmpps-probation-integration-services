@@ -27,7 +27,7 @@ class PersonManager(
     val staff: Staff,
 
     @ManyToOne
-    @JoinColumn(name = "provider_team_id", nullable = false)
+    @JoinColumn(name = "team_id", nullable = false)
     val team: Team,
 
     @Column(name = "active_flag", columnDefinition = "number")
