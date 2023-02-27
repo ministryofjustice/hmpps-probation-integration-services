@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
@@ -84,8 +85,13 @@ class RiskAssessmentService(
             ManagementTierEvent(
                 person,
                 contactType = contactTypeRepository.getByCode(OGRS_ASSESSMENT_CT),
-                changeReason = referenceDataRepository.findByDatasetAndCode(DatasetCode.TIER_CHANGE_REASON, "OGRS"),
-                tier = referenceDataRepository.findByDatasetAndCode(DatasetCode.TIER, "NA"),
+                changeReason = referenceDataRepository.findByDatasetAndCode(DatasetCode.TIER_CHANGE_REASON, "OGRS")
+                    ?: throw NotFoundException(DatasetCode.TIER_CHANGE_REASON.name, "code", "OGRS"),
+                tier = referenceDataRepository.findByDatasetAndCode(DatasetCode.TIER, "NA") ?: throw NotFoundException(
+                    DatasetCode.TIER.name,
+                    "code",
+                    "NA"
+                )
             )
         )
     }

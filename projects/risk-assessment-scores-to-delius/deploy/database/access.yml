@@ -5,6 +5,7 @@ database:
     tables:
       - contact
       - ogrs_assessment
+      - management_tier_event
     packages:
       - pkg_triggersupport # for CAS update procedure
   audit:
