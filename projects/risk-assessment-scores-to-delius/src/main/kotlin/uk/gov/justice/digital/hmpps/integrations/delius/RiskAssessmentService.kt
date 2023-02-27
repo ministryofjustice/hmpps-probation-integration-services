@@ -7,8 +7,11 @@ import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ManagementTierEvent
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ManagementTierEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessment
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRS_ASSESSMENT_CT
@@ -16,6 +19,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.getManager
@@ -29,7 +33,9 @@ class RiskAssessmentService(
     private val ogrsAssessmentRepository: OGRSAssessmentRepository,
     private val personManagerRepository: PersonManagerRepository,
     private val contactTypeRepository: ContactTypeRepository,
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
+    private val referenceDataRepository: ReferenceDataRepository,
+    private val managementTierEventRepository: ManagementTierEventRepository,
 ) {
 
     @Transactional
@@ -69,7 +75,19 @@ class RiskAssessmentService(
                 )
             )
             createContact(person, event, assessmentDate, ogrsScore)
+            createManagementTierEvent(person)
         }
+    }
+
+    private fun createManagementTierEvent(person: Person) {
+        managementTierEventRepository.save(
+            ManagementTierEvent(
+                person,
+                contactType = contactTypeRepository.getByCode(OGRS_ASSESSMENT_CT),
+                changeReason = referenceDataRepository.findByDatasetAndCode(DatasetCode.TIER_CHANGE_REASON, "OGRS"),
+                tier = referenceDataRepository.findByDatasetAndCode(DatasetCode.TIER, "NA"),
+            )
+        )
     }
 
     private fun createContact(
