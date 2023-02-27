@@ -40,8 +40,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAdd
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.getActiveManager
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationAreaRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.approvedPremisesAddressType
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.mainAddressStatus
@@ -70,7 +68,6 @@ class ApprovedPremisesService(
     private val personAddressRepository: PersonAddressRepository,
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
-    private val probationAreaRepository: ProbationAreaRepository,
     private val nsiRepository: NsiRepository,
     private val nsiTypeRepository: NsiTypeRepository,
     private val nsiStatusRepository: NsiStatusRepository,
@@ -82,9 +79,8 @@ class ApprovedPremisesService(
     fun applicationSubmitted(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getApplicationSubmittedDetails(event.url()).eventDetails
         createContact(
+            ContactDetails(date = details.submittedAt, type = APPLICATION_SUBMITTED),
             person = personRepository.getByCrn(event.crn()),
-            type = APPLICATION_SUBMITTED,
-            date = details.submittedAt,
             staff = staffRepository.getByCode(details.submittedBy.staffMember.staffCode),
             probationAreaCode = details.submittedBy.probationArea.code
         )
@@ -94,11 +90,13 @@ class ApprovedPremisesService(
     fun applicationAssessed(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getApplicationAssessedDetails(event.url()).eventDetails
         createContact(
+            ContactDetails(
+                date = details.assessedAt,
+                type = APPLICATION_ASSESSED,
+                notes = details.decisionRationale,
+                description = "Approved Premises Application ${details.decision}"
+            ),
             person = personRepository.getByCrn(event.crn()),
-            type = APPLICATION_ASSESSED,
-            description = "Approved Premises Application ${details.decision}",
-            notes = details.decisionRationale,
-            date = details.assessedAt,
             staff = staffRepository.getByCode(details.assessedBy.staffMember.staffCode),
             probationAreaCode = details.assessedBy.probationArea.code
         )
@@ -107,30 +105,36 @@ class ApprovedPremisesService(
     @Transactional
     fun bookingMade(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getBookingMadeDetails(event.url()).eventDetails
+        val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
         createContact(
+            ContactDetails(
+                date = details.createdAt,
+                type = BOOKING_MADE,
+                notes = "To view details of the Approved Premises booking, click here: ${details.applicationUrl}",
+                description = "Approved Premises Booking for ${details.premises.name}"
+            ),
             person = personRepository.getByCrn(event.crn()),
-            type = BOOKING_MADE,
-            description = "Approved Premises Booking for ${details.premises.name}",
-            notes = "To view details of the Approved Premises booking, click here: ${details.applicationUrl}",
-            date = details.createdAt,
             staff = staffRepository.getByCode(details.bookedBy.staffMember.staffCode),
-            probationAreaCode = details.premises.probationArea.code
+            probationAreaCode = ap.probationArea.code
         )
     }
 
     @Transactional
     fun personNotArrived(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getPersonNotArrivedDetails(event.url())
+        val ap = approvedPremisesRepository.getApprovedPremises(details.eventDetails.premises.legacyApCode)
         createContact(
+            ContactDetails(
+                date = details.timestamp,
+                type = NOT_ARRIVED,
+                notes = listOfNotNull(
+                    details.eventDetails.notes,
+                    "For more details, click here: ${details.eventDetails.applicationUrl}"
+                ).joinToString("\n\n")
+            ),
             person = personRepository.getByCrn(event.crn()),
-            type = NOT_ARRIVED,
-            notes = listOfNotNull(
-                details.eventDetails.notes,
-                "For more details, click here: ${details.eventDetails.applicationUrl}"
-            ).joinToString("\n\n"),
-            date = details.timestamp,
             staff = staffRepository.getByCode(details.eventDetails.recordedBy.staffCode),
-            probationAreaCode = details.eventDetails.premises.probationArea.code
+            probationAreaCode = ap.probationArea.code
         )
     }
 
@@ -139,23 +143,26 @@ class ApprovedPremisesService(
         val details = approvedPremisesApiClient.getPersonArrivedDetails(event.url()).eventDetails
         val person = personRepository.getByCrn(event.crn())
         val staff = staffRepository.getByCode(details.keyWorker.staffCode)
+        val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
         createContact(
+            ContactDetails(
+                date = details.arrivedAt,
+                type = ARRIVED,
+                notes = listOfNotNull(
+                    details.notes,
+                    "For more details, click here: ${details.applicationUrl}"
+                ).joinToString("\n\n")
+            ),
             person = person,
-            type = ARRIVED,
-            notes = listOfNotNull(
-                details.notes,
-                "For more details, click here: ${details.applicationUrl}"
-            ).joinToString("\n\n"),
-            date = details.arrivedAt,
             staff = staff,
-            probationAreaCode = details.premises.probationArea.code
+            probationAreaCode = ap.probationArea.code
         )
         createResidenceNsi(
             person = person,
             staff = staff,
             details
         )
-        updateMainAddress(person, details)
+        updateMainAddress(person, details, ap)
     }
 
     @Transactional
@@ -163,14 +170,17 @@ class ApprovedPremisesService(
         val details = approvedPremisesApiClient.getPersonDepartedDetails(event.url()).eventDetails
         val person = personRepository.getByCrn(event.crn())
         val staff = staffRepository.getByCode(details.keyWorker.staffCode)
+        val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
         createContact(
+            ContactDetails(
+                date = details.departedAt,
+                type = DEPARTED,
+                notes = "For details, see the referral on the AP Service: ${details.applicationUrl}",
+                createAlert = false
+            ),
             person = person,
-            type = DEPARTED,
-            notes = "For details, see the referral on the AP Service: ${details.applicationUrl}",
-            date = details.departedAt,
             staff = staff,
-            probationAreaCode = details.premises.probationArea.code,
-            createAlert = false
+            probationAreaCode = ap.probationArea.code
         )
         closeNsi(details)
         endMainAddress(person, details.departedAt.toLocalDate())
@@ -182,31 +192,26 @@ class ApprovedPremisesService(
     }
 
     private fun createContact(
-        date: ZonedDateTime,
-        type: ContactTypeCode,
+        details: ContactDetails,
         person: Person,
         staff: Staff,
-        probationAreaCode: String,
-        description: String? = null,
-        notes: String? = null,
-        createAlert: Boolean = true
+        probationAreaCode: String
     ) {
         val team = teamRepository.getUnallocatedTeam(probationAreaCode)
         val personManager = personManagerRepository.getActiveManager(person.id)
         val contact = contactRepository.save(
             Contact(
-                date = date,
-                startTime = date,
-                type = contactTypeRepository.getByCode(type.code),
-                description = description,
+                date = details.date,
+                type = contactTypeRepository.getByCode(details.type.code),
+                description = details.description,
                 person = person,
                 staff = staff,
                 team = team,
-                notes = notes,
-                alert = createAlert
+                notes = details.notes,
+                alert = details.createAlert
             )
         )
-        if (createAlert) {
+        if (details.createAlert) {
             contactAlertRepository.save(
                 ContactAlert(
                     contactId = contact.id,
@@ -243,22 +248,20 @@ class ApprovedPremisesService(
             )
         )
         val team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode)
-        val probationArea = probationAreaRepository.getByCode(details.premises.probationArea.code)
         nsiManagerRepository.save(
             NsiManager(
                 nsi = nsi,
                 staff = staff,
                 team = team,
-                probationArea = probationArea,
+                probationArea = team.probationArea,
                 startDate = nsi.referralDate,
                 transferReason = transferReasonRepository.getNsiTransferReason()
             )
         )
     }
 
-    private fun updateMainAddress(person: Person, details: PersonArrived) {
+    private fun updateMainAddress(person: Person, details: PersonArrived, ap: ApprovedPremises) {
         endMainAddress(person, details.arrivedAt.toLocalDate())
-        val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
         ap.arrival(person, details).apply(personAddressRepository::save)
     }
 
@@ -285,5 +288,13 @@ class ApprovedPremisesService(
         address.postcode,
         address.telephoneNumber,
         startDate = details.arrivedAt.toLocalDate()
+    )
+
+    data class ContactDetails(
+        val date: ZonedDateTime,
+        val type: ContactTypeCode,
+        val notes: String? = null,
+        val description: String? = null,
+        val createAlert: Boolean = true
     )
 }

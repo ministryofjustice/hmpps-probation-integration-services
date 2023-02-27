@@ -41,7 +41,7 @@ class Contact(
     val date: ZonedDateTime,
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime? = null,
+    val startTime: ZonedDateTime? = date,
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id", nullable = false)

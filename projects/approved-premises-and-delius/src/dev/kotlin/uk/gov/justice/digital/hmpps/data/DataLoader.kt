@@ -34,7 +34,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationAreaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
@@ -73,9 +73,9 @@ class DataLoader(
 
         addressRepository.saveAll(listOf(AddressGenerator.Q001, AddressGenerator.Q002))
 
+        probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
         approvedPremisesRepository.save(ApprovedPremisesGenerator.DEFAULT)
         approvedPremisesRepository.save(ApprovedPremisesGenerator.NO_STAFF)
-        probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
         teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM)
         teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM_WITH_NO_STAFF)
         teamRepository.save(TeamGenerator.NON_APPROVED_PREMISES_TEAM)
@@ -126,5 +126,6 @@ class DataLoader(
     }
 }
 
-interface AddressRepository : JpaRepository<Address, Long>
 interface DatasetRepository : JpaRepository<Dataset, Long>
+interface ProbationAreaRepository : JpaRepository<ProbationArea, Long>
+interface AddressRepository : JpaRepository<Address, Long>
