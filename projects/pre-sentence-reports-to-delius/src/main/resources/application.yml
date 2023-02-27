@@ -26,6 +26,8 @@ spring:
       default-request-headers:
         Accept: application/json
         Content-Type: application/json
+    pre-sentence-service:
+      read-timeout: 10000
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: PreSentenceService
