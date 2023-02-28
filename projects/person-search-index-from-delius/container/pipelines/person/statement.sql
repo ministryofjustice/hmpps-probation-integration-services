@@ -13,8 +13,7 @@ SELECT json_object(
                 'pncNumber' VALUE o.PNC_NUMBER,
                 'previousCrn' VALUE prev.IDENTIFIER,
                 'immigrationNumber' VALUE o.IMMIGRATION_NUMBER,
-                'mostRecentPrisonerNumber' VALUE o.MOST_RECENT_PRISONER_NUMBER
-                ABSENT ON NULL),
+                'mostRecentPrisonerNumber' VALUE o.MOST_RECENT_PRISONER_NUMBER ABSENT ON NULL),
                'firstName' VALUE o.FIRST_NAME,
                'middleNames' VALUE json_array(o.SECOND_NAME, o.THIRD_NAME ABSENT ON NULL),
                'surname' VALUE o.SURNAME,

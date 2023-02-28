@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: index-alias-management
 spec:
-  schedule: {{ .Values.management.schedule }}
+  schedule: {{ .Values.management.person_schedule }}
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
   successfulJobsHistoryLimit: 1
@@ -13,15 +13,13 @@ spec:
       template:
         spec:
           containers:
-            - name: housekeeping
+            - name: person-search
               image: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius-management:{{ .Values.version }}
               args:
                 - /scripts/index-alias-management.sh
               env:
-                - name: PRIMARY_INDEX_NAME
-                  value: person-search-primary
-                - name: STANDBY_INDEX_NAME
-                  value: person-search-standby
+                - name: INDEX_PREFIX
+                  value: person-search
                 - name: SEARCH_INDEX_HOST
                   value: {{ .Values.management.host }}
                 - name: APPLICATIONINSIGHTS_CONNECTION_STRING

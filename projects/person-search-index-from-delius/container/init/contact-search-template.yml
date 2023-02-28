@@ -1,0 +1,585 @@
+index_patterns:
+  - contact-search-*
+
+template:
+  settings:
+    index:
+      number_of_shards: 18 # ~= Total size of data / 50GB
+      number_of_replicas: 1
+    index.mapping.ignore_malformed: true
+    analysis:
+      analyzer:
+        probation_search_analyzer:
+          tokenizer: custom-whitespace  # Split words on whitespace while preserving space-separated dates, numbers and postcodes
+          filter:
+            - asciifolding              # Convert non-ascii characters to ascii (e.g. "Êxâmple.text" => "Example.text")
+            - lowercase                 # Convert all characters to lowercase
+            - capture_numbers           # Capture consecutive numbers (e.g. "DATE=01-02-03" => ["01-02-03", "DATE=01-02-03"])
+            - replace_dialcodes         # Replace dial codes with 0 (e.g. "+44123..." => "0123...")
+            - dates_iso8601             # Convert a range of date formats to yyyy-MM-dd
+            - dates_month_day_year      #   e.g. "feb 1st 1999" => "01.feb.1999
+            - dates_jan                 #   e.g. "1st January 19" => "01.01.19"
+            - dates_feb                 #   e.g. "01.feb.99" => "01.02.99"
+            - dates_mar                 #   ...
+            - dates_apr
+            - dates_may
+            - dates_jun
+            - dates_jul
+            - dates_aug
+            - dates_sep
+            - dates_oct
+            - dates_nov
+            - dates_dec
+            - dates_year_month_day      #   e.g. "1999.02.01" => "01.02.1999"
+            - dates_long_year           #   e.g. "01 02 1999" => "01.02.1999"
+            - dates_short_year_19       #   e.g. "01 02 99"   => "01.02.1999"
+            - dates_short_year_20       #   e.g. "01 02 03"   => "01.02.2003"
+            - dates_short_day           #   e.g. "1 02 1999"  => "01.02.1999"
+            - dates_short_month         #   e.g. "01 2 1999"  => "01.02.1999"
+            - dates_reformat            #   e.g. "01.02.1999" => "1999-02-01"
+            - catenate_non_dates        # Combine any numeric fields that haven't been matched as dates (e.g. phone numbers "(0123) 456-789" => "0123456780")
+            - override_stemmer          # Exclude words from stemming (e.g. officer and office should be treated separately)
+            - stemmer                   # Perform word stemming (e.g. "example" => "exampl" , "testing" => "test")
+            - probation_synonyms_common # Apply simple synonyms during both search and indexing.
+            - probation_synonyms_search # Apply additional synonyms at search time
+            - delimit_words             # Split tokens on punctuation (e.g. "example.text" => ["example.text", "exampletext", "example", "text"])
+            - flatten_graph             # Flatten the token graph, so it can be used for indexing
+            - override_stemmer          # Perform additional word stemming after synonyms have been applied
+            - stemmer                   # ...
+            - trim                      # Trim any whitespace from the start/end of tokens
+            - remove_single_chars       # Remove any tokens that are a single character
+            - unique_tokens             # Remove any duplicate tokens in the same positions
+        probation_text_analyzer: # Duplicate of the search analyzer, but with different synonyms
+          tokenizer: custom-whitespace  # Split words on whitespace while preserving space-separated dates, numbers and postcodes
+          filter:
+            - asciifolding              # Convert non-ascii characters to ascii (e.g. "Êxâmple.text" => "Example.text")
+            - lowercase                 # Convert all characters to lowercase
+            - capture_numbers           # Capture consecutive numbers (e.g. "DATE=01-02-03" => ["01-02-03", "DATE=01-02-03"])
+            - replace_dialcodes         # Replace dial codes with 0 (e.g. "+44123..." => "0123...")
+            - dates_iso8601             # Convert a range of date formats to yyyy-MM-dd
+            - dates_month_day_year      #   e.g. "feb 1st 1999" => "01.feb.1999
+            - dates_jan                 #   e.g. "1st January 19" => "01.01.19"
+            - dates_feb                 #   e.g. "01.feb.99" => "01.02.99"
+            - dates_mar                 #   ...
+            - dates_apr
+            - dates_may
+            - dates_jun
+            - dates_jul
+            - dates_aug
+            - dates_sep
+            - dates_oct
+            - dates_nov
+            - dates_dec
+            - dates_year_month_day      #   e.g. "1999.02.01" => "01.02.1999"
+            - dates_long_year           #   e.g. "01 02 1999" => "01.02.1999"
+            - dates_short_year_19       #   e.g. "01 02 99"   => "01.02.1999"
+            - dates_short_year_20       #   e.g. "01 02 03"   => "01.02.2003"
+            - dates_short_day           #   e.g. "1 02 1999"  => "01.02.1999"
+            - dates_short_month         #   e.g. "01 2 1999"  => "01.02.1999"
+            - dates_reformat            #   e.g. "01.02.1999" => "1999-02-01"
+            - catenate_non_dates        # Combine any numeric fields that haven't been matched as dates (e.g. phone numbers "(0123) 456-789" => "0123456780")
+            - override_stemmer          # Exclude words from stemming (e.g. officer and office should be treated separately)
+            - stemmer                   # Perform word stemming (e.g. "example" => "exampl" , "testing" => "test")
+            - probation_synonyms_common # Apply simple synonyms during both search and indexing.
+            - probation_synonyms_index  # Apply additional synonyms while indexing
+            - delimit_words             # Split tokens on punctuation (e.g. "example.text" => ["example.text", "exampletext", "example", "text"])
+            - flatten_graph             # Flatten the token graph, so it can be used for indexing
+            - override_stemmer          # Perform additional word stemming after synonyms have been applied
+            - stemmer                   # ...
+            - trim                      # Trim any whitespace from the start/end of tokens
+            - remove_single_chars       # Remove any tokens that are a single character
+            - unique_tokens             # Remove any duplicate tokens in the same positions
+      tokenizer:
+        custom-whitespace:
+          type: pattern
+          pattern: |
+            ( \b\d{1,2}(?:st|nd|rd|th)?[\ \-\./]         # capture space-separated dates (e.g. "1st february 1999", "1 feb 99")
+                (?:jan(?:uary)?|feb(?:ruary)?
+                  |mar(?:ch)?|apr(?:il)?|may
+                  |june?|july?|aug(?:ust)?
+                  |sept?(?:ember)?|oct(?:ober)?
+                  |(?:nov|dec)(?:ember)?)
+                [\ \-\./](?:19|20)?\d{2}\b
+            | \b(?:jan(?:uary)?|feb(?:ruary)?            # capture space-separated dates, with month first (e.g. "feb 1st 99", "feb 01 1999")
+                  |mar(?:ch)?|apr(?:il)?|may
+                  |june?|july?|aug(?:ust)?
+                  |sept?(?:ember)?|oct(?:ober)?
+                  |(?:nov|dec)(?:ember)?)
+                [\ \-\./]\d{1,2}(?:st|nd|rd|th)?
+                [\ \-\./](?:19|20)?\d{2}\b
+            | \(?\+?\d+[\ \-\./\(\)][\d\ \-\./\(\)]+\d+  # capture space-separated numbers (e.g. "phone 0123 456 78" => ["phone", "0123 456 78"])
+            | [a-z]{1,2}\d[a-z\d]?\ \d[a-z]{2}           # capture space-separated postcodes (e.g. "M20 0AA is the postcode" => ["M20 0AA", "is", "the", "postcode"])
+            | \S+                                        # tokenize everything else on whitespace
+            )
+          flags: CASE_INSENSITIVE|COMMENTS
+          group: 1
+      filter:
+        probation_synonyms_common:
+          type: synonym         # expand: false unless => is used
+          synonyms:
+            - apt, appt => appointment, apt, appt
+            - upw duty manager, upw operations manager, upw placement manager, upw om, upw requirement manager, upw work manager, upw management, upw delivery manager
+            - general practitioner, gp, doctor
+            - mental health, mh
+            - adjourned, adj
+            - report, rept, rep, rpt
+            - magistrates court, magistratescourt, mc, mags, mag court
+            - crown court, cc, crowncourt, crn court
+            - accredited program, accreditedprogram, ap, prog, program
+            - sentence plan, initial sentence plan, final sentence plan, sp, isp, fsp, sentenceplan plan
+            - self harm, selfharm, self-harm
+            - wife, partner
+            - transfer, tfr
+            - meds, medication, medicine
+            - dad, father, pa
+            - mom, mum, mother
+            - msg, message
+            - disqualified, disq
+            - intelligence, intel
+            - text, sms, tc
+            - afternoon, pm
+            - morning, am
+            - employment, empl
+            - licence, lic
+            - cert, certification
+            - rls, release
+            - pics, pictures
+            - unlawfully at large, ual
+            - standard, std
+            - years, yrs
+            - ooh, out of hours
+            - wfh, work from home
+            - adj, adjourned
+            - pts, points
+            - television, tv
+            - att => att, attend
+            - absence, ab, abs
+            - fialed, filed => failed, fialed filed
+            - girlfriend, gf
+            - abs, absence
+            - home office, ho
+            - appt, apt, appointment
+            - e-mail, email
+            - video link, videolink, video-link
+            - referral, referal
+            - term, termination
+            - time table, timetable, time-table
+            - summ, summary
+            - criminal number, cro
+            - antidepressants, anti-depressants
+            - fostercare, foster-care
+            - departure, depart
+            - disclose, disclosure
+            - expose, exposure
+            - work sheet, worksheet
+            - antisocial, anti-social, anti social
+            - sfo, serious further offence
+            - hrs, hours
+            - years, yrs
+            - girlfriend, gf
+            - accomodation, accom, accommodation
+            - home office, ho
+            - alcohol, alc
+            - address, addr
+            - drugs, drg
+            - programme, program
+            - domestic, dom
+            - sexual, sex
+            - well being, wellbeing, welbeing, well-being, wellbeing
+            - solicitor, lawyer
+            - rehab, rehabilitation
+            - nan, grand mother, grandmother, grandma
+            - grandfather, grand father, grandad
+            - grandchild, grand child
+            - preg, pregnant
+            - pip, benefits
+            - docs, documents
+            - key worker, keyworker, key-worker
+            - min, minutes
+            - child, children, kid
+            - admission, admit
+            - exclusion, excl
+            - initial, inital
+            - intro, introduction
+            - mgr => manager
+            - passed away, died
+            - pictures, pics
+            - racial, racist
+            - register, registration, registry
+            - one, 1
+            - 2, two
+            - 3, three
+            - 4, four
+            - 5, five
+            - 6, six
+            - 7, seven
+            - 8, eight
+            - 9, nine
+            - 10, ten
+            - 11, eleven
+            - 12, twelve
+            - 13, thirteen
+            - 14, fourteen
+            - 15, fifteen
+            - 16, sixteen
+            - 17, seventeen
+            - 18, eighteen
+            - 19, nineteen
+            - 20, twenty
+            - 30, thirty
+            - 40, forty
+            - 50, fifty
+            - 60, sixty
+            - 70, seventy
+            - 80, eighty
+            - 90, ninety
+            - 1 am, 1am, 0100
+            - 2 am, 2am, 0200
+            - 3 am, 3am, 0300
+            - 4 am, 4am, 0400
+            - 5 am, 5am, 0500
+            - 6 am, 6am, 0600
+            - 7 am, 7am, 0700
+            - 8 am, 8am, 0800
+            - 9 am, 9am, 0900
+            - 10 am, 10am, 1000
+            - 11 am, 11am, 1100
+            - 12 pm, 12pm, 1200
+            - 1 pm, 1pm, 1300
+            - 2 pm, 2pm, 1400
+            - 3 pm, 3pm, 1500
+            - 4 pm, 4pm, 1600
+            - 5 pm, 5pm, 1700
+            - 6 pm, 6pm, 1800
+            - 7 pm, 7pm, 1900
+            - 8 pm, 8pm, 2000
+            - 9 pm, 9pm, 2100
+            - 10 pm, 10pm, 2200
+            - 11 pm, 11pm, 2300
+            - 12 am, 12am, 0000
+        probation_synonyms_index:
+          type: synonym         # expand: false unless => is used
+          synonyms:
+            - failed to attend, fta, abs, absence, failure to attend => failedtoattend failed absence fta
+            - failed to report, ftr => failedtoreport failed  ftr report
+            - failed to comply, ftc => failedtocomply ftc failed comply
+            - unacceptable absence, ua => unacceptableabsence ua unacceptable
+            - acceptable absence, aa => acceptableabsence acceptable absence aa
+            - grievous bodily harm, gbh => grievousbodilyharm gbh
+            - actual bodily harm, abh => actualbodilyharm abh
+            - domestic violence, domestic abuse, dv, da => domesticviolence dv da abuse violence domestic
+            - offender manager, om => om offendermanager manager  # exclude offender
+            - community practitioner, cppt => offendermanager manager cppt  practitioner
+            - probation practitioner, ppt => ppt offendermanager manager  practitioner
+            - community practitioner, com => offendermanager manager com practitioner
+            - prison offender manager, pom => pom, prisonoffendermanager, manager
+            - program manager, programme manaer => programmanager, manager
+            - treatment manager => programmanager, manager
+            - tutor => programmanager, tutor
+            - intervention manager, im, intervension manager => interventionmanager, manager, im
+            - supervisor => unpaidworkmanager manager supervisor
+            - unpaid work manager => unpaidworkmanager manager supervisor
+            - unpaid work supervisor => unpaidworkmanager manager supervisor
+            - upw supervisor => unpaidworkmanager manager supervisor
+            - cp manager => unpaidworkmanager manager supervisor
+            - cp supervisor => unpaidworkmanager manager supervisor
+            - offender management unit, omu => omu offendermanagermentunit
+            - warrant not backed bail, wnbb => warrantnotbackedbail warrant  summons wnbb
+            - warrant backed for  bail, wbb => warrantbackedbail warrant  summons wbb
+            - wnbb => warrantnotbackedbail warrant  summons wnbb
+            - wbb => warrantbackedbail warrant  summons wbb
+            - risk of serious harm, risk of harm, rosh, rosha => riskofharm risk harm serious rosh rosha
+            - sex offences protection order, sopo, sor, shpo, sex offender register, sexual harm prevention order, sro => sexoffencesprotectionorder, sex, register, harm, prevention, offence
+            - independent inquiry into child sexual abuse, child abuse, iicsa => independentinquiryintochildsexualabuse, child, abuse, sexual
+            - prolific priority offender, ppo => prolificpriorityoffender, prolific, offender, priority
+            - victim liaison officer, victim liaison contact, victim liaison unit, vlo, vlu => victimliaisonofficer victim liaison officer unit
+            - womens safety worker, wsw => victimliaisonofficer women safety worker
+            - unpaid work, upw, cp, cs, community service => unpaidwork, upw
+            - cs, community service => unpaidwork, cs, community service
+            - community payback, cp => unpaidwork, cp, comminity payback
+            - community order, co, com, comm order probation order => communityorder, order, community, co, com
+            - previous convictions, prev convictions, precon, pre cons, pre-cons => previousconviction, conviction
+            - police constable, pc => policeconstable, pc, constable, police
+            - accredited program, accredited programme, acc prog, ap, iaps => accreditedprogram, ap, program, iaps
+            - person on probation, pop, client => persononprobation, offender, person
+            - service user => persononprobation, service user
+            - client => persononprobation, client
+            - offender => persononprobation, offender
+            - remanded in custody, ric => remandedincustody, remanded, custody, ric
+            - universal credit, uc => universalcredit, uc, benefits, credit, universal
+            - social services, ss, social worker, adult services, adult care, adultcare => socialservices, social services adult
+            - national insurance number => ninumber, ni, nino
+            - ni => ninumber, ni, nino
+            - nino => ninumber, ni, nino
+            - ni number => ninumber ni, nino
+            - national standards => nationalstandards ns national standards
+            - local admin unit, probation delivery unit, ldu, lau, cluster, pdu => localadminunit delivery local ldu lau cluster pdu
+            - commissioned rehabilitative services, crs => commissioned rehabilitative services crs
+            - rehabilitation activity requirement, rar => rehabilitationactivityrequirement rar requirement rehabilitation
+            - non structured intervention, non structured intervension, nsi, non statutory intervention => nonstatutoryintervention, nsi, intervention
+            - structured interventions, si, tsi, structured intervension => structuredintervention structured si, tsi, intervention, interension
+            - national delius, nd => nationaldelius, delius, nd
+            - delius => nationaldelius
+            - dob, d o b, date of birth, d.o.b => dateofbirth, birth, date
+            - safe guarding, safeguarding, safegaurding, safe gaurding, safegarding, safe-guarding => safeguarding
+            - dwp, department for work pensions, dwp => dwp, department work pensions
+            - hand over => handover, h/o
+            - self harm, self-harm => selfharm
+            - aftercare, after care, after-care
+            - annual, yearly
+            - chronology, cronolgy, chron, cron
+        probation_synonyms_search:
+          type: synonym         # expand: false unless => is used
+          synonyms:
+            - failed to attend, fta, abs, absence failed attend, failure to attend => failedtoattend
+            - failed to report, ftr => failedtoreport
+            - failed to comply, ftc => failedtocomply
+            - unacceptable absence, ua => unacceptableabsence
+            - acceptable absence, aa => acceptableabsence
+            - grevious bodily harm, gbh => greviousbodilyharm gbh
+            - actual bodily harm, abh => actualbodilyharm abh
+            - domestic violence, domestic abuse, dv, da => domesticviolence
+            - offender manager, om => offendermanager
+            - community practitioner, cppt => offendermanager
+            - probation practitioner, ppt => offendermanager
+            - community probation practitioner, com => offendermanager
+            - prison offender manager, pom => prisonoffendermanager
+            - program manager, programme manager => programmanager
+            - treatment manager => programmanager
+            - tutor => programmanager
+            - intervention manager, intervension manager, im => interventionmanager
+            - supervisor => unpaidworkmanager supervisor
+            - unpaid work manager => unpaidworkmanager
+            - unpaid work supervisor => unpaidworkmanager
+            - upw supervisor => unpaidworkmanager
+            - cp manager => unpaidworkmanager
+            - cp supervisor => unpaidworkmanager
+            - offender management unit, omu => offendermanagermentunit
+            - general practitioner, gp, doctor => generalpractitioner
+            - mental health, mh => mentalhealth
+            - warrant not backed bail, wnbb, summons => warrantnotbackedbail
+            - warrant backed for bail, wbb, summons => warrantbackedbail
+            - magistrates court, mc, mags court => magistratescourt
+            - crown court, crn court, cc => crowncourt
+            - risk of serious harm, risk of harm, rosh, rosha => riskofharm
+            - sex offences protection order, sopo, sor, shpo, sex offender register, sexual harm prevention order, sro => sexoffencesprotectionorder
+            - independent inquiry into child sexual abuse, child abuse, iicsa => independentinquiryintochildsexualabuse
+            - victim liaison officer, victim liason unit, womens safety worker, wsw, vlo, vlu => victimliaisonofficer
+            - unpaid work, upw, cs, community service, community payback, cp => unpaidwork
+            - community order, co, com, comm order probation order => communityorder
+            - previous convictions, precon, pre-cons => previousconviction
+            - police constable, pc => policeconstable, pc
+            - accredited program, accredited programme, acc_prog, ap => accreditedprogram
+            - service user, person on probation, pop, client, offender => persononprobation
+            - remanded in custody, ric => remandedincustody ric
+            - universal credit, uc => univeralcredit
+            - social services, ss, social worker, social care => socialservices
+            - national insurance number, ni number, ni, nino => ninumber
+            - sentence plan, initial sentence plan, final sentence plan, sp, isp, fsp => sentenceplan plan
+            - national standards, ns => nationalstandards
+            - local admin unit, Probation Delivery Unit, ldu, lau, cluster, pdu => localadminunit
+            - commissioned rehabilitative services crs => commissioned rehabilitative services
+            - rehabilitation activity requirement, rar => rehabilitationactivityrequirement
+            - non structured intervention, nsi, non statutory invervention => nonstatutoryintervention
+            - structured interventions, si, tsi, structured intervension => structuredintervention
+            - national delius => nationaldelius
+            - delius => national delius
+            - dob, d o b, date of birth, d.o.b => dateofbirth
+            - safe guarding, safeguarding, safegarding, safe-guarding, safegaurding, safe  gaurding => safeguarding
+            - dwp, department for work pensions, dwp => dwp, department work pensions
+            - hand over, h/o, handover => handover
+            - self harm, self-harm => selfharm
+        delimit_words:
+          type: word_delimiter_graph
+          preserve_original: true
+          generate_number_parts: false
+        remove_single_chars:
+          type: length
+          min: 2
+        override_stemmer:
+          type: stemmer_override
+          rules:
+            - officer => officer
+            - officers => officer
+            - office => office
+            - offices => office
+            - nps => nps
+            - one => one
+            - nomis => nomis
+            - delius => delius
+            - ndelius => ndelius
+            - nationaldelius => nationaldelius
+        capture_numbers:
+          type: pattern_capture
+          preserve_original: true
+          patterns:
+            - (\d{4}-\d{2}-\d{2})t00:00:00(?:\.000)?z? # iso8601 dates (e.g. "2001-02-03T00:00:00.000Z" => "2001-02-03")
+            - (\d+[\d\W]+\d+)                          # any delimited numbers (e.g. "0123-456 789")
+        replace_dialcodes:
+          type: pattern_replace
+          preserve_original: true
+          pattern: ^(?:00|\+)?44\W*0?(.*)$
+          replacement: 0$1
+        dates_iso8601:
+          type: pattern_replace
+          pattern: ^(\d{4})-(\d{2})-(\d{2})t\d{2}:00:00(?:\.000)?z?$
+          replacement: $3.$2.$1
+        dates_month_day_year:
+          type: pattern_replace
+          pattern: ^(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sept?(?:ember)?|oct(?:ober)?|(?:nov|dec)(?:ember)?)[\s\-\./](\d{1,2})(?:st|nd|rd|th)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $2.$1.$3
+        dates_jan:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]jan(?:uary)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.01.$2
+        dates_feb:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]feb(?:ruary)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.02.$2
+        dates_mar:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]mar(?:ch)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.03.$2
+        dates_apr:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]apr(?:il)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.04.$2
+        dates_may:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]may[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.05.$2
+        dates_jun:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]june?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.06.$2
+        dates_jul:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]july?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.07.$2
+        dates_aug:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]aug(?:ust)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.08.$2
+        dates_sep:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]sept?(?:ember)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.09.$2
+        dates_oct:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]oct(?:ober)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.10.$2
+        dates_nov:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]nov(?:ember)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.11.$2
+        dates_dec:
+          type: pattern_replace
+          pattern: ^(\d{1,2})(?:st|nd|rd|th)?[\s\-\./]dec(?:ember)?[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.12.$2
+        dates_year_month_day:
+          type: pattern_replace
+          pattern: ^((?:19|20)\d{2})[\s\-\./]?(0?[1-9]|1[0-2])[\s\-\./]?(\d{2})$
+          replacement: $3.$2.$1
+        dates_long_year:
+          type: pattern_replace
+          pattern: ^(\d{1,2})[\s\-\./](0?[1-9]|1[0-2])[\s\-\./]((?:19|20)\d{2})$
+          replacement: $1.$2.$3
+        dates_short_year_19:
+          type: pattern_replace
+          pattern: ^(\d{1,2})[\s\-\./](0?[1-9]|1[0-2])[\s\-\./]([8-9]\d)$
+          replacement: $1.$2.19$3
+        dates_short_year_20:
+          type: pattern_replace
+          pattern: ^(\d{1,2})[\s\-\./](0?[1-9]|1[0-2])[\s\-\./]([0-7]\d)$
+          replacement: $1.$2.20$3
+        dates_short_day:
+          type: pattern_replace
+          pattern: ^(\d{1})[\s\-\./](0?[1-9]|1[0-2])[\s\-\./]((?:19|20)?\d{2})$
+          replacement: 0$1.$2.$3
+        dates_short_month:
+          type: pattern_replace
+          pattern: ^(\d{2})[\s\-\./](\d{1})[\s\-\./]((?:19|20)?\d{2})$
+          replacement: $1.0$2.$3
+        dates_reformat:
+          type: pattern_replace
+          pattern: ^(\d{2})\.(0[1-9]|1[0-2])\.((?:19|20)\d{2})$
+          replacement: $3-$2-$1
+        catenate_non_dates:
+          type: condition
+          filter: [ remove_non_digits ]
+          script:
+            source: '!(token.getTerm().toString() ==~ /^(?:19|20)\d{2}-(0[1-9]|1[0-2])-\d{2}$/) && token.getTerm().toString() ==~ /^[\d\W]+$/'
+        remove_non_digits:
+          type: pattern_replace
+          pattern: \D
+        unique_tokens:
+          type: unique
+          only_on_same_position: true
+
+  mappings:
+    properties:
+      crn:
+        type: keyword
+      offenderId:
+        type: integer
+      contactId:
+        type: integer
+      date:
+        type: text
+        analyzer: probation_text_analyzer
+        copy_to: notes
+        fields:
+          date:
+            type: date
+            format: date_optional_time||yyyy-MM-dd||dd-MM-yyyy
+      notes:
+        type: text
+        analyzer: probation_text_analyzer
+        search_analyzer: probation_search_analyzer
+        boost: 5
+      description:
+        type: text
+        analyzer: probation_text_analyzer
+        search_analyzer: probation_search_analyzer
+        boost: 4
+      outcome:
+        type: text
+        store: true
+        fielddata: true
+        boost: 2
+        fields:
+          keyword:
+            type: keyword
+      type:
+        type: text
+        store: true
+        fielddata: true
+      typeCode:
+        type: keyword
+        copy_to: type
+      typeDescription:
+        type: keyword
+        copy_to: type
+      typeShortDescription:
+        type: keyword
+        copy_to: type
+      outcomeCode:
+        type: keyword
+        copy_to: outcome
+      outcomeDescription:
+        type: keyword
+        copy_to: outcome
+      attended:
+        type: keyword
+        copy_to: outcome
+      complied:
+        type: keyword
+        copy_to: outcome
+      lastUpdatedDateTime:
+        type: date
+      rowVersion:
+        type: double
+        index: false
+      scn:
+        type: integer
+        index: false

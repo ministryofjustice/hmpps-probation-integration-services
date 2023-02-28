@@ -1,3 +1,4 @@
+api.http.host: ${API_HTTP_HOST:"127.0.0.1"}
 config.support_escapes: true
 dead_letter_queue.enable: true
 pipeline:

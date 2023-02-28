@@ -3,43 +3,39 @@ set -eo pipefail
 
 function help {
   echo -e "\\nSCRIPT USAGE\\n"
-  echo "-a The name of the PRIMARY alias"
-  echo "-b The name of the STANDBY alias"
+  echo "-i The prefix of the primary and standby index name (e.g. 'person-search')"
+  echo "-t The time in seconds to wait before attempting to switch aliases2"
   echo "-u Search Host URL"
   exit 1
 }
 
 export SEARCH_URL="${SEARCH_INDEX_HOST}"
-export PERSON_SEARCH_PRIMARY="person-search-primary"
-export PERSON_SEARCH_STANDBY="person-search-standby"
-export MAX_TIMEOUT=7200
+export TIMEOUT=7200
 
-while getopts a:b:h:u: FLAG; do
+while getopts h:i:t:u: FLAG; do
   case $FLAG in
-  a)
-    export PERSON_SEARCH_PRIMARY="${OPTARG}"
-    ;;
-  b)
-    export PERSON_SEARCH_STANDBY="${OPTARG}"
-    ;;
-  h)
-    help
-    ;;
-  u)
-    export SEARCH_URL="$OPTARG"
-    ;;
+  h) help ;;
+  i) export INDEX_PREFIX="$OPTARG" ;;
+  t) export TIMEOUT="$OPTARG" ;;
+  u) export SEARCH_URL="$OPTARG" ;;
   \?) #unrecognized option - show help
     echo -e \\n"Option not allowed."
     help
     ;;
   esac
 done
+if [ -z "$INDEX_PREFIX" ]; then echo 'Missing -i' >&2; exit 1; fi
 
-get_current_indices() {
+function curl_json() {
+  curl --fail --silent --show-error --header 'Content-Type: application/json' "$@"
+  echo
+}
+
+function get_current_indices() {
+  PRIMARY_INDEX=$(curl_json --retry 3 "${SEARCH_URL}/_alias/${INDEX_PREFIX}-primary" | jq -r 'keys[0]')
+  STANDBY_INDEX=$(curl_json --retry 3 "${SEARCH_URL}/_alias/${INDEX_PREFIX}-standby" | jq -r 'keys[0]')
   echo "Search URL: ${SEARCH_URL}"
-  export PRIMARY_INDEX=$(curl --retry 3 -sSf -XGET -H "Content-Type: application/json" "${SEARCH_URL}/_alias/${PERSON_SEARCH_PRIMARY}" | jq keys | jq -r '.[0]')
   echo "Primary Index => ${PRIMARY_INDEX}"
-  export STANDBY_INDEX=$(curl -sSf -XGET -H "Content-Type: application/json" "${SEARCH_URL}/_alias/${PERSON_SEARCH_STANDBY}" | jq keys | jq -r '.[0]')
   echo "Standby Index => ${STANDBY_INDEX}"
 
   if [ -z "$PRIMARY_INDEX" ] || [ -z "$STANDBY_INDEX" ] || [ "$PRIMARY_INDEX" = 'error' ] || [ "$STANDBY_INDEX" = 'error' ]; then
@@ -50,12 +46,8 @@ get_current_indices() {
 
 delete_ready_for_reindex() {
   echo "deleting ${STANDBY_INDEX} ready for indexing ..."
-  curl -sSf -XDELETE -H "Content-Type: application/json" "${SEARCH_URL}/${STANDBY_INDEX}"
-  curl -sSf -XPUT -H "Content-Type: application/json" "${SEARCH_URL}/${STANDBY_INDEX}" -d '{
-                                         "aliases": {
-                                             "'"${PERSON_SEARCH_STANDBY}"'": {}
-                                         }
-                                      }'
+  curl_json -XDELETE "${SEARCH_URL}/${STANDBY_INDEX}"
+  curl_json -XPUT "${SEARCH_URL}/${STANDBY_INDEX}" --data '{"aliases": {"'"${INDEX_PREFIX}-primary"'": {}}}'
 }
 
 parseAppInsightsConnectionString() {
@@ -77,18 +69,18 @@ parseAppInsightsConnectionString() {
 }
 
 check_count_document() {
-  export EXPECTED_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.activeOffenders')
+  EXPECTED_COUNT=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.activeOffenders')
 
   SECONDS=0
   until [[ "${EXPECTED_COUNT:-0}" -gt 0 ]]; do
     echo 'waiting for count to be indexed ... '
-    if (("${SECONDS}" >= "${MAX_TIMEOUT}")); then
+    if (("${SECONDS}" >= "${TIMEOUT}")); then
       echo "Timed out getting index count."
       sendFailure
       exit 1
     fi
     sleep 60
-    export EXPECTED_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.activeOffenders')
+    EXPECTED_COUNT=$(curl_json --no-fail "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.activeOffenders')
   done
   echo "Expected Count After Indexing ${EXPECTED_COUNT}"
 }
@@ -98,17 +90,17 @@ wait_for_index_to_complete() {
   parseAppInsightsConnectionString
   check_count_document
 
-  ACTUAL_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
+  ACTUAL_COUNT=$(curl_json --no-fail "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
 
   until [[ "${ACTUAL_COUNT:-0}" -ge "${EXPECTED_COUNT}" ]]; do
     echo 'waiting for actual count to be at least expected count ...'
-    if (("${SECONDS}" >= "${MAX_TIMEOUT}")); then
+    if (("${SECONDS}" >= "${TIMEOUT}")); then
       echo "Indexing process timed out: Expected ${EXPECTED_COUNT} but got ${ACTUAL_COUNT}"
       sendFailure
       exit 1
     fi
     sleep 10
-    ACTUAL_COUNT=$(curl -sS -XGET -H "Content-Type: application/json" "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
+    ACTUAL_COUNT=$(curl_json --no-fail "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
   done
   echo "Actual Count is ${ACTUAL_COUNT} => Expected ${EXPECTED_COUNT}"
 }
@@ -116,57 +108,57 @@ wait_for_index_to_complete() {
 sendSuccess() {
   printf "\\nSuccessfully completed indexing and alias switch\\n"
   now=$(date +'%FT%T%z')
-  curl -sSf -XPOST -H "Content-Type: application/json" "${APP_INSIGHTS_URL}" -d '{
-                                    "name": "ProbationSearchIndexCompleted",
-                                    "time": "'"${now}"'",
-                                    "iKey": "'"${APP_INSIGHTS_KEY}"'",
-                                    "tags": {
-                                      "ai.cloud.role": "person-search-index-from-delius"
-                                    },
-                                    "data": {
-                                       "baseType": "EventData",
-                                       "baseData": {
-                                          "ver": 1,
-                                          "name": "ProbationSearchIndexCompleted",
-                                          "properties": {
-                                             "duration": "'"${SECONDS}"'",
-                                             "count": "'"${ACTUAL_COUNT}"'"
-                                          }
-                                       }
-                                    }
-                                 }'
+  curl_json -XPOST "${APP_INSIGHTS_URL}" --data '{
+    "name": "ProbationSearchIndexCompleted",
+    "time": "'"${now}"'",
+    "iKey": "'"${APP_INSIGHTS_KEY}"'",
+    "tags": {
+      "ai.cloud.role": "person-search-index-from-delius"
+    },
+    "data": {
+       "baseType": "EventData",
+       "baseData": {
+          "ver": 1,
+          "name": "ProbationSearchIndexCompleted",
+          "properties": {
+             "duration": "'"${SECONDS}"'",
+             "count": "'"${ACTUAL_COUNT}"'"
+          }
+       }
+    }
+  }'
 }
 
 sendFailure() {
   printf "\\nFailed to complete indexing due to timeout\\n"
   now=$(date +'%FT%T%z')
-  curl -sSf -XPOST -H "Content-Type: application/json" "${APP_INSIGHTS_URL}" -d '{
-                                    "name": "ProbationSearchIndexFailure",
-                                    "time": "'"${now}"'",
-                                    "iKey": "'"${APP_INSIGHTS_KEY}"'",
-                                    "tags": {
-                                      "ai.cloud.role": "person-search-index-from-delius"
-                                    },
-                                    "data": {
-                                       "baseType": "ExceptionData",
-                                       "baseData": {
-                                          "ver": 1,
-                                          "handledAt": "ProbationSearchIndexFailure",
-                                          "properties": {
-                                             "timeout": "'"${SECONDS}"'"
-                                          },
-                                          "exceptions": [
-                                            {
-                                               "typeName": "ProbationSearchIndexFailure",
-                                               "message": "Indexing Process Timed Out",
-                                               "hasFullStack": false,
-                                               "parsedStack": [
-                                               ]
-                                            }
-                                         ]
-                                       }
-                                    }
-                                 }'
+  curl_json -XPOST "${APP_INSIGHTS_URL}" --data '{
+    "name": "ProbationSearchIndexFailure",
+    "time": "'"${now}"'",
+    "iKey": "'"${APP_INSIGHTS_KEY}"'",
+    "tags": {
+      "ai.cloud.role": "person-search-index-from-delius"
+    },
+    "data": {
+       "baseType": "ExceptionData",
+       "baseData": {
+          "ver": 1,
+          "handledAt": "ProbationSearchIndexFailure",
+          "properties": {
+             "timeout": "'"${SECONDS}"'"
+          },
+          "exceptions": [
+            {
+               "typeName": "ProbationSearchIndexFailure",
+               "message": "Indexing Process Timed Out",
+               "hasFullStack": false,
+               "parsedStack": [
+               ]
+            }
+         ]
+       }
+    }
+  }'
 }
 
 switch_aliases() {
@@ -174,34 +166,34 @@ switch_aliases() {
   echo "primary => $STANDBY_INDEX"
   echo "standby => $PRIMARY_INDEX"
 
-  curl -sSf -XPOST -H "Content-Type: application/json" "${SEARCH_URL}"/_aliases -d '{
-                                      "actions": [
-                                        {
-                                          "remove": {
-                                            "index": "*",
-                                            "alias": "'"${PERSON_SEARCH_PRIMARY}"'"
-                                          }
-                                        },
-                                        {
-                                          "remove": {
-                                            "index": "*",
-                                            "alias": "'"${PERSON_SEARCH_STANDBY}"'"
-                                          }
-                                        },
-                                        {
-                                          "add": {
-                                            "index": "'"${STANDBY_INDEX}"'",
-                                            "alias": "'"${PERSON_SEARCH_PRIMARY}"'"
-                                          }
-                                        },
-                                        {
-                                          "add": {
-                                            "index": "'"${PRIMARY_INDEX}"'",
-                                            "alias": "'"${PERSON_SEARCH_STANDBY}"'"
-                                          }
-                                        }
-                                      ]
-                                    }'
+  curl_json -XPOST "${SEARCH_URL}"/_aliases --data '{
+    "actions": [
+      {
+        "remove": {
+          "index": "'"${PRIMARY_INDEX}"'",
+          "alias": "'"${INDEX_PREFIX}-primary"'"
+        }
+      },
+      {
+        "remove": {
+          "index": "'"${STANDBY_INDEX}"'",
+          "alias": "'"${INDEX_PREFIX}-standby"'"
+        }
+      },
+      {
+        "add": {
+          "index": "'"${STANDBY_INDEX}"'",
+          "alias": "'"${INDEX_PREFIX}-primary"'"
+        }
+      },
+      {
+        "add": {
+          "index": "'"${PRIMARY_INDEX}"'",
+          "alias": "'"${INDEX_PREFIX}-standby"'"
+        }
+      }
+    ]
+  }'
   sendSuccess
 }
 
