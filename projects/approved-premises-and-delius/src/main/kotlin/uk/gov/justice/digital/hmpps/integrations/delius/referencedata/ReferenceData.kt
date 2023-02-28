@@ -42,7 +42,7 @@ class Dataset(
 
 enum class DatasetCode(val value: String) {
     ADDRESS_STATUS("ADDRESS STATUS"),
-    ADDRESS_TYPE("ADDRESS_TYPE"),
+    ADDRESS_TYPE("ADDRESS TYPE"),
     HOSTEL_CODE("HOSTEL CODE"),
     STAFF_GRADE("OFFICER GRADE");
 
