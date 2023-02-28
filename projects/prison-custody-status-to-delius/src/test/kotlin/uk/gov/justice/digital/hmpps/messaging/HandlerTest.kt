@@ -11,6 +11,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallService
+import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseService
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -48,6 +49,7 @@ internal class HandlerTest {
                     "nomsNumber" to "Z0001ZZ",
                     "prisonId" to "ZZZ",
                     "reason" to "Test data",
+                    "nomisMovementReasonCode" to "OPA",
                     "details" to "Test data"
                 )
             )
@@ -57,19 +59,45 @@ internal class HandlerTest {
 
     @Test
     fun messageIsLoggedToTelemetry() {
+        whenever(
+            releaseService.release(
+                notification.message.additionalInformation.nomsNumber(),
+                notification.message.additionalInformation.prisonId(),
+                notification.message.additionalInformation.reason(),
+                notification.message.additionalInformation.movementReason(),
+                notification.message.occurredAt
+            )
+        ).thenReturn(ReleaseOutcome.PrisonerReleased)
         handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
     }
 
     @Test
     fun releaseMessagesAreHandled() {
+        whenever(
+            releaseService.release(
+                notification.message.additionalInformation.nomsNumber(),
+                notification.message.additionalInformation.prisonId(),
+                notification.message.additionalInformation.reason(),
+                notification.message.additionalInformation.movementReason(),
+                notification.message.occurredAt
+            )
+        ).thenReturn(ReleaseOutcome.PrisonerReleased)
+
         handler.handle(notification)
-        verify(releaseService).release("Z0001ZZ", "ZZZ", "Test data", notification.message.occurredAt)
+        verify(releaseService).release(
+            notification.message.additionalInformation.nomsNumber(),
+            notification.message.additionalInformation.prisonId(),
+            notification.message.additionalInformation.reason(),
+            notification.message.additionalInformation.movementReason(),
+            notification.message.occurredAt
+        )
     }
 
     @Test
     fun recallMessagesAreHandled() {
-        whenever(recallService.recall("Z0001ZZ", "ZZZ", "Test data", notification.message.occurredAt)).thenReturn(RecallOutcome.PrisonerRecalled)
+        whenever(recallService.recall("Z0001ZZ", "ZZZ", "Test data", notification.message.occurredAt))
+            .thenReturn(RecallOutcome.PrisonerRecalled)
         handler.handle(notification.copy(attributes = MessageAttributes("prison-offender-events.prisoner.received")))
         verify(recallService).recall("Z0001ZZ", "ZZZ", "Test data", notification.message.occurredAt)
         verify(telemetryService).trackEvent("PrisonerRecalled", notification.message.telemetryProperties())

@@ -129,5 +129,8 @@ class DataLoader(
         releaseRepository.save(recallableEvent.disposal!!.custody!!.mostRecentRelease()!!)
         orderManagerRepository.save(OrderManagerGenerator.generate(recallableEvent))
         personManagerRepository.save(PersonManagerGenerator.generate(recallablePerson))
+
+        personRepository.save(PersonGenerator.DIED)
+        personManagerRepository.save(PersonManagerGenerator.generate(PersonGenerator.DIED))
     }
 }
