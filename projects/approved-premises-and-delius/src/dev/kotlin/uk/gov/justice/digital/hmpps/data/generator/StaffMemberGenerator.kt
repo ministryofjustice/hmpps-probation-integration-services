@@ -10,7 +10,7 @@ object StaffMemberGenerator {
         staffIdentifier: Long = 1501234567,
         forenames: String = "John",
         surname: String = "Smith",
-        username: String = "JohnSmithNPS"
+        username: String? = null
     ) = StaffMember(
         staffCode = staffCode,
         staffIdentifier = staffIdentifier,
