@@ -8,7 +8,7 @@ interface ApprovedPremisesRepository : JpaRepository<ApprovedPremises, Long> {
     fun existsByCodeCode(code: String): Boolean
 
     @EntityGraph(attributePaths = ["code", "address", "probationArea"])
-    fun findByCodeCodeAndSelectable(code: String): ApprovedPremises?
+    fun findByCodeCodeAndSelectable(code: String, selectable: Boolean = true): ApprovedPremises?
 }
 
 fun ApprovedPremisesRepository.getApprovedPremises(code: String): ApprovedPremises =
