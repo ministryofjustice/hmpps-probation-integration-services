@@ -68,6 +68,6 @@ class ManagementTierEvent(
 
     @Version
     @Column(name = "row_version", nullable = false)
-    val version: Long = 0,
+    val version: Long = 0
 
-    )
+)

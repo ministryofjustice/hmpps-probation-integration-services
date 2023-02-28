@@ -36,7 +36,7 @@ class RiskAssessmentService(
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val referenceDataRepository: ReferenceDataRepository,
-    private val managementTierEventRepository: ManagementTierEventRepository,
+    private val managementTierEventRepository: ManagementTierEventRepository
 ) {
 
     @Transactional
@@ -85,13 +85,8 @@ class RiskAssessmentService(
             ManagementTierEvent(
                 person,
                 contactType = contactTypeRepository.getByCode(OGRS_ASSESSMENT_CT),
-                changeReason = referenceDataRepository.findByDatasetAndCode(DatasetCode.TIER_CHANGE_REASON, "OGRS")
-                    ?: throw NotFoundException(DatasetCode.TIER_CHANGE_REASON.name, "code", "OGRS"),
-                tier = referenceDataRepository.findByDatasetAndCode(DatasetCode.TIER, "NA") ?: throw NotFoundException(
-                    DatasetCode.TIER.name,
-                    "code",
-                    "NA"
-                )
+                changeReason = referenceDataRepository.findByDatasetAndCode(DatasetCode.TIER_CHANGE_REASON, "OGRS") ?: throw NotFoundException(DatasetCode.TIER_CHANGE_REASON.name, "code", "OGRS"),
+                tier = referenceDataRepository.findByDatasetAndCode(DatasetCode.TIER, "NA") ?: throw NotFoundException(DatasetCode.TIER.name, "code", "NA")
             )
         )
     }
