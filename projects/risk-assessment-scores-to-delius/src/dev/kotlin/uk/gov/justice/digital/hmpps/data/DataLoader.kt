@@ -61,13 +61,17 @@ class DataLoader(
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         datasetRepository.saveAll(
             listOf(
-                DatasetGenerator.GENDER
+                DatasetGenerator.GENDER,
+                DatasetGenerator.TIER_CHANGE_REASON,
+                DatasetGenerator.TIER
             )
         )
 
         referenceDataRepository.saveAll(
             listOf(
-                ReferenceDataGenerator.GENDER_MALE
+                ReferenceDataGenerator.GENDER_MALE,
+                ReferenceDataGenerator.TIER_CHANGE_REASON_OGRS,
+                ReferenceDataGenerator.TIER_NA
             )
         )
 
