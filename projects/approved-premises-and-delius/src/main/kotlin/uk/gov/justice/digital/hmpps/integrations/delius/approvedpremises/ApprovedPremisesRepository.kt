@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 interface ApprovedPremisesRepository : JpaRepository<ApprovedPremises, Long> {
     fun existsByCodeCode(code: String): Boolean
 
-    @EntityGraph(attributePaths = ["code", "address"])
+    @EntityGraph(attributePaths = ["code", "address", "probationArea"])
     fun findByCodeCode(code: String): ApprovedPremises?
 }
 

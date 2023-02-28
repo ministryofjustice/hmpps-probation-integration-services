@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.release
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlert
@@ -28,8 +28,8 @@ class PersonDied(
         val people = personRepository.findByNomsNumberAndSoftDeletedIsFalse(nomsId)
         val person = when (people.size) {
             1 -> people[0]
-            0 -> throw NotFoundException("Person", "nomsNumber", nomsId)
-            else -> throw IllegalStateException("More than one case with the same Noms Number: $nomsId")
+            0 -> throw IgnorableMessageException("MissingNomsNumber: $nomsId")
+            else -> throw IgnorableMessageException("DuplicateNomsNumber: $nomsId")
         }
         createAlertContact(person, dateTime)
     }
