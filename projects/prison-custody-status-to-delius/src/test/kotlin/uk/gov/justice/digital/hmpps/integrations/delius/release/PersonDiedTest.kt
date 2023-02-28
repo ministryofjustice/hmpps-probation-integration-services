@@ -56,10 +56,10 @@ internal class PersonDiedTest {
     companion object {
         @JvmStatic
         fun peopleAndExceptions() = listOf(
-            Arguments.of(listOf<Person>(), IgnorableMessageException("MissingNomsNumber: T2354EX")),
+            Arguments.of(listOf<Person>(), IgnorableMessageException("MissingNomsNumber")),
             Arguments.of(
                 listOf(PersonGenerator.RECALLABLE, PersonGenerator.RELEASABLE),
-                IgnorableMessageException("DuplicateNomsNumber: T2354EX")
+                IgnorableMessageException("DuplicateNomsNumber")
             )
         )
     }
