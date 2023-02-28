@@ -444,7 +444,7 @@ internal class ApprovedPremisesServiceTest {
     }
 
     private fun givenAnApprovedPremises(ap: ApprovedPremises) {
-        whenever(approvedPremisesRepository.findByCodeCode(ap.code.code)).thenReturn(ap)
+        whenever(approvedPremisesRepository.findByCodeCodeAndSelectable(ap.code.code)).thenReturn(ap)
     }
 
     private fun givenAddressStatuses(statuses: List<ReferenceData>) {
