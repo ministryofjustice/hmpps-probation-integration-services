@@ -61,6 +61,7 @@ class RiskAssessmentService(
                 ogrsAssessment.assessmentDate = assessmentDate.toLocalDate()
                 ogrsAssessmentRepository.save(ogrsAssessment)
                 createContact(person, event, assessmentDate, ogrsScore)
+                createManagementTierEvent(person)
             }
         } else {
             // if there is no OGRS_ASSESSMENT for this crn/event then create a new one
