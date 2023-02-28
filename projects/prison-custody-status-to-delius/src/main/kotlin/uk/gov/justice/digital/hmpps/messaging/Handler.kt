@@ -25,13 +25,14 @@ class Handler(
         try {
             when (notification.eventType) {
                 "prison-offender-events.prisoner.released" -> {
-                    releaseService.release(
+                    val outcome = releaseService.release(
                         hmppsEvent.additionalInformation.nomsNumber(),
                         hmppsEvent.additionalInformation.prisonId(),
                         hmppsEvent.additionalInformation.reason(),
+                        hmppsEvent.additionalInformation.movementReason(),
                         hmppsEvent.occurredAt
                     )
-                    telemetryService.trackEvent("PrisonerReleased", hmppsEvent.telemetryProperties())
+                    telemetryService.trackEvent(outcome.name, hmppsEvent.telemetryProperties())
                 }
 
                 "prison-offender-events.prisoner.received" -> {
@@ -56,11 +57,13 @@ class Handler(
 fun AdditionalInformation.nomsNumber() = this["nomsNumber"] as String
 fun AdditionalInformation.prisonId() = this["prisonId"] as String
 fun AdditionalInformation.reason() = this["reason"] as String
+fun AdditionalInformation.movementReason() = this["nomisMovementReasonCode"] as String
 fun AdditionalInformation.details() = this["details"] as String?
 fun HmppsDomainEvent.telemetryProperties() = listOfNotNull(
     "occurredAt" to occurredAt.toString(),
     "nomsNumber" to additionalInformation.nomsNumber(),
     "institution" to additionalInformation.prisonId(),
     "reason" to additionalInformation.reason(),
+    "nomisMovementReasonCode" to additionalInformation.movementReason(),
     additionalInformation.details()?.let { "details" to it }
 ).toMap()
