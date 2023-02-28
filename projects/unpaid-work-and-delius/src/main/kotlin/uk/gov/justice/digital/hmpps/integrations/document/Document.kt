@@ -3,7 +3,10 @@ package uk.gov.justice.digital.hmpps.integrations.document
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.persistence.Version
 import org.springframework.data.annotation.CreatedBy
@@ -18,6 +21,8 @@ import java.time.ZonedDateTime
 @EntityListeners(AuditingEntityListener::class)
 class Document(
     @Id
+    @SequenceGenerator(name = "document_id_generator", sequenceName = "document_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "document_id_generator")
     @Column(name = "document_id")
     val id: Long = 0,
 
