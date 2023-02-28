@@ -11,8 +11,19 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 
-interface ReferenceDataRepository : JpaRepository<ReferenceData, Long>
+interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
+
+    @Query(
+        """
+        SELECT rd FROM ReferenceData rd
+        WHERE rd.dataset.code = :datasetCode
+        AND rd.code = :code
+    """
+    )
+    fun findByDatasetAndCode(datasetCode: DatasetCode, code: String): ReferenceData?
+}
 
 @Immutable
 @Entity
@@ -47,7 +58,9 @@ class Dataset(
 )
 
 enum class DatasetCode(val value: String) {
-    GENDER("GENDER");
+    GENDER("GENDER"),
+    TIER_CHANGE_REASON("TIER CHANGE REASON"),
+    TIER("TIER");
 
     companion object {
         private val index = DatasetCode.values().associateBy { it.value }
