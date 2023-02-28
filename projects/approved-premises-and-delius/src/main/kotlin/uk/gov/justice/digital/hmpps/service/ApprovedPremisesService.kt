@@ -254,7 +254,7 @@ class ApprovedPremisesService(
                 staff = staff,
                 team = team,
                 probationArea = team.probationArea,
-                startDate = nsi.referralDate,
+                startDate = details.arrivedAt,
                 transferReason = transferReasonRepository.getNsiTransferReason()
             )
         )

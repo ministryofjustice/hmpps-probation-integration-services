@@ -77,7 +77,7 @@ data class PersonArrived(
     val applicationUrl: String,
     val premises: Premises,
     val keyWorker: StaffMember,
-    val applicationSubmittedOn: ZonedDateTime,
+    val applicationSubmittedOn: LocalDate,
     val arrivedAt: ZonedDateTime,
     val expectedDepartureOn: LocalDate?,
     val notes: String?

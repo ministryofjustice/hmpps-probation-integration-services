@@ -328,7 +328,7 @@ internal class ApprovedPremisesServiceTest {
     private fun verifyNsiIsCreated(
         type: NsiTypeCode,
         status: NsiStatusCode,
-        referralDate: ZonedDateTime,
+        referralDate: LocalDate,
         actualStartDate: ZonedDateTime?,
         expectedStartDate: ZonedDateTime?,
         expectedEndDate: LocalDate?,
