@@ -28,8 +28,8 @@ class PersonDied(
         val people = personRepository.findByNomsNumberAndSoftDeletedIsFalse(nomsId)
         val person = when (people.size) {
             1 -> people[0]
-            0 -> throw IgnorableMessageException("MissingNomsNumber: $nomsId")
-            else -> throw IgnorableMessageException("DuplicateNomsNumber: $nomsId")
+            0 -> throw IgnorableMessageException("MissingNomsNumber")
+            else -> throw IgnorableMessageException("DuplicateNomsNumber")
         }
         createAlertContact(person, dateTime)
     }
@@ -45,7 +45,7 @@ class PersonDied(
                 date = dateTime,
                 person = person,
                 notes = "This information has been provided via a movement reason recorded at ${
-                DeliusDateTimeFormatter.format(dateTime)
+                    DeliusDateTimeFormatter.format(dateTime)
                 } in NOMIS",
                 staffId = cm.staff.id,
                 teamId = cm.team.id,
