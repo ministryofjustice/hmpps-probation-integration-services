@@ -45,7 +45,7 @@ class PersonDied(
                 date = dateTime,
                 person = person,
                 notes = "This information has been provided via a movement reason recorded at ${
-                    DeliusDateTimeFormatter.format(dateTime)
+                DeliusDateTimeFormatter.format(dateTime)
                 } in NOMIS",
                 staffId = cm.staff.id,
                 teamId = cm.team.id,
