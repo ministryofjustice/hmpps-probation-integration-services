@@ -52,6 +52,10 @@ class RiskAssessmentService(
         // validate that the offender has an event with this event number
         val event = eventRepository.getByCrn(crn, eventNumber.toString())
 
+        if(!event.active){
+            throw ConflictException("[crn=${person.crn}][eventNumber=$eventNumber]: Event number is Terminated")
+        }
+
         val ogrsAssessment = ogrsAssessmentRepository.findByEvent(event)
         if (ogrsAssessment != null) {
             if (assessmentDate.toLocalDate() > ogrsAssessment.assessmentDate) {
