@@ -53,7 +53,7 @@ class RiskAssessmentService(
         val event = eventRepository.getByCrn(crn, eventNumber.toString())
 
         if (!event.active) {
-            throw ConflictException("[crn=${person.crn}][eventNumber=$eventNumber]: Event number is Terminated")
+            throw ConflictException("Event number is Terminated")
         }
 
         val ogrsAssessment = ogrsAssessmentRepository.findByEvent(event)
