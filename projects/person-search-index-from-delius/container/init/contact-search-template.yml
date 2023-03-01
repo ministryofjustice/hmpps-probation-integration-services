@@ -580,6 +580,3 @@ template:
       rowVersion:
         type: double
         index: false
-      scn:
-        type: integer
-        index: false

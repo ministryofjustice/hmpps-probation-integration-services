@@ -4,6 +4,8 @@ WITH pre_con AS (SELECT doc.*,
                  WHERE (:offender_id = 0 OR doc.OFFENDER_ID = :offender_id)
                    AND doc.DOCUMENT_TYPE = 'PREVIOUS_CONVICTION'
                    AND doc.SOFT_DELETED = 0)
+SELECT "json", "offenderId"
+FROM (
 SELECT json_object(
                'otherIds' VALUE json_object(
                 'crn' VALUE o.CRN,
@@ -337,17 +339,18 @@ FROM OFFENDER o
 WHERE o.SOFT_DELETED = 0
   AND om.SOFT_DELETED = 0
   AND (:offender_id = 0 OR o.OFFENDER_ID = :offender_id)
+ORDER BY o.OFFENDER_ID)
 
 UNION ALL
 
-SELECT json_object('activeOffenders' VALUE (SELECT COUNT(1)
-                                            FROM OFFENDER o
-                                            WHERE SOFT_DELETED = 0
-                                              AND EXISTS(SELECT 1
-                                                         FROM OFFENDER_MANAGER om
-                                                         WHERE o.OFFENDER_ID = om.OFFENDER_ID
-                                                           AND om.ACTIVE_FLAG = 1
-                                                           AND om.SOFT_DELETED = 0)) RETURNING CLOB) "json",
-       -1                                                                                            "offenderId"
+SELECT json_object('lastId' VALUE (SELECT max(offender_id)
+                                   FROM OFFENDER o
+                                   WHERE SOFT_DELETED = 0
+                                     AND EXISTS(SELECT 1
+                                                FROM OFFENDER_MANAGER om
+                                                WHERE o.OFFENDER_ID = om.OFFENDER_ID
+                                                  AND om.ACTIVE_FLAG = 1
+                                                  AND om.SOFT_DELETED = 0)) RETURNING CLOB) "json",
+       -1                                                                                   "offenderId"
 FROM DUAL
 WHERE :offender_id = 0

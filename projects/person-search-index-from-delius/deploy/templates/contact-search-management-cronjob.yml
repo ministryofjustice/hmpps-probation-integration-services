@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: index-alias-management
+  name: contact-index-alias-management
 spec:
   schedule: {{ .Values.management.contact_schedule }}
   concurrencyPolicy: Forbid
