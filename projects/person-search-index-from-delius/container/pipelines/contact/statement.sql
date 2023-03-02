@@ -1,8 +1,7 @@
 select "json", "contactId"
 from (with page as (select * from contact where :contact_id = 0
-                                            and (select min(contact.contact_id) from contact where contact.contact_id >= :offset and contact.contact_id < :offset + :size) is not null
                                             and contact.contact_id >= :offset
-                                          order by contact_id fetch next :size rows only),
+                                          order by contact_id fetch next :size-1 rows only),
            single as (select * from contact where :contact_id > 0 and contact.contact_id = :contact_id)
       select json_object(
                      'crn' value offender.crn,
