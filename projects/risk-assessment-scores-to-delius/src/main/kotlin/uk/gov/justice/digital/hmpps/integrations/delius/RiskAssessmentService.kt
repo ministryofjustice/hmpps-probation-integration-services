@@ -127,11 +127,11 @@ class RiskAssessmentService(
             CRN: ${person.crn}
             PNC Number: ${person.pncNumber}
             Name: ${person.forename} ${person.surname}
-            Order: ${event.disposal?.disposalType?.description}
+             Order: ${event.disposal?.disposalType?.description ?: ""}
             Offender manager: ${personManager.staff.forename} ${personManager.staff.surname}
             Gender: ${person.gender?.description}
             Date of Birth: ${DeliusDateFormatter.format(person.dateOfBirth)}
-            Date of Current Conviction: ${DeliusDateFormatter.format(event.disposal?.disposalDate)}
+            Date of Current Conviction: ${event.disposal?.disposalDate.let { DeliusDateFormatter.format(it) } ?: ""}
             Date of Assessment: ${DeliusDateFormatter.format(assessmentDate)}
             Date of First Sanction: ${event.mainOffence?.date}
             Previous Sanctions: ${event.mainOffence?.offenceCount}
