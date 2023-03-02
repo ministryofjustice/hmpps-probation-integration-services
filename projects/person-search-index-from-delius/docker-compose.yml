@@ -5,7 +5,6 @@ services:
     build:
       context: container
     environment:
-      API_HTTP_HOST: 0.0.0.0
       SEARCH_INDEX_HOST: http://elasticsearch:9200
       SQS_ENDPOINT: http://localstack:4566/
       JDBC_CONNECTION_STRING: jdbc:oracle:thin:@//oracledb:1521/XEPDB1
