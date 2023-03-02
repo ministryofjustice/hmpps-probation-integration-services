@@ -131,7 +131,7 @@ class RiskAssessmentService(
             Offender manager: ${personManager.staff.forename} ${personManager.staff.surname}
             Gender: ${person.gender?.description}
             Date of Birth: ${DeliusDateFormatter.format(person.dateOfBirth)}
-            Date of Current Conviction: ${event.disposal?.disposalDate.let { DeliusDateFormatter.format(it) } ?: ""}
+            Date of Current Conviction: ${event.disposal?.disposalDate?.let { DeliusDateFormatter.format(it) } ?: ""}
             Date of Assessment: ${DeliusDateFormatter.format(assessmentDate)}
             Date of First Sanction: ${event.mainOffence?.date}
             Previous Sanctions: ${event.mainOffence?.offenceCount}
