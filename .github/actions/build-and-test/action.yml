@@ -83,20 +83,20 @@ runs:
       shell: bash
       run: ./gradlew dockerTagsPush
 
-    - name: Sonar analysis
-      uses: gradle/gradle-build-action@v2
-      if: ${{ github.actor != 'dependabot[bot]' }}
-      continue-on-error: true # don't fail the build when sonarcloud.io is down
-      with:
-        arguments: sonar
-
-    - name: Publish test reports
-      uses: mikepenz/action-junit-report@v3.3.3
-      if: always() && github.actor != 'dependabot[bot]'
-      with:
-        check_name: |-
-          Unit test results
-          Integration test results
-        report_paths: |-
-          **/build/test-results/test/TEST-*.xml
-          **/build/test-results/integrationTest/TEST-*.xml
+#    - name: Sonar analysis
+#      uses: gradle/gradle-build-action@v2
+#      if: ${{ github.actor != 'dependabot[bot]' }}
+#      continue-on-error: true # don't fail the build when sonarcloud.io is down
+#      with:
+#        arguments: sonar
+#
+#    - name: Publish test reports
+#      uses: mikepenz/action-junit-report@v3.3.3
+#      if: always() && github.actor != 'dependabot[bot]'
+#      with:
+#        check_name: |-
+#          Unit test results
+#          Integration test results
+#        report_paths: |-
+#          **/build/test-results/test/TEST-*.xml
+#          **/build/test-results/integrationTest/TEST-*.xml
