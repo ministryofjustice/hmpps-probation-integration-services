@@ -21,7 +21,7 @@ spec:
                 - name: INDEX_PREFIX
                   value: contact-search
                 - name: TIMEOUT
-                  value: 86400 # 1 day
+                  value: '86400' # 1 day
                 - name: SEARCH_INDEX_HOST
                   value: {{ .Values.management.host }}
                 - name: APPLICATIONINSIGHTS_CONNECTION_STRING
