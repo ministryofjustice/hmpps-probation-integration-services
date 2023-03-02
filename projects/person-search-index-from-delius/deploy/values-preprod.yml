@@ -5,9 +5,9 @@ generic-service:
   env:
     SEARCH_INDEX_HOST: "es-proxy.hmpps-probation-search-preprod.svc.cluster.local:9200"
     PERSON_INDEX_SCHEDULE: "0 7 * * 1-5"
-    CONTACT_INDEX_SCHEDULE: "0 7 * * 6"
+    CONTACT_INDEX_SCHEDULE: "12 16 * * *"
 
 management:
   person_schedule: 58 6 * * 1-5
-  contact_schedule: 58 6 * * 6
+  contact_schedule: 10 16 * * *
   host: es-proxy.hmpps-probation-search-preprod.svc.cluster.local:9200
