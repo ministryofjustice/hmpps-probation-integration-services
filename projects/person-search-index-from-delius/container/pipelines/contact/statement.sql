@@ -29,7 +29,10 @@ from (with page as (select * from contact where :contact_id = 0
                left outer join r_contact_outcome_type
                                on r_contact_outcome_type.contact_outcome_type_id = contact.contact_outcome_type_id)
 union all
-select json_object('lastId' value last_id returning clob) as "json",
-       -1                                                 as "contactId"
-from (select max(contact_id) as last_id from contact)
-where :contact_id = 0
+select "json", "contactId"
+from (select json_object('lastId' value last_id returning clob) as "json",
+             -1                                                 as "contactId",
+             last_id
+      from (select max(contact_id) as last_id from contact)
+      where :contact_id = 0 fetch next 1 rows only)
+where :offset <= last_id
