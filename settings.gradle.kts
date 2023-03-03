@@ -43,7 +43,7 @@ dependencyResolutionManagement {
             library("mockito-inline", "org.mockito:mockito-inline:5.1.1")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
             library("insights", "com.microsoft.azure:applicationinsights-web:3.4.10")
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.14.0")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.15.0")
             library("opentelemetry-annotations", "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.23.0")
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.1")
@@ -55,7 +55,7 @@ dependencyResolutionManagement {
     }
 }
 
-plugins { id("com.gradle.enterprise") version "3.12.3" }
+plugins { id("com.gradle.enterprise") version "3.12.4" }
 gradleEnterprise {
     buildScan {
         publishAlwaysIf(!System.getenv("CI").isNullOrEmpty())

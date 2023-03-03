@@ -12,14 +12,17 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ManagementTierEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessment
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.messaging.OgrsScore
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -43,6 +46,12 @@ class RiskAssessmentServiceTest {
 
     @Mock
     private lateinit var contactRepository: ContactRepository
+
+    @Mock
+    private lateinit var referenceDataRepository: ReferenceDataRepository
+
+    @Mock
+    private lateinit var managementTierEventRepository: ManagementTierEventRepository
 
     @InjectMocks
     private lateinit var riskAssessmentService: RiskAssessmentService
@@ -73,6 +82,25 @@ class RiskAssessmentServiceTest {
             .thenReturn(null)
 
         assertThrows<NotFoundException> {
+            riskAssessmentService.addOrUpdateRiskAssessment(
+                crn,
+                1,
+                ZonedDateTime.now(),
+                OgrsScore(1, 1)
+            )
+        }
+    }
+
+    @Test
+    fun `when event not active`() {
+        val crn = PersonGenerator.DEFAULT.crn
+        whenever(personRepository.findByCrn(crn))
+            .thenReturn(PersonGenerator.DEFAULT)
+
+        whenever(eventRepository.findByCrn(crn, "1"))
+            .thenReturn(EventGenerator.generate(active = false))
+
+        assertThrows<ConflictException> {
             riskAssessmentService.addOrUpdateRiskAssessment(
                 crn,
                 1,

@@ -29,8 +29,17 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getRelease
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.PrisonerDied
+import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.PrisonerReleased
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.DAYS
+
+const val MOVEMENT_REASON_DIED = "DEC"
+
+enum class ReleaseOutcome {
+    PrisonerReleased,
+    PrisonerDied
+}
 
 @Service
 class ReleaseService(
@@ -43,7 +52,8 @@ class ReleaseService(
     private val custodyService: CustodyService,
     private val orderManagerRepository: OrderManagerRepository,
     private val contactRepository: ContactRepository,
-    private val contactTypeRepository: ContactTypeRepository
+    private val contactTypeRepository: ContactTypeRepository,
+    private val personDied: PersonDied
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -51,14 +61,19 @@ class ReleaseService(
         nomsNumber: String,
         prisonId: String,
         reason: String,
+        movementReasonCode: String,
         releaseDateTime: ZonedDateTime
-    ) {
+    ) = if (movementReasonCode == MOVEMENT_REASON_DIED) {
+        personDied.inCustody(nomsNumber, releaseDateTime)
+        PrisonerDied
+    } else {
         val releaseType = referenceDataRepository.getReleaseType(mapToReleaseType(reason).code)
         val institution = institutionRepository.getByNomisCdeCode(prisonId)
 
         eventService.getActiveCustodialEvents(nomsNumber).forEach {
             addReleaseToEvent(it, institution, releaseType, releaseDateTime)
         }
+        PrisonerReleased
     }
 
     private fun addReleaseToEvent(
@@ -92,7 +107,12 @@ class ReleaseService(
         )
 
         // update custody status + location
-        custodyService.updateStatus(custody, CustodialStatusCode.RELEASED_ON_LICENCE, releaseDate, "Released on Licence")
+        custodyService.updateStatus(
+            custody,
+            CustodialStatusCode.RELEASED_ON_LICENCE,
+            releaseDate,
+            "Released on Licence"
+        )
         custodyService.updateLocation(custody, InstitutionCode.IN_COMMUNITY.code, releaseDate)
 
         // update event

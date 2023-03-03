@@ -86,12 +86,12 @@ object EventDetailsGenerator {
             expectedDepartureOn = LocalDate.now().plusMonths(6),
             keyWorker = staffMember(keyWorker),
             notes = "Arrived on time",
-            applicationSubmittedOn = ZonedDateTime.now().minusDays(1)
+            applicationSubmittedOn = LocalDate.now().minusDays(1)
         )
     )
 
-    private fun staffMember(staff: Staff) = StaffMember(
-        username = "TEST",
+    private fun staffMember(staff: Staff, username: String? = null) = StaffMember(
+        username = username,
         staffCode = staff.code,
         staffIdentifier = staff.id,
         forenames = staff.forename,

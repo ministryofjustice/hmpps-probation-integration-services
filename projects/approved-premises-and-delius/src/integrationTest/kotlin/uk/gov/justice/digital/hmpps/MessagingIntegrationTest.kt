@@ -190,7 +190,7 @@ internal class MessagingIntegrationTest {
             )
         )
         assertThat(nsi.externalReference, equalTo(EXT_REF_BOOKING_PREFIX + details.bookingId))
-        assertThat(nsi.referralDate.withZoneSameInstant(EuropeLondon), equalTo(details.applicationSubmittedOn.withZoneSameInstant(EuropeLondon)))
+        assertThat(nsi.referralDate, equalTo(details.applicationSubmittedOn))
         assertNotNull(nsi.actualStartDate)
         assertThat(nsi.actualStartDate!!.withZoneSameInstant(EuropeLondon), equalTo(details.arrivedAt.withZoneSameInstant(EuropeLondon)))
 

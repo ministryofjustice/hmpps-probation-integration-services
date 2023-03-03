@@ -4,6 +4,7 @@ import IdGenerator
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -25,6 +26,7 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffMemberGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SubmittedByGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationAssessed
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSubmitted
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremisesApiClient
@@ -204,6 +206,15 @@ internal class ApprovedPremisesServiceTest {
     }
 
     @Test
+    fun `throws not found when approved premises not found`() {
+        val bookedBy = BookedByGenerator.generate()
+        givenBookingMadeDetails(bookedBy = bookedBy)
+
+        val ex = assertThrows<NotFoundException> { approvedPremisesService.bookingMade(bookingMadeEvent) }
+        assertThat(ex.message, equalTo("Approved Premises with code of Q001 not found"))
+    }
+
+    @Test
     fun `creates alert contact for person not arrived`() {
         val crn = personNotArrivedEvent.crn()
         val person = givenAPerson(crn)
@@ -317,7 +328,7 @@ internal class ApprovedPremisesServiceTest {
     private fun verifyNsiIsCreated(
         type: NsiTypeCode,
         status: NsiStatusCode,
-        referralDate: ZonedDateTime,
+        referralDate: LocalDate,
         actualStartDate: ZonedDateTime?,
         expectedStartDate: ZonedDateTime?,
         expectedEndDate: LocalDate?,

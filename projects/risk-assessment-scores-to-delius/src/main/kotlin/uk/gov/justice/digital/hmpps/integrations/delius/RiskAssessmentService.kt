@@ -4,11 +4,15 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.exception.ConflictException
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ManagementTierEvent
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ManagementTierEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessment
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRS_ASSESSMENT_CT
@@ -16,6 +20,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.getManager
@@ -29,7 +34,9 @@ class RiskAssessmentService(
     private val ogrsAssessmentRepository: OGRSAssessmentRepository,
     private val personManagerRepository: PersonManagerRepository,
     private val contactTypeRepository: ContactTypeRepository,
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
+    private val referenceDataRepository: ReferenceDataRepository,
+    private val managementTierEventRepository: ManagementTierEventRepository
 ) {
 
     @Transactional
@@ -45,6 +52,10 @@ class RiskAssessmentService(
         // validate that the offender has an event with this event number
         val event = eventRepository.getByCrn(crn, eventNumber.toString())
 
+        if (!event.active) {
+            throw ConflictException("Event number is Terminated")
+        }
+
         val ogrsAssessment = ogrsAssessmentRepository.findByEvent(event)
         if (ogrsAssessment != null) {
             if (assessmentDate.toLocalDate() > ogrsAssessment.assessmentDate) {
@@ -54,6 +65,7 @@ class RiskAssessmentService(
                 ogrsAssessment.assessmentDate = assessmentDate.toLocalDate()
                 ogrsAssessmentRepository.save(ogrsAssessment)
                 createContact(person, event, assessmentDate, ogrsScore)
+                createManagementTierEvent(person)
             }
         } else {
             // if there is no OGRS_ASSESSMENT for this crn/event then create a new one
@@ -69,7 +81,19 @@ class RiskAssessmentService(
                 )
             )
             createContact(person, event, assessmentDate, ogrsScore)
+            createManagementTierEvent(person)
         }
+    }
+
+    private fun createManagementTierEvent(person: Person) {
+        managementTierEventRepository.save(
+            ManagementTierEvent(
+                person,
+                contactType = contactTypeRepository.getByCode(OGRS_ASSESSMENT_CT),
+                changeReason = referenceDataRepository.findByDatasetAndCode(DatasetCode.TIER_CHANGE_REASON, "OGRS") ?: throw NotFoundException(DatasetCode.TIER_CHANGE_REASON.name, "code", "OGRS"),
+                tier = referenceDataRepository.findByDatasetAndCode(DatasetCode.TIER, "NA") ?: throw NotFoundException(DatasetCode.TIER.name, "code", "NA")
+            )
+        )
     }
 
     private fun createContact(
@@ -103,11 +127,11 @@ class RiskAssessmentService(
             CRN: ${person.crn}
             PNC Number: ${person.pncNumber}
             Name: ${person.forename} ${person.surname}
-            Order: ${event.disposal?.disposalType?.description}
+             Order: ${event.disposal?.disposalType?.description ?: ""}
             Offender manager: ${personManager.staff.forename} ${personManager.staff.surname}
             Gender: ${person.gender?.description}
             Date of Birth: ${DeliusDateFormatter.format(person.dateOfBirth)}
-            Date of Current Conviction: ${DeliusDateFormatter.format(event.disposal?.disposalDate)}
+            Date of Current Conviction: ${event.disposal?.disposalDate?.let { DeliusDateFormatter.format(it) } ?: ""}
             Date of Assessment: ${DeliusDateFormatter.format(assessmentDate)}
             Date of First Sanction: ${event.mainOffence?.date}
             Previous Sanctions: ${event.mainOffence?.offenceCount}

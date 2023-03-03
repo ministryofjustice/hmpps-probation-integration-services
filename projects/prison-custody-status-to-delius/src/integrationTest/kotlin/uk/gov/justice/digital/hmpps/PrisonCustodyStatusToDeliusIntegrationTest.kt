@@ -6,6 +6,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.verify
@@ -15,8 +16,11 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlertRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.BREACH_PRISON_RECALL
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.CHANGE_OF_INSTITUTION
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.RELEASE_FROM_CUSTODY
@@ -26,6 +30,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyH
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.PrisonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.responsibleofficer.ResponsibleOfficerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode.LOCATION_CHANGE
@@ -69,10 +75,16 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
     private lateinit var contactRepository: ContactRepository
 
     @Autowired
+    private lateinit var contactAlertRepository: ContactAlertRepository
+
+    @Autowired
     private lateinit var prisonManagerRepository: PrisonManagerRepository
 
     @Autowired
     private lateinit var responsibleOfficerRepository: ResponsibleOfficerRepository
+
+    @Autowired
+    private lateinit var personManagerRepository: PersonManagerRepository
 
     @MockBean
     private lateinit var telemetryService: TelemetryService
@@ -122,6 +134,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
                 "nomsNumber" to "A0001AA",
                 "institution" to "WSI",
                 "reason" to "RELEASED",
+                "nomisMovementReasonCode" to "NCS",
                 "details" to "Movement reason code NCS"
             )
         )
@@ -183,9 +196,43 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
                 "nomsNumber" to "A0002AA",
                 "institution" to "WSI",
                 "reason" to "ADMISSION",
+                "nomisMovementReasonCode" to "R1",
                 "details" to "ACTIVE IN:ADM-L"
             )
         )
+    }
+
+    @Test
+    fun `a person died in custody alerts manager`() {
+        val nomsNumber = MessageGenerator.PRISONER_DIED.additionalInformation.nomsNumber()
+        val person = PersonGenerator.DIED
+
+        val notification = Notification(
+            message = MessageGenerator.PRISONER_DIED,
+            attributes = MessageAttributes("prison-offender-events.prisoner.released")
+        )
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).trackEvent(
+            "PrisonerDied",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to nomsNumber,
+                "institution" to "WSI",
+                "reason" to "RELEASED",
+                "nomisMovementReasonCode" to "DEC"
+            )
+        )
+
+        val dus = contactRepository.findAll().firstOrNull { it.person.id == person.id }
+        assertNotNull(dus!!)
+        assertThat(dus.type.code, equalTo(ContactTypeCode.DIED_IN_CUSTODY.code))
+        assertTrue(dus.alert!!)
+        val personManager = personManagerRepository.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)
+        assertThat(dus.teamId, equalTo(personManager.team.id))
+        assertThat(dus.staffId, equalTo(personManager.staff.id))
+        val alert = contactAlertRepository.findAll().firstOrNull { it.contactId == dus.id }
+        assertNotNull(alert)
     }
 
     private fun getPersonId(nomsNumber: String) =

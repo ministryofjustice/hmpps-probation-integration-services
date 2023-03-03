@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ManagementTierEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessmentRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
@@ -61,6 +62,9 @@ internal class IntegrationTest {
     @Autowired
     private lateinit var riskAssessmentService: RiskAssessmentService
 
+    @Autowired
+    private lateinit var managementTierEventRepository: ManagementTierEventRepository
+
     @Test
     fun `successfully update RSR scores`() {
         val notification = Notification(
@@ -93,6 +97,13 @@ internal class IntegrationTest {
             contactRepository.findAll()[0].notes,
             Matchers.containsString("Reconviction calculation is 4% within one year and 8% within 2 years.")
         )
+
+        val managementTierEvents = managementTierEventRepository.findAll()
+
+        MatcherAssert.assertThat(managementTierEvents.size, Matchers.equalTo(1))
+        MatcherAssert.assertThat(managementTierEvents[0].changeReason.code, Matchers.equalTo("OGRS"))
+        MatcherAssert.assertThat(managementTierEvents[0].tier.code, Matchers.equalTo("NA"))
+        MatcherAssert.assertThat(managementTierEvents[0].person.crn, Matchers.equalTo(PersonGenerator.DEFAULT.crn))
     }
 
     @Test

@@ -52,7 +52,7 @@ class Nsi(
     val statusDate: ZonedDateTime = ZonedDateTime.now(),
 
     @Column
-    val referralDate: ZonedDateTime,
+    val referralDate: LocalDate,
 
     @Column
     val expectedStartDate: ZonedDateTime? = null,
