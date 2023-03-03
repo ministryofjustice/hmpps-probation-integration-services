@@ -35,8 +35,7 @@ function get_current_indices() {
   echo "Standby Index => ${STANDBY_INDEX}"
 
   if [ -z "$PRIMARY_INDEX" ] || [ -z "$STANDBY_INDEX" ] || [ "$PRIMARY_INDEX" = 'error' ] || [ "$STANDBY_INDEX" = 'error' ]; then
-    echo "Unable to get Index Aliases."
-    exit 1
+    fail "Unable to get index aliases."
   fi
 }
 

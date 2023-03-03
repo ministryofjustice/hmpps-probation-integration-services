@@ -31,22 +31,22 @@ if [ -z "$SEARCH_URL" ]; then fail 'Missing -u'; fi
 
 function create_pipeline() {
   if [ -n "${PIPELINE_FILENAME}" ]; then
-    if [ ! -f "${PIPELINE_FILENAME}" ]; then echo "${PIPELINE_FILENAME} does not exist." >&2; exit 1; fi
-    echo "creating ${INDEX_PREFIX} pipeline ..."
+    if [ ! -f "${PIPELINE_FILENAME}" ]; then fail "${PIPELINE_FILENAME} does not exist."; fi
+    echo "Creating ${INDEX_PREFIX} pipeline ..."
     curl_json -XPUT "${SEARCH_URL}/_ingest/pipeline/${INDEX_PREFIX}-pipeline" --data @"${PIPELINE_FILENAME}"
   fi
 }
 
 function create_template() {
   if [ -n "${TEMPLATE_FILENAME}" ]; then
-    if [ ! -f "${TEMPLATE_FILENAME}" ]; then echo "${TEMPLATE_FILENAME} does not exist." >&2; exit 1; fi
-    echo "creating ${INDEX_PREFIX} template ..."
+    if [ ! -f "${TEMPLATE_FILENAME}" ]; then fail "${TEMPLATE_FILENAME} does not exist."; fi
+    echo "Creating ${INDEX_PREFIX} template ..."
     curl_json -XPUT "${SEARCH_URL}/_index_template/${INDEX_PREFIX}-template" --data @"${TEMPLATE_FILENAME}"
   fi
 }
 
 function create_indices() {
-  echo "creating ${INDEX_PREFIX} indices if they don't already exist ..."
+  echo "Creating ${INDEX_PREFIX} indices, if they don't already exist ..."
   curl_json -XPUT "${SEARCH_URL}/${INDEX_PREFIX}-a" --data '{"aliases": {"'"${INDEX_PREFIX}-primary"'": {}}}' --no-fail
   curl_json -XPUT "${SEARCH_URL}/${INDEX_PREFIX}-b" --data '{"aliases": {"'"${INDEX_PREFIX}-standby"'": {}}}' --no-fail
 }
