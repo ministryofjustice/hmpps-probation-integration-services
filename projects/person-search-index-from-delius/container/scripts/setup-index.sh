@@ -1,6 +1,6 @@
 #!/bin/bash
 set -eo pipefail
-. functions.sh
+. "$(dirname -- "$0")/functions.sh"
 
 function help {
   echo -e "\\nSCRIPT USAGE\\n"

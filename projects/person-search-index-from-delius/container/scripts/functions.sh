@@ -10,12 +10,10 @@ function fail() {
 }
 
 function curl_json() {
-  curl --fail --silent --show-error --header 'Content-Type: application/json' "$@"
-  echo
+  curl --fail --silent --show-error --header 'Content-Type: application/json' "$@" && echo
 }
 
 function parse_connection_string() {
-  if [ -z "$APPLICATIONINSIGHTS_CONNECTION_STRING" ]; then fail 'Missing APPLICATIONINSIGHTS_CONNECTION_STRING'; fi
   terms=$(echo "$APPLICATIONINSIGHTS_CONNECTION_STRING" | tr ";" "\n")
   for term in $terms; do
       key=$(echo "$term" | cut -d "=" -f 1)
@@ -27,7 +25,8 @@ function parse_connection_string() {
 }
 
 function track_custom_event() {
-  echo "Sending custom event to app insights: $1"
+  echo "Sending custom event to app insights: $1 ${2:-{}}"
+  if [ -z "$APPLICATIONINSIGHTS_CONNECTION_STRING" ]; then echo 'Missing APPLICATIONINSIGHTS_CONNECTION_STRING. Telemetry is disabled.'; return; fi
   if [ -z "$APP_INSIGHTS_URL" ]; then parse_connection_string; fi
   now=$(date +'%FT%T%z')
   curl_json -XPOST "$APP_INSIGHTS_URL" --data '{
@@ -49,7 +48,8 @@ function track_custom_event() {
 }
 
 function track_exception() {
-  echo "Sending exception to app insights: $1"
+  echo "Sending exception to app insights: $1 $2"
+  if [ -z "$APPLICATIONINSIGHTS_CONNECTION_STRING" ]; then echo 'Missing APPLICATIONINSIGHTS_CONNECTION_STRING. Telemetry is disabled.'; return; fi
   if [ -z "$APP_INSIGHTS_URL" ]; then parse_connection_string; fi
   now=$(date +'%FT%T%z')
   curl_json -XPOST "$APP_INSIGHTS_URL" --data '{

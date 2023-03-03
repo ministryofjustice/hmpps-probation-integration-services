@@ -31,10 +31,8 @@ spec:
                   value: contact-search
                 - name: CONTACT_REINDEXING_TIMEOUT
                   value: '86400' # 1 day
-                - name: CONTACT_FULL_LOAD_PIPELINE_ENABLED
-                  value: enabled
-                - name: CONTACT_DLQ_PIPELINE_ENABLED
-                  value: enabled
+                - name: PIPELINES_ENABLED
+                  value: contact-full-load,contact-dlq
                 - name: SEARCH_INDEX_HOST
                   value: {{ .Values.reindexing.host }}
                 - name: APPLICATIONINSIGHTS_CONNECTION_STRING

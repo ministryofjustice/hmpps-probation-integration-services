@@ -1,6 +1,6 @@
 SELECT "json",
        "offenderId",
-       (SELECT MIN(OFFENDER_ID) FROM OFFENDER WHERE OFFENDER_ID >= :sql_last_value + :batch_size) AS sql_next_value
+       (SELECT MIN(OFFENDER_ID) FROM OFFENDER WHERE OFFENDER_ID >= :sql_last_value + :batch_size) AS "sql_next_value"
 FROM (WITH PAGE AS (SELECT * FROM OFFENDER WHERE :offender_id = 0
                                              AND OFFENDER.OFFENDER_ID >= :sql_last_value
                                              AND OFFENDER.OFFENDER_ID < :sql_last_value + :batch_size
@@ -358,6 +358,6 @@ SELECT json_object('lastId' VALUE (SELECT max(offender_id)
                                                   AND om.ACTIVE_FLAG = 1
                                                   AND om.SOFT_DELETED = 0)) RETURNING CLOB)      AS "json",
        -1                                                                                        AS "offenderId",
-       (SELECT MIN(OFFENDER_ID) FROM OFFENDER WHERE OFFENDER_ID > :sql_last_value + :batch_size) AS sql_next_value
+       (SELECT MIN(OFFENDER_ID) FROM OFFENDER WHERE OFFENDER_ID > :sql_last_value + :batch_size) AS "sql_next_value"
 FROM DUAL
 WHERE :offender_id = 0

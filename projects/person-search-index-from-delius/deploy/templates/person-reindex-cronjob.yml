@@ -31,10 +31,8 @@ spec:
                   value: person-search
                 - name: PERSON_REINDEXING_TIMEOUT
                   value: '7200' # 3 hours
-                - name: PERSON_FULL_LOAD_PIPELINE_ENABLED
-                  value: enabled
-                - name: PERSON_DLQ_PIPELINE_ENABLED
-                  value: enabled
+                - name: PIPELINES_ENABLED
+                  value: person-full-load,person-dlq
                 - name: SEARCH_INDEX_HOST
                   value: {{ .Values.reindexing.host }}
                 - name: APPLICATIONINSIGHTS_CONNECTION_STRING

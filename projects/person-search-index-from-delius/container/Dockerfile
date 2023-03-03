@@ -1,7 +1,7 @@
 FROM mikefarah/yq:4 as yml
 # Convert yml files to json
 COPY --chown=yq /pipelines /pipelines
-RUN find /init -type f -name '*.yml' | xargs -n1 -I{} sh -c 'f={}; yq -o=json "$f" > "${f%.yml}.json"'
+RUN find /pipelines -type f -name '*.yml' | xargs -n1 -I{} sh -c 'f={}; yq -o=json "$f" > "${f%.yml}.json"'
 
 
 FROM opensearchproject/logstash-oss-with-opensearch-output-plugin:8.6.1
@@ -15,7 +15,7 @@ USER 1000
 COPY --chown=logstash ojdbc11.jar /etc/logstash/
 COPY --chown=logstash config /usr/share/logstash/config
 COPY --chown=logstash /scripts /scripts
-COPY --chown=logstash --from=yml /pipelines /enabled/pipelines
+COPY --chown=logstash --from=yml /pipelines /pipelines
 
 RUN mkdir -p /usr/share/logstash/data/dead_letter_queue/person-incremental \
              /usr/share/logstash/data/dead_letter_queue/person-full-load \

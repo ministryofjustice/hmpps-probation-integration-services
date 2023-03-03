@@ -1,6 +1,6 @@
 select "json",
        "contactId",
-       (select min(contact_id) from contact where contact_id >= :sql_last_value + :batch_size) as sql_next_value
+       (select min(contact_id) from contact where contact_id >= :sql_last_value + :batch_size) as "sql_next_value"
 from (with page as (select * from contact where :contact_id = 0
                                             and contact.contact_id >= :sql_last_value
                                             and contact.contact_id < :sql_last_value + :batch_size
@@ -33,6 +33,6 @@ from (with page as (select * from contact where :contact_id = 0
 union all
 select json_object('lastId' value last_id returning clob)                                      as "json",
        -1                                                                                      as "contactId",
-       (select min(contact_id) from contact where contact_id >= :sql_last_value + :batch_size) as sql_next_value
+       (select min(contact_id) from contact where contact_id >= :sql_last_value + :batch_size) as "sql_next_value"
 from (select max(contact_id) as last_id from contact)
 where :contact_id = 0
