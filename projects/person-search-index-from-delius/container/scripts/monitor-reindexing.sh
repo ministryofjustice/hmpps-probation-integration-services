@@ -24,8 +24,8 @@ while getopts h:i:t:u: FLAG; do
     ;;
   esac
 done
-if [ -z "$INDEX_PREFIX" ]; then help; fail 'Missing -i'; fi
-if [ -z "$REINDEXING_TIMEOUT" ]; then help; fail 'Missing -t'; fi
+if [ -z "$INDEX_PREFIX" ]; then help; fail 'Missing -i'; stop_logstash; fi
+if [ -z "$REINDEXING_TIMEOUT" ]; then help; fail 'Missing -t'; stop_logstash; fi
 
 function get_current_indices() {
   PRIMARY_INDEX=$(curl_json --retry 3 "${SEARCH_URL}/_alias/${INDEX_PREFIX}-primary" | jq -r 'keys[0]')
@@ -36,6 +36,7 @@ function get_current_indices() {
 
   if [ -z "$PRIMARY_INDEX" ] || [ -z "$STANDBY_INDEX" ] || [ "$PRIMARY_INDEX" = 'error' ] || [ "$STANDBY_INDEX" = 'error' ]; then
     fail "Unable to get index aliases."
+    stop_logstash
   fi
 }
 
@@ -49,7 +50,7 @@ function wait_for_metadata_document() {
   echo 'Waiting for metadata document ...'
   SECONDS=0
   until curl_json --no-show-error "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1"; do
-    if [ "$SECONDS" -gt "600" ]; then fail 'Timed out getting metadata document' 'ProbationSearchIndexFailure'; fi
+    if [ "$SECONDS" -gt '600' ]; then fail 'Timed out getting metadata document' 'ProbationSearchIndexFailure'; stop_logstash; fi
     sleep 10
   done
   LAST_ID=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.lastId')
@@ -61,7 +62,7 @@ function wait_for_index_to_complete() {
   echo 'Waiting for indexing to complete ...'
   SECONDS=0
   until curl_json --no-show-error "${SEARCH_URL}/${STANDBY_INDEX}/_doc/${LAST_ID}" >/dev/null; do
-    if [ "$SECONDS" -gt "$REINDEXING_TIMEOUT" ]; then fail "Indexing process timed out. ID=${LAST_ID} was never indexed" 'ProbationSearchIndexFailure'; fi
+    if [ "$SECONDS" -gt "$REINDEXING_TIMEOUT" ]; then fail "Indexing process timed out. ID=${LAST_ID} was never indexed" 'ProbationSearchIndexFailure'; stop_logstash; fi
     sleep 60
   done
   COUNT=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
