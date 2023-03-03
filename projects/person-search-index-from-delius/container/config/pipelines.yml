@@ -1,13 +1,13 @@
 - pipeline.id: person-full-load
-  path.config: "/pipelines/person/logstash-full-load.conf"
+  path.config: "${PERSON_FULL_LOAD_PIPELINE_ENABLED:disabled}/pipelines/person/logstash-full-load.conf"
 - pipeline.id: person-incremental
-  path.config: "/pipelines/person/logstash-incremental.conf"
+  path.config: "${PERSON_INCREMENTAL_PIPELINE_ENABLED:disabled}/pipelines/person/logstash-incremental.conf"
 - pipeline.id: person-dlq
-  path.config: "/pipelines/person/logstash-dlq.conf"
+  path.config: "${PERSON_DLQ_PIPELINE_ENABLED:disabled}/pipelines/person/logstash-dlq.conf"
 
 - pipeline.id: contact-full-load
-  path.config: "/pipelines/contact/logstash-full-load.conf"
+  path.config: "${CONTACT_FULL_LOAD_PIPELINE_ENABLED:disabled}/pipelines/contact/logstash-full-load.conf"
 - pipeline.id: contact-incremental
-  path.config: "/pipelines/contact/logstash-incremental.conf"
+  path.config: "${CONTACT_INCREMENTAL_PIPELINE_ENABLED:disabled}/pipelines/contact/logstash-incremental.conf"
 - pipeline.id: contact-dlq
-  path.config: "/pipelines/contact/logstash-dlq.conf"
+  path.config: "${CONTACT_DLQ_PIPELINE_ENABLED:disabled}/pipelines/contact/logstash-dlq.conf"

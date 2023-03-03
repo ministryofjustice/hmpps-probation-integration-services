@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eo pipefail
+. functions.sh
 
 function help {
   echo -e "\\nSCRIPT USAGE\\n"
@@ -25,19 +26,14 @@ while getopts h:i:p:t:u: FLAG; do
     ;;
   esac
 done
-if [ -z "$INDEX_PREFIX" ]; then echo 'Missing -i' >&2; exit 1; fi
-if [ -z "$SEARCH_URL" ]; then echo 'Missing -u' >&2; exit 1; fi
-
-function put_json() {
-  curl --fail --silent --show-error --request PUT --header 'Content-Type: application/json' "$@"
-  echo
-}
+if [ -z "$INDEX_PREFIX" ]; then fail 'Missing -i'; fi
+if [ -z "$SEARCH_URL" ]; then fail 'Missing -u'; fi
 
 function create_pipeline() {
   if [ -n "${PIPELINE_FILENAME}" ]; then
     if [ ! -f "${PIPELINE_FILENAME}" ]; then echo "${PIPELINE_FILENAME} does not exist." >&2; exit 1; fi
     echo "creating ${INDEX_PREFIX} pipeline ..."
-    put_json "${SEARCH_URL}/_ingest/pipeline/${INDEX_PREFIX}-pipeline" --data @"${PIPELINE_FILENAME}"
+    curl_json -XPUT "${SEARCH_URL}/_ingest/pipeline/${INDEX_PREFIX}-pipeline" --data @"${PIPELINE_FILENAME}"
   fi
 }
 
@@ -45,14 +41,14 @@ function create_template() {
   if [ -n "${TEMPLATE_FILENAME}" ]; then
     if [ ! -f "${TEMPLATE_FILENAME}" ]; then echo "${TEMPLATE_FILENAME} does not exist." >&2; exit 1; fi
     echo "creating ${INDEX_PREFIX} template ..."
-    put_json "${SEARCH_URL}/_index_template/${INDEX_PREFIX}-template" --data @"${TEMPLATE_FILENAME}"
+    curl_json -XPUT "${SEARCH_URL}/_index_template/${INDEX_PREFIX}-template" --data @"${TEMPLATE_FILENAME}"
   fi
 }
 
 function create_indices() {
   echo "creating ${INDEX_PREFIX} indices if they don't already exist ..."
-  put_json "${SEARCH_URL}/${INDEX_PREFIX}-a" --data '{"aliases": {"'"${INDEX_PREFIX}-primary"'": {}}}' --no-fail
-  put_json "${SEARCH_URL}/${INDEX_PREFIX}-b" --data '{"aliases": {"'"${INDEX_PREFIX}-standby"'": {}}}' --no-fail
+  curl_json -XPUT "${SEARCH_URL}/${INDEX_PREFIX}-a" --data '{"aliases": {"'"${INDEX_PREFIX}-primary"'": {}}}' --no-fail
+  curl_json -XPUT "${SEARCH_URL}/${INDEX_PREFIX}-b" --data '{"aliases": {"'"${INDEX_PREFIX}-standby"'": {}}}' --no-fail
 }
 
 create_pipeline && create_template && create_indices

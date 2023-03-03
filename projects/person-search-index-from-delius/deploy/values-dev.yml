@@ -3,11 +3,9 @@ generic-service:
     host: person-search-index-from-delius-dev.hmpps.service.justice.gov.uk
 
   env:
-    SEARCH_INDEX_HOST: "es-proxy.hmpps-probation-search-dev.svc.cluster.local:9200"
-    PERSON_INDEX_SCHEDULE: "0 9 * * 1-5"
-    CONTACT_INDEX_SCHEDULE: "0 9 * * 6"
+    SEARCH_INDEX_HOST: es-proxy.hmpps-probation-search-dev.svc.cluster.local:9200
 
-management:
-  person_schedule: 58 8 * * 1-5
-  contact_schedule: 58 8 * * 6
+reindexing:
+  person_schedule: 0 9 * * 1-5
+  contact_schedule: 0 12 * * 1
   host: es-proxy.hmpps-probation-search-dev.svc.cluster.local:9200

@@ -1,7 +1,10 @@
-select "json", "contactId"
+select "json",
+       "contactId",
+       (select min(contact_id) from contact where contact_id >= :sql_last_value + :batch_size) as sql_next_value
 from (with page as (select * from contact where :contact_id = 0
-                                            and contact.contact_id >= :offset
-                                          order by contact_id fetch next :size-1 rows only),
+                                            and contact.contact_id >= :sql_last_value
+                                            and contact.contact_id < :sql_last_value + :batch_size
+                                          order by contact_id fetch next :batch_size rows only),
            single as (select * from contact where :contact_id > 0 and contact.contact_id = :contact_id)
       select json_object(
                      'crn' value offender.crn,
@@ -28,10 +31,8 @@ from (with page as (select * from contact where :contact_id = 0
                left outer join r_contact_outcome_type
                                on r_contact_outcome_type.contact_outcome_type_id = contact.contact_outcome_type_id)
 union all
-select "json", "contactId"
-from (select json_object('lastId' value last_id returning clob) as "json",
-             -1                                                 as "contactId",
-             last_id
-      from (select max(contact_id) as last_id from contact)
-      where :contact_id = 0 fetch next 1 rows only)
-where :offset <= last_id
+select json_object('lastId' value last_id returning clob)                                      as "json",
+       -1                                                                                      as "contactId",
+       (select min(contact_id) from contact where contact_id >= :sql_last_value + :batch_size) as sql_next_value
+from (select max(contact_id) as last_id from contact)
+where :contact_id = 0

@@ -1,22 +1,23 @@
 #!/bin/bash
 set -exo pipefail
+. functions.sh
 
 function help {
   echo -e "\\nSCRIPT USAGE\\n"
   echo "-i The prefix of the primary and standby index name (e.g. 'person-search')"
-  echo "-t The time (in seconds) to wait before attempting to switch aliases"
+  echo "-t The maximum time (in seconds) to wait for indexing to complete"
   echo "-u Search Host URL"
   exit 1
 }
 
 SEARCH_URL="${SEARCH_INDEX_HOST}"
-TIMEOUT=7200
+REINDEXING_TIMEOUT=7200
 
 while getopts h:i:t:u: FLAG; do
   case $FLAG in
   h) help ;;
   i) INDEX_PREFIX="$OPTARG" ;;
-  t) TIMEOUT="$OPTARG" ;;
+  t) REINDEXING_TIMEOUT="$OPTARG" ;;
   u) SEARCH_URL="$OPTARG" ;;
   \?) #unrecognized option - show help
     echo -e \\n"Option not allowed."
@@ -25,8 +26,6 @@ while getopts h:i:t:u: FLAG; do
   esac
 done
 if [ -z "$INDEX_PREFIX" ]; then help; fail 'Missing -i'; fi
-
-. functions.sh
 
 function get_current_indices() {
   PRIMARY_INDEX=$(curl_json --retry 3 "${SEARCH_URL}/_alias/${INDEX_PREFIX}-primary" | jq -r 'keys[0]')
@@ -51,7 +50,7 @@ function wait_for_metadata_document() {
   echo 'Waiting for metadata document ...'
   SECONDS=0
   until curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1"; do
-    if [ "$SECONDS" -gt "$TIMEOUT" ]; then fail 'Timed out getting metadata document' 'ProbationSearchIndexFailure'; fi
+    if [ "$SECONDS" -gt "600" ]; then fail 'Timed out getting metadata document' 'ProbationSearchIndexFailure'; fi
     sleep 60
   done
   LAST_ID=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.lastId')
@@ -63,7 +62,7 @@ function wait_for_index_to_complete() {
   echo 'Waiting for indexing to complete ...'
   SECONDS=0
   until curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_doc/${LAST_ID}"; do
-    if [ "$SECONDS" -gt "$TIMEOUT" ]; then fail "Indexing process timed out. ID=${LAST_ID} was never indexed" 'ProbationSearchIndexFailure'; fi
+    if [ "$SECONDS" -gt "$REINDEXING_TIMEOUT" ]; then fail "Indexing process timed out. ID=${LAST_ID} was never indexed" 'ProbationSearchIndexFailure'; fi
     sleep 10
   done
   COUNT=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')

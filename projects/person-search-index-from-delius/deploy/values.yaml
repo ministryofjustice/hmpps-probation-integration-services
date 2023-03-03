@@ -1,46 +1,5 @@
 generic-service:
   nameOverride: person-search-index-from-delius
-  replicaCount: 1
-  resources:
-    limits:
-      cpu: 2
-      memory: 2Gi
-    requests:
-      cpu: 1
-      memory: 2Gi
-
-  readinessProbe:
-    httpGet: null
-    exec:
-      command:
-        - curl
-        - -sf
-        - localhost:9600
-    initialDelaySeconds: 30
-    periodSeconds: 10
-    timeoutSeconds: 60
-
-  livenessProbe:
-    httpGet: null
-    exec:
-      command:
-        - curl
-        - -sf
-        - localhost:9600
-    initialDelaySeconds: 30
-    periodSeconds: 10
-    timeoutSeconds: 60
-
-  startupProbe:
-    httpGet: null
-    exec:
-      command:
-        - curl
-        - -sf
-        - localhost:9600
-    periodSeconds: 10
-    timeoutSeconds: 10
-    failureThreshold: 20
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius
@@ -50,8 +9,12 @@ generic-service:
     tlsSecretName: person-search-index-from-delius-cert
 
   env:
-    PERSON_INDEX_PREFIX: person-search
     CONTACT_INDEX_PREFIX: contact-search
+    CONTACT_INCREMENTAL_PIPELINE_ENABLED: enabled
+    CONTACT_DLQ_PIPELINE_ENABLED: enabled
+    PERSON_INDEX_PREFIX: person-search
+    PERSON_INCREMENTAL_PIPELINE_ENABLED: enabled
+    PERSON_DLQ_PIPELINE_ENABLED: enabled
     JDK_JAVA_OPTIONS: -XX:MaxRAMPercentage=75.0
 
   namespace_secrets:
