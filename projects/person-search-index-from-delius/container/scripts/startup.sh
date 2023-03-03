@@ -9,14 +9,18 @@ for pipeline in $pipelines; do
   fi
 done
 
-/scripts/setup-index.sh -i "$PERSON_INDEX_PREFIX" -p /pipelines/person/index/person-search-pipeline.json -t /pipelines/person/index/person-search-template.json
-if grep --q "person-full-load" <<<"$PIPELINES_ENABLED"; then
-  /scripts/monitor-reindexing.sh -i "$PERSON_INDEX_PREFIX" -t "$PERSON_REINDEXING_TIMEOUT" &
+if grep --q 'person' <<<"$PIPELINES_ENABLED"; then
+  /scripts/setup-index.sh -i "$PERSON_INDEX_PREFIX" -p /pipelines/person/index/person-search-pipeline.json -t /pipelines/person/index/person-search-template.json
+  if grep --q 'person-full-load' <<<"$PIPELINES_ENABLED"; then
+    /scripts/monitor-reindexing.sh -i "$PERSON_INDEX_PREFIX" -t "$PERSON_REINDEXING_TIMEOUT" &
+  fi
 fi
 
-/scripts/setup-index.sh -i "$CONTACT_INDEX_PREFIX" -t /pipelines/contact/index/contact-search-template.json
-if grep --q "contact-full-load" <<<"$PIPELINES_ENABLED"; then
-  /scripts/monitor-reindexing.sh -i "$CONTACT_INDEX_PREFIX" -t "$CONTACT_REINDEXING_TIMEOUT" &
+if grep --q 'contact' <<<"$PIPELINES_ENABLED"; then
+  /scripts/setup-index.sh -i "$CONTACT_INDEX_PREFIX" -t /pipelines/contact/index/contact-search-template.json
+  if grep --q 'contact-full-load' <<<"$PIPELINES_ENABLED"; then
+    /scripts/monitor-reindexing.sh -i "$CONTACT_INDEX_PREFIX" -t "$CONTACT_REINDEXING_TIMEOUT" &
+  fi
 fi
 
 /usr/local/bin/docker-entrypoint
