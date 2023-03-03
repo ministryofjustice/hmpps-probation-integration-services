@@ -11,7 +11,6 @@ include(
     "approved-premises-and-delius",
     "tier-to-delius",
     "risk-assessment-scores-to-delius",
-    "person-search-index-from-delius:management",
     "person-search-index-from-delius",
     "prison-custody-status-to-delius",
     "pre-sentence-reports-to-delius",

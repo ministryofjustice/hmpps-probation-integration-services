@@ -7,7 +7,9 @@ RUN find /init -type f -name '*.yml' | xargs -n1 -I{} sh -c 'f={}; yq -o=json "$
 FROM opensearchproject/logstash-oss-with-opensearch-output-plugin:8.6.1
 
 USER root
-RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install -y curl jq \
+    && rm -rf /var/lib/apt/lists/*
 USER 1000
 
 COPY --chown=logstash ojdbc11.jar /etc/logstash/
