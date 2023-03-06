@@ -31,7 +31,8 @@ from (with page as (select * from contact where :contact_id = 0
                left outer join offender on offender.offender_id = contact.offender_id
                left outer join r_contact_type on r_contact_type.contact_type_id = contact.contact_type_id
                left outer join r_contact_outcome_type
-                               on r_contact_outcome_type.contact_outcome_type_id = contact.contact_outcome_type_id)
+                               on r_contact_outcome_type.contact_outcome_type_id = contact.contact_outcome_type_id
+      where contact.soft_deleted = 0)
 union all
 select json_object('lastId' value last_id returning clob)                                      as "json",
        -1                                                                                      as "contactId",
