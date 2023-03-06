@@ -35,6 +35,7 @@ function stop_logstash() {
       pgrep java | xargs -n1 kill -TERM
     else
       echo 'Killing Logstash process...'
+      _sentry_err_trap "${BASH_COMMAND:-unknown}" "$exit_code"
       pgrep java | xargs -n1 kill -KILL
     fi
     exit $exit_code
