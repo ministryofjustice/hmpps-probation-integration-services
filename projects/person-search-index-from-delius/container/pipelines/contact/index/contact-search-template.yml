@@ -545,7 +545,6 @@ template:
       outcome:
         type: text
         store: true
-        fielddata: true
         boost: 2
         fields:
           keyword:
@@ -553,7 +552,9 @@ template:
       type:
         type: text
         store: true
-        fielddata: true
+        fields:
+          keyword:
+            type: keyword
       typeCode:
         type: keyword
         copy_to: type
