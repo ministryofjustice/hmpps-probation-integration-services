@@ -1,5 +1,10 @@
 generic-service:
   nameOverride: person-search-index-from-delius
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      memory: 1Gi
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius
