@@ -25,7 +25,7 @@ function parse_connection_string() {
 }
 
 function track_custom_event() {
-  echo "Sending custom event to app insights: $1 ${2:-{}}"
+  echo "Sending custom event to app insights: $1 ${2:-"{}"}"
   if [ -z "$APPLICATIONINSIGHTS_CONNECTION_STRING" ]; then echo 'Missing APPLICATIONINSIGHTS_CONNECTION_STRING. Telemetry is disabled.'; return; fi
   if [ -z "$APP_INSIGHTS_URL" ]; then parse_connection_string; fi
   now=$(date +'%FT%T%z')
@@ -41,7 +41,7 @@ function track_custom_event() {
       "baseData": {
         "ver": 1,
         "name": "'"$1"'",
-        "properties": '"${2:-{}}"'
+        "properties": '"${2:-"{}"}"'
       }
     }
   }'
