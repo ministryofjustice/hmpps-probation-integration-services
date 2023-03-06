@@ -11,6 +11,8 @@ from (with page as (select * from contact where :contact_id = 0
                      'offenderId' value offender.offender_id,
                      'id' value contact.contact_id,
                      'date' value to_char(contact.contact_date, 'yyyy-mm-dd'),
+                     'startTime' value to_char(contact.contact_start_time, 'HH24:MI:SS'),
+                     'endTime' value to_char(contact.contact_end_time, 'HH24:MI:SS'),
                      'description' value contact.description,
                      'notes' value contact.notes,
                      'attended' value decode(contact.attended, 'Y', 'attended', 'N', 'fta', null),

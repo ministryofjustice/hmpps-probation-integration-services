@@ -532,6 +532,12 @@ template:
           date:
             type: date
             format: date_optional_time||yyyy-MM-dd||dd-MM-yyyy
+      startTime:
+        type: date
+        format: hour_minute_second
+      endTime:
+        type: date
+        format: hour_minute_second
       notes:
         type: text
         analyzer: probation_text_analyzer
