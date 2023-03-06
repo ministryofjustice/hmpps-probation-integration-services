@@ -42,24 +42,24 @@ runs:
       with:
         cache-read-only: ${{ inputs.push-images != 'true' }}
 
-#    - name: Compile and Test
-#      shell: bash
-#      run: ./gradlew check
+    - name: Compile and Test
+      shell: bash
+      run: ./gradlew check
 
-#    - name: Pull base image and set env var for base image
-#      if: ${{ inputs.push-images == 'true' }}
-#      shell: bash
-#      run: |
-#        docker pull eclipse-temurin:17-jre-alpine
-#        echo "JIB_FROM_IMAGE=docker://$(docker inspect --format='{{index .RepoDigests 0}}' eclipse-temurin:17-jre-alpine)" >> $GITHUB_ENV
-#
-#    - name: Jib Image Push
-#      if: ${{ inputs.push-images == 'true' }}
-#      shell: bash
-#      env:
-#        GITHUB_USERNAME: ${{ github.actor }}
-#        GITHUB_PASSWORD: ${{ github.token }}
-#      run: ./gradlew jib
+    - name: Pull base image and set env var for base image
+      if: ${{ inputs.push-images == 'true' }}
+      shell: bash
+      run: |
+        docker pull eclipse-temurin:17-jre-alpine
+        echo "JIB_FROM_IMAGE=docker://$(docker inspect --format='{{index .RepoDigests 0}}' eclipse-temurin:17-jre-alpine)" >> $GITHUB_ENV
+
+    - name: Jib Image Push
+      if: ${{ inputs.push-images == 'true' }}
+      shell: bash
+      env:
+        GITHUB_USERNAME: ${{ github.actor }}
+        GITHUB_PASSWORD: ${{ github.token }}
+      run: ./gradlew jib
 
     - name: Build standalone docker images
       shell: bash
@@ -68,7 +68,7 @@ runs:
     - name: Check Changed Images
       id: changed-images
       shell: bash
-      run: echo 'projects=["person-search-index-from-delius"]' >> $GITHUB_OUTPUT
+      run: echo "projects=$(ls changed | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_OUTPUT
 
     - name: Login to GitHub Container Registry
       if: ${{ inputs.push-images == 'true' }}
@@ -83,20 +83,20 @@ runs:
       shell: bash
       run: ./gradlew dockerTagsPush
 
-#    - name: Sonar analysis
-#      uses: gradle/gradle-build-action@v2
-#      if: ${{ github.actor != 'dependabot[bot]' }}
-#      continue-on-error: true # don't fail the build when sonarcloud.io is down
-#      with:
-#        arguments: sonar
-#
-#    - name: Publish test reports
-#      uses: mikepenz/action-junit-report@v3.3.3
-#      if: always() && github.actor != 'dependabot[bot]'
-#      with:
-#        check_name: |-
-#          Unit test results
-#          Integration test results
-#        report_paths: |-
-#          **/build/test-results/test/TEST-*.xml
-#          **/build/test-results/integrationTest/TEST-*.xml
+    - name: Sonar analysis
+      uses: gradle/gradle-build-action@v2
+      if: ${{ github.actor != 'dependabot[bot]' }}
+      continue-on-error: true # don't fail the build when sonarcloud.io is down
+      with:
+        arguments: sonar
+
+    - name: Publish test reports
+      uses: mikepenz/action-junit-report@v3.3.3
+      if: always() && github.actor != 'dependabot[bot]'
+      with:
+        check_name: |-
+          Unit test results
+          Integration test results
+        report_paths: |-
+          **/build/test-results/test/TEST-*.xml
+          **/build/test-results/integrationTest/TEST-*.xml
