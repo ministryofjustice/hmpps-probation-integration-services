@@ -41,7 +41,7 @@ function track_custom_event() {
       "baseData": {
         "ver": 1,
         "name": "'"$1"'",
-        "properties": "'"${2:-{}}"'"
+        "properties": '"${2:-{}}"'
       }
     }
   }'
@@ -67,10 +67,10 @@ function track_exception() {
         "properties": {},
         "exceptions": [
           {
-          "typeName": "'"$1"'",
-          "message": "'"$2"'",
-          "hasFullStack": false,
-          "parsedStack": []
+            "typeName": "'"$1"'",
+            "message": "'"$2"'",
+            "hasFullStack": false,
+            "parsedStack": []
           }
         ]
       }
