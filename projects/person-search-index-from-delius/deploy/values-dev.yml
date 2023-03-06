@@ -8,6 +8,6 @@ generic-service:
 
 reindexing:
   person_schedule: 0 9 * * 1-5
-  contact_schedule: 0 12 * * 1
+  contact_schedule: 0 9 * * 1
   sentry_environment: dev
   host: es-proxy.hmpps-probation-search-dev.svc.cluster.local:9200
