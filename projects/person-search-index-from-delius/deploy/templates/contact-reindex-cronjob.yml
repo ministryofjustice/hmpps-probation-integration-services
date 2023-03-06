@@ -59,6 +59,12 @@ spec:
                       name: person-search-index-from-delius
                       key: DB_PASSWORD
                       optional: false
+                - name: SENTRY_DSN
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius
+                      key: SENTRY_DSN
+                      optional: false
                 - name: CONTACT_SQS_DLQ_NAME
                   valueFrom:
                     secretKeyRef:

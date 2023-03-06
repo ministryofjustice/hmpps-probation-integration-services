@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eo pipefail
+eval "$(sentry-cli bash-hook)"
 
 pipelines=$(grep 'pipeline.id' /usr/share/logstash/config/pipelines.yml | sed 's/.*: //')
 for pipeline in $pipelines; do

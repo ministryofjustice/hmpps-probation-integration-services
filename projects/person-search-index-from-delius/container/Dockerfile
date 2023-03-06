@@ -9,7 +9,8 @@ FROM opensearchproject/logstash-oss-with-opensearch-output-plugin:8.6.1
 USER root
 RUN apt-get update && apt-get upgrade -y \
     && apt-get install -y curl jq \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && curl -sL https://sentry.io/get-cli/ | bash
 USER 1000
 
 COPY --chown=logstash ojdbc11.jar /etc/logstash/

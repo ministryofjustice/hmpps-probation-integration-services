@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eo pipefail
+eval "$(sentry-cli bash-hook)"
 . "$(dirname -- "$0")/functions.sh"
 
 function help {

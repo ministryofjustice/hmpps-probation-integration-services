@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eo pipefail
+eval "$(sentry-cli bash-hook)"
 
 function fail() {
   message=$1
