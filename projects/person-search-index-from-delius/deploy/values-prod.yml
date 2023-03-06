@@ -3,9 +3,11 @@ generic-service:
     host: person-search-index-from-delius.hmpps.service.justice.gov.uk
 
   env:
+    SENTRY_ENVIRONMENT: prod
     SEARCH_INDEX_HOST: es-proxy.hmpps-probation-search-prod.svc.cluster.local:9200
 
 reindexing:
   person_schedule: 0 3 * * 1-5
   contact_schedule: 0 7 * * 2
+  sentry_environment: prod
   host: es-proxy.hmpps-probation-search-prod.svc.cluster.local:9200

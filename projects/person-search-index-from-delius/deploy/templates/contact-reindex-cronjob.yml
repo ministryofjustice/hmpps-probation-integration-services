@@ -27,6 +27,8 @@ spec:
                   value: eu-west-2
                 - name: JDK_JAVA_OPTIONS
                   value: -XX:MaxRAMPercentage=75.0
+                - name: SENTRY_ENVIRONMENT
+                  value: {{ .Values.reindexing.sentry_environment }}
                 - name: CONTACT_INDEX_PREFIX
                   value: contact-search
                 - name: CONTACT_REINDEXING_TIMEOUT
