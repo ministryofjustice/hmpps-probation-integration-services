@@ -209,11 +209,13 @@ class NsiStatusHistory(
     var createdByUserId: Long = 0,
 
     @CreatedDate
+    @Column(name = "created_datetime")
     var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
 
     @LastModifiedDate
+    @Column(name = "last_updated_datetime")
     var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now()
 )
