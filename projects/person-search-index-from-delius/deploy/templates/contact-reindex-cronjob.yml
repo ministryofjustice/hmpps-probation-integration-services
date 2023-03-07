@@ -35,6 +35,8 @@ spec:
                   value: '129600' # 36 hours
                 - name: PIPELINES_ENABLED
                   value: contact-full-load,contact-dlq
+                - name: PIPELINE_BATCH_SIZE
+                  value: 5000
                 - name: SEARCH_INDEX_HOST
                   value: {{ .Values.reindexing.host }}
                 - name: APPLICATIONINSIGHTS_CONNECTION_STRING
