@@ -1,0 +1,4 @@
+
+# Suppress as only uploading from trusted sources on a secure network
+# By anthony-britton-moj
+CVE-2023-24998 exp:2023-03-21
