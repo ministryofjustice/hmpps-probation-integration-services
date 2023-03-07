@@ -169,9 +169,11 @@ class Enforcement(
     val version: Long = 0,
 
     @CreatedDate
+    @Column(name = "created_datetime")
     var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @LastModifiedDate
+    @Column(name = "last_updated_datetime")
     var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
 
     @CreatedBy
