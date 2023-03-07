@@ -1,6 +1,8 @@
+WITH NEXT AS (SELECT NVL(MIN(OFFENDER_ID), :sql_last_value + :batch_size) sql_next_value
+              FROM OFFENDER WHERE OFFENDER_ID >= :sql_last_value + :batch_size)
 SELECT "json",
        "offenderId",
-       (SELECT MIN(OFFENDER_ID) FROM OFFENDER WHERE OFFENDER_ID >= :sql_last_value + :batch_size) AS "sql_next_value"
+       (SELECT SQL_NEXT_VALUE FROM NEXT) AS "sql_next_value"
 FROM (WITH PAGE AS (SELECT * FROM OFFENDER WHERE :offender_id = 0
                                              AND OFFENDER.OFFENDER_ID >= :sql_last_value
                                              AND OFFENDER.OFFENDER_ID < :sql_last_value + :batch_size
@@ -349,15 +351,19 @@ ORDER BY o.OFFENDER_ID)
 
 UNION ALL
 
-SELECT json_object('lastId' VALUE (SELECT max(offender_id)
-                                   FROM OFFENDER o
-                                   WHERE SOFT_DELETED = 0
-                                     AND EXISTS(SELECT 1
-                                                FROM OFFENDER_MANAGER om
-                                                WHERE o.OFFENDER_ID = om.OFFENDER_ID
-                                                  AND om.ACTIVE_FLAG = 1
-                                                  AND om.SOFT_DELETED = 0)) RETURNING CLOB)      AS "json",
-       -1                                                                                        AS "offenderId",
-       (SELECT MIN(OFFENDER_ID) FROM OFFENDER WHERE OFFENDER_ID > :sql_last_value + :batch_size) AS "sql_next_value"
+SELECT JSON_OBJECT('indexReady'
+                   VALUE CASE
+                             WHEN :sql_last_value >= (SELECT max(offender_id)
+                                                      FROM OFFENDER o
+                                                      WHERE SOFT_DELETED = 0
+                                                        AND EXISTS(SELECT 1
+                                                                   FROM OFFENDER_MANAGER om
+                                                                   WHERE o.OFFENDER_ID = om.OFFENDER_ID
+                                                                     AND om.ACTIVE_FLAG = 1
+                                                                     AND om.SOFT_DELETED = 0)) then 'true'
+                             ELSE 'false' END
+                   FORMAT JSON RETURNING CLOB) as "json",
+       -1                                      as "offenderId",
+       (SELECT SQL_NEXT_VALUE FROM NEXT)       AS "sql_next_value"
 FROM DUAL
 WHERE :offender_id = 0
