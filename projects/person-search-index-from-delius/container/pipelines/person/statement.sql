@@ -1,9 +1,19 @@
-WITH pre_con AS (SELECT doc.*,
-                        ROW_NUMBER() over (PARTITION BY OFFENDER_ID ORDER BY LAST_SAVED DESC) row_number
-                 FROM DOCUMENT doc
-                 WHERE (:offender_id = 0 OR doc.OFFENDER_ID = :offender_id)
-                   AND doc.DOCUMENT_TYPE = 'PREVIOUS_CONVICTION'
-                   AND doc.SOFT_DELETED = 0)
+SELECT "json",
+       "offenderId",
+       (SELECT MIN(OFFENDER_ID) FROM OFFENDER WHERE OFFENDER_ID >= :sql_last_value + :batch_size) AS "sql_next_value"
+FROM (WITH PAGE AS (SELECT * FROM OFFENDER WHERE :offender_id = 0
+                                             AND OFFENDER.OFFENDER_ID >= :sql_last_value
+                                             AND OFFENDER.OFFENDER_ID < :sql_last_value + :batch_size
+                                           ORDER BY OFFENDER_ID FETCH NEXT :batch_size ROWS ONLY),
+           SINGLE AS (SELECT * FROM OFFENDER WHERE :offender_id > 0 AND OFFENDER.OFFENDER_ID = :offender_id),
+           PRE_CON AS (SELECT doc.*, ROW_NUMBER() over (PARTITION BY OFFENDER_ID ORDER BY LAST_SAVED DESC) row_number
+                          FROM DOCUMENT doc
+                          WHERE (:offender_id = 0
+                                  AND doc.OFFENDER_ID >= :sql_last_value
+                                  AND doc.OFFENDER_ID < :sql_last_value + :batch_size)
+                             OR (:offender_id > 0 AND doc.OFFENDER_ID = :offender_id)
+                            AND doc.DOCUMENT_TYPE = 'PREVIOUS_CONVICTION'
+                            AND doc.SOFT_DELETED = 0)
 SELECT json_object(
                'otherIds' VALUE json_object(
                 'crn' VALUE o.CRN,
@@ -13,8 +23,7 @@ SELECT json_object(
                 'pncNumber' VALUE o.PNC_NUMBER,
                 'previousCrn' VALUE prev.IDENTIFIER,
                 'immigrationNumber' VALUE o.IMMIGRATION_NUMBER,
-                'mostRecentPrisonerNumber' VALUE o.MOST_RECENT_PRISONER_NUMBER
-                ABSENT ON NULL),
+                'mostRecentPrisonerNumber' VALUE o.MOST_RECENT_PRISONER_NUMBER ABSENT ON NULL),
                'firstName' VALUE o.FIRST_NAME,
                'middleNames' VALUE json_array(o.SECOND_NAME, o.THIRD_NAME ABSENT ON NULL),
                'surname' VALUE o.SURNAME,
@@ -303,8 +312,7 @@ SELECT json_object(
                               ORDER BY r.CREATED_DATETIME DESC FETCH NEXT 1 ROWS ONLY)
                ABSENT ON NULL RETURNING CLOB) "json",
        o.OFFENDER_ID AS                       "offenderId"
-
-FROM OFFENDER o
+FROM (SELECT * FROM PAGE UNION ALL SELECT * FROM SINGLE) o
          JOIN PARTITION_AREA pa ON pa.PARTITION_AREA_ID = o.PARTITION_AREA_ID
          JOIN OFFENDER_MANAGER om ON om.OFFENDER_ID = o.OFFENDER_ID AND om.ACTIVE_FLAG = 1
          LEFT OUTER JOIN PROBATION_AREA pa ON pa.PROBATION_AREA_ID = om.PROBATION_AREA_ID
@@ -337,18 +345,19 @@ FROM OFFENDER o
 
 WHERE o.SOFT_DELETED = 0
   AND om.SOFT_DELETED = 0
-  AND (:offender_id = 0 OR o.OFFENDER_ID = :offender_id)
+ORDER BY o.OFFENDER_ID)
 
 UNION ALL
 
-SELECT json_object('activeOffenders' VALUE (SELECT COUNT(1)
-                                            FROM OFFENDER o
-                                            WHERE SOFT_DELETED = 0
-                                              AND EXISTS(SELECT 1
-                                                         FROM OFFENDER_MANAGER om
-                                                         WHERE o.OFFENDER_ID = om.OFFENDER_ID
-                                                           AND om.ACTIVE_FLAG = 1
-                                                           AND om.SOFT_DELETED = 0)) RETURNING CLOB) "json",
-       -1                                                                                            "offenderId"
+SELECT json_object('lastId' VALUE (SELECT max(offender_id)
+                                   FROM OFFENDER o
+                                   WHERE SOFT_DELETED = 0
+                                     AND EXISTS(SELECT 1
+                                                FROM OFFENDER_MANAGER om
+                                                WHERE o.OFFENDER_ID = om.OFFENDER_ID
+                                                  AND om.ACTIVE_FLAG = 1
+                                                  AND om.SOFT_DELETED = 0)) RETURNING CLOB)      AS "json",
+       -1                                                                                        AS "offenderId",
+       (SELECT MIN(OFFENDER_ID) FROM OFFENDER WHERE OFFENDER_ID > :sql_last_value + :batch_size) AS "sql_next_value"
 FROM DUAL
 WHERE :offender_id = 0

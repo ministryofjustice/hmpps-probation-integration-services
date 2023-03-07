@@ -1,3 +1,16 @@
+#  Usage:
+#
+#   * Perform a full load of the person-search index:
+#      PIPELINES_ENABLED=person-full-load docker-compose up
+#
+#   * Perform a full load of the contact-search:
+#      PIPELINES_ENABLED=contact-full-load docker-compose up
+#
+#   * Send an incremental update to the contact-search index using LocalStack / SQS:
+#      PIPELINES_ENABLED=contact-incremental docker-compose up -d
+#      docker-compose exec localstack awslocal sqs send-message '{"Message": "{\"sourceId\": 1}"}'
+#
+
 version: "2.4"
 
 services:
@@ -5,19 +18,39 @@ services:
     build:
       context: container
     environment:
+      SEARCH_INDEX_HOST: http://elasticsearch:9200
+      SQS_ENDPOINT: http://localstack:4566/
       JDBC_CONNECTION_STRING: jdbc:oracle:thin:@//oracledb:1521/XEPDB1
       JDBC_USER: delius_app_schema
       JDBC_PASSWORD: NDelius1
-      PRIMARY_INDEX_NAME: person-search-primary
-      STANDBY_INDEX_NAME: person-search-standby
-      SEARCH_INDEX_HOST: "http://elasticsearch:9200"
-      INDEX_SCHEDULE: "* * * * *"
+      PIPELINES_ENABLED: ${PIPELINES_ENABLED}
+      #PIPELINES_ENABLED: person-full-load,person-incremental,person-dlq,contact-full-load,contact-incremental,contact-dlq
+      PERSON_INDEX_PREFIX: person-search
+      PERSON_INDEX_SCHEDULE: "* * * * *"
+      PERSON_REINDEXING_TIMEOUT: 600
+      PERSON_SQS_QUEUE_NAME: person-queue
+      PERSON_SQS_QUEUE_ACCESS_KEY_ID: localstack
+      PERSON_SQS_QUEUE_SECRET_ACCESS_KEY: localstack
+      PERSON_SQS_DLQ_NAME: person-dlq
+      PERSON_SQS_DLQ_ACCESS_KEY_ID: localstack
+      PERSON_SQS_DLQ_SECRET_ACCESS_KEY: localstack
+      CONTACT_INDEX_PREFIX: contact-search
+      CONTACT_INDEX_SCHEDULE: "* * * * *"
+      CONTACT_REINDEXING_TIMEOUT: 600
+      CONTACT_SQS_QUEUE_NAME: contact-queue
+      CONTACT_SQS_QUEUE_ACCESS_KEY_ID: localstack
+      CONTACT_SQS_QUEUE_SECRET_ACCESS_KEY: localstack
+      CONTACT_SQS_DLQ_NAME: contact-dlq
+      CONTACT_SQS_DLQ_ACCESS_KEY_ID: localstack
+      CONTACT_SQS_DLQ_SECRET_ACCESS_KEY: localstack
     ports:
       - "9600:9600"
     depends_on:
       oracledb:
         condition: service_healthy
       elasticsearch:
+        condition: service_healthy
+      localstack:
         condition: service_healthy
     networks:
       - shared
@@ -40,6 +73,21 @@ services:
       ELASTIC_PASSWORD: elastic
     ports:
       - "9200:9200"
+    networks:
+      - shared
+
+  localstack:
+    image: localstack/localstack:1.4
+    healthcheck:
+      test: awslocal sqs list-queues
+    environment:
+      LS_LOG: warn
+      SERVICES: sqs
+      DEFAULT_REGION: eu-west-2
+    ports:
+      - "4566:4566"
+    volumes:
+      - "./localstack:/docker-entrypoint-initaws.d"
     networks:
       - shared
 

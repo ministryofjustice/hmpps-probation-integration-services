@@ -1,57 +1,29 @@
 generic-service:
   nameOverride: person-search-index-from-delius
-  replicaCount: 1
   resources:
     limits:
-      cpu: 2
       memory: 2Gi
     requests:
-      cpu: 1
-      memory: 2Gi
-
-  readinessProbe:
-    httpGet: null
-    exec:
-      command:
-        - curl
-        - -sf
-        - localhost:9600
-    initialDelaySeconds: 30
-    periodSeconds: 10
-    timeoutSeconds: 60
-
-  livenessProbe:
-    httpGet: null
-    exec:
-      command:
-        - curl
-        - -sf
-        - localhost:9600
-    initialDelaySeconds: 30
-    periodSeconds: 10
-    timeoutSeconds: 60
-
-  startupProbe:
-    httpGet: null
-    exec:
-      command:
-        - curl
-        - -sf
-        - localhost:9600
-    periodSeconds: 10
-    timeoutSeconds: 10
-    failureThreshold: 20
+      memory: 1Gi
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius
     port: 9600
 
+  readinessProbe:
+    httpGet:
+      path: /
+  livenessProbe:
+    httpGet:
+      path: /
+
   ingress:
     tlsSecretName: person-search-index-from-delius-cert
 
   env:
-    PRIMARY_INDEX_NAME: person-search-primary
-    STANDBY_INDEX_NAME: person-search-standby
+    CONTACT_INDEX_PREFIX: contact-search
+    PERSON_INDEX_PREFIX: person-search
+    PIPELINES_ENABLED: person-incremental,person-dlq,contact-incremental,contact-dlq
     JDK_JAVA_OPTIONS: -XX:MaxRAMPercentage=75.0
 
   namespace_secrets:
@@ -60,12 +32,19 @@ generic-service:
     person-search-index-from-delius:
       JDBC_USER: DB_USERNAME
       JDBC_PASSWORD: DB_PASSWORD
-      SQS_QUEUE_NAME: SQS_QUEUE_NAME
-      SQS_QUEUE_ACCESS_KEY_ID: SQS_QUEUE_ACCESS_KEY_ID
-      SQS_QUEUE_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
-      SQS_DLQ_NAME: SQS_DLQ_NAME
-      SQS_DLQ_ACCESS_KEY_ID: SQS_DLQ_ACCESS_KEY_ID
-      SQS_DLQ_SECRET_ACCESS_KEY: SQS_DLQ_SECRET_ACCESS_KEY
+      SENTRY_DSN: SENTRY_DSN
+      PERSON_SQS_QUEUE_NAME: PERSON_SQS_QUEUE_NAME
+      PERSON_SQS_QUEUE_ACCESS_KEY_ID: PERSON_SQS_QUEUE_ACCESS_KEY_ID
+      PERSON_SQS_QUEUE_SECRET_ACCESS_KEY: PERSON_SQS_QUEUE_SECRET_ACCESS_KEY
+      PERSON_SQS_DLQ_NAME: PERSON_SQS_DLQ_NAME
+      PERSON_SQS_DLQ_ACCESS_KEY_ID: PERSON_SQS_DLQ_ACCESS_KEY_ID
+      PERSON_SQS_DLQ_SECRET_ACCESS_KEY: PERSON_SQS_DLQ_SECRET_ACCESS_KEY
+      CONTACT_SQS_QUEUE_NAME: CONTACT_SQS_QUEUE_NAME
+      CONTACT_SQS_QUEUE_ACCESS_KEY_ID: CONTACT_SQS_QUEUE_ACCESS_KEY_ID
+      CONTACT_SQS_QUEUE_SECRET_ACCESS_KEY: CONTACT_SQS_QUEUE_SECRET_ACCESS_KEY
+      CONTACT_SQS_DLQ_NAME: CONTACT_SQS_DLQ_NAME
+      CONTACT_SQS_DLQ_ACCESS_KEY_ID: CONTACT_SQS_DLQ_ACCESS_KEY_ID
+      CONTACT_SQS_DLQ_SECRET_ACCESS_KEY: CONTACT_SQS_DLQ_SECRET_ACCESS_KEY
 
 generic-prometheus-alerts:
   targetApplication: person-search-index-from-delius
