@@ -60,23 +60,11 @@ function delete_ready_for_reindex() {
   curl_json -XPUT "${SEARCH_URL}/${STANDBY_INDEX}" --data '{"aliases": {"'"${INDEX_PREFIX}-standby"'": {}}}'
 }
 
-function wait_for_metadata_document() {
-  echo 'Waiting for metadata document ...'
-  SECONDS=0
-  until curl_json --no-show-error "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1"; do
-    if [ "$SECONDS" -gt '600' ]; then fail 'Timed out getting metadata document' 'ProbationSearchIndexFailure'; fi
-    sleep 10
-  done
-  LAST_ID=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.lastId')
-  echo "Metadata retrieved. The last id to be indexed will be $LAST_ID"
-}
-
 function wait_for_index_to_complete() {
-  wait_for_metadata_document
   echo 'Waiting for indexing to complete ...'
   SECONDS=0
-  until curl_json --no-show-error "${SEARCH_URL}/${STANDBY_INDEX}/_doc/${LAST_ID}" >/dev/null; do
-    if [ "$SECONDS" -gt "$REINDEXING_TIMEOUT" ]; then fail "Indexing process timed out. ID=${LAST_ID} was never indexed" 'ProbationSearchIndexFailure'; fi
+  until [ "$(curl_json --no-show-error "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1/_source" | jq '.indexReady')" = 'true' ]; do
+    if [ "$SECONDS" -gt "$REINDEXING_TIMEOUT" ]; then fail "Indexing process timed out." 'ProbationSearchIndexFailure'; fi
     sleep 60
   done
   COUNT=$(curl_json "${SEARCH_URL}/${STANDBY_INDEX}/_count" | jq '.count')
@@ -87,30 +75,10 @@ function switch_aliases() {
   echo 'Switching aliases ...'
   curl_json "${SEARCH_URL}/_aliases" --data '{
     "actions": [
-      {
-        "remove": {
-          "index": "'"${PRIMARY_INDEX}"'",
-          "alias": "'"${INDEX_PREFIX}-primary"'"
-        }
-      },
-      {
-        "remove": {
-          "index": "'"${STANDBY_INDEX}"'",
-          "alias": "'"${INDEX_PREFIX}-standby"'"
-        }
-      },
-      {
-        "add": {
-          "index": "'"${STANDBY_INDEX}"'",
-          "alias": "'"${INDEX_PREFIX}-primary"'"
-        }
-      },
-      {
-        "add": {
-          "index": "'"${PRIMARY_INDEX}"'",
-          "alias": "'"${INDEX_PREFIX}-standby"'"
-        }
-      }
+      { "remove": { "index": "'"${PRIMARY_INDEX}"'", "alias": "'"${INDEX_PREFIX}-primary"'" }},
+      { "remove": { "index": "'"${STANDBY_INDEX}"'", "alias": "'"${INDEX_PREFIX}-standby"'" }},
+      { "add": { "index": "'"${STANDBY_INDEX}"'", "alias": "'"${INDEX_PREFIX}-primary"'" }},
+      { "add": { "index": "'"${PRIMARY_INDEX}"'", "alias": "'"${INDEX_PREFIX}-standby"'" }}
     ]
   }'
   echo "$STANDBY_INDEX is now the primary index, and $PRIMARY_INDEX is the standby"

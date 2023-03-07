@@ -1,6 +1,8 @@
+with next as (select nvl(min(contact_id), :sql_last_value + :batch_size) sql_next_value
+              from contact where contact_id >= :sql_last_value + :batch_size)
 select "json",
        "contactId",
-       (select min(contact_id) from contact where contact_id >= :sql_last_value + :batch_size) as "sql_next_value"
+       (select sql_next_value from next) as "sql_next_value"
 from (with page as (select * from contact where :contact_id = 0
                                             and contact.contact_id >= :sql_last_value
                                             and contact.contact_id < :sql_last_value + :batch_size
@@ -34,8 +36,10 @@ from (with page as (select * from contact where :contact_id = 0
                                on r_contact_outcome_type.contact_outcome_type_id = contact.contact_outcome_type_id
       where contact.soft_deleted = 0)
 union all
-select json_object('lastId' value last_id returning clob)                                      as "json",
-       -1                                                                                      as "contactId",
-       (select min(contact_id) from contact where contact_id >= :sql_last_value + :batch_size) as "sql_next_value"
-from (select max(contact_id) as last_id from contact)
+select json_object('indexReady'
+                   value case when :sql_last_value >= (select max(contact_id) from contact) then 'true' else 'false' end
+                   format json returning clob) as "json",
+       -1                                      as "contactId",
+       (select sql_next_value from next)       as "sql_next_value"
+from dual
 where :contact_id = 0

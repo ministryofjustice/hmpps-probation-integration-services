@@ -10,6 +10,9 @@ generic-service:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius
     port: 9600
 
+  startupProbe:
+    httpGet:
+      path: /
   readinessProbe:
     httpGet:
       path: /
