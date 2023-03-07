@@ -7,7 +7,7 @@ generic-service:
     SEARCH_INDEX_HOST: es-proxy.hmpps-probation-search-preprod.svc.cluster.local:9200
 
 reindexing:
-  person_schedule: 0 8 * * 1-5 # testing
+  person_schedule: 0 3 * * 1-5
   contact_schedule: 0 7 * * 2
   sentry_environment: preprod
   host: es-proxy.hmpps-probation-search-preprod.svc.cluster.local:9200
