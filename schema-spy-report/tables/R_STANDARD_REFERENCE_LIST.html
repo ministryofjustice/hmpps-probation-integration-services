@@ -748,6 +748,10 @@
                                                 <td class="constraint detail">SYS_C0021003<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
+                                                <td title="PROVISION.PROVISION_CATEGORY_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1383"><a href='PROVISION.html'>PROVISION</a><span class='relatedKey'>.PROVISION_CATEGORY_ID</span></td>
+                                                <td class="constraint detail">R_1383<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="PROVISION.PROVISION_TYPE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0021497"><a href='PROVISION.html'>PROVISION</a><span class='relatedKey'>.PROVISION_TYPE_ID</span></td>
                                                 <td class="constraint detail">SYS_C0021497<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -954,6 +958,14 @@
                                             <tr>
                                                 <td title="R_POST_CJA_LIC_CONDITION_TYPE.LIC_COND_TYPE_SUB_CAT_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0021205"><a href='R_POST_CJA_LIC_CONDITION_TYPE.html'>R_POST_CJA_LIC_CONDITION_TYPE</a><span class='relatedKey'>.LIC_COND_TYPE_SUB_CAT_ID</span></td>
                                                 <td class="constraint detail">SYS_C0021205<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="R_PROVISION_CATEGORY_TYPE.PROVISION_CATEGORY_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1384"><a href='R_PROVISION_CATEGORY_TYPE.html'>R_PROVISION_CATEGORY_TYPE</a><span class='relatedKey'>.PROVISION_CATEGORY_ID</span></td>
+                                                <td class="constraint detail">R_1384<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="R_PROVISION_CATEGORY_TYPE.PROVISION_TYPE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1385"><a href='R_PROVISION_CATEGORY_TYPE.html'>R_PROVISION_CATEGORY_TYPE</a><span class='relatedKey'>.PROVISION_TYPE_ID</span></td>
+                                                <td class="constraint detail">R_1385<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="R_PSS_RQMNT_REJECTION_REASON.REJECTION_REASON_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_998"><a href='R_PSS_RQMNT_REJECTION_REASON.html'>R_PSS_RQMNT_REJECTION_REASON</a><span class='relatedKey'>.REJECTION_REASON_ID</span></td>
@@ -1562,12 +1574,12 @@
                                     <td>SPG_INTEREST IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>TRUE_OR_FALSE_1684532474</td>
-                                    <td>SPG_OVERRIDE IN (0, 1)</td>
-                                </tr>
-                                <tr>
                                     <td>YES_OR_NO27</td>
                                     <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE_1684532474</td>
+                                    <td>SPG_OVERRIDE IN (0, 1)</td>
                                 </tr>
                                 </tbody>
                             </table>
