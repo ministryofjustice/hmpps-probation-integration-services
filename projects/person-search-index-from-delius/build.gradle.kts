@@ -1,6 +1,6 @@
 val imageName = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}"
-val buildFile = File("${buildDir}/docker", "build")
-val tagFile = File("${buildDir}/docker", "tag")
+val buildFile = File("$buildDir/docker", "build")
+val tagFile = File("$buildDir/docker", "tag")
 
 val dockerBuild = tasks.create<Exec>("dockerBuild") {
     doFirst {
@@ -10,7 +10,7 @@ val dockerBuild = tasks.create<Exec>("dockerBuild") {
     inputs.dir("container")
     inputs.dir("deploy")
 
-    commandLine = listOf("docker", "build", "-t", "${imageName}:latest", "container")
+    commandLine = listOf("docker", "build", "-t", "$imageName:latest", "container")
 
     outputs.file(buildFile)
     outputs.cacheIf { true }
@@ -32,7 +32,7 @@ val dockerTag = tasks.create<Exec>("dockerTag") {
         commandLine = listOf("docker", "tag", imageName, "$imageName:${project.version}")
     }
     workingDir = projectDir
-    commandLine = listOf("docker", "tag", imageName, "${imageName}:latest")
+    commandLine = listOf("docker", "tag", imageName, "$imageName:latest")
     inputs.file(buildFile)
     outputs.file(tagFile)
     outputs.cacheIf { true }
@@ -44,7 +44,7 @@ val dockerPush = tasks.create("dockerPush") {
 }
 
 listOf("latest", "${project.version}").forEach {
-    val pushFile = File("${buildDir}/docker", "push-$it")
+    val pushFile = File("$buildDir/docker", "push-$it")
     val subTask = tasks.create<Exec>("dockerPush-$it") {
         doFirst {
             if (!pushFile.exists()) pushFile.createNewFile()
