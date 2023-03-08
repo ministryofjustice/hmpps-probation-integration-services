@@ -78,7 +78,7 @@ class ImpactIntegrationTest {
     @Test
     fun `get impact returns person and staff`() {
         val person = PersonGenerator.DEFAULT
-        val staff = StaffGenerator.STAFF_WITH_USER.toStaffMember()
+        val staff = StaffGenerator.STAFF_WITH_USER.toStaffMember("example@example.com")
 
         val res = mockMvc.perform(
             get("/allocation-demand/impact?crn=${PersonGenerator.DEFAULT.crn}&staff=${staff.code}")
