@@ -63,7 +63,7 @@ runs:
 
     - name: Build standalone docker images
       shell: bash
-      run: ./gradlew docker
+      run: ./gradlew dockerBuild
 
     - name: Check Changed Images
       id: changed-images
@@ -81,7 +81,7 @@ runs:
     - name: Docker Image Push
       if: ${{ inputs.push-images == 'true' }}
       shell: bash
-      run: ./gradlew dockerTagsPush
+      run: ./gradlew dockerPush
 
     - name: Sonar analysis
       uses: gradle/gradle-build-action@v2
