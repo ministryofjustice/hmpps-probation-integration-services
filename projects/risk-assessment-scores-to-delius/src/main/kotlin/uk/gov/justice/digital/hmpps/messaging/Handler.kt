@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.messaging
 
-import com.fasterxml.jackson.databind.JsonMappingException
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
@@ -22,9 +21,9 @@ class Handler(
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val message = notification.message
-        try {
-            when (message.eventType) {
-                "risk-assessment.scores.rsr.determined" -> {
+        when (message.eventType) {
+            "risk-assessment.scores.rsr.determined" -> {
+                try {
                     riskScoreService.updateRsrScores(
                         message.personReference.findCrn()
                             ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
@@ -35,48 +34,40 @@ class Handler(
                         message.ospContact()
                     )
                     telemetryService.trackEvent("RsrScoresUpdated", message.telemetryProperties())
+                } catch (e: DeliusValidationError) {
+                    telemetryService.trackEvent("RsrUpdateRejected", mapOf("reason" to e.message) + message.telemetryProperties())
+                    if (!e.ignored()) throw e
                 }
-
-                "risk-assessment.scores.ogrs.determined" -> {
-                    // if the message doesn't contain the event number then the event is coming from the prison side
-                    // so ignore the message
-                    if (!message.additionalInformation.containsKey("EventNumber")) {
-                        telemetryService.trackEvent(
-                            "AddOrUpdateRiskAssessment - ignored due to no event number",
-                            message.telemetryProperties()
-                        )
-                        return
-                    } else if (message.additionalInformation["EventNumber"] == null) {
-                        // validate that the event number is present
-                        telemetryService.trackEvent(
-                            "Event number not present",
-                            mapOf("crn" to message.personReference.findCrn()!!)
-                        )
-                        return
-                    }
-                    riskAssessmentService.addOrUpdateRiskAssessment(
-                        message.personReference.findCrn()
-                            ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
-                        message.additionalInformation["EventNumber"] as Int?,
-                        message.assessmentDate(),
-                        message.ogrsScore()
-                    )
-                    telemetryService.trackEvent("AddOrUpdateRiskAssessment", message.telemetryProperties())
-                }
-
-                else -> throw IllegalArgumentException("Unexpected event type ${message.eventType}")
             }
-        } catch (e: DeliusValidationError) {
-            telemetryService.trackEvent("UpdateRejected", mapOf("reason" to e.message) + message.telemetryProperties())
-            throw e
-        }
-    }
 
-    override fun handle(message: String) {
-        try {
-            handle(converter.fromMessage(message))
-        } catch (e: JsonMappingException) {
-            telemetryService.trackEvent("JsonMappingException", mapOf("cause" to message))
+            "risk-assessment.scores.ogrs.determined" -> {
+                // if the message doesn't contain the event number then the event is coming from the prison side
+                // so ignore the message
+                if (!message.additionalInformation.containsKey("EventNumber")) {
+                    telemetryService.trackEvent(
+                        "AddOrUpdateRiskAssessment - ignored due to no event number",
+                        message.telemetryProperties()
+                    )
+                    return
+                } else if (message.additionalInformation["EventNumber"] == null) {
+                    // validate that the event number is present
+                    telemetryService.trackEvent(
+                        "Event number not present",
+                        mapOf("crn" to message.personReference.findCrn()!!)
+                    )
+                    return
+                }
+                riskAssessmentService.addOrUpdateRiskAssessment(
+                    message.personReference.findCrn()
+                        ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
+                    message.additionalInformation["EventNumber"] as Int?,
+                    message.assessmentDate(),
+                    message.ogrsScore()
+                )
+                telemetryService.trackEvent("AddOrUpdateRiskAssessment", message.telemetryProperties())
+            }
+
+            else -> throw IllegalArgumentException("Unexpected event type ${message.eventType}")
         }
     }
 }
