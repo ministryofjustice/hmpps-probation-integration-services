@@ -33,7 +33,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrnAndSoftDeletedFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.getWithUserByCode
 
 @Service
 class AllocationDemandService(
@@ -130,8 +130,8 @@ class AllocationDemandService(
 
     fun getImpact(crn: String, staffCode: String): AllocationImpact {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
-        val staff = staffRepository.getByCode(staffCode)
-        return AllocationImpact(person.crn, person.name(), staff.toStaffMember())
+        val staff = staffRepository.getWithUserByCode(staffCode)
+        return AllocationImpact(person.crn, person.name(), staff.toStaffMember(ldapService.findEmailForStaff(staff)))
     }
 
     fun getUnallocatedEvents(crn: String): UnallocatedEventsResponse {

@@ -6,7 +6,7 @@ pipelines=$(grep 'pipeline.id' /usr/share/logstash/config/pipelines.yml | sed 's
 for pipeline in $pipelines; do
   if grep -v -q "$pipeline" <<<"$PIPELINES_ENABLED"; then
     # pipeline not enabled, remove from pipelines.yml
-    sed -i "/$pipeline/,/^- /{/$pipeline/!d}" /usr/share/logstash/config/pipelines.yml
+    sed -i "/$pipeline/,+1d" /usr/share/logstash/config/pipelines.yml
   fi
 done
 
