@@ -70,18 +70,18 @@ subprojects {
     apply { plugin(ClassPathPlugin::class.java) }
     apply { plugin("org.sonarqube") }
     apply { plugin("org.jetbrains.kotlin.kapt") }
-}
 
-tasks {
-    withType<BootRun> {
-        if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
-            classpath = sourceSets.getByName("dev").runtimeClasspath
+    tasks {
+        withType<BootRun> {
+            if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
+                classpath = sourceSets.getByName("dev").runtimeClasspath
+            }
         }
-    }
-    withType<Jar> {
-        isPreserveFileTimestamps = false
-        isReproducibleFileOrder = true
-        archiveFileName.set("${archiveBaseName.get()}-${archiveClassifier.get()}.${archiveExtension.get()}")
+        withType<Jar> {
+            isPreserveFileTimestamps = false
+            isReproducibleFileOrder = true
+            archiveFileName.set("${archiveBaseName.get()}-${archiveClassifier.get()}.${archiveExtension.get()}")
+        }
     }
 }
 
