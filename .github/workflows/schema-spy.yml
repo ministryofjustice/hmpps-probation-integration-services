@@ -26,7 +26,7 @@ jobs:
           USERNAME: ${{ secrets.SCHEMA_SPY_USERNAME }}
           PASSWORD: ${{ secrets.SCHEMA_SPY_PASSWORD }}
         run: |
-          java -Xss2048k -Xmx2G -Xms2G -jar ./tools/schema-spy/schemaspy-6.1.0.jar -t orathin-service \
+          java -Xss4096k -Xmx2G -Xms2G -jar ./tools/schema-spy/schemaspy-6.1.0.jar -t orathin-service \
                     -dp ./tools/schema-spy/ojdbc8.jar \
                     -db "${DB}" \
                     -host "${HOST}" \

@@ -7,8 +7,10 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.MessageGenerator
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.integrations.delius.DeliusValidationError
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -87,6 +89,34 @@ internal class HandlerTest {
             message.message.ogrsScore()
         )
         verify(telemetryService).trackEvent("AddOrUpdateRiskAssessment", message.message.telemetryProperties())
+    }
+
+    @Test
+    fun `ignorable Delius errors are logged to Telemetry but not thrown`() {
+        // Given a message that causes an ignorable Delius error
+        val message = Notification(
+            message = MessageGenerator.RSR_SCORES_DETERMINED,
+            attributes = MessageAttributes("risk-assessment.scores.determined")
+        )
+        whenever(
+            riskScoreService.updateRsrScores(
+                message.message.personReference.findCrn()!!,
+                message.message.additionalInformation["EventNumber"] as Int,
+                message.message.assessmentDate(),
+                message.message.rsr(),
+                message.message.ospIndecent(),
+                message.message.ospContact()
+            )
+        ).thenThrow(DeliusValidationError("No Event number provided"))
+
+        // When it is received
+        handler.handle(message)
+
+        // Then an exception is not thrown, but an event is logged to telemetry
+        verify(telemetryService).trackEvent(
+            "RsrUpdateRejected",
+            mapOf("reason" to "No Event number provided") + message.message.telemetryProperties()
+        )
     }
 
     @Test

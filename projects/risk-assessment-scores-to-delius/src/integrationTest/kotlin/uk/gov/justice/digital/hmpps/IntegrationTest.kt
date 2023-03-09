@@ -7,17 +7,13 @@ import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
-import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
@@ -32,7 +28,6 @@ import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
 import uk.gov.justice.digital.hmpps.messaging.OgrsScore
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.nio.file.Files
 import java.time.ZonedDateTime
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionException
@@ -157,12 +152,5 @@ internal class IntegrationTest {
         }
 
         assertThat(ce.cause is ConflictException)
-    }
-
-    @Test
-    fun `JsonMappingException handled gracefully`() {
-        val message = Files.readString(ResourceUtils.getFile("classpath:messages/no-event-number.json").toPath())
-        assertDoesNotThrow { handler.handle(message) }
-        verify(telemetryService).trackEvent(eq("JsonMappingException"), any(), any())
     }
 }
