@@ -1,21 +1,29 @@
-val imageName = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}"
-val buildFile = File("$buildDir/docker", "build")
-val tagFile = File("$buildDir/docker", "tag")
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
+val imageName = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}"
+val dockerDir = File(buildDir, "docker")
+if (!dockerDir.exists()) dockerDir.mkdirs()
+val buildFile = File("$buildDir/docker", "build")
+
+// build and tag image
 val dockerBuild = tasks.create<Exec>("dockerBuild") {
     doFirst {
-        if (!buildFile.exists()) buildFile.createNewFile()
+        commandLine =
+            listOf("docker", "build", "-t", "$imageName:latest", "-t", "$imageName:${project.version}", "container")
     }
     workingDir = projectDir
     inputs.dir("container")
     inputs.dir("deploy")
 
-    commandLine = listOf("docker", "build", "-t", "$imageName:latest", "container")
+    // commandLine cannot be empty at declaration but the actual command is run in doFirst to avoid cache invalidation for version changes
+    commandLine = listOf("echo", "dockerBuild $imageName")
 
     outputs.file(buildFile)
     outputs.cacheIf { true }
 
     doLast {
+        if (!buildFile.exists()) buildFile.createNewFile()
         buildFile.writeBytes("${project.version}".toByteArray())
 
         val dir = File("${project.rootDir}/changed")
@@ -25,37 +33,36 @@ val dockerBuild = tasks.create<Exec>("dockerBuild") {
     }
 }
 
-val dockerTag = tasks.create<Exec>("dockerTag") {
-    dependsOn(dockerBuild)
-    doFirst {
-        if (!tagFile.exists()) tagFile.createNewFile()
-        commandLine = listOf("docker", "tag", imageName, "$imageName:${project.version}")
-    }
-    workingDir = projectDir
-    commandLine = listOf("docker", "tag", imageName, "$imageName:latest")
-    inputs.file(buildFile)
-    outputs.file(tagFile)
-    outputs.cacheIf { true }
-}
-
+val log: Logger = LoggerFactory.getLogger(this::class.java)
 val dockerPush = tasks.create("dockerPush") {
-    inputs.file(tagFile)
+    inputs.files(buildFile, File("$buildDir/docker", "push-latest"))
+    actions.add { log.info("Built and Pushed ${project.name}:${project.version}") }
+    outputs.file(File(dockerDir, "push"))
     outputs.cacheIf { true }
+    doLast {
+        // delete any previous push files - if this task has run for current version
+        dockerDir.listFiles().filter {
+            it.isFile && it.name.startsWith("push-") && it.name != "push-${project.version}"
+        }.forEach(File::delete)
+    }
 }
 
 listOf("latest", "${project.version}").forEach {
     val pushFile = File("$buildDir/docker", "push-$it")
     val subTask = tasks.create<Exec>("dockerPush-$it") {
         doFirst {
-            if (!pushFile.exists()) pushFile.createNewFile()
+            commandLine = listOf("docker", "push", "$imageName:$it")
         }
-        dependsOn(dockerTag)
+        dependsOn(dockerBuild)
         workingDir = projectDir
-        inputs.file(tagFile)
-        commandLine = listOf("docker", "push", "$imageName:latest")
+        inputs.file(buildFile)
+        commandLine = listOf("echo", "dockerPush $imageName")
         outputs.file(pushFile)
         outputs.cacheIf { true }
+        doLast {
+            if (!pushFile.exists()) pushFile.createNewFile()
+            pushFile.writeBytes("${project.version}".toByteArray())
+        }
     }
     dockerPush.dependsOn(subTask)
-    dockerPush.outputs.files + pushFile
 }
