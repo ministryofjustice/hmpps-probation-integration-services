@@ -168,7 +168,7 @@ jobs:
           token: ${{ secrets.KUBE_TOKEN }}
 
       - name: Store DSN as Kubernetes secret
-        run: kubectl create secret "$PROJECT-sentry" --from-literal "SENTRY_DSN=$VALUE"
+        run: kubectl create secret generic "$PROJECT-sentry" --from-literal "SENTRY_DSN=$VALUE"
         env:
           PROJECT: ${{ matrix.project }}
           VALUE: ${{ steps.client_key.outputs.dsn }}
