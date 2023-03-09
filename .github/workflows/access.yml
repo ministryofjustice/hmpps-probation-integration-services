@@ -108,7 +108,7 @@ jobs:
         if: ${{ steps.check_file.outputs.files_exists == 'true' }}
         shell: bash
         run: |
-          if ! kubectl get secret "$PROJECT-database"; then
+          if ! kubectl get secret "$PROJECT-database" > /dev/null; then
             sudo apt-get install pwgen
             kubectl create secret generic "$PROJECT-database" \
               --from-literal "DB_USERNAME=$(echo "$PROJECT" | sed 's/-/_/g')" \
