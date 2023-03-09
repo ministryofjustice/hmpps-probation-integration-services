@@ -110,7 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ inputs.create_sentry_project }}
     outputs:
-      dsn: ${{ steps.client_key.outputs.dsn }}
+      project_slug: ${{ steps.project.outputs.slug }}
     steps:
       - uses: actions/checkout@v3
 
@@ -130,16 +130,12 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{"platform":"kotlin"}'
 
-      - name: Get client key (DSN)
+      - name: Get client key id
         id: client_key
         run: |
           response=$(curl https://sentry.io/api/0/projects/ministryofjustice/${{ steps.project.outputs.slug }}/keys/ --fail \
                   -H 'Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }}')
-          id=$(echo $response | jq -r '.[0].id')
-          dsn=$(echo $response | jq -r '.[0].dsn.public')
-          echo "::add-mask::$dsn"
-          echo "dsn=$dsn" >> $GITHUB_OUTPUT
-          echo "id=$id" >> $GITHUB_OUTPUT
+          echo "id=$(echo $response | jq -r '.[0].id')" >> $GITHUB_OUTPUT
 
       - name: Set rate limit (10/minute)
         run: |
@@ -174,11 +170,20 @@ jobs:
           namespace: ${{ secrets.KUBE_NAMESPACE }}
           token: ${{ secrets.KUBE_TOKEN }}
 
+      - name: Get client key DSN
+        id: client_key
+        run: |
+          response=$(curl https://sentry.io/api/0/projects/ministryofjustice/${{ needs.sentry-setup.outputs.project_slug }}/keys/ --fail \
+                  -H 'Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }}')
+          dsn=$(echo $response | jq -r '.[0].dsn.public')
+          echo "::add-mask::$dsn"
+          echo "dsn=$dsn" >> $GITHUB_OUTPUT
+
       - name: Store DSN as Kubernetes secret
         run: kubectl create secret generic "$PROJECT-sentry" --from-literal "SENTRY_DSN=$VALUE"
         env:
           PROJECT: ${{ inputs.project_name }}
-          VALUE: ${{ needs.sentry-setup.outputs.dsn }}
+          VALUE: ${{ steps.client_key.outputs.dsn }}
 
   sqs-queue-setup:
     runs-on: ubuntu-latest
