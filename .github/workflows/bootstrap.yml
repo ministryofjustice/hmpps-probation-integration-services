@@ -44,6 +44,11 @@ on:
         default: true
         required: true
         type: boolean
+      create_infra:
+        description: Will the service be deployed to MOJ Cloud Platform?
+        default: true
+        required: true
+        type: boolean
 
 jobs:
   auth-setup:
@@ -104,6 +109,8 @@ jobs:
   sentry-setup:
     runs-on: ubuntu-latest
     if: ${{ inputs.create_sentry_project }}
+    outputs:
+      dsn: ${{ steps.client_key.outputs.dsn }}
     steps:
       - uses: actions/checkout@v3
 
@@ -170,8 +177,8 @@ jobs:
       - name: Store DSN as Kubernetes secret
         run: kubectl create secret generic "$PROJECT-sentry" --from-literal "SENTRY_DSN=$VALUE"
         env:
-          PROJECT: ${{ matrix.project }}
-          VALUE: ${{ steps.client_key.outputs.dsn }}
+          PROJECT: ${{ inputs.project_name }}
+          VALUE: ${{ needs.sentry-setup.outputs.dsn }}
 
   sqs-queue-setup:
     runs-on: ubuntu-latest
@@ -270,6 +277,7 @@ jobs:
 
   infra-setup:
     runs-on: ubuntu-latest
+    if: ${{ inputs.create_infra }}
     steps:
       - id: project_name
         run: echo "hash=$(echo -n '${{ inputs.project_name }}' | sha1sum | head -c 8)" >> $GITHUB_OUTPUT
