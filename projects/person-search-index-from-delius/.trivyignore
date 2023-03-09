@@ -40,7 +40,4 @@ CVE-2022-47318 exp:2023-06-01
 CVE-2022-44570 exp:2023-06-01
 CVE-2022-44571 exp:2023-06-01
 CVE-2022-44572 exp:2023-06-01
-
-# Suppress - rack web server is not used to handle any http requests
-# By marcus-bcl
-CVE-2023-27530 exp:2023-03-23
+CVE-2023-27530 exp:2023-06-01
