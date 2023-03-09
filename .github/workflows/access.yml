@@ -122,8 +122,8 @@ jobs:
         shell: bash
         run: |
           secret=$(kubectl get secret "$PROJECT-database" -o json)
-          aws ssm put-parameter --name "$PARAMETER_PATH/db-username" --value "$(echo "$secret" | jq '.data.DB_USERNAME' | base64 -d)" --overwrite --type SecureString --region eu-west-2
-          aws ssm put-parameter --name "$PARAMETER_PATH/db-password" --value "$(echo "$secret" | jq '.data.DB_PASSWORD' | base64 -d)" --overwrite --type SecureString --region eu-west-2
+          aws ssm put-parameter --name "$PARAMETER_PATH/db-username" --value "$(echo "$secret" | jq -r '.data.DB_USERNAME' | base64 -d)" --overwrite --type SecureString --region eu-west-2
+          aws ssm put-parameter --name "$PARAMETER_PATH/db-password" --value "$(echo "$secret" | jq -r '.data.DB_PASSWORD' | base64 -d)" --overwrite --type SecureString --region eu-west-2
         env:
           PROJECT: ${{ matrix.project }}
           PARAMETER_PATH: '/${{ steps.env.outputs.delius-name }}/delius/probation-integration/${{ matrix.project }}'
