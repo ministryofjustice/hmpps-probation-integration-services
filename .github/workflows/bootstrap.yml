@@ -24,11 +24,6 @@ on:
           - message-listener-with-api-client
           - message-listener-with-api-client-and-server
           - 'No template - I want to create the project from scratch'
-      create_database_credentials:
-        description: Will the service access the Delius database?
-        default: true
-        required: true
-        type: boolean
       create_sentry_project:
         description: Will the service use Sentry for capturing exceptions?
         default: true
@@ -66,43 +61,6 @@ jobs:
             --label bootstrap
         env:
           GITHUB_TOKEN: ${{ github.token }}
-
-  db-secrets-setup:
-    runs-on: ubuntu-latest
-    if: ${{ inputs.create_database_credentials }}
-    steps:
-      - uses: actions/checkout@v3
-
-      # convert project name to environment variable (e.g. 'hello-world' -> 'HELLO_WORLD')
-      - id: project_name
-        run: |
-          echo "with_underscores=$(echo '${{ inputs.project_name }}' | sed 's/-/_/g')" >> $GITHUB_OUTPUT
-          echo "with_underscores_uppercase=$(echo '${{ inputs.project_name }}' | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')" >> $GITHUB_OUTPUT
-
-      - name: Set database username
-        run: gh secret set "$NAME" --body "$VALUE" --app actions
-        env:
-          NAME: ${{ steps.project_name.outputs.with_underscores_uppercase }}_DB_USERNAME
-          VALUE: ${{ steps.project_name.outputs.with_underscores }}
-          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
-
-      - uses: ./.github/actions/random-secret
-        with:
-          environment: test
-          name: ${{ steps.project_name.outputs.with_underscores_uppercase }}_DB_PASSWORD
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
-
-      - uses: ./.github/actions/random-secret
-        with:
-          environment: preprod
-          name: ${{ steps.project_name.outputs.with_underscores_uppercase }}_DB_PASSWORD
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
-
-      - uses: ./.github/actions/random-secret
-        with:
-          environment: prod
-          name: ${{ steps.project_name.outputs.with_underscores_uppercase }}_DB_PASSWORD
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
   project-setup:
     if: ${{ inputs.project_template != 'No template - I want to create the project from scratch' }}

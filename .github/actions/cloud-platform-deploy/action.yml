@@ -26,63 +26,50 @@ inputs:
   token:
     description: The KUBE_TOKEN
     required: true
-  json-secrets:
-    description: json representation of secrets to add to parameter store
-    required: true
 
 runs:
   using: composite
   steps:
     - uses: actions/checkout@v3
+
     - name: Get environment details
       uses: ./.github/actions/get-env-details
       id: env
       with:
         environment: ${{ inputs.environment }}
 
-    - name: auth k8s
+    - name: Authenticate
+      uses: ./.github/actions/cloud-platform-auth
+      with:
+        api: ${{ inputs.api }}
+        cert: ${{ inputs.cert }}
+        cluster: ${{ inputs.cluster }}
+        namespace: ${{ inputs.namespace }}
+        token: ${{ inputs.token }}
+
+    - name: Deploy
       shell: bash
       run: |
-        echo "${{ inputs.cert }}" > ca.crt
-        kubectl config set-cluster ${{ inputs.cluster }} --certificate-authority=./ca.crt --server=${{ inputs.api }}
-        kubectl config set-credentials cd-serviceaccount --token=${{ inputs.token }}
-        kubectl config set-context ${{ inputs.cluster }} --cluster=${{ inputs.cluster }} --user=cd-serviceaccount --namespace=${{ inputs.namespace }}
-        kubectl config use-context ${{ inputs.cluster }}
-
-    - name: add secrets to k8s
-      shell: bash
-      env:
-        ALL_SECRETS: ${{ inputs.json-secrets }}
-      run: |
-        project_name=$(echo '${{ inputs.project }}' | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
-        secret_command='kubectl -n ${{ inputs.namespace }} create secret generic ${{ inputs.project }}'
-        for key in $(echo "${ALL_SECRETS}" | jq -r ". | keys[] | select(. | startswith(\"${project_name}\"))");
-        do
-          name="${key##${project_name}_}"
-          value=$(echo "${ALL_SECRETS}" | jq -r ".${key}")
-          secret_command="${secret_command} --from-literal='$name=$value'"
-        done
-        kubectl -n ${{ inputs.namespace }} delete secret ${{ inputs.project }} --ignore-not-found
-        eval $secret_command
-
-    - name: deploy to k8s
-      shell: bash
-      run: |        
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         brew install helm
-        yq -i '.appVersion = "${{ inputs.version }}"' projects/${{ inputs.project }}/deploy/Chart.yaml
-        helm dependency update projects/${{ inputs.project }}/deploy
-        helm upgrade ${{ inputs.project }} projects/${{ inputs.project }}/deploy \
-          --install \
-          --namespace=${{ inputs.namespace }} \
-          --values templates/helm-defaults.yml \
-          --values projects/${{ inputs.project }}/deploy/values.yaml \
-          --values projects/${{ inputs.project }}/deploy/${{ steps.env.outputs.values-file }} \
-          --set generic-service.image.tag=${{ inputs.version }} \
-          --set generic-service.env.VERSION=${{ inputs.version }} \
-          --set version=${{ inputs.version }} \
-          --wait \
-          --timeout 10m \
+        yq -i ".appVersion = \"$VERSION\"" "projects/$PROJECT/deploy/Chart.yaml"
+        helm dependency update "projects/$PROJECT/deploy"
+        helm upgrade "$PROJECT" "projects/$PROJECT/deploy" \
+          --atomic \
           --history-max 10 \
+          --install \
+          --namespace="$NAMESPACE" \
           --reset-values \
-          --atomic
+          --set "generic-service.env.VERSION=$VERSION" \
+          --set "generic-service.image.tag=$VERSION" \
+          --set "version=$VERSION" \
+          --timeout 10m \
+          --values templates/helm-defaults.yml \
+          --values "projects/$PROJECT/deploy/values.yaml" \
+          --values "projects/$PROJECT/deploy/$VALUES_FILE" \
+          --wait
+      env:
+        NAMESPACE: ${{ inputs.namespace }}
+        PROJECT: ${{ inputs.project }}
+        VALUES_FILE: ${{ steps.env.outputs.values-file }}
+        VERSION: ${{ inputs.version }}

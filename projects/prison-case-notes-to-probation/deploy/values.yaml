@@ -13,15 +13,18 @@ generic-service:
   namespace_secrets:
     common:
       SPRING_DATASOURCE_URL: DB_URL
-    prison-case-notes-to-probation:
-      AWS_ACCESS_KEY_ID: SQS_QUEUE_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
-      MESSAGING_CONSUMER_QUEUE: SQS_QUEUE_NAME
-      SENTRY_DSN: SENTRY_DSN
-      SPRING_DATASOURCE_USERNAME: DB_USERNAME
-      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    prison-case-notes-to-probation-client-credentials:
       INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-ID: CLIENT_ID
       INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-SECRET: CLIENT_SECRET
+    prison-case-notes-to-probation-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    prison-case-notes-to-probation-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    prison-case-notes-to-probation-queue:
+      AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
 
 generic-prometheus-alerts:
   targetApplication: prison-case-notes-to-probation

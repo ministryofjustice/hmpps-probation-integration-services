@@ -10,13 +10,15 @@ generic-service:
   namespace_secrets:
     common:
       SPRING_DATASOURCE_URL: DB_URL
-    make-recall-decisions-and-delius:
-      AWS_ACCESS_KEY_ID: SQS_QUEUE_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY: SQS_QUEUE_SECRET_ACCESS_KEY
-      MESSAGING_CONSUMER_QUEUE: SQS_QUEUE_NAME
-      SENTRY_DSN: SENTRY_DSN
+    make-recall-decisions-and-delius-database:
       SPRING_DATASOURCE_USERNAME: DB_USERNAME
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    make-recall-decisions-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    make-recall-decisions-and-delius-queue:
+      AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
 
 generic-prometheus-alerts:
   targetApplication: make-recall-decisions-and-delius
