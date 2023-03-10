@@ -12,7 +12,6 @@ plugins {
     id("org.springframework.boot") version "3.0.4" apply false
     id("io.spring.dependency-management") version "1.1.0" apply false
     id("com.google.cloud.tools.jib") apply false
-    id("com.palantir.docker") version "0.34.0" apply false
     id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
     id("base")
     id("org.sonarqube")
@@ -58,21 +57,19 @@ allprojects {
 }
 
 subprojects {
-    apply {
-        plugin("org.springframework.boot")
-        plugin("io.spring.dependency-management")
-        plugin("org.jetbrains.kotlin.jvm")
-        plugin("org.jetbrains.kotlin.plugin.spring")
-        plugin("org.jetbrains.kotlin.plugin.jpa")
-        plugin("org.jlleitschuh.gradle.ktlint")
-        plugin("jacoco")
-        plugin("test-report-aggregation")
-        plugin("jacoco-report-aggregation")
-        plugin(JibConfigPlugin::class.java)
-        plugin(ClassPathPlugin::class.java)
-        plugin("org.sonarqube")
-        plugin("org.jetbrains.kotlin.kapt")
-    }
+    apply { plugin("org.springframework.boot") }
+    apply { plugin("io.spring.dependency-management") }
+    apply { plugin("org.jetbrains.kotlin.jvm") }
+    apply { plugin("org.jetbrains.kotlin.plugin.spring") }
+    apply { plugin("org.jetbrains.kotlin.plugin.jpa") }
+    apply { plugin("org.jlleitschuh.gradle.ktlint") }
+    apply { plugin("jacoco") }
+    apply { plugin("test-report-aggregation") }
+    apply { plugin("jacoco-report-aggregation") }
+    apply { plugin(JibConfigPlugin::class.java) }
+    apply { plugin(ClassPathPlugin::class.java) }
+    apply { plugin("org.sonarqube") }
+    apply { plugin("org.jetbrains.kotlin.kapt") }
 
     tasks {
         withType<BootRun> {
@@ -87,4 +84,5 @@ subprojects {
         }
     }
 }
+
 tasks.named("check") { dependsOn("ktlintCheck") }
