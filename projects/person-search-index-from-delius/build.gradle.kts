@@ -5,6 +5,8 @@ val imageName = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/
 val dockerDir = File(buildDir, "docker")
 if (!dockerDir.exists()) dockerDir.mkdirs()
 val buildFile = File("$buildDir/docker", "build")
+val pushLatestFile = File("$buildDir/docker", "push-latest")
+val pushVersionFile = File("$buildDir/docker", "push-version")
 
 // build and tag image
 val dockerBuild = tasks.create<Exec>("dockerBuild") {
@@ -33,25 +35,11 @@ val dockerBuild = tasks.create<Exec>("dockerBuild") {
     }
 }
 
-val log: Logger = LoggerFactory.getLogger(this::class.java)
-val dockerPush = tasks.create("dockerPush") {
-    inputs.files(buildFile, File("$buildDir/docker", "push-latest"))
-    actions.add { log.info("Built and Pushed ${project.name}:${project.version}") }
-    outputs.file(File(dockerDir, "push"))
-    outputs.cacheIf { true }
-    doLast {
-        // delete any previous push files - if this task has run for current version
-        dockerDir.listFiles().filter {
-            it.isFile && it.name.startsWith("push-") && it.name != "push-${project.version}"
-        }.forEach(File::delete)
-    }
-}
-
-listOf("latest", "${project.version}").forEach {
-    val pushFile = File("$buildDir/docker", "push-$it")
-    val subTask = tasks.create<Exec>("dockerPush-$it") {
+fun createPushSubTask(tag: String, pushFile: File): Exec {
+    val taskName = if (tag == "latest") "latest" else "version"
+    return tasks.create<Exec>("dockerPush-${taskName}") {
         doFirst {
-            commandLine = listOf("docker", "push", "$imageName:$it")
+            commandLine = listOf("docker", "push", "$imageName:$tag")
         }
         dependsOn(dockerBuild)
         workingDir = projectDir
@@ -64,5 +52,16 @@ listOf("latest", "${project.version}").forEach {
             pushFile.writeBytes("${project.version}".toByteArray())
         }
     }
-    dockerPush.dependsOn(subTask)
+}
+
+val pushLatest = createPushSubTask("latest", pushLatestFile)
+val pushVersion = createPushSubTask("${project.version}", pushVersionFile)
+
+val log: Logger = LoggerFactory.getLogger(this::class.java)
+val dockerPush = tasks.create("dockerPush") {
+    dependsOn(pushLatest, pushVersion)
+    inputs.files(buildFile, pushVersionFile, pushLatestFile)
+    actions.add { log.info("Built and Pushed ${project.name}:${project.version}") }
+    outputs.file(File(dockerDir, "push"))
+    outputs.cacheIf { true }
 }
