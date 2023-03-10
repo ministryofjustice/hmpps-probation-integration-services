@@ -43,8 +43,8 @@ function stop_logstash() {
 trap stop_logstash EXIT
 
 function get_current_indices() {
-  PRIMARY_INDEX=$(curl_json --retry 3 "${SEARCH_URL}/_alias/${INDEX_PREFIX}-primary" | jq -r 'keys[0]')
-  STANDBY_INDEX=$(curl_json --retry 3 "${SEARCH_URL}/_alias/${INDEX_PREFIX}-standby" | jq -r 'keys[0]')
+  PRIMARY_INDEX=$(curl_json "${SEARCH_URL}/_alias/${INDEX_PREFIX}-primary" | jq -r 'keys[0]')
+  STANDBY_INDEX=$(curl_json "${SEARCH_URL}/_alias/${INDEX_PREFIX}-standby" | jq -r 'keys[0]')
   echo "Search URL: ${SEARCH_URL}"
   echo "Primary Index => ${PRIMARY_INDEX}"
   echo "Standby Index => ${STANDBY_INDEX}"

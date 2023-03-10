@@ -1,6 +1,11 @@
 #!/bin/bash
 set -eo pipefail
 eval "$(sentry-cli bash-hook --no-environ)"
+. "$(dirname -- "$0")/functions.sh"
+
+# Workaround for intermittent DNS resolution failure immediately after container start
+if [ -z "$SEARCH_INDEX_HOST" ]; then fail 'Missing environment variable: SEARCH_INDEX_HOST'; fi
+curl_json --retry 3 "$SEARCH_INDEX_HOST"
 
 pipelines=$(grep 'pipeline.id' /usr/share/logstash/config/pipelines.yml | sed 's/.*: //')
 for pipeline in $pipelines; do
