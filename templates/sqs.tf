@@ -44,14 +44,14 @@ resource "aws_sqs_queue_policy" "SERVICE_NAME-dlq-policy" {
   policy    = data.aws_iam_policy_document.sqs_queue_policy_document.json
 }
 
-resource "github_actions_environment_secret" "SERVICE_NAME-secrets" {
-  for_each = {
-    "SERVICE_NAME_UPPERCASE_SQS_QUEUE_NAME"              = module.SERVICE_NAME-queue.sqs_name
-    "SERVICE_NAME_UPPERCASE_SQS_QUEUE_ACCESS_KEY_ID"     = module.SERVICE_NAME-queue.access_key_id
-    "SERVICE_NAME_UPPERCASE_SQS_QUEUE_SECRET_ACCESS_KEY" = module.SERVICE_NAME-queue.secret_access_key
+resource "kubernetes_secret" "SERVICE_NAME-queue-secret" {
+  metadata {
+    name      = "SERVICE_NAME-queue"
+    namespace = var.namespace
   }
-  repository      = data.github_repository.hmpps-probation-integration-services.name
-  environment     = var.github_environment_name
-  secret_name     = each.key
-  plaintext_value = each.value
+  data = {
+    QUEUE_NAME            = module.SERVICE_NAME-queue.sqs_name
+    AWS_ACCESS_KEY_ID     = module.SERVICE_NAME-queue.access_key_id
+    AWS_SECRET_ACCESS_KEY = module.SERVICE_NAME-queue.secret_access_key
+  }
 }

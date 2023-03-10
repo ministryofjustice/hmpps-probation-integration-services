@@ -11,13 +11,15 @@ generic-service:
   namespace_secrets:
     common:
       SPRING_DATASOURCE_URL: DB_URL
-    offender-events-and-delius:
-      AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
-      MESSAGING_PRODUCER_TOPIC: AWS_TOPIC_ARN
-      SENTRY_DSN: SENTRY_DSN
+    offender-events-and-delius-database:
       SPRING_DATASOURCE_USERNAME: DB_USERNAME
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    offender-events-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    offender-events-and-delius-topic:
+      AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
+      MESSAGING_PRODUCER_TOPIC: TOPIC_ARN
 
 generic-prometheus-alerts:
   targetApplication: offender-events-and-delius
