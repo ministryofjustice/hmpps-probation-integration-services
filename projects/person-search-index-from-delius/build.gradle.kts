@@ -37,7 +37,7 @@ val dockerBuild = tasks.create<Exec>("dockerBuild") {
 
 fun createPushSubTask(tag: String, pushFile: File): Exec {
     val taskName = if (tag == "latest") "latest" else "version"
-    return tasks.create<Exec>("dockerPush-${taskName}") {
+    return tasks.create<Exec>("dockerPush-$taskName") {
         doFirst {
             commandLine = listOf("docker", "push", "$imageName:$tag")
         }
