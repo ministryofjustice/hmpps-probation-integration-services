@@ -94,7 +94,6 @@ jobs:
           cluster: ${{ secrets.KUBE_CLUSTER }}
           namespace: ${{ secrets.KUBE_NAMESPACE }}
           token: ${{ secrets.KUBE_TOKEN }}
-          json-secrets: ${{ toJson(secrets) }}
 
       - name: Create Sentry release
         if: steps.enabled.outputs.enabled == 'true'
