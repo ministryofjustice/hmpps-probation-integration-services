@@ -50,7 +50,8 @@ class AllocationsDataLoader(
     private val staffUserRepository: StaffUserRepository,
     private val personAllocationDataLoader: PersonAllocationDataLoader,
     private val caseViewDataLoader: CaseViewDataLoader,
-    private val registerTypeRepository: RegisterTypeRepository
+    private val registerTypeRepository: RegisterTypeRepository,
+    private val limitedAccessDataLoader: LimitedAccessDataLoader
 
 ) : ApplicationListener<ApplicationReadyEvent> {
 
@@ -136,5 +137,6 @@ class AllocationsDataLoader(
 
         personAllocationDataLoader.loadData()
         caseViewDataLoader.loadData()
+        limitedAccessDataLoader.loadData()
     }
 }
