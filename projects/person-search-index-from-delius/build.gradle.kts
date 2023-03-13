@@ -1,12 +1,8 @@
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
 val imageName = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}"
 val dockerDir = File(buildDir, "docker")
 if (!dockerDir.exists()) dockerDir.mkdirs()
 val buildFile = File("$buildDir/docker", "build")
-val pushLatestFile = File("$buildDir/docker", "push-latest")
-val pushVersionFile = File("$buildDir/docker", "push-version")
+val pushFile = File("$buildDir/docker", "push")
 
 // build and tag image
 val dockerBuild = tasks.create<Exec>("dockerBuild") {
@@ -35,33 +31,23 @@ val dockerBuild = tasks.create<Exec>("dockerBuild") {
     }
 }
 
-fun createPushSubTask(tag: String, pushFile: File): Exec {
-    val taskName = if (tag == "latest") "latest" else "version"
-    return tasks.create<Exec>("dockerPush-$taskName") {
-        doFirst {
-            commandLine = listOf("docker", "push", "$imageName:$tag")
+val dockerPush = tasks.create("dockerPush") {
+    doFirst {
+        exec {
+            workingDir = projectDir
+            commandLine = listOf("docker", "push", "$imageName:latest")
         }
-        dependsOn(dockerBuild)
-        workingDir = projectDir
-        inputs.file(buildFile)
-        commandLine = listOf("echo", "dockerPush $imageName")
-        outputs.file(pushFile)
-        outputs.cacheIf { true }
-        doLast {
-            if (!pushFile.exists()) pushFile.createNewFile()
-            pushFile.writeBytes("${project.version}".toByteArray())
+        exec {
+            workingDir = projectDir
+            commandLine = listOf("docker", "push", "$imageName:${project.version}")
         }
     }
-}
-
-val pushLatest = createPushSubTask("latest", pushLatestFile)
-val pushVersion = createPushSubTask("${project.version}", pushVersionFile)
-
-val log: Logger = LoggerFactory.getLogger(this::class.java)
-val dockerPush = tasks.create("dockerPush") {
-    dependsOn(pushLatest, pushVersion)
-    inputs.files(buildFile, pushVersionFile, pushLatestFile)
-    actions.add { log.info("Built and Pushed ${project.name}:${project.version}") }
-    outputs.file(File(dockerDir, "push"))
+    dependsOn(dockerBuild)
+    inputs.file(buildFile)
+    outputs.file(pushFile)
     outputs.cacheIf { true }
+    doLast {
+        if (!pushFile.exists()) pushFile.createNewFile()
+        pushFile.writeBytes("${project.version}".toByteArray())
+    }
 }
