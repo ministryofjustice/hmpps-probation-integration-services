@@ -19,6 +19,7 @@ data class PersonalCircumstance(
 
 data class PersonalContact(
     val relationship: String,
+    val relationshipType: Type,
     val name: Name,
     val telephoneNumber: String?,
     val mobileNumber: String?,

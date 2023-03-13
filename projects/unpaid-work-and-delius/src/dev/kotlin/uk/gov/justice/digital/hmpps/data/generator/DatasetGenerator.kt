@@ -12,6 +12,7 @@ object DatasetGenerator {
     val REGISTER_LEVEL = generate(DatasetCode.REGISTER_LEVEL)
     val REGISTER_CATEGORY = generate(DatasetCode.REGISTER_CATEGORY)
     val DISABILITY_PROVISION = generate(DatasetCode.DISABILITY_PROVISION)
+    val RELATIONSHIP = generate(DatasetCode.RELATIONSHIP)
 
     fun generate(code: DatasetCode, id: Long = IdGenerator.getAndIncrement()) = Dataset(id, code)
 }

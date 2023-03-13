@@ -23,7 +23,7 @@ class CasePersonalCircumstanceEntity(
     val case: CaseEntity,
     type: PersonalCircumstanceType,
     subType: PersonalCircumstanceSubType?,
-    notes: String,
+    notes: String? = null,
     start: LocalDate? = null,
     endDate: LocalDate? = null,
     softDeleted: Boolean = false,

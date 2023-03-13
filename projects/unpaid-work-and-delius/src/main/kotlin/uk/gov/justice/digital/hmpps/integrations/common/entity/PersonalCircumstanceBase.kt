@@ -26,7 +26,7 @@ open class PersonalCircumstanceBase(
     val subType: PersonalCircumstanceSubType?,
 
     @Column(name = "notes", columnDefinition = "clob")
-    val notes: String,
+    val notes: String?,
 
     @Column(name = "start_date")
     val start: LocalDate? = null,

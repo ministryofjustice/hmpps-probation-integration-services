@@ -22,7 +22,7 @@ class PersonalCircumstanceEntity(
     val person: Person,
     type: PersonalCircumstanceType,
     subType: PersonalCircumstanceSubType?,
-    notes: String,
+    notes: String? = null,
     start: LocalDate? = null,
     endDate: LocalDate? = null,
     softDeleted: Boolean = false,

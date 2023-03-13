@@ -8,6 +8,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import uk.gov.justice.digital.hmpps.integrations.common.entity.AddressEntity
 import uk.gov.justice.digital.hmpps.integrations.common.entity.PersonalContactBase
+import uk.gov.justice.digital.hmpps.integrations.common.entity.ReferenceData
 import java.time.LocalDate
 
 @Entity
@@ -20,6 +21,7 @@ class PersonalContactEntity(
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
     relationship: String,
+    relationshipType: ReferenceData,
     forename: String,
     middleName: String?,
     surname: String,
@@ -31,6 +33,7 @@ class PersonalContactEntity(
 ) : PersonalContactBase(
     id,
     relationship,
+    relationshipType,
     forename,
     middleName,
     surname,

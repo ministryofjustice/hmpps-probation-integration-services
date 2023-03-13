@@ -11,6 +11,7 @@ object PersonalContactGenerator {
         id,
         CaseGenerator.DEFAULT,
         "Captains mate",
+        ReferenceDataGenerator.DOCTOR_RELATIONSHIP,
         "Shiver",
         "Me",
         "Timbers",
