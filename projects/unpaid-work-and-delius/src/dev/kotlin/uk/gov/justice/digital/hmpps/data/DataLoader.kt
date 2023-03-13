@@ -113,9 +113,9 @@ class DataLoader(
                 ReferenceDataGenerator.MAPPA_LEVEL_1,
                 ReferenceDataGenerator.MAPPA_CATEGORY_2,
                 ReferenceDataGenerator.HEARING_PROVISION,
-                ReferenceDataGenerator.DOCTOR_RELATIONSHIP,
+                ReferenceDataGenerator.DOCTOR_RELATIONSHIP
 
-                )
+            )
         )
         contactTypeRepository.save(ContactTypeGenerator.DEFAULT)
         staffRepository.save(StaffGenerator.DEFAULT)
