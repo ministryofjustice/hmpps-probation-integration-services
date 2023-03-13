@@ -19,7 +19,7 @@ object LimitedAccessGenerator {
     ) = Exclusion(id, person, user, endDateTime)
 
     fun generateRestriction(
-        user: User = UserGenerator.LIMITED_ACCESS_USER,
+        user: User = UserGenerator.APPLICATION_USER,
         person: Person = PersonGenerator.RESTRICTION,
         endDateTime: LocalDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()

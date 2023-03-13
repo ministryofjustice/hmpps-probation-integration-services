@@ -12,6 +12,11 @@ object PersonGenerator {
     val CASE_VIEW = forCaseView("C123456")
     val EXCLUSION = generate("E123456", exclusionMessage = "There is an exclusion on this person")
     val RESTRICTION = generate("R123456", restrictionMessage = "There is a restriction on this person")
+    val RESTRICTION_EXCLUSION = generate(
+        "B123456",
+        exclusionMessage = "You are excluded from viewing this case",
+        restrictionMessage = "You are restricted from viewing this case"
+    )
 
     fun generate(
         crn: String,
