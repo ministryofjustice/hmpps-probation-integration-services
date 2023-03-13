@@ -7,17 +7,14 @@ import uk.gov.justice.digital.hmpps.user.User
 interface UserAccessRepository : JpaRepository<User, Long> {
     @Query(
         """
-        select new uk.gov.justice.digital.hmpps.integrations.delius.user.access.UserPersonAccess(p.crn, p.exclusionMessage, '') from Exclusion e
-        join e.user u
-        join e.person p
-        where u.username = :username and p.crn in :crns
-        and (e.end is null or e.end > current_date)
+        select new uk.gov.justice.digital.hmpps.integrations.delius.user.access.UserPersonAccess(p.crn, p.exclusionMessage, '')
+        from Person p where p.crn in :crns
+        and exists (select e from Exclusion e where e.user.username = :username and e.person.id = p.id and (e.end is null or e.end > current_date ))
         union
-        select new uk.gov.justice.digital.hmpps.integrations.delius.user.access.UserPersonAccess(p.crn, '', p.restrictionMessage) from Restriction r
-        join r.user u
-        join r.person p
-        where u.username = :username and p.crn in :crns
-        and (r.end is null or r.end > current_date)
+        select new uk.gov.justice.digital.hmpps.integrations.delius.user.access.UserPersonAccess(p.crn, '', p.restrictionMessage)
+        from Person p where p.crn in :crns
+        and exists (select r from Restriction r where r.person.id = p.id and (r.end is null or r.end > current_date ))
+        and not exists (select r from Restriction r where r.user.username = :username and r.person.id = p.id and (r.end is null or r.end > current_date ))
     """
     )
     fun getAccessFor(username: String, crns: List<String>): List<UserPersonAccess>
