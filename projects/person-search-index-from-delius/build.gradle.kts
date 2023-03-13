@@ -37,7 +37,7 @@ val dockerPush = tasks.create<Exec>("dockerPush") {
             commandLine = listOf("docker", "push", "$imageName:latest")
         }
         exec {
-            commandLine = listOf("docker", "push", "$imageName:$${project.version}")
+            commandLine = listOf("docker", "push", "$imageName:${project.version}")
         }
     }
     dependsOn(dockerBuild)
