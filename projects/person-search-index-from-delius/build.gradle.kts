@@ -43,7 +43,6 @@ val dockerPush = tasks.create<Exec>("dockerPush") {
     dependsOn(dockerBuild)
     workingDir = projectDir
     inputs.file(buildFile)
-    commandLine = listOf("echo", "dockerPush $imageName")
     outputs.file(pushFile)
     outputs.cacheIf { true }
     doLast {
