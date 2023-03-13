@@ -31,17 +31,18 @@ val dockerBuild = tasks.create<Exec>("dockerBuild") {
     }
 }
 
-val dockerPush = tasks.create<Exec>("dockerPush") {
+val dockerPush = tasks.create("dockerPush") {
     doFirst {
         exec {
+            workingDir = projectDir
             commandLine = listOf("docker", "push", "$imageName:latest")
         }
         exec {
+            workingDir = projectDir
             commandLine = listOf("docker", "push", "$imageName:${project.version}")
         }
     }
     dependsOn(dockerBuild)
-    workingDir = projectDir
     inputs.file(buildFile)
     outputs.file(pushFile)
     outputs.cacheIf { true }
