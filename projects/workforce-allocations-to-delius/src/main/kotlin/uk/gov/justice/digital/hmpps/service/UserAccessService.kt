@@ -13,13 +13,15 @@ class UserAccessService(private val uar: UserAccessRepository) {
     }
 
     private fun List<UserPersonAccess>?.combined(): UserAccess {
-        return if (this == null) UserAccess.NO_ACCESS_LIMITATIONS
-        else {
+        return if (this == null) {
+            UserAccess.NO_ACCESS_LIMITATIONS
+        } else {
             UserAccess(
-                    any { it.isExcluded() },
-                    any { it.isRestricted() },
-                    firstOrNull { it.isExcluded() }?.exclusionMessage,
-                    firstOrNull { it.isRestricted() }?.restrictionMessage)
+                any { it.isExcluded() },
+                any { it.isRestricted() },
+                firstOrNull { it.isExcluded() }?.exclusionMessage,
+                firstOrNull { it.isRestricted() }?.restrictionMessage
+            )
         }
     }
 }

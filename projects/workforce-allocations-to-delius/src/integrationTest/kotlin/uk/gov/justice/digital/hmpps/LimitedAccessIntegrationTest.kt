@@ -95,32 +95,32 @@ class LimitedAccessIntegrationTest {
     @Test
     fun `limited access controls do not prevent legitimate access`() {
         val res = mockMvc.perform(
-                MockMvcRequestBuilders.post("/user/${UserGenerator.APPLICATION_USER.username}/access-controls")
-                        .withOAuth2Token(wireMockserver)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                                objectMapper.writeValueAsString(
-                                        listOf(
-                                                PersonGenerator.EXCLUSION.crn,
-                                                PersonGenerator.RESTRICTION.crn,
-                                                PersonGenerator.DEFAULT.crn
-                                        )
-                                )
+            MockMvcRequestBuilders.post("/user/${UserGenerator.APPLICATION_USER.username}/access-controls")
+                .withOAuth2Token(wireMockserver)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    objectMapper.writeValueAsString(
+                        listOf(
+                            PersonGenerator.EXCLUSION.crn,
+                            PersonGenerator.RESTRICTION.crn,
+                            PersonGenerator.DEFAULT.crn
                         )
+                    )
+                )
         ).andReturn().response.contentAsString
 
         val result = objectMapper.readValue<Map<String, UserAccess>>(res)
         assertThat(
-                result[PersonGenerator.EXCLUSION.crn],
-                equalTo(UserAccess.NO_ACCESS_LIMITATIONS)
+            result[PersonGenerator.EXCLUSION.crn],
+            equalTo(UserAccess.NO_ACCESS_LIMITATIONS)
         )
         assertThat(
-                result[PersonGenerator.RESTRICTION.crn],
-                equalTo(UserAccess.NO_ACCESS_LIMITATIONS)
+            result[PersonGenerator.RESTRICTION.crn],
+            equalTo(UserAccess.NO_ACCESS_LIMITATIONS)
         )
         assertThat(
-                result[PersonGenerator.DEFAULT.crn],
-                equalTo(UserAccess.NO_ACCESS_LIMITATIONS)
+            result[PersonGenerator.DEFAULT.crn],
+            equalTo(UserAccess.NO_ACCESS_LIMITATIONS)
         )
     }
 }
