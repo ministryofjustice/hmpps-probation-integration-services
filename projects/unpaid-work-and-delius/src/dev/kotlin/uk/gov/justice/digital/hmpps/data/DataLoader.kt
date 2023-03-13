@@ -99,7 +99,8 @@ class DataLoader(
                 DatasetGenerator.LANGUAGE,
                 DatasetGenerator.REGISTER_LEVEL,
                 DatasetGenerator.REGISTER_CATEGORY,
-                DatasetGenerator.DISABILITY_PROVISION
+                DatasetGenerator.DISABILITY_PROVISION,
+                DatasetGenerator.RELATIONSHIP
             )
         )
 
@@ -111,8 +112,10 @@ class DataLoader(
                 ReferenceDataGenerator.LANGUAGE_ENGLISH,
                 ReferenceDataGenerator.MAPPA_LEVEL_1,
                 ReferenceDataGenerator.MAPPA_CATEGORY_2,
-                ReferenceDataGenerator.HEARING_PROVISION
-            )
+                ReferenceDataGenerator.HEARING_PROVISION,
+                ReferenceDataGenerator.DOCTOR_RELATIONSHIP,
+
+                )
         )
         contactTypeRepository.save(ContactTypeGenerator.DEFAULT)
         staffRepository.save(StaffGenerator.DEFAULT)

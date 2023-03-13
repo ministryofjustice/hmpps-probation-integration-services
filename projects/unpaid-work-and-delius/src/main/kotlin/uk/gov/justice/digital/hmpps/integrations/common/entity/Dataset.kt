@@ -29,7 +29,9 @@ enum class DatasetCode(val value: String) {
     LANGUAGE("LANGUAGE"),
     REGISTER_LEVEL("REGISTER LEVEL"),
     REGISTER_CATEGORY("REGISTER CATEGORY"),
-    DISABILITY_PROVISION("DISABILITY PROVISION");
+    DISABILITY_PROVISION("DISABILITY PROVISION"),
+    RELATIONSHIP("RELATIONSHIP"),
+    GENDER_IDENTITY("GENDER IDENTITY");
 
     companion object {
         private val index = DatasetCode.values().associateBy { it.value }

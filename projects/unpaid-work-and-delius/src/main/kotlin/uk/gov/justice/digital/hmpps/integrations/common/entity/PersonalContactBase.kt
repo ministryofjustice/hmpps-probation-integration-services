@@ -17,6 +17,10 @@ open class PersonalContactBase(
 
     val relationship: String,
 
+    @ManyToOne
+    @JoinColumn(name = "relationship_type_id")
+    val relationshipType: ReferenceData,
+
     @Column(name = "first_name")
     val forename: String,
 
