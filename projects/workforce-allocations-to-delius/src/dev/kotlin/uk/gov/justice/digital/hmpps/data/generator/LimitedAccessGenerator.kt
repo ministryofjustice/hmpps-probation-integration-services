@@ -2,8 +2,8 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.user.Exclusion
-import uk.gov.justice.digital.hmpps.integrations.delius.user.Restriction
+import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Exclusion
+import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Restriction
 import uk.gov.justice.digital.hmpps.user.User
 import java.time.LocalDateTime
 

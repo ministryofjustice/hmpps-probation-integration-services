@@ -7,8 +7,8 @@ import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.Exclusion
-import uk.gov.justice.digital.hmpps.integrations.delius.user.Restriction
+import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Exclusion
+import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Restriction
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
