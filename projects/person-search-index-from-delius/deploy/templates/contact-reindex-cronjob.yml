@@ -54,37 +54,37 @@ spec:
                 - name: JDBC_USER
                   valueFrom:
                     secretKeyRef:
-                      name: person-search-index-from-delius
+                      name: person-search-index-from-delius-database
                       key: DB_USERNAME
                       optional: false
                 - name: JDBC_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: person-search-index-from-delius
+                      name: person-search-index-from-delius-database
                       key: DB_PASSWORD
                       optional: false
                 - name: SENTRY_DSN
                   valueFrom:
                     secretKeyRef:
-                      name: person-search-index-from-delius
+                      name: person-search-index-from-delius-sentry
                       key: SENTRY_DSN
                       optional: false
                 - name: CONTACT_SQS_DLQ_NAME
                   valueFrom:
                     secretKeyRef:
-                      name: person-search-index-from-delius
+                      name: person-search-index-from-delius-contact-dlq
                       key: CONTACT_SQS_DLQ_NAME
                       optional: false
                 - name: CONTACT_SQS_DLQ_ACCESS_KEY_ID
                   valueFrom:
                     secretKeyRef:
-                      name: person-search-index-from-delius
+                      name: person-search-index-from-delius-contact-dlq
                       key: CONTACT_SQS_DLQ_ACCESS_KEY_ID
                       optional: false
                 - name: CONTACT_SQS_DLQ_SECRET_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
-                      name: person-search-index-from-delius
+                      name: person-search-index-from-delius-contact-dlq
                       key: CONTACT_SQS_DLQ_SECRET_ACCESS_KEY
                       optional: false
           restartPolicy: Never
