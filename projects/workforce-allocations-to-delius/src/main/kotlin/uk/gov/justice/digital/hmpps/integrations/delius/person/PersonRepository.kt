@@ -11,7 +11,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrnAndSoftDeletedFalse(crn: String): Person?
     fun findByNomsIdAndSoftDeletedFalse(nomsId: String): Person?
 
-    @Query("select p from Person p where p.crn in :crns")
+    @Query("select p from Person p where p.crn in :crns and p.softDeleted = false")
     fun findAllByCrnAndSoftDeletedFalse(crns: List<String>): List<Person>
 
     @Query("select p.id from Person p where p.crn = :crn")
