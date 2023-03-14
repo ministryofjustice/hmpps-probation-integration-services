@@ -73,18 +73,18 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       name: person-search-index-from-delius-contact-dlq
-                      key: CONTACT_SQS_DLQ_NAME
+                      key: QUEUE_NAME
                       optional: false
                 - name: CONTACT_SQS_DLQ_ACCESS_KEY_ID
                   valueFrom:
                     secretKeyRef:
                       name: person-search-index-from-delius-contact-dlq
-                      key: CONTACT_SQS_DLQ_ACCESS_KEY_ID
+                      key: AWS_ACCESS_KEY_ID
                       optional: false
                 - name: CONTACT_SQS_DLQ_SECRET_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
                       name: person-search-index-from-delius-contact-dlq
-                      key: CONTACT_SQS_DLQ_SECRET_ACCESS_KEY
+                      key: AWS_SECRET_ACCESS_KEY
                       optional: false
           restartPolicy: Never
