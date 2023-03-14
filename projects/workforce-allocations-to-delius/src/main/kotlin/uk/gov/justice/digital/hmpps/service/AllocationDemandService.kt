@@ -142,13 +142,15 @@ class AllocationDemandService(
         val staff = staffRepository.findAllByCodeIn(requests.cases.map { it.staffCode })
             .map { it.toStaffMember() }
             .associateBy { it.code }
-        return AllocationDetails(requests.cases.map {
-            AllocationImpact(
-                cases[it.crn]?.crn,
-                cases[it.crn]?.name(),
-                staff[it.staffCode]
-            )
-        })
+        return AllocationDetails(
+            requests.cases.map {
+                AllocationImpact(
+                    cases[it.crn]?.crn,
+                    cases[it.crn]?.name(),
+                    staff[it.staffCode]
+                )
+            }
+        )
     }
 
     fun getUnallocatedEvents(crn: String): UnallocatedEventsResponse {

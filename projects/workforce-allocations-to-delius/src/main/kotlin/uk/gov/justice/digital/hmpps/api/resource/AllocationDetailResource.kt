@@ -16,5 +16,8 @@ import uk.gov.justice.digital.hmpps.service.AllocationDemandService
 class AllocationDetailResource(private val allocationDemand: AllocationDemandService) {
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @PostMapping("/details")
-    fun getDetails(@Valid @RequestBody detailRequests: AllocationDetailRequests) = allocationDemand.getDetails(detailRequests)
+    fun getDetails(
+        @Valid @RequestBody
+        detailRequests: AllocationDetailRequests
+    ) = allocationDemand.getDetails(detailRequests)
 }
