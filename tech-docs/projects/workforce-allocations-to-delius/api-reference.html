@@ -115,6 +115,9 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#user-username-access-controls"><span>/user/{username}/access-controls</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#staff-code-active-cases"><span>/staff/{code}/active-cases</span></a>
       </li>
       <li>
@@ -186,6 +189,130 @@
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="user-username-access-controls">/user/{username}/access-controls</h2>
+
+<h3 id="user-username-access-controls-get">get</h3>
+
+
+
+
+<h4 id="user-username-access-controls-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>crns</td>
+<td>query</td>
+<td>array</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="user-username-access-controls-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+<h3 id="user-username-access-controls-post">post</h3>
+
+
+
+
+<h4 id="user-username-access-controls-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="user-username-access-controls-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -1499,6 +1626,58 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-useraccess">UserAccess</h3>
+
+
+<table class='schema-useraccess'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>userExcluded</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>userRestricted</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>exclusionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>restrictionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-activecasesresponse">ActiveCasesResponse</h3>
 
 
