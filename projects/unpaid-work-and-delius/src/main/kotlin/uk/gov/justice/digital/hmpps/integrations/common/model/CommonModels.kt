@@ -13,7 +13,7 @@ data class Address(
 data class PersonalCircumstance(
     val type: Type,
     val subType: Type?,
-    val notes: String,
+    val notes: String?,
     val evidenced: Boolean
 )
 
