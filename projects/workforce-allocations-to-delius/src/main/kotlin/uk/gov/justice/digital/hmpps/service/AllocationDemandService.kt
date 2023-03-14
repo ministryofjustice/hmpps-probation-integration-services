@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.AllocationDemandRequest
 import uk.gov.justice.digital.hmpps.api.model.AllocationDemandResponse
 import uk.gov.justice.digital.hmpps.api.model.AllocationDemandStaffResponse
+import uk.gov.justice.digital.hmpps.api.model.AllocationDetailRequests
+import uk.gov.justice.digital.hmpps.api.model.AllocationDetails
 import uk.gov.justice.digital.hmpps.api.model.AllocationImpact
 import uk.gov.justice.digital.hmpps.api.model.ChoosePractitionerResponse
 import uk.gov.justice.digital.hmpps.api.model.Event
@@ -132,6 +134,21 @@ class AllocationDemandService(
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val staff = staffRepository.getWithUserByCode(staffCode)
         return AllocationImpact(person.crn, person.name(), staff.toStaffMember(ldapService.findEmailForStaff(staff)))
+    }
+
+    fun getDetails(requests: AllocationDetailRequests): AllocationDetails {
+        val cases = personRepository.findAllByCrnAndSoftDeletedFalse(requests.cases.map { it.crn })
+            .associateBy { it.crn }
+        val staff = staffRepository.findAllByCodeIn(requests.cases.map { it.staffCode })
+            .map { it.toStaffMember() }
+            .associateBy { it.code }
+        return AllocationDetails(requests.cases.map {
+            AllocationImpact(
+                cases[it.crn]?.crn,
+                cases[it.crn]?.name(),
+                staff[it.staffCode]
+            )
+        })
     }
 
     fun getUnallocatedEvents(crn: String): UnallocatedEventsResponse {

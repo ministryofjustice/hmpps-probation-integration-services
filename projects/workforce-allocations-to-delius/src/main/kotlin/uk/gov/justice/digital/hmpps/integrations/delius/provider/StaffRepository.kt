@@ -11,6 +11,9 @@ interface StaffRepository : JpaRepository<StaffRecord, Long> {
     @Query("select s from StaffWithUser s where s.code = :code")
     fun findStaffWithUserByCode(code: String): StaffWithUser?
 
+    @EntityGraph(attributePaths = ["grade.dataset"])
+    fun findAllByCodeIn(codes: List<String>): List<Staff>
+
     @EntityGraph(attributePaths = ["grade.dataset", "user"])
     @Query("select s from StaffWithUser s where upper(s.user.username) = upper(:username)")
     fun findStaffWithUserByUsername(username: String): StaffWithUser?
