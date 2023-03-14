@@ -58,7 +58,6 @@ runs:
           --atomic \
           --history-max 10 \
           --install \
-          --namespace="$NAMESPACE" \
           --reset-values \
           --set "generic-service.env.VERSION=$VERSION" \
           --set "generic-service.image.tag=$VERSION" \
@@ -69,7 +68,6 @@ runs:
           --values "projects/$PROJECT/deploy/$VALUES_FILE" \
           --wait
       env:
-        NAMESPACE: ${{ inputs.namespace }}
         PROJECT: ${{ inputs.project }}
         VALUES_FILE: ${{ steps.env.outputs.values-file }}
         VERSION: ${{ inputs.version }}
