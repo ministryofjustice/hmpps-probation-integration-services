@@ -25,8 +25,14 @@ spring:
   jpa:
     hibernate.ddl-auto: create-drop
 
-messaging:
-  consumer.queue: message-queue
+wiremock.enabled: true
+context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+
+flipt:
+  url: http://localhost:${wiremock.port}/flipt-enabled
+  token: test-token
+
+messaging.consumer.queue: message-queue
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
