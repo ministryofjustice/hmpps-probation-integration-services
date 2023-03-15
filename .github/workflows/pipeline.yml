@@ -9,19 +9,10 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.build.outputs.version }}
-      changed-images: ${{ steps.build.outputs.changed-images }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Build and test
-        id: build
-        uses: ./.github/actions/build-and-test
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          push-images: true
+    uses: ./.github/workflows/build.yml
+    with:
+      push: true
+    secrets: inherit
 
   deploy-to-test:
     name: Deploy to test

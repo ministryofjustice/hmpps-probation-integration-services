@@ -1,0 +1,48 @@
+name: Build Docker image
+description: Build, and optionally push, a Docker image
+
+inputs:
+  project:
+    description: Project name
+  push:
+    description: Whether to push images to the registry
+    default: 'false'
+  version:
+    description: Version
+
+outputs:
+  changes:
+    description: A JSON array of projects that have changed
+    value: ${{ steps.check-changes.outputs.projects }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: docker/setup-qemu-action@v2
+    - uses: docker/setup-buildx-action@v2
+    - id: check-changes
+      uses: ./.github/actions/check-changes
+      with:
+        filters: |
+          projects:
+            - 'projects/${{ inputs.project }}/**'
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project)
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+
+    - name: Build Docker images
+      uses: docker/build-push-action@v4
+      if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project)
+      with:
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        context: projects/${{ inputs.project }}/container
+        push: ${{ inputs.push }}
+        tags: |
+          ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}:latest
+          ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}:${{ inputs.version }}

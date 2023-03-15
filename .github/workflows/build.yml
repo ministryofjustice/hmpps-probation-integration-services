@@ -1,0 +1,104 @@
+name: Build
+
+on:
+  push:
+    branches-ignore:
+      - main
+  workflow_call:
+    inputs:
+      push:
+        type: boolean
+        default: false
+    outputs:
+      version:
+        value: ${{ jobs.build.outputs.version }}
+      changed-images:
+        value: ${{ jobs.build.outputs.changes }}
+  workflow_dispatch:
+    inputs:
+      push:
+        description: Whether to push images to the registry
+        type: boolean
+        default: false
+
+env:
+  push: ${{ github.event_name != 'push' && inputs.push }}
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    outputs:
+      changes: ${{ steps.check-changes.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - uses: gradle/wrapper-validation-action@v1
+      - uses: gradle/gradle-build-action@v2
+        with:
+          cache-read-only: ${{ env.push }}
+
+      - name: Set version
+        id: version
+        run: |
+          version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
+          echo version=$version
+          echo "ORG_GRADLE_PROJECT_version=$version" >> $GITHUB_ENV
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Set Gradle properties
+        run: echo -e "\norg.gradle.jvmargs=-Xmx1g -XX:MaxMetaspaceSize=512m" >> gradle.properties
+
+      - name: Build and test
+        run: ./gradlew check
+
+      - name: Sonar analysis
+        if: github.actor != 'dependabot[bot]'
+        continue-on-error: true # don't fail the build when sonarcloud.io is down
+        run: ./gradlew sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Publish test reports
+        uses: mikepenz/action-junit-report@4fa23552acda20a6a1d44f16224a90efbeb6c5f1 # v3.7.5
+        if: always() && github.actor != 'dependabot[bot]'
+        with:
+          check_name: |-
+            Unit test results
+            Integration test results
+          report_paths: |-
+            **/build/test-results/test/TEST-*.xml
+            **/build/test-results/integrationTest/TEST-*.xml
+
+      - name: Cache base image
+        if: env.push == 'true'
+        run: |
+          docker pull eclipse-temurin:17-jre-alpine
+          echo "JIB_FROM_IMAGE=docker://$(docker inspect --format='{{index .RepoDigests 0}}' eclipse-temurin:17-jre-alpine)" >> $GITHUB_ENV
+
+      - name: Push Jib images
+        if: env.push == 'true'
+        run: ./gradlew jib
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_PASSWORD: ${{ github.token }}
+
+      - name: Build Docker images
+        uses: ./.github/actions/docker-build
+        id: docker-build
+        with:
+          project: person-search-index-from-delius
+          push: ${{ env.push }}
+          version: ${{ steps.version.outputs.version }}
+
+      - name: Check changes
+        id: check-changes
+        run: |
+          gradle_changes="$((ls changed || true) | jq -r . | jq --slurp --compact-output .)"
+          docker_changes='${{ steps.docker-build.outputs.changes }}'
+          echo "changes=$(echo -e "$gradle_changes\n$docker_changes" | jq --slurp --compact-output 'add')" >> $GITHUB_OUTPUT
