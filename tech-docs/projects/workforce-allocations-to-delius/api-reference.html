@@ -121,6 +121,9 @@
         <a href="./api-reference.html#staff-code-active-cases"><span>/staff/{code}/active-cases</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#allocation-details"><span>/allocation/details</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#allocation-demand"><span>/allocation-demand</span></a>
       </li>
       <li>
@@ -386,6 +389,65 @@
 </td>
 <td>
 <a href='#schema-activecasesresponse'>ActiveCasesResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="allocation-details">/allocation/details</h2>
+
+<h3 id="allocation-details-post">post</h3>
+
+
+
+
+
+
+
+<h4 id="allocation-details-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "cases": [
+    {
+      "crn": "string",
+      "name": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "staff": {
+        "code": "string",
+        "name": {
+          "forename": "string",
+          "middleName": "string",
+          "surname": "string"
+        },
+        "email": "string",
+        "grade": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-allocationdetails'>AllocationDetails</a>
 </td>
 </tr>
 
@@ -1824,6 +1886,176 @@
 </tbody>
 </table>
 
+<h3 id="schema-allocationdetailrequest">AllocationDetailRequest</h3>
+
+
+<table class='schema-allocationdetailrequest'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>staffCode</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-allocationdetailrequests">AllocationDetailRequests</h3>
+
+
+<table class='schema-allocationdetailrequests'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>cases</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-allocationdetailrequest'>AllocationDetailRequest</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-allocationdetails">AllocationDetails</h3>
+
+
+<table class='schema-allocationdetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>cases</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-allocationimpact'>AllocationImpact</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-allocationimpact">AllocationImpact</h3>
+
+
+<table class='schema-allocationimpact'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>staff</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-staffmember'>StaffMember</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-staffmember">StaffMember</h3>
+
+
+<table class='schema-staffmember'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>grade</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-allocationdemandrequest">AllocationDemandRequest</h3>
 
 
@@ -2644,58 +2876,6 @@
 <td></td>
 <td>
   <a href='#schema-prevent'>PrEvent</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-staffmember">StaffMember</h3>
-
-
-<table class='schema-staffmember'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>email</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>grade</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
 </td>
 </tr>
 
@@ -3658,48 +3838,6 @@
 <td></td>
 <td>
   
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-allocationimpact">AllocationImpact</h3>
-
-
-<table class='schema-allocationimpact'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>crn</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>staff</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-staffmember'>StaffMember</a>
 </td>
 </tr>
 
