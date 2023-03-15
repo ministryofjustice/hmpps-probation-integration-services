@@ -18,22 +18,22 @@ jobs:
     name: Deploy to test
     uses: ./.github/workflows/deploy.yml
     needs: build
-    if: ${{ needs.build.outputs.changed-images != '[]'}}
+    if: ${{ needs.build.outputs.changes != '[]'}}
     with:
       environment: test
       version: ${{ needs.build.outputs.version }}
-      projects: ${{ needs.build.outputs.changed-images }}
+      projects: ${{ needs.build.outputs.changes }}
     secrets: inherit
 
   deploy-to-preprod:
     name: Deploy to preprod
     uses: ./.github/workflows/deploy.yml
     needs: build
-    if: ${{ needs.build.outputs.changed-images != '[]'}}
+    if: ${{ needs.build.outputs.changes != '[]'}}
     with:
       environment: preprod
       version: ${{ needs.build.outputs.version }}
-      projects: ${{ needs.build.outputs.changed-images }}
+      projects: ${{ needs.build.outputs.changes }}
     secrets: inherit
 
   end-to-end-tests:
@@ -44,7 +44,7 @@ jobs:
       - deploy-to-test
       - deploy-to-preprod
     with:
-      projects: ${{ needs.build.outputs.changed-images }}
+      projects: ${{ needs.build.outputs.changes }}
     secrets: inherit
 
   report-test-failures:

@@ -12,7 +12,7 @@ on:
     outputs:
       version:
         value: ${{ jobs.build.outputs.version }}
-      changed-images:
+      changes:
         value: ${{ jobs.build.outputs.changes }}
   workflow_dispatch:
     inputs:
@@ -29,6 +29,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     outputs:
+      version: ${{ steps.version.outputs.version }}
       changes: ${{ steps.check-changes.outputs.changes }}
     steps:
       - uses: actions/checkout@v3
