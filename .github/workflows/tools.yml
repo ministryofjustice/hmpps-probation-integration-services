@@ -84,3 +84,19 @@ jobs:
         working-directory: tools/${{ matrix.project }}/deploy
         env:
           PROJECT: ${{ matrix.project }}
+
+  deploy-auth:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'schedule' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch') }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm install -g auth0-deploy-cli
+      - name: Import Auth0 configuration
+        working-directory: tools/feature-flags/deploy/auth0
+        env:
+          AUTH0_CLIENT_ID: ${{ secrets.FLIPT_AUTH0_CLIENT_ID }}
+          AUTH0_CLIENT_SECRET: ${{ secrets.FLIPT_AUTH0_CLIENT_SECRET }}
+        run: a0deploy import --input_file tenant.yaml --config_file config.json
