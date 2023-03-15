@@ -46,10 +46,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
   // Check if user is in one of the allowed teams
   for (const team of teams) {
-    if (ALLOWED_TEAMS.includes(`${team.organization.login}:${team.slug}`)) {
-      console.log("Success!");
-      return;
-    }
+    if (ALLOWED_TEAMS.includes(`${team.organization.login}:${team.slug}`)) return;
   }
   api.access.deny('User must be a member of one of the following teams: ' + ALLOWED_TEAMS.join(", "));
 };
