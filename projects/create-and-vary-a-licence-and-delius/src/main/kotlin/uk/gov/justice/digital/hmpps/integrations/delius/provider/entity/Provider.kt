@@ -19,7 +19,7 @@ class Provider(
 
     @Id
     @Column(name = "probation_area_id")
-    val id: Long,
+    val id: Long
 )
 
 @Immutable
