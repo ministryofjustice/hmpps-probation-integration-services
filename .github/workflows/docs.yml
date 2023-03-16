@@ -85,7 +85,7 @@ jobs:
       - name: Set branch
         if: github.ref_name != 'main'
         run: sed -i "s|$REPOSITORY/main|$REPOSITORY/$BRANCH|" index.html.md.erb
-        working-directory: projects/${{ matrix.project }}/tech-docs
+        working-directory: projects/${{ matrix.project }}/tech-docs/source
         env:
           REPOSITORY: ${{ github.repository }}
           BRANCH: ${{ github.ref_name }}
