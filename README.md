@@ -168,6 +168,37 @@ in MOJ Cloud Platform.
 See [06-github-actions-runner.yaml](https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration/06-github-actions-runner.yaml).
 For more information on how this is implemented, see [PI-340](https://dsdmoj.atlassian.net/browse/PI-340).
 
+# Feature flags
+
+This project uses feature flags to control the availability of certain features.
+Feature flags allow you to easily turn on or off parts of a service in production.
+This helps us to decouple "releases" from "deployments".
+
+Feature flags are managed in the [Flipt dashboard](https://feature-flags.probation-integration.service.justice.gov.uk).
+You'll need to be in an appropriate GitHub team to access it.
+
+To add a feature flag to your code,
+
+1. Create a new flag in the dashboard
+2. Add the FLIPT_URL and FLIPT_TOKEN to your values-prod.yml file.
+   Example: [values-prod.yml](https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/d7759200292b02b28aaadf2d31e4281228702fa2/projects/risk-assessment-scores-to-delius/deploy/values-prod.yml#L7).
+3. Update your code to inject the `FeatureFlags` service, and call `enabled("<key>")`. Example:
+
+```kotlin
+@Service
+class MyService(private val featureFlags: FeatureFlags) {
+    fun myMethod() {
+        if (featureFlags.enabled("my-flag")) {
+            // Feature is enabled, do something
+        } else {
+            // Feature is disabled, do something else
+        }
+    }
+}
+```
+
+For more information about Flipt, check out the [Flipt documentation](https://www.flipt.io/docs).
+
 # Deployment
 Once the code is built and tested, GitHub Actions deploys the updated images for each service
 to [MOJ Cloud Platform](https://user-guide.cloud-platform.service.justice.gov.uk/documentation/concepts/what-is-the-cloud-platform.html).

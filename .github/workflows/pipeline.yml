@@ -9,40 +9,31 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.build.outputs.version }}
-      changed-images: ${{ steps.build.outputs.changed-images }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Build and test
-        id: build
-        uses: ./.github/actions/build-and-test
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          push-images: true
+    uses: ./.github/workflows/build.yml
+    with:
+      push: true
+    secrets: inherit
 
   deploy-to-test:
     name: Deploy to test
     uses: ./.github/workflows/deploy.yml
     needs: build
-    if: ${{ needs.build.outputs.changed-images != '[]'}}
+    if: ${{ needs.build.outputs.changes != '[]'}}
     with:
       environment: test
       version: ${{ needs.build.outputs.version }}
-      projects: ${{ needs.build.outputs.changed-images }}
+      projects: ${{ needs.build.outputs.changes }}
     secrets: inherit
 
   deploy-to-preprod:
     name: Deploy to preprod
     uses: ./.github/workflows/deploy.yml
     needs: build
-    if: ${{ needs.build.outputs.changed-images != '[]'}}
+    if: ${{ needs.build.outputs.changes != '[]'}}
     with:
       environment: preprod
       version: ${{ needs.build.outputs.version }}
-      projects: ${{ needs.build.outputs.changed-images }}
+      projects: ${{ needs.build.outputs.changes }}
     secrets: inherit
 
   end-to-end-tests:
@@ -53,7 +44,7 @@ jobs:
       - deploy-to-test
       - deploy-to-preprod
     with:
-      projects: ${{ needs.build.outputs.changed-images }}
+      projects: ${{ needs.build.outputs.changes }}
     secrets: inherit
 
   report-test-failures:
