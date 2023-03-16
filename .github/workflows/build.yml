@@ -22,7 +22,7 @@ on:
         default: false
 
 env:
-  push: ${{ github.event_name != 'push' && inputs.push }}
+  push: ${{ !(github.event_name == 'push' && github.ref_name != 'main') && inputs.push }}
 
 jobs:
   build:
