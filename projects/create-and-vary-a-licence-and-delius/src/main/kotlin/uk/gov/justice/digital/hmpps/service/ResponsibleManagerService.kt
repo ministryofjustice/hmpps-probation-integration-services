@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.service
+package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.Manager
@@ -10,18 +10,29 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
+import uk.gov.justice.digital.hmpps.integrations.ldap.LdapService
 
 @Service
-class ResponsibleManagerService(private val responsibleOfficerRepository: ResponsibleOfficerRepository) {
+class ResponsibleManagerService(
+    private val responsibleOfficerRepository: ResponsibleOfficerRepository,
+    private val ldapService: LdapService
+) {
     fun findResponsibleCommunityManager(crn: String): Manager? =
-        responsibleOfficerRepository.findResponsibleOfficer(crn)?.asManager()
+        responsibleOfficerRepository.findResponsibleOfficer(crn)?.let { ro ->
+            ro.communityManager.staff.user?.apply {
+                email = ldapService.findEmailByUsername(username)
+            }
+            ro.asManager()
+        }
 }
 
 fun ResponsibleOfficer.asManager() = Manager(
     communityManager.staff.code,
     communityManager.staff.name(),
     communityManager.provider.asProvider(),
-    communityManager.team.asTeam()
+    communityManager.team.asTeam(),
+    communityManager.staff.user?.username,
+    communityManager.staff.user?.email
 )
 
 fun Staff.name() = Name(forename, middleName, surname)

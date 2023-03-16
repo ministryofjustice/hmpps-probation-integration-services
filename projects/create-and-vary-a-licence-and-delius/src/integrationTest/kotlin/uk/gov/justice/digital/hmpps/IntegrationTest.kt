@@ -16,8 +16,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.service.asManager
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.service.asManager
 
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-test")
@@ -42,7 +42,12 @@ internal class IntegrationTest {
         ).andReturn().response.contentAsString
 
         val manager = objectMapper.readValue<Manager>(res)
-        assertThat(manager, equalTo(PersonGenerator.DEFAULT_RO.asManager()))
+        assertThat(
+            manager,
+            equalTo(
+                PersonGenerator.DEFAULT_RO.asManager().copy(username = "john-smith", email = "john.smith@moj.gov.uk")
+            )
+        )
     }
 
     @Test

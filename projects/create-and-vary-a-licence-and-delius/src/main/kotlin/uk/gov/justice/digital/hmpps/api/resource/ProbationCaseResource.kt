@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.api.model.Manager
-import uk.gov.justice.digital.hmpps.integrations.delius.service.ResponsibleManagerService
+import uk.gov.justice.digital.hmpps.service.ResponsibleManagerService
 
 @RestController
 @RequestMapping("probation-case/{crn}")
