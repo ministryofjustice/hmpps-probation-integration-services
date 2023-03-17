@@ -100,6 +100,6 @@ jobs:
       - name: Check changes
         id: check-changes
         run: |
-          gradle_changes="$((ls changed || true) | jq -r . | jq --slurp --compact-output .)"
+          gradle_changes="$((ls changed || true) | jq --raw-input . | jq --slurp --compact-output .)"
           docker_changes='${{ steps.docker-build.outputs.changes }}'
           echo "changes=$(echo -e "$gradle_changes\n$docker_changes" | jq --slurp --compact-output 'add')" | tee -a $GITHUB_OUTPUT
