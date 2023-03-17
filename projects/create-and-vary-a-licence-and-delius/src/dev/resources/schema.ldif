@@ -1,0 +1,16 @@
+dn: dc=moj,dc=com
+objectclass: top
+objectclass: domain
+dc: moj
+
+dn: ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: Users
+
+dn: cn=DefaultStaff,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: john-smith
+sn: Staff
+mail: john.smith@moj.gov.uk
