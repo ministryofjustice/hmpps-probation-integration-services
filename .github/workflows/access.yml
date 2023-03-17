@@ -151,3 +151,22 @@ jobs:
           echo "Completed with status: $status"
           if [ "$status" != "Success" ]; then exit 1; fi
         working-directory: projects/${{ matrix.project }}/deploy
+
+  create-issue:
+    runs-on: ubuntu-latest
+    needs: get-projects
+    strategy:
+      matrix:
+        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create issue for manual approval step
+        run: |
+          gh issue create \
+            --title 'Complete database access setup for ${{ matrix.project }}' \
+            --body '
+          The ${{ matrix.project }} [database/access.yml](https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/${{ matrix.project }}/deploy/database/access.yml) file was recently changed. For these changes to take effect in production, the [Database Access](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/access.yml) workflow must be manually approved. 
+          - [ ] Approve workflow: https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/runs/${{ github.run_id }}' \
+            --label bootstrap
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
