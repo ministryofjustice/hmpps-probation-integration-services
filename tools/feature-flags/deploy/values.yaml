@@ -2,11 +2,11 @@
 generic-service:
   nameOverride: feature-flags
 
-  replicaCount: 1
+  replicaCount: 2
 
   image:
     repository: flipt/flipt
-    tag: latest
+    tag: v1.19.2
     port: 8080
 
   securityContext:
@@ -49,3 +49,4 @@ generic-service:
 
 generic-prometheus-alerts:
   targetApplication: feature-flags
+  alertSeverity: probation-integration-notifications
