@@ -4,7 +4,7 @@ generic-service:
 
   env:
     SENTRY_ENVIRONMENT: prod
-    FLIPT_URL: http://feature-flags.hmpps-probation-integration.svc.cluster.local:8080
+    FLIPT_URL: http://feature-flags.hmpps-probation-integration.svc.cluster.local
 
   namespace_secrets:
     flipt-client:
