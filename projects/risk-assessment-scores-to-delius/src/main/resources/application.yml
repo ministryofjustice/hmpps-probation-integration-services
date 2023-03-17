@@ -53,7 +53,7 @@ spring:
     password: NDelius1
   jpa:
     properties:
-      hibernate.dialect: org.hibernate.dialect.Oracle12cDialect
+      hibernate.dialect: org.hibernate.dialect.OracleDialect
     hibernate.ddl-auto: validate
 delius.db.username: NationalUser
 
