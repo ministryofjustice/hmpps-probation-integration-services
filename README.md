@@ -176,12 +176,13 @@ This helps us to decouple "releases" from "deployments".
 
 Feature flags are managed in the [Flipt dashboard](https://feature-flags.probation-integration.service.justice.gov.uk).
 You'll need to be in an appropriate GitHub team to access it.
+The list of allowed teams is defined here: [code.js](tools/feature-flags/deploy/auth0/actions/Check%20GitHub%20teams/code.js).
 
 To add a feature flag to your code,
 
 1. Create a new flag in the dashboard
 2. Add the FLIPT_URL and FLIPT_TOKEN to your values-prod.yml file.
-   Example: [values-prod.yml](https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/d7759200292b02b28aaadf2d31e4281228702fa2/projects/risk-assessment-scores-to-delius/deploy/values-prod.yml#L7).
+   Example: [values-prod.yml](https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/bd9a93c86112cd8a3717c9cc8631644d27cf34a7/projects/risk-assessment-scores-to-delius/deploy/values-prod.yml#L7-L11).
 3. Update your code to inject the `FeatureFlags` service, and call `enabled("<key>")`. Example:
 
 ```kotlin
