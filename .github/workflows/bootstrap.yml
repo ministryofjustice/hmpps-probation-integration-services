@@ -180,10 +180,11 @@ jobs:
           echo "dsn=$dsn" >> $GITHUB_OUTPUT
 
       - name: Store DSN as Kubernetes secret
-        run: kubectl create secret generic "$PROJECT-sentry" --from-literal "SENTRY_DSN=$VALUE"
+        run: kubectl create secret generic "$PROJECT-sentry" --from-literal "SENTRY_DSN=$VALUE" --from-literal "SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN"
         env:
           PROJECT: ${{ inputs.project_name }}
           VALUE: ${{ steps.client_key.outputs.dsn }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
   sqs-queue-setup:
     runs-on: ubuntu-latest

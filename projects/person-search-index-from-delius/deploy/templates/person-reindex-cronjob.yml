@@ -69,6 +69,18 @@ spec:
                       name: person-search-index-from-delius-sentry
                       key: SENTRY_DSN
                       optional: false
+                - name: SENTRY_AUTH_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-sentry
+                      key: SENTRY_AUTH_TOKEN
+                      optional: false
+                - name: PERSON_REINDEXING_SENTRY_MONITOR_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-sentry
+                      key: PERSON_REINDEXING_SENTRY_MONITOR_ID
+                      optional: false
                 - name: PERSON_SQS_DLQ_NAME
                   valueFrom:
                     secretKeyRef:

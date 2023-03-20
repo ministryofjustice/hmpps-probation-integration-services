@@ -36,7 +36,7 @@ spec:
                 - name: PIPELINES_ENABLED
                   value: contact-full-load,contact-dlq
                 - name: PIPELINE_BATCH_SIZE
-                  value: '5000'
+                  value: '10000'
                 - name: SEARCH_INDEX_HOST
                   value: {{ .Values.reindexing.host }}
                 - name: APPLICATIONINSIGHTS_CONNECTION_STRING
@@ -68,6 +68,18 @@ spec:
                     secretKeyRef:
                       name: person-search-index-from-delius-sentry
                       key: SENTRY_DSN
+                      optional: false
+                - name: SENTRY_AUTH_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-sentry
+                      key: SENTRY_AUTH_TOKEN
+                      optional: false
+                - name: CONTACT_REINDEXING_SENTRY_MONITOR_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-sentry
+                      key: CONTACT_REINDEXING_SENTRY_MONITOR_ID
                       optional: false
                 - name: CONTACT_SQS_DLQ_NAME
                   valueFrom:

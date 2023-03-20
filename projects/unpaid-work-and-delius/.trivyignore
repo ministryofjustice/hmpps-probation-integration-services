@@ -1,7 +1,7 @@
 
 # Suppress due to only uploading from trusted sources
 # By anthony-britton-moj
-CVE-2023-24998 exp:2023-03-21
+CVE-2023-24998 exp:2023-04-20
 
 # Suppress - we do not process any untrusted YML content
 # By marcus-bcl
