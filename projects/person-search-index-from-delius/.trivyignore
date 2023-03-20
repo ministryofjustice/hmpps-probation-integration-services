@@ -4,6 +4,7 @@ CVE-2020-36518
 # Reason: snakeyaml only used for internal (controlled) objects
 CVE-2017-18640
 CVE-2022-25857
+CVE-2022-1471
 
 # Reason:
 #   Given the CVE description, the changes in the JDK source code and the information publicly available we believe that Logstash is not affected by any of the aforementioned flaws.
