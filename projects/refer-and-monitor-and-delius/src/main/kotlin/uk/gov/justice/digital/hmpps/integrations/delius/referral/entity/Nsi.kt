@@ -35,6 +35,10 @@ class Nsi(
     val person: Person,
 
     @ManyToOne
+    @JoinColumn(name = "nsi_type_id")
+    var type: NsiType,
+
+    @ManyToOne
     @JoinColumn(name = "nsi_status_id")
     var status: NsiStatus,
 
@@ -47,7 +51,7 @@ class Nsi(
 
     val referralDate: ZonedDateTime,
 
-    val actualStartDate: ZonedDateTime? = null,
+    var actualStartDate: ZonedDateTime? = null,
 
     var actualEndDate: ZonedDateTime? = null,
 
@@ -56,9 +60,12 @@ class Nsi(
 
     val externalReference: String? = null,
 
+    @Column(name = "intended_provider_id")
+    val intendedProviderId: Long? = null,
+
     @OneToMany(mappedBy = "nsi")
     @Where(clause = "active_flag = 1")
-    val managers: List<NsiManager> = listOf(),
+    private val managers: MutableList<NsiManager> = mutableListOf(),
 
     val eventId: Long? = null,
 
@@ -92,6 +99,11 @@ class Nsi(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 ) {
+    fun withManager(manager: NsiManager): Nsi {
+        managers.add(manager)
+        return this
+    }
+
     val manager
         get() = managers.first()
 }
@@ -124,6 +136,16 @@ class NsiManager(
     @Version
     @Column(name = "row_version")
     val version: Long = 0
+)
+
+@Entity
+@Immutable
+@Table(name = "r_nsi_type")
+class NsiType(
+    val code: String,
+    @Id
+    @Column(name = "nsi_type_id")
+    val id: Long
 )
 
 @Entity

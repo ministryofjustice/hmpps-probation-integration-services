@@ -49,6 +49,9 @@ internal class RepositoryExtensionMethodTests {
     @Mock
     lateinit var contactTypeRepository: ContactTypeRepository
 
+    @Mock
+    lateinit var createNsi: CreateNsi
+
     @InjectMocks
     lateinit var nsiService: NsiService
 

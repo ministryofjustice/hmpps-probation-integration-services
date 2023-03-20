@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Dataset.Code.NSI_OUTCOME
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Nsi
+import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiManager
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatusHistory
+import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiType
 
 interface NsiRepository : JpaRepository<Nsi, Long> {
     @EntityGraph(attributePaths = ["person", "status", "managers"])
@@ -20,6 +22,13 @@ fun NsiRepository.getByCrnAndExternalReference(crn: String, ref: String) =
         ?: throw NotFoundException("NSI with reference $ref for CRN $crn not found")
 
 interface NsiStatusHistoryRepository : JpaRepository<NsiStatusHistory, Long>
+
+interface NsiTypeRepository : JpaRepository<NsiType, Long> {
+    fun findByCode(code: String): NsiType?
+}
+
+fun NsiTypeRepository.getByCode(code: String) =
+    findByCode(code) ?: throw NotFoundException("NsiType", "code", code)
 
 interface NsiStatusRepository : JpaRepository<NsiStatus, Long> {
     fun findByCode(code: String): NsiStatus?
@@ -42,3 +51,5 @@ interface NsiOutcomeRepository : JpaRepository<NsiOutcome, Long> {
 
 fun NsiOutcomeRepository.nsiOutcome(code: String) =
     findByCode(code, NSI_OUTCOME.value) ?: throw NotFoundException("NsiOutcome", "code", code)
+
+interface NsiManagerRepository : JpaRepository<NsiManager, Long>

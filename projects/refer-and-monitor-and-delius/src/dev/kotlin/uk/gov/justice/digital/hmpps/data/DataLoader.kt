@@ -15,11 +15,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepositor
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementActionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Dataset
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiManager
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
@@ -30,6 +31,7 @@ class DataLoader(
     private val contactTypeRepository: ContactTypeRepository,
     private val contactOutcomeRepository: ContactOutcomeRepository,
     private val enforcementActionRepository: EnforcementActionRepository,
+    private val nsiTypeRepository: NsiTypeRepository,
     private val nsiStatusRepository: NsiStatusRepository,
     private val nsiOutcomeRepository: NsiOutcomeRepository,
     private val personRepository: PersonRepository,
@@ -47,6 +49,7 @@ class DataLoader(
         contactTypeRepository.saveAll(ContactGenerator.TYPES.values)
         contactOutcomeRepository.saveAll(ContactGenerator.OUTCOMES.values)
         enforcementActionRepository.saveAll(ContactGenerator.ENFORCEMENT_ACTIONS.values)
+        nsiTypeRepository.saveAll(NsiGenerator.TYPES.values)
         nsiStatusRepository.saveAll(listOf(NsiGenerator.INPROG_STATUS, NsiGenerator.COMP_STATUS))
 
         datasetRepository.save(NsiGenerator.NSI_OUTCOME_DS)
@@ -61,4 +64,3 @@ class DataLoader(
 }
 
 interface DatasetRepository : JpaRepository<Dataset, Long>
-interface NsiManagerRepository : JpaRepository<NsiManager, Long>
