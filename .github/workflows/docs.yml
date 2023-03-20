@@ -9,16 +9,51 @@ on:
   schedule:
     - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
   workflow_dispatch:
+    inputs:
+      projects:
+        description: Project
+        type: choice
+        required: true
+        options:
+          - 'All'
+          - '["approved-premises-and-oasys"]'
+          - '["approved-premises-and-delius"]'
+          - '["person-search-index-from-delius"]'
+          - '["pre-sentence-reports-to-delius"]'
+          - '["prison-case-notes-to-probation"]'
+          - '["prison-custody-status-to-delius"]'
+          - '["risk-assessment-scores-to-delius"]'
+          - '["tier-to-delius"]'
+          - '["workforce-allocations-to-delius"]'
+          - '["offender-events-and-delius"]'
+          - '["custody-key-dates-and-delius"]'
+          - '["make-recall-decisions-and-delius"]'
+          - '["unpaid-work-and-delius"]'
+          - '["manage-pom-cases-and-delius"]'
+          - '["refer-and-monitor-and-delius"]'
+          - '["create-and-vary-a-licence-and-delius"]'
+          # ^ add new projects here
+          # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
+          # See https://github.com/community/community/discussions/11795
+      deploy:
+        description: Deploy?
+        type: boolean
 
 jobs:
   get-projects:
     runs-on: ubuntu-latest
     outputs:
-      projects: ${{ steps.get-projects.outputs.projects }}
+      projects: ${{ steps.output.outputs.projects }}
     steps:
       - uses: actions/checkout@v3
-      - id: get-projects
-        run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_OUTPUT
+      - name: Get projects - all
+        if: github.event_name != 'workflow_dispatch' || inputs.projects == 'All'
+        run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_ENV
+      - name: Get projects - selected
+        if: github.event_name == 'workflow_dispatch' && inputs.projects != 'All'
+        run: echo 'projects=${{ inputs.projects }}' >> $GITHUB_ENV
+      - id: output
+        run: echo 'projects=${{ env.projects }}' >> $GITHUB_OUTPUT
 
   tech-docs-index:
     runs-on: ubuntu-latest
@@ -97,8 +132,15 @@ jobs:
         working-directory: projects/${{ matrix.project }}/tech-docs
 
       - name: Deploy
-        if: github.ref == 'refs/heads/main'
+        if: github.ref_name == 'main'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: projects/${{ matrix.project }}/tech-docs/build
           target-folder: tech-docs/projects/${{ matrix.project }}
+
+      - name: Branch deploy
+        if: github.ref_name != 'main' && github.event_name == 'workflow_dispatch' && inputs.deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: projects/${{ matrix.project }}/tech-docs/build
+          target-folder: tech-docs/drafts/${{ matrix.project }}
