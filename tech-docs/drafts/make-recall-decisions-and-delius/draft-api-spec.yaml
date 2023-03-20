@@ -1,0 +1,201 @@
+openapi: 3.0.1
+info:
+  title: Make Recall Decisions and Delius
+  description: A probation integration service to share data between the Making a Recall Decision API and the Delius probation case management system.
+  termsOfService: ""
+  version: "1"
+servers:
+  - url: https://make-recall-decisions-and-delius-dev.hmpps.service.justice.gov.uk
+paths:
+  /overview/{crn}:
+    get:
+      description: Retrieves Delius case and event/conviction information to support
+        the case summary overview
+      parameters:
+        - name: crn
+          in: path
+          description: The CRN (case reference number)
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: if the case exists
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CaseOverview'
+  /personal-details/{crn}:
+    get:
+      description: Retrieves personal details for a Delius case
+      parameters:
+        - name: crn
+          in: path
+          description: The CRN (case reference number)
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: if the case exists
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PersonalDetails'
+components:
+  schemas:
+    CaseOverview:
+      type: object
+      properties:
+        personalDetails:
+          $ref: '#/components/schemas/PersonalDetails'
+        communityManager:
+          $ref: '#/components/schemas/CommunityManager'
+        riskFlags:
+          type: array
+          description: List of type.description for active registrations
+          items:
+            type: string
+          example: ["MAPPA 1", "High risk of serious harm"]
+        lastReleaseDate:
+          type: string
+          format: date
+        lastRecallDate:
+          type: string
+          format: date
+        activeConvictions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+    Event:
+      type: object
+      properties:
+        number:
+          example: 4
+          type: string
+        description:
+          type: string
+          example: ORA Suspended Sentence Order
+        length:
+          type: number
+          example: 2
+        lengthUnits:
+          type: string
+          example: Months
+        mainOffence:
+          description: Main offence description
+          example: Burglary
+          type: string
+        additionalOffences:
+          description: List of additional offence descriptions
+          example: ["Assault"]
+          type: array
+          items:
+            type: string
+        isCustodial:
+          type: boolean
+        custodialStatusCode:
+          type: string
+          example: B
+        licenceExpiryDate:
+          type: string
+          format: date
+        sentenceExpiryDate:
+          type: string
+          format: date
+    CommunityManager:
+      type: object
+      description: Currently active offender_manager
+      properties:
+        staffCode:
+          example: N01A001
+          type: string
+        name:
+          $ref: '#/components/schemas/Name'
+        provider:
+          $ref: '#/components/schemas/Provider'
+        team:
+          $ref: '#/components/schemas/Team'
+    PersonalDetails:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        identifiers:
+          type: object
+          properties:
+            pncNumber:
+              type: string
+            croNumber:
+              type: string
+            nomsNumber:
+              type: string
+            bookingNumber:
+              description: Same as mostRecentPrisonerNumber in Community API, this comes from the custody.prisoner_number on the latest disposal
+              type: string
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+          example: Female
+        ethnicity:
+          type: string
+        primaryLanguage:
+          type: string
+        mainAddress:
+          $ref: '#/components/schemas/Address'
+    Address:
+      type: object
+      properties:
+        buildingName:
+          type: string
+        addressNumber:
+          type: string
+        streetName:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+        noFixedAbode:
+          type: boolean
+    Name:
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+    Provider:
+      type: object
+      properties:
+        code:
+          type: string
+          example: N01
+        name:
+          type: string
+          example: London
+    Team:
+      type: object
+      properties:
+        code:
+          type: string
+          example: N01T01
+        name:
+          type: string
+          example: Recall team
+        localAdminUnit:
+          type: string
+          description: The team.district.description in the database.  This was called localDeliveryUnit in Community API.
+          example: North London
+        telephone:
+          type: string
+          example: '0123456789'
+        email:
+          type: string
+          example: example@example.com
