@@ -64,7 +64,7 @@ internal class ReferralStartedIntegrationTest {
         makeRequest(person, referralId, r1)
         validateNsiAndContacts(person, r1)
 
-        // Duplicate the request to make sure results stay the same regardless of how many times the request is made
+        // Duplicate the request to make sure nsi is not recreated
         val r2 = ReferralStarted(
             referralId,
             ZonedDateTime.now(),
