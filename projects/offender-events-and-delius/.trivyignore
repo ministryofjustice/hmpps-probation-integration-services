@@ -1,0 +1,4 @@
+
+# Suppress - we don not process any untrusted YML content
+# By marcus-bcl
+CVE-2022-1471 exp:2023-04-03
