@@ -98,7 +98,7 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
-        <a href="./api-reference.html#example-inputid"><span>/example/{inputId}</span></a>
+        <a href="./api-reference.html#probation-case-crn-responsible-community-manager"><span>/probation-case/{crn}/responsible-community-manager</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -134,14 +134,14 @@
 
 
 
-<h2 id="example-inputid">/example/{inputId}</h2>
+<h2 id="probation-case-crn-responsible-community-manager">/probation-case/{crn}/responsible-community-manager</h2>
 
-<h3 id="example-inputid-get">get</h3>
-
-
+<h3 id="probation-case-crn-responsible-community-manager-get">get</h3>
 
 
-<h4 id="example-inputid-get-parameters">Parameters</h4>
+
+
+<h4 id="probation-case-crn-responsible-community-manager-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -149,7 +149,7 @@
 <tbody>
 
 <tr>
-<td>inputId</td>
+<td>crn</td>
 <td>path</td>
 <td>string</td>
 <td>true</td>
@@ -164,7 +164,7 @@
 
 
 
-<h4 id="example-inputid-get-responses">Responses</h4>
+<h4 id="probation-case-crn-responsible-community-manager-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -178,9 +178,36 @@
 
 
 
+<pre><code>{
+  "code": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "provider": {
+    "code": "string",
+    "description": "string"
+  },
+  "team": {
+    "code": "string",
+    "description": "string",
+    "district": {
+      "code": "string",
+      "description": "string",
+      "borough": {
+        "code": "string",
+        "description": "string"
+      }
+    }
+  },
+  "username": "string",
+  "email": "string"
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-manager'>Manager</a>
 </td>
 </tr>
 
@@ -192,6 +219,268 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-borough">Borough</h3>
+
+
+<table class='schema-borough'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-district">District</h3>
+
+
+<table class='schema-district'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>borough</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-borough'>Borough</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-manager">Manager</h3>
+
+
+<table class='schema-manager'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>provider</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+<tr>
+<td>username</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-name">Name</h3>
+
+
+<table class='schema-name'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-provider">Provider</h3>
+
+
+<table class='schema-provider'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-team">Team</h3>
+
+
+<table class='schema-team'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>district</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-district'>District</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 
 
             
