@@ -11,7 +11,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatu
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiType
 import uk.gov.justice.digital.hmpps.messaging.ReferralEndType
 import uk.gov.justice.digital.hmpps.service.ContractTypeNsiType
-import uk.gov.justice.digital.hmpps.set
 import java.time.ZonedDateTime
 
 object NsiGenerator {
@@ -27,7 +26,7 @@ object NsiGenerator {
         ContactGenerator.TYPES[ContactType.Code.COMPLETED.value]!!.id
     )
 
-    val END_PREMATURELY = generate(
+    var END_PREMATURELY = generate(
         TYPES.values.first(),
         externalReference = "urn:hmpps:interventions-referral:68df9f6c-3fcb-4ec6-8fcf-96551cd9b080"
     )
@@ -59,9 +58,11 @@ object NsiGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = NsiOutcome(code, description, id, NSI_OUTCOME_DS.id)
 
-    fun generateManager(nsi: Nsi): NsiManager {
-        val manager = NsiManager(nsi, 101, 102, 103)
-        nsi.set("managers", listOf(manager))
-        return manager
-    }
+    fun generateManager(nsi: Nsi, startDateTime: ZonedDateTime = ZonedDateTime.now().minusDays(7)) = NsiManager(
+        nsi,
+        ProviderGenerator.INTENDED_PROVIDER.id,
+        ProviderGenerator.INTENDED_TEAM.id,
+        ProviderGenerator.INTENDED_STAFF.id,
+        startDateTime
+    )
 }

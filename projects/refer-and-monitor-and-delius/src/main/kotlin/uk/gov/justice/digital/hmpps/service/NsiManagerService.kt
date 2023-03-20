@@ -16,12 +16,13 @@ class NsiManagerService(
     private val staffRepository: StaffRepository,
     private val nsiManagerRepository: NsiManagerRepository
 ) {
-    fun createManager(nsi: Nsi) = nsiManagerRepository.save(
+    fun createNewManager(nsi: Nsi) = nsiManagerRepository.save(
         NsiManager(
             nsi,
             nsi.intendedProviderId!!,
             teamRepository.getByCode(Team.INTENDED_TEAM_CODE).id,
-            staffRepository.getByCode(Staff.INTENDED_STAFF_CODE).id
+            staffRepository.getByCode(Staff.INTENDED_STAFF_CODE).id,
+            nsi.statusDate
         )
     )
 }

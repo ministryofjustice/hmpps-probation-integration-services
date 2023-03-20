@@ -58,7 +58,7 @@ class CreateNsi(
                 notes = rs.notes
             )
         )
-        val manager = nsiManagerService.createManager(nsi)
-        return nsi.withManager(manager)
+        val manager = nsiManagerService.createNewManager(nsi)
+        return nsiRepository.save(nsi.withManager(manager))
     }
 }
