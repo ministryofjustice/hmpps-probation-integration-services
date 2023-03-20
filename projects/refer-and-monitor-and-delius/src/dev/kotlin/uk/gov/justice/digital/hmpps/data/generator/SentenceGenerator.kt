@@ -22,5 +22,5 @@ object SentenceGenerator {
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Requirement(disposal.personId, mainCategory, disposal, active, softDeleted, id)
+    ) = Requirement(disposal.personId, mainCategory, disposal.id, active, softDeleted, id)
 }

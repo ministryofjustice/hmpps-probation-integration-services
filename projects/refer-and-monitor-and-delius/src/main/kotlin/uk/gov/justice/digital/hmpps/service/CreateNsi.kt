@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
@@ -29,12 +31,13 @@ class CreateNsi(
     private val nsiManagerService: NsiManagerService
 ) {
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun new(crn: String, rs: ReferralStarted): Nsi {
         val person = personRepository.getByCrn(crn)
         val sentence = disposalRepository.getByPersonIdAndEventId(person.id, rs.sentenceId)
         val req = requirementRepository.findForPersonAndEvent(
             person.id,
-            rs.sentenceId,
+            sentence.id,
             RequirementMainCategory.Code.REHAB_ACTIVITY_TYPE.value
         ).firstOrNull()
 
@@ -59,6 +62,7 @@ class CreateNsi(
             )
         )
         val manager = nsiManagerService.createNewManager(nsi)
-        return nsiRepository.save(nsi.withManager(manager))
+        nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn)
+        return nsi.withManager(manager)
     }
 }

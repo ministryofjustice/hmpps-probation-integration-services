@@ -9,14 +9,15 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
     @Query(
         """
             select r from Requirement r 
+            join fetch r.mainCategory
             where r.personId = :personId
-            and r.disposal.eventId = :eventId
+            and r.disposalId = :disposalId
             and r.mainCategory.code = :type
         """
     )
     fun findForPersonAndEvent(
         personId: Long,
-        eventId: Long,
+        disposalId: Long,
         type: String,
         pageable: Pageable = Pageable.ofSize(1)
     ): List<Requirement>

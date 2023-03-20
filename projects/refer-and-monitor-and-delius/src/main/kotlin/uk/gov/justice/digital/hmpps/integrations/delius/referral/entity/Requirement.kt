@@ -22,14 +22,13 @@ class Requirement(
     @JoinColumn(name = "rqmnt_type_main_category_id")
     val mainCategory: RequirementMainCategory,
 
-    @ManyToOne
-    @JoinColumn(name = "disposal_id", nullable = false)
-    val disposal: Disposal,
+    @Column(name = "disposal_id")
+    val disposalId: Long,
 
-    @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
-    @Column(updatable = false, columnDefinition = "NUMBER")
+    @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
 
     @Id
