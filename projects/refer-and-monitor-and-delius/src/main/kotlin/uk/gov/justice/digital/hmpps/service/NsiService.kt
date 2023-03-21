@@ -47,9 +47,10 @@ class NsiService(
                 contactRepository.save(contact(NSI_REFERRAL.value, referralDate))
                 contactRepository.save(statusChangeContact())
                 contactRepository.save(contact(NSI_COMMENCED.value, actualStartDate!!))
-                audit["offenderId"] = person.id
-                audit["nsiId"] = id
             }
+
+        audit["offenderId"] = nsi.person.id
+        audit["nsiId"] = nsi.id
 
         if (nsi.notes != rs.notes) {
             nsi.notes = rs.notes
