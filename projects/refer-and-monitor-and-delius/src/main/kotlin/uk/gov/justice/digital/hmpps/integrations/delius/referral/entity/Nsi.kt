@@ -23,16 +23,20 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import java.time.ZonedDateTime
 
-@EntityListeners(AuditingEntityListener::class)
 @Entity
 @Table(name = "nsi")
 @Where(clause = "soft_deleted = 0")
+@EntityListeners(AuditingEntityListener::class)
 @SequenceGenerator(name = "nsi_id_generator", sequenceName = "nsi_id_seq", allocationSize = 1)
 class Nsi(
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
+
+    @ManyToOne
+    @JoinColumn(name = "nsi_type_id")
+    var type: NsiType,
 
     @ManyToOne
     @JoinColumn(name = "nsi_status_id")
@@ -47,7 +51,7 @@ class Nsi(
 
     val referralDate: ZonedDateTime,
 
-    val actualStartDate: ZonedDateTime? = null,
+    var actualStartDate: ZonedDateTime? = null,
 
     var actualEndDate: ZonedDateTime? = null,
 
@@ -56,9 +60,12 @@ class Nsi(
 
     val externalReference: String? = null,
 
+    @Column(name = "intended_provider_id")
+    val intendedProviderId: Long? = null,
+
     @OneToMany(mappedBy = "nsi")
     @Where(clause = "active_flag = 1")
-    val managers: List<NsiManager> = listOf(),
+    private val managers: MutableList<NsiManager> = mutableListOf(),
 
     val eventId: Long? = null,
 
@@ -92,24 +99,52 @@ class Nsi(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 ) {
+    fun withManager(manager: NsiManager): Nsi {
+        managers.add(manager)
+        return this
+    }
+
     val manager
         get() = managers.first()
 }
 
-@Immutable
 @Entity
+@EntityListeners(AuditingEntityListener::class)
 @Table(name = "nsi_manager")
 @Where(clause = "soft_deleted = 0")
+@SequenceGenerator(name = "nsi_manager_id_generator", sequenceName = "nsi_manager_id_seq", allocationSize = 1)
 class NsiManager(
-
     @ManyToOne
     @JoinColumn(name = "nsi_id")
     val nsi: Nsi,
 
     @Column(name = "probation_area_id")
     val providerId: Long,
+
+    @Column(name = "team_id")
     val teamId: Long,
+
+    @Column(name = "staff_id")
     val staffId: Long,
+
+    @Column
+    val startDate: ZonedDateTime,
+
+    @Column
+    @CreatedDate
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column
+    @CreatedBy
+    var createdByUserId: Long = 0,
+
+    @Column
+    @LastModifiedDate
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column
+    @LastModifiedBy
+    var lastUpdatedUserId: Long = 0,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
@@ -117,13 +152,27 @@ class NsiManager(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
 
-    @Id
-    @Column(name = "nsi_manager_id")
-    val id: Long = 0,
+    @Column
+    val partitionAreaId: Long = 0,
 
     @Version
     @Column(name = "row_version")
-    val version: Long = 0
+    val version: Long = 0,
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nsi_manager_id_generator")
+    @Column(name = "nsi_manager_id")
+    val id: Long = 0
+)
+
+@Entity
+@Immutable
+@Table(name = "r_nsi_type")
+class NsiType(
+    val code: String,
+    @Id
+    @Column(name = "nsi_type_id")
+    val id: Long
 )
 
 @Entity

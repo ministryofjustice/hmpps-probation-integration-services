@@ -107,6 +107,8 @@ class ContactType(
     enum class Code(val value: String, val rar: Boolean = false) {
         CRSAPT("CRSAPT", true),
         CRSSAA("CRSSAA"),
+        NSI_REFERRAL("NREF"),
+        NSI_COMMENCED("NCOM"),
         NSI_TERMINATED("NTER"),
         IN_PROGRESS("C091"),
         COMPLETED("C092")

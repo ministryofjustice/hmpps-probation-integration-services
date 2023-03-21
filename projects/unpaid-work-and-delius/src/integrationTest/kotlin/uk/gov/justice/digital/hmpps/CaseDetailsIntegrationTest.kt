@@ -51,7 +51,7 @@ class CaseDetailsIntegrationTest {
             .andExpect(jsonPath("$.personalCircumstances[0].evidenced").value(PersonalCircumstanceGenerator.DEFAULT.evidenced))
             .andExpect(jsonPath("$.personalCircumstances[0].notes").value(PersonalCircumstanceGenerator.DEFAULT.notes))
             .andExpect(jsonPath("$.personalContacts[0].relationship").value(PersonalContactGenerator.DEFAULT.relationship))
-            .andExpect(jsonPath("$.personalContacts[0].relationshipType.code").value(PersonalContactGenerator.DEFAULT.relationshipType!!.code))
+            .andExpect(jsonPath("$.personalContacts[0].relationshipType.code").value(PersonalContactGenerator.DEFAULT.relationshipType.code))
             .andExpect(jsonPath("$.personalContacts[0].name.forename").value(PersonalContactGenerator.DEFAULT.name().forename))
             .andExpect(jsonPath("$.personalContacts[0].name.middleName").value(PersonalContactGenerator.DEFAULT.name().middleName))
             .andExpect(jsonPath("$.personalContacts[0].name.surname").value(PersonalContactGenerator.DEFAULT.name().surname))
