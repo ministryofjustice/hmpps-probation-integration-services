@@ -43,7 +43,12 @@ spring:
   security.oauth2.resourceserver.jwt.public-key-location: classpath:local-public-key.pub
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
-messaging.consumer.queue: message-queue
+messaging:
+  consumer.queue: message-queue
+  messages-of-interest: >
+    intervention.referral.ended,
+    intervention.session-appointment.session-feedback-submitted,
+    intervention.initial-assessment-appointment.session-feedback-submitted
 
 oauth2:
   client-id: refer-and-monitor-and-delius
