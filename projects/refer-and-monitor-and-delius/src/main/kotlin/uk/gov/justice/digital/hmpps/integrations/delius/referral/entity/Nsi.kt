@@ -53,8 +53,6 @@ class Nsi(
 
     var actualStartDate: ZonedDateTime? = null,
 
-    var actualEndDate: ZonedDateTime? = null,
-
     @Lob
     var notes: String? = null,
 
@@ -109,6 +107,12 @@ class Nsi(
 
     val manager
         get() = managers.first()
+
+    var actualEndDate: ZonedDateTime? = null
+        set(value) {
+            field = value
+            active = field == null
+        }
 }
 
 @Entity
