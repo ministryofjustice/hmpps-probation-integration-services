@@ -47,7 +47,7 @@ class NsiService(
                 contactRepository.save(contact(NSI_REFERRAL.value, referralDate))
                 contactRepository.save(statusChangeContact())
                 contactRepository.save(contact(NSI_COMMENCED.value, actualStartDate!!))
-                audit["offender_id"] = person.id
+                audit["offenderId"] = person.id
                 audit["nsiId"] = id
             }
 
@@ -61,9 +61,9 @@ class NsiService(
 
         if (nsi.status.code != NsiStatus.Code.IN_PROGRESS.value) {
             nsi.status = nsiStatusRepository.getByCode(NsiStatus.Code.IN_PROGRESS.value)
-        }
-        if (nsi.statusDate != rs.startedAt) {
             nsi.statusDate = rs.startedAt
+            statusHistoryRepository.save(nsi.statusHistory())
+            contactRepository.save(nsi.statusChangeContact())
         }
     }
 
@@ -73,7 +73,7 @@ class NsiService(
         val status = nsiStatusRepository.getByCode(END.value)
         val outcome = nsiOutcomeRepository.nsiOutcome(termination.endType.outcome)
 
-        it["offender_id"] = nsi.person.id
+        it["offenderId"] = nsi.person.id
         it["nsiId"] = nsi.id
 
         if (nsi.status.id != status.id) {
