@@ -72,6 +72,9 @@ class Nsi(
     @Column(name = "rqmnt_id")
     val requirementId: Long? = null,
 
+    @Column(columnDefinition = "number")
+    val pendingTransfer: Boolean = false,
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nsi_id_generator")
     @Column(name = "nsi_id")
