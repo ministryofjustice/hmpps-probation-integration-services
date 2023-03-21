@@ -143,4 +143,4 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: projects/${{ matrix.project }}/tech-docs/build
-          target-folder: tech-docs/drafts/${{ matrix.project }}
+          target-folder: tech-docs-drafts/${{ matrix.project }}

@@ -35,6 +35,7 @@ jobs:
           brew install git-filter-repo
           git-filter-repo \
             --path 'tech-docs' \
+            --path 'tech-doc-drafts' \
             --path 'schema-spy-report' \
             --path "playwright-report/test/main/$(date -d '-7 days' '+%Y-%m-%d')" \
             --path "playwright-report/test/main/$(date -d '-6 days' '+%Y-%m-%d')" \
