@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team.Com
 
 @Entity
 @Immutable
+@Table(name = "probation_area")
 class Provider(
     @Column(columnDefinition = "char(3)")
     val code: String,
