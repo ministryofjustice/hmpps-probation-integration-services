@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.service.NsiService
 @RestController
 @RequestMapping("probation-case/{crn}/referrals")
 class ReferralResource(private val nsiService: NsiService) {
-    @PreAuthorize("hasRole('RM_REFERRAL')")
+    @PreAuthorize("hasRole('CRS_REFERRAL')")
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun referralStarted(@PathVariable crn: String, @RequestBody referralStarted: ReferralStarted) {
