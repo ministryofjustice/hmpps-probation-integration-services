@@ -7,6 +7,7 @@ database:
       - contact
       - enforcement
       - nsi
+      - nsi_manager
       - nsi_status_history
 
   audit:
