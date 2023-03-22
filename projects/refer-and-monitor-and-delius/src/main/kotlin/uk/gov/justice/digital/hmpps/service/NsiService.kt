@@ -99,7 +99,6 @@ class NsiService(
         person,
         contactTypeRepository.getReferenceById(status.contactTypeId),
         eventId = eventId,
-        requirementId = requirementId,
         nsiId = id,
         date = statusDate,
         providerId = manager.providerId,
@@ -114,7 +113,6 @@ class NsiService(
         teamId = manager.teamId,
         staffId = manager.staffId,
         eventId = eventId,
-        requirementId = requirementId,
         nsiId = id,
         date = date
     )
@@ -126,7 +124,6 @@ class NsiService(
         teamId = manager.teamId,
         staffId = manager.staffId,
         eventId = eventId,
-        requirementId = requirementId,
         nsiId = id,
         date = statusDate,
         notes = "NSI Terminated with Outcome: ${outcome!!.description}"

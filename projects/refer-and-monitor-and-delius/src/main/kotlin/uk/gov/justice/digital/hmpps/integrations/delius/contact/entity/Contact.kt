@@ -58,9 +58,6 @@ class Contact(
 
     val eventId: Long? = null,
 
-    @Column(name = "rqmnt_id")
-    val requirementId: Long? = null,
-
     val nsiId: Long? = null,
 
     @Column(name = "probation_area_id")
