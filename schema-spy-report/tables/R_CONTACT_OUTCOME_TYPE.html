@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>R_CONTACT_OUTCOME_TYPE</h1><p><span id="recordNumber">213</span> rows</p><br />
+                    <h1>R_CONTACT_OUTCOME_TYPE</h1><p><span id="recordNumber">220</span> rows</p><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -130,6 +130,10 @@
                                             <tr>
                                                 <td title="R_CON_OUT_TYPE_CONTACT_TYPE.CONTACT_OUTCOME_TYPE_ID references R_CONTACT_OUTCOME_TYPE.CONTACT_OUTCOME_TYPE_ID via SYS_C0021233"><a href='R_CON_OUT_TYPE_CONTACT_TYPE.html'>R_CON_OUT_TYPE_CONTACT_TYPE</a><span class='relatedKey'>.CONTACT_OUTCOME_TYPE_ID</span></td>
                                                 <td class="constraint detail">SYS_C0021233<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="R_CONTACT_OUTCOME_UPW_REASON.CONTACT_OUTCOME_TYPE_ID references R_CONTACT_OUTCOME_TYPE.CONTACT_OUTCOME_TYPE_ID via XFK1CONTACT_OUTPUT_UPW_REASON"><a href='R_CONTACT_OUTCOME_UPW_REASON.html'>R_CONTACT_OUTCOME_UPW_REASON</a><span class='relatedKey'>.CONTACT_OUTCOME_TYPE_ID</span></td>
+                                                <td class="constraint detail">XFK1CONTACT_OUTPUT_UPW_REASON<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="R_CONTACT_TYPE_OUTCOME.CONTACT_OUTCOME_TYPE_ID references R_CONTACT_OUTCOME_TYPE.CONTACT_OUTCOME_TYPE_ID via SYS_C0021369"><a href='R_CONTACT_TYPE_OUTCOME.html'>R_CONTACT_TYPE_OUTCOME</a><span class='relatedKey'>.CONTACT_OUTCOME_TYPE_ID</span></td>
@@ -537,16 +541,24 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY_970250507</td>
-                                    <td>DRUG_ASSESSMENT IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
                                     <td>YES_OR_NO_ONLY_1754564151</td>
                                     <td>DRUG_TEST IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
+                                    <td>YES_OR_NO_ONLY_970250507</td>
+                                    <td>DRUG_ASSESSMENT IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
                                     <td>YES_OR_NO_427</td>
                                     <td>OUTCOME_COMPLIANT_ACCEPTABLE IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_1535481661</td>
+                                    <td>TEST_PASS IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_1703715133</td>
+                                    <td>TEST_FAIL IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_ONLY_590806017</td>
@@ -555,14 +567,6 @@
                                 <tr>
                                     <td>YES_OR_NO_ONLY_878130661</td>
                                     <td>DRUG_REFERRAL IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY_1703715133</td>
-                                    <td>TEST_FAIL IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY_1535481661</td>
-                                    <td>TEST_PASS IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_428</td>
