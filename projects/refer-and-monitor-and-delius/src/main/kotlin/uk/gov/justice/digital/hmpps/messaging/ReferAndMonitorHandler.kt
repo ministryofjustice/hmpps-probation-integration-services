@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.messaging
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -13,8 +12,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 class ReferAndMonitorHandler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
-    eventHandlers: List<DomainEventHandler>,
-    @Value("\${messaging.messages-of-interest}") private val messagesOfInterest: List<String>
+    eventHandlers: List<DomainEventHandler>
 ) : NotificationHandler<HmppsDomainEvent> {
     private val eventHandlers: Map<DomainEventType, (HmppsDomainEvent) -> EventProcessingResult> =
         eventHandlers.flatMap { it.handledEvents.entries }.associate { it.key to it.value }
@@ -22,7 +20,6 @@ class ReferAndMonitorHandler(
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         if (notification.message.detailUrl == null) throw IllegalArgumentException("Detail Url Missing")
         val event = DomainEventType.of(notification.eventType ?: notification.message.eventType)
-        if (event.name !in messagesOfInterest) return
         when (val res = eventHandlers[event]?.invoke(notification.message)) {
             is Success -> telemetryService.trackEvent(
                 res.eventType::class.simpleName!!,

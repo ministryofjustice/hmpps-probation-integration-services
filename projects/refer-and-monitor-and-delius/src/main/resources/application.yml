@@ -28,9 +28,6 @@ spring:
 
 delius.db.username: ReferAndMonitorAndDelius # Should match value in [deploy/database/access.yml].
 
-messaging:
-  messages-of-interest: ""
-
 management.endpoints.web:
   base-path: /
   exposure.include: [ "health", "info" ]
@@ -46,12 +43,7 @@ spring:
   security.oauth2.resourceserver.jwt.public-key-location: classpath:local-public-key.pub
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
-messaging:
-  consumer.queue: message-queue
-  messages-of-interest: >
-    intervention.referral.ended,
-    intervention.session-appointment.session-feedback-submitted,
-    intervention.initial-assessment-appointment.session-feedback-submitted
+messaging.consumer.queue: message-queue
 
 oauth2:
   client-id: refer-and-monitor-and-delius
