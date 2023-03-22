@@ -104,7 +104,7 @@ class NsiService(
                 termination.eventId,
                 ContractTypeNsiType.MAPPING.values.toSet()
             ).filter {
-                it.referralDate.truncatedTo(ChronoUnit.HOURS).withZoneSameInstant(EuropeLondon) == termination.startDate.truncatedTo(ChronoUnit.HOURS)
+                it.referralDate.truncatedTo(ChronoUnit.DAYS).withZoneSameInstant(EuropeLondon) == termination.startDate.truncatedTo(ChronoUnit.DAYS)
             }
             if (nsis.size == 1) nsi = nsis[0]
         }
