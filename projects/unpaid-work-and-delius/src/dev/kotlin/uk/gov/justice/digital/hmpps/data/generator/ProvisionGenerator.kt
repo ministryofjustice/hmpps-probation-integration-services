@@ -11,7 +11,6 @@ object ProvisionGenerator {
         id,
         CaseGenerator.DEFAULT,
         ReferenceDataGenerator.HEARING_PROVISION,
-        ReferenceDataGenerator.HEARING_PROVISION_CATEGORY,
         LocalDate.now().minusMonths(5)
     )
 }

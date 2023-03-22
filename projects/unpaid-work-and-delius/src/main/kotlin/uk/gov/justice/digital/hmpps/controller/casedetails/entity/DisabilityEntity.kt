@@ -28,10 +28,6 @@ class DisabilityEntity(
     @JoinColumn(name = "disability_type_id", updatable = false)
     val type: ReferenceData,
 
-    @ManyToOne
-    @JoinColumn(name = "disability_condition_id", updatable = false)
-    val condition: ReferenceData? = null,
-
     @Column(name = "notes", columnDefinition = "clob")
     val notes: String,
 

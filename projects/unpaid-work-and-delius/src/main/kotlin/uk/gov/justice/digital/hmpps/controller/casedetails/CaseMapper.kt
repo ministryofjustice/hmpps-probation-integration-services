@@ -80,15 +80,13 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetai
     val disabilities = case.disabilities.map { d ->
         Disability(
             Type(d.type.code, d.type.description),
-            d.condition?.let { Type(d.condition.code, d.condition.description) },
             d.notes
         )
     }
 
     val provisions = case.provisions.map { p ->
         Provision(
-            Type(p.type.code, p.type.description),
-            p.category?.let { Type(p.category.code, p.category.description) }
+            Type(p.type.code, p.type.description)
         )
     }
 
