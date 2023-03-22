@@ -96,10 +96,12 @@ class DataLoader(
                 DatasetGenerator.GENDER,
                 DatasetGenerator.ETHNICITY,
                 DatasetGenerator.DISABILITY,
+                DatasetGenerator.DISABILITY_CONDITION,
                 DatasetGenerator.LANGUAGE,
                 DatasetGenerator.REGISTER_LEVEL,
                 DatasetGenerator.REGISTER_CATEGORY,
                 DatasetGenerator.DISABILITY_PROVISION,
+                DatasetGenerator.DISABILITY_PROVISION_CATEGORY,
                 DatasetGenerator.RELATIONSHIP
             )
         )
@@ -109,10 +111,12 @@ class DataLoader(
                 ReferenceDataGenerator.GENDER_MALE,
                 ReferenceDataGenerator.ETHNICITY_INDIAN,
                 ReferenceDataGenerator.DISABILITY_HEARING,
+                ReferenceDataGenerator.DISABILITY_HEARING_CONDITION,
                 ReferenceDataGenerator.LANGUAGE_ENGLISH,
                 ReferenceDataGenerator.MAPPA_LEVEL_1,
                 ReferenceDataGenerator.MAPPA_CATEGORY_2,
                 ReferenceDataGenerator.HEARING_PROVISION,
+                ReferenceDataGenerator.HEARING_PROVISION_CATEGORY,
                 ReferenceDataGenerator.DOCTOR_RELATIONSHIP
 
             )
