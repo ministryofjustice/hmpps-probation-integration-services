@@ -27,7 +27,6 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
         where p.crn = :crn
         and nsi.eventId = :eventId
         and t.code in :types
-        and nsi.outcome is null 
         and pr.code = 'CRS'
         """
     )
