@@ -21,16 +21,12 @@ class ProvisionEntity(
     val id: Long,
 
     @ManyToOne
-    @JoinColumn(name = "disability_id", nullable = false)
-    val disability: DisabilityEntity,
+    @JoinColumn(name = "offender_id", nullable = false)
+    val case: CaseEntity,
 
     @ManyToOne
     @JoinColumn(name = "provision_type_id", updatable = false)
     val type: ReferenceData,
-
-    @ManyToOne
-    @JoinColumn(name = "provision_category_id", updatable = false)
-    val category: ReferenceData? = null,
 
     @Column(name = "start_date")
     val start: LocalDate? = null,

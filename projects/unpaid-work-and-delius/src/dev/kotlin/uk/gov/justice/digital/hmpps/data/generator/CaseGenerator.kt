@@ -25,6 +25,7 @@ object CaseGenerator {
             personalContacts = listOf(),
             aliases = listOf(),
             disabilities = listOf(),
+            provisions = listOf(),
             ethnicity = ReferenceDataGenerator.ETHNICITY_INDIAN,
             primaryLanguage = ReferenceDataGenerator.LANGUAGE_ENGLISH,
             registrations = listOf()

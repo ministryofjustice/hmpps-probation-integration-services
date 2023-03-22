@@ -2,11 +2,9 @@ package uk.gov.justice.digital.hmpps.controller.casedetails.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
@@ -30,10 +28,6 @@ class DisabilityEntity(
     @JoinColumn(name = "disability_type_id", updatable = false)
     val type: ReferenceData,
 
-    @ManyToOne
-    @JoinColumn(name = "disability_condition_id", updatable = false)
-    val condition: ReferenceData? = null,
-
     @Column(name = "notes", columnDefinition = "clob")
     val notes: String,
 
@@ -44,8 +38,5 @@ class DisabilityEntity(
     val endDate: LocalDate? = null,
 
     @Column(updatable = false, columnDefinition = "number")
-    val softDeleted: Boolean = false,
-
-    @OneToMany(mappedBy = "disability", fetch = FetchType.EAGER)
-    val provisions: List<ProvisionEntity>? = listOf()
+    val softDeleted: Boolean = false
 )
