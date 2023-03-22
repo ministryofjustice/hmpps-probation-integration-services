@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Dataset
@@ -34,7 +35,7 @@ object NsiGenerator {
     var FUZZY_SEARCH = generate(
         TYPES.values.toList()[3],
         PersonGenerator.FUZZY_SEARCH,
-        referralDate = ZonedDateTime.parse("2023-02-14T11:31:49.503Z"),
+        referralDate = ZonedDateTime.parse("2023-02-14T11:31:49.503Z").withZoneSameInstant(EuropeLondon),
         eventId = 97
     )
 
