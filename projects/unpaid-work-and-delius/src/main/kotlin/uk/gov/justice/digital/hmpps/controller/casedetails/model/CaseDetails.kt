@@ -24,6 +24,7 @@ data class CaseDetails(
     val mainAddress: Address?,
     val ethnicity: String?,
     val disabilities: List<Disability>? = listOf(),
+    val provisions: List<Provision>?,
     val language: Language?,
     val personalCircumstances: List<PersonalCircumstance>? = listOf(),
     val personalContacts: List<PersonalContact>? = listOf(),
@@ -46,7 +47,6 @@ data class PhoneNumber(
 data class Disability(
     val type: Type,
     val condition: Type?,
-    val provisions: List<Provision>?,
     val notes: String
 )
 

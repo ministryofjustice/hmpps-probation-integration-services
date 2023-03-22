@@ -9,7 +9,7 @@ object ProvisionGenerator {
 
     fun generate(id: Long = IdGenerator.getAndIncrement()) = ProvisionEntity(
         id,
-        DisabilityGenerator.DEFAULT,
+        CaseGenerator.DEFAULT,
         ReferenceDataGenerator.HEARING_PROVISION,
         ReferenceDataGenerator.HEARING_PROVISION_CATEGORY,
         LocalDate.now().minusMonths(5)
