@@ -25,6 +25,19 @@
         "status": 200,
         "bodyFileName": "referral-prematurely-ended.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/sent-referral/71df9f6c-3fcb-4ec6-8fcf-96551cd9b080"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "fuzzy-search-referral-ended.json"
+      }
     }
   ]
 }

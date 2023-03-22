@@ -96,6 +96,10 @@ class DataLoader(
 
         disposalRepository.save(SentenceGenerator.SENTENCE_WITHOUT_NSI)
         requirementRepository.save(SentenceGenerator.generateRequirement(SentenceGenerator.SENTENCE_WITHOUT_NSI))
+
+        personRepository.save(PersonGenerator.FUZZY_SEARCH)
+        nsiRepository.save(NsiGenerator.FUZZY_SEARCH)
+        nsiManagerRepository.save(NsiGenerator.generateManager(NsiGenerator.FUZZY_SEARCH))
     }
 }
 

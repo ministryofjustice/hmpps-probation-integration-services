@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Dataset
@@ -31,20 +32,31 @@ object NsiGenerator {
         externalReference = "urn:hmpps:interventions-referral:68df9f6c-3fcb-4ec6-8fcf-96551cd9b080"
     )
 
+    var FUZZY_SEARCH = generate(
+        TYPES.values.toList()[3],
+        PersonGenerator.FUZZY_SEARCH,
+        referralDate = ZonedDateTime.parse("2023-02-14T11:31:49.503Z").withZoneSameInstant(EuropeLondon),
+        eventId = 97
+    )
+
     fun generate(
         type: NsiType,
         person: Person = PersonGenerator.DEFAULT,
         status: NsiStatus = INPROG_STATUS,
         statusDate: ZonedDateTime = ZonedDateTime.now().minusDays(7),
         referralDate: ZonedDateTime = ZonedDateTime.now().minusDays(21),
-        externalReference: String? = null
+        externalReference: String? = null,
+        eventId: Long? = null,
+        providerId: Long = ProviderGenerator.INTENDED_PROVIDER.id
     ) = Nsi(
         person,
         type,
         status,
         statusDate = statusDate,
         referralDate = referralDate,
-        externalReference = externalReference
+        externalReference = externalReference,
+        eventId = eventId,
+        intendedProviderId = providerId
     )
 
     fun generateType(code: String, id: Long = IdGenerator.getAndIncrement()) = NsiType(code, id)
