@@ -1,0 +1,1877 @@
+<!doctype html>
+<html lang="en" class="govuk-template no-js">
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <title>API Reference - HMPPS Make Recall Decisions And Delius</title>
+
+    <link href="stylesheets/manifest.css" rel="stylesheet" />
+
+    <link rel="canonical" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius/api-reference.html">
+
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:domain" content="ministryofjustice.github.io" />
+      <meta name="twitter:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius/images/govuk-large.png" />
+      <meta name="twitter:title" content="API Reference - HMPPS Make Recall Decisions And Delius" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius/api-reference.html" />
+
+      <meta property="og:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius/images/govuk-large.png" />
+      <meta property="og:site_name" content="HMPPS Make Recall Decisions And Delius" />
+      <meta property="og:title" content="API Reference" />
+      <meta property="og:type" content="object" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius/api-reference.html" />
+
+    
+  </head>
+
+  <body class="govuk-template__body">
+    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+
+    <div class="app-pane">
+      <div class="app-pane__header toc-open-disabled">
+        <a href="#content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+        <header class="govuk-header app-header" role="banner" data-module="govuk-header">
+  <div class="govuk-header__container govuk-header__container--full-width">
+    <div class="govuk-header__logo">
+      <a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius" class="govuk-header__link govuk-header__link--homepage">
+        <span class="govuk-header__product-name">
+          HMPPS Make Recall Decisions And Delius
+        </span>
+      </a>
+    </div>
+    <div class="govuk-header__content">
+      <nav class="govuk-header__navigation govuk-header__navigation--end" aria-label="Menu">
+        <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide menu">Menu</button>
+        <ul id="navigation" class="govuk-header__navigation-list">
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs">Home</a>
+            </li>
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://github.com/ministryofjustice/hmpps-probation-integration-services#readme">GitHub</a>
+            </li>
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://mojdt.slack.com/archives/C02HQ4M2YQN">Slack</a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+      </div>
+
+        <div id="toc-heading" class="toc-show fixedsticky">
+          <button type="button" class="toc-show__label js-toc-show" aria-controls="toc">
+            Table of contents <span class="toc-show__icon"></span>
+          </button>
+        </div>
+
+      <div class="app-pane__body" data-module="in-page-navigation">
+          <div class="app-pane__toc">
+            <div class="toc" data-module="table-of-contents" tabindex="-1" aria-label="Table of contents" role="dialog">
+              <div class="search" data-module="search" data-path-to-site-root="./">
+  <form action="https://www.google.co.uk/search" method="get" role="search" class="search__form govuk-!-margin-bottom-4">
+    <input type="hidden" name="as_sitesearch" value="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius"/>
+    <label class="govuk-label search__label" for="search" aria-hidden="true">
+      Search (via Google)
+    </label>
+    <input
+      type="text"
+      id="search" name="q"
+      class="govuk-input govuk-!-margin-bottom-0 search__input"
+      aria-controls="search-results"
+      placeholder="Search">
+    <button type="submit" class="search__button">Search</button>
+  </form>
+</div>
+
+              <button type="button" class="toc__close js-toc-close" aria-controls="toc" aria-label="Hide table of contents"></button>
+              <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
+                      <ul>
+  <li>
+    <a href="./index.html"><span>make-recall-decisions-and-delius</span></a>
+  </li>
+  <li>
+    <a href="./api-reference.html"><span>API Reference v1</span></a>
+    <ul>
+      <li>
+        <a href="./api-reference.html#servers"><span>Servers</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#personal-details-crn"><span>/personal-details/{crn}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#overview-crn"><span>/overview/{crn}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#mappa-and-rosh-history-crn"><span>/mappa-and-rosh-history/{crn}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#contact-history-crn"><span>/contact-history/{crn}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#document-crn-id"><span>/document/{crn}/{id}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#licence-conditions-crn"><span>/licence-conditions/{crn}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#schemas"><span>Schemas</span></a>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+              </nav>
+            </div>
+          </div>
+
+        <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
+          <main id="content" class="technical-documentation" data-module="anchored-headings">
+            <header id="api" class="anchored-heading govuk-heading-xl" style="padding-top: 30px">
+    <a href="#api" class="anchored-heading__icon" aria-hidden="true" tabindex="-1"></a>
+    API Reference <strong class="govuk-tag govuk-tag--blue">DRAFT</strong>
+</header>
+
+<style>.technical-documentation > h1 { display: none !important }</style>
+
+<blockquote>
+<p>You can also view this document in the <a href="https://editor.swagger.io/?url=https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/PI-577-mrd-api/projects/make-recall-decisions-and-delius/tech-docs/source/draft-api-spec.yaml">Swagger Editor</a>.</p>
+</blockquote>
+
+<hr>
+<h1 id="api-reference">API Reference v1</h1>
+<p>A probation integration service to share data between the Making a Recall Decision API and the Delius probation case management system.</p>
+
+
+
+
+  <h2 id="servers">Servers</h2>
+  <div id="server-list">
+    
+    
+    <p><strong><p>dev</p>
+</strong></p>
+    
+    <a href="https://make-recall-decisions-and-delius-dev.hmpps.service.justice.gov.uk">https://make-recall-decisions-and-delius-dev.hmpps.service.justice.gov.uk</a>
+  
+    
+    <p><strong><p>preprod</p>
+</strong></p>
+    
+    <a href="https://make-recall-decisions-and-delius-preprod.hmpps.service.justice.gov.uk">https://make-recall-decisions-and-delius-preprod.hmpps.service.justice.gov.uk</a>
+  
+    
+    <p><strong><p>prod</p>
+</strong></p>
+    
+    <a href="https://make-recall-decisions-and-delius.hmpps.service.justice.gov.uk">https://make-recall-decisions-and-delius.hmpps.service.justice.gov.uk</a>
+  
+  </div>
+
+
+
+<h2 id="personal-details-crn">/personal-details/{crn}</h2>
+
+<h3 id="personal-details-crn-get">get</h3>
+
+  <p><em>Personal details e.g. name, date of birth, address.</em></p>
+
+
+
+
+<h4 id="personal-details-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td><p>The CRN (case reference number)</p>
+
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="personal-details-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>if the case exists</p>
+
+
+
+<pre><code>{
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "identifiers": {
+    "pncNumber": "string",
+    "croNumber": "string",
+    "nomsNumber": "string",
+    "bookingNumber": "string"
+  },
+  "dateOfBirth": "string",
+  "gender": "Female",
+  "ethnicity": "string",
+  "primaryLanguage": "string",
+  "mainAddress": {
+    "buildingName": "string",
+    "addressNumber": "string",
+    "streetName": "string",
+    "town": "string",
+    "county": "string",
+    "postcode": "string",
+    "noFixedAbode": "boolean"
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personaldetails'>PersonalDetails</a>
+</td>
+</tr>
+
+<tr>
+<td>404</td>
+<td>
+<p>if the case does not exist, has been soft-deleted, or merged</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="overview-crn">/overview/{crn}</h2>
+
+<h3 id="overview-crn-get">get</h3>
+
+  <p><em>Delius case overview e.g. active events/convictions, register flags.</em></p>
+
+
+
+
+<h4 id="overview-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td><p>The CRN (case reference number)</p>
+
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="overview-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>if the case exists</p>
+
+
+
+<pre><code>{
+  "personalDetails": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "identifiers": {
+      "pncNumber": "string",
+      "croNumber": "string",
+      "nomsNumber": "string",
+      "bookingNumber": "string"
+    },
+    "dateOfBirth": "string",
+    "gender": "Female",
+    "ethnicity": "string",
+    "primaryLanguage": "string",
+    "mainAddress": {
+      "buildingName": "string",
+      "addressNumber": "string",
+      "streetName": "string",
+      "town": "string",
+      "county": "string",
+      "postcode": "string",
+      "noFixedAbode": "boolean"
+    }
+  },
+  "communityManager": {
+    "staffCode": "N01A001",
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "provider": {
+      "code": "N01",
+      "name": "London"
+    },
+    "team": {
+      "code": "N01T01",
+      "name": "Recall team",
+      "localAdminUnit": "North London",
+      "telephone": "0123456789",
+      "email": "example@example.com"
+    }
+  },
+  "registerFlags": [
+    {
+    }
+  ],
+  "lastReleaseDate": "string",
+  "lastRecallDate": "string",
+  "activeConvictions": [
+    {
+      "number": 4,
+      "description": "ORA Suspended Sentence Order",
+      "length": 2,
+      "lengthUnits": "Months",
+      "mainOffence": "Burglary",
+      "additionalOffences": [
+        {
+        }
+      ],
+      "isCustodial": "boolean",
+      "custodialStatusCode": "B",
+      "licenceExpiryDate": "string",
+      "sentenceExpiryDate": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-caseoverview'>CaseOverview</a>
+</td>
+</tr>
+
+<tr>
+<td>404</td>
+<td>
+<p>if the case does not exist, has been soft-deleted, or merged</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="mappa-and-rosh-history-crn">/mappa-and-rosh-history/{crn}</h2>
+
+<h3 id="mappa-and-rosh-history-crn-get">get</h3>
+
+  <p><em>Current MAPPA and historical RoSH registrations</em></p>
+
+
+  <p><p>This is intended to populate the MAPPA (Multi-agency public protection arrangements) and RoSH (Risk of Serious Harm) widgets. <p>Note that risk assessment information is generally held in OASys, and this endpoint only surfaces supplementary Delius registration/register details.</p>
+
+
+
+
+<h4 id="mappa-and-rosh-history-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td><p>The CRN (case reference number)</p>
+
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="mappa-and-rosh-history-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>if the case exists</p>
+
+
+
+<pre><code>{
+  "personalDetails": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "identifiers": {
+      "pncNumber": "string",
+      "croNumber": "string",
+      "nomsNumber": "string",
+      "bookingNumber": "string"
+    },
+    "dateOfBirth": "string",
+    "gender": "Female",
+    "ethnicity": "string",
+    "primaryLanguage": "string",
+    "mainAddress": {
+      "buildingName": "string",
+      "addressNumber": "string",
+      "streetName": "string",
+      "town": "string",
+      "county": "string",
+      "postcode": "string",
+      "noFixedAbode": "boolean"
+    }
+  },
+  "mappa": {
+    "category": 2,
+    "level": 3,
+    "startDate": "string"
+  },
+  "roshHistory": [
+    {
+      "active": true,
+      "level": "string",
+      "notes": "string",
+      "startDate": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-mappaandroshhistory'>MappaAndRoshHistory</a>
+</td>
+</tr>
+
+<tr>
+<td>404</td>
+<td>
+<p>if the case does not exist, has been soft-deleted, or merged</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="contact-history-crn">/contact-history/{crn}</h2>
+
+<h3 id="contact-history-crn-get">get</h3>
+
+  <p><em>Contact history</em></p>
+
+
+  <p>Returns matching historical records from the Delius contact log, including linked documents, and a summary showing the total number of contacts on the case grouped by type.</p>
+
+
+
+
+<h4 id="contact-history-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td><p>The CRN (case reference number)</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td>query</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td><p>Search for contacts that contain the provided text</p>
+
+<blockquote>
+<p>If we decide to get this information from the database, then this will be a simple substring match on the notes field. However, we could potentially switch to using the contact search service when it&rsquo;s ready, which would improve the performance and quality of results.</p>
+</blockquote>
+
+
+</td>
+</tr>
+
+<tr>
+<td>from</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td><p>Return only contacts that start after this date</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td>to</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td><p>Return only contacts that start before this date. If provided, this value must be on or before the current date.</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>query</td>
+<td>array</td>
+<td>false</td>
+<td><p>Filter on contact type codes</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td>includeSystemGenerated</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td><p>Include (true) or exclude (false) any contact types that are system-generated</p>
+
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="contact-history-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>if the case exists</p>
+
+
+
+<pre><code>{
+  "personalDetails": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "identifiers": {
+      "pncNumber": "string",
+      "croNumber": "string",
+      "nomsNumber": "string",
+      "bookingNumber": "string"
+    },
+    "dateOfBirth": "string",
+    "gender": "Female",
+    "ethnicity": "string",
+    "primaryLanguage": "string",
+    "mainAddress": {
+      "buildingName": "string",
+      "addressNumber": "string",
+      "streetName": "string",
+      "town": "string",
+      "county": "string",
+      "postcode": "string",
+      "noFixedAbode": "boolean"
+    }
+  },
+  "contacts": [
+    {
+      "description": "Initial appointment at Durham office",
+      "documents": [
+        {
+          "id": "number",
+          "name": "string"
+        }
+      ],
+      "enforcementAction": "Refer to manager",
+      "notes": "Missed appointment with Joe Bloggs",
+      "outcome": "Failed to attend",
+      "sensitive": "boolean",
+      "startDateTime": "string",
+      "type": {
+        "code": "COAI",
+        "description": "Initial appointment in office"
+      }
+    }
+  ],
+  "summary": {
+    "types": [
+      {
+        "code": "COAI",
+        "description": "Initial appointment in office",
+        "total": 1
+      }
+    ],
+    "hits": 1,
+    "total": 123
+  }
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>404</td>
+<td>
+<p>if the case does not exist, has been soft-deleted, or merged</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="document-crn-id">/document/{crn}/{id}</h2>
+
+<h3 id="document-crn-id-get">get</h3>
+
+  <p><em>Download document content</em></p>
+
+
+
+
+<h4 id="document-crn-id-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td><p>The CRN (case reference number)</p>
+
+
+</td>
+</tr>
+
+<tr>
+<td>id</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td><p>The Delius document id</p>
+
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="document-crn-id-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>if the document exists and it belongs to the case</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>404</td>
+<td>
+<p>if the document does not exist</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="licence-conditions-crn">/licence-conditions/{crn}</h2>
+
+<h3 id="licence-conditions-crn-get">get</h3>
+
+  <p><em>Active events/convictions, with licence conditions</em></p>
+
+
+  <p>Only returns active licence conditions that are associated to active events/convictions. Licence documents are not returned, as they appear to be unused in the MRD UI - <a href="https://github.com/search?q=repo%3Aministryofjustice%2Fmake-recall-decision-ui%20licenceDocuments&type=code">https://github.com/search?q=repo%3Aministryofjustice%2Fmake-recall-decision-ui%20licenceDocuments&amp;type=code</a>.</p>
+
+
+
+
+<h4 id="licence-conditions-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td><p>The CRN (case reference number)</p>
+
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="licence-conditions-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>if the case exists</p>
+
+
+
+<pre><code>{
+  "personalDetails": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "identifiers": {
+      "pncNumber": "string",
+      "croNumber": "string",
+      "nomsNumber": "string",
+      "bookingNumber": "string"
+    },
+    "dateOfBirth": "string",
+    "gender": "Female",
+    "ethnicity": "string",
+    "primaryLanguage": "string",
+    "mainAddress": {
+      "buildingName": "string",
+      "addressNumber": "string",
+      "streetName": "string",
+      "town": "string",
+      "county": "string",
+      "postcode": "string",
+      "noFixedAbode": "boolean"
+    }
+  },
+  "activeConvictions": [
+    {
+      "number": 4,
+      "description": "ORA Suspended Sentence Order",
+      "length": 2,
+      "lengthUnits": "Months",
+      "mainOffence": "Burglary",
+      "additionalOffences": [
+        {
+        }
+      ],
+      "isCustodial": "boolean",
+      "custodialStatusCode": "B",
+      "licenceExpiryDate": "string",
+      "sentenceExpiryDate": "string",
+      "licenceConditions": [
+        {
+          "mainCategory": "Freedom of movement",
+          "subCategory": "Police escort",
+          "notes": "string"
+        }
+      ]
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>404</td>
+<td>
+<p>if the case does not exist, has been soft-deleted, or merged</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+
+<h2 id="schemas">Schemas</h2>
+<h3 id="schema-address">Address</h3>
+
+
+<table class='schema-address'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>buildingName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>addressNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>streetName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>town</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>county</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>noFixedAbode</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-caseoverview">CaseOverview</h3>
+
+
+<table class='schema-caseoverview'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personalDetails</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-personaldetails'>PersonalDetails</a>
+</td>
+</tr>
+
+<tr>
+<td>communityManager</td>
+<td>object</td>
+<td>false</td>
+<td><p>Currently active offender_manager</p>
+</td>
+<td>
+  <a href='#schema-communitymanager'>CommunityManager</a>
+</td>
+</tr>
+
+<tr>
+<td>registerFlags</td>
+<td>array</td>
+<td>false</td>
+<td><p>List of type.description for active registrations</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastReleaseDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastRecallDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>activeConvictions</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-event'>Event</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-communitymanager">CommunityManager</h3>
+<p>Currently active offender_manager</p>
+
+
+<table class='schema-communitymanager'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>staffCode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>provider</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-contact">Contact</h3>
+
+
+<table class='schema-contact'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>documents</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-document'>Document</a>
+</td>
+</tr>
+
+<tr>
+<td>enforcementAction</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>outcome</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sensitive</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDateTime</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-document">Document</h3>
+
+
+<table class='schema-document'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-event">Event</h3>
+
+
+<table class='schema-event'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>number</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lengthUnits</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>string</td>
+<td>false</td>
+<td><p>Main offence description</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>additionalOffences</td>
+<td>array</td>
+<td>false</td>
+<td><p>List of additional offence descriptions</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isCustodial</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>custodialStatusCode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>licenceExpiryDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sentenceExpiryDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-eventwithlicenceconditions">EventWithLicenceConditions</h3>
+
+
+<table class='schema-eventwithlicenceconditions'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>number</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lengthUnits</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>string</td>
+<td>false</td>
+<td><p>Main offence description</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>additionalOffences</td>
+<td>array</td>
+<td>false</td>
+<td><p>List of additional offence descriptions</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isCustodial</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>custodialStatusCode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>licenceExpiryDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sentenceExpiryDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>licenceConditions</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-licencecondition'>LicenceCondition</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-licencecondition">LicenceCondition</h3>
+
+
+<table class='schema-licencecondition'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>mainCategory</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>subCategory</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-mappaandroshhistory">MappaAndRoshHistory</h3>
+
+
+<table class='schema-mappaandroshhistory'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personalDetails</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-personaldetails'>PersonalDetails</a>
+</td>
+</tr>
+
+<tr>
+<td>mappa</td>
+<td>object</td>
+<td>false</td>
+<td><p>The first active registration of register type <code>MAPP</code></p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>roshHistory</td>
+<td>array</td>
+<td>false</td>
+<td><p>Any active or inactive registrations of register type <code>1</code> (RoSH) and level <code>RHRH</code> (High) or <code>RVHR</code> (Very high).</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-name">Name</h3>
+
+
+<table class='schema-name'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personaldetails">PersonalDetails</h3>
+
+
+<table class='schema-personaldetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>identifiers</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>gender</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ethnicity</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>primaryLanguage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainAddress</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-address'>Address</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-provider">Provider</h3>
+
+
+<table class='schema-provider'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-team">Team</h3>
+
+
+<table class='schema-team'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>localAdminUnit</td>
+<td>string</td>
+<td>false</td>
+<td><p>The team.district.description in the database.  This was called localDeliveryUnit in Community API.</p>
+</td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephone</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+            
+          </main>
+
+          <aside>
+              <ul class="contribution-banner">
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/manage-pom-cases-and-delius/tech-docs/source/api-reference.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new?body=Problem+with+%27API+Reference%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fhmpps-probation-integration-services%2Ftech-docs%2Fprojects%2Fmake-recall-decisions-and-delius%2Fapi-reference.html%29&amp;labels=bug&amp;title=Re%3A+%27API+Reference%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services">GitHub Repo</a></li>
+              </ul>
+          </aside>
+
+          <footer class="govuk-footer app-footer" role="contentinfo">
+  <div class="govuk-footer__meta">
+    <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+
+
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        class="govuk-footer__licence-logo"
+        xmlns="http://www.w3.org/2000/svg"
+        viewbox="0 0 483.2 195.7"
+        height="17"
+        width="41"
+      >
+        <path
+          fill="currentColor"
+          d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"
+        />
+      </svg>
+      <span class="govuk-footer__licence-description">
+        All content is available under the
+        <a
+          class="govuk-footer__link"
+          href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+          rel="license"
+        >Open Government Licence v3.0</a>, except where otherwise stated
+      </span>
+    </div>
+    <div class="govuk-footer__meta-item">
+      <a
+        class="govuk-footer__link govuk-footer__copyright-logo"
+        href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+      >© Crown copyright</a>
+    </div>
+  </div>
+</footer>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <script src="javascripts/application.js"></script>
+  </body>
+</html>
