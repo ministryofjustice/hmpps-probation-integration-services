@@ -64,6 +64,8 @@ internal class RepositoryExtensionMethodTests {
                 NsiTermination(
                     "D123456",
                     "urn:fake:test:string",
+                    1,
+                    ZonedDateTime.now().minusDays(1),
                     ZonedDateTime.now(),
                     ReferralEndType.CANCELLED,
                     "Notes"
@@ -85,6 +87,8 @@ internal class RepositoryExtensionMethodTests {
                 NsiTermination(
                     person.crn,
                     nsi.externalReference!!,
+                    1,
+                    ZonedDateTime.now().minusDays(1),
                     ZonedDateTime.now(),
                     ReferralEndType.COMPLETED,
                     "Notes"
@@ -107,6 +111,8 @@ internal class RepositoryExtensionMethodTests {
                 NsiTermination(
                     person.crn,
                     nsi.externalReference!!,
+                    1,
+                    ZonedDateTime.now().minusDays(1),
                     ZonedDateTime.now(),
                     ReferralEndType.COMPLETED,
                     "Notes"

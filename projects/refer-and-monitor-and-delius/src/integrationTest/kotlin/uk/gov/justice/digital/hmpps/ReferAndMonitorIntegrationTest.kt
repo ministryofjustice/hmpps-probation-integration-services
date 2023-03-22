@@ -28,6 +28,7 @@ import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.ReferralEndType
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.Duration
 import java.time.ZonedDateTime
 
 @SpringBootTest
@@ -125,6 +126,41 @@ internal class ReferAndMonitorIntegrationTest {
         assertThat(contacts.size, equalTo(2))
         assertTrue(contacts have ContactType.Code.COMPLETED.value)
         assertTrue(contacts have ContactType.Code.NSI_TERMINATED.value)
+    }
+
+    @Test
+    fun `fuzzy search referral end submitted`() {
+        val nsi = nsiRepository.findById(NsiGenerator.FUZZY_SEARCH.id).orElseThrow()
+        assertNull(nsi.actualEndDate)
+        assertNull(nsi.outcome)
+
+        val notification = prepNotification(
+            notification("fuzzy-search-referral-ended"),
+            wireMockServer.port()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofSeconds(180))
+
+        verify(telemetryService).trackEvent(
+            "ReferralEnded",
+            mapOf(
+                "crn" to "F123456",
+                "referralUrn" to "urn:hmpps:interventions-referral:71df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+                "endDate" to "2023-02-23T15:29:54.197Z[Europe/London]",
+                "endType" to "CANCELLED"
+            )
+        )
+
+        val saved = nsiRepository.findById(NsiGenerator.FUZZY_SEARCH.id).orElseThrow()
+        assertThat(saved.status.code, equalTo(NsiStatus.Code.END.value))
+        assertThat(
+            saved.actualEndDate?.withZoneSameInstant(EuropeLondon),
+            equalTo(
+                ZonedDateTime.parse("2023-02-23T15:29:54Z").withZoneSameInstant(EuropeLondon)
+            )
+        )
+        assertThat(saved.outcome?.code, equalTo(ReferralEndType.CANCELLED.outcome))
+        assertFalse(saved.active)
     }
 
     private infix fun List<Contact>.have(type: String) = any { it.type.code == type }

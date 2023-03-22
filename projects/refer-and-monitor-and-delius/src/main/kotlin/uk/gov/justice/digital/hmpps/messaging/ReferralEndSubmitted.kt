@@ -27,6 +27,8 @@ class ReferralEndSubmitted(
         val termination = NsiTermination(
             event.personReference.findCrn()!!,
             event.referralUrn(),
+            sentReferral.relevantSentenceId,
+            sentReferral.referral.createdAt,
             sentReferral.endDate,
             ReferralEndType.valueOf(event.deliveryState()),
             sentReferral.notes(event.referralUiUrl())
@@ -51,6 +53,7 @@ fun HmppsDomainEvent.referralUiUrl() = additionalInformation["referralProbationU
 
 data class SentReferral(
     val referenceNumber: String,
+    val relevantSentenceId: Long,
     val referral: Referral,
     val endRequestedAt: ZonedDateTime,
     val concludedAt: ZonedDateTime?
@@ -71,7 +74,8 @@ data class Referral(
     @JsonAlias("serviceProvider")
     val provider: Provider,
     @JsonAlias("contractTypeName")
-    val contractType: String
+    val contractType: String,
+    val createdAt: ZonedDateTime
 )
 
 enum class ReferralEndType(val outcome: String) {
@@ -83,6 +87,8 @@ enum class ReferralEndType(val outcome: String) {
 data class NsiTermination(
     val crn: String,
     val urn: String,
+    val eventId: Long,
+    val startDate: ZonedDateTime,
     val endDate: ZonedDateTime,
     val endType: ReferralEndType,
     val notes: String

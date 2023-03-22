@@ -53,7 +53,13 @@ internal class ReferralEndSubmittedTest {
         private val concludedAt = ZonedDateTime.now()
         private val sentReferral = SentReferral(
             "Ref123",
-            Referral(UUID.randomUUID().toString(), Provider("Special Provider"), "Contract Type"),
+            1,
+            Referral(
+                UUID.randomUUID().toString(),
+                Provider("Special Provider"),
+                "Contract Type",
+                ZonedDateTime.now().minusDays(1)
+            ),
             endRequestedAt,
             null
         )

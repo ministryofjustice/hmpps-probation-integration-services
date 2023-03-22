@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.MANAGE_NSI
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
@@ -22,10 +23,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatu
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus.Code.END
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatusHistory
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCrnAndExternalReference
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.nsiOutcome
 import uk.gov.justice.digital.hmpps.messaging.NsiTermination
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 @Service
 class NsiService(
@@ -69,13 +70,13 @@ class NsiService(
     }
 
     @Transactional
-    fun terminateNsi(termination: NsiTermination) = audit(MANAGE_NSI) {
-        val nsi = nsiRepository.getByCrnAndExternalReference(termination.crn, termination.urn)
+    fun terminateNsi(termination: NsiTermination) = audit(MANAGE_NSI) { audit ->
+        val nsi = findNsi(termination)
         val status = nsiStatusRepository.getByCode(END.value)
         val outcome = nsiOutcomeRepository.nsiOutcome(termination.endType.outcome)
 
-        it["offenderId"] = nsi.person.id
-        it["nsiId"] = nsi.id
+        audit["offenderId"] = nsi.person.id
+        audit["nsiId"] = nsi.id
 
         if (nsi.status.id != status.id) {
             nsi.status = status
@@ -92,6 +93,22 @@ class NsiService(
         if (nsi.actualEndDate != termination.endDate) {
             nsi.actualEndDate = termination.endDate
         }
+    }
+
+    private fun findNsi(termination: NsiTermination): Nsi {
+        var nsi: Nsi? = nsiRepository.findByPersonCrnAndExternalReference(termination.crn, termination.urn)
+        if (nsi == null) {
+            val nsis = nsiRepository.fuzzySearch(
+                termination.crn,
+                termination.eventId,
+                ContractTypeNsiType.MAPPING.values.toSet()
+            ).filter {
+                it.referralDate.truncatedTo(ChronoUnit.HOURS) == termination.startDate.truncatedTo(ChronoUnit.HOURS)
+            }
+            if (nsis.size == 1) nsi = nsis[0]
+        }
+        if (nsi == null) throw NotFoundException("NSI with reference ${termination.urn} for CRN ${termination.crn} not found")
+        return nsi
     }
 
     private fun Nsi.statusHistory() = NsiStatusHistory(id, status.id, statusDate, notes)

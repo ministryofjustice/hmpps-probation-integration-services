@@ -13,8 +13,25 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatu
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiType
 
 interface NsiRepository : JpaRepository<Nsi, Long> {
-    @EntityGraph(attributePaths = ["person", "status", "managers"])
+    @EntityGraph(attributePaths = ["person", "type", "status", "managers"])
     fun findByPersonCrnAndExternalReference(crn: String, ref: String): Nsi?
+
+    @Query(
+        """
+        select nsi from Nsi nsi
+        join fetch nsi.person p
+        join fetch nsi.type t
+        join fetch nsi.status
+        join fetch nsi.managers
+        join Provider pr on nsi.intendedProviderId = pr.id
+        where p.crn = :crn
+        and nsi.eventId = :eventId
+        and t.code in :types
+        and nsi.outcome is null 
+        and pr.code = 'CRS'
+        """
+    )
+    fun fuzzySearch(crn: String, eventId: Long, types: Set<String>): List<Nsi>
 }
 
 fun NsiRepository.getByCrnAndExternalReference(crn: String, ref: String) =
