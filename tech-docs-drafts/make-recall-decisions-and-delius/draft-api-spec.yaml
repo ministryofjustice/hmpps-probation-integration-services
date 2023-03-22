@@ -12,8 +12,10 @@ servers:
   - description: prod
     url: https://make-recall-decisions-and-delius.hmpps.service.justice.gov.uk
 paths:
-  /personal-details/{crn}:
+  /case-summary/{crn}/personal-details:
     get:
+      tags:
+        - Case Summary
       summary: Personal details e.g. name, date of birth, address.
       parameters:
         - name: crn
@@ -31,8 +33,10 @@ paths:
                 $ref: '#/components/schemas/PersonalDetails'
         404:
           description: if the case does not exist, has been soft-deleted, or merged
-  /overview/{crn}:
+  /case-summary/{crn}/overview:
     get:
+      tags:
+        - Case Summary
       summary: Delius case overview e.g. active events/convictions, register flags.
       parameters:
         - name: crn
@@ -50,8 +54,10 @@ paths:
                 $ref: '#/components/schemas/CaseOverview'
         404:
           description: if the case does not exist, has been soft-deleted, or merged
-  /mappa-and-rosh-history/{crn}:
+  /case-summary/{crn}/mappa-and-rosh-history:
     get:
+      tags:
+        - Case Summary
       summary: Current MAPPA and historical RoSH registrations
       description: <p>This is intended to populate the MAPPA (Multi-agency public protection arrangements) and RoSH (Risk of Serious Harm) widgets. <p>Note that risk assessment information is generally held in OASys, and this endpoint only surfaces supplementary Delius registration/register details.
       parameters:
@@ -70,8 +76,10 @@ paths:
                 $ref: '#/components/schemas/MappaAndRoshHistory'
         404:
           description: if the case does not exist, has been soft-deleted, or merged
-  /contact-history/{crn}:
+  /case-summary/{crn}/contact-history:
     get:
+      tags:
+        - Case Summary
       summary: Contact history
       description: Returns matching historical records from the Delius contact log, including linked documents, and a summary showing the total number of contacts on the case grouped by type.
       parameters:
@@ -163,6 +171,8 @@ paths:
           description: if the case does not exist, has been soft-deleted, or merged
   /document/{crn}/{id}:
     get:
+      tags:
+        - Documents
       summary: Download document content
       parameters:
         - name: crn
@@ -185,8 +195,10 @@ paths:
               example: Document content (e.g. Word or PDF)
         404:
           description: if the document does not exist
-  /licence-conditions/{crn}:
+  /case-summary/{crn}/licence-conditions:
     get:
+      tags:
+        - Case Summary
       summary: Active events/convictions, with licence conditions
       description: Only returns active licence conditions that are associated to active events/convictions. Licence documents are not returned, as they appear to be unused in the MRD UI - <https://github.com/search?q=repo%3Aministryofjustice%2Fmake-recall-decision-ui%20licenceDocuments&type=code>.
       parameters:

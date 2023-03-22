@@ -101,22 +101,22 @@
         <a href="./api-reference.html#servers"><span>Servers</span></a>
       </li>
       <li>
-        <a href="./api-reference.html#personal-details-crn"><span>/personal-details/{crn}</span></a>
+        <a href="./api-reference.html#case-summary-crn-personal-details"><span>/case-summary/{crn}/personal-details</span></a>
       </li>
       <li>
-        <a href="./api-reference.html#overview-crn"><span>/overview/{crn}</span></a>
+        <a href="./api-reference.html#case-summary-crn-overview"><span>/case-summary/{crn}/overview</span></a>
       </li>
       <li>
-        <a href="./api-reference.html#mappa-and-rosh-history-crn"><span>/mappa-and-rosh-history/{crn}</span></a>
+        <a href="./api-reference.html#case-summary-crn-mappa-and-rosh-history"><span>/case-summary/{crn}/mappa-and-rosh-history</span></a>
       </li>
       <li>
-        <a href="./api-reference.html#contact-history-crn"><span>/contact-history/{crn}</span></a>
+        <a href="./api-reference.html#case-summary-crn-contact-history"><span>/case-summary/{crn}/contact-history</span></a>
       </li>
       <li>
         <a href="./api-reference.html#document-crn-id"><span>/document/{crn}/{id}</span></a>
       </li>
       <li>
-        <a href="./api-reference.html#licence-conditions-crn"><span>/licence-conditions/{crn}</span></a>
+        <a href="./api-reference.html#case-summary-crn-licence-conditions"><span>/case-summary/{crn}/licence-conditions</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -175,16 +175,16 @@
 
 
 
-<h2 id="personal-details-crn">/personal-details/{crn}</h2>
+<h2 id="case-summary-crn-personal-details">/case-summary/{crn}/personal-details</h2>
 
-<h3 id="personal-details-crn-get">get</h3>
+<h3 id="case-summary-crn-personal-details-get">get</h3>
 
   <p><em>Personal details e.g. name, date of birth, address.</em></p>
 
 
 
 
-<h4 id="personal-details-crn-get-parameters">Parameters</h4>
+<h4 id="case-summary-crn-personal-details-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -208,7 +208,7 @@
 
 
 
-<h4 id="personal-details-crn-get-responses">Responses</h4>
+<h4 id="case-summary-crn-personal-details-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -274,16 +274,16 @@
 
 
 
-<h2 id="overview-crn">/overview/{crn}</h2>
+<h2 id="case-summary-crn-overview">/case-summary/{crn}/overview</h2>
 
-<h3 id="overview-crn-get">get</h3>
+<h3 id="case-summary-crn-overview-get">get</h3>
 
   <p><em>Delius case overview e.g. active events/convictions, register flags.</em></p>
 
 
 
 
-<h4 id="overview-crn-get-parameters">Parameters</h4>
+<h4 id="case-summary-crn-overview-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -307,7 +307,7 @@
 
 
 
-<h4 id="overview-crn-get-responses">Responses</h4>
+<h4 id="case-summary-crn-overview-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -417,9 +417,9 @@
 
 
 
-<h2 id="mappa-and-rosh-history-crn">/mappa-and-rosh-history/{crn}</h2>
+<h2 id="case-summary-crn-mappa-and-rosh-history">/case-summary/{crn}/mappa-and-rosh-history</h2>
 
-<h3 id="mappa-and-rosh-history-crn-get">get</h3>
+<h3 id="case-summary-crn-mappa-and-rosh-history-get">get</h3>
 
   <p><em>Current MAPPA and historical RoSH registrations</em></p>
 
@@ -429,7 +429,7 @@
 
 
 
-<h4 id="mappa-and-rosh-history-crn-get-parameters">Parameters</h4>
+<h4 id="case-summary-crn-mappa-and-rosh-history-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -453,7 +453,7 @@
 
 
 
-<h4 id="mappa-and-rosh-history-crn-get-responses">Responses</h4>
+<h4 id="case-summary-crn-mappa-and-rosh-history-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -534,9 +534,9 @@
 
 
 
-<h2 id="contact-history-crn">/contact-history/{crn}</h2>
+<h2 id="case-summary-crn-contact-history">/case-summary/{crn}/contact-history</h2>
 
-<h3 id="contact-history-crn-get">get</h3>
+<h3 id="case-summary-crn-contact-history-get">get</h3>
 
   <p><em>Contact history</em></p>
 
@@ -546,7 +546,7 @@
 
 
 
-<h4 id="contact-history-crn-get-parameters">Parameters</h4>
+<h4 id="case-summary-crn-contact-history-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -629,7 +629,7 @@
 
 
 
-<h4 id="contact-history-crn-get-responses">Responses</h4>
+<h4 id="case-summary-crn-contact-history-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -811,9 +811,9 @@
 
 
 
-<h2 id="licence-conditions-crn">/licence-conditions/{crn}</h2>
+<h2 id="case-summary-crn-licence-conditions">/case-summary/{crn}/licence-conditions</h2>
 
-<h3 id="licence-conditions-crn-get">get</h3>
+<h3 id="case-summary-crn-licence-conditions-get">get</h3>
 
   <p><em>Active events/convictions, with licence conditions</em></p>
 
@@ -823,7 +823,7 @@
 
 
 
-<h4 id="licence-conditions-crn-get-parameters">Parameters</h4>
+<h4 id="case-summary-crn-licence-conditions-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -847,7 +847,7 @@
 
 
 
-<h4 id="licence-conditions-crn-get-responses">Responses</h4>
+<h4 id="case-summary-crn-licence-conditions-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
