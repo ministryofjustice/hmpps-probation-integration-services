@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.MANAGE_NSI
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -103,7 +104,7 @@ class NsiService(
                 termination.eventId,
                 ContractTypeNsiType.MAPPING.values.toSet()
             ).filter {
-                it.referralDate.truncatedTo(ChronoUnit.HOURS) == termination.startDate.truncatedTo(ChronoUnit.HOURS)
+                it.referralDate.truncatedTo(ChronoUnit.HOURS).withZoneSameInstant(EuropeLondon) == termination.startDate.truncatedTo(ChronoUnit.HOURS)
             }
             if (nsis.size == 1) nsi = nsis[0]
         }
