@@ -36,7 +36,7 @@ internal class ReferAndMonitorHandlerTest {
 
     @BeforeEach
     fun setUp() {
-        handler = ReferAndMonitorHandler(converter, telemetryService, listOf(eventHandler), listOf("unknown.event.type"))
+        handler = ReferAndMonitorHandler(converter, telemetryService, listOf(eventHandler))
     }
 
     @Test
@@ -94,7 +94,7 @@ internal class ReferAndMonitorHandlerTest {
                 }
             )
         )
-        handler = ReferAndMonitorHandler(converter, telemetryService, listOf(eventHandler), listOf(SessionAppointmentSubmitted.name))
+        handler = ReferAndMonitorHandler(converter, telemetryService, listOf(eventHandler))
 
         handler.handle(notification)
 
@@ -124,7 +124,7 @@ internal class ReferAndMonitorHandlerTest {
                 }
             )
         )
-        handler = ReferAndMonitorHandler(converter, telemetryService, listOf(eventHandler), listOf(SessionAppointmentSubmitted.name))
+        handler = ReferAndMonitorHandler(converter, telemetryService, listOf(eventHandler))
 
         val ex = assertThrows<IllegalStateException> { handler.handle(notification) }
         val expectedMessage = "Unable to process event 'intervention.session-appointment.session-feedback-submitted'"
