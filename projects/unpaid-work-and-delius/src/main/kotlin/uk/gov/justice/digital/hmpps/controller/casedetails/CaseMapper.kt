@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.controller.casedetails.model.Language
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.MainOffence
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.MappaRegistration
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.PhoneNumber
+import uk.gov.justice.digital.hmpps.controller.casedetails.model.Provision
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.RegisterFlag
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.Sentence
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.name
@@ -79,7 +80,13 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetai
     val disabilities = case.disabilities.map { d ->
         Disability(
             Type(d.type.code, d.type.description),
-            d.provisions?.map { it -> it.type.description },
+            d.condition?.let { Type(it.code, d.condition.description) },
+            d.provisions?.map { it ->
+                Provision(
+                    Type(it.type.code, it.type.description),
+                    it.category?.let { it1 -> Type(it1.code, it.category.description) }
+                )
+            },
             d.notes
         )
     }

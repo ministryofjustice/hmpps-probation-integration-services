@@ -11,7 +11,9 @@ object DisabilityGenerator {
         id,
         CaseGenerator.DEFAULT,
         ReferenceDataGenerator.DISABILITY_HEARING,
+        ReferenceDataGenerator.DISABILITY_HEARING_CONDITION,
         "wears hearing aid",
-        LocalDate.now().minusMonths(5)
+        LocalDate.now().minusMonths(5),
+        null
     )
 }

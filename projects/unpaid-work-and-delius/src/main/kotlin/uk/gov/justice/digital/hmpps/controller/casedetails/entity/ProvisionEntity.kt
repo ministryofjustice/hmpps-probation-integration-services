@@ -28,6 +28,10 @@ class ProvisionEntity(
     @JoinColumn(name = "provision_type_id", updatable = false)
     val type: ReferenceData,
 
+    @ManyToOne
+    @JoinColumn(name = "provision_category_id", updatable = false)
+    val category: ReferenceData? = null,
+
     @Column(name = "start_date")
     val start: LocalDate? = null,
 
