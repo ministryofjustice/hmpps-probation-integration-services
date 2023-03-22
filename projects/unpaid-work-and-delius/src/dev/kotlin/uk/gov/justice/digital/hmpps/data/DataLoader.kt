@@ -96,7 +96,7 @@ class DataLoader(
                 DatasetGenerator.GENDER,
                 DatasetGenerator.ETHNICITY,
                 DatasetGenerator.DISABILITY,
-                DatasetGenerator.DISABILITY_CONDITON,
+                DatasetGenerator.DISABILITY_CONDITION,
                 DatasetGenerator.LANGUAGE,
                 DatasetGenerator.REGISTER_LEVEL,
                 DatasetGenerator.REGISTER_CATEGORY,
