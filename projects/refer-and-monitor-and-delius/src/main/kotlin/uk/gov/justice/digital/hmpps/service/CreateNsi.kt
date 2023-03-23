@@ -32,7 +32,7 @@ class CreateNsi(
 ) {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    fun new(crn: String, rs: ReferralStarted): Nsi {
+    fun new(crn: String, rs: ReferralStarted, additions: (nsi: Nsi) -> Unit): Nsi {
         val person = personRepository.getByCrn(crn)
         val sentence = disposalRepository.getByPersonIdAndEventId(person.id, rs.sentenceId)
         val req = requirementRepository.findForPersonAndEvent(
@@ -62,7 +62,7 @@ class CreateNsi(
             )
         )
         val manager = nsiManagerService.createNewManager(nsi)
-        nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn)
-        return nsi.withManager(manager)
+        additions(nsi.withManager(manager))
+        return nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn)!!
     }
 }
