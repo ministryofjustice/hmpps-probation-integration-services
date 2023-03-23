@@ -23,7 +23,7 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
 @SpringBootTest
 @ActiveProfiles("integration-test")
-internal class IntegrationTest {
+internal class RecommendationIntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
 
