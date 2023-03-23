@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.recommendation
+package uk.gov.justice.digital.hmpps.service
 
 import IdGenerator
 import org.hamcrest.MatcherAssert.assertThat

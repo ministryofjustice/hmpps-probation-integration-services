@@ -1,13 +1,21 @@
 {
-  "Type": "Notification",
-  "MessageId": "307a32fe-4acc-4b2d-80ac-e13503cf5628",
-  "TopicArn": "arn:aws:sns:eu-west-2:000000000000:hmpps-domain-events",
-  "Message": "{\n\"eventType\": \"prison-recall.recommendation.managementOversight\",\n\"version\": 1,\n\"description\": \"Management Oversight - Recall\",\n\"occurredAt\": \"2022-11-21T06:27:57.028Z\",\n\"additionalInformation\": {\n\"contactOutcome\": \"DECISION_TO_RECALL\",\n\"recommendationUrl\": \"http://mrd.case.crn/overview\"\n,\n\"bookedBy\": { \n\"staffCode\": \"N54A999\"} \n},\n\"personReference\": {\n\"identifiers\": [\n{\"type\": \"CRN\", \"value\":\"X08770\"}\n]\n}}",
-  "Timestamp": "2022-10-21T06:27:57.028Z",
-  "MessageAttributes": {
-    "eventType": {
-      "Type": "String",
-      "Value": "prison-recall.recommendation.managementOversight"
+  "eventType": "prison-recall.recommendation.managementOversight",
+  "version": 1,
+  "description": "Management Oversight - Recall",
+  "occurredAt": "2022-11-21T06:27:57.028Z",
+  "additionalInformation": {
+    "contactOutcome": "DECISION_TO_RECALL",
+    "recommendationUrl": "http://mrd.case.crn/overview",
+    "bookedBy": {
+      "staffCode": "N54A999"
     }
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "X000002"
+      }
+    ]
   }
 }
