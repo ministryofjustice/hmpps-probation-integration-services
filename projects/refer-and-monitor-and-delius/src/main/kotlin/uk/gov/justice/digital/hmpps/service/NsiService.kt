@@ -104,8 +104,9 @@ class NsiService(
             ).filter {
                 it.referralDate.toLocalDate() == termination.startDate.toLocalDate()
             }
-            if (nsis.size == 1) nsi = nsis[0]
-            else if (nsis.size > 1) nsi = nsis.firstOrNull { it.notes?.contains(termination.urn) ?: false }
+            if (nsis.size == 1) {
+                nsi = nsis[0]
+            } else if (nsis.size > 1) nsi = nsis.firstOrNull { it.notes?.contains(termination.urn) ?: false }
         }
         if (nsi == null) {
             throw NotFoundException(
