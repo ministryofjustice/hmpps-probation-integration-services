@@ -59,21 +59,21 @@ internal class RepositoryExtensionMethodTests {
     fun `nsi not found causes failure`() {
         whenever(nsiRepository.findByPersonCrnAndExternalReference(any(), any())).thenReturn(null)
 
-        val ex = assertThrows<NotFoundException> {
-            nsiService.terminateNsi(
-                NsiTermination(
-                    "D123456",
-                    "urn:fake:test:string",
-                    1,
-                    ZonedDateTime.now().minusDays(1),
-                    ZonedDateTime.now(),
-                    ReferralEndType.CANCELLED,
-                    "Notes"
-                )
-            )
-        }
+        val termination = NsiTermination(
+            "D123456",
+            "urn:fake:test:string",
+            1,
+            ZonedDateTime.now().minusDays(1),
+            ZonedDateTime.now(),
+            ReferralEndType.CANCELLED,
+            "Notes"
+        )
+        val ex = assertThrows<NotFoundException> { nsiService.terminateNsi(termination) }
 
-        assertThat(ex.message, equalTo("NSI with reference urn:fake:test:string for CRN D123456 not found"))
+        assertThat(
+            ex.message,
+            equalTo("Unable to match Referral ${termination.urn} => CRN ${termination.crn} : EventId ${termination.eventId} : StartDate ${termination.startDate.toLocalDate()}")
+        )
     }
 
     @Test

@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.MANAGE_NSI
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -27,7 +26,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.nsiOutcome
 import uk.gov.justice.digital.hmpps.messaging.NsiTermination
 import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
 
 @Service
 class NsiService(
@@ -104,11 +102,16 @@ class NsiService(
                 termination.eventId,
                 ContractTypeNsiType.MAPPING.values.toSet()
             ).filter {
-                it.referralDate.truncatedTo(ChronoUnit.DAYS).withZoneSameInstant(EuropeLondon) == termination.startDate.truncatedTo(ChronoUnit.DAYS)
+                it.referralDate.toLocalDate() == termination.startDate.toLocalDate()
             }
             if (nsis.size == 1) nsi = nsis[0]
+            else if (nsis.size > 1) nsi = nsis.firstOrNull { it.notes?.contains(termination.urn) ?: false }
         }
-        if (nsi == null) throw NotFoundException("NSI with reference ${termination.urn} for CRN ${termination.crn} not found")
+        if (nsi == null) {
+            throw NotFoundException(
+                "Unable to match Referral ${termination.urn} => CRN ${termination.crn} : EventId ${termination.eventId} : StartDate ${termination.startDate.toLocalDate()}"
+            )
+        }
         return nsi
     }
 
