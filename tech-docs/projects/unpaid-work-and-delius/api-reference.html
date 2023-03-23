@@ -236,11 +236,15 @@
         "code": "string",
         "description": "string"
       },
-      "provisions": [
-        {
-        }
-      ],
       "notes": "string"
+    }
+  ],
+  "provisions": [
+    {
+      "type": {
+        "code": "string",
+        "description": "string"
+      }
     }
   ],
   "language": {
@@ -686,6 +690,16 @@
 </tr>
 
 <tr>
+<td>provisions</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-provision'>Provision</a>
+</td>
+</tr>
+
+<tr>
 <td>language</td>
 <td>object</td>
 <td>false</td>
@@ -764,16 +778,6 @@
 <td></td>
 <td>
   <a href='#schema-type'>Type</a>
-</td>
-</tr>
-
-<tr>
-<td>provisions</td>
-<td>array</td>
-<td>false</td>
-<td></td>
-<td>
-  
 </td>
 </tr>
 
@@ -1088,6 +1092,28 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-provision">Provision</h3>
+
+
+<table class='schema-provision'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>type</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-type'>Type</a>
 </td>
 </tr>
 
