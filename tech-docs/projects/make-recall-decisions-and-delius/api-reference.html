@@ -5,23 +5,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-    <title>About - HMPPS Make Recall Decisions And Delius</title>
+    <title>API Reference - HMPPS Make Recall Decisions And Delius</title>
 
     <link href="stylesheets/manifest.css" rel="stylesheet" />
 
-    <link rel="canonical" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius/">
+    <link rel="canonical" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius/api-reference.html">
 
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:domain" content="ministryofjustice.github.io" />
       <meta name="twitter:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius/images/govuk-large.png" />
-      <meta name="twitter:title" content="About - HMPPS Make Recall Decisions And Delius" />
-      <meta name="twitter:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius/" />
+      <meta name="twitter:title" content="API Reference - HMPPS Make Recall Decisions And Delius" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius/api-reference.html" />
 
       <meta property="og:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius/images/govuk-large.png" />
       <meta property="og:site_name" content="HMPPS Make Recall Decisions And Delius" />
-      <meta property="og:title" content="About" />
+      <meta property="og:title" content="API Reference" />
       <meta property="og:type" content="object" />
-      <meta property="og:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius/" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/make-recall-decisions-and-delius/api-reference.html" />
 
     
   </head>
@@ -114,16 +114,385 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="make-recall-decisions-and-delius">make-recall-decisions-and-delius</h1>
-<p>// TODO Describe the service</p>
+            <header id="api" class="anchored-heading govuk-heading-xl" style="padding-top: 30px">
+    <a href="#api" class="anchored-heading__icon" aria-hidden="true" tabindex="-1"></a>
+    API Reference <strong class="govuk-tag govuk-tag--yellow">IN DEVELOPMENT</strong>
+</header>
+
+<style>.technical-documentation > h1 { display: none !important }</style>
+
+<blockquote>
+<p>This document shows what has been developed so far.
+View the full list of proposed endpoints in the draft document, here: <a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs-drafts/make-recall-decisions-and-delius/api-reference.html">API Reference DRAFT</a>.</p>
+</blockquote>
+
+<hr>
+<p>The following documentation is also available in these formats:</p>
+
+<ul>
+<li><a href="https://make-recall-decisions-and-delius-dev.hmpps.service.justice.gov.uk/v3/api-docs">OpenAPI JSON</a></li>
+<li><a href="https://make-recall-decisions-and-delius-dev.hmpps.service.justice.gov.uk/v3/api-docs.yaml">OpenAPI YAML</a></li>
+<li><a href="https://make-recall-decisions-and-delius-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html">Swagger UI</a></li>
+</ul>
+<h1 id="api-reference">API Reference v1.0</h1>
+
+
+
+
+
+
+<h2 id="case-summary-crn-personal-details">/case-summary/{crn}/personal-details</h2>
+
+<h3 id="case-summary-crn-personal-details-get">get</h3>
+
+
+
+
+<h4 id="case-summary-crn-personal-details-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="case-summary-crn-personal-details-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "identifiers": {
+    "pncNumber": "string",
+    "croNumber": "string",
+    "nomsNumber": "string",
+    "bookingNumber": "string"
+  },
+  "dateOfBirth": "string",
+  "gender": "string",
+  "ethnicity": "string",
+  "primaryLanguage": "string",
+  "mainAddress": {
+    "buildingName": "string",
+    "addressNumber": "string",
+    "streetName": "string",
+    "town": "string",
+    "county": "string",
+    "postcode": "string",
+    "noFixedAbode": "boolean"
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-personaldetails'>PersonalDetails</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+
+<h2 id="schemas">Schemas</h2>
+<h3 id="schema-address">Address</h3>
+
+
+<table class='schema-address'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>buildingName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>addressNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>streetName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>town</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>county</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>noFixedAbode</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-identifiers">Identifiers</h3>
+
+
+<table class='schema-identifiers'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>pncNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>croNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nomsNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>bookingNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-name">Name</h3>
+
+
+<table class='schema-name'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personaldetails">PersonalDetails</h3>
+
+
+<table class='schema-personaldetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>identifiers</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-identifiers'>Identifiers</a>
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>gender</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ethnicity</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>primaryLanguage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainAddress</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-address'>Address</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
 
             
           </main>
 
           <aside>
               <ul class="contribution-banner">
-                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/make-recall-decisions-and-delius/tech-docs/source/index.html.md.erb">View source</a></li>
-                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new?body=Problem+with+%27About%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fhmpps-probation-integration-services%2Ftech-docs%2Fprojects%2Fmake-recall-decisions-and-delius%2F%29&amp;labels=bug&amp;title=Re%3A+%27About%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/approved-premises-and-delius/tech-docs/source/api-reference.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new?body=Problem+with+%27API+Reference%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fhmpps-probation-integration-services%2Ftech-docs%2Fprojects%2Fmake-recall-decisions-and-delius%2Fapi-reference.html%29&amp;labels=bug&amp;title=Re%3A+%27API+Reference%27">Report problem</a></li>
                 <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services">GitHub Repo</a></li>
               </ul>
           </aside>
