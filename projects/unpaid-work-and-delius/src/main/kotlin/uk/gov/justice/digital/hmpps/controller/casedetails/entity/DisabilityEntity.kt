@@ -29,7 +29,7 @@ class DisabilityEntity(
     val type: ReferenceData,
 
     @Column(name = "notes", columnDefinition = "clob")
-    val notes: String,
+    val notes: String? = null,
 
     @Column(name = "start_date")
     val start: LocalDate? = null,

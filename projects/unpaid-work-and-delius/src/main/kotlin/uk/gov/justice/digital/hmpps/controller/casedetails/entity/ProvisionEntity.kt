@@ -28,6 +28,9 @@ class ProvisionEntity(
     @JoinColumn(name = "provision_type_id", updatable = false)
     val type: ReferenceData,
 
+    @Column(name = "notes", columnDefinition = "clob")
+    val notes: String? = null,
+
     @Column(name = "start_date")
     val start: LocalDate? = null,
 

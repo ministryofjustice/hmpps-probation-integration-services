@@ -46,11 +46,12 @@ data class PhoneNumber(
 
 data class Disability(
     val type: Type,
-    val notes: String
+    val notes: String?
 )
 
 data class Provision(
-    val type: Type
+    val type: Type,
+    val notes: String?
 )
 data class Language(
     val requiresInterpreter: Boolean = false,

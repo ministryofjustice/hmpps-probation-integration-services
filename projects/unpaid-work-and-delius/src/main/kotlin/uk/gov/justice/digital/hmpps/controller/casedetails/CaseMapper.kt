@@ -86,7 +86,8 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetai
 
     val provisions = case.provisions.map { p ->
         Provision(
-            Type(p.type.code, p.type.description)
+            Type(p.type.code, p.type.description),
+            p.notes
         )
     }
 
