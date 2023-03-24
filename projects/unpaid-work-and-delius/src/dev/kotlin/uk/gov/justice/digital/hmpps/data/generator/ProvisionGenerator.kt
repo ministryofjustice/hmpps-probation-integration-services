@@ -11,6 +11,7 @@ object ProvisionGenerator {
         id,
         CaseGenerator.DEFAULT,
         ReferenceDataGenerator.HEARING_PROVISION,
+        "Knock loudly on the door",
         LocalDate.now().minusMonths(5)
     )
 }
