@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.exception.FutureAppointmentLinkedException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.MANAGE_NSI
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -82,7 +84,11 @@ class NsiService(
             nsi.statusDate = termination.endDate
             nsi.notes = listOfNotNull(nsi.notes, termination.notes).joinToString(System.lineSeparator())
             statusHistoryRepository.save(nsi.statusHistory())
-            contactRepository.deleteFutureAppointmentsForNsi(nsi.id)
+            try {
+                contactRepository.deleteFutureAppointmentsForNsi(nsi.id)
+            } catch (dive: DataIntegrityViolationException) {
+                throw FutureAppointmentLinkedException()
+            }
             contactRepository.save(nsi.statusChangeContact())
         }
         if (nsi.outcome?.id != outcome.id) {

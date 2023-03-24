@@ -33,10 +33,6 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
     fun fuzzySearch(crn: String, eventId: Long, types: Set<String>): List<Nsi>
 }
 
-fun NsiRepository.getByCrnAndExternalReference(crn: String, ref: String) =
-    findByPersonCrnAndExternalReference(crn, ref)
-        ?: throw NotFoundException("NSI with reference $ref for CRN $crn not found")
-
 interface NsiStatusHistoryRepository : JpaRepository<NsiStatusHistory, Long>
 
 interface NsiTypeRepository : JpaRepository<NsiType, Long> {
