@@ -2,3 +2,7 @@
 # Suppress - we do not process any untrusted YML content
 # By marcus-bcl
 CVE-2022-1471 exp:2023-04-03
+
+# Suppress as no file uploads
+# By marcus-bcl
+CVE-2023-24998 exp:2023-04-07
