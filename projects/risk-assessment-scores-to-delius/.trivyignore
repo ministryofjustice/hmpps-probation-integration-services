@@ -1,4 +1,7 @@
 
+# Suppressed as we do not process any untrusted YML content
+CVE-2022-1471 exp:2023-04-07
+
 # Suppressed as we do not process any untrusted SpEL expressions
 CVE-2023-20861 exp:2023-04-07
 
