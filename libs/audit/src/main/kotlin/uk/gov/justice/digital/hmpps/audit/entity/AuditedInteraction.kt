@@ -14,6 +14,7 @@ import java.time.ZonedDateTime
 
 data class AuditedInteractionId(
 
+    @Column(columnDefinition = "timestamp")
     val dateTime: ZonedDateTime = ZonedDateTime.now(),
 
     val businessInteractionId: Long = 0,
