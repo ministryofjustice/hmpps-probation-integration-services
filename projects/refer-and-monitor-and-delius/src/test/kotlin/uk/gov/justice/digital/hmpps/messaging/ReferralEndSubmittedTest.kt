@@ -11,8 +11,15 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.integrations.randm.ReferAndMonitorClient
+import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.message.PersonIdentifier
+import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.service.NsiService
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -46,6 +53,31 @@ internal class ReferralEndSubmittedTest {
     @MethodSource("sentReferralDates")
     fun `Sent Referral End Date Correctly Identified`(sr: SentReferral, expectedEndDate: ZonedDateTime) {
         assertThat(sr.endDate, equalTo(expectedEndDate))
+    }
+
+    @Test
+    fun `no end date throws IllegalStateException`() {
+        val event = HmppsDomainEvent(
+            DomainEventType.ReferralEnded.name,
+            1,
+            "https://fake.org/url",
+            personReference = PersonReference(listOf(PersonIdentifier("CRN", "T123456"))),
+            additionalInformation = AdditionalInformation(
+                mutableMapOf(
+                    "referralURN" to UUID.randomUUID().toString(),
+                    "deliveryState" to "CANCELLED",
+                    "referralProbationUserURL" to "https://fake.ui/index.html"
+                )
+            )
+        )
+        val referral = sentReferral.copy(endRequestedAt = null, concludedAt = null)
+        whenever(ramClient.getReferral(any())).thenReturn(referral)
+
+        val res = referralEnd.referralEnded(event)
+        assertThat(res, IsInstanceOf(EventProcessingResult.Failure::class.java))
+        val failure = res as EventProcessingResult.Failure
+        assertThat(failure.exception, IsInstanceOf(IllegalStateException::class.java))
+        verify(nsiService, never()).terminateNsi(any())
     }
 
     companion object {
