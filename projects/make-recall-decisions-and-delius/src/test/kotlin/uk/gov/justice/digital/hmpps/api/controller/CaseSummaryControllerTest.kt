@@ -21,4 +21,10 @@ internal class CaseSummaryControllerTest {
         caseSummaryController.getPersonalDetails("TEST")
         verify(caseSummaryService).getPersonalDetails("TEST")
     }
+
+    @Test
+    fun `get overview`() {
+        caseSummaryController.getOverview("TEST")
+        verify(caseSummaryService).getOverview("TEST")
+    }
 }

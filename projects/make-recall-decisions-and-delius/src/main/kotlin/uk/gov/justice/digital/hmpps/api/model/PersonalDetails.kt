@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model
 
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Address
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Person
 import java.time.LocalDate
 
 data class PersonalDetails(
@@ -11,11 +13,6 @@ data class PersonalDetails(
     val primaryLanguage: String?,
     val mainAddress: Address?
 ) {
-    data class Name(
-        val forename: String,
-        val middleName: String?,
-        val surname: String
-    )
     data class Identifiers(
         val pncNumber: String?,
         val croNumber: String?,
@@ -32,3 +29,14 @@ data class PersonalDetails(
         val noFixedAbode: Boolean?
     )
 }
+
+fun Person.identifiers() = PersonalDetails.Identifiers(pncNumber, croNumber, nomsNumber, bookingNumber = mostRecentPrisonerNumber)
+fun Address.toAddress() = PersonalDetails.Address(
+    buildingName = buildingName,
+    addressNumber = addressNumber,
+    streetName = streetName,
+    town = town,
+    county = county,
+    postcode = postcode,
+    noFixedAbode = noFixedAbode
+)
