@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model
 
 data class ProbationStatusDetail(
-    val status: String
+    val status: ManagedStatus
 )
 
 enum class ManagedStatus {
