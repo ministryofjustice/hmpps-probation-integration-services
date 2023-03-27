@@ -1,9 +1,11 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.dao.IncorrectResultSizeDataAccessException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
+import uk.gov.justice.digital.hmpps.exception.AlreadyCreatedException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
@@ -63,6 +65,10 @@ class CreateNsi(
         )
         val manager = nsiManagerService.createNewManager(nsi)
         additions(nsi.withManager(manager))
-        return nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn)!!
+        return try {
+            nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn)!!
+        } catch (e: IncorrectResultSizeDataAccessException) {
+            throw AlreadyCreatedException("Nsi ${rs.urn} already created for $crn")
+        }
     }
 }

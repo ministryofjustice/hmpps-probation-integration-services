@@ -31,7 +31,7 @@ import java.time.ZonedDateTime
 import java.util.UUID
 
 @ExtendWith(MockitoExtension::class)
-class NsiServiceTest {
+internal class NsiServiceTest {
     @Mock
     lateinit var auditedInteractionService: AuditedInteractionService
 
