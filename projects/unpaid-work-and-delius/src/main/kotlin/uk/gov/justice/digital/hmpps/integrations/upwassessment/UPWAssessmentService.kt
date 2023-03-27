@@ -70,8 +70,13 @@ class UPWAssessmentService(
         val response = arnClient.getUPWAssessment(URI(notification.message.detailUrl!!))
         val filename = ContentDisposition.parse(response.headers()["Content-Disposition"]!!.first()).filename
         val fileData = response.body().asInputStream().readAllBytes()
+        if (response.status() != 200 || !fileData.isPdf()) {
+            throw IllegalStateException("Invalid PDF returned for episode: ${notification.message.detailUrl}")
+        }
         // Then upload the document content to Alfresco AND create a delius document that links to the alfresco id
         // and contact id.
         documentService.createDeliusDocument(notification.message, fileData, filename!!, contactId, episodeId, offenderId)
     }
+
+    private fun ByteArray.isPdf() = take(4).toByteArray().contentEquals("%PDF".toByteArray())
 }
