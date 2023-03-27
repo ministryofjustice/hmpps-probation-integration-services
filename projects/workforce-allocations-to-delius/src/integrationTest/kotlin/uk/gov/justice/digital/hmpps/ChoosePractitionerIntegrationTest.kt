@@ -39,7 +39,7 @@ class ChoosePractitionerIntegrationTest {
             .andExpect(jsonPath("$.name.forename").value(person.forename))
             .andExpect(jsonPath("$.name.middleName").value(person.secondName))
             .andExpect(jsonPath("$.name.surname").value(person.surname))
-            .andExpect(jsonPath("$.probationStatus.status").value("UNKNOWN"))
+            .andExpect(jsonPath("$.probationStatus.status").value("PREVIOUSLY_MANAGED"))
             .andExpect(jsonPath("$.communityPersonManager.code").value("N02UATU"))
             .andExpect(jsonPath("$.communityPersonManager.teamCode").value("N02UAT"))
             .andExpect(jsonPath("$.teams.keys()").value(setOf(team1, team2)))
