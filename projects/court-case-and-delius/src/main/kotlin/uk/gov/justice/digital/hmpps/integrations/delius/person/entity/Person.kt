@@ -7,7 +7,7 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.api.model.ManagedStatus
+import java.time.LocalDate
 
 @Immutable
 @Entity
@@ -32,29 +32,46 @@ const val DISPOSAL_SQL = """
     join order_manager om on om.event_id = e.event_id and om.active_flag = 1 and om.soft_deleted = 0
     join staff s on s.staff_id = om.allocation_staff_id
     join disposal d on d.event_id = e.event_id and d.soft_deleted = 0
-    where crn = :crn
+    where crn = :crn and o.soft_deleted = 0
 """
 interface PersonRepository : JpaRepository<Person, Long> {
 
     @Query(
         """
-        with
-            total_disposals as (select count(1) as cnt from ($DISPOSAL_SQL)),
-            unallocated_disposals as (select count(1) as cnt from ($DISPOSAL_SQL) where active_flag = 1 and officer_code like '%U'),
-            allocated_disposals as (select count(1) as cnt from ($DISPOSAL_SQL) where active_flag = 1 and officer_code not like '%U'),
-            previous_disposals as (select count(1) as cnt from ($DISPOSAL_SQL) where active_flag = 0)
-        select case
-                   when unallocated_disposals.cnt = 1 and total_disposals.cnt = 1 then 'NEW_TO_PROBATION'
-                   when allocated_disposals.cnt > 0 then 'CURRENTLY_MANAGED'
-                   when previous_disposals.cnt > 0 then 'PREVIOUSLY_MANAGED'
-                   else 'UNKNOWN'
-               end as managed_status
-        from total_disposals,
-             allocated_disposals,
-             previous_disposals,
-             unallocated_disposals
+        select
+           o.crn,
+           sum(case when d.active_flag = 1 and lower(s.officer_code) like '%u' then 1 else 0 end)     as unallocatedCount,
+           sum(case when d.active_flag = 1 and lower(s.officer_code) not like '%u' then 1 else 0 end) as allocatedCount,
+           sum(case when d.active_flag = 0 then 1 else 0 end)                                         as previousCount,
+           max(d.termination_date)                                                                    as terminationDate,
+           sum(e.in_breach)                                                                           as breachCount,
+           sum(case when e.active_flag = 1 and d.disposal_id is null then 1 else 0 end)               as preSentenceCount,
+           sum(case when d.disposal_id is null and ca.outcome_code = '101' then 1 else 0 end)         as awaitingPsrCount
+        from offender o
+             join event e on e.offender_id = o.offender_id and e.soft_deleted = 0
+             join order_manager om on om.event_id = e.event_id and om.active_flag = 1 and om.soft_deleted = 0
+             join staff s on s.staff_id = om.allocation_staff_id
+             left join disposal d on d.event_id = e.event_id and d.soft_deleted = 0
+             left join (select ca.event_id, oc.code_value as outcome_code
+                        from court_appearance ca
+                                 join r_standard_reference_list oc on ca.outcome_id = oc.standard_reference_list_id) ca
+                       on ca.event_id = e.event_id
+        where crn = :crn
+            and o.soft_deleted = 0
+        group by o.crn
         """,
         nativeQuery = true
     )
-    fun managedStatus(crn: String): ManagedStatus
+    fun statusOf(crn: String): SentenceCounts
+}
+
+interface SentenceCounts {
+    val crn: String
+    val allocatedCount: Int
+    val unallocatedCount: Int
+    val previousCount: Int
+    val terminationDate: LocalDate?
+    val breachCount: Int
+    val preSentenceCount: Int
+    val awaitingPsrCount: Int
 }

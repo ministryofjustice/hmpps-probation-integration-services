@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
+import java.time.ZonedDateTime
 
 @Entity
 @Immutable
@@ -14,6 +15,9 @@ class Disposal(
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event,
+
+    @Column
+    val terminationDate: ZonedDateTime? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean,

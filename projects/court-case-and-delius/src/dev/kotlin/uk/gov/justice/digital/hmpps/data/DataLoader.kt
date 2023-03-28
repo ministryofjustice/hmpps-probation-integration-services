@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.user.UserRepository
+import java.time.ZonedDateTime
 
 @Component
 @Profile("dev", "integration-test")
@@ -51,7 +52,7 @@ class DataLoader(
         em.saveAll(currentEvent, currentSentence, currentManager)
 
         val preEvent = SentenceGenerator.generateEvent(PersonGenerator.PREVIOUSLY_MANAGED, active = false)
-        val preSentence = SentenceGenerator.generateSentence(preEvent, active = false)
+        val preSentence = SentenceGenerator.generateSentence(preEvent, ZonedDateTime.now().minusDays(7), active = false)
         val preManager = SentenceGenerator.generateOrderManager(preEvent, StaffGenerator.ALLOCATED)
         em.saveAll(preEvent, preSentence, preManager)
     }
