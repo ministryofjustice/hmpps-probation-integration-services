@@ -98,7 +98,7 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
-        <a href="./api-reference.html#example-inputid"><span>/example/{inputId}</span></a>
+        <a href="./api-reference.html#probation-case-crn-status"><span>/probation-case/{crn}/status</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -134,14 +134,14 @@
 
 
 
-<h2 id="example-inputid">/example/{inputId}</h2>
+<h2 id="probation-case-crn-status">/probation-case/{crn}/status</h2>
 
-<h3 id="example-inputid-get">get</h3>
-
-
+<h3 id="probation-case-crn-status-get">get</h3>
 
 
-<h4 id="example-inputid-get-parameters">Parameters</h4>
+
+
+<h4 id="probation-case-crn-status-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -149,7 +149,7 @@
 <tbody>
 
 <tr>
-<td>inputId</td>
+<td>crn</td>
 <td>path</td>
 <td>string</td>
 <td>true</td>
@@ -164,7 +164,7 @@
 
 
 
-<h4 id="example-inputid-get-responses">Responses</h4>
+<h4 id="probation-case-crn-status-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -178,9 +178,13 @@
 
 
 
+<pre><code>{
+  "status": "string"
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-probationstatusdetail'>ProbationStatusDetail</a>
 </td>
 </tr>
 
@@ -192,6 +196,28 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-probationstatusdetail">ProbationStatusDetail</h3>
+
+
+<table class='schema-probationstatusdetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>status</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 
 
             
