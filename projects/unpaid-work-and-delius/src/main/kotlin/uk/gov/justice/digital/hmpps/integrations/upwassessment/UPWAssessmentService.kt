@@ -69,7 +69,7 @@ class UPWAssessmentService(
         val episodeId = notification.message.additionalInformation.episodeId()
         val response = arnClient.getUPWAssessment(URI(notification.message.detailUrl!!))
         val reg = Regex("[^A-Za-z0-9- ]")
-        val filename = "${person.forename}-${person.surname}-${person.crn}-UPW.pdf".replace(reg,"")
+        val filename = "${person.forename}-${person.surname}-${person.crn}-UPW.pdf".replace(reg, "")
         val fileData = response.body().asInputStream().readAllBytes()
         if (response.status() != 200 || !fileData.isPdf()) {
             throw IllegalStateException("Invalid PDF returned for episode: ${notification.message.detailUrl}")

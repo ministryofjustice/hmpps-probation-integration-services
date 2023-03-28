@@ -12,7 +12,9 @@ object PersonManagerGenerator {
         id,
         PersonWithManager(
             CaseGenerator.DEFAULT.id,
-            CaseGenerator.DEFAULT.crn
+            CaseGenerator.DEFAULT.crn,
+            "stevo",
+            "O'test"
         ),
         StaffGenerator.DEFAULT,
         TeamGenerator.DEFAULT
