@@ -20,6 +20,12 @@ class PersonWithManager(
     @Column(columnDefinition = "char(7)")
     val crn: String,
 
+    @Column(name = "first_name", length = 35)
+    val forename: String,
+
+    @Column(name = "surname", length = 35)
+    val surname: String,
+
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
 

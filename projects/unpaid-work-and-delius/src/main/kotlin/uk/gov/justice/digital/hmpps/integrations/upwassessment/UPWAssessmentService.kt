@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.integrations.upwassessment
 
-import jakarta.validation.ConstraintViolationException
-import org.springframework.http.ContentDisposition
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.arn.ArnClient
@@ -18,6 +16,7 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
+import java.sql.SQLIntegrityConstraintViolationException
 
 @Service
 class UPWAssessmentService(
@@ -40,7 +39,7 @@ class UPWAssessmentService(
             )
         }
         val contactId = createContact(person, notification)
-        uploadDocument(notification, contactId, person.id)
+        uploadDocument(notification, contactId, person)
     }
 
     private fun createContact(
@@ -65,11 +64,12 @@ class UPWAssessmentService(
         return contact.id
     }
 
-    private fun uploadDocument(notification: Notification<HmppsDomainEvent>, contactId: Long, offenderId: Long) {
+    private fun uploadDocument(notification: Notification<HmppsDomainEvent>, contactId: Long, person: PersonWithManager) {
         // get the episode id from the message then get the document content from the UPW/ARN Service
         val episodeId = notification.message.additionalInformation.episodeId()
         val response = arnClient.getUPWAssessment(URI(notification.message.detailUrl!!))
-        val filename = ContentDisposition.parse(response.headers()["Content-Disposition"]!!.first()).filename
+        val reg = Regex("[^A-Za-z0-9-. ]")
+        val filename = "${person.forename}-${person.surname}-${person.crn}-UPW.pdf".replace(reg, "")
         val fileData = response.body().asInputStream().readAllBytes()
         if (response.status() != 200 || !fileData.isPdf()) {
             throw IllegalStateException("Invalid PDF returned for episode: ${notification.message.detailUrl}")
@@ -80,12 +80,12 @@ class UPWAssessmentService(
             documentService.createDeliusDocument(
                 notification.message,
                 fileData,
-                filename!!,
+                filename,
                 contactId,
                 episodeId,
-                offenderId
+                person.id
             )
-        } catch (e: ConstraintViolationException) {
+        } catch (e: SQLIntegrityConstraintViolationException) {
             if (e.message?.contains("XIE10DOCUMENT") == true) {
                 return
             }
