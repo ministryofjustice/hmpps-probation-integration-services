@@ -38,15 +38,20 @@ internal class RecallServiceTest : RecallServiceTestBase() {
 
     @Test
     fun unsupportedReleaseTypeIsIgnored() {
-        assertThrows<IgnorableMessageException> { recallService.recall("", "", "RETURN_FROM_COURT", recallDateTime) }
-        assertThrows<IgnorableMessageException> { recallService.recall("", "", "TRANSFERRED", recallDateTime) }
-        assertThrows<IgnorableMessageException> { recallService.recall("", "", "UNKNOWN", recallDateTime) }
+        val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
+        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(prisonId)).thenReturn(InstitutionGenerator.DEFAULT)
+        whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
+        assertThrows<IgnorableMessageException> { recallService.recall(nomsNumber, prisonId, "RETURN_FROM_COURT", recallDateTime) }
+        assertThrows<IgnorableMessageException> { recallService.recall(nomsNumber, prisonId, "UNKNOWN", recallDateTime) }
     }
 
     @Test
     fun unexpectedReleaseTypeIsThrown() {
+        val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
+        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(prisonId)).thenReturn(InstitutionGenerator.DEFAULT)
+        whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
         assertThrows<IllegalArgumentException> {
-            recallService.recall("", "", "Invalid reason!", recallDateTime)
+            recallService.recall(nomsNumber, prisonId, "Invalid reason!", recallDateTime)
         }
     }
 
@@ -59,8 +64,6 @@ internal class RecallServiceTest : RecallServiceTestBase() {
 
     @Test
     fun missingInstitutionIsThrown() {
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT])
-
         assertThrows<NotFoundException> {
             recallService.recall("", "TEST", reason, recallDateTime)
         }
@@ -68,7 +71,6 @@ internal class RecallServiceTest : RecallServiceTestBase() {
 
     @Test
     fun failureToRetrieveEventsIsThrown() {
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT])
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(prisonId)).thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents("INVALID")).thenThrow(IllegalArgumentException())
 
@@ -80,7 +82,6 @@ internal class RecallServiceTest : RecallServiceTestBase() {
     @Test
     fun attemptToRecallUnSentencedEventIsThrown() {
         val unSentencedEvent = EventGenerator.unSentencedEvent(person)
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT])
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(prisonId)).thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(unSentencedEvent))
 
@@ -93,7 +94,6 @@ internal class RecallServiceTest : RecallServiceTestBase() {
     @Test
     fun attemptToRecallNonCustodialEventIsThrown() {
         val nonCustodialEvent = EventGenerator.nonCustodialEvent(person)
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT])
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(prisonId)).thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(nonCustodialEvent))
 

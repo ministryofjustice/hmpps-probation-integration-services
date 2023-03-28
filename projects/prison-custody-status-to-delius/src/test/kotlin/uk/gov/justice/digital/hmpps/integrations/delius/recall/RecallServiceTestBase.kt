@@ -5,6 +5,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
@@ -21,6 +22,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReas
 abstract class RecallServiceTestBase {
     @Mock
     lateinit var auditedInteractionService: AuditedInteractionService
+
+    @Mock
+    lateinit var featureFlags: FeatureFlags
 
     @Mock
     lateinit var eventService: EventService

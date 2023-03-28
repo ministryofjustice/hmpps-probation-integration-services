@@ -9,7 +9,12 @@ enum class CustodialStatusCode(val code: String) {
     POST_SENTENCE_SUPERVISION("P"),
     CUSTODY_ROTL("R"),
     TERMINATED("T"),
-    AUTO_TERMINATED("AT")
+    AUTO_TERMINATED("AT");
+
+    companion object {
+        fun withCode(code: String) =
+            values().firstOrNull { it.code == code } ?: throw IllegalArgumentException("No known custodial status")
+    }
 }
 
 val TERMINATED_STATUSES = listOf(CustodialStatusCode.TERMINATED, CustodialStatusCode.AUTO_TERMINATED)

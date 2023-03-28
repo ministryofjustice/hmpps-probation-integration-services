@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datasource.OptimisationContext
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -60,6 +61,7 @@ val EOTL_RECALL_CONTACT_NOTES = """${System.lineSeparator()}
 @Service
 class RecallService(
     auditedInteractionService: AuditedInteractionService,
+    private val featureFlags: FeatureFlags,
     private val eventService: EventService,
     private val institutionRepository: InstitutionRepository,
     private val recallReasonRepository: RecallReasonRepository,
@@ -81,18 +83,20 @@ class RecallService(
         reason: String,
         recallDateTime: ZonedDateTime
     ): RecallOutcome {
-        val recallReason = recallReasonRepository.getByCodeAndSelectableIsTrue(mapToRecallReason(reason).code)
+        val getRecallReason = { csc: CustodialStatusCode ->
+            recallReasonRepository.getByCodeAndSelectableIsTrue(decideRecallReason(reason)(csc).code)
+        }
         val institution = institutionRepository.getByNomisCdeCodeAndIdEstablishment(prisonId)
 
         return eventService.getActiveCustodialEvents(nomsNumber)
-            .map { addRecallToEvent(it, institution, recallReason, recallDateTime) }
+            .map { addRecallToEvent(it, institution, getRecallReason, recallDateTime) }
             .minBy { it.ordinal } // return the most relevant outcome
     }
 
     private fun addRecallToEvent(
         event: Event,
         toInstitution: Institution,
-        recallReason: RecallReason,
+        getRecallReason: (csc: CustodialStatusCode) -> RecallReason,
         recallDateTime: ZonedDateTime
     ): RecallOutcome = audit(BusinessInteractionCode.ADD_RECALL) { audit ->
         audit["eventId"] = event.id
@@ -108,6 +112,7 @@ class RecallService(
 
         val recallDate = recallDateTime.truncatedTo(DAYS)
 
+        val recallReason = getRecallReason(CustodialStatusCode.withCode(custody.status.code))
         // perform validation
         validateRecall(recallReason, custody, latestRelease, recallDate)
 
@@ -156,11 +161,21 @@ class RecallService(
         recall: Recall?
     ) = when (toInstitution.code) {
         InstitutionCode.UNLAWFULLY_AT_LARGE.code -> {
-            custodyService.updateStatus(custody, CustodialStatusCode.RECALLED, recallDate, "Recall added unlawfully at large ")
+            custodyService.updateStatus(
+                custody,
+                CustodialStatusCode.RECALLED,
+                recallDate,
+                "Recall added unlawfully at large "
+            )
             true
         }
         InstitutionCode.UNKNOWN.code -> {
-            custodyService.updateStatus(custody, CustodialStatusCode.RECALLED, recallDate, "Recall added but location unknown ")
+            custodyService.updateStatus(
+                custody,
+                CustodialStatusCode.RECALLED,
+                recallDate,
+                "Recall added but location unknown "
+            )
             true
         }
         else -> if (custody.status.canChange()) {
@@ -281,11 +296,26 @@ class RecallService(
         }
     }
 
-    private fun mapToRecallReason(reason: String) = when (reason) {
-        "ADMISSION" -> RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT
-        "TEMPORARY_ABSENCE_RETURN" -> RecallReasonCode.END_OF_TEMPORARY_LICENCE
+    private fun decideRecallReason(reason: String): (code: CustodialStatusCode) -> RecallReasonCode = when (reason) {
+        "ADMISSION" -> {
+            { RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT }
+        }
+        "TEMPORARY_ABSENCE_RETURN" -> {
+            { RecallReasonCode.END_OF_TEMPORARY_LICENCE }
+        }
+        "TRANSFERRED" -> {
+            if (featureFlags.enabled("messages.recall.transferred")) {
+                {
+                    when (it) {
+                        CustodialStatusCode.CUSTODY_ROTL -> RecallReasonCode.END_OF_TEMPORARY_LICENCE
+                        else -> RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT
+                    }
+                }
+            } else {
+                throw IgnorableMessageException("UnsupportedRecallReason")
+            }
+        }
         "RETURN_FROM_COURT",
-        "TRANSFERRED",
         "UNKNOWN" -> throw IgnorableMessageException("UnsupportedRecallReason")
         else -> throw IllegalArgumentException("Unexpected recall reason: $reason")
     }
