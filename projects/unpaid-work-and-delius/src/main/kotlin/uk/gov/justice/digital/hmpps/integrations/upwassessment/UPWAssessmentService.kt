@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.upwassessment
 
+import jakarta.validation.ConstraintViolationException
 import org.springframework.http.ContentDisposition
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -75,7 +76,21 @@ class UPWAssessmentService(
         }
         // Then upload the document content to Alfresco AND create a delius document that links to the alfresco id
         // and contact id.
-        documentService.createDeliusDocument(notification.message, fileData, filename!!, contactId, episodeId, offenderId)
+        try {
+            documentService.createDeliusDocument(
+                notification.message,
+                fileData,
+                filename!!,
+                contactId,
+                episodeId,
+                offenderId
+            )
+        } catch (e: ConstraintViolationException) {
+            if (e.message?.contains("XIE10DOCUMENT") == true) {
+                return
+            }
+            throw e
+        }
     }
 
     private fun ByteArray.isPdf() = take(4).toByteArray().contentEquals("%PDF".toByteArray())
