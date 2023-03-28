@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data
 
+import IdGenerator
 import UserGenerator
 import jakarta.annotation.PostConstruct
 import jakarta.persistence.EntityManager
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.Outcome
 import uk.gov.justice.digital.hmpps.user.UserRepository
 import java.time.ZonedDateTime
 
@@ -39,7 +41,9 @@ class DataLoader(
 
         val noSentenceEvent = SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE)
         val noSentenceManager = SentenceGenerator.generateOrderManager(noSentenceEvent, StaffGenerator.UNALLOCATED)
-        em.saveAll(noSentenceEvent, noSentenceManager)
+        val outcome = Outcome(Outcome.Code.AWAITING_PSR.value, IdGenerator.getAndIncrement())
+        val courtAppearance = SentenceGenerator.generateCourtAppearance(noSentenceEvent, outcome)
+        em.saveAll(noSentenceEvent, noSentenceManager, outcome, courtAppearance)
 
         val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION)
         val newSentence = SentenceGenerator.generateSentence(newEvent)

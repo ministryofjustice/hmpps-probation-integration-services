@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtAppearance
+import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.Outcome
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
@@ -32,4 +34,11 @@ object SentenceGenerator {
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = OrderManager(event, staff, active, softDeleted, id)
+
+    fun generateCourtAppearance(
+        event: Event,
+        outcome: Outcome,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = CourtAppearance(event, outcome, softDeleted, id)
 }

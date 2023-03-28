@@ -42,4 +42,8 @@ class Outcome(
     @Id
     @Column(name = "standard_reference_list_id")
     val id: Long
-)
+) {
+    enum class Code(val value: String) {
+        AWAITING_PSR("101")
+    }
+}
