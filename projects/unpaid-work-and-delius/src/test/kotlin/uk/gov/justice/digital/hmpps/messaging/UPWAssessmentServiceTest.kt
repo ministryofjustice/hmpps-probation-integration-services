@@ -1,21 +1,34 @@
 package uk.gov.justice.digital.hmpps.messaging
 
+import feign.Request
+import feign.Response
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.any
+import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.CaseGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.integrations.arn.ArnClient
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.type.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonManager
+import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonWithManager
 import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonWithManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.common.entity.staff.Staff
+import uk.gov.justice.digital.hmpps.integrations.common.entity.team.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.document.DocumentService
 import uk.gov.justice.digital.hmpps.integrations.upwassessment.UPWAssessmentService
 import uk.gov.justice.digital.hmpps.prepMessage
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.net.URI
 
 @ExtendWith(MockitoExtension::class)
 internal class UPWAssessmentServiceTest {
@@ -41,6 +54,18 @@ internal class UPWAssessmentServiceTest {
     @Mock
     private lateinit var arnClient: ArnClient
 
+    @Mock
+    private lateinit var staff: Staff
+
+    @Mock
+    private lateinit var team: Team
+
+    @Mock
+    private lateinit var personManager: PersonManager
+
+    @Mock
+    private lateinit var person: PersonWithManager
+
     @Test
     fun `when person not found`() {
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(CaseGenerator.DEFAULT.crn)).thenReturn(null)
@@ -51,5 +76,30 @@ internal class UPWAssessmentServiceTest {
             "PersonNotFound",
             mapOf("crn" to notification.message.personReference.findCrn()!!)
         )
+    }
+
+    @Test
+    fun `when invalid pdf is returned`() {
+        whenever(personManager.staff).thenReturn(staff)
+        whenever(personManager.team).thenReturn(team)
+        whenever(person.managers).thenReturn(listOf(personManager))
+        whenever(personRepository.findByCrnAndSoftDeletedIsFalse(CaseGenerator.DEFAULT.crn)).thenReturn(person)
+        whenever(contactTypeRepository.findByCode(ContactTypeGenerator.DEFAULT.code)).thenReturn(ContactTypeGenerator.DEFAULT)
+        whenever(contactRepository.save(any())).thenAnswer { it.arguments[0] }
+        val notification = prepMessage("upw-assessment-complete", 1234)
+
+        whenever(arnClient.getUPWAssessment(URI(notification.message.detailUrl!!))).thenReturn(
+            Response.builder()
+                .body("Ceci n'est pas une PDF".toByteArray())
+                .headers(mapOf("Content-Disposition" to listOf("filename=upw-assessment.pdf")))
+                .request(mock(Request::class.java))
+                .status(200)
+                .build()
+        )
+
+        val exception = assertThrows<IllegalStateException> {
+            upwAssessmentService.processMessage(notification)
+        }
+        assertThat(exception.message, equalTo("Invalid PDF returned for episode: http://localhost:1234/api/upw/download/12345"))
     }
 }
