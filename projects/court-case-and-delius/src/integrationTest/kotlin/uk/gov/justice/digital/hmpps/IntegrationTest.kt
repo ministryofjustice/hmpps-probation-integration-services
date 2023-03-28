@@ -41,6 +41,9 @@ internal class IntegrationTest {
             .perform(get("/probation-case/$crn/status").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful)
             .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(statusDetail.status.name))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.inBreach").value(statusDetail.inBreach))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.preSentenceActivity").value(statusDetail.preSentenceActivity))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.awaitingPsr").value(statusDetail.awaitingPsr))
 
         statusDetail.terminationDate?.let {
             expect.andExpect(MockMvcResultMatchers.jsonPath("$.terminationDate").value(it.toString()))
@@ -60,7 +63,10 @@ internal class IntegrationTest {
         @JvmStatic
         fun probationStatuses() = listOf(
             Arguments.of(PersonGenerator.NEW_TO_PROBATION.crn, DEFAULT_DETAIL.copy(ManagedStatus.NEW_TO_PROBATION)),
-            Arguments.of(PersonGenerator.CURRENTLY_MANAGED.crn, DEFAULT_DETAIL.copy(ManagedStatus.CURRENTLY_MANAGED)),
+            Arguments.of(
+                PersonGenerator.CURRENTLY_MANAGED.crn,
+                DEFAULT_DETAIL.copy(ManagedStatus.CURRENTLY_MANAGED, inBreach = true)
+            ),
             Arguments.of(
                 PersonGenerator.PREVIOUSLY_MANAGED.crn,
                 DEFAULT_DETAIL.copy(ManagedStatus.PREVIOUSLY_MANAGED, LocalDate.now().minusDays(7))

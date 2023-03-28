@@ -50,7 +50,7 @@ class DataLoader(
         val newManager = SentenceGenerator.generateOrderManager(newEvent, StaffGenerator.UNALLOCATED)
         em.saveAll(newEvent, newSentence, newManager)
 
-        val currentEvent = SentenceGenerator.generateEvent(PersonGenerator.CURRENTLY_MANAGED)
+        val currentEvent = SentenceGenerator.generateEvent(PersonGenerator.CURRENTLY_MANAGED, inBreach = true)
         val currentSentence = SentenceGenerator.generateSentence(currentEvent)
         val currentManager = SentenceGenerator.generateOrderManager(currentEvent, StaffGenerator.ALLOCATED)
         em.saveAll(currentEvent, currentSentence, currentManager)
