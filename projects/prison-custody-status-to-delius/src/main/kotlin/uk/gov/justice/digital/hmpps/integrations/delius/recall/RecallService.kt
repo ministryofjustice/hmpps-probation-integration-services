@@ -58,6 +58,8 @@ val EOTL_RECALL_CONTACT_NOTES = """${System.lineSeparator()}
     |The date may reflect an update after the date the actual Recall/Return to Custody occurred
 """.trimMargin()
 
+const val FEATURE_FLAG_TRANSFERRED = "messages.recall.transferred"
+
 @Service
 class RecallService(
     auditedInteractionService: AuditedInteractionService,
@@ -304,7 +306,7 @@ class RecallService(
             { RecallReasonCode.END_OF_TEMPORARY_LICENCE }
         }
         "TRANSFERRED" -> {
-            if (featureFlags.enabled("messages.recall.transferred")) {
+            if (featureFlags.enabled(FEATURE_FLAG_TRANSFERRED)) {
                 {
                     when (it) {
                         CustodialStatusCode.CUSTODY_ROTL -> RecallReasonCode.END_OF_TEMPORARY_LICENCE
