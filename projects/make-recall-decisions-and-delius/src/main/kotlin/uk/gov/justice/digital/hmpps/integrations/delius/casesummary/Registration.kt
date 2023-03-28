@@ -17,7 +17,7 @@ import org.springframework.data.jpa.repository.Query
 @Where(clause = "soft_deleted = 0 and deregistered = 0")
 class Registration(
     @Id
-    @Column(name = "offender_manager_id")
+    @Column(name = "registration_id")
     val id: Long,
 
     @Column(name = "offender_id")
@@ -39,7 +39,7 @@ class Registration(
 @Entity(name = "CaseSummaryRegistrationType")
 class RegistrationType(
     @Id
-    @Column(name = "staff_id")
+    @Column(name = "register_type_id")
     val id: Long,
 
     @Column

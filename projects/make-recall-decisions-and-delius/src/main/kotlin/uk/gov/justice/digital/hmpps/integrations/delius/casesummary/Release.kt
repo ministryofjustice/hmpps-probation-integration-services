@@ -42,7 +42,7 @@ class Recall(
     @Column(name = "recall_id")
     val id: Long,
 
-    @Column(name = "actual_release_date")
+    @Column(name = "recall_date")
     val date: ZonedDateTime,
 
     @OneToOne
