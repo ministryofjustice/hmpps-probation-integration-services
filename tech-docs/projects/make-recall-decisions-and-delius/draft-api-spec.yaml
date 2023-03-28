@@ -256,12 +256,15 @@ components:
           items:
             type: string
           example: ["MAPPA 1", "High risk of serious harm"]
-        lastReleaseDate:
-          type: string
-          format: date
-        lastRecallDate:
-          type: string
-          format: date
+        lastRelease:
+          type: object
+          properties:
+            releaseDate:
+              type: string
+              format: date
+            recallDate:
+              type: string
+              format: date
         activeConvictions:
           type: array
           items:
@@ -328,12 +331,6 @@ components:
         description:
           type: string
           example: ORA Suspended Sentence Order
-        length:
-          type: number
-          example: 2
-        lengthUnits:
-          type: string
-          example: Months
         mainOffence:
           description: Main offence description
           example: Burglary
@@ -344,17 +341,26 @@ components:
           type: array
           items:
             type: string
-        isCustodial:
-          type: boolean
-        custodialStatusCode:
-          type: string
-          example: B
-        licenceExpiryDate:
-          type: string
-          format: date
-        sentenceExpiryDate:
-          type: string
-          format: date
+        sentence:
+          type: object
+          properties:
+            length:
+              type: number
+              example: 2
+            lengthUnits:
+              type: string
+              example: Months
+            isCustodial:
+              type: boolean
+            custodialStatusCode:
+              type: string
+              example: B
+            licenceExpiryDate:
+              type: string
+              format: date
+            sentenceExpiryDate:
+              type: string
+              format: date
     EventWithLicenceConditions:
       type: object
       properties:
