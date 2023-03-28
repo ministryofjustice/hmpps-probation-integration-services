@@ -2,3 +2,7 @@
 # Suppressed as no file uploads
 # By anthony-britton-moj
 CVE-2023-24998 exp:2023-04-11
+
+# Suppressed as we only use trusted yaml - app config
+# By anthony-britton-moj
+CVE-2022-1471 exp:2023-04-11
