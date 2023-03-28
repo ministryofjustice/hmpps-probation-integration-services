@@ -1,7 +1,10 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryPerson
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.District
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Provider
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
@@ -9,6 +12,11 @@ import uk.gov.justice.digital.hmpps.set
 import java.time.LocalDate
 
 object PersonGenerator {
+    val DEFAULT_PROVIDER = Provider(IdGenerator.getAndIncrement(), "TST", "Provider description")
+    val DEFAULT_LAU = District(IdGenerator.getAndIncrement(), "Local admin unit")
+    val DEFAULT_TEAM = Team(IdGenerator.getAndIncrement(), "TEAM01", "Team description", district = DEFAULT_LAU)
+    val DEFAULT_STAFF = Staff(IdGenerator.getAndIncrement(), "STAFF01", forename = "Forename", surname = "Surname")
+
     val RECOMMENDATION_STARTED = generate("X000001")
     val DECISION_TO_RECALL = generate("X000002")
     val DECISION_NOT_TO_RECALL = generate("X000003")
@@ -16,9 +24,9 @@ object PersonGenerator {
 
     fun generate(
         crn: String,
-        providerId: Long = 1,
-        teamId: Long = 2,
-        staffId: Long = 3,
+        providerId: Long = DEFAULT_PROVIDER.id,
+        teamId: Long = DEFAULT_TEAM.id,
+        staffId: Long = DEFAULT_STAFF.id,
         id: Long = IdGenerator.getAndIncrement()
     ): Person {
         val person = Person(id, crn)
@@ -38,7 +46,7 @@ object PersonGenerator {
         ethnicity: ReferenceData = ReferenceData(IdGenerator.getAndIncrement(), "A1", "Asian or Asian British: Indian"),
         primaryLanguage: ReferenceData = ReferenceData(IdGenerator.getAndIncrement(), "001", "English"),
         id: Long = IdGenerator.getAndIncrement()
-    ) = CaseSummaryPerson(
+    ) = uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Person(
         id = id,
         crn = crn,
         forename = forename,

@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.controller
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -8,10 +10,16 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.service.CaseSummaryService
 
 @RestController
+@Tag(name = "Case Summary")
 @RequestMapping("/case-summary/{crn}")
 @PreAuthorize("hasRole('ROLE_MAKE_RECALL_DECISIONS_API')")
 class CaseSummaryController(private val caseSummaryService: CaseSummaryService) {
 
     @GetMapping(value = ["/personal-details"])
+    @Operation(summary = "Personal details including name, date of birth, address")
     fun getPersonalDetails(@PathVariable("crn") crn: String) = caseSummaryService.getPersonalDetails(crn)
+
+    @GetMapping(value = ["/overview"])
+    @Operation(summary = "Overview of the probation case including active events/convictions, register flags")
+    fun getOverview(@PathVariable("crn") crn: String) = caseSummaryService.getOverview(crn)
 }

@@ -8,16 +8,17 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 
-@Entity
 @Immutable
 @Table(name = "offender")
+@Entity(name = "CaseSummaryPerson")
 @Where(clause = "soft_deleted = 0")
-class CaseSummaryPerson(
+class Person(
     @Id
     @Column(name = "offender_id")
     val id: Long,
@@ -68,8 +69,9 @@ class CaseSummaryPerson(
     val softDeleted: Boolean = false
 )
 
-interface CaseSummaryPersonRepository : JpaRepository<CaseSummaryPerson, Long> {
-    fun findByCrn(crn: String): CaseSummaryPerson?
+interface CaseSummaryPersonRepository : JpaRepository<Person, Long> {
+    @EntityGraph(attributePaths = ["gender", "ethnicity", "primaryLanguage"])
+    fun findByCrn(crn: String): Person?
 }
 
 fun CaseSummaryPersonRepository.getPerson(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
