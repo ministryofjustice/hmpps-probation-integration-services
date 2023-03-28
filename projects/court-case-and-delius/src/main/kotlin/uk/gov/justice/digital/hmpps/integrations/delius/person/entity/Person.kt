@@ -25,15 +25,6 @@ class Person(
     val id: Long
 )
 
-const val DISPOSAL_SQL = """
-    select o.crn, d.active_flag * e.active_flag as active_flag, s.officer_code
-    from offender o
-    join event e on e.offender_id = o.offender_id and e.soft_deleted = 0
-    join order_manager om on om.event_id = e.event_id and om.active_flag = 1 and om.soft_deleted = 0
-    join staff s on s.staff_id = om.allocation_staff_id
-    join disposal d on d.event_id = e.event_id and d.soft_deleted = 0
-    where crn = :crn and o.soft_deleted = 0
-"""
 interface PersonRepository : JpaRepository<Person, Long> {
 
     @Query(
