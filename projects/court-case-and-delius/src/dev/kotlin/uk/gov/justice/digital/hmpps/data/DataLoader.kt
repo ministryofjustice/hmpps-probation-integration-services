@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data
 
+import IdGenerator
 import UserGenerator
 import jakarta.annotation.PostConstruct
 import jakarta.persistence.EntityManager
@@ -11,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.Outcome
 import uk.gov.justice.digital.hmpps.user.UserRepository
+import java.time.ZonedDateTime
 
 @Component
 @Profile("dev", "integration-test")
@@ -38,20 +41,22 @@ class DataLoader(
 
         val noSentenceEvent = SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE)
         val noSentenceManager = SentenceGenerator.generateOrderManager(noSentenceEvent, StaffGenerator.UNALLOCATED)
-        em.saveAll(noSentenceEvent, noSentenceManager)
+        val outcome = Outcome(Outcome.Code.AWAITING_PSR.value, IdGenerator.getAndIncrement())
+        val courtAppearance = SentenceGenerator.generateCourtAppearance(noSentenceEvent, outcome)
+        em.saveAll(noSentenceEvent, noSentenceManager, outcome, courtAppearance)
 
         val newEvent = SentenceGenerator.generateEvent(PersonGenerator.NEW_TO_PROBATION)
         val newSentence = SentenceGenerator.generateSentence(newEvent)
         val newManager = SentenceGenerator.generateOrderManager(newEvent, StaffGenerator.UNALLOCATED)
         em.saveAll(newEvent, newSentence, newManager)
 
-        val currentEvent = SentenceGenerator.generateEvent(PersonGenerator.CURRENTLY_MANAGED)
+        val currentEvent = SentenceGenerator.generateEvent(PersonGenerator.CURRENTLY_MANAGED, inBreach = true)
         val currentSentence = SentenceGenerator.generateSentence(currentEvent)
         val currentManager = SentenceGenerator.generateOrderManager(currentEvent, StaffGenerator.ALLOCATED)
         em.saveAll(currentEvent, currentSentence, currentManager)
 
         val preEvent = SentenceGenerator.generateEvent(PersonGenerator.PREVIOUSLY_MANAGED, active = false)
-        val preSentence = SentenceGenerator.generateSentence(preEvent, active = false)
+        val preSentence = SentenceGenerator.generateSentence(preEvent, ZonedDateTime.now().minusDays(7), active = false)
         val preManager = SentenceGenerator.generateOrderManager(preEvent, StaffGenerator.ALLOCATED)
         em.saveAll(preEvent, preSentence, preManager)
     }

@@ -15,9 +15,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.ManagedStatus
+import uk.gov.justice.digital.hmpps.api.model.ProbationStatusDetail
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-test")
@@ -34,20 +36,45 @@ internal class IntegrationTest {
 
     @ParameterizedTest
     @MethodSource("probationStatuses")
-    fun `correct status returned for each case`(crn: String, status: ManagedStatus) {
-        mockMvc
+    fun `correct status returned for each case`(crn: String, statusDetail: ProbationStatusDetail) {
+        val expect = mockMvc
             .perform(get("/probation-case/$crn/status").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(status.name))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(statusDetail.status.name))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.inBreach").value(statusDetail.inBreach))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.preSentenceActivity").value(statusDetail.preSentenceActivity))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.awaitingPsr").value(statusDetail.awaitingPsr))
+
+        statusDetail.terminationDate?.let {
+            expect.andExpect(MockMvcResultMatchers.jsonPath("$.terminationDate").value(it.toString()))
+        }
     }
 
     companion object {
+
+        private val DEFAULT_DETAIL = ProbationStatusDetail(
+            ManagedStatus.UNKNOWN,
+            terminationDate = null,
+            inBreach = false,
+            preSentenceActivity = false,
+            awaitingPsr = false
+        )
+
         @JvmStatic
         fun probationStatuses() = listOf(
-            Arguments.of(PersonGenerator.NEW_TO_PROBATION.crn, ManagedStatus.NEW_TO_PROBATION),
-            Arguments.of(PersonGenerator.CURRENTLY_MANAGED.crn, ManagedStatus.CURRENTLY_MANAGED),
-            Arguments.of(PersonGenerator.PREVIOUSLY_MANAGED.crn, ManagedStatus.PREVIOUSLY_MANAGED),
-            Arguments.of(PersonGenerator.NO_SENTENCE.crn, ManagedStatus.UNKNOWN)
+            Arguments.of(PersonGenerator.NEW_TO_PROBATION.crn, DEFAULT_DETAIL.copy(ManagedStatus.NEW_TO_PROBATION)),
+            Arguments.of(
+                PersonGenerator.CURRENTLY_MANAGED.crn,
+                DEFAULT_DETAIL.copy(ManagedStatus.CURRENTLY_MANAGED, inBreach = true)
+            ),
+            Arguments.of(
+                PersonGenerator.PREVIOUSLY_MANAGED.crn,
+                DEFAULT_DETAIL.copy(ManagedStatus.PREVIOUSLY_MANAGED, LocalDate.now().minusDays(7))
+            ),
+            Arguments.of(
+                PersonGenerator.NO_SENTENCE.crn,
+                DEFAULT_DETAIL.copy(ManagedStatus.UNKNOWN, preSentenceActivity = true, awaitingPsr = true)
+            )
         )
     }
 }
