@@ -45,9 +45,9 @@ internal class RecommendationIntegrationTest {
         val person = PersonGenerator.RECOMMENDATION_STARTED
         val contact = contactRepository.findAll().firstOrNull { it.personId == person.id }
         assertNotNull(contact!!)
-        assertThat(contact.providerId, equalTo(1))
-        assertThat(contact.teamId, equalTo(2))
-        assertThat(contact.staffId, equalTo(3))
+        assertThat(contact.providerId, equalTo(PersonGenerator.DEFAULT_PROVIDER.id))
+        assertThat(contact.teamId, equalTo(PersonGenerator.DEFAULT_TEAM.id))
+        assertThat(contact.staffId, equalTo(PersonGenerator.DEFAULT_STAFF.id))
         assertThat(contact.notes, equalTo("View details of this Recommendation: http://mrd.case.crn/overview"))
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
     }
@@ -61,8 +61,8 @@ internal class RecommendationIntegrationTest {
         val person = PersonGenerator.DECISION_TO_RECALL
         val contact = contactRepository.findAll().firstOrNull { it.personId == person.id }
         assertNotNull(contact!!)
-        assertThat(contact.providerId, equalTo(1))
-        assertThat(contact.teamId, equalTo(2))
+        assertThat(contact.providerId, equalTo(PersonGenerator.DEFAULT_PROVIDER.id))
+        assertThat(contact.teamId, equalTo(PersonGenerator.DEFAULT_TEAM.id))
         assertThat(contact.staffId, equalTo(StaffGenerator.DEFAULT.id))
         assertThat(contact.notes, equalTo("View details of the Manage a Recall Oversight Decision: http://mrd.case.crn/overview"))
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
@@ -77,8 +77,8 @@ internal class RecommendationIntegrationTest {
         val person = PersonGenerator.DECISION_NOT_TO_RECALL
         val contact = contactRepository.findAll().firstOrNull { it.personId == person.id }
         assertNotNull(contact!!)
-        assertThat(contact.providerId, equalTo(1))
-        assertThat(contact.teamId, equalTo(2))
+        assertThat(contact.providerId, equalTo(PersonGenerator.DEFAULT_PROVIDER.id))
+        assertThat(contact.teamId, equalTo(PersonGenerator.DEFAULT_TEAM.id))
         assertThat(contact.staffId, equalTo(StaffGenerator.DEFAULT.id))
         assertThat(contact.notes, equalTo("View details of the Manage a Recall Oversight Decision: http://mrd.case.crn/overview"))
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)

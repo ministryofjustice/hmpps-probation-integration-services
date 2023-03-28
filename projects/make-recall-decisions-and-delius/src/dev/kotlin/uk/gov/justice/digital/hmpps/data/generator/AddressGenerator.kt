@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Address
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 
 object AddressGenerator {
@@ -17,5 +17,5 @@ object AddressGenerator {
         personId: Long = PersonGenerator.CASE_SUMMARY.id,
         status: ReferenceData = ReferenceData(IdGenerator.getAndIncrement(), "M", "Main"),
         id: Long = IdGenerator.getAndIncrement()
-    ) = CaseSummaryAddress(id, personId, status, buildingName, addressNumber, streetName, town, county, postcode, false)
+    ) = Address(id, personId, status, buildingName, addressNumber, streetName, town, county, postcode, false)
 }
