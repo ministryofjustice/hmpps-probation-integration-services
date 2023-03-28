@@ -62,7 +62,7 @@ internal class AssessmentCompleteIntegrationTest {
         val documents = documentRepository.findAll()
         MatcherAssert.assertThat(documents.size, Matchers.equalTo(1))
         MatcherAssert.assertThat(documents[0].alfrescoId, Matchers.equalTo("alfresco-uuid"))
-        MatcherAssert.assertThat(documents[0].name, Matchers.equalTo("upw.pdf"))
+        MatcherAssert.assertThat(documents[0].name, Matchers.equalTo("David-Banner-${CaseGenerator.DEFAULT.crn}-UPW.pdf"))
         MatcherAssert.assertThat(documents[0].contactId, Matchers.equalTo(contacts[0].id))
         MatcherAssert.assertThat(documents[0].tableName, Matchers.equalTo("CONTACT"))
         MatcherAssert.assertThat(documents[0].externalReference, Matchers.equalTo("12345"))

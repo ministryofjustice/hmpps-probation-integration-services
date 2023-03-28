@@ -13,7 +13,7 @@ object PersonManagerGenerator {
         PersonWithManager(
             CaseGenerator.DEFAULT.id,
             CaseGenerator.DEFAULT.crn,
-            "stevo",
+            "Stevo",
             "O'test"
         ),
         StaffGenerator.DEFAULT,

@@ -68,7 +68,7 @@ class UPWAssessmentService(
         // get the episode id from the message then get the document content from the UPW/ARN Service
         val episodeId = notification.message.additionalInformation.episodeId()
         val response = arnClient.getUPWAssessment(URI(notification.message.detailUrl!!))
-        val reg = Regex("[^A-Za-z0-9- ]")
+        val reg = Regex("[^A-Za-z0-9-. ]")
         val filename = "${person.forename}-${person.surname}-${person.crn}-UPW.pdf".replace(reg, "")
         val fileData = response.body().asInputStream().readAllBytes()
         if (response.status() != 200 || !fileData.isPdf()) {
