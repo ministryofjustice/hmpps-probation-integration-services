@@ -58,7 +58,7 @@ val EOTL_RECALL_CONTACT_NOTES = """${System.lineSeparator()}
     |The date may reflect an update after the date the actual Recall/Return to Custody occurred
 """.trimMargin()
 
-const val FEATURE_FLAG_TRANSFERRED = "messages.recall.transferred"
+const val FEATURE_FLAG_TRANSFERRED = "messages_received_transferred"
 
 @Service
 class RecallService(
