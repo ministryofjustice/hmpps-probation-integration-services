@@ -2,3 +2,7 @@
 # Suppressed as no file uploads
 # By anthony-britton-moj
 CVE-2023-24998 exp:2023-04-11
+
+# Suppressed as agent jar not our code
+# By anthony-britton-moj
+CVE-2023-1370 exp:2023-04-11
