@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.upwassessment
 
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.arn.ArnClient
 import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonWithManager
@@ -52,7 +53,7 @@ class UPWAssessmentService(
                 person,
                 notification.message.occurredAt
             )
-        } catch (e: Exception) {
+        } catch (e: DataIntegrityViolationException) {
             if (e.message?.contains("XIE10DOCUMENT") == true) {
                 return
             }
