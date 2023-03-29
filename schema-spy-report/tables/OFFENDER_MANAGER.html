@@ -698,20 +698,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>TRUST_OR_PROVIDER5</td>
-                                    <td> (&#10;TRUST_PROVIDER_TEAM_ID = TEAM_ID&#10;OR&#10;TRUST_PROVIDER_TEAM_ID = PROVIDER_TEAM_ID&#10;) </td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE49</td>
-                                    <td>TRUST_PROVIDER_FLAG IN (0, 1)</td>
+                                    <td>OFFENDER_MANAGER_TEAM_XOR5</td>
+                                    <td> (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>ACTIVE_FLAG_END_DATE4</td>
                                     <td> (ACTIVE_FLAG = 0 AND END_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG = 1 AND END_DATE IS NULL)&#10; </td>
-                                </tr>
-                                <tr>
-                                    <td>OFFENDER_MANAGER_XOR</td>
-                                    <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND ALLOCATION_STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND ALLOCATION_STAFF_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE47</td>
@@ -722,8 +714,16 @@
                                     <td> (&#10;STAFF_EMPLOYEE_ID = ALLOCATION_STAFF_ID&#10;OR&#10;STAFF_EMPLOYEE_ID = PROVIDER_EMPLOYEE_ID&#10;) </td>
                                 </tr>
                                 <tr>
-                                    <td>OFFENDER_MANAGER_TEAM_XOR5</td>
-                                    <td> (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
+                                    <td>OFFENDER_MANAGER_XOR</td>
+                                    <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND ALLOCATION_STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND ALLOCATION_STAFF_ID IS NOT NULL)&#10;) </td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE49</td>
+                                    <td>TRUST_PROVIDER_FLAG IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUST_OR_PROVIDER5</td>
+                                    <td> (&#10;TRUST_PROVIDER_TEAM_ID = TEAM_ID&#10;OR&#10;TRUST_PROVIDER_TEAM_ID = PROVIDER_TEAM_ID&#10;) </td>
                                 </tr>
                                 </tbody>
                             </table>
