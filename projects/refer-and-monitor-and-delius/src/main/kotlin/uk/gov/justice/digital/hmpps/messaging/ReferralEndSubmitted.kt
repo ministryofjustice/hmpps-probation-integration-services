@@ -28,7 +28,7 @@ class ReferralEndSubmitted(
             event.personReference.findCrn()!!,
             event.referralUrn(),
             sentReferral.relevantSentenceId,
-            sentReferral.referral.createdAt,
+            sentReferral.sentAt,
             sentReferral.endDate
                 ?: throw IllegalStateException("No End Date for Termination: ${event.referralUrn()} => ${event.personReference.findCrn()}"),
             ReferralEndType.valueOf(event.deliveryState()),
@@ -56,6 +56,7 @@ data class SentReferral(
     val referenceNumber: String,
     val relevantSentenceId: Long,
     val referral: Referral,
+    val sentAt: ZonedDateTime,
     val endRequestedAt: ZonedDateTime?,
     val concludedAt: ZonedDateTime?
 ) {
@@ -75,8 +76,7 @@ data class Referral(
     @JsonAlias("serviceProvider")
     val provider: Provider,
     @JsonAlias("contractTypeName")
-    val contractType: String,
-    val createdAt: ZonedDateTime
+    val contractType: String
 )
 
 enum class ReferralEndType(val outcome: String) {

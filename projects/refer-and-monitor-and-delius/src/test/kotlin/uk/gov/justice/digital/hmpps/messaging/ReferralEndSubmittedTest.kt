@@ -89,9 +89,9 @@ internal class ReferralEndSubmittedTest {
             Referral(
                 UUID.randomUUID().toString(),
                 Provider("Special Provider"),
-                "Contract Type",
-                ZonedDateTime.now().minusDays(1)
+                "Contract Type"
             ),
+            ZonedDateTime.now().minusDays(1),
             endRequestedAt,
             null
         )
