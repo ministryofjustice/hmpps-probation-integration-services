@@ -9,13 +9,11 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.any
 import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.CaseGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.integrations.arn.ArnClient
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonManager
@@ -80,12 +78,7 @@ internal class UPWAssessmentServiceTest {
 
     @Test
     fun `when invalid pdf is returned`() {
-        whenever(personManager.staff).thenReturn(staff)
-        whenever(personManager.team).thenReturn(team)
-        whenever(person.managers).thenReturn(listOf(personManager))
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(CaseGenerator.DEFAULT.crn)).thenReturn(person)
-        whenever(contactTypeRepository.findByCode(ContactTypeGenerator.DEFAULT.code)).thenReturn(ContactTypeGenerator.DEFAULT)
-        whenever(contactRepository.save(any())).thenAnswer { it.arguments[0] }
         val notification = prepMessage("upw-assessment-complete", 1234)
 
         whenever(arnClient.getUPWAssessment(URI(notification.message.detailUrl!!))).thenReturn(

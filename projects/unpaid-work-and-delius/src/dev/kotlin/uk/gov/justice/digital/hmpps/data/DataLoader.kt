@@ -7,10 +7,12 @@ import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.CaseRepository
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.EventRepository
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.AliasGenerator
+import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseAddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
@@ -60,6 +62,7 @@ class DataLoader(
     private val userRepository: UserRepository,
     private val caseRepository: CaseRepository,
     private val datasetRepository: DatasetRepository,
+    private val businessInteractionRepository: BusinessInteractionRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val personalCircumstanceTypeRepository: PersonalCircumstanceTypeRepository,
     private val personalCircumstanceSubTypeRepository: PersonalCircumstanceSubTypeRepository,
@@ -102,6 +105,9 @@ class DataLoader(
                 DatasetGenerator.DISABILITY_PROVISION,
                 DatasetGenerator.RELATIONSHIP
             )
+        )
+        businessInteractionRepository.saveAll(
+            listOf(BusinessInteractionGenerator.UPLOAD_DOCUMENT)
         )
 
         referenceDataRepository.saveAll(
