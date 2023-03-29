@@ -16,7 +16,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryP
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryPersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryRegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryReleaseRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMainAddress
@@ -57,7 +56,7 @@ class CaseSummaryService(
         val personalDetails = getPersonalDetailsOverview(person)
         val registerFlags = registrationRepository.findTypeDescriptionsByPersonId(person.id)
         val events = eventRepository.findByPersonId(person.id)
-        val lastRelease = releaseRepository.findFirstByCustodyIdOrderByDateDesc(events.singleCustody(crn).id)
+        val lastRelease = events.singleCustody()?.let { releaseRepository.findFirstByCustodyIdOrderByDateDesc(it.id) }
         return Overview(
             personalDetails = personalDetails,
             registerFlags = registerFlags,
@@ -66,10 +65,5 @@ class CaseSummaryService(
         )
     }
 
-    private fun List<Event>.singleCustody(crn: String): Custody {
-        val custodies = mapNotNull { it.disposal?.custody }
-        if (custodies.size > 1) throw IllegalStateException("Multiple active custodial events for $crn")
-        if (custodies.isEmpty()) throw IllegalStateException("No active custodial events for $crn")
-        return custodies.single()
-    }
+    private fun List<Event>.singleCustody() = mapNotNull { it.disposal?.custody }.singleOrNull()
 }

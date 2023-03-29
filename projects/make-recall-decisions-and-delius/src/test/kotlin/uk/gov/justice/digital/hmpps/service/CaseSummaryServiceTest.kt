@@ -1,10 +1,11 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.empty
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -94,14 +95,14 @@ internal class CaseSummaryServiceTest {
     }
 
     @Test
-    fun `get overview throws when multiple custodial events`() {
+    fun `get overview ignores multiple custodial events`() {
         givenPersonalDetails()
         givenCustodialEvents(List(3) { EventGenerator.custodialEvent(PersonGenerator.CASE_SUMMARY.id) })
 
-        val exception = assertThrows<IllegalStateException> {
-            caseSummaryService.getOverview(PersonGenerator.CASE_SUMMARY.crn)
-        }
-        assertThat(exception.message, equalTo("Multiple active custodial events for X000004"))
+        val overview = caseSummaryService.getOverview(PersonGenerator.CASE_SUMMARY.crn)
+
+        assertThat(overview.activeConvictions, hasSize(3))
+        assertThat(overview.lastRelease, nullValue())
     }
 
     @Test
@@ -109,18 +110,20 @@ internal class CaseSummaryServiceTest {
         givenPersonalDetails()
         givenCustodialEvents(emptyList())
 
-        val exception = assertThrows<IllegalStateException> {
-            caseSummaryService.getOverview(PersonGenerator.CASE_SUMMARY.crn)
-        }
-        assertThat(exception.message, equalTo("No active custodial events for X000004"))
+        val overview = caseSummaryService.getOverview(PersonGenerator.CASE_SUMMARY.crn)
+
+        assertThat(overview.activeConvictions, empty())
+        assertThat(overview.lastRelease, nullValue())
     }
 
     private fun givenPersonalDetails() {
-        whenever(personRepository.findByCrn(PersonGenerator.CASE_SUMMARY.crn)).thenReturn(PersonGenerator.CASE_SUMMARY)
+        whenever(personRepository.findByCrn(PersonGenerator.CASE_SUMMARY.crn))
+            .thenReturn(PersonGenerator.CASE_SUMMARY)
     }
 
     private fun givenAnAddress() {
-        whenever(addressRepository.findMainAddress(PersonGenerator.CASE_SUMMARY.id)).thenReturn(AddressGenerator.CASE_SUMMARY_MAIN_ADDRESS)
+        whenever(addressRepository.findMainAddress(PersonGenerator.CASE_SUMMARY.id))
+            .thenReturn(AddressGenerator.CASE_SUMMARY_MAIN_ADDRESS)
     }
 
     private fun givenAManager() {
