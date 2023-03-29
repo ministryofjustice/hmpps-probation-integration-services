@@ -28,20 +28,22 @@ internal class CaseSummaryIntegrationTest {
     @Test
     fun `personal details are returned`() {
         val person = PersonGenerator.CASE_SUMMARY
+        val manager = PersonManagerGenerator.CASE_SUMMARY
         val address = AddressGenerator.CASE_SUMMARY_MAIN_ADDRESS
         mockMvc.perform(get("/case-summary/${person.crn}/personal-details").withOAuth2Token(wireMockserver))
             .andExpect(status().is2xxSuccessful)
-            .andExpect(jsonPath("$.name.forename", equalTo(person.forename)))
-            .andExpect(jsonPath("$.name.middleName", equalTo("${person.secondName} ${person.thirdName}")))
-            .andExpect(jsonPath("$.name.surname", equalTo(person.surname)))
-            .andExpect(jsonPath("$.gender", equalTo(person.gender.description)))
-            .andExpect(jsonPath("$.dateOfBirth", equalTo(person.dateOfBirth.toString())))
-            .andExpect(jsonPath("$.identifiers.nomsNumber", equalTo(person.nomsNumber)))
-            .andExpect(jsonPath("$.identifiers.croNumber", equalTo(person.croNumber)))
-            .andExpect(jsonPath("$.identifiers.pncNumber", equalTo(person.pncNumber)))
-            .andExpect(jsonPath("$.identifiers.bookingNumber", equalTo(person.mostRecentPrisonerNumber)))
-            .andExpect(jsonPath("$.ethnicity", equalTo(person.ethnicity!!.description)))
-            .andExpect(jsonPath("$.primaryLanguage", equalTo(person.primaryLanguage!!.description)))
+            .andExpect(jsonPath("$.personalDetails.name.forename", equalTo(person.forename)))
+            .andExpect(jsonPath("$.personalDetails.name.middleName", equalTo("${person.secondName} ${person.thirdName}")))
+            .andExpect(jsonPath("$.personalDetails.name.surname", equalTo(person.surname)))
+            .andExpect(jsonPath("$.personalDetails.gender", equalTo(person.gender.description)))
+            .andExpect(jsonPath("$.personalDetails.dateOfBirth", equalTo(person.dateOfBirth.toString())))
+            .andExpect(jsonPath("$.personalDetails.identifiers.nomsNumber", equalTo(person.nomsNumber)))
+            .andExpect(jsonPath("$.personalDetails.identifiers.croNumber", equalTo(person.croNumber)))
+            .andExpect(jsonPath("$.personalDetails.identifiers.pncNumber", equalTo(person.pncNumber)))
+            .andExpect(jsonPath("$.personalDetails.identifiers.bookingNumber", equalTo(person.mostRecentPrisonerNumber)))
+            .andExpect(jsonPath("$.personalDetails.ethnicity", equalTo(person.ethnicity!!.description)))
+            .andExpect(jsonPath("$.personalDetails.primaryLanguage", equalTo(person.primaryLanguage!!.description)))
+            .andExpect(jsonPath("$.communityManager.staffCode", equalTo(manager.staff.code)))
             .andExpect(jsonPath("$.mainAddress.addressNumber", equalTo(address.addressNumber)))
             .andExpect(jsonPath("$.mainAddress.streetName", equalTo(address.streetName)))
             .andExpect(jsonPath("$.mainAddress.noFixedAbode", equalTo(address.noFixedAbode)))
@@ -50,14 +52,10 @@ internal class CaseSummaryIntegrationTest {
     @Test
     fun `overview is returned`() {
         val person = PersonGenerator.CASE_SUMMARY
-        val manager = PersonManagerGenerator.CASE_SUMMARY
         val event = EventGenerator.CASE_SUMMARY
-        val address = AddressGenerator.CASE_SUMMARY_MAIN_ADDRESS
         mockMvc.perform(get("/case-summary/${person.crn}/overview").withOAuth2Token(wireMockserver))
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.personalDetails.name.surname", equalTo(person.surname)))
-            .andExpect(jsonPath("$.personalDetails.mainAddress.streetName", equalTo(address.streetName)))
-            .andExpect(jsonPath("$.communityManager.staffCode", equalTo(manager.staff.code)))
             .andExpect(jsonPath("$.registerFlags", equalTo(listOf("MAPPA 1", "High RoSH"))))
             .andExpect(jsonPath("$.activeConvictions[0].number", equalTo(event.number)))
             .andExpect(jsonPath("$.activeConvictions[0].mainOffence", equalTo(event.mainOffence.offence.description)))

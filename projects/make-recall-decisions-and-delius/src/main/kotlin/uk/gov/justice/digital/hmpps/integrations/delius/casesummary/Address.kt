@@ -43,6 +43,9 @@ class Address(
     val town: String?,
 
     @Column
+    val district: String?,
+
+    @Column
     val county: String?,
 
     @Column

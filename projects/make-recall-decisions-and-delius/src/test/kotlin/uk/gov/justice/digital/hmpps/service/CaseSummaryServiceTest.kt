@@ -54,29 +54,29 @@ internal class CaseSummaryServiceTest {
     @Test
     fun `get personal details`() {
         givenPersonalDetails()
+        givenAnAddress()
+        givenAManager()
 
-        val personalDetails = caseSummaryService.getPersonalDetails(PersonGenerator.CASE_SUMMARY.crn)
+        val details = caseSummaryService.getPersonalDetails(PersonGenerator.CASE_SUMMARY.crn)
 
-        assertThat(personalDetails.name.forename, equalTo(PersonGenerator.CASE_SUMMARY.forename))
-        assertThat(personalDetails.mainAddress!!.streetName, equalTo(AddressGenerator.CASE_SUMMARY_MAIN_ADDRESS.streetName))
+        assertThat(details.personalDetails.name.forename, equalTo(PersonGenerator.CASE_SUMMARY.forename))
+        assertThat(details.mainAddress!!.addressNumber, equalTo(AddressGenerator.CASE_SUMMARY_MAIN_ADDRESS.addressNumber))
+        assertThat(details.mainAddress!!.streetName, equalTo(AddressGenerator.CASE_SUMMARY_MAIN_ADDRESS.streetName))
+        assertThat(details.communityManager!!.staffCode, equalTo("STAFF01"))
+        assertThat(details.communityManager!!.team.code, equalTo("TEAM01"))
+        assertThat(details.communityManager!!.name.forename, equalTo("Forename"))
+        assertThat(details.communityManager!!.name.surname, equalTo("Surname"))
     }
 
     @Test
     fun `get overview`() {
         givenPersonalDetails()
-        givenAManager()
         givenRegistrations()
         val release = givenARelease()
 
         val overview = caseSummaryService.getOverview(PersonGenerator.CASE_SUMMARY.crn)
 
         assertThat(overview.personalDetails.name.forename, equalTo(PersonGenerator.CASE_SUMMARY.forename))
-        assertThat(overview.personalDetails.mainAddress!!.addressNumber, equalTo(AddressGenerator.CASE_SUMMARY_MAIN_ADDRESS.addressNumber))
-        assertThat(overview.personalDetails.mainAddress!!.streetName, equalTo(AddressGenerator.CASE_SUMMARY_MAIN_ADDRESS.streetName))
-        assertThat(overview.communityManager!!.staffCode, equalTo("STAFF01"))
-        assertThat(overview.communityManager!!.team.code, equalTo("TEAM01"))
-        assertThat(overview.communityManager!!.name.forename, equalTo("Forename"))
-        assertThat(overview.communityManager!!.name.surname, equalTo("Surname"))
         assertThat(overview.registerFlags, equalTo(listOf("MAPPA 1", "High RoSH")))
         assertThat(overview.lastRelease!!.releaseDate, equalTo(release.date))
         assertThat(overview.lastRelease!!.recallDate, equalTo(release.recall?.date))
@@ -117,6 +117,9 @@ internal class CaseSummaryServiceTest {
 
     private fun givenPersonalDetails() {
         whenever(personRepository.findByCrn(PersonGenerator.CASE_SUMMARY.crn)).thenReturn(PersonGenerator.CASE_SUMMARY)
+    }
+
+    private fun givenAnAddress() {
         whenever(addressRepository.findMainAddress(PersonGenerator.CASE_SUMMARY.id)).thenReturn(AddressGenerator.CASE_SUMMARY_MAIN_ADDRESS)
     }
 
