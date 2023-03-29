@@ -12,10 +12,11 @@ object AddressGenerator {
         addressNumber: String? = null,
         streetName: String? = null,
         town: String? = null,
+        district: String? = null,
         county: String? = null,
         postcode: String? = null,
         personId: Long = PersonGenerator.CASE_SUMMARY.id,
         status: ReferenceData = ReferenceData(IdGenerator.getAndIncrement(), "M", "Main"),
         id: Long = IdGenerator.getAndIncrement()
-    ) = Address(id, personId, status, buildingName, addressNumber, streetName, town, county, postcode, false)
+    ) = Address(id, personId, status, buildingName, addressNumber, streetName, town, district, county, postcode, false)
 }
