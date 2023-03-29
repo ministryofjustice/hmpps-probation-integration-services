@@ -30,7 +30,14 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PersonalDetails'
+                type: object
+                properties:
+                  personalDetails:
+                    $ref: '#/components/schemas/PersonalDetails'
+                  communityManager:
+                    $ref: '#/components/schemas/CommunityManager'
+                  mainAddress:
+                    $ref: '#/components/schemas/Address'
         404:
           description: if the case does not exist, has been soft-deleted, or merged
   /case-summary/{crn}/overview:
@@ -248,20 +255,21 @@ components:
       properties:
         personalDetails:
           $ref: '#/components/schemas/PersonalDetails'
-        communityManager:
-          $ref: '#/components/schemas/CommunityManager'
         registerFlags:
           type: array
           description: List of type.description for active registrations
           items:
             type: string
           example: ["MAPPA 1", "High risk of serious harm"]
-        lastReleaseDate:
-          type: string
-          format: date
-        lastRecallDate:
-          type: string
-          format: date
+        lastRelease:
+          type: object
+          properties:
+            releaseDate:
+              type: string
+              format: date
+            recallDate:
+              type: string
+              format: date
         activeConvictions:
           type: array
           items:
@@ -328,12 +336,6 @@ components:
         description:
           type: string
           example: ORA Suspended Sentence Order
-        length:
-          type: number
-          example: 2
-        lengthUnits:
-          type: string
-          example: Months
         mainOffence:
           description: Main offence description
           example: Burglary
@@ -344,17 +346,26 @@ components:
           type: array
           items:
             type: string
-        isCustodial:
-          type: boolean
-        custodialStatusCode:
-          type: string
-          example: B
-        licenceExpiryDate:
-          type: string
-          format: date
-        sentenceExpiryDate:
-          type: string
-          format: date
+        sentence:
+          type: object
+          properties:
+            length:
+              type: number
+              example: 2
+            lengthUnits:
+              type: string
+              example: Months
+            isCustodial:
+              type: boolean
+            custodialStatusCode:
+              type: string
+              example: B
+            licenceExpiryDate:
+              type: string
+              format: date
+            sentenceExpiryDate:
+              type: string
+              format: date
     EventWithLicenceConditions:
       type: object
       properties:
@@ -479,8 +490,6 @@ components:
           type: string
         primaryLanguage:
           type: string
-        mainAddress:
-          $ref: '#/components/schemas/Address'
     Provider:
       type: object
       properties:
