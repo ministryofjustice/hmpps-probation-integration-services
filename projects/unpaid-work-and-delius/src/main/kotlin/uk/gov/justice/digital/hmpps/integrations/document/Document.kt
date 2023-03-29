@@ -38,6 +38,7 @@ class Document(
     @Column(name = "table_name")
     val tableName: String,
 
+    @Column(unique = true)
     val externalReference: String,
 
     @Column(name = "document_name")
