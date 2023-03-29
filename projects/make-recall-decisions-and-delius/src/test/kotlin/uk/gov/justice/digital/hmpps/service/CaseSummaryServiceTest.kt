@@ -6,6 +6,7 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -24,6 +25,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryP
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryRegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryReleaseRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Registration
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Release
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMainAddress
@@ -52,21 +54,25 @@ internal class CaseSummaryServiceTest {
     @InjectMocks
     lateinit var caseSummaryService: CaseSummaryService
 
+    val person = PersonGenerator.CASE_SUMMARY
+    val manager = PersonManagerGenerator.CASE_SUMMARY
+    val address = AddressGenerator.CASE_SUMMARY_MAIN_ADDRESS
+
     @Test
     fun `get personal details`() {
         givenPersonalDetails()
         givenAnAddress()
         givenAManager()
 
-        val details = caseSummaryService.getPersonalDetails(PersonGenerator.CASE_SUMMARY.crn)
+        val details = caseSummaryService.getPersonalDetails(person.crn)
 
-        assertThat(details.personalDetails.name.forename, equalTo(PersonGenerator.CASE_SUMMARY.forename))
-        assertThat(details.mainAddress!!.addressNumber, equalTo(AddressGenerator.CASE_SUMMARY_MAIN_ADDRESS.addressNumber))
-        assertThat(details.mainAddress!!.streetName, equalTo(AddressGenerator.CASE_SUMMARY_MAIN_ADDRESS.streetName))
-        assertThat(details.communityManager!!.staffCode, equalTo("STAFF01"))
-        assertThat(details.communityManager!!.team.code, equalTo("TEAM01"))
-        assertThat(details.communityManager!!.name.forename, equalTo("Forename"))
-        assertThat(details.communityManager!!.name.surname, equalTo("Surname"))
+        assertThat(details.personalDetails.name.forename, equalTo(person.forename))
+        assertThat(details.mainAddress!!.addressNumber, equalTo(address.addressNumber))
+        assertThat(details.mainAddress!!.streetName, equalTo(address.streetName))
+        assertThat(details.communityManager!!.staffCode, equalTo(manager.staff.code))
+        assertThat(details.communityManager!!.team.code, equalTo(manager.team.code))
+        assertThat(details.communityManager!!.name.forename, equalTo(manager.staff.forename))
+        assertThat(details.communityManager!!.name.surname, equalTo(manager.staff.surname))
     }
 
     @Test
@@ -75,9 +81,9 @@ internal class CaseSummaryServiceTest {
         givenRegistrations()
         val release = givenARelease()
 
-        val overview = caseSummaryService.getOverview(PersonGenerator.CASE_SUMMARY.crn)
+        val overview = caseSummaryService.getOverview(person.crn)
 
-        assertThat(overview.personalDetails.name.forename, equalTo(PersonGenerator.CASE_SUMMARY.forename))
+        assertThat(overview.personalDetails.name.forename, equalTo(person.forename))
         assertThat(overview.registerFlags, equalTo(listOf("MAPPA 1", "High RoSH")))
         assertThat(overview.lastRelease!!.releaseDate, equalTo(release.date))
         assertThat(overview.lastRelease!!.recallDate, equalTo(release.recall?.date))
@@ -97,9 +103,9 @@ internal class CaseSummaryServiceTest {
     @Test
     fun `get overview ignores multiple custodial events`() {
         givenPersonalDetails()
-        givenCustodialEvents(List(3) { EventGenerator.custodialEvent(PersonGenerator.CASE_SUMMARY.id) })
+        givenCustodialEvents(List(3) { EventGenerator.custodialEvent(person.id) })
 
-        val overview = caseSummaryService.getOverview(PersonGenerator.CASE_SUMMARY.crn)
+        val overview = caseSummaryService.getOverview(person.crn)
 
         assertThat(overview.activeConvictions, hasSize(3))
         assertThat(overview.lastRelease, nullValue())
@@ -110,36 +116,87 @@ internal class CaseSummaryServiceTest {
         givenPersonalDetails()
         givenCustodialEvents(emptyList())
 
-        val overview = caseSummaryService.getOverview(PersonGenerator.CASE_SUMMARY.crn)
+        val overview = caseSummaryService.getOverview(person.crn)
 
         assertThat(overview.activeConvictions, empty())
         assertThat(overview.lastRelease, nullValue())
     }
 
+    @Test
+    fun `get mappa and rosh history`() {
+        givenPersonalDetails()
+        givenMappa()
+        givenRosh()
+
+        val overview = caseSummaryService.getMappaAndRoshHistory(person.crn)
+
+        assertThat(overview.personalDetails.name.forename, equalTo(person.forename))
+        assertThat(overview.mappa!!.category, equalTo(1))
+        assertThat(overview.mappa!!.level, equalTo(2))
+        assertThat(overview.mappa!!.startDate, equalTo(RegistrationGenerator.MAPPA.date))
+        assertThat(overview.roshHistory, hasSize(1))
+        assertThat(overview.roshHistory[0].type, equalTo(RegistrationGenerator.HIGH_ROSH.type.code))
+        assertThat(overview.roshHistory[0].typeDescription, equalTo(RegistrationGenerator.HIGH_ROSH.type.description))
+        assertThat(overview.roshHistory[0].notes, equalTo(RegistrationGenerator.HIGH_ROSH.notes))
+        assertThat(overview.roshHistory[0].startDate, equalTo(RegistrationGenerator.HIGH_ROSH.date))
+    }
+
+    @Test
+    fun `unexpected mappa category is thrown`() {
+        givenPersonalDetails()
+        givenMappa(RegistrationGenerator.generate(person.id, RegisterType.MAPPA_TYPE, "MAPPA", category = "XX"))
+
+        val exception = assertThrows<IllegalStateException> {
+            caseSummaryService.getMappaAndRoshHistory(person.crn)
+        }
+
+        assertThat(exception.message, equalTo("Unexpected MAPPA category: XX"))
+    }
+
+    @Test
+    fun `unexpected mappa level is thrown`() {
+        givenPersonalDetails()
+        givenMappa(RegistrationGenerator.generate(person.id, RegisterType.MAPPA_TYPE, "MAPPA", level = "YY"))
+
+        val exception = assertThrows<IllegalStateException> {
+            caseSummaryService.getMappaAndRoshHistory(person.crn)
+        }
+
+        assertThat(exception.message, equalTo("Unexpected MAPPA level: YY"))
+    }
+
     private fun givenPersonalDetails() {
-        whenever(personRepository.findByCrn(PersonGenerator.CASE_SUMMARY.crn))
-            .thenReturn(PersonGenerator.CASE_SUMMARY)
+        whenever(personRepository.findByCrn(person.crn))
+            .thenReturn(person)
     }
 
     private fun givenAnAddress() {
-        whenever(addressRepository.findMainAddress(PersonGenerator.CASE_SUMMARY.id))
-            .thenReturn(AddressGenerator.CASE_SUMMARY_MAIN_ADDRESS)
+        whenever(addressRepository.findMainAddress(person.id)).thenReturn(address)
     }
 
     private fun givenAManager() {
-        whenever(personManagerRepository.findByPersonId(PersonGenerator.CASE_SUMMARY.id))
-            .thenReturn(PersonManagerGenerator.CASE_SUMMARY)
+        whenever(personManagerRepository.findByPersonId(person.id)).thenReturn(PersonManagerGenerator.CASE_SUMMARY)
     }
 
     private fun givenRegistrations(
         registrations: List<Registration> = listOf(RegistrationGenerator.MAPPA, RegistrationGenerator.HIGH_ROSH)
     ) {
-        whenever(registrationRepository.findTypeDescriptionsByPersonId(PersonGenerator.CASE_SUMMARY.id))
+        whenever(registrationRepository.findActiveTypeDescriptionsByPersonId(person.id))
             .thenReturn(registrations.map { it.type.description })
     }
 
+    private fun givenMappa(mappa: Registration = RegistrationGenerator.MAPPA) {
+        whenever(registrationRepository.findFirstByPersonIdAndTypeCodeAndDeregisteredFalseOrderByDateDesc(person.id, RegisterType.MAPPA_TYPE))
+            .thenReturn(mappa)
+    }
+
+    private fun givenRosh(rosh: List<Registration> = listOf(RegistrationGenerator.HIGH_ROSH)) {
+        whenever(registrationRepository.findByPersonIdAndTypeFlagCodeOrderByDateDesc(person.id, RegisterType.ROSH_FLAG))
+            .thenReturn(rosh)
+    }
+
     private fun givenCustodialEvents(events: List<Event>): List<Event> {
-        whenever(eventRepository.findByPersonId(PersonGenerator.CASE_SUMMARY.id)).thenReturn(events)
+        whenever(eventRepository.findByPersonId(person.id)).thenReturn(events)
         return events
     }
 

@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius.casesummary
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
@@ -35,7 +34,7 @@ class Event(
     @OneToOne(mappedBy = "event", cascade = [CascadeType.PERSIST])
     val mainOffence: MainOffence,
 
-    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST])
+    @OneToMany(mappedBy = "event", cascade = [CascadeType.PERSIST])
     val additionalOffences: List<AdditionalOffence>,
 
     @OneToOne(mappedBy = "event")

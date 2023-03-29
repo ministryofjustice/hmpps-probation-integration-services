@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.MappaAndRoshHistory
 import uk.gov.justice.digital.hmpps.api.model.Overview
 import uk.gov.justice.digital.hmpps.api.model.PersonalDetails
 import uk.gov.justice.digital.hmpps.api.model.PersonalDetailsOverview
@@ -10,6 +11,8 @@ import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.api.model.toAddress
 import uk.gov.justice.digital.hmpps.api.model.toConviction
 import uk.gov.justice.digital.hmpps.api.model.toManager
+import uk.gov.justice.digital.hmpps.api.model.toMappa
+import uk.gov.justice.digital.hmpps.api.model.toRosh
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryPersonManagerRepository
@@ -19,6 +22,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryR
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMainAddress
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMappa
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findRoshHistory
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.getPerson
 
 @Service
@@ -54,7 +59,7 @@ class CaseSummaryService(
     fun getOverview(crn: String): Overview {
         val person = personRepository.getPerson(crn)
         val personalDetails = getPersonalDetailsOverview(person)
-        val registerFlags = registrationRepository.findTypeDescriptionsByPersonId(person.id)
+        val registerFlags = registrationRepository.findActiveTypeDescriptionsByPersonId(person.id)
         val events = eventRepository.findByPersonId(person.id)
         val lastRelease = events.singleCustody()?.let { releaseRepository.findFirstByCustodyIdOrderByDateDesc(it.id) }
         return Overview(
@@ -62,6 +67,18 @@ class CaseSummaryService(
             registerFlags = registerFlags,
             lastRelease = lastRelease?.dates(),
             activeConvictions = events.map { it.toConviction() }
+        )
+    }
+
+    fun getMappaAndRoshHistory(crn: String): MappaAndRoshHistory {
+        val person = personRepository.getPerson(crn)
+        val personalDetails = getPersonalDetailsOverview(person)
+        val mappa = registrationRepository.findMappa(person.id)?.toMappa()
+        val roshHistory = registrationRepository.findRoshHistory(person.id).map { it.toRosh() }
+        return MappaAndRoshHistory(
+            personalDetails = personalDetails,
+            mappa = mappa,
+            roshHistory = roshHistory
         )
     }
 
