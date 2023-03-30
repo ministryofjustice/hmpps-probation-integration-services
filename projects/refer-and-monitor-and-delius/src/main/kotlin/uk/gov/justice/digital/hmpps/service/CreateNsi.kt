@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Requirem
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.getByPersonIdAndEventId
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCode
 import uk.gov.justice.digital.hmpps.logging.logger
+import java.time.temporal.ChronoUnit
 
 @Service
 class CreateNsi(
@@ -55,7 +56,7 @@ class CreateNsi(
                 type = type,
                 eventId = sentence.eventId,
                 requirementId = req?.id,
-                referralDate = rs.startedAt,
+                referralDate = rs.startedAt.truncatedTo(ChronoUnit.DAYS),
                 actualStartDate = rs.startedAt,
                 status = status,
                 statusDate = rs.startedAt,
