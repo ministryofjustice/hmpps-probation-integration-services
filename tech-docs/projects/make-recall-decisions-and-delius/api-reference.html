@@ -191,29 +191,51 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 
 
 <pre><code>{
-  "name": {
-    "forename": "string",
-    "middleName": "string",
-    "surname": "string"
+  "personalDetails": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "identifiers": {
+      "pncNumber": "string",
+      "croNumber": "string",
+      "nomsNumber": "string",
+      "bookingNumber": "string"
+    },
+    "dateOfBirth": "string",
+    "gender": "string",
+    "ethnicity": "string",
+    "primaryLanguage": "string"
   },
-  "identifiers": {
-    "pncNumber": "string",
-    "croNumber": "string",
-    "nomsNumber": "string",
-    "bookingNumber": "string"
-  },
-  "dateOfBirth": "string",
-  "gender": "string",
-  "ethnicity": "string",
-  "primaryLanguage": "string",
   "mainAddress": {
     "buildingName": "string",
     "addressNumber": "string",
     "streetName": "string",
+    "district": "string",
     "town": "string",
     "county": "string",
     "postcode": "string",
     "noFixedAbode": "boolean"
+  },
+  "communityManager": {
+    "staffCode": "string",
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "provider": {
+      "code": "string",
+      "name": "string"
+    },
+    "team": {
+      "code": "string",
+      "name": "string",
+      "localAdminUnit": "string",
+      "telephone": "string",
+      "email": "string"
+    }
   }
 }</code></pre>
 
@@ -291,35 +313,7 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
     "dateOfBirth": "string",
     "gender": "string",
     "ethnicity": "string",
-    "primaryLanguage": "string",
-    "mainAddress": {
-      "buildingName": "string",
-      "addressNumber": "string",
-      "streetName": "string",
-      "town": "string",
-      "county": "string",
-      "postcode": "string",
-      "noFixedAbode": "boolean"
-    }
-  },
-  "communityManager": {
-    "staffCode": "string",
-    "name": {
-      "forename": "string",
-      "middleName": "string",
-      "surname": "string"
-    },
-    "provider": {
-      "code": "string",
-      "name": "string"
-    },
-    "team": {
-      "code": "string",
-      "name": "string",
-      "localAdminUnit": "string",
-      "telephone": "string",
-      "email": "string"
-    }
+    "primaryLanguage": "string"
   },
   "registerFlags": [
     {
@@ -395,6 +389,16 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 
 <tr>
 <td>streetName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>district</td>
 <td>string</td>
 <td>false</td>
 <td></td>
@@ -498,6 +502,58 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 </tbody>
 </table>
 
+<h3 id="schema-manager">Manager</h3>
+
+
+<table class='schema-manager'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>staffCode</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>provider</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-name">Name</h3>
 
 
@@ -544,6 +600,48 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 
 
 <table class='schema-personaldetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personalDetails</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personaldetailsoverview'>PersonalDetailsOverview</a>
+</td>
+</tr>
+
+<tr>
+<td>mainAddress</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-address'>Address</a>
+</td>
+</tr>
+
+<tr>
+<td>communityManager</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-manager'>Manager</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personaldetailsoverview">PersonalDetailsOverview</h3>
+
+
+<table class='schema-personaldetailsoverview'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
@@ -609,13 +707,97 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 </td>
 </tr>
 
+</tbody>
+</table>
+
+<h3 id="schema-provider">Provider</h3>
+
+
+<table class='schema-provider'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
 <tr>
-<td>mainAddress</td>
-<td>object</td>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-team">Team</h3>
+
+
+<table class='schema-team'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>localAdminUnit</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephone</td>
+<td>string</td>
 <td>false</td>
 <td></td>
 <td>
-  <a href='#schema-address'>Address</a>
+  
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 
@@ -674,58 +856,6 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 </tbody>
 </table>
 
-<h3 id="schema-manager">Manager</h3>
-
-
-<table class='schema-manager'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>staffCode</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-name'>Name</a>
-</td>
-</tr>
-
-<tr>
-<td>provider</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-provider'>Provider</a>
-</td>
-</tr>
-
-<tr>
-<td>team</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-team'>Team</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
 <h3 id="schema-overview">Overview</h3>
 
 
@@ -741,17 +871,7 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 <td>true</td>
 <td></td>
 <td>
-  <a href='#schema-personaldetails'>PersonalDetails</a>
-</td>
-</tr>
-
-<tr>
-<td>communityManager</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-manager'>Manager</a>
+  <a href='#schema-personaldetailsoverview'>PersonalDetailsOverview</a>
 </td>
 </tr>
 
@@ -782,38 +902,6 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 <td></td>
 <td>
   <a href='#schema-conviction'>Conviction</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-provider">Provider</h3>
-
-
-<table class='schema-provider'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
 </td>
 </tr>
 
@@ -923,68 +1011,6 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 
 <tr>
 <td>sentenceExpiryDate</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-team">Team</h3>
-
-
-<table class='schema-team'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>localAdminUnit</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>telephone</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>email</td>
 <td>string</td>
 <td>false</td>
 <td></td>
