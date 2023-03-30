@@ -43,13 +43,15 @@ class NsiService(
 
     @Transactional
     fun startNsi(crn: String, rs: ReferralStarted) = audit(MANAGE_NSI) { audit ->
-        val nsi = nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn)
+        val find = { nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn) }
+        val nsi = find()
             ?: createNsi.new(crn, rs) {
                 statusHistoryRepository.save(it.statusHistory())
                 contactRepository.save(it.contact(NSI_REFERRAL.value, it.referralDate))
                 contactRepository.save(it.statusChangeContact())
                 contactRepository.save(it.contact(NSI_COMMENCED.value, it.actualStartDate!!))
             }
+            ?: find() ?: throw IllegalStateException("Unable to find or create NSI for ${rs.urn}")
 
         audit["offenderId"] = nsi.person.id
         audit["nsiId"] = nsi.id

@@ -7,6 +7,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.dao.DataIntegrityViolationException
@@ -79,6 +80,27 @@ internal class NsiServiceTest {
 
         verify(statusHistoryRepository).save(any())
         verify(contactRepository).save(any())
+    }
+
+    @Test
+    fun `unable to create nsi calls find a second time`() {
+        val crn = "T123456"
+        val referralId = UUID.randomUUID()
+        val ref = "urn:hmpps:interventions-referral:$referralId"
+        val nsi = NsiGenerator.generate(NsiGenerator.TYPES.values.first(), status = NsiGenerator.COMP_STATUS)
+        val manager = NsiGenerator.generateManager(nsi)
+        whenever(nsiRepository.findByPersonCrnAndExternalReference(crn, ref))
+            .thenReturn(null, nsi.withManager(manager))
+        whenever(nsiStatusRepository.findByCode(NsiStatus.Code.IN_PROGRESS.value)).thenReturn(NsiGenerator.INPROG_STATUS)
+        whenever(contactTypeRepository.getReferenceById(NsiGenerator.INPROG_STATUS.contactTypeId))
+            .thenReturn(ContactGenerator.TYPES[ContactType.Code.IN_PROGRESS.value])
+
+        nsiService.startNsi(
+            crn,
+            ReferralStarted(referralId, nsi.referralDate, "E2E", 197L, "some notes about this referral")
+        )
+
+        verify(nsiRepository, times(2)).findByPersonCrnAndExternalReference(crn, ref)
     }
 
     @Test

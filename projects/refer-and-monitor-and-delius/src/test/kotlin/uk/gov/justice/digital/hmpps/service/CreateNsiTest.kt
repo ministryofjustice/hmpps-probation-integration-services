@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -14,7 +15,6 @@ import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
-import uk.gov.justice.digital.hmpps.exception.AlreadyCreatedException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
@@ -81,7 +81,7 @@ internal class CreateNsiTest {
     }
 
     @Test
-    fun `Already Created Exception when attempting to create a duplicate`() {
+    fun `null is returned from create when attempting to create a duplicate`() {
         val person = PersonGenerator.SETENCED_WITHOUT_NSI
         val sentence = SentenceGenerator.SENTENCE_WITHOUT_NSI
         val referralId = UUID.randomUUID()
@@ -112,6 +112,7 @@ internal class CreateNsiTest {
         whenever(nsiRepository.save(any<Nsi>())).thenAnswer { it.arguments[0] }
         whenever(nsiManagerService.createNewManager(any())).thenAnswer { NsiGenerator.generateManager(it.arguments[0] as Nsi) }
 
-        assertThrows<AlreadyCreatedException> { createNsi.new(person.crn, rs) {} }
+        val none = createNsi.new(person.crn, rs) {}
+        assertNull(none)
     }
 }
