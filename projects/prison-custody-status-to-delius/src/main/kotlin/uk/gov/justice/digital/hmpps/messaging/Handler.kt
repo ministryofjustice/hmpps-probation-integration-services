@@ -40,6 +40,7 @@ class Handler(
                         hmppsEvent.additionalInformation.nomsNumber(),
                         hmppsEvent.additionalInformation.prisonId(),
                         hmppsEvent.additionalInformation.reason(),
+                        hmppsEvent.additionalInformation.movementReason(),
                         hmppsEvent.occurredAt
                     )
                     telemetryService.trackEvent(outcome.toString(), hmppsEvent.telemetryProperties())

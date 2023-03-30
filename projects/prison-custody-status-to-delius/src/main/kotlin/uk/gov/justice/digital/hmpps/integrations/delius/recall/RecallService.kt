@@ -83,10 +83,11 @@ class RecallService(
         nomsNumber: String,
         prisonId: String,
         reason: String,
+        movementReason: String,
         recallDateTime: ZonedDateTime
     ): RecallOutcome {
         val getRecallReason = { csc: CustodialStatusCode ->
-            recallReasonRepository.getByCodeAndSelectableIsTrue(decideRecallReason(reason)(csc).code)
+            recallReasonRepository.getByCodeAndSelectableIsTrue(decideRecallReason(reason, movementReason)(csc).code)
         }
         val institution = institutionRepository.getByNomisCdeCodeAndIdEstablishment(prisonId)
 
@@ -298,7 +299,7 @@ class RecallService(
         }
     }
 
-    private fun decideRecallReason(reason: String): (code: CustodialStatusCode) -> RecallReasonCode = when (reason) {
+    private fun decideRecallReason(reason: String, movementReason: String): (code: CustodialStatusCode) -> RecallReasonCode = when (reason) {
         "ADMISSION" -> {
             { RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT }
         }
@@ -306,7 +307,7 @@ class RecallService(
             { RecallReasonCode.END_OF_TEMPORARY_LICENCE }
         }
         "TRANSFERRED" -> {
-            if (featureFlags.enabled(FEATURE_FLAG_TRANSFERRED)) {
+            if (movementReason == "INT" && featureFlags.enabled(FEATURE_FLAG_TRANSFERRED)) {
                 {
                     when (it) {
                         CustodialStatusCode.CUSTODY_ROTL -> RecallReasonCode.END_OF_TEMPORARY_LICENCE

@@ -58,7 +58,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
-        val outcome = recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", recallDateTime)
+        val outcome = recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", "R1", recallDateTime)
 
         assertThat(outcome, equalTo(RecallOutcome.PrisonerRecalled))
 
@@ -135,7 +135,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         whenever(contactTypeRepository.findByCode(ContactTypeCode.BREACH_PRISON_RECALL.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
-        val outcome = recallService.recall(person.nomsNumber, "WSI", "TRANSFERRED", recallDateTime)
+        val outcome = recallService.recall(person.nomsNumber, "WSI", "TRANSFERRED", "INT", recallDateTime)
 
         assertThat(outcome, equalTo(RecallOutcome.PrisonerRecalled))
 
@@ -208,7 +208,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(om)
 
-        val outcome = recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", recallDateTime)
+        val outcome = recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", "R1", recallDateTime)
 
         assertThat(outcome, equalTo(RecallOutcome.CustodialDetailsUpdated))
 
@@ -247,7 +247,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
             .thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
-        val outcome = recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", recallDateTime)
+        val outcome = recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", "R1", recallDateTime)
 
         assertThat(outcome, equalTo(RecallOutcome.NoCustodialUpdates))
 
@@ -274,7 +274,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
-            recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", ZonedDateTime.now())
+            recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", "R1", ZonedDateTime.now())
         }
         assertThat(exception.message, equalTo("UnexpectedCustodialStatus"))
     }
@@ -308,7 +308,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
-        val outcome = recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", recallDateTime)
+        val outcome = recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", "R1", recallDateTime)
 
         assertThat(outcome, equalTo(RecallOutcome.PrisonerRecalled))
 
@@ -378,7 +378,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IllegalArgumentException> {
-            recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", ZonedDateTime.now())
+            recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", "R1", ZonedDateTime.now())
         }
         assertThat(exception.message, equalTo("TerminatedCustodialStatus"))
     }

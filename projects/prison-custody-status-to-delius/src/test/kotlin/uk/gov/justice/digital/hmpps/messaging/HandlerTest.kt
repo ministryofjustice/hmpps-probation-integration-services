@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseService
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.message.MessageAttribute
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -96,10 +97,12 @@ internal class HandlerTest {
 
     @Test
     fun recallMessagesAreHandled() {
-        whenever(recallService.recall("Z0001ZZ", "ZZZ", "Test data", notification.message.occurredAt))
+        whenever(recallService.recall("Z0001ZZ", "ZZZ", "Test data", "OPA", notification.message.occurredAt))
             .thenReturn(RecallOutcome.PrisonerRecalled)
-        handler.handle(notification.copy(attributes = MessageAttributes("prison-offender-events.prisoner.received")))
-        verify(recallService).recall("Z0001ZZ", "ZZZ", "Test data", notification.message.occurredAt)
+        val attrs = MessageAttributes("prison-offender-events.prisoner.received")
+        attrs["nomisMovementReasonCode"] = MessageAttribute("String", "R1")
+        handler.handle(notification.copy(attributes = attrs))
+        verify(recallService).recall("Z0001ZZ", "ZZZ", "Test data", "OPA", notification.message.occurredAt)
         verify(telemetryService).trackEvent("PrisonerRecalled", notification.message.telemetryProperties())
     }
 

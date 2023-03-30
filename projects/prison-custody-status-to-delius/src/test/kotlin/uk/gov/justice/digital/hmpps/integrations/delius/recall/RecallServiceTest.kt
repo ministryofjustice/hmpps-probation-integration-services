@@ -41,8 +41,9 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(prisonId)).thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
-        assertThrows<IgnorableMessageException> { recallService.recall(nomsNumber, prisonId, "RETURN_FROM_COURT", recallDateTime) }
-        assertThrows<IgnorableMessageException> { recallService.recall(nomsNumber, prisonId, "UNKNOWN", recallDateTime) }
+        assertThrows<IgnorableMessageException> { recallService.recall(nomsNumber, prisonId, "RETURN_FROM_COURT", "R1", recallDateTime) }
+        assertThrows<IgnorableMessageException> { recallService.recall(nomsNumber, prisonId, "UNKNOWN", "UNKNOWN", recallDateTime) }
+        assertThrows<IgnorableMessageException> { recallService.recall(nomsNumber, prisonId, "TRANSFERRED", "NOTINT", recallDateTime) }
     }
 
     @Test
@@ -52,7 +53,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
 
         whenever(featureFlags.enabled(FEATURE_FLAG_TRANSFERRED)).thenReturn(false)
-        assertThrows<IgnorableMessageException> { recallService.recall(nomsNumber, prisonId, "TRANSFERRED", recallDateTime) }
+        assertThrows<IgnorableMessageException> { recallService.recall(nomsNumber, prisonId, "TRANSFERRED", "INT", recallDateTime) }
     }
 
     @Test
@@ -73,7 +74,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
-        val outcome = recallService.recall(nomsNumber, prisonId, "TRANSFERRED", recallDateTime)
+        val outcome = recallService.recall(nomsNumber, prisonId, "TRANSFERRED", "INT", recallDateTime)
         assertThat(outcome, equalTo(RecallOutcome.PrisonerRecalled))
 
         // recall is created
@@ -113,21 +114,21 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(prisonId)).thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
         assertThrows<IllegalArgumentException> {
-            recallService.recall(nomsNumber, prisonId, "Invalid reason!", recallDateTime)
+            recallService.recall(nomsNumber, prisonId, "Invalid reason!", "NO", recallDateTime)
         }
     }
 
     @Test
     fun missingReleaseTypeIsThrown() {
         assertThrows<NotFoundException> {
-            recallService.recall("", "", reason, recallDateTime)
+            recallService.recall("", "", reason, "INT", recallDateTime)
         }
     }
 
     @Test
     fun missingInstitutionIsThrown() {
         assertThrows<NotFoundException> {
-            recallService.recall("", "TEST", reason, recallDateTime)
+            recallService.recall("", "TEST", reason, "INT", recallDateTime)
         }
     }
 
@@ -137,7 +138,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents("INVALID")).thenThrow(IllegalArgumentException())
 
         assertThrows<IllegalArgumentException> {
-            recallService.recall("INVALID", prisonId, reason, recallDateTime)
+            recallService.recall("INVALID", prisonId, reason, "INT", recallDateTime)
         }
     }
 
@@ -148,7 +149,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(unSentencedEvent))
 
         val exception = assertThrows<NotFoundException> {
-            recallService.recall(nomsNumber, prisonId, reason, recallDateTime)
+            recallService.recall(nomsNumber, prisonId, reason, "INT", recallDateTime)
         }
         assertThat(exception.message, equalTo("Disposal with eventId of ${unSentencedEvent.id} not found"))
     }
@@ -160,7 +161,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(nonCustodialEvent))
 
         val exception = assertThrows<NotFoundException> {
-            recallService.recall(nomsNumber, prisonId, reason, recallDateTime)
+            recallService.recall(nomsNumber, prisonId, reason, "INT", recallDateTime)
         }
         assertThat(exception.message, equalTo("Custody with disposalId of ${nonCustodialEvent.disposal!!.id} not found"))
     }
@@ -173,7 +174,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
 
         assertThrows<IgnorableMessageException> {
-            recallService.recall(nomsNumber, prisonId, reason, recallDateTime)
+            recallService.recall(nomsNumber, prisonId, reason, "INT", recallDateTime)
         }
     }
 
@@ -186,7 +187,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
-            recallService.recall(nomsNumber, prisonId, reason, recallDateTime)
+            recallService.recall(nomsNumber, prisonId, reason, "INT", recallDateTime)
         }
         assertThat(exception.message, equalTo("UnexpectedCustodialStatus"))
     }
@@ -199,7 +200,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
-            recallService.recall(nomsNumber, prisonId, reason, recallDateTime)
+            recallService.recall(nomsNumber, prisonId, reason, "INT", recallDateTime)
         }
         assertThat(exception.message, equalTo("RecallAlreadyExists"))
     }
@@ -213,7 +214,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
-            recallService.recall(nomsNumber, prisonId, reason, recallDateTime)
+            recallService.recall(nomsNumber, prisonId, reason, "INT", recallDateTime)
         }
         assertThat(exception.message, equalTo("UnexpectedReleaseType"))
     }
@@ -226,7 +227,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
-            recallService.recall(nomsNumber, prisonId, reason, recallDateTime.plusDays(1))
+            recallService.recall(nomsNumber, prisonId, reason, "INT", recallDateTime.plusDays(1))
         }
         assertThat(exception.message, equalTo("InvalidRecallDate"))
     }
@@ -239,7 +240,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
-            recallService.recall(nomsNumber, prisonId, reason, event.firstReleaseDate!!.minusDays(1))
+            recallService.recall(nomsNumber, prisonId, reason, "INT", event.firstReleaseDate!!.minusDays(1))
         }
         assertThat(exception.message, equalTo("InvalidRecallDate"))
     }
@@ -253,7 +254,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         doAnswer<Recall> { it.getArgument(0) }.whenever(recallRepository).save(any())
 
         val exception = assertThrows<NotFoundException> {
-            recallService.recall(nomsNumber, prisonId, reason, recallDateTime)
+            recallService.recall(nomsNumber, prisonId, reason, "INT", recallDateTime)
         }
         assertThat(exception.message, equalTo("OrderManager with eventId of ${event.id} not found"))
     }
@@ -268,7 +269,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
 
         val exception = assertThrows<NotFoundException> {
-            recallService.recall(nomsNumber, prisonId, reason, recallDateTime)
+            recallService.recall(nomsNumber, prisonId, reason, "INT", recallDateTime)
         }
         assertThat(exception.message, equalTo("PersonManager with personId of ${person.id} not found"))
     }
@@ -284,7 +285,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)).thenReturn(PersonManagerGenerator.generate(person))
 
         val exception = assertThrows<NotFoundException> {
-            recallService.recall(nomsNumber, prisonId, reason, recallDateTime)
+            recallService.recall(nomsNumber, prisonId, reason, "INT", recallDateTime)
         }
         assertThat(exception.message, equalTo("ContactType with code of ERCL not found"))
     }
@@ -306,7 +307,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
-        val outcome = recallService.recall(nomsNumber, prisonId, reason, recallDateTime)
+        val outcome = recallService.recall(nomsNumber, prisonId, reason, "INT", recallDateTime)
         assertThat(outcome, equalTo(RecallOutcome.PrisonerRecalled))
 
         // recall is created
@@ -353,7 +354,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(contactTypeRepository.findByCode(ContactTypeCode.BREACH_PRISON_RECALL.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
-        recallService.recall(nomsNumber, institution.code, reason, recallDateTime)
+        recallService.recall(nomsNumber, institution.code, reason, "INT", recallDateTime)
 
         verify(custodyService)
             .updateStatus(event.disposal!!.custody!!, CustodialStatusCode.RECALLED, recallDate, "Recall added unlawfully at large ")
@@ -372,7 +373,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(contactTypeRepository.findByCode(ContactTypeCode.BREACH_PRISON_RECALL.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
-        recallService.recall(nomsNumber, institution.code, reason, recallDateTime)
+        recallService.recall(nomsNumber, institution.code, reason, "INT", recallDateTime)
 
         verify(custodyService)
             .updateStatus(event.disposal!!.custody!!, CustodialStatusCode.RECALLED, recallDate, "Recall added but location unknown ")
