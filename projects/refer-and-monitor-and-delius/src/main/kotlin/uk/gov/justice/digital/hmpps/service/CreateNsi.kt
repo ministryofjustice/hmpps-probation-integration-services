@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
-import uk.gov.justice.digital.hmpps.exception.AlreadyCreatedException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
@@ -20,6 +19,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatu
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.getByPersonIdAndEventId
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCode
+import uk.gov.justice.digital.hmpps.logging.logger
 
 @Service
 class CreateNsi(
@@ -34,7 +34,7 @@ class CreateNsi(
 ) {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    fun new(crn: String, rs: ReferralStarted, additions: (nsi: Nsi) -> Unit): Nsi {
+    fun new(crn: String, rs: ReferralStarted, additions: (nsi: Nsi) -> Unit): Nsi? {
         val person = personRepository.getByCrn(crn)
         val sentence = disposalRepository.getByPersonIdAndEventId(person.id, rs.sentenceId)
         val req = requirementRepository.findForPersonAndEvent(
@@ -68,7 +68,8 @@ class CreateNsi(
         return try {
             nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn)!!
         } catch (e: IncorrectResultSizeDataAccessException) {
-            throw AlreadyCreatedException("Nsi ${rs.urn} already created for $crn")
+            logger().value.info("Nsi ${rs.urn} already created for $crn")
+            null
         }
     }
 }
