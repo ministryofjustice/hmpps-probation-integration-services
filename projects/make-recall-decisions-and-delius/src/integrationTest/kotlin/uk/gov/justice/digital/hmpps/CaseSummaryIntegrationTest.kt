@@ -64,4 +64,15 @@ internal class CaseSummaryIntegrationTest {
             .andExpect(jsonPath("$.activeConvictions[0].sentence.custodialStatusCode", equalTo(event.disposal!!.custody!!.status.code)))
             .andExpect(jsonPath("$.activeConvictions[0].sentence.sentenceExpiryDate", equalTo("2023-01-01")))
     }
+
+    @Test
+    fun `mappa and rosh history is returned`() {
+        val person = PersonGenerator.CASE_SUMMARY
+        mockMvc.perform(get("/case-summary/${person.crn}/mappa-and-rosh-history").withOAuth2Token(wireMockserver))
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("$.personalDetails.name.forename", equalTo(person.forename)))
+            .andExpect(jsonPath("$.mappa.category", equalTo(1)))
+            .andExpect(jsonPath("$.roshHistory[0].type", equalTo("RHRH")))
+            .andExpect(jsonPath("$.roshHistory[0].typeDescription", equalTo("High RoSH")))
+    }
 }

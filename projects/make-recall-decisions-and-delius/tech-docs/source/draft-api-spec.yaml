@@ -30,7 +30,14 @@ paths:
           content:
             'application/json':
               schema:
-                $ref: '#/components/schemas/PersonalDetails'
+                type: object
+                properties:
+                  personalDetails:
+                    $ref: '#/components/schemas/PersonalDetails'
+                  communityManager:
+                    $ref: '#/components/schemas/CommunityManager'
+                  mainAddress:
+                    $ref: '#/components/schemas/Address'
         404:
           description: if the case does not exist, has been soft-deleted, or merged
   /case-summary/{crn}/overview:
@@ -248,8 +255,6 @@ components:
       properties:
         personalDetails:
           $ref: '#/components/schemas/PersonalDetails'
-        communityManager:
-          $ref: '#/components/schemas/CommunityManager'
         registerFlags:
           type: array
           description: List of type.description for active registrations
@@ -431,7 +436,7 @@ components:
               type: string
               format: date
         roshHistory:
-          description: Any active or inactive registrations of register type `1` (RoSH) and level `RHRH` (High) or `RVHR` (Very high).
+          description: Any active or inactive registrations with a register type flag of `1` (RoSH).
           type: array
           items:
             type: object
@@ -439,11 +444,12 @@ components:
               active:
                 type: boolean
                 example: true
-              level:
+              type:
                 type: string
-                enum:
-                  - High
-                  - Very high
+                example: RHRH
+              typeDescription:
+                type: string
+                example: High RoSH
               notes:
                 type: string
               startDate:
@@ -485,8 +491,6 @@ components:
           type: string
         primaryLanguage:
           type: string
-        mainAddress:
-          $ref: '#/components/schemas/Address'
     Provider:
       type: object
       properties:
