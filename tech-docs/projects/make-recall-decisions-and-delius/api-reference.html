@@ -104,6 +104,9 @@
         <a href="./api-reference.html#case-summary-crn-overview"><span>/case-summary/{crn}/overview</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#case-summary-crn-mappa-and-rosh-history"><span>/case-summary/{crn}/mappa-and-rosh-history</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
       </li>
     </ul>
@@ -347,6 +350,101 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 </td>
 <td>
 <a href='#schema-overview'>Overview</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="case-summary-crn-mappa-and-rosh-history">/case-summary/{crn}/mappa-and-rosh-history</h2>
+
+<h3 id="case-summary-crn-mappa-and-rosh-history-get">get</h3>
+
+  <p><em>Current MAPPA and historical RoSH registrations</em></p>
+
+
+  <p><p>This is intended to populate the MAPPA (Multi-agency public protection arrangements) and RoSH (Risk of Serious Harm) widgets.<p>Note that risk assessment information is generally held in OASys, and this endpoint only surfaces supplementary Delius registration/register details.</p>
+
+
+
+
+<h4 id="case-summary-crn-mappa-and-rosh-history-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="case-summary-crn-mappa-and-rosh-history-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personalDetails": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "identifiers": {
+      "pncNumber": "string",
+      "croNumber": "string",
+      "nomsNumber": "string",
+      "bookingNumber": "string"
+    },
+    "dateOfBirth": "string",
+    "gender": "string",
+    "ethnicity": "string",
+    "primaryLanguage": "string"
+  },
+  "mappa": {
+    "category": "integer",
+    "level": "integer",
+    "startDate": "string"
+  },
+  "roshHistory": [
+    {
+      "active": "boolean",
+      "type": "string",
+      "typeDescription": "string",
+      "notes": "string",
+      "startDate": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-mappaandroshhistory'>MappaAndRoshHistory</a>
 </td>
 </tr>
 
@@ -1013,6 +1111,152 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 <td>sentenceExpiryDate</td>
 <td>string</td>
 <td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-mappa">Mappa</h3>
+
+
+<table class='schema-mappa'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>category</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>level</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-mappaandroshhistory">MappaAndRoshHistory</h3>
+
+
+<table class='schema-mappaandroshhistory'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personalDetails</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personaldetailsoverview'>PersonalDetailsOverview</a>
+</td>
+</tr>
+
+<tr>
+<td>mappa</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-mappa'>Mappa</a>
+</td>
+</tr>
+
+<tr>
+<td>roshHistory</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-rosh'>Rosh</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-rosh">Rosh</h3>
+
+
+<table class='schema-rosh'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>active</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>typeDescription</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
 <td></td>
 <td>
   
