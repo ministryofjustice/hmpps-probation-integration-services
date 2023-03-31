@@ -161,6 +161,9 @@ class MainOffence(
     @JoinColumn(name = "event_id", nullable = false)
     val event: Event?,
 
+    @Column(name = "offence_date")
+    val date: LocalDate,
+
     @JoinColumn(name = "offence_id")
     @ManyToOne(cascade = [CascadeType.PERSIST])
     val offence: Offence,
@@ -182,6 +185,9 @@ class AdditionalOffence(
     @JoinColumn(name = "event_id", nullable = false)
     val event: Event?,
 
+    @Column(name = "offence_date")
+    val date: LocalDate,
+
     @JoinColumn(name = "offence_id")
     @ManyToOne(cascade = [CascadeType.PERSIST])
     val offence: Offence,
@@ -197,6 +203,9 @@ class Offence(
     @Id
     @Column(name = "offence_id")
     val id: Long,
+
+    @Column
+    val code: String,
 
     @Column
     val description: String
