@@ -37,7 +37,7 @@ class Registration(
     @JoinColumn(name = "register_level_id")
     val level: ReferenceData?,
 
-    @Column(name = "registration_notes")
+    @Column(name = "registration_notes", columnDefinition = "clob")
     val notes: String?,
 
     @Column(name = "registration_date")
