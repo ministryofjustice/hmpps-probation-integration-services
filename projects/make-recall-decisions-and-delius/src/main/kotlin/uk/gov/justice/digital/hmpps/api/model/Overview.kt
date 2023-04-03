@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.api.model
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Release
 import java.time.LocalDate
-import java.time.ZonedDateTime
 
 data class Overview(
     val personalDetails: PersonalDetailsOverview,
@@ -12,14 +11,19 @@ data class Overview(
     val activeConvictions: List<Conviction>
 ) {
     data class Release(
-        val releaseDate: ZonedDateTime,
-        val recallDate: ZonedDateTime?
+        val releaseDate: LocalDate,
+        val recallDate: LocalDate?
     )
     data class Conviction(
         val number: String,
         val sentence: Sentence?,
-        val mainOffence: String,
-        val additionalOffences: List<String>
+        val mainOffence: Offence,
+        val additionalOffences: List<Offence>
+    )
+    data class Offence(
+        val date: LocalDate,
+        val code: String,
+        val description: String
     )
     data class Sentence(
         val description: String,
@@ -35,8 +39,8 @@ data class Overview(
 fun Release.dates() = Overview.Release(date, recall?.date)
 fun Event.toConviction() = Overview.Conviction(
     number = number,
-    mainOffence = mainOffence.offence.description,
-    additionalOffences = additionalOffences.map { it.offence.description },
+    mainOffence = Overview.Offence(mainOffence.date, mainOffence.offence.code, mainOffence.offence.description),
+    additionalOffences = additionalOffences.map { Overview.Offence(it.date, it.offence.code, it.offence.description) },
     sentence = disposal?.let {
         Overview.Sentence(
             description = it.type.description,
