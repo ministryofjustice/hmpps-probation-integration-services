@@ -47,7 +47,7 @@ class NsiService(
         val nsi = find()
             ?: createNsi.new(crn, rs) {
                 statusHistoryRepository.save(it.statusHistory())
-                contactRepository.save(it.contact(NSI_REFERRAL.value, it.referralDate))
+                contactRepository.save(it.contact(NSI_REFERRAL.value, it.statusDate))
                 contactRepository.save(it.statusChangeContact())
                 contactRepository.save(it.contact(NSI_COMMENCED.value, it.actualStartDate!!))
             }
@@ -110,7 +110,7 @@ class NsiService(
                 termination.eventId,
                 ContractTypeNsiType.MAPPING.values.toSet()
             ).filter {
-                it.referralDate.toLocalDate() == termination.startDate.toLocalDate()
+                it.referralDate == termination.startDate.toLocalDate()
             }
             if (nsis.size == 1) {
                 nsi = nsis[0]
@@ -130,7 +130,8 @@ class NsiService(
         contactTypeRepository.getReferenceById(status.contactTypeId),
         eventId = eventId,
         nsiId = id,
-        date = statusDate,
+        date = statusDate.toLocalDate(),
+        startTime = statusDate,
         providerId = manager.providerId,
         teamId = manager.teamId,
         staffId = manager.staffId
@@ -144,7 +145,8 @@ class NsiService(
         staffId = manager.staffId,
         eventId = eventId,
         nsiId = id,
-        date = date
+        date = date.toLocalDate(),
+        startTime = date
     )
 
     private fun Nsi.terminationContact() = Contact(
@@ -155,7 +157,8 @@ class NsiService(
         staffId = manager.staffId,
         eventId = eventId,
         nsiId = id,
-        date = statusDate,
+        date = statusDate.toLocalDate(),
+        startTime = statusDate,
         notes = "NSI Terminated with Outcome: ${outcome!!.description}"
     )
 }

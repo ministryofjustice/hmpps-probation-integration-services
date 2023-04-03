@@ -15,13 +15,13 @@ import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.RequirementRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.RequirementMainCategory
@@ -63,7 +63,7 @@ internal class CreateNsiTest {
         val sentence = SentenceGenerator.SENTENCE_WITHOUT_NSI
         val referralId = UUID.randomUUID()
         whenever(personRepository.findByCrn(person.crn)).thenReturn(person)
-        whenever(disposalRepository.findByPersonIdAndEventId(person.id, sentence.eventId)).thenReturn(sentence)
+        whenever(disposalRepository.findByEventPersonIdAndEventId(person.id, sentence.event.id)).thenReturn(sentence)
         whenever(
             requirementRepository.findForPersonAndEvent(
                 person.id,
@@ -75,7 +75,7 @@ internal class CreateNsiTest {
         assertThrows<IllegalArgumentException> {
             createNsi.new(
                 person.crn,
-                ReferralStarted(referralId, ZonedDateTime.now(), "unknown", sentence.eventId, "Notes")
+                ReferralStarted(referralId, ZonedDateTime.now(), "unknown", sentence.event.id, "Notes")
             ) {}
         }
     }
@@ -91,12 +91,12 @@ internal class CreateNsiTest {
             referralId,
             ZonedDateTime.now(),
             contractType,
-            sentence.eventId,
+            sentence.event.id,
             "Notes"
         )
 
         whenever(personRepository.findByCrn(person.crn)).thenReturn(person)
-        whenever(disposalRepository.findByPersonIdAndEventId(person.id, sentence.eventId)).thenReturn(sentence)
+        whenever(disposalRepository.findByEventPersonIdAndEventId(person.id, sentence.event.id)).thenReturn(sentence)
         whenever(
             requirementRepository.findForPersonAndEvent(
                 person.id,

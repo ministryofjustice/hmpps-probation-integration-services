@@ -28,6 +28,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
 import uk.gov.justice.digital.hmpps.messaging.NsiTermination
 import uk.gov.justice.digital.hmpps.messaging.ReferralEndType
+import java.time.OffsetTime
 import java.time.ZonedDateTime
 import java.util.UUID
 
@@ -75,7 +76,7 @@ internal class NsiServiceTest {
 
         nsiService.startNsi(
             crn,
-            ReferralStarted(referralId, nsi.referralDate, "E2E", 197L, "some notes about this referral")
+            ReferralStarted(referralId, nsi.referralDate.atTime(OffsetTime.now()).toZonedDateTime(), "E2E", 197L, "some notes about this referral")
         )
 
         verify(statusHistoryRepository).save(any())
@@ -97,7 +98,7 @@ internal class NsiServiceTest {
 
         nsiService.startNsi(
             crn,
-            ReferralStarted(referralId, nsi.referralDate, "E2E", 197L, "some notes about this referral")
+            ReferralStarted(referralId, nsi.referralDate.atTime(OffsetTime.now()).toZonedDateTime(), "E2E", 197L, "some notes about this referral")
         )
 
         verify(nsiRepository, times(2)).findByPersonCrnAndExternalReference(crn, ref)
@@ -124,7 +125,7 @@ internal class NsiServiceTest {
             person.crn,
             nsi.externalReference!!,
             nsi.eventId!!,
-            nsi.referralDate,
+            nsi.referralDate.atTime(OffsetTime.now()).toZonedDateTime(),
             ZonedDateTime.now(),
             ReferralEndType.COMPLETED,
             "This referral has been completed"
