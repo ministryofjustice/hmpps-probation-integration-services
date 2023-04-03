@@ -59,7 +59,7 @@ internal class CreateNsiTest {
 
     @Test
     fun `contract type not recognised`() {
-        val person = PersonGenerator.SETENCED_WITHOUT_NSI
+        val person = PersonGenerator.SENTENCED_WITHOUT_NSI
         val sentence = SentenceGenerator.SENTENCE_WITHOUT_NSI
         val referralId = UUID.randomUUID()
         whenever(personRepository.findByCrn(person.crn)).thenReturn(person)
@@ -82,7 +82,7 @@ internal class CreateNsiTest {
 
     @Test
     fun `null is returned from create when attempting to create a duplicate`() {
-        val person = PersonGenerator.SETENCED_WITHOUT_NSI
+        val person = PersonGenerator.SENTENCED_WITHOUT_NSI
         val sentence = SentenceGenerator.SENTENCE_WITHOUT_NSI
         val referralId = UUID.randomUUID()
         val contractType = ContractTypeNsiType.MAPPING.keys.first()
