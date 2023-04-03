@@ -7,6 +7,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.DisposalType
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.KeyDate
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.LicenceCondition
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.LicenceConditionMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.MainOffence
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Offence
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Recall
@@ -41,6 +43,7 @@ object EventGenerator {
         custody.set(Custody::sentenceExpiryDate, custody.keyDate("SED", LocalDate.of(2023, 1, 1)))
         custody.set(Custody::licenceExpiryDate, custody.keyDate("LED", LocalDate.of(2024, 1, 1)))
         disposal.set(Disposal::custody, custody)
+        disposal.set(Disposal::licenceConditions, listOf(disposal.licenceCondition("TEST", "Freedom of movement")))
         event.set(Event::disposal, disposal)
         event.set(Event::mainOffence, mainOffence(event))
         event.set(Event::additionalOffences, listOf(additionalOffence(event)))
@@ -84,4 +87,16 @@ object EventGenerator {
         )
         return release
     }
+
+    fun Disposal.licenceCondition(code: String, description: String) = LicenceCondition(
+        id = IdGenerator.getAndIncrement(),
+        disposal = this,
+        notes = "Test notes",
+        mainCategory = LicenceConditionMainCategory(
+            id = IdGenerator.getAndIncrement(),
+            code = code,
+            description = description
+        ),
+        subCategory = null
+    )
 }

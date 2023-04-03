@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.LicenceConditions
 import uk.gov.justice.digital.hmpps.api.model.MappaAndRoshHistory
 import uk.gov.justice.digital.hmpps.api.model.Overview
 import uk.gov.justice.digital.hmpps.api.model.PersonalDetails
@@ -10,6 +11,7 @@ import uk.gov.justice.digital.hmpps.api.model.identifiers
 import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.api.model.toAddress
 import uk.gov.justice.digital.hmpps.api.model.toConviction
+import uk.gov.justice.digital.hmpps.api.model.toConvictionWithLicenceConditions
 import uk.gov.justice.digital.hmpps.api.model.toManager
 import uk.gov.justice.digital.hmpps.api.model.toMappa
 import uk.gov.justice.digital.hmpps.api.model.toRosh
@@ -79,6 +81,16 @@ class CaseSummaryService(
             personalDetails = personalDetails,
             mappa = mappa,
             roshHistory = roshHistory
+        )
+    }
+
+    fun getLicenceConditions(crn: String): LicenceConditions {
+        val person = personRepository.getPerson(crn)
+        val personalDetails = getPersonalDetailsOverview(person)
+        val events = eventRepository.findByPersonId(person.id)
+        return LicenceConditions(
+            personalDetails = personalDetails,
+            activeConvictions = events.map { it.toConvictionWithLicenceConditions() }
         )
     }
 
