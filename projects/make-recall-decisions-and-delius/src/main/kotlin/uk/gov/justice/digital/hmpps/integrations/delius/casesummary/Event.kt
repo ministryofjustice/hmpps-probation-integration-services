@@ -204,7 +204,7 @@ class Offence(
     @Column(name = "offence_id")
     val id: Long,
 
-    @Column
+    @Column(columnDefinition = "char(5)")
     val code: String,
 
     @Column
