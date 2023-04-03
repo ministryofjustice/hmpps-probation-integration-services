@@ -22,6 +22,7 @@ data class Attendance(
     val submittedAt: ZonedDateTime
 )
 
+// Non-null behaviour with nullable notify to match model from Interventions Service
 data class Behaviour(
-    val notifyProbationPractitioner: Boolean
+    val notifyProbationPractitioner: Boolean?
 )

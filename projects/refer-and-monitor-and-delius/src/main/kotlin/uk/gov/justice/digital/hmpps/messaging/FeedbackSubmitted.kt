@@ -60,6 +60,6 @@ private fun ReferralSession.appointmentOutcome(
     referralReference,
     Referral("", Provider(providerName), contractType),
     Attended.of(sessionFeedback.attendance.attended),
-    sessionFeedback.behaviour.notifyProbationPractitioner,
+    sessionFeedback.behaviour.notifyProbationPractitioner ?: false,
     url
 )

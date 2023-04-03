@@ -3,7 +3,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/referral/f56c5f7c-632f-4cad-a1b3-693541cb5f22/sessions/1"
+        "url": "/referral/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080/sessions/1"
       },
       "response": {
         "headers": {
@@ -16,7 +16,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/referral/f56c5f7c-632f-4cad-a1b3-693541cb5f22/sessions/2"
+        "url": "/referral/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080/sessions/2"
       },
       "response": {
         "headers": {
