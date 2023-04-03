@@ -43,9 +43,9 @@ class FeedbackSubmitted(
     }
 }
 
-private fun HmppsDomainEvent.contractType() = additionalInformation["contractType"] as String
+private fun HmppsDomainEvent.contractType() = additionalInformation["contractTypeName"] as String
 private fun HmppsDomainEvent.referralReference() = additionalInformation["referralReference"] as String
-private fun HmppsDomainEvent.providerName() = additionalInformation["providerName"] as String
+private fun HmppsDomainEvent.providerName() = additionalInformation["primeProviderName"] as String
 private fun HmppsDomainEvent.url() = additionalInformation["referralProbationUserURL"] as String
 
 private fun ReferralSession.appointmentOutcome(
