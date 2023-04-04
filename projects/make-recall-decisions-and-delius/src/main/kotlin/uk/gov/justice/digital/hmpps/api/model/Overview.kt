@@ -20,29 +20,15 @@ data class Overview(
         val mainOffence: Offence,
         val additionalOffences: List<Offence>
     )
-    data class Offence(
-        val date: LocalDate,
-        val code: String,
-        val description: String
-    )
-    data class Sentence(
-        val description: String,
-        val length: Long?,
-        val lengthUnits: String?,
-        val isCustodial: Boolean,
-        val custodialStatusCode: String?,
-        val licenceExpiryDate: LocalDate?,
-        val sentenceExpiryDate: LocalDate?
-    )
 }
 
 fun Release.dates() = Overview.Release(date, recall?.date)
 fun Event.toConviction() = Overview.Conviction(
     number = number,
-    mainOffence = Overview.Offence(mainOffence.date, mainOffence.offence.code, mainOffence.offence.description),
-    additionalOffences = additionalOffences.map { Overview.Offence(it.date, it.offence.code, it.offence.description) },
+    mainOffence = Offence(mainOffence.date, mainOffence.offence.code, mainOffence.offence.description),
+    additionalOffences = additionalOffences.map { Offence(it.date, it.offence.code, it.offence.description) },
     sentence = disposal?.let {
-        Overview.Sentence(
+        Sentence(
             description = it.type.description,
             length = it.entryLength,
             lengthUnits = it.entryLengthUnit?.description,

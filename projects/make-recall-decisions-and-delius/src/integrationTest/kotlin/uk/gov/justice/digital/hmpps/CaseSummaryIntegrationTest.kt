@@ -75,4 +75,16 @@ internal class CaseSummaryIntegrationTest {
             .andExpect(jsonPath("$.roshHistory[0].type", equalTo("RHRH")))
             .andExpect(jsonPath("$.roshHistory[0].typeDescription", equalTo("High RoSH")))
     }
+
+    @Test
+    fun `licence conditions are returned`() {
+        val person = PersonGenerator.CASE_SUMMARY
+        val event = EventGenerator.CASE_SUMMARY
+        mockMvc.perform(get("/case-summary/${person.crn}/licence-conditions").withOAuth2Token(wireMockserver))
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("$.personalDetails.name.forename", equalTo(person.forename)))
+            .andExpect(jsonPath("$.activeConvictions[0].licenceConditions.size()", equalTo(1)))
+            .andExpect(jsonPath("$.activeConvictions[0].licenceConditions[0].mainCategory.description", equalTo(event.disposal!!.licenceConditions[0].mainCategory.description)))
+            .andExpect(jsonPath("$.activeConvictions[0].licenceConditions[0].notes", equalTo(event.disposal!!.licenceConditions[0].notes)))
+    }
 }
