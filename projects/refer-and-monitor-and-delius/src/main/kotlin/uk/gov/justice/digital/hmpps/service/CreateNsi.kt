@@ -1,9 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.dao.IncorrectResultSizeDataAccessException
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
@@ -19,7 +16,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatu
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.getByPersonIdAndEventId
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCode
-import uk.gov.justice.digital.hmpps.logging.logger
 import java.time.temporal.ChronoUnit
 
 @Service
@@ -33,8 +29,6 @@ class CreateNsi(
     private val nsiRepository: NsiRepository,
     private val nsiManagerService: NsiManagerService
 ) {
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun new(crn: String, rs: ReferralStarted, additions: (nsi: Nsi) -> Unit): Nsi? {
         val person = personRepository.getByCrn(crn)
         val sentence = disposalRepository.getByPersonIdAndEventId(person.id, rs.sentenceId)
@@ -49,12 +43,16 @@ class CreateNsi(
         val type = nsiTypeRepository.getByCode(nsiTypeCode)
         val status = nsiStatusRepository.getByCode(NsiStatus.Code.IN_PROGRESS.value)
 
+        val eventId = disposalRepository.findForUpdate(sentence.id)
+        val existing = nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn)
+        if (existing != null) return existing
+
         val nsi = nsiRepository.save(
             Nsi(
                 person = person,
                 intendedProviderId = providerRepository.getCrsProvider().id,
                 type = type,
-                eventId = sentence.eventId,
+                eventId = eventId,
                 requirementId = req?.id,
                 referralDate = rs.startedAt.truncatedTo(ChronoUnit.DAYS),
                 actualStartDate = rs.startedAt,
@@ -66,11 +64,6 @@ class CreateNsi(
         )
         val manager = nsiManagerService.createNewManager(nsi)
         additions(nsi.withManager(manager))
-        return try {
-            nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn)!!
-        } catch (e: IncorrectResultSizeDataAccessException) {
-            logger().value.info("Nsi ${rs.urn} already created for $crn")
-            null
-        }
+        return nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn)
     }
 }
