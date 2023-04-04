@@ -79,7 +79,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         )
         verify(custodyService).updateLocation(
             event.disposal!!.custody!!,
-            InstitutionGenerator.DEFAULT.code,
+            InstitutionGenerator.DEFAULT,
             recallDate,
             om,
             recallReason
@@ -156,7 +156,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         )
         verify(custodyService).updateLocation(
             event.disposal!!.custody!!,
-            InstitutionGenerator.DEFAULT.code,
+            InstitutionGenerator.DEFAULT,
             recallDate,
             om,
             recallReason
@@ -224,7 +224,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         )
         verify(custodyService).updateLocation(
             event.disposal!!.custody!!,
-            InstitutionGenerator.DEFAULT.code,
+            InstitutionGenerator.DEFAULT,
             recallDate,
             om,
             recallReason
@@ -329,7 +329,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         )
         verify(custodyService).updateLocation(
             event.disposal!!.custody!!,
-            InstitutionGenerator.DEFAULT.code,
+            InstitutionGenerator.DEFAULT,
             recallDate,
             om,
             recallReason

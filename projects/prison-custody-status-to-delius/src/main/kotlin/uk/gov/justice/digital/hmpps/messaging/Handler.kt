@@ -25,7 +25,7 @@ class Handler(
         try {
             when (notification.eventType) {
                 "prison-offender-events.prisoner.released" -> {
-                    val outcome = releaseService.release(
+                    val outcome = releaseService.releaseFrom(
                         hmppsEvent.additionalInformation.nomsNumber(),
                         hmppsEvent.additionalInformation.prisonId(),
                         hmppsEvent.additionalInformation.reason(),

@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.getByEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host.HostRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.getByNomisCdeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
@@ -31,10 +32,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.PrisonerDied
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.PrisonerReleased
+import java.time.Duration.between
+import java.time.LocalDate.now
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.DAYS
 
 const val MOVEMENT_REASON_DIED = "DEC"
+const val ETL23_NOTES = "This is a ROTL release on Extended Temporary Licence (ETL23)"
 
 enum class ReleaseOutcome {
     PrisonerReleased,
@@ -57,7 +61,7 @@ class ReleaseService(
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
-    fun release(
+    fun releaseFrom(
         nomsNumber: String,
         prisonId: String,
         reason: String,
@@ -67,11 +71,17 @@ class ReleaseService(
         personDied.inCustody(nomsNumber, releaseDateTime)
         PrisonerDied
     } else {
-        val releaseType = referenceDataRepository.getReleaseType(mapToReleaseType(reason).code)
+        val releaseType = referenceDataRepository.getReleaseType(mapToReleaseType(reason, movementReasonCode).code)
         val institution = institutionRepository.getByNomisCdeCode(prisonId)
 
         eventService.getActiveCustodialEvents(nomsNumber).forEach {
-            addReleaseToEvent(it, institution, releaseType, releaseDateTime)
+            addReleaseToEvent(
+                it,
+                institution,
+                releaseType,
+                releaseDateTime,
+                movementReasonCode
+            )
         }
         PrisonerReleased
     }
@@ -80,7 +90,8 @@ class ReleaseService(
         event: Event,
         fromInstitution: Institution,
         releaseType: ReferenceData,
-        releaseDateTime: ZonedDateTime
+        releaseDateTime: ZonedDateTime,
+        movementReasonCode: String
     ): Unit = audit(BusinessInteractionCode.ADD_RELEASE) {
         it["eventId"] = event.id
         OptimisationContext.offenderId.set(event.person.id)
@@ -93,45 +104,39 @@ class ReleaseService(
         validateRelease(custody, fromInstitution, releaseDate)
 
         // create the release
-        releaseRepository.save(
-            Release(
-                date = releaseDate,
-                type = releaseType,
-                person = event.person,
-                custody = custody,
-                institutionId = fromInstitution.id,
-                probationAreaId = hostRepository
-                    .findLeadHostProviderIdByInstitutionId(fromInstitution.id.institutionId, releaseDate),
-                recall = custody.mostRecentRelease()?.recall
-            )
-        )
+        releaseFrom(releaseDateTime, releaseType, custody, fromInstitution, movementReasonCode)
 
         // update custody status + location
+        val statusCode = when (releaseType.code) {
+            ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE.code -> CustodialStatusCode.CUSTODY_ROTL
+            else -> CustodialStatusCode.RELEASED_ON_LICENCE
+        }
         custodyService.updateStatus(
             custody,
-            CustodialStatusCode.RELEASED_ON_LICENCE,
+            statusCode,
             releaseDate,
-            "Released on Licence"
+            when (statusCode) {
+                CustodialStatusCode.CUSTODY_ROTL -> "Released on Temporary Licence"
+                else -> "Released on Licence"
+            }
         )
-        custodyService.updateLocation(custody, InstitutionCode.IN_COMMUNITY.code, releaseDate)
+
+        val institution = when (releaseType.code) {
+            ReleaseTypeCode.ADULT_LICENCE.code -> institutionRepository.getByCode(InstitutionCode.IN_COMMUNITY.code)
+            else -> fromInstitution
+        }
+        if (locationChanged(custody, institution)) {
+            custodyService.updateLocation(custody, institution, releaseDate)
+        }
+
+        custodyService.allocatePrisonManager(null, fromInstitution, custody, releaseDateTime)
 
         // update event
         eventService.updateReleaseDateAndIapsFlag(event, releaseDate)
-
-        // create contact
-        val orderManager = orderManagerRepository.getByEventId(event.id)
-        contactRepository.save(
-            Contact(
-                type = contactTypeRepository.getByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code),
-                date = releaseDateTime,
-                event = event,
-                person = event.person,
-                notes = "Release Type: ${releaseType.description}",
-                staffId = orderManager.staffId,
-                teamId = orderManager.teamId
-            )
-        )
     }
+
+    private fun locationChanged(custody: Custody, institution: Institution): Boolean =
+        institution.code == InstitutionCode.IN_COMMUNITY.code || custody.institution.id != institution.id
 
     private fun validateRelease(custody: Custody, institution: Institution, releaseDate: ZonedDateTime) {
         if (!custody.isInCustody()) {
@@ -153,12 +158,62 @@ class ReleaseService(
         }
     }
 
-    private fun mapToReleaseType(reason: String) = when (reason) {
+    private fun mapToReleaseType(reason: String, movementReasonCode: String) = when (reason) {
         "RELEASED" -> ReleaseTypeCode.ADULT_LICENCE
-        "TEMPORARY_ABSENCE_RELEASE", // -> ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE
+        "TEMPORARY_ABSENCE_RELEASE" -> when (movementReasonCode) {
+            "ETL23" -> ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE
+            else -> throw IgnorableMessageException("UnsupportedReleaseReason")
+        }
         "RELEASED_TO_HOSPITAL", // -> TBC
         "SENT_TO_COURT",
         "TRANSFERRED" -> throw IgnorableMessageException("UnsupportedReleaseReason")
         else -> throw IllegalArgumentException("Unexpected release reason: $reason")
+    }
+
+    private fun releaseFrom(
+        dateTime: ZonedDateTime,
+        type: ReferenceData,
+        custody: Custody,
+        fromInstitution: Institution,
+        movementReasonCode: String
+    ) {
+        val length = if (type.code == ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE.code) {
+            val acr = custodyService.findAutoConditionalReleaseDate(custody.id)
+                ?: throw IgnorableMessageException("No Auto-Conditional Release date is present")
+            if (acr.date.isBefore(now())) throw IgnorableMessageException("Auto-Conditional Release date in the past")
+            custodyService.addRotlEndDate(acr)
+            maxOf(between(acr.date.minusDays(1), now()).toDays(), 1)
+        } else {
+            null
+        }
+        val releaseDate = dateTime.truncatedTo(DAYS)
+        releaseRepository.save(
+            Release(
+                date = releaseDate,
+                type = type,
+                person = custody.disposal.event.person,
+                custody = custody,
+                institutionId = fromInstitution.id,
+                probationAreaId = hostRepository.findLeadHostProviderIdByInstitutionId(
+                    fromInstitution.id.institutionId,
+                    dateTime
+                ),
+                recall = custody.mostRecentRelease()?.recall,
+                length = length
+            )
+        )
+        val event = custody.disposal.event
+        val orderManager = orderManagerRepository.getByEventId(event.id)
+        contactRepository.save(
+            Contact(
+                type = contactTypeRepository.getByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code),
+                date = dateTime,
+                event = event,
+                person = event.person,
+                notes = if (movementReasonCode == "ETL23") ETL23_NOTES else "Release Type: ${type.description}",
+                staffId = orderManager.staffId,
+                teamId = orderManager.teamId
+            )
+        )
     }
 }

@@ -26,6 +26,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyHistory
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyHistoryRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.keydate.entity.KeyDateRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.PrisonManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
@@ -55,6 +57,12 @@ internal class CustodyServiceTest {
 
     @Mock
     private lateinit var contactRepository: ContactRepository
+
+    @Mock
+    private lateinit var keyDateRepository: KeyDateRepository
+
+    @Mock
+    private lateinit var prisonManagerService: PrisonManagerService
 
     @InjectMocks
     private lateinit var custodyService: CustodyService
@@ -88,16 +96,15 @@ internal class CustodyServiceTest {
         val now = ZonedDateTime.now()
         val om = OrderManagerGenerator.generate(custody.disposal.event)
         val ct = ContactType(IdGenerator.getAndIncrement(), ContactTypeCode.CHANGE_OF_INSTITUTION.code)
+        val inCom = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]!!
 
-        whenever(institutionRepository.findByCode(InstitutionCode.IN_COMMUNITY.code))
-            .thenReturn(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY])
         whenever(referenceDataRepository.findByCodeAndSetName(LOCATION_CHANGE.code, "CUSTODY EVENT TYPE"))
             .thenReturn(ReferenceDataGenerator.CUSTODY_EVENT_TYPE[LOCATION_CHANGE])
         whenever(contactTypeRepository.findByCode(ContactTypeCode.CHANGE_OF_INSTITUTION.code)).thenReturn(ct)
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
         val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE]
-        custodyService.updateLocation(custody, InstitutionCode.IN_COMMUNITY.code, now, om, recallReason)
+        custodyService.updateLocation(custody, inCom, now, om, recallReason)
 
         val saved = argumentCaptor<CustodyHistory>()
         verify(custodyHistoryRepository).save(saved.capture())

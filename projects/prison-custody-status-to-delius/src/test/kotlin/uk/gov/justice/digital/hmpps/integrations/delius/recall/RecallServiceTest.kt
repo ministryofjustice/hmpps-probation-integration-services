@@ -86,7 +86,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         assertThat(recall.firstValue.reason.code, equalTo("NN"))
 
         // custody details are updated
-        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT.code, recallDate, om, recallReason)
+        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT, recallDate, om, recallReason)
         verify(custodyService).updateStatus(event.disposal!!.custody!!, CustodialStatusCode.IN_CUSTODY, recallDate, "Recall added in custody ")
 
         // licence conditions are terminated
@@ -319,7 +319,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         assertThat(recall.firstValue.reason.code, equalTo("NN"))
 
         // custody details are updated
-        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT.code, recallDate, om, recallReason)
+        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT, recallDate, om, recallReason)
         verify(custodyService).updateStatus(event.disposal!!.custody!!, CustodialStatusCode.IN_CUSTODY, recallDate, "Recall added in custody ")
 
         // licence conditions are terminated
