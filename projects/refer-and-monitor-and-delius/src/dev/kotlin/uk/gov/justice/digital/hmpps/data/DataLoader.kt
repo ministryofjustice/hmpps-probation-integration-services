@@ -24,8 +24,11 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalRep
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiOutcomeRepository
@@ -55,7 +58,10 @@ class DataLoader(
     private val providerRepository: ProviderRepository,
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
+    private val staffUserRepository: StaffUserRepository,
     private val personRepository: PersonRepository,
+    private val personManagerRepository: PersonManagerRepository,
+    private val responsibleOfficerRepository: ResponsibleOfficerRepository,
     private val eventRepository: EventRepository,
     private val disposalRepository: DisposalRepository,
     private val contactRepository: ContactRepository,
@@ -98,9 +104,36 @@ class DataLoader(
 
         providerRepository.save(ProviderGenerator.INTENDED_PROVIDER)
         teamRepository.save(ProviderGenerator.INTENDED_TEAM)
-        staffRepository.save(ProviderGenerator.INTENDED_STAFF)
+        staffRepository.saveAll(listOf(ProviderGenerator.INTENDED_STAFF, ProviderGenerator.JOHN_SMITH))
 
-        personRepository.saveAll(listOf(PersonGenerator.DEFAULT, PersonGenerator.SETENCED_WITHOUT_NSI))
+        personRepository.saveAll(
+            listOf(
+                PersonGenerator.DEFAULT,
+                PersonGenerator.SENTENCED_WITHOUT_NSI,
+                PersonGenerator.COMMUNITY_RESPONSIBLE,
+                PersonGenerator.COMMUNITY_NOT_RESPONSIBLE
+            )
+        )
+
+        val roCom = PersonGenerator.generatePersonManager(
+            PersonGenerator.COMMUNITY_RESPONSIBLE,
+            ProviderGenerator.JOHN_SMITH
+        )
+        personManagerRepository.saveAll(
+            listOf(
+                roCom,
+                PersonGenerator.generatePersonManager(
+                    PersonGenerator.COMMUNITY_NOT_RESPONSIBLE,
+                    ProviderGenerator.JOHN_SMITH
+                )
+            )
+        )
+
+        responsibleOfficerRepository.save(PersonGenerator.generateResponsibleOfficer(roCom))
+
+        staffUserRepository.save(ProviderGenerator.JOHN_SMITH_USER)
+
+        personRepository.saveAll(listOf(PersonGenerator.DEFAULT, PersonGenerator.SENTENCED_WITHOUT_NSI))
 
         eventRepository.saveAll(listOf(SentenceGenerator.EVENT_WITHOUT_NSI, SentenceGenerator.EVENT_WITH_NSI))
         disposalRepository.saveAll(listOf(SentenceGenerator.SENTENCE_WITHOUT_NSI, SentenceGenerator.SENTENCE_WITH_NSI))
@@ -147,3 +180,6 @@ class DataLoader(
 interface DatasetRepository : JpaRepository<Dataset, Long>
 interface MainCatRepository : JpaRepository<RequirementMainCategory, Long>
 interface DisposalTypeRepository : JpaRepository<DisposalType, Long>
+
+interface StaffUserRepository : JpaRepository<StaffUser, Long>
+interface ResponsibleOfficerRepository : JpaRepository<ResponsibleOfficer, Long>

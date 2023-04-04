@@ -12,7 +12,7 @@ object SentenceGenerator {
     val DEFAULT_DISPOSAL_TYPE = generateDisposalType("NP", 0)
     val EVENT_WITH_NSI = generateEvent(PersonGenerator.DEFAULT.id)
     val SENTENCE_WITH_NSI = generateSentence(EVENT_WITH_NSI, type = DEFAULT_DISPOSAL_TYPE)
-    val EVENT_WITHOUT_NSI = generateEvent(PersonGenerator.SETENCED_WITHOUT_NSI.id)
+    val EVENT_WITHOUT_NSI = generateEvent(PersonGenerator.SENTENCED_WITHOUT_NSI.id)
     val SENTENCE_WITHOUT_NSI = generateSentence(EVENT_WITHOUT_NSI, type = DEFAULT_DISPOSAL_TYPE)
 
     val MAIN_CAT_F = RequirementMainCategory("F", IdGenerator.getAndIncrement())

@@ -5,6 +5,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
@@ -73,6 +74,9 @@ class Disposal(
 
     @OneToOne(mappedBy = "disposal")
     val custody: Custody? = null,
+
+    @OneToMany(mappedBy = "disposal")
+    val licenceConditions: List<LicenceCondition> = emptyList(),
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
@@ -161,6 +165,9 @@ class MainOffence(
     @JoinColumn(name = "event_id", nullable = false)
     val event: Event?,
 
+    @Column(name = "offence_date")
+    val date: LocalDate,
+
     @JoinColumn(name = "offence_id")
     @ManyToOne(cascade = [CascadeType.PERSIST])
     val offence: Offence,
@@ -182,6 +189,9 @@ class AdditionalOffence(
     @JoinColumn(name = "event_id", nullable = false)
     val event: Event?,
 
+    @Column(name = "offence_date")
+    val date: LocalDate,
+
     @JoinColumn(name = "offence_id")
     @ManyToOne(cascade = [CascadeType.PERSIST])
     val offence: Offence,
@@ -197,6 +207,56 @@ class Offence(
     @Id
     @Column(name = "offence_id")
     val id: Long,
+
+    @Column(columnDefinition = "char(5)")
+    val code: String,
+
+    @Column
+    val description: String
+)
+
+@Immutable
+@Table(name = "lic_condition")
+@Entity(name = "CaseSummaryLicenceCondition")
+@Where(clause = "soft_deleted = 0 and active_flag = 1")
+class LicenceCondition(
+    @Id
+    @Column(name = "lic_condition_id")
+    val id: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "disposal_id")
+    val disposal: Disposal,
+
+    @ManyToOne
+    @JoinColumn(name = "lic_cond_type_main_cat_id")
+    val mainCategory: LicenceConditionMainCategory,
+
+    @ManyToOne
+    @JoinColumn(name = "lic_cond_type_sub_cat_id")
+    val subCategory: ReferenceData?,
+
+    @Lob
+    @Column(name = "lic_condition_notes")
+    val notes: String,
+
+    @Column(name = "active_flag", columnDefinition = "number")
+    val active: Boolean = true,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean = false
+)
+
+@Immutable
+@Table(name = "r_lic_cond_type_main_cat")
+@Entity(name = "CaseSummaryLicenceConditionMainCategory")
+class LicenceConditionMainCategory(
+    @Id
+    @Column(name = "lic_cond_type_main_cat_id")
+    val id: Long,
+
+    @Column
+    val code: String,
 
     @Column
     val description: String

@@ -51,7 +51,7 @@ internal class ReferralStartedIntegrationTest {
 
     @Test
     fun `nsi, manager and contacts created when it doesn't already exist`() {
-        val person = PersonGenerator.SETENCED_WITHOUT_NSI
+        val person = PersonGenerator.SENTENCED_WITHOUT_NSI
         val referralId = UUID.randomUUID()
         val r1 = ReferralStarted(
             referralId,
