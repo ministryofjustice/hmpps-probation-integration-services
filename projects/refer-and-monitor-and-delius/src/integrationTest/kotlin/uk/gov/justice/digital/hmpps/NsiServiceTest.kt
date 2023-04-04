@@ -38,10 +38,10 @@ class NsiServiceTest {
         val referralStarted = ReferralStarted(referralId, startedAt, contractType, sentenceId, "Some notes")
 
         val job1 = CompletableFuture.supplyAsync {
-            nsiService.startNsi(PersonGenerator.SETENCED_WITHOUT_NSI.crn, referralStarted)
+            nsiService.startNsi(PersonGenerator.SENTENCED_WITHOUT_NSI.crn, referralStarted)
         }
         val job2 = CompletableFuture.supplyAsync {
-            nsiService.startNsi(PersonGenerator.SETENCED_WITHOUT_NSI.crn, referralStarted)
+            nsiService.startNsi(PersonGenerator.SENTENCED_WITHOUT_NSI.crn, referralStarted)
         }
 
         CompletableFuture.allOf(job1, job2).join()
@@ -49,7 +49,7 @@ class NsiServiceTest {
         job2.get()
 
         val nsi = nsiRepository.findByPersonCrnAndExternalReference(
-            PersonGenerator.SETENCED_WITHOUT_NSI.crn,
+            PersonGenerator.SENTENCED_WITHOUT_NSI.crn,
             referralStarted.urn
         )
         assertThat(nsi?.externalReference, equalTo(referralStarted.urn))
