@@ -338,9 +338,16 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
         "licenceExpiryDate": "string",
         "sentenceExpiryDate": "string"
       },
-      "mainOffence": "string",
+      "mainOffence": {
+        "date": "string",
+        "code": "string",
+        "description": "string"
+      },
       "additionalOffences": [
         {
+          "date": "string",
+          "code": "string",
+          "description": "string"
         }
       ]
     }
@@ -933,6 +940,38 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 
 <tr>
 <td>mainOffence</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+<tr>
+<td>additionalOffences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offence">Offence</h3>
+
+
+<table class='schema-offence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>date</td>
 <td>string</td>
 <td>true</td>
 <td></td>
@@ -942,8 +981,18 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 </tr>
 
 <tr>
-<td>additionalOffences</td>
-<td>array</td>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
 <td>true</td>
 <td></td>
 <td>
