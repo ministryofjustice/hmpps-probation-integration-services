@@ -29,9 +29,10 @@ class DocumentService(
 
 ) : AuditableService(auditedInteractionService) {
     @Transactional
-    fun createDeliusDocument(hmppsEvent: HmppsDomainEvent, file: ByteArray, filename: String, episodeId: String, person: PersonWithManager, contactDate: ZonedDateTime) =
+    fun createDeliusDocument(hmppsEvent: HmppsDomainEvent, file: ByteArray, filename: String, episodeId: String, person: PersonWithManager, eventId: Long, contactDate: ZonedDateTime) =
         audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
-            val contactId = createContact(person, contactDate)
+            val externalReference = "urn:hmpps:unpaid-work-assessment:$episodeId"
+            val contactId = createContact(person, eventId, contactDate, externalReference)
 
             val alfrescoDocument = alfrescoClient.addDocument(populateBodyValues(hmppsEvent, file, filename, contactId))
             documentRepository.save(
@@ -40,7 +41,7 @@ class DocumentService(
                     offenderId = person.id,
                     alfrescoId = alfrescoDocument.id,
                     name = filename,
-                    externalReference = episodeId,
+                    externalReference = externalReference,
                     tableName = "CONTACT"
                 )
             )
@@ -48,7 +49,9 @@ class DocumentService(
 
     private fun createContact(
         person: PersonWithManager,
-        date: ZonedDateTime
+        eventId: Long,
+        date: ZonedDateTime,
+        externalReference: String
     ): Long {
         val manager = person.managers.first()
         val staffId = manager.staff.id
@@ -59,10 +62,13 @@ class DocumentService(
                 notes = "CP/UPW Assessment",
                 date = date,
                 person = person,
+                eventId = eventId,
                 startTime = date,
                 staffId = staffId,
                 teamId = teamId,
-                type = contactTypeRepository.getByCode(ContactTypeCode.UPW_ASSESSMENT.code)
+                type = contactTypeRepository.getByCode(ContactTypeCode.UPW_ASSESSMENT.code),
+                documentLinked = true,
+                externalReference = externalReference
             )
         )
         return contact.id
