@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Requirem
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.RequirementMainCategory
 
 object SentenceGenerator {
-    val SENTENCE_WITHOUT_NSI = generateSentence(PersonGenerator.SETENCED_WITHOUT_NSI.id)
+    val SENTENCE_WITHOUT_NSI = generateSentence(PersonGenerator.SENTENCED_WITHOUT_NSI.id)
 
     val MAIN_CAT_F = RequirementMainCategory("F", IdGenerator.getAndIncrement())
 

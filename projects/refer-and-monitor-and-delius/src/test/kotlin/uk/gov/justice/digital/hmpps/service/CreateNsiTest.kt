@@ -52,7 +52,7 @@ internal class CreateNsiTest {
 
     @Test
     fun `contract type not recognised`() {
-        val person = PersonGenerator.SETENCED_WITHOUT_NSI
+        val person = PersonGenerator.SENTENCED_WITHOUT_NSI
         val sentence = SentenceGenerator.SENTENCE_WITHOUT_NSI
         val referralId = UUID.randomUUID()
         whenever(personRepository.findByCrn(person.crn)).thenReturn(person)
