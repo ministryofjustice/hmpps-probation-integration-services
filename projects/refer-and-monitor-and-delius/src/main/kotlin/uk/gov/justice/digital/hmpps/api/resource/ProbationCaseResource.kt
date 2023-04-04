@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.service.ManagerService
 @RestController
 @RequestMapping("probation-case/{crn}")
 class ProbationCaseResource(private val managerService: ManagerService) {
-    @PreAuthorize("hasRole('CRS_RESPONSIBLE_OFFICER')")
+    @PreAuthorize("hasRole('CRS_REFERRAL')")
     @GetMapping("responsible-officer")
     fun handle(@PathVariable crn: String): ResponsibleOfficer =
         managerService.findResponsibleCommunityManager(crn)
