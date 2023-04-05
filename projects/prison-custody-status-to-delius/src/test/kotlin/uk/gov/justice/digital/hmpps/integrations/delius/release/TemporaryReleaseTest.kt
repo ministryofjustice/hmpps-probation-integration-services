@@ -36,7 +36,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
     fun `when feature flag is disabled, ETL23 is ignored`() {
         whenever(featureFlags.enabled(FeatureFlagCodes.RELEASE_ETL23)).thenReturn(false)
         assertThrows<IgnorableMessageException> {
-            releaseService.releaseFrom(
+            releaseService.release(
                 "",
                 "",
                 "TEMPORARY_ABSENCE_RELEASE",
@@ -66,7 +66,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
-            releaseService.releaseFrom(
+            releaseService.release(
                 person.nomsNumber,
                 institution.nomisCdeCode,
                 "TEMPORARY_ABSENCE_RELEASE",
@@ -106,7 +106,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
         whenever(custodyService.findAutoConditionalReleaseDate(custody.id)).thenReturn(acrKd)
 
         val exception = assertThrows<IgnorableMessageException> {
-            releaseService.releaseFrom(
+            releaseService.release(
                 person.nomsNumber,
                 institution.nomisCdeCode,
                 "TEMPORARY_ABSENCE_RELEASE",
@@ -151,7 +151,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY])
         whenever(custodyService.findAutoConditionalReleaseDate(custody.id)).thenReturn(acrKd)
 
-        releaseService.releaseFrom(
+        releaseService.release(
             person.nomsNumber,
             institution.nomisCdeCode,
             "TEMPORARY_ABSENCE_RELEASE",
@@ -217,7 +217,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
         )
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
-        releaseService.releaseFrom(
+        releaseService.release(
             person.nomsNumber,
             institution.nomisCdeCode,
             "TEMPORARY_ABSENCE_RELEASE",
@@ -264,7 +264,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
         )
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
-        releaseService.releaseFrom(
+        releaseService.release(
             person.nomsNumber,
             institution.nomisCdeCode,
             "TEMPORARY_ABSENCE_RELEASE",

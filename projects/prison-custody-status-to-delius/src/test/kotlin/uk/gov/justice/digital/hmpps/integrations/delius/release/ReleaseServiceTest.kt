@@ -39,7 +39,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
     @Test
     fun unsupportedReleaseTypeIsIgnored() {
         assertThrows<IgnorableMessageException> {
-            releaseService.releaseFrom(
+            releaseService.release(
                 "",
                 "",
                 "TEMPORARY_ABSENCE_RELEASE",
@@ -48,7 +48,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
             )
         }
         assertThrows<IgnorableMessageException> {
-            releaseService.releaseFrom(
+            releaseService.release(
                 "",
                 "",
                 "RELEASED_TO_HOSPITAL",
@@ -57,7 +57,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
             )
         }
         assertThrows<IgnorableMessageException> {
-            releaseService.releaseFrom(
+            releaseService.release(
                 "",
                 "",
                 "SENT_TO_COURT",
@@ -66,7 +66,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
             )
         }
         assertThrows<IgnorableMessageException> {
-            releaseService.releaseFrom(
+            releaseService.release(
                 "",
                 "",
                 "TRANSFERRED",
@@ -79,14 +79,14 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
     @Test
     fun unexpectedReleaseTypeIsThrown() {
         assertThrows<IllegalArgumentException> {
-            releaseService.releaseFrom("", "", "Invalid reason!", "BL", ZonedDateTime.now())
+            releaseService.release("", "", "Invalid reason!", "BL", ZonedDateTime.now())
         }
     }
 
     @Test
     fun missingReleaseTypeIsThrown() {
         assertThrows<NotFoundException> {
-            releaseService.releaseFrom("", "", RELEASED, "BL", ZonedDateTime.now())
+            releaseService.release("", "", RELEASED, "BL", ZonedDateTime.now())
         }
     }
 
@@ -96,7 +96,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
 
         assertThrows<NotFoundException> {
-            releaseService.releaseFrom("", "TEST", RELEASED, "BL", ZonedDateTime.now())
+            releaseService.release("", "TEST", RELEASED, "BL", ZonedDateTime.now())
         }
     }
 
@@ -108,7 +108,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents("INVALID")).thenThrow(IllegalArgumentException())
 
         assertThrows<IllegalArgumentException> {
-            releaseService.releaseFrom("INVALID", DEFAULT.code, RELEASED, "BL", ZonedDateTime.now())
+            releaseService.release("INVALID", DEFAULT.code, RELEASED, "BL", ZonedDateTime.now())
         }
     }
 
@@ -121,7 +121,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<NotFoundException> {
-            releaseService.releaseFrom(person.nomsNumber, DEFAULT.code, RELEASED, "BL", ZonedDateTime.now())
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "BL", ZonedDateTime.now())
         }
         assertThat(exception.message, matchesPattern("Disposal with eventId of \\d* not found"))
     }
@@ -135,7 +135,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<NotFoundException> {
-            releaseService.releaseFrom(person.nomsNumber, DEFAULT.code, RELEASED, "BL", ZonedDateTime.now())
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "BL", ZonedDateTime.now())
         }
         assertThat(exception.message, matchesPattern("Custody with disposalId of \\d* not found"))
     }
@@ -150,7 +150,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
             .thenReturn(listOf(EventGenerator.custodialEvent(person, DEFAULT, status)))
 
         val exception = assertThrows<IgnorableMessageException> {
-            releaseService.releaseFrom(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", ZonedDateTime.now())
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", ZonedDateTime.now())
         }
         assertEquals(exception.message, "UnexpectedCustodialStatus")
     }
@@ -165,7 +165,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
             .thenReturn(listOf(EventGenerator.custodialEvent(person, institution)))
 
         val exception = assertThrows<IgnorableMessageException> {
-            releaseService.releaseFrom(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", ZonedDateTime.now())
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", ZonedDateTime.now())
         }
         assertEquals(exception.message, "UnexpectedInstitution")
     }
@@ -180,7 +180,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
             .thenReturn(listOf(EventGenerator.custodialEvent(person, DEFAULT)))
 
         val exception = assertThrows<IgnorableMessageException> {
-            releaseService.releaseFrom(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", releaseDate)
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", releaseDate)
         }
         assertThat(exception.message, equalTo("InvalidReleaseDate"))
     }
@@ -196,7 +196,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
-            releaseService.releaseFrom(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", releaseDate)
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", releaseDate)
         }
         assertThat(exception.message, equalTo("InvalidReleaseDate"))
     }
@@ -210,7 +210,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<NotFoundException> {
-            releaseService.releaseFrom(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", ZonedDateTime.now())
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", ZonedDateTime.now())
         }
         assertThat(exception.message, matchesPattern("OrderManager with eventId of \\d* not found"))
     }
@@ -226,7 +226,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(orderManager)
 
         val exception = assertThrows<NotFoundException> {
-            releaseService.releaseFrom(person.nomsNumber, DEFAULT.code, RELEASED, "ANY", ZonedDateTime.now())
+            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "ANY", ZonedDateTime.now())
         }
         assertThat(exception.message, equalTo("ContactType with code of EREL not found"))
     }
@@ -248,7 +248,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(contactTypeRepository.findByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code))
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY])
 
-        releaseService.releaseFrom(person.nomsNumber, DEFAULT.nomisCdeCode, RELEASED, "OPA", releaseDateTime)
+        releaseService.release(person.nomsNumber, DEFAULT.nomisCdeCode, RELEASED, "OPA", releaseDateTime)
 
         val saved = argumentCaptor<Release>()
         verify(releaseRepository).save(saved.capture())
@@ -292,7 +292,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(contactTypeRepository.findByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code))
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY])
 
-        releaseService.releaseFrom(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", releaseDateTime)
+        releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", releaseDateTime)
 
         val saved = argumentCaptor<Contact>()
         verify(contactRepository).save(saved.capture())

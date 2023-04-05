@@ -64,7 +64,7 @@ class ReleaseService(
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
-    fun releaseFrom(
+    fun release(
         nomsNumber: String,
         prisonId: String,
         reason: String,
@@ -107,7 +107,7 @@ class ReleaseService(
         validateRelease(custody, fromInstitution, releaseDate, movementReasonCode)
 
         // create the release
-        releaseFrom(releaseDateTime, releaseType, custody, fromInstitution, movementReasonCode)
+        release(releaseDateTime, releaseType, custody, fromInstitution, movementReasonCode)
 
         // update custody status + location
         val statusCode = when (releaseType.code) {
@@ -179,7 +179,7 @@ class ReleaseService(
         else -> throw IllegalArgumentException("Unexpected release reason: $reason")
     }
 
-    private fun releaseFrom(
+    private fun release(
         dateTime: ZonedDateTime,
         type: ReferenceData,
         custody: Custody,

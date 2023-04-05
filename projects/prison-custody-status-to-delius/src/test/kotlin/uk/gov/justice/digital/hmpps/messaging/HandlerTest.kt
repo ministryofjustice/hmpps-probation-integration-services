@@ -61,7 +61,7 @@ internal class HandlerTest {
     @Test
     fun messageIsLoggedToTelemetry() {
         whenever(
-            releaseService.releaseFrom(
+            releaseService.release(
                 notification.message.additionalInformation.nomsNumber(),
                 notification.message.additionalInformation.prisonId(),
                 notification.message.additionalInformation.reason(),
@@ -76,7 +76,7 @@ internal class HandlerTest {
     @Test
     fun releaseMessagesAreHandled() {
         whenever(
-            releaseService.releaseFrom(
+            releaseService.release(
                 notification.message.additionalInformation.nomsNumber(),
                 notification.message.additionalInformation.prisonId(),
                 notification.message.additionalInformation.reason(),
@@ -86,7 +86,7 @@ internal class HandlerTest {
         ).thenReturn(ReleaseOutcome.PrisonerReleased)
 
         handler.handle(notification)
-        verify(releaseService).releaseFrom(
+        verify(releaseService).release(
             notification.message.additionalInformation.nomsNumber(),
             notification.message.additionalInformation.prisonId(),
             notification.message.additionalInformation.reason(),
