@@ -226,7 +226,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
         )
 
         verify(releaseRepository, never()).save(any())
-        verify(eventService).updateReleaseDateAndIapsFlag(event, releaseDate)
+        verify(eventService, never()).updateReleaseDateAndIapsFlag(any(), any())
         verify(custodyService, never()).addRotlEndDate(any())
         verify(contactRepository, never()).save(any())
 
@@ -273,7 +273,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
         )
 
         verify(releaseRepository, never()).save(any())
-        verify(eventService).updateReleaseDateAndIapsFlag(event, releaseDate)
+        verify(eventService, never()).updateReleaseDateAndIapsFlag(any(), any())
         verify(custodyService, never()).addRotlEndDate(any())
         verify(contactRepository, never()).save(any())
 

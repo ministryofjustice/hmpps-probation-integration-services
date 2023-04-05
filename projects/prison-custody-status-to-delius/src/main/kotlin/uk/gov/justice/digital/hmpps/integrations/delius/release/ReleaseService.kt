@@ -132,9 +132,6 @@ class ReleaseService(
             custodyService.updateLocation(custody, institution, releaseDate)
             custodyService.allocatePrisonManager(null, fromInstitution, custody, releaseDateTime)
         }
-
-        // update event
-        eventService.updateReleaseDateAndIapsFlag(event, releaseDate)
     }
 
     private fun locationChanged(custody: Custody, institution: Institution): Boolean =
@@ -228,6 +225,7 @@ class ReleaseService(
                 teamId = orderManager.teamId
             )
         )
+        eventService.updateReleaseDateAndIapsFlag(event, releaseDate)
     }
 }
 
