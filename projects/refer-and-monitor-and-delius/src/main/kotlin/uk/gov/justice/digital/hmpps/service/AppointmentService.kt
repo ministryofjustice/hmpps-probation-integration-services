@@ -44,8 +44,6 @@ class AppointmentService(
         appointment.outcome = outcome
         if (appointment.notes?.contains(uao.notes) != true) {
             appointment.notes += """${System.lineSeparator()}
-            |----------
-            |
             |${uao.notes}
             """.trimMargin()
         }
