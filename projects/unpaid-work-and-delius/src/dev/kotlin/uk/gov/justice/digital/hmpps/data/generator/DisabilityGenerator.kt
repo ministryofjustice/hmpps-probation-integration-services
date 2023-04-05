@@ -10,6 +10,7 @@ object DisabilityGenerator {
     fun generate(id: Long = IdGenerator.getAndIncrement()) = DisabilityEntity(
         id,
         CaseGenerator.DEFAULT,
+        null,
         ReferenceDataGenerator.DISABILITY_HEARING,
         "wears hearing aid",
         LocalDate.now().minusMonths(5),

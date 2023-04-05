@@ -5,6 +5,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
@@ -23,6 +24,9 @@ class DisabilityEntity(
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val case: CaseEntity,
+
+    @OneToMany(mappedBy = "disabilityEntity")
+    val provisions: List<ProvisionEntity>?,
 
     @ManyToOne
     @JoinColumn(name = "disability_type_id", updatable = false)

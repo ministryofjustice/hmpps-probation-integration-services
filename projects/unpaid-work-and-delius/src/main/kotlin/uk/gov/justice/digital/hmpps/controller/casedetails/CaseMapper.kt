@@ -80,14 +80,13 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetai
     val disabilities = case.disabilities.map { d ->
         Disability(
             Type(d.type.code, d.type.description),
-            d.notes
-        )
-    }
-
-    val provisions = case.provisions.map { p ->
-        Provision(
-            Type(p.type.code, p.type.description),
-            p.notes
+            d.notes,
+            d.provisions?.map {
+                Provision(
+                    Type(it.type.code, it.type.description),
+                    it.notes
+                )
+            }
         )
     }
 
@@ -98,8 +97,7 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetai
         registerFlags = populateRegisterFlags(case),
         language = case.primaryLanguage?.description?.language(case.requiresInterpreter ?: false),
         sentence = sentence,
-        disabilities = disabilities,
-        provisions = provisions
+        disabilities = disabilities
     )
 }
 
