@@ -34,7 +34,7 @@ class NsiServiceTest {
         val referralId = UUID.randomUUID()
         val startedAt = LocalDate.now().atStartOfDay().atZone(EuropeLondon)
         val contractType = ContractTypeNsiType.MAPPING.entries.first().key
-        val sentenceId = SentenceGenerator.SENTENCE_WITHOUT_NSI.eventId
+        val sentenceId = SentenceGenerator.SENTENCE_WITHOUT_NSI.event.id
         val referralStarted = ReferralStarted(referralId, startedAt, contractType, sentenceId, "Some notes")
 
         val job1 = CompletableFuture.supplyAsync {

@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.getByPersonIdAndEventId
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
@@ -10,13 +12,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.RequirementRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.RequirementMainCategory
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.getByPersonIdAndEventId
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCode
-import java.time.temporal.ChronoUnit
 
 @Service
 class CreateNsi(
@@ -54,7 +53,7 @@ class CreateNsi(
                 type = type,
                 eventId = eventId,
                 requirementId = req?.id,
-                referralDate = rs.startedAt.truncatedTo(ChronoUnit.DAYS),
+                referralDate = rs.startedAt.toLocalDate(),
                 actualStartDate = rs.startedAt,
                 status = status,
                 statusDate = rs.startedAt,

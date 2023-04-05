@@ -31,6 +31,16 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
         """
     )
     fun fuzzySearch(crn: String, eventId: Long, types: Set<String>): List<Nsi>
+
+    @Query(
+        """
+        select nsi from Nsi nsi
+        join Requirement r on r.id = nsi.requirementId
+        join r.mainCategory rt
+        where nsi.id = :id and rt.code = 'F'
+    """
+    )
+    fun findByIdIfRar(id: Long): Nsi?
 }
 
 interface NsiStatusHistoryRepository : JpaRepository<NsiStatusHistory, Long>

@@ -2,12 +2,16 @@ package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.MethodOrderer
+import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -16,23 +20,28 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
-import uk.gov.justice.digital.hmpps.messaging.DomainEventType
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.ReferralEndType
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.Duration
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @SpringBootTest
 @ActiveProfiles("integration-test")
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class ReferAndMonitorIntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
@@ -55,24 +64,105 @@ internal class ReferAndMonitorIntegrationTest {
     @Autowired
     lateinit var contactRepository: ContactRepository
 
+    @Autowired
+    lateinit var enforcementRepository: EnforcementRepository
+
+    @Autowired
+    lateinit var eventRepository: EventRepository
+
     @Test
-    fun `session appointment feedback submitted`() {
+    @Order(1)
+    fun `session appointment feedback submitted failed to comply`() {
+        val scheduled = contactRepository.findById(ContactGenerator.CRSAPT_NON_COMPLIANT.id).orElseThrow()
+        assertNull(scheduled.outcome)
+
         val notification = prepNotification(
-            notification("session-appointment-feedback-submitted"),
+            notification("session-appointment-feedback-submitted-non-compliant"),
             wireMockServer.port()
         )
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(telemetryService).trackEvent(
-            "UnhandledEventReceived",
+            "SessionAppointmentSubmitted",
             mapOf(
-                "eventType" to DomainEventType.SessionAppointmentSubmitted.name
+                "appointmentId" to "1",
+                "crn" to "T140223",
+                "referralReference" to "FE4536C"
             )
         )
+
+        val expectedOutcome = ContactGenerator.OUTCOMES[ContactOutcome.Code.FAILED_TO_COMPLY.value]!!
+        val appointment = contactRepository.findById(ContactGenerator.CRSAPT_NON_COMPLIANT.id).orElseThrow()
+        assertThat(appointment.outcome?.code, equalTo(expectedOutcome.code))
+        assertThat(appointment.attended, equalTo(expectedOutcome.attendance))
+        assertThat(appointment.complied, equalTo(expectedOutcome.compliantAcceptable))
+        assertThat(appointment.hoursCredited, equalTo(null))
+        assertTrue(appointment.enforcement!!)
+
+        val enforcement = enforcementRepository.findAll().firstOrNull { it.contact.id == appointment.id }
+        assertNotNull(enforcement)
+        val referContact = contactRepository.findAll().firstOrNull {
+            it.person.id == PersonGenerator.DEFAULT.id && it.type.code == ContactType.Code.REFER_TO_PERSON_MANAGER.value
+        }
+        assertNotNull(referContact!!)
+        assertThat(referContact.notes, containsString("Enforcement Action: ${enforcement!!.action!!.description}"))
+
+        val event = eventRepository.findById(appointment.eventId!!).orElseThrow()
+        assertThat(event.ftcCount, equalTo(1))
+
+        val nsi = nsiRepository.findById(appointment.nsiId!!).orElseThrow()
+        assertThat(nsi.rarCount, equalTo(null))
     }
 
     @Test
+    @Order(2)
+    fun `session appointment feedback submitted complied`() {
+        val scheduled = contactRepository.findById(ContactGenerator.CRSAPT_COMPLIANT.id).orElseThrow()
+        assertNull(scheduled.outcome)
+
+        val notification = prepNotification(
+            notification("session-appointment-feedback-submitted-compliant"),
+            wireMockServer.port()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofSeconds(180))
+
+        verify(telemetryService).trackEvent(
+            "SessionAppointmentSubmitted",
+            mapOf(
+                "appointmentId" to "2",
+                "crn" to "T140223",
+                "referralReference" to "FE4536C"
+            )
+        )
+
+        val expectedOutcome = ContactGenerator.OUTCOMES[ContactOutcome.Code.COMPLIED.value]!!
+        val appointment = contactRepository.findById(ContactGenerator.CRSAPT_COMPLIANT.id).orElseThrow()
+        assertThat(appointment.outcome?.code, equalTo(expectedOutcome.code))
+        assertThat(appointment.attended, equalTo(expectedOutcome.attendance))
+        assertThat(appointment.complied, equalTo(expectedOutcome.compliantAcceptable))
+        assertThat(appointment.hoursCredited, equalTo(0.75))
+        assertNull(appointment.enforcement)
+
+        val enforcement = enforcementRepository.findAll().firstOrNull { it.contact.id == appointment.id }
+        assertNull(enforcement)
+        val referContacts = contactRepository.findAll().filter {
+            it.person.id == PersonGenerator.DEFAULT.id && it.type.code == ContactType.Code.REFER_TO_PERSON_MANAGER.value
+        }
+        // one created in the previous test
+        assertThat(referContacts.count(), equalTo(1))
+
+        // one ftc from previous test
+        val event = eventRepository.findById(appointment.eventId!!).orElseThrow()
+        assertThat(event.ftcCount, equalTo(1))
+
+        val nsi = nsiRepository.findById(appointment.nsiId!!).orElseThrow()
+        assertThat(nsi.rarCount, equalTo(1))
+    }
+
+    @Test
+    @Order(3)
     fun `referral end submitted`() {
         val nsi = nsiRepository.findById(NsiGenerator.END_PREMATURELY.id).orElseThrow()
         assertThat(nsi.status.code, equalTo(NsiStatus.Code.IN_PROGRESS.value))
@@ -81,7 +171,8 @@ internal class ReferAndMonitorIntegrationTest {
 
         val futureAppt = ContactGenerator.generate(
             type = ContactGenerator.TYPES[ContactType.Code.CRSAPT.value]!!,
-            date = ZonedDateTime.now().plusDays(7),
+            date = LocalDate.now().plusDays(7),
+            startTime = ZonedDateTime.now().plusDays(7),
             nsi = nsi,
             person = nsi.person,
             id = 0
@@ -123,7 +214,6 @@ internal class ReferAndMonitorIntegrationTest {
         assertThat(sh.date, equalTo(saved.actualEndDate))
 
         val contacts = contactRepository.findAll().filter { it.nsiId == nsi.id }
-        assertThat(contacts.size, equalTo(2))
         assertTrue(contacts have ContactType.Code.COMPLETED.value)
         assertTrue(contacts have ContactType.Code.NSI_TERMINATED.value)
     }

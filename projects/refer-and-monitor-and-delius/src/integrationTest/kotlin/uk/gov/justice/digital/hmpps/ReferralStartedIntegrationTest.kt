@@ -57,7 +57,7 @@ internal class ReferralStartedIntegrationTest {
             referralId,
             ZonedDateTime.now(),
             "ACC",
-            SentenceGenerator.SENTENCE_WITHOUT_NSI.eventId,
+            SentenceGenerator.SENTENCE_WITHOUT_NSI.event.id,
             "The referral has been started"
         )
 
@@ -69,7 +69,7 @@ internal class ReferralStartedIntegrationTest {
             referralId,
             ZonedDateTime.now(),
             "ACC",
-            SentenceGenerator.SENTENCE_WITHOUT_NSI.eventId,
+            SentenceGenerator.SENTENCE_WITHOUT_NSI.event.id,
             "The referral has been sent twice"
         )
 
@@ -99,7 +99,7 @@ internal class ReferralStartedIntegrationTest {
         assertThat(nsi.statusDate, isCloseTo(request.startedAt))
         assertThat(nsi.status.code, equalTo(NsiStatus.Code.IN_PROGRESS.value))
         assertThat(nsi.type.code, equalTo("CRS01"))
-        assertThat(nsi.eventId, equalTo(SentenceGenerator.SENTENCE_WITHOUT_NSI.eventId))
+        assertThat(nsi.eventId, equalTo(SentenceGenerator.SENTENCE_WITHOUT_NSI.event.id))
         Assertions.assertNotNull(nsi.requirementId)
         assertThat(nsi.notes, equalTo(request.notes))
 
