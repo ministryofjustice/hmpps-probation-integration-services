@@ -4,7 +4,7 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 interface Assessment {
-    val score: Int
+    val score: Long
     val lastModifiedDateTime: ZonedDateTime
     val assessmentDate: LocalDate
 }

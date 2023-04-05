@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.controller
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.controller.entity.CaseEntity
-import uk.gov.justice.digital.hmpps.controller.entity.CaseRepository
+import uk.gov.justice.digital.hmpps.controller.entity.CaseEntityRepository
 import uk.gov.justice.digital.hmpps.controller.entity.EventEntity
 import uk.gov.justice.digital.hmpps.controller.entity.EventRepository
 import uk.gov.justice.digital.hmpps.controller.entity.OASYSAssessmentRepository
@@ -16,7 +16,7 @@ import uk.gov.justice.digital.hmpps.controller.model.TierDetails
 
 @Service
 class TierDetailsService(
-    val caseRepository: CaseRepository,
+    val caseEntityRepository: CaseEntityRepository,
     val registrationRepository: RegistrationRepository,
     val eventRepository: EventRepository,
     val oasysAssessmentRepository: OASYSAssessmentRepository,
@@ -24,7 +24,7 @@ class TierDetailsService(
 
 ) {
     fun tierDetails(crn: String): TierDetails {
-        val case = caseRepository.getCase(crn)
+        val case = caseEntityRepository.getCase(crn)
         val registrationEntities = registrationRepository.findByPersonIdOrderByDateDesc(case.id)
         val eventEntities = eventRepository.findByCrn(crn)
         val convictions = mapToConvictions(eventEntities)
@@ -53,7 +53,7 @@ class TierDetailsService(
         }
     }
 
-    private fun getRiskOgrs(case: CaseEntity): Int? {
+    private fun getRiskOgrs(case: CaseEntity): Long? {
         val oasysAssessment = oasysAssessmentRepository.findFirstByPersonIdAndScoreIsNotNullOrderByAssessmentDateDesc(
             case.id
         )

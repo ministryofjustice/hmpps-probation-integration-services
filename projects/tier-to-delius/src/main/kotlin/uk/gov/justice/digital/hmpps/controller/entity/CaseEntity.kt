@@ -38,8 +38,8 @@ class CaseEntity(
     val dynamicRsrScore: Double?
 )
 
-interface CaseRepository : JpaRepository<CaseEntity, Long>{
+interface CaseEntityRepository : JpaRepository<CaseEntity, Long>{
 fun findByCrnAndSoftDeletedIsFalse(crn: String): CaseEntity?
 }
-fun CaseRepository.getCase(crn: String): CaseEntity =
+fun CaseEntityRepository.getCase(crn: String): CaseEntity =
     findByCrnAndSoftDeletedIsFalse(crn) ?: throw NotFoundException("Person", "crn", crn)

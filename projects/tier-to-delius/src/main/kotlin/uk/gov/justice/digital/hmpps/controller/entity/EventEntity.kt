@@ -17,7 +17,7 @@ import java.time.ZonedDateTime
 
 @Immutable
 @Entity
-@Where(clause = "softDeleted = 0 and active = 1")
+@Where(clause = "soft_deleted = 0 and active_flag = 1")
 class EventEntity(
     @Id
     @Column(name = "event_id", nullable = false)
@@ -48,7 +48,7 @@ class EventEntity(
 
 @Immutable
 @Entity
-@Where(clause = "softDeleted = 0 and active = 1")
+@Where(clause = "soft_deleted = 0 and active_flag = 1")
 class Disposal(
     @Id
     @Column(name = "disposal_id")
@@ -132,7 +132,6 @@ interface EventRepository : JpaRepository<EventEntity, Long> {
         """
         select e from EventEntity e 
         where e.person.crn = :crn
-        and e.softDeleted = false
     """
     )
     fun findByCrn(crn: String): List<EventEntity>

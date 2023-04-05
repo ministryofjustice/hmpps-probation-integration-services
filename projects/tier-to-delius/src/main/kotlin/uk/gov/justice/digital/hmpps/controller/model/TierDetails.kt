@@ -1,12 +1,11 @@
 package uk.gov.justice.digital.hmpps.controller.model
 
-import java.math.BigDecimal
 import java.time.LocalDate
 
 data class TierDetails(
     val gender: String,
     val tier: String?,
-    val oGRSScore: Int?,
+    val oGRSScore: Long?,
     val rSRScore: Double?,
     val registrations: List<Registration>,
     val convictions: List<Conviction>

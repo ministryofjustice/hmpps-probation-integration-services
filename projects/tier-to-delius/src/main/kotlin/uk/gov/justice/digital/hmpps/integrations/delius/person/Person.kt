@@ -25,7 +25,7 @@ class Person(
     @Column(columnDefinition = "char(7)")
     val crn: String,
 
-    @Column
+    @Column(name = "current_tier")
     var currentTier: Long? = null,
 
     @Version

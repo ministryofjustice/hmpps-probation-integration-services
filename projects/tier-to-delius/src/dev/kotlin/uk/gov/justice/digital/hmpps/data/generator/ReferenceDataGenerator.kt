@@ -5,6 +5,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceD
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataSet
 
 object ReferenceDataGenerator {
+
+
     fun generate(
         code: String,
         dataset: ReferenceDataSet,
@@ -15,6 +17,7 @@ object ReferenceDataGenerator {
 object ReferenceDataSetGenerator {
     val TIER = generate("TIER")
     val TIER_CHANGE_REASON = generate("TIER CHANGE REASON")
+    val GENDER = generate("GENDER")
 
     fun generate(name: String, id: Long = IdGenerator.getAndIncrement()) = ReferenceDataSet(id, name)
 }

@@ -17,7 +17,7 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-class TierContextTest {
+class TierDetailsTest {
     @Autowired lateinit var mockMvc: MockMvc
 
     @Autowired lateinit var wireMockserver: WireMockServer
@@ -26,8 +26,9 @@ class TierContextTest {
 
     @Test
     fun `successful response`() {
+        
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/tier-context").withOAuth2Token(wireMockserver)
+            MockMvcRequestBuilders.get("/tier-details/A000001").withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
 
         )
