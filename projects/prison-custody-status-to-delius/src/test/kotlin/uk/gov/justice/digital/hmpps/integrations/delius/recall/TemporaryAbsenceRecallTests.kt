@@ -12,6 +12,7 @@ import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.FeatureFlagCodes
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
@@ -125,7 +126,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         val om = OrderManagerGenerator.generate(event)
         val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE]
 
-        whenever(featureFlags.enabled(FEATURE_FLAG_TRANSFERRED)).thenReturn(true)
+        whenever(featureFlags.enabled(FeatureFlagCodes.RECALL_TRANSFERRED)).thenReturn(true)
         whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code)).thenReturn(recallReason)
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment("WSI")).thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))

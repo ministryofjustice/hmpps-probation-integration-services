@@ -2,11 +2,14 @@ package uk.gov.justice.digital.hmpps.integrations.delius.release
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.FeatureFlagCodes.RELEASE_ETL23
+import uk.gov.justice.digital.hmpps.MovementReasonCodes
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datasource.OptimisationContext
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -32,12 +35,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.PrisonerDied
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.PrisonerReleased
-import java.time.Duration.between
 import java.time.LocalDate.now
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.DAYS
 
-const val MOVEMENT_REASON_DIED = "DEC"
 const val ETL23_NOTES = "This is a ROTL release on Extended Temporary Licence (ETL23)"
 
 enum class ReleaseOutcome {
@@ -57,7 +58,8 @@ class ReleaseService(
     private val orderManagerRepository: OrderManagerRepository,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
-    private val personDied: PersonDied
+    private val personDied: PersonDied,
+    private val featureFlags: FeatureFlags
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -67,7 +69,7 @@ class ReleaseService(
         reason: String,
         movementReasonCode: String,
         releaseDateTime: ZonedDateTime
-    ) = if (movementReasonCode == MOVEMENT_REASON_DIED) {
+    ) = if (movementReasonCode == MovementReasonCodes.DIED) {
         personDied.inCustody(nomsNumber, releaseDateTime)
         PrisonerDied
     } else {
@@ -101,7 +103,7 @@ class ReleaseService(
         val releaseDate = releaseDateTime.truncatedTo(DAYS)
 
         // perform validation
-        validateRelease(custody, fromInstitution, releaseDate)
+        validateRelease(custody, fromInstitution, releaseDate, movementReasonCode)
 
         // create the release
         releaseFrom(releaseDateTime, releaseType, custody, fromInstitution, movementReasonCode)
@@ -138,13 +140,13 @@ class ReleaseService(
     private fun locationChanged(custody: Custody, institution: Institution): Boolean =
         institution.code == InstitutionCode.IN_COMMUNITY.code || custody.institution.id != institution.id
 
-    private fun validateRelease(custody: Custody, institution: Institution, releaseDate: ZonedDateTime) {
+    private fun validateRelease(custody: Custody, institution: Institution, releaseDate: ZonedDateTime, movementReasonCode: String) {
         if (!custody.isInCustody()) {
             throw IgnorableMessageException("UnexpectedCustodialStatus")
         }
 
         // This behaviour may change. See https://dsdmoj.atlassian.net/browse/PI-264
-        if (custody.institution.code != institution.code) {
+        if (custody.institution.code != institution.code && movementReasonCode != MovementReasonCodes.EXTENDED_TEMPORARY_LICENCE) {
             throw IgnorableMessageException("UnexpectedInstitution", mapOf("current" to custody.institution.code))
         }
 
@@ -160,10 +162,12 @@ class ReleaseService(
 
     private fun mapToReleaseType(reason: String, movementReasonCode: String) = when (reason) {
         "RELEASED" -> ReleaseTypeCode.ADULT_LICENCE
-        "TEMPORARY_ABSENCE_RELEASE" -> when (movementReasonCode) {
-            "ETL23" -> ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE
-            else -> throw IgnorableMessageException("UnsupportedReleaseReason")
-        }
+        "TEMPORARY_ABSENCE_RELEASE" ->
+            if (movementReasonCode == "ETL23" && featureFlags.enabled(RELEASE_ETL23)) {
+                ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE
+            } else {
+                throw IgnorableMessageException("UnsupportedReleaseReason")
+            }
         "RELEASED_TO_HOSPITAL", // -> TBC
         "SENT_TO_COURT",
         "TRANSFERRED" -> throw IgnorableMessageException("UnsupportedReleaseReason")
@@ -182,7 +186,7 @@ class ReleaseService(
                 ?: throw IgnorableMessageException("No Auto-Conditional Release date is present")
             if (acr.date.isBefore(now())) throw IgnorableMessageException("Auto-Conditional Release date in the past")
             custodyService.addRotlEndDate(acr)
-            maxOf(between(acr.date.minusDays(1), now()).toDays(), 1)
+            maxOf(DAYS.between(acr.date.minusDays(1), now()), 1)
         } else {
             null
         }
@@ -210,7 +214,7 @@ class ReleaseService(
                 date = dateTime,
                 event = event,
                 person = event.person,
-                notes = if (movementReasonCode == "ETL23") ETL23_NOTES else "Release Type: ${type.description}",
+                notes = if (movementReasonCode == MovementReasonCodes.EXTENDED_TEMPORARY_LICENCE) ETL23_NOTES else "Release Type: ${type.description}",
                 staffId = orderManager.staffId,
                 teamId = orderManager.teamId
             )

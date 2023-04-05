@@ -6,14 +6,9 @@ import org.hamcrest.Matchers.matchesPattern
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator.DEFAULT
@@ -24,15 +19,7 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.CustodyService
-import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
-import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host.HostRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
@@ -41,43 +28,7 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.DAYS
 
-@ExtendWith(MockitoExtension::class)
-internal class ReleaseServiceTest {
-    @Mock
-    private lateinit var auditedInteractionService: AuditedInteractionService
-
-    @Mock
-    private lateinit var referenceDataRepository: ReferenceDataRepository
-
-    @Mock
-    private lateinit var institutionRepository: InstitutionRepository
-
-    @Mock
-    private lateinit var hostRepository: HostRepository
-
-    @Mock
-    private lateinit var eventService: EventService
-
-    @Mock
-    private lateinit var releaseRepository: ReleaseRepository
-
-    @Mock
-    private lateinit var custodyService: CustodyService
-
-    @Mock
-    private lateinit var orderManagerRepository: OrderManagerRepository
-
-    @Mock
-    private lateinit var contactRepository: ContactRepository
-
-    @Mock
-    private lateinit var contactTypeRepository: ContactTypeRepository
-
-    @Mock
-    private lateinit var personDied: PersonDied
-
-    @InjectMocks
-    private lateinit var releaseService: ReleaseService
+internal class ReleaseServiceTest : ReleaseServiceTestBase() {
 
     private val person = PersonGenerator.RELEASABLE
 
@@ -291,13 +242,13 @@ internal class ReleaseServiceTest {
         whenever(institutionRepository.findByCode(inCom.code)).thenReturn(inCom)
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
+        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.nomisCdeCode)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(orderManager)
         whenever(contactTypeRepository.findByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code))
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY])
 
-        releaseService.releaseFrom(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", releaseDateTime)
+        releaseService.releaseFrom(person.nomsNumber, DEFAULT.nomisCdeCode, RELEASED, "OPA", releaseDateTime)
 
         val saved = argumentCaptor<Release>()
         verify(releaseRepository).save(saved.capture())

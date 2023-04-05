@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.recall
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.FeatureFlagCodes.RECALL_TRANSFERRED
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datasource.OptimisationContext
@@ -24,7 +25,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManag
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.getByEventId
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceConditionService
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.PrisonManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.Institution
@@ -57,8 +57,6 @@ val EOTL_RECALL_CONTACT_NOTES = """${System.lineSeparator()}
     |The date may reflect an update after the date the actual Recall/Return to Custody occurred
 """.trimMargin()
 
-const val FEATURE_FLAG_TRANSFERRED = "messages_received_transferred"
-
 @Service
 class RecallService(
     auditedInteractionService: AuditedInteractionService,
@@ -73,8 +71,7 @@ class RecallService(
     private val personManagerRepository: PersonManagerRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
-    private val contactAlertRepository: ContactAlertRepository,
-    private val prisonManagerService: PrisonManagerService
+    private val contactAlertRepository: ContactAlertRepository
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -288,7 +285,7 @@ class RecallService(
             { RecallReasonCode.END_OF_TEMPORARY_LICENCE }
         }
         "TRANSFERRED" -> {
-            if (movementReason == "INT" && featureFlags.enabled(FEATURE_FLAG_TRANSFERRED)) {
+            if (movementReason == "INT" && featureFlags.enabled(RECALL_TRANSFERRED)) {
                 {
                     when (it) {
                         CustodialStatusCode.CUSTODY_ROTL -> RecallReasonCode.END_OF_TEMPORARY_LICENCE
