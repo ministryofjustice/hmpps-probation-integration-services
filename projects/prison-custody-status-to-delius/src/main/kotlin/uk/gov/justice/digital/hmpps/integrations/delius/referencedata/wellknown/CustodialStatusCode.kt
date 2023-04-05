@@ -26,3 +26,9 @@ val NO_CHANGE_STATUSES = listOf(
 val NO_RECALL_STATUSES = listOf(
     CustodialStatusCode.RECALLED
 ) + NO_CHANGE_STATUSES + TERMINATED_STATUSES
+
+val RELEASABLE_STATUSES = listOf(
+    CustodialStatusCode.IN_CUSTODY,
+    CustodialStatusCode.SENTENCED_IN_CUSTODY,
+    CustodialStatusCode.RECALLED
+)

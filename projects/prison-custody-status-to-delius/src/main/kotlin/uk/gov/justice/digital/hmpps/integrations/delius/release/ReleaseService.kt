@@ -32,6 +32,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceD
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getReleaseType
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.RELEASABLE_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.PrisonerDied
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.PrisonerReleased
@@ -129,9 +130,8 @@ class ReleaseService(
         }
         if (locationChanged(custody, institution)) {
             custodyService.updateLocation(custody, institution, releaseDate)
+            custodyService.allocatePrisonManager(null, fromInstitution, custody, releaseDateTime)
         }
-
-        custodyService.allocatePrisonManager(null, fromInstitution, custody, releaseDateTime)
 
         // update event
         eventService.updateReleaseDateAndIapsFlag(event, releaseDate)
@@ -140,14 +140,22 @@ class ReleaseService(
     private fun locationChanged(custody: Custody, institution: Institution): Boolean =
         institution.code == InstitutionCode.IN_COMMUNITY.code || custody.institution.id != institution.id
 
-    private fun validateRelease(custody: Custody, institution: Institution, releaseDate: ZonedDateTime, movementReasonCode: String) {
-        if (!custody.isInCustody()) {
-            throw IgnorableMessageException("UnexpectedCustodialStatus")
-        }
+    private fun validateRelease(
+        custody: Custody,
+        institution: Institution,
+        releaseDate: ZonedDateTime,
+        movementReasonCode: String
+    ) {
+        // do not carry out this validation for ETL23 - logic later to deal with these scenarios
+        if (movementReasonCode != MovementReasonCodes.EXTENDED_TEMPORARY_LICENCE) {
+            if (!custody.isInCustody()) {
+                throw IgnorableMessageException("UnexpectedCustodialStatus")
+            }
 
-        // This behaviour may change. See https://dsdmoj.atlassian.net/browse/PI-264
-        if (custody.institution.code != institution.code && movementReasonCode != MovementReasonCodes.EXTENDED_TEMPORARY_LICENCE) {
-            throw IgnorableMessageException("UnexpectedInstitution", mapOf("current" to custody.institution.code))
+            // This behaviour may change. See https://dsdmoj.atlassian.net/browse/PI-264
+            if (custody.institution.code != institution.code) {
+                throw IgnorableMessageException("UnexpectedInstitution", mapOf("current" to custody.institution.code))
+            }
         }
 
         if (releaseDate.isBefore(custody.disposal.date)) {
@@ -181,6 +189,7 @@ class ReleaseService(
         fromInstitution: Institution,
         movementReasonCode: String
     ) {
+        if (!custody.status.canRelease()) return
         val length = if (type.code == ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE.code) {
             val acr = custodyService.findAutoConditionalReleaseDate(custody.id)
                 ?: throw IgnorableMessageException("No Auto-Conditional Release date is present")
@@ -221,3 +230,5 @@ class ReleaseService(
         )
     }
 }
+
+fun ReferenceData.canRelease() = RELEASABLE_STATUSES.map { it.code }.contains(code)

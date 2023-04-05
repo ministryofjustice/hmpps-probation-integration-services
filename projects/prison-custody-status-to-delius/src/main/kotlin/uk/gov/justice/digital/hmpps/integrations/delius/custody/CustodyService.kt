@@ -41,18 +41,20 @@ class CustodyService(
     private val prisonManagerService: PrisonManagerService
 ) {
     fun updateStatus(custody: Custody, status: CustodialStatusCode, date: ZonedDateTime, detail: String) {
-        custody.status = referenceDataRepository.getCustodialStatus(status.code)
-        custody.statusChangeDate = date
-        custodyRepository.save(custody)
-        custodyHistoryRepository.save(
-            CustodyHistory(
-                date = date,
-                type = referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.STATUS_CHANGE.code),
-                detail = detail,
-                person = custody.disposal.event.person,
-                custody = custody
+        if (custody.status.code != status.code) {
+            custody.status = referenceDataRepository.getCustodialStatus(status.code)
+            custody.statusChangeDate = date
+            custodyRepository.save(custody)
+            custodyHistoryRepository.save(
+                CustodyHistory(
+                    date = date,
+                    type = referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.STATUS_CHANGE.code),
+                    detail = detail,
+                    person = custody.disposal.event.person,
+                    custody = custody
+                )
             )
-        )
+        }
     }
 
     fun updateLocation(
@@ -110,7 +112,11 @@ class CustodyService(
             ) &&
             toInstitution.probationArea != null
         ) {
-            prisonManagerService.allocateToProbationArea(custody.disposal, toInstitution.probationArea, allocationDateTime)
+            prisonManagerService.allocateToProbationArea(
+                custody.disposal,
+                toInstitution.probationArea,
+                allocationDateTime
+            )
         }
     }
 

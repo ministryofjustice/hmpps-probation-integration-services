@@ -13,7 +13,7 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.FeatureFlagCodes
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.custodialEvent
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -49,7 +49,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
     @Test
     fun `exception thrown when no Auto Conditional Release date`() {
         val person = PersonGenerator.RELEASABLE
-        val event = EventGenerator.custodialEvent(person, InstitutionGenerator.DEFAULT)
+        val event = custodialEvent(person, InstitutionGenerator.DEFAULT)
         val releaseDateTime = ZonedDateTime.now()
         val institution = InstitutionGenerator.DEFAULT
 
@@ -86,7 +86,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
     @Test
     fun `exception thrown if acr date in past`() {
         val person = PersonGenerator.RELEASABLE
-        val event = EventGenerator.custodialEvent(person, InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]!!)
+        val event = custodialEvent(person, InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]!!)
         val releaseDateTime = ZonedDateTime.now()
         val institution = InstitutionGenerator.DEFAULT
         val custody = event.disposal!!.custody!!
@@ -126,7 +126,8 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
     @Test
     fun `temporary release from custody`() {
         val person = PersonGenerator.RELEASABLE
-        val event = EventGenerator.custodialEvent(person, InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]!!)
+        val event =
+            custodialEvent(person, InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]!!)
         val orderManager = OrderManagerGenerator.generate(event)
         val releaseDateTime = ZonedDateTime.now()
         val releaseDate = releaseDateTime.truncatedTo(ChronoUnit.DAYS)
@@ -173,12 +174,108 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
         assertThat(release.institutionId, equalTo(InstitutionGenerator.DEFAULT.id))
         assertThat(release.probationAreaId, equalTo(0))
 
+        verify(custodyService).addRotlEndDate(acrKd)
+
         val savedContact = argumentCaptor<Contact>()
         verify(contactRepository).save(savedContact.capture())
 
         val contact = savedContact.firstValue
         assertThat(contact.type.code, equalTo(ContactTypeCode.RELEASE_FROM_CUSTODY.code))
         assertThat(contact.notes, containsString("This is a ROTL release on Extended Temporary Licence (ETL23)"))
+
+        verify(custodyService).updateStatus(
+            custody,
+            CustodialStatusCode.CUSTODY_ROTL,
+            releaseDate,
+            "Released on Temporary Licence"
+        )
+        verify(custodyService).updateLocation(custody, institution, releaseDate)
+    }
+
+    @Test
+    fun `temporary release when released`() {
+        val person = PersonGenerator.RECALLABLE
+        val event = custodialEvent(
+            person,
+            InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]!!,
+            CustodialStatusCode.RELEASED_ON_LICENCE
+        )
+        val releaseDateTime = ZonedDateTime.now()
+        val releaseDate = releaseDateTime.truncatedTo(ChronoUnit.DAYS)
+        val institution = InstitutionGenerator.DEFAULT
+        val custody = event.disposal!!.custody!!
+
+        whenever(featureFlags.enabled(FeatureFlagCodes.RELEASE_ETL23)).thenReturn(true)
+        whenever(
+            referenceDataRepository.findByCodeAndSetName(
+                ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE.code,
+                "RELEASE TYPE"
+            )
+        ).thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE])
+        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode)).thenReturn(
+            institution
+        )
+        whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
+
+        releaseService.releaseFrom(
+            person.nomsNumber,
+            institution.nomisCdeCode,
+            "TEMPORARY_ABSENCE_RELEASE",
+            "ETL23",
+            releaseDateTime
+        )
+
+        verify(releaseRepository, never()).save(any())
+        verify(eventService).updateReleaseDateAndIapsFlag(event, releaseDate)
+        verify(custodyService, never()).addRotlEndDate(any())
+        verify(contactRepository, never()).save(any())
+
+        verify(custodyService).updateStatus(
+            custody,
+            CustodialStatusCode.CUSTODY_ROTL,
+            releaseDate,
+            "Released on Temporary Licence"
+        )
+        verify(custodyService).updateLocation(custody, institution, releaseDate)
+    }
+
+    @Test
+    fun `temporary release when RoTL`() {
+        val person = PersonGenerator.RECALLABLE
+        val event = custodialEvent(
+            person,
+            InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]!!,
+            CustodialStatusCode.CUSTODY_ROTL
+        )
+        val releaseDateTime = ZonedDateTime.now()
+        val releaseDate = releaseDateTime.truncatedTo(ChronoUnit.DAYS)
+        val institution = InstitutionGenerator.DEFAULT
+        val custody = event.disposal!!.custody!!
+
+        whenever(featureFlags.enabled(FeatureFlagCodes.RELEASE_ETL23)).thenReturn(true)
+        whenever(
+            referenceDataRepository.findByCodeAndSetName(
+                ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE.code,
+                "RELEASE TYPE"
+            )
+        ).thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE])
+        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode)).thenReturn(
+            institution
+        )
+        whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
+
+        releaseService.releaseFrom(
+            person.nomsNumber,
+            institution.nomisCdeCode,
+            "TEMPORARY_ABSENCE_RELEASE",
+            "ETL23",
+            releaseDateTime
+        )
+
+        verify(releaseRepository, never()).save(any())
+        verify(eventService).updateReleaseDateAndIapsFlag(event, releaseDate)
+        verify(custodyService, never()).addRotlEndDate(any())
+        verify(contactRepository, never()).save(any())
 
         verify(custodyService).updateStatus(
             custody,
