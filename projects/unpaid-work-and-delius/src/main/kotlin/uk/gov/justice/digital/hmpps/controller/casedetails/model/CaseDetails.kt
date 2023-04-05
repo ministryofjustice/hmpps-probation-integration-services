@@ -46,13 +46,9 @@ data class PhoneNumber(
 data class Disability(
     val type: Type,
     val notes: String?,
-    val provisions: List<Provision>? = listOf()
+    val provisions: List<String>? = listOf()
 )
 
-data class Provision(
-    val type: Type,
-    val notes: String?
-)
 data class Language(
     val requiresInterpreter: Boolean = false,
     val primaryLanguage: String = ""
