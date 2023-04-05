@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.controller.casedetails.model.Language
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.MainOffence
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.MappaRegistration
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.PhoneNumber
-import uk.gov.justice.digital.hmpps.controller.casedetails.model.Provision
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.RegisterFlag
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.Sentence
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.name
@@ -82,10 +81,7 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetai
             Type(d.type.code, d.type.description),
             d.notes,
             d.provisions?.map {
-                Provision(
-                    Type(it.type.code, it.type.description),
-                    it.notes
-                )
+                it.type.description
             }
         )
     }
@@ -148,5 +144,6 @@ interface CasePersonalContactMapper {
 
 @Mapper(componentModel = "spring")
 interface DisabilityMapper {
+    @Mapping(target = "provisions", ignore = true)
     fun convertToModel(disabilityEntity: DisabilityEntity): Disability
 }
