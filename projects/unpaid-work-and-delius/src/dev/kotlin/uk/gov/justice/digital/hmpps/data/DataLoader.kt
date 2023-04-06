@@ -103,7 +103,8 @@ class DataLoader(
                 DatasetGenerator.REGISTER_LEVEL,
                 DatasetGenerator.REGISTER_CATEGORY,
                 DatasetGenerator.DISABILITY_PROVISION,
-                DatasetGenerator.RELATIONSHIP
+                DatasetGenerator.RELATIONSHIP,
+                DatasetGenerator.ADDRESS_STATUS
             )
         )
         businessInteractionRepository.saveAll(
@@ -119,7 +120,8 @@ class DataLoader(
                 ReferenceDataGenerator.MAPPA_LEVEL_1,
                 ReferenceDataGenerator.MAPPA_CATEGORY_2,
                 ReferenceDataGenerator.HEARING_PROVISION,
-                ReferenceDataGenerator.DOCTOR_RELATIONSHIP
+                ReferenceDataGenerator.DOCTOR_RELATIONSHIP,
+                ReferenceDataGenerator.MAIN_ADDRESS
 
             )
         )

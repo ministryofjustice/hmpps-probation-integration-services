@@ -38,5 +38,5 @@ open class PersonalCircumstanceBase(
     val softDeleted: Boolean = false,
 
     @Convert(converter = YesNoConverter::class)
-    val evidenced: Boolean = false
+    val evidenced: Boolean? = false
 )

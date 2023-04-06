@@ -82,6 +82,14 @@ class DataLoader(
             persist(EventGenerator.CASE_SUMMARY.disposal!!.custody!!.licenceExpiryDate)
             persist(EventGenerator.CASE_SUMMARY.disposal!!.licenceConditions[0].mainCategory)
             persist(EventGenerator.CASE_SUMMARY.disposal!!.licenceConditions[0])
+
+            persist(UserGenerator.TEST_USER1)
+            persist(UserGenerator.TEST_USER2)
+            persist(PersonGenerator.EXCLUDED)
+            persist(PersonGenerator.EXCLUDED.exclusions[0])
+            persist(PersonGenerator.RESTRICTED)
+            persist(PersonGenerator.RESTRICTED.restrictions[0])
+            persist(PersonGenerator.NO_ACCESS_LIMITATIONS)
         }
     }
 }

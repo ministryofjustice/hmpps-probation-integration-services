@@ -132,6 +132,26 @@ class AppointmentService(
         linkedContactId = id
     )
 
+    private fun Event.enforcementUnderReview() = contactRepository.countEnforcementUnderReview(
+        id,
+        ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value,
+        breachEnd
+    ) > 0
+
+    private fun Contact.reviewEnforcement() = Contact(
+        person,
+        contactTypeRepository.getByCode(ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value),
+        date,
+        startTime,
+        endTime,
+        eventId = eventId,
+        nsiId = nsiId,
+        providerId = providerId,
+        teamId = teamId,
+        staffId = staffId,
+        linkedContactId = id
+    )
+
     companion object {
         private fun attendanceOutcome(uoa: UpdateAppointmentOutcome): Code =
             when (uoa.attended) {

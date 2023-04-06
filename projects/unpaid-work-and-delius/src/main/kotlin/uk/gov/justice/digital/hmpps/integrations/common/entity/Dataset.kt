@@ -23,6 +23,7 @@ class Dataset(
 )
 
 enum class DatasetCode(val value: String) {
+    ADDRESS_STATUS("ADDRESS STATUS"),
     GENDER("GENDER"),
     ETHNICITY("ETHNICITY"),
     DISABILITY("DISABILITY TYPE"),

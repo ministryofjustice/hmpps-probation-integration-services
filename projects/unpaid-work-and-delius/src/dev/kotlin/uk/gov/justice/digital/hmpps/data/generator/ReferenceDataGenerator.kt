@@ -13,6 +13,7 @@ object ReferenceDataGenerator {
     val MAPPA_CATEGORY_2 = generate(DatasetGenerator.REGISTER_CATEGORY, "M2", "MAPPA Cat 2")
     val HEARING_PROVISION = generate(DatasetGenerator.DISABILITY_PROVISION, "H", "Hearing Aid")
     val DOCTOR_RELATIONSHIP = generate(DatasetGenerator.RELATIONSHIP, "DOC", "Doctor")
+    val MAIN_ADDRESS = generate(DatasetGenerator.ADDRESS_STATUS, "M", "Main")
 
     fun generate(
         dataset: Dataset,

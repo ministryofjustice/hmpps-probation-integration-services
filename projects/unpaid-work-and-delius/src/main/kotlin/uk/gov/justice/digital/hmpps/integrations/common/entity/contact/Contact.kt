@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.common.entity.contact
 
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.GeneratedValue
@@ -11,6 +12,7 @@ import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Version
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -32,6 +34,9 @@ class Contact(
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: PersonWithManager,
+
+    @Column
+    val eventId: Long,
 
     @Version
     @Column(name = "row_version", nullable = false)
@@ -56,6 +61,17 @@ class Contact(
     @ManyToOne
     @JoinColumn(name = "contact_type_id", nullable = false)
     val type: ContactType,
+
+    @Column
+    val externalReference: String? = null,
+
+    @Column
+    @Convert(converter = YesNoConverter::class)
+    val documentLinked: Boolean? = null,
+
+    @Column
+    @Convert(converter = YesNoConverter::class)
+    val sensitive: Boolean? = false,
 
     @Column(nullable = false)
     @CreatedDate
