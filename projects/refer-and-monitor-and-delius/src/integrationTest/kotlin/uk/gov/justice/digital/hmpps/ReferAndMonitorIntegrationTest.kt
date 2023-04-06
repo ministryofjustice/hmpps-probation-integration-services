@@ -113,6 +113,13 @@ internal class ReferAndMonitorIntegrationTest {
 
         val nsi = nsiRepository.findById(appointment.nsiId!!).orElseThrow()
         assertThat(nsi.rarCount, equalTo(null))
+
+        val reviewCreated = contactRepository.countEnforcementUnderReview(
+            event.id,
+            ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value,
+            event.breachEnd
+        ) > 0
+        assertTrue(reviewCreated)
     }
 
     @Test

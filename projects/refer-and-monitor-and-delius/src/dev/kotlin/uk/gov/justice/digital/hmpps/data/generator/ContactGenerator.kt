@@ -86,8 +86,11 @@ object ContactGenerator {
         rarActivity = rarActivity
     ).apply { this.outcome = outcome }
 
-    fun generateType(code: String, nationalStandards: Boolean = false, id: Long = IdGenerator.getAndIncrement()) =
-        ContactType(code, nationalStandards, id)
+    fun generateType(
+        code: String,
+        nationalStandards: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = ContactType(code, nationalStandards, id)
 
     fun generateOutcome(
         code: String,
