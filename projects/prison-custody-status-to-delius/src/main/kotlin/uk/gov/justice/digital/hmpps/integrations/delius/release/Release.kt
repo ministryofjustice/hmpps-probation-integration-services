@@ -60,6 +60,8 @@ class Release(
     @Column(nullable = true)
     val probationAreaId: Long? = null,
 
+    val length: Long?,
+
     @OneToOne(mappedBy = "release")
     var recall: Recall? = null,
 

@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.api.model.ManagedStatus
+import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatusDetail
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
@@ -52,28 +52,23 @@ internal class IntegrationTest {
 
     companion object {
 
-        private val DEFAULT_DETAIL = ProbationStatusDetail(
-            ManagedStatus.UNKNOWN,
-            terminationDate = null,
-            inBreach = false,
-            preSentenceActivity = false,
-            awaitingPsr = false
-        )
+        private val DEFAULT_DETAIL = ProbationStatusDetail.NO_RECORD
 
         @JvmStatic
         fun probationStatuses() = listOf(
-            Arguments.of(PersonGenerator.NEW_TO_PROBATION.crn, DEFAULT_DETAIL.copy(ManagedStatus.NEW_TO_PROBATION)),
+            Arguments.of("D035N73", DEFAULT_DETAIL),
+            Arguments.of(PersonGenerator.NEW_TO_PROBATION.crn, DEFAULT_DETAIL.copy(ProbationStatus.CURRENT)),
             Arguments.of(
                 PersonGenerator.CURRENTLY_MANAGED.crn,
-                DEFAULT_DETAIL.copy(ManagedStatus.CURRENTLY_MANAGED, inBreach = true)
+                DEFAULT_DETAIL.copy(ProbationStatus.CURRENT, inBreach = true)
             ),
             Arguments.of(
                 PersonGenerator.PREVIOUSLY_MANAGED.crn,
-                DEFAULT_DETAIL.copy(ManagedStatus.PREVIOUSLY_MANAGED, LocalDate.now().minusDays(7))
+                DEFAULT_DETAIL.copy(ProbationStatus.PREVIOUSLY_KNOWN, LocalDate.now().minusDays(7))
             ),
             Arguments.of(
                 PersonGenerator.NO_SENTENCE.crn,
-                DEFAULT_DETAIL.copy(ManagedStatus.UNKNOWN, preSentenceActivity = true, awaitingPsr = true)
+                DEFAULT_DETAIL.copy(ProbationStatus.NOT_SENTENCED, preSentenceActivity = true, awaitingPsr = true)
             )
         )
     }

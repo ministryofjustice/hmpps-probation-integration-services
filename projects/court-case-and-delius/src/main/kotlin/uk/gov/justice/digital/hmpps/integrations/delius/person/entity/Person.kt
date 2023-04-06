@@ -31,8 +31,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
         """
         select
            o.crn,
-           sum(case when d.active_flag = 1 and lower(s.officer_code) like '%u' then 1 else 0 end)     as unallocatedCount,
-           sum(case when d.active_flag = 1 and lower(s.officer_code) not like '%u' then 1 else 0 end) as allocatedCount,
+           sum(case when d.active_flag = 1 then 1 else 0 end)                                         as currentCount,
            sum(case when d.active_flag = 0 then 1 else 0 end)                                         as previousCount,
            max(d.termination_date)                                                                    as terminationDate,
            sum(e.in_breach)                                                                           as breachCount,
@@ -40,8 +39,6 @@ interface PersonRepository : JpaRepository<Person, Long> {
            sum(case when d.disposal_id is null and ca.outcome_code = '101' then 1 else 0 end)         as awaitingPsrCount
         from offender o
              join event e on e.offender_id = o.offender_id and e.soft_deleted = 0
-             join order_manager om on om.event_id = e.event_id and om.active_flag = 1 and om.soft_deleted = 0
-             join staff s on s.staff_id = om.allocation_staff_id
              left join disposal d on d.event_id = e.event_id and d.soft_deleted = 0
              left join (select ca.event_id, oc.code_value as outcome_code
                         from court_appearance ca
@@ -53,13 +50,12 @@ interface PersonRepository : JpaRepository<Person, Long> {
         """,
         nativeQuery = true
     )
-    fun statusOf(crn: String): SentenceCounts
+    fun statusOf(crn: String): SentenceCounts?
 }
 
 interface SentenceCounts {
     val crn: String
-    val allocatedCount: Int
-    val unallocatedCount: Int
+    val currentCount: Int
     val previousCount: Int
     val terminationDate: LocalDate?
     val breachCount: Int

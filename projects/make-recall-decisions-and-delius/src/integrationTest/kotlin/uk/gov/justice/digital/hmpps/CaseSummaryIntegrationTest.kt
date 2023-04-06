@@ -58,10 +58,33 @@ internal class CaseSummaryIntegrationTest {
             .andExpect(jsonPath("$.personalDetails.name.surname", equalTo(person.surname)))
             .andExpect(jsonPath("$.registerFlags", equalTo(listOf("MAPPA 1", "High RoSH"))))
             .andExpect(jsonPath("$.activeConvictions[0].number", equalTo(event.number)))
-            .andExpect(jsonPath("$.activeConvictions[0].mainOffence", equalTo(event.mainOffence.offence.description)))
-            .andExpect(jsonPath("$.activeConvictions[0].additionalOffences[0]", equalTo(event.additionalOffences[0].offence.description)))
+            .andExpect(jsonPath("$.activeConvictions[0].mainOffence.description", equalTo(event.mainOffence.offence.description)))
+            .andExpect(jsonPath("$.activeConvictions[0].additionalOffences[0].description", equalTo(event.additionalOffences[0].offence.description)))
             .andExpect(jsonPath("$.activeConvictions[0].sentence.isCustodial", equalTo(true)))
             .andExpect(jsonPath("$.activeConvictions[0].sentence.custodialStatusCode", equalTo(event.disposal!!.custody!!.status.code)))
             .andExpect(jsonPath("$.activeConvictions[0].sentence.sentenceExpiryDate", equalTo("2023-01-01")))
+    }
+
+    @Test
+    fun `mappa and rosh history is returned`() {
+        val person = PersonGenerator.CASE_SUMMARY
+        mockMvc.perform(get("/case-summary/${person.crn}/mappa-and-rosh-history").withOAuth2Token(wireMockserver))
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("$.personalDetails.name.forename", equalTo(person.forename)))
+            .andExpect(jsonPath("$.mappa.category", equalTo(1)))
+            .andExpect(jsonPath("$.roshHistory[0].type", equalTo("RHRH")))
+            .andExpect(jsonPath("$.roshHistory[0].typeDescription", equalTo("High RoSH")))
+    }
+
+    @Test
+    fun `licence conditions are returned`() {
+        val person = PersonGenerator.CASE_SUMMARY
+        val event = EventGenerator.CASE_SUMMARY
+        mockMvc.perform(get("/case-summary/${person.crn}/licence-conditions").withOAuth2Token(wireMockserver))
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("$.personalDetails.name.forename", equalTo(person.forename)))
+            .andExpect(jsonPath("$.activeConvictions[0].licenceConditions.size()", equalTo(1)))
+            .andExpect(jsonPath("$.activeConvictions[0].licenceConditions[0].mainCategory.description", equalTo(event.disposal!!.licenceConditions[0].mainCategory.description)))
+            .andExpect(jsonPath("$.activeConvictions[0].licenceConditions[0].notes", equalTo(event.disposal!!.licenceConditions[0].notes)))
     }
 }

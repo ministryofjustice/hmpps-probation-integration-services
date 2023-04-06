@@ -10,6 +10,7 @@ object ProvisionGenerator {
     fun generate(id: Long = IdGenerator.getAndIncrement()) = ProvisionEntity(
         id,
         CaseGenerator.DEFAULT,
+        DisabilityGenerator.DEFAULT,
         ReferenceDataGenerator.HEARING_PROVISION,
         "Knock loudly on the door",
         LocalDate.now().minusMonths(5)

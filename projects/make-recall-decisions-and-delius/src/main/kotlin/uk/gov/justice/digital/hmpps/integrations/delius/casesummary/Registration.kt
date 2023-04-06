@@ -10,11 +10,13 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import java.time.LocalDate
 
 @Immutable
 @Table(name = "registration")
 @Entity(name = "CaseSummaryRegistration")
-@Where(clause = "soft_deleted = 0 and deregistered = 0")
+@Where(clause = "soft_deleted = 0")
 class Registration(
     @Id
     @Column(name = "registration_id")
@@ -25,7 +27,21 @@ class Registration(
 
     @ManyToOne
     @JoinColumn(name = "register_type_id")
-    val type: RegistrationType,
+    val type: RegisterType,
+
+    @ManyToOne
+    @JoinColumn(name = "register_category_id")
+    val category: ReferenceData?,
+
+    @ManyToOne
+    @JoinColumn(name = "register_level_id")
+    val level: ReferenceData?,
+
+    @Column(name = "registration_notes", columnDefinition = "clob")
+    val notes: String?,
+
+    @Column(name = "registration_date")
+    val date: LocalDate,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false,
@@ -36,17 +52,38 @@ class Registration(
 
 @Immutable
 @Table(name = "r_register_type")
-@Entity(name = "CaseSummaryRegistrationType")
-class RegistrationType(
+@Entity(name = "CaseSummaryRegisterType")
+class RegisterType(
     @Id
     @Column(name = "register_type_id")
     val id: Long,
 
     @Column
-    val description: String
-)
+    val code: String,
+
+    @Column
+    val description: String,
+
+    @ManyToOne
+    @JoinColumn(name = "register_type_flag_id")
+    val flag: ReferenceData
+) {
+    companion object {
+        const val MAPPA_TYPE = "MAPP"
+        const val ROSH_FLAG = "1"
+    }
+}
 
 interface CaseSummaryRegistrationRepository : JpaRepository<Registration, Long> {
-    @Query("select r.type.description from CaseSummaryRegistration r where r.personId = :personId")
-    fun findTypeDescriptionsByPersonId(personId: Long): List<String>
+    @Query("select r.type.description from CaseSummaryRegistration r where r.personId = :personId and r.deregistered = false")
+    fun findActiveTypeDescriptionsByPersonId(personId: Long): List<String>
+
+    fun findByPersonIdAndTypeFlagCodeOrderByDateDesc(personId: Long, typeCode: String): List<Registration>
+    fun findFirstByPersonIdAndTypeCodeAndDeregisteredFalseOrderByDateDesc(personId: Long, typeCode: String): Registration?
 }
+
+fun CaseSummaryRegistrationRepository.findRoshHistory(personId: Long) =
+    findByPersonIdAndTypeFlagCodeOrderByDateDesc(personId, RegisterType.ROSH_FLAG)
+
+fun CaseSummaryRegistrationRepository.findMappa(personId: Long) =
+    findFirstByPersonIdAndTypeCodeAndDeregisteredFalseOrderByDateDesc(personId, RegisterType.MAPPA_TYPE)

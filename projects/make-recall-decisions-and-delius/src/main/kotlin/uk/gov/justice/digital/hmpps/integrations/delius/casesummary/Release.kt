@@ -9,7 +9,7 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
-import java.time.ZonedDateTime
+import java.time.LocalDate
 
 @Immutable
 @Table(name = "release")
@@ -24,7 +24,7 @@ class Release(
     val custodyId: Long,
 
     @Column(name = "actual_release_date")
-    val date: ZonedDateTime,
+    val date: LocalDate,
 
     @OneToOne(mappedBy = "release")
     val recall: Recall? = null,
@@ -43,7 +43,7 @@ class Recall(
     val id: Long,
 
     @Column(name = "recall_date")
-    val date: ZonedDateTime,
+    val date: LocalDate,
 
     @OneToOne
     @JoinColumn(name = "release_id")

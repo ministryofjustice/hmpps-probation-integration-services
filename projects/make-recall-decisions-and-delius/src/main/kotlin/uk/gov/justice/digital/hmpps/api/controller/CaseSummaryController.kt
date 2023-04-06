@@ -22,4 +22,19 @@ class CaseSummaryController(private val caseSummaryService: CaseSummaryService) 
     @GetMapping(value = ["/overview"])
     @Operation(summary = "Overview of the probation case including active events/convictions, register flags")
     fun getOverview(@PathVariable("crn") crn: String) = caseSummaryService.getOverview(crn)
+
+    @GetMapping(value = ["/mappa-and-rosh-history"])
+    @Operation(
+        summary = "Current MAPPA and historical RoSH registrations",
+        description = "<p>This is intended to populate the MAPPA (Multi-agency public protection arrangements) and RoSH (Risk of Serious Harm) widgets." +
+            "<p>Note that risk assessment information is generally held in OASys, and this endpoint only surfaces supplementary Delius registration/register details."
+    )
+    fun getMappaAndRoshHistory(@PathVariable("crn") crn: String) = caseSummaryService.getMappaAndRoshHistory(crn)
+
+    @GetMapping(value = ["/licence-conditions"])
+    @Operation(
+        summary = "Active events/convictions, with licence conditions",
+        description = "Only returns active licence conditions that are associated with active events/convictions"
+    )
+    fun getLicenceConditions(@PathVariable("crn") crn: String) = caseSummaryService.getLicenceConditions(crn)
 }

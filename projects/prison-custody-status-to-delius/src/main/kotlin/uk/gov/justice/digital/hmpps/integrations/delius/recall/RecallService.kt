@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.recall
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.FeatureFlagCodes.RECALL_TRANSFERRED
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datasource.OptimisationContext
@@ -18,14 +19,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.CustodyService
-import uk.gov.justice.digital.hmpps.integrations.delius.event.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.getByEventId
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceConditionService
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.PrisonManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.Institution
@@ -58,8 +57,6 @@ val EOTL_RECALL_CONTACT_NOTES = """${System.lineSeparator()}
     |The date may reflect an update after the date the actual Recall/Return to Custody occurred
 """.trimMargin()
 
-const val FEATURE_FLAG_TRANSFERRED = "messages_received_transferred"
-
 @Service
 class RecallService(
     auditedInteractionService: AuditedInteractionService,
@@ -74,8 +71,7 @@ class RecallService(
     private val personManagerRepository: PersonManagerRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
-    private val contactAlertRepository: ContactAlertRepository,
-    private val prisonManagerService: PrisonManagerService
+    private val contactAlertRepository: ContactAlertRepository
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -125,7 +121,7 @@ class RecallService(
 
         val custodialLocationUpdated = updateCustodialLocation(custody, toInstitution, event, recallDate, recallReason)
 
-        allocatePrisonManager(latestRelease, toInstitution, custody, disposal, recallDateTime)
+        custodyService.allocatePrisonManager(latestRelease, toInstitution, custody, recallDateTime)
 
         if (recall != null) {
             licenceConditionService.terminateLicenceConditionsForDisposal(
@@ -151,7 +147,7 @@ class RecallService(
         recallReason: RecallReason
     ) = if (custody.institution.id != toInstitution.id || custody.status.canRecall()) {
         val orderManager = orderManagerRepository.getByEventId(event.id)
-        custodyService.updateLocation(custody, toInstitution.code, recallDate, orderManager, recallReason)
+        custodyService.updateLocation(custody, toInstitution, recallDate, orderManager, recallReason)
         true
     } else {
         false
@@ -226,24 +222,6 @@ class RecallService(
         )
     }
 
-    private fun allocatePrisonManager(
-        latestRelease: Release?,
-        toInstitution: Institution,
-        custody: Custody,
-        disposal: Disposal,
-        recallDateTime: ZonedDateTime
-    ) {
-        // allocate a prison manager if institution has changed and institution is linked to a provider
-        if ((
-            (latestRelease != null && toInstitution.id != latestRelease.institutionId) ||
-                (latestRelease == null && toInstitution.id != custody.institution.id)
-            ) &&
-            toInstitution.probationArea != null
-        ) {
-            prisonManagerService.allocateToProbationArea(disposal, toInstitution.probationArea, recallDateTime)
-        }
-    }
-
     private fun createRecall(
         custody: Custody,
         recallReason: RecallReason,
@@ -307,7 +285,7 @@ class RecallService(
             { RecallReasonCode.END_OF_TEMPORARY_LICENCE }
         }
         "TRANSFERRED" -> {
-            if (movementReason == "INT" && featureFlags.enabled(FEATURE_FLAG_TRANSFERRED)) {
+            if (movementReason == "INT" && featureFlags.enabled(RECALL_TRANSFERRED)) {
                 {
                     when (it) {
                         CustodialStatusCode.CUSTODY_ROTL -> RecallReasonCode.END_OF_TEMPORARY_LICENCE

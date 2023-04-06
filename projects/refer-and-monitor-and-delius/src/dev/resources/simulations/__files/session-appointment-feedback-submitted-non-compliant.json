@@ -1,6 +1,6 @@
 {
   "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "sessionNumber": 2,
+  "sessionNumber": 1,
   "appointmentTime": "2023-02-14T15:00:00.000Z",
   "durationInMinutes": 30,
   "appointmentDeliveryType": "PHONE_CALL",
@@ -74,5 +74,5 @@
       "userId": "userId"
     }
   },
-  "deliusAppointmentId": 1824573421
+  "deliusAppointmentId": 1
 }

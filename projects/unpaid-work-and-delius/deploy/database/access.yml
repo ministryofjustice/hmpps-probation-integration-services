@@ -3,6 +3,7 @@ database:
     username_key: /unpaid-work-and-delius/db-username
     password_key: /unpaid-work-and-delius/db-password
     tables:
+      - audited_interaction
       - contact
       - document
 
