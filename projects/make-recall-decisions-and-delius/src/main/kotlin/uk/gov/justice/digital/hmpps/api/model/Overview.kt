@@ -23,6 +23,7 @@ data class Overview(
 }
 
 fun Release.dates() = Overview.Release(date, recall?.date)
+fun List<Event>.singleCustody() = mapNotNull { it.disposal?.custody }.singleOrNull()
 fun Event.toConviction() = Overview.Conviction(
     number = number,
     mainOffence = Offence(mainOffence.date, mainOffence.offence.code, mainOffence.offence.description),
