@@ -25,7 +25,7 @@ class ManagerService(
 }
 
 fun PersonManager.toResponsibleOfficer() = ResponsibleOfficer(
-    Manager(staff.code, staff.name(), staff.user?.email, responsibleOfficer != null)
+    Manager(staff.code, staff.name(), staff.user?.username, staff.user?.email, responsibleOfficer != null)
 )
 
 fun Staff.name() = Name(forename, surname)
