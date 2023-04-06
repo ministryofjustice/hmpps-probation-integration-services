@@ -5,7 +5,6 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
@@ -19,7 +18,7 @@ class CaseAddress(
     @Id
     @Column(name = "offender_address_id")
     val id: Long,
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: CaseEntity,
     @Column(name = "building_name")
