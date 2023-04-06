@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.contact
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
@@ -26,6 +27,19 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         """
     )
     fun countFailureToComply(eventId: Long, lastResetDate: LocalDate?): Long
+
+    @Query(
+        """
+            select count(c.id) from Contact c 
+            where c.eventId = :eventId and c.type.code = :contactCode 
+            and c.outcome is null and (:breachEnd is null or c.date >= :breachEnd)
+        """
+    )
+    fun countEnforcementUnderReview(
+        @Param("eventId") eventId: Long,
+        @Param("contactCode") contactCode: String,
+        @Param("breachEnd") breachEnd: LocalDate?
+    ): Long
 
     @Query(
         """
@@ -79,6 +93,7 @@ fun ContactOutcomeRepository.getByCode(code: String) =
 interface EnforcementRepository : JpaRepository<Enforcement, Long> {
     fun findByContactId(contactId: Long): Enforcement?
 }
+
 interface EnforcementActionRepository : JpaRepository<EnforcementAction, Long> {
     fun findByCode(code: String): EnforcementAction?
 }

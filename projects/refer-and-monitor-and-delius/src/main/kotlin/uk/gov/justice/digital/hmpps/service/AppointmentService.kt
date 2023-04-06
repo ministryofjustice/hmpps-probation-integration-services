@@ -8,14 +8,17 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.UPDATE_CONTACT
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementActionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOutcome.Code
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Enforcement
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.EnforcementAction
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.getAppointmentById
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.messaging.Referral
@@ -28,6 +31,7 @@ import java.time.ZonedDateTime
 class AppointmentService(
     auditedInteractionService: AuditedInteractionService,
     private val contactRepository: ContactRepository,
+    private val contactTypeRepository: ContactTypeRepository,
     private val outcomeRepository: ContactOutcomeRepository,
     private val enforcementActionRepository: EnforcementActionRepository,
     private val enforcementRepository: EnforcementRepository,
@@ -85,9 +89,8 @@ class AppointmentService(
                 listOfNotNull(event.breachEnd, event.disposal?.date).maxOrNull()
             )
             event.ftcCount = currentCount
-            if (event.disposal?.type?.overLimit(currentCount) == true) {
-                // TODO check if enforcement is under review
-                // if not - create REVIEW_ENFORCEMENT_STATUS("ARWS") contact
+            if (event.disposal?.type?.overLimit(currentCount) == true && !event.enforcementUnderReview()) {
+                contactRepository.save(appointment.reviewEnforcement())
             }
         }
     }
@@ -105,6 +108,26 @@ class AppointmentService(
         teamId = teamId,
         staffId = staffId,
         locationId = locationId
+    )
+
+    private fun Event.enforcementUnderReview() = contactRepository.countEnforcementUnderReview(
+        id,
+        ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value,
+        breachEnd
+    ) > 0
+
+    private fun Contact.reviewEnforcement() = Contact(
+        person,
+        contactTypeRepository.getByCode(ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value),
+        date,
+        startTime,
+        endTime,
+        eventId = eventId,
+        nsiId = nsiId,
+        providerId = providerId,
+        teamId = teamId,
+        staffId = staffId,
+        linkedContactId = id
     )
 
     companion object {

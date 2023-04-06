@@ -86,6 +86,8 @@ class Contact(
     @Convert(converter = YesNoConverter::class)
     var rarActivity: Boolean? = null,
 
+    val linkedContactId: Long? = null,
+
     @Id
     @Column(name = "contact_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
@@ -144,6 +146,7 @@ class ContactType(
 ) {
     enum class Code(val value: String, val rar: Boolean = false) {
         REFER_TO_PERSON_MANAGER("AROM"),
+        REVIEW_ENFORCEMENT_STATUS("ARWS"),
         CRSAPT("CRSAPT", true),
         CRSSAA("CRSSAA"),
         NSI_REFERRAL("NREF"),
