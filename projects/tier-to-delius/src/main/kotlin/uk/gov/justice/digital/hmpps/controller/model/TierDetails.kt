@@ -4,7 +4,7 @@ import java.time.LocalDate
 
 data class TierDetails(
     val gender: String,
-    val tier: String?,
+    val currentTier: String?,
     val oGRSScore: Long?,
     val rSRScore: Double?,
     val registrations: List<Registration>,

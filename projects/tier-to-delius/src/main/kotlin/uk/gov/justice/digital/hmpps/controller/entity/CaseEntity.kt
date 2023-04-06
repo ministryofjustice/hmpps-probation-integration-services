@@ -10,6 +10,7 @@ import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
+import java.time.ZonedDateTime
 
 @Immutable
 @Entity
@@ -35,11 +36,23 @@ class CaseEntity(
     val tier: ReferenceData?,
 
     @Column(name = "dynamic_rsr_score")
-    val dynamicRsrScore: Double?
+    val dynamicRsrScore: Double?,
+
+    val createdByUserId: Long = 0,
+
+    val lastUpdatedUserId: Long = 0,
+
+    val createdDatetime: ZonedDateTime = ZonedDateTime.now(),
+
+    val lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(name = "row_version", nullable = false)
+    val version: Long = 0,
 )
 
-interface CaseEntityRepository : JpaRepository<CaseEntity, Long>{
-fun findByCrnAndSoftDeletedIsFalse(crn: String): CaseEntity?
+interface CaseEntityRepository : JpaRepository<CaseEntity, Long> {
+    fun findByCrnAndSoftDeletedIsFalse(crn: String): CaseEntity?
 }
+
 fun CaseEntityRepository.getCase(crn: String): CaseEntity =
     findByCrnAndSoftDeletedIsFalse(crn) ?: throw NotFoundException("Person", "crn", crn)

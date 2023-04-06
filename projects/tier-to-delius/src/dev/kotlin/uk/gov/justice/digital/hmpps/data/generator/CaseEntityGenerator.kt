@@ -2,16 +2,15 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
 import uk.gov.justice.digital.hmpps.controller.entity.CaseEntity
-import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 
 object CaseEntityGenerator {
 
-    val DEFAULT = generate("D001022")
+    val DEFAULT = generate("F001022")
 
     fun generate(
         crn: String,
         id: Long = IdGenerator.getAndIncrement()
     ): CaseEntity {
-        return CaseEntity(id = id, crn = crn, gender = , dynamicRsrScore = 10.1, tier =  )
+        return CaseEntity(id = id, crn = crn, gender = ReferenceDataGenerator.GENDER_MALE, dynamicRsrScore = 10.1, tier = ReferenceDataGenerator.TIER_ONE )
     }
 }

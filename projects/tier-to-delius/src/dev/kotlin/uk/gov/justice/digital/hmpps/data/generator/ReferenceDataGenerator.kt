@@ -6,6 +6,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceD
 
 object ReferenceDataGenerator {
 
+    val GENDER_MALE = generate("MALE", ReferenceDataSetGenerator.GENDER)
+    val TIER_ONE = generate("T1", ReferenceDataSetGenerator.TIER)
 
     fun generate(
         code: String,

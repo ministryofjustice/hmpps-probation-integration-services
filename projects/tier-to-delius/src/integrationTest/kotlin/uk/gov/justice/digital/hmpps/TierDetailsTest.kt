@@ -11,7 +11,9 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.data.generator.CaseEntityGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 
 @AutoConfigureMockMvc
@@ -28,10 +30,13 @@ class TierDetailsTest {
     fun `successful response`() {
         
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/tier-details/A000001").withOAuth2Token(wireMockserver)
+            MockMvcRequestBuilders.get("/tier-details/F001022").withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
 
         )
             .andExpect(status().is2xxSuccessful)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.gender").value(CaseEntityGenerator.DEFAULT.gender.description))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.currentTier").value(CaseEntityGenerator.DEFAULT.tier?.code))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.rsrscore").value(CaseEntityGenerator.DEFAULT.dynamicRsrScore))
     }
 }
