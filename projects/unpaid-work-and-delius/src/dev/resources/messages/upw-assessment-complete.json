@@ -6,7 +6,7 @@
   "detailUrl": "http://localhost:{wiremock.port}/api/upw/download/12345",
   "additionalInformation": {
     "episodeId": "12345",
-    "eventId": 1234567890
+    "eventId": "1234567890"
   },
   "personReference": {
     "identifiers": [

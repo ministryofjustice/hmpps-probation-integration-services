@@ -28,7 +28,7 @@ class UPWAssessmentService(
         val crn = notification.message.personReference.findCrn()!!
         val person = personWithManagerRepository.findByCrnAndSoftDeletedIsFalse(crn)
             ?: return let { telemetryService.trackEvent("PersonNotFound", mapOf("crn" to crn)) }
-        val eventId = (notification.message.additionalInformation["eventId"] as Number).toLong()
+        val eventId = (notification.message.additionalInformation["eventId"] as String).toLong()
         if (!eventRepository.existsById(eventId)) throw NotFoundException("Event", "id", eventId)
 
         uploadDocument(notification, person, eventId)
