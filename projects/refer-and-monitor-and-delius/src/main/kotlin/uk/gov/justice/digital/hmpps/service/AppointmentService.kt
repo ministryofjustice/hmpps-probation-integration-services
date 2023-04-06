@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.messaging.Referral
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
@@ -98,16 +99,16 @@ class AppointmentService(
     private fun Contact.createEnforcementActionContact(action: EnforcementAction) = Contact(
         person = person,
         type = action.contactType,
-        date = date,
-        startTime = startTime,
-        endTime = endTime,
+        date = LocalDate.now(),
+        startTime = ZonedDateTime.now(),
         eventId = eventId,
         nsiId = nsiId,
         notes = "${notes}\n${LocalDateTime.now()}\nEnforcement Action: ${action.description}",
         providerId = providerId,
         teamId = teamId,
         staffId = staffId,
-        locationId = locationId
+        locationId = locationId,
+        linkedContactId = id
     )
 
     private fun Event.enforcementUnderReview() = contactRepository.countEnforcementUnderReview(
@@ -127,6 +128,7 @@ class AppointmentService(
         providerId = providerId,
         teamId = teamId,
         staffId = staffId,
+        locationId = locationId,
         linkedContactId = id
     )
 
