@@ -4,10 +4,12 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
+import uk.gov.justice.digital.hmpps.integrations.common.entity.ReferenceData
 
 @Immutable
 @Entity
@@ -33,5 +35,8 @@ class CaseAddress(
     val postcode: String?,
     val telephoneNumber: String?,
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
+    @ManyToOne
+    @JoinColumn(name = "address_status_id")
+    val status: ReferenceData
 )

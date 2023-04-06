@@ -124,6 +124,7 @@ fun populateMappaRegistration(case: CaseEntity): MappaRegistration? {
 
 @Mapper(componentModel = "spring")
 interface CasePersonalCircumstanceMapper {
+    @Mapping(source = "evidenced", target = "evidenced", defaultValue = "false")
     fun convertToModel(personalCircumstanceEntity: CasePersonalCircumstanceEntity): PersonalCircumstance
 }
 
