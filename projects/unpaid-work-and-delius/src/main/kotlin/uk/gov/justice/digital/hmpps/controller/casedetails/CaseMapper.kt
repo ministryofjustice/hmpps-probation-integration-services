@@ -47,7 +47,6 @@ interface CaseMapper {
     @Mapping(target = "language", ignore = true)
     @Mapping(target = "mappaRegistration", ignore = true)
     @Mapping(target = "sentence", ignore = true)
-    @Mapping(target = "mainAddress", ignore = true)
     fun convertToModel(case: CaseEntity): CaseDetails
 }
 
@@ -87,10 +86,6 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetai
         )
     }
 
-    val mainAddress = case.addresses.firstOrNull()?.let {
-        Address(it.buildingName, it.addressNumber, it.streetName, it.district, it.town, it.county, it.postcode)
-    }
-
     return model.copy(
         aliases = aliases,
         phoneNumbers = phoneNumbers,
@@ -98,8 +93,7 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetai
         registerFlags = populateRegisterFlags(case),
         language = case.primaryLanguage?.description?.language(case.requiresInterpreter ?: false),
         sentence = sentence,
-        disabilities = disabilities,
-        mainAddress = mainAddress
+        disabilities = disabilities
     )
 }
 

@@ -7,6 +7,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
@@ -52,15 +53,17 @@ class CaseEntity(
     val telephoneNumber: String? = null,
     @Column(name = "mobileNumber")
     val mobileNumber: String? = null,
-    @OneToMany(mappedBy = "person")
-    @Where(clause = """
+    @OneToOne(mappedBy = "person")
+    @Where(
+        clause = """
         address_status_id = (
         select at.standard_reference_list_id from r_standard_reference_list at 
         join r_reference_data_master rm on rm.reference_data_master_id = at.reference_data_master_id
         where rm.code_set_name = 'ADDRESS STATUS' and at.code_value = 'M'
         )
-    """)
-    val addresses: List<CaseAddress>,
+    """
+    )
+    val mainAddress: CaseAddress? = null,
     @ManyToOne
     @JoinColumn(name = "gender_identity_id")
     val genderIdentity: ReferenceData? = null,

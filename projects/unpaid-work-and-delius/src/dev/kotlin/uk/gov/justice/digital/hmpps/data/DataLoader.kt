@@ -104,7 +104,7 @@ class DataLoader(
                 DatasetGenerator.REGISTER_CATEGORY,
                 DatasetGenerator.DISABILITY_PROVISION,
                 DatasetGenerator.RELATIONSHIP,
-                DatasetGenerator.ADDRESS_STATUS,
+                DatasetGenerator.ADDRESS_STATUS
             )
         )
         businessInteractionRepository.saveAll(
