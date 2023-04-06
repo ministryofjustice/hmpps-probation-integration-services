@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.api.model.PersonalDetailsOverview
 import uk.gov.justice.digital.hmpps.api.model.dates
 import uk.gov.justice.digital.hmpps.api.model.identifiers
 import uk.gov.justice.digital.hmpps.api.model.name
+import uk.gov.justice.digital.hmpps.api.model.singleCustody
 import uk.gov.justice.digital.hmpps.api.model.toAddress
 import uk.gov.justice.digital.hmpps.api.model.toConviction
 import uk.gov.justice.digital.hmpps.api.model.toConvictionWithLicenceConditions
@@ -21,7 +22,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryP
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryPersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryRegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryReleaseRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMainAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMappa
@@ -93,6 +93,4 @@ class CaseSummaryService(
             activeConvictions = events.map { it.toConvictionWithLicenceConditions() }
         )
     }
-
-    private fun List<Event>.singleCustody() = mapNotNull { it.disposal?.custody }.singleOrNull()
 }
