@@ -4,7 +4,7 @@ import IdGenerator
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.Event
 
 object EventGenerator {
-    val DEFAULT = generate()
+    val DEFAULT = generate(1234567890L)
 
     fun generate(
         id: Long = IdGenerator.getAndIncrement()

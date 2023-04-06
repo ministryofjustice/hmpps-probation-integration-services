@@ -13,7 +13,10 @@ import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.controller.casedetails.entity.EventRepository
 import uk.gov.justice.digital.hmpps.data.generator.CaseGenerator
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.arn.ArnClient
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonManager
@@ -24,7 +27,7 @@ import uk.gov.justice.digital.hmpps.integrations.common.entity.team.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.document.DocumentService
 import uk.gov.justice.digital.hmpps.integrations.upwassessment.UPWAssessmentService
-import uk.gov.justice.digital.hmpps.prepMessage
+import uk.gov.justice.digital.hmpps.prepEvent
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
 
@@ -36,6 +39,9 @@ internal class UPWAssessmentServiceTest {
 
     @Mock
     private lateinit var personRepository: PersonWithManagerRepository
+
+    @Mock
+    private lateinit var eventRepository: EventRepository
 
     @Mock
     private lateinit var contactRepository: ContactRepository
@@ -67,7 +73,7 @@ internal class UPWAssessmentServiceTest {
     @Test
     fun `when person not found`() {
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(CaseGenerator.DEFAULT.crn)).thenReturn(null)
-        val notification = prepMessage("upw-assessment-complete")
+        val notification = prepEvent("upw-assessment-complete")
         upwAssessmentService.processMessage(notification)
 
         verify(telemetryService).trackEvent(
@@ -77,9 +83,22 @@ internal class UPWAssessmentServiceTest {
     }
 
     @Test
+    fun `when event not found`() {
+        whenever(personRepository.findByCrnAndSoftDeletedIsFalse(CaseGenerator.DEFAULT.crn)).thenReturn(person)
+        whenever(eventRepository.existsById(EventGenerator.DEFAULT.id)).thenReturn(false)
+        val notification = prepEvent("upw-assessment-complete")
+
+        val exception = assertThrows<NotFoundException> {
+            upwAssessmentService.processMessage(notification)
+        }
+        assertThat(exception.message, equalTo("Event with id of ${EventGenerator.DEFAULT.id} not found"))
+    }
+
+    @Test
     fun `when invalid pdf is returned`() {
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(CaseGenerator.DEFAULT.crn)).thenReturn(person)
-        val notification = prepMessage("upw-assessment-complete", 1234)
+        whenever(eventRepository.existsById(EventGenerator.DEFAULT.id)).thenReturn(true)
+        val notification = prepEvent("upw-assessment-complete", 1234)
 
         whenever(arnClient.getUPWAssessment(URI(notification.message.detailUrl!!))).thenReturn(
             Response.builder()

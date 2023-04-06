@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.verify
@@ -49,23 +49,27 @@ internal class AssessmentCompleteIntegrationTest {
 
     @Test
     fun `complete an UPW assessment`() {
-        val notification = prepMessage("upw-assessment-complete", wireMockServer.port())
+        val notification = prepEvent("upw-assessment-complete", wireMockServer.port())
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val contacts = contactRepository.findAll().filter { it.person.crn == CaseGenerator.DEFAULT.crn }
-        MatcherAssert.assertThat(contacts.size, Matchers.equalTo(1))
-        MatcherAssert.assertThat(contacts[0].notes, Matchers.equalTo("CP/UPW Assessment"))
-        MatcherAssert.assertThat(contacts[0].type.code, Matchers.equalTo(ContactTypeCode.UPW_ASSESSMENT.code))
-        MatcherAssert.assertThat(contacts[0].person.crn, Matchers.equalTo(CaseGenerator.DEFAULT.crn))
+        assertThat(contacts.size, equalTo(1))
+        assertThat(contacts[0].notes, equalTo("CP/UPW Assessment"))
+        assertThat(contacts[0].type.code, equalTo(ContactTypeCode.UPW_ASSESSMENT.code))
+        assertThat(contacts[0].person.crn, equalTo(CaseGenerator.DEFAULT.crn))
+        assertThat(contacts[0].eventId, equalTo(1234567890))
+        assertThat(contacts[0].sensitive, equalTo(false))
+        assertThat(contacts[0].documentLinked, equalTo(true))
+        assertThat(contacts[0].externalReference, equalTo("urn:hmpps:unpaid-work-assessment:12345"))
 
         val documents = documentRepository.findAll()
-        MatcherAssert.assertThat(documents.size, Matchers.equalTo(1))
-        MatcherAssert.assertThat(documents[0].alfrescoId, Matchers.equalTo("alfresco-uuid"))
-        MatcherAssert.assertThat(documents[0].name, Matchers.equalTo("David-Banner-${CaseGenerator.DEFAULT.crn}-UPW.pdf"))
-        MatcherAssert.assertThat(documents[0].contactId, Matchers.equalTo(contacts[0].id))
-        MatcherAssert.assertThat(documents[0].tableName, Matchers.equalTo("CONTACT"))
-        MatcherAssert.assertThat(documents[0].externalReference, Matchers.equalTo("12345"))
+        assertThat(documents.size, equalTo(1))
+        assertThat(documents[0].alfrescoId, equalTo("alfresco-uuid"))
+        assertThat(documents[0].name, equalTo("David-Banner-${CaseGenerator.DEFAULT.crn}-UPW.pdf"))
+        assertThat(documents[0].contactId, equalTo(contacts[0].id))
+        assertThat(documents[0].tableName, equalTo("CONTACT"))
+        assertThat(documents[0].externalReference, equalTo("urn:hmpps:unpaid-work-assessment:12345"))
 
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
     }
