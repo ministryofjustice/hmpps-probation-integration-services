@@ -63,6 +63,7 @@ jobs:
       fail-fast: false
       matrix:
         project: ${{ fromJson(inputs.projects) }}
+    concurrency: deploy-${{ matrix.project }}-${{ inputs.environment }}
     environment:
       name: ${{ inputs.environment }}
     steps:
