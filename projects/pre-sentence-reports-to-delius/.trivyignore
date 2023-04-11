@@ -1,13 +1,6 @@
 
-# Suppress as only uploading from trusted sources on a secure network
-# By anthony-britton-moj
-CVE-2023-24998 exp:2023-04-20
+# Suppressed as this service only uploads templated files from trusted sources
+CVE-2023-24998 exp:2023-05-01
 
 # Suppressed as we do not process any untrusted YML content
-CVE-2022-1471 exp:2023-04-07
-
-# Suppressed as we do not process any untrusted SpEL expressions
-CVE-2023-20861 exp:2023-04-07
-
-# Suppressed as json-smart only used internally by app insights azure-identity module
-CVE-2023-1370 exp:2023-04-07
+CVE-2022-1471 exp:2023-05-01
