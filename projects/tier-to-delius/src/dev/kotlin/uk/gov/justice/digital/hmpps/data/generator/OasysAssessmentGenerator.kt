@@ -11,7 +11,6 @@ object OasysAssessmentGenerator {
     val DEFAULT = OASYSAssessment(
         IdGenerator.getAndIncrement(),
         CaseEntityGenerator.DEFAULT.id,
-        EventGenerator.DEFAULT.number,
         LocalDate.now().minusWeeks(10),
         99L,
         ZonedDateTime.of(LocalDateTime.now().minusWeeks(10), EuropeLondon),
