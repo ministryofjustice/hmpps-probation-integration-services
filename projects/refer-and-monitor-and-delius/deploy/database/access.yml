@@ -6,6 +6,7 @@ database:
       - audited_interaction
       - contact
       - enforcement
+      - event
       - nsi
       - nsi_manager
       - nsi_status_history
