@@ -9,7 +9,7 @@ object RegistrationGenerator {
     val DEFAULT = generate()
 
     fun generate(
-        id: Long = IdGenerator.getAndIncrement(),
+        id: Long = IdGenerator.getAndIncrement()
     ) = RegistrationEntity(
         id,
         CaseEntityGenerator.DEFAULT.id,

@@ -35,7 +35,7 @@ class CaseEntity(
     @JoinColumn(name = "current_tier")
     val tier: ReferenceData?,
 
-    @Column(name = "dynamic_rsr_score", columnDefinition = "number(5,2)" )
+    @Column(name = "dynamic_rsr_score", columnDefinition = "number(5,2)")
     val dynamicRsrScore: Double?,
 
     val createdByUserId: Long = 0,
@@ -47,7 +47,7 @@ class CaseEntity(
     val lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 
     @Column(name = "row_version", nullable = false)
-    val version: Long = 0,
+    val version: Long = 0
 )
 
 interface CaseEntityRepository : JpaRepository<CaseEntity, Long> {

@@ -11,11 +11,11 @@ object DisposalGenerator {
     fun generate(
         event: EventEntity = EventGenerator.DEFAULT,
         id: Long = IdGenerator.getAndIncrement(),
-        type: DisposalType = DisposalTypeGenerator.DEFAULT,
+        type: DisposalType = DisposalTypeGenerator.DEFAULT
     ) = Disposal(
         id,
         event,
         type,
-        listOf(),
+        listOf()
     )
 }

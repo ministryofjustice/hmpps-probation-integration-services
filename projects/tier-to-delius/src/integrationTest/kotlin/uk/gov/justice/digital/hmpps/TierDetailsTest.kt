@@ -31,7 +31,6 @@ class TierDetailsTest {
 
     @Test
     fun `successful response`() {
-        
         mockMvc.perform(
             MockMvcRequestBuilders.get("/tier-details/F001022").withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)

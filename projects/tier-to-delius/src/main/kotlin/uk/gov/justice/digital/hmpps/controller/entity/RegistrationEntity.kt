@@ -64,4 +64,3 @@ class RegisterType(
 interface RegistrationRepository : JpaRepository<RegistrationEntity, Long> {
     fun findByPersonIdOrderByDateDesc(personId: Long): List<RegistrationEntity>
 }
-

@@ -9,7 +9,7 @@ object RequirementGenerator {
     val DEFAULT = generate()
     fun generate(
         disposal: Disposal = DisposalGenerator.DEFAULT,
-        id: Long = IdGenerator.getAndIncrement(),
+        id: Long = IdGenerator.getAndIncrement()
     ) = RequirementEntity(
         id,
         disposal,

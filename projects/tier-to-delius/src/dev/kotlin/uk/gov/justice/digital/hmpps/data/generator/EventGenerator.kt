@@ -10,6 +10,6 @@ object EventGenerator {
     fun generate(
         person: CaseEntity = CaseEntityGenerator.DEFAULT,
         eventNumber: String = "1",
-        id: Long = IdGenerator.getAndIncrement(),
+        id: Long = IdGenerator.getAndIncrement()
     ) = EventEntity(id, eventNumber, person, null)
 }

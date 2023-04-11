@@ -30,4 +30,3 @@ data class Requirement(
     val mainCategoryTypeCode: String,
     val restrictive: Boolean
 )
-

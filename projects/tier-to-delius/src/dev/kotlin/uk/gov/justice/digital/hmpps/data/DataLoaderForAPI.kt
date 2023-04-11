@@ -66,6 +66,5 @@ class DataLoaderForAPI(
         ogrsAssessmentRepository.save(OgrsAssessmentGenerator.DEFAULT)
         oasysAssessmentRepository.save(OasysAssessmentGenerator.DEFAULT)
         registerRepository.save(RegistrationGenerator.DEFAULT)
-
     }
 }

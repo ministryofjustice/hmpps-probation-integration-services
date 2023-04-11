@@ -95,5 +95,4 @@ interface EventRepository : JpaRepository<EventEntity, Long> {
     """
     )
     fun findByCrn(crn: String): List<EventEntity>
-
 }
