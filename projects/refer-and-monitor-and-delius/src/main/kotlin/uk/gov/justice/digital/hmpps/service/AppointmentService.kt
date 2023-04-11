@@ -151,7 +151,7 @@ data class UpdateAppointmentOutcome(
     val url: String
 ) {
     val notes =
-        "Session Feedback Submitted for ${referral.contractType} Referral $referralReference with Prime Provider ${referral.provider.name}${System.lineSeparator()}$url"
+        "Session Feedback Recorded for ${referral.contractType} Referral $referralReference with Prime Provider ${referral.provider.name}${System.lineSeparator()}$url"
 }
 
 enum class Attended {

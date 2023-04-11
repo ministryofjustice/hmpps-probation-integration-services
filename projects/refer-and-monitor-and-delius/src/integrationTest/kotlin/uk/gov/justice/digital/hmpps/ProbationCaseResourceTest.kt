@@ -51,6 +51,7 @@ class ProbationCaseResourceTest {
         val com = objectMapper.readValue<ResponsibleOfficer>(res).communityManager
         assertThat(com.code, equalTo(staff.code))
         assertThat(com.name, equalTo(Name(staff.forename, staff.surname)))
+        assertThat(com.username, equalTo(staff.user?.username))
         assertThat(com.email, equalTo("john.smith@moj.gov.uk"))
         assertThat(com.responsibleOfficer, equalTo(communityResponsible))
     }
