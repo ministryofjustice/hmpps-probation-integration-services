@@ -13,10 +13,10 @@ import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
-import java.time.ZonedDateTime
 
 @Immutable
 @Entity
+@Table(name = "event")
 @Where(clause = "soft_deleted = 0 and active_flag = 1")
 class EventEntity(
     @Id
@@ -33,17 +33,14 @@ class EventEntity(
     @OneToOne(mappedBy = "eventEntity")
     val disposal: Disposal? = null,
 
-    @OneToOne(mappedBy = "eventEntity")
-    val mainOffence: MainOffence? = null,
-
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
-    val active: Boolean,
+    val active: Boolean = true,
 
     @Column(name = "in_breach")
     var inBreach: Boolean = false,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean
+    val softDeleted: Boolean = false
 )
 
 @Immutable
@@ -65,9 +62,6 @@ class Disposal(
     @OneToMany(mappedBy = "disposal")
     val requirements: List<RequirementEntity>,
 
-    @Column(name = "disposal_date", nullable = false)
-    val disposalDate: ZonedDateTime,
-
     val terminationDate: LocalDate? = null,
 
     @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
@@ -85,45 +79,11 @@ class DisposalType(
     @Column(name = "disposal_type_id")
     val id: Long,
 
+    @Column(name = "disposal_type_code")
+    val code: String,
+
     @Column(name = "description")
     val description: String
-)
-
-@Immutable
-@Entity
-@Table(name = "main_offence")
-@Where(clause = "soft_deleted = 0")
-class MainOffence(
-    @Id
-    @Column(name = "main_offence_id")
-    val id: Long,
-
-    @OneToOne
-    @JoinColumn(name = "event_id")
-    val eventEntity: EventEntity,
-
-    @ManyToOne
-    @JoinColumn(name = "offence_id")
-    val offence: Offence,
-
-    @Column(name = "offence_date")
-    val date: LocalDate,
-
-    @Column(name = "offence_count")
-    val offenceCount: Int,
-
-    @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
-)
-
-@Immutable
-@Entity
-@Table(name = "r_offence")
-class Offence(
-    @Id
-    @Column(name = "offence_id")
-    val id: Long,
-    val mainCategoryDescription: String
 )
 
 interface EventRepository : JpaRepository<EventEntity, Long> {

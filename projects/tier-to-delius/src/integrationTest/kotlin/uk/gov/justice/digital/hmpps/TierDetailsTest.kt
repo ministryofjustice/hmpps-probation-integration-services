@@ -14,6 +14,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.CaseEntityGenerator
+import uk.gov.justice.digital.hmpps.data.generator.DisposalTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OgrsAssessmentGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 
 @AutoConfigureMockMvc
@@ -38,5 +41,13 @@ class TierDetailsTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.gender").value(CaseEntityGenerator.DEFAULT.gender.description))
             .andExpect(MockMvcResultMatchers.jsonPath("$.currentTier").value(CaseEntityGenerator.DEFAULT.tier?.code))
             .andExpect(MockMvcResultMatchers.jsonPath("$.rsrscore").value(CaseEntityGenerator.DEFAULT.dynamicRsrScore))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.ogrsscore").value(OgrsAssessmentGenerator.DEFAULT.score))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.registrations[0].code").value(RegistrationGenerator.DEFAULT.type.code))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.registrations[0].description").value(RegistrationGenerator.DEFAULT.type.description))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.registrations[0].level").value(RegistrationGenerator.DEFAULT.level?.code))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.convictions[0].breached").isBoolean)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.convictions[0].sentenceTypeCode").value(DisposalTypeGenerator.DEFAULT.code))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.convictions[0].sentenceTypeDescription").value(DisposalTypeGenerator.DEFAULT.description))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.convictions[0].requirements[0].mainCategoryTypeCode").value("MAIN"))
     }
 }

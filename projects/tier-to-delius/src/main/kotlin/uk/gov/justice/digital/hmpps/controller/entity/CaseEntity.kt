@@ -35,7 +35,7 @@ class CaseEntity(
     @JoinColumn(name = "current_tier")
     val tier: ReferenceData?,
 
-    @Column(name = "dynamic_rsr_score")
+    @Column(name = "dynamic_rsr_score", columnDefinition = "number(5,2)" )
     val dynamicRsrScore: Double?,
 
     val createdByUserId: Long = 0,

@@ -44,6 +44,7 @@ class TierDetailsService(
         event.disposal?.let { disposal ->
             Conviction(
                 disposal.terminationDate,
+                disposal.disposalType.code,
                 disposal.disposalType.description,
                 event.inBreach,
                 disposal.requirements.map {

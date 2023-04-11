@@ -29,10 +29,6 @@ class RegistrationEntity(
     val type: RegisterType,
 
     @ManyToOne
-    @JoinColumn(name = "register_category_id")
-    val category: ReferenceData?,
-
-    @ManyToOne
     @JoinColumn(name = "register_level_id")
     val level: ReferenceData?,
 

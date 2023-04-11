@@ -21,6 +21,7 @@ data class Registration(
 data class Conviction(
     val terminationDate: LocalDate?,
     val sentenceTypeCode: String?,
+    val sentenceTypeDescription: String?,
     val breached: Boolean,
     val requirements: List<Requirement>
 )
