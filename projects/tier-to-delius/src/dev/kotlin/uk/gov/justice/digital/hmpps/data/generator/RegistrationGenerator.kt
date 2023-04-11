@@ -25,5 +25,5 @@ object RegisterTypeGenerator {
         code: String,
         description: String = "$code description",
         id: Long = IdGenerator.getAndIncrement()
-    ) = RegisterType(id, code, description, ReferenceDataGenerator.FLAG)
+    ) = RegisterType(code, description, ReferenceDataGenerator.FLAG, id)
 }

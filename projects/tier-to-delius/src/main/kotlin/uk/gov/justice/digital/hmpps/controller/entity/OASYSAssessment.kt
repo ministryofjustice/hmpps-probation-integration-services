@@ -21,9 +21,6 @@ class OASYSAssessment(
     @Column(name = "offender_id")
     val personId: Long,
 
-    @Column(name = "event_number")
-    val eventNumber: String,
-
     @Column(name = "assessment_date")
     override val assessmentDate: LocalDate,
 

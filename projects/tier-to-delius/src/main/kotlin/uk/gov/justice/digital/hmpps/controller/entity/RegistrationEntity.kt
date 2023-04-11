@@ -46,10 +46,6 @@ class RegistrationEntity(
 @Table(name = "r_register_type")
 @Entity(name = "CaseSummaryRegisterType")
 class RegisterType(
-    @Id
-    @Column(name = "register_type_id")
-    val id: Long,
-
     @Column
     val code: String,
 
@@ -58,7 +54,11 @@ class RegisterType(
 
     @ManyToOne
     @JoinColumn(name = "register_type_flag_id")
-    val flag: ReferenceData
+    val flag: ReferenceData,
+
+    @Id
+    @Column(name = "register_type_id")
+    val id: Long
 )
 
 interface RegistrationRepository : JpaRepository<RegistrationEntity, Long> {
