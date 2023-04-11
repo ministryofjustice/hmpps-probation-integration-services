@@ -7,6 +7,7 @@ data class ResponsibleOfficer(
 data class Manager(
     val code: String,
     val name: Name,
+    val username: String?,
     val email: String?,
     val responsibleOfficer: Boolean
 )
