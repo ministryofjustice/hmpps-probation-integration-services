@@ -10,6 +10,7 @@ database:
       - custody_history
       - event
       - iaps_event
+      - key_date
       - lic_condition
       - lic_condition_transfer
       - prison_offender_manager
