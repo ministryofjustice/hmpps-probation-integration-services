@@ -21,10 +21,9 @@
             ]
           },
           "postcodeAnalyzer": {
-            "tokenizer": "standard",
+            "tokenizer": "keyword",
             "filter": [
               "lowercase",
-              "postcode_shingle",
               "postcode_space_filter"
             ]
           },
@@ -38,6 +37,7 @@
             "type": "synonym",
             "synonyms": [
               "av => avenue",
+              "bd => boulevard",
               "cl => close",
               "cres => crescent",
               "ct => court",
@@ -48,12 +48,6 @@
               "st => street",
               "wy => way"
             ]
-          },
-          "postcode_shingle": {
-            "type": "shingle",
-            "min_shingle_size": 2,
-            "max_shingle_size": 3,
-            "output_unigrams": true
           },
           "postcode_space_filter": {
             "type": "pattern_replace",

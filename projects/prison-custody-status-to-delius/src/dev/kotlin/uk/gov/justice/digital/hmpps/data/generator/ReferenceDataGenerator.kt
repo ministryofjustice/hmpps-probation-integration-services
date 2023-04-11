@@ -39,6 +39,8 @@ object ReferenceDataGenerator {
     val CONTACT_TYPE =
         ContactTypeCode.values().associateWith { ContactType(IdGenerator.getAndIncrement(), it.code) }
 
+    val ACR_DATE_TYPE = generate("ACR", ReferenceDataSetGenerator.KEY_DATE_TYPE)
+
     fun generate(
         code: String,
         dataset: ReferenceDataSet,
@@ -52,6 +54,7 @@ object ReferenceDataSetGenerator {
     val CUSTODIAL_STATUS = generate("THROUGHCARE STATUS")
     val CUSTODY_EVENT_TYPE = generate("CUSTODY EVENT TYPE")
     val TRANSFER_STATUS = generate("TRANSFER STATUS")
+    val KEY_DATE_TYPE = generate("THROUGHCARE DATE TYPE")
 
     fun generate(name: String, id: Long = IdGenerator.getAndIncrement()) = ReferenceDataSet(id, name)
 }

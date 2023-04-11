@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.controller.casedetails.model.Language
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.MainOffence
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.MappaRegistration
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.PhoneNumber
-import uk.gov.justice.digital.hmpps.controller.casedetails.model.Provision
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.RegisterFlag
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.Sentence
 import uk.gov.justice.digital.hmpps.controller.casedetails.model.name
@@ -48,6 +47,7 @@ interface CaseMapper {
     @Mapping(target = "language", ignore = true)
     @Mapping(target = "mappaRegistration", ignore = true)
     @Mapping(target = "sentence", ignore = true)
+    @Mapping(target = "mainAddress", ignore = true)
     fun convertToModel(case: CaseEntity): CaseDetails
 }
 
@@ -80,15 +80,15 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetai
     val disabilities = case.disabilities.map { d ->
         Disability(
             Type(d.type.code, d.type.description),
-            d.notes
+            d.notes,
+            d.provisions?.map {
+                it.type.description
+            }
         )
     }
 
-    val provisions = case.provisions.map { p ->
-        Provision(
-            Type(p.type.code, p.type.description),
-            p.notes
-        )
+    val mainAddress = case.addresses.firstOrNull()?.let {
+        Address(it.buildingName, it.addressNumber, it.streetName, it.district, it.town, it.county, it.postcode)
     }
 
     return model.copy(
@@ -99,7 +99,7 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetai
         language = case.primaryLanguage?.description?.language(case.requiresInterpreter ?: false),
         sentence = sentence,
         disabilities = disabilities,
-        provisions = provisions
+        mainAddress = mainAddress
     )
 }
 
@@ -130,6 +130,7 @@ fun populateMappaRegistration(case: CaseEntity): MappaRegistration? {
 
 @Mapper(componentModel = "spring")
 interface CasePersonalCircumstanceMapper {
+    @Mapping(source = "evidenced", target = "evidenced", defaultValue = "false")
     fun convertToModel(personalCircumstanceEntity: CasePersonalCircumstanceEntity): PersonalCircumstance
 }
 
@@ -150,5 +151,6 @@ interface CasePersonalContactMapper {
 
 @Mapper(componentModel = "spring")
 interface DisabilityMapper {
+    @Mapping(target = "provisions", ignore = true)
     fun convertToModel(disabilityEntity: DisabilityEntity): Disability
 }

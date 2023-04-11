@@ -25,6 +25,10 @@ class ProvisionEntity(
     val case: CaseEntity,
 
     @ManyToOne
+    @JoinColumn(name = "disability_id", nullable = false)
+    val disabilityEntity: DisabilityEntity,
+
+    @ManyToOne
     @JoinColumn(name = "provision_type_id", updatable = false)
     val type: ReferenceData,
 

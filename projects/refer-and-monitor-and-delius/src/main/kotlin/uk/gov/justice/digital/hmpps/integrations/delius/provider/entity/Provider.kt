@@ -8,7 +8,6 @@ import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider.Companion.INTENDED_PROVIDER_CODE
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team.Companion.INTENDED_TEAM_CODE
 
 @Entity
 @Immutable
@@ -43,23 +42,6 @@ class Team(
     }
 }
 
-@Immutable
-@Entity
-@Table(name = "staff")
-class Staff(
-
-    @Column(name = "officer_code", columnDefinition = "char(7)")
-    val code: String,
-
-    @Id
-    @Column(name = "staff_id")
-    val id: Long
-) {
-    companion object {
-        const val INTENDED_STAFF_CODE = INTENDED_TEAM_CODE + "U"
-    }
-}
-
 interface ProviderRepository : JpaRepository<Provider, Long> {
     fun findByCode(code: String): Provider?
 }
@@ -72,9 +54,3 @@ interface TeamRepository : JpaRepository<Team, Long> {
 }
 
 fun TeamRepository.getByCode(code: String) = findByCode(code) ?: throw NotFoundException("Team", "code", code)
-
-interface StaffRepository : JpaRepository<Staff, Long> {
-    fun findByCode(code: String): Staff?
-}
-
-fun StaffRepository.getByCode(code: String) = findByCode(code) ?: throw NotFoundException("Staff", "code", code)

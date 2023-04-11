@@ -5,10 +5,10 @@ import uk.gov.justice.digital.hmpps.plugins.ClassPathPlugin
 import uk.gov.justice.digital.hmpps.plugins.JibConfigPlugin
 
 plugins {
-    kotlin("jvm") version "1.8.10"
-    kotlin("plugin.spring") version "1.8.10" apply false
-    kotlin("plugin.jpa") version "1.8.10" apply false
-    kotlin("kapt") version "1.8.10" apply false
+    kotlin("jvm") version "1.8.20"
+    kotlin("plugin.spring") version "1.8.20" apply false
+    kotlin("plugin.jpa") version "1.8.20" apply false
+    kotlin("kapt") version "1.8.20" apply false
     id("org.springframework.boot") version "3.0.5" apply false
     id("io.spring.dependency-management") version "1.1.0" apply false
     id("com.google.cloud.tools.jib") apply false
@@ -20,7 +20,7 @@ plugins {
 val agentDeps: Configuration by configurations.creating
 
 dependencies {
-    agentDeps("com.microsoft.azure:applicationinsights-agent:3.4.10")
+    agentDeps("com.microsoft.azure:applicationinsights-agent:3.4.11")
 }
 
 val copyAgentTask = project.tasks.register<Copy>("copyAgent") {

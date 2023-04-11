@@ -21,6 +21,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
@@ -49,7 +50,7 @@ class Nsi(
     @Column(name = "nsi_status_date")
     var statusDate: ZonedDateTime = ZonedDateTime.now(),
 
-    val referralDate: ZonedDateTime,
+    val referralDate: LocalDate,
 
     var actualStartDate: ZonedDateTime? = null,
 
@@ -69,6 +70,9 @@ class Nsi(
 
     @Column(name = "rqmnt_id")
     val requirementId: Long? = null,
+
+    @Column(name = "rar_count")
+    var rarCount: Long? = null,
 
     @Column(columnDefinition = "number")
     val pendingTransfer: Boolean = false,

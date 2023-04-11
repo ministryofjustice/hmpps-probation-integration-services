@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
+import UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.District
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Staff
@@ -8,7 +9,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.user.access.Exclusion
+import uk.gov.justice.digital.hmpps.integrations.delius.user.access.Restriction
 import uk.gov.justice.digital.hmpps.set
+import uk.gov.justice.digital.hmpps.user.User
 import java.time.LocalDate
 
 object PersonGenerator {
@@ -21,6 +25,9 @@ object PersonGenerator {
     val DECISION_TO_RECALL = generate("X000002")
     val DECISION_NOT_TO_RECALL = generate("X000003")
     val CASE_SUMMARY = generateCaseSummary("X000004")
+    val RESTRICTED = generateUserAccess("X000005", restrictions = listOf(UserGenerator.TEST_USER1))
+    val EXCLUDED = generateUserAccess("X000006", exclusions = listOf(UserGenerator.TEST_USER1))
+    val NO_ACCESS_LIMITATIONS = generateUserAccess("X000007")
 
     fun generate(
         crn: String,
@@ -62,4 +69,23 @@ object PersonGenerator {
         ethnicity = ethnicity,
         primaryLanguage = primaryLanguage
     )
+
+    fun generateUserAccess(
+        crn: String = "X000000",
+        restrictions: List<User> = emptyList(),
+        exclusions: List<User> = emptyList(),
+        id: Long = IdGenerator.getAndIncrement()
+    ): uk.gov.justice.digital.hmpps.integrations.delius.user.access.Person {
+        val person = uk.gov.justice.digital.hmpps.integrations.delius.user.access.Person(
+            id = id,
+            crn = crn,
+            restrictions = emptyList(),
+            exclusions = emptyList(),
+            restrictionMessage = "Restriction message",
+            exclusionMessage = "Exclusion message"
+        )
+        person.set(person::restrictions, restrictions.map { Restriction(IdGenerator.getAndIncrement(), person, it) })
+        person.set(person::exclusions, exclusions.map { Exclusion(IdGenerator.getAndIncrement(), person, it) })
+        return person
+    }
 }

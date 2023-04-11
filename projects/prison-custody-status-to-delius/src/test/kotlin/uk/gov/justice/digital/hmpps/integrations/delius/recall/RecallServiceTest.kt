@@ -9,6 +9,7 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.FeatureFlagCodes
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
@@ -52,7 +53,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(prisonId)).thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
 
-        whenever(featureFlags.enabled(FEATURE_FLAG_TRANSFERRED)).thenReturn(false)
+        whenever(featureFlags.enabled(FeatureFlagCodes.RECALL_TRANSFERRED)).thenReturn(false)
         assertThrows<IgnorableMessageException> { recallService.recall(nomsNumber, prisonId, "TRANSFERRED", "INT", recallDateTime) }
     }
 
@@ -62,7 +63,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         val om = OrderManagerGenerator.generate(event)
         val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
 
-        whenever(featureFlags.enabled(FEATURE_FLAG_TRANSFERRED)).thenReturn(true)
+        whenever(featureFlags.enabled(FeatureFlagCodes.RECALL_TRANSFERRED)).thenReturn(true)
         whenever(recallReasonRepository.findByCodeAndSelectable(recallReason!!.code)).thenReturn(recallReason)
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(prisonId)).thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
@@ -86,7 +87,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         assertThat(recall.firstValue.reason.code, equalTo("NN"))
 
         // custody details are updated
-        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT.code, recallDate, om, recallReason)
+        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT, recallDate, om, recallReason)
         verify(custodyService).updateStatus(event.disposal!!.custody!!, CustodialStatusCode.IN_CUSTODY, recallDate, "Recall added in custody ")
 
         // licence conditions are terminated
@@ -319,7 +320,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         assertThat(recall.firstValue.reason.code, equalTo("NN"))
 
         // custody details are updated
-        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT.code, recallDate, om, recallReason)
+        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT, recallDate, om, recallReason)
         verify(custodyService).updateStatus(event.disposal!!.custody!!, CustodialStatusCode.IN_CUSTODY, recallDate, "Recall added in custody ")
 
         // licence conditions are terminated

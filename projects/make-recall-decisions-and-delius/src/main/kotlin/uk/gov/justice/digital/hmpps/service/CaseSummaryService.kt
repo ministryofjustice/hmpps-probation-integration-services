@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.LicenceConditions
 import uk.gov.justice.digital.hmpps.api.model.MappaAndRoshHistory
 import uk.gov.justice.digital.hmpps.api.model.Overview
 import uk.gov.justice.digital.hmpps.api.model.PersonalDetails
@@ -8,8 +9,10 @@ import uk.gov.justice.digital.hmpps.api.model.PersonalDetailsOverview
 import uk.gov.justice.digital.hmpps.api.model.dates
 import uk.gov.justice.digital.hmpps.api.model.identifiers
 import uk.gov.justice.digital.hmpps.api.model.name
+import uk.gov.justice.digital.hmpps.api.model.singleCustody
 import uk.gov.justice.digital.hmpps.api.model.toAddress
 import uk.gov.justice.digital.hmpps.api.model.toConviction
+import uk.gov.justice.digital.hmpps.api.model.toConvictionWithLicenceConditions
 import uk.gov.justice.digital.hmpps.api.model.toManager
 import uk.gov.justice.digital.hmpps.api.model.toMappa
 import uk.gov.justice.digital.hmpps.api.model.toRosh
@@ -19,7 +22,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryP
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryPersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryRegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryReleaseRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMainAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMappa
@@ -82,5 +84,13 @@ class CaseSummaryService(
         )
     }
 
-    private fun List<Event>.singleCustody() = mapNotNull { it.disposal?.custody }.singleOrNull()
+    fun getLicenceConditions(crn: String): LicenceConditions {
+        val person = personRepository.getPerson(crn)
+        val personalDetails = getPersonalDetailsOverview(person)
+        val events = eventRepository.findByPersonId(person.id)
+        return LicenceConditions(
+            personalDetails = personalDetails,
+            activeConvictions = events.map { it.toConvictionWithLicenceConditions() }
+        )
+    }
 }

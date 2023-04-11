@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.CustodyService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceConditionService
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.PrisonManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonRepository
@@ -58,9 +57,6 @@ abstract class RecallServiceTestBase {
 
     @Mock
     lateinit var contactAlertRepository: ContactAlertRepository
-
-    @Mock
-    lateinit var prisonManagerService: PrisonManagerService
 
     @InjectMocks
     lateinit var recallService: RecallService

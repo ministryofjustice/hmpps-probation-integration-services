@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.contact.entity
 
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.GeneratedValue
@@ -14,12 +15,15 @@ import jakarta.persistence.Table
 import jakarta.persistence.Version
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import java.time.Duration
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @EntityListeners(AuditingEntityListener::class)
@@ -38,14 +42,24 @@ class Contact(
     val type: ContactType,
 
     @Column(name = "contact_date")
-    val date: ZonedDateTime = ZonedDateTime.now(),
+    val date: LocalDate = LocalDate.now(),
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime = date,
+    val startTime: ZonedDateTime,
 
-    @ManyToOne
-    @JoinColumn(name = "contact_outcome_type_id")
-    var outcome: AppointmentOutcome? = null,
+    @Column(name = "contact_end_time")
+    val endTime: ZonedDateTime? = null,
+
+    @Column(name = "attended")
+    @Convert(converter = YesNoConverter::class)
+    var attended: Boolean? = null,
+
+    @Column(name = "complied")
+    @Convert(converter = YesNoConverter::class)
+    var complied: Boolean? = null,
+
+    @Column(name = "hours_credited", columnDefinition = "number")
+    var hoursCredited: Double? = null,
 
     @Lob
     @Column
@@ -64,6 +78,15 @@ class Contact(
     val providerId: Long,
     val teamId: Long,
     val staffId: Long,
+
+    @Column(name = "office_location_id")
+    var locationId: Long? = null,
+
+    @Column(name = "rar_activity", length = 1)
+    @Convert(converter = YesNoConverter::class)
+    var rarActivity: Boolean? = null,
+
+    val linkedContactId: Long? = null,
 
     @Id
     @Column(name = "contact_id")
@@ -90,18 +113,40 @@ class Contact(
     val softDeleted: Boolean = false,
 
     val partitionAreaId: Long = 0
-)
+) {
+    @ManyToOne
+    @JoinColumn(name = "contact_outcome_type_id")
+    var outcome: ContactOutcome? = null
+        set(value) {
+            field = value
+            attended = value?.attendance
+            complied = value?.compliantAcceptable
+        }
+
+    val duration: Duration
+        get() =
+            if (endTime != null) {
+                Duration.between(startTime, endTime)
+            } else {
+                Duration.ZERO
+            }
+}
 
 @Immutable
 @Entity
 @Table(name = "r_contact_type")
 class ContactType(
     val code: String,
+    @Column(name = "national_standards_contact", length = 1)
+    @Convert(converter = YesNoConverter::class)
+    val nationalStandards: Boolean,
     @Id
     @Column(name = "contact_type_id")
     val id: Long
 ) {
     enum class Code(val value: String, val rar: Boolean = false) {
+        REFER_TO_PERSON_MANAGER("AROM"),
+        REVIEW_ENFORCEMENT_STATUS("ARWS"),
         CRSAPT("CRSAPT", true),
         CRSSAA("CRSSAA"),
         NSI_REFERRAL("NREF"),
@@ -115,8 +160,17 @@ class ContactType(
 @Immutable
 @Entity
 @Table(name = "r_contact_outcome_type")
-class AppointmentOutcome(
+class ContactOutcome(
     val code: String,
+
+    @Column(name = "outcome_attendance", length = 1)
+    @Convert(converter = YesNoConverter::class)
+    var attendance: Boolean?,
+
+    @Column(name = "outcome_compliant_acceptable", length = 1)
+    @Convert(converter = YesNoConverter::class)
+    var compliantAcceptable: Boolean?,
+
     @Id
     @Column(name = "contact_outcome_type_id")
     val id: Long
@@ -146,10 +200,10 @@ class Enforcement(
     val responseDate: ZonedDateTime? = null,
 
     @Column(name = "action_taken_date")
-    val actionTakenDate: ZonedDateTime? = null,
+    val actionTakenDate: ZonedDateTime = ZonedDateTime.now(),
 
     @Column(name = "action_taken_time")
-    val actionTakenTime: ZonedDateTime? = null,
+    val actionTakenTime: ZonedDateTime = ZonedDateTime.now(),
 
     @Id
     @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
@@ -187,7 +241,12 @@ class Enforcement(
 @Table(name = "r_enforcement_action")
 class EnforcementAction(
     val code: String,
+    val description: String,
     val responseByPeriod: Long?,
+
+    @ManyToOne
+    @JoinColumn(name = "contact_type_id")
+    val contactType: ContactType,
 
     @Id
     @Column(name = "enforcement_action_id")

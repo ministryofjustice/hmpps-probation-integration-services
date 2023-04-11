@@ -72,7 +72,8 @@ object EventGenerator {
             type = ReferenceDataGenerator.RELEASE_TYPE[releaseType]!!,
             custody = custody,
             person = person,
-            institutionId = institution.id
+            institutionId = institution.id,
+            length = null
         )
         custody.releases.add(release)
         event.firstReleaseDate = release.date
