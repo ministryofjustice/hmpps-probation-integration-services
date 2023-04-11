@@ -44,7 +44,7 @@ class RegistrationEntity(
 
 @Immutable
 @Table(name = "r_register_type")
-@Entity(name = "CaseSummaryRegisterType")
+@Entity
 class RegisterType(
     @Column
     val code: String,
