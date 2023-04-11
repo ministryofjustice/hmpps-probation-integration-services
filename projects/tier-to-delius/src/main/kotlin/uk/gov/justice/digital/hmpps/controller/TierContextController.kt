@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class TierContextController(val tierDetailsService: TierDetailsService) {
+class TierContextController(private val tierDetailsService: TierDetailsService) {
     @GetMapping(value = ["/tier-details/{crn}"])
     @PreAuthorize("hasRole('TIER_DETAILS')")
     fun tierContext(@PathVariable crn: String) = tierDetailsService.tierDetails(crn)
