@@ -98,6 +98,9 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#user-username-access-crn"><span>/user/{username}/access/{crn}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#case-summary-crn-personal-details"><span>/case-summary/{crn}/personal-details</span></a>
       </li>
       <li>
@@ -146,6 +149,84 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="user-username-access-crn">/user/{username}/access/{crn}</h2>
+
+<h3 id="user-username-access-crn-get">get</h3>
+
+  <p><em>Details of any restrictions or exclusions</em></p>
+
+
+  <p><p>Returns either an <code>exclusionMessage</code> or <code>restrictionMessage</code> if the user is not allowed to access the case. <p>This can happen if the user is <em>excluded</em> from viewing the case (e.g. a family member), or if the case has been <em>restricted</em> to a subset of users that the user is not a part of (e.g. high profile cases).</p>
+
+
+
+
+<h4 id="user-username-access-crn-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="user-username-access-crn-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "exclusionMessage": "string",
+  "restrictionMessage": "string",
+  "userExcluded": "boolean",
+  "userRestricted": "boolean"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-useraccess'>UserAccess</a>
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -586,6 +667,58 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-useraccess">UserAccess</h3>
+
+
+<table class='schema-useraccess'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>exclusionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>restrictionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>userExcluded</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>userRestricted</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-address">Address</h3>
 
 
