@@ -23,28 +23,36 @@ class ReferAndMonitorHandler(
         when (val res = eventHandlers[event]?.invoke(notification.message)) {
             is Success -> telemetryService.trackEvent(
                 res.eventType::class.simpleName!!,
-                res.properties
+                notification.message.commonFields() + res.properties
             )
             is Failure -> {
                 telemetryService.trackEvent(
                     res.exception::class.simpleName!!,
-                    res.properties + ("message" to res.exception.message!!)
+                    notification.message.commonFields() + res.properties + ("message" to res.exception.message!!)
                 )
                 throw res.exception
             }
             null -> telemetryService.trackEvent(
                 "UnhandledEventReceived",
-                mapOf("eventType" to event.name)
+                notification.message.commonFields() + ("eventType" to event.name)
             )
         }
     }
 }
 
+fun HmppsDomainEvent.commonFields() = mapOf(
+    "crn" to (personReference.findCrn() ?: ""),
+    "referralId" to (additionalInformation["referralId"] as String? ?: "")
+)
+
 interface DomainEventHandler {
     val handledEvents: Map<DomainEventType, (HmppsDomainEvent) -> EventProcessingResult>
-    fun handle(block: () -> EventProcessingResult): EventProcessingResult = try {
-        block()
+    fun handle(
+        event: HmppsDomainEvent,
+        block: (event: HmppsDomainEvent) -> EventProcessingResult
+    ): EventProcessingResult = try {
+        block(event)
     } catch (e: Exception) {
-        Failure(e, mapOf("message" to (e.message ?: "")))
+        Failure(e, event.commonFields() + ("message" to (e.message ?: "")))
     }
 }

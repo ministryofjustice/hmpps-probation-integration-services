@@ -41,12 +41,23 @@ internal class ReferralEndSubmittedTest {
         val event = HmppsDomainEvent(
             DomainEventType.ReferralEnded.name,
             1,
-            "https://fake.org/url"
+            "https://fake.org/url",
+            additionalInformation = AdditionalInformation(mutableMapOf("referralId" to UUID.randomUUID().toString())),
+            personReference = PersonReference(listOf(PersonIdentifier("CRN", "T123456")))
         )
 
         val res = referralEnd.referralEnded(event)
         assertThat(res, IsInstanceOf(EventProcessingResult.Failure::class.java))
-        assertThat(res.properties, equalTo(mapOf("message" to "Unable to retrieve session: ${event.detailUrl}")))
+        assertThat(
+            res.properties,
+            equalTo(
+                mapOf(
+                    "crn" to event.personReference.findCrn()!!,
+                    "referralId" to event.additionalInformation["referralId"] as String,
+                    "message" to "Unable to retrieve session: ${event.detailUrl}"
+                )
+            )
+        )
     }
 
     @ParameterizedTest

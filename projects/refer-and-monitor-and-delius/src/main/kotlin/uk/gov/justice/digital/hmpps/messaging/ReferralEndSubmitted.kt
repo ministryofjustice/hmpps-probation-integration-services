@@ -20,7 +20,7 @@ class ReferralEndSubmitted(
         ReferralEnded as DomainEventType to ::referralEnded
     )
 
-    fun referralEnded(event: HmppsDomainEvent): EventProcessingResult = handle {
+    fun referralEnded(event: HmppsDomainEvent): EventProcessingResult = handle(event) {
         val sentReferral = ramClient.getReferral(URI(event.detailUrl!!))
             ?: throw NotFoundException("Unable to retrieve session: ${event.detailUrl}")
 

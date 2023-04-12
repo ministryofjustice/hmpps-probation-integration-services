@@ -86,8 +86,9 @@ internal class ReferAndMonitorIntegrationTest {
         verify(telemetryService).trackEvent(
             "SessionAppointmentSubmitted",
             mapOf(
-                "appointmentId" to "1",
                 "crn" to "T140223",
+                "appointmentId" to "1",
+                "referralId" to "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
                 "referralReference" to "FE4536C"
             )
         )
@@ -138,8 +139,9 @@ internal class ReferAndMonitorIntegrationTest {
         verify(telemetryService).trackEvent(
             "SessionAppointmentSubmitted",
             mapOf(
-                "appointmentId" to "2",
                 "crn" to "T140223",
+                "referralId" to "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+                "appointmentId" to "2",
                 "referralReference" to "FE4536C"
             )
         )
@@ -196,6 +198,7 @@ internal class ReferAndMonitorIntegrationTest {
             "ReferralEnded",
             mapOf(
                 "crn" to "T140223",
+                "referralId" to "f56c5f7c-632f-4cad-a1b3-693541cb5f22",
                 "referralUrn" to "urn:hmpps:interventions-referral:68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
                 "endDate" to "2023-02-23T15:29:54.197Z[Europe/London]",
                 "endType" to "PREMATURELY_ENDED"
@@ -242,6 +245,7 @@ internal class ReferAndMonitorIntegrationTest {
             "ReferralEnded",
             mapOf(
                 "crn" to "F123456",
+                "referralId" to "f56c5f7c-632f-4cad-a1b3-693541cb5f22",
                 "referralUrn" to "urn:hmpps:interventions-referral:71df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
                 "endDate" to "2023-02-23T15:29:54.197Z[Europe/London]",
                 "endType" to "CANCELLED"
