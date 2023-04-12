@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactOutcomeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
@@ -82,6 +83,15 @@ class DataLoader(
             persist(EventGenerator.CASE_SUMMARY.disposal!!.custody!!.licenceExpiryDate)
             persist(EventGenerator.CASE_SUMMARY.disposal!!.licenceConditions[0].mainCategory)
             persist(EventGenerator.CASE_SUMMARY.disposal!!.licenceConditions[0])
+            persist(ContactGenerator.DEFAULT_OUTCOME)
+            persist(ContactGenerator.DEFAULT_TYPE)
+            persist(ContactGenerator.SYSTEM_GENERATED_TYPE)
+            persist(ContactGenerator.DEFAULT)
+            persist(ContactGenerator.SYSTEM_GENERATED)
+            persist(ContactGenerator.FUTURE)
+            persist(ContactGenerator.PAST)
+            persist(ContactGenerator.WITH_DOCUMENTS)
+            ContactGenerator.WITH_DOCUMENTS.documents.forEach { persist(it) }
 
             persist(UserGenerator.TEST_USER1)
             persist(UserGenerator.TEST_USER2)

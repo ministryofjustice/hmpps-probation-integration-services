@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
+import jakarta.persistence.EntityManager
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -14,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
@@ -31,7 +32,7 @@ internal class RecommendationIntegrationTest {
     lateinit var channelManager: HmppsChannelManager
 
     @Autowired
-    lateinit var contactRepository: ContactRepository
+    lateinit var entityManager: EntityManager
 
     @MockBean
     lateinit var telemetryService: TelemetryService
@@ -43,7 +44,7 @@ internal class RecommendationIntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val person = PersonGenerator.RECOMMENDATION_STARTED
-        val contact = contactRepository.findAll().firstOrNull { it.personId == person.id }
+        val contact = getContact(person.id)
         assertNotNull(contact!!)
         assertThat(contact.providerId, equalTo(PersonGenerator.DEFAULT_PROVIDER.id))
         assertThat(contact.teamId, equalTo(PersonGenerator.DEFAULT_TEAM.id))
@@ -59,7 +60,7 @@ internal class RecommendationIntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val person = PersonGenerator.DECISION_TO_RECALL
-        val contact = contactRepository.findAll().firstOrNull { it.personId == person.id }
+        val contact = getContact(person.id)
         assertNotNull(contact!!)
         assertThat(contact.providerId, equalTo(PersonGenerator.DEFAULT_PROVIDER.id))
         assertThat(contact.teamId, equalTo(PersonGenerator.DEFAULT_TEAM.id))
@@ -75,7 +76,7 @@ internal class RecommendationIntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val person = PersonGenerator.DECISION_NOT_TO_RECALL
-        val contact = contactRepository.findAll().firstOrNull { it.personId == person.id }
+        val contact = getContact(person.id)
         assertNotNull(contact!!)
         assertThat(contact.providerId, equalTo(PersonGenerator.DEFAULT_PROVIDER.id))
         assertThat(contact.teamId, equalTo(PersonGenerator.DEFAULT_TEAM.id))
@@ -83,4 +84,9 @@ internal class RecommendationIntegrationTest {
         assertThat(contact.notes, equalTo("View details of the Manage a Recall Oversight Decision: http://mrd.case.crn/overview"))
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
     }
+
+    private fun getContact(personId: Long) = entityManager
+        .createQuery("select c from Contact c where c.personId = :personId", Contact::class.java)
+        .setParameter("personId", personId)
+        .resultList.firstOrNull()
 }

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.ContactHistory
 import uk.gov.justice.digital.hmpps.api.model.LicenceConditions
 import uk.gov.justice.digital.hmpps.api.model.MappaAndRoshHistory
 import uk.gov.justice.digital.hmpps.api.model.Overview
@@ -11,12 +12,14 @@ import uk.gov.justice.digital.hmpps.api.model.identifiers
 import uk.gov.justice.digital.hmpps.api.model.name
 import uk.gov.justice.digital.hmpps.api.model.singleCustody
 import uk.gov.justice.digital.hmpps.api.model.toAddress
+import uk.gov.justice.digital.hmpps.api.model.toContact
 import uk.gov.justice.digital.hmpps.api.model.toConviction
 import uk.gov.justice.digital.hmpps.api.model.toConvictionWithLicenceConditions
 import uk.gov.justice.digital.hmpps.api.model.toManager
 import uk.gov.justice.digital.hmpps.api.model.toMappa
 import uk.gov.justice.digital.hmpps.api.model.toRosh
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryAddressRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryPersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryPersonRepository
@@ -27,6 +30,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMainAddr
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMappa
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findRoshHistory
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.getPerson
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.searchContacts
+import java.time.LocalDate
 
 @Service
 class CaseSummaryService(
@@ -35,7 +40,8 @@ class CaseSummaryService(
     private val personManagerRepository: CaseSummaryPersonManagerRepository,
     private val registrationRepository: CaseSummaryRegistrationRepository,
     private val releaseRepository: CaseSummaryReleaseRepository,
-    private val eventRepository: CaseSummaryEventRepository
+    private val eventRepository: CaseSummaryEventRepository,
+    private val contactRepository: CaseSummaryContactRepository
 ) {
     fun getPersonalDetailsOverview(person: Person) = PersonalDetailsOverview(
         name = person.name(),
@@ -91,6 +97,28 @@ class CaseSummaryService(
         return LicenceConditions(
             personalDetails = personalDetails,
             activeConvictions = events.map { it.toConvictionWithLicenceConditions() }
+        )
+    }
+
+    fun getContactHistory(
+        crn: String,
+        query: String? = null,
+        from: LocalDate? = null,
+        to: LocalDate = LocalDate.now(),
+        types: List<String> = emptyList(),
+        includeSystemGenerated: Boolean = true
+    ): ContactHistory {
+        val person = personRepository.getPerson(crn)
+        val personalDetails = getPersonalDetailsOverview(person)
+        val contacts = contactRepository.searchContacts(person.id, query, from, to, types, includeSystemGenerated)
+        val typeSummary = contactRepository.summarizeContactTypes(person.id)
+        return ContactHistory(
+            personalDetails = personalDetails,
+            contacts = contacts.map { it.toContact() },
+            summary = ContactHistory.ContactSummary(
+                types = typeSummary,
+                hits = contacts.size
+            )
         )
     }
 }

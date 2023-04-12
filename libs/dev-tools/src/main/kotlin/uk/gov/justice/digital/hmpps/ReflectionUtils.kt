@@ -19,3 +19,8 @@ fun <T : Any, V : Any?> T.set(field: KProperty1<T, V>, value: V): T {
     this.set(field.name, value)
     return this
 }
+
+fun <T : Any, V : Any?> T.set(field: KProperty1<T, V>, value: (T) -> V): T {
+    this.set(field.name, value.invoke(this))
+    return this
+}
