@@ -19,7 +19,7 @@ class FeedbackSubmitted(
         DomainEventType.SessionAppointmentSubmitted as DomainEventType to ::sessionAppointmentSubmitted
     )
 
-    fun sessionAppointmentSubmitted(event: HmppsDomainEvent): EventProcessingResult = handle {
+    fun sessionAppointmentSubmitted(event: HmppsDomainEvent): EventProcessingResult = handle(event) {
         val appointment = ramClient.getSession(URI(event.detailUrl!!))?.appointmentOutcome(
             event.personReference.findCrn()!!,
             event.referralReference(),
