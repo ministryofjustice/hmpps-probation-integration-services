@@ -19,8 +19,8 @@ object ContactGenerator {
     val SYSTEM_GENERATED = generate(notes = "system-generated", ZonedDateTime.now().minusDays(1), SYSTEM_GENERATED_TYPE)
     val WITH_DOCUMENTS = generate(notes = "documents", ZonedDateTime.now().minusDays(2)).set(Contact::documents) {
         listOf(
-            ContactDocument(IdGenerator.getAndIncrement(), it, "doc1"),
-            ContactDocument(IdGenerator.getAndIncrement(), it, "doc2")
+            ContactDocument(IdGenerator.getAndIncrement(), it, "uuid1", "doc1", ZonedDateTime.now()),
+            ContactDocument(IdGenerator.getAndIncrement(), it, "uuid2", "doc2", ZonedDateTime.now())
         )
     }
     val PAST = generate(notes = "past", ZonedDateTime.of(2022, 1, 1, 12, 0, 0, 0, EuropeLondon))
