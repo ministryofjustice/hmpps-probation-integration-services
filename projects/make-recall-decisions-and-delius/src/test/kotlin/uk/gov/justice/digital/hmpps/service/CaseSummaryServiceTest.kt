@@ -12,13 +12,16 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.api.model.ContactTypeSummary
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.release
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryAddressRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryPersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryPersonRepository
@@ -50,6 +53,9 @@ internal class CaseSummaryServiceTest {
 
     @Mock
     lateinit var eventRepository: CaseSummaryEventRepository
+
+    @Mock
+    lateinit var contactRepository: CaseSummaryContactRepository
 
     @InjectMocks
     lateinit var caseSummaryService: CaseSummaryService
@@ -165,6 +171,20 @@ internal class CaseSummaryServiceTest {
         assertThat(exception.message, equalTo("Unexpected MAPPA level: YY"))
     }
 
+    @Test
+    fun `get contact history`() {
+        givenPersonalDetails()
+        givenContacts()
+
+        val contacts = caseSummaryService.getContactHistory(person.crn)
+
+        assertThat(contacts.personalDetails.name.forename, equalTo(person.forename))
+        assertThat(contacts.contacts.size, equalTo(1))
+        assertThat(contacts.summary.types.size, equalTo(1))
+        assertThat(contacts.summary.types[0].code, equalTo("TYPE"))
+        assertThat(contacts.summary.types[0].total, equalTo(123))
+    }
+
     private fun givenPersonalDetails() {
         whenever(personRepository.findByCrn(person.crn))
             .thenReturn(person)
@@ -208,5 +228,12 @@ internal class CaseSummaryServiceTest {
         val release = event.disposal!!.custody!!.release()
         whenever(releaseRepository.findFirstByCustodyIdOrderByDateDesc(event.disposal!!.custody!!.id)).thenReturn(release)
         return release
+    }
+
+    private fun givenContacts() {
+        whenever(contactRepository.findContacts(person.id, null, LocalDate.now(), true, emptyList(), 0))
+            .thenReturn(listOf(ContactGenerator.DEFAULT))
+        whenever(contactRepository.summarizeContactTypes(person.id))
+            .thenReturn(listOf(ContactTypeSummary("TYPE", "Description", 123)))
     }
 }

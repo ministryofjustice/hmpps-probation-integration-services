@@ -68,16 +68,17 @@ class Contact(
     @Column(name = "alert_active")
     val alert: Boolean? = false,
 
-    @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
+    @Column(name = "soft_deleted", columnDefinition = "number")
     var softDeleted: Boolean = false,
 
-    @Column(name = "row_version", nullable = false)
+    @Column(name = "row_version")
     @Version
     var version: Long = 0,
 
+    @Column
     val partitionAreaId: Long = 0,
 
-    @Column(name = "created_datetime", nullable = false)
+    @Column(name = "created_datetime")
     @CreatedDate
     var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
 
@@ -89,7 +90,7 @@ class Contact(
     @LastModifiedBy
     var lastModifiedUserId: Long = 0,
 
-    @Column(name = "last_updated_datetime", nullable = false)
+    @Column(name = "last_updated_datetime")
     @LastModifiedDate
     var lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now()
 )
