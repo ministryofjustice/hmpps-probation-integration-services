@@ -231,7 +231,7 @@ internal class CaseSummaryServiceTest {
     }
 
     private fun givenContacts() {
-        whenever(contactRepository.findContacts(person.id, null, LocalDate.now(), 1, emptyList(), 0))
+        whenever(contactRepository.findContacts(person.id, null, LocalDate.now(), true, emptyList(), 0))
             .thenReturn(listOf(ContactGenerator.DEFAULT))
         whenever(contactRepository.summarizeContactTypes(person.id))
             .thenReturn(listOf(ContactTypeSummary("TYPE", "Description", 123)))

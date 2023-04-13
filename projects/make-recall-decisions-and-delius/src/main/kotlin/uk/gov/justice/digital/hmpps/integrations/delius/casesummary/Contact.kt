@@ -119,14 +119,14 @@ interface CaseSummaryContactRepository : JpaRepository<Contact, Long> {
     @Query(
         """
         select c from CaseSummaryContact c
-        left join fetch c.type
+        join fetch c.type
         left join fetch c.outcome
         left join fetch c.documents
         where c.personId = :personId
         and c.date <= :toDate
         and (:fromDate is null or c.date >= :fromDate)
         and (:typesCount = 0 or c.type.code in :types)
-        and (:includeSystemGenerated = 1 or c.type.systemGenerated = false)
+        and (:includeSystemGenerated = true or c.type.systemGenerated = false)
         order by c.date desc, c.startTime desc
         """
     )
@@ -134,7 +134,7 @@ interface CaseSummaryContactRepository : JpaRepository<Contact, Long> {
         personId: Long,
         fromDate: LocalDate?,
         toDate: LocalDate,
-        includeSystemGenerated: Int,
+        includeSystemGenerated: Boolean,
         types: List<String>,
         typesCount: Int = types.count()
     ): List<Contact>
@@ -161,7 +161,7 @@ fun CaseSummaryContactRepository.searchContacts(
     types: List<String>,
     includeSystemGenerated: Boolean
 ): List<Contact> {
-    val contacts = findContacts(personId, fromDate, toDate, if (includeSystemGenerated) 1 else 0, types)
+    val contacts = findContacts(personId, fromDate, toDate, includeSystemGenerated, types)
     // Oracle doesn't allow query comparisons on CLOBs, so we have to filter the notes ourselves:
     return if (query.isNullOrBlank()) contacts else contacts.filter { it.notes?.contains(query, true) == true }
 }
