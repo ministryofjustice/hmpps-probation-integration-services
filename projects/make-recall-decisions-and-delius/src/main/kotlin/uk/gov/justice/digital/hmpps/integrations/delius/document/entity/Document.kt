@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.document
+package uk.gov.justice.digital.hmpps.integrations.delius.document.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -8,8 +8,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
 
 @Table
 @Entity
@@ -49,8 +47,3 @@ class Person(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 )
-
-interface DocumentRepository : JpaRepository<Document, Long> {
-    @Query("select d.name from Document d where d.person.crn = :crn and d.alfrescoId = :alfrescoId")
-    fun findNameByPersonCrnAndAlfrescoId(crn: String, alfrescoId: String): String?
-}
