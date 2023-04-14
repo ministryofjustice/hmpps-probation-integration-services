@@ -45,13 +45,13 @@ dependencyResolutionManagement {
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
             library("insights", "com.microsoft.azure:applicationinsights-web:3.4.11")
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.17.0")
-            library("opentelemetry-annotations", "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.24.0")
+            library("opentelemetry-annotations", "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.25.0")
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
             library("wiremock", "com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
-            library("mapstruct", "org.mapstruct:mapstruct:1.5.3.Final")
-            library("mapstructprocessor", "org.mapstruct:mapstruct-processor:1.5.3.Final")
+            library("mapstruct", "org.mapstruct:mapstruct:1.5.4.Final")
+            library("mapstructprocessor", "org.mapstruct:mapstruct-processor:1.5.4.Final")
             library("flipt", "io.flipt:flipt-java:0.1.8")
         }
     }
