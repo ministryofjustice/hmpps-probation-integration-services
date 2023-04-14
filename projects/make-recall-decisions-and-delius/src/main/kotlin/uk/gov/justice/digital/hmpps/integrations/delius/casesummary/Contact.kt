@@ -101,6 +101,9 @@ class ContactDocument(
     @Column(name = "document_id")
     val id: Long,
 
+    @Column(name = "offender_id")
+    val personId: Long,
+
     @ManyToOne
     @JoinColumn(name = "primary_key_id", referencedColumnName = "contact_id")
     val contact: Contact,

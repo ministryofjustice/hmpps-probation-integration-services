@@ -1,0 +1,56 @@
+package uk.gov.justice.digital.hmpps.integrations.delius.document
+
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.Table
+import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.Where
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+
+@Table
+@Entity
+@Immutable
+@Where(clause = "soft_deleted = 0")
+class Document(
+    @Id
+    @Column(name = "document_id")
+    val id: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "offender_id")
+    val person: Person,
+
+    @Column(name = "alfresco_document_id")
+    val alfrescoId: String,
+
+    @Column(name = "document_name")
+    val name: String,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean = false
+)
+
+@Immutable
+@Table(name = "offender")
+@Entity(name = "DocumentPerson")
+@Where(clause = "soft_deleted = 0")
+class Person(
+    @Id
+    @Column(name = "offender_id")
+    val id: Long,
+
+    @Column(columnDefinition = "char(7)")
+    val crn: String,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean = false
+)
+
+interface DocumentRepository : JpaRepository<Document, Long> {
+    @Query("select d.name from Document d where d.person.crn = :crn and d.alfrescoId = :alfrescoId")
+    fun findNameByPersonCrnAndAlfrescoId(crn: String, alfrescoId: String): String?
+}
