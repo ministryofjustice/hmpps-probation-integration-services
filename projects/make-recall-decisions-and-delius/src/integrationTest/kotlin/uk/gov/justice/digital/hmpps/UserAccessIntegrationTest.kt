@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import UserGenerator
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -13,6 +12,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 
 @SpringBootTest

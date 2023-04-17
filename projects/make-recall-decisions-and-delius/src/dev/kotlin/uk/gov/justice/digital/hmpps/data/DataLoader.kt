@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data
 
-import UserGenerator
 import jakarta.annotation.PostConstruct
 import jakarta.persistence.EntityManager
 import org.springframework.boot.context.event.ApplicationReadyEvent
@@ -17,6 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
@@ -102,6 +102,9 @@ class DataLoader(
             persist(PersonGenerator.RESTRICTED)
             persist(PersonGenerator.RESTRICTED.restrictions[0])
             persist(PersonGenerator.NO_ACCESS_LIMITATIONS)
+            persist(UserGenerator.WITHOUT_STAFF)
+            persist(UserGenerator.WITH_STAFF.staff)
+            persist(UserGenerator.WITH_STAFF)
         }
     }
 }

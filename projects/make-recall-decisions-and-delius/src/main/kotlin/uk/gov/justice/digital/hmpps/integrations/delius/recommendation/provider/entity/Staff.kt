@@ -6,7 +6,7 @@ import jakarta.persistence.Id
 import org.hibernate.annotations.Immutable
 
 @Immutable
-@Entity
+@Entity(name = "RecommendationStaff")
 class Staff(
 
     @Id
