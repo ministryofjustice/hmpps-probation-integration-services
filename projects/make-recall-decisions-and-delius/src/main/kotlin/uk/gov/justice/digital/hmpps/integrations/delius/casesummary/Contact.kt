@@ -101,12 +101,21 @@ class ContactDocument(
     @Column(name = "document_id")
     val id: Long,
 
+    @Column(name = "offender_id")
+    val personId: Long,
+
     @ManyToOne
     @JoinColumn(name = "primary_key_id", referencedColumnName = "contact_id")
     val contact: Contact,
 
+    @Column(name = "alfresco_document_id")
+    val alfrescoId: String,
+
     @Column(name = "document_name")
     val name: String,
+
+    @Column(name = "last_saved")
+    val lastUpdated: ZonedDateTime,
 
     @Column
     val tableName: String = "CONTACT",

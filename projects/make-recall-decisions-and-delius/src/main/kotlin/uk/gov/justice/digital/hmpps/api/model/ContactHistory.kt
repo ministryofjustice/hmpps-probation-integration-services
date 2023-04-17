@@ -22,7 +22,7 @@ data class ContactHistory(
         val type: Type
     ) {
         data class Type(val code: String, val description: String)
-        data class DocumentReference(val id: Long, val name: String)
+        data class DocumentReference(val id: String, val name: String, val lastUpdated: ZonedDateTime)
     }
     data class ContactSummary(
         val types: List<ContactTypeSummary>,
@@ -34,7 +34,7 @@ data class ContactTypeSummary(val code: String, val description: String, val tot
 
 fun Contact.toContact() = ContactHistory.Contact(
     description = description,
-    documents = documents.map { DocumentReference(it.id, it.name) },
+    documents = documents.map { DocumentReference(it.alfrescoId, it.name, it.lastUpdated) },
     enforcementAction = null,
     notes = notes,
     outcome = outcome?.description,

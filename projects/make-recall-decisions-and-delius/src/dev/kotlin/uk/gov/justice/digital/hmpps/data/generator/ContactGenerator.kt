@@ -19,8 +19,8 @@ object ContactGenerator {
     val SYSTEM_GENERATED = generate(notes = "system-generated", ZonedDateTime.now().minusDays(1), SYSTEM_GENERATED_TYPE)
     val WITH_DOCUMENTS = generate(notes = "documents", ZonedDateTime.now().minusDays(2)).set(Contact::documents) {
         listOf(
-            ContactDocument(IdGenerator.getAndIncrement(), it, "doc1"),
-            ContactDocument(IdGenerator.getAndIncrement(), it, "doc2")
+            generateContactDocument(it, "uuid1", "doc1"),
+            generateContactDocument(it, "uuid2", "doc2")
         )
     }
     val PAST = generate(notes = "past", ZonedDateTime.of(2022, 1, 1, 12, 0, 0, 0, EuropeLondon))
@@ -44,4 +44,12 @@ object ContactGenerator {
         startTime = dateTime.toLocalTime().atDate(EPOCH).atZone(dateTime.zone),
         sensitive = false
     )
+
+    fun generateContactDocument(
+        contact: Contact,
+        alfrescoId: String,
+        filename: String,
+        personId: Long = PersonGenerator.CASE_SUMMARY.id,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = ContactDocument(id, personId, contact, alfrescoId, filename, ZonedDateTime.now())
 }
