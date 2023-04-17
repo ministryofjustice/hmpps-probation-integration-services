@@ -156,6 +156,7 @@ class DataLoader(
         ContactGenerator.CRSAPT_NON_COMPLIANT = contactRepository.save(
             ContactGenerator.generate(
                 crsA.type,
+                date = crsA.date,
                 notes = crsA.notes,
                 nsi = NsiGenerator.END_PREMATURELY,
                 rarActivity = crsA.rarActivity
@@ -166,9 +167,21 @@ class DataLoader(
         ContactGenerator.CRSAPT_COMPLIANT = contactRepository.save(
             ContactGenerator.generate(
                 crsB.type,
+                date = crsB.date,
                 notes = crsB.notes,
                 nsi = NsiGenerator.END_PREMATURELY,
                 rarActivity = crsB.rarActivity
+            )
+        )
+
+        val crsC = ContactGenerator.CRSAPT_NOT_ATTENDED
+        ContactGenerator.CRSAPT_NOT_ATTENDED = contactRepository.save(
+            ContactGenerator.generate(
+                crsC.type,
+                date = crsC.date,
+                notes = crsC.notes,
+                nsi = NsiGenerator.END_PREMATURELY,
+                rarActivity = crsC.rarActivity
             )
         )
 

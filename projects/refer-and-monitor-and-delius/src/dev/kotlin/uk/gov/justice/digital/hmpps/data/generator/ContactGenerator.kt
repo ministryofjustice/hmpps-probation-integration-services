@@ -50,10 +50,22 @@ object ContactGenerator {
     )
 
     var CRSAPT_COMPLIANT = generate(
+        date = LocalDate.now(),
         type = TYPES[Code.CRSAPT.value]!!,
         notes = """
             |Service Delivery Appointment for Accommodation Referral FE4536C with Prime Provider ProviderName
             |https://refer-monitor-intervention.service.justice.gov.uk/probation-practitioner/referrals/f56c5f7c-632f-4cad-a1b3-693541cb5f22/progress
+        """.trimMargin(),
+        nsi = NsiGenerator.END_PREMATURELY,
+        rarActivity = true
+    )
+
+    var CRSAPT_NOT_ATTENDED = generate(
+        type = TYPES[Code.CRSAPT.value]!!,
+        date = LocalDate.now().minusDays(2),
+        notes = """
+            |Service Delivery Appointment for Accommodation Referral AY0164AC with Prime Provider ProviderName
+            |https://refer-monitor-intervention.service.justice.gov.uk/probation-practitioner/referrals/89a3f79c-f12b-43de-9616-77ae19813cfe/progress
         """.trimMargin(),
         nsi = NsiGenerator.END_PREMATURELY,
         rarActivity = true
