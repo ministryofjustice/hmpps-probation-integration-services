@@ -6,12 +6,17 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.api.model.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.access.UserAccessRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.UserStaffRepository
 
 @RestController
-@Tag(name = "User Access")
+@Tag(name = "Users")
 @PreAuthorize("hasRole('ROLE_MAKE_RECALL_DECISIONS_API')")
-class UserAccessController(private val userAccessRepository: UserAccessRepository) {
+class UserController(
+    private val userAccessRepository: UserAccessRepository,
+    private val userStaffRepository: UserStaffRepository
+) {
     @GetMapping("/user/{username}/access/{crn}")
     @Operation(
         summary = "Details of any restrictions or exclusions",
@@ -19,4 +24,8 @@ class UserAccessController(private val userAccessRepository: UserAccessRepositor
             "<p>This can happen if the user is *excluded* from viewing the case (e.g. a family member), or if the case has been *restricted* to a subset of users that the user is not a part of (e.g. high profile cases)."
     )
     fun checkUserAccess(@PathVariable username: String, @PathVariable crn: String) = userAccessRepository.findByUsernameAndCrn(username, crn)
+
+    @GetMapping("/user/{username}/staff")
+    @Operation(summary = "Get the staff code for a user, if it exists")
+    fun getStaffCode(@PathVariable username: String) = Staff(userStaffRepository.findUserStaffCode(username))
 }
