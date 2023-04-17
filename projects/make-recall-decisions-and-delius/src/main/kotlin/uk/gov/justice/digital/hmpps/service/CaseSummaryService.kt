@@ -7,13 +7,15 @@ import uk.gov.justice.digital.hmpps.api.model.MappaAndRoshHistory
 import uk.gov.justice.digital.hmpps.api.model.Overview
 import uk.gov.justice.digital.hmpps.api.model.PersonalDetails
 import uk.gov.justice.digital.hmpps.api.model.PersonalDetailsOverview
+import uk.gov.justice.digital.hmpps.api.model.RecommendationModel
+import uk.gov.justice.digital.hmpps.api.model.RecommendationModel.Institution
 import uk.gov.justice.digital.hmpps.api.model.dates
 import uk.gov.justice.digital.hmpps.api.model.identifiers
 import uk.gov.justice.digital.hmpps.api.model.name
-import uk.gov.justice.digital.hmpps.api.model.singleCustody
 import uk.gov.justice.digital.hmpps.api.model.toAddress
 import uk.gov.justice.digital.hmpps.api.model.toContact
 import uk.gov.justice.digital.hmpps.api.model.toConviction
+import uk.gov.justice.digital.hmpps.api.model.toConvictionDetails
 import uk.gov.justice.digital.hmpps.api.model.toConvictionWithLicenceConditions
 import uk.gov.justice.digital.hmpps.api.model.toManager
 import uk.gov.justice.digital.hmpps.api.model.toMappa
@@ -25,6 +27,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryP
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryPersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryRegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryReleaseRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMainAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMappa
@@ -69,7 +72,7 @@ class CaseSummaryService(
         val personalDetails = getPersonalDetailsOverview(person)
         val registerFlags = registrationRepository.findActiveTypeDescriptionsByPersonId(person.id)
         val events = eventRepository.findByPersonId(person.id)
-        val lastRelease = events.singleCustody()?.let { releaseRepository.findFirstByCustodyIdOrderByDateDesc(it.id) }
+        val lastRelease = events.lastRelease()
         return Overview(
             personalDetails = personalDetails,
             registerFlags = registerFlags,
@@ -121,4 +124,27 @@ class CaseSummaryService(
             )
         )
     }
+
+    fun getRecommendationModel(crn: String): RecommendationModel {
+        val person = personRepository.getPerson(crn)
+        val personalDetails = getPersonalDetailsOverview(person)
+        val mainAddress = addressRepository.findMainAddress(person.id)
+        val mappa = registrationRepository.findMappa(person.id)?.toMappa()
+        val events = eventRepository.findByPersonId(person.id)
+        val lastRelease = events.lastRelease()
+        return RecommendationModel(
+            personalDetails = personalDetails,
+            mainAddress = mainAddress?.toAddress(),
+            lastRelease = lastRelease?.dates(),
+            lastReleasedFromInstitution = lastRelease?.institution?.let { Institution(it.name) },
+            mappa = mappa,
+            activeConvictions = events.map { it.toConviction() },
+            activeCustodialConvictions = events.custodial().map { it.toConvictionDetails() }
+        )
+    }
+
+    private fun List<Event>.lastRelease() = map { it.disposal?.custody }.singleOrNull()
+        ?.let { releaseRepository.findFirstByCustodyIdOrderByDateDesc(it.id) }
+
+    private fun List<Event>.custodial() = filter { it.disposal?.custody != null }
 }

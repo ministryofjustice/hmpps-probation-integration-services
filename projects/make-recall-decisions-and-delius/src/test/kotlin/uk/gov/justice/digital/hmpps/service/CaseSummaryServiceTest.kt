@@ -185,6 +185,20 @@ internal class CaseSummaryServiceTest {
         assertThat(contacts.summary.types[0].total, equalTo(123))
     }
 
+    @Test
+    fun `get recommendation model`() {
+        givenPersonalDetails()
+        givenARelease()
+
+        val recommendationModel = caseSummaryService.getRecommendationModel(person.crn)
+
+        assertThat(recommendationModel.lastReleasedFromInstitution!!.name, equalTo("Test institution"))
+        assertThat(recommendationModel.activeCustodialConvictions, hasSize(1))
+        assertThat(recommendationModel.activeCustodialConvictions[0].sentence!!.secondLength, equalTo(2))
+        assertThat(recommendationModel.activeCustodialConvictions[0].sentence!!.secondLengthUnits, equalTo("Years"))
+        assertThat(recommendationModel.activeCustodialConvictions[0].sentence!!.startDate, equalTo(LocalDate.of(2021, 1, 1)))
+    }
+
     private fun givenPersonalDetails() {
         whenever(personRepository.findByCrn(person.crn))
             .thenReturn(person)

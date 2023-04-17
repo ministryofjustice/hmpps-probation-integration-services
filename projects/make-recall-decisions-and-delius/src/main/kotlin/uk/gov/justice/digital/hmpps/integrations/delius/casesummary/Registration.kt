@@ -8,6 +8,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
@@ -78,7 +79,10 @@ interface CaseSummaryRegistrationRepository : JpaRepository<Registration, Long> 
     @Query("select r.type.description from CaseSummaryRegistration r where r.personId = :personId and r.deregistered = false")
     fun findActiveTypeDescriptionsByPersonId(personId: Long): List<String>
 
+    @EntityGraph(attributePaths = ["type.flag", "category", "level"])
     fun findByPersonIdAndTypeFlagCodeOrderByDateDesc(personId: Long, typeCode: String): List<Registration>
+
+    @EntityGraph(attributePaths = ["type.flag", "category", "level"])
     fun findFirstByPersonIdAndTypeCodeAndDeregisteredFalseOrderByDateDesc(personId: Long, typeCode: String): Registration?
 }
 
