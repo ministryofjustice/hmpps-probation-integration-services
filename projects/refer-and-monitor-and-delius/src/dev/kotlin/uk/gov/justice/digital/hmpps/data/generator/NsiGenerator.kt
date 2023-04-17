@@ -30,7 +30,8 @@ object NsiGenerator {
     var END_PREMATURELY = generate(
         TYPES.values.first(),
         externalReference = "urn:hmpps:interventions-referral:68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
-        eventId = SentenceGenerator.EVENT_WITH_NSI.id
+        eventId = SentenceGenerator.EVENT_WITH_NSI.id,
+        rarCount = 2
     )
 
     var FUZZY_SEARCH = generate(
@@ -49,6 +50,7 @@ object NsiGenerator {
         externalReference: String? = null,
         eventId: Long? = null,
         requirementId: Long? = null,
+        rarCount: Long? = null,
         providerId: Long = ProviderGenerator.INTENDED_PROVIDER.id,
         id: Long = IdGenerator.getAndIncrement()
     ) = Nsi(
@@ -61,6 +63,7 @@ object NsiGenerator {
         eventId = eventId,
         intendedProviderId = providerId,
         requirementId = requirementId,
+        rarCount = rarCount,
         id = id
     )
 

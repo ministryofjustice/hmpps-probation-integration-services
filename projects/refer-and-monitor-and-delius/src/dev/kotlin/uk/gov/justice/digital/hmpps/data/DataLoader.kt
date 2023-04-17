@@ -146,7 +146,8 @@ class DataLoader(
                 nsi.type,
                 externalReference = nsi.externalReference,
                 eventId = nsi.eventId,
-                requirementId = rfn.id
+                requirementId = rfn.id,
+                rarCount = nsi.rarCount
             )
         )
         nsiManagerRepository.save(NsiGenerator.generateManager(NsiGenerator.END_PREMATURELY))

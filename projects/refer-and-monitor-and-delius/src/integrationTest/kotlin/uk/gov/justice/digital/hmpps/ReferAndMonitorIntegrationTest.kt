@@ -76,6 +76,9 @@ internal class ReferAndMonitorIntegrationTest {
         val scheduled = contactRepository.findById(ContactGenerator.CRSAPT_NON_COMPLIANT.id).orElseThrow()
         assertNull(scheduled.outcome)
 
+        val nsi = nsiRepository.findById(scheduled.nsiId!!).orElseThrow()
+        assertThat(nsi.rarCount, equalTo(2))
+
         val notification = prepNotification(
             notification("session-appointment-feedback-submitted-non-compliant"),
             wireMockServer.port()
@@ -112,8 +115,7 @@ internal class ReferAndMonitorIntegrationTest {
         val event = eventRepository.findById(appointment.eventId!!).orElseThrow()
         assertThat(event.ftcCount, equalTo(1))
 
-        val nsi = nsiRepository.findById(appointment.nsiId!!).orElseThrow()
-        assertThat(nsi.rarCount, equalTo(null))
+        assertThat(nsi.rarCount, equalTo(2))
 
         val reviewCreated = contactRepository.countEnforcementUnderReview(
             event.id,
