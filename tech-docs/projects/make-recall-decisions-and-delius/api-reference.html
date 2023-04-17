@@ -101,6 +101,12 @@
         <a href="./api-reference.html#user-username-access-crn"><span>/user/{username}/access/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#document-crn-id"><span>/document/{crn}/{id}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#case-summary-crn-recommendation-model"><span>/case-summary/{crn}/recommendation-model</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#case-summary-crn-personal-details"><span>/case-summary/{crn}/personal-details</span></a>
       </li>
       <li>
@@ -225,6 +231,235 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 </td>
 <td>
 <a href='#schema-useraccess'>UserAccess</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="document-crn-id">/document/{crn}/{id}</h2>
+
+<h3 id="document-crn-id-get">get</h3>
+
+  <p><em>Download document content</em></p>
+
+
+
+
+<h4 id="document-crn-id-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>id</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="document-crn-id-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="case-summary-crn-recommendation-model">/case-summary/{crn}/recommendation-model</h2>
+
+<h3 id="case-summary-crn-recommendation-model-get">get</h3>
+
+  <p><em>Case data required to populate the recommendation model</em></p>
+
+
+  <p>This is used to populate the Recall Part A document template when a recommendation is made, and to refresh the case data when a recall decision is made later.</p>
+
+
+
+
+<h4 id="case-summary-crn-recommendation-model-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="case-summary-crn-recommendation-model-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "personalDetails": {
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "identifiers": {
+      "pncNumber": "string",
+      "croNumber": "string",
+      "nomsNumber": "string",
+      "bookingNumber": "string"
+    },
+    "dateOfBirth": "string",
+    "gender": "string",
+    "ethnicity": "string",
+    "primaryLanguage": "string"
+  },
+  "mainAddress": {
+    "buildingName": "string",
+    "addressNumber": "string",
+    "streetName": "string",
+    "district": "string",
+    "town": "string",
+    "county": "string",
+    "postcode": "string",
+    "noFixedAbode": "boolean"
+  },
+  "lastRelease": {
+    "releaseDate": "string",
+    "recallDate": "string"
+  },
+  "lastReleasedFromInstitution": {
+    "name": "string"
+  },
+  "mappa": {
+    "category": "integer",
+    "level": "integer",
+    "startDate": "string"
+  },
+  "activeConvictions": [
+    {
+      "number": "string",
+      "sentence": {
+        "description": "string",
+        "length": "integer",
+        "lengthUnits": "string",
+        "isCustodial": "boolean",
+        "custodialStatusCode": "string",
+        "licenceExpiryDate": "string",
+        "sentenceExpiryDate": "string"
+      },
+      "mainOffence": {
+        "date": "string",
+        "code": "string",
+        "description": "string"
+      },
+      "additionalOffences": [
+        {
+          "date": "string",
+          "code": "string",
+          "description": "string"
+        }
+      ]
+    }
+  ],
+  "activeCustodialConvictions": [
+    {
+      "number": "string",
+      "sentence": {
+        "description": "string",
+        "length": "integer",
+        "lengthUnits": "string",
+        "secondLength": "integer",
+        "secondLengthUnits": "string",
+        "isCustodial": "boolean",
+        "custodialStatusCode": "string",
+        "startDate": "string",
+        "licenceExpiryDate": "string",
+        "sentenceExpiryDate": "string"
+      },
+      "mainOffence": {
+        "date": "string",
+        "code": "string",
+        "description": "string"
+      },
+      "additionalOffences": [
+        {
+          "date": "string",
+          "code": "string",
+          "description": "string"
+        }
+      ]
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-recommendationmodel'>RecommendationModel</a>
 </td>
 </tr>
 
@@ -795,8 +1030,9 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
       "description": "string",
       "documents": [
         {
-          "id": "integer",
-          "name": "string"
+          "id": "string",
+          "name": "string",
+          "lastUpdated": "string"
         }
       ],
       "enforcementAction": "string",
@@ -981,6 +1217,222 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 </tbody>
 </table>
 
+<h3 id="schema-conviction">Conviction</h3>
+
+
+<table class='schema-conviction'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>number</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sentence</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-sentence'>Sentence</a>
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+<tr>
+<td>additionalOffences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-convictiondetails">ConvictionDetails</h3>
+
+
+<table class='schema-convictiondetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>number</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sentence</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-extendedsentence'>ExtendedSentence</a>
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+<tr>
+<td>additionalOffences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-extendedsentence">ExtendedSentence</h3>
+
+
+<table class='schema-extendedsentence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lengthUnits</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>secondLength</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>secondLengthUnits</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>isCustodial</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>custodialStatusCode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>licenceExpiryDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sentenceExpiryDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-identifiers">Identifiers</h3>
 
 
@@ -1033,17 +1485,17 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 </tbody>
 </table>
 
-<h3 id="schema-manager">Manager</h3>
+<h3 id="schema-institution">Institution</h3>
 
 
-<table class='schema-manager'>
+<table class='schema-institution'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
 
 <tr>
-<td>staffCode</td>
+<td>name</td>
 <td>string</td>
 <td>true</td>
 <td></td>
@@ -1052,33 +1504,45 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 </td>
 </tr>
 
+</tbody>
+</table>
+
+<h3 id="schema-mappa">Mappa</h3>
+
+
+<table class='schema-mappa'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
 <tr>
-<td>name</td>
-<td>object</td>
-<td>true</td>
+<td>category</td>
+<td>integer</td>
+<td>false</td>
 <td></td>
 <td>
-  <a href='#schema-name'>Name</a>
+  
 </td>
 </tr>
 
 <tr>
-<td>provider</td>
-<td>object</td>
-<td>true</td>
+<td>level</td>
+<td>integer</td>
+<td>false</td>
 <td></td>
 <td>
-  <a href='#schema-provider'>Provider</a>
+  
 </td>
 </tr>
 
 <tr>
-<td>team</td>
-<td>object</td>
+<td>startDate</td>
+<td>string</td>
 <td>true</td>
 <td></td>
 <td>
-  <a href='#schema-team'>Team</a>
+  
 </td>
 </tr>
 
@@ -1127,42 +1591,42 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 </tbody>
 </table>
 
-<h3 id="schema-personaldetails">PersonalDetails</h3>
+<h3 id="schema-offence">Offence</h3>
 
 
-<table class='schema-personaldetails'>
+<table class='schema-offence'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
 
 <tr>
-<td>personalDetails</td>
-<td>object</td>
+<td>date</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>code</td>
+<td>string</td>
 <td>true</td>
 <td></td>
 <td>
-  <a href='#schema-personaldetailsoverview'>PersonalDetailsOverview</a>
+  
 </td>
 </tr>
 
 <tr>
-<td>mainAddress</td>
-<td>object</td>
-<td>false</td>
+<td>description</td>
+<td>string</td>
+<td>true</td>
 <td></td>
 <td>
-  <a href='#schema-address'>Address</a>
-</td>
-</tr>
-
-<tr>
-<td>communityManager</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-manager'>Manager</a>
+  
 </td>
 </tr>
 
@@ -1241,198 +1705,10 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 </tbody>
 </table>
 
-<h3 id="schema-provider">Provider</h3>
+<h3 id="schema-recommendationmodel">RecommendationModel</h3>
 
 
-<table class='schema-provider'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-team">Team</h3>
-
-
-<table class='schema-team'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>localAdminUnit</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>telephone</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>email</td>
-<td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-conviction">Conviction</h3>
-
-
-<table class='schema-conviction'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>number</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>sentence</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-sentence'>Sentence</a>
-</td>
-</tr>
-
-<tr>
-<td>mainOffence</td>
-<td>object</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-offence'>Offence</a>
-</td>
-</tr>
-
-<tr>
-<td>additionalOffences</td>
-<td>array</td>
-<td>true</td>
-<td></td>
-<td>
-  <a href='#schema-offence'>Offence</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-offence">Offence</h3>
-
-
-<table class='schema-offence'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>date</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>description</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-overview">Overview</h3>
-
-
-<table class='schema-overview'>
+<table class='schema-recommendationmodel'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
@@ -1449,12 +1725,12 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 </tr>
 
 <tr>
-<td>registerFlags</td>
-<td>array</td>
-<td>true</td>
+<td>mainAddress</td>
+<td>object</td>
+<td>false</td>
 <td></td>
 <td>
-  
+  <a href='#schema-address'>Address</a>
 </td>
 </tr>
 
@@ -1469,12 +1745,42 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 </tr>
 
 <tr>
+<td>lastReleasedFromInstitution</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-institution'>Institution</a>
+</td>
+</tr>
+
+<tr>
+<td>mappa</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-mappa'>Mappa</a>
+</td>
+</tr>
+
+<tr>
 <td>activeConvictions</td>
 <td>array</td>
 <td>true</td>
 <td></td>
 <td>
   <a href='#schema-conviction'>Conviction</a>
+</td>
+</tr>
+
+<tr>
+<td>activeCustodialConvictions</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-convictiondetails'>ConvictionDetails</a>
 </td>
 </tr>
 
@@ -1595,42 +1901,240 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 </tbody>
 </table>
 
-<h3 id="schema-mappa">Mappa</h3>
+<h3 id="schema-manager">Manager</h3>
 
 
-<table class='schema-mappa'>
+<table class='schema-manager'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
 
 <tr>
-<td>category</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>level</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>startDate</td>
+<td>staffCode</td>
 <td>string</td>
 <td>true</td>
 <td></td>
 <td>
   
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>provider</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personaldetails">PersonalDetails</h3>
+
+
+<table class='schema-personaldetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personalDetails</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personaldetailsoverview'>PersonalDetailsOverview</a>
+</td>
+</tr>
+
+<tr>
+<td>mainAddress</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-address'>Address</a>
+</td>
+</tr>
+
+<tr>
+<td>communityManager</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-manager'>Manager</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-provider">Provider</h3>
+
+
+<table class='schema-provider'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-team">Team</h3>
+
+
+<table class='schema-team'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>localAdminUnit</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephone</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-overview">Overview</h3>
+
+
+<table class='schema-overview'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>personalDetails</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personaldetailsoverview'>PersonalDetailsOverview</a>
+</td>
+</tr>
+
+<tr>
+<td>registerFlags</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastRelease</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-release'>Release</a>
+</td>
+</tr>
+
+<tr>
+<td>activeConvictions</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-conviction'>Conviction</a>
 </td>
 </tr>
 
@@ -2138,7 +2642,7 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 
 <tr>
 <td>id</td>
-<td>integer</td>
+<td>string</td>
 <td>true</td>
 <td></td>
 <td>
@@ -2148,6 +2652,16 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 
 <tr>
 <td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdated</td>
 <td>string</td>
 <td>true</td>
 <td></td>
