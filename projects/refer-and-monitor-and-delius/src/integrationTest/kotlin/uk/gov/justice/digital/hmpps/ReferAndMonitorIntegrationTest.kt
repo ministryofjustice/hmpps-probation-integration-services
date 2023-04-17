@@ -76,6 +76,9 @@ internal class ReferAndMonitorIntegrationTest {
         val scheduled = contactRepository.findById(ContactGenerator.CRSAPT_NON_COMPLIANT.id).orElseThrow()
         assertNull(scheduled.outcome)
 
+        val nsi = nsiRepository.findById(scheduled.nsiId!!).orElseThrow()
+        assertThat(nsi.rarCount, equalTo(3))
+
         val notification = prepNotification(
             notification("session-appointment-feedback-submitted-non-compliant"),
             wireMockServer.port()
@@ -112,8 +115,7 @@ internal class ReferAndMonitorIntegrationTest {
         val event = eventRepository.findById(appointment.eventId!!).orElseThrow()
         assertThat(event.ftcCount, equalTo(1))
 
-        val nsi = nsiRepository.findById(appointment.nsiId!!).orElseThrow()
-        assertThat(nsi.rarCount, equalTo(null))
+        assertThat(nsi.rarCount, equalTo(3))
 
         val reviewCreated = contactRepository.countEnforcementUnderReview(
             event.id,
@@ -125,6 +127,60 @@ internal class ReferAndMonitorIntegrationTest {
 
     @Test
     @Order(2)
+    fun `session appointment feedback submitted not attended`() {
+        val scheduled = contactRepository.findById(ContactGenerator.CRSAPT_NOT_ATTENDED.id).orElseThrow()
+        assertNull(scheduled.outcome)
+
+        val notification = prepNotification(
+            notification("session-appointment-feedback-submitted-not-attended"),
+            wireMockServer.port()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).trackEvent(
+            "SessionAppointmentSubmitted",
+            mapOf(
+                "crn" to "T140223",
+                "appointmentId" to "3",
+                "referralId" to "89a3f79c-f12b-43de-9616-77ae19813cfe",
+                "referralReference" to "AY0164AC"
+            )
+        )
+
+        val expectedOutcome = ContactGenerator.OUTCOMES[ContactOutcome.Code.FAILED_TO_ATTEND.value]!!
+        val appointment = contactRepository.findById(ContactGenerator.CRSAPT_NOT_ATTENDED.id).orElseThrow()
+        assertThat(appointment.outcome?.code, equalTo(expectedOutcome.code))
+        assertThat(appointment.attended, equalTo(expectedOutcome.attendance))
+        assertThat(appointment.complied, equalTo(expectedOutcome.compliantAcceptable))
+        assertThat(appointment.hoursCredited, equalTo(null))
+        assertTrue(appointment.enforcement!!)
+
+        val enforcement = enforcementRepository.findAll().firstOrNull { it.contact.id == appointment.id }
+        assertNotNull(enforcement)
+        val referContact = contactRepository.findAll().firstOrNull {
+            it.person.id == PersonGenerator.DEFAULT.id && it.type.code == ContactType.Code.REFER_TO_PERSON_MANAGER.value
+        }
+        assertNotNull(referContact!!)
+        assertThat(referContact.notes, containsString("Enforcement Action: ${enforcement!!.action!!.description}"))
+
+        // plus one ftc from previous test
+        val event = eventRepository.findById(appointment.eventId!!).orElseThrow()
+        assertThat(event.ftcCount, equalTo(2))
+
+        val nsi = nsiRepository.findById(appointment.nsiId!!).orElseThrow()
+        assertThat(nsi.rarCount, equalTo(2))
+
+        val reviewCreated = contactRepository.countEnforcementUnderReview(
+            event.id,
+            ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value,
+            event.breachEnd
+        ) > 0
+        assertTrue(reviewCreated)
+    }
+
+    @Test
+    @Order(3)
     fun `session appointment feedback submitted complied`() {
         val scheduled = contactRepository.findById(ContactGenerator.CRSAPT_COMPLIANT.id).orElseThrow()
         assertNull(scheduled.outcome)
@@ -159,19 +215,19 @@ internal class ReferAndMonitorIntegrationTest {
         val referContacts = contactRepository.findAll().filter {
             it.person.id == PersonGenerator.DEFAULT.id && it.type.code == ContactType.Code.REFER_TO_PERSON_MANAGER.value
         }
-        // one created in the previous test
-        assertThat(referContacts.count(), equalTo(1))
+        // two created in the previous tests
+        assertThat(referContacts.count(), equalTo(2))
 
-        // one ftc from previous test
+        // two ftc from previous tests
         val event = eventRepository.findById(appointment.eventId!!).orElseThrow()
-        assertThat(event.ftcCount, equalTo(1))
+        assertThat(event.ftcCount, equalTo(2))
 
         val nsi = nsiRepository.findById(appointment.nsiId!!).orElseThrow()
-        assertThat(nsi.rarCount, equalTo(1))
+        assertThat(nsi.rarCount, equalTo(2))
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     fun `referral end submitted`() {
         val nsi = nsiRepository.findById(NsiGenerator.END_PREMATURELY.id).orElseThrow()
         assertThat(nsi.status.code, equalTo(NsiStatus.Code.IN_PROGRESS.value))

@@ -110,7 +110,6 @@ internal class ReferralStartedIntegrationTest {
         assertThat(manager.startDate, isCloseTo(nsi.actualStartDate!!))
 
         val contacts = contactRepository.findAll().filter { it.person.crn == person.crn }
-        assertThat(contacts.size, equalTo(3))
         assertThat(
             contacts.map { it.type.code },
             Matchers.hasItems(

@@ -63,10 +63,10 @@ class AppointmentService(
 
         if (uao.notify && outcome.compliantAcceptable == false) {
             handleNonCompliance(appointment)
-        } else if (outcome.compliantAcceptable == true) {
-            nsiRepository.findByIdIfRar(appointment.nsiId!!)?.rarCount =
-                contactRepository.countNsiRar(appointment.nsiId)
         }
+
+        contactRepository.saveAndFlush(appointment)
+        nsiRepository.findByIdIfRar(appointment.nsiId!!)?.rarCount = contactRepository.countNsiRar(appointment.nsiId)
     }
 
     private fun handleNonCompliance(appointment: Contact) {
