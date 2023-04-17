@@ -129,6 +129,20 @@ internal class CaseSummaryIntegrationTest {
             .andExpect(jsonPath("$.contacts.*.notes", hasItem("documents")))
     }
 
+    @Test
+    fun `recommendation model is returned`() {
+        val person = PersonGenerator.CASE_SUMMARY
+        mockMvc.perform(get("/case-summary/${person.crn}/recommendation-model").withOAuth2Token(wireMockserver))
+            .andExpect(status().is2xxSuccessful)
+            .andExpectPersonalDetailsToMatch(person)
+            .andExpect(jsonPath("$.mainAddress.addressNumber", equalTo("123")))
+            .andExpect(jsonPath("$.mainAddress.streetName", equalTo("Fake Street")))
+            .andExpect(jsonPath("$.mappa.level", equalTo(2)))
+            .andExpect(jsonPath("$.activeConvictions.size()", equalTo(1)))
+            .andExpect(jsonPath("$.activeCustodialConvictions.size()", equalTo(1)))
+            .andExpect(jsonPath("$.activeCustodialConvictions[0].sentence.startDate", equalTo("2021-01-01")))
+    }
+
     private fun ResultActions.andExpectPersonalDetailsToMatch(person: Person) = this
         .andExpect(jsonPath("$.personalDetails.name.forename", equalTo(person.forename)))
         .andExpect(jsonPath("$.personalDetails.name.middleName", equalTo("${person.secondName} ${person.thirdName}")))

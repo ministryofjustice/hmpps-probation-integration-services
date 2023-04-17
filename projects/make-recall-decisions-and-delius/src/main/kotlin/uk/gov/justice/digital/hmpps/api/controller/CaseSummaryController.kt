@@ -71,4 +71,11 @@ class CaseSummaryController(private val caseSummaryService: CaseSummaryService) 
         @RequestParam(defaultValue = "true")
         includeSystemGenerated: Boolean = true
     ) = caseSummaryService.getContactHistory(crn, query, from, to ?: LocalDate.now(), type, includeSystemGenerated)
+
+    @GetMapping(value = ["/recommendation-model"])
+    @Operation(
+        summary = "Case data required to populate the recommendation model",
+        description = "This is used to populate the Recall Part A document template when a recommendation is made, and to refresh the case data when a recall decision is made later."
+    )
+    fun getRecommendationModel(@PathVariable crn: String) = caseSummaryService.getRecommendationModel(crn)
 }

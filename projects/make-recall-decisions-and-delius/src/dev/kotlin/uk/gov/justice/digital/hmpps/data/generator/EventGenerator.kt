@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.DisposalType
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.KeyDate
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.LicenceConditionMainCategory
@@ -32,8 +33,11 @@ object EventGenerator {
             id = IdGenerator.getAndIncrement(),
             event = event,
             type = DisposalType(IdGenerator.getAndIncrement(), "Sentence type"),
+            startDate = LocalDate.of(2021, 1, 1),
             entryLength = 6,
-            entryLengthUnit = ReferenceData(IdGenerator.getAndIncrement(), "M", "Months")
+            entryLengthUnit = ReferenceData(IdGenerator.getAndIncrement(), "M", "Months"),
+            secondEntryLength = 2,
+            secondEntryLengthUnit = ReferenceData(IdGenerator.getAndIncrement(), "Y", "Years")
         )
         val custody = Custody(
             id = IdGenerator.getAndIncrement(),
@@ -75,7 +79,8 @@ object EventGenerator {
         val release = Release(
             id = IdGenerator.getAndIncrement(),
             custodyId = id,
-            date = LocalDate.now().minusMonths(6)
+            date = LocalDate.now().minusMonths(6),
+            institution = Institution(IdGenerator.getAndIncrement(), "Test institution")
         )
         release.set(
             Release::recall,

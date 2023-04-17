@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.api.model
 
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Address
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Provider
@@ -28,16 +27,6 @@ data class PersonalDetails(
     val mainAddress: Address?,
     val communityManager: Manager?
 ) {
-    data class Address(
-        val buildingName: String?,
-        val addressNumber: String?,
-        val streetName: String?,
-        val district: String?,
-        val town: String?,
-        val county: String?,
-        val postcode: String?,
-        val noFixedAbode: Boolean?
-    )
     data class Manager(
         val staffCode: String,
         val name: Name,
@@ -58,16 +47,6 @@ data class PersonalDetails(
     }
 }
 
-fun Address.toAddress() = PersonalDetails.Address(
-    buildingName = buildingName,
-    addressNumber = addressNumber,
-    streetName = streetName,
-    town = town,
-    district = district,
-    county = county,
-    postcode = postcode,
-    noFixedAbode = noFixedAbode
-)
 fun Team.toTeam() = PersonalDetails.Manager.Team(code, description, localAdminUnit = district.description, telephone, emailAddress)
 fun Provider.toProvider() = PersonalDetails.Manager.Provider(code, description)
 fun PersonManager.toManager() = PersonalDetails.Manager(

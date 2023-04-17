@@ -57,12 +57,22 @@ class Disposal(
     @Column(name = "disposal_id")
     val id: Long,
 
+    @Column(name = "disposal_date")
+    val startDate: LocalDate,
+
     @Column
     val entryLength: Long?,
 
     @ManyToOne
     @JoinColumn(name = "entry_length_units_id")
     val entryLengthUnit: ReferenceData?,
+
+    @Column(name = "length_2")
+    val secondEntryLength: Long?,
+
+    @ManyToOne
+    @JoinColumn(name = "entry_length_2_units_id")
+    val secondEntryLengthUnit: ReferenceData?,
 
     @ManyToOne
     @JoinColumn(name = "disposal_type_id")
@@ -268,6 +278,7 @@ interface CaseSummaryEventRepository : JpaRepository<Event, Long> {
             "mainOffence.offence",
             "additionalOffences.offence",
             "disposal.entryLengthUnit",
+            "disposal.secondEntryLengthUnit",
             "disposal.type",
             "disposal.custody.status",
             "disposal.custody.sentenceExpiryDate.type",
