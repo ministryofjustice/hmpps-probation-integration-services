@@ -9,12 +9,12 @@ interface UserAccessRepository : JpaRepository<User, Long> {
         """
         select new uk.gov.justice.digital.hmpps.integrations.delius.user.access.UserPersonAccess(p.crn, p.exclusionMessage, '')
         from Person p where p.crn in :crns
-        and exists (select e from Exclusion e where e.user.username = :username and e.person.id = p.id and (e.end is null or e.end > current_date ))
+        and exists (select e from Exclusion e where upper(e.user.username) = upper(:username) and e.person.id = p.id and (e.end is null or e.end > current_date ))
         union
         select new uk.gov.justice.digital.hmpps.integrations.delius.user.access.UserPersonAccess(p.crn, '', p.restrictionMessage)
         from Person p where p.crn in :crns
         and exists (select r from Restriction r where r.person.id = p.id and (r.end is null or r.end > current_date ))
-        and not exists (select r from Restriction r where r.user.username = :username and r.person.id = p.id and (r.end is null or r.end > current_date ))
+        and not exists (select r from Restriction r where upper(r.user.username) = upper(:username) and r.person.id = p.id and (r.end is null or r.end > current_date ))
     """
     )
     fun getAccessFor(username: String, crns: List<String>): List<UserPersonAccess>

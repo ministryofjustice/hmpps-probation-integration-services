@@ -74,4 +74,12 @@ internal class UserAccessIntegrationTest {
             .andExpect(jsonPath("$.userRestricted", equalTo(true)))
             .andExpect(jsonPath("$.restrictionMessage", equalTo(person.restrictionMessage)))
     }
+
+    @Test
+    fun `case does not exist`() {
+        val user = UserGenerator.TEST_USER1
+
+        mockMvc.perform(get("/user/${user.username}/access/NOTFOUND").withOAuth2Token(wireMockserver))
+            .andExpect(status().isNotFound)
+    }
 }
