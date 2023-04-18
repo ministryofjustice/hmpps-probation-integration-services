@@ -98,6 +98,9 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#user-username-staff"><span>/user/{username}/staff</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#user-username-access-crn"><span>/user/{username}/access/{crn}</span></a>
       </li>
       <li>
@@ -158,6 +161,68 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="user-username-staff">/user/{username}/staff</h2>
+
+<h3 id="user-username-staff-get">get</h3>
+
+  <p><em>Get the staff code for a user, if it exists</em></p>
+
+
+
+
+<h4 id="user-username-staff-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="user-username-staff-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "code": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-staff'>Staff</a>
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -1073,6 +1138,28 @@ View the full list of proposed endpoints in the draft document, here: <a href="h
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-staff">Staff</h3>
+
+
+<table class='schema-staff'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-useraccess">UserAccess</h3>
 
 
