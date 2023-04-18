@@ -270,8 +270,6 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         )
         whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
             .thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment("WSI"))
-            .thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
@@ -374,8 +372,6 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         )
         whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
             .thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment("WSI"))
-            .thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IllegalArgumentException> {
