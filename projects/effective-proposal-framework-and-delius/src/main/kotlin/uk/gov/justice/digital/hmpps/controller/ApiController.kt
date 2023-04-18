@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class ApiController {
-    @PreAuthorize("hasRole('ROLE_EXAMPLE')")
+    @PreAuthorize("hasRole('EPF_CONTEXT')")
     @GetMapping(value = ["/example/{inputId}"])
     fun handle(
         @PathVariable("inputId") inputId: String
