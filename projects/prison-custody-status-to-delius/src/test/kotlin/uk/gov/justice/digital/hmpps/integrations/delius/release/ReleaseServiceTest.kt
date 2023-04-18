@@ -92,11 +92,14 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
 
     @Test
     fun missingInstitutionIsThrown() {
+        val event = EventGenerator.custodialEvent(person, DEFAULT)
+
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
+        whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         assertThrows<NotFoundException> {
-            releaseService.release("", "TEST", RELEASED, "BL", ZonedDateTime.now())
+            releaseService.release(person.nomsNumber, "TEST", RELEASED, "BL", ZonedDateTime.now())
         }
     }
 
@@ -104,7 +107,6 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
     fun failureToRetrieveEventsIsThrown() {
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents("INVALID")).thenThrow(IllegalArgumentException())
 
         assertThrows<IllegalArgumentException> {
@@ -117,7 +119,6 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         val event = EventGenerator.unSentencedEvent(person)
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<NotFoundException> {
@@ -131,7 +132,6 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         val event = EventGenerator.nonCustodialEvent(person)
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.code)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<NotFoundException> {

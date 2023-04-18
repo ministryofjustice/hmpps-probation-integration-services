@@ -85,7 +85,7 @@ class RecallService(
         val getRecallReason = { csc: CustodialStatusCode ->
             recallReasonRepository.getByCodeAndSelectableIsTrue(decideRecallReason(reason, movementReason)(csc).code)
         }
-        val institution = institutionRepository.getByNomisCdeCodeAndIdEstablishment(prisonId)
+        val institution = lazy { institutionRepository.getByNomisCdeCodeAndIdEstablishment(prisonId) }
 
         return eventService.getActiveCustodialEvents(nomsNumber)
             .map { addRecallToEvent(it, institution, getRecallReason, recallDateTime) }
@@ -94,7 +94,7 @@ class RecallService(
 
     private fun addRecallToEvent(
         event: Event,
-        toInstitution: Institution,
+        lazyInstitution: Lazy<Institution>,
         getRecallReason: (csc: CustodialStatusCode) -> RecallReason,
         recallDateTime: ZonedDateTime
     ): RecallOutcome = audit(BusinessInteractionCode.ADD_RECALL) { audit ->
@@ -117,6 +117,7 @@ class RecallService(
 
         val recall = createRecall(custody, recallReason, recallDate, latestRelease, person)
 
+        val toInstitution = lazyInstitution.value
         val custodialStatusUpdated = updateCustodialStatus(toInstitution, custody, recallDate, recall)
 
         val custodialLocationUpdated = updateCustodialLocation(custody, toInstitution, event, recallDate, recallReason)

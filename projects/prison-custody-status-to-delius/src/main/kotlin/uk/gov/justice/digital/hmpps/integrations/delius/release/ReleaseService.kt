@@ -75,7 +75,7 @@ class ReleaseService(
         PrisonerDied
     } else {
         val releaseType = referenceDataRepository.getReleaseType(mapToReleaseType(reason, movementReasonCode).code)
-        val institution = institutionRepository.getByNomisCdeCode(prisonId)
+        val institution = lazy { institutionRepository.getByNomisCdeCode(prisonId) }
 
         eventService.getActiveCustodialEvents(nomsNumber).forEach {
             addReleaseToEvent(
@@ -91,7 +91,7 @@ class ReleaseService(
 
     private fun addReleaseToEvent(
         event: Event,
-        fromInstitution: Institution,
+        lazyInstitution: Lazy<Institution>,
         releaseType: ReferenceData,
         releaseDateTime: ZonedDateTime,
         movementReasonCode: String
@@ -104,6 +104,7 @@ class ReleaseService(
         val releaseDate = releaseDateTime.truncatedTo(DAYS)
 
         // perform validation
+        val fromInstitution = lazyInstitution.value
         validateRelease(custody, fromInstitution, releaseDate, movementReasonCode)
 
         // create the release
