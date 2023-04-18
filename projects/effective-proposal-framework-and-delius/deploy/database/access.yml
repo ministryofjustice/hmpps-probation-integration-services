@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /effective-proposal-framework-and-delius/db-username
+    password_key: /effective-proposal-framework-and-delius/db-password
+
+  audit:
+    username: EffectiveProposalFrameworkAndDelius
+    forename: EPF
+    surname: Service
