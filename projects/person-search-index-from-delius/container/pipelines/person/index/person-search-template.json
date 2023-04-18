@@ -12,44 +12,23 @@
       },
       "analysis": {
         "analyzer": {
-          "streetAnalyzer": {
-            "tokenizer": "standard",
-            "filter": [
-              "lowercase",
-              "asciifolding",
-              "street_synonym"
-            ]
-          },
-          "postcodeAnalyzer": {
+          "deliusAnalyzer": {
             "tokenizer": "keyword",
             "filter": [
               "lowercase",
-              "postcode_space_filter"
+              "asciifolding",
+              "whitespace_filter"
             ]
           },
-            "phoneAnalyzer": {
+          "phoneAnalyzer": {
             "tokenizer": "standard",
-            "filter": ["phone_number_filter"]
+            "filter": [
+              "phone_number_filter"
+            ]
           }
         },
         "filter": {
-          "street_synonym": {
-            "type": "synonym",
-            "synonyms": [
-              "av => avenue",
-              "bd => boulevard",
-              "cl => close",
-              "cres => crescent",
-              "ct => court",
-              "dr => drive",
-              "ln => lane",
-              "pl => place",
-              "rd => road",
-              "st => street",
-              "wy => way"
-            ]
-          },
-          "postcode_space_filter": {
+          "whitespace_filter": {
             "type": "pattern_replace",
             "pattern": " ",
             "replacement": ""
@@ -150,11 +129,15 @@
           "properties": {
             "streetName_analyzed": {
               "type": "text",
-              "analyzer": "streetAnalyzer"
+              "analyzer": "deliusAnalyzer"
+            },
+            "town_analyzed": {
+              "type": "text",
+              "analyzer": "deliusAnalyzer"
             },
             "postcode_analyzed": {
               "type": "text",
-              "analyzer": "postcodeAnalyzer"
+              "analyzer": "deliusAnalyzer"
             }
           }
         }
