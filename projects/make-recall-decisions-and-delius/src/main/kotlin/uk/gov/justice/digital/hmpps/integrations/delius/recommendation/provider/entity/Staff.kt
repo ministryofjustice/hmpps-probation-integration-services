@@ -3,9 +3,11 @@ package uk.gov.justice.digital.hmpps.integrations.delius.recommendation.provider
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
+import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 
 @Immutable
+@Table(name = "staff")
 @Entity(name = "RecommendationStaff")
 class Staff(
 
