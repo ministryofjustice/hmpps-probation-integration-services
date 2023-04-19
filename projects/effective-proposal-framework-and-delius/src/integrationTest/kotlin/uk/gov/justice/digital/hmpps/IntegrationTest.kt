@@ -59,7 +59,7 @@ internal class IntegrationTest {
             Name(
                 PersonGenerator.DEFAULT.forename,
                 PersonGenerator.DEFAULT.secondName,
-                PersonGenerator.DEFAULT.surname,
+                PersonGenerator.DEFAULT.surname
             ),
             PersonGenerator.DEFAULT.dateOfBirth,
             PersonGenerator.DEFAULT.gender.description,
