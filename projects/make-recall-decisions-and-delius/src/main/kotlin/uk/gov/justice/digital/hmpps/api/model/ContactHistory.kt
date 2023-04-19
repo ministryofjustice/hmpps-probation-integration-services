@@ -17,11 +17,11 @@ data class ContactHistory(
         val enforcementAction: String?,
         val notes: String?,
         val outcome: String?,
-        val sensitive: Boolean,
+        val sensitive: Boolean?,
         val startDateTime: ZonedDateTime,
         val type: Type
     ) {
-        data class Type(val code: String, val description: String)
+        data class Type(val code: String, val description: String, val systemGenerated: Boolean)
         data class DocumentReference(val id: String, val name: String, val lastUpdated: ZonedDateTime)
     }
     data class ContactSummary(
@@ -40,5 +40,5 @@ fun Contact.toContact() = ContactHistory.Contact(
     outcome = outcome?.description,
     sensitive = sensitive,
     startDateTime = date.atTime(startTime.withZoneSameInstant(EuropeLondon).toLocalTime()).atZone(EuropeLondon),
-    type = Type(type.code, type.description)
+    type = Type(code = type.code, description = type.description, systemGenerated = type.systemGenerated)
 )

@@ -179,7 +179,9 @@ internal class CaseSummaryServiceTest {
         val contacts = caseSummaryService.getContactHistory(person.crn)
 
         assertThat(contacts.personalDetails.name.forename, equalTo(person.forename))
-        assertThat(contacts.contacts.size, equalTo(1))
+        assertThat(contacts.contacts.size, equalTo(2))
+        assertThat(contacts.contacts[0].type.systemGenerated, equalTo(false))
+        assertThat(contacts.contacts[1].type.systemGenerated, equalTo(true))
         assertThat(contacts.summary.types.size, equalTo(1))
         assertThat(contacts.summary.types[0].code, equalTo("TYPE"))
         assertThat(contacts.summary.types[0].total, equalTo(123))
@@ -246,7 +248,7 @@ internal class CaseSummaryServiceTest {
 
     private fun givenContacts() {
         whenever(contactRepository.findContacts(person.id, null, LocalDate.now(), true, emptyList(), 0))
-            .thenReturn(listOf(ContactGenerator.DEFAULT))
+            .thenReturn(listOf(ContactGenerator.DEFAULT, ContactGenerator.SYSTEM_GENERATED))
         whenever(contactRepository.summarizeContactTypes(person.id))
             .thenReturn(listOf(ContactTypeSummary("TYPE", "Description", 123)))
     }
