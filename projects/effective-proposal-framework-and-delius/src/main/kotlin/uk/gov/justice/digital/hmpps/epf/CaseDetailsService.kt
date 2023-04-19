@@ -1,25 +1,34 @@
 package uk.gov.justice.digital.hmpps.epf
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.epf.entity.CourtAppearanceRepository
+import uk.gov.justice.digital.hmpps.epf.entity.EventRepository
 import uk.gov.justice.digital.hmpps.epf.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.epf.entity.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.epf.entity.ResponsibleOfficerRepository
+import uk.gov.justice.digital.hmpps.epf.entity.getEvent
 import uk.gov.justice.digital.hmpps.epf.entity.getPerson
 
 @Service
 class CaseDetailsService(
     private val personRepository: PersonRepository,
-    private val responsibleOfficerRepository: ResponsibleOfficerRepository
+    private val responsibleOfficerRepository: ResponsibleOfficerRepository,
+    private val courtAppearanceRepository: CourtAppearanceRepository,
+    private val eventRepository: EventRepository
+
 ) {
     fun caseDetails(crn: String, eventNumber: Int): CaseDetails {
         val person = personRepository.getPerson(crn)
         val responsibleOfficer = responsibleOfficerRepository.findByPersonIdAndEndDateIsNull(person.id)
-
+        val event = eventRepository.getEvent(person.crn, eventNumber.toString())
+        val courtName = courtAppearanceRepository.findLatestCourtNameByEventId(event.id)
         return CaseDetails(
             person.name(),
             person.dateOfBirth,
             person.gender.description,
-            null,
+            event.disposal?.date?.let{
+                Sentence(it, Court(courtName), event.firstReleaseDate)
+            },
             responsibleOfficer?.provider()
         )
     }

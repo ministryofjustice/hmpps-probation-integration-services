@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.epf.entity
 
 import jakarta.persistence.Column
+import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
@@ -14,6 +15,7 @@ import java.time.LocalDate
 
 @Immutable
 @Table(name = "offender")
+@Entity
 @Where(clause = "soft_deleted = 0")
 class Person(
     @Id
@@ -49,7 +51,7 @@ class Person(
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {
-    @EntityGraph(attributePaths = ["gender", "ethnicity", "primaryLanguage"])
+    @EntityGraph(attributePaths = ["gender"])
     fun findByCrn(crn: String): Person?
 }
 
