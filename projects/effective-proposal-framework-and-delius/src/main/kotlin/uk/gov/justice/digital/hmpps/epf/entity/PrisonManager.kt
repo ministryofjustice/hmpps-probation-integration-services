@@ -26,5 +26,5 @@ class PrisonManager(
     val softDeleted: Boolean = false,
 
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
-    var active: Boolean = true
+    val active: Boolean = true
 )
