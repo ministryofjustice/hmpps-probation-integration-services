@@ -29,10 +29,10 @@ class Event(
     val person: Person,
 
     @Column
-    var firstReleaseDate: LocalDate? = null,
+    val firstReleaseDate: LocalDate? = null,
 
     @OneToOne(mappedBy = "event")
-    var disposal: Disposal? = null,
+    val disposal: Disposal? = null,
 
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     val active: Boolean = true,
@@ -43,6 +43,7 @@ class Event(
 
 @Immutable
 @Entity
+@Where(clause = "active_flag = 1 and soft_deleted = 0")
 class Disposal(
     @Id
     @Column(name = "disposal_id")
@@ -53,7 +54,13 @@ class Disposal(
 
     @OneToOne
     @JoinColumn(name = "event_id", updatable = false)
-    val event: Event
+    val event: Event,
+
+    @Column(name = "active_flag", columnDefinition = "number", nullable = false)
+    val active: Boolean = true,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean = false
 )
 
 interface EventRepository : JpaRepository<Event, Long> {

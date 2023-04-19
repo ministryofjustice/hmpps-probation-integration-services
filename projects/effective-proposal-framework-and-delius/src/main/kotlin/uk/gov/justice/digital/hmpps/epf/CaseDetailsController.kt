@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class ApiController(private val caseDetailsService: CaseDetailsService) {
+class CaseDetailsController(private val caseDetailsService: CaseDetailsService) {
     @PreAuthorize("hasRole('EPF_CONTEXT')")
     @GetMapping(value = ["/case-details/{crn}/{eventNumber}"])
     fun handle(
