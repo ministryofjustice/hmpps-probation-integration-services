@@ -156,7 +156,8 @@ interface CaseSummaryContactRepository : JpaRepository<Contact, Long> {
         from CaseSummaryContact c
         where c.personId = :personId
         and c.date <= current_date
-        group by c.type
+        group by c.type.code, c.type.description
+        order by c.type.code
         """
     )
     fun summarizeContactTypes(personId: Long): List<ContactTypeSummary>
