@@ -97,10 +97,10 @@ internal class CaseSummaryIntegrationTest {
             .andExpect(jsonPath("$.summary.hits", equalTo(4)))
             .andExpect(jsonPath("$.summary.total", equalTo(4)))
             .andExpect(jsonPath("$.summary.types.size()", equalTo(2)))
-            .andExpect(jsonPath("$.summary.types[0].description", equalTo("Contact type")))
-            .andExpect(jsonPath("$.summary.types[0].total", equalTo(3)))
-            .andExpect(jsonPath("$.summary.types[1].description", equalTo("System-generated contact type")))
-            .andExpect(jsonPath("$.summary.types[1].total", equalTo(1)))
+            .andExpect(jsonPath("$.summary.types[0].description", equalTo("System-generated contact type")))
+            .andExpect(jsonPath("$.summary.types[0].total", equalTo(1)))
+            .andExpect(jsonPath("$.summary.types[1].description", equalTo("Contact type")))
+            .andExpect(jsonPath("$.summary.types[1].total", equalTo(3)))
     }
 
     @Test

@@ -7,7 +7,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.ContactDocum
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.ContactType
 import uk.gov.justice.digital.hmpps.set
+import java.time.LocalDate
 import java.time.LocalDate.EPOCH
+import java.time.LocalTime
 import java.time.ZonedDateTime
 
 object ContactGenerator {
@@ -16,19 +18,20 @@ object ContactGenerator {
     val SYSTEM_GENERATED_TYPE = ContactType(IdGenerator.getAndIncrement(), "SG", "System-generated contact type", true)
 
     val DEFAULT = generate(notes = "default")
-    val SYSTEM_GENERATED = generate(notes = "system-generated", ZonedDateTime.now().minusDays(1), SYSTEM_GENERATED_TYPE)
-    val WITH_DOCUMENTS = generate(notes = "documents", ZonedDateTime.now().minusDays(2)).set(Contact::documents) {
+    val SYSTEM_GENERATED = generate(notes = "system-generated", LocalDate.now().minusDays(1), type = SYSTEM_GENERATED_TYPE)
+    val WITH_DOCUMENTS = generate(notes = "documents", LocalDate.now().minusDays(2)).set(Contact::documents) {
         listOf(
             generateContactDocument(it, "uuid1", "doc1"),
             generateContactDocument(it, "uuid2", "doc2")
         )
     }
-    val PAST = generate(notes = "past", ZonedDateTime.of(2022, 1, 1, 12, 0, 0, 0, EuropeLondon))
-    val FUTURE = generate(notes = "future", ZonedDateTime.now().plusDays(1))
+    val PAST = generate(notes = "past", LocalDate.of(2022, 1, 1), LocalTime.NOON)
+    val FUTURE = generate(notes = "future", LocalDate.now().plusDays(1))
 
     fun generate(
         notes: String = "Contact notes",
-        dateTime: ZonedDateTime = ZonedDateTime.now(),
+        date: LocalDate = LocalDate.now(),
+        time: LocalTime? = LocalTime.now(),
         type: ContactType = DEFAULT_TYPE,
         personId: Long = PersonGenerator.CASE_SUMMARY.id,
         id: Long = IdGenerator.getAndIncrement()
@@ -40,8 +43,8 @@ object ContactGenerator {
         outcome = DEFAULT_OUTCOME,
         documents = listOf(),
         notes = notes,
-        date = dateTime.toLocalDate(),
-        startTime = dateTime.toLocalTime().atDate(EPOCH).atZone(dateTime.zone),
+        date = date,
+        startTime = time?.atDate(EPOCH)?.atZone(EuropeLondon),
         sensitive = false
     )
 
