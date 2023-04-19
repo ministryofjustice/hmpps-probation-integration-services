@@ -25,6 +25,7 @@ class Court(
     val name: String
 
 )
+
 @Entity
 @Immutable
 @Table(name = "court_appearance")
