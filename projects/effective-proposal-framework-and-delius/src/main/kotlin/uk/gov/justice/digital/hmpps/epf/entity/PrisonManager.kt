@@ -11,7 +11,7 @@ import org.springframework.data.annotation.Immutable
 
 @Entity
 @Table(name = "prison_offender_manager")
-@Where(clause = "soft_deleted = 0 and active = 1")
+@Where(clause = "soft_deleted = 0 and active_flag = 1")
 @Immutable
 class PrisonManager(
     @Id
