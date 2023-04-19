@@ -12,5 +12,5 @@ class ApiController(private val caseDetailsService: CaseDetailsService) {
     fun handle(
         @PathVariable("crn") crn: String,
         @PathVariable("eventNumber") eventNumber: Int
-    )= caseDetailsService.caseDetails(crn, eventNumber)
+    ) = caseDetailsService.caseDetails(crn, eventNumber)
 }

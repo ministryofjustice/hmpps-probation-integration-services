@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.data.generator.ManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
-import uk.gov.justice.digital.hmpps.epf.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
@@ -38,7 +37,7 @@ class DataLoader(
             SentenceGenerator.DEFAULT_COURT_APPEARANCE,
             ProviderGenerator.DEFAULT,
             ManagerGenerator.DEFAULT_PERSON_MANAGER,
-            ManagerGenerator.DEFAULT_RESPONSIBLE_OFFICER,
+            ManagerGenerator.DEFAULT_RESPONSIBLE_OFFICER
         )
     }
 

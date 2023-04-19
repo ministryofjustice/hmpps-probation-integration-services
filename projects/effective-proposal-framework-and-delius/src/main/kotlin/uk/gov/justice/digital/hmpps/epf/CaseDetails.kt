@@ -21,5 +21,3 @@ data class Court(val name: String)
 data class Provider(val code: String, val name: String)
 
 fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
-
-

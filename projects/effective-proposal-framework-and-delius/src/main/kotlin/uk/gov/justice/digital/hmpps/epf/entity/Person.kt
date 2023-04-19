@@ -47,7 +47,6 @@ class Person(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 
-
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {

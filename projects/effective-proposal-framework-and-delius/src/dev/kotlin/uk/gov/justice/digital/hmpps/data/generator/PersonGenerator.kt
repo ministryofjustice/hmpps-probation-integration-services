@@ -13,7 +13,8 @@ object PersonGenerator {
         Person(id, crn, "David", "Bruce", "", "Banner", LocalDate.now().minusYears(18), DEFAULT_GENDER, softDeleted)
 
     fun generateGender(
-        code: String, description: String = "$code description", id: Long = IdGenerator.getAndIncrement()
+        code: String,
+        description: String = "$code description",
+        id: Long = IdGenerator.getAndIncrement()
     ) = ReferenceData(id, code, description)
 }
-

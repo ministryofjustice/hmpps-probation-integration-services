@@ -26,7 +26,7 @@ class CaseDetailsService(
             person.name(),
             person.dateOfBirth,
             person.gender.description,
-            event.disposal?.date?.let{
+            event.disposal?.date?.let {
                 Sentence(it, Court(courtName), event.firstReleaseDate)
             },
             responsibleOfficer?.provider()
@@ -38,4 +38,3 @@ class CaseDetailsService(
         return Provider(provider!!.code, provider.description)
     }
 }
-

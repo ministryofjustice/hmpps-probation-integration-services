@@ -32,7 +32,7 @@ class ResponsibleOfficer(
     @JoinColumn(name = "prison_offender_manager_id")
     val prisonManager: PrisonManager?,
 
-    val endDate: ZonedDateTime? = null,
+    val endDate: ZonedDateTime? = null
 )
 
 @Immutable
@@ -61,4 +61,3 @@ interface ResponsibleOfficerRepository : JpaRepository<ResponsibleOfficer, Long>
     @EntityGraph(attributePaths = ["communityManager", "prisonManager"])
     fun findByPersonIdAndEndDateIsNull(personId: Long): ResponsibleOfficer?
 }
-
