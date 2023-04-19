@@ -21,7 +21,7 @@ class CaseDetailsService(
         val person = personRepository.getPerson(crn)
         val responsibleOfficer = responsibleOfficerRepository.findByPersonIdAndEndDateIsNull(person.id)
         val event = eventRepository.getEvent(person.crn, eventNumber.toString())
-        val courtName = courtAppearanceRepository.findLatestCourtNameByEventId(event.id)
+        val courtName = courtAppearanceRepository.findMostRecentCourtNameByEventId(event.id)
         return CaseDetails(
             person.name(),
             person.dateOfBirth,

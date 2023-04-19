@@ -32,7 +32,7 @@ object SentenceGenerator {
         court: Court = DEFAULT_COURT,
         date: LocalDate = LocalDate.now().minusDays(1),
         id: Long = IdGenerator.getAndIncrement()
-    ) = CourtAppearance(id, date, event, court)
+    ) = CourtAppearance(date, id, event, court)
 
     fun generateCourt(
         id: Long = IdGenerator.getAndIncrement(),

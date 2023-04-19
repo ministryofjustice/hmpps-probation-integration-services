@@ -15,16 +15,28 @@ import java.time.LocalDate
 
 @Entity
 @Immutable
+class Court(
+
+    @Id
+    @Column(name = "court_id")
+    val id: Long,
+
+    @Column(name = "court_name")
+    val name: String
+
+)
+@Entity
+@Immutable
 @Table(name = "court_appearance")
 @Where(clause = "soft_deleted = 0")
 class CourtAppearance(
 
+    @Column(name = "appearance_date")
+    val appearanceDate: LocalDate,
+
     @Id
     @Column(name = "court_appearance_id")
     val id: Long,
-
-    @Column(name = "appearance_date")
-    val appearanceDate: LocalDate,
 
     @JoinColumn(name = "event_id")
     @ManyToOne
@@ -38,19 +50,6 @@ class CourtAppearance(
     var softDeleted: Boolean = false
 )
 
-@Entity
-@Immutable
-class Court(
-
-    @Id
-    @Column(name = "court_id")
-    val id: Long,
-
-    @Column(name = "court_name")
-    val name: String
-
-)
-
 interface CourtRepository : JpaRepository<Court, Long>
 interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
 
@@ -61,5 +60,5 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
         order by ca.appearanceDate desc
     """
     )
-    fun findLatestCourtNameByEventId(eventId: Long, page: PageRequest = PageRequest.of(0, 1)): String
+    fun findMostRecentCourtNameByEventId(eventId: Long, page: PageRequest = PageRequest.of(0, 1)): String
 }

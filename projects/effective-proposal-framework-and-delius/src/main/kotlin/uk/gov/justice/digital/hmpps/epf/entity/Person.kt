@@ -25,6 +25,13 @@ class Person(
     @Column(columnDefinition = "char(7)")
     val crn: String,
 
+    @ManyToOne
+    @JoinColumn(name = "gender_id")
+    val gender: ReferenceData,
+
+    @Column(name = "date_of_birth_date")
+    val dateOfBirth: LocalDate,
+
     @Column(name = "first_name", length = 35)
     val forename: String,
 
@@ -36,13 +43,6 @@ class Person(
 
     @Column(name = "surname", length = 35)
     val surname: String,
-
-    @Column(name = "date_of_birth_date")
-    val dateOfBirth: LocalDate,
-
-    @ManyToOne
-    @JoinColumn(name = "gender_id")
-    val gender: ReferenceData,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false

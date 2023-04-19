@@ -10,7 +10,7 @@ object PersonGenerator {
     val DEFAULT = generate("N123456")
 
     fun generate(crn: String, softDeleted: Boolean = false, id: Long = IdGenerator.getAndIncrement()) =
-        Person(id, crn, "David", "Bruce", "", "Banner", LocalDate.now().minusYears(18), DEFAULT_GENDER, softDeleted)
+        Person(id, crn, DEFAULT_GENDER, LocalDate.now().minusYears(18), "David", "Bruce", "", "Banner", softDeleted)
 
     fun generateGender(
         code: String,
