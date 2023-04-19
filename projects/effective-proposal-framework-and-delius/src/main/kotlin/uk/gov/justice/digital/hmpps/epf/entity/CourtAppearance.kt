@@ -48,7 +48,7 @@ class CourtAppearance(
     val court: Court,
 
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
-    var softDeleted: Boolean = false
+    val softDeleted: Boolean = false
 )
 
 interface CourtRepository : JpaRepository<Court, Long>
