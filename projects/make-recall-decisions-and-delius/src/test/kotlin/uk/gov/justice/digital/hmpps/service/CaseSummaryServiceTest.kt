@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.release
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.CaseSummaryEventRepository
@@ -33,6 +34,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Registration
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Release
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.findMainAddress
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class CaseSummaryServiceTest {
@@ -185,6 +187,19 @@ internal class CaseSummaryServiceTest {
         assertThat(contacts.summary.types.size, equalTo(1))
         assertThat(contacts.summary.types[0].code, equalTo("TYPE"))
         assertThat(contacts.summary.types[0].total, equalTo(123))
+    }
+
+    @Test
+    fun `handles missing contact start time`() {
+        givenPersonalDetails()
+        givenContacts()
+        whenever(contactRepository.findContacts(person.id, null, LocalDate.now(), true, emptyList(), 0))
+            .thenReturn(listOf(ContactGenerator.generate(date = LocalDate.of(2023, 1, 1), time = null)))
+
+        val contacts = caseSummaryService.getContactHistory(person.crn)
+
+        assertThat(contacts.contacts.size, equalTo(1))
+        assertThat(contacts.contacts[0].startDateTime, equalTo(ZonedDateTime.of(2023, 1, 1, 0, 0, 0, 0, EuropeLondon)))
     }
 
     @Test
