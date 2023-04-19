@@ -35,10 +35,10 @@ class Event(
     var disposal: Disposal? = null,
 
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
-    val active: Boolean,
+    val active: Boolean = true,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean
+    val softDeleted: Boolean = false
 )
 
 @Immutable

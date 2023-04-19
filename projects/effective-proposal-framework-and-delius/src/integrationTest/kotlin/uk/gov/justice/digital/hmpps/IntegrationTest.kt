@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -26,8 +27,10 @@ internal class IntegrationTest {
 
     @Test
     fun `API call retuns a success response`() {
+        val crn = PersonGenerator.DEFAULT.crn
+        val eventNumber = 1
         mockMvc
-            .perform(get("/example/123").withOAuth2Token(wireMockServer))
+            .perform(get("/case-details/$crn/$eventNumber").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful)
     }
 }
