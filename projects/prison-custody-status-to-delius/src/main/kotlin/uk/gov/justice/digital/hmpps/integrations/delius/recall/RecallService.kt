@@ -88,7 +88,7 @@ class RecallService(
         val institution = lazy { institutionRepository.getByNomisCdeCodeAndIdEstablishment(prisonId) }
 
         return eventService.getActiveCustodialEvents(nomsNumber)
-            .map { addRecallToEvent(it, institution, getRecallReason, recallDateTime) }
+            .map { addRecallToEvent(it, institution, getRecallReason, recallDateTime, "TRANSFERRED" == reason) }
             .minBy { it.ordinal } // return the most relevant outcome
     }
 
@@ -96,7 +96,8 @@ class RecallService(
         event: Event,
         lazyInstitution: Lazy<Institution>,
         getRecallReason: (csc: CustodialStatusCode) -> RecallReason,
-        recallDateTime: ZonedDateTime
+        recallDateTime: ZonedDateTime,
+        isTransfer: Boolean
     ): RecallOutcome = audit(BusinessInteractionCode.ADD_RECALL) { audit ->
         audit["eventId"] = event.id
         OptimisationContext.offenderId.set(event.person.id)
@@ -112,8 +113,9 @@ class RecallService(
         val recallDate = recallDateTime.truncatedTo(DAYS)
 
         val recallReason = getRecallReason(CustodialStatusCode.withCode(custody.status.code))
+
         // perform validation
-        validateRecall(recallReason, custody, latestRelease, recallDate)
+        validateRecall(recallReason, custody, latestRelease, recallDate, isTransfer)
 
         val recall = createRecall(custody, recallReason, recallDate, latestRelease, person)
 
@@ -169,6 +171,7 @@ class RecallService(
             )
             true
         }
+
         InstitutionCode.UNKNOWN.code -> {
             custodyService.updateStatus(
                 custody,
@@ -178,6 +181,7 @@ class RecallService(
             )
             true
         }
+
         else -> if (custody.status.canChange()) {
             val detail = if (recall == null) "In custody " else "Recall added in custody "
             custodyService.updateStatus(custody, CustodialStatusCode.IN_CUSTODY, recallDate, detail)
@@ -248,7 +252,8 @@ class RecallService(
         reason: RecallReason,
         custody: Custody,
         latestRelease: Release?,
-        recallDate: ZonedDateTime
+        recallDate: ZonedDateTime,
+        isTransfer: Boolean
     ) {
         if (custody.status.code == CustodialStatusCode.POST_SENTENCE_SUPERVISION.code ||
             (reason.code == RecallReasonCode.END_OF_TEMPORARY_LICENCE.code && custody.status.code == CustodialStatusCode.IN_CUSTODY_IRC.code)
@@ -260,15 +265,14 @@ class RecallService(
             throw IllegalArgumentException("TerminatedCustodialStatus")
         }
 
-        val recall = latestRelease?.recall
-        if (recall != null && reason.code != RecallReasonCode.END_OF_TEMPORARY_LICENCE.code) {
-            throw IgnorableMessageException("RecallAlreadyExists")
-        }
+        if (!isTransfer && reason.code != RecallReasonCode.END_OF_TEMPORARY_LICENCE.code) {
+            if (latestRelease?.recall != null) {
+                throw IgnorableMessageException("RecallAlreadyExists")
+            }
 
-        if (latestRelease?.type?.code != ReleaseTypeCode.ADULT_LICENCE.code &&
-            reason.code != RecallReasonCode.END_OF_TEMPORARY_LICENCE.code
-        ) {
-            throw IgnorableMessageException("UnexpectedReleaseType")
+            if (latestRelease?.type?.code != ReleaseTypeCode.ADULT_LICENCE.code) {
+                throw IgnorableMessageException("UnexpectedReleaseType")
+            }
         }
 
         if (recallDate.isAfter(ZonedDateTime.now()) ||
@@ -278,13 +282,18 @@ class RecallService(
         }
     }
 
-    private fun decideRecallReason(reason: String, movementReason: String): (code: CustodialStatusCode) -> RecallReasonCode = when (reason) {
+    private fun decideRecallReason(
+        reason: String,
+        movementReason: String
+    ): (code: CustodialStatusCode) -> RecallReasonCode = when (reason) {
         "ADMISSION" -> {
             { RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT }
         }
+
         "TEMPORARY_ABSENCE_RETURN" -> {
             { RecallReasonCode.END_OF_TEMPORARY_LICENCE }
         }
+
         "TRANSFERRED" -> {
             if (movementReason == "INT" && featureFlags.enabled(RECALL_TRANSFERRED)) {
                 {
@@ -297,8 +306,10 @@ class RecallService(
                 throw IgnorableMessageException("UnsupportedRecallReason")
             }
         }
+
         "RETURN_FROM_COURT",
         "UNKNOWN" -> throw IgnorableMessageException("UnsupportedRecallReason")
+
         else -> throw IllegalArgumentException("Unexpected recall reason: $reason")
     }
 
