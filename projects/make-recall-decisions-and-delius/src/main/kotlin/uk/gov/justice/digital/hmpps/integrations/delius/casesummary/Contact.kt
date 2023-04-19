@@ -56,7 +56,7 @@ class Contact(
 
     @Column
     @Convert(converter = YesNoConverter::class)
-    val sensitive: Boolean,
+    val sensitive: Boolean?,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false
