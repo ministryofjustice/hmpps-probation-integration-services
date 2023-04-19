@@ -4,6 +4,8 @@ import uk.gov.justice.digital.hmpps.api.model.ContactHistory.Contact.DocumentRef
 import uk.gov.justice.digital.hmpps.api.model.ContactHistory.Contact.Type
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Contact
+import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZonedDateTime
 
 data class ContactHistory(
@@ -39,6 +41,10 @@ fun Contact.toContact() = ContactHistory.Contact(
     notes = notes,
     outcome = outcome?.description,
     sensitive = sensitive,
-    startDateTime = date.atTime(startTime.withZoneSameInstant(EuropeLondon).toLocalTime()).atZone(EuropeLondon),
+    startDateTime = date.withTime(startTime),
     type = Type(code = type.code, description = type.description, systemGenerated = type.systemGenerated)
 )
+
+private fun LocalDate.withTime(time: ZonedDateTime?): ZonedDateTime = this
+    .atTime(time?.withZoneSameInstant(EuropeLondon)?.toLocalTime() ?: LocalTime.MIDNIGHT)
+    .atZone(EuropeLondon)

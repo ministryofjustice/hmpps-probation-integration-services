@@ -52,7 +52,7 @@ class Contact(
     val date: LocalDate,
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime,
+    val startTime: ZonedDateTime?,
 
     @Column
     @Convert(converter = YesNoConverter::class)
