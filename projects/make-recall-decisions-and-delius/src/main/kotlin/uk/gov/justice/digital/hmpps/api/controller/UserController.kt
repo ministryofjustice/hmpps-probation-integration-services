@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.api.model.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.user.access.UserAccessRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.access.checkUserAccess
-import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.UserStaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffRepository
 
 @RestController
 @Tag(name = "Users")
 @PreAuthorize("hasRole('ROLE_MAKE_RECALL_DECISIONS_API')")
 class UserController(
     private val userAccessRepository: UserAccessRepository,
-    private val userStaffRepository: UserStaffRepository
+    private val staffRepository: StaffRepository
 ) {
     @GetMapping("/user/{username}/access/{crn}")
     @Operation(
@@ -30,5 +30,5 @@ class UserController(
 
     @GetMapping("/user/{username}/staff")
     @Operation(summary = "Get the staff code for a user, if it exists")
-    fun getStaffCode(@PathVariable username: String) = Staff(userStaffRepository.findUserStaffCode(username))
+    fun getStaffCode(@PathVariable username: String) = Staff(staffRepository.findUserStaffCode(username))
 }

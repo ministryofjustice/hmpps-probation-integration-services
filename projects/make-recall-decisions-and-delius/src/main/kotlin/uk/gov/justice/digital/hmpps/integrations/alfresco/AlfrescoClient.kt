@@ -1,10 +1,8 @@
 package uk.gov.justice.digital.hmpps.integrations.alfresco
 
 import feign.RequestInterceptor
-import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.Resource
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,8 +15,6 @@ interface AlfrescoClient {
     fun getDocument(@PathVariable id: String): ResponseEntity<Resource>
 }
 
-@Configuration
-@EnableFeignClients(clients = [AlfrescoClient::class])
 class AlfrescoFeignConfig {
     @Bean
     fun requestInterceptor() = RequestInterceptor { template ->

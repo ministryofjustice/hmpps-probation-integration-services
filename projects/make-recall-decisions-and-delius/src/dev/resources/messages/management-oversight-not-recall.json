@@ -1,13 +1,14 @@
 {
-  "eventType": "prison-recall.recommendation.managementOversight",
+  "eventType": "prison-recall.recommendation.management-oversight",
   "version": 1,
   "description": "Management Oversight - Recall",
   "occurredAt": "2022-11-21T06:27:57.028Z",
+  "detailUrl": "http://localhost:{wiremock.port}/mrd/management-oversight/1",
   "additionalInformation": {
     "contactOutcome": "DECISION_NOT_TO_RECALL",
     "recommendationUrl": "http://mrd.case.crn/overview",
     "bookedBy": {
-      "staffCode": "N54A999"
+      "username": "WithStaff"
     }
   },
   "personReference": {
