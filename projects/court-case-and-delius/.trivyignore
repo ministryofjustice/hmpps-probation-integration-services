@@ -4,3 +4,6 @@ CVE-2023-24998 exp:2023-05-01
 
 # Suppressed as we do not process any untrusted YML content
 CVE-2022-1471 exp:2023-05-01
+
+# Suppressed as we do not process any untrusted SpEL expressions
+CVE-2023-20863 exp:2023-05-01
