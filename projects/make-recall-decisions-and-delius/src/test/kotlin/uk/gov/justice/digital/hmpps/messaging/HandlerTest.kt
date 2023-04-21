@@ -79,6 +79,15 @@ internal class HandlerTest {
     }
 
     @Test
+    fun `decision message with blank detail url throws exception`() {
+        val message = MessageGenerator.DECISION_NOT_TO_RECALL.copy(detailUrl = "")
+        val notification = Notification(message, MessageAttributes(message.eventType))
+
+        val exception = assertThrows<IllegalArgumentException> { handler.handle(notification) }
+        assertThat(exception.message, equalTo("No detail url provided"))
+    }
+
+    @Test
     fun `calls detail url`() {
         val message = MessageGenerator.DECISION_TO_RECALL
         val notification = Notification(message, MessageAttributes(message.eventType))
