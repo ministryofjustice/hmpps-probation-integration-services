@@ -2,6 +2,9 @@ generic-service:
   ingress:
     host: person-search-index-from-delius-dev.hmpps.service.justice.gov.uk
 
+  scheduledDowntime:
+    enabled: true
+
   env:
     SENTRY_ENVIRONMENT: dev
     SEARCH_INDEX_HOST: es-proxy.hmpps-probation-search-dev.svc.cluster.local:9200
