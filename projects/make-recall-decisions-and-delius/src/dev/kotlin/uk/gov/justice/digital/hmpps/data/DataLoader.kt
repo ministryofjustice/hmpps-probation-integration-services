@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
@@ -34,8 +33,6 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(ape: ApplicationReadyEvent) {
         entityManager.run {
-            persist(StaffGenerator.DEFAULT)
-
             persist(ContactTypeGenerator.RECOMMENDATION_STARTED)
             persist(ContactTypeGenerator.MANAGEMENT_OVERSIGHT_RECALL)
             persist(ContactOutcomeGenerator.DECISION_TO_RECALL)

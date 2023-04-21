@@ -10,9 +10,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.contact.g
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.getPerson
-import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.provider.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.provider.entity.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.provider.getStaff
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.getStaff
+import uk.gov.justice.digital.hmpps.integrations.makerecalldecisions.MakeRecallDecisionsClient.DecisionDetails
 import uk.gov.justice.digital.hmpps.messaging.ManagementDecision
 import java.time.ZonedDateTime
 
@@ -27,21 +28,23 @@ class ManagementOversightRecall(
 
     fun decision(
         crn: String,
-        recommendationUrl: String,
-        occurredAt: ZonedDateTime,
         decision: ManagementDecision,
-        staffCode: String
+        details: DecisionDetails,
+        username: String,
+        occurredAt: ZonedDateTime
     ) {
         val person = personRepository.getPerson(crn)
-        val staff = staffRepository.getStaff(staffCode)
-        contactRepository.save(person.managementOversightRecall(recommendationUrl, occurredAt, decision, staff))
+        val staff = staffRepository.getStaff(username)
+        val contact = person.managementOversightRecall(decision, details.notes, details.sensitive, staff, occurredAt)
+        contactRepository.save(contact)
     }
 
     private fun Person.managementOversightRecall(
-        recommendationUrl: String,
-        occurredAt: ZonedDateTime,
         decision: ManagementDecision,
-        staff: Staff
+        notes: String,
+        sensitive: Boolean,
+        staff: Staff,
+        occurredAt: ZonedDateTime
     ): Contact {
         if (manager == null) throw IllegalStateException("No Active Person Manager")
         return Contact(
@@ -50,11 +53,12 @@ class ManagementOversightRecall(
             occurredAt,
             occurredAt,
             type = contactTypeRepository.getByCode(ContactType.MANAGEMENT_OVERSIGHT_RECALL),
-            notes = "View details of the Manage a Recall Oversight Decision: $recommendationUrl",
+            notes = notes,
             providerId = manager.providerId,
             teamId = manager.teamId,
             staffId = staff.id,
-            outcome = contactOutcomeRepository.getByCode(decision.code)
+            outcome = contactOutcomeRepository.getByCode(decision.code),
+            isSensitive = sensitive
         )
     }
 }
