@@ -52,7 +52,7 @@ dependencyResolutionManagement {
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
             library("wiremock", "com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
             library("mapstruct", "org.mapstruct:mapstruct:1.5.4.Final")
-            library("mapstructprocessor", "org.mapstruct:mapstruct-processor:1.5.4.Final")
+            library("mapstructprocessor", "org.mapstruct:mapstruct-processor:1.5.5.Final")
             library("flipt", "io.flipt:flipt-java:0.1.8")
         }
     }
