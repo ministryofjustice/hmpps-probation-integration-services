@@ -93,7 +93,6 @@ class AllocateEventService(
         }
 
     fun createCadeContact(allocationDetail: EventAllocationDetail, event: Event, orderManager: OrderManager) {
-
         contactRepository.save(
             Contact(
                 type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_ALLOCATION_DECISION_EVIDENCE.value),
@@ -110,5 +109,3 @@ class AllocateEventService(
         )
     }
 }
-
-
