@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.timeout
 import org.mockito.kotlin.verify
@@ -15,6 +16,8 @@ import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.repository.IapsEventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
@@ -46,6 +49,9 @@ class AllocateEventIntegrationTest {
 
     @MockBean
     private lateinit var telemetryService: TelemetryService
+
+    @Autowired
+    private lateinit var contactRepository: ContactRepository
 
     @Test
     fun `allocate new order manager`() {
@@ -110,5 +116,13 @@ class AllocateEventIntegrationTest {
         assertThat(updatedOmCount, equalTo(originalOmCount + 1))
 
         assert(iapsEventRepository.findById(event.id).isPresent)
+
+        val cadeContact = contactRepository.findAll()
+            .firstOrNull { it.eventId == oldOm.eventId && it.type.code == ContactTypeCode.CASE_ALLOCATION_DECISION_EVIDENCE.value }
+
+        assertNotNull(cadeContact)
+
+        assertThat(cadeContact!!.isSensitive, equalTo((allocationDetail as AllocationDetail.EventAllocationDetail).sensitive))
+        assertThat(cadeContact.notes, equalTo(allocationDetail.notes))
     }
 }
