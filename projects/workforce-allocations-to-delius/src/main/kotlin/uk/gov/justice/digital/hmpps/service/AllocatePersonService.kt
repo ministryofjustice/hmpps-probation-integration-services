@@ -86,9 +86,8 @@ class AllocatePersonService(
     private fun updateResponsibleOfficer(
         newPersonManager: PersonManager
     ) {
-        val activeResponsibleOfficer = responsibleOfficerRepository
-            .findActiveManagerAtDate(newPersonManager.personId, newPersonManager.startDate)
-            ?: throw NotFoundException("Responsible Officer for ${newPersonManager.personId} at ${newPersonManager.startDate} not found")
+        val activeResponsibleOfficer =
+            responsibleOfficerRepository.findActiveManagerAtDate(newPersonManager.personId, newPersonManager.startDate)
 
         val newResponsibleOfficer = ResponsibleOfficer(
             personId = newPersonManager.personId,
@@ -96,10 +95,10 @@ class AllocatePersonService(
             endDate = newPersonManager.endDate,
             communityManager = newPersonManager
         )
-        activeResponsibleOfficer.endDate = newPersonManager.startDate
+        activeResponsibleOfficer?.endDate = newPersonManager.startDate
 
         // Need to flush changes here to ensure single active RO constraint isn't violated when new RO is added.
-        responsibleOfficerRepository.saveAndFlush(activeResponsibleOfficer)
+        activeResponsibleOfficer?.let { responsibleOfficerRepository.saveAndFlush(it) }
         responsibleOfficerRepository.save(newResponsibleOfficer)
         if (newResponsibleOfficer.communityManager != null) {
             createResponsibleOfficerInternalTransferContact(
@@ -111,7 +110,7 @@ class AllocatePersonService(
 
     private fun createResponsibleOfficerInternalTransferContact(
         newResponsibleOfficer: ResponsibleOfficer,
-        oldResponsibleOfficer: ResponsibleOfficer
+        oldResponsibleOfficer: ResponsibleOfficer?
     ) {
         val newCommunityOffenderManager = newResponsibleOfficer.communityManager!!
         val sc = Contact(
@@ -128,14 +127,14 @@ class AllocatePersonService(
     }
 
     private fun generateRoContactNotes(
-        oldResponsibleOfficer: ResponsibleOfficer,
+        oldResponsibleOfficer: ResponsibleOfficer?,
         newResponsibleOfficer: ResponsibleOfficer
     ): String {
         return """
       |New Details:
       |${newResponsibleOfficer.stringDetails()}
       |Previous Details:
-      |${oldResponsibleOfficer.stringDetails()}
+      |${oldResponsibleOfficer?.stringDetails()}
       |Allocation Reason: ${newResponsibleOfficer.communityManager!!.allocationReason.description}
         """.trimMargin()
     }
