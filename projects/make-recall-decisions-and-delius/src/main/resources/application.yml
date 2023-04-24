@@ -12,8 +12,8 @@ spring:
       make-recall-decisions-and-delius:
         provider: hmpps-auth
         authorization-grant-type: client_credentials
-        client-id: make-recall-decisions-and-delius
-        client-secret: make-recall-decisions-and-delius
+        client-id: ${oauth2.client-id}
+        client-secret: ${oauth2.client-secret}
     provider:
       hmpps-auth:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
