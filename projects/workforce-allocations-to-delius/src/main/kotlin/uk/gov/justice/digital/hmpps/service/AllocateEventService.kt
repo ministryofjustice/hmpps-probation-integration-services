@@ -10,11 +10,13 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationValidator
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactContext
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.findByCodeOrThrow
+import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
@@ -85,6 +87,28 @@ class AllocateEventService(
                 )
             )
 
+            createCadeContact(allocationDetail, event, newOrderManager)
+
             eventRepository.updateIaps(event.id)
         }
+
+    fun createCadeContact(allocationDetail: EventAllocationDetail, event: Event, orderManager: OrderManager) {
+
+        contactRepository.save(
+            Contact(
+                type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_ALLOCATION_DECISION_EVIDENCE.value),
+                personId = event.person.id,
+                eventId = event.id,
+                date = orderManager.startDate,
+                startTime = orderManager.startDate,
+                teamId = orderManager.team.id,
+                staffId = orderManager.staff.id,
+                providerId = orderManager.provider.id,
+                notes = allocationDetail.notes,
+                isSensitive = allocationDetail.sensitive
+            )
+        )
+    }
 }
+
+

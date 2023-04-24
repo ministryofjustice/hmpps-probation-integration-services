@@ -42,7 +42,7 @@ class Contact(
     val type: ContactType,
 
     @Lob
-    val notes: String,
+    val notes: String?,
 
     @Column(name = "contact_date")
     val date: ZonedDateTime,

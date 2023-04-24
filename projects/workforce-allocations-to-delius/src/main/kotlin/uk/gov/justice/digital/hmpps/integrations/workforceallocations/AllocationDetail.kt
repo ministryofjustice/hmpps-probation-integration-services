@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.workforceallocations
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.DatasetCode
@@ -33,7 +34,11 @@ sealed interface AllocationDetail {
         override val createdDate: ZonedDateTime,
         val eventNumber: Long,
         override val datasetCode: DatasetCode = DatasetCode.ORDER_ALLOCATION_REASON,
-        override val code: String = "INT"
+        override val code: String = "INT",
+        @JsonAlias("allocationJustificationNotes")
+        val notes: String?,
+        @JsonAlias("sensitiveNotes")
+        val sensitive: Boolean = false
     ) : AllocationDetail
 
     @JsonDeserialize(using = JsonDeserializer.None::class)

@@ -5,5 +5,7 @@
   "teamCode": "N02ABS",
   "createdBy": "Smith, Bob",
   "createdDate": "2022-07-28T10:30:54.023+01:00",
-  "eventNumber": 3
+  "eventNumber": 3,
+  "sensitiveNotes": false
+
 }
