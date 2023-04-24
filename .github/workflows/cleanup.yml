@@ -31,9 +31,9 @@ jobs:
           fetch-depth: 0
       - name: Delete Playwright reports older than 1 week
         run: |
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          brew install git-filter-repo
-          git-filter-repo \
+          wget https://raw.githubusercontent.com/newren/git-filter-repo/main/git-filter-repo
+          git pull origin gh-pages
+          python3 git-filter-repo \
             --path 'tech-docs' \
             --path 'tech-docs-drafts' \
             --path 'schema-spy-report' \
@@ -47,4 +47,5 @@ jobs:
             --path "playwright-report/test/main/$(date '+%Y-%m-%d')" \
             --refs gh-pages \
             --force
+          git gc --prune=now
           git push origin gh-pages --force
