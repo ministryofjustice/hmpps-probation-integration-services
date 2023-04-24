@@ -2,6 +2,9 @@ generic-service:
   ingress:
     host: prison-custody-status-to-delius-dev.hmpps.service.justice.gov.uk
 
+  scheduledDowntime:
+    enabled: true
+
   env:
     SENTRY_ENVIRONMENT: dev
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG

@@ -4,6 +4,9 @@ generic-service:
   ingress:
     host: approved-premises-and-oasys-dev.hmpps.service.justice.gov.uk
 
+  scheduledDowntime:
+    enabled: true
+
   env:
     SENTRY_ENVIRONMENT: dev
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_ORDS-OASYS-AUTH_TOKEN-URI: https://ords.t2.oasys.service.justice.gov.uk/eor/oasys/oauth/token
