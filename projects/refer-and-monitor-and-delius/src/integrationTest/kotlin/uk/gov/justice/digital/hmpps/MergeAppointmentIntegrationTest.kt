@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
@@ -24,6 +24,8 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.service.Attended
+import uk.gov.justice.digital.hmpps.service.Outcome
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -92,7 +94,7 @@ internal class MergeAppointmentIntegrationTest {
                 mergeAppointment.urn
             )
         }
-        Assertions.assertNotNull(appointment)
+        assertNotNull(appointment)
         assertThat(appointment!!.date, equalTo(mergeAppointment.start.toLocalDate()))
         assertThat(appointment.startTime, isCloseTo(mergeAppointment.start))
         assertThat(appointment.endTime!!, isCloseTo(mergeAppointment.end))
@@ -121,7 +123,6 @@ internal class MergeAppointmentIntegrationTest {
     }
 
     @Test
-    @Order(3)
     fun `cannot save past appointment without an outcome`() {
         val person = PersonGenerator.NO_APPOINTMENTS
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
@@ -140,5 +141,40 @@ internal class MergeAppointmentIntegrationTest {
         )
 
         makeRequest(person, referralId, mergeAppointment, MockMvcResultMatchers.status().isBadRequest)
+    }
+
+    @Test
+    fun `creates appointment with outcome when in past`() {
+        val person = PersonGenerator.NO_APPOINTMENTS
+        val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
+        val start = ZonedDateTime.now().plusDays(2)
+        val end = start.plusMinutes(20)
+        val mergeAppointment = MergeAppointment(
+            UUID.randomUUID(),
+            referralId,
+            "RE1234F",
+            start,
+            end,
+            "Appointment Notes",
+            "DEFAULT",
+            false,
+            Outcome(Attended.YES, false)
+        )
+        val result = MockMvcResultMatchers.status().isNoContent
+
+        makeRequest(person, referralId, mergeAppointment, result)
+
+        val appointment = assertDoesNotThrow {
+            contactRepository.findByPersonCrnAndExternalReference(
+                person.crn,
+                mergeAppointment.urn
+            )
+        }
+        assertNotNull(appointment)
+        assertThat(appointment!!.date, equalTo(mergeAppointment.start.toLocalDate()))
+        assertThat(appointment.startTime, isCloseTo(mergeAppointment.start))
+        assertThat(appointment.endTime!!, isCloseTo(mergeAppointment.end))
+        assertNotNull(appointment.outcome)
+        assertThat(appointment.attended, equalTo(true))
     }
 }

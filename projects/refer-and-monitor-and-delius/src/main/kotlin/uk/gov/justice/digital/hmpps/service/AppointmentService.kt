@@ -243,5 +243,5 @@ enum class Attended {
 
 data class Outcome(
     val attended: Attended,
-    val notify: Boolean
+    val notify: Boolean = true
 )
