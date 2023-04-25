@@ -119,4 +119,25 @@ internal class MergeAppointmentIntegrationTest {
 
         makeRequest(person, referralId, mergeAppointment, MockMvcResultMatchers.status().isConflict)
     }
+
+    @Test
+    fun `cannot save past appointment without an outcome`() {
+        val person = PersonGenerator.DEFAULT
+        val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
+        val start = ZonedDateTime.now().minusDays(1)
+        val end = start.plusMinutes(30)
+        val mergeAppointment = MergeAppointment(
+            UUID.randomUUID(),
+            referralId,
+            "RE1234F",
+            start,
+            end,
+            "Appointment Notes",
+            "DEFAULT",
+            false,
+            null
+        )
+
+        makeRequest(person, referralId, mergeAppointment, MockMvcResultMatchers.status().isBadRequest)
+    }
 }

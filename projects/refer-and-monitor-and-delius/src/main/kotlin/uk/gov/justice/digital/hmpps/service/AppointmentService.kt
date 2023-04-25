@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.api.model.MergeAppointment
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
@@ -30,7 +32,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCrnAndExte
 import uk.gov.justice.digital.hmpps.messaging.Referral
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
+import java.time.ZonedDateTime.now
 import java.util.UUID
 
 @Service
@@ -51,6 +53,12 @@ class AppointmentService(
         val nsi = nsiRepository.getByCrnAndExternalReference(crn, mergeAppointment.referralUrn)
         audit["offenderId"] = nsi.person.id
 
+        if (now().isAfter(mergeAppointment.start) && mergeAppointment.outcome == null) {
+            throw ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Appointment started in the past and no outcome was provided"
+            )
+        }
         checkForConflicts(nsi.person.id, mergeAppointment)
 
         val assignation = providerService.findCrsAssignationDetails(mergeAppointment.officeLocationCode)
@@ -106,7 +114,7 @@ class AppointmentService(
         personId: Long,
         mergeAppointment: MergeAppointment
     ) {
-        if (mergeAppointment.start.isAfter(ZonedDateTime.now()) && contactRepository.appointmentClashes(
+        if (mergeAppointment.start.isAfter(now()) && contactRepository.appointmentClashes(
                 personId,
                 mergeAppointment.id.toString(),
                 mergeAppointment.start.toLocalDate(),
@@ -144,7 +152,7 @@ class AppointmentService(
         enforcementRepository.findByContactId(appointment.id) ?: Enforcement(
             appointment,
             action,
-            action.responseByPeriod?.let { ZonedDateTime.now().plusDays(it) }
+            action.responseByPeriod?.let { now().plusDays(it) }
         ).apply {
             enforcementRepository.save(this)
             val eac = appointment.createEnforcementActionContact(action)
@@ -170,7 +178,7 @@ class AppointmentService(
         person = person,
         type = action.contactType,
         date = LocalDate.now(),
-        startTime = ZonedDateTime.now(),
+        startTime = now(),
         eventId = eventId,
         nsiId = nsiId,
         providerId = providerId,
