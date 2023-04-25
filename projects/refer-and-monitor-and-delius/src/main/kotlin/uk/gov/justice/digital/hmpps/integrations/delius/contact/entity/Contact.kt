@@ -22,6 +22,8 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -42,13 +44,13 @@ class Contact(
     val type: ContactType,
 
     @Column(name = "contact_date")
-    val date: LocalDate = LocalDate.now(),
+    var date: LocalDate = LocalDate.now(),
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime,
+    var startTime: ZonedDateTime,
 
     @Column(name = "contact_end_time")
-    val endTime: ZonedDateTime? = null,
+    var endTime: ZonedDateTime? = null,
 
     @Column(name = "attended")
     @Convert(converter = YesNoConverter::class)
@@ -57,13 +59,6 @@ class Contact(
     @Column(name = "complied")
     @Convert(converter = YesNoConverter::class)
     var complied: Boolean? = null,
-
-    @Column(name = "hours_credited", columnDefinition = "number")
-    var hoursCredited: Double? = null,
-
-    @Lob
-    @Column
-    var notes: String? = null,
 
     @Column(name = "latest_enforcement_action_id")
     var enforcementActionId: Long? = null,
@@ -87,6 +82,8 @@ class Contact(
     var rarActivity: Boolean? = null,
 
     val linkedContactId: Long? = null,
+
+    val externalReference: String? = null,
 
     @Id
     @Column(name = "contact_id")
@@ -130,6 +127,32 @@ class Contact(
             } else {
                 Duration.ZERO
             }
+
+    @Lob
+    @Column
+    var notes: String? = null
+        private set
+
+    @Column(name = "hours_credited", columnDefinition = "number")
+    var hoursCredited: Double? = null
+        private set
+
+    fun addNotes(notes: String?): Contact {
+        this.notes += """${System.lineSeparator()}
+            |$notes
+        """.trimMargin()
+        return this
+    }
+
+    fun creditHours() {
+        hoursCredited = if (outcome?.code == ContactOutcome.Code.COMPLIED.value) {
+            BigDecimal.valueOf(duration.toMinutes())
+                .divide(BigDecimal(60), 2, RoundingMode.HALF_UP)
+                .toDouble()
+        } else {
+            null
+        }
+    }
 }
 
 @Immutable
@@ -140,6 +163,9 @@ class ContactType(
     @Column(name = "national_standards_contact", length = 1)
     @Convert(converter = YesNoConverter::class)
     val nationalStandards: Boolean,
+    @Column(name = "attendance_contact")
+    @Convert(converter = YesNoConverter::class)
+    val attendanceContact: Boolean,
     @Id
     @Column(name = "contact_type_id")
     val id: Long

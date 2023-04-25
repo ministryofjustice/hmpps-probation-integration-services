@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventReposi
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.ResponsibleOfficer
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.LocationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
@@ -67,7 +68,8 @@ class DataLoader(
     private val contactRepository: ContactRepository,
     private val nsiRepository: NsiRepository,
     private val nsiManagerRepository: NsiManagerRepository,
-    private val requirementRepository: RequirementRepository
+    private val requirementRepository: RequirementRepository,
+    private val locationRepository: LocationRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -81,6 +83,11 @@ class DataLoader(
                 BusinessInteraction(
                     IdGenerator.getAndIncrement(),
                     BusinessInteractionCode.MANAGE_NSI.code,
+                    ZonedDateTime.now()
+                ),
+                BusinessInteraction(
+                    IdGenerator.getAndIncrement(),
+                    BusinessInteractionCode.ADD_CONTACT.code,
                     ZonedDateTime.now()
                 ),
                 BusinessInteraction(
@@ -106,12 +113,15 @@ class DataLoader(
         teamRepository.save(ProviderGenerator.INTENDED_TEAM)
         staffRepository.saveAll(listOf(ProviderGenerator.INTENDED_STAFF, ProviderGenerator.JOHN_SMITH))
 
+        locationRepository.save(ProviderGenerator.DEFAULT_LOCATION)
+
         personRepository.saveAll(
             listOf(
                 PersonGenerator.DEFAULT,
                 PersonGenerator.SENTENCED_WITHOUT_NSI,
                 PersonGenerator.COMMUNITY_RESPONSIBLE,
-                PersonGenerator.COMMUNITY_NOT_RESPONSIBLE
+                PersonGenerator.COMMUNITY_NOT_RESPONSIBLE,
+                PersonGenerator.NO_APPOINTMENTS
             )
         )
 
@@ -150,7 +160,23 @@ class DataLoader(
                 rarCount = nsi.rarCount
             )
         )
-        nsiManagerRepository.save(NsiGenerator.generateManager(NsiGenerator.END_PREMATURELY))
+
+        val nsiNa = NsiGenerator.NO_APPOINTMENTS
+        NsiGenerator.NO_APPOINTMENTS = nsiRepository.save(
+            NsiGenerator.generate(
+                nsiNa.type,
+                externalReference = nsiNa.externalReference,
+                eventId = nsiNa.eventId,
+                rarCount = nsiNa.rarCount
+            )
+        )
+
+        nsiManagerRepository.saveAll(
+            listOf(
+                NsiGenerator.generateManager(NsiGenerator.END_PREMATURELY),
+                NsiGenerator.generateManager(NsiGenerator.NO_APPOINTMENTS)
+            )
+        )
 
         val crsA = ContactGenerator.CRSAPT_NON_COMPLIANT
         ContactGenerator.CRSAPT_NON_COMPLIANT = contactRepository.save(
@@ -170,7 +196,8 @@ class DataLoader(
                 date = crsB.date,
                 notes = crsB.notes,
                 nsi = NsiGenerator.END_PREMATURELY,
-                rarActivity = crsB.rarActivity
+                rarActivity = crsB.rarActivity,
+                externalReference = crsB.externalReference
             )
         )
 

@@ -2,13 +2,14 @@ package uk.gov.justice.digital.hmpps.integrations.randm
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import java.time.ZonedDateTime
+import java.util.UUID
 
 data class ReferralSession(
-    val id: String,
+    val id: UUID,
     val sessionNumber: Int,
     val appointmentTime: ZonedDateTime,
     @JsonAlias("deliusAppointmentId")
-    val appointmentId: Long,
+    val deliusId: Long,
     val sessionFeedback: SessionFeedback
 )
 

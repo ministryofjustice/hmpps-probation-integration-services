@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Location
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
@@ -11,6 +12,7 @@ object ProviderGenerator {
     val INTENDED_PROVIDER = generateProvider(Provider.INTENDED_PROVIDER_CODE)
     val INTENDED_TEAM = generateTeam(Team.INTENDED_TEAM_CODE)
     val INTENDED_STAFF = generateStaff(Staff.INTENDED_STAFF_CODE, "Intended", "Staff")
+    val DEFAULT_LOCATION = generateLocation("DEFAULT")
     val JOHN_SMITH = generateStaff("N01RMT1", "John", "Smith")
     val JOHN_SMITH_USER = generateStaffUser("john-smith", JOHN_SMITH)
 
@@ -29,4 +31,6 @@ object ProviderGenerator {
         staff: Staff? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = StaffUser(username, staff, id).apply { staff?.set(Staff::user, this) }
+
+    fun generateLocation(code: String, id: Long = IdGenerator.getAndIncrement()) = Location(code, id)
 }

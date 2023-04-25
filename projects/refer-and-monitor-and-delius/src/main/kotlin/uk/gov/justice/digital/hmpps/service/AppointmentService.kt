@@ -2,15 +2,19 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.api.model.MergeAppointment
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.ADD_CONTACT
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.UPDATE_CONTACT
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementActionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.appointmentClashes
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOutcome.Code
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
@@ -21,16 +25,18 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Nsi
+import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCrnAndExternalReference
 import uk.gov.justice.digital.hmpps.messaging.Referral
-import java.math.BigDecimal
-import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
+import java.util.UUID
 
 @Service
 class AppointmentService(
     auditedInteractionService: AuditedInteractionService,
+    private val providerService: ProviderService,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val outcomeRepository: ContactOutcomeRepository,
@@ -41,27 +47,91 @@ class AppointmentService(
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
+    fun mergeAppointment(crn: String, mergeAppointment: MergeAppointment): Unit = audit(ADD_CONTACT) { audit ->
+        val nsi = nsiRepository.getByCrnAndExternalReference(crn, mergeAppointment.referralUrn)
+        audit["offenderId"] = nsi.person.id
+
+        checkForConflicts(nsi.person.id, mergeAppointment)
+
+        val assignation = providerService.findCrsAssignationDetails(mergeAppointment.officeLocationCode)
+        val find = { contactRepository.findByPersonCrnAndExternalReference(crn, mergeAppointment.urn) }
+        val appointment = find() ?: run {
+            nsiRepository.findForUpdate(nsi.id)
+            find() ?: createContact(mergeAppointment, assignation, nsi)
+        }
+
+        appointment.startTime = mergeAppointment.start
+        appointment.endTime = mergeAppointment.end
+        appointment.date = mergeAppointment.start.toLocalDate()
+
+        mergeAppointment.notes?.also {
+            if (appointment.notes?.contains(it) != true) appointment.addNotes(mergeAppointment.notes)
+        }
+
+        mergeAppointment.outcome?.also {
+            val outcome = outcomeRepository.getByCode(attendanceOutcome(it).value)
+            appointment.outcome = outcome
+            appointment.creditHours()
+
+            if (it.notify && outcome.compliantAcceptable == false) {
+                handleNonCompliance(appointment)
+            }
+
+            contactRepository.saveAndFlush(appointment)
+            nsiRepository.findByIdIfRar(appointment.nsiId!!)?.rarCount =
+                contactRepository.countNsiRar(appointment.nsiId)
+        }
+    }
+
+    private fun createContact(mergeAppointment: MergeAppointment, assignation: CrsAssignation, nsi: Nsi): Contact =
+        contactRepository.save(
+            Contact(
+                nsi.person,
+                contactTypeRepository.getByCode(mergeAppointment.typeCode.value),
+                providerId = assignation.provider.id,
+                teamId = assignation.team.id,
+                staffId = assignation.staff.id,
+                locationId = assignation.location?.id,
+                eventId = nsi.eventId,
+                nsiId = nsi.id,
+                rarActivity = nsiRepository.isRar(nsi.id),
+                externalReference = mergeAppointment.urn,
+                date = mergeAppointment.start.toLocalDate(),
+                startTime = mergeAppointment.start,
+                endTime = mergeAppointment.end
+            )
+        )
+
+    private fun checkForConflicts(
+        personId: Long,
+        mergeAppointment: MergeAppointment
+    ) {
+        if (mergeAppointment.start.isAfter(ZonedDateTime.now()) && contactRepository.appointmentClashes(
+                personId,
+                mergeAppointment.id.toString(),
+                mergeAppointment.start.toLocalDate(),
+                mergeAppointment.start,
+                mergeAppointment.end
+            )
+        ) {
+            throw ConflictException("Appointment conflicts with an existing future appointment")
+        }
+    }
+
+    @Transactional
     fun updateOutcome(uao: UpdateAppointmentOutcome): Unit = audit(UPDATE_CONTACT) { audit ->
         audit["contactId"] = uao.id
 
-        val appointment = contactRepository.getAppointmentById(uao.id)
-        val outcome = outcomeRepository.getByCode(attendanceOutcome(uao).value)
+        val appointment = contactRepository.findByPersonCrnAndExternalReference(uao.crn, uao.id.toString())
+            ?: contactRepository.getAppointmentById(uao.deliusId)
+        val outcome = outcomeRepository.getByCode(attendanceOutcome(uao.outcome).value)
         appointment.outcome = outcome
         if (appointment.notes?.contains(uao.notes) != true) {
-            appointment.notes += """${System.lineSeparator()}
-            |${uao.notes}
-            """.trimMargin()
+            appointment.addNotes(uao.notes)
         }
+        appointment.creditHours()
 
-        appointment.hoursCredited = if (outcome.code == Code.COMPLIED.value) {
-            BigDecimal.valueOf(appointment.duration.toMinutes())
-                .divide(BigDecimal(60), 2, RoundingMode.HALF_UP)
-                .toDouble()
-        } else {
-            null
-        }
-
-        if (uao.notify && outcome.compliantAcceptable == false) {
+        if (uao.outcome.notify && outcome.compliantAcceptable == false) {
             handleNonCompliance(appointment)
         }
 
@@ -103,13 +173,12 @@ class AppointmentService(
         startTime = ZonedDateTime.now(),
         eventId = eventId,
         nsiId = nsiId,
-        notes = "${notes}\n${LocalDateTime.now()}\nEnforcement Action: ${action.description}",
         providerId = providerId,
         teamId = teamId,
         staffId = staffId,
         locationId = locationId,
         linkedContactId = id
-    )
+    ).addNotes("${notes}\n${LocalDateTime.now()}\nEnforcement Action: ${action.description}")
 
     private fun Event.enforcementUnderReview() = contactRepository.countEnforcementUnderReview(
         id,
@@ -133,25 +202,27 @@ class AppointmentService(
     )
 
     companion object {
-        private fun attendanceOutcome(uoa: UpdateAppointmentOutcome): Code =
-            when (uoa.attended) {
-                Attended.YES, Attended.LATE -> if (uoa.notify) Code.FAILED_TO_COMPLY else Code.COMPLIED
+        private fun attendanceOutcome(outcome: Outcome): Code =
+            when (outcome.attended) {
+                Attended.YES, Attended.LATE -> if (outcome.notify) Code.FAILED_TO_COMPLY else Code.COMPLIED
                 Attended.NO -> Code.FAILED_TO_ATTEND
             }
     }
 }
 
 data class UpdateAppointmentOutcome(
-    val id: Long,
+    val id: UUID,
+    val deliusId: Long,
     val crn: String,
     val referralReference: String,
     val referral: Referral,
-    val attended: Attended,
-    val notify: Boolean,
+    val outcome: Outcome,
     val url: String
 ) {
     val notes =
         "Session Feedback Recorded for ${referral.contractType} Referral $referralReference with Prime Provider ${referral.provider.name}${System.lineSeparator()}$url"
+    val urn
+        get() = "urn:hmpps:interventions-appointment:$id"
 }
 
 enum class Attended {
@@ -161,3 +232,8 @@ enum class Attended {
         fun of(value: String): Attended = values().first { it.name.lowercase() == value.lowercase() }
     }
 }
+
+data class Outcome(
+    val attended: Attended,
+    val notify: Boolean
+)

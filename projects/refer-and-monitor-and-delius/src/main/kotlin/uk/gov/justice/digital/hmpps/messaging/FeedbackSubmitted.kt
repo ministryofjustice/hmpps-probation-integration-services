@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.EventProcessingResult.Failure
 import uk.gov.justice.digital.hmpps.service.AppointmentService
 import uk.gov.justice.digital.hmpps.service.Attended
+import uk.gov.justice.digital.hmpps.service.Outcome
 import uk.gov.justice.digital.hmpps.service.UpdateAppointmentOutcome
 import java.net.URI
 
@@ -55,11 +56,14 @@ private fun ReferralSession.appointmentOutcome(
     providerName: String,
     url: String
 ) = UpdateAppointmentOutcome(
-    appointmentId,
+    id,
+    deliusId,
     crn,
     referralReference,
     Referral("", Provider(providerName), contractType),
-    Attended.of(sessionFeedback.attendance.attended),
-    sessionFeedback.behaviour.notifyProbationPractitioner ?: true,
+    Outcome(
+        Attended.of(sessionFeedback.attendance.attended),
+        sessionFeedback.behaviour.notifyProbationPractitioner ?: true
+    ),
     url
 )
