@@ -102,7 +102,7 @@ internal class MergeAppointmentIntegrationTest {
     @Order(2)
     fun `cannot save appointment that conflicts with existing appointment`() {
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
-        val start = ZonedDateTime.now().plusDays(14)
+        val start = ZonedDateTime.now().plusDays(14).plusMinutes(10)
         val end = start.plusMinutes(30)
         val person = PersonGenerator.DEFAULT
         val mergeAppointment = MergeAppointment(
