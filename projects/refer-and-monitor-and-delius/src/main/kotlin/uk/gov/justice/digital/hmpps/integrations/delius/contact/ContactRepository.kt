@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Enforcement
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.EnforcementAction
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 import java.time.format.DateTimeFormatter.ISO_LOCAL_TIME
@@ -87,6 +88,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             and to_char(c.contact_date, 'YYYY-MM-DD') = :date
             and to_char(c.contact_start_time, 'HH24:MI') < :endTime 
             and to_char(c.contact_end_time, 'HH24:MI') > :startTime
+            and c.soft_deleted = 0
         """,
         nativeQuery = true
     )
@@ -109,8 +111,8 @@ fun ContactRepository.appointmentClashes(
     personId,
     externalReference,
     date.format(ISO_LOCAL_DATE),
-    startTime.format(ISO_LOCAL_TIME),
-    endTime.format(ISO_LOCAL_TIME)
+    startTime.format(ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
+    endTime.format(ISO_LOCAL_TIME.withZone(ZoneId.systemDefault()))
 ) > 0
 
 fun ContactRepository.getAppointmentById(id: Long): Contact =

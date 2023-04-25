@@ -165,6 +165,7 @@ class DataLoader(
         NsiGenerator.NO_APPOINTMENTS = nsiRepository.save(
             NsiGenerator.generate(
                 nsiNa.type,
+                nsiNa.person,
                 externalReference = nsiNa.externalReference,
                 eventId = nsiNa.eventId,
                 rarCount = nsiNa.rarCount

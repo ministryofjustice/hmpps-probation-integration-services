@@ -60,7 +60,7 @@ internal class MergeAppointmentIntegrationTest {
     @Test
     @Order(1)
     fun `creates appointment with external reference only once`() {
-        val person = PersonGenerator.DEFAULT
+        val person = PersonGenerator.NO_APPOINTMENTS
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
         val start = ZonedDateTime.now().plusDays(14)
         val end = start.plusMinutes(30)
@@ -104,7 +104,7 @@ internal class MergeAppointmentIntegrationTest {
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
         val start = ZonedDateTime.now().plusDays(14).plusMinutes(10)
         val end = start.plusMinutes(30)
-        val person = PersonGenerator.DEFAULT
+        val person = PersonGenerator.NO_APPOINTMENTS
         val mergeAppointment = MergeAppointment(
             UUID.randomUUID(),
             referralId,
@@ -121,8 +121,9 @@ internal class MergeAppointmentIntegrationTest {
     }
 
     @Test
+    @Order(3)
     fun `cannot save past appointment without an outcome`() {
-        val person = PersonGenerator.DEFAULT
+        val person = PersonGenerator.NO_APPOINTMENTS
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
         val start = ZonedDateTime.now().minusDays(1)
         val end = start.plusMinutes(30)
