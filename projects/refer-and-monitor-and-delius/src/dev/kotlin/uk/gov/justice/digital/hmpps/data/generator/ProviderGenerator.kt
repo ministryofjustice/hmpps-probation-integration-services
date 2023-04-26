@@ -15,6 +15,7 @@ object ProviderGenerator {
     val DEFAULT_LOCATION = generateLocation("DEFAULT")
     val JOHN_SMITH = generateStaff("N01RMT1", "John", "Smith")
     val JOHN_SMITH_USER = generateStaffUser("john-smith", JOHN_SMITH)
+    val PRISON_MANAGER = generateStaff("P01WDN1", "Peter", "Wilson")
 
     fun generateProvider(code: String, id: Long = IdGenerator.getAndIncrement()) = Provider(code, id)
     fun generateTeam(code: String, id: Long = IdGenerator.getAndIncrement()) = Team(code, id)
