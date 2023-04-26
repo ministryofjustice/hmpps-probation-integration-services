@@ -4,7 +4,7 @@ import java.time.ZonedDateTime
 import java.util.UUID
 
 class ReferralStarted(
-    referralId: UUID,
+    val referralId: UUID,
     val startedAt: ZonedDateTime,
     val contractType: String,
     val sentenceId: Long,

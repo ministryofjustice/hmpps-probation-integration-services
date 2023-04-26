@@ -42,6 +42,18 @@ class Team(
     }
 }
 
+@Immutable
+@Entity
+@Table(name = "office_location")
+class Location(
+    @Column(name = "code", columnDefinition = "char(7)")
+    val code: String,
+
+    @Id
+    @Column(name = "office_location_id")
+    val id: Long
+)
+
 interface ProviderRepository : JpaRepository<Provider, Long> {
     fun findByCode(code: String): Provider?
 }
@@ -54,3 +66,9 @@ interface TeamRepository : JpaRepository<Team, Long> {
 }
 
 fun TeamRepository.getByCode(code: String) = findByCode(code) ?: throw NotFoundException("Team", "code", code)
+
+interface LocationRepository : JpaRepository<Location, Long> {
+    fun findByCode(code: String): Location?
+}
+
+fun LocationRepository.getByCode(code: String) = findByCode(code) ?: throw NotFoundException("Location", "code", code)

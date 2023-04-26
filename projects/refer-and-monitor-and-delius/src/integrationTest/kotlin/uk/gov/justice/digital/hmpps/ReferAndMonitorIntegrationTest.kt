@@ -90,7 +90,7 @@ internal class ReferAndMonitorIntegrationTest {
             "SessionAppointmentSubmitted",
             mapOf(
                 "crn" to "T140223",
-                "appointmentId" to "1",
+                "appointmentId" to "3fa85f64-5717-4562-b3fc-2c963f66afa6",
                 "referralId" to "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
                 "referralReference" to "FE4536C"
             )
@@ -142,7 +142,7 @@ internal class ReferAndMonitorIntegrationTest {
             "SessionAppointmentSubmitted",
             mapOf(
                 "crn" to "T140223",
-                "appointmentId" to "3",
+                "appointmentId" to "3b8282cd-baa5-45d3-8489-b5836a58a0e8",
                 "referralId" to "89a3f79c-f12b-43de-9616-77ae19813cfe",
                 "referralReference" to "AY0164AC"
             )
@@ -197,7 +197,7 @@ internal class ReferAndMonitorIntegrationTest {
             mapOf(
                 "crn" to "T140223",
                 "referralId" to "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
-                "appointmentId" to "2",
+                "appointmentId" to "48911ad2-1213-4bd3-8312-3824dc29f131",
                 "referralReference" to "FE4536C"
             )
         )

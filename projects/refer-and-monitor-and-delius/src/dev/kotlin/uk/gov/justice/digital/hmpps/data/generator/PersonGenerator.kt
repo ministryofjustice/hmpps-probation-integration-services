@@ -11,6 +11,7 @@ object PersonGenerator {
     val DEFAULT = generate("T140223")
     val FUZZY_SEARCH = generate("F123456")
     val SENTENCED_WITHOUT_NSI = generate("S123456")
+    val NO_APPOINTMENTS = generate("N049975")
 
     val COMMUNITY_RESPONSIBLE = generate("C025519")
     val COMMUNITY_NOT_RESPONSIBLE = generate("C014150")

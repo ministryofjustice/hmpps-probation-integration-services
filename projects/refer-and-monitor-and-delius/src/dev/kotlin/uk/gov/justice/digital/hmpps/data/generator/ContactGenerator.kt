@@ -14,7 +14,7 @@ import java.time.ZonedDateTime
 object ContactGenerator {
     val TYPES = Code.values().map {
         when (it) {
-            Code.CRSAPT, Code.CRSSAA -> generateType(it.value, true)
+            Code.CRSAPT, Code.CRSSAA -> generateType(it.value, nationalStandards = true, attendance = true)
             else -> generateType(it.value)
         }
     }.associateBy { it.code }
@@ -26,11 +26,13 @@ object ContactGenerator {
                 attendance = true,
                 compliantAcceptable = false
             )
+
             ContactOutcome.Code.FAILED_TO_ATTEND -> generateOutcome(
                 it.value,
                 attendance = false,
                 compliantAcceptable = false
             )
+
             else -> generateOutcome(it.value)
         }
     }.associateBy { it.code }
@@ -57,7 +59,8 @@ object ContactGenerator {
             |https://refer-monitor-intervention.service.justice.gov.uk/probation-practitioner/referrals/f56c5f7c-632f-4cad-a1b3-693541cb5f22/progress
         """.trimMargin(),
         nsi = NsiGenerator.END_PREMATURELY,
-        rarActivity = true
+        rarActivity = true,
+        externalReference = "48911ad2-1213-4bd3-8312-3824dc29f131"
     )
 
     var CRSAPT_NOT_ATTENDED = generate(
@@ -81,6 +84,7 @@ object ContactGenerator {
         notes: String? = null,
         rarActivity: Boolean? = null,
         person: Person = PersonGenerator.DEFAULT,
+        externalReference: String? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = Contact(
         person,
@@ -90,19 +94,20 @@ object ContactGenerator {
         endTime = endTime,
         nsiId = nsi?.id,
         eventId = nsi?.eventId,
-        notes = notes,
         id = id,
         providerId = ProviderGenerator.INTENDED_PROVIDER.id,
         teamId = ProviderGenerator.INTENDED_TEAM.id,
         staffId = ProviderGenerator.INTENDED_STAFF.id,
-        rarActivity = rarActivity
-    ).apply { this.outcome = outcome }
+        rarActivity = rarActivity,
+        externalReference = externalReference
+    ).addNotes(notes).apply { this.outcome = outcome }
 
     fun generateType(
         code: String,
         nationalStandards: Boolean = false,
+        attendance: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = ContactType(code, nationalStandards, id)
+    ) = ContactType(code, nationalStandards, attendance, id)
 
     fun generateOutcome(
         code: String,

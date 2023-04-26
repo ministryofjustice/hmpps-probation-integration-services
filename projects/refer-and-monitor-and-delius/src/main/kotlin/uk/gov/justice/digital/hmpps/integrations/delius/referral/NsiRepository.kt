@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.referral
 
+import jakarta.persistence.LockModeType
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Dataset.Code.NSI_OUTCOME
@@ -41,7 +43,29 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
     """
     )
     fun findByIdIfRar(id: Long): Nsi?
+
+    @Query(
+        """
+        select case when rt.code = 'F' then true else false end
+        from Nsi nsi
+        left join Requirement r on r.id = nsi.requirementId
+        left join r.mainCategory rt
+        where nsi.id = :id
+        """
+    )
+    fun isRar(id: Long): Boolean?
+
+    @Lock(LockModeType.PESSIMISTIC_READ)
+    @Query("select nsi.id from Nsi nsi where nsi.id = :id")
+    fun findForUpdate(id: Long): Long
 }
+
+fun NsiRepository.getByCrnAndExternalReference(crn: String, externalReference: String) =
+    findByPersonCrnAndExternalReference(crn, externalReference) ?: throw NotFoundException(
+        "NSI",
+        "externalReference",
+        externalReference
+    )
 
 interface NsiStatusHistoryRepository : JpaRepository<NsiStatusHistory, Long>
 

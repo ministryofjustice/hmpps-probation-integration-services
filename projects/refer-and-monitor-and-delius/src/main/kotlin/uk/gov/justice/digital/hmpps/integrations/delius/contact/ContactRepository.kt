@@ -14,6 +14,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Enforcement
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.EnforcementAction
 import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
+import java.time.format.DateTimeFormatter.ISO_LOCAL_TIME
 
 interface ContactRepository : JpaRepository<Contact, Long> {
 
@@ -71,7 +75,45 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         contactTypes: List<String> = listOf(CRSAPT.value, CRSSAA.value),
         date: LocalDate = LocalDate.now()
     )
+
+    fun findByPersonCrnAndExternalReference(crn: String, externalReference: String): Contact?
+
+    @Query(
+        """
+            select count(c.contact_id)
+            from contact c
+            join r_contact_type ct on c.contact_type_id = ct.contact_type_id
+            where c.offender_id = :personId and ct.attendance_contact = 'Y'
+            and c.external_reference <> :externalReference
+            and to_char(c.contact_date, 'YYYY-MM-DD') = :date
+            and to_char(c.contact_start_time, 'HH24:MI') < :endTime 
+            and to_char(c.contact_end_time, 'HH24:MI') > :startTime
+            and c.soft_deleted = 0
+        """,
+        nativeQuery = true
+    )
+    fun getClashCount(
+        personId: Long,
+        externalReference: String,
+        date: String,
+        startTime: String,
+        endTime: String
+    ): Int
 }
+
+fun ContactRepository.appointmentClashes(
+    personId: Long,
+    externalReference: String,
+    date: LocalDate,
+    startTime: ZonedDateTime,
+    endTime: ZonedDateTime
+): Boolean = getClashCount(
+    personId,
+    externalReference,
+    date.format(ISO_LOCAL_DATE),
+    startTime.format(ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
+    endTime.format(ISO_LOCAL_TIME.withZone(ZoneId.systemDefault()))
+) > 0
 
 fun ContactRepository.getAppointmentById(id: Long): Contact =
     findById(id).orElseThrow { NotFoundException("Appointment", "id", id) }

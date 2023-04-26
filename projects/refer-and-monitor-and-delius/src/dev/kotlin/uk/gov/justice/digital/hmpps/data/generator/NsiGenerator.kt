@@ -34,6 +34,12 @@ object NsiGenerator {
         rarCount = 3
     )
 
+    var NO_APPOINTMENTS = generate(
+        TYPES.values.first(),
+        person = PersonGenerator.NO_APPOINTMENTS,
+        externalReference = "urn:hmpps:interventions-referral:09c62549-bcd3-49a9-8120-7811b76925e5"
+    )
+
     var FUZZY_SEARCH = generate(
         TYPES.values.toList()[3],
         PersonGenerator.FUZZY_SEARCH,

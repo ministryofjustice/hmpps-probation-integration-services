@@ -158,7 +158,6 @@ class NsiService(
         eventId = eventId,
         nsiId = id,
         date = statusDate.toLocalDate(),
-        startTime = statusDate,
-        notes = "NSI Terminated with Outcome: ${outcome!!.description}"
-    )
+        startTime = statusDate
+    ).addNotes("NSI Terminated with Outcome: ${outcome!!.description}")
 }

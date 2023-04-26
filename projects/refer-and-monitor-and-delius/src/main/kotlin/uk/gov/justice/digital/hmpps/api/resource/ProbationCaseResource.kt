@@ -13,6 +13,6 @@ import uk.gov.justice.digital.hmpps.service.ManagerService
 class ProbationCaseResource(private val managerService: ManagerService) {
     @PreAuthorize("hasRole('CRS_REFERRAL')")
     @GetMapping("responsible-officer")
-    fun handle(@PathVariable crn: String): ResponsibleOfficer =
+    fun findResponsibleOfficer(@PathVariable crn: String): ResponsibleOfficer =
         managerService.findResponsibleCommunityManager(crn)
 }
