@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.resource
 
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.core.io.Resource
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -15,11 +16,27 @@ import uk.gov.justice.digital.hmpps.integrations.delius.document.PersonDocument
 class DocumentResource(private val service: DocumentService) {
 
     @PreAuthorize("hasRole('ROLE_WORKFORCE_DOCUMENT')")
+    @Operation(
+        summary = "List of documents held in Delius for the probation case",
+        description = """List of documents available in Delius for the probation
+            case identified by the CRN provided in the request. Document list
+            includes summary information on the type and purpose of document held.
+            Used to support the 'Document List' view of the HMPPS Workload service
+        """
+    )
     @GetMapping
     fun findDocuments(@PathVariable crn: String): List<PersonDocument> =
         service.getDocumentsByCrn(crn)
 
     @PreAuthorize("hasRole('ROLE_WORKFORCE_DOCUMENT')")
+    @Operation(
+        summary = "Fetch a complete document from Delius/Alfresco",
+        description = """Returns the full document identified by the CRN and
+            document id provided in the request. Document is returned in the
+            format stored in Alfresco. Used to support downloading documents
+            from the document list in the HMPPS Workload service
+        """
+    )
     @GetMapping(value = ["/{id}"])
     fun getDocument(@PathVariable crn: String, @PathVariable id: String): ResponseEntity<Resource> =
         service.getDocument(crn, id)
