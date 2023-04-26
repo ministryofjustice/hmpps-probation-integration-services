@@ -1,7 +1,8 @@
 package uk.gov.justice.digital.hmpps.api.model
 
 data class ResponsibleOfficer(
-    val communityManager: Manager
+    val communityManager: Manager,
+    val prisonManager: Manager?
 )
 
 data class Manager(

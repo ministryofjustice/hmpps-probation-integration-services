@@ -45,6 +45,35 @@ class PersonManager(
 
 @Immutable
 @Entity
+@Table(name = "prison_offender_manager")
+@Where(clause = "soft_deleted = 0 and active_flag = 1")
+class PrisonManager(
+
+    @Column(name = "offender_id")
+    val personId: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "allocation_staff_id")
+    val staff: Staff,
+
+    @OneToOne(mappedBy = "prisonManager")
+    val responsibleOfficer: ResponsibleOfficer?,
+
+    val emailAddress: String?,
+
+    @Column(name = "active_flag", columnDefinition = "number")
+    val active: Boolean = true,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean = false,
+
+    @Id
+    @Column(name = "prison_offender_manager_id")
+    val id: Long
+)
+
+@Immutable
+@Entity
 @Table(name = "responsible_officer")
 @Where(clause = "end_date is null")
 class ResponsibleOfficer(
@@ -52,14 +81,23 @@ class ResponsibleOfficer(
     @JoinColumn(name = "offender_manager_id")
     val communityManager: PersonManager?,
 
+    @OneToOne
+    @JoinColumn(name = "prison_offender_manager_id")
+    val prisonManager: PrisonManager? = null,
+
     val endDate: ZonedDateTime? = null,
 
     @Id
     @Column(name = "responsible_officer_id")
-    private val id: Long
+    val id: Long
 )
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
-    @EntityGraph(attributePaths = ["person", "responsibleOfficer"])
+    @EntityGraph(attributePaths = ["person", "responsibleOfficer", "staff.user"])
     fun findByPersonCrn(crn: String): PersonManager?
+}
+
+interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
+    @EntityGraph(attributePaths = ["responsibleOfficer", "staff"])
+    fun findByPersonId(personId: Long): PrisonManager?
 }

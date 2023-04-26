@@ -5,6 +5,9 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -39,7 +42,7 @@ class ProbationCaseResourceTest {
 
     @ParameterizedTest
     @MethodSource("existingCases")
-    fun `retrieve community manager who is responsible officer`(person: Person, communityResponsible: Boolean) {
+    fun `retrieve responsible officer`(person: Person, communityResponsible: Boolean) {
         val staff = ProviderGenerator.JOHN_SMITH
 
         val res = mockMvc.perform(
@@ -48,12 +51,21 @@ class ProbationCaseResourceTest {
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn().response.contentAsString
 
-        val com = objectMapper.readValue<ResponsibleOfficer>(res).communityManager
+        val ro = objectMapper.readValue<ResponsibleOfficer>(res)
+        val com = ro.communityManager
         assertThat(com.code, equalTo(staff.code))
         assertThat(com.name, equalTo(Name(staff.forename, staff.surname)))
         assertThat(com.username, equalTo(staff.user?.username))
         assertThat(com.email, equalTo("john.smith@moj.gov.uk"))
         assertThat(com.responsibleOfficer, equalTo(communityResponsible))
+
+        if (communityResponsible) {
+            assertNull(ro.prisonManager)
+        } else {
+            assertNotNull(ro.prisonManager)
+            assertTrue(ro.prisonManager!!.responsibleOfficer)
+            assertThat(ro.prisonManager!!.email, equalTo("manager@prison.gov.uk"))
+        }
     }
 
     @Test

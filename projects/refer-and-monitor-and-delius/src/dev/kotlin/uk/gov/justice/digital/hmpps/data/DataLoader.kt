@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalTyp
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.LocationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
@@ -62,6 +63,7 @@ class DataLoader(
     private val staffUserRepository: StaffUserRepository,
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
+    private val prisonManagerRepository: PrisonManagerRepository,
     private val responsibleOfficerRepository: ResponsibleOfficerRepository,
     private val eventRepository: EventRepository,
     private val disposalRepository: DisposalRepository,
@@ -111,7 +113,13 @@ class DataLoader(
 
         providerRepository.save(ProviderGenerator.INTENDED_PROVIDER)
         teamRepository.save(ProviderGenerator.INTENDED_TEAM)
-        staffRepository.saveAll(listOf(ProviderGenerator.INTENDED_STAFF, ProviderGenerator.JOHN_SMITH))
+        staffRepository.saveAll(
+            listOf(
+                ProviderGenerator.INTENDED_STAFF,
+                ProviderGenerator.JOHN_SMITH,
+                ProviderGenerator.PRISON_MANAGER
+            )
+        )
 
         locationRepository.save(ProviderGenerator.DEFAULT_LOCATION)
 
@@ -139,7 +147,15 @@ class DataLoader(
             )
         )
 
+        val pom = prisonManagerRepository.save(
+            PersonGenerator.generatePrisonManager(
+                PersonGenerator.COMMUNITY_NOT_RESPONSIBLE,
+                ProviderGenerator.PRISON_MANAGER
+            )
+        )
+
         responsibleOfficerRepository.save(PersonGenerator.generateResponsibleOfficer(roCom))
+        responsibleOfficerRepository.save(PersonGenerator.generateResponsibleOfficer(null, pom))
 
         staffUserRepository.save(ProviderGenerator.JOHN_SMITH_USER)
 
