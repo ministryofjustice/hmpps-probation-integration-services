@@ -40,11 +40,17 @@ class ReferralResource(
         @PathVariable crn: String,
         @PathVariable referralId: UUID,
         @RequestBody mergeAppointment: MergeAppointment
-    ) {
-        appointmentService.mergeAppointment(crn, mergeAppointment)
+    ): Map<String, Long> {
+        val deliusId = appointmentService.mergeAppointment(crn, mergeAppointment)
         telemetryService.trackEvent(
             "MergeAppointment",
-            mapOf("crn" to crn, "referralId" to mergeAppointment.referralId.toString())
+            mapOf(
+                "crn" to crn,
+                "referralId" to mergeAppointment.referralId.toString(),
+                "appointmentId" to mergeAppointment.id.toString(),
+                "deliusId" to deliusId.toString()
+            )
         )
+        return mapOf("appointmentId" to deliusId)
     }
 }

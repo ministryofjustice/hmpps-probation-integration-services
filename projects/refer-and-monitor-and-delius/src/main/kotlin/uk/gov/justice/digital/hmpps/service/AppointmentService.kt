@@ -49,7 +49,7 @@ class AppointmentService(
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
-    fun mergeAppointment(crn: String, mergeAppointment: MergeAppointment): Unit = audit(ADD_CONTACT) { audit ->
+    fun mergeAppointment(crn: String, mergeAppointment: MergeAppointment): Long = audit(ADD_CONTACT) { audit ->
         val nsi = nsiRepository.getByCrnAndExternalReference(crn, mergeAppointment.referralUrn)
         audit["offenderId"] = nsi.person.id
 
@@ -68,9 +68,11 @@ class AppointmentService(
             find() ?: createContact(mergeAppointment, assignation, nsi)
         }
 
+        audit["contactId"] = appointment.id
         appointment.startTime = mergeAppointment.start
         appointment.endTime = mergeAppointment.end
         appointment.date = mergeAppointment.start.toLocalDate()
+        appointment.locationId = assignation.location?.id
 
         mergeAppointment.notes?.also {
             if (appointment.notes?.contains(it) != true) appointment.addNotes(mergeAppointment.notes)
@@ -79,7 +81,6 @@ class AppointmentService(
         mergeAppointment.outcome?.also {
             val outcome = outcomeRepository.getByCode(attendanceOutcome(it).value)
             appointment.outcome = outcome
-            appointment.creditHours()
 
             if (it.notify && outcome.compliantAcceptable == false) {
                 handleNonCompliance(appointment)
@@ -89,6 +90,7 @@ class AppointmentService(
             nsiRepository.findByIdIfRar(appointment.nsiId!!)?.rarCount =
                 contactRepository.countNsiRar(appointment.nsiId)
         }
+        appointment.id
     }
 
     private fun createContact(mergeAppointment: MergeAppointment, assignation: CrsAssignation, nsi: Nsi): Contact =
@@ -131,13 +133,13 @@ class AppointmentService(
         audit["contactId"] = uao.id
 
         val appointment = contactRepository.findByPersonCrnAndExternalReference(uao.crn, uao.id.toString())
-            ?: contactRepository.getAppointmentById(uao.deliusId)
+            ?: uao.deliusId?.let { contactRepository.getAppointmentById(it) }
+            ?: throw NotFoundException("Unable to find appointment ${uao.id} : ${uao.deliusId}")
         val outcome = outcomeRepository.getByCode(attendanceOutcome(uao.outcome).value)
         appointment.outcome = outcome
         if (appointment.notes?.contains(uao.notes) != true) {
             appointment.addNotes(uao.notes)
         }
-        appointment.creditHours()
 
         if (uao.outcome.notify && outcome.compliantAcceptable == false) {
             handleNonCompliance(appointment)
@@ -220,7 +222,7 @@ class AppointmentService(
 
 data class UpdateAppointmentOutcome(
     val id: UUID,
-    val deliusId: Long,
+    val deliusId: Long?,
     val crn: String,
     val referralReference: String,
     val referral: Referral,

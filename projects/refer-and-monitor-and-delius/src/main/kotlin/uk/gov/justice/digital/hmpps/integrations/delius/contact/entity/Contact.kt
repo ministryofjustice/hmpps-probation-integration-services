@@ -118,6 +118,7 @@ class Contact(
             field = value
             attended = value?.attendance
             complied = value?.compliantAcceptable
+            creditHours()
         }
 
     val duration: Duration

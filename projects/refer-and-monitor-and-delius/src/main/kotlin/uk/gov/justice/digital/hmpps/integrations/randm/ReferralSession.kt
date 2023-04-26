@@ -9,7 +9,7 @@ data class ReferralSession(
     val sessionNumber: Int,
     val appointmentTime: ZonedDateTime,
     @JsonAlias("deliusAppointmentId")
-    val deliusId: Long,
+    val deliusId: Long?,
     val sessionFeedback: SessionFeedback
 )
 

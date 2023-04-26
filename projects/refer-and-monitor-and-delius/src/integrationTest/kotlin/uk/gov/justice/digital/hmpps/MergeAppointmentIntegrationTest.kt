@@ -18,7 +18,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultMatcher
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.MergeAppointment
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -77,7 +77,7 @@ internal class MergeAppointmentIntegrationTest {
             false,
             null
         )
-        val result = MockMvcResultMatchers.status().isNoContent
+        val result = status().isNoContent
 
         val r1 = CompletableFuture.supplyAsync {
             makeRequest(person, referralId, mergeAppointment, result)
@@ -119,7 +119,7 @@ internal class MergeAppointmentIntegrationTest {
             null
         )
 
-        makeRequest(person, referralId, mergeAppointment, MockMvcResultMatchers.status().isConflict)
+        makeRequest(person, referralId, mergeAppointment, status().isConflict)
     }
 
     @Test
@@ -140,7 +140,7 @@ internal class MergeAppointmentIntegrationTest {
             null
         )
 
-        makeRequest(person, referralId, mergeAppointment, MockMvcResultMatchers.status().isBadRequest)
+        makeRequest(person, referralId, mergeAppointment, status().isBadRequest)
     }
 
     @Test
@@ -148,7 +148,7 @@ internal class MergeAppointmentIntegrationTest {
         val person = PersonGenerator.NO_APPOINTMENTS
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
         val start = ZonedDateTime.now().plusDays(2)
-        val end = start.plusMinutes(20)
+        val end = start.plusMinutes(30)
         val mergeAppointment = MergeAppointment(
             UUID.randomUUID(),
             referralId,
@@ -160,7 +160,7 @@ internal class MergeAppointmentIntegrationTest {
             false,
             Outcome(Attended.YES, false)
         )
-        val result = MockMvcResultMatchers.status().isNoContent
+        val result = status().isNoContent
 
         makeRequest(person, referralId, mergeAppointment, result)
 
@@ -176,5 +176,27 @@ internal class MergeAppointmentIntegrationTest {
         assertThat(appointment.endTime!!, isCloseTo(mergeAppointment.end))
         assertNotNull(appointment.outcome)
         assertThat(appointment.attended, equalTo(true))
+        assertThat(appointment.hoursCredited, equalTo(0.5))
+    }
+
+    @Test
+    fun `when nsi not found unable to create appointment`() {
+        val person = PersonGenerator.NO_APPOINTMENTS
+        val referralId = UUID.fromString("10b45127-abc1-29c1-7492-2354c21735b8")
+        val start = ZonedDateTime.now().plusDays(10)
+        val end = start.plusMinutes(30)
+        val mergeAppointment = MergeAppointment(
+            UUID.randomUUID(),
+            referralId,
+            "NE1234D",
+            start,
+            end,
+            "Appointment Notes",
+            "DEFAULT",
+            false,
+            null
+        )
+
+        makeRequest(person, referralId, mergeAppointment, status().isNotFound)
     }
 }
