@@ -1,0 +1,28 @@
+asyncapi: 2.6.0
+info:
+  title: Approved Premises and Delius
+  description: Reflect progress of approved premises referrals in Delius
+  version: 0.1.0
+
+servers:
+  development:
+    url: https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-dev-approved-premises-and-delius-queue
+    protocol: sqs
+  preproduction:
+    url: https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-preprod-approved-premises-and-delius-queue
+    protocol: sqs
+  production:
+    url: https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-prod-approved-premises-and-delius-queue
+    protocol: sqs
+
+channels:
+  hmpps-domain-events/approved-premises-and-delius/application-submitted:
+    subscribe:
+      operationId: approved-premises.application.submitted
+      message:
+        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/approved_premises/application_submitted.yml
+  hmpps-domain-events/approved-premises-and-delius/application-assessed:
+    subscribe:
+      operationId: approved-premises.application.assessed
+      message:
+        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/approved_premises/application_assessed.yml
