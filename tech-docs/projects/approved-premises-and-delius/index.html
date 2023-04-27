@@ -100,6 +100,12 @@
       <li>
         <a href="./index.html#context-maps"><span>Context Maps</span></a>
       </li>
+      <li>
+        <a href="./index.html#interfaces"><span>Interfaces</span></a>
+      </li>
+      <li>
+        <a href="./index.html#event-triggers"><span>Event Triggers</span></a>
+      </li>
     </ul>
   </li>
   <li>
@@ -115,6 +121,9 @@
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
       </li>
     </ul>
+  </li>
+  <li>
+    <a href="./async-api-reference.html"><span>ASyncAPI Reference</span></a>
   </li>
 </ul>
 
@@ -138,7 +147,35 @@ Practitioner has an up-to-date view of activity in the Approved Premises
 service when interacting with the probation case via Delius.</p>
 <h2 id="context-maps">Context Maps</h2>
 <p><a href="././img/approved-premises-and-delius-context-maps.png" rel="noopener noreferrer"><img src="img/approved-premises-and-delius-context-maps.png" alt="Context Maps" /></a></p>
-
+<h2 id="interfaces">Interfaces</h2>
+<h3 id="message-formats">Message Formats</h3>
+<p>The service responds to various HMPPS Domain Event message via the
+<a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/approved-premises-and-delius-queue.tf">Approved Premises and Delius Queue</a>.
+The events are raised by the <a href="https://github.com/ministryofjustice/hmpps-approved-premises-api">HMPPS Approved Premises Service</a>
+to communicate important events in the approved premises referrals process.</p>
+<p>Example <a href="./src/dev/resources/messages/">messages</a> are in the development source tree.</p>
+<p>Incoming messages are filtered on <code>eventType</code> by the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/cc44e15d883b04d1caf5663eec6025674dc10eb5/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/approved-premises-and-delius-queue.tf#L5-L14">SQS queue policy</a></p>
+<h2 id="event-triggers">Event Triggers</h2>
+<p>Approved Premises domain events are raised in real time as approved premises
+referrals are processed. The progressive stages of a referral are raised as
+separate events</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Class</th>
+<th>Message Event Type / Filter</th>
+</tr><tr>
+<td>A referral to an approved premises has been assessed</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;approved-premises.application.assessed&rdquo;</td>
+</tr><tr>
+<td>A referral to an approved premises has been submitted</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;approved-premises.application.submitted&rdquo;</td>
+</tr>
+        </table>
+      </div>
             
           </main>
 
