@@ -29,7 +29,8 @@ class AllocationDemandResource(
         summary = "List of summary probation case details for cases that require allocation",
         description = """Summary information on the probation case list provided in the request.
             Used to support the list of 'Unallocated Community Cases' in the HMPPS Workforce
-            service
+            service which shows the list of cases that require allocation to a probation
+            practitioner
         """
     )
     @PostMapping
@@ -50,8 +51,8 @@ class AllocationDemandResource(
         summary = "List of summary probation case details with probation practioner details",
         description = """Summary information on the probation case provided in the request along
             with a list of probation practitioners associated with the teams provided in the
-            request. Used to support the 'Choose Practitioner' screen of the HMPPS Workload
-            service
+            request. Used to support the 'Choose Practitioner' screen of the HMPPS Workforce
+            service which is part of the case allocation workflow
         """
     )
     @GetMapping("/choose-practitioner")
@@ -66,7 +67,7 @@ class AllocationDemandResource(
         description = """Detailed information on all current and previous cases, offences, sentences
             and management by probation practitioners for the person identified by the CRN and event
             provided in the request. Supports the 'Probation Record' screen of case allocation in
-            the HMPPS Workload service
+            the HMPPS Workforce service which is part of the case allocation workflow
         """
     )
     @GetMapping("/{crn}/{eventNumber}/probation-record")
@@ -78,7 +79,7 @@ class AllocationDemandResource(
         summary = "Summary information on the person on probation and probation practitioner",
         description = """Summary information on the person on probation and probation practitioner
             identified by the CRN and staff code provided in the request. Used to support the
-            post-allocation 'Impact' screen of the HMPPS Workload service
+            post-allocation 'Impact' screen of the HMPPS Workforce service
         """
     )
     @GetMapping("/impact")
@@ -89,7 +90,8 @@ class AllocationDemandResource(
         summary = "Detailed information on the risk information held in Delius",
         description = """Detailed information on the risk factors held and managed in Delius for the
             person on probation identified by the CRN provided in the request. Supports the 'Risk'
-            section of the 'Case View' within the HMPPS Workload service
+            section of the 'Case View' within the HMPPS Workload service which is part of the case
+            allocation workflow
         """
     )
     @GetMapping("/{crn}/risk")
@@ -101,8 +103,8 @@ class AllocationDemandResource(
             on probation""",
         description = """Summary information on the person on probation identified by the CRN provided
             in the request with a list of all active Delius events for that person that do not currently
-            have a case allocation. Used to support choosing the event to allocate in the HMPPS Workload
-            service
+            have a case allocation. Used to support choosing the event to allocate in the case allocation
+            workflow of the HMPPS Workforce service
         """
     )
     @GetMapping("/{crn}/unallocated-events")
@@ -113,7 +115,7 @@ class AllocationDemandResource(
         summary = "Detailed information on the case allocation",
         description = """Detailed information on the probation case, event and probation practitioners
             identified in the request. Used to display a summary page after case allocation has been
-            completed in the HMPPS Workload service
+            completed in the HMPPS Workforce service
         """
     )
     @GetMapping("/{crn}/{eventNumber}/allocation")

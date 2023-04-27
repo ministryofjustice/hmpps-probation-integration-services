@@ -15,10 +15,10 @@ import uk.gov.justice.digital.hmpps.service.AllocationCompletedService
 class AllocationCompletedResource(private val service: AllocationCompletedService) {
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @Operation(
-        summary = "Summary case allocation information as held in Delius",
+        summary = "Summary case allocation information as currently held in Delius",
         description = """Summary case allocation information for the probation case
-            identified by the CRN and Event Number in the request. Staff information
-            returned for the probation practitioner identified by the Staff Code
+            identified by the CRN and Event Number in the request. Also provided
+            information on the probation practitioner identified by the staff code
             in the request. Used to support the post-allocation information page of
             the HMPPS Workforce service
         """

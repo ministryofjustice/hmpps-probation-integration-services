@@ -15,10 +15,11 @@ class CaseViewResource(val service: CaseViewService) {
     @Operation(
         summary = "Detailed information on the probation case",
         description = """Detailed information on the probation case identified
-            by the CRN and Event Number provided in the request. Returns information
+            by the CRN and event number provided in the request. Returns information
             on the person on probation, offences, sentence, requirements and case
             documents held in Delius. Used to support the 'Case View' screen of the
-            HMPPS Workforce service
+            HMPPS Workforce service which provides a detailed overview of the case
+            when allocating to a probation practitioner
         """
     )
     @GetMapping("/{crn}/{eventNumber}/case-view")

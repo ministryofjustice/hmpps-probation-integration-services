@@ -23,7 +23,7 @@ class UserResource(private val userAccessService: UserAccessService) {
             access to all users other than those named. The restrictions may be in place
             for a number of reasons related to the case supervision and clients should use
             the restriction information to mask data access from any identified user that
-            has a restriction in place.
+            has a restriction in place
         """
     )
     @RequestMapping("/{username}/access-controls", method = [RequestMethod.GET, RequestMethod.POST])
