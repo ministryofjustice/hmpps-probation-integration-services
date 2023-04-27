@@ -5,23 +5,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-    <title>About - HMPPS Workforce Allocations to Delius</title>
+    <title>AsyncAPI Reference - HMPPS Workforce Allocations to Delius</title>
 
     <link href="stylesheets/manifest.css" rel="stylesheet" />
 
-    <link rel="canonical" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius/">
+    <link rel="canonical" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius/async-api-reference.html">
 
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:domain" content="ministryofjustice.github.io" />
       <meta name="twitter:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius/images/govuk-large.png" />
-      <meta name="twitter:title" content="About - HMPPS Workforce Allocations to Delius" />
-      <meta name="twitter:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius/" />
+      <meta name="twitter:title" content="AsyncAPI Reference - HMPPS Workforce Allocations to Delius" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius/async-api-reference.html" />
 
       <meta property="og:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius/images/govuk-large.png" />
       <meta property="og:site_name" content="HMPPS Workforce Allocations to Delius" />
-      <meta property="og:title" content="About" />
+      <meta property="og:title" content="AsyncAPI Reference" />
       <meta property="og:type" content="object" />
-      <meta property="og:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius/" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius/async-api-reference.html" />
 
     
   </head>
@@ -179,67 +179,19 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="workforce-allocations-to-delius">Workforce Allocations to Delius</h1>
-<p>Inbound service that responds to workforce allocations events, calls the
-<a href="https://github.com/ministryofjustice/hmpps-workload">HMPPS Workload Service</a>
-to determine case allocation status and adds the allocations and transfer
-records to Delius. We also add case history contacts to the contact log and
-add the necessary audit logs and IAPS events.</p>
-<h2 id="probation-business-need">Probation Business Need</h2>
-<p>The process of allocating cases to probation practitioners is moving to the
-HMPPS Workforce service. When these case allocations are actioned they must be
-reflected in Delius for the case management activity to proceed.</p>
-<h2 id="context-map">Context Map</h2>
-<p><a href="./img/workforce-allocations-to-delius-context-map.png" rel="noopener noreferrer"><img src="img/workforce-allocations-to-delius-context-map.png" alt="Context Map" /></a></p>
-<h2 id="interfaces">Interfaces</h2>
-<h3 id="message-formats">Message Formats</h3>
-<p>The service responds to various HMPPS Domain Event message via the
-<a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-domain-events-prod/resources/hmpps-workforce-allocation-queue.tf">HMPPS Workforce Allocation Queue</a>.
-The events are raised by the <a href="https://github.com/ministryofjustice/hmpps-workload">HMPPS Workload Service</a> and indicate the
-a person, event or requirement has been allocated to a probation practitioner.</p>
-<p>Example <a href="./src/dev/resources/messages/">messages</a> are in the development source tree.</p>
-<p>Incoming messages are filtered on <code>eventType</code> by the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/bf1435995cd59ec9b69e641bd4a1f480a561e178/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-domain-events-prod/resources/hmpps-workforce-allocation-queue.tf#L72-L77">SQS queue policy</a>.</p>
-<h3 id="workforce-allocation-details">Workforce Allocation Details</h3>
-<p>The service uses <code>detailUrl</code> contained in the message to request details of
-the case to be allocated. This URL should reference an instance of the HMPPS
-Workload service or a service that provides a response containing workforce
-allocation details in the same format.</p>
-<h2 id="historic-allocations">Historic Allocations</h2>
-<p>If the allocation date and time is prior to the date and time of the latest
-case allocation in Delius then the details will be added to the historic
-record of allocations but the current case allocation will remain in place.</p>
-<h2 id="event-triggers">Event Triggers</h2>
-<p>Allocation domain events are raised in real time as probation cases are
-allocated to a practitioner. The individual elements of the case are raised as
-separate events.</p>
-<div class="table-container">
-        <table>
-          <tr>
-<th>Business Event</th>
-<th>Message Class</th>
-<th>Message Event Type / Filter</th>
-</tr><tr>
-<td>Person Allocated to Practitioner</td>
-<td>HMPPS Domain Event</td>
-<td>&ldquo;person.community.manager.allocated&rdquo;</td>
-</tr><tr>
-<td>Event Allocated to Practitioner</td>
-<td>HMPPS Domain Event</td>
-<td>&ldquo;event.manager.allocated&rdquo;</td>
-</tr><tr>
-<td>Requirement Allocated to Practitioner</td>
-<td>HMPPS Domain Event</td>
-<td>&ldquo;requirement.manager.allocated&rdquo;</td>
-</tr>
-        </table>
-      </div>
+            <h1 id="asyncapi-reference">ASyncAPI Reference</h1>
+
+<ul>
+<li><a href="https://studio.asyncapi.com/?url=https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/main/projects/workforce-allocations-to-delius/tech-docs/spec/async-api.yaml&amp;readOnly">ASyncAPI Spec</a></li>
+</ul>
+
             
           </main>
 
           <aside>
               <ul class="contribution-banner">
-                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/workforce-allocations-to-delius/tech-docs/source/index.html.md.erb">View source</a></li>
-                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new?body=Problem+with+%27About%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fhmpps-probation-integration-services%2Ftech-docs%2Fprojects%2Fworkforce-allocations-to-delius%2F%29&amp;labels=bug&amp;title=Re%3A+%27About%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/workforce-allocations-to-delius/tech-docs/source/async-api-reference.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new?body=Problem+with+%27AsyncAPI+Reference%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fhmpps-probation-integration-services%2Ftech-docs%2Fprojects%2Fworkforce-allocations-to-delius%2Fasync-api-reference.html%29&amp;labels=bug&amp;title=Re%3A+%27AsyncAPI+Reference%27">Report problem</a></li>
                 <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services">GitHub Repo</a></li>
               </ul>
           </aside>

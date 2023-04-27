@@ -167,6 +167,9 @@
       </li>
     </ul>
   </li>
+  <li>
+    <a href="./async-api-reference.html"><span>ASyncAPI Reference</span></a>
+  </li>
 </ul>
 
 
@@ -199,6 +202,18 @@
 <h2 id="user-username-access-controls">/user/{username}/access-controls</h2>
 
 <h3 id="user-username-access-controls-get">get</h3>
+
+  <p><em>Data access restriction information for the combination of the Delius
+            user and the supplied list of CRNs</em></p>
+
+
+  <p>Probation case records in Delius may have access restrictions
+            defined for particular Delius users. This restrictions may be in place to stop
+            identified users accessing information on specific people or they may restrict
+            access to all users other than those named. The restrictions may be in place
+            for a number of reasons related to the case supervision and clients should use
+            the restriction information to mask data access from any identified user that
+            has a restriction in place</p>
 
 
 
@@ -265,6 +280,18 @@
 
 <h3 id="user-username-access-controls-post">post</h3>
 
+  <p><em>Data access restriction information for the combination of the Delius
+            user and the supplied list of CRNs</em></p>
+
+
+  <p>Probation case records in Delius may have access restrictions
+            defined for particular Delius users. This restrictions may be in place to stop
+            identified users accessing information on specific people or they may restrict
+            access to all users other than those named. The restrictions may be in place
+            for a number of reasons related to the case supervision and clients should use
+            the restriction information to mask data access from any identified user that
+            has a restriction in place</p>
+
 
 
 
@@ -323,6 +350,16 @@
 <h2 id="staff-code-active-cases">/staff/{code}/active-cases</h2>
 
 <h3 id="staff-code-active-cases-post">post</h3>
+
+  <p><em>Personal information along with a list of active
+            cases for the identified probation practitioner</em></p>
+
+
+  <p>Summary information on the full case list of
+            of the probation practitioner identified in the request.
+            Used to support the &lsquo;Case Details&rsquo; capability of the HMPPS
+            Workload service, which show details of the current case load
+            of the staff member for capacity planning</p>
 
 
 
@@ -402,6 +439,13 @@
 
 <h3 id="allocation-details-post">post</h3>
 
+  <p><em>Summary information on the person on probation and probation practitioner</em></p>
+
+
+  <p>Summary information on the person on probation and probation practitioner
+            identified by the list of CRNs and staff codes provided in the request. Used to support
+            showing the impact of case allocations in the HMPPS Workforce service</p>
+
 
 
 
@@ -460,6 +504,14 @@
 <h2 id="allocation-demand">/allocation-demand</h2>
 
 <h3 id="allocation-demand-post">post</h3>
+
+  <p><em>List of summary probation case details for cases that require allocation</em></p>
+
+
+  <p>Summary information on the probation case list provided in the request.
+            Used to support the list of &lsquo;Unallocated Community Cases&rsquo; in the HMPPS Workforce
+            service which shows the list of cases that require allocation to a probation
+            practitioner</p>
 
 
 
@@ -546,6 +598,16 @@
 
 <h3 id="staff-code-officer-view-get">get</h3>
 
+  <p><em>Personal and and summary caseload information for
+            the identified probation officer</em></p>
+
+
+  <p>Summary information on the probation caseload
+            for the probation officer identified in the request. Used
+            to support the &lsquo;Officer View&rsquo; capability of the HMPPS
+            Workload service which shows statistics on the staff members
+            caseload</p>
+
 
 
 
@@ -615,6 +677,13 @@
 <h2 id="person-value">/person/{value}</h2>
 
 <h3 id="person-value-get">get</h3>
+
+  <p><em>Basic information on the person on probation</em></p>
+
+
+  <p>Basic information on the person on probation as held in Delius,
+            identified by either the CRN or NOMS number provided in the request. Supports
+            display of the overview person information in the HMPPS Workload service</p>
 
 
 
@@ -701,6 +770,16 @@
 
 <h3 id="offenders-crn-documents-get">get</h3>
 
+  <p><em>List of documents held in Delius for the probation case</em></p>
+
+
+  <p>List of documents available in Delius for the probation
+            case identified by the CRN provided in the request. Document list
+            includes summary information on the type and purpose of document held.
+            Used to support the &lsquo;Document List&rsquo; view of the HMPPS Workforce service
+            which is used to give detailed information on the case when allocating
+            to a probation practitioner</p>
+
 
 
 
@@ -759,6 +838,14 @@
 <h2 id="offenders-crn-documents-id">/offenders/{crn}/documents/{id}</h2>
 
 <h3 id="offenders-crn-documents-id-get">get</h3>
+
+  <p><em>Fetch a complete document from Delius/Alfresco</em></p>
+
+
+  <p>Returns the full document identified by the CRN and
+            document id provided in the request. Document is returned in the
+            format stored in Alfresco. Used to support downloading documents
+            from the document list in the HMPPS Workload service</p>
 
 
 
@@ -828,6 +915,14 @@
 <h2 id="allocation-demand-crn-eventnumber-probation-record">/allocation-demand/{crn}/{eventNumber}/probation-record</h2>
 
 <h3 id="allocation-demand-crn-eventnumber-probation-record-get">get</h3>
+
+  <p><em>Detailed information on the probation supervision history</em></p>
+
+
+  <p>Detailed information on all current and previous cases, offences, sentences
+            and management by probation practitioners for the person identified by the CRN and event
+            provided in the request. Supports the &lsquo;Probation Record&rsquo; screen of case allocation in
+            the HMPPS Workforce service which is part of the case allocation workflow</p>
 
 
 
@@ -969,6 +1064,16 @@
 
 <h3 id="allocation-demand-crn-eventnumber-case-view-get">get</h3>
 
+  <p><em>Detailed information on the probation case</em></p>
+
+
+  <p>Detailed information on the probation case identified
+            by the CRN and event number provided in the request. Returns information
+            on the person on probation, offences, sentence, requirements and case
+            documents held in Delius. Used to support the &lsquo;Case View&rsquo; screen of the
+            HMPPS Workforce service which provides a detailed overview of the case
+            when allocating to a probation practitioner</p>
+
 
 
 
@@ -1096,6 +1201,13 @@
 <h2 id="allocation-demand-crn-eventnumber-allocation">/allocation-demand/{crn}/{eventNumber}/allocation</h2>
 
 <h3 id="allocation-demand-crn-eventnumber-allocation-get">get</h3>
+
+  <p><em>Detailed information on the case allocation</em></p>
+
+
+  <p>Detailed information on the probation case, event and probation practitioners
+            identified in the request. Used to display a summary page after case allocation has been
+            completed in the HMPPS Workforce service</p>
 
 
 
@@ -1245,6 +1357,15 @@
 
 <h3 id="allocation-demand-crn-unallocated-events-get">get</h3>
 
+  <p><em>Summary information on all Delius events without a case allocation for a person
+            on probation</em></p>
+
+
+  <p>Summary information on the person on probation identified by the CRN provided
+            in the request with a list of all active Delius events for that person that do not currently
+            have a case allocation. Used to support choosing the event to allocate in the case allocation
+            workflow of the HMPPS Workforce service</p>
+
 
 
 
@@ -1316,6 +1437,14 @@
 <h2 id="allocation-demand-crn-risk">/allocation-demand/{crn}/risk</h2>
 
 <h3 id="allocation-demand-crn-risk-get">get</h3>
+
+  <p><em>Detailed information on the risk information held in Delius</em></p>
+
+
+  <p>Detailed information on the risk factors held and managed in Delius for the
+            person on probation identified by the CRN provided in the request. Supports the &lsquo;Risk&rsquo;
+            section of the &lsquo;Case View&rsquo; within the HMPPS Workload service which is part of the case
+            allocation workflow</p>
 
 
 
@@ -1402,6 +1531,13 @@
 
 <h3 id="allocation-demand-impact-get">get</h3>
 
+  <p><em>Summary information on the person on probation and probation practitioner</em></p>
+
+
+  <p>Summary information on the person on probation and probation practitioner
+            identified by the CRN and staff code provided in the request. Used to support the
+            post-allocation &lsquo;Impact&rsquo; screen of the HMPPS Workforce service</p>
+
 
 
 
@@ -1486,6 +1622,14 @@
 <h2 id="allocation-demand-choose-practitioner">/allocation-demand/choose-practitioner</h2>
 
 <h3 id="allocation-demand-choose-practitioner-get">get</h3>
+
+  <p><em>List of summary probation case details with probation practioner details</em></p>
+
+
+  <p>Summary information on the probation case provided in the request along
+            with a list of probation practitioners associated with the teams provided in the
+            request. Used to support the &lsquo;Choose Practitioner&rsquo; screen of the HMPPS Workforce
+            service which is part of the case allocation workflow</p>
 
 
 
@@ -1577,6 +1721,15 @@
 <h2 id="allocation-completed-details">/allocation-completed/details</h2>
 
 <h3 id="allocation-completed-details-get">get</h3>
+
+  <p><em>Summary case allocation information as currently held in Delius</em></p>
+
+
+  <p>Summary case allocation information for the probation case
+            identified by the CRN and Event Number in the request. Also provided
+            information on the probation practitioner identified by the staff code
+            in the request. Used to support the post-allocation information page of
+            the HMPPS Workforce service</p>
 
 
 
