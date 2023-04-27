@@ -213,7 +213,7 @@
             access to all users other than those named. The restrictions may be in place
             for a number of reasons related to the case supervision and clients should use
             the restriction information to mask data access from any identified user that
-            has a restriction in place.</p>
+            has a restriction in place</p>
 
 
 
@@ -290,7 +290,7 @@
             access to all users other than those named. The restrictions may be in place
             for a number of reasons related to the case supervision and clients should use
             the restriction information to mask data access from any identified user that
-            has a restriction in place.</p>
+            has a restriction in place</p>
 
 
 
@@ -352,13 +352,14 @@
 <h3 id="staff-code-active-cases-post">post</h3>
 
   <p><em>Personal information along with a list of active
-            cases for the identified probation officer</em></p>
+            cases for the identified probation practitioner</em></p>
 
 
   <p>Summary information on the full case list of
-            of the probation officer identified in the request. Used
-            to support the &lsquo;Case Details&rsquo; capability of the HMPPS
-            Workload API</p>
+            of the probation practitioner identified in the request.
+            Used to support the &lsquo;Case Details&rsquo; capability of the HMPPS
+            Workload service, which show details of the current case load
+            of the staff member for capacity planning</p>
 
 
 
@@ -443,7 +444,7 @@
 
   <p>Summary information on the person on probation and probation practitioner
             identified by the list of CRNs and staff codes provided in the request. Used to support
-            ??</p>
+            showing the impact of case allocations in the HMPPS Workforce service</p>
 
 
 
@@ -509,7 +510,8 @@
 
   <p>Summary information on the probation case list provided in the request.
             Used to support the list of &lsquo;Unallocated Community Cases&rsquo; in the HMPPS Workforce
-            service</p>
+            service which shows the list of cases that require allocation to a probation
+            practitioner</p>
 
 
 
@@ -603,7 +605,8 @@
   <p>Summary information on the probation caseload
             for the probation officer identified in the request. Used
             to support the &lsquo;Officer View&rsquo; capability of the HMPPS
-            Workload API</p>
+            Workload service which shows statistics on the staff members
+            caseload</p>
 
 
 
@@ -773,7 +776,9 @@
   <p>List of documents available in Delius for the probation
             case identified by the CRN provided in the request. Document list
             includes summary information on the type and purpose of document held.
-            Used to support the &lsquo;Document List&rsquo; view of the HMPPS Workload service</p>
+            Used to support the &lsquo;Document List&rsquo; view of the HMPPS Workforce service
+            which is used to give detailed information on the case when allocating
+            to a probation practitioner</p>
 
 
 
@@ -917,7 +922,7 @@
   <p>Detailed information on all current and previous cases, offences, sentences
             and management by probation practitioners for the person identified by the CRN and event
             provided in the request. Supports the &lsquo;Probation Record&rsquo; screen of case allocation in
-            the HMPPS Workload service</p>
+            the HMPPS Workforce service which is part of the case allocation workflow</p>
 
 
 
@@ -1063,10 +1068,11 @@
 
 
   <p>Detailed information on the probation case identified
-            by the CRN and Event Number provided in the request. Returns information
+            by the CRN and event number provided in the request. Returns information
             on the person on probation, offences, sentence, requirements and case
             documents held in Delius. Used to support the &lsquo;Case View&rsquo; screen of the
-            HMPPS Workforce service</p>
+            HMPPS Workforce service which provides a detailed overview of the case
+            when allocating to a probation practitioner</p>
 
 
 
@@ -1201,7 +1207,7 @@
 
   <p>Detailed information on the probation case, event and probation practitioners
             identified in the request. Used to display a summary page after case allocation has been
-            completed in the HMPPS Workload service</p>
+            completed in the HMPPS Workforce service</p>
 
 
 
@@ -1357,8 +1363,8 @@
 
   <p>Summary information on the person on probation identified by the CRN provided
             in the request with a list of all active Delius events for that person that do not currently
-            have a case allocation. Used to support choosing the event to allocate in the HMPPS Workload
-            service</p>
+            have a case allocation. Used to support choosing the event to allocate in the case allocation
+            workflow of the HMPPS Workforce service</p>
 
 
 
@@ -1437,7 +1443,8 @@
 
   <p>Detailed information on the risk factors held and managed in Delius for the
             person on probation identified by the CRN provided in the request. Supports the &lsquo;Risk&rsquo;
-            section of the &lsquo;Case View&rsquo; within the HMPPS Workload service</p>
+            section of the &lsquo;Case View&rsquo; within the HMPPS Workload service which is part of the case
+            allocation workflow</p>
 
 
 
@@ -1529,7 +1536,7 @@
 
   <p>Summary information on the person on probation and probation practitioner
             identified by the CRN and staff code provided in the request. Used to support the
-            post-allocation &lsquo;Impact&rsquo; screen of the HMPPS Workload service</p>
+            post-allocation &lsquo;Impact&rsquo; screen of the HMPPS Workforce service</p>
 
 
 
@@ -1621,8 +1628,8 @@
 
   <p>Summary information on the probation case provided in the request along
             with a list of probation practitioners associated with the teams provided in the
-            request. Used to support the &lsquo;Choose Practitioner&rsquo; screen of the HMPPS Workload
-            service</p>
+            request. Used to support the &lsquo;Choose Practitioner&rsquo; screen of the HMPPS Workforce
+            service which is part of the case allocation workflow</p>
 
 
 
@@ -1715,12 +1722,12 @@
 
 <h3 id="allocation-completed-details-get">get</h3>
 
-  <p><em>Summary case allocation information as held in Delius</em></p>
+  <p><em>Summary case allocation information as currently held in Delius</em></p>
 
 
   <p>Summary case allocation information for the probation case
-            identified by the CRN and Event Number in the request. Staff information
-            returned for the probation practitioner identified by the Staff Code
+            identified by the CRN and Event Number in the request. Also provided
+            information on the probation practitioner identified by the staff code
             in the request. Used to support the post-allocation information page of
             the HMPPS Workforce service</p>
 
