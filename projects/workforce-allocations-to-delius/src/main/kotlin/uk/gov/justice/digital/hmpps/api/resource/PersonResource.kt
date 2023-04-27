@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.resource
 
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -14,6 +15,13 @@ import uk.gov.justice.digital.hmpps.service.PersonService
 class PersonResource(private val personService: PersonService) {
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
+    @Operation(
+        summary = "Basic information on the person on probation",
+        description = """Basic information on the person on probation as held in Delius,
+            identified by either the CRN or NOMS number provided in the request. Supports
+            display of the overview person information in the HMPPS Workload service
+        """
+    )
     @GetMapping("/{value}")
     fun findPerson(
         @PathVariable value: String,
