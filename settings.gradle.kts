@@ -36,7 +36,7 @@ rootProject.allChildren()
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.0.0-RC2")
+            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.0.0")
             library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.0.0-RC2")
             library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.0.0-RC2")
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.0.0-RC2")
