@@ -33,7 +33,6 @@ allprojects {
     group = "uk.gov.justice.digital"
 
     repositories {
-        maven { url = uri("https://repo.spring.io/milestone") }
         mavenLocal()
         mavenCentral()
     }
