@@ -40,3 +40,13 @@ separate events
 |-------------------------------------------------------|--------------------|-------------------------------------------|
 | A referral to an approved premises has been assessed  | HMPPS Domain Event | "approved-premises.application.assessed"  |
 | A referral to an approved premises has been submitted | HMPPS Domain Event | "approved-premises.application.submitted" |
+
+## Authorisation
+
+API endpoints are secured by roles supplied by the HMPPS Auth client used in
+the requests
+
+| API Endpoint                    | Required Role                   |
+|---------------------------------|---------------------------------|
+| /approved-premises/{code}/staff | ROLE\_APPROVED\_PREMISES\_STAFF |
+| /teams/managingCase/{crn}       | ROLE\_APPROVED\_PREMISES\_STAFF |
