@@ -106,6 +106,9 @@
       <li>
         <a href="./index.html#event-triggers"><span>Event Triggers</span></a>
       </li>
+      <li>
+        <a href="./index.html#authorisation"><span>Authorisation</span></a>
+      </li>
     </ul>
   </li>
   <li>
@@ -173,6 +176,22 @@ separate events</p>
 <td>A referral to an approved premises has been submitted</td>
 <td>HMPPS Domain Event</td>
 <td>&ldquo;approved-premises.application.submitted&rdquo;</td>
+</tr>
+        </table>
+      </div><h2 id="authorisation">Authorisation</h2>
+<p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
+the requests</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>/approved-premises/{code}/staff</td>
+<td>ROLE_APPROVED_PREMISES_STAFF</td>
+</tr><tr>
+<td>/teams/managingCase/{crn}</td>
+<td>ROLE_APPROVED_PREMISES_STAFF</td>
 </tr>
         </table>
       </div>
