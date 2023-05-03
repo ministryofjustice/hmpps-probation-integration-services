@@ -22,7 +22,6 @@ class Staff(
     @Column(name = "forename2")
     val middleName: String? = null,
 
-
     @Id
     @Column(name = "staff_id")
     val id: Long

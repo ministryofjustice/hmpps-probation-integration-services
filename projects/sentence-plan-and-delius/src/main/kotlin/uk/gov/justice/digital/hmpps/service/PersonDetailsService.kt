@@ -20,7 +20,7 @@ class PersonDetailsService(val personRepository: PersonRepository) {
             Manager(
                 Name(manager.staff.forename, manager.staff.middleName, manager.staff.surname),
                 manager.staff.isUnallocated()
-            ),
+            )
         )
     }
 }

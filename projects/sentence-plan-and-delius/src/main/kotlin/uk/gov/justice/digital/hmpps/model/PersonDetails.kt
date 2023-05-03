@@ -22,5 +22,3 @@ data class Manager(
     val name: Name?,
     val unallocated: Boolean = false
 )
-
-

@@ -27,7 +27,6 @@ class Team(
     val id: Long
 )
 
-
 @Entity
 @Immutable
 class ProbationArea(

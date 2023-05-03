@@ -5,6 +5,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.springframework.data.annotation.Immutable
+import org.springframework.data.jpa.repository.JpaRepository
 
 @Immutable
 @Entity
@@ -19,5 +20,7 @@ class ReferenceData(
     val id: Long,
 
     @Column(name = "code_description")
-    val description: String,
+    val description: String
 )
+
+interface ReferenceDataRepository : JpaRepository<ReferenceData, Long>

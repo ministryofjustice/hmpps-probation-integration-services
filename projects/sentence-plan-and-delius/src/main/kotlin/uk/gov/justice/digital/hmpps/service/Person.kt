@@ -9,7 +9,6 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
-import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.Name
@@ -55,8 +54,8 @@ class Person(
 
     @ManyToOne
     @JoinColumn(name = "current_tier")
-    val tier: ReferenceData?,
-    )
+    val tier: ReferenceData?
+)
 
 @Immutable
 @Entity
@@ -87,10 +86,7 @@ class PersonManager(
     val id: Long
 )
 
-
-
 interface PersonRepository : JpaRepository<Person, Long> {
-    @EntityGraph(attributePaths = ["currentTier"])
     fun findByCrn(crn: String): Person?
 }
 
