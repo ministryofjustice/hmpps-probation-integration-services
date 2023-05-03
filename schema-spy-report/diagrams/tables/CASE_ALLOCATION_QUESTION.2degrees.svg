@@ -1283,7 +1283,7 @@
 <text text-anchor="start" x="1717.5" y="-4985.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 15</text>
 <polygon fill="#ffffff" stroke="transparent" points="1798.5,-4979.7 1798.5,-4998.7 1877.5,-4998.7 1877.5,-4979.7 1798.5,-4979.7"/>
 <polygon fill="none" stroke="#000000" points="1798.5,-4979.7 1798.5,-4998.7 1877.5,-4998.7 1877.5,-4979.7 1798.5,-4979.7"/>
-<text text-anchor="start" x="1829.8807" y="-4985.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">271 rows</text>
+<text text-anchor="start" x="1829.8807" y="-4985.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">270 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="1877.5,-4979.7 1877.5,-4998.7 1927.5,-4998.7 1927.5,-4979.7 1877.5,-4979.7"/>
 <polygon fill="none" stroke="#000000" points="1877.5,-4979.7 1877.5,-4998.7 1927.5,-4998.7 1927.5,-4979.7 1877.5,-4979.7"/>
 <text text-anchor="start" x="1908.9053" y="-4985.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">1 &gt;</text>
@@ -1432,7 +1432,7 @@
 <text text-anchor="start" x="2002.5" y="-3720.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 2</text>
 <polygon fill="#ffffff" stroke="transparent" points="2079.5,-3714.7 2079.5,-3733.7 2197.5,-3733.7 2197.5,-3714.7 2079.5,-3714.7"/>
 <polygon fill="none" stroke="#000000" points="2079.5,-3714.7 2079.5,-3733.7 2197.5,-3733.7 2197.5,-3714.7 2079.5,-3714.7"/>
-<text text-anchor="start" x="2140.7089" y="-3720.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">2,150 rows</text>
+<text text-anchor="start" x="2140.7089" y="-3720.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">2,144 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="2197.5,-3714.7 2197.5,-3733.7 2258.5,-3733.7 2258.5,-3714.7 2197.5,-3714.7"/>
 <polygon fill="none" stroke="#000000" points="2197.5,-3714.7 2197.5,-3733.7 2258.5,-3733.7 2258.5,-3714.7 2197.5,-3714.7"/>
 <text text-anchor="start" x="2239.9053" y="-3720.8" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">0 &gt;</text>
