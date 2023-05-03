@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.model.CaseDetails
 import uk.gov.justice.digital.hmpps.model.Manager
 import uk.gov.justice.digital.hmpps.model.Name
-import uk.gov.justice.digital.hmpps.model.CaseDetails
 
 @Service
 class PersonDetailsService(val personRepository: PersonRepository) {

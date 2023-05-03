@@ -64,7 +64,8 @@ internal class SentencePlanIntegrationTest {
                     ProviderGenerator.DEFAULT_STAFF.forename,
                     ProviderGenerator.DEFAULT_STAFF.middleName,
                     ProviderGenerator.DEFAULT_STAFF.surname
-                ), ProviderGenerator.DEFAULT_STAFF.isUnallocated()
+                ),
+                ProviderGenerator.DEFAULT_STAFF.isUnallocated()
             )
         )
     }
