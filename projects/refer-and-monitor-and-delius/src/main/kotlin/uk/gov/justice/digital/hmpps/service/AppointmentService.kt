@@ -69,28 +69,33 @@ class AppointmentService(
         }
 
         audit["contactId"] = appointment.id
-        appointment.startTime = mergeAppointment.start
-        appointment.endTime = mergeAppointment.end
-        appointment.date = mergeAppointment.start.toLocalDate()
         appointment.locationId = assignation.location?.id
 
         mergeAppointment.notes?.also {
             if (appointment.notes?.contains(it) != true) appointment.addNotes(mergeAppointment.notes)
         }
 
-        mergeAppointment.outcome?.also {
-            val outcome = outcomeRepository.getByCode(attendanceOutcome(it).value)
-            appointment.outcome = outcome
-
-            if (it.notify && outcome.compliantAcceptable == false) {
-                handleNonCompliance(appointment)
-            }
-
-            contactRepository.saveAndFlush(appointment)
-            nsiRepository.findByIdIfRar(appointment.nsiId!!)?.rarCount =
-                contactRepository.countNsiRar(appointment.nsiId)
+        val replacement = appointment.replaceIfRescheduled(mergeAppointment.start, mergeAppointment.end)
+        replacement?.also {
+            appointment.outcome = outcomeRepository.getByCode(Code.RESCHEDULED_SERVICE_REQUEST.value)
+            contactRepository.save(it)
         }
-        appointment.id
+
+        mergeAppointment.outcome?.applyTo(replacement ?: appointment) ?: replacement?.id ?: appointment.id
+    }
+
+    fun Outcome.applyTo(appointment: Contact): Long {
+        val outcome = outcomeRepository.getByCode(attendanceOutcome(this).value)
+        appointment.outcome = outcome
+
+        if (notify && outcome.compliantAcceptable == false) {
+            handleNonCompliance(appointment)
+        }
+
+        contactRepository.saveAndFlush(appointment)
+        nsiRepository.findByIdIfRar(appointment.nsiId!!)?.rarCount =
+            contactRepository.countNsiRar(appointment.nsiId)
+        return appointment.id
     }
 
     private fun createContact(mergeAppointment: MergeAppointment, assignation: CrsAssignation, nsi: Nsi): Contact =
@@ -118,7 +123,7 @@ class AppointmentService(
     ) {
         if (mergeAppointment.start.isAfter(now()) && contactRepository.appointmentClashes(
                 personId,
-                mergeAppointment.id.toString(),
+                mergeAppointment.urn,
                 mergeAppointment.start.toLocalDate(),
                 mergeAppointment.start,
                 mergeAppointment.end

@@ -21,6 +21,7 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import uk.gov.justice.digital.hmpps.extensions.hasChanged
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -83,7 +84,7 @@ class Contact(
 
     val linkedContactId: Long? = null,
 
-    val externalReference: String? = null,
+    var externalReference: String? = null,
 
     @Id
     @Column(name = "contact_id")
@@ -145,7 +146,7 @@ class Contact(
         return this
     }
 
-    fun creditHours() {
+    private fun creditHours() {
         hoursCredited = if (outcome?.code == ContactOutcome.Code.COMPLIED.value) {
             BigDecimal.valueOf(duration.toMinutes())
                 .divide(BigDecimal(60), 2, RoundingMode.HALF_UP)
@@ -154,6 +155,30 @@ class Contact(
             null
         }
     }
+
+    fun replaceIfRescheduled(
+        startTime: ZonedDateTime,
+        endTime: ZonedDateTime?
+    ): Contact? =
+        if (startTime.hasChanged(this.startTime) || endTime.hasChanged(this.endTime)) {
+            val replacement = Contact(
+                person,
+                type,
+                startTime.toLocalDate(),
+                startTime,
+                endTime,
+                eventId = eventId,
+                nsiId = nsiId,
+                providerId = providerId,
+                teamId = teamId,
+                staffId = staffId,
+                externalReference = externalReference
+            )
+            this.externalReference = null
+            replacement
+        } else {
+            null
+        }
 }
 
 @Immutable
@@ -205,7 +230,8 @@ class ContactOutcome(
     enum class Code(val value: String) {
         COMPLIED("ATTC"),
         FAILED_TO_COMPLY("AFTC"),
-        FAILED_TO_ATTEND("AFTA")
+        FAILED_TO_ATTEND("AFTA"),
+        RESCHEDULED_SERVICE_REQUEST("RSSR")
     }
 }
 
