@@ -13,7 +13,7 @@ class PersonDetailsService(val personRepository: PersonRepository) {
         return CaseDetails(
             personEntity.name(),
             personEntity.crn,
-            personEntity.tier?.code,
+            personEntity.tier?.description,
             personEntity.dateOfBirth,
             personEntity.nomisId,
             manager.team.probationArea.description,

@@ -55,7 +55,7 @@ internal class SentencePlanIntegrationTest {
                 PersonGenerator.DEFAULT.surname
             ),
             PersonGenerator.DEFAULT.crn,
-            PersonGenerator.DEFAULT.tier!!.code,
+            PersonGenerator.DEFAULT.tier!!.description,
             PersonGenerator.DEFAULT.dateOfBirth,
             PersonGenerator.DEFAULT.nomisId,
             ProviderGenerator.DEFAULT_AREA.description,
