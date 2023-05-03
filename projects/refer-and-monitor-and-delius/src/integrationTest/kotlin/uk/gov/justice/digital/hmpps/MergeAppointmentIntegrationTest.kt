@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
@@ -22,6 +23,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.MergeAppointment
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOutcome
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.getAppointmentById
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.service.Attended
@@ -120,6 +123,54 @@ internal class MergeAppointmentIntegrationTest {
         )
 
         makeRequest(person, referralId, mergeAppointment, status().isConflict)
+    }
+
+    @Test
+    @Order(3)
+    fun `can reschedule appointment`() {
+        val person = PersonGenerator.NO_APPOINTMENTS
+        val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
+        val start = ZonedDateTime.now().plusDays(14).plusMinutes(10)
+        val end = start.plusMinutes(20)
+        val appointmentId =
+            contactRepository.findAll()
+                .filter { it.person.id == person.id }
+                .mapNotNull { it.externalReference }
+                .map { UUID.fromString(it.substring(it.lastIndexOf(":") + 1, it.length)) }
+                .first()
+
+        val mergeAppointment = MergeAppointment(
+            appointmentId,
+            referralId,
+            "RE1234F",
+            start,
+            end,
+            "Appointment Notes",
+            "DEFAULT",
+            false,
+            null
+        )
+        val result = status().isNoContent
+
+        val existingAppointmentId = contactRepository.findByPersonCrnAndExternalReference(person.crn, mergeAppointment.urn)!!.id
+        makeRequest(person, referralId, mergeAppointment, result)
+
+        val existing = contactRepository.getAppointmentById(existingAppointmentId)
+        assertNull(existing.externalReference)
+        assertThat(existing.outcome?.code, equalTo(ContactOutcome.Code.RESCHEDULED_SERVICE_REQUEST.value))
+        assertNull(existing.attended)
+
+        val replacement = assertDoesNotThrow {
+            contactRepository.findByPersonCrnAndExternalReference(
+                person.crn,
+                mergeAppointment.urn
+            )
+        }
+
+        assertNotNull(replacement)
+        assertThat(replacement!!.date, equalTo(mergeAppointment.start.toLocalDate()))
+        assertThat(replacement.startTime, isCloseTo(mergeAppointment.start))
+        assertThat(replacement.endTime!!, isCloseTo(mergeAppointment.end))
     }
 
     @Test

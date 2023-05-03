@@ -88,7 +88,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             and to_char(c.contact_date, 'YYYY-MM-DD') = :date
             and to_char(c.contact_start_time, 'HH24:MI') < :endTime 
             and to_char(c.contact_end_time, 'HH24:MI') > :startTime
-            and c.soft_deleted = 0
+            and c.soft_deleted = 0 and c.contact_outcome_type_id is null
         """,
         nativeQuery = true
     )
