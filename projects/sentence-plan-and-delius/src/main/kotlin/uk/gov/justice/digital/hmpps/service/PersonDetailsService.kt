@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.model.Name
 class PersonDetailsService(val personRepository: PersonRepository) {
     fun getPersonalDetails(crn: String): CaseDetails {
         val personEntity = personRepository.getPerson(crn)
-        val manager = personEntity.managers[0]
+        val manager = personEntity.manager
         return CaseDetails(
             personEntity.name(),
             personEntity.crn,

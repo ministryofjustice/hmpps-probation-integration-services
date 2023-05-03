@@ -55,7 +55,10 @@ class Person(
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
-)
+) {
+    val manager
+        get() = managers.first()
+}
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?
