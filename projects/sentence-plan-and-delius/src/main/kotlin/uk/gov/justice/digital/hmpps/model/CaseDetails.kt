@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.model
 
 import java.time.LocalDate
 
-class PersonDetails(
+data class CaseDetails(
     val name: Name,
     val crn: String,
     val tier: String?,
