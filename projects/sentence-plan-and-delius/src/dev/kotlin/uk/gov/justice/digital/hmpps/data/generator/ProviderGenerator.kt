@@ -3,14 +3,12 @@ package uk.gov.justice.digital.hmpps.data.generator
 import IdGenerator
 import uk.gov.justice.digital.hmpps.service.ProbationArea
 import uk.gov.justice.digital.hmpps.service.Staff
-import uk.gov.justice.digital.hmpps.service.StaffUser
 import uk.gov.justice.digital.hmpps.service.Team
-import uk.gov.justice.digital.hmpps.set
 
 object ProviderGenerator {
     val DEFAULT_AREA = generateProbationArea()
     val DEFAULT_TEAM = generateTeam("N03DEF", probationArea = DEFAULT_AREA)
-    val DEFAULT_STAFF = generateStaff("N03DEF0", "Default", "Staff")
+    val DEFAULT_STAFF = generateStaff("N03DEFU", "Default", "Staff")
 
     fun generateProbationArea(
         id: Long = IdGenerator.getAndIncrement(),
@@ -28,7 +26,6 @@ object ProviderGenerator {
         forename: String,
         surname: String,
         middleName: String? = null,
-        user: StaffUser? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Staff(code, forename, surname, middleName, id).apply { user?.set("staff", this) }
+    ) = Staff(code, forename, surname, middleName, id)
 }

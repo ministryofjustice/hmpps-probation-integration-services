@@ -57,7 +57,6 @@ class Person(
     val softDeleted: Boolean = false
 )
 
-@FunctionalInterface
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?
 }
