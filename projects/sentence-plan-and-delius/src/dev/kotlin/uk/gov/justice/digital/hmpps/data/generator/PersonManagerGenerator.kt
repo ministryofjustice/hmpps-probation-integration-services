@@ -9,10 +9,10 @@ object PersonManagerGenerator {
     fun generate(softDeleted: Boolean = false, id: Long = IdGenerator.getAndIncrement()) =
         PersonManager(
             PersonGenerator.DEFAULT,
-            ProviderGenerator.DEFAULT_TEAM,
             ProviderGenerator.DEFAULT_STAFF,
-            true,
+            ProviderGenerator.DEFAULT_TEAM,
             softDeleted,
+            true,
             id
         )
 }

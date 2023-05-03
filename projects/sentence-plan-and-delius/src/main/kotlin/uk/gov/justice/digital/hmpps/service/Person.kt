@@ -49,13 +49,21 @@ class Person(
     @Column(name = "date_of_birth_date")
     val dateOfBirth: LocalDate,
 
-    @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false,
-
     @ManyToOne
     @JoinColumn(name = "current_tier")
-    val tier: ReferenceData?
+    val tier: ReferenceData?,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean = false
 )
+
+interface PersonRepository : JpaRepository<Person, Long> {
+    fun findByCrn(crn: String): Person?
+}
+
+fun PersonRepository.getPerson(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
+
+fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
 
 @Immutable
 @Entity
@@ -68,28 +76,20 @@ class PersonManager(
     val person: Person,
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
-    val team: Team,
-
-    @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
 
-    @Column(name = "active_flag", columnDefinition = "number")
-    val active: Boolean = true,
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    val team: Team,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false,
+
+    @Column(name = "active_flag", columnDefinition = "number")
+    val active: Boolean = true,
 
     @Id
     @Column(name = "offender_manager_id")
     val id: Long
 )
-
-interface PersonRepository : JpaRepository<Person, Long> {
-    fun findByCrn(crn: String): Person?
-}
-
-fun PersonRepository.getPerson(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
-
-fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)

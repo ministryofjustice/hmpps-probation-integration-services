@@ -18,7 +18,7 @@ object PersonGenerator {
             "NOMISID",
             crn,
             LocalDate.now().minusYears(18),
-            softDeleted,
-            ReferenceDataGenerator.TIER_1
+            ReferenceDataGenerator.TIER_1,
+            softDeleted
         )
 }
