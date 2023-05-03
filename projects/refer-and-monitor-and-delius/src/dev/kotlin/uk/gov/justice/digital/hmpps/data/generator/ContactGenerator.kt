@@ -33,6 +33,11 @@ object ContactGenerator {
                 compliantAcceptable = false
             )
 
+            ContactOutcome.Code.RESCHEDULED_SERVICE_REQUEST -> generateOutcome(
+                it.value,
+                attendance = false,
+                compliantAcceptable = true
+            )
             else -> generateOutcome(it.value)
         }
     }.associateBy { it.code }
