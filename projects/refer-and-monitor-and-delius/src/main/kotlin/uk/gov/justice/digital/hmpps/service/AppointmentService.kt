@@ -67,9 +67,9 @@ class AppointmentService(
             contactRepository.findByPersonCrnAndExternalReference(
                 crn,
                 mergeAppointment.previousUrn ?: mergeAppointment.urn
-            ) ?: mergeAppointment.deliusId?.let { contactRepository.findByIdOrNull(it) }
+            )
         }
-        val appointment = find() ?: run {
+        val appointment = find() ?: mergeAppointment.deliusId?.let { contactRepository.findByIdOrNull(it) } ?: run {
             nsiRepository.findForUpdate(nsi.id)
             find() ?: createContact(mergeAppointment, assignation, nsi)
         }
