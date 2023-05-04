@@ -1,0 +1,48 @@
+---
+title: Guides
+source_url: 'https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/doc/tech-docs/source/tutorials.html.md.erb'
+weight: 40
+---
+
+# How-To Guides
+
+## Authenticating with HMPPS Auth
+
+Authentication tokens can be obtained from HMPPS Auth using `client credentials`
+flow with specific credentials supplied by the HMPPS Digital team. The
+supplied client will contain the correct scopes and authorities for accessing
+the API endpoints provided by the integration service and these will be
+present in the JWT.
+
+```bash
+# Client credentials - supplied by HMPPS Digital
+CLIENT_ID=<hmpps-auth-client-id>
+CLIENT_SECRET=<hmpps-auth-client-secret>
+
+# MacOS - default is for no line wrapping
+BASIC_AUTH=$(echo -n $CLIENT_ID:$CLIENT_SECRET | base64)
+
+# Linux - disable line wrapping
+BASIC_AUTH=$(echo -n $CLIENT_ID:$CLIENT_SECRET | base64 -w 0)
+
+# Request a JWT access token
+AUTH_TOKEN=$(
+	curl -s --location \
+		--request POST "https://sign-in.hmpps.service.justice.gov.uk/auth/oauth/token?grant_type=client_credentials" \
+		--header "Authorization: Basic $BASIC_AUTH" |
+		jq -r .access_token
+)
+
+# To inspect the JWT and ensure scopes and authorities are correct
+jwt decode $AUTH_TOKEN
+```
+
+## Making an API Request to Read Data
+
+To make a request to the API make a `GET` request to an endpoint in the
+integration service, supplying the JWT access token in an `Authorization` header.
+
+```bash
+curl -s --location https://<integration-service-name>.hmpps.service.justice.gov.uk/case-details/X633793/1 \
+        --header "Authorization: Bearer $AUTH_TOKEN"
+```
