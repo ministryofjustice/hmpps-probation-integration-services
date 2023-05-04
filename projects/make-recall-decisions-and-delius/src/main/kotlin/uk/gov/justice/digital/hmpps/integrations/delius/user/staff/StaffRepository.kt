@@ -8,9 +8,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff
 interface StaffRepository : JpaRepository<Staff, Long> {
     @Query("select s from Staff s where upper(s.user.username) = upper(:username)")
     fun findStaffByUsername(username: String): Staff?
-
-    @Query("select s.code from Staff s where upper(s.user.username) = upper(:username)")
-    fun findUserStaffCode(username: String): String?
 }
 
 fun StaffRepository.getStaff(username: String) = findStaffByUsername(username)
