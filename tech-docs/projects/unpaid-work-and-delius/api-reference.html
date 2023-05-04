@@ -100,6 +100,12 @@
       <li>
         <a href="./index.html#context-maps"><span>Context Maps</span></a>
       </li>
+      <li>
+        <a href="./index.html#interfaces"><span>Interfaces</span></a>
+      </li>
+      <li>
+        <a href="./index.html#authorisation"><span>Authorisation</span></a>
+      </li>
     </ul>
   </li>
   <li>
@@ -151,6 +157,15 @@
 <h2 id="case-data-crn-eventid">/case-data/{crn}/{eventId}</h2>
 
 <h3 id="case-data-crn-eventid-get">get</h3>
+
+  <p><em>Detailed information on the probation case</em></p>
+
+
+  <p>Full details of the probation case for the purposes
+            of creating a new unpaid work assessment. The service will return
+            case information for the CRN and Event Number supplied in the
+            request. Only active personal contacts and personal circumstances
+            are included</p>
 
 
 
@@ -345,6 +360,17 @@
 <h2 id="case-data-crn-personal-details">/case-data/{crn}/personal-details</h2>
 
 <h3 id="case-data-crn-personal-details-get">get</h3>
+
+  <p><em>Details of all active personal contacts and personal
+            circumstances for a person on probation</em></p>
+
+
+  <p>Details of all active personal contacts and personal
+            circumstances related to the probation case identified by the CRN
+            provided in the request. The service will return personal contacts
+            and personal circumstances that are active on the date of the
+            request. Used to access any additional information held in Delius
+            when cloning an existing assessment</p>
 
 
 

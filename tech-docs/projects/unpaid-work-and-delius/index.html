@@ -100,6 +100,12 @@
       <li>
         <a href="./index.html#context-maps"><span>Context Maps</span></a>
       </li>
+      <li>
+        <a href="./index.html#interfaces"><span>Interfaces</span></a>
+      </li>
+      <li>
+        <a href="./index.html#authorisation"><span>Authorisation</span></a>
+      </li>
     </ul>
   </li>
   <li>
@@ -144,7 +150,47 @@ and ensuring the probation case record in Delius is updated to reflect the
 activity in the Unpaid Work Service.</p>
 <h2 id="context-maps">Context Maps</h2>
 <p><a href="././img/unpaid-work-and-delius-context-maps.png" rel="noopener noreferrer"><img src="img/unpaid-work-and-delius-context-maps.png" alt="Context Maps" /></a></p>
-
+<h2 id="interfaces">Interfaces</h2>
+<h3 id="message-formats">Message Formats</h3>
+<p>The service responds to an HMPPS Domain Event message via an
+<a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/unpaid-work-and-delius-queue.tf">SQS Queue</a>.
+The events are raised by the <a href="https://github.com/ministryofjustice/hmpps-risk-assessment-ui">Unpaid Work Service</a> when
+an unpaid work assessment is complete.</p>
+<p>Example <a href="./src/dev/resources/messages/">messages</a> are in the development source tree.</p>
+<p>Incoming messages are filtered on <code>eventType</code> by the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/534dd58ad31724df677376d30e72755eb56706c7/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/unpaid-work-and-delius-queue.tf#L5-L7">SQS queue policy</a></p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Class</th>
+<th>Message Event Type / Filter</th>
+</tr><tr>
+<td>Unpaid Work Assessment Completed</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;unpaid-work.assessment.completed&rdquo;</td>
+</tr>
+        </table>
+      </div><h3 id="unpaid-work-document">Unpaid Work Document</h3>
+<p>The service uses <code>detailUrl</code> contained in the event message to request the
+full unpaid work assessment document which is then uploaded to Alfresco and
+attached to the case record.</p>
+<h2 id="authorisation">Authorisation</h2>
+<p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
+the requests</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>/case-data/{crn}/{eventId}</td>
+<td>ROLE_UPW_DETAILS</td>
+</tr><tr>
+<td>/case-data/{crn}/personal-details</td>
+<td>ROLE_UPW_DETAILS</td>
+</tr>
+        </table>
+      </div>
             
           </main>
 
