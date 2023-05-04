@@ -253,6 +253,7 @@ internal class MergeAppointmentIntegrationTest {
     }
 
     @Test
+    @Order(5)
     fun `creates appointment with outcome when in past`() {
         val person = PersonGenerator.NO_APPOINTMENTS
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
