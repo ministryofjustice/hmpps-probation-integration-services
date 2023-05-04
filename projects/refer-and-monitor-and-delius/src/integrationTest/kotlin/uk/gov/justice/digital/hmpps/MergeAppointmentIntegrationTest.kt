@@ -25,7 +25,6 @@ import uk.gov.justice.digital.hmpps.api.model.MergeAppointment
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOutcome
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.getAppointmentById
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.service.Attended
@@ -79,6 +78,8 @@ internal class MergeAppointmentIntegrationTest {
             "Appointment Notes",
             "DEFAULT",
             false,
+            null,
+            null,
             null
         )
         val result = status().isNoContent
@@ -120,6 +121,8 @@ internal class MergeAppointmentIntegrationTest {
             "Appointment Notes",
             "DEFAULT",
             false,
+            null,
+            null,
             null
         )
 
@@ -141,7 +144,7 @@ internal class MergeAppointmentIntegrationTest {
                 .first()
 
         val mergeAppointment = MergeAppointment(
-            appointmentId,
+            UUID.randomUUID(),
             referralId,
             "RE1234F",
             start,
@@ -149,15 +152,16 @@ internal class MergeAppointmentIntegrationTest {
             "Appointment Notes",
             "DEFAULT",
             false,
+            null,
+            appointmentId,
             null
         )
         val result = status().isNoContent
 
-        val existingAppointmentId = contactRepository.findByPersonCrnAndExternalReference(person.crn, mergeAppointment.urn)!!.id
         makeRequest(person, referralId, mergeAppointment, result)
 
-        val existing = contactRepository.getAppointmentById(existingAppointmentId)
-        assertNull(existing.externalReference)
+        val existing =
+            contactRepository.findByPersonCrnAndExternalReference(person.crn, mergeAppointment.previousUrn!!)!!
         assertThat(existing.outcome?.code, equalTo(ContactOutcome.Code.RESCHEDULED_SERVICE_REQUEST.value))
         assertFalse(existing.attended!!)
 
@@ -175,6 +179,57 @@ internal class MergeAppointmentIntegrationTest {
     }
 
     @Test
+    @Order(4)
+    fun `can reschedule appointment and apply outcome`() {
+        val person = PersonGenerator.NO_APPOINTMENTS
+        val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
+        val start = ZonedDateTime.now().minusMinutes(30)
+        val end = start.plusMinutes(30)
+        val appointmentId =
+            contactRepository.findAll()
+                .filter { it.person.id == person.id }
+                .mapNotNull { it.externalReference }
+                .map { UUID.fromString(it.substring(it.lastIndexOf(":") + 1, it.length)) }
+                .first()
+
+        val mergeAppointment = MergeAppointment(
+            UUID.randomUUID(),
+            referralId,
+            "RE1234F",
+            start,
+            end,
+            "Appointment Notes",
+            "DEFAULT",
+            false,
+            Outcome(Attended.YES, false),
+            appointmentId,
+            null
+        )
+        val result = status().isNoContent
+
+        makeRequest(person, referralId, mergeAppointment, result)
+
+        val replacement = assertDoesNotThrow {
+            contactRepository.findByPersonCrnAndExternalReference(
+                person.crn,
+                mergeAppointment.urn
+            )
+        }
+        assertNotNull(replacement)
+        assertThat(replacement!!.date, equalTo(mergeAppointment.start.toLocalDate()))
+        assertThat(replacement.startTime, isCloseTo(mergeAppointment.start))
+        assertThat(replacement.endTime!!, isCloseTo(mergeAppointment.end))
+        assertNotNull(replacement.outcome)
+        assertThat(replacement.attended, equalTo(true))
+        assertThat(replacement.hoursCredited, equalTo(0.5))
+
+        val previousAppt =
+            contactRepository.findByPersonCrnAndExternalReference(person.crn, mergeAppointment.previousUrn!!)!!
+        assertThat(previousAppt.outcome?.code, equalTo(ContactOutcome.Code.RESCHEDULED_SERVICE_REQUEST.value))
+        assertFalse(previousAppt.attended!!)
+    }
+
+    @Test
     fun `cannot save past appointment without an outcome`() {
         val person = PersonGenerator.NO_APPOINTMENTS
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
@@ -189,6 +244,8 @@ internal class MergeAppointmentIntegrationTest {
             "Appointment Notes",
             "DEFAULT",
             false,
+            null,
+            null,
             null
         )
 
@@ -196,6 +253,7 @@ internal class MergeAppointmentIntegrationTest {
     }
 
     @Test
+    @Order(5)
     fun `creates appointment with outcome when in past`() {
         val person = PersonGenerator.NO_APPOINTMENTS
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
@@ -210,7 +268,9 @@ internal class MergeAppointmentIntegrationTest {
             "Appointment Notes",
             "DEFAULT",
             false,
-            Outcome(Attended.YES, false)
+            Outcome(Attended.LATE, true),
+            null,
+            null
         )
         val result = status().isNoContent
 
@@ -228,7 +288,7 @@ internal class MergeAppointmentIntegrationTest {
         assertThat(appointment.endTime!!, isCloseTo(mergeAppointment.end))
         assertNotNull(appointment.outcome)
         assertThat(appointment.attended, equalTo(true))
-        assertThat(appointment.hoursCredited, equalTo(0.5))
+        assertNull(appointment.hoursCredited)
     }
 
     @Test
@@ -246,6 +306,8 @@ internal class MergeAppointmentIntegrationTest {
             "Appointment Notes",
             "DEFAULT",
             false,
+            null,
+            null,
             null
         )
 

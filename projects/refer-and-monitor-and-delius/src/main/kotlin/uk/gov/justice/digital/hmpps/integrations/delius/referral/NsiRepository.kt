@@ -55,7 +55,7 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
     )
     fun isRar(id: Long): Boolean?
 
-    @Lock(LockModeType.PESSIMISTIC_READ)
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select nsi.id from Nsi nsi where nsi.id = :id")
     fun findForUpdate(id: Long): Long
 }

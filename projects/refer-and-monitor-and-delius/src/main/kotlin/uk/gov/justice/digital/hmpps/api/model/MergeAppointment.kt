@@ -14,12 +14,17 @@ data class MergeAppointment(
     val notes: String?,
     val officeLocationCode: String?,
     val countsTowardsRar: Boolean,
-    val outcome: Outcome?
+    val outcome: Outcome?,
+    val previousId: UUID?,
+    val deliusId: Long?
 ) {
     val referralUrn
         get() = "urn:hmpps:interventions-referral:$referralId"
     val urn
         get() = "urn:hmpps:interventions-appointment:$id"
+
+    val previousUrn
+        get() = previousId?.let { "urn:hmpps:interventions-appointment:$it" }
 
     val typeCode
         get() = if (countsTowardsRar) ContactType.Code.CRSAPT else ContactType.Code.CRSSAA

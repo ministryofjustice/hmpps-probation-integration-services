@@ -85,6 +85,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             join r_contact_type ct on c.contact_type_id = ct.contact_type_id
             where c.offender_id = :personId and ct.attendance_contact = 'Y'
             and c.external_reference <> :externalReference
+            and (:previousExternalReference is null or c.external_reference <> :previousExternalReference)
             and to_char(c.contact_date, 'YYYY-MM-DD') = :date
             and to_char(c.contact_start_time, 'HH24:MI') < :endTime 
             and to_char(c.contact_end_time, 'HH24:MI') > :startTime
@@ -97,7 +98,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         externalReference: String,
         date: String,
         startTime: String,
-        endTime: String
+        endTime: String,
+        previousExternalReference: String?
     ): Int
 }
 
@@ -106,13 +108,15 @@ fun ContactRepository.appointmentClashes(
     externalReference: String,
     date: LocalDate,
     startTime: ZonedDateTime,
-    endTime: ZonedDateTime
+    endTime: ZonedDateTime,
+    previousExternalReference: String?
 ): Boolean = getClashCount(
     personId,
     externalReference,
     date.format(ISO_LOCAL_DATE),
     startTime.format(ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
-    endTime.format(ISO_LOCAL_TIME.withZone(ZoneId.systemDefault()))
+    endTime.format(ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
+    previousExternalReference
 ) > 0
 
 fun ContactRepository.getAppointmentById(id: Long): Contact =
