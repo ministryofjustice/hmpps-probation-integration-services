@@ -10,7 +10,9 @@ data class Manager(
     val name: Name,
     val username: String?,
     val email: String?,
-    val responsibleOfficer: Boolean
+    val responsibleOfficer: Boolean,
+    val pdu: Pdu
 )
 
 data class Name(val forename: String, val surname: String)
+data class Pdu(val code: String, val description: String)
