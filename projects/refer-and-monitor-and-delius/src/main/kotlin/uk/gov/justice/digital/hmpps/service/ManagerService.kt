@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.Pdu
 import uk.gov.justice.digital.hmpps.api.model.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PersonManager
@@ -10,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.Pe
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PrisonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.ldap.LdapService
 
 @Service
@@ -29,10 +31,13 @@ class ManagerService(
 }
 
 fun PersonManager.toResponsibleOfficer(pom: PrisonManager?) = ResponsibleOfficer(
-    Manager(staff.code, staff.name(), staff.user?.username, staff.user?.email, responsibleOfficer != null),
+    Manager(staff.code, staff.name(), staff.user?.username, staff.user?.email, responsibleOfficer != null, team.pdu()),
     pom?.toManager()
 )
 
-fun PrisonManager.toManager() = Manager(staff.code, staff.name(), null, emailAddress, responsibleOfficer != null)
+fun PrisonManager.toManager() =
+    Manager(staff.code, staff.name(), null, emailAddress, responsibleOfficer != null, team.pdu())
 
 fun Staff.name() = Name(forename, surname)
+
+fun Team.pdu() = Pdu(district.borough.code, district.borough.description)

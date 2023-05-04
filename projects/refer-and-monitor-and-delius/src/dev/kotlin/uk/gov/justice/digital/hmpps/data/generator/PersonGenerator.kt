@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.Pe
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PrisonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import java.time.ZonedDateTime
 
 object PersonGenerator {
@@ -23,21 +24,23 @@ object PersonGenerator {
     fun generatePersonManager(
         person: Person,
         staff: Staff,
+        team: Team,
         responsibleOfficer: ResponsibleOfficer? = null,
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = PersonManager(person, staff, responsibleOfficer, active, softDeleted, id)
+    ) = PersonManager(person, staff, team, responsibleOfficer, active, softDeleted, id)
 
     fun generatePrisonManager(
         person: Person,
         staff: Staff,
+        team: Team,
         responsibleOfficer: ResponsibleOfficer? = null,
         emailAddress: String? = "manager@prison.gov.uk",
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = PrisonManager(person.id, staff, responsibleOfficer, emailAddress, active, softDeleted, id)
+    ) = PrisonManager(person.id, staff, team, responsibleOfficer, emailAddress, active, softDeleted, id)
 
     fun generateResponsibleOfficer(
         communityManager: PersonManager?,
