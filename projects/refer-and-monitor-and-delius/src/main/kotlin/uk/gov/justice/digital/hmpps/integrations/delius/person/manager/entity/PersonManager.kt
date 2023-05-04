@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import java.time.ZonedDateTime
 
 @Immutable
@@ -28,6 +29,10 @@ class PersonManager(
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
+
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    val team: Team,
 
     @OneToOne(mappedBy = "communityManager")
     val responsibleOfficer: ResponsibleOfficer?,
@@ -55,6 +60,10 @@ class PrisonManager(
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
+
+    @ManyToOne
+    @JoinColumn(name = "allocation_team_id")
+    val team: Team,
 
     @OneToOne(mappedBy = "prisonManager")
     val responsibleOfficer: ResponsibleOfficer?,
@@ -93,11 +102,11 @@ class ResponsibleOfficer(
 )
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
-    @EntityGraph(attributePaths = ["person", "responsibleOfficer", "staff.user"])
+    @EntityGraph(attributePaths = ["person", "responsibleOfficer", "staff.user", "team.district.borough"])
     fun findByPersonCrn(crn: String): PersonManager?
 }
 
 interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
-    @EntityGraph(attributePaths = ["responsibleOfficer", "staff"])
+    @EntityGraph(attributePaths = ["responsibleOfficer", "staff", "team.district.borough"])
     fun findByPersonId(personId: Long): PrisonManager?
 }

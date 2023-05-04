@@ -58,6 +58,7 @@ class ProbationCaseResourceTest {
         assertThat(com.username, equalTo(staff.user?.username))
         assertThat(com.email, equalTo("john.smith@moj.gov.uk"))
         assertThat(com.responsibleOfficer, equalTo(communityResponsible))
+        assertThat(com.pdu.code, equalTo(ProviderGenerator.PROBATION_BOROUGH.code))
 
         if (communityResponsible) {
             assertNull(ro.prisonManager)
@@ -65,6 +66,7 @@ class ProbationCaseResourceTest {
             assertNotNull(ro.prisonManager)
             assertTrue(ro.prisonManager!!.responsibleOfficer)
             assertThat(ro.prisonManager!!.email, equalTo("manager@prison.gov.uk"))
+            assertThat(ro.prisonManager!!.pdu.code, equalTo(ProviderGenerator.PRISON_BOROUGH.code))
         }
     }
 

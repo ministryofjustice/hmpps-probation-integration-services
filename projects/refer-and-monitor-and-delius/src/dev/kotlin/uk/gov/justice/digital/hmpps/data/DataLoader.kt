@@ -27,6 +27,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.ResponsibleOfficer
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Borough
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.LocationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
@@ -58,6 +60,8 @@ class DataLoader(
     private val nsiOutcomeRepository: NsiOutcomeRepository,
     private val mainCatRepository: MainCatRepository,
     private val providerRepository: ProviderRepository,
+    private val boroughRepository: BoroughRepository,
+    private val districtRepository: DistrictRepository,
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
     private val staffUserRepository: StaffUserRepository,
@@ -112,7 +116,15 @@ class DataLoader(
         mainCatRepository.save(SentenceGenerator.MAIN_CAT_F)
 
         providerRepository.save(ProviderGenerator.INTENDED_PROVIDER)
-        teamRepository.save(ProviderGenerator.INTENDED_TEAM)
+        boroughRepository.saveAll(listOf(ProviderGenerator.PROBATION_BOROUGH, ProviderGenerator.PRISON_BOROUGH))
+        districtRepository.saveAll(listOf(ProviderGenerator.PROBATION_DISTRICT, ProviderGenerator.PRISON_DISTRICT))
+        teamRepository.saveAll(
+            listOf(
+                ProviderGenerator.INTENDED_TEAM,
+                ProviderGenerator.PROBATION_TEAM,
+                ProviderGenerator.PRISON_TEAM
+            )
+        )
         staffRepository.saveAll(
             listOf(
                 ProviderGenerator.INTENDED_STAFF,
@@ -135,14 +147,16 @@ class DataLoader(
 
         val roCom = PersonGenerator.generatePersonManager(
             PersonGenerator.COMMUNITY_RESPONSIBLE,
-            ProviderGenerator.JOHN_SMITH
+            ProviderGenerator.JOHN_SMITH,
+            ProviderGenerator.PROBATION_TEAM
         )
         personManagerRepository.saveAll(
             listOf(
                 roCom,
                 PersonGenerator.generatePersonManager(
                     PersonGenerator.COMMUNITY_NOT_RESPONSIBLE,
-                    ProviderGenerator.JOHN_SMITH
+                    ProviderGenerator.JOHN_SMITH,
+                    ProviderGenerator.PROBATION_TEAM
                 )
             )
         )
@@ -150,7 +164,8 @@ class DataLoader(
         val pom = prisonManagerRepository.save(
             PersonGenerator.generatePrisonManager(
                 PersonGenerator.COMMUNITY_NOT_RESPONSIBLE,
-                ProviderGenerator.PRISON_MANAGER
+                ProviderGenerator.PRISON_MANAGER,
+                ProviderGenerator.PRISON_TEAM
             )
         )
 
@@ -236,8 +251,9 @@ class DataLoader(
 }
 
 interface DatasetRepository : JpaRepository<Dataset, Long>
+interface DistrictRepository : JpaRepository<District, Long>
+interface BoroughRepository : JpaRepository<Borough, Long>
 interface MainCatRepository : JpaRepository<RequirementMainCategory, Long>
 interface DisposalTypeRepository : JpaRepository<DisposalType, Long>
-
 interface StaffUserRepository : JpaRepository<StaffUser, Long>
 interface ResponsibleOfficerRepository : JpaRepository<ResponsibleOfficer, Long>
