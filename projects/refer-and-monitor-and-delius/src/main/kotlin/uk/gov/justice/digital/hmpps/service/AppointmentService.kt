@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -62,7 +63,12 @@ class AppointmentService(
         checkForConflicts(nsi.person.id, mergeAppointment)
 
         val assignation = providerService.findCrsAssignationDetails(mergeAppointment.officeLocationCode)
-        val find = { contactRepository.findByPersonCrnAndExternalReference(crn, mergeAppointment.urn) }
+        val find = {
+            contactRepository.findByPersonCrnAndExternalReference(
+                crn,
+                mergeAppointment.previousUrn ?: mergeAppointment.urn
+            ) ?: mergeAppointment.deliusId?.let { contactRepository.findByIdOrNull(it) }
+        }
         val appointment = find() ?: run {
             nsiRepository.findForUpdate(nsi.id)
             find() ?: createContact(mergeAppointment, assignation, nsi)
@@ -75,7 +81,11 @@ class AppointmentService(
             if (appointment.notes?.contains(it) != true) appointment.addNotes(mergeAppointment.notes)
         }
 
-        val replacement = appointment.replaceIfRescheduled(mergeAppointment.start, mergeAppointment.end)
+        val replacement = appointment.replaceIfRescheduled(
+            mergeAppointment.urn,
+            mergeAppointment.start,
+            mergeAppointment.end
+        )
         replacement?.also {
             appointment.outcome = outcomeRepository.getByCode(Code.RESCHEDULED_SERVICE_REQUEST.value)
             contactRepository.save(it)
@@ -126,7 +136,8 @@ class AppointmentService(
                 mergeAppointment.urn,
                 mergeAppointment.start.toLocalDate(),
                 mergeAppointment.start,
-                mergeAppointment.end
+                mergeAppointment.end,
+                mergeAppointment.previousUrn
             )
         ) {
             throw ConflictException("Appointment conflicts with an existing future appointment")

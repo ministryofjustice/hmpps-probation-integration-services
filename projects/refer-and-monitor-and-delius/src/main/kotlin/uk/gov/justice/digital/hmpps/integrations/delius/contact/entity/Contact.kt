@@ -157,11 +157,12 @@ class Contact(
     }
 
     fun replaceIfRescheduled(
+        externalReference: String,
         startTime: ZonedDateTime,
-        endTime: ZonedDateTime?
+        endTime: ZonedDateTime
     ): Contact? =
         if (startTime.hasChanged(this.startTime) || endTime.hasChanged(this.endTime)) {
-            val replacement = Contact(
+            Contact(
                 person,
                 type,
                 startTime.toLocalDate(),
@@ -174,9 +175,8 @@ class Contact(
                 staffId = staffId,
                 externalReference = externalReference
             )
-            this.externalReference = null
-            replacement
         } else {
+            this.externalReference = externalReference
             null
         }
 }
