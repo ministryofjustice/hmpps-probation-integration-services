@@ -140,7 +140,7 @@ class Contact(
         private set
 
     fun addNotes(notes: String?): Contact {
-        this.notes += """${System.lineSeparator()}
+        this.notes = (this.notes ?: "") + """${System.lineSeparator()}
             |$notes
         """.trimMargin()
         return this
@@ -174,7 +174,7 @@ class Contact(
                 teamId = teamId,
                 staffId = staffId,
                 externalReference = externalReference
-            )
+            ).addNotes(notes)
         } else {
             this.externalReference = externalReference
             null
