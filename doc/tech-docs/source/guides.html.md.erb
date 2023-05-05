@@ -6,23 +6,25 @@ weight: 40
 
 # How-To Guides
 
-## Authenticating with HMPPS Auth
+## Making an Authenticated API Request
 
-Authentication tokens can be obtained from HMPPS Auth using `client credentials`
-flow with specific credentials supplied by the HMPPS Digital team. The
-supplied client will contain the correct scopes and authorities for accessing
-the API endpoints provided by the integration service and these will be
-present in the JWT.
+Authentication tokens can be obtained from the internal HMPPS OAuth server,
+[HMPPS Auth](https://github.com/ministryofjustice/hmpps-auth), using Client
+Credentials Flow. Specific credentials for accessing an integration service
+are supplied by the 'HMPPS Auth, Audit and Registers' team. The client should
+be configured with the correct scopes and authorities for accessing the API
+endpoints provided by the integration service and these will then be present
+in the supplied JWT.
 
 ```bash
-# Client credentials - supplied by HMPPS Digital
+# Client credentials - supplied by 'HMPPS Auth, Audit and Registers' team
 CLIENT_ID=<hmpps-auth-client-id>
 CLIENT_SECRET=<hmpps-auth-client-secret>
 
-# MacOS - default is for no line wrapping
+# MacOS - Generate basic auth. Default for base64 is no line wrapping
 BASIC_AUTH=$(echo -n $CLIENT_ID:$CLIENT_SECRET | base64)
 
-# Linux - disable line wrapping
+# Linux - Generate basic auth. Disable base64 line wrapping
 BASIC_AUTH=$(echo -n $CLIENT_ID:$CLIENT_SECRET | base64 -w 0)
 
 # Request a JWT access token
@@ -33,14 +35,14 @@ AUTH_TOKEN=$(
 		jq -r .access_token
 )
 
-# To inspect the JWT and ensure scopes and authorities are correct
+# Inspect the JWT and ensure scopes and authorities are correct
 jwt decode $AUTH_TOKEN
 ```
 
-## Making an API Request to Read Data
+To make a request to the API submit a `GET` request to an endpoint in the
+integration service, supplying the JWT access token as a bearer token in an
+`Authorization` header.
 
-To make a request to the API make a `GET` request to an endpoint in the
-integration service, supplying the JWT access token in an `Authorization` header.
 
 ```bash
 curl -s --location https://<integration-service-name>.hmpps.service.justice.gov.uk/case-details/X633793/1 \
