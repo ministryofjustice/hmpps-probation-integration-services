@@ -21,17 +21,11 @@ in the supplied JWT.
 CLIENT_ID=<hmpps-auth-client-id>
 CLIENT_SECRET=<hmpps-auth-client-secret>
 
-# MacOS - Generate basic auth. Default for base64 is no line wrapping
-BASIC_AUTH=$(echo -n $CLIENT_ID:$CLIENT_SECRET | base64)
-
-# Linux - Generate basic auth. Disable base64 line wrapping
-BASIC_AUTH=$(echo -n $CLIENT_ID:$CLIENT_SECRET | base64 -w 0)
-
 # Request a JWT access token
 AUTH_TOKEN=$(
 	curl -s --location \
 		--request POST "https://sign-in.hmpps.service.justice.gov.uk/auth/oauth/token?grant_type=client_credentials" \
-		--header "Authorization: Basic $BASIC_AUTH" |
+		--user "$CLIENT_ID:$CLIENT_SECRET" |
 		jq -r .access_token
 )
 
