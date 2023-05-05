@@ -119,7 +119,7 @@ class AppointmentService(
                 locationId = assignation.location?.id,
                 eventId = nsi.eventId,
                 nsiId = nsi.id,
-                rarActivity = nsiRepository.isRar(nsi.id),
+                rarActivity = nsiRepository.isRar(nsi.id)?.let { it && mergeAppointment.countsTowardsRar },
                 externalReference = mergeAppointment.urn,
                 date = mergeAppointment.start.toLocalDate(),
                 startTime = mergeAppointment.start,
