@@ -37,13 +37,17 @@ spec:
                   value: person-full-load,person-dlq
                 - name: PIPELINE_BATCH_SIZE
                   value: '500'
-                - name: SEARCH_INDEX_HOST
-                  value: {{ .Values.reindexing.host }}
                 - name: APPLICATIONINSIGHTS_CONNECTION_STRING
                   valueFrom:
                     secretKeyRef:
                       name: common
                       key: APPLICATIONINSIGHTS_CONNECTION_STRING
+                      optional: false
+                - name: SEARCH_INDEX_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-opensearch
+                      key: url
                       optional: false
                 - name: JDBC_CONNECTION_STRING
                   valueFrom:
