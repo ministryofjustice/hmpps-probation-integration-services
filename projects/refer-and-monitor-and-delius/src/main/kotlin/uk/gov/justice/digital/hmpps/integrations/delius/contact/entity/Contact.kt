@@ -173,6 +173,7 @@ class Contact(
                 providerId = providerId,
                 teamId = teamId,
                 staffId = staffId,
+                locationId = locationId,
                 externalReference = externalReference
             ).addNotes(notes)
         } else {

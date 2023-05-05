@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider.Companion.INTENDED_PROVIDER_CODE
@@ -102,6 +103,7 @@ fun ProviderRepository.getCrsProvider() =
     findByCode(INTENDED_PROVIDER_CODE) ?: throw NotFoundException("Provider", "code", INTENDED_PROVIDER_CODE)
 
 interface TeamRepository : JpaRepository<Team, Long> {
+    @EntityGraph(attributePaths = ["district.borough"])
     fun findByCode(code: String): Team?
 }
 
