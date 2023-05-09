@@ -28,7 +28,7 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-internal class IntegrationTest {
+internal class ApiIntegrationTest {
 
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -40,7 +40,7 @@ internal class IntegrationTest {
     lateinit var objectMapper: ObjectMapper
 
     @Test
-    fun `API call retuns a success response`() {
+    fun `successful retrieval of a case record by noms id`() {
         val person = PersonGenerator.DEFAULT
         val res = mockMvc
             .perform(get("/case-records/${person.nomsId}").withOAuth2Token(wireMockServer))

@@ -1,12 +1,12 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.generateDisposal
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.generateEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.CaseAllocation
-import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.Disposal
-import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
-import uk.gov.justice.digital.hmpps.set
 import java.time.ZonedDateTime
 
 object CaseAllocationGenerator {
@@ -40,18 +40,4 @@ object CaseAllocationGenerator {
         decisionDate: ZonedDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = CaseAllocation(person, event, decision, decisionDate, id)
-
-    fun generateEvent(
-        disposal: Disposal? = null,
-        active: Boolean = true,
-        softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Event(disposal, active, softDeleted, id)
-
-    fun generateDisposal(
-        event: Event,
-        active: Boolean = true,
-        softDeleted: Boolean = false,
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Disposal(event, active, softDeleted, id).apply { event.set("disposal", this) }
 }

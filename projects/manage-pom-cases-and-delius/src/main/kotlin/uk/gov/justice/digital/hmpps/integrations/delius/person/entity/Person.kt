@@ -11,6 +11,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
@@ -79,6 +80,9 @@ class PersonManager(
 interface PersonRepository : JpaRepository<Person, Long> {
     @EntityGraph(attributePaths = ["currentTier", "managers.team.ldu", "managers.staff.user"])
     fun findByNomsId(nomsId: String): Person?
+
+    @Query("select p.id from Person p where p.nomsId = :nomsId and p.softDeleted = false")
+    fun findIdFromNomsId(nomsId: String): Long?
 }
 
 fun PersonRepository.getByNomsId(nomsId: String) =
