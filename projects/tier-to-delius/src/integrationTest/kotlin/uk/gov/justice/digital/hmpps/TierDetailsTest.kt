@@ -45,8 +45,7 @@ class TierDetailsTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.registrations[0].description").value(RegistrationGenerator.DEFAULT.type.description))
             .andExpect(MockMvcResultMatchers.jsonPath("$.registrations[0].level").value(RegistrationGenerator.DEFAULT.level?.code))
             .andExpect(MockMvcResultMatchers.jsonPath("$.convictions[0].breached").isBoolean)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.convictions[0].sentenceTypeCode").value(DisposalTypeGenerator.DEFAULT.code))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.convictions[0].sentenceTypeDescription").value(DisposalTypeGenerator.DEFAULT.description))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.convictions[0].sentenceTypeCode").value(DisposalTypeGenerator.DEFAULT.sentenceType))
             .andExpect(MockMvcResultMatchers.jsonPath("$.convictions[0].requirements[0].mainCategoryTypeCode").value("MAIN"))
     }
 }

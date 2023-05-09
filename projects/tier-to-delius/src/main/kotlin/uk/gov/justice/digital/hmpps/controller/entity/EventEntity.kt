@@ -79,11 +79,8 @@ class DisposalType(
     @Column(name = "disposal_type_id")
     val id: Long,
 
-    @Column(name = "disposal_type_code")
-    val code: String,
-
-    @Column(name = "description")
-    val description: String
+    @Column(name = "sentence_type")
+    val sentenceType: String
 )
 
 interface EventRepository : JpaRepository<EventEntity, Long> {
