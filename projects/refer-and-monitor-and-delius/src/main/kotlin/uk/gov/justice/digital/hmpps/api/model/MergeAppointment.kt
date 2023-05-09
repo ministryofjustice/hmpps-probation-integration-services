@@ -15,6 +15,7 @@ data class MergeAppointment(
     val officeLocationCode: String?,
     val countsTowardsRar: Boolean,
     val outcome: Outcome?,
+    val sentenceId: Long?,
     val previousId: UUID?,
     val deliusId: Long?
 ) {
