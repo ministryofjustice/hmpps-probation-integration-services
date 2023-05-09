@@ -38,6 +38,7 @@ generic-service:
     unilink-aovpn11: "217.138.45.109/32"
     unilink-aovpn12: "217.138.45.110/32"
     ctrl-o: "5.2.17.96/27"
+    ctrl-o-dev: "81.187.7.168/32"
 
 generic-prometheus-alerts:
   targetApplication: effective-proposal-framework-and-delius
