@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /pathfinder-and-delius/db-username
+    password_key: /pathfinder-and-delius/db-password
+
+  audit:
+    username: PathfinderAndDelius
+    forename: Probation Integration # TODO change this to something meaningful for your service
+    surname: Service

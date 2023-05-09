@@ -1,0 +1,22 @@
+# Common values
+generic-service:
+  nameOverride: pathfinder-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/pathfinder-and-delius
+
+  ingress:
+    tlsSecretName: pathfinder-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    pathfinder-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    pathfinder-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: pathfinder-and-delius
+
