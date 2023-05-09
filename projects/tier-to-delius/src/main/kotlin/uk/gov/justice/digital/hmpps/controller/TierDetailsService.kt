@@ -44,8 +44,7 @@ class TierDetailsService(
         event.disposal?.let { disposal ->
             Conviction(
                 disposal.terminationDate,
-                disposal.disposalType.code,
-                disposal.disposalType.description,
+                disposal.disposalType.sentenceType,
                 event.inBreach,
                 disposal.requirements.map {
                     Requirement(it.mainCategory.code, it.mainCategory.restrictive)
