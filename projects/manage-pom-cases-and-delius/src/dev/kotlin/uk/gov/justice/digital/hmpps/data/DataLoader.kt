@@ -71,7 +71,8 @@ class DataLoader(
             listOf(
                 PersonGenerator.DEFAULT,
                 PersonGenerator.HANDOVER,
-                PersonGenerator.HANDOVER_AND_START
+                PersonGenerator.CREATE_HANDOVER_AND_START,
+                PersonGenerator.UPDATE_HANDOVER_AND_START
             )
         )
         personManagerRepository.saveAll(PersonManagerGenerator.ALL)
@@ -111,8 +112,12 @@ class DataLoader(
         val handoverDisposal = disposalRepository.save(EventGenerator.generateDisposal(handoverEvent))
         custodyRepository.save(EventGenerator.generateCustody(handoverDisposal))
 
+        val bothEvent = eventRepository.save(EventGenerator.generateEvent(PersonGenerator.CREATE_HANDOVER_AND_START.id))
+        val bothDisposal = disposalRepository.save(EventGenerator.generateDisposal(bothEvent))
+        custodyRepository.save(EventGenerator.generateCustody(bothDisposal))
+
         val handoverStartEvent =
-            eventRepository.save(EventGenerator.generateEvent(PersonGenerator.HANDOVER_AND_START.id))
+            eventRepository.save(EventGenerator.generateEvent(PersonGenerator.UPDATE_HANDOVER_AND_START.id))
         val handoverStartDisposal = disposalRepository.save(EventGenerator.generateDisposal(handoverStartEvent))
         val handoverStartCustody = custodyRepository.save(EventGenerator.generateCustody(handoverStartDisposal))
         keyDateRepository.saveAll(

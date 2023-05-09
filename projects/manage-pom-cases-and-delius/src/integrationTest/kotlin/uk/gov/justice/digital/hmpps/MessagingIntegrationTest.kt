@@ -83,10 +83,36 @@ internal class MessagingIntegrationTest {
             )
         )
 
-        val custody = custodyRepository.findAllByDisposalEventPersonId(PersonGenerator.HANDOVER_AND_START.id).first()
+        val custody =
+            custodyRepository.findAllByDisposalEventPersonId(PersonGenerator.UPDATE_HANDOVER_AND_START.id).first()
         val handoverDates = keyDateRepository.findHandoverDates(custody.id).associateBy { it.type.code }
         assertThat(handoverDates.size, equalTo(2))
         assertThat(handoverDates[KeyDate.TypeCode.HANDOVER_DATE.value]?.date, equalTo(LocalDate.of(2023, 5, 9)))
         assertThat(handoverDates[KeyDate.TypeCode.HANDOVER_START_DATE.value]?.date, equalTo(LocalDate.of(2023, 5, 4)))
+    }
+
+    @Test
+    fun `creates a handover key date and start date successfully`() {
+        val notification = prepNotification(
+            notification("create-handover-and-start-date"),
+            wireMockServer.port()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).trackEvent(
+            KeyDateMergeResult.KEY_DATE_CREATED.name,
+            mapOf(
+                "nomsId" to "A4096BY",
+                "handoverDate" to "2023-05-10",
+                "handoverStartDate" to "2023-05-06"
+            )
+        )
+
+        val custody = custodyRepository.findAllByDisposalEventPersonId(PersonGenerator.CREATE_HANDOVER_AND_START.id).first()
+        val handoverDates = keyDateRepository.findHandoverDates(custody.id).associateBy { it.type.code }
+        assertThat(handoverDates.size, equalTo(2))
+        assertThat(handoverDates[KeyDate.TypeCode.HANDOVER_DATE.value]?.date, equalTo(LocalDate.of(2023, 5, 10)))
+        assertThat(handoverDates[KeyDate.TypeCode.HANDOVER_START_DATE.value]?.date, equalTo(LocalDate.of(2023, 5, 6)))
     }
 }
