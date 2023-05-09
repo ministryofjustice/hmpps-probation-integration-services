@@ -35,6 +35,8 @@ generic-service:
     person-search-index-from-delius-database:
       JDBC_USER: DB_USERNAME
       JDBC_PASSWORD: DB_PASSWORD
+    person-search-index-from-delius-opensearch:
+      SEARCH_INDEX_HOST: url
     person-search-index-from-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
     person-search-index-from-delius-person-queue:

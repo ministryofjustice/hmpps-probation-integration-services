@@ -63,7 +63,7 @@ function delete_ready_for_reindex() {
 function wait_for_index_to_complete() {
   echo 'Waiting for indexing to complete ...'
   SECONDS=0
-  until [ "$(curl_json --no-show-error "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1/_source" | jq '.indexReady')" = 'true' ]; do
+  until [ "$(curl_json --no-show-error "${SEARCH_URL}/${STANDBY_INDEX}/_doc/-1" | jq '._source.indexReady')" = 'true' ]; do
     if [ "$SECONDS" -gt "$REINDEXING_TIMEOUT" ]; then fail "Indexing process timed out." 'ProbationSearchIndexFailure'; fi
     sleep 60
   done
