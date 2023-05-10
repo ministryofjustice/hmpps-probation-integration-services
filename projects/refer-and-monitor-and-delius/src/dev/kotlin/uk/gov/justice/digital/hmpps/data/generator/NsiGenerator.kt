@@ -58,6 +58,7 @@ object NsiGenerator {
         requirementId: Long? = null,
         rarCount: Long? = null,
         providerId: Long = ProviderGenerator.INTENDED_PROVIDER.id,
+        notes: String? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = Nsi(
         person,
@@ -70,6 +71,7 @@ object NsiGenerator {
         intendedProviderId = providerId,
         requirementId = requirementId,
         rarCount = rarCount,
+        notes = notes,
         id = id
     )
 

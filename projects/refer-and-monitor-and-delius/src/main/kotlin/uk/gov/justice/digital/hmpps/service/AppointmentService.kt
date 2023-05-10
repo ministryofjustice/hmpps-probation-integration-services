@@ -29,7 +29,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Nsi
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCrnAndExternalReference
 import uk.gov.justice.digital.hmpps.messaging.Referral
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -51,7 +50,7 @@ class AppointmentService(
 
     @Transactional
     fun mergeAppointment(crn: String, mergeAppointment: MergeAppointment): Long = audit(ADD_CONTACT) { audit ->
-        val nsi = nsiRepository.getByCrnAndExternalReference(crn, mergeAppointment.referralUrn)
+        val nsi = findNsi(crn, mergeAppointment)
         audit["offenderId"] = nsi.person.id
 
         if (now().isAfter(mergeAppointment.start) && mergeAppointment.outcome == null) {
@@ -106,6 +105,26 @@ class AppointmentService(
         nsiRepository.findByIdIfRar(appointment.nsiId!!)?.rarCount =
             contactRepository.countNsiRar(appointment.nsiId)
         return appointment.id
+    }
+
+    private fun findNsi(crn: String, mergeAppointment: MergeAppointment): Nsi {
+        var nsi: Nsi? = nsiRepository.findByPersonCrnAndExternalReference(crn, mergeAppointment.referralUrn)
+        if (nsi == null && mergeAppointment.sentenceId != null) {
+            val nsis = nsiRepository.fuzzySearch(
+                crn,
+                mergeAppointment.sentenceId,
+                ContractTypeNsiType.MAPPING.values.toSet()
+            )
+            if (nsis.size == 1) {
+                nsi = nsis[0]
+            } else if (nsis.size > 1) nsi = nsis.firstOrNull { it.notes?.contains(mergeAppointment.referralUrn) ?: false }
+        }
+        if (nsi == null) {
+            throw NotFoundException(
+                "Unable to match Referral ${mergeAppointment.referralUrn} => CRN $crn : EventId ${mergeAppointment.sentenceId}"
+            )
+        }
+        return nsi
     }
 
     private fun createContact(mergeAppointment: MergeAppointment, assignation: CrsAssignation, nsi: Nsi): Contact =

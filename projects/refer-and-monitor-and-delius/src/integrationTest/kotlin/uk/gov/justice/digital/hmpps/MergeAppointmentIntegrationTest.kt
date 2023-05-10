@@ -80,6 +80,7 @@ internal class MergeAppointmentIntegrationTest {
             false,
             null,
             null,
+            null,
             null
         )
         val result = status().isNoContent
@@ -123,6 +124,7 @@ internal class MergeAppointmentIntegrationTest {
             false,
             null,
             null,
+            null,
             null
         )
 
@@ -152,6 +154,7 @@ internal class MergeAppointmentIntegrationTest {
             "Appointment Notes",
             "DEFAULT",
             false,
+            null,
             null,
             appointmentId,
             null
@@ -202,6 +205,7 @@ internal class MergeAppointmentIntegrationTest {
             "DEFAULT",
             false,
             Outcome(Attended.YES, false),
+            null,
             appointmentId,
             null
         )
@@ -246,6 +250,7 @@ internal class MergeAppointmentIntegrationTest {
             false,
             null,
             null,
+            null,
             null
         )
 
@@ -269,6 +274,7 @@ internal class MergeAppointmentIntegrationTest {
             "DEFAULT",
             false,
             Outcome(Attended.LATE, true),
+            null,
             null,
             null
         )
@@ -306,6 +312,7 @@ internal class MergeAppointmentIntegrationTest {
             "Appointment Notes",
             "DEFAULT",
             false,
+            null,
             null,
             null,
             null
