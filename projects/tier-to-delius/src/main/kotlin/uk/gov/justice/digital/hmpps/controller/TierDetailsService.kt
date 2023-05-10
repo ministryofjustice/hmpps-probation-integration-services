@@ -46,8 +46,8 @@ class TierDetailsService(
                 disposal.terminationDate,
                 disposal.disposalType.sentenceType,
                 event.inBreach,
-                disposal.requirements.map {
-                    Requirement(it.mainCategory.code, it.mainCategory.restrictive)
+                disposal.requirements.mapNotNull { rq ->
+                    rq.mainCategory?.code?.let { Requirement(it, rq.mainCategory.restrictive) }
                 }
             )
         }

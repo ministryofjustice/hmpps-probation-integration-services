@@ -27,7 +27,7 @@ class RequirementEntity(
 
     @ManyToOne
     @JoinColumn(name = "rqmnt_type_main_category_id")
-    val mainCategory: RequirementMainCategory,
+    val mainCategory: RequirementMainCategory?,
 
     @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
     val active: Boolean = true,
