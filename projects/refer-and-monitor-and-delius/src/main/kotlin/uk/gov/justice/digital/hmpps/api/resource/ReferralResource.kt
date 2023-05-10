@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.api.model.MergeAppointment
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.service.AppointmentService
 import uk.gov.justice.digital.hmpps.service.NsiService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 @RestController
@@ -40,7 +42,7 @@ class ReferralResource(
         @PathVariable crn: String,
         @PathVariable referralId: UUID,
         @RequestBody mergeAppointment: MergeAppointment
-    ): Map<String, Long> {
+    ): Map<String, Long> = try {
         val deliusId = appointmentService.mergeAppointment(crn, mergeAppointment)
         telemetryService.trackEvent(
             "MergeAppointment",
@@ -51,6 +53,20 @@ class ReferralResource(
                 "deliusId" to deliusId.toString()
             )
         )
-        return mapOf("appointmentId" to deliusId)
+        mapOf("appointmentId" to deliusId)
+    } catch (rse: ResponseStatusException) {
+        telemetryService.trackEvent(
+            "PastAppointmentWithoutOutcome",
+            mapOf(
+                "crn" to crn,
+                "referralId" to mergeAppointment.referralId.toString(),
+                "referralReference" to mergeAppointment.referralReference,
+                "appointmentId" to mergeAppointment.id.toString(),
+                "startTime" to mergeAppointment.start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+                "endTime" to mergeAppointment.end.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+                "outcome" to (mergeAppointment.outcome?.attended?.name ?: "null")
+            )
+        )
+        throw rse
     }
 }
