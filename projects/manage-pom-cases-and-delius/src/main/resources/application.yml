@@ -13,8 +13,8 @@ spring:
       manage-pom-cases-and-delius:
         provider: hmpps-auth
         authorization-grant-type: client_credentials
-        client-id: manage-pom-cases-and-delius
-        client-secret: manage-pom-cases-and-delius
+        client-id: ${oauth2.client-id}
+        client-secret: ${oauth2.client-secret}
     provider:
       hmpps-auth:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
