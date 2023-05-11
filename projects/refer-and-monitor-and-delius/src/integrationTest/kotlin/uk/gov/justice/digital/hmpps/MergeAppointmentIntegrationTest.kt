@@ -83,7 +83,7 @@ internal class MergeAppointmentIntegrationTest {
             null,
             null
         )
-        val result = status().isNoContent
+        val result = status().isOk
 
         val r1 = CompletableFuture.supplyAsync {
             makeRequest(person, referralId, mergeAppointment, result)
@@ -159,7 +159,7 @@ internal class MergeAppointmentIntegrationTest {
             appointmentId,
             null
         )
-        val result = status().isNoContent
+        val result = status().isOk
 
         makeRequest(person, referralId, mergeAppointment, result)
 
@@ -209,7 +209,7 @@ internal class MergeAppointmentIntegrationTest {
             appointmentId,
             null
         )
-        val result = status().isNoContent
+        val result = status().isOk
 
         makeRequest(person, referralId, mergeAppointment, result)
 
@@ -278,7 +278,7 @@ internal class MergeAppointmentIntegrationTest {
             null,
             null
         )
-        val result = status().isNoContent
+        val result = status().isOk
 
         makeRequest(person, referralId, mergeAppointment, result)
 
