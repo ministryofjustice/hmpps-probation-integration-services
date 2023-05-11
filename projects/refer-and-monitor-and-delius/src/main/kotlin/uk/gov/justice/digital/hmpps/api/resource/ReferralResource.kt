@@ -37,7 +37,7 @@ class ReferralResource(
 
     @PreAuthorize("hasRole('CRS_REFERRAL')")
     @PutMapping("/{referralId}/appointments")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     fun mergeAppointment(
         @PathVariable crn: String,
         @PathVariable referralId: UUID,
