@@ -32,7 +32,7 @@ spec:
                 - name: CONTACT_INDEX_PREFIX
                   value: contact-search
                 - name: CONTACT_REINDEXING_TIMEOUT
-                  value: '129600' # 36 hours
+                  value: '172800' # 48 hours
                 - name: PIPELINES_ENABLED
                   value: contact-full-load,contact-dlq
                 - name: PIPELINE_BATCH_SIZE
