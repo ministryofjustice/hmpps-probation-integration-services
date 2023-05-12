@@ -16,7 +16,6 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.util.concurrent.TimeoutException
 
 @SpringBootTest
-@ActiveProfiles("integration-test")
 internal class IntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String

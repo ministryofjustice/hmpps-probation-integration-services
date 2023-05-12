@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @AutoConfigureMockMvc
-@ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest {
     @Autowired

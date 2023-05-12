@@ -77,22 +77,9 @@ spring.config.activate.on-profile: dev
 spring.config.activate.on-profile: integration-test
 spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_ON_EXIT=FALSE
 
-
-
 ---
 spring.config.activate.on-profile: oracle
-spring:
-  datasource:
-    url: 'jdbc:oracle:thin:@//localhost:1521/XEPDB1'
-    username: delius_pool
-    password: NDelius1
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.Oracle12cDialect
-    hibernate:
-      ddl-auto: validate
-delius.db.username: NationalUser
+spring.datasource.url: 'jdbc:tc:oracle:slim-faststart:///XEPDB1'
 
 ---
 spring.config.activate.on-profile: localstack

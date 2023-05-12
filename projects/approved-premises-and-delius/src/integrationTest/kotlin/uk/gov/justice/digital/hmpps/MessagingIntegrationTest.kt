@@ -16,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
@@ -38,7 +37,6 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 
 @AutoConfigureMockMvc
-@ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @TestMethodOrder(OrderAnnotation::class)
 internal class MessagingIntegrationTest {

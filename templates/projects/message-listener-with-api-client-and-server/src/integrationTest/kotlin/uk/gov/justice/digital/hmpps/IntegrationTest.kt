@@ -23,7 +23,6 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.util.concurrent.TimeoutException
 
 @AutoConfigureMockMvc
-@ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest {
     @Value("\${messaging.consumer.queue}")

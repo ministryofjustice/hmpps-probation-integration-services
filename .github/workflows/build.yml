@@ -55,8 +55,13 @@ jobs:
       - name: Set Gradle properties
         run: echo -e "\norg.gradle.jvmargs=-Xmx1g -XX:MaxMetaspaceSize=512m" >> gradle.properties
 
+      - name: Cache OracleDB image
+        run: docker pull gvenzl/oracle-xe:slim-faststart
+
       - name: Build and test
         run: ./gradlew check
+        env:
+          SPRING_PROFILES_ACTIVE: oracle
 
       - name: Sonar analysis
         if: github.actor != 'dependabot[bot]'

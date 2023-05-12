@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.DEFAULT_CUSTODY
@@ -27,7 +26,6 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
 @SpringBootTest
-@ActiveProfiles("integration-test")
 internal class IntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String

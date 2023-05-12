@@ -60,13 +60,4 @@ spring.datasource.url: jdbc:h2:mem:./test;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH
 
 ---
 spring.config.activate.on-profile: oracle
-spring:
-  datasource:
-    url: 'jdbc:oracle:thin:@//localhost:1521/XEPDB1'
-    username: delius_pool
-    password: NDelius1
-  jpa:
-    properties:
-      hibernate.dialect: org.hibernate.dialect.OracleDialect
-    hibernate.ddl-auto: validate
-delius.db.username: NationalUser
+spring.datasource.url: 'jdbc:tc:oracle:slim-faststart:///XEPDB1'
