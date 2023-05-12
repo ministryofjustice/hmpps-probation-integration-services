@@ -57,4 +57,5 @@ spring:
     properties:
       hibernate.dialect: org.hibernate.dialect.OracleDialect
     hibernate.ddl-auto: validate
+    show-sql: true
 delius.db.username: NationalUser
