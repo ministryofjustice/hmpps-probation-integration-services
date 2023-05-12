@@ -70,6 +70,7 @@ class AppointmentService(
         }
         val appointment = find() ?: mergeAppointment.deliusId?.let { contactRepository.findByIdOrNull(it) } ?: run {
             nsiRepository.findForUpdate(nsi.id)
+            nsi.lastUpdatedDatetime = now()
             find() ?: createContact(mergeAppointment, assignation, nsi)
         }
 

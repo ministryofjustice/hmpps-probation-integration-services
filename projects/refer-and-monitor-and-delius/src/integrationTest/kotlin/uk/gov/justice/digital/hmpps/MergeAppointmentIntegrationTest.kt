@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.instanceOf
+import org.hibernate.StaleObjectStateException
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -12,9 +14,11 @@ import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
 import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.core.NestedExceptionUtils.getRootCause
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
@@ -33,6 +37,8 @@ import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.CompletableFuture.supplyAsync
+import java.util.concurrent.CompletionException
 
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-test")
@@ -85,14 +91,11 @@ internal class MergeAppointmentIntegrationTest {
         )
         val result = status().isOk
 
-        val r1 = CompletableFuture.supplyAsync {
-            makeRequest(person, referralId, mergeAppointment, result)
+        val exception = assertThrows<CompletionException> {
+            val requests = List(10) { supplyAsync { makeRequest(person, referralId, mergeAppointment, result) } }
+            CompletableFuture.allOf(*requests.toTypedArray()).join()
         }
-        val r2 = CompletableFuture.supplyAsync {
-            makeRequest(person, referralId, mergeAppointment, result)
-        }
-
-        CompletableFuture.allOf(r1, r2).join()
+        assertThat(getRootCause(exception), instanceOf(StaleObjectStateException::class.java))
 
         val appointment = assertDoesNotThrow {
             contactRepository.findByPersonCrnAndExternalReference(
