@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import java.net.URI
 
 @FeignClient(name = "make-recall-decisions", url = "https://dummy-url/to/be/overridden")
-interface MakeRecallDecisionsClient {
+fun interface MakeRecallDecisionsClient {
     @GetMapping
     fun getDetails(url: URI): DecisionDetails
 

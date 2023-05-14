@@ -34,7 +34,7 @@ import uk.gov.justice.digital.hmpps.integrations.common.model.Type
         DisabilityMapper::class
     ]
 )
-interface CaseMapper {
+fun interface CaseMapper {
     @Mapping(source = "surname", target = "name.surname")
     @Mapping(source = "forename", target = "name.forename")
     @Mapping(source = "secondName", target = "name.middleName")
@@ -129,18 +129,18 @@ fun populateMappaRegistration(case: CaseEntity): MappaRegistration? {
 }
 
 @Mapper(componentModel = "spring")
-interface CasePersonalCircumstanceMapper {
+fun interface CasePersonalCircumstanceMapper {
     @Mapping(source = "evidenced", target = "evidenced", defaultValue = "false")
     fun convertToModel(personalCircumstanceEntity: CasePersonalCircumstanceEntity): PersonalCircumstance
 }
 
 @Mapper(componentModel = "spring")
-interface CaseAddressMapper {
+fun interface CaseAddressMapper {
     fun convertToModel(caseAddress: CaseAddress): Address
 }
 
 @Mapper(componentModel = "spring")
-interface CasePersonalContactMapper {
+fun interface CasePersonalContactMapper {
 
     @Mapping(source = "surname", target = "name.surname")
     @Mapping(source = "forename", target = "name.forename")
@@ -150,7 +150,7 @@ interface CasePersonalContactMapper {
 }
 
 @Mapper(componentModel = "spring")
-interface DisabilityMapper {
+fun interface DisabilityMapper {
     @Mapping(target = "provisions", ignore = true)
     fun convertToModel(disabilityEntity: DisabilityEntity): Disability
 }

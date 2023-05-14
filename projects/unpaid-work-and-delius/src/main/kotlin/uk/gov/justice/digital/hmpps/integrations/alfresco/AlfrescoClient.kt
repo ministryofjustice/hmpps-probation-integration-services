@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import uk.gov.justice.digital.hmpps.config.AlfrescoFeignConfig
 
 @FeignClient(name = "alfresco", url = "\${integrations.alfresco.url}", configuration = [AlfrescoFeignConfig::class])
-interface AlfrescoClient {
+fun interface AlfrescoClient {
     @PostMapping(value = ["/uploadnew"])
     fun addDocument(@RequestBody body: MultiValueMap<String, HttpEntity<*>>): AlfrescoDocument
 }

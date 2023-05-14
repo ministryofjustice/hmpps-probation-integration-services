@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import java.net.URI
 
 @FeignClient(name = "workforce-allocations", url = "https://dummy-url/to/be/overridden")
-interface WorkforceAllocationsClient {
+fun interface WorkforceAllocationsClient {
     @GetMapping
     fun getAllocationDetail(baseUrl: URI): AllocationDetail
 }

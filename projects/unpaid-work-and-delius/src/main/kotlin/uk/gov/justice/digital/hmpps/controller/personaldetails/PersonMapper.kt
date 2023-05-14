@@ -10,17 +10,17 @@ import uk.gov.justice.digital.hmpps.integrations.common.model.PersonalCircumstan
 import uk.gov.justice.digital.hmpps.integrations.common.model.PersonalContact
 
 @Mapper(componentModel = "spring", uses = [PersonalCircumstanceMapper::class, PersonalContactMapper::class, AddressMapper::class])
-interface PersonMapper {
+fun interface PersonMapper {
     fun convertToModel(person: Person): PersonalDetails
 }
 
 @Mapper(componentModel = "spring")
-interface PersonalCircumstanceMapper {
+fun interface PersonalCircumstanceMapper {
     fun convertToModel(personalCircumstanceEntity: PersonalCircumstanceEntity): PersonalCircumstance
 }
 
 @Mapper(componentModel = "spring")
-interface PersonalContactMapper {
+fun interface PersonalContactMapper {
 
     @Mapping(source = "surname", target = "name.surname")
     @Mapping(source = "forename", target = "name.forename")
