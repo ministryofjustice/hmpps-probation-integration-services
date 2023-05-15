@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
@@ -14,12 +13,12 @@ import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.service.ContractTypeNsiType
 import uk.gov.justice.digital.hmpps.service.NsiService
+import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.LocalDate
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
 
 @AutoConfigureMockMvc
-@ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class NsiServiceTest {
 
@@ -51,8 +50,8 @@ class NsiServiceTest {
         val nsi = nsiRepository.findByPersonCrnAndExternalReference(
             PersonGenerator.SENTENCED_WITHOUT_NSI.crn,
             referralStarted.urn
-        )
-        assertThat(nsi?.externalReference, equalTo(referralStarted.urn))
-        assertThat(nsi?.createdDatetime, equalTo(nsi?.lastUpdatedDatetime))
+        )!!
+        assertThat(nsi.externalReference, equalTo(referralStarted.urn))
+        assertThat(nsi.createdDatetime, isCloseTo(nsi.lastUpdatedDatetime))
     }
 }

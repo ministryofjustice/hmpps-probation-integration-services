@@ -117,6 +117,18 @@ used to set the Spring profile. For example,
 SPRING_PROFILES_ACTIVE=dev ./gradlew <project-name>:bootRun
 ```
 
+### Using a live-like database
+
+A Docker image is available for the Delius database, which is pre-populated with all the Delius stored procedures and
+reference data.
+To access and run the image, follow the instructions in the [HMPPS Delius Docker Images repository](https://github.com/ministryofjustice/hmpps-delius-docker-images/tree/main/oracledb-18c#running-from-ecr).
+
+Once the database is running, use the `delius-db` profile to connect to it:
+
+```shell
+SPRING_PROFILES_ACTIVE=dev,delius-db ./gradlew <project-name>:bootRun
+```
+
 # Test
 ## Integration tests
 Integration tests use WireMock JSON files to mock any external services.
@@ -148,6 +160,17 @@ When mocking these urls the following would be appropriate (rather than a separa
 ```
 
 All other concepts of Spring Boot Tests are usable as per Spring documentation.
+
+### Testing with an Oracle Database
+
+By default, integration tests run against an in-memory H2 database.
+This can sometimes cause problems where H2 doesn't behave in the same way as the target Oracle database.
+
+To run the integration tests using a slim Oracle database container, use the `oracle` profile:
+
+```shell
+SPRING_PROFILES_ACTIVE=integration-test,oracle ./gradlew integrationTest 
+```
 
 ## End-to-end tests
 

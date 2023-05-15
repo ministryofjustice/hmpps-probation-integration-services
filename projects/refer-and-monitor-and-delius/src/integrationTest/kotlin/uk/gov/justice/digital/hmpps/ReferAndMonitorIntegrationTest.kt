@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -40,7 +39,6 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @SpringBootTest
-@ActiveProfiles("integration-test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class ReferAndMonitorIntegrationTest {
     @Value("\${messaging.consumer.queue}")
@@ -266,7 +264,7 @@ internal class ReferAndMonitorIntegrationTest {
         assertThat(
             saved.actualEndDate?.withZoneSameInstant(EuropeLondon),
             equalTo(
-                ZonedDateTime.parse("2023-02-23T15:29:54Z").withZoneSameInstant(EuropeLondon)
+                ZonedDateTime.parse("2023-02-23T15:29:54.197Z").withZoneSameInstant(EuropeLondon)
             )
         )
         assertThat(saved.outcome?.code, equalTo(ReferralEndType.PREMATURELY_ENDED.outcome))
@@ -313,7 +311,7 @@ internal class ReferAndMonitorIntegrationTest {
         assertThat(
             saved.actualEndDate?.withZoneSameInstant(EuropeLondon),
             equalTo(
-                ZonedDateTime.parse("2023-02-23T15:29:54Z").withZoneSameInstant(EuropeLondon)
+                ZonedDateTime.parse("2023-02-23T15:29:54.197Z").withZoneSameInstant(EuropeLondon)
             )
         )
         assertThat(saved.outcome?.code, equalTo(ReferralEndType.CANCELLED.outcome))

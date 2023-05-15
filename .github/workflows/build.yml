@@ -11,9 +11,9 @@ on:
         default: false
     outputs:
       version:
-        value: ${{ jobs.build.outputs.version }}
+        value: ${{ jobs.build-gradle.outputs.version }}
       changes:
-        value: ${{ jobs.build.outputs.changes }}
+        value: ${{ jobs.analyse.outputs.changes }}
   workflow_dispatch:
     inputs:
       push:
@@ -25,16 +25,40 @@ env:
   push: ${{ !(github.event_name == 'push' && github.ref_name != 'main') && inputs.push }}
 
 jobs:
-  build:
-    name: Build
+  build-gradle:
+    name: Gradle build
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - approved-premises-and-oasys
+          - approved-premises-and-delius
+          - pre-sentence-reports-to-delius
+          - prison-case-notes-to-probation
+          - prison-custody-status-to-delius
+          - risk-assessment-scores-to-delius
+          - tier-to-delius
+          - workforce-allocations-to-delius
+          - offender-events-and-delius
+          - custody-key-dates-and-delius
+          - make-recall-decisions-and-delius
+          - unpaid-work-and-delius
+          - manage-pom-cases-and-delius
+          - refer-and-monitor-and-delius
+          - create-and-vary-a-licence-and-delius
+          - court-case-and-delius
+          - effective-proposal-framework-and-delius
+          - sentence-plan-and-delius
+          - pathfinder-and-delius
+          # ^ add new projects here
+          # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
+          # See https://github.com/community/community/discussions/11795
     outputs:
       version: ${{ steps.version.outputs.version }}
       changes: ${{ steps.check-changes.outputs.changes }}
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
@@ -48,22 +72,86 @@ jobs:
         id: version
         run: |
           version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
-          echo version=$version
           echo "ORG_GRADLE_PROJECT_version=$version" >> $GITHUB_ENV
-          echo "version=$version" >> $GITHUB_OUTPUT
-
-      - name: Set Gradle properties
-        run: echo -e "\norg.gradle.jvmargs=-Xmx1g -XX:MaxMetaspaceSize=512m" >> gradle.properties
+          echo "version=$version" | tee -a $GITHUB_OUTPUT
 
       - name: Build and test
-        run: ./gradlew check
-
-      - name: Sonar analysis
-        if: github.actor != 'dependabot[bot]'
-        continue-on-error: true # don't fail the build when sonarcloud.io is down
-        run: ./gradlew sonar
+        run: ./gradlew ${{ matrix.project }}:check
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SPRING_PROFILES_ACTIVE: oracle
+
+      - name: Push images
+        if: env.push == 'true'
+        run: ./gradlew ${{ matrix.project }}:jib
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_PASSWORD: ${{ github.token }}
+
+      - name: Check changes
+        id: check-changes
+        run: echo "changes=$((ls changed || true) | jq --raw-input . | jq --slurp --compact-output .)" | tee -a $GITHUB_OUTPUT
+
+      - name: Output changes
+        uses: cloudposse/github-action-matrix-outputs-write@47bfd07b833c59443a15353094aa2802a7613501 # v0.4.1
+        with:
+          matrix-step-name: output-changes
+          matrix-key: ${{ matrix.project }}
+          outputs: ${{ steps.check-changes.outputs.changes }}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: |
+            **/build/jacoco
+            **/build/test-results
+
+  build-docker:
+    name: Docker build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project:
+          - person-search-index-from-delius
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set version
+        id: version
+        run: |
+          version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
+          echo "version=$version" | tee -a $GITHUB_OUTPUT
+
+      - name: Build Docker images
+        uses: ./.github/actions/docker-build
+        id: build
+        with:
+          project: ${{ matrix.project }}
+          push: ${{ env.push }}
+          version: ${{ steps.version.outputs.version }}
+
+      - name: Output changes
+        uses: cloudposse/github-action-matrix-outputs-write@47bfd07b833c59443a15353094aa2802a7613501 # v0.4.1
+        with:
+          matrix-step-name: output-changes
+          matrix-key: ${{ matrix.project }}
+          outputs: ${{ steps.build.outputs.changes }}
+
+  analyse:
+    name: Analyse
+    runs-on: ubuntu-latest
+    needs:
+      - build-gradle
+      - build-docker
+    outputs:
+      changes: ${{ steps.check-changes.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: test-results
 
       - name: Publish test reports
         uses: mikepenz/action-junit-report@4fa23552acda20a6a1d44f16224a90efbeb6c5f1 # v3.7.5
@@ -76,30 +164,27 @@ jobs:
             **/build/test-results/test/TEST-*.xml
             **/build/test-results/integrationTest/TEST-*.xml
 
-      - name: Cache base image
-        if: env.push == 'true'
-        run: |
-          docker pull eclipse-temurin:17-jre-alpine
-          echo "JIB_FROM_IMAGE=docker://$(docker inspect --format='{{index .RepoDigests 0}}' eclipse-temurin:17-jre-alpine)" >> $GITHUB_ENV
-
-      - name: Push Jib images
-        if: env.push == 'true'
-        run: ./gradlew jib
-        env:
-          GITHUB_USERNAME: ${{ github.actor }}
-          GITHUB_PASSWORD: ${{ github.token }}
-
-      - name: Build Docker images
-        uses: ./.github/actions/docker-build
-        id: docker-build
+      - uses: actions/setup-java@v3
         with:
-          project: person-search-index-from-delius
-          push: ${{ env.push }}
-          version: ${{ steps.version.outputs.version }}
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Sonar analysis
+        if: github.actor != 'dependabot[bot]'
+        continue-on-error: true # don't fail the build when sonarcloud.io is down
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - uses: cloudposse/github-action-matrix-outputs-read@ea1c28d66c34b8400391ed74d510f66abc392d5e # v0.1.1
+        id: read-changes
+        with:
+          matrix-step-name: output-changes
 
       - name: Check changes
         id: check-changes
-        run: |
-          gradle_changes="$((ls changed || true) | jq --raw-input . | jq --slurp --compact-output .)"
-          docker_changes='${{ steps.docker-build.outputs.changes }}'
-          echo "changes=$(echo -e "$gradle_changes\n$docker_changes" | jq --slurp --compact-output 'add')" | tee -a $GITHUB_OUTPUT
+        run: echo "changes=$(echo $changes | jq '. | values[] | [.]' | jq --slurp --compact-output 'add')" | tee -a $GITHUB_OUTPUT
+        env:
+          changes: ${{ steps.read-changes.outputs.result }}

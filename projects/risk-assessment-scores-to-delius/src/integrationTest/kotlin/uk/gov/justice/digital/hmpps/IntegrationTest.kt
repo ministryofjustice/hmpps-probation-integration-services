@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
@@ -33,7 +32,6 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionException
 
 @SpringBootTest
-@ActiveProfiles("integration-test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class IntegrationTest {
     @Value("\${messaging.consumer.queue}")

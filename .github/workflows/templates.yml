@@ -15,6 +15,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         project_template:
           - api-client-and-server
@@ -39,4 +40,4 @@ jobs:
       - name: Compile and test
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: check
+          arguments: 'test-project:check'
