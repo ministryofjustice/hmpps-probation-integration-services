@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.http.MediaType
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -20,7 +19,6 @@ import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 
 @AutoConfigureMockMvc
-@ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class TierDetailsTest {
     @Autowired lateinit var mockMvc: MockMvc

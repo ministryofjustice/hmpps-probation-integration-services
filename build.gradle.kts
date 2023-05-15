@@ -72,7 +72,7 @@ subprojects {
 
     tasks {
         withType<BootRun> {
-            if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE")) == "dev") {
+            if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE"))?.split(",")?.contains("dev") == true) {
                 classpath = sourceSets.getByName("dev").runtimeClasspath
             }
         }

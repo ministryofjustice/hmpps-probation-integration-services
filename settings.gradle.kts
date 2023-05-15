@@ -56,11 +56,12 @@ dependencyResolutionManagement {
             library("mapstruct", "org.mapstruct:mapstruct:1.5.5.Final")
             library("mapstructprocessor", "org.mapstruct:mapstruct-processor:1.5.5.Final")
             library("flipt", "io.flipt:flipt-java:0.1.8")
+            library("testcontainers-oracle", "org.testcontainers:oracle-xe:1.18.1")
         }
     }
 }
 
-plugins { id("com.gradle.enterprise") version "3.13.1" }
+plugins { id("com.gradle.enterprise") version "3.13.2" }
 gradleEnterprise {
     buildScan {
         publishAlwaysIf(!System.getenv("CI").isNullOrEmpty())

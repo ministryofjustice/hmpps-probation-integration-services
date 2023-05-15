@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data
 
-import org.springframework.context.annotation.Profile
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Restr
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
-@Profile("dev", "integration-test")
+@ConditionalOnProperty("seed.database")
 class LimitedAccessDataLoader(
     private val userRepository: UserRepository,
     private val personRepository: PersonRepository,

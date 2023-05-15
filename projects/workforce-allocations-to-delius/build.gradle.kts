@@ -27,8 +27,9 @@ dependencies {
     implementation(libs.opentelemetry.annotations)
 
     dev(project(":libs:dev-tools"))
-    dev("com.h2database:h2")
     dev("com.unboundid:unboundid-ldapsdk")
+    dev("com.h2database:h2")
+    dev(libs.testcontainers.oracle)
 
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 

@@ -23,6 +23,6 @@ class ConnectionProviderConfig {
 class OracleCondition : Condition {
     override fun matches(context: ConditionContext, metadata: AnnotatedTypeMetadata): Boolean {
         val url = context.environment.getProperty("spring.datasource.url")
-        return url?.startsWith("jdbc:oracle") ?: false
+        return url?.startsWith("jdbc:oracle") ?: false && !context.environment.acceptsProfiles { it.test("oracle") }
     }
 }
