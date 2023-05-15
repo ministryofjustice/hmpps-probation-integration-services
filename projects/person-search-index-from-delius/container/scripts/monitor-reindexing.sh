@@ -30,6 +30,8 @@ if [ -z "$REINDEXING_TIMEOUT" ]; then help; fail 'Missing -t'; fi
 
 function stop_logstash() {
     exit_code=$?
+    echo 'Printing final stats...'
+    curl localhost:9600/_node/stats
     if [ "$exit_code" = '0' ]; then
       echo 'Gracefully stopping Logstash process...'
       pgrep java | xargs -n1 kill -TERM
