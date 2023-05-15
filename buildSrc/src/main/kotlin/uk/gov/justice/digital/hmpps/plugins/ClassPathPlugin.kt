@@ -55,7 +55,7 @@ class ClassPathPlugin : Plugin<Project> {
             project.tasks.create("integrationTest", Test::class.java) {
                 testClassesDirs = getByName("integrationTest").output.classesDirs
                 classpath = getByName("integrationTest").runtimeClasspath
-                systemProperty("spring.profiles.active", "integration-test,${System.getenv("SPRING_PROFILES_ACTIVE")}")
+                systemProperty("spring.profiles.active", "integration-test,${System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE"))}")
             }
             project.tasks.withType(Test::class.java) {
                 useJUnitPlatform()

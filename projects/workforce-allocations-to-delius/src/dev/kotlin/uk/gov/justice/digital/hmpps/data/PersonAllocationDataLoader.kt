@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data
 
-import org.springframework.context.annotation.Profile
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator
@@ -52,7 +52,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOffice
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 
 @Component
-@Profile("dev", "integration-test")
+@ConditionalOnProperty("seed.database")
 class PersonAllocationDataLoader(
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,

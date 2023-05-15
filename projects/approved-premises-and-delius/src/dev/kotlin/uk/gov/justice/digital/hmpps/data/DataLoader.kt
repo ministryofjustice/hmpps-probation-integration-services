@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.data
 
 import jakarta.annotation.PostConstruct
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
-import org.springframework.context.annotation.Profile
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
@@ -42,7 +42,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component
-@Profile("dev", "integration-test")
+@ConditionalOnProperty("seed.database")
 class DataLoader(
     private val userRepository: UserRepository,
     private val datasetRepository: DatasetRepository,

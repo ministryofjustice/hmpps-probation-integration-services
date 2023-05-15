@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data
 
 import IdGenerator
-import org.springframework.context.annotation.Profile
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
@@ -35,7 +35,7 @@ import uk.gov.justice.digital.hmpps.set
 import java.time.ZonedDateTime
 
 @Component
-@Profile("dev", "integration-test")
+@ConditionalOnProperty("seed.database")
 class CaseViewDataLoader(
     val personRepository: CaseViewPersonRepository,
     val addressRepository: CaseViewPersonAddressRepository,

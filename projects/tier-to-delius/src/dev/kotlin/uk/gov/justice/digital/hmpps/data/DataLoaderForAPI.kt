@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.data
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
-import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.controller.entity.CaseEntityRepository
@@ -29,7 +29,7 @@ import uk.gov.justice.digital.hmpps.data.repository.RequirementMainCategoryRepos
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 
 @Component
-@Profile("dev", "integration-test")
+@ConditionalOnProperty("seed.database")
 class DataLoaderForAPI(
     private val caseEntityRepository: CaseEntityRepository,
     private val referenceDataRepository: ReferenceDataRepository,
