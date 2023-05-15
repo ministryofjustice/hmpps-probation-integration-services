@@ -13,10 +13,10 @@ class ProbationAreaService(private val probationAreaRepository: ProbationAreaRep
         val pas = mutableListOf<ProbationArea>()
         val pad = probationAreaRepository.probationAreaDistricts()
 
-        //create a set of probation areas
+        // create a set of probation areas
         val paCodes: Set<Pair<String, String>> = pad.map { Pair(it.pCode, it.pDesc) }.toSet()
 
-        //get the districts for the paCode
+        // get the districts for the paCode
         paCodes.forEach {
             pas.add(ProbationArea(it.first, it.second, function(it.first, pad)))
         }

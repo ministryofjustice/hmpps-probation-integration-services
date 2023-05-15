@@ -32,7 +32,7 @@ class ProbationAreaEntity(
     val id: Long,
 
     @OneToMany(mappedBy = "probationAreaId")
-    val boroughs: List<Borough> = listOf(),
+    val boroughs: List<Borough> = listOf()
 )
 
 @Immutable
@@ -55,7 +55,7 @@ class District(
 
     @Id
     @Column(name = "district_id")
-    val id: Long,
+    val id: Long
 )
 
 @Immutable
@@ -78,11 +78,11 @@ class Borough(
     val code: String,
 
     @OneToMany(mappedBy = "borough")
-    val districts: List<District> = listOf(),
+    val districts: List<District> = listOf()
 
 )
 
-interface ProbationAreaRepository : JpaRepository<ProbationAreaEntity, Long>{
+interface ProbationAreaRepository : JpaRepository<ProbationAreaEntity, Long> {
     @Query(
         """
         select new uk.gov.justice.digital.hmpps.entity.ProbationAreaDistrict(pa.code, pa.description, d.code, d.description)
