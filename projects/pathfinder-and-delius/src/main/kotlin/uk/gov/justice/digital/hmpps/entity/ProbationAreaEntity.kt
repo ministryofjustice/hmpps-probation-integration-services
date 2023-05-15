@@ -1,14 +1,15 @@
 package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
@@ -16,6 +17,10 @@ import org.springframework.data.jpa.repository.Query
 @Immutable
 @Table(name = "probation_area")
 class ProbationAreaEntity(
+
+    @Column(nullable = false)
+    @Convert(converter = YesNoConverter::class)
+    val selectable: Boolean = true,
 
     val description: String,
 
@@ -26,7 +31,7 @@ class ProbationAreaEntity(
     @Column(name = "probation_area_id")
     val id: Long,
 
-    @OneToMany(mappedBy = "probationAreaId", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "probationAreaId")
     val boroughs: List<Borough> = listOf(),
 )
 
@@ -34,6 +39,10 @@ class ProbationAreaEntity(
 @Entity
 @Table(name = "district")
 class District(
+
+    @Column(nullable = false)
+    @Convert(converter = YesNoConverter::class)
+    val selectable: Boolean = true,
 
     @Column(name = "code")
     val code: String,
@@ -54,9 +63,13 @@ class District(
 @Table(name = "borough")
 class Borough(
 
+    @Column(nullable = false)
+    @Convert(converter = YesNoConverter::class)
+    val selectable: Boolean = true,
+
     @Id
     @Column(name = "borough_id")
-    val boroughId: Long,
+    val id: Long,
 
     @Column(name = "probation_area_id")
     val probationAreaId: Long,
@@ -70,9 +83,20 @@ class Borough(
 )
 
 interface ProbationAreaRepository : JpaRepository<ProbationAreaEntity, Long>{
-    @Query("""
-        select p from ProbationAreaEntity p
-        join fetch p.boroughs b
-    """)
-    override fun findAll(): List<ProbationAreaEntity>
+    @Query(
+        """
+        select new uk.gov.justice.digital.hmpps.entity.ProbationAreaDistrict(pa.code, pa.description, d.code, d.description)
+        from ProbationAreaEntity pa 
+        join Borough b on b.probationAreaId = pa.id
+        join District d on d.borough.id = b.id
+        where pa.description not like 'ZZ%'
+        and d.code <> '-1'
+        and pa.selectable = true
+        and d.selectable = true
+        and b.selectable = true
+    """
+    )
+    fun probationAreaDistricts(): List<ProbationAreaDistrict>
 }
+
+data class ProbationAreaDistrict(val pCode: String, val pDesc: String, val dCode: String, val dDesc: String)
