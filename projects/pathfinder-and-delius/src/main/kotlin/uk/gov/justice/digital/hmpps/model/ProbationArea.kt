@@ -10,3 +10,7 @@ data class LocalDeliveryUnit(
     val code: String,
     val description: String
 )
+
+data class ProbationAreaContainer(
+    val probationAreas: List<ProbationArea>
+)

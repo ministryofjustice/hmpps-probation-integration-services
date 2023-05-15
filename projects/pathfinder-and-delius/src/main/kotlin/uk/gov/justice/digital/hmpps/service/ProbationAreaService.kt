@@ -5,10 +5,11 @@ import uk.gov.justice.digital.hmpps.entity.ProbationAreaDistrict
 import uk.gov.justice.digital.hmpps.entity.ProbationAreaRepository
 import uk.gov.justice.digital.hmpps.model.LocalDeliveryUnit
 import uk.gov.justice.digital.hmpps.model.ProbationArea
+import uk.gov.justice.digital.hmpps.model.ProbationAreaContainer
 
 @Service
 class ProbationAreaService(private val probationAreaRepository: ProbationAreaRepository) {
-    fun getProbationAreas(): List<ProbationArea> {
+    fun getProbationAreas(): ProbationAreaContainer {
         val pas = mutableListOf<ProbationArea>()
         val pad = probationAreaRepository.probationAreaDistricts()
 
@@ -19,7 +20,7 @@ class ProbationAreaService(private val probationAreaRepository: ProbationAreaRep
         paCodes.forEach {
             pas.add(ProbationArea(it.first, it.second, function(it.first, pad)))
         }
-        return pas
+        return ProbationAreaContainer(pas)
     }
 
     private fun function(pCode: String, pad: List<ProbationAreaDistrict>): List<LocalDeliveryUnit> {
