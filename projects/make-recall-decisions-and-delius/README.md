@@ -24,7 +24,7 @@ The service raises HMPPS Domain Event messages to the
 The events are raised by the [HMPPS Consider a Recall Service](https://github.com/ministryofjustice/make-recall-decision-api)
 indicating significant events in the 'recall to custody' decision process
 
-Example [messages](./src/dev/resources/messages/) are in the development source tree.
+Example [messages](https://github.com/ministryofjustice/hmpps-probation-integration-services/tree/main/projects/make-recall-decisions-and-delius/src/dev/resources/messages/) are in the development source tree.
 
 Incoming messages are filtered on `eventType` by the [SQS queue policy](https://github.com/ministryofjustice/cloud-platform-environments/blob/02fd1494435dd2525f2820f447ea7cdc10ddf54d/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/make-recall-decisions-and-delius-queue.tf#L5-L10)
 
