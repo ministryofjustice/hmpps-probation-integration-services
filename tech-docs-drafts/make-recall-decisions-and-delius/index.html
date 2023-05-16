@@ -143,6 +143,9 @@
       </li>
     </ul>
   </li>
+  <li>
+    <a href="./async-api-reference.html"><span>ASyncAPI Reference</span></a>
+  </li>
 </ul>
 
 
@@ -170,7 +173,7 @@ activity around recall decisions in the Delius contact history.</p>
 <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-domain-events-prod/resources/hmpps-domain-events-topic.tf">HMPPS Domain Events Topic</a>.
 The events are raised by the <a href="https://github.com/ministryofjustice/make-recall-decision-api">HMPPS Consider a Recall Service</a>
 indicating significant events in the &lsquo;recall to custody&rsquo; decision process</p>
-<p>Example <a href="./src/dev/resources/messages/">messages</a> are in the development source tree.</p>
+<p>Example <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/tree/main/projects/make-recall-decisions-and-delius/src/dev/resources/messages/">messages</a> are in the development source tree.</p>
 <p>Incoming messages are filtered on <code>eventType</code> by the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/02fd1494435dd2525f2820f447ea7cdc10ddf54d/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/make-recall-decisions-and-delius-queue.tf#L5-L10">SQS queue policy</a></p>
 <h2 id="event-triggers">Event Triggers</h2>
 <p>Allocation domain events are raised in real time as probation cases are
