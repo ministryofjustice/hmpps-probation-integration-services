@@ -103,6 +103,7 @@ jobs:
           name: test-results
           path: |
             **/build/jacoco
+            **/build/reports/jacoco/**/*.xml
             **/build/test-results
 
   build-docker:
