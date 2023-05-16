@@ -98,7 +98,7 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
-        <a href="./api-reference.html#example-inputid"><span>/example/{inputId}</span></a>
+        <a href="./api-reference.html#probation-areas"><span>/probation-areas</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -134,37 +134,17 @@
 
 
 
-<h2 id="example-inputid">/example/{inputId}</h2>
+<h2 id="probation-areas">/probation-areas</h2>
 
-<h3 id="example-inputid-get">get</h3>
-
-
-
-
-<h4 id="example-inputid-get-parameters">Parameters</h4>
-<table>
-<thead>
-<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>inputId</td>
-<td>path</td>
-<td>string</td>
-<td>true</td>
-<td>
-
-</td>
-</tr>
-
-</tbody>
-</table>
+<h3 id="probation-areas-get">get</h3>
 
 
 
 
-<h4 id="example-inputid-get-responses">Responses</h4>
+
+
+
+<h4 id="probation-areas-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -178,9 +158,24 @@
 
 
 
+<pre><code>{
+  "probationAreas": [
+    {
+      "code": "string",
+      "description": "string",
+      "localDeliveryUnits": [
+        {
+          "code": "string",
+          "description": "string"
+        }
+      ]
+    }
+  ]
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-probationareacontainer'>ProbationAreaContainer</a>
 </td>
 </tr>
 
@@ -192,6 +187,102 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-localdeliveryunit">LocalDeliveryUnit</h3>
+
+
+<table class='schema-localdeliveryunit'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationarea">ProbationArea</h3>
+
+
+<table class='schema-probationarea'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>localDeliveryUnits</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-localdeliveryunit'>LocalDeliveryUnit</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationareacontainer">ProbationAreaContainer</h3>
+
+
+<table class='schema-probationareacontainer'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>probationAreas</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-probationarea'>ProbationArea</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 
 
             
