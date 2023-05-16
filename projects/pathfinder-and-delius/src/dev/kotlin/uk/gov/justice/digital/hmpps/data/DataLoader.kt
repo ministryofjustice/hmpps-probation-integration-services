@@ -8,6 +8,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
@@ -28,7 +29,12 @@ class DataLoader(
         em.saveAll(
             ProbationAreaGenerator.DEFAULT_PA,
             ProbationAreaGenerator.DEFAULT_BOROUGH,
-            ProbationAreaGenerator.DEFAULT_LDU
+            ProbationAreaGenerator.DEFAULT_LDU,
+            CourtAppearanceGenerator.DEFAULT_CA_TYPE,
+            CourtAppearanceGenerator.DEFAULT_COURT,
+            CourtAppearanceGenerator.DEFAULT_PERSON,
+            CourtAppearanceGenerator.DEFAULT_EVENT,
+            CourtAppearanceGenerator.DEFAULT_CA
         )
     }
 
