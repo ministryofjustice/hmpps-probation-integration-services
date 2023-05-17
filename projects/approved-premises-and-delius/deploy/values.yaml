@@ -25,5 +25,3 @@ generic-service:
 
 generic-prometheus-alerts:
   targetApplication: approved-premises-and-delius
-  # Alert for business hours only - 7am to 6pm UTC (8am to 7pm BST) on week days (Monday to Friday)
-  # businessHoursOnly: false
