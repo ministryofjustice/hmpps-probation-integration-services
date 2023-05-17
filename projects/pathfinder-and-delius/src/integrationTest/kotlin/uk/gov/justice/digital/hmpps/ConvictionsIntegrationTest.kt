@@ -47,9 +47,9 @@ internal class ConvictionsIntegrationTest {
 
     @Test
     fun `API call retuns a success response using NOMS`() {
-        val crn = ConvictionEventGenerator.PERSON.nomsNumber
+        val noms = ConvictionEventGenerator.PERSON.nomsNumber
         val result = mockMvc
-            .perform(get("/convictions/$crn?type=NOMS").withOAuth2Token(wireMockServer))
+            .perform(get("/convictions/$noms?type=NOMS").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, ConvictionsContainer::class.java)
