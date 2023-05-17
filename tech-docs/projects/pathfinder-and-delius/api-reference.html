@@ -101,6 +101,9 @@
         <a href="./api-reference.html#probation-areas"><span>/probation-areas</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#court-appearances"><span>/court-appearances</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
       </li>
     </ul>
@@ -176,6 +179,57 @@
 </td>
 <td>
 <a href='#schema-probationareacontainer'>ProbationAreaContainer</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="court-appearances">/court-appearances</h2>
+
+<h3 id="court-appearances-get">get</h3>
+
+
+
+
+
+
+
+<h4 id="court-appearances-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "courtAppearances": [
+    {
+      "appearanceDate": "string",
+      "type": {
+        "code": "string",
+        "description": "string"
+      },
+      "courtCode": "string",
+      "courtName": "string",
+      "crn": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-courtappearancescontainer'>CourtAppearancesContainer</a>
 </td>
 </tr>
 
@@ -277,6 +331,122 @@
 <td></td>
 <td>
   <a href='#schema-probationarea'>ProbationArea</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-courtappearance">CourtAppearance</h3>
+
+
+<table class='schema-courtappearance'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>appearanceDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-type'>Type</a>
+</td>
+</tr>
+
+<tr>
+<td>courtCode</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>courtName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-courtappearancescontainer">CourtAppearancesContainer</h3>
+
+
+<table class='schema-courtappearancescontainer'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>courtAppearances</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-courtappearance'>CourtAppearance</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-type">Type</h3>
+
+
+<table class='schema-type'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 
