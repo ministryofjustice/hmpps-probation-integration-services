@@ -79,6 +79,16 @@ object ContactGenerator {
         rarActivity = true
     )
 
+    var TERMINATED_NSI = generate(
+        type = TYPES[Code.CRSAPT.value]!!,
+        notes = """
+            |Service Delivery Appointment for Accommodation Referral FE4536C with Prime Provider ProviderName
+            |https://refer-monitor-intervention.service.justice.gov.uk/probation-practitioner/referrals/cb293dcb-c201-4743-aa9d-acb14c8a1ddd/progress
+        """.trimMargin(),
+        nsi = NsiGenerator.TERMINATED,
+        softDeleted = true
+    )
+
     fun generate(
         type: ContactType,
         date: LocalDate = LocalDate.now().minusDays(1),
@@ -90,6 +100,7 @@ object ContactGenerator {
         rarActivity: Boolean? = null,
         person: Person = PersonGenerator.DEFAULT,
         externalReference: String? = null,
+        softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = Contact(
         person,
@@ -104,7 +115,8 @@ object ContactGenerator {
         teamId = ProviderGenerator.INTENDED_TEAM.id,
         staffId = ProviderGenerator.INTENDED_STAFF.id,
         rarActivity = rarActivity,
-        externalReference = externalReference
+        externalReference = externalReference,
+        softDeleted = softDeleted
     ).addNotes(notes).apply { this.outcome = outcome }
 
     fun generateType(

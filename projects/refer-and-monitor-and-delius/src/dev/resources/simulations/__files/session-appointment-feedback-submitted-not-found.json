@@ -1,0 +1,34 @@
+{
+  "id": "ac26da83-978f-4bbf-b517-f406fc29fb6d",
+  "sessionNumber": 1,
+  "appointmentTime": "2023-04-17T09:34:00+01:00",
+  "durationInMinutes": 15,
+  "appointmentDeliveryType": "PHONE_CALL",
+  "oldAppointments": [],
+  "sessionType": "ONE_TO_ONE",
+  "npsOfficeCode": null,
+  "appointmentDeliveryAddress": null,
+  "sessionFeedback": {
+    "attendance": {
+      "attended": "no",
+      "additionalAttendanceInformation": "",
+      "submittedAt": "2023-04-17T11:34:15.372669+01:00",
+      "submittedBy": {
+        "username": "INTERVENTIONS-DEVS@DIGITAL.JUSTICE.GOV.UK",
+        "authSource": "auth",
+        "userId": "bc7098ed-948e-456d-8b21-3afb0257aa23"
+      }
+    },
+    "behaviour": {
+      "behaviourDescription": null,
+      "notifyProbationPractitioner": null
+    },
+    "submitted": true,
+    "submittedBy": {
+      "username": "INTERVENTIONS-DEVS@DIGITAL.JUSTICE.GOV.UK",
+      "authSource": "auth",
+      "userId": "bc7098ed-948e-456d-8b21-3afb0257aa23"
+    }
+  },
+  "deliusAppointmentId": 4
+}

@@ -318,5 +318,32 @@ internal class ReferAndMonitorIntegrationTest {
         assertFalse(saved.active)
     }
 
+    @Test
+    fun `failure to find appointment is rejected with reason`() {
+        assertTrue(contactRepository.findById(ContactGenerator.TERMINATED_NSI.id).isEmpty)
+
+        val notification = prepNotification(
+            notification("session-appointment-feedback-submitted-not-found"),
+            wireMockServer.port()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).trackEvent(
+            "AppointmentNotFound",
+            mapOf(
+                "crn" to "T140223",
+                "referralId" to "89a3f79c-f12b-43de-9616-77ae19813cfe",
+                "appointmentId" to "ac26da83-978f-4bbf-b517-f406fc29fb6d",
+                "deliusId" to "4",
+                "referralReference" to "AY0164AC",
+                "outcomeAttended" to "NO",
+                "outcomeNotify" to "true",
+                "reason" to "NSI Terminated",
+                "reasonDetail" to "NSI last updated by ReferAndMonitorAndDelius"
+            )
+        )
+    }
+
     private infix fun List<Contact>.have(type: String) = any { it.type.code == type }
 }

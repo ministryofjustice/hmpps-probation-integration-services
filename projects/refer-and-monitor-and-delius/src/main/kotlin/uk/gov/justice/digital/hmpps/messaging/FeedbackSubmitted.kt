@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.exception.UnprocessableException
 import uk.gov.justice.digital.hmpps.integrations.randm.ReferAndMonitorClient
 import uk.gov.justice.digital.hmpps.integrations.randm.ReferralSession
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -31,15 +32,19 @@ class FeedbackSubmitted(
         if (appointment == null) {
             Failure(IllegalArgumentException("Unable to retrieve session: ${event.detailUrl}"))
         } else {
-            appointmentService.updateOutcome(appointment)
-            EventProcessingResult.Success(
-                DomainEventType.SessionAppointmentSubmitted,
-                mapOf(
-                    "appointmentId" to appointment.id.toString(),
-                    "crn" to appointment.crn,
-                    "referralReference" to appointment.referralReference
+            try {
+                appointmentService.updateOutcome(appointment)
+                EventProcessingResult.Success(
+                    DomainEventType.SessionAppointmentSubmitted,
+                    mapOf(
+                        "appointmentId" to appointment.id.toString(),
+                        "crn" to appointment.crn,
+                        "referralReference" to appointment.referralReference
+                    )
                 )
-            )
+            } catch (e: UnprocessableException) {
+                EventProcessingResult.Rejected(e, e.properties)
+            }
         }
     }
 }
