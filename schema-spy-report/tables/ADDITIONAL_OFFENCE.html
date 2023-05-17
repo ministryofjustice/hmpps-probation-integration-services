@@ -335,6 +335,27 @@
                                     </td>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="DETAILED_OFFENCE_ID">DETAILED_OFFENCE_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="ADDITIONAL_OFFENCE.DETAILED_OFFENCE_ID references R_DETAILED_OFFENCE.DETAILED_OFFENCE_ID via R_1391"><a href='R_DETAILED_OFFENCE.html'>R_DETAILED_OFFENCE</a><span class='relatedKey'>.DETAILED_OFFENCE_ID</span></td>
+                                                <td class="constraint detail">R_1391<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -394,6 +415,12 @@
                                     <td>Performance</td>
                                     <td><span title='Ascending'>Asc</span></td>
                                     <td>TRAINING_SESSION_ID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>XIF7ADDITIONAL_OFFENCE</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>DETAILED_OFFENCE_ID</td>
                                 </tr>
                                 </tbody>
                             </table>

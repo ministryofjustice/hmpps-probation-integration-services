@@ -43,7 +43,7 @@ digraph "compactRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>ADDITIONAL_OFFENCE</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">128 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">128 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
     </TABLE>>
     URL="../../tables/ADDITIONAL_OFFENCE.html"
     target="_top"
@@ -945,7 +945,7 @@ digraph "compactRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>MAIN_OFFENCE</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">14,603 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 5</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">14,603 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/MAIN_OFFENCE.html"
     target="_top"
@@ -1985,6 +1985,17 @@ digraph "compactRelationshipsDiagram" {
     target="_top"
     tooltip="R_COURT_TRANSFER_REASON"
   ];
+  "R_DETAILED_OFFENCE" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>R_DETAILED_OFFENCE</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
+    </TABLE>>
+    URL="../../tables/R_DETAILED_OFFENCE.html"
+    target="_top"
+    tooltip="R_DETAILED_OFFENCE"
+  ];
   "R_DISABILITY_TYPE_CONDITION" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -2562,7 +2573,7 @@ digraph "compactRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>R_STANDARD_REFERENCE_LIST</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">15,391 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">294 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">15,391 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">296 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/R_STANDARD_REFERENCE_LIST.html"
     target="_top"
@@ -3004,6 +3015,7 @@ digraph "compactRelationshipsDiagram" {
   "ADDITIONAL_IDENTIFIER":"IDENTIFIER_NAME_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "ADDITIONAL_IDENTIFIER":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "ADDITIONAL_IDENTIFIER":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "ADDITIONAL_OFFENCE":"DETAILED_OFFENCE_ID":w -> "R_DETAILED_OFFENCE":"DETAILED_OFFENCE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "ADDITIONAL_OFFENCE":"EVENT_ID":w -> "EVENT":"EVENT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "ADDITIONAL_OFFENCE":"OFFENCE_ID":w -> "R_OFFENCE":"OFFENCE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "ADDITIONAL_OFFENCE":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -3443,6 +3455,7 @@ digraph "compactRelationshipsDiagram" {
   "LOST_BEDS":"APPROVED_PREMISES_ID":w -> "R_APPROVED_PREMISES":"APPROVED_PREMISES_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "LOST_BEDS":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "LOST_BEDS":"REASON_FOR_LOSS_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "MAIN_OFFENCE":"DETAILED_OFFENCE_ID":w -> "R_DETAILED_OFFENCE":"DETAILED_OFFENCE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "MAIN_OFFENCE":"EVENT_ID":w -> "EVENT":"EVENT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "MAIN_OFFENCE":"OFFENCE_ID":w -> "R_OFFENCE":"OFFENCE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "MAIN_OFFENCE":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -3791,6 +3804,8 @@ digraph "compactRelationshipsDiagram" {
   "R_COURT_TEAM":"TEAM_ID":w -> "TEAM":"TEAM_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_COURT_TRANSFER_REASON":"COURT_REPORT_TYPE_ID":w -> "R_COURT_REPORT_TYPE":"COURT_REPORT_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_COURT_TRANSFER_REASON":"TRANSFER_REASON_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_DETAILED_OFFENCE":"COURT_CATEGORY_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_DETAILED_OFFENCE":"OFFENCE_TYPE_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_DISABILITY_TYPE_CONDITION":"DISABILITY_CONDITION_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_DISABILITY_TYPE_CONDITION":"DISABILITY_TYPE_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_DISPOSAL_TYPE":"OUTCOME_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
