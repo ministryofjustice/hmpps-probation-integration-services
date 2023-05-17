@@ -13,7 +13,7 @@ object ConvictionEventGenerator {
     val PERSON = ConvictionEventPerson(
         IdGenerator.getAndIncrement(),
         "X012772",
-        "123123"
+        "1231234"
     )
     val OFFENCE_MAIN = Offence(
         IdGenerator.getAndIncrement(),
