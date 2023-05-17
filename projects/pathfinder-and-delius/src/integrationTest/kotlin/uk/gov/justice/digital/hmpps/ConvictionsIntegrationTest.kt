@@ -35,10 +35,10 @@ internal class ConvictionsIntegrationTest {
     lateinit var objectMapper: ObjectMapper
 
     @Test
-    fun `API call retuns a success response using CRN`() {
-        val crn = ConvictionEventGenerator.PERSON.crn
+    fun `API call retuns a success response using NOMS`() {
+        val noms = ConvictionEventGenerator.PERSON.nomsNumber
         val result = mockMvc
-            .perform(get("/convictions/$crn?type=CRN").withOAuth2Token(wireMockServer))
+            .perform(get("/convictions/$noms?type=NOMS").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, ConvictionsContainer::class.java)
@@ -46,10 +46,10 @@ internal class ConvictionsIntegrationTest {
     }
 
     @Test
-    fun `API call retuns a success response using NOMS`() {
-        val noms = ConvictionEventGenerator.PERSON.nomsNumber
+    fun `API call retuns a success response using CRN`() {
+        val crn = ConvictionEventGenerator.PERSON.crn
         val result = mockMvc
-            .perform(get("/convictions/$noms?type=NOMS").withOAuth2Token(wireMockServer))
+            .perform(get("/convictions/$crn?type=CRN").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, ConvictionsContainer::class.java)
