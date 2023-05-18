@@ -92,7 +92,24 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>make-recall-decisions-and-delius</span></a>
+    <a href="./index.html"><span>Make Recall Decisions and Delius</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#business-need"><span>Business Need</span></a>
+      </li>
+      <li>
+        <a href="./index.html#context-maps"><span>Context Maps</span></a>
+      </li>
+      <li>
+        <a href="./index.html#interfaces"><span>Interfaces</span></a>
+      </li>
+      <li>
+        <a href="./index.html#event-triggers"><span>Event Triggers</span></a>
+      </li>
+      <li>
+        <a href="./index.html#authorisation"><span>Authorisation</span></a>
+      </li>
+    </ul>
   </li>
   <li>
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
@@ -126,6 +143,9 @@
       </li>
     </ul>
   </li>
+  <li>
+    <a href="./async-api-reference.html"><span>ASyncAPI Reference</span></a>
+  </li>
 </ul>
 
 
@@ -135,9 +155,60 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="make-recall-decisions-and-delius">make-recall-decisions-and-delius</h1>
-<p>// TODO Describe the service</p>
-
+            <h1 id="make-recall-decisions-and-delius">Make Recall Decisions and Delius</h1>
+<h2 id="business-need">Business Need</h2>
+<p>Supports integration between the
+<a href="https://github.com/ministryofjustice/make-recall-decision-api">Consider a Recall</a>
+(previously Make a Recall Decision) service and
+<a href="https://github.com/ministryofjustice/delius">Delius</a>. The service
+provides an API for gathering data on the person on probation and the
+probation case history, including case documents. The service also listens for
+events produced by the Consider a Recall service in order to reflect the
+activity around recall decisions in the Delius contact history.</p>
+<h2 id="context-maps">Context Maps</h2>
+<p><a href="././img/make-recall-decisions-and-delius-context-map.png" rel="noopener noreferrer"><img src="img/make-recall-decisions-and-delius-context-map.png" alt="Context Maps" /></a></p>
+<h2 id="interfaces">Interfaces</h2>
+<h3 id="message-formats">Message Formats</h3>
+<p>The service raises HMPPS Domain Event messages to the
+<a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-domain-events-prod/resources/hmpps-domain-events-topic.tf">HMPPS Domain Events Topic</a>.
+The events are raised by the <a href="https://github.com/ministryofjustice/make-recall-decision-api">HMPPS Consider a Recall Service</a>
+indicating significant events in the &lsquo;recall to custody&rsquo; decision process</p>
+<p>Example <a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/tree/main/projects/make-recall-decisions-and-delius/src/dev/resources/messages/">messages</a> are in the development source tree.</p>
+<p>Incoming messages are filtered on <code>eventType</code> by the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/02fd1494435dd2525f2820f447ea7cdc10ddf54d/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/make-recall-decisions-and-delius-queue.tf#L5-L10">SQS queue policy</a></p>
+<h2 id="event-triggers">Event Triggers</h2>
+<p>Allocation domain events are raised in real time as probation cases are
+allocated to a practitioner. The individual elements of the case are raised as
+separate events.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Class</th>
+<th>Message Event Type / Filter</th>
+</tr><tr>
+<td>Recommendation Process Started</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;prison-recall.recommendation.started&rdquo;</td>
+</tr><tr>
+<td>Management Oversight of Recall</td>
+<td>HMPPS Domain Event</td>
+<td>&ldquo;prison-recall.recommendation.management-oversight&rdquo;</td>
+</tr>
+        </table>
+      </div><h2 id="authorisation">Authorisation</h2>
+<p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
+the requests</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>All</td>
+<td>ROLE_MAKE_RECALL_DECISIONS_API</td>
+</tr>
+        </table>
+      </div>
             
           </main>
 
