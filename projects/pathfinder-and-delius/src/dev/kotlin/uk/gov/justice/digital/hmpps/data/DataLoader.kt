@@ -8,6 +8,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.data.generator.ConvictionEventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.user.UserRepository
@@ -34,7 +35,16 @@ class DataLoader(
             CourtAppearanceGenerator.DEFAULT_COURT,
             CourtAppearanceGenerator.DEFAULT_PERSON,
             CourtAppearanceGenerator.DEFAULT_EVENT,
-            CourtAppearanceGenerator.DEFAULT_CA
+            CourtAppearanceGenerator.DEFAULT_CA,
+            ConvictionEventGenerator.PERSON,
+            ConvictionEventGenerator.OFFENCE_OTHER,
+            ConvictionEventGenerator.OFFENCE_MAIN,
+            ConvictionEventGenerator.DEFAULT_EVENT,
+            ConvictionEventGenerator.MAIN_OFFENCE,
+            ConvictionEventGenerator.OTHER_OFFENCE,
+            ConvictionEventGenerator.DISPOSAL_TYPE,
+            ConvictionEventGenerator.DISPOSAL
+
         )
     }
 
