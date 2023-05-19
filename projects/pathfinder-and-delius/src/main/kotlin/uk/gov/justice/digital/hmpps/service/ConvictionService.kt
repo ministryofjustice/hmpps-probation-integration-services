@@ -17,7 +17,7 @@ class ConvictionService(private val convictionEventRepository: ConvictionEventRe
         val convictionModels = mutableListOf<Conviction>()
         convictions.map { convictionEventEntity ->
             val offences = mutableListOf<Offence>()
-            offences.add(Offence(convictionEventEntity.mainOffence.offence.description, true))
+            offences.add(Offence(convictionEventEntity.mainOffence!!.offence.description, true))
             convictionEventEntity.additionalOffences.forEach { offences.add(Offence(it.offence.description, false)) }
             convictionModels.add(
                 Conviction(
