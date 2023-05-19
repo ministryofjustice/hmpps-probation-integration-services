@@ -12,6 +12,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
 @Immutable
@@ -162,6 +163,12 @@ class DetailDistrict(
 )
 
 interface DetailRepository : JpaRepository<DetailPerson, Long> {
-    fun getByCrn(crn: String): DetailPerson
-    fun getByNomsNumber(nomsNumber: String): DetailPerson
+    fun getByCrn(crn: String): DetailPerson?
+    fun getByNomsNumber(nomsNumber: String): DetailPerson?
 }
+
+fun DetailRepository.findByNomsNumber(nomsNumber: String): DetailPerson =
+    getByNomsNumber(nomsNumber) ?: throw NotFoundException("person", "nomsNumber", nomsNumber)
+
+fun DetailRepository.findByCrn(crn: String): DetailPerson =
+    getByCrn(crn) ?: throw NotFoundException("person", "crn", crn)

@@ -103,7 +103,7 @@ class DisposalType(
 
 @Immutable
 @Table(name = "main_offence")
-@Entity()
+@Entity
 @Where(clause = "soft_deleted = 0")
 class MainOffence(
     @Id

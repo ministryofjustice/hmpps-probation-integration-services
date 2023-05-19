@@ -49,4 +49,30 @@ object ConvictionEventGenerator {
         DISPOSAL_TYPE,
         DEFAULT_EVENT
     )
+
+    val PERSON_2 = ConvictionEventPerson(
+        IdGenerator.getAndIncrement(),
+        "X11111",
+        "1111111"
+    )
+    val EVENT_2 = ConvictionEventEntity(
+        IdGenerator.getAndIncrement(),
+        LocalDate.now(),
+        PERSON_2
+    )
+    val MAIN_OFFENCE_2 = MainOffence(
+        IdGenerator.getAndIncrement(),
+        EVENT_2,
+        OFFENCE_MAIN
+    )
+    val OTHER_OFFENCE_2 = AdditionalOffence(
+        IdGenerator.getAndIncrement(),
+        EVENT_2,
+        OFFENCE_OTHER
+    )
+    val DISPOSAL_2 = Disposal(
+        IdGenerator.getAndIncrement(),
+        DISPOSAL_TYPE,
+        EVENT_2
+    )
 }

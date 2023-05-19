@@ -47,9 +47,12 @@ class KeyDate(
     val type: ReferenceData,
 
     @Column(name = "key_date")
-    var date: LocalDate
+    var date: LocalDate,
+
+    @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
+    val softDeleted: Boolean = false
 )
 
 interface CustodyRepository : JpaRepository<Custody, Long> {
-    fun getCustodyByDisposalId(disposalId: Long): Custody
+    fun getCustodyByDisposalId(disposalId: Long): Custody?
 }

@@ -13,8 +13,8 @@ data class Detail(
     val probationArea: String,
     val offenderManager: Name,
     val mainOffence: String? = null,
-    val religion: String?,
-    val keyDates: List<KeyDate>,
+    val religion: String? = null,
+    val keyDates: List<KeyDate> = listOf(),
     val releaseDate: LocalDate? = null,
     val releaseLocation: String? = null
 )
