@@ -103,7 +103,7 @@ class DisposalType(
 
 @Immutable
 @Table(name = "main_offence")
-@Entity(name = "CaseSummaryMainOffence")
+@Entity
 @Where(clause = "soft_deleted = 0")
 class MainOffence(
     @Id
@@ -167,6 +167,15 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         ]
     )
     fun getAllByConvictionEventPersonCrn(crn: String): List<ConvictionEventEntity>
+
+    @EntityGraph(
+        attributePaths = [
+            "mainOffence.offence",
+            "additionalOffences.offence",
+            "disposal.type"
+        ]
+    )
+    fun getAllByConvictionEventPersonId(personId: Long): List<ConvictionEventEntity>
 
     @EntityGraph(
         attributePaths = [
