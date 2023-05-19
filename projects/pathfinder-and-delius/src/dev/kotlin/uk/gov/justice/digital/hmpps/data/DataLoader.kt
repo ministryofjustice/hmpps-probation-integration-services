@@ -63,9 +63,12 @@ class DataLoader(
             KeyDateGenerator.KEYDATE
         )
 
-        em.createNativeQuery("""
+        em.createNativeQuery(
+            """
              update event set offender_id = ${DetailsGenerator.PERSON.id} 
-             where event_id = ${ConvictionEventGenerator.EVENT_2.id}""".trimMargin())
+             where event_id = ${ConvictionEventGenerator.EVENT_2.id}
+            """.trimMargin()
+        )
             .executeUpdate()
     }
 

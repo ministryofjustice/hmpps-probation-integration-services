@@ -22,4 +22,4 @@ object KeyDateGenerator {
         SED_KEYDATE,
         LocalDate.now().plusYears(5)
     )
- }
+}

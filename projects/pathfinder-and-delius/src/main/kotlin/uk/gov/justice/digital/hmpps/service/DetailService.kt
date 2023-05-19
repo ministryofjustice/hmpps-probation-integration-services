@@ -36,7 +36,7 @@ class DetailService(
             mainOffence = convictionEvent.mainOffence?.offence?.description
             if (convictionEvent.disposal != null) {
                 val custody = custodyRepository.getCustodyByDisposalId(convictionEvent.disposal.id)
-                if(custody!=null) {
+                if (custody != null) {
                     val keyDateEntities = custody.keyDates
                     keyDateEntities.forEach { keyDates.add(KeyDate(it.type.code, it.type.description, it.date)) }
                     val release = detailReleaseRepository.findFirstByCustodyIdOrderByDateDesc(custody.id)
