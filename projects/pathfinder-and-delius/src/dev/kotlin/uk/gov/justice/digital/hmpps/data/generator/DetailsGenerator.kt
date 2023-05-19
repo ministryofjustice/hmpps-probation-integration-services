@@ -24,10 +24,10 @@ object DetailsGenerator {
         RELIGION,
         listOf(),
         LocalDate.now().minusYears(18),
+        "Smith",
         "Bob",
         "Richard",
-        "Clive",
-        "Smith"
+        "Clive"
     )
 
     val DEFAULT_PA = DetailProbationArea(true, "London", "LDN", IdGenerator.getAndIncrement())

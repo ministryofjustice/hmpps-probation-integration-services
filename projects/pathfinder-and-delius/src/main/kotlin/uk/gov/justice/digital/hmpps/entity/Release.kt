@@ -25,35 +25,15 @@ class DetailRelease(
     @Column
     val custodyId: Long,
 
-    @Column(name = "actual_release_date")
-    val date: LocalDate,
-
-    @OneToOne(mappedBy = "release")
-    val recall: Recall? = null,
-
     @ManyToOne
     @JoinColumn(name = "institution_id")
     val institution: Institution? = null,
 
-    @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
-)
+    @OneToOne(mappedBy = "release")
+    val recall: Recall? = null,
 
-@Immutable
-@Table(name = "recall")
-@Entity(name = "CaseSummaryRecall")
-@Where(clause = "soft_deleted = 0")
-class Recall(
-    @Id
-    @Column(name = "recall_id")
-    val id: Long,
-
-    @Column(name = "recall_date")
+    @Column(name = "actual_release_date")
     val date: LocalDate,
-
-    @OneToOne
-    @JoinColumn(name = "release_id")
-    val release: DetailRelease,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false
@@ -69,6 +49,26 @@ class Institution(
 
     @Column(name = "institution_name")
     val name: String
+)
+
+@Immutable
+@Table(name = "recall")
+@Entity(name = "CaseSummaryRecall")
+@Where(clause = "soft_deleted = 0")
+class Recall(
+    @Id
+    @Column(name = "recall_id")
+    val id: Long,
+
+    @OneToOne
+    @JoinColumn(name = "release_id")
+    val release: DetailRelease,
+
+    @Column(name = "recall_date")
+    val date: LocalDate,
+
+    @Column(name = "soft_deleted", columnDefinition = "number")
+    val softDeleted: Boolean = false
 )
 
 interface DetailReleaseRepository : JpaRepository<DetailRelease, Long> {

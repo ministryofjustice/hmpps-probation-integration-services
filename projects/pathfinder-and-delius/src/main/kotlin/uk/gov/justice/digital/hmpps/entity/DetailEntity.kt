@@ -43,6 +43,9 @@ class DetailPerson(
     @Column(name = "date_of_birth_date")
     val dateOfBirth: LocalDate,
 
+    @Column(name = "surname", length = 35)
+    val surname: String,
+
     @Column(name = "first_name", length = 35)
     val forename: String,
 
@@ -51,9 +54,6 @@ class DetailPerson(
 
     @Column(name = "third_name", length = 35)
     val thirdName: String? = null,
-
-    @Column(name = "surname", length = 35)
-    val surname: String,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
