@@ -41,7 +41,7 @@ class DetailRelease(
 
 @Immutable
 @Table(name = "r_institution")
-@Entity(name = "CaseSummaryInstitution")
+@Entity
 class Institution(
     @Id
     @Column(name = "institution_id")
@@ -53,7 +53,7 @@ class Institution(
 
 @Immutable
 @Table(name = "recall")
-@Entity(name = "CaseSummaryRecall")
+@Entity
 @Where(clause = "soft_deleted = 0")
 class Recall(
     @Id

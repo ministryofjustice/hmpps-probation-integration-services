@@ -27,13 +27,13 @@ class DetailService(
             IdentifierType.NOMS -> detailRepository.findByNomsNumber(value)
         }
         val c = convictionEventRepository.getAllByConvictionEventPersonId(p.id)
-        var mainOffence: String? = ""
+        var mainOffence = ""
         val keyDates = mutableListOf<KeyDate>()
         var releaseLocation: String? = null
         var releaseDate: LocalDate? = null
         if (c.isNotEmpty()) {
             val convictionEvent = c.sortedBy { it.convictionDate }[0]
-            mainOffence = convictionEvent.mainOffence?.offence?.description
+            mainOffence = convictionEvent.mainOffence.offence.description
             if (convictionEvent.disposal != null) {
                 val custody = custodyRepository.getCustodyByDisposalId(convictionEvent.disposal.id)
                 if (custody != null) {

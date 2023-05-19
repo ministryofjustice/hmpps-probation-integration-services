@@ -30,7 +30,7 @@ class ConvictionEventEntity(
     val convictionEventPerson: ConvictionEventPerson,
 
     @OneToOne(mappedBy = "event")
-    val mainOffence: MainOffence? = null,
+    val mainOffence: MainOffence,
 
     @OneToMany(mappedBy = "event")
     val additionalOffences: List<AdditionalOffence> = listOf(),
