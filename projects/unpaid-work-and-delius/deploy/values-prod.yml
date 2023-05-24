@@ -9,5 +9,3 @@ generic-service:
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/issuer
 
     INTEGRATIONS_ALFRESCO_URL: https://alfresco.probation.service.justice.gov.uk/alfresco/service/noms-spg/
-
-    LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG # Temporary to help debug Alfresco incident
