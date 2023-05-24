@@ -6,6 +6,8 @@ database:
       - contact
       - offender
       - management_tier
+    packages:
+      - pkg_triggersupport # for caseload rebuild
 
   audit:
     username: TierToDelius
