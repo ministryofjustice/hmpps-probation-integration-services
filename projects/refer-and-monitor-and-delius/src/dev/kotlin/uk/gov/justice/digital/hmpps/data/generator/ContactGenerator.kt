@@ -79,16 +79,6 @@ object ContactGenerator {
         rarActivity = true
     )
 
-    var TERMINATED_NSI = generate(
-        type = TYPES[Code.CRSAPT.value]!!,
-        notes = """
-            |Service Delivery Appointment for Accommodation Referral FE4536C with Prime Provider ProviderName
-            |https://refer-monitor-intervention.service.justice.gov.uk/probation-practitioner/referrals/cb293dcb-c201-4743-aa9d-acb14c8a1ddd/progress
-        """.trimMargin(),
-        nsi = NsiGenerator.TERMINATED,
-        softDeleted = true
-    )
-
     fun generate(
         type: ContactType,
         date: LocalDate = LocalDate.now().minusDays(1),

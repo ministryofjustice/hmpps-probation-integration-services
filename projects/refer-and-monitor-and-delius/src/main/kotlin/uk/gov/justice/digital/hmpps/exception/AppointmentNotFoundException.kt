@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.exception
 
 import jakarta.persistence.Tuple
 import uk.gov.justice.digital.hmpps.service.Outcome
-import java.math.BigDecimal
 import java.util.UUID
 
 class AppointmentNotFoundException(
@@ -31,17 +30,19 @@ data class AppointmentNotFoundReason(
     companion object {
         fun from(result: Tuple?) = result?.let {
             AppointmentNotFoundReason(
-                if (it["soft_deleted"] == BigDecimal.ONE) {
-                    "NSI Deleted"
-                } else if (it["active_flag"] == BigDecimal.ZERO) {
-                    "NSI Terminated"
-                } else {
-                    "Unknown"
+                when {
+                    it["contact_soft_deleted"].asInt() == 1 -> "Contact soft-deleted"
+                    it["contact_soft_deleted"].asInt() == 0 -> "Contact not soft-deleted"
+                    it["nsi_soft_deleted"].asInt() == 1 -> "NSI soft-deleted"
+                    it["nsi_active"].asInt() == 0 -> "NSI terminated"
+                    else -> "Unknown"
                 },
-                "NSI last updated by ${it["distinguished_name"]}"
+                "NSI last updated by ${it["nsi_last_updated_by"]}"
             )
         } ?: unknown
 
         private val unknown = AppointmentNotFoundReason("Unknown", "Unknown")
+
+        private fun Any?.asInt() = (this as Number?)?.toInt()
     }
 }

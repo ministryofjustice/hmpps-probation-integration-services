@@ -24,6 +24,7 @@ class FeedbackSubmitted(
     fun sessionAppointmentSubmitted(event: HmppsDomainEvent): EventProcessingResult = handle(event) {
         val appointment = ramClient.getSession(URI(event.detailUrl!!))?.appointmentOutcome(
             event.personReference.findCrn()!!,
+            event.referralId(),
             event.referralReference(),
             event.contractType(),
             event.providerName(),
@@ -50,12 +51,14 @@ class FeedbackSubmitted(
 }
 
 private fun HmppsDomainEvent.contractType() = additionalInformation["contractTypeName"] as String
+private fun HmppsDomainEvent.referralId() = additionalInformation["referralId"] as String
 private fun HmppsDomainEvent.referralReference() = additionalInformation["referralReference"] as String
 private fun HmppsDomainEvent.providerName() = additionalInformation["primeProviderName"] as String
 private fun HmppsDomainEvent.url() = additionalInformation["referralProbationUserURL"] as String
 
 private fun ReferralSession.appointmentOutcome(
     crn: String,
+    referralId: String,
     referralReference: String,
     contractType: String,
     providerName: String,
@@ -65,7 +68,7 @@ private fun ReferralSession.appointmentOutcome(
     deliusId,
     crn,
     referralReference,
-    Referral("", Provider(providerName), contractType),
+    Referral(referralId, Provider(providerName), contractType),
     Outcome(
         Attended.of(sessionFeedback.attendance.attended),
         sessionFeedback.behaviour.notifyProbationPractitioner ?: true

@@ -77,7 +77,9 @@ data class Referral(
     val provider: Provider,
     @JsonAlias("contractTypeName")
     val contractType: String
-)
+) {
+    val urn = "urn:hmpps:interventions-referral:$id"
+}
 
 enum class ReferralEndType(val outcome: String) {
     CANCELLED("CRS01"),
