@@ -247,6 +247,8 @@ class DataLoader(
         personRepository.save(PersonGenerator.FUZZY_SEARCH)
         NsiGenerator.FUZZY_SEARCH = nsiRepository.save(NsiGenerator.FUZZY_SEARCH)
         nsiManagerRepository.save(NsiGenerator.generateManager(NsiGenerator.FUZZY_SEARCH))
+
+        NsiGenerator.TERMINATED = nsiRepository.save(NsiGenerator.TERMINATED)
     }
 }
 

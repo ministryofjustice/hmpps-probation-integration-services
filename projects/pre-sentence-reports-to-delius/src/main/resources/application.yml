@@ -77,7 +77,7 @@ spring.config.activate.on-profile: oracle
 spring.datasource.url: 'jdbc:tc:oracle:slim-faststart:///XEPDB1'
 
 ---
-spring.config.activate.on-profile: oracle-full
+spring.config.activate.on-profile: delius-db
 spring:
   datasource:
     url: 'jdbc:oracle:thin:@//localhost:1521/XEPDB1'

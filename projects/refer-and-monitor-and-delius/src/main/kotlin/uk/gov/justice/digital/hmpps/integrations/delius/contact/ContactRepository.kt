@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.contact
 
+import jakarta.persistence.Tuple
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -101,6 +102,25 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         endTime: String,
         previousExternalReference: String?
     ): Int
+
+    @Query(
+        """
+            select 
+                (select contact.soft_deleted 
+                    from contact 
+                    join offender on offender.offender_id = contact.offender_id 
+                    where contact.external_reference = :contactExternalReference or contact_id = :contactId
+                ) as contact_soft_deleted,
+                nsi.soft_deleted as nsi_soft_deleted,
+                nsi.active_flag as nsi_active,
+                last_updated_by.distinguished_name as nsi_last_updated_by
+            from nsi
+            left join user_ last_updated_by on last_updated_by.user_id = nsi.last_updated_user_id
+            where nsi.external_reference = :nsiExternalReference
+        """,
+        nativeQuery = true
+    )
+    fun getNotFoundReason(nsiExternalReference: String, contactExternalReference: String, contactId: Long = -1): Tuple?
 }
 
 fun ContactRepository.appointmentClashes(
@@ -118,9 +138,6 @@ fun ContactRepository.appointmentClashes(
     endTime.format(ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
     previousExternalReference
 ) > 0
-
-fun ContactRepository.getAppointmentById(id: Long): Contact =
-    findById(id).orElseThrow { NotFoundException("Appointment", "id", id) }
 
 interface ContactTypeRepository : JpaRepository<ContactType, Long> {
     fun findByCode(code: String): ContactType?

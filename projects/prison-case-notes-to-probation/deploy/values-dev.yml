@@ -11,3 +11,6 @@ generic-service:
 
     LOGGING_LEVEL_COM_AMAZON_SQS: DEBUG
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
+
+  # Alert for business hours only - 7am to 6pm UTC (8am to 7pm BST) on week days (Monday to Friday)
+  businessHoursOnly: true
