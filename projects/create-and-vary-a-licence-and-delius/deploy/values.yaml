@@ -1,0 +1,25 @@
+# Common values
+generic-service:
+  nameOverride: create-and-vary-a-licence-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/create-and-vary-a-licence-and-delius
+
+  ingress:
+    tlsSecretName: create-and-vary-a-licence-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+      SPRING_LDAP_URLS: LDAP_URL
+      SPRING_LDAP_USERNAME: LDAP_USERNAME
+      SPRING_LDAP_PASSWORD: LDAP_PASSWORD
+    create-and-vary-a-licence-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    create-and-vary-a-licence-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: create-and-vary-a-licence-and-delius
+

@@ -1,0 +1,6 @@
+
+# Suppressed as this service only uploads templated files from trusted sources
+CVE-2023-24998 exp:2023-06-01
+
+# Suppressed as we do not process any untrusted YML content
+CVE-2022-1471 exp:2023-06-01

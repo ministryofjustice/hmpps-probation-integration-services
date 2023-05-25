@@ -1,0 +1,17 @@
+{
+  "eventType": "prison-recall.recommendation.started",
+  "version": 1,
+  "description": "Recommendation started (recall or no recall)",
+  "occurredAt": "2022-11-21T06:27:57.028Z",
+  "additionalInformation": {
+    "recommendationUrl": "http://mrd.case.crn/overview"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "X000001"
+      }
+    ]
+  }
+}

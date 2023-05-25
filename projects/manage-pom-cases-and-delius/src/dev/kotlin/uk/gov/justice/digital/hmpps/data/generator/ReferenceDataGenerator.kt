@@ -1,0 +1,42 @@
+package uk.gov.justice.digital.hmpps.data.generator
+
+import IdGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.KeyDate
+import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceDataSet
+
+object ReferenceDataGenerator {
+    val KEY_DATE_TYPE_DATASET = generateDataSet(ReferenceDataSet.Code.KEY_DATE_TYPE.value)
+    val TIER_2 = generate("2", "Tier 2")
+    val DECISION_ENHANCED = generate("R")
+    val DECISION_NORMAL = generate("A")
+    val DECISION_NOT_ASSESSED = generate("N")
+    val LEVEL_M1 = generate("M1")
+    val LEVEL_M2 = generate("M2")
+    val LEVEL_M3 = generate("M3")
+
+    val KEY_DATE_HANDOVER_TYPE = generate(KeyDate.TypeCode.HANDOVER_DATE.value, dataSetId = KEY_DATE_TYPE_DATASET.id)
+    val KEY_DATE_HANDOVER_START_DATE_TYPE =
+        generate(KeyDate.TypeCode.HANDOVER_START_DATE.value, dataSetId = KEY_DATE_TYPE_DATASET.id)
+
+    val ALL = listOf(
+        DECISION_ENHANCED,
+        DECISION_NORMAL,
+        DECISION_NOT_ASSESSED,
+        LEVEL_M1,
+        LEVEL_M2,
+        LEVEL_M3,
+        TIER_2,
+        KEY_DATE_HANDOVER_TYPE,
+        KEY_DATE_HANDOVER_START_DATE_TYPE
+    )
+
+    fun generateDataSet(name: String, id: Long = IdGenerator.getAndIncrement()) = ReferenceDataSet(name, id)
+
+    fun generate(
+        code: String,
+        description: String = "Description of $code",
+        dataSetId: Long = 0,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = ReferenceData(code, description, dataSetId, id)
+}

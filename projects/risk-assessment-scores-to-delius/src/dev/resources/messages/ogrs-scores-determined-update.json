@@ -1,0 +1,17 @@
+{
+  "Type": "Notification",
+  "MessageId": "308e3969-d990-411a-85c8-2123c6ff0e73",
+  "TopicArn": "",
+  "Message": "{\"eventType\":\"risk-assessment.scores.ogrs.determined\",\"version\":1,\"description\":\"Risk assessment scores have been determined\",\"detailUrl\":\"https://some-url-where-we-can-get-more-info-this-might-not-exist\",\"occurredAt\":\"2022-09-15T15:34:48+01:00\",\"additionalInformation\":{\"OGRS3Yr1\":5,\"OGRS3Yr2\":9,\"EventNumber\":1,\"AssessmentDate\":\"2022-09-16T15:34:48+01:00\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"X552020\"}]}}",
+  "Timestamp": "2022-09-15T14:34:48.123Z",
+  "SignatureVersion": "1",
+  "Signature": "",
+  "SigningCertURL": "",
+  "UnsubscribeURL": "",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "risk-assessment.scores.ogrs.determined"
+    }
+  }
+}

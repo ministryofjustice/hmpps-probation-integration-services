@@ -1,0 +1,74 @@
+name: Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Can be triggered manually from a branch
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/build.yml
+    with:
+      push: true
+    secrets: inherit
+
+  deploy-to-test:
+    name: Deploy to test
+    uses: ./.github/workflows/deploy.yml
+    needs: build
+    if: ${{ needs.build.outputs.changes != '[]'}}
+    with:
+      environment: test
+      version: ${{ needs.build.outputs.version }}
+      projects: ${{ needs.build.outputs.changes }}
+    secrets: inherit
+
+  deploy-to-preprod:
+    name: Deploy to preprod
+    uses: ./.github/workflows/deploy.yml
+    needs: build
+    if: ${{ needs.build.outputs.changes != '[]'}}
+    with:
+      environment: preprod
+      version: ${{ needs.build.outputs.version }}
+      projects: ${{ needs.build.outputs.changes }}
+    secrets: inherit
+
+  end-to-end-tests:
+    name: Run end-to-end tests
+    uses: ./.github/workflows/end-to-end-tests.yml
+    needs:
+      - build
+      - deploy-to-test
+      - deploy-to-preprod
+    with:
+      projects: ${{ needs.build.outputs.changes }}
+    secrets: inherit
+
+  report-test-failures:
+    name: Failed testing
+    if: ${{ failure() && needs.end-to-end-tests.outputs.failed-projects != '[]' }}
+    needs:
+      - end-to-end-tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.end-to-end-tests.outputs.failed-projects) }}
+    steps:
+      - run: 'echo Tests failed for ${{ matrix.project }}. View the full report here: ${{ needs.end-to-end-tests.outputs.report-url }}; exit 1'
+
+  deploy-to-prod:
+    name: Deploy to production
+    uses: ./.github/workflows/deploy.yml
+    if: ${{ (success() || (failure() && needs.end-to-end-tests.outputs.passed-projects != '[]')) && github.ref == 'refs/heads/main' }}
+    needs:
+      - build
+      - end-to-end-tests
+    with:
+      environment: prod
+      version: ${{ needs.build.outputs.version }}
+      projects: ${{ needs.end-to-end-tests.outputs.passed-projects }}
+    secrets: inherit

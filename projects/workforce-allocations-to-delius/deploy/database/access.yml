@@ -1,0 +1,21 @@
+database:
+  access:
+    username_key: /workforce-allocations-to-delius/db-username
+    password_key: /workforce-allocations-to-delius/db-password
+    tables:
+      - audited_interaction
+      - contact
+      - offender_manager
+      - responsible_officer
+      - order_manager
+      - rqmnt_manager
+      - iaps_offender
+      - iaps_event
+      - iaps_rqmnt
+    packages:
+      - pkg_triggersupport # for caseload rebuild
+
+  audit:
+    username: HMPPSAllocations
+    forename: Workforce Allocations
+    surname: Service

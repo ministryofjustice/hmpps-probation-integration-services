@@ -1,0 +1,14 @@
+package uk.gov.justice.digital.hmpps.data.generator
+
+import IdGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.user.staff.entity.StaffUser
+import uk.gov.justice.digital.hmpps.user.User
+
+object UserGenerator {
+    val APPLICATION_USER = User(IdGenerator.getAndIncrement(), "MakeRecallDecisionsAndDelius")
+    val TEST_USER1 = User(IdGenerator.getAndIncrement(), "Test1")
+    val TEST_USER2 = User(IdGenerator.getAndIncrement(), "Test2")
+    val WITH_STAFF = StaffUser(IdGenerator.getAndIncrement(), "WithStaff", Staff(IdGenerator.getAndIncrement(), "TEST001"))
+    val WITHOUT_STAFF = StaffUser(IdGenerator.getAndIncrement(), "WithoutStaff")
+}

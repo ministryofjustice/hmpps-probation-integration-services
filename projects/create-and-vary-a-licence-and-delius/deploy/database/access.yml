@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /create-and-vary-a-licence-and-delius/db-username
+    password_key: /create-and-vary-a-licence-and-delius/db-password
+
+  audit:
+    username: CreateAndVaryALicenceAndDelius
+    forename: CVL
+    surname: Service

@@ -1,0 +1,42 @@
+{
+  "source": "OASys",
+  "inputs": {
+    "crn": "D006296",
+    "laoPrivilege": "ALLOW",
+    "assessmentPk": 9641348,
+    "expectedStatus": "OPEN"
+  },
+  "crn": "D006296",
+  "limitedAccessOffender": false,
+  "assessments": [
+    {
+      "assessmentPk": 9641348,
+      "assessmentType": "LAYER3",
+      "dateCompleted": null,
+      "assessorSignedDate": null,
+      "initiationDate": "2022-11-02T15:17:29",
+      "assessmentStatus": "OPEN",
+      "superStatus": "WIP",
+      "laterWIPAssessmentExists": false,
+      "latestWIPDate": "2022-11-02T15:17:29",
+      "laterSignLockAssessmentExists": false,
+      "latestSignLockDate": null,
+      "laterPartCompUnsignedAssessmentExists": false,
+      "latestPartCompUnsignedDate": null,
+      "laterPartCompSignedAssessmentExists": false,
+      "latestPartCompSignedDate": null,
+      "laterCompleteAssessmentExists": false,
+      "latestCompleteDate": null,
+      "offenceAnalysis": "Threatened a passer-by with a knife",
+      "othersInvolved": null,
+      "issueContributingToRisk": "works in a kitchen with knives",
+      "offenceMotivation": "random knife attack",
+      "victimImpact": "cries a lot and does not sleep",
+      "victimPerpetratorRel": "Stranger",
+      "victimInfo": "easy access",
+      "patternOffending": "random",
+      "acceptsResponsibility": "Full responsibility",
+      "lastUpdatedDate": "2022-11-17T15:02:17"
+    }
+  ]
+}

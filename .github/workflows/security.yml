@@ -1,0 +1,129 @@
+name: Security
+
+on:
+  schedule:
+    - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/.trivyignore'
+
+jobs:
+  get-projects:
+    runs-on: ubuntu-latest
+    outputs:
+      projects: ${{ steps.get-projects.outputs.projects }}
+    steps:
+      - uses: actions/checkout@v3
+      - id: get-projects
+        run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_OUTPUT
+
+  trivy-scan:
+    runs-on: ubuntu-latest
+    needs:
+      - get-projects
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Scan image
+        uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # v0.10.0
+        with:
+          image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          trivyignores: 'projects/${{ matrix.project }}/.trivyignore'
+          limit-severities-for-sarif: true
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Get Trivy results
+        if: always()
+        uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # v0.10.0
+        with:
+          image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+          format: 'json'
+          output: 'results.json'
+          trivyignores: 'projects/${{ matrix.project }}/.trivyignore'
+
+      - name: Output Trivy results
+        if: always()
+        run: cat results.json
+
+      - name: Create GitHub issues
+        if: failure()
+        run: |
+          cat results.json | jq -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[]' | while read -r vulnerability; do
+            id=$(echo "$vulnerability" | jq -r '.VulnerabilityID')
+            if [[ $(gh issue list --state open --label dependencies --label security --search "$id (${{ matrix.project }})" | wc -l) -gt 0 ]]; then
+              echo "Issue '$id (${{ matrix.project }})' already exists"
+            else
+              gh issue create \
+                --title "$id (${{ matrix.project }})" \
+                --body "$(echo $vulnerability | jq -r '.Title + "\n* Project: ${{ matrix.project }}\n* Package: `" + .PkgName + ":" + .InstalledVersion + "`\n* Location: `" + .PkgPath + "`\n\n>" + .Description + "\n\n" + .PrimaryURL + "\n\nIf the vulnerability does not impact the `${{ matrix.project }}` project, you can suppress this alert by adding a comment starting with `Suppress`. For example, \"Suppressed because we do not process any untrusted XML content\"."')" \
+                --label 'dependencies,security'
+            fi
+          done
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Check & Close GH Issue
+        if: always()
+        run: |
+          openissues="$(gh issue list --state open --label dependencies --label security --search '(${{ matrix.project }})' | awk '{print $3}')"
+          scanresults="$(cat results.json | jq -r -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[].VulnerabilityID')"
+          issuestoclose="$(comm -23 <(echo "$openissues" | sort -u) <(echo "$scanresults" | sort -u))" #print lines only present in first file
+          echo "openissues=$openissues"
+          echo "scanresults=$scanresults"
+          echo "issuestoclose=$issuestoclose"
+          for cve in $issuestoclose; do
+            echo "$cve is already resolved, removing matching issue..."
+            issuenumber=$(gh issue list --state open --label dependencies --label security --search "$cve (${{ matrix.project }})" | awk '{print $1}')
+            echo $issuenumber | xargs -n1 gh issue close
+          done
+
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+  veracode-scan:
+    runs-on: ubuntu-latest
+    needs:
+      - get-projects
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Build jars
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: jar
+
+      - name: Package jars
+        run: find . -name *.jar | zip -r package.zip -@
+
+      - name: Upload to Veracode
+        uses: veracode/veracode-uploadandscan-action@0.2.6
+        with:
+          appname: hmpps-probation-integration-services
+          createprofile: false
+          deleteincompletescan: 2 # force delete any incomplete scans
+          filepath: package.zip
+          vid: ${{ secrets.CYBERSECURITY_VERACODE_API_ID }}
+          vkey: ${{ secrets.CYBERSECURITY_VERACODE_API_KEY }}

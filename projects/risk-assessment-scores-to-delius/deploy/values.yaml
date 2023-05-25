@@ -1,0 +1,27 @@
+---
+# Values here are the same across all environments
+# An additional set of default values can be found in templates/helm-defaults.yml, which is the same across all projects
+generic-service:
+  nameOverride: risk-assessment-scores-to-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/risk-assessment-scores-to-delius
+
+  ingress:
+    tlsSecretName: risk-assessment-scores-to-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    risk-assessment-scores-to-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    risk-assessment-scores-to-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    risk-assessment-scores-to-delius-queue:
+      AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+
+generic-prometheus-alerts:
+  targetApplication: risk-assessment-scores-to-delius

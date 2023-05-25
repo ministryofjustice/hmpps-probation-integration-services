@@ -1,0 +1,44 @@
+---
+title: Guides
+source_url: 'https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/doc/tech-docs/source/guides.html.md.erb'
+weight: 40
+---
+
+# How-To Guides
+
+## Making an Authenticated API Request
+
+Authentication tokens can be obtained from the internal HMPPS OAuth server,
+[HMPPS Auth](https://github.com/ministryofjustice/hmpps-auth), using Client
+Credentials Flow. Specific credentials for accessing an integration service
+are supplied by the 'HMPPS Auth, Audit and Registers' team. The client should
+be configured with the correct scopes and authorities for accessing the API
+endpoints provided by the integration service and these will then be present
+in the supplied JWT.
+
+```bash
+# Client credentials - supplied by 'HMPPS Auth, Audit and Registers' team
+CLIENT_ID=<hmpps-auth-client-id>
+CLIENT_SECRET=<hmpps-auth-client-secret>
+
+# Request a JWT access token
+AUTH_TOKEN=$(
+	curl -s --location \
+		--request POST "https://sign-in.hmpps.service.justice.gov.uk/auth/oauth/token?grant_type=client_credentials" \
+		--user "$CLIENT_ID:$CLIENT_SECRET" |
+		jq -r .access_token
+)
+
+# Inspect the JWT and ensure scopes and authorities are correct
+jwt decode $AUTH_TOKEN
+```
+
+To make a request to the API submit a `GET` request to an endpoint in the
+integration service, supplying the JWT access token as a bearer token in an
+`Authorization` header.
+
+
+```bash
+curl -s --location https://<integration-service-name>.hmpps.service.justice.gov.uk/case-details/X633793/1 \
+        --header "Authorization: Bearer $AUTH_TOKEN"
+```

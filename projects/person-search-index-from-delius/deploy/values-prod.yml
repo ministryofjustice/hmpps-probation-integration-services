@@ -1,0 +1,11 @@
+generic-service:
+  ingress:
+    host: person-search-index-from-delius.hmpps.service.justice.gov.uk
+
+  env:
+    SENTRY_ENVIRONMENT: prod
+
+reindexing:
+  person_schedule: 0 3 * * 1-5
+  contact_schedule: 0 7 * * 2
+  sentry_environment: prod

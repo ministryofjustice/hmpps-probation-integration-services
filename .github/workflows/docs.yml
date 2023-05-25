@@ -1,0 +1,150 @@
+name: Documentation
+
+on:
+  push:
+    paths:
+      - .github/workflows/docs.yml
+      - projects/**/tech-docs/**
+      - doc/tech-docs/**
+  schedule:
+    - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
+  workflow_dispatch:
+    inputs:
+      projects:
+        description: Project
+        type: choice
+        required: true
+        options:
+          - 'All'
+          - '["approved-premises-and-oasys"]'
+          - '["approved-premises-and-delius"]'
+          - '["person-search-index-from-delius"]'
+          - '["pre-sentence-reports-to-delius"]'
+          - '["prison-case-notes-to-probation"]'
+          - '["prison-custody-status-to-delius"]'
+          - '["risk-assessment-scores-to-delius"]'
+          - '["tier-to-delius"]'
+          - '["workforce-allocations-to-delius"]'
+          - '["offender-events-and-delius"]'
+          - '["custody-key-dates-and-delius"]'
+          - '["make-recall-decisions-and-delius"]'
+          - '["unpaid-work-and-delius"]'
+          - '["manage-pom-cases-and-delius"]'
+          - '["refer-and-monitor-and-delius"]'
+          - '["create-and-vary-a-licence-and-delius"]'
+          - '["court-case-and-delius"]'
+          - '["effective-proposal-framework-and-delius"]'
+          - '["sentence-plan-and-delius"]'
+          - '["pathfinder-and-delius"]'
+          # ^ add new projects here
+          # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
+          # See https://github.com/community/community/discussions/11795
+      deploy:
+        description: Deploy?
+        type: boolean
+
+jobs:
+  get-projects:
+    runs-on: ubuntu-latest
+    outputs:
+      projects: ${{ steps.output.outputs.projects }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get projects - all
+        if: github.event_name != 'workflow_dispatch' || inputs.projects == 'All'
+        run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_ENV
+      - name: Get projects - selected
+        if: github.event_name == 'workflow_dispatch' && inputs.projects != 'All'
+        run: echo 'projects=${{ inputs.projects }}' >> $GITHUB_ENV
+      - id: output
+        run: echo 'projects=${{ env.projects }}' >> $GITHUB_OUTPUT
+
+  tech-docs-index:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+          bundler-cache: true
+          working-directory: doc/tech-docs
+      - name: Build
+        run: |
+          gem install middleman
+          bundle exec middleman build --verbose
+        working-directory: doc/tech-docs
+      - name: Deploy
+        if: github.ref == 'refs/heads/main'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: doc/tech-docs/build
+          target-folder: tech-docs
+          clean-exclude: |
+            projects
+            tech-docs/projects
+
+  tech-docs-project:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: get-projects
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+          bundler-cache: true
+          working-directory: projects/${{ matrix.project }}/tech-docs
+
+      - name: Check if OpenAPI is configured
+        id: check_config
+        run: echo "api_path=$(yq '.api_path' 'projects/${{ matrix.project }}/tech-docs/config/tech-docs.yml')" >> $GITHUB_OUTPUT
+      - uses: actions/setup-java@v3
+        if: startsWith(steps.check_config.outputs.api_path, 'http')
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - uses: gradle/gradle-build-action@v2 # enables caching
+        if: startsWith(steps.check_config.outputs.api_path, 'http')
+        with:
+          arguments: ${{ matrix.project }}:assemble
+      - name: Host OpenAPI spec
+        if: startsWith(steps.check_config.outputs.api_path, 'http')
+        run: |
+          ./gradlew '${{ matrix.project }}:bootRun' &
+          timeout 120 sh -c 'until curl -s localhost:8080/v3/api-docs.yaml; do sleep 5; done'
+          yq -i '.api_path = "http://localhost:8080/v3/api-docs.yaml"' 'projects/${{ matrix.project }}/tech-docs/config/tech-docs.yml'
+        env:
+          SPRING_PROFILES_ACTIVE: dev
+
+      - name: Set branch
+        if: github.ref_name != 'main'
+        run: sed -i "s|$REPOSITORY/main|$REPOSITORY/$BRANCH|" index.html.md.erb
+        working-directory: projects/${{ matrix.project }}/tech-docs/source
+        env:
+          REPOSITORY: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+
+      - name: Build
+        run: |
+          gem install middleman
+          bundle exec middleman build --verbose
+        working-directory: projects/${{ matrix.project }}/tech-docs
+
+      - name: Deploy
+        if: github.ref_name == 'main'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: projects/${{ matrix.project }}/tech-docs/build
+          target-folder: tech-docs/projects/${{ matrix.project }}
+
+      - name: Branch deploy
+        if: github.ref_name != 'main' && github.event_name == 'workflow_dispatch' && inputs.deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: projects/${{ matrix.project }}/tech-docs/build
+          target-folder: tech-docs-drafts/${{ matrix.project }}

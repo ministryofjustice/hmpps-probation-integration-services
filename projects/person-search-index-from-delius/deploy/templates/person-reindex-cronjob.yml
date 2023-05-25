@@ -1,0 +1,106 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: person-reindex
+spec:
+  schedule: {{ .Values.reindexing.person_schedule }}
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          containers:
+            - name: person-reindex
+              image: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius:{{ .Values.version }}
+              resources:
+                requests:
+                  memory: 4Gi
+                  cpu: 2
+                limits:
+                  memory: 4Gi
+                  cpu: 2
+              env:
+                - name: AWS_REGION
+                  value: eu-west-2
+                - name: JDK_JAVA_OPTIONS
+                  value: -XX:MaxRAMPercentage=75.0
+                - name: SENTRY_ENVIRONMENT
+                  value: {{ .Values.reindexing.sentry_environment }}
+                - name: PERSON_INDEX_PREFIX
+                  value: person-search
+                - name: PERSON_REINDEXING_TIMEOUT
+                  value: '7200' # 3 hours
+                - name: PIPELINES_ENABLED
+                  value: person-full-load,person-dlq
+                - name: PIPELINE_BATCH_SIZE
+                  value: '500'
+                - name: APPLICATIONINSIGHTS_CONNECTION_STRING
+                  valueFrom:
+                    secretKeyRef:
+                      name: common
+                      key: APPLICATIONINSIGHTS_CONNECTION_STRING
+                      optional: false
+                - name: SEARCH_INDEX_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-opensearch
+                      key: url
+                      optional: false
+                - name: JDBC_CONNECTION_STRING
+                  valueFrom:
+                    secretKeyRef:
+                      name: common
+                      key: DB_STANDBY_URL
+                      optional: false
+                - name: JDBC_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-database
+                      key: DB_USERNAME
+                      optional: false
+                - name: JDBC_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-database
+                      key: DB_PASSWORD
+                      optional: false
+                - name: SENTRY_DSN
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-sentry
+                      key: SENTRY_DSN
+                      optional: false
+                - name: SENTRY_AUTH_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-sentry
+                      key: SENTRY_AUTH_TOKEN
+                      optional: false
+                - name: PERSON_REINDEXING_SENTRY_MONITOR_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-sentry
+                      key: PERSON_REINDEXING_SENTRY_MONITOR_ID
+                      optional: false
+                - name: PERSON_SQS_DLQ_NAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-person-dlq
+                      key: QUEUE_NAME
+                      optional: false
+                - name: PERSON_SQS_DLQ_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-person-dlq
+                      key: AWS_ACCESS_KEY_ID
+                      optional: false
+                - name: PERSON_SQS_DLQ_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: person-search-index-from-delius-person-dlq
+                      key: AWS_SECRET_ACCESS_KEY
+                      optional: false
+          restartPolicy: Never

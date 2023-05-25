@@ -1,0 +1,208 @@
+name: End-to-end tests
+
+on:
+  schedule:
+    - cron: "0 8 * * MON-FRI" # Every weekday at 08:00 UTC
+  workflow_call:
+    inputs:
+      test-branch:
+        description: The branch to run in the e2e repo
+        default: main
+        type: string
+        required: false
+      projects:
+        description: A JSON array of projects to deploy
+        type: string
+        required: true
+    outputs:
+      failed-projects:
+        description: The projects that failed end-to-end testing
+        value: ${{ jobs.test.outputs.failed-projects }}
+      passed-projects:
+        description: The projects that passed end-to-end testing
+        value: ${{ jobs.test.outputs.passed-projects }}
+      report-url:
+        description: The URL of the Playwright HTML report
+        value: ${{ jobs.test.outputs.report-url }}
+  workflow_dispatch:
+    inputs:
+      test-branch:
+        description: Test branch
+        default: main
+        type: string
+        required: true
+      projects:
+        description: Project
+        type: choice
+        required: true
+        options:
+          - 'All'
+          - '["approved-premises-and-oasys"]'
+          - '["approved-premises-and-delius"]'
+          - '["court-case-and-delius"]'
+          - '["create-and-vary-a-licence-and-delius"]'
+          - '["custody-key-dates-and-delius"]'
+          - '["effective-proposal-framework-and-delius"]'
+          - '["make-recall-decisions-and-delius"]'
+          - '["manage-pom-cases-and-delius"]'
+          - '["offender-events-and-delius"]'
+          - '["person-search-index-from-delius"]'
+          - '["pre-sentence-reports-to-delius"]'
+          - '["prison-case-notes-to-probation"]'
+          - '["prison-custody-status-to-delius"]'
+          - '["refer-and-monitor-and-delius"]'
+          - '["risk-assessment-scores-to-delius"]'
+          - '["sentence-plan-and-delius"]'
+          - '["tier-to-delius"]'
+          - '["unpaid-work-and-delius"]'
+          - '["workforce-allocations-to-delius"]'
+          - '["pathfinder-and-delius"]'
+          # ^ add new projects here
+          # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
+          # See https://github.com/community/community/discussions/11795
+
+jobs:
+  test:
+    runs-on: moj-cloud-platform
+    timeout-minutes: 60
+    outputs:
+      failed-projects: ${{ steps.json.outputs.failed-projects }}
+      passed-projects: ${{ steps.json.outputs.passed-projects }}
+      report-url: ${{ steps.html.outputs.report-url }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: ministryofjustice/hmpps-probation-integration-e2e-tests
+          ref: ${{ inputs.test-branch }}
+      - name: Get tests to run - all tests
+        if: inputs.projects == '' || inputs.projects == 'All'
+        run: echo "projects=$(cd tests && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_ENV
+      - name: Get tests to run - specific tests
+        if: inputs.projects != '' && inputs.projects != 'All'
+        run: echo 'projects=${{ inputs.projects }}' >> $GITHUB_ENV
+      - name: Get report output directory
+        run: echo "report-dir=playwright-report/test/${{ github.ref_name }}/$(date '+%Y-%m-%d')/${{ github.sha }}/${{ github.run_id }}/${{ github.run_attempt }}" >> $GITHUB_ENV
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install
+      - name: Run Playwright tests
+        id: tests
+        run: npx playwright test --reporter=html,junit,json,line $(echo '${{ env.projects }}' | jq -r 'join(" ")')
+        env:
+          ENV: test
+          DELIUS_URL: https://ndelius.test.probation.service.justice.gov.uk
+          WORKFORCE_URL: https://workforce-management-dev.hmpps.service.justice.gov.uk
+          DPS_URL: https://digital-dev.prison.service.justice.gov.uk
+          AUTH_URL: https://sign-in-dev.hmpps.service.justice.gov.uk
+          PRISON_API: https://api-dev.prison.service.justice.gov.uk/
+          EPF_API: https://effective-proposal-framework-and-delius-dev.hmpps.service.justice.gov.uk/
+          REFERANDMONITOR_URL: https://hmpps-interventions-ui-dev.apps.live-1.cloud-platform.service.justice.gov.uk
+          OASYS_URL: https://ords.t2.oasys.service.justice.gov.uk/
+          APPROVEDPREMISES_URL: https://approved-premises-dev.hmpps.service.justice.gov.uk/
+          MAKE_RECALL_DECISIONS_URL: https://make-recall-decision-dev.hmpps.service.justice.gov.uk
+          DELIUS_USERNAME: ${{ secrets.E2E_DELIUS_USERNAME }}
+          DELIUS_PASSWORD: ${{ secrets.E2E_DELIUS_PASSWORD }}
+          DPS_USERNAME: ${{ secrets.E2E_DPS_USERNAME }}
+          DPS_PASSWORD: ${{ secrets.E2E_DPS_PASSWORD }}
+          CRED_USERNAME: ${{ secrets.E2E_CLIENT_ID }}
+          CRED_PASSWORD: ${{ secrets.E2E_CLIENT_SECRET }}
+          REFERANDMONITOR_SUPPLIER_USERNAME: ${{ secrets.E2E_REFERANDMONITOR_SUPPLIER_USERNAME }}
+          REFERANDMONITOR_SUPPLIER_PASSWORD: ${{ secrets.E2E_REFERANDMONITOR_SUPPLIER_PASSWORD }}
+          OASYS_USERNAME_BOOKING: ${{ secrets.E2E_OASYS_USERNAME_BOOKING }}
+          OASYS_PASSWORD_BOOKING: ${{ secrets.E2E_OASYS_PASSWORD_BOOKING }}
+          OASYS_USERNAME_RSR: ${{ secrets.E2E_OASYS_USERNAME_RSR }}
+          OASYS_PASSWORD_RSR: ${{ secrets.E2E_OASYS_PASSWORD_RSR }}
+          OASYS_USERNAME_TIMELINE: ${{ secrets.E2E_OASYS_USERNAME_TIMELINE }}
+          OASYS_PASSWORD_TIMELINE: ${{ secrets.E2E_OASYS_PASSWORD_TIMELINE }}
+          APPROVEDPREMISES_USERNAME: ${{ secrets.E2E_DELIUS_USERNAME }}
+          APPROVEDPREMISES_PASSWORD: ${{ secrets.E2E_DELIUS_PASSWORD }}
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME: junit.xml
+          PLAYWRIGHT_JSON_OUTPUT_NAME: results.json
+      - name: Parse JSON results
+        if: always()
+        id: json
+        run: |
+          skipped_projects=$(echo "$all_projects" | jq -r '.[]' | while read project; do if [ ! -d "tests/$project" ]; then echo $project; fi; done | jq --raw-input . | jq --slurp --compact-output .)
+          failed_projects=$(cat results.json | jq -r '.suites[].specs[] | select(.ok == false).file' | xargs -n1 dirname | sort -u | jq --raw-input . | jq --slurp --compact-output .)
+          passed_projects=$(jq --compact-output --null-input --argjson all "$all_projects" --argjson failed "$failed_projects" --argjson skipped "$skipped_projects" '{all: $all, failed: $failed, skipped: $skipped} | .all - .failed - .skipped')
+          echo skipped-projects=$skipped_projects >> $GITHUB_OUTPUT
+          echo failed-projects=$failed_projects >> $GITHUB_OUTPUT
+          echo passed-projects=$passed_projects >> $GITHUB_OUTPUT
+          echo All tests passed for: $passed_projects
+          echo Failures detected in: $failed_projects
+          echo No results found for: $skipped_projects
+        env:
+          all_projects: ${{ env.projects }}
+      - name: Publish JUnit report
+        if: always()
+        uses: mikepenz/action-junit-report@v3
+        id: junit
+        with:
+          check_name: End-to-end test results
+          report_paths: junit.xml
+      - name: Publish HTML report
+        if: always()
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: playwright-report
+          target-folder: ${{ env.report-dir }}
+      - name: Output HTML report URL
+        id: html
+        if: always()
+        run: |
+          echo '[🎭 Playwright HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.report-dir }})' >> $GITHUB_STEP_SUMMARY
+          echo 'report-url=https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.report-dir }}' >> $GITHUB_OUTPUT
+      - name: Send message to Slack
+        uses: slackapi/slack-github-action@v1.23.0
+        if: ${{ failure() && github.event_name == 'schedule' }}
+        with:
+          channel-id: probation-integration-notifications
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "🎭 *Probation Integration Services* end-to-end test failure"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": ">${{ steps.junit.outputs.total }} tests run, ${{ steps.junit.outputs.passed }} passed, ${{ steps.junit.outputs.skipped }} skipped, ${{ steps.junit.outputs.failed }} failed."
+                    }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "📈 Report"
+                      },
+                      "url": "https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.report-dir }}"
+                    },
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "📝 Logs"
+                      },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

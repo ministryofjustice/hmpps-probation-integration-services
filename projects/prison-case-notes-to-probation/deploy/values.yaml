@@ -1,0 +1,30 @@
+---
+# Values here are the same across all environments
+# An additional set of default values can be found in templates/helm-defaults.yml, which is the same across all projects
+generic-service:
+  nameOverride: prison-case-notes-to-probation
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-case-notes-to-probation
+
+  ingress:
+    tlsSecretName: prison-case-notes-to-probation-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    prison-case-notes-to-probation-client-credentials:
+      INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-ID: CLIENT_ID
+      INTEGRATIONS_PRISON-CASE-NOTES_CLIENT-SECRET: CLIENT_SECRET
+    prison-case-notes-to-probation-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    prison-case-notes-to-probation-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    prison-case-notes-to-probation-queue:
+      AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+
+generic-prometheus-alerts:
+  targetApplication: prison-case-notes-to-probation

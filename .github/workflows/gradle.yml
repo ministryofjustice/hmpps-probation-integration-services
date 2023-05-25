@@ -1,0 +1,23 @@
+name: Gradle
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
+  push:
+    paths:
+      - gradlew
+      - gradlew.bat
+      - gradle/**
+
+jobs:
+  validate-wrapper:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: gradle/wrapper-validation-action@v1
+
+  update-wrapper:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: gradle-update/update-gradle-wrapper-action@v1

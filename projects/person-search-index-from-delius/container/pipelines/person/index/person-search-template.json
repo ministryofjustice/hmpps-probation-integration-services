@@ -1,0 +1,147 @@
+{
+  "index_patterns": [
+    "person-search-*"
+  ],
+  "template": {
+    "settings": {
+      "index": {
+        "number_of_shards": "1",
+        "number_of_replicas": "1",
+        "default_pipeline": "person-search-pipeline",
+        "max_ngram_diff": 9
+      },
+      "analysis": {
+        "analyzer": {
+          "deliusAnalyzer": {
+            "tokenizer": "keyword",
+            "filter": [
+              "lowercase",
+              "asciifolding",
+              "whitespace_filter"
+            ]
+          },
+          "phoneAnalyzer": {
+            "tokenizer": "standard",
+            "filter": [
+              "phone_number_filter"
+            ]
+          }
+        },
+        "filter": {
+          "whitespace_filter": {
+            "type": "pattern_replace",
+            "pattern": " ",
+            "replacement": ""
+          },
+          "phone_number_filter": {
+            "type": "ngram",
+            "min_gram": 6,
+            "max_gram": 15
+          }
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "otherIds.pncNumberShortYear": {
+          "type": "keyword"
+        },
+        "otherIds.croNumberLowercase": {
+          "type": "keyword"
+        },
+        "otherIds.crn": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "otherIds.previousCrn": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "firstName": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "surname": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "offenderManagers": {
+          "type": "nested",
+          "properties": {
+            "probationArea.code": {
+              "type": "keyword"
+            },
+            "team.code": {
+              "type": "keyword"
+            },
+            "staff.forenames": {
+              "type": "text",
+              "fields": {
+                "raw": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "staff.surname": {
+              "type": "text",
+              "fields": {
+                "raw": {
+                  "type": "keyword"
+                }
+              }
+            }
+          }
+        },
+        "offenderAliases": {
+          "include_in_root": true,
+          "type": "nested"
+        },
+        "dateOfBirth": {
+          "format": "yyyy-MM-dd||yyyy/MM/dd||dd-MM-yy||dd/MM/yy||dd-MM-yyyy||dd/MM/yyyy",
+          "type": "date"
+        },
+        "otherIds.pncNumberLongYear": {
+          "type": "keyword"
+        },
+        "contactNumbers": {
+          "type": "text",
+          "analyzer": "phoneAnalyzer"
+        },
+        "contactDetails.addresses": {
+          "include_in_root": true,
+          "type": "nested",
+          "properties": {
+            "streetName_analyzed": {
+              "type": "text",
+              "analyzer": "deliusAnalyzer"
+            },
+            "town_analyzed": {
+              "type": "text",
+              "analyzer": "deliusAnalyzer"
+            },
+            "postcode_analyzed": {
+              "type": "text",
+              "analyzer": "deliusAnalyzer"
+            }
+          }
+        }
+      }
+    }
+  }
+}

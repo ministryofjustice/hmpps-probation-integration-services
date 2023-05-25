@@ -1,0 +1,28 @@
+generic-service:
+  nameOverride: pre-sentence-reports-to-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/pre-sentence-reports-to-delius
+
+  ingress:
+    tlsSecretName: pre-sentence-reports-to-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    pre-sentence-reports-to-delius-client-credentials:
+      INTEGRATIONS_PRE-SENTENCE-REPORTS_CLIENT-ID: CLIENT_ID
+      INTEGRATIONS_PRE-SENTENCE-REPORTS_CLIENT-SECRET: CLIENT_SECRET
+    pre-sentence-reports-to-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    pre-sentence-reports-to-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    pre-sentence-reports-to-delius-queue:
+      AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+
+generic-prometheus-alerts:
+  targetApplication: pre-sentence-reports-to-delius
+

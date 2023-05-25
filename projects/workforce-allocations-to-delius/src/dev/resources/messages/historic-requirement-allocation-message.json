@@ -1,0 +1,17 @@
+{
+  "Type": "Notification",
+  "MessageId": "aa2c2828-167f-529b-8e19-73735a2fb85c",
+  "TopicArn": "arn:aws:sns:eu-west-2:754256621582:cloud-platform-Digital-Prison-Services-15b2b4a6af7714848baeaf5f41c85fcd",
+  "Message": "{\"eventType\":\"requirement.manager.allocated\",\"version\":1,\"description\":\"Requirement allocated event\",\"detailUrl\":\"http://localhost:{wiremock.port}/allocation/requirements/allocate-historic-requirement-manager\",\"occurredAt\":\"2022-07-27T15:22:08.452612281+01:00\",\"additionalInformation\":{\"allocationId\":\"6aafe304-861f-4479-8380-fec5f90f6d17\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"X123456\"}]}}",
+  "Timestamp": "2022-07-27T14:22:08.509Z",
+  "SignatureVersion": "1",
+  "Signature": "BAquzVT8j1yFAanYz0dJ/6e/5N93D4hOVh2DNxn8exlPjqHS30/DXz+5Q53oS2eeXwDBFapp4qfiUPYNFr1wwFM9ZLM8y8Ehkb/is+SOlJetIoH8ShkXFAyiuD551rObN8mCTlqKWs1mOXe0x9iYl3IhwRj4Uuaq4E17qe3nD/MUr7eFqvNn0TKrRT+oFoa1S5YenyzMvvFH9Rz1squAklTpQUGuLgsJjgy+BYNPbdD3+ArWpnzFS9rY9obVYlicVVt8FvjIWaMAgenAUlHTcVvfMA4rbv+NjHz4zYOFDC1746QVnAR5dq0zK8WOSa4TRki8ekVKbZ9cjIccIQLGaQ==",
+  "SigningCertURL": "https://sns.eu-west-2.amazonaws.com/SimpleNotificationService-7ff5318490ec183fbaddaa2a969abfda.pem",
+  "UnsubscribeURL": "https://sns.eu-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-west-2:754256621582:cloud-platform-Digital-Prison-Services-15b2b4a6af7714848baeaf5f41c85fcd:459b97c7-7eb7-4a5a-8f30-7e85475ba3b1",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "requirement.manager.allocated"
+    }
+  }
+}

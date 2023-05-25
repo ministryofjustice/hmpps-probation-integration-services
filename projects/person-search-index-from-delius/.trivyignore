@@ -1,0 +1,44 @@
+# Reason: jackson only used for internal (controlled) objects
+CVE-2020-36518
+
+# Reason: snakeyaml only used for internal (controlled) objects
+CVE-2017-18640
+CVE-2022-25857
+CVE-2022-1471
+
+# Reason:
+#   Given the CVE description, the changes in the JDK source code and the information publicly available we believe that Logstash is not affected by any of the aforementioned flaws.
+#   Logstash bundles a JDK with all download artifacts ( archives, RPM/DEB packages, Docker images ).
+#   Logstash versions 8.4.0 and 7.17.6 that are released on 2022-08-24 bundle unaffected JDK versions. Namely, Logstash version 8.4.0 bundles JDK 17.0.4 and Logstash version 7.17.6 bundles JDK 11.0.16.
+#   - https://discuss.elastic.co/t/elastic-stack-8-4-0-7-17-6-security-statement/312823
+CVE-2022-25647
+
+# Reason: arr-pm - Logstash does not process any RPM files
+CVE-2022-39224
+
+# Reason: jackson-databind:2.13.3 - The UNWRAP_SINGLE_VALUE_ARRAYS feature is not enabled
+CVE-2022-42003
+CVE-2022-42004
+
+# Suppressed as we are not serving any HTTP requests from the indexer
+# By izzyL-DJ
+CVE-2022-45442 exp:2023-06-01
+
+# Suppressed as we do not process any XML as part of search indexing
+# By marcus-bcl
+CVE-2022-23476 exp:2023-06-01
+
+# Suppressed because this service does not handle any TLS requests
+# By marcus-bcl
+CVE-2022-41881 exp:2023-06-01
+
+# Suppressed because git is not used at runtime
+# By marcus-bcl
+CVE-2022-47318 exp:2023-06-01
+
+# Suppress - rack web server is not used to handle any http requests
+# By marcus-bcl
+CVE-2022-44570 exp:2023-06-01
+CVE-2022-44571 exp:2023-06-01
+CVE-2022-44572 exp:2023-06-01
+CVE-2023-27530 exp:2023-06-01

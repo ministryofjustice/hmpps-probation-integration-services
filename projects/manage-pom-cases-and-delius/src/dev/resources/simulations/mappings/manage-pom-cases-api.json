@@ -1,0 +1,43 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/api/handovers/A1024BY"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "create-handover-date.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/api/handovers/A2048BY"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "update-handover-and-start-date.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/api/handovers/A4096BY"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "create-handover-and-start-date.json"
+      }
+    }
+  ]
+}

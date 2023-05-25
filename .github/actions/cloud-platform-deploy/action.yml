@@ -1,0 +1,73 @@
+name: Cloud Platform Deploy
+description: Deploy to Cloud Platform using Helm
+
+inputs:
+  project:
+    description: The project to deploy
+    required: true
+  environment:
+    description: The environment to deploy to (dev/preprod/prod)
+    required: true
+  version:
+    description: The version of the service to deploy
+    required: true
+  api:
+    description: The KUBE_ENV_API
+    required: true
+  cert:
+    description: The KUBE_CERT
+    required: true
+  cluster:
+    description: The KUBE_CLUSTER
+    required: true
+  namespace:
+    description: The KUBE_NAMESPACE
+    required: true
+  token:
+    description: The KUBE_TOKEN
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v3
+
+    - name: Get environment details
+      uses: ./.github/actions/get-env-details
+      id: env
+      with:
+        environment: ${{ inputs.environment }}
+
+    - name: Authenticate
+      uses: ./.github/actions/cloud-platform-auth
+      with:
+        api: ${{ inputs.api }}
+        cert: ${{ inputs.cert }}
+        cluster: ${{ inputs.cluster }}
+        namespace: ${{ inputs.namespace }}
+        token: ${{ inputs.token }}
+
+    - name: Deploy
+      shell: bash
+      run: |
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+        brew install helm
+        yq -i ".appVersion = \"$VERSION\"" "projects/$PROJECT/deploy/Chart.yaml"
+        helm dependency update "projects/$PROJECT/deploy"
+        helm upgrade "$PROJECT" "projects/$PROJECT/deploy" \
+          --atomic \
+          --history-max 10 \
+          --install \
+          --reset-values \
+          --set "generic-service.env.VERSION=$VERSION" \
+          --set "generic-service.image.tag=$VERSION" \
+          --set "version=$VERSION" \
+          --timeout 10m \
+          --values templates/helm-defaults.yml \
+          --values "projects/$PROJECT/deploy/values.yaml" \
+          --values "projects/$PROJECT/deploy/$VALUES_FILE" \
+          --wait
+      env:
+        PROJECT: ${{ inputs.project }}
+        VALUES_FILE: ${{ steps.env.outputs.values-file }}
+        VERSION: ${{ inputs.version }}
