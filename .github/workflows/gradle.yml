@@ -35,8 +35,11 @@ jobs:
         with:
           labels: dependencies
           repo-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-      - run: |
-          if [ $(git branch --show-current) != main ]; then
-            git commit --amend --author='probation-integration-bot <probation-integration-team@digital.justice.gov.uk>'
-            git push --force-with-lease
+      - name: Reset commit author # workaround for https://github.com/gradle-update/update-gradle-wrapper-action/issues/124
+        run: |
+          if [ "$(git branch --show-current)" != main ]; then
+            git config --local user.name probation-integration-bot
+            git config --local user.email probation-integration-team@digital.justice.gov.uk
+            git commit --amend --reset-author --no-edit
+            git push --set-upstream origin "$(git branch --show-current)" --force
           fi
