@@ -34,6 +34,7 @@ import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.ReferralEndType
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -262,10 +263,8 @@ internal class ReferAndMonitorIntegrationTest {
         val saved = nsiRepository.findById(NsiGenerator.END_PREMATURELY.id).orElseThrow()
         assertThat(saved.status.code, equalTo(NsiStatus.Code.END.value))
         assertThat(
-            saved.actualEndDate?.withZoneSameInstant(EuropeLondon),
-            equalTo(
-                ZonedDateTime.parse("2023-02-23T15:29:54.197Z").withZoneSameInstant(EuropeLondon)
-            )
+            saved.actualEndDate!!.withZoneSameInstant(EuropeLondon),
+            isCloseTo(ZonedDateTime.parse("2023-02-23T15:29:54.197Z").withZoneSameInstant(EuropeLondon))
         )
         assertThat(saved.outcome?.code, equalTo(ReferralEndType.PREMATURELY_ENDED.outcome))
         assertFalse(saved.active)
@@ -309,13 +308,36 @@ internal class ReferAndMonitorIntegrationTest {
         val saved = nsiRepository.findById(NsiGenerator.FUZZY_SEARCH.id).orElseThrow()
         assertThat(saved.status.code, equalTo(NsiStatus.Code.END.value))
         assertThat(
-            saved.actualEndDate?.withZoneSameInstant(EuropeLondon),
-            equalTo(
-                ZonedDateTime.parse("2023-02-23T15:29:54.197Z").withZoneSameInstant(EuropeLondon)
-            )
+            saved.actualEndDate!!.withZoneSameInstant(EuropeLondon),
+            isCloseTo(ZonedDateTime.parse("2023-02-23T15:29:54.197Z").withZoneSameInstant(EuropeLondon))
         )
         assertThat(saved.outcome?.code, equalTo(ReferralEndType.CANCELLED.outcome))
         assertFalse(saved.active)
+    }
+
+    @Test
+    fun `failure to find appointment is rejected with reason`() {
+        val notification = prepNotification(
+            notification("session-appointment-feedback-submitted-not-found"),
+            wireMockServer.port()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).trackEvent(
+            "AppointmentNotFound",
+            mapOf(
+                "crn" to "T140223",
+                "referralId" to "cb293dcb-c201-4743-aa9d-acb14c8a1ddd",
+                "appointmentId" to "ac26da83-978f-4bbf-b517-f406fc29fb6d",
+                "deliusId" to "999",
+                "referralReference" to "AY0164AC",
+                "outcomeAttended" to "NO",
+                "outcomeNotify" to "true",
+                "reason" to "NSI terminated",
+                "reasonDetail" to "NSI last updated by ReferAndMonitorAndDelius"
+            )
+        )
     }
 
     private infix fun List<Contact>.have(type: String) = any { it.type.code == type }

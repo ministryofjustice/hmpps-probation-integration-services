@@ -90,6 +90,7 @@ object ContactGenerator {
         rarActivity: Boolean? = null,
         person: Person = PersonGenerator.DEFAULT,
         externalReference: String? = null,
+        softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = Contact(
         person,
@@ -104,7 +105,8 @@ object ContactGenerator {
         teamId = ProviderGenerator.INTENDED_TEAM.id,
         staffId = ProviderGenerator.INTENDED_STAFF.id,
         rarActivity = rarActivity,
-        externalReference = externalReference
+        externalReference = externalReference,
+        softDeleted = softDeleted
     ).addNotes(notes).apply { this.outcome = outcome }
 
     fun generateType(
