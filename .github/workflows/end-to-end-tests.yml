@@ -94,6 +94,7 @@ jobs:
         id: tests
         run: npx playwright test --reporter=html,junit,json,line $(echo '${{ env.projects }}' | jq -r 'join(" ")')
         env:
+          TZ: Europe/London
           ENV: test
           DELIUS_URL: https://ndelius.test.probation.service.justice.gov.uk
           WORKFORCE_URL: https://workforce-management-dev.hmpps.service.justice.gov.uk
