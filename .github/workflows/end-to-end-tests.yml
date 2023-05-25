@@ -103,7 +103,7 @@ jobs:
           PRISON_API: https://api-dev.prison.service.justice.gov.uk/
           EPF_API: https://effective-proposal-framework-and-delius-dev.hmpps.service.justice.gov.uk/
           REFERANDMONITOR_URL: https://hmpps-interventions-ui-dev.apps.live-1.cloud-platform.service.justice.gov.uk
-          OASYS_URL: https://ords.t2.oasys.service.justice.gov.uk/
+          OASYS_URL: https://ords.t2.oasys.service.justice.gov.uk/eor/f?p=100:101
           APPROVEDPREMISES_URL: https://approved-premises-dev.hmpps.service.justice.gov.uk/
           MAKE_RECALL_DECISIONS_URL: https://make-recall-decision-dev.hmpps.service.justice.gov.uk
           DELIUS_USERNAME: ${{ secrets.E2E_DELIUS_USERNAME }}
