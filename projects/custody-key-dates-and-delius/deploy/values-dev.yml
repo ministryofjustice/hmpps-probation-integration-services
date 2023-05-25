@@ -1,10 +1,17 @@
 enabled: false # TODO set this to true when you're ready to deploy your service
 
-env:
-  SENTRY_ENVIRONMENT: dev
-  SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/oauth/token
+generic-service:
+  ingress:
+    host: custody-key-dates-and-delius-dev.hmpps.service.justice.gov.uk
 
-  LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
+  scheduledDowntime:
+    enabled: true
 
-  # Alert for business hours only - 7am to 6pm UTC (8am to 7pm BST) on week days (Monday to Friday)
+  env:
+    SENTRY_ENVIRONMENT: dev
+    SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/oauth/token
+
+    LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
+
+generic-prometheus-alerts:
   businessHoursOnly: true

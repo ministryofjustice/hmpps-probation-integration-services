@@ -8,7 +8,7 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: dev
 
-  # Alert for business hours only - 7am to 6pm UTC (8am to 7pm BST) on week days (Monday to Friday)
+generic-prometheus-alerts:
   businessHoursOnly: true
 
 reindexing:
