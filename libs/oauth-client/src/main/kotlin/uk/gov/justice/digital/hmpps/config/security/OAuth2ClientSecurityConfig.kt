@@ -19,7 +19,7 @@ class OAuth2ClientSecurityConfig : SecurityConfig() {
     @Bean
     @Primary
     override fun configure(http: HttpSecurity): SecurityFilterChain {
-        filterChain(http).oauth2Client()
+        filterChain(http).oauth2Client { }
         return http.build()
     }
 
