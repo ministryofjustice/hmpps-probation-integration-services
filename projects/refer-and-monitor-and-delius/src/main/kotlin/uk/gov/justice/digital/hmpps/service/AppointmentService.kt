@@ -8,6 +8,8 @@ import org.springframework.web.server.ResponseStatusException
 import uk.gov.justice.digital.hmpps.api.model.MergeAppointment
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.exception.AppointmentNotFoundException
+import uk.gov.justice.digital.hmpps.exception.AppointmentNotFoundReason
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.ADD_CONTACT
@@ -23,7 +25,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOu
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Enforcement
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.EnforcementAction
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.getAppointmentById
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
@@ -168,8 +169,15 @@ class AppointmentService(
         audit["contactId"] = uao.id
 
         val appointment = contactRepository.findByPersonCrnAndExternalReference(uao.crn, uao.id.toString())
-            ?: uao.deliusId?.let { contactRepository.getAppointmentById(it) }
-            ?: throw NotFoundException("Unable to find appointment ${uao.id} : ${uao.deliusId}")
+            ?: uao.deliusId?.let { contactRepository.findByIdOrNull(it) }
+            ?: throw AppointmentNotFoundException(
+                appointmentId = uao.id,
+                deliusId = uao.deliusId,
+                referralReference = uao.referralReference,
+                outcome = uao.outcome,
+                reason = AppointmentNotFoundReason.from(contactRepository.getNotFoundReason(uao.crn, uao.referral.urn, uao.urn, uao.deliusId ?: -1))
+            )
+
         val outcome = outcomeRepository.getByCode(attendanceOutcome(uao.outcome).value)
         appointment.outcome = outcome
         if (appointment.notes?.contains(uao.notes) != true) {

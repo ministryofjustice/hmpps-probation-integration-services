@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.EventProcessingResult.Failure
+import uk.gov.justice.digital.hmpps.messaging.EventProcessingResult.Rejected
 import uk.gov.justice.digital.hmpps.messaging.EventProcessingResult.Success
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -31,6 +32,12 @@ class ReferAndMonitorHandler(
                     notification.message.commonFields() + res.properties + ("message" to res.exception.message!!)
                 )
                 throw res.exception
+            }
+            is Rejected -> {
+                telemetryService.trackEvent(
+                    res.exception.message!!,
+                    notification.message.commonFields() + res.properties
+                )
             }
             null -> telemetryService.trackEvent(
                 "UnhandledEventReceived",

@@ -47,6 +47,13 @@ object NsiGenerator {
         eventId = 97
     )
 
+    var TERMINATED = generate(
+        TYPES.values.first(),
+        eventId = SentenceGenerator.EVENT_WITH_NSI.id,
+        active = false,
+        externalReference = "urn:hmpps:interventions-referral:cb293dcb-c201-4743-aa9d-acb14c8a1ddd"
+    )
+
     fun generate(
         type: NsiType,
         person: Person = PersonGenerator.DEFAULT,
@@ -59,6 +66,8 @@ object NsiGenerator {
         rarCount: Long? = null,
         providerId: Long = ProviderGenerator.INTENDED_PROVIDER.id,
         notes: String? = null,
+        active: Boolean = true,
+        softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = Nsi(
         person,
@@ -72,6 +81,8 @@ object NsiGenerator {
         requirementId = requirementId,
         rarCount = rarCount,
         notes = notes,
+        active = active,
+        softDeleted = softDeleted,
         id = id
     )
 
