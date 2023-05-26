@@ -159,7 +159,7 @@ jobs:
           echo '[🎭 Playwright HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.report-dir }})' >> $GITHUB_STEP_SUMMARY
           echo 'report-url=https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.report-dir }}' >> $GITHUB_OUTPUT
       - name: Send message to Slack
-        uses: slackapi/slack-github-action@v1.23.0
+        uses: slackapi/slack-github-action@e28cf165c92ffef168d23c5c9000cffc8a25e117 # v1.24.0
         if: ${{ failure() && github.event_name == 'schedule' }}
         with:
           channel-id: probation-integration-notifications
