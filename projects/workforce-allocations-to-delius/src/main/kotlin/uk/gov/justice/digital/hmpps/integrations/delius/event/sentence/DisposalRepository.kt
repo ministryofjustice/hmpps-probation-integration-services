@@ -13,12 +13,14 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
         ) from Disposal d
         join fetch d.event e
         join fetch d.type
-        join fetch d.entryLengthUnit.dataset
+        join fetch d.entryLengthUnit elu
+        join fetch elu.dataset
         join fetch MainOffence mo on e.id = mo.event.id
         join fetch mo.offence
         join OrderManager om on e.id = om.eventId
         join fetch Staff s on om.staff.id = s.id
-        left join fetch s.grade.dataset
+        left join fetch s.grade sg
+        left join fetch sg.dataset
         where e.person.id = :personId
         and e.number <> :eventNumber
         and e.softDeleted = false and d.softDeleted = false

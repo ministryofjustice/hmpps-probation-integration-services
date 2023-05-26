@@ -15,7 +15,8 @@ interface DocumentRepository : JpaRepository<Document, Long> {
     @Query(
         """
         select crd from CourtReportDocument crd
-        join fetch crd.courtReport.type
+        join fetch crd.courtReport cr
+        join fetch cr.type
         where crd.personId = :personId 
         and crd.alfrescoId is not null
         and crd.softDeleted = false

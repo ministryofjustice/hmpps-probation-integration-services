@@ -52,8 +52,10 @@ interface CaseViewPersonRepository : JpaRepository<CaseViewPerson, Long> {
     @Query(
         """
         select ma from CaseViewPersonAddress ma
-        join fetch ma.status.dataset
-        left join fetch ma.type.dataset
+        join fetch ma.status s
+        join fetch s.dataset
+        left join fetch ma.type t
+        left join fetch t.dataset
         where ma.personId = :personId 
         and ma.status.code = 'M'
         and ma.endDate is null
