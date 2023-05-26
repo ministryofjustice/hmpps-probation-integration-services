@@ -7,6 +7,7 @@ spring:
     hibernate.ddl-auto: validate
     properties:
       hibernate.query.mutation_strategy: org.hibernate.query.sqm.mutation.internal.inline.InlineMutationStrategy
+      hibernate.timezone.default_storage: NORMALIZE
 
 delius.db.username: PrisonCustodyStatusService # See deploy/database/access.yml
 
