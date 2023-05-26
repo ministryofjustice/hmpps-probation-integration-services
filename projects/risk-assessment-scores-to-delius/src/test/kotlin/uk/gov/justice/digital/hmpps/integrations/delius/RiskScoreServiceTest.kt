@@ -13,7 +13,6 @@ import org.mockito.Mockito.any
 import org.mockito.Mockito.mockConstructionWithAnswer
 import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.anyVararg
 import org.mockito.kotlin.check
 import org.mockito.kotlin.whenever
 import org.springframework.jdbc.UncategorizedSQLException
@@ -107,7 +106,7 @@ internal class RiskScoreServiceTest {
     private fun givenTheDatabaseProcedureSucceeds(): MockedConstruction<SimpleJdbcCall> {
         whenever(simpleJdbcCall.withProcedureName("procUpdateCAS")).thenReturn(simpleJdbcCall)
         whenever(simpleJdbcCall.withoutProcedureColumnMetaDataAccess()).thenReturn(simpleJdbcCall)
-        whenever(simpleJdbcCall.declareParameters(anyVararg())).thenReturn(simpleJdbcCall)
+        whenever(simpleJdbcCall.declareParameters(*Array(9) { any() })).thenReturn(simpleJdbcCall)
         return mockConstructionWithAnswer(SimpleJdbcCall::class.java, { simpleJdbcCall })
     }
 
