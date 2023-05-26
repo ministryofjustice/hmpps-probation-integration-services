@@ -175,7 +175,7 @@ class AppointmentService(
                 deliusId = uao.deliusId,
                 referralReference = uao.referralReference,
                 outcome = uao.outcome,
-                reason = AppointmentNotFoundReason.from(contactRepository.getNotFoundReason(uao.referral.urn, uao.urn, uao.deliusId ?: -1))
+                reason = AppointmentNotFoundReason.from(contactRepository.getNotFoundReason(uao.crn, uao.referral.urn, uao.urn, uao.deliusId ?: -1))
             )
 
         val outcome = outcomeRepository.getByCode(attendanceOutcome(uao.outcome).value)

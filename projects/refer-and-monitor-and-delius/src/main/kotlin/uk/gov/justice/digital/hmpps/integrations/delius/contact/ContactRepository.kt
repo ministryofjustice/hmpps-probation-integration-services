@@ -108,19 +108,21 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             select 
                 (select contact.soft_deleted 
                     from contact 
-                    join offender on offender.offender_id = contact.offender_id 
-                    where contact.external_reference = :contactExternalReference or contact_id = :contactId
+                    join offender contact_offender on contact_offender.offender_id = contact.offender_id 
+                    where (contact_offender.crn = :crn and contact.external_reference = :contactExternalReference) 
+                    or contact_id = :contactId
                 ) as contact_soft_deleted,
                 nsi.soft_deleted as nsi_soft_deleted,
                 nsi.active_flag as nsi_active,
                 last_updated_by.distinguished_name as nsi_last_updated_by
             from nsi
+            join offender nsi_offender on nsi_offender.offender_id = nsi.offender_id 
             left join user_ last_updated_by on last_updated_by.user_id = nsi.last_updated_user_id
-            where nsi.external_reference = :nsiExternalReference
+            where nsi_offender.crn = :crn and nsi.external_reference = :nsiExternalReference
         """,
         nativeQuery = true
     )
-    fun getNotFoundReason(nsiExternalReference: String, contactExternalReference: String, contactId: Long = -1): Tuple?
+    fun getNotFoundReason(crn: String, nsiExternalReference: String, contactExternalReference: String, contactId: Long): Tuple?
 }
 
 fun ContactRepository.appointmentClashes(
