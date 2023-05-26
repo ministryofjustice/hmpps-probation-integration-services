@@ -124,15 +124,13 @@ class Custody(
     @JoinColumn(name = "custodial_status_id")
     val status: ReferenceData,
 
-    @JoinColumn
-    @OneToOne(mappedBy = "custody")
-    @Where(clause = "key_date_type_id = (select standard_reference_list_id from r_standard_reference_list where code_value = 'SED')")
-    val sentenceExpiryDate: KeyDate? = null,
+    @OneToMany(mappedBy = "custody")
+    @Where(clause = "key_date_type_id = (select sed.standard_reference_list_id from r_standard_reference_list sed where sed.code_value = 'SED')")
+    val sentenceExpiryDate: Set<KeyDate> = emptySet(),
 
-    @JoinColumn
-    @OneToOne(mappedBy = "custody")
-    @Where(clause = "key_date_type_id = (select standard_reference_list_id from r_standard_reference_list where code_value = 'LED')")
-    val licenceExpiryDate: KeyDate? = null,
+    @OneToMany(mappedBy = "custody")
+    @Where(clause = "key_date_type_id = (select led.standard_reference_list_id from r_standard_reference_list led where led.code_value = 'LED')")
+    val licenceExpiryDate: Set<KeyDate> = emptySet(),
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
@@ -147,7 +145,7 @@ class KeyDate(
     @Column(name = "key_date_id")
     val id: Long,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "custody_id")
     val custody: Custody,
 

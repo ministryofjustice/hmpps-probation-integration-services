@@ -31,7 +31,7 @@ class ProbationAreaEntity(
     @Column(name = "probation_area_id")
     val id: Long,
 
-    @OneToMany(mappedBy = "probationAreaId")
+    @OneToMany(mappedBy = "probationArea")
     val boroughs: List<Borough> = listOf()
 )
 
@@ -71,8 +71,9 @@ class Borough(
     @Column(name = "borough_id")
     val id: Long,
 
-    @Column(name = "probation_area_id")
-    val probationAreaId: Long,
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val probationArea: ProbationAreaEntity,
 
     @Column(name = "code")
     val code: String,
@@ -87,7 +88,7 @@ interface ProbationAreaRepository : JpaRepository<ProbationAreaEntity, Long> {
         """
         select new uk.gov.justice.digital.hmpps.entity.ProbationAreaDistrict(pa.code, pa.description, d.code, d.description)
         from ProbationAreaEntity pa 
-        join Borough b on b.probationAreaId = pa.id
+        join Borough b on b.probationArea.id = pa.id
         join District d on d.borough.id = b.id
         where pa.description not like 'ZZ%'
         and d.code <> '-1'

@@ -15,7 +15,7 @@ object ProbationAreaGenerator {
     val DEFAULT_BOROUGH = Borough(
         true,
         IdGenerator.getAndIncrement(),
-        DEFAULT_PA.id,
+        DEFAULT_PA,
         "N02"
     )
     val DEFAULT_LDU = District(

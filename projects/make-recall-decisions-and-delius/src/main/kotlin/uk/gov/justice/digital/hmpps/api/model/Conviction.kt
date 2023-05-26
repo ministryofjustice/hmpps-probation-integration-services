@@ -20,8 +20,8 @@ fun Event.toConviction() = Conviction(
             lengthUnits = it.entryLengthUnit?.description,
             isCustodial = it.custody != null,
             custodialStatusCode = it.custody?.status?.code,
-            sentenceExpiryDate = it.custody?.sentenceExpiryDate?.date,
-            licenceExpiryDate = it.custody?.licenceExpiryDate?.date
+            sentenceExpiryDate = it.custody?.sentenceExpiryDate?.single()?.date,
+            licenceExpiryDate = it.custody?.licenceExpiryDate?.single()?.date
         )
     }
 )

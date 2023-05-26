@@ -23,7 +23,7 @@ dependencies {
 
     dev(project(":libs:dev-tools"))
     dev("com.h2database:h2")
-    dev(libs.testcontainers.oracle)
+    dev("org.testcontainers:oracle-xe")
 
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 

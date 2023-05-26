@@ -17,21 +17,22 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 class SecurityConfig {
 
     fun filterChain(http: HttpSecurity): HttpSecurity {
-        http.authorizeHttpRequests {
-            it.requestMatchers(
-                AntPathRequestMatcher("/actuator/**"),
-                AntPathRequestMatcher("/health/**"),
-                AntPathRequestMatcher("/info/**"),
-                AntPathRequestMatcher("/swagger-ui/**"),
-                AntPathRequestMatcher("/v3/api-docs.yaml"),
-                AntPathRequestMatcher("/v3/api-docs/**")
-            ).permitAll().anyRequest().authenticated()
-        }
-            .csrf().disable()
-            .cors().disable()
-            .httpBasic().disable()
-            .formLogin().disable()
-            .logout().disable()
+        http
+            .authorizeHttpRequests {
+                it.requestMatchers(
+                    AntPathRequestMatcher("/actuator/**"),
+                    AntPathRequestMatcher("/health/**"),
+                    AntPathRequestMatcher("/info/**"),
+                    AntPathRequestMatcher("/swagger-ui/**"),
+                    AntPathRequestMatcher("/v3/api-docs.yaml"),
+                    AntPathRequestMatcher("/v3/api-docs/**")
+                ).permitAll().anyRequest().authenticated()
+            }
+            .csrf { it.disable() }
+            .cors { it.disable() }
+            .httpBasic { it.disable() }
+            .formLogin { it.disable() }
+            .logout { it.disable() }
         return http
     }
 

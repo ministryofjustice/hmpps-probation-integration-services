@@ -68,11 +68,13 @@ object EventGenerator {
         offence = Offence(IdGenerator.getAndIncrement(), "BB", "Additional offence description")
     )
 
-    fun Custody.keyDate(type: String, date: LocalDate) = KeyDate(
-        id = IdGenerator.getAndIncrement(),
-        custody = this,
-        type = ReferenceData(IdGenerator.getAndIncrement(), type, "Description of $type"),
-        date = date
+    fun Custody.keyDate(type: String, date: LocalDate) = setOf(
+        KeyDate(
+            id = IdGenerator.getAndIncrement(),
+            custody = this,
+            type = ReferenceData(IdGenerator.getAndIncrement(), type, "Description of $type"),
+            date = date
+        )
     )
 
     fun Custody.release(): Release {

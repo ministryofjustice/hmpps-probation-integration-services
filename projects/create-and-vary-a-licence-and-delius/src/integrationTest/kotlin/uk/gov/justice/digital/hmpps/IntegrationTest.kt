@@ -34,10 +34,10 @@ internal class IntegrationTest {
     fun `returns responsible officer details`() {
         val crn = PersonGenerator.DEFAULT_PERSON.crn
 
-        val res = mockMvc.perform(
-            get("/probation-case/$crn/responsible-community-manager")
-                .withOAuth2Token(wireMockServer)
-        ).andReturn().response.contentAsString
+        val res = mockMvc
+            .perform(get("/probation-case/$crn/responsible-community-manager").withOAuth2Token(wireMockServer))
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsString
 
         val manager = objectMapper.readValue<Manager>(res)
         assertThat(
