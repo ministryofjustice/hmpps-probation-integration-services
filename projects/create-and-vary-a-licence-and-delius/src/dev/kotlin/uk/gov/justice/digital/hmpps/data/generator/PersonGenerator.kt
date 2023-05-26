@@ -28,10 +28,10 @@ object PersonGenerator {
         provider: Provider = ProviderGenerator.DEFAULT_PROVIDER,
         team: Team = ProviderGenerator.DEFAULT_TEAM,
         staff: Staff = StaffGenerator.DEFAULT,
-        active: Boolean = true,
         softDeleted: Boolean = false,
+        active: Boolean = true,
         id: Long = IdGenerator.getAndIncrement()
-    ) = PersonManager(provider, team, staff, active, softDeleted, id)
+    ) = PersonManager(provider, team, staff, softDeleted, active, id)
 
     fun generateResponsibleOfficer(
         person: Person = DEFAULT_PERSON,
