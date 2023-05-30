@@ -148,7 +148,7 @@ class RecallService(
         event: Event,
         recallDate: ZonedDateTime,
         recallReason: RecallReason
-    ) = if (custody.institution.id != toInstitution.id || custody.status.canRecall()) {
+    ) = if (custody.institution?.id != toInstitution.id || custody.status.canRecall()) {
         val orderManager = orderManagerRepository.getByEventId(event.id)
         custodyService.updateLocation(custody, toInstitution, recallDate, orderManager, recallReason)
         true
