@@ -11,7 +11,7 @@ import java.net.URI
     url = "https://dummy-url/to/be/overridden",
     configuration = [ArnFeignConfig::class]
 )
-fun interface ArnClient {
+interface ArnClient {
     @GetMapping
     fun getUPWAssessment(baseUrl: URI): Response
 }

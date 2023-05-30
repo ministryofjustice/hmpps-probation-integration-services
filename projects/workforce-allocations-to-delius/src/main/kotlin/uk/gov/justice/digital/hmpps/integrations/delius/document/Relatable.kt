@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.document
 
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.DocEvent
 
-fun interface Relatable {
+interface Relatable {
     fun findRelatedTo(): RelatedTo
 }
 

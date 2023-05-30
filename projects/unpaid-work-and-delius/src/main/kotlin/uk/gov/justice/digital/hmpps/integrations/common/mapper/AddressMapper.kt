@@ -5,6 +5,6 @@ import uk.gov.justice.digital.hmpps.integrations.common.entity.AddressEntity
 import uk.gov.justice.digital.hmpps.integrations.common.model.Address
 
 @Mapper(componentModel = "spring")
-fun interface AddressMapper {
+interface AddressMapper {
     fun convertToModel(addressEntity: AddressEntity): Address
 }
