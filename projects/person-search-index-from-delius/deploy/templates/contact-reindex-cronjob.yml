@@ -4,12 +4,9 @@ metadata:
   name: contact-reindex
 spec:
   schedule: {{ .Values.reindexing.contact_schedule }}
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 1
+  concurrencyPolicy: Replace
   jobTemplate:
     spec:
-      backoffLimit: 0
       template:
         spec:
           containers:
