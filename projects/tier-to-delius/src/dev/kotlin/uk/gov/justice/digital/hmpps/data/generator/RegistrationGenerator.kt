@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import IdGenerator
 import uk.gov.justice.digital.hmpps.controller.entity.RegisterType
 import uk.gov.justice.digital.hmpps.controller.entity.RegistrationEntity
 import java.time.LocalDate

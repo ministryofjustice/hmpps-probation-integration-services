@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import java.net.URI
 
 @FeignClient(name = "prison-case-notes", url = "https://dummy-url/to/be/overridden")
-fun interface PrisonCaseNotesClient {
+interface PrisonCaseNotesClient {
     @GetMapping
     fun getCaseNote(baseUrl: URI): PrisonCaseNote?
 }

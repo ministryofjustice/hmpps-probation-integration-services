@@ -18,13 +18,13 @@ import uk.gov.justice.digital.hmpps.data.generator.CaseGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.arn.ArnClient
+import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonWithManager
 import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonWithManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.common.entity.staff.Staff
 import uk.gov.justice.digital.hmpps.integrations.common.entity.team.Team
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.document.DocumentService
 import uk.gov.justice.digital.hmpps.integrations.upwassessment.UPWAssessmentService
 import uk.gov.justice.digital.hmpps.prepEvent
@@ -97,6 +97,9 @@ internal class UPWAssessmentServiceTest {
     @Test
     fun `when invalid pdf is returned`() {
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(CaseGenerator.DEFAULT.crn)).thenReturn(person)
+        whenever(person.crn).thenReturn(CaseGenerator.DEFAULT.crn)
+        whenever(person.forename).thenReturn(CaseGenerator.DEFAULT.forename)
+        whenever(person.surname).thenReturn(CaseGenerator.DEFAULT.surname)
         whenever(eventRepository.existsById(EventGenerator.DEFAULT.id)).thenReturn(true)
         val notification = prepEvent("upw-assessment-complete", 1234)
 

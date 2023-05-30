@@ -7,7 +7,7 @@ import java.net.URI
 import java.time.LocalDate
 
 @FeignClient(name = "manage-pom-cases", url = "https://dummy-url/to/be/overridden")
-fun interface ManagePomCasesClient {
+interface ManagePomCasesClient {
     @GetMapping
     fun getDetails(url: URI): Handover?
 }

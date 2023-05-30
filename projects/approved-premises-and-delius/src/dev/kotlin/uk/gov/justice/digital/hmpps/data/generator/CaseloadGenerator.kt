@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.Caseload
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadStaff

@@ -10,7 +10,7 @@ import java.net.URI
     url = "https://dummy-url/to/be/overridden",
     configuration = [PsrFeignConfig::class]
 )
-fun interface PsrClient {
+interface PsrClient {
     @GetMapping
     fun getPsrReport(baseUrl: URI): ByteArray
 }
