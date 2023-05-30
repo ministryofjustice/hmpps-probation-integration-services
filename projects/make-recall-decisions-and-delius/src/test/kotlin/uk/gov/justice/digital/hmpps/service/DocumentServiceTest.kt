@@ -61,12 +61,22 @@ internal class DocumentServiceTest {
     }
 
     @Test
-    fun `alfresco error is handled`() {
+    fun `throws not found on alfresco 404`() {
         whenever(alfrescoClient.getDocument("uuid")).thenReturn(ResponseEntity.notFound().build())
+        whenever(documentRepository.findNameByPersonCrnAndAlfrescoId("X000001", "uuid")).thenReturn("My filename.pdf")
+
+        val exception = assertThrows<NotFoundException> { documentService.downloadDocument("X000001", "uuid") }
+
+        assertThat(exception.message, equalTo("Document content with id of uuid not found for CRN X000001"))
+    }
+
+    @Test
+    fun `alfresco error is handled`() {
+        whenever(alfrescoClient.getDocument("uuid")).thenReturn(ResponseEntity.internalServerError().build())
         whenever(documentRepository.findNameByPersonCrnAndAlfrescoId("X000001", "uuid")).thenReturn("My filename.pdf")
 
         val exception = assertThrows<RuntimeException> { documentService.downloadDocument("X000001", "uuid") }
 
-        assertThat(exception.message, equalTo("Failed to download document. Alfresco responded with 404 NOT_FOUND."))
+        assertThat(exception.message, equalTo("Failed to download document. Alfresco responded with 500 INTERNAL_SERVER_ERROR."))
     }
 }

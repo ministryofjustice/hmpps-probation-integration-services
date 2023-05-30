@@ -23,15 +23,18 @@ class DocumentService(
         val filename = documentRepository.findNameByPersonCrnAndAlfrescoId(crn, id)
             ?: throw NotFoundException("Document with id of $id not found for CRN $crn")
 
-        val alfrescoResponse = alfrescoClient.getDocument(id)
-        if (!alfrescoResponse.statusCode.is2xxSuccessful) {
-            throw RuntimeException("Failed to download document. Alfresco responded with ${alfrescoResponse.statusCode}.")
-        }
+        val response = alfrescoClient.getDocument(id)
 
-        return ResponseEntity.ok()
-            .headers { it.putAll(alfrescoResponse.sanitisedHeaders()) }
-            .header(CONTENT_DISPOSITION, ContentDisposition.attachment().filename(filename, UTF_8).build().toString())
-            .body(alfrescoResponse.body)
+        return when {
+            response.statusCode.is2xxSuccessful -> ResponseEntity.ok()
+                .headers { it.putAll(response.sanitisedHeaders()) }
+                .header(CONTENT_DISPOSITION, ContentDisposition.attachment().filename(filename, UTF_8).build().toString())
+                .body(response.body)
+
+            response.statusCode.is4xxClientError -> throw NotFoundException("Document content with id of $id not found for CRN $crn")
+
+            else -> throw RuntimeException("Failed to download document. Alfresco responded with ${response.statusCode}.")
+        }
     }
 
     private fun <T> ResponseEntity<T>.sanitisedHeaders() = headers.filterKeys {
