@@ -44,7 +44,7 @@ class Custody(
         JoinColumn(name = "institution_id", referencedColumnName = "institution_id"),
         JoinColumn(name = "establishment", referencedColumnName = "establishment")
     )
-    var institution: Institution,
+    var institution: Institution?,
 
     @OneToOne
     @JoinColumn(name = "disposal_id", updatable = false)

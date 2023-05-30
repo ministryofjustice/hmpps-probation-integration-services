@@ -136,7 +136,7 @@ class ReleaseService(
     }
 
     private fun locationChanged(custody: Custody, institution: Institution): Boolean =
-        institution.code == InstitutionCode.IN_COMMUNITY.code || custody.institution.id != institution.id
+        institution.code == InstitutionCode.IN_COMMUNITY.code || custody.institution?.id != institution.id
 
     private fun validateRelease(
         custody: Custody,
@@ -151,8 +151,8 @@ class ReleaseService(
             }
 
             // This behaviour may change. See https://dsdmoj.atlassian.net/browse/PI-264
-            if (custody.institution.code != institution.code) {
-                throw IgnorableMessageException("UnexpectedInstitution", mapOf("current" to custody.institution.code))
+            if (custody.institution?.code != institution.code) {
+                throw IgnorableMessageException("UnexpectedInstitution", mapOf("current" to (custody.institution?.code ?: "null")))
             }
         }
 
