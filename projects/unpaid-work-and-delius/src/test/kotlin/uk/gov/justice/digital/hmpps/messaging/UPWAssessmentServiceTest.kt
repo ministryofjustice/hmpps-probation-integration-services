@@ -97,6 +97,9 @@ internal class UPWAssessmentServiceTest {
     @Test
     fun `when invalid pdf is returned`() {
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(CaseGenerator.DEFAULT.crn)).thenReturn(person)
+        whenever(person.crn).thenReturn(CaseGenerator.DEFAULT.crn)
+        whenever(person.forename).thenReturn(CaseGenerator.DEFAULT.forename)
+        whenever(person.surname).thenReturn(CaseGenerator.DEFAULT.surname)
         whenever(eventRepository.existsById(EventGenerator.DEFAULT.id)).thenReturn(true)
         val notification = prepEvent("upw-assessment-complete", 1234)
 
