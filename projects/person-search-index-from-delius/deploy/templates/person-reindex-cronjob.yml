@@ -4,12 +4,9 @@ metadata:
   name: person-reindex
 spec:
   schedule: {{ .Values.reindexing.person_schedule }}
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 1
+  concurrencyPolicy: Replace
   jobTemplate:
     spec:
-      backoffLimit: 0
       template:
         spec:
           containers:
