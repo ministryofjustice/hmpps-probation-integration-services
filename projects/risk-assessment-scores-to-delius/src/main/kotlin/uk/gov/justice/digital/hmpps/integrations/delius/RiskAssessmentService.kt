@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Contact
@@ -17,7 +16,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessment
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.OGRS_ASSESSMENT_CT
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceDataRepository
@@ -109,33 +107,19 @@ class RiskAssessmentService(
                 date = assessmentDate,
                 event = event,
                 person = person,
-                notes = generateNotes(person, assessmentDate, ogrsScore, personManager, event),
+                notes = generateNotes(person, ogrsScore, event),
                 staffId = personManager.staff.id,
                 teamId = personManager.team.id
             )
         )
     }
 
-    private fun generateNotes(
-        person: Person,
-        assessmentDate: ZonedDateTime,
-        ogrsScore: OgrsScore,
-        personManager: PersonManager,
-        event: Event
-    ): String {
+    private fun generateNotes(person: Person, ogrsScore: OgrsScore, event: Event): String {
         return """
             CRN: ${person.crn}
             PNC Number: ${person.pncNumber}
             Name: ${person.forename} ${person.surname}
-             Order: ${event.disposal?.disposalType?.description ?: ""}
-            Offender manager: ${personManager.staff.forename} ${personManager.staff.surname}
-            Gender: ${person.gender?.description}
-            Date of Birth: ${DeliusDateFormatter.format(person.dateOfBirth)}
-            Date of Current Conviction: ${event.disposal?.disposalDate?.let { DeliusDateFormatter.format(it) } ?: ""}
-            Date of Assessment: ${DeliusDateFormatter.format(assessmentDate)}
-            Date of First Sanction: ${event.mainOffence?.date}
-            Previous Sanctions: ${event.mainOffence?.offenceCount}
-            Offence Category: ${event.mainOffence?.offence?.mainCategoryDescription}
+            Order: ${event.disposal?.disposalType?.description ?: ""}
             Reconviction calculation is ${ogrsScore.ogrs3Yr1}% within one year and ${ogrsScore.ogrs3Yr2}% within 2 years.
         """.trimIndent()
     }
