@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import IdGenerator
 import uk.gov.justice.digital.hmpps.entity.AdditionalOffence
 import uk.gov.justice.digital.hmpps.entity.ConvictionEventEntity
 import uk.gov.justice.digital.hmpps.entity.ConvictionEventPerson
@@ -9,6 +8,7 @@ import uk.gov.justice.digital.hmpps.entity.DisposalType
 import uk.gov.justice.digital.hmpps.entity.MainOffence
 import uk.gov.justice.digital.hmpps.entity.Offence
 import java.time.LocalDate
+
 object ConvictionEventGenerator {
     val PERSON = ConvictionEventPerson(
         IdGenerator.getAndIncrement(),
