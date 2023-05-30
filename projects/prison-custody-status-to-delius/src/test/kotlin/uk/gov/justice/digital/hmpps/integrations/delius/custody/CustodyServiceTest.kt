@@ -131,7 +131,7 @@ internal class CustodyServiceTest {
             contact.firstValue.notes,
             equalTo(
                 "Custodial Status: ${custody.status.description}\n" +
-                    "Custodial Establishment: ${custody.institution?.description ?: "Unknown"}\n" +
+                    "Custodial Establishment: ${custody.institution?.description}\n" +
                     "Location Change Date: ${DeliusDateTimeFormatter.format(now)}\n" +
                     "-------------------------------" +
                     EOTL_LOCATION_CHANGE_CONTACT_NOTES
