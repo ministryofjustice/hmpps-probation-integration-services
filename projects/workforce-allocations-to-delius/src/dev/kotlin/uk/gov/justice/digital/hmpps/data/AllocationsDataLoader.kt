@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegisterTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RequirementAdditionalMainCategoryGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementMainCategoryGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
@@ -25,6 +26,7 @@ import uk.gov.justice.digital.hmpps.data.repository.DatasetRepository
 import uk.gov.justice.digital.hmpps.data.repository.OffenceRepository
 import uk.gov.justice.digital.hmpps.data.repository.ProviderRepository
 import uk.gov.justice.digital.hmpps.data.repository.RegisterTypeRepository
+import uk.gov.justice.digital.hmpps.data.repository.RequirementAdditionalMainCategoryRepository
 import uk.gov.justice.digital.hmpps.data.repository.RequirementMainCategoryRepository
 import uk.gov.justice.digital.hmpps.data.repository.StaffUserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceDataRepository
@@ -42,6 +44,7 @@ class AllocationsDataLoader(
     private val referenceDataRepository: ReferenceDataRepository,
     private val offenceRepository: OffenceRepository,
     private val requirementMainCategoryRepository: RequirementMainCategoryRepository,
+    private val requirementAdditionalMainCategoryRepository: RequirementAdditionalMainCategoryRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val courtReportTypeRepository: CourtReportTypeRepository,
     private val providerRepository: ProviderRepository,
@@ -110,6 +113,7 @@ class AllocationsDataLoader(
         )
 
         requirementMainCategoryRepository.save(RequirementMainCategoryGenerator.DEFAULT)
+        requirementAdditionalMainCategoryRepository.save(RequirementAdditionalMainCategoryGenerator.DEFAULT)
         registerTypeRepository.save(RegisterTypeGenerator.DEFAULT)
 
         contactTypeRepository.saveAll(

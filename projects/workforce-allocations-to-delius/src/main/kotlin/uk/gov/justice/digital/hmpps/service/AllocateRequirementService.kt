@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepos
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.findByCodeOrThrow
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementRepository
@@ -100,6 +101,18 @@ class AllocateRequirementService(
                 )
             )
 
-            requirementRepository.updateIaps(allocationDetail.requirementId)
+            if (requirement.isAccreditedProgramme()) {
+                requirementRepository.updateIaps(allocationDetail.requirementId)
+            }
         }
+}
+
+private const val ACCREDITED_PROGRAMME = "7"
+private const val WY_ACCRED_PROGRAMME = "RM38"
+private const val NOT_SPECIFIED = "RS66"
+private fun Requirement.isAccreditedProgramme() = when {
+    mainCategory?.code == ACCREDITED_PROGRAMME && subCategory?.code != NOT_SPECIFIED -> true
+    mainCategory?.code == WY_ACCRED_PROGRAMME -> true
+    additionalMainCategory?.code in arrayOf(ACCREDITED_PROGRAMME, WY_ACCRED_PROGRAMME) -> true
+    else -> false
 }
