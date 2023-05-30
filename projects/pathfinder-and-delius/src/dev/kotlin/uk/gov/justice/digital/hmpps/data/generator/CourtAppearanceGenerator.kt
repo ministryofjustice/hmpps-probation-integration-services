@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import IdGenerator
 import uk.gov.justice.digital.hmpps.entity.Court
 import uk.gov.justice.digital.hmpps.entity.CourtAppearanceEntity
 import uk.gov.justice.digital.hmpps.entity.CourtAppearanceEventEntity

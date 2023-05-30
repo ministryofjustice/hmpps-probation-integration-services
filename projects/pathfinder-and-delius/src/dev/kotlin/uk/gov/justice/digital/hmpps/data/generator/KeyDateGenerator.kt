@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import IdGenerator
 import uk.gov.justice.digital.hmpps.entity.Custody
 import uk.gov.justice.digital.hmpps.entity.KeyDate
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
