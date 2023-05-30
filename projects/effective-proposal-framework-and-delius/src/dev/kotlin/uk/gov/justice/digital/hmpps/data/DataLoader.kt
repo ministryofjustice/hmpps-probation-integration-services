@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data
 
-import UserGenerator
 import jakarta.annotation.PostConstruct
 import jakarta.persistence.EntityManager
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -12,6 +11,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.user.UserRepository
 
 @Component

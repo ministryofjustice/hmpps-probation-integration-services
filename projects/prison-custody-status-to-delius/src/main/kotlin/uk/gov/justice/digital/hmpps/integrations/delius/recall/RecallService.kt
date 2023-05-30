@@ -261,9 +261,7 @@ class RecallService(
             throw IgnorableMessageException("UnexpectedCustodialStatus")
         }
 
-        if (custody.status.isTerminated()) {
-            throw IllegalArgumentException("TerminatedCustodialStatus")
-        }
+        require(!custody.status.isTerminated()) { "TerminatedCustodialStatus" }
 
         if (!isTransfer && reason.code != RecallReasonCode.END_OF_TEMPORARY_LICENCE.code) {
             if (latestRelease?.recall != null) {

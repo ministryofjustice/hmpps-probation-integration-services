@@ -46,7 +46,7 @@ class ManagementOversightRecall(
         staff: Staff,
         occurredAt: ZonedDateTime
     ): Contact {
-        if (manager == null) throw IllegalStateException("No Active Person Manager")
+        checkNotNull(manager) { "No Active Person Manager" }
         return Contact(
             0,
             id,

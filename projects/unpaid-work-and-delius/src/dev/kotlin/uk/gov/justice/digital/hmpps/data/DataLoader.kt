@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data
 
-import UserGenerator
 import jakarta.annotation.PostConstruct
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.event.ApplicationReadyEvent
@@ -33,6 +32,7 @@ import uk.gov.justice.digital.hmpps.data.generator.RegisterTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.data.repository.AddressRepository
 import uk.gov.justice.digital.hmpps.data.repository.AliasRepository
 import uk.gov.justice.digital.hmpps.data.repository.CaseAddressRepository

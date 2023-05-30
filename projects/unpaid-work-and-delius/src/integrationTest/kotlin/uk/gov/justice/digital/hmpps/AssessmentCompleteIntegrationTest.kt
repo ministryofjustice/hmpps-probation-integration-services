@@ -14,8 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
 import uk.gov.justice.digital.hmpps.data.generator.CaseGenerator
+import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService

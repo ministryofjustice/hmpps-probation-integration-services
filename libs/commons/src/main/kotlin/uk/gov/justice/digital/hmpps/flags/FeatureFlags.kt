@@ -9,7 +9,7 @@ class FeatureFlags(
     private val client: FliptApiClient?
 ) {
     fun enabled(key: String) = try {
-        client == null || client.flags().get(Get.Request.builder().key(key).build()).enabled
+        client == null || client.flags()[Get.Request.builder().key(key).build()].enabled
     } catch (e: Exception) {
         throw FeatureFlagException(key, e)
     }

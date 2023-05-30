@@ -57,13 +57,13 @@ class CustodyDateUpdateService(
             val existing = custody.keyDates.find(cdt.code)
             if (existing != null) {
                 existing.date = date
-                return@mapNotNull existing
+                existing
             } else {
                 val kdt = referenceDataRepository.findKeyDateType(cdt.code)
-                return@mapNotNull KeyDate(null, custody, kdt, date)
+                KeyDate(null, custody, kdt, date)
             }
         } else {
-            return@mapNotNull custody.keyDates.find(cdt.code)?.let { it.softDeleted = true; it }
+            custody.keyDates.find(cdt.code)?.let { it.softDeleted = true; it }
         }
     }
 

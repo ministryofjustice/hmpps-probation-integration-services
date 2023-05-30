@@ -58,7 +58,7 @@ class DeliusService(
         }
     }
 
-    private fun DeliusCaseNote.newEntity(): CaseNote? {
+    private fun DeliusCaseNote.newEntity(): CaseNote {
         val caseNoteType = nomisTypeRepository.findById(body.typeLookup())
             .map { it.type }
             .orElseGet {

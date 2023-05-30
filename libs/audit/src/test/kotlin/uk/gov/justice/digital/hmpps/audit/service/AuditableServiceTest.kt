@@ -54,7 +54,7 @@ class AuditableServiceTest {
             left + right
         }
 
-        fun fail(): Nothing? = audit(
+        fun fail(): Nothing = audit(
             BusinessInteractionCode.TEST_BI_CODE,
             AuditedInteraction.Parameters(mutableMapOf("field" to "value"))
         ) {

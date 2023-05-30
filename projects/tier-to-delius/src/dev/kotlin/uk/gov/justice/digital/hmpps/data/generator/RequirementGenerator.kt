@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import IdGenerator
 import uk.gov.justice.digital.hmpps.controller.entity.Disposal
 import uk.gov.justice.digital.hmpps.controller.entity.RequirementEntity
 import uk.gov.justice.digital.hmpps.controller.entity.RequirementMainCategory

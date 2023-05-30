@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
 import uk.gov.justice.digital.hmpps.data.repository.DisposalRepository
 import uk.gov.justice.digital.hmpps.data.repository.DisposalTypeRepository
+import uk.gov.justice.digital.hmpps.data.repository.ReferenceDataSetRepository
 import uk.gov.justice.digital.hmpps.data.repository.RegisterTypeRepository
 import uk.gov.justice.digital.hmpps.data.repository.RequirementMainCategoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
