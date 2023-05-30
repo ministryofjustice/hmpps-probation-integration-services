@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.entity.DisposalType
 import uk.gov.justice.digital.hmpps.entity.MainOffence
 import uk.gov.justice.digital.hmpps.entity.Offence
 import java.time.LocalDate
+
 object ConvictionEventGenerator {
     val PERSON = ConvictionEventPerson(
         IdGenerator.getAndIncrement(),
