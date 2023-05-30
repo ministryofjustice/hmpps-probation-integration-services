@@ -71,7 +71,7 @@ class CustodyService(
             CustodyHistory(
                 date = date,
                 type = referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.LOCATION_CHANGE.code),
-                detail = custody.institution.description,
+                detail = custody.institution!!.description,
                 person = custody.disposal.event.person,
                 custody = custody
             )
@@ -80,7 +80,7 @@ class CustodyService(
         if (orderManager != null) {
             val person = custody.disposal.event.person
             val notes = "Custodial Status: ${custody.status.description}\n" +
-                "Custodial Establishment: ${custody.institution.description}\n" +
+                "Custodial Establishment: ${custody.institution!!.description}\n" +
                 "Location Change Date: ${DeliusDateTimeFormatter.format(date)}\n" +
                 "-------------------------------" +
                 if (recallReason.isEotl()) EOTL_LOCATION_CHANGE_CONTACT_NOTES else ""
@@ -108,7 +108,7 @@ class CustodyService(
         // allocate a prison manager if institution has changed and institution is linked to a provider
         if ((
             (latestRelease != null && toInstitution.id != latestRelease.institutionId) ||
-                (latestRelease == null && toInstitution.id != custody.institution.id)
+                (latestRelease == null && toInstitution.id != custody.institution?.id)
             ) &&
             toInstitution.probationArea != null
         ) {
