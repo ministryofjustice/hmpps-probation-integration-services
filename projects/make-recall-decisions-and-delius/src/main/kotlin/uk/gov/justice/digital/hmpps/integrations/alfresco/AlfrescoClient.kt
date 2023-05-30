@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 
 @FeignClient(name = "alfresco", url = "\${integrations.alfresco.url}", configuration = [AlfrescoFeignConfig::class])
-fun interface AlfrescoClient {
+interface AlfrescoClient {
     @GetMapping(value = ["/fetch/{id}"])
     fun getDocument(@PathVariable id: String): ResponseEntity<Resource>
 }

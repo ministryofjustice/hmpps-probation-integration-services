@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewAdditionalOffence
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewMainOffence
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewOffence

@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.transfer.entity.LicenceConditionTransfer
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.TransferStatusCode

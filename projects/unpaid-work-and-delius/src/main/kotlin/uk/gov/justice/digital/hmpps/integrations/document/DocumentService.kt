@@ -10,12 +10,12 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.Contact
+import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.type.getByCode
 import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonWithManager
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import java.time.ZonedDateTime
 

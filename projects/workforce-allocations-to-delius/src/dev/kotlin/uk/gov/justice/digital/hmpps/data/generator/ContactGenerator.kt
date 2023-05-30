@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactType
 import java.time.ZonedDateTime

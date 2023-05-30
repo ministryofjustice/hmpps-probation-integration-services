@@ -10,7 +10,7 @@ import java.net.URI
     url = "https://dummy-url/to/be/overridden",
     configuration = [FeignOAuth2Config::class]
 )
-fun interface TierClient {
+interface TierClient {
     @GetMapping
     fun getTierCalculation(baseUrl: URI): TierCalculation
 }

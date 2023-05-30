@@ -25,6 +25,6 @@ data class UserPersonAccess(
     val exclusionMessage: String?,
     val restrictionMessage: String?
 ) {
-    fun isExcluded(): Boolean = exclusionMessage != null && exclusionMessage.isNotBlank()
-    fun isRestricted(): Boolean = restrictionMessage != null && restrictionMessage.isNotBlank()
+    fun isExcluded(): Boolean = !exclusionMessage.isNullOrBlank()
+    fun isRestricted(): Boolean = !restrictionMessage.isNullOrBlank()
 }

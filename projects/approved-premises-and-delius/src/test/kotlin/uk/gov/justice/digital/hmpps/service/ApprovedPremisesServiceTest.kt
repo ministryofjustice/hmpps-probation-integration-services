@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import IdGenerator
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -18,6 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.AssessedByGenerator
 import uk.gov.justice.digital.hmpps.data.generator.BookedByGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventDetailsGenerator
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
