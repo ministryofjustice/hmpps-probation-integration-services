@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data
 
-import UserGenerator
 import jakarta.annotation.PostConstruct
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.event.ApplicationReadyEvent
@@ -16,6 +15,7 @@ import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateCus
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateDisposal
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateEvent
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator.generateOrderManager
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.data.repository.DatasetRepository
 import uk.gov.justice.digital.hmpps.data.repository.DisposalRepository
 import uk.gov.justice.digital.hmpps.data.repository.EventRepository

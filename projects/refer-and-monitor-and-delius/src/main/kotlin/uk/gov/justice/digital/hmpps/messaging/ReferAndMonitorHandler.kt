@@ -19,7 +19,7 @@ class ReferAndMonitorHandler(
         eventHandlers.flatMap { it.handledEvents.entries }.associate { it.key to it.value }
 
     override fun handle(notification: Notification<HmppsDomainEvent>) {
-        if (notification.message.detailUrl == null) throw IllegalArgumentException("Detail Url Missing")
+        requireNotNull(notification.message.detailUrl) { "Detail Url Missing" }
         val event = DomainEventType.of(notification.eventType ?: notification.message.eventType)
         when (val res = eventHandlers[event]?.invoke(notification.message)) {
             is Success -> telemetryService.trackEvent(

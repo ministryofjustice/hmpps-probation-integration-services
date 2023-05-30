@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.event.registration.DeRegistration
 import uk.gov.justice.digital.hmpps.integrations.delius.event.registration.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.registration.Registration

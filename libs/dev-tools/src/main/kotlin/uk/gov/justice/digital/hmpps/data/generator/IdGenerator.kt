@@ -1,3 +1,5 @@
+package uk.gov.justice.digital.hmpps.data.generator
+
 import java.util.concurrent.atomic.AtomicLong
 
 object IdGenerator {

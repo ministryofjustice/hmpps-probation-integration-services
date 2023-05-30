@@ -22,9 +22,9 @@ class KeyDateService(
     fun mergeHandoverDates(personId: Long, date: LocalDate, startDate: LocalDate?): KeyDateMergeResult {
         val custodyList = custodyRepository.findAllByDisposalEventPersonId(personId)
         val custody = when (custodyList.size) {
-            0 -> throw IllegalStateException("No active custodial sentence")
+            0 -> error("No active custodial sentence")
             1 -> custodyList.first()
-            else -> throw IllegalStateException("Multiple active custodial sentences")
+            else -> error("Multiple active custodial sentences")
         }
 
         val existing = keyDateRepository.findHandoverDates(custody.id).associateBy { it.type.code }

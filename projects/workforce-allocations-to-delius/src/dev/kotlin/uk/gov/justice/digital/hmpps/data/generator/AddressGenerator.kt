@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewPerson
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewPersonAddress
@@ -29,7 +28,7 @@ object AddressGenerator {
         startDate: LocalDate = LocalDate.now(),
         id: Long = IdGenerator.getAndIncrement()
     ): CaseViewPersonAddress {
-        val address = CaseViewPersonAddress(
+        return CaseViewPersonAddress(
             id,
             person.id,
             type,
@@ -42,6 +41,5 @@ object AddressGenerator {
             postcode,
             startDate = startDate
         )
-        return address
     }
 }

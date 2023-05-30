@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import IdGenerator
 import uk.gov.justice.digital.hmpps.controller.entity.OGRSAssessment
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import java.time.LocalDate

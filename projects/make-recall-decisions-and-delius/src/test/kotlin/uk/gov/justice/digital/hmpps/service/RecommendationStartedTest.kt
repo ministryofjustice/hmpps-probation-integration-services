@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import IdGenerator
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -10,6 +9,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.PersonRepository

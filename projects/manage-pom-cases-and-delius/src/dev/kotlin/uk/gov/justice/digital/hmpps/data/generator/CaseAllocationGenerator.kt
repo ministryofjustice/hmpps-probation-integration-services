@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.generateDisposal
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.generateEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.CaseAllocation

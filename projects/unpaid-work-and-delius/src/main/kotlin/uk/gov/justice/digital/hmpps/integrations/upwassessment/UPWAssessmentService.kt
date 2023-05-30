@@ -41,9 +41,7 @@ class UPWAssessmentService(
         val reg = Regex("[^A-Za-z0-9-. ]")
         val filename = "${person.forename}-${person.surname}-${person.crn}-UPW.pdf".replace(reg, "")
         val fileData = response.body().asInputStream().readAllBytes()
-        if (response.status() != 200 || !fileData.isPdf()) {
-            throw IllegalStateException("Invalid PDF returned for episode: ${notification.message.detailUrl}")
-        }
+        check(response.status() == 200 && fileData.isPdf()) { "Invalid PDF returned for episode: ${notification.message.detailUrl}" }
         // Then upload the document content to Alfresco AND create a delius document that links to the alfresco id
         // and contact id.
         try {
