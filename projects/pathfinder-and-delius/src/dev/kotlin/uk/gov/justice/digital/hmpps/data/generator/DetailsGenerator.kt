@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import IdGenerator
 import uk.gov.justice.digital.hmpps.entity.DetailDistrict
 import uk.gov.justice.digital.hmpps.entity.DetailPerson
 import uk.gov.justice.digital.hmpps.entity.DetailProbationArea
