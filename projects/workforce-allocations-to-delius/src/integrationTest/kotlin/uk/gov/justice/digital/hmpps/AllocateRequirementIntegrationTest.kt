@@ -12,7 +12,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.repository.findByIdOrNull
 import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator
-import uk.gov.justice.digital.hmpps.data.repository.IapsRequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManagerRepository
@@ -37,9 +36,6 @@ class AllocateRequirementIntegrationTest {
 
     @Autowired
     private lateinit var requirementManagerRepository: RequirementManagerRepository
-
-    @Autowired
-    private lateinit var iapsRequirementRepository: IapsRequirementRepository
 
     @MockBean
     private lateinit var telemetryService: TelemetryService
@@ -109,7 +105,5 @@ class AllocateRequirementIntegrationTest {
 
         val oldRm = requirementManagerRepository.findById(existingRm.id).orElseThrow()
         assert(allocationDetail.createdDate.closeTo(oldRm.endDate))
-
-        assert(iapsRequirementRepository.findById(requirement.id).isPresent)
     }
 }

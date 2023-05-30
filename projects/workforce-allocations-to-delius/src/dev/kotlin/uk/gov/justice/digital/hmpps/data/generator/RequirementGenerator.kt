@@ -1,11 +1,13 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import IdGenerator
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.REQUIREMENT_SUB_CATEGORY
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewDisposal
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirement
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
+import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementAdditionalMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
@@ -26,7 +28,26 @@ object RequirementGenerator {
         id,
         person,
         disposal,
+        RequirementMainCategoryGenerator.DEFAULT,
+        RequirementAdditionalMainCategoryGenerator.DEFAULT,
+        ReferenceDataGenerator.REQUIREMENT_SUB_CATEGORY,
         active
+    )
+
+    fun generate(
+        mainCategory: String?,
+        additionalMainCategory: String?,
+        subCategory: String?,
+        person: Person = PersonGenerator.DEFAULT,
+        disposal: Disposal = DisposalGenerator.DEFAULT,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Requirement(
+        id,
+        person,
+        disposal,
+        mainCategory?.let { RequirementMainCategoryGenerator.generate(it, "Test") },
+        additionalMainCategory?.let { RequirementAdditionalMainCategoryGenerator.generate(it, "Test") },
+        subCategory?.let { ReferenceDataGenerator.generate(REQUIREMENT_SUB_CATEGORY, it, "Test") }
     )
 
     private fun forCaseView(
@@ -61,4 +82,14 @@ object RequirementMainCategoryGenerator {
         units: ReferenceData = ReferenceDataGenerator.UNIT_MONTHS,
         id: Long = IdGenerator.getAndIncrement()
     ) = CaseViewRequirementMainCategory(id, code, description, units)
+}
+
+object RequirementAdditionalMainCategoryGenerator {
+    val DEFAULT = generate("ADDN", "Rqmnt Additional Main Category")
+
+    fun generate(
+        code: String,
+        description: String = code,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = RequirementAdditionalMainCategory(id, code, description)
 }
