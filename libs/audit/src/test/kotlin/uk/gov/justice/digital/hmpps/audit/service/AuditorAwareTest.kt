@@ -10,14 +10,14 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import org.springframework.boot.context.event.ApplicationStartedEvent
 import uk.gov.justice.digital.hmpps.security.ServiceContext
-import uk.gov.justice.digital.hmpps.user.User
-import uk.gov.justice.digital.hmpps.user.UserService
+import uk.gov.justice.digital.hmpps.user.AuditUser
+import uk.gov.justice.digital.hmpps.user.AuditUserService
 
 @ExtendWith(MockitoExtension::class)
 internal class AuditorAwareTest {
 
     @Mock
-    private lateinit var userService: UserService
+    private lateinit var auditUserService: AuditUserService
 
     @Mock
     private lateinit var applicationStartedEvent: ApplicationStartedEvent
@@ -25,12 +25,12 @@ internal class AuditorAwareTest {
     @InjectMocks
     private lateinit var auditorAware: AuditorAware
 
-    private val user = User(1, "ServiceUserName")
+    private val user = AuditUser(1, "ServiceUserName")
 
     @BeforeEach
     fun setUpUser() {
-        whenever(userService.findUser(user.username)).thenReturn(user)
-        ServiceContext(user.username, userService).onApplicationEvent(applicationStartedEvent)
+        whenever(auditUserService.findUser(user.username)).thenReturn(user)
+        ServiceContext(user.username, auditUserService).onApplicationEvent(applicationStartedEvent)
     }
 
     @Test

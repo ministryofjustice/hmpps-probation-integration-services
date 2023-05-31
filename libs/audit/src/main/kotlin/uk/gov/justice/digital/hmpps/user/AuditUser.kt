@@ -9,7 +9,7 @@ import org.hibernate.annotations.Immutable
 @Immutable
 @Entity
 @Table(name = "user_")
-class User(
+class AuditUser(
     @Id
     @Column(name = "user_id")
     val id: Long,

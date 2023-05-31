@@ -29,13 +29,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUse
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceDataSet
-import uk.gov.justice.digital.hmpps.user.UserRepository
+import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
 
 @Component
 @ConditionalOnProperty("seed.database")
 class DataLoader(
-    private val userRepository: UserRepository,
+    private val auditUserRepository: AuditUserRepository,
     private val staffUserRepository: StaffUserRepository,
     private val referenceDataSetRepository: ReferenceDataSetRepository,
     private val referenceDataRepository: ReferenceDataRepository,
@@ -54,8 +54,8 @@ class DataLoader(
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
-    fun saveUserToDb() {
-        userRepository.save(UserGenerator.APPLICATION_USER)
+    fun saveAuditUser() {
+        auditUserRepository.save(UserGenerator.AUDIT_USER)
     }
 
     override fun onApplicationEvent(are: ApplicationReadyEvent) {

@@ -42,13 +42,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiTypeReposito
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.RequirementMainCategory
-import uk.gov.justice.digital.hmpps.user.UserRepository
+import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.ZonedDateTime
 
 @Component
 @ConditionalOnProperty("seed.database")
 class DataLoader(
-    private val userRepository: UserRepository,
+    private val auditUserRepository: AuditUserRepository,
     private val businessInteractionRepository: BusinessInteractionRepository,
     private val datasetRepository: DatasetRepository,
     private val disposalTypeRepository: DisposalTypeRepository,
@@ -79,8 +79,8 @@ class DataLoader(
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
-    fun saveUserToDb() {
-        userRepository.save(UserGenerator.APPLICATION_USER)
+    fun saveAuditUser() {
+        auditUserRepository.save(UserGenerator.AUDIT_USER)
     }
 
     override fun onApplicationEvent(are: ApplicationReadyEvent) {

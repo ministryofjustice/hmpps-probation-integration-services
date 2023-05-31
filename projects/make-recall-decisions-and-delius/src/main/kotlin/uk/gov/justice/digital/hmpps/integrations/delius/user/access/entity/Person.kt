@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.user.access
+package uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -9,7 +9,6 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
-import uk.gov.justice.digital.hmpps.user.User
 import java.time.ZonedDateTime
 
 @Immutable

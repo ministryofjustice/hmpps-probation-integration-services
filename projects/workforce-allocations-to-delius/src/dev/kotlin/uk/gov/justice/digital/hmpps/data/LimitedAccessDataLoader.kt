@@ -11,18 +11,18 @@ import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Exclusion
 import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Restriction
-import uk.gov.justice.digital.hmpps.user.UserRepository
+import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
 @ConditionalOnProperty("seed.database")
 class LimitedAccessDataLoader(
-    private val userRepository: UserRepository,
+    private val auditUserRepository: AuditUserRepository,
     private val personRepository: PersonRepository,
     private val exclusionRepository: ExclusionRepository,
     private val restrictionRepository: RestrictionRepository
 ) {
     fun loadData() {
-        userRepository.saveAll(listOf(UserGenerator.LIMITED_ACCESS_USER))
+        auditUserRepository.saveAll(listOf(UserGenerator.LIMITED_ACCESS_USER))
         personRepository.saveAll(
             listOf(
                 PersonGenerator.EXCLUSION,
