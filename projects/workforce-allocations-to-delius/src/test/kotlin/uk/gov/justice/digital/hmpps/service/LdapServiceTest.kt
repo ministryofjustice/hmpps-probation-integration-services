@@ -9,14 +9,15 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import org.mockito.ArgumentMatchers.any
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.LdapTemplate
 import uk.gov.justice.digital.hmpps.data.generator.LdapUserGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
@@ -54,12 +55,11 @@ class LdapServiceTest {
     @Test
     fun `email found for single staff`() {
         val staff = StaffGenerator.generateStaffWithUser("email", user = StaffUserGenerator.generate("HasEmail"))
-        val ldapUser = LdapUserGenerator.generate("HasEmail", "email@user.com")
-        whenever(ldapTemplate.find(any(), eq(LdapUser::class.java))).thenReturn(listOf(ldapUser))
+        whenever(ldapTemplate.search(any(), any<AttributesMapper<String?>>())).thenReturn(listOf("email@user.com"))
 
         val email = ldapService.findEmailForStaff(staff)
 
-        assertThat(email, equalTo(ldapUser.email))
+        assertThat(email, equalTo("email@user.com"))
     }
 
     @ParameterizedTest
