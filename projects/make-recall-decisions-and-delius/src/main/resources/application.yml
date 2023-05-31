@@ -8,6 +8,7 @@ spring:
     properties:
       hibernate.query.mutation_strategy: org.hibernate.query.sqm.mutation.internal.inline.InlineMutationStrategy
       hibernate.timezone.default_storage: NORMALIZE
+  ldap.base: dc=moj,dc=com
   security.oauth2.client:
     registration:
       make-recall-decisions-and-delius:
@@ -43,6 +44,7 @@ spring.config.activate.on-profile: [ "dev", "integration-test" ]
 spring:
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
+  ldap.embedded.base-dn: ${spring.ldap.base}
   security.oauth2.resourceserver.jwt.public-key-location: classpath:local-public-key.pub
 
 seed.database: true

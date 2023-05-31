@@ -101,6 +101,8 @@ class DataLoader(
             persist(UserGenerator.WITHOUT_STAFF)
             persist(UserGenerator.WITH_STAFF.staff)
             persist(UserGenerator.WITH_STAFF)
+            persist(UserGenerator.USER_DETAILS.staff)
+            persist(UserGenerator.USER_DETAILS)
         }
     }
 }
