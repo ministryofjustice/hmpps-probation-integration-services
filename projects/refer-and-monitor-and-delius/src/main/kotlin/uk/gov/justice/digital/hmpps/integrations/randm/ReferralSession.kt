@@ -19,11 +19,24 @@ data class SessionFeedback(
 )
 
 data class Attendance(
-    val attended: String,
-    val submittedAt: ZonedDateTime
+    val attended: String
 )
 
 // Non-null behaviour with nullable notify to match model from Interventions Service
 data class Behaviour(
     val notifyProbationPractitioner: Boolean?
+)
+
+data class SupplierAssessment(
+    val id: UUID,
+    val appointments: List<Appointment>,
+    val currentAppointmentId: UUID?,
+    val referralId: UUID
+) {
+    val currentAppointment = appointments.firstOrNull { it.id == currentAppointmentId }
+}
+
+data class Appointment(
+    val id: UUID,
+    val sessionFeedback: SessionFeedback
 )

@@ -13,4 +13,7 @@ interface ReferAndMonitorClient {
 
     @GetMapping
     fun getSession(uri: URI): ReferralSession?
+
+    @GetMapping
+    fun getSupplierAssessment(uri: URI): SupplierAssessment?
 }
