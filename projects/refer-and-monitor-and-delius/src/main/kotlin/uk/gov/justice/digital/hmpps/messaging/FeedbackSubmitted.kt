@@ -72,7 +72,7 @@ private fun HmppsDomainEvent.referralId() = additionalInformation["referralId"] 
 private fun HmppsDomainEvent.referralReference() = additionalInformation["referralReference"] as String
 private fun HmppsDomainEvent.providerName() = additionalInformation["primeProviderName"] as String
 private fun HmppsDomainEvent.url() = additionalInformation["referralProbationUserURL"] as String
-private fun HmppsDomainEvent.deliusId() = (additionalInformation["deliusAppointmentId"] as String).toLong()
+private fun HmppsDomainEvent.deliusId() = (additionalInformation["deliusAppointmentId"] as String?)?.toLong()
 
 private fun ReferralSession.appointmentOutcome(
     crn: String,
