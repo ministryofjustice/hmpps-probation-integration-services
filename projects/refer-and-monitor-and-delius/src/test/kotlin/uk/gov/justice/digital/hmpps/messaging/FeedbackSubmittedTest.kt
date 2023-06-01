@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.service.AppointmentService
 import uk.gov.justice.digital.hmpps.service.Attended
 import uk.gov.justice.digital.hmpps.service.UpdateAppointmentOutcome
 import java.net.URI
+import java.time.ZonedDateTime
 import java.util.UUID
 
 @ExtendWith(MockitoExtension::class)
@@ -73,34 +74,32 @@ internal class FeedbackSubmittedTest {
 
     @Test
     fun `if appointment not found in supplier assessment, process fails`() {
-        val appointmentId = UUID.randomUUID()
-        whenever(ramClient.getSupplierAssessment(URI(domainEvent.detailUrl!!)))
-            .thenReturn(
-                SupplierAssessment(
-                    UUID.randomUUID(),
-                    listOf(),
-                    appointmentId,
-                    referralId
-                )
-            )
+        val supplierAssessment = SupplierAssessment(UUID.randomUUID(), listOf(), referralId)
+        whenever(ramClient.getSupplierAssessment(URI(domainEvent.detailUrl!!))).thenReturn(supplierAssessment)
 
         val result = feedbackSubmitted.initialAppointmentSubmitted(domainEvent)
         assertThat(result, instanceOf(EventProcessingResult.Failure::class.java))
         val ex = (result as EventProcessingResult.Failure).exception
         assertThat(ex, instanceOf(IllegalStateException::class.java))
-        assertThat(ex.message, equalTo("No Session Feedback for appointment $appointmentId"))
+        assertThat(
+            ex.message,
+            equalTo("Unable to find appointment with feedback for supplier assessment ${supplierAssessment.id}")
+        )
     }
 
     @Test
     fun `able to map supplier assessment to appointment outcome`() {
         val appointment =
-            Appointment(UUID.randomUUID(), SessionFeedback(Attendance(Attended.YES.name), Behaviour(false)))
+            Appointment(
+                UUID.randomUUID(),
+                SessionFeedback(Attendance(Attended.YES.name, ZonedDateTime.now()), Behaviour(false)),
+                ZonedDateTime.now()
+            )
         whenever(ramClient.getSupplierAssessment(URI(domainEvent.detailUrl!!)))
             .thenReturn(
                 SupplierAssessment(
                     UUID.randomUUID(),
                     listOf(appointment),
-                    appointment.id,
                     referralId
                 )
             )

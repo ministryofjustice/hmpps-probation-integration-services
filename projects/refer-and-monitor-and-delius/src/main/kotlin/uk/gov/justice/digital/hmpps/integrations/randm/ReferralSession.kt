@@ -20,7 +20,8 @@ data class SessionFeedback(
 
 // Non-null behaviour with nullable attended to match model from Interventions Service
 data class Attendance(
-    val attended: String?
+    val attended: String?,
+    val submittedAt: ZonedDateTime?
 )
 
 // Non-null behaviour with nullable notify to match model from Interventions Service
@@ -31,13 +32,15 @@ data class Behaviour(
 data class SupplierAssessment(
     val id: UUID,
     val appointments: List<Appointment>,
-    val currentAppointmentId: UUID?,
     val referralId: UUID
 ) {
-    val currentAppointment = appointments.firstOrNull { it.id == currentAppointmentId }
+    val latestFeedback =
+        appointments.filter { it.sessionFeedback.attendance.attended != null }
+            .maxByOrNull { it.createdAt ?: it.sessionFeedback.attendance.submittedAt!! }
 }
 
 data class Appointment(
     val id: UUID,
-    val sessionFeedback: SessionFeedback
+    val sessionFeedback: SessionFeedback,
+    val createdAt: ZonedDateTime?
 )
