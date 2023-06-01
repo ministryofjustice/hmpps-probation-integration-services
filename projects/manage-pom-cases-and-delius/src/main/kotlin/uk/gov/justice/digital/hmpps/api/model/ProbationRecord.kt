@@ -6,7 +6,8 @@ data class ProbationRecord(
     val currentTier: String?,
     val resourcing: Resourcing?,
     val manager: Manager,
-    val mappaLevel: Int
+    val mappaLevel: Int,
+    val vloAssigned: Boolean
 )
 
 enum class Resourcing {

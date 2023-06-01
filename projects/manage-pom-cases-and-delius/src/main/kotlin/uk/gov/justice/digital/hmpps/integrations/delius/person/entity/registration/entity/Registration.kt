@@ -79,6 +79,15 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
         code: String,
         pageRequest: PageRequest = PageRequest.of(0, 1)
     ): List<Registration>
+
+    @Query(
+        """
+            select count(r) > 0 from Registration r
+            where r.person.id = :personId
+            and r.type.code in ('DASO', 'INVI')
+        """
+    )
+    fun hasVloAssigned(personId: Long): Boolean
 }
 
 fun RegistrationRepository.findMappaRegistration(personId: Long) =
