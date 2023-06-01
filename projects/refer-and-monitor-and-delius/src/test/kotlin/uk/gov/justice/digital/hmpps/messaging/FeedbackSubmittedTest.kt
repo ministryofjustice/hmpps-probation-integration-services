@@ -92,8 +92,7 @@ internal class FeedbackSubmittedTest {
         val appointment =
             Appointment(
                 UUID.randomUUID(),
-                SessionFeedback(Attendance(Attended.YES.name, ZonedDateTime.now()), Behaviour(false)),
-                ZonedDateTime.now()
+                SessionFeedback(Attendance(Attended.YES.name, ZonedDateTime.now()), Behaviour(false))
             )
         whenever(ramClient.getSupplierAssessment(URI(domainEvent.detailUrl!!)))
             .thenReturn(

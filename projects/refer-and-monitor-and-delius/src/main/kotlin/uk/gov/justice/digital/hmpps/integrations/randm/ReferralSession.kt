@@ -36,11 +36,10 @@ data class SupplierAssessment(
 ) {
     val latestFeedback =
         appointments.filter { it.sessionFeedback.attendance.attended != null }
-            .maxByOrNull { it.createdAt ?: it.sessionFeedback.attendance.submittedAt!! }
+            .maxByOrNull { it.sessionFeedback.attendance.submittedAt!! }
 }
 
 data class Appointment(
     val id: UUID,
-    val sessionFeedback: SessionFeedback,
-    val createdAt: ZonedDateTime?
+    val sessionFeedback: SessionFeedback
 )
