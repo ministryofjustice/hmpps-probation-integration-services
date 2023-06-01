@@ -147,7 +147,7 @@ class Contact(
     }
 
     private fun creditHours() {
-        hoursCredited = if (outcome?.code == ContactOutcome.Code.COMPLIED.value) {
+        hoursCredited = if (outcome?.code == ContactOutcome.Code.COMPLIED.value && duration > Duration.ZERO) {
             BigDecimal.valueOf(duration.toMinutes())
                 .divide(BigDecimal(60), 2, RoundingMode.HALF_UP)
                 .toDouble()
