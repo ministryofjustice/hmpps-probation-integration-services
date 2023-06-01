@@ -21,16 +21,12 @@ class UserService(
         throw NotFoundException("Person", "crn", crn)
     }
 
-    fun getUserDetails(username: String): UserDetails? {
-        val user = userDetailsRepository.findByUsername(username)
-        val email = ldapTemplate.findEmailByUsername(username)
-        return user?.let {
-            UserDetails(
-                name = Name(it.forename, it.middleName, it.surname),
-                username = it.username,
-                staffCode = it.staff?.code,
-                email = email
-            )
-        }
+    fun getUserDetails(username: String) = userDetailsRepository.findByUsername(username)?.let {
+        UserDetails(
+            name = Name(it.forename, it.middleName, it.surname),
+            username = it.username,
+            staffCode = it.staff?.code,
+            email = ldapTemplate.findEmailByUsername(username)
+        )
     }
 }
