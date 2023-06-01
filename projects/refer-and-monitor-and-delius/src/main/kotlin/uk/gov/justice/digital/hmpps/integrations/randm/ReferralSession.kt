@@ -18,8 +18,9 @@ data class SessionFeedback(
     val behaviour: Behaviour
 )
 
+// Non-null behaviour with nullable attended to match model from Interventions Service
 data class Attendance(
-    val attended: String
+    val attended: String?
 )
 
 // Non-null behaviour with nullable notify to match model from Interventions Service

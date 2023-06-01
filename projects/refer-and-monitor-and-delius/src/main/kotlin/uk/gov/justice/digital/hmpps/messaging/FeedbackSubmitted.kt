@@ -81,18 +81,21 @@ private fun ReferralSession.appointmentOutcome(
     contractType: String,
     providerName: String,
     url: String
-) = UpdateAppointmentOutcome(
-    id,
-    deliusId,
-    crn,
-    referralReference,
-    Referral(referralId, Provider(providerName), contractType),
-    Outcome(
-        Attended.of(sessionFeedback.attendance.attended),
-        sessionFeedback.behaviour.notifyProbationPractitioner ?: true
-    ),
-    url
-)
+): UpdateAppointmentOutcome {
+    checkNotNull(sessionFeedback.attendance.attended)
+    return UpdateAppointmentOutcome(
+        id,
+        deliusId,
+        crn,
+        referralReference,
+        Referral(referralId, Provider(providerName), contractType),
+        Outcome(
+            Attended.of(sessionFeedback.attendance.attended),
+            sessionFeedback.behaviour.notifyProbationPractitioner ?: true
+        ),
+        url
+    )
+}
 
 private fun SupplierAssessment.appointmentOutcome(
     crn: String,
@@ -105,6 +108,7 @@ private fun SupplierAssessment.appointmentOutcome(
     val sessionFeedback = checkNotNull(currentAppointment?.sessionFeedback) {
         "No Session Feedback for appointment $currentAppointmentId"
     }
+    checkNotNull(sessionFeedback.attendance.attended)
     return UpdateAppointmentOutcome(
         id,
         deliusId,
