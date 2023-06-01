@@ -14,6 +14,7 @@ import java.time.LocalDate
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class RegistrationRepositoryTest {
     @Autowired lateinit var personRepository: PersonRepository
+
     @Autowired lateinit var registrationRepository: RegistrationRepository
 
     @Test
