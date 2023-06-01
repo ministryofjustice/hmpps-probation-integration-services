@@ -25,6 +25,7 @@ class ProbationRecordService(
         }
         val decision = caseAllocationRepository.findLatestActiveDecision(person.id)
         val registration = registrationRepository.findMappaRegistration(person.id)
-        return person.record(decision, registration)
+        val vloAssigned = registrationRepository.hasVloAssigned(person.id)
+        return person.record(decision, registration, vloAssigned)
     }
 }

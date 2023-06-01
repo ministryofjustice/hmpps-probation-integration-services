@@ -61,7 +61,13 @@ class DataLoader(
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         referenceDataSetRepository.save(ReferenceDataGenerator.KEY_DATE_TYPE_DATASET)
         referenceDataRepository.saveAll(ReferenceDataGenerator.ALL)
-        registerTypeRepository.saveAll(listOf(RegistrationGenerator.TYPE_MAPPA, RegistrationGenerator.TYPE_OTH))
+        registerTypeRepository.saveAll(
+            listOf(
+                RegistrationGenerator.TYPE_MAPPA,
+                RegistrationGenerator.TYPE_OTH,
+                RegistrationGenerator.TYPE_DASO
+            )
+        )
         lduRepository.save(ProviderGenerator.DEFAULT_LDU)
         teamRepository.saveAll(PersonManagerGenerator.ALL.map { it.team })
         staffRepository.saveAll(PersonManagerGenerator.ALL.map { it.staff })

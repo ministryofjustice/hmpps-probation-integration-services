@@ -10,6 +10,7 @@ object RegistrationGenerator {
 
     val TYPE_MAPPA = generateType("MAPP")
     val TYPE_OTH = generateType("OTH")
+    val TYPE_DASO = generateType("DASO")
 
     fun generateType(code: String, id: Long = IdGenerator.getAndIncrement()) = RegisterType(code, id)
 

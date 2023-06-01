@@ -67,7 +67,8 @@ internal class ApiIntegrationTest {
                         Name(staff.forename, staff.middleName, staff.surname),
                         "default.staff@moj.gov.uk"
                     ),
-                    2
+                    2,
+                    false
                 )
             )
         )

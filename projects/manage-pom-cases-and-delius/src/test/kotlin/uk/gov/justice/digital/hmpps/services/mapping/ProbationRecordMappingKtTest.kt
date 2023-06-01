@@ -26,7 +26,7 @@ internal class ProbationRecordMappingKtTest {
         val person = PersonGenerator.generate("J123456", "J00243U")
         PersonManagerGenerator.generate(person = person).also { person.set("managers", listOf(it)) }
 
-        val personRecord = person.record(null, null)
+        val personRecord = person.record(null, null, false)
         assertNull(personRecord.currentTier)
         assertNull(personRecord.resourcing)
         assertThat(personRecord.mappaLevel, equalTo(0))

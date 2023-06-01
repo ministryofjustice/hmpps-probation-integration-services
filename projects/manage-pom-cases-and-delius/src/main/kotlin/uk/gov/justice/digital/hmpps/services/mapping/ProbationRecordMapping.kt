@@ -12,14 +12,15 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
 
-fun Person.record(decision: ReferenceData?, registration: Registration?): ProbationRecord =
+fun Person.record(decision: ReferenceData?, registration: Registration?, vloAssigned: Boolean): ProbationRecord =
     ProbationRecord(
         crn,
         nomsId!!,
         currentTier?.description,
         decision?.resourcing(),
         manager.manager(),
-        registration.level()
+        registration.level(),
+        vloAssigned
     )
 
 fun ReferenceData?.resourcing() = when (this?.code) {
