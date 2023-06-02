@@ -28,8 +28,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.Pe
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Borough
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.DeliveryUnit
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.LocationRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PduRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
@@ -75,7 +77,8 @@ class DataLoader(
     private val nsiRepository: NsiRepository,
     private val nsiManagerRepository: NsiManagerRepository,
     private val requirementRepository: RequirementRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val pduRepository: PduRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -115,9 +118,33 @@ class DataLoader(
 
         mainCatRepository.save(SentenceGenerator.MAIN_CAT_F)
 
-        providerRepository.save(ProviderGenerator.INTENDED_PROVIDER)
-        boroughRepository.saveAll(listOf(ProviderGenerator.PROBATION_BOROUGH, ProviderGenerator.PRISON_BOROUGH))
+        val provider = providerRepository.saveAndFlush(ProviderGenerator.INTENDED_PROVIDER)
+        pduRepository.saveAll(
+            listOf(
+                ProviderGenerator.PROBATION_BOROUGH.let {
+                    DeliveryUnit(
+                        it.code,
+                        it.description,
+                        provider,
+                        true,
+                        it.id
+                    )
+                },
+                ProviderGenerator.PRISON_BOROUGH.let {
+                    DeliveryUnit(
+                        it.code,
+                        it.description,
+                        provider,
+                        false,
+                        it.id
+                    )
+                }
+            )
+        )
         districtRepository.saveAll(listOf(ProviderGenerator.PROBATION_DISTRICT, ProviderGenerator.PRISON_DISTRICT))
+
+        val pdus = pduRepository.findAll().forEach { println("${it.code}, ${it.description}, ${it.id}") }
+
         teamRepository.saveAll(
             listOf(
                 ProviderGenerator.INTENDED_TEAM,

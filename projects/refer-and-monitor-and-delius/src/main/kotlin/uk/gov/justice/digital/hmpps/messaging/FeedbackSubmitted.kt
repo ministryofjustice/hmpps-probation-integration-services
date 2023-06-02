@@ -82,7 +82,9 @@ private fun ReferralSession.appointmentOutcome(
     providerName: String,
     url: String
 ): UpdateAppointmentOutcome {
-    checkNotNull(sessionFeedback.attendance.attended)
+    checkNotNull(sessionFeedback.attendance.attended) {
+        "No attendance information available for referral $referralId : appointment $id"
+    }
     return UpdateAppointmentOutcome(
         id,
         deliusId,
