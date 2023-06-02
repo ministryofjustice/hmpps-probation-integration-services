@@ -138,7 +138,8 @@ class DataLoader(
                         false,
                         it.id
                     )
-                })
+                }
+            )
         )
         districtRepository.saveAll(listOf(ProviderGenerator.PROBATION_DISTRICT, ProviderGenerator.PRISON_DISTRICT))
 

@@ -24,7 +24,7 @@ object ProviderGenerator {
     val JOHN_SMITH_USER = generateStaffUser("john-smith", JOHN_SMITH)
     val PRISON_MANAGER = generateStaff("P01WDN1", "Peter", "Wilson")
 
-    fun generateProvider(code: String, description: String, id: Long = IdGenerator.getAndIncrement()) = Provider(code,description, id)
+    fun generateProvider(code: String, description: String, id: Long = IdGenerator.getAndIncrement()) = Provider(code, description, id)
 
     fun generateBorough(
         code: String,
