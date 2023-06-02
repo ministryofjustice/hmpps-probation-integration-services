@@ -1,7 +1,7 @@
 import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-ldap")
+    compileOnly("org.springframework.boot:spring-boot-starter-data-ldap")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
