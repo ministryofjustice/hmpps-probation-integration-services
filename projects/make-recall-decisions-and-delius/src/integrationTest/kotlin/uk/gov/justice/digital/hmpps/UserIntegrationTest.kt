@@ -24,7 +24,7 @@ internal class UserIntegrationTest {
     @Test
     fun `get user details`() {
         val user = UserGenerator.USER_DETAILS
-        mockMvc.perform(get("/user/${user.username}").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/user/${user.username.lowercase()}").withOAuth2Token(wireMockserver))
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.username", equalTo("TestUser")))
             .andExpect(jsonPath("$.staffCode", equalTo("TEST002")))
