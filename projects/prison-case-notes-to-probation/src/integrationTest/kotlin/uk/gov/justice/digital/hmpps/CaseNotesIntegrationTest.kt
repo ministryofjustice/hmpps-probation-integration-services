@@ -125,8 +125,8 @@ class CaseNotesIntegrationTest {
         val staff = staffRepository.findById(saved.staffId).orElseThrow()
         assertThat(staff.code, equalTo("${ProbationAreaGenerator.DEFAULT.code}B001"))
 
-        assertThat(saved.createdByUserId, equalTo(UserGenerator.APPLICATION_USER.id))
-        assertThat(saved.lastModifiedUserId, equalTo(UserGenerator.APPLICATION_USER.id))
+        assertThat(saved.createdByUserId, equalTo(UserGenerator.AUDIT_USER.id))
+        assertThat(saved.lastModifiedUserId, equalTo(UserGenerator.AUDIT_USER.id))
 
         verify(air, atLeastOnce()).save(any())
         val savedAudits = air.findAll()

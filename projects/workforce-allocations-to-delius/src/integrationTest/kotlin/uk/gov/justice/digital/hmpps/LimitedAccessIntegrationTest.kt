@@ -93,7 +93,7 @@ class LimitedAccessIntegrationTest {
     @Test
     fun `limited access controls do not prevent legitimate access`() {
         val res = mockMvc.perform(
-            MockMvcRequestBuilders.post("/user/${UserGenerator.APPLICATION_USER.username}/access-controls")
+            MockMvcRequestBuilders.post("/user/${UserGenerator.AUDIT_USER.username}/access-controls")
                 .withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(

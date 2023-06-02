@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.ldap
+package uk.gov.justice.digital.hmpps.ldap.entity
 
 import org.springframework.ldap.odm.annotations.Attribute
 import org.springframework.ldap.odm.annotations.DnAttribute

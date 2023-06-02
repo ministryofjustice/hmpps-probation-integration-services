@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.noarg.gradle.NoArgExtension
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
 import uk.gov.justice.digital.hmpps.plugins.ClassPathPlugin
@@ -81,6 +82,10 @@ subprojects {
             isReproducibleFileOrder = true
             archiveFileName.set("${archiveBaseName.get()}-${archiveClassifier.get()}.${archiveExtension.get()}")
         }
+    }
+
+    extensions.configure<NoArgExtension> {
+        annotation("org.springframework.ldap.odm.annotations.Entry")
     }
 }
 

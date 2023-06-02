@@ -9,13 +9,14 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.springframework.ldap.core.AttributesMapper
+import org.springframework.ldap.core.LdapTemplate
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.CaseAllocationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.integrations.ldap.LdapService
 import uk.gov.justice.digital.hmpps.set
 
 @ExtendWith(MockitoExtension::class)
@@ -25,7 +26,7 @@ internal class ProbationRecordServiceTest {
     private lateinit var personRepository: PersonRepository
 
     @Mock
-    private lateinit var ldap: LdapService
+    private lateinit var ldapTemplate: LdapTemplate
 
     @Mock
     private lateinit var caseAllocationRepository: CaseAllocationRepository
@@ -48,6 +49,6 @@ internal class ProbationRecordServiceTest {
 
         service.findByNomsId(person.nomsId!!)
 
-        verify(ldap, never()).findEmailByUsername(any())
+        verify(ldapTemplate, never()).search(any(), any<AttributesMapper<String?>>())
     }
 }

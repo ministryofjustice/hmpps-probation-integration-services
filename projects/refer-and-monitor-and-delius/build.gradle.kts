@@ -1,9 +1,6 @@
 import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
 
 apply(plugin = "com.google.cloud.tools.jib")
-noArg {
-    annotation("org.springframework.ldap.odm.annotations.Entry")
-}
 
 dependencies {
     implementation(project(":libs:audit"))

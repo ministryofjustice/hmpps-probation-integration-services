@@ -10,6 +10,7 @@ import org.springframework.ldap.query.SearchScope
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithUser
 import uk.gov.justice.digital.hmpps.integrations.delius.user.LdapUser
+import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 
 @Service
 class LdapService(private val ldapTemplate: LdapTemplate) {
@@ -18,16 +19,8 @@ class LdapService(private val ldapTemplate: LdapTemplate) {
     }
 
     @WithSpan
-    fun findEmailForStaff(@SpanAttribute staff: StaffWithUser?) = staff?.user?.username.let {
-        ldapTemplate.find(
-            LdapQueryBuilder.query()
-                .attributes("mail")
-                .base("ou=Users")
-                .searchScope(SearchScope.ONELEVEL)
-                .where("cn").`is`(it),
-            LdapUser::class.java
-        ).singleOrNull()?.email
-    }
+    fun findEmailForStaff(@SpanAttribute staff: StaffWithUser?) =
+        staff?.user?.username?.let { ldapTemplate.findEmailByUsername(it) }
 
     @WithSpan
     fun findEmailsForStaffIn(@SpanAttribute staff: List<StaffWithUser>) = staff.mapNotNull { it.user?.username }

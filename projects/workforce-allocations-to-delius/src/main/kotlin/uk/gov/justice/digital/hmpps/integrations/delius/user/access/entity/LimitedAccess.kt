@@ -7,7 +7,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import org.hibernate.annotations.Immutable
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.user.User
+import uk.gov.justice.digital.hmpps.user.AuditUser
 import java.time.LocalDateTime
 
 @Immutable
@@ -23,7 +23,7 @@ class Exclusion(
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    val user: User,
+    val user: AuditUser,
 
     @Column(name = "exclusion_end_time")
     val end: LocalDateTime? = null
@@ -42,7 +42,7 @@ class Restriction(
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    val user: User,
+    val user: AuditUser,
 
     @Column(name = "restriction_end_time")
     val end: LocalDateTime? = null

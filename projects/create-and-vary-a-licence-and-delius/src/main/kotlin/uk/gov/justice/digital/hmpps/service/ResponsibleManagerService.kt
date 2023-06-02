@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.service
 
+import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
@@ -10,17 +11,17 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
-import uk.gov.justice.digital.hmpps.integrations.ldap.LdapService
+import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 
 @Service
 class ResponsibleManagerService(
     private val responsibleOfficerRepository: ResponsibleOfficerRepository,
-    private val ldapService: LdapService
+    private val ldapTemplate: LdapTemplate
 ) {
     fun findResponsibleCommunityManager(crn: String): Manager? =
         responsibleOfficerRepository.findResponsibleOfficer(crn)?.let { ro ->
             ro.communityManager.staff.user?.apply {
-                email = ldapService.findEmailByUsername(username)
+                email = ldapTemplate.findEmailByUsername(username)
             }
             ro.asManager()
         }

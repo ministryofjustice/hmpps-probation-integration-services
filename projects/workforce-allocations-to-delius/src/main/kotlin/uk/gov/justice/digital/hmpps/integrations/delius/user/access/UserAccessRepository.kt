@@ -2,9 +2,9 @@ package uk.gov.justice.digital.hmpps.integrations.delius.user.access
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.user.User
+import uk.gov.justice.digital.hmpps.user.AuditUser
 
-interface UserAccessRepository : JpaRepository<User, Long> {
+interface UserAccessRepository : JpaRepository<AuditUser, Long> {
     @Query(
         """
         select new uk.gov.justice.digital.hmpps.integrations.delius.user.access.UserPersonAccess(p.crn, p.exclusionMessage, '')
