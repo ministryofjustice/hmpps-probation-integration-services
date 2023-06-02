@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.set
 
 object ProviderGenerator {
-    val INTENDED_PROVIDER = generateProvider(Provider.INTENDED_PROVIDER_CODE)
+    val INTENDED_PROVIDER = generateProvider(Provider.INTENDED_PROVIDER_CODE, "Test Provider")
     val PROBATION_BOROUGH = generateBorough("PDU01")
     val PRISON_BOROUGH = generateBorough("PDU02")
     val PROBATION_DISTRICT = generateDistrict("LDU01", borough = PROBATION_BOROUGH)
@@ -24,7 +24,7 @@ object ProviderGenerator {
     val JOHN_SMITH_USER = generateStaffUser("john-smith", JOHN_SMITH)
     val PRISON_MANAGER = generateStaff("P01WDN1", "Peter", "Wilson")
 
-    fun generateProvider(code: String, id: Long = IdGenerator.getAndIncrement()) = Provider(code, id)
+    fun generateProvider(code: String, description: String, id: Long = IdGenerator.getAndIncrement()) = Provider(code,description, id)
 
     fun generateBorough(
         code: String,

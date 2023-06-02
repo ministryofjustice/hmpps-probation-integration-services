@@ -1,8 +1,11 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.DeliveryUnit
+import uk.gov.justice.digital.hmpps.api.model.Region
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Location
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.LocationRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PduRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
@@ -17,7 +20,8 @@ class ProviderService(
     private val providerRepository: ProviderRepository,
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val pduRepository: PduRepository
 ) {
     fun findCrsAssignationDetails(locationCode: String?): CrsAssignation {
         val provider = providerRepository.getCrsProvider()
@@ -25,6 +29,10 @@ class ProviderService(
         val staff = staffRepository.getByCode(Staff.INTENDED_STAFF_CODE)
         val location = locationCode?.let { locationRepository.getByCode(it) }
         return CrsAssignation(provider, team, staff, location)
+    }
+
+    fun findSelectableDeliveryUnits() = pduRepository.findAllSelectable().map {
+        DeliveryUnit(it.code, it.description, Region(it.region.code, it.region.description))
     }
 }
 
