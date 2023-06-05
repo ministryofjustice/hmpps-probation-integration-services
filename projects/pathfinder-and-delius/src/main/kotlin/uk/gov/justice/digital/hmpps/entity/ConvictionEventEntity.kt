@@ -23,7 +23,7 @@ class ConvictionEventEntity(
     @Column(name = "event_id")
     val id: Long,
 
-    val convictionDate: LocalDate,
+    val convictionDate: LocalDate?,
 
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
