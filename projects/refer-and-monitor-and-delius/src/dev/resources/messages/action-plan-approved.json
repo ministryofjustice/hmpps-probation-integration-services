@@ -1,0 +1,13 @@
+{
+  "Type": "Notification",
+  "MessageId": "71ab5796-bc4d-5eb7-9ccb-0b6152589af4",
+  "TopicArn": "arn:aws:sns:eu-west-2:754256621582:cloud-platform-Digital-Prison-Services-e29fb030a51b3576dd645aa5e460e573",
+  "Message": "{\"eventType\":\"intervention.action-plan.approved\",\"description\":\"An action plan has been approved\",\"detailUrl\":\"http://localhost:{wiremock.port}/action-plan/14c9ead2-b4d1-47cf-9b82-859bdd54bb5b\",\"occurredAt\":\"2023-06-05T15:06:13.237399037+01:00\",\"additionalInformation\":{\"actionPlanId\":\"14c9ead2-b4d1-47cf-9b82-859bdd54bb5b\",\"approvedBy\":\"AUTOMATEDTESTUSER\",\"referralId\":\"68df9f6c-3fcb-4ec6-8fcf-96551cd9b080\",\"referralReference\":\"FE4536C\",\"contractTypeName\":\"Accommodation\",\"primeProviderName\":\"Seetec Business Technology Centre Limited\",\"actionPlanProbationUserUrl\":\"https://hmpps-interventions-ui-dev.apps.live-1.cloud-platform.service.justice.gov.uk/probation-practitioner/referrals/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080/action-plan\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"T140223\"}]},\"version\":1}",
+  "Timestamp": "2023-06-05T14:06:13.292Z",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "intervention.action-plan.approved"
+    }
+  }
+}
