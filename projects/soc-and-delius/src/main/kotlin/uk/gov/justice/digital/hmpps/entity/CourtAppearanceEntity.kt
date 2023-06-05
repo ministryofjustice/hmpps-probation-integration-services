@@ -89,6 +89,9 @@ class CourtAppearancePerson(
     @Column(columnDefinition = "char(7)")
     val crn: String,
 
+    @Column(columnDefinition = "char(7)")
+    val nomsNumber: String? = null,
+
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 
@@ -99,9 +102,20 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearanceEntity, Long>
     @Query(
         """
         select ca from CourtAppearanceEntity ca
-        where (ca.appearanceDate >= :dateFrom)
+        where ca.appearanceDate >= :dateFrom
+        and ca.courtAppearanceEventEntity.courtAppearancePerson.crn = :crn
         order by ca.appearanceDate desc
     """
     )
-    fun findMostRecentCourtAppearances(dateFrom: ZonedDateTime): List<CourtAppearanceEntity>
+    fun findMostRecentCourtAppearancesByCrn(dateFrom: ZonedDateTime, crn: String): List<CourtAppearanceEntity>
+
+    @Query(
+        """
+        select ca from CourtAppearanceEntity ca
+        where ca.appearanceDate >= :dateFrom
+        and ca.courtAppearanceEventEntity.courtAppearancePerson.nomsNumber = :nomsNumber
+        order by ca.appearanceDate desc
+    """
+    )
+    fun findMostRecentCourtAppearancesByNomsNumber(dateFrom: ZonedDateTime, nomsNumber: String): List<CourtAppearanceEntity>
 }

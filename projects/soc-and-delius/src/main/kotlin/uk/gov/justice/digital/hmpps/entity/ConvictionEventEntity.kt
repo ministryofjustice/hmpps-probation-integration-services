@@ -58,7 +58,7 @@ class ConvictionEventPerson(
     val crn: String,
 
     @Column(columnDefinition = "char(7)")
-    val nomsNumber: String,
+    val nomsNumber: String? = null,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false

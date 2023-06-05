@@ -28,10 +28,10 @@ class DetailPerson(
     val crn: String,
 
     @Column(columnDefinition = "char(7)")
-    val nomsNumber: String,
+    val nomsNumber: String? = null,
 
     @Column(columnDefinition = "char(13)")
-    val pncNumber: String,
+    val pncNumber: String? = null,
 
     @ManyToOne
     @JoinColumn(name = "religion_id")

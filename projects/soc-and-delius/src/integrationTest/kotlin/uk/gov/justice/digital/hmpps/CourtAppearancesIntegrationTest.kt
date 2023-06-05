@@ -36,8 +36,9 @@ internal class CourtAppearancesIntegrationTest {
 
     @Test
     fun `API call retuns a success response`() {
+        val crn = CourtAppearanceGenerator.DEFAULT_PERSON.crn
         val result = mockMvc
-            .perform(get("/court-appearances").withOAuth2Token(wireMockServer))
+            .perform(get("/court-appearances/${crn}").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, CourtAppearancesContainer::class.java)
