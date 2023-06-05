@@ -87,9 +87,9 @@ interface ProbationAreaRepository : JpaRepository<ProbationAreaEntity, Long> {
     @Query(
         """
         select new uk.gov.justice.digital.hmpps.entity.ProbationAreaDistrict(pa.code, pa.description, d.code, d.description)
-        from ProbationAreaEntity pa 
-        join Borough b on b.probationArea.id = pa.id
-        join District d on d.borough.id = b.id
+        from District d
+        join d.borough b
+        join b.probationArea pa
         where pa.description not like 'ZZ%'
         and d.code <> '-1'
         and pa.selectable = true

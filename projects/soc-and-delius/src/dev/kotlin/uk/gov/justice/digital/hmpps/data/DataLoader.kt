@@ -33,6 +33,7 @@ class DataLoader(
             ProbationAreaGenerator.DEFAULT_PA,
             ProbationAreaGenerator.DEFAULT_BOROUGH,
             ProbationAreaGenerator.DEFAULT_LDU,
+            ProbationAreaGenerator.DEFAULT_LDU2,
             CourtAppearanceGenerator.DEFAULT_CA_TYPE,
             CourtAppearanceGenerator.DEFAULT_COURT,
             CourtAppearanceGenerator.DEFAULT_PERSON,

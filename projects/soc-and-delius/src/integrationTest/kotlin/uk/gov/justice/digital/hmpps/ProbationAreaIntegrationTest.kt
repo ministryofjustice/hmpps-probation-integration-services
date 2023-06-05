@@ -53,6 +53,10 @@ internal class ProbationAreaIntegrationTest {
                     LocalDeliveryUnit(
                         ProbationAreaGenerator.DEFAULT_LDU.code,
                         ProbationAreaGenerator.DEFAULT_LDU.description
+                    ),
+                    LocalDeliveryUnit(
+                        ProbationAreaGenerator.DEFAULT_LDU2.code,
+                        ProbationAreaGenerator.DEFAULT_LDU2.description
                     )
                 )
             )
