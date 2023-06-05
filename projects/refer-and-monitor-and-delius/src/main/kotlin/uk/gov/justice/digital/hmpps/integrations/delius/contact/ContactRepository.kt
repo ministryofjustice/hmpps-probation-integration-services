@@ -105,6 +105,16 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 
     @Query(
         """
+            select c from Contact c 
+            where c.nsiId = :nsiId
+            and c.type.code = :contactType
+            and c.date = :date
+        """
+    )
+    fun findNotificationContact(nsiId: Long, contactType: String, date: LocalDate): List<Contact>
+
+    @Query(
+        """
             select 
                 (select contact.soft_deleted 
                     from contact 
@@ -122,7 +132,12 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         """,
         nativeQuery = true
     )
-    fun getNotFoundReason(crn: String, nsiExternalReference: String, contactExternalReference: String, contactId: Long): Tuple?
+    fun getNotFoundReason(
+        crn: String,
+        nsiExternalReference: String,
+        contactExternalReference: String,
+        contactId: Long
+    ): Tuple?
 }
 
 fun ContactRepository.appointmentClashes(

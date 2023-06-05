@@ -32,7 +32,9 @@ class ReferralEndSubmitted(
             sentReferral.endDate
                 ?: throw IllegalStateException("No End Date for Termination: ${event.referralUrn()} => ${event.personReference.findCrn()}"),
             ReferralEndType.valueOf(event.deliveryState()),
-            sentReferral.notes(event.referralUiUrl())
+            sentReferral.notes(event.referralUiUrl()),
+            sentReferral.endOfServiceReport?.submittedAt,
+            sentReferral.notificationNotes(event.referralUiUrl())
         )
         nsiService.terminateNsi(termination)
 
@@ -58,11 +60,17 @@ data class SentReferral(
     val referral: Referral,
     val sentAt: ZonedDateTime,
     val endRequestedAt: ZonedDateTime?,
-    val concludedAt: ZonedDateTime?
+    val concludedAt: ZonedDateTime?,
+    val endOfServiceReport: EndOfServiceReport?
 ) {
     val endDate = concludedAt ?: endRequestedAt
     fun notes(uiUrl: String) =
         """Referral Ended for ${referral.contractType} Referral $referenceNumber with Prime Provider ${referral.provider.name}
+            |$uiUrl
+        """.trimMargin()
+
+    fun notificationNotes(uiUrl: String) =
+        """End of Service Report Submitted for ${referral.contractType} Referral $referenceNumber with Prime Provider ${referral.provider.name}
             |$uiUrl
         """.trimMargin()
 }
@@ -87,6 +95,8 @@ enum class ReferralEndType(val outcome: String) {
     COMPLETED("CRS03")
 }
 
+data class EndOfServiceReport(val submittedAt: ZonedDateTime?)
+
 data class NsiTermination(
     val crn: String,
     val urn: String,
@@ -94,5 +104,7 @@ data class NsiTermination(
     val startDate: ZonedDateTime,
     val endDate: ZonedDateTime,
     val endType: ReferralEndType,
-    val notes: String
+    val notes: String,
+    val notificationDateTime: ZonedDateTime?,
+    val notificationNotes: String
 )

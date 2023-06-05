@@ -279,6 +279,7 @@ internal class ReferAndMonitorIntegrationTest {
         val contacts = contactRepository.findAll().filter { it.nsiId == nsi.id }
         assertTrue(contacts have ContactType.Code.COMPLETED.value)
         assertTrue(contacts have ContactType.Code.NSI_TERMINATED.value)
+        assertTrue(contacts have ContactType.Code.CRSNOTE.value)
     }
 
     @Test
