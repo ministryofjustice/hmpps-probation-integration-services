@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.projections.NsiNotFoundReason
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Dataset.Code.NSI_OUTCOME
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiManager
@@ -58,14 +59,25 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select nsi.id from Nsi nsi where nsi.id = :id")
     fun findForUpdate(id: Long): Long
-}
 
-fun NsiRepository.getByCrnAndExternalReference(crn: String, externalReference: String) =
-    findByPersonCrnAndExternalReference(crn, externalReference) ?: throw NotFoundException(
-        "NSI",
-        "externalReference",
-        externalReference
+    @Query(
+        """
+            select 
+                nsi.soft_deleted as nsiSoftDeleted,
+                nsi.active_flag as nsiActive,
+                last_updated_by.distinguished_name as nsiLastUpdatedBy
+            from nsi
+            join offender nsi_offender on nsi_offender.offender_id = nsi.offender_id 
+            left join user_ last_updated_by on last_updated_by.user_id = nsi.last_updated_user_id
+            where nsi_offender.crn = :crn and nsi.external_reference = :nsiExternalReference
+        """,
+        nativeQuery = true
     )
+    fun getNotFoundReason(
+        crn: String,
+        nsiExternalReference: String
+    ): NsiNotFoundReason?
+}
 
 interface NsiStatusHistoryRepository : JpaRepository<NsiStatusHistory, Long>
 

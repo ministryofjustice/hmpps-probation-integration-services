@@ -335,7 +335,7 @@ internal class ReferAndMonitorIntegrationTest {
                 "referralReference" to "AY0164AC",
                 "outcomeAttended" to "NO",
                 "outcomeNotify" to "true",
-                "reason" to "NSI terminated",
+                "reason" to "NSI terminated, likely a future appointment deleted",
                 "reasonDetail" to "NSI last updated by ReferAndMonitorAndDelius"
             )
         )
