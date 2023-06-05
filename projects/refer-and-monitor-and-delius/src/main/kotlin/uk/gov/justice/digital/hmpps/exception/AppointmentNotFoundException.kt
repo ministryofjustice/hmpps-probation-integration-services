@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.exception
 
-import jakarta.persistence.Tuple
+import uk.gov.justice.digital.hmpps.integrations.delius.projections.ContactNotFoundReason
 import uk.gov.justice.digital.hmpps.service.Outcome
 import java.util.UUID
 
@@ -23,26 +23,22 @@ class AppointmentNotFoundException(
     )
 )
 
+fun ContactNotFoundReason?.asReason(): AppointmentNotFoundReason =
+    AppointmentNotFoundReason(
+        when {
+            this == null -> "Unknown"
+            softDeleted == null && nsiActive == 0 -> "NSI terminated, likely a future appointment deleted"
+            softDeleted == null -> "Contact hard deleted or not yet present"
+            softDeleted == 0 -> "Created with outcome using merge appointment at the same time"
+            softDeleted == 1 -> "Contact soft deleted"
+            nsiActive == 0 -> "NSI terminated"
+            nsiActive == null -> "NSI cannot be determined"
+            else -> "Unknown"
+        },
+        "NSI last updated by ${this?.nsiLastUpdatedBy}"
+    )
+
 data class AppointmentNotFoundReason(
     val reason: String,
     val additionalInformation: String
-) {
-    companion object {
-        fun from(result: Tuple?) = result?.let {
-            AppointmentNotFoundReason(
-                when {
-                    it["contact_soft_deleted"].asInt() == 1 -> "Contact soft-deleted"
-                    it["contact_soft_deleted"].asInt() == 0 -> "Contact not soft-deleted"
-                    it["nsi_soft_deleted"].asInt() == 1 -> "NSI soft-deleted"
-                    it["nsi_active"].asInt() == 0 -> "NSI terminated"
-                    else -> "Unknown"
-                },
-                "NSI last updated by ${it["nsi_last_updated_by"]}"
-            )
-        } ?: unknown
-
-        private val unknown = AppointmentNotFoundReason("Unknown", "Unknown")
-
-        private fun Any?.asInt() = (this as Number?)?.toInt()
-    }
-}
+)
