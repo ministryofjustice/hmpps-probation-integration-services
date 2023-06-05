@@ -66,7 +66,9 @@ internal class RepositoryExtensionMethodTests {
             ZonedDateTime.now().minusDays(1),
             ZonedDateTime.now(),
             ReferralEndType.CANCELLED,
-            "Notes"
+            "Notes",
+            ZonedDateTime.now(),
+            "End Of Service Report Submitted"
         )
         val ex = assertThrows<NotFoundException> { nsiService.terminateNsi(termination) }
 
@@ -91,7 +93,9 @@ internal class RepositoryExtensionMethodTests {
                     ZonedDateTime.now().minusDays(1),
                     ZonedDateTime.now(),
                     ReferralEndType.COMPLETED,
-                    "Notes"
+                    "Notes",
+                    ZonedDateTime.now(),
+                    "End Of Service Report Submitted"
                 )
             )
         }
@@ -115,7 +119,9 @@ internal class RepositoryExtensionMethodTests {
                     ZonedDateTime.now().minusDays(1),
                     ZonedDateTime.now(),
                     ReferralEndType.COMPLETED,
-                    "Notes"
+                    "Notes",
+                    ZonedDateTime.now(),
+                    "End Of Service Report Submitted"
                 )
             )
         }

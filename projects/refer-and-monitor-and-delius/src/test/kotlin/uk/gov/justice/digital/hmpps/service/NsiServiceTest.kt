@@ -128,7 +128,9 @@ internal class NsiServiceTest {
             nsi.referralDate.atTime(OffsetTime.now()).toZonedDateTime(),
             ZonedDateTime.now(),
             ReferralEndType.COMPLETED,
-            "This referral has been completed"
+            "This referral has been completed",
+            ZonedDateTime.now(),
+            "End Of Service Report Submitted"
         )
 
         assertThrows<FutureAppointmentLinkedException> { nsiService.terminateNsi(termination) }

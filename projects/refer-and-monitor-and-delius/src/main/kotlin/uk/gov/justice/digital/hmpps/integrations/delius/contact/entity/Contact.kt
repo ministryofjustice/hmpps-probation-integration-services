@@ -202,6 +202,7 @@ class ContactType(
         REVIEW_ENFORCEMENT_STATUS("ARWS"),
         CRSAPT("CRSAPT", true),
         CRSSAA("CRSSAA"),
+        CRSNOTE("CRSNOTE"),
         NSI_REFERRAL("NREF"),
         NSI_COMMENCED("NCOM"),
         NSI_TERMINATED("NTER"),
