@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.service.ProbationAreaService
 
 @RestController
 class ProbationAreasController(private val probationAreaService: ProbationAreaService) {
-    @PreAuthorize("hasRole('ROLE_PATHFINDER_PROBATION_CASE')")
+    @PreAuthorize("hasRole('ROLE_SOC_PROBATION_CASE')")
     @GetMapping(value = ["/probation-areas"])
     fun probationAreas() =
         probationAreaService.getProbationAreas()

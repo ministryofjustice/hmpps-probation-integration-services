@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.service.CourtAppearanceService
 
 @RestController
 class CourtAppearancesController(private val courtAppearanceService: CourtAppearanceService) {
-    @PreAuthorize("hasRole('ROLE_PATHFINDER_PROBATION_CASE')")
+    @PreAuthorize("hasRole('ROLE_SOC_PROBATION_CASE')")
     @GetMapping(value = ["/court-appearances/{value}"])
     fun courtAppearances(
         @PathVariable value: String,
