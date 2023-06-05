@@ -35,7 +35,6 @@ import uk.gov.justice.digital.hmpps.messaging.ReferralEndType
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
-import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -189,7 +188,7 @@ internal class ReferAndMonitorIntegrationTest {
             wireMockServer.port()
         )
 
-        channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofSeconds(180))
+        channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(telemetryService).trackEvent(
             "SessionAppointmentSubmitted",
@@ -283,6 +282,54 @@ internal class ReferAndMonitorIntegrationTest {
     }
 
     @Test
+    fun `action plan submitted notification processed`() {
+        val notification = prepNotification(
+            notification("action-plan-submitted"),
+            wireMockServer.port()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).trackEvent(
+            "ActionPlanSubmitted",
+            mapOf(
+                "crn" to "T140223",
+                "referralId" to "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080"
+            )
+        )
+
+        val contact = contactRepository.findAll()
+            .filter { it.person.id == PersonGenerator.DEFAULT.id && it.type.code == ContactType.Code.CRSNOTE.value }
+            .firstOrNull { it.notes?.contains("Action Plan Submitted") == true }
+
+        assertNotNull(contact)
+    }
+
+    @Test
+    fun `action plan approved notification processed`() {
+        val notification = prepNotification(
+            notification("action-plan-approved"),
+            wireMockServer.port()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(telemetryService).trackEvent(
+            "ActionPlanApproved",
+            mapOf(
+                "crn" to "T140223",
+                "referralId" to "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080"
+            )
+        )
+
+        val contact = contactRepository.findAll()
+            .filter { it.person.id == PersonGenerator.DEFAULT.id && it.type.code == ContactType.Code.CRSNOTE.value }
+            .firstOrNull { it.notes?.contains("Action Plan Approved") == true }
+
+        assertNotNull(contact)
+    }
+
+    @Test
     fun `fuzzy search referral end submitted`() {
         val nsi = nsiRepository.findById(NsiGenerator.FUZZY_SEARCH.id).orElseThrow()
         assertNull(nsi.actualEndDate)
@@ -293,7 +340,7 @@ internal class ReferAndMonitorIntegrationTest {
             wireMockServer.port()
         )
 
-        channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofSeconds(180))
+        channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(telemetryService).trackEvent(
             "ReferralEnded",
