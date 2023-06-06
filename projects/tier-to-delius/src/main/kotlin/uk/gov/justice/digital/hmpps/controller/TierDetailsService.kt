@@ -54,14 +54,10 @@ class TierDetailsService(
     }
 
     private fun getRiskOgrs(case: CaseEntity): Long? {
-        val oasysAssessment = oasysAssessmentRepository.findFirstByPersonIdAndScoreIsNotNullOrderByAssessmentDateDesc(
-            case.id
-        )
-        val ogrsAssessment =
-            ogrsAssessmentRepository.findFirstByEventPersonIdAndScoreIsNotNullOrderByAssessmentDateDesc(case.id)
-        val assessment = listOfNotNull(oasysAssessment, ogrsAssessment).maxByOrNull { it.assessmentDate }
-        return assessment?.let {
-            assessment.score
-        }
+        val oasysAssessment = oasysAssessmentRepository.findLatestAssessment(case.id)
+        val ogrsAssessment = ogrsAssessmentRepository.findLatestAssessment(case.id)
+        return listOfNotNull(oasysAssessment, ogrsAssessment)
+            .filter { it.score != null }
+            .maxByOrNull { it.assessmentDate }?.score
     }
 }
