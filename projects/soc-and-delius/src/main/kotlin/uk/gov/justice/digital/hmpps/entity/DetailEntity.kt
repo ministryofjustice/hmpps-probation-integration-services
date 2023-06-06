@@ -11,6 +11,7 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
@@ -163,7 +164,27 @@ class DetailDistrict(
 )
 
 interface DetailRepository : JpaRepository<DetailPerson, Long> {
+    @EntityGraph(
+        attributePaths = [
+            "religion",
+            "personManager",
+            "personManager.staff",
+            "personManager.team",
+            "personManager.team.probationArea",
+            "personManager.team.district"
+        ]
+    )
     fun getByCrn(crn: String): DetailPerson?
+    @EntityGraph(
+        attributePaths = [
+            "religion",
+            "personManager",
+            "personManager.staff",
+            "personManager.team",
+            "personManager.team.probationArea",
+            "personManager.team.district"
+        ]
+    )
     fun getByNomsNumber(nomsNumber: String): DetailPerson?
 }
 
