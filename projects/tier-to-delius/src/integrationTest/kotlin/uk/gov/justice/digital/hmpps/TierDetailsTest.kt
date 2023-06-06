@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,8 +23,6 @@ class TierDetailsTest {
     @Autowired lateinit var mockMvc: MockMvc
 
     @Autowired lateinit var wireMockserver: WireMockServer
-
-    @Autowired lateinit var objectMapper: ObjectMapper
 
     @Test
     fun `successful response`() {

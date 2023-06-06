@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.controller.entity.EventRepository
 import uk.gov.justice.digital.hmpps.controller.entity.OASYSAssessmentRepository
 import uk.gov.justice.digital.hmpps.controller.entity.OGRSAssessmentRepository
 import uk.gov.justice.digital.hmpps.controller.entity.RegistrationRepository
+import uk.gov.justice.digital.hmpps.controller.entity.findLatest
 import uk.gov.justice.digital.hmpps.controller.entity.getCase
 import uk.gov.justice.digital.hmpps.controller.model.Conviction
 import uk.gov.justice.digital.hmpps.controller.model.Registration
@@ -54,8 +55,8 @@ class TierDetailsService(
     }
 
     private fun getRiskOgrs(case: CaseEntity): Long? {
-        val oasysAssessment = oasysAssessmentRepository.findLatestAssessment(case.id)
-        val ogrsAssessment = ogrsAssessmentRepository.findLatestAssessment(case.id)
+        val oasysAssessment = oasysAssessmentRepository.findLatest(case.id)
+        val ogrsAssessment = ogrsAssessmentRepository.findLatest(case.id)
         return listOfNotNull(oasysAssessment, ogrsAssessment)
             .filter { it.score != null }
             .maxByOrNull { it.assessmentDate }?.score

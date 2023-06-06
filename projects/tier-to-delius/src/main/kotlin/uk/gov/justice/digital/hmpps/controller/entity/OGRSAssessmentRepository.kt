@@ -14,5 +14,8 @@ interface OGRSAssessmentRepository : JpaRepository<OGRSAssessment, Long> {
         order by a.assessmentDate desc, a.lastModifiedDateTime desc
     """
     )
-    fun findLatestAssessment(personId: Long, pageable: Pageable = PageRequest.of(0, 1)): OGRSAssessment?
+    fun findLatestAssessment(personId: Long, pageable: Pageable = PageRequest.of(0, 1)): List<OGRSAssessment>
 }
+
+fun OGRSAssessmentRepository.findLatest(personId: Long) =
+    findLatestAssessment(personId).firstOrNull()
