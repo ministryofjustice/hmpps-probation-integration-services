@@ -82,6 +82,9 @@ class Disposal(
     @JoinColumn(name = "event_id")
     val event: ConvictionEventEntity,
 
+    @OneToOne(mappedBy = "disposal")
+    val custody: Custody? = null,
+
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
@@ -172,7 +175,8 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         attributePaths = [
             "mainOffence.offence",
             "additionalOffences.offence",
-            "disposal.type"
+            "disposal.type",
+            "disposal.custody"
         ]
     )
     fun getAllByConvictionEventPersonIdOrderByConvictionDateDesc(personId: Long): List<ConvictionEventEntity>

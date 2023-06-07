@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -11,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ConvictionEventGenerator
@@ -39,29 +39,6 @@ internal class DetailsIntegrationTest {
 
     @Autowired
     lateinit var objectMapper: ObjectMapper
-
-    @Test
-    fun `API call retuns a success response using NOMS`() {
-        val noms = DetailsGenerator.PERSON.nomsNumber
-        val result = mockMvc
-            .perform(get("/detail/$noms?type=NOMS").withOAuth2Token(wireMockServer))
-            .andExpect(status().is2xxSuccessful).andReturn()
-
-        val detailResponse = objectMapper.readValue(result.response.contentAsString, Detail::class.java)
-        Assertions.assertThat(detailResponse).isEqualTo(getDetail())
-    }
-
-    @Test
-    fun `API call retuns a success response using CRN`() {
-        val crn = DetailsGenerator.PERSON.crn
-        val result = mockMvc
-            .perform(get("/detail/$crn?type=CRN").withOAuth2Token(wireMockServer))
-            .andExpect(status().is2xxSuccessful).andReturn()
-
-        val detailResponse = objectMapper.readValue(result.response.contentAsString, Detail::class.java)
-        Assertions.assertThat(detailResponse).isEqualTo(getDetail())
-    }
-
     @Test
     fun `API call retuns a success response using list of CRNs`() {
         val crns = listOf(DetailsGenerator.PERSON.crn)
@@ -80,8 +57,8 @@ internal class DetailsIntegrationTest {
             )
             .andExpect(status().is2xxSuccessful).andReturn()
 
-        // val detailResponse = objectMapper.readValue(result.response.contentAsString, Detail::class.java)
-        // Assertions.assertThat(detailResponse).isEqualTo(getDetail())
+        val detailResponse = objectMapper.readValue<List<Detail>>(result.response.contentAsString)
+        Assertions.assertThat(detailResponse).isEqualTo(listOf(getDetail()))
     }
 
     private fun getDetail(): Detail = Detail(

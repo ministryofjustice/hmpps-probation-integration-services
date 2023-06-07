@@ -47,7 +47,7 @@ class Institution(
     @Column(name = "institution_id")
     val id: Long,
 
-    @Column(name = "institution_name")
+    @Column(name = "description")
     val name: String
 )
 

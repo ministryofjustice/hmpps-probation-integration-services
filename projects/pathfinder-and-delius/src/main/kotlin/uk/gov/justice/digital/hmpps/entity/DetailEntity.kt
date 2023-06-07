@@ -11,9 +11,8 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.hibernate.type.YesNoConverter
-import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 
 @Immutable
@@ -164,45 +163,77 @@ class DetailDistrict(
 )
 
 interface DetailRepository : JpaRepository<DetailPerson, Long> {
-    @EntityGraph(
-        attributePaths = [
-            "religion",
-            "personManager",
-            "personManager.staff",
-            "personManager.team",
-            "personManager.team.probationArea",
-            "personManager.team.district"
-        ]
-    )
-    fun getByCrn(crn: String): DetailPerson?
-
-    @EntityGraph(
-        attributePaths = [
-            "religion",
-            "personManager",
-            "personManager.staff",
-            "personManager.team",
-            "personManager.team.probationArea",
-            "personManager.team.district"
-        ]
-    )
-    fun getByNomsNumber(nomsNumber: String): DetailPerson?
-
-    @EntityGraph(
-        attributePaths = [
-            "religion",
-            "personManager",
-            "personManager.staff",
-            "personManager.team",
-            "personManager.team.probationArea",
-            "personManager.team.district"
-        ]
-    )
-    fun getByCrnIsIn(crn: List<String>): List<DetailPerson>
+    @Query("""
+        with latest_event as (
+            select e.offender_id, e.event_id, r.actual_release_date, i.description as release_location, c.custody_id
+            from offender o
+                     join event e on e.offender_id = o.offender_id
+                     left outer join disposal d on e.event_id = d.event_id
+                     left outer join custody c on d.disposal_id = c.disposal_id
+                     left outer join release r on c.custody_id = r.custody_id
+                     left outer join r_institution i on r.institution_id = i.institution_id
+            where o.crn in :crns
+              and e.active_flag = 1
+              and e.soft_deleted = 0
+              and d.active_flag = 1
+              and d.soft_deleted = 0
+        )
+        select o.first_name forename,
+               o.second_name middleNameOne,
+               o.third_name middleNameTwo,
+               o.surname, 
+               o.date_of_birth_date dateOfBirth,
+               o.crn,
+               o.noms_number nomisId,
+               o.pnc_number pncNumber,
+               d.description ldu,
+               pa.description probationArea,
+               s.forename omForename,
+               s.forename2 omMiddleName,
+               s.surname omSurname,
+               off.description mainOffence,
+               religion.code_description religion,
+               e.actual_release_date releaseDate,
+               e.release_location releaseLocation,
+               kdt.code_value keyDateCode,
+               kdt.code_description keyDateDesc,
+               kd.key_date keydate
+        from offender o
+                 join offender_manager om on o.offender_id = om.offender_id and om.active_flag = 1
+                 join probation_area pa on om.probation_area_id = pa.probation_area_id
+                 join team t on om.team_id = t.team_id
+                 join staff s on om.allocation_staff_id = s.staff_id
+                 join district d on t.district_id = d.district_id
+                 left outer join latest_event e on o.offender_id = e.offender_id
+                 left outer join main_offence mo on mo.event_id = e.event_id
+                 left outer join r_offence off on mo.offence_id = off.offence_id
+                 left outer join r_standard_reference_list religion on o.religion_id = religion.standard_reference_list_id
+                 left outer join key_date kd on kd.custody_id = e.custody_id
+                 left outer join r_standard_reference_list kdt on kd.key_date_type_id = kdt.standard_reference_list_id
+        where o.crn in :crns
+    """, nativeQuery = true)
+    fun getByCrns(crns: List<String>): List<PersonDetail>
 }
 
-fun DetailRepository.findByNomsNumber(nomsNumber: String): DetailPerson =
-    getByNomsNumber(nomsNumber) ?: throw NotFoundException("person", "nomsNumber", nomsNumber)
-
-fun DetailRepository.findByCrn(crn: String): DetailPerson =
-    getByCrn(crn) ?: throw NotFoundException("person", "crn", crn)
+interface PersonDetail{
+    val forename: String
+    val middleNameOne: String
+    val middleNameTwo: String
+    val surname: String
+    val dateOfBirth: LocalDate
+    val crn: String
+    val nomisId: String
+    val pncNumber: String
+    val ldu: String
+    val probationArea: String
+    val omForename: String
+    val omMiddleName: String
+    val omSurname: String
+    val mainOffence: String
+    val religion: String
+    val releaseDate: LocalDate
+    val releaseLocation: String
+    val keyDateCode: String
+    val keyDateDesc: String
+    val keydate: LocalDate
+}

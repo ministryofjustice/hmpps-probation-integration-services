@@ -13,7 +13,7 @@ object KeyDateGenerator {
     )
     val CUSTODY = Custody(
         IdGenerator.getAndIncrement(),
-        ConvictionEventGenerator.DISPOSAL_2.id
+        ConvictionEventGenerator.DISPOSAL_2
     )
     val KEYDATE = KeyDate(
         IdGenerator.getAndIncrement(),
