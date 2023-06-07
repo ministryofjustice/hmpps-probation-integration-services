@@ -620,6 +620,17 @@ digraph "compactImpliedRelationshipsDiagram" {
     target="_top"
     tooltip="DOCUMENT_TEMPLATE_AREA"
   ];
+  "DOMAIN_EVENT" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>DOMAIN_EVENT</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/DOMAIN_EVENT.html"
+    target="_top"
+    tooltip="DOMAIN_EVENT"
+  ];
   "DPA_REPORT" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -2660,7 +2671,7 @@ digraph "compactImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>R_STANDARD_REFERENCE_LIST</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">15,391 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">296 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">15,391 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">297 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/R_STANDARD_REFERENCE_LIST.html"
     target="_top"
@@ -3413,6 +3424,7 @@ digraph "compactImpliedRelationshipsDiagram" {
   "DOCUMENT":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "DOCUMENT_TEMPLATE_AREA":"DOCUMENT_TEMPLATE_ID":w -> "DOCUMENT_TEMPLATE":"DOCUMENT_TEMPLATE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "DOCUMENT_TEMPLATE_AREA":"PROBATION_AREA_ID":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "DOMAIN_EVENT":"DOMAIN_EVENT_TYPE_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "DPA_REPORT":"BOROUGH_ID":w -> "BOROUGH":"BOROUGH_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "DPA_REPORT":"DISTRICT_ID":w -> "DISTRICT":"DISTRICT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "DPA_REPORT":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];

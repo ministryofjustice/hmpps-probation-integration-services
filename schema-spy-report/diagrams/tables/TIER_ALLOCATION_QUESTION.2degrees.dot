@@ -194,6 +194,7 @@ digraph "twoDegreesRelationshipsDiagram" {
   "DISPOSAL":"elipses":w -> "OFFENDER":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "DISPOSAL_TYPE_AD_SENT_TYPE":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "DISPOSAL_TYPE_AD_SENT_TYPE":"elipses":w -> "R_DISPOSAL_TYPE":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "DOMAIN_EVENT":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "DRUG_TEST_RESULT":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "DRUG_TEST_RESULT":"elipses":w -> "R_DRUG_TYPE":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "DRUG_TEST_RESULT":"elipses":w -> "DRUGS_TEST":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -953,6 +954,17 @@ digraph "twoDegreesRelationshipsDiagram" {
     URL="../../tables/DISPOSAL_TYPE_AD_SENT_TYPE.html"
     target="_top"
     tooltip="DISPOSAL_TYPE_AD_SENT_TYPE"
+  ];
+  "DOMAIN_EVENT" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>DOMAIN_EVENT</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/DOMAIN_EVENT.html"
+    target="_top"
+    tooltip="DOMAIN_EVENT"
   ];
   "DRUG_TEST_RESULT" [
    label=<
@@ -1942,7 +1954,7 @@ digraph "twoDegreesRelationshipsDiagram" {
       <TR><TD PORT="REFERENCE_DATA_MASTER_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="172" HEIGHT="16">REFERENCE_DATA_MASTER_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="TRAINING_SESSION_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="172" HEIGHT="16">TRAINING_SESSION_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">15,391 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">296 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">15,391 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">297 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/R_STANDARD_REFERENCE_LIST.html"
     target="_top"

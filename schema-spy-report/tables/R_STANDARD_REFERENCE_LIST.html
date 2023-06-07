@@ -400,6 +400,10 @@
                                                 <td class="constraint detail">SYS_C0021087<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
+                                                <td title="DOMAIN_EVENT.DOMAIN_EVENT_TYPE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1393"><a href='DOMAIN_EVENT.html'>DOMAIN_EVENT</a><span class='relatedKey'>.DOMAIN_EVENT_TYPE_ID</span></td>
+                                                <td class="constraint detail">R_1393<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="DRUG_TEST_RESULT.ACTION_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1329"><a href='DRUG_TEST_RESULT.html'>DRUG_TEST_RESULT</a><span class='relatedKey'>.ACTION_ID</span></td>
                                                 <td class="constraint detail">R_1329<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -1586,12 +1590,12 @@
                                     <td>SPG_INTEREST IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO27</td>
-                                    <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE_1684532474</td>
                                     <td>SPG_OVERRIDE IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO27</td>
+                                    <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>

@@ -110,7 +110,7 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">TRIGGER T_CAS_OFFENDER_AR&#10;  AFTER UPDATE OF&#10;    nationality_id&#10;    --, pending_transfer&#10;  ON offender FOR EACH ROW&#10;BEGIN&#10;    IF NVL(:NEW.nationality_id  , -1) &lt;&gt; NVL(:OLD.nationality_id  , -2)&#10;       --OR&#10;       --NVL(:NEW.pending_transfer, -1) &lt;&gt; NVL(:OLD.pending_transfer, -2)&#10;    THEN&#10;        PKG_TriggerSupport.procAddCASDeferred(:OLD.offender_id);&#10;    END IF;&#10;END T_CAS_OFFENDER_AR;</textarea>
+                            <textarea id="sql-script-codemirror" name="sql-script-codemirror" rows="" style="display: none;">TRIGGER T_CAS_OFFENDER_AR&#10;  AFTER UPDATE OF&#10;    nationality_id&#10;    --, pending_transfer&#10;  ON offender FOR EACH ROW&#10;BEGIN&#10;    IF /*DST-1440: remove FNO&#10;       NVL(:NEW.nationality_id  , -1) &lt;&gt; NVL(:OLD.nationality_id  , -2)*/&#10;       1&lt;&gt;1&#10;    THEN&#10;        PKG_TriggerSupport.procAddCASDeferred(:OLD.offender_id);&#10;    END IF;&#10;END T_CAS_OFFENDER_AR;</textarea>
                         </div>
                     </div>
                 </section>
