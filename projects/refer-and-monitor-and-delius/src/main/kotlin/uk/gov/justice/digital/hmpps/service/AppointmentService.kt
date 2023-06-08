@@ -103,8 +103,7 @@ class AppointmentService(
         }
 
         contactRepository.saveAndFlush(appointment)
-        nsiRepository.findByIdIfRar(appointment.nsiId!!)?.rarCount =
-            contactRepository.countNsiRar(appointment.nsiId)
+        nsiRepository.findByIdIfRar(appointment.nsiId!!)?.rarCount = contactRepository.countNsiRar(appointment.nsiId)
         return appointment.id
     }
 
@@ -118,7 +117,9 @@ class AppointmentService(
             )
             if (nsis.size == 1) {
                 nsi = nsis.first()
-            } else if (nsis.size > 1) nsi = nsis.firstOrNull { it.notes?.contains(mergeAppointment.referralUrn) ?: false }
+            } else if (nsis.size > 1) {
+                nsi = nsis.firstOrNull { it.notes?.contains(mergeAppointment.referralUrn) ?: false }
+            }
         }
         if (nsi == null) {
             throw NotFoundException(

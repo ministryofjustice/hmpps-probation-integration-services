@@ -49,6 +49,7 @@ internal class ReferralResourceTest {
             UUID.randomUUID(),
             "R1234EF",
             ZonedDateTime.now().minusDays(1),
+            20,
             ZonedDateTime.now().minusDays(1).plusMinutes(20),
             "Some notes",
             "DEFAULT",
@@ -74,7 +75,6 @@ internal class ReferralResourceTest {
                 "referralReference" to mergeAppointment.referralReference,
                 "appointmentId" to mergeAppointment.id.toString(),
                 "startTime" to mergeAppointment.start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-                "endTime" to mergeAppointment.end.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
                 "outcome" to "null"
             )
         )
