@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -9,10 +10,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
+import uk.gov.justice.digital.hmpps.model.BatchRequest
 import uk.gov.justice.digital.hmpps.model.CourtAppearance
 import uk.gov.justice.digital.hmpps.model.CourtAppearancesContainer
 import uk.gov.justice.digital.hmpps.model.Type
@@ -36,11 +39,21 @@ internal class CourtAppearancesIntegrationTest {
 
     @Test
     fun `API call retuns a success response`() {
+        val crns = listOf(CourtAppearanceGenerator.DEFAULT_PERSON.crn)
         val result = mockMvc
-            .perform(get("/court-appearances").withOAuth2Token(wireMockServer))
+            .perform(
+                post("/court-appearances").withOAuth2Token(wireMockServer)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    objectMapper.writeValueAsString(
+                        BatchRequest(
+                            crns
+                        )
+                    )
+                ))
             .andExpect(status().is2xxSuccessful).andReturn()
 
-        val detailResponse = objectMapper.readValue(result.response.contentAsString, CourtAppearancesContainer::class.java)
+        val detailResponse = objectMapper.readValue<CourtAppearancesContainer>(result.response.contentAsString)
         Assertions.assertThat(detailResponse).isEqualTo(getCourtAppearances())
     }
 
