@@ -85,7 +85,7 @@ class AppointmentService(
             mergeAppointment.urn,
             mergeAppointment.start,
             mergeAppointment.end
-        )
+        )?.addNotes(mergeAppointment.notes)
         replacement?.also {
             appointment.outcome = outcomeRepository.getByCode(Code.RESCHEDULED_SERVICE_REQUEST.value)
             contactRepository.save(it)

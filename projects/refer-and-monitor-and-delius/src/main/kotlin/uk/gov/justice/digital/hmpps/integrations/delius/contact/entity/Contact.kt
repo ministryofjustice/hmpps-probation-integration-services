@@ -175,7 +175,7 @@ class Contact(
                 staffId = staffId,
                 locationId = locationId,
                 externalReference = externalReference
-            ).addNotes(notes)
+            )
         } else {
             this.externalReference = externalReference
             null
