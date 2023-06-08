@@ -63,7 +63,6 @@ class ReferralResource(
                 "referralReference" to mergeAppointment.referralReference,
                 "appointmentId" to mergeAppointment.id.toString(),
                 "startTime" to mergeAppointment.start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-                "endTime" to mergeAppointment.end.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
                 "outcome" to (mergeAppointment.outcome?.attended?.name ?: "null")
             )
         )

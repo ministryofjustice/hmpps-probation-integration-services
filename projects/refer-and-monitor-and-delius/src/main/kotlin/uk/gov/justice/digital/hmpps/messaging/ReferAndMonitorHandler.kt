@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.messaging
 
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.exception.UnprocessableException
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.EventProcessingResult.Failure
@@ -59,6 +60,8 @@ interface DomainEventHandler {
         block: (event: HmppsDomainEvent) -> EventProcessingResult
     ): EventProcessingResult = try {
         block(event)
+    } catch (upe: UnprocessableException) {
+        Rejected(upe, event.commonFields() + upe.properties)
     } catch (e: Exception) {
         Failure(e, event.commonFields() + ("message" to (e.message ?: "")))
     }
