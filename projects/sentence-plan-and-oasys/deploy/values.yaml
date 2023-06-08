@@ -1,0 +1,25 @@
+# Common values
+generic-service:
+  nameOverride: sentence-plan-and-oasys
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/sentence-plan-and-oasys
+
+  ingress:
+    tlsSecretName: sentence-plan-and-oasys-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    sentence-plan-and-oasys-client-credentials:
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
+    sentence-plan-and-oasys-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    sentence-plan-and-oasys-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: sentence-plan-and-oasys
+
