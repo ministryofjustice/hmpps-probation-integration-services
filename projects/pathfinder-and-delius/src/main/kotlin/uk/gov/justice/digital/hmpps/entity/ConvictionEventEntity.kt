@@ -181,4 +181,3 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
     )
     fun getAllByConvictionEventPersonCrnIn(crns: List<String>): List<ConvictionEventEntity>
 }
-

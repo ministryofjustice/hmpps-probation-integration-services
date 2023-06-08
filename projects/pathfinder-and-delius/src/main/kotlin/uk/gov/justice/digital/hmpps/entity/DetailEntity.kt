@@ -163,7 +163,8 @@ class DetailDistrict(
 )
 
 interface DetailRepository : JpaRepository<DetailPerson, Long> {
-    @Query("""
+    @Query(
+        """
         with latest_event as (
             select e.offender_id, e.event_id, r.actual_release_date, i.description as release_location, c.custody_id
             from offender o
@@ -211,11 +212,13 @@ interface DetailRepository : JpaRepository<DetailPerson, Long> {
                  left outer join key_date kd on kd.custody_id = e.custody_id
                  left outer join r_standard_reference_list kdt on kd.key_date_type_id = kdt.standard_reference_list_id
         where o.crn in :crns
-    """, nativeQuery = true)
+    """,
+        nativeQuery = true
+    )
     fun getByCrns(crns: List<String>): List<PersonDetail>
 }
 
-interface PersonDetail{
+interface PersonDetail {
     val forename: String
     val middleNameOne: String
     val middleNameTwo: String

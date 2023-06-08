@@ -32,7 +32,7 @@ class DetailService(
         val keyDates = mutableListOf<KeyDate>()
         var releaseLocation: String? = null
         var releaseDate: LocalDate? = null
-        if (c!=null) {
+        if (c != null) {
             mainOffence = c.mainOffence!!.offence.description
             if (c.disposal != null) {
                 val custody = custodyRepository.getCustodyByDisposalId(c.disposal.id)

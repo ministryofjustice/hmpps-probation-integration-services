@@ -43,14 +43,15 @@ internal class CourtAppearancesIntegrationTest {
         val result = mockMvc
             .perform(
                 post("/court-appearances").withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    objectMapper.writeValueAsString(
-                        BatchRequest(
-                            crns
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        objectMapper.writeValueAsString(
+                            BatchRequest(
+                                crns
+                            )
                         )
                     )
-                ))
+            )
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue<CourtAppearancesContainer>(result.response.contentAsString)

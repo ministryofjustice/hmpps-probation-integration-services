@@ -175,6 +175,7 @@ interface DetailRepository : JpaRepository<DetailPerson, Long> {
         ]
     )
     fun getByCrn(crn: String): DetailPerson?
+
     @EntityGraph(
         attributePaths = [
             "religion",

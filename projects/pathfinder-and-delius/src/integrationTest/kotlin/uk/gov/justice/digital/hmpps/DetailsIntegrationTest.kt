@@ -39,6 +39,7 @@ internal class DetailsIntegrationTest {
 
     @Autowired
     lateinit var objectMapper: ObjectMapper
+
     @Test
     fun `API call retuns a success response using list of CRNs`() {
         val crns = listOf(DetailsGenerator.PERSON.crn)

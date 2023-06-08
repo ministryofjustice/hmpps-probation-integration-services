@@ -15,23 +15,20 @@ class ConvictionService(private val convictionEventRepository: ConvictionEventRe
 
         val personConvictions = convictions.groupBy { it.convictionEventPerson.crn }
             .map {
-                PersonConviction(it.key, it.value
-                    .map { c ->
-                        Conviction(
-                            c.convictionDate,
-                            c.disposal?.type?.description ?: "unknown",
-                            combineOffences(
-                                Offence(c.mainOffence!!.offence.description, true),
-                                c.additionalOffences.map { o -> Offence(o.offence.description, false) }
+                PersonConviction(
+                    it.key,
+                    it.value
+                        .map { c ->
+                            Conviction(
+                                c.convictionDate,
+                                c.disposal?.type?.description ?: "unknown",
+                                listOf(
+                                    Offence(c.mainOffence!!.offence.description, true)
+                                ) + c.additionalOffences.map { o -> Offence(o.offence.description, false) }
                             )
-                        )
-
-                    })
+                        }
+                )
             }
         return ConvictionsContainer(personConvictions)
-    }
-
-    private fun combineOffences(offence: Offence, otherOffences: List<Offence>): List<Offence> {
-        return listOf(offence) + otherOffences
     }
 }

@@ -50,7 +50,8 @@ internal class ConvictionsIntegrationTest {
                                 crns
                             )
                         )
-                    ))
+                    )
+            )
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, ConvictionsContainer::class.java)
