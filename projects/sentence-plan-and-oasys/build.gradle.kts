@@ -9,7 +9,6 @@ dependencies {
     implementation(project(":libs:oauth-server"))
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -20,10 +19,6 @@ dependencies {
     implementation(libs.springdoc)
 
     dev(project(":libs:dev-tools"))
-    dev("com.h2database:h2")
-    dev("org.testcontainers:oracle-xe")
-
-    runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.bundles.mockito)
