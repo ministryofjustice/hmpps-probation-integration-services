@@ -29,24 +29,23 @@ class DetailService(
         }
         val c = convictionEventRepository.getLatestConviction(p.id)
         var mainOffence = ""
-        val keyDates = mutableListOf<KeyDate>()
         var releaseLocation: String? = null
         var releaseDate: LocalDate? = null
+        var keyDates = listOf<KeyDate>()
         if (c != null) {
             mainOffence = c.mainOffence!!.offence.description
             if (c.disposal != null) {
                 val custody = custodyRepository.getCustodyByDisposalId(c.disposal.id)
                 if (custody != null) {
-                    val keyDateEntities = custody.keyDates
-                    keyDateEntities.forEach { keyDates.add(KeyDate(it.type.code, it.type.description, it.date)) }
                     val release = detailReleaseRepository.findFirstByCustodyIdOrderByDateDesc(custody.id)
                     releaseLocation = release?.institution?.name
                     releaseDate = release?.date
+                    keyDates = custody.keyDates.map { KeyDate(it.type.code, it.type.description, it.date) }
                 }
             }
         }
 
-        val personManager = p.personManager[0]
+        val personManager = p.personManager.first()
         return Detail(
             p.name(),
             p.dateOfBirth,
