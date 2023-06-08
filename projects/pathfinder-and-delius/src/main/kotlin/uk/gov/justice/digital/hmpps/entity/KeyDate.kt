@@ -6,22 +6,24 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
-import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 @Immutable
 @Entity
 @Table(name = "custody")
+@Where(clause = "soft_deleted = 0")
 class Custody(
     @Id
     @Column(name = "custody_id")
     val id: Long,
 
-    @Column(name = "disposal_id")
-    val disposalId: Long,
+    @OneToOne
+    @JoinColumn(name = "disposal_id")
+    val disposal: Disposal,
 
     @OneToMany(mappedBy = "custody")
     val keyDates: List<KeyDate> = listOf(),
@@ -52,7 +54,3 @@ class KeyDate(
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
     val softDeleted: Boolean = false
 )
-
-interface CustodyRepository : JpaRepository<Custody, Long> {
-    fun getCustodyByDisposalId(disposalId: Long): Custody?
-}

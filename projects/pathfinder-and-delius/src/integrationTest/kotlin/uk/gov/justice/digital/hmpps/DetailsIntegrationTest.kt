@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -9,12 +10,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ConvictionEventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
+import uk.gov.justice.digital.hmpps.model.BatchRequest
 import uk.gov.justice.digital.hmpps.model.Detail
 import uk.gov.justice.digital.hmpps.model.KeyDate
 import uk.gov.justice.digital.hmpps.model.Name
@@ -38,25 +41,25 @@ internal class DetailsIntegrationTest {
     lateinit var objectMapper: ObjectMapper
 
     @Test
-    fun `API call retuns a success response using NOMS`() {
-        val noms = DetailsGenerator.PERSON.nomsNumber
+    fun `API call retuns a success response using list of CRNs`() {
+        val crns = listOf(DetailsGenerator.PERSON.crn)
+
         val result = mockMvc
-            .perform(get("/detail/$noms?type=NOMS").withOAuth2Token(wireMockServer))
+            .perform(
+                post("/detail").withOAuth2Token(wireMockServer)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        objectMapper.writeValueAsString(
+                            BatchRequest(
+                                crns
+                            )
+                        )
+                    )
+            )
             .andExpect(status().is2xxSuccessful).andReturn()
 
-        val detailResponse = objectMapper.readValue(result.response.contentAsString, Detail::class.java)
-        Assertions.assertThat(detailResponse).isEqualTo(getDetail())
-    }
-
-    @Test
-    fun `API call retuns a success response using CRN`() {
-        val crn = DetailsGenerator.PERSON.crn
-        val result = mockMvc
-            .perform(get("/detail/$crn?type=CRN").withOAuth2Token(wireMockServer))
-            .andExpect(status().is2xxSuccessful).andReturn()
-
-        val detailResponse = objectMapper.readValue(result.response.contentAsString, Detail::class.java)
-        Assertions.assertThat(detailResponse).isEqualTo(getDetail())
+        val detailResponse = objectMapper.readValue<List<Detail>>(result.response.contentAsString)
+        Assertions.assertThat(detailResponse).isEqualTo(listOf(getDetail()))
     }
 
     private fun getDetail(): Detail = Detail(

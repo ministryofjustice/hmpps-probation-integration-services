@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.entity.CourtAppearanceRepository
+import uk.gov.justice.digital.hmpps.model.BatchRequest
 import uk.gov.justice.digital.hmpps.model.CourtAppearance
 import uk.gov.justice.digital.hmpps.model.CourtAppearancesContainer
 import uk.gov.justice.digital.hmpps.model.Type
@@ -10,9 +11,9 @@ import java.time.temporal.ChronoUnit
 
 @Service
 class CourtAppearanceService(private val courtAppearanceRepository: CourtAppearanceRepository) {
-    fun getCourtAppearances(): CourtAppearancesContainer {
+    fun getCourtAppearances(batchRequest: BatchRequest): CourtAppearancesContainer {
         val courtAppearanceModels = mutableListOf<CourtAppearance>()
-        val courtAppearances = courtAppearanceRepository.findMostRecentCourtAppearances(ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS))
+        val courtAppearances = courtAppearanceRepository.findMostRecentCourtAppearances(ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS), batchRequest.crns)
         courtAppearances.map {
             courtAppearanceModels.add(
                 CourtAppearance(
