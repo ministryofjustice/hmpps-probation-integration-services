@@ -58,6 +58,7 @@ on:
           - '["workforce-allocations-to-delius"]'
           - '["pathfinder-and-delius"]'
           - '["soc-and-delius"]'
+          - '["sentence-plan-and-oasys"]'
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
