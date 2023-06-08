@@ -3,7 +3,6 @@ import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
 apply(plugin = "com.google.cloud.tools.jib")
 
 dependencies {
-    implementation(project(":libs:audit"))
     implementation(project(":libs:commons"))
     implementation(project(":libs:oauth-client"))
     implementation(project(":libs:oauth-server"))

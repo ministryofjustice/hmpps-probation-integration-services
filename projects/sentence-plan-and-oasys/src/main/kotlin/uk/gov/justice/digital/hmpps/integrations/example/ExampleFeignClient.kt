@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable
 import uk.gov.justice.digital.hmpps.config.FeignOAuth2Config
 
 @FeignClient(
-    name = "example",
-    url = "\${integrations.example.url}",
+    name = "ords-oasys",
+    url = "\${integrations.ords-oasys.url}",
     configuration = [FeignOAuth2Config::class]
 )
 interface ExampleFeignClient {
