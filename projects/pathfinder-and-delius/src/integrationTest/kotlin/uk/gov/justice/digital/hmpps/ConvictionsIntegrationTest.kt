@@ -9,13 +9,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ConvictionEventGenerator
+import uk.gov.justice.digital.hmpps.model.BatchRequest
 import uk.gov.justice.digital.hmpps.model.Conviction
 import uk.gov.justice.digital.hmpps.model.ConvictionsContainer
 import uk.gov.justice.digital.hmpps.model.Offence
+import uk.gov.justice.digital.hmpps.model.PersonConviction
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -35,21 +38,19 @@ internal class ConvictionsIntegrationTest {
     lateinit var objectMapper: ObjectMapper
 
     @Test
-    fun `API call retuns a success response using NOMS`() {
-        val noms = ConvictionEventGenerator.PERSON.nomsNumber
-        val result = mockMvc
-            .perform(get("/convictions/$noms?type=NOMS").withOAuth2Token(wireMockServer))
-            .andExpect(status().is2xxSuccessful).andReturn()
-
-        val detailResponse = objectMapper.readValue(result.response.contentAsString, ConvictionsContainer::class.java)
-        Assertions.assertThat(detailResponse).isEqualTo(getConvictions())
-    }
-
-    @Test
     fun `API call retuns a success response using CRN`() {
-        val crn = ConvictionEventGenerator.PERSON.crn
+        val crns = listOf(ConvictionEventGenerator.PERSON.crn)
         val result = mockMvc
-            .perform(get("/convictions/$crn?type=CRN").withOAuth2Token(wireMockServer))
+            .perform(
+                MockMvcRequestBuilders.post("/convictions").withOAuth2Token(wireMockServer)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        objectMapper.writeValueAsString(
+                            BatchRequest(
+                                crns
+                            )
+                        )
+                    ))
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, ConvictionsContainer::class.java)
@@ -58,12 +59,17 @@ internal class ConvictionsIntegrationTest {
 
     private fun getConvictions(): ConvictionsContainer = ConvictionsContainer(
         listOf(
-            Conviction(
-                ConvictionEventGenerator.DEFAULT_EVENT.convictionDate,
-                ConvictionEventGenerator.DISPOSAL_TYPE.description,
+            PersonConviction(
+                ConvictionEventGenerator.DEFAULT_EVENT.convictionEventPerson.crn,
                 listOf(
-                    Offence(ConvictionEventGenerator.OFFENCE_MAIN.description, true),
-                    Offence(ConvictionEventGenerator.OFFENCE_OTHER.description, false)
+                    Conviction(
+                        ConvictionEventGenerator.DEFAULT_EVENT.convictionDate,
+                        ConvictionEventGenerator.DISPOSAL_TYPE.description,
+                        listOf(
+                            Offence(ConvictionEventGenerator.OFFENCE_MAIN.description, true),
+                            Offence(ConvictionEventGenerator.OFFENCE_OTHER.description, false)
+                        )
+                    )
                 )
             )
         )

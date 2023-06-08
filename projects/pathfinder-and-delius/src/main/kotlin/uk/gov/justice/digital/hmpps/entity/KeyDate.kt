@@ -10,7 +10,6 @@ import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
-import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 @Immutable
@@ -55,7 +54,3 @@ class KeyDate(
     @Column(name = "soft_deleted", columnDefinition = "number", nullable = false)
     val softDeleted: Boolean = false
 )
-
-interface CustodyRepository : JpaRepository<Custody, Long> {
-    fun getCustodyByDisposalId(disposalId: Long): Custody?
-}

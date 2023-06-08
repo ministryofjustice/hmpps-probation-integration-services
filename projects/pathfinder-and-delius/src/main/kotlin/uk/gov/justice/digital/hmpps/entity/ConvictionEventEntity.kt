@@ -12,6 +12,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 
 @Immutable
@@ -166,31 +167,18 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         attributePaths = [
             "mainOffence.offence",
             "additionalOffences.offence",
-            "disposal.type"
-        ]
-    )
-    fun getAllByConvictionEventPersonCrn(crn: String): List<ConvictionEventEntity>
-
-    @EntityGraph(
-        attributePaths = [
-            "mainOffence.offence",
-            "additionalOffences.offence",
             "disposal.type",
+            "convictionEventPerson",
             "disposal.custody"
-        ]
-    )
-    fun getAllByConvictionEventPersonIdOrderByConvictionDateDesc(personId: Long): List<ConvictionEventEntity>
 
-    @EntityGraph(
-        attributePaths = [
-            "mainOffence.offence",
-            "additionalOffences.offence",
-            "disposal.type"
         ]
     )
-    fun getAllByConvictionEventPersonNomsNumber(nomsNumber: String): List<ConvictionEventEntity>
+    @Query(
+        """
+        select c from ConvictionEventEntity c
+        where c.convictionEventPerson.crn in :crns
+    """
+    )
+    fun getAllByConvictionEventPersonCrnIn(crns: List<String>): List<ConvictionEventEntity>
 }
-
-fun ConvictionEventRepository.getLatestConviction(personId: Long) =
-    getAllByConvictionEventPersonIdOrderByConvictionDateDesc(personId).firstOrNull()
 

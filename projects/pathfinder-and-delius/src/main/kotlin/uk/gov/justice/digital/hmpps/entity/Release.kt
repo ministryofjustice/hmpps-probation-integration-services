@@ -9,8 +9,6 @@ import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
-import org.springframework.data.jpa.repository.EntityGraph
-import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 @Immutable
@@ -70,8 +68,3 @@ class Recall(
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false
 )
-
-interface DetailReleaseRepository : JpaRepository<DetailRelease, Long> {
-    @EntityGraph(attributePaths = ["recall", "institution"])
-    fun findFirstByCustodyIdOrderByDateDesc(custodyId: Long): DetailRelease?
-}
