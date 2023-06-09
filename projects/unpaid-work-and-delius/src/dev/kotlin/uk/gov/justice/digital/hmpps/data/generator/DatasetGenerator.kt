@@ -7,10 +7,12 @@ object DatasetGenerator {
     val GENDER = generate(DatasetCode.GENDER)
     val ETHNICITY = generate(DatasetCode.ETHNICITY)
     val DISABILITY = generate(DatasetCode.DISABILITY)
+    val DISABILITY_CONDITION = generate(DatasetCode.DISABILITY_CONDITION)
     val LANGUAGE = generate(DatasetCode.LANGUAGE)
     val REGISTER_LEVEL = generate(DatasetCode.REGISTER_LEVEL)
     val REGISTER_CATEGORY = generate(DatasetCode.REGISTER_CATEGORY)
     val DISABILITY_PROVISION = generate(DatasetCode.DISABILITY_PROVISION)
+    val DISABILITY_PROVISION_CATEGORY = generate(DatasetCode.DISABILITY_PROVISION_CATEGORY)
     val RELATIONSHIP = generate(DatasetCode.RELATIONSHIP)
     val ADDRESS_STATUS = generate(DatasetCode.ADDRESS_STATUS)
 
