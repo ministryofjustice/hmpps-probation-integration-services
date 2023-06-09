@@ -7,11 +7,24 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class ApiController {
-    @PreAuthorize("hasRole('ROLE_EXAMPLE')")
-    @GetMapping(value = ["/example/{inputId}"])
-    fun handle(
-        @PathVariable("inputId") inputId: String
-    ) {
-        // TODO Not yet implemented
+    @PreAuthorize("hasRole('ROLE_SENTENCE_PLAN_RW')")
+    @GetMapping(value = ["/needs/{crn}"])
+    fun getNeeds(
+        @PathVariable("crn") crn: String
+    ) = genericNeeds(crn)
+
+    private fun genericNeeds(crn: String): Needs {
+        return Needs(
+            listOf(
+                Need("Accommodation"),
+                Need("Education/Employability"),
+                Need("Relationships"),
+                Need("Lifestyle"),
+                Need("Drug misuse"),
+                Need("Alcohol misuse"),
+                Need("Thinking & Behaviour"),
+                Need("Attitudes")
+            )
+        )
     }
 }
