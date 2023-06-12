@@ -114,7 +114,7 @@ SELECT json_object(
                                                                         pr.NOTES,
                                                                         'startDate' VALUE
                                                                         to_char(pr.START_DATE, 'yyyy-MM-dd'),
-                                                                        'finishDate' VALUE
+                                                                        'endDate' VALUE
                                                                         to_char(pr.FINISH_DATE, 'yyyy-MM-dd')
                                                                         ABSENT ON NULL
                                                                         RETURNING CLOB)
