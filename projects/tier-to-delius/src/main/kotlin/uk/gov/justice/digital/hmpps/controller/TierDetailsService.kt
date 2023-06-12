@@ -14,6 +14,8 @@ import uk.gov.justice.digital.hmpps.controller.model.Conviction
 import uk.gov.justice.digital.hmpps.controller.model.Registration
 import uk.gov.justice.digital.hmpps.controller.model.Requirement
 import uk.gov.justice.digital.hmpps.controller.model.TierDetails
+import uk.gov.justice.digital.hmpps.integrations.delius.nsi.entity.NsiRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nsi.entity.previousEnforcementActivity
 
 @Service
 class TierDetailsService(
@@ -21,8 +23,8 @@ class TierDetailsService(
     val registrationRepository: RegistrationRepository,
     val eventRepository: EventRepository,
     val oasysAssessmentRepository: OASYSAssessmentRepository,
-    val ogrsAssessmentRepository: OGRSAssessmentRepository
-
+    val ogrsAssessmentRepository: OGRSAssessmentRepository,
+    val nsiRepository: NsiRepository
 ) {
     fun tierDetails(crn: String): TierDetails {
         val case = caseEntityRepository.getCase(crn)
@@ -37,7 +39,8 @@ class TierDetailsService(
             ogrsScore,
             case.dynamicRsrScore,
             registrationEntities.map { Registration(it.type.code, it.type.description, it.level?.code, it.date) },
-            convictions
+            convictions,
+            nsiRepository.previousEnforcementActivity(case.id)
         )
     }
 

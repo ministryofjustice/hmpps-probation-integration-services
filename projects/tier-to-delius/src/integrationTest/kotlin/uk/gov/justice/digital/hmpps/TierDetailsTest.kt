@@ -36,6 +36,7 @@ class TierDetailsTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.currentTier").value(CaseEntityGenerator.DEFAULT.tier?.code))
             .andExpect(MockMvcResultMatchers.jsonPath("$.rsrscore").value(CaseEntityGenerator.DEFAULT.dynamicRsrScore))
             .andExpect(MockMvcResultMatchers.jsonPath("$.ogrsscore").value(OgrsAssessmentGenerator.DEFAULT.score))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.previousEnforcementActivity").value(true))
             .andExpect(MockMvcResultMatchers.jsonPath("$.registrations[0].code").value(RegistrationGenerator.DEFAULT.type.code))
             .andExpect(MockMvcResultMatchers.jsonPath("$.registrations[0].description").value(RegistrationGenerator.DEFAULT.type.description))
             .andExpect(MockMvcResultMatchers.jsonPath("$.registrations[0].level").value(RegistrationGenerator.DEFAULT.level?.code))
