@@ -4,9 +4,12 @@ import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
@@ -21,9 +24,11 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "offender_address")
 @EntityListeners(AuditingEntityListener::class)
+@SequenceGenerator(name = "offender_address_id_generator", sequenceName = "offender_address_id_seq", allocationSize = 1)
 class PersonAddress(
     @Id
     @Column(name = "offender_address_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offender_address_id_generator")
     val id: Long,
     @Column(name = "offender_id")
     val personId: Long,
