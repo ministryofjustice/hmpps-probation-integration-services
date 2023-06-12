@@ -50,7 +50,6 @@ internal class ReferralResourceTest {
             "R1234EF",
             ZonedDateTime.now().minusDays(1),
             20,
-            ZonedDateTime.now().minusDays(1).plusMinutes(20),
             "Some notes",
             "DEFAULT",
             false,

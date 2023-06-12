@@ -70,7 +70,6 @@ internal class AppointmentServiceTest {
             "R1234EF",
             ZonedDateTime.now().plusMinutes(30),
             60,
-            null,
             "some notes for the appointment",
             "DEFAULT",
             false,
