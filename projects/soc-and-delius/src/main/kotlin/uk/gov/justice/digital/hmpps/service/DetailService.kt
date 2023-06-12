@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.entity.DetailReleaseRepository
 import uk.gov.justice.digital.hmpps.entity.DetailRepository
 import uk.gov.justice.digital.hmpps.entity.findByCrn
 import uk.gov.justice.digital.hmpps.entity.findByNomsNumber
+import uk.gov.justice.digital.hmpps.entity.getLatestConviction
 import uk.gov.justice.digital.hmpps.model.Detail
 import uk.gov.justice.digital.hmpps.model.KeyDate
 import uk.gov.justice.digital.hmpps.model.Name
@@ -26,27 +27,25 @@ class DetailService(
             IdentifierType.CRN -> detailRepository.findByCrn(value)
             IdentifierType.NOMS -> detailRepository.findByNomsNumber(value)
         }
-        val c = convictionEventRepository.getAllByConvictionEventPersonId(p.id)
+        val c = convictionEventRepository.getLatestConviction(p.id)
         var mainOffence = ""
-        val keyDates = mutableListOf<KeyDate>()
         var releaseLocation: String? = null
         var releaseDate: LocalDate? = null
-        if (c.isNotEmpty()) {
-            val convictionEvent = c.sortedBy { it.convictionDate }[0]
-            mainOffence = convictionEvent.mainOffence!!.offence.description
-            if (convictionEvent.disposal != null) {
-                val custody = custodyRepository.getCustodyByDisposalId(convictionEvent.disposal.id)
+        var keyDates = listOf<KeyDate>()
+        if (c != null) {
+            mainOffence = c.mainOffence!!.offence.description
+            if (c.disposal != null) {
+                val custody = custodyRepository.getCustodyByDisposalId(c.disposal.id)
                 if (custody != null) {
-                    val keyDateEntities = custody.keyDates
-                    keyDateEntities.forEach { keyDates.add(KeyDate(it.type.code, it.type.description, it.date)) }
                     val release = detailReleaseRepository.findFirstByCustodyIdOrderByDateDesc(custody.id)
                     releaseLocation = release?.institution?.name
                     releaseDate = release?.date
+                    keyDates = custody.keyDates.map { KeyDate(it.type.code, it.type.description, it.date) }
                 }
             }
         }
 
-        val personManager = p.personManager[0]
+        val personManager = p.personManager.first()
         return Detail(
             p.name(),
             p.dateOfBirth,

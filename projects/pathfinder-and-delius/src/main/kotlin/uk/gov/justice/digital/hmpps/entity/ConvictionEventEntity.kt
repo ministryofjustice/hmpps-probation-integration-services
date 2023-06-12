@@ -12,6 +12,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 
 @Immutable
@@ -81,6 +82,9 @@ class Disposal(
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: ConvictionEventEntity,
+
+    @OneToOne(mappedBy = "disposal")
+    val custody: Custody? = null,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
@@ -163,26 +167,17 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         attributePaths = [
             "mainOffence.offence",
             "additionalOffences.offence",
-            "disposal.type"
-        ]
-    )
-    fun getAllByConvictionEventPersonCrn(crn: String): List<ConvictionEventEntity>
+            "disposal.type",
+            "convictionEventPerson",
+            "disposal.custody"
 
-    @EntityGraph(
-        attributePaths = [
-            "mainOffence.offence",
-            "additionalOffences.offence",
-            "disposal.type"
         ]
     )
-    fun getAllByConvictionEventPersonId(personId: Long): List<ConvictionEventEntity>
-
-    @EntityGraph(
-        attributePaths = [
-            "mainOffence.offence",
-            "additionalOffences.offence",
-            "disposal.type"
-        ]
+    @Query(
+        """
+        select c from ConvictionEventEntity c
+        where c.convictionEventPerson.crn in :crns
+    """
     )
-    fun getAllByConvictionEventPersonNomsNumber(nomsNumber: String): List<ConvictionEventEntity>
+    fun getAllByConvictionEventPersonCrnIn(crns: List<String>): List<ConvictionEventEntity>
 }

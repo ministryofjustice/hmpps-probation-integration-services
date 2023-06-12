@@ -14,5 +14,10 @@ data class Offence(
 )
 
 data class ConvictionsContainer(
+    val personConvictions: List<PersonConviction> = listOf()
+)
+
+data class PersonConviction(
+    val crn: String,
     val convictions: List<Conviction> = listOf()
 )

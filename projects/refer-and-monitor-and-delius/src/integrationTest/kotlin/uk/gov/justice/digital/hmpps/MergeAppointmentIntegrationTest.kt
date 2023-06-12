@@ -66,13 +66,12 @@ internal class MergeAppointmentIntegrationTest {
         val person = PersonGenerator.NO_APPOINTMENTS
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
         val start = ZonedDateTime.now().plusDays(14)
-        val end = start.plusMinutes(30)
         val mergeAppointment = MergeAppointment(
             UUID.randomUUID(),
             referralId,
             "RE1234F",
             start,
-            end,
+            30,
             "Appointment Notes",
             "DEFAULT",
             false,
@@ -109,14 +108,13 @@ internal class MergeAppointmentIntegrationTest {
     fun `cannot save appointment that conflicts with existing appointment`() {
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
         val start = ZonedDateTime.now().plusDays(14).plusMinutes(10)
-        val end = start.plusMinutes(30)
         val person = PersonGenerator.NO_APPOINTMENTS
         val mergeAppointment = MergeAppointment(
             UUID.randomUUID(),
             referralId,
             "RE1234F",
             start,
-            end,
+            30,
             "Appointment Notes",
             "DEFAULT",
             false,
@@ -135,7 +133,6 @@ internal class MergeAppointmentIntegrationTest {
         val person = PersonGenerator.NO_APPOINTMENTS
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
         val start = ZonedDateTime.now().plusDays(14).plusMinutes(10)
-        val end = start.plusMinutes(20)
         val appointmentId =
             contactRepository.findAll()
                 .filter { it.person.id == person.id }
@@ -148,7 +145,7 @@ internal class MergeAppointmentIntegrationTest {
             referralId,
             "RE1234F",
             start,
-            end,
+            20,
             "Appointment Notes",
             "DEFAULT",
             false,
@@ -185,7 +182,6 @@ internal class MergeAppointmentIntegrationTest {
         val person = PersonGenerator.NO_APPOINTMENTS
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
         val start = ZonedDateTime.now().minusMinutes(30)
-        val end = start.plusMinutes(30)
         val appointmentId =
             contactRepository.findAll()
                 .filter { it.person.id == person.id }
@@ -198,7 +194,7 @@ internal class MergeAppointmentIntegrationTest {
             referralId,
             "RE1234F",
             start,
-            end,
+            30,
             "Appointment Notes",
             "DEFAULT",
             false,
@@ -236,13 +232,12 @@ internal class MergeAppointmentIntegrationTest {
         val person = PersonGenerator.NO_APPOINTMENTS
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
         val start = ZonedDateTime.now().minusDays(1)
-        val end = start.plusMinutes(30)
         val mergeAppointment = MergeAppointment(
             UUID.randomUUID(),
             referralId,
             "RE1234F",
             start,
-            end,
+            30,
             "Appointment Notes",
             "DEFAULT",
             false,
@@ -261,13 +256,12 @@ internal class MergeAppointmentIntegrationTest {
         val person = PersonGenerator.NO_APPOINTMENTS
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
         val start = ZonedDateTime.now().plusDays(2)
-        val end = start.plusMinutes(30)
         val mergeAppointment = MergeAppointment(
             UUID.randomUUID(),
             referralId,
             "RE1234F",
             start,
-            end,
+            30,
             "Appointment Notes",
             "DEFAULT",
             false,
@@ -300,13 +294,12 @@ internal class MergeAppointmentIntegrationTest {
         val person = PersonGenerator.NO_APPOINTMENTS
         val referralId = UUID.fromString("10b45127-abc1-29c1-7492-2354c21735b8")
         val start = ZonedDateTime.now().plusDays(10)
-        val end = start.plusMinutes(30)
         val mergeAppointment = MergeAppointment(
             UUID.randomUUID(),
             referralId,
             "NE1234D",
             start,
-            end,
+            30,
             "Appointment Notes",
             "DEFAULT",
             false,

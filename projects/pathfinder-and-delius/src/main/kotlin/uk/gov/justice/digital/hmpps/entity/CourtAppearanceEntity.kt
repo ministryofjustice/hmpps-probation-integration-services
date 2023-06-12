@@ -99,9 +99,10 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearanceEntity, Long>
     @Query(
         """
         select ca from CourtAppearanceEntity ca
-        where (ca.appearanceDate >= :dateFrom)
+        where ca.appearanceDate >= :dateFrom
+        and ca.courtAppearanceEventEntity.courtAppearancePerson.crn in (:crns)
         order by ca.appearanceDate desc
     """
     )
-    fun findMostRecentCourtAppearances(dateFrom: ZonedDateTime): List<CourtAppearanceEntity>
+    fun findMostRecentCourtAppearances(dateFrom: ZonedDateTime, crns: List<String>): List<CourtAppearanceEntity>
 }

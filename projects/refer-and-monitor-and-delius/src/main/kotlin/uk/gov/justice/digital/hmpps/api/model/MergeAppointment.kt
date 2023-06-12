@@ -10,7 +10,7 @@ data class MergeAppointment(
     val referralId: UUID,
     val referralReference: String,
     val start: ZonedDateTime,
-    val end: ZonedDateTime,
+    val durationInMinutes: Long,
     val notes: String?,
     val officeLocationCode: String?,
     val countsTowardsRar: Boolean,
@@ -29,4 +29,6 @@ data class MergeAppointment(
 
     val typeCode
         get() = if (countsTowardsRar) ContactType.Code.CRSAPT else ContactType.Code.CRSSAA
+
+    val end: ZonedDateTime = start.plusMinutes(durationInMinutes)
 }

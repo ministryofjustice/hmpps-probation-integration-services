@@ -82,6 +82,9 @@ class CaseEntity(
     @OneToMany(mappedBy = "case")
     val disabilities: List<DisabilityEntity>,
 
+    @OneToMany(mappedBy = "case")
+    val provisions: List<ProvisionEntity>,
+
     @ManyToOne
     @JoinColumn(name = "language_id")
     val primaryLanguage: ReferenceData? = null,

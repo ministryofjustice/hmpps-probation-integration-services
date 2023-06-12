@@ -1,66 +1,42 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.controller.IdentifierType
-import uk.gov.justice.digital.hmpps.entity.ConvictionEventRepository
-import uk.gov.justice.digital.hmpps.entity.CustodyRepository
-import uk.gov.justice.digital.hmpps.entity.DetailReleaseRepository
 import uk.gov.justice.digital.hmpps.entity.DetailRepository
-import uk.gov.justice.digital.hmpps.entity.findByCrn
-import uk.gov.justice.digital.hmpps.entity.findByNomsNumber
+import uk.gov.justice.digital.hmpps.entity.PersonDetail
+import uk.gov.justice.digital.hmpps.model.BatchRequest
 import uk.gov.justice.digital.hmpps.model.Detail
 import uk.gov.justice.digital.hmpps.model.KeyDate
 import uk.gov.justice.digital.hmpps.model.Name
-import uk.gov.justice.digital.hmpps.model.name
-import java.time.LocalDate
 
 @Service
 class DetailService(
-    private val detailRepository: DetailRepository,
-    private val convictionEventRepository: ConvictionEventRepository,
-    private val custodyRepository: CustodyRepository,
-    private val detailReleaseRepository: DetailReleaseRepository
+    private val detailRepository: DetailRepository
 ) {
-    fun getDetails(value: String, type: IdentifierType): Detail {
-        val p = when (type) {
-            IdentifierType.CRN -> detailRepository.findByCrn(value)
-            IdentifierType.NOMS -> detailRepository.findByNomsNumber(value)
-        }
-        val c = convictionEventRepository.getAllByConvictionEventPersonId(p.id)
-        var mainOffence = ""
-        val keyDates = mutableListOf<KeyDate>()
-        var releaseLocation: String? = null
-        var releaseDate: LocalDate? = null
-        if (c.isNotEmpty()) {
-            val convictionEvent = c.sortedBy { it.convictionDate }[0]
-            mainOffence = convictionEvent.mainOffence!!.offence.description
-            if (convictionEvent.disposal != null) {
-                val custody = custodyRepository.getCustodyByDisposalId(convictionEvent.disposal.id)
-                if (custody != null) {
-                    val keyDateEntities = custody.keyDates
-                    keyDateEntities.forEach { keyDates.add(KeyDate(it.type.code, it.type.description, it.date)) }
-                    val release = detailReleaseRepository.findFirstByCustodyIdOrderByDateDesc(custody.id)
-                    releaseLocation = release?.institution?.name
-                    releaseDate = release?.date
-                }
+    fun getBatchDetails(batchRequest: BatchRequest) =
+        detailRepository.getByCrns(batchRequest.crns).groupBy { it.crn }
+            .map { pd ->
+                val detail = pd.value.first()
+                Detail(
+                    detail.name(),
+                    detail.dateOfBirth,
+                    detail.crn,
+                    detail.nomisId,
+                    detail.pncNumber,
+                    detail.ldu,
+                    detail.probationArea,
+                    detail.offenderManagerName(),
+                    detail.mainOffence,
+                    detail.religion,
+                    pd.value.keyDates(),
+                    detail.releaseDate,
+                    detail.releaseLocation
+                )
             }
-        }
 
-        val personManager = p.personManager[0]
-        return Detail(
-            p.name(),
-            p.dateOfBirth,
-            p.crn,
-            p.nomsNumber,
-            p.pncNumber,
-            personManager.team.district.description,
-            personManager.team.probationArea.description,
-            Name(personManager.staff.forename, personManager.staff.middleName, personManager.staff.surname),
-            mainOffence,
-            p.religion?.description,
-            keyDates,
-            releaseDate,
-            releaseLocation
-        )
+    fun List<PersonDetail>.keyDates() = map {
+        KeyDate(it.keyDateCode, it.keyDateDesc, it.keydate)
     }
+
+    fun PersonDetail.name() = Name(forename, listOfNotNull(middleNameOne, middleNameTwo).joinToString(" "), surname)
+    fun PersonDetail.offenderManagerName() = Name(omForename, omMiddleName, omSurname)
 }
