@@ -31,7 +31,7 @@ if [ -z "$REINDEXING_TIMEOUT" ]; then help; fail 'Missing -t'; fi
 function stop_logstash() {
     exit_code=$?
     echo 'Printing final stats...'
-    curl localhost:9600/_node/stats
+    curl --silent localhost:9600/_node/stats
     if [ "$exit_code" = '0' ]; then
       echo 'Gracefully stopping Logstash process...'
       pgrep java | xargs -n1 kill -TERM
@@ -87,6 +87,9 @@ function switch_aliases() {
   track_custom_event 'ProbationSearchIndexCompleted' '{"indexName": "'"$STANDBY_INDEX"'", "duration": "'"$SECONDS"'", "count": "'"$COUNT"'"}'
 }
 
-get_current_indices && delete_ready_for_reindex && wait_for_index_to_complete && switch_aliases
+get_current_indices
+delete_ready_for_reindex
+wait_for_index_to_complete
+switch_aliases
 
 exit 0
