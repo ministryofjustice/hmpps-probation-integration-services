@@ -13,7 +13,7 @@ import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.DeliusValidationError
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -136,4 +136,4 @@ interface EventRepository : JpaRepository<Event, Long> {
 }
 
 fun EventRepository.getByCrn(crn: String, eventNumber: String) =
-    findByCrn(crn, eventNumber) ?: throw NotFoundException("Event number $eventNumber does not exist for crn $crn")
+    findByCrn(crn, eventNumber) ?: throw DeliusValidationError("Event does not exist for crn")
