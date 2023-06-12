@@ -39,7 +39,7 @@ class EventEntity(
     @Column(name = "in_breach")
     val inBreach: Boolean = false,
 
-    @Column(name = "soft_deleted", columnDefinition = "number")
+    @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 )
 
