@@ -9,9 +9,9 @@ import uk.gov.justice.digital.hmpps.api.model.MergeAppointment
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.AppointmentNotFoundException
-import uk.gov.justice.digital.hmpps.exception.AppointmentNotFoundReason
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.asReason
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.ADD_CONTACT
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.UPDATE_CONTACT
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRepository
@@ -175,7 +175,8 @@ class AppointmentService(
                 deliusId = uao.deliusId,
                 referralReference = uao.referralReference,
                 outcome = uao.outcome,
-                reason = AppointmentNotFoundReason.from(contactRepository.getNotFoundReason(uao.crn, uao.referral.urn, uao.urn, uao.deliusId ?: -1))
+                reason = contactRepository.getNotFoundReason(uao.crn, uao.referral.urn, uao.urn, uao.deliusId ?: -1)
+                    .asReason()
             )
 
         val outcome = outcomeRepository.getByCode(attendanceOutcome(uao.outcome).value)

@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.contact
 
-import jakarta.persistence.Tuple
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -14,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.CRSSAA
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Enforcement
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.EnforcementAction
+import uk.gov.justice.digital.hmpps.integrations.delius.projections.ContactNotFoundReason
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -105,16 +105,26 @@ interface ContactRepository : JpaRepository<Contact, Long> {
 
     @Query(
         """
+            select c from Contact c 
+            where c.nsiId = :nsiId
+            and c.type.code = :contactType
+            and c.date = :date
+        """
+    )
+    fun findNotificationContact(nsiId: Long, contactType: String, date: LocalDate): List<Contact>
+
+    @Query(
+        """
             select 
                 (select contact.soft_deleted 
                     from contact 
                     join offender contact_offender on contact_offender.offender_id = contact.offender_id 
                     where (contact_offender.crn = :crn and contact.external_reference = :contactExternalReference) 
                     or contact_id = :contactId
-                ) as contact_soft_deleted,
-                nsi.soft_deleted as nsi_soft_deleted,
-                nsi.active_flag as nsi_active,
-                last_updated_by.distinguished_name as nsi_last_updated_by
+                ) as softDeleted,
+                nsi.soft_deleted as nsiSoftDeleted,
+                nsi.active_flag as nsiActive,
+                last_updated_by.distinguished_name as nsiLastUpdatedBy
             from nsi
             join offender nsi_offender on nsi_offender.offender_id = nsi.offender_id 
             left join user_ last_updated_by on last_updated_by.user_id = nsi.last_updated_user_id
@@ -122,7 +132,12 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         """,
         nativeQuery = true
     )
-    fun getNotFoundReason(crn: String, nsiExternalReference: String, contactExternalReference: String, contactId: Long): Tuple?
+    fun getNotFoundReason(
+        crn: String,
+        nsiExternalReference: String,
+        contactExternalReference: String,
+        contactId: Long
+    ): ContactNotFoundReason?
 }
 
 fun ContactRepository.appointmentClashes(

@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.ReferralNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiOutcomeRepository
@@ -66,14 +67,11 @@ internal class RepositoryExtensionMethodTests {
             ZonedDateTime.now().minusDays(1),
             ZonedDateTime.now(),
             ReferralEndType.CANCELLED,
-            "Notes"
+            "Notes",
+            ZonedDateTime.now(),
+            "End Of Service Report Submitted"
         )
-        val ex = assertThrows<NotFoundException> { nsiService.terminateNsi(termination) }
-
-        assertThat(
-            ex.message,
-            equalTo("Unable to match Referral ${termination.urn} => CRN ${termination.crn} : EventId ${termination.eventId} : StartDate ${termination.startDate.toLocalDate()}")
-        )
+        assertThrows<ReferralNotFoundException> { nsiService.terminateNsi(termination) }
     }
 
     @Test
@@ -91,7 +89,9 @@ internal class RepositoryExtensionMethodTests {
                     ZonedDateTime.now().minusDays(1),
                     ZonedDateTime.now(),
                     ReferralEndType.COMPLETED,
-                    "Notes"
+                    "Notes",
+                    ZonedDateTime.now(),
+                    "End Of Service Report Submitted"
                 )
             )
         }
@@ -115,7 +115,9 @@ internal class RepositoryExtensionMethodTests {
                     ZonedDateTime.now().minusDays(1),
                     ZonedDateTime.now(),
                     ReferralEndType.COMPLETED,
-                    "Notes"
+                    "Notes",
+                    ZonedDateTime.now(),
+                    "End Of Service Report Submitted"
                 )
             )
         }

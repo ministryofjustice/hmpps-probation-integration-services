@@ -7,11 +7,12 @@ import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.FutureAppointmentLinkedException
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exception.ReferralNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.MANAGE_NSI
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.NSI_COMMENCED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.NSI_REFERRAL
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.NSI_TERMINATED
@@ -100,6 +101,8 @@ class NsiService(
         if (nsi.actualEndDate != termination.endDate) {
             nsi.actualEndDate = termination.endDate
         }
+
+        createNotificationIfNotExists(termination, nsi)
     }
 
     private fun findNsi(termination: NsiTermination): Nsi {
@@ -113,12 +116,21 @@ class NsiService(
                 it.referralDate == termination.startDate.toLocalDate()
             }
             if (nsis.size == 1) {
-                nsi = nsis[0]
+                nsi = nsis.first()
             } else if (nsis.size > 1) nsi = nsis.firstOrNull { it.notes?.contains(termination.urn) ?: false }
         }
         if (nsi == null) {
-            throw NotFoundException(
-                "Unable to match Referral ${termination.urn} => CRN ${termination.crn} : EventId ${termination.eventId} : StartDate ${termination.startDate.toLocalDate()}"
+            val nfr = nsiRepository.getNotFoundReason(termination.crn, termination.urn)
+            throw ReferralNotFoundException(
+                termination.urn,
+                termination.crn,
+                termination.eventId,
+                termination.startDate.toLocalDate(),
+                when {
+                    nfr == null -> "NSI cannot be determined"
+                    nfr.nsiSoftDeleted == 1 -> "NSI soft deleted"
+                    else -> "Unknown"
+                }
             )
         }
         return nsi
@@ -160,4 +172,18 @@ class NsiService(
         date = statusDate.toLocalDate(),
         startTime = statusDate
     ).addNotes("NSI Terminated with Outcome: ${outcome!!.description}")
+
+    private fun createNotificationIfNotExists(nsiTermination: NsiTermination, nsi: Nsi) {
+        nsiTermination.notificationDateTime?.let {
+            contactRepository.findNotificationContact(
+                nsi.id,
+                ContactType.Code.CRSNOTE.value,
+                it.toLocalDate()
+            ).firstOrNull { c -> c.notes?.contains("End of Service Report Submitted") == true } ?: run {
+                contactRepository.save(
+                    nsi.contact(ContactType.Code.CRSNOTE.value, it).addNotes(nsiTermination.notificationNotes)
+                )
+            }
+        }
+    }
 }

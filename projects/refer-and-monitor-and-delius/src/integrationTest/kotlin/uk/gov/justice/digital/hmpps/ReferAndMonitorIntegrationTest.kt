@@ -279,6 +279,7 @@ internal class ReferAndMonitorIntegrationTest {
         val contacts = contactRepository.findAll().filter { it.nsiId == nsi.id }
         assertTrue(contacts have ContactType.Code.COMPLETED.value)
         assertTrue(contacts have ContactType.Code.NSI_TERMINATED.value)
+        assertTrue(contacts have ContactType.Code.CRSNOTE.value)
     }
 
     @Test
@@ -334,7 +335,7 @@ internal class ReferAndMonitorIntegrationTest {
                 "referralReference" to "AY0164AC",
                 "outcomeAttended" to "NO",
                 "outcomeNotify" to "true",
-                "reason" to "NSI terminated",
+                "reason" to "NSI terminated, likely a future appointment deleted",
                 "reasonDetail" to "NSI last updated by ReferAndMonitorAndDelius"
             )
         )

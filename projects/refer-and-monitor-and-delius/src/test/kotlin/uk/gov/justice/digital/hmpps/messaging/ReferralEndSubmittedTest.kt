@@ -104,6 +104,7 @@ internal class ReferralEndSubmittedTest {
             ),
             ZonedDateTime.now().minusDays(1),
             endRequestedAt,
+            null,
             null
         )
 
