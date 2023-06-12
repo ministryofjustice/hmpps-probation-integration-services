@@ -80,7 +80,7 @@ class RiskAssessmentServiceTest {
         whenever(eventRepository.findByCrn(crn, "1"))
             .thenReturn(null)
 
-        assertThrows<NotFoundException> {
+        assertThrows<DeliusValidationError> {
             riskAssessmentService.addOrUpdateRiskAssessment(
                 crn,
                 1,
