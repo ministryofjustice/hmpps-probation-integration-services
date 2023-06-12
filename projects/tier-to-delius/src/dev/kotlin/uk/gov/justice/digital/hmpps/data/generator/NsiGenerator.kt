@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.nsi.Nsi
-import uk.gov.justice.digital.hmpps.integrations.delius.nsi.NsiEvent
+import uk.gov.justice.digital.hmpps.integrations.delius.nsi.entity.Nsi
+import uk.gov.justice.digital.hmpps.integrations.delius.nsi.entity.NsiEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import java.time.LocalDate
 

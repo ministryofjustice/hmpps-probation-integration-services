@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.nsi
+package uk.gov.justice.digital.hmpps.integrations.delius.nsi.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -10,6 +10,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.nsi.EnforcementActivityCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import java.time.LocalDate
 

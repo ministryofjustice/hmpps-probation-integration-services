@@ -14,8 +14,8 @@ import uk.gov.justice.digital.hmpps.controller.model.Conviction
 import uk.gov.justice.digital.hmpps.controller.model.Registration
 import uk.gov.justice.digital.hmpps.controller.model.Requirement
 import uk.gov.justice.digital.hmpps.controller.model.TierDetails
-import uk.gov.justice.digital.hmpps.integrations.delius.nsi.NsiRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nsi.previousEnforcementActivity
+import uk.gov.justice.digital.hmpps.integrations.delius.nsi.entity.NsiRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nsi.entity.previousEnforcementActivity
 
 @Service
 class TierDetailsService(
