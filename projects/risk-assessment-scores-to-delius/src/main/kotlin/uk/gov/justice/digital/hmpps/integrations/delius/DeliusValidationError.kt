@@ -5,7 +5,8 @@ class DeliusValidationError(override val message: String) : RuntimeException(mes
 
     companion object {
         private val IGNORED_VALIDATION_MESSAGES = listOf(
-            "No Event number provided"
+            "No Event number provided",
+            "Event is Terminated"
         )
 
         private val KNOWN_VALIDATION_MESSAGES = listOf(

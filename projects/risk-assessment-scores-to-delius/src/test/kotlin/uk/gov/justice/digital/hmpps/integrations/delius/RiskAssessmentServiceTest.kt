@@ -12,7 +12,6 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
@@ -100,7 +99,7 @@ class RiskAssessmentServiceTest {
         whenever(eventRepository.findByCrn(crn, "1"))
             .thenReturn(EventGenerator.generate(active = false))
 
-        assertThrows<ConflictException> {
+        assertThrows<DeliusValidationError> {
             riskAssessmentService.addOrUpdateRiskAssessment(
                 crn,
                 1,

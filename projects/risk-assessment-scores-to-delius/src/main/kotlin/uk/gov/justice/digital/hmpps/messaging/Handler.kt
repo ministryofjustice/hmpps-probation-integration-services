@@ -37,38 +37,49 @@ class Handler(
                     )
                     telemetryService.trackEvent("RsrScoresUpdated", message.telemetryProperties())
                 } catch (e: DeliusValidationError) {
-                    telemetryService.trackEvent("RsrUpdateRejected", mapOf("reason" to e.message) + message.telemetryProperties())
+                    telemetryService.trackEvent(
+                        "RsrUpdateRejected",
+                        mapOf("reason" to e.message) + message.telemetryProperties()
+                    )
                     if (!e.ignored()) throw e
                 }
             }
 
             "risk-assessment.scores.ogrs.determined" -> {
-                if (!featureFlags.enabled("ogrs")) return
+                try {
+                    if (!featureFlags.enabled("ogrs")) return
 
-                // if the message doesn't contain the event number then the event is coming from the prison side
-                // so ignore the message
-                if (!message.additionalInformation.containsKey("EventNumber")) {
-                    telemetryService.trackEvent(
-                        "AddOrUpdateRiskAssessment - ignored due to no event number",
-                        message.telemetryProperties()
+                    // if the message doesn't contain the event number then the event is coming from the prison side
+                    // so ignore the message
+                    if (!message.additionalInformation.containsKey("EventNumber")) {
+                        telemetryService.trackEvent(
+                            "AddOrUpdateRiskAssessment - ignored due to no event number",
+                            message.telemetryProperties()
+                        )
+                        return
+                    } else if (message.additionalInformation["EventNumber"] == null) {
+                        // validate that the event number is present
+                        telemetryService.trackEvent(
+                            "Event number not present",
+                            mapOf("crn" to message.personReference.findCrn()!!)
+                        )
+                        return
+                    }
+                    riskAssessmentService.addOrUpdateRiskAssessment(
+                        message.personReference.findCrn()
+                            ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
+                        message.additionalInformation["EventNumber"] as Int?,
+                        message.assessmentDate(),
+                        message.ogrsScore()
                     )
-                    return
-                } else if (message.additionalInformation["EventNumber"] == null) {
-                    // validate that the event number is present
+                    telemetryService.trackEvent("AddOrUpdateRiskAssessment", message.telemetryProperties())
+                } catch (dve: DeliusValidationError) {
                     telemetryService.trackEvent(
-                        "Event number not present",
-                        mapOf("crn" to message.personReference.findCrn()!!)
+                        "AddOrUpdateRiskAssessmentRejected",
+                        mapOf("reason" to dve.message) + message.telemetryProperties()
                     )
-                    return
+                    if (!dve.ignored()) throw dve
                 }
-                riskAssessmentService.addOrUpdateRiskAssessment(
-                    message.personReference.findCrn()
-                        ?: throw IllegalArgumentException("Missing CRN in ${message.personReference}"),
-                    message.additionalInformation["EventNumber"] as Int?,
-                    message.assessmentDate(),
-                    message.ogrsScore()
-                )
-                telemetryService.trackEvent("AddOrUpdateRiskAssessment", message.telemetryProperties())
             }
 
             else -> throw IllegalArgumentException("Unexpected event type ${message.eventType}")
