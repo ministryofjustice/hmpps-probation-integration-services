@@ -8,18 +8,18 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 
 @ExtendWith(MockitoExtension::class)
-class UserServiceTest {
+class AuditUserServiceTest {
 
     @Mock
-    private lateinit var userRepository: UserRepository
+    private lateinit var auditUserRepository: AuditUserRepository
 
     @InjectMocks
-    private lateinit var userService: UserService
+    private lateinit var auditUserService: AuditUserService
 
     @Test
     fun `user service calls repository with same values`() {
         val username = "ServiceUsername"
-        userService.findUser(username)
-        verify(userRepository).findUserByUsername(username)
+        auditUserService.findUser(username)
+        verify(auditUserRepository).findUserByUsername(username)
     }
 }

@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Exclusion
 import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Restriction
-import uk.gov.justice.digital.hmpps.user.User
+import uk.gov.justice.digital.hmpps.user.AuditUser
 import java.time.LocalDateTime
 
 object LimitedAccessGenerator {
@@ -11,14 +11,14 @@ object LimitedAccessGenerator {
     val RESTRICTION = generateRestriction(endDateTime = LocalDateTime.now().plusHours(1))
 
     fun generateExclusion(
-        user: User = UserGenerator.LIMITED_ACCESS_USER,
+        user: AuditUser = UserGenerator.LIMITED_ACCESS_USER,
         person: Person = PersonGenerator.EXCLUSION,
         endDateTime: LocalDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
     ) = Exclusion(id, person, user, endDateTime)
 
     fun generateRestriction(
-        user: User = UserGenerator.APPLICATION_USER,
+        user: AuditUser = UserGenerator.AUDIT_USER,
         person: Person = PersonGenerator.RESTRICTION,
         endDateTime: LocalDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()

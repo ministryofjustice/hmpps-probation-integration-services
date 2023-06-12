@@ -16,10 +16,20 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 
 @SpringBootTest
 @AutoConfigureMockMvc
-internal class UserAccessIntegrationTest {
+internal class UserIntegrationTest {
     @Autowired lateinit var mockMvc: MockMvc
 
     @Autowired lateinit var wireMockserver: WireMockServer
+
+    @Test
+    fun `get user details`() {
+        val user = UserGenerator.USER_DETAILS
+        mockMvc.perform(get("/user/${user.username.lowercase()}").withOAuth2Token(wireMockserver))
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("$.username", equalTo("TestUser")))
+            .andExpect(jsonPath("$.staffCode", equalTo("TEST002")))
+            .andExpect(jsonPath("$.email", equalTo("test@example.com")))
+    }
 
     @Test
     fun `case has no access limitations`() {

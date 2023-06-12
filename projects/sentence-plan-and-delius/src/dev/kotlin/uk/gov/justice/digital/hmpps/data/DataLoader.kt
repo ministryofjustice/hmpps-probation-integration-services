@@ -12,19 +12,19 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.user.UserRepository
+import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
 @ConditionalOnProperty("seed.database")
 class DataLoader(
-    private val userRepository: UserRepository,
+    private val auditUserRepository: AuditUserRepository,
     private val em: EntityManager
 
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
-    fun saveUserToDb() {
-        userRepository.save(UserGenerator.APPLICATION_USER)
+    fun saveAuditUser() {
+        auditUserRepository.save(UserGenerator.AUDIT_USER)
     }
 
     @Transactional

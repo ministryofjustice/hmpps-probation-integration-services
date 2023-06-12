@@ -32,12 +32,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepos
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.ProbationAreaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.TeamRepository
-import uk.gov.justice.digital.hmpps.user.UserRepository
+import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
 @ConditionalOnProperty("seed.database")
 class CaseNotesDataLoader(
-    private val userRepository: UserRepository,
+    private val auditUserRepository: AuditUserRepository,
     private val businessInteractionRepository: BusinessInteractionRepository,
     private val caseNoteTypeRepository: CaseNoteTypeRepository,
     private val caseNoteNomisTypeRepository: CaseNoteNomisTypeRepository,
@@ -56,8 +56,8 @@ class CaseNotesDataLoader(
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
-    fun saveUserToDb() {
-        userRepository.save(UserGenerator.APPLICATION_USER)
+    fun saveAuditUser() {
+        auditUserRepository.save(UserGenerator.AUDIT_USER)
     }
 
     override fun onApplicationEvent(are: ApplicationReadyEvent) {

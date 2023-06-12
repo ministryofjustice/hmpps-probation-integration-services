@@ -20,8 +20,8 @@ interface ManagerGenerator {
         dateTime: ZonedDateTime = START_DATE_TIME,
         createdDateTime: ZonedDateTime = ZonedDateTime.now(),
         lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
-        createdUserId: Long = UserGenerator.APPLICATION_USER.id,
-        lastModifiedUserId: Long = UserGenerator.APPLICATION_USER.id,
+        createdUserId: Long = UserGenerator.AUDIT_USER.id,
+        lastModifiedUserId: Long = UserGenerator.AUDIT_USER.id,
         version: Long? = null
     ) = apply {
         this.provider = provider

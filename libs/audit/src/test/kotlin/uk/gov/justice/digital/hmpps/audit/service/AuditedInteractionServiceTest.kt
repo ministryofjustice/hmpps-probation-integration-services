@@ -23,8 +23,8 @@ import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteractionId
 import uk.gov.justice.digital.hmpps.audit.repository.AuditedInteractionRepository
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.security.ServiceContext
-import uk.gov.justice.digital.hmpps.user.User
-import uk.gov.justice.digital.hmpps.user.UserService
+import uk.gov.justice.digital.hmpps.user.AuditUser
+import uk.gov.justice.digital.hmpps.user.AuditUserService
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -37,7 +37,7 @@ class AuditedInteractionServiceTest {
     lateinit var auditedInteractionRepository: AuditedInteractionRepository
 
     @Mock
-    lateinit var userService: UserService
+    lateinit var auditUserService: AuditUserService
 
     @Mock
     lateinit var applicationStartedEvent: ApplicationStartedEvent
@@ -45,11 +45,11 @@ class AuditedInteractionServiceTest {
     @InjectMocks
     lateinit var auditedInteractionService: AuditedInteractionService
 
-    private val user = User(1, "ServiceUserName")
+    private val user = AuditUser(1, "ServiceUserName")
 
     private fun setupUser() {
-        whenever(userService.findUser(user.username)).thenReturn(user)
-        ServiceContext(user.username, userService).onApplicationEvent(applicationStartedEvent)
+        whenever(auditUserService.findUser(user.username)).thenReturn(user)
+        ServiceContext(user.username, auditUserService).onApplicationEvent(applicationStartedEvent)
     }
 
     @Test

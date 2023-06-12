@@ -14,12 +14,12 @@ import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
-import uk.gov.justice.digital.hmpps.user.UserRepository
+import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
 @ConditionalOnProperty("seed.database")
 class PsrDataLoader(
-    private val userRepository: UserRepository,
+    private val auditUserRepository: AuditUserRepository,
     private val businessInteractionRepository: BusinessInteractionRepository,
     private val personRepository: PersonRepository,
     private val documentRepository: DocumentRepository,
@@ -27,12 +27,12 @@ class PsrDataLoader(
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
-    fun saveUserToDb() {
-        userRepository.save(UserGenerator.APPLICATION_USER)
+    fun saveAuditUser() {
+        auditUserRepository.save(UserGenerator.AUDIT_USER)
     }
 
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        userRepository.save(UserGenerator.APPLICATION_USER)
+        auditUserRepository.save(UserGenerator.AUDIT_USER)
 
         businessInteractionRepository.saveAll(
             listOf(BusinessInteractionGenerator.UPLOAD_DOCUMENT)

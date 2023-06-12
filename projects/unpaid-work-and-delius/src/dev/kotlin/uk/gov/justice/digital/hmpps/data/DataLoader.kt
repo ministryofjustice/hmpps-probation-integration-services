@@ -54,12 +54,12 @@ import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.type.Cont
 import uk.gov.justice.digital.hmpps.integrations.common.entity.person.PersonWithManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.common.entity.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.common.entity.team.TeamRepository
-import uk.gov.justice.digital.hmpps.user.UserRepository
+import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
 @ConditionalOnProperty("seed.database")
 class DataLoader(
-    private val userRepository: UserRepository,
+    private val auditUserRepository: AuditUserRepository,
     private val caseRepository: CaseRepository,
     private val datasetRepository: DatasetRepository,
     private val businessInteractionRepository: BusinessInteractionRepository,
@@ -88,8 +88,8 @@ class DataLoader(
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
-    fun saveUserToDb() {
-        userRepository.save(UserGenerator.APPLICATION_USER)
+    fun saveAuditUser() {
+        auditUserRepository.save(UserGenerator.AUDIT_USER)
     }
 
     @Transactional

@@ -7,10 +7,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
-import uk.gov.justice.digital.hmpps.integrations.delius.user.access.Exclusion
-import uk.gov.justice.digital.hmpps.integrations.delius.user.access.Restriction
+import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Exclusion
+import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Restriction
+import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.User
 import uk.gov.justice.digital.hmpps.set
-import uk.gov.justice.digital.hmpps.user.User
 import java.time.LocalDate
 
 object PersonGenerator {
@@ -73,8 +73,8 @@ object PersonGenerator {
         restrictions: List<User> = emptyList(),
         exclusions: List<User> = emptyList(),
         id: Long = IdGenerator.getAndIncrement()
-    ): uk.gov.justice.digital.hmpps.integrations.delius.user.access.Person {
-        val person = uk.gov.justice.digital.hmpps.integrations.delius.user.access.Person(
+    ): uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Person {
+        val person = uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Person(
             id = id,
             crn = crn,
             restrictions = emptyList(),
