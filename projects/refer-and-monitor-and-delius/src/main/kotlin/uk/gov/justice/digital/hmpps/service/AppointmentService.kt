@@ -117,7 +117,7 @@ class AppointmentService(
                 ContractTypeNsiType.MAPPING.values.toSet()
             )
             if (nsis.size == 1) {
-                nsi = nsis[0]
+                nsi = nsis.first()
             } else if (nsis.size > 1) nsi = nsis.firstOrNull { it.notes?.contains(mergeAppointment.referralUrn) ?: false }
         }
         if (nsi == null) {

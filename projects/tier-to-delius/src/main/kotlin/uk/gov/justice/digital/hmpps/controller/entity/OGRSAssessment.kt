@@ -28,7 +28,7 @@ class OGRSAssessment(
     val event: EventEntity,
 
     @Column(name = "ogrs3_score_2")
-    override val score: Long,
+    override val score: Long?,
 
     @Column(name = "last_updated_datetime", nullable = false)
     override val lastModifiedDateTime: ZonedDateTime,

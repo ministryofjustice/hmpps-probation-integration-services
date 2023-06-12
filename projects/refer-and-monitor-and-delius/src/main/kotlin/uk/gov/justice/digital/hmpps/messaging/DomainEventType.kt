@@ -3,6 +3,14 @@ package uk.gov.justice.digital.hmpps.messaging
 sealed interface DomainEventType {
     val name: String
 
+    object ActionPlanApproved : DomainEventType {
+        override val name: String = "intervention.action-plan.approved"
+    }
+
+    object ActionPlanSubmitted : DomainEventType {
+        override val name: String = "intervention.action-plan.submitted"
+    }
+
     object InitialAppointmentSubmitted : DomainEventType {
         override val name: String = "intervention.initial-assessment-appointment.session-feedback-submitted"
     }
@@ -19,6 +27,8 @@ sealed interface DomainEventType {
 
     companion object {
         private val types = listOf(
+            ActionPlanApproved,
+            ActionPlanSubmitted,
             InitialAppointmentSubmitted,
             ReferralEnded,
             SessionAppointmentSubmitted

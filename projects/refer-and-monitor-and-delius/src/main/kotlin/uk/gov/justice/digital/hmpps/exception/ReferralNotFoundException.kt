@@ -6,16 +6,16 @@ import java.time.format.DateTimeFormatter
 class ReferralNotFoundException(
     referralUrn: String,
     crn: String,
-    eventId: Long,
+    eventId: Long?,
     date: LocalDate,
     reason: String
 ) : UnprocessableException(
     "ReferralNotFound",
-    mapOf(
+    listOfNotNull(
         "referralUrn" to referralUrn,
         "crn" to crn,
-        "eventId" to eventId.toString(),
+        eventId?.let { "eventId" to it.toString() },
         "date" to date.format(DateTimeFormatter.ISO_LOCAL_DATE),
         "reason" to reason
-    )
+    ).toMap()
 )
