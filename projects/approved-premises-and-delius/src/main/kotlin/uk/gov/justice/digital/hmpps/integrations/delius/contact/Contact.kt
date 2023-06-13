@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
@@ -38,10 +39,10 @@ class Contact(
     val version: Long = 0,
 
     @Column(name = "contact_date", nullable = false)
-    val date: ZonedDateTime,
+    val date: LocalDate,
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime? = date,
+    val startTime: ZonedDateTime?,
 
     @ManyToOne
     @JoinColumn(name = "contact_type_id", nullable = false)
