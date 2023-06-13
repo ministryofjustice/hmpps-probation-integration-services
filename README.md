@@ -25,13 +25,6 @@ With this in mind, we aim to:
 * Separate overlapping domain concepts by creating smaller, more focused services
 * Simplify the developer experience by unifying common approaches and streamlining workflows
 
-## Design Decisions
-* Each service serves one, and only one, client
-* Services have a single well-defined purpose
-* Entities/projections are defined using domain-specific language (e.g. CaseNote, not Contact)
-
-Additional decision records can be found in [this repository](doc/adr), and in [Confluence](https://dsdmoj.atlassian.net/wiki/spaces/PINT/pages/4029808725/Architecture+Decisions).
-
 ## Tooling
 * Code is written in [Kotlin](https://kotlinlang.org/), using [Spring Boot](https://spring.io/projects/spring-boot)
 * Built and tested as a multi-project [Gradle](https://gradle.org/) build
@@ -42,6 +35,24 @@ Additional decision records can be found in [this repository](doc/adr), and in [
 [GitHub Packages](https://github.com/orgs/ministryofjustice/packages?repo_name=hmpps-probation-integration-services)
 * Code formatting by [ktlint](https://ktlint.github.io/)
 * Continuous integration with [GitHub Actions](https://help.github.com/en/actions)
+
+## Structure
+This repository is structured as a monorepo containing an individually deployable project per integration service.
+
+The directory layout is as follows:
+```
+├── .github           ~ GitHub actions workflows and configuration
+├── .idea             ~ IntelliJ IDEA configuration
+├── buildSrc          ~ Gradle build scripts
+├── doc               ~ Technical documentation and decision records
+├── libs              ~ Shared Kotlin libraries
+├── projects          ~ Source code for integration service projects
+│   ├── project-1
+│   ├── ...
+│   └── project-n
+├── templates         ~ Project templates and shared configuration
+└── tools             ~ Operational tools e.g. feature flags and database reports 
+```
 
 # Development
 The project is configured to enable developers to build/test/run integration services in isolation without the need for 
