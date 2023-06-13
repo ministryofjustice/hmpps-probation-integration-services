@@ -27,7 +27,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.ResponsibleOfficer
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Borough
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.DeliveryUnit
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.LocationRepository
@@ -62,7 +61,6 @@ class DataLoader(
     private val nsiOutcomeRepository: NsiOutcomeRepository,
     private val mainCatRepository: MainCatRepository,
     private val providerRepository: ProviderRepository,
-    private val boroughRepository: BoroughRepository,
     private val districtRepository: DistrictRepository,
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
@@ -143,8 +141,6 @@ class DataLoader(
         )
         districtRepository.saveAll(listOf(ProviderGenerator.PROBATION_DISTRICT, ProviderGenerator.PRISON_DISTRICT))
 
-        val pdus = pduRepository.findAll().forEach { println("${it.code}, ${it.description}, ${it.id}") }
-
         teamRepository.saveAll(
             listOf(
                 ProviderGenerator.INTENDED_TEAM,
@@ -160,7 +156,7 @@ class DataLoader(
             )
         )
 
-        locationRepository.save(ProviderGenerator.DEFAULT_LOCATION)
+        locationRepository.saveAll(ProviderGenerator.LOCATIONS + ProviderGenerator.DEFAULT_LOCATION)
 
         personRepository.saveAll(
             listOf(
@@ -281,7 +277,6 @@ class DataLoader(
 
 interface DatasetRepository : JpaRepository<Dataset, Long>
 interface DistrictRepository : JpaRepository<District, Long>
-interface BoroughRepository : JpaRepository<Borough, Long>
 interface MainCatRepository : JpaRepository<RequirementMainCategory, Long>
 interface DisposalTypeRepository : JpaRepository<DisposalType, Long>
 interface StaffUserRepository : JpaRepository<StaffUser, Long>

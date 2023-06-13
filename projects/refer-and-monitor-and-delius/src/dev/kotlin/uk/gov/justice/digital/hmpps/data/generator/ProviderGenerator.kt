@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.set
+import java.time.LocalDate
 
 object ProviderGenerator {
     val INTENDED_PROVIDER = generateProvider(Provider.INTENDED_PROVIDER_CODE, "Test Provider")
@@ -24,7 +25,14 @@ object ProviderGenerator {
     val JOHN_SMITH_USER = generateStaffUser("john-smith", JOHN_SMITH)
     val PRISON_MANAGER = generateStaff("P01WDN1", "Peter", "Wilson")
 
-    fun generateProvider(code: String, description: String, id: Long = IdGenerator.getAndIncrement()) = Provider(code, description, id)
+    val LOCATIONS = listOf(
+        generateLocation("TESTONE", buildingName = "Test One", streetName = "Mantle Place", postcode = "MP1 1PM"),
+        generateLocation("TESTTWO", buildingName = "Test Two", postcode = "MP2 2PM", telephoneNumber = "020 123 6789"),
+        generateLocation("NOTCRS", providerId = 999L)
+    )
+
+    fun generateProvider(code: String, description: String, id: Long = IdGenerator.getAndIncrement()) =
+        Provider(code, description, id)
 
     fun generateBorough(
         code: String,
@@ -56,5 +64,33 @@ object ProviderGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = StaffUser(username, staff, id).apply { staff?.set(Staff::user, this) }
 
-    fun generateLocation(code: String, id: Long = IdGenerator.getAndIncrement()) = Location(code, id)
+    fun generateLocation(
+        code: String,
+        description: String = "Description of $code",
+        buildingName: String? = null,
+        buildingNumber: String? = null,
+        streetName: String? = null,
+        townCity: String? = null,
+        county: String? = null,
+        postcode: String? = null,
+        telephoneNumber: String? = null,
+        startDate: LocalDate = LocalDate.now().minusDays(7),
+        endDate: LocalDate? = null,
+        providerId: Long = INTENDED_PROVIDER.id,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Location(
+        code,
+        description,
+        buildingName,
+        buildingNumber,
+        streetName,
+        townCity,
+        county,
+        postcode,
+        telephoneNumber,
+        startDate,
+        endDate,
+        providerId,
+        id
+    )
 }

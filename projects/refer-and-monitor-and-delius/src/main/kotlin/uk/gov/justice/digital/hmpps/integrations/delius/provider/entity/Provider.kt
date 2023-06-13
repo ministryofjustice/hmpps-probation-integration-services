@@ -9,8 +9,10 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider.Companion.INTENDED_PROVIDER_CODE
+import java.time.LocalDate
 
 @Entity
 @Immutable
@@ -57,6 +59,20 @@ class Team(
 class Location(
     @Column(name = "code", columnDefinition = "char(7)")
     val code: String,
+
+    val description: String,
+    val buildingName: String?,
+    val buildingNumber: String?,
+    val streetName: String?,
+    val townCity: String?,
+    val county: String?,
+    val postcode: String?,
+    val telephoneNumber: String?,
+    val startDate: LocalDate,
+    val endDate: LocalDate?,
+
+    @Column(name = "probation_area_id")
+    val providerId: Long,
 
     @Id
     @Column(name = "office_location_id")
@@ -113,6 +129,15 @@ fun TeamRepository.getByCode(code: String) = findByCode(code) ?: throw NotFoundE
 
 interface LocationRepository : JpaRepository<Location, Long> {
     fun findByCode(code: String): Location?
+
+    @Query(
+        """
+        select l from Location l
+        where l.providerId = :providerId
+        and l.endDate is null
+    """
+    )
+    fun findAllLocationsForProvider(providerId: Long): List<Location>
 }
 
 fun LocationRepository.getByCode(code: String) = findByCode(code) ?: throw NotFoundException("Location", "code", code)

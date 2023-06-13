@@ -1,0 +1,17 @@
+package uk.gov.justice.digital.hmpps.api.resource
+
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.api.model.OfficeLocation
+import uk.gov.justice.digital.hmpps.service.ProviderService
+
+@RestController
+@RequestMapping("/office-locations")
+class OfficeLocationResource(private val providerService: ProviderService) {
+
+    @PreAuthorize("hasRole('CRS_REFERRAL')")
+    @GetMapping
+    fun findAllActiveLocations(): List<OfficeLocation> = providerService.findActiveOfficeLocations()
+}
