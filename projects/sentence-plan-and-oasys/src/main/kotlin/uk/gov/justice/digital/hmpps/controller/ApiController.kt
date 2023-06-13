@@ -16,14 +16,14 @@ class ApiController {
     private fun genericNeeds(crn: String): Needs {
         return Needs(
             listOf(
-                Need("Accommodation"),
-                Need("Education/Employability"),
-                Need("Relationships"),
-                Need("Lifestyle"),
-                Need("Drug misuse"),
-                Need("Alcohol misuse"),
-                Need("Thinking & Behaviour"),
-                Need("Attitudes")
+                Need("accommodation", "Accommodation"),
+                Need("alcohol", "Alcohol misuse"),
+                Need("attitudes", "Attitudes"),
+                Need("drugs", "Drug misuse"),
+                Need("employability", "Education, training and employment"),
+                Need("lifestyle", "Lifestyle"),
+                Need("relationships", "Relationships"),
+                Need("behaviour", "Thinking and behaviour")
             )
         )
     }
