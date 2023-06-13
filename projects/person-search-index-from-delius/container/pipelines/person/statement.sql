@@ -72,49 +72,59 @@ SELECT json_object(
                                                                                 'code' VALUE dt.CODE_VALUE,
                                                                                 'description' VALUE dt.CODE_DESCRIPTION
                                                                             ),
+                                                                        'condition' VALUE json_object(
+                                                                                'code' VALUE dc.CODE_VALUE,
+                                                                                'description' VALUE dc.CODE_DESCRIPTION
+                                                                            ),
                                                                         'startDate' VALUE
                                                                         to_char(d.START_DATE, 'yyyy-MM-dd'),
                                                                         'endDate' VALUE
                                                                         to_char(d.FINISH_DATE, 'yyyy-MM-dd'),
                                                                         'notes' VALUE d.NOTES,
                                                                         'lastUpdatedDateTime' VALUE
-                                                                        d.LAST_UPDATED_DATETIME,
-                                                                        'provisions' VALUE
-                                                                        (SELECT json_arrayagg(json_object(
-                                                                                                      'provisionId'
-                                                                                                      VALUE
-                                                                                                      pr.PROVISION_ID,
-                                                                                                      'provisionType'
-                                                                                                      VALUE json_object(
-                                                                                                              'code'
-                                                                                                              VALUE
-                                                                                                              pt.CODE_VALUE,
-                                                                                                              'description'
-                                                                                                              VALUE
-                                                                                                              pt.CODE_DESCRIPTION
-                                                                                                          ),
-                                                                                                      'notes' VALUE
-                                                                                                      pr.NOTES,
-                                                                                                      'startDate' VALUE
-                                                                                                      to_char(d.START_DATE, 'yyyy-MM-dd'),
-                                                                                                      'finishDate' VALUE
-                                                                                                      to_char(d.FINISH_DATE, 'yyyy-MM-dd')
-                                                                                                      ABSENT ON NULL
-                                                                                                      RETURNING CLOB)
-                                                                                              ABSENT ON NULL
-                                                                                              RETURNING CLOB)
-                                                                         FROM PROVISION pr
-                                                                                  JOIN R_STANDARD_REFERENCE_LIST pt
-                                                                                       ON pt.STANDARD_REFERENCE_LIST_ID = pr.PROVISION_TYPE_ID
-                                                                         WHERE pr.DISABILITY_ID = d.DISABILITY_ID
-                                                                           AND pr.SOFT_DELETED = 0)
-                                                                        ABSENT ON NULL RETURNING CLOB)
-                                                            ABSENT ON NULL RETURNING CLOB)
+                                                                        d.LAST_UPDATED_DATETIME))
                                              FROM DISABILITY d
                                                       JOIN R_STANDARD_REFERENCE_LIST dt
                                                            ON dt.STANDARD_REFERENCE_LIST_ID = d.DISABILITY_TYPE_ID
+                                                      LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST dc
+                                                                      ON dc.STANDARD_REFERENCE_LIST_ID = d.DISABILITY_CONDITION_ID
                                              WHERE d.OFFENDER_ID = o.OFFENDER_ID
-                                               AND d.SOFT_DELETED = 0)
+                                               AND d.SOFT_DELETED = 0),
+                       'provisions' VALUE (SELECT json_arrayagg(json_object(
+                                                                        'provisionId'
+                                                                        VALUE
+                                                                        pr.PROVISION_ID,
+                                                                        'provisionType' VALUE json_object(
+                                                                                'code'
+                                                                                VALUE
+                                                                                pt.CODE_VALUE,
+                                                                                'description'
+                                                                                VALUE
+                                                                                pt.CODE_DESCRIPTION
+                                                                            ),
+                                                                        'category' VALUE json_object(
+                                                                                'code'
+                                                                                VALUE
+                                                                                pcat.CODE_VALUE,
+                                                                                'description'
+                                                                                VALUE
+                                                                                pcat.CODE_DESCRIPTION
+                                                                            ),
+                                                                        'notes' VALUE
+                                                                        pr.NOTES,
+                                                                        'startDate' VALUE
+                                                                        to_char(pr.START_DATE, 'yyyy-MM-dd'),
+                                                                        'endDate' VALUE
+                                                                        to_char(pr.FINISH_DATE, 'yyyy-MM-dd')
+                                                                        ABSENT ON NULL
+                                                                        RETURNING CLOB)
+                                                                ABSENT ON NULL
+                                                                RETURNING CLOB)
+                                           FROM PROVISION pr
+                                                    JOIN R_STANDARD_REFERENCE_LIST pt ON pt.STANDARD_REFERENCE_LIST_ID = pr.PROVISION_TYPE_ID
+                                                    LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST pcat ON pcat.STANDARD_REFERENCE_LIST_ID = pr.PROVISION_CATEGORY_ID
+                                           WHERE pr.OFFENDER_ID = o.OFFENDER_ID
+                                             AND pr.SOFT_DELETED = 0)
                        ABSENT ON NULL RETURNING CLOB),
                'softDeleted' VALUE CASE WHEN o.SOFT_DELETED = 1 THEN 'true' ELSE 'false' END FORMAT JSON,
                'offenderManagers' VALUE json_array(json_object(

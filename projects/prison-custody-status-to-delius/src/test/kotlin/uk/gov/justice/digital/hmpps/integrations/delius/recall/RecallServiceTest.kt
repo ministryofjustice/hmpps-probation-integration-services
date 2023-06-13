@@ -9,7 +9,6 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.FeatureFlagCodes
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
@@ -47,21 +46,11 @@ internal class RecallServiceTest : RecallServiceTestBase() {
     }
 
     @Test
-    fun `transfer messages are ignored when feature flag is disabled`() {
-        val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
-        whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
-
-        whenever(featureFlags.enabled(FeatureFlagCodes.RECALL_TRANSFERRED)).thenReturn(false)
-        assertThrows<IgnorableMessageException> { recallService.recall(nomsNumber, prisonId, "TRANSFERRED", "INT", recallDateTime) }
-    }
-
-    @Test
-    fun `transfer messages are processed when feature flag is enabled`() {
+    fun `transfer messages are processed`() {
         val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
         val om = OrderManagerGenerator.generate(event)
         val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
 
-        whenever(featureFlags.enabled(FeatureFlagCodes.RECALL_TRANSFERRED)).thenReturn(true)
         whenever(recallReasonRepository.findByCodeAndSelectable(recallReason!!.code)).thenReturn(recallReason)
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(prisonId)).thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
