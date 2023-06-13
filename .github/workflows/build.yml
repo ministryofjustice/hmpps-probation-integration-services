@@ -93,7 +93,7 @@ jobs:
         run: echo "changes=$((ls changed || true) | jq --raw-input . | jq --slurp --compact-output .)" | tee -a $GITHUB_OUTPUT
 
       - name: Output changes
-        uses: cloudposse/github-action-matrix-outputs-write@47bfd07b833c59443a15353094aa2802a7613501 # v0.4.1
+        uses: cloudposse/github-action-matrix-outputs-write@928e2a2d3d6ae4eb94010827489805c17c81181f # v0.4.2
         with:
           matrix-step-name: output-changes
           matrix-key: ${{ matrix.project }}
@@ -132,7 +132,7 @@ jobs:
           version: ${{ steps.version.outputs.version }}
 
       - name: Output changes
-        uses: cloudposse/github-action-matrix-outputs-write@47bfd07b833c59443a15353094aa2802a7613501 # v0.4.1
+        uses: cloudposse/github-action-matrix-outputs-write@928e2a2d3d6ae4eb94010827489805c17c81181f # v0.4.2
         with:
           matrix-step-name: output-changes
           matrix-key: ${{ matrix.project }}

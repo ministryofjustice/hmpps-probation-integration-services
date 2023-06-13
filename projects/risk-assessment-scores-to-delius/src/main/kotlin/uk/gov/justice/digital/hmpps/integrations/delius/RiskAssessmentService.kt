@@ -51,7 +51,7 @@ class RiskAssessmentService(
         val event = eventRepository.getByCrn(crn, eventNumber.toString())
 
         if (!event.active) {
-            throw ConflictException("Event number is Terminated")
+            throw DeliusValidationError("Event is Terminated")
         }
 
         val ogrsAssessment = ogrsAssessmentRepository.findByEvent(event)

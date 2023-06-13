@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceD
 
 object AddressGenerator {
 
-    val PERSON_ADDRESS = generatePersonAddress(
+    var PERSON_ADDRESS = generatePersonAddress(
         addressNumber = "12",
         streetName = "Tulip Drive",
         town = "Some Place",

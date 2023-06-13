@@ -4,7 +4,7 @@ COPY --chown=yq /pipelines /pipelines
 RUN find /pipelines -type f -name '*.yml' | xargs -n1 -I{} sh -c 'f={}; yq -o=json "$f" > "${f%.yml}.json"'
 
 
-FROM opensearchproject/logstash-oss-with-opensearch-output-plugin:8.6.1
+FROM logstash:8.7.1
 
 USER root
 RUN apt-get update && apt-get upgrade -y \
@@ -18,7 +18,9 @@ COPY --chown=logstash config /usr/share/logstash/config
 COPY --chown=logstash /scripts /scripts
 COPY --chown=logstash --from=yml /pipelines /pipelines
 
-RUN mkdir -p /usr/share/logstash/data/dead_letter_queue/person-incremental \
+RUN bin/logstash-plugin install logstash-input-opensearch && \
+    bin/logstash-plugin install logstash-output-opensearch && \
+    mkdir -p /usr/share/logstash/data/dead_letter_queue/person-incremental \
              /usr/share/logstash/data/dead_letter_queue/person-full-load \
              /usr/share/logstash/data/dead_letter_queue/contact-incremental \
              /usr/share/logstash/data/dead_letter_queue/contact-full-load

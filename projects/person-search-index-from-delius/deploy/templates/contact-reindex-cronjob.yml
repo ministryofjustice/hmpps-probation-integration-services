@@ -14,8 +14,8 @@ spec:
               image: ghcr.io/ministryofjustice/hmpps-probation-integration-services/person-search-index-from-delius:{{ .Values.version }}
               resources:
                 requests:
-                  memory: 4Gi
-                  cpu: 2
+                  memory: 2Gi
+                  cpu: 1
                 limits:
                   memory: 4Gi
                   cpu: 2
@@ -32,8 +32,10 @@ spec:
                   value: '172800' # 48 hours
                 - name: PIPELINES_ENABLED
                   value: contact-full-load,contact-dlq
-                - name: PIPELINE_BATCH_SIZE
+                - name: PIPELINE_BATCH_SIZE # Maximum number of in-memory events per worker
                   value: '10000'
+                - name: JDBC_BATCH_SIZE # Maximum number of results to return from DB at a time
+                  value: '1000000'
                 - name: APPLICATIONINSIGHTS_CONNECTION_STRING
                   valueFrom:
                     secretKeyRef:

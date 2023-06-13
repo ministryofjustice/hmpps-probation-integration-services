@@ -2,10 +2,10 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.any
 import org.mockito.Mockito.verify
@@ -121,7 +121,9 @@ internal class ApprovedPremisesServiceTest {
     @Mock
     lateinit var referenceDataRepository: ReferenceDataRepository
 
-    @InjectMocks
+    lateinit var addressService: AddressService
+    lateinit var contactService: ContactService
+    lateinit var nsiService: NsiService
     lateinit var approvedPremisesService: ApprovedPremisesService
 
     private val applicationSubmittedEvent = prepEvent("application-submitted").message
@@ -129,6 +131,38 @@ internal class ApprovedPremisesServiceTest {
     private val bookingMadeEvent = prepEvent("booking-made").message
     private val personNotArrivedEvent = prepEvent("person-not-arrived").message
     private val personArrivedEvent = prepEvent("person-arrived").message
+
+    @BeforeEach
+    fun setup() {
+        addressService = AddressService(personAddressRepository, referenceDataRepository)
+        contactService = ContactService(
+            contactRepository,
+            contactTypeRepository,
+            contactAlertRepository,
+            teamRepository,
+            staffRepository,
+            personManagerRepository
+        )
+        nsiService = NsiService(
+            nsiRepository,
+            nsiTypeRepository,
+            nsiStatusRepository,
+            nsiManagerRepository,
+            personRepository,
+            teamRepository,
+            staffRepository,
+            transferReasonRepository,
+            addressService,
+            contactService
+        )
+        approvedPremisesService = ApprovedPremisesService(
+            approvedPremisesApiClient,
+            approvedPremisesRepository,
+            personRepository,
+            contactService,
+            nsiService
+        )
+    }
 
     @Test
     fun `creates alert contact for application submission`() {
@@ -303,7 +337,7 @@ internal class ApprovedPremisesServiceTest {
         verify(contactRepository).save(
             check { contact ->
                 assertThat(contact.type.code, equalTo(type.code))
-                assertThat(contact.date, equalTo(date))
+                assertThat(contact.date, equalTo(date.toLocalDate()))
                 assertThat(contact.startTime, equalTo(date))
                 assertThat(contact.person.crn, equalTo(person.crn))
                 assertThat(contact.staff, equalTo(staff))

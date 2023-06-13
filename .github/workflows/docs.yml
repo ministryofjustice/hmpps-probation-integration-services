@@ -15,7 +15,6 @@ on:
         type: choice
         required: true
         options:
-          - 'All'
           - '["approved-premises-and-oasys"]'
           - '["approved-premises-and-delius"]'
           - '["person-search-index-from-delius"]'
@@ -53,15 +52,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Get projects - all
-        if: github.event_name != 'workflow_dispatch' || inputs.projects == 'All'
+        if: github.event_name != 'workflow_dispatch'
         run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_ENV
       - name: Get projects - selected
-        if: github.event_name == 'workflow_dispatch' && inputs.projects != 'All'
+        if: github.event_name == 'workflow_dispatch'
         run: echo 'projects=${{ inputs.projects }}' >> $GITHUB_ENV
       - id: output
-        run: echo 'projects=${{ env.projects }}' >> $GITHUB_OUTPUT
+        run: echo 'projects=${{ env.projects }}' | tee -a $GITHUB_OUTPUT
 
-  tech-docs-index:
+  build-index:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -76,17 +75,13 @@ jobs:
           gem install middleman
           bundle exec middleman build --verbose
         working-directory: doc/tech-docs
-      - name: Deploy
-        if: github.ref == 'refs/heads/main'
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: doc/tech-docs/build
-          target-folder: tech-docs
-          clean-exclude: |
-            projects
-            tech-docs/projects
 
-  tech-docs-project:
+      - uses: actions/upload-artifact@v3
+        with:
+          name: index
+          path: doc/tech-docs/build
+
+  build-projects:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: get-projects
@@ -137,12 +132,10 @@ jobs:
           bundle exec middleman build --verbose
         working-directory: projects/${{ matrix.project }}/tech-docs
 
-      - name: Deploy
-        if: github.ref_name == 'main'
-        uses: JamesIves/github-pages-deploy-action@v4
+      - uses: actions/upload-artifact@v3
         with:
-          folder: projects/${{ matrix.project }}/tech-docs/build
-          target-folder: tech-docs/projects/${{ matrix.project }}
+          name: ${{ matrix.project }}
+          path: projects/${{ matrix.project }}/tech-docs/build
 
       - name: Branch deploy
         if: github.ref_name != 'main' && github.event_name == 'workflow_dispatch' && inputs.deploy
@@ -150,3 +143,28 @@ jobs:
         with:
           folder: projects/${{ matrix.project }}/tech-docs/build
           target-folder: tech-docs-drafts/${{ matrix.project }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.ref == 'refs/heads/main'
+    needs:
+      - build-index
+      - build-projects
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+
+      - name: Merge artifacts
+        run: |
+          mv artifacts/index/ tech-docs
+          mkdir -p tech-docs/projects
+          ls artifacts | xargs -I{} mv artifacts/{}/ tech-docs/projects/{}
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: tech-docs
+          target-folder: tech-docs

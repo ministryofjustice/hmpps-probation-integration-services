@@ -123,7 +123,7 @@ class DataLoader(
                 team = TeamGenerator.NON_APPROVED_PREMISES_TEAM
             )
         )
-        personAddressRepository.save(AddressGenerator.PERSON_ADDRESS)
+        AddressGenerator.PERSON_ADDRESS = personAddressRepository.save(AddressGenerator.PERSON_ADDRESS)
         contactTypeRepository.saveAll(ContactTypeCode.values().map { ContactTypeGenerator.generate(it.code) })
         nsiTypeRepository.saveAll(NsiTypeCode.values().map { NsiTypeGenerator.generate(it.code) })
         nsiStatusRepository.saveAll(NsiStatusCode.values().map { NsiStatusGenerator.generate(it.code) })

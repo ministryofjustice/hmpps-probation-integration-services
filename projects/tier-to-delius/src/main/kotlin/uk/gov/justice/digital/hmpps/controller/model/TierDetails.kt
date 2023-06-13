@@ -8,7 +8,8 @@ data class TierDetails(
     val oGRSScore: Long?,
     val rSRScore: Double?,
     val registrations: List<Registration>,
-    val convictions: List<Conviction>
+    val convictions: List<Conviction>,
+    val previousEnforcementActivity: Boolean
 )
 
 data class Registration(
