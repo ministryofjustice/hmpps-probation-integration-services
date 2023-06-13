@@ -2,13 +2,11 @@ package uk.gov.justice.digital.hmpps.integrations.delius.recall
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.FeatureFlagCodes.RECALL_TRANSFERRED
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.datasource.OptimisationContext
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -60,7 +58,6 @@ val EOTL_RECALL_CONTACT_NOTES = """${System.lineSeparator()}
 @Service
 class RecallService(
     auditedInteractionService: AuditedInteractionService,
-    private val featureFlags: FeatureFlags,
     private val eventService: EventService,
     private val institutionRepository: InstitutionRepository,
     private val recallReasonRepository: RecallReasonRepository,
@@ -293,7 +290,7 @@ class RecallService(
         }
 
         "TRANSFERRED" -> {
-            if (movementReason == "INT" && featureFlags.enabled(RECALL_TRANSFERRED)) {
+            if (movementReason == "INT") {
                 {
                     when (it) {
                         CustodialStatusCode.CUSTODY_ROTL -> RecallReasonCode.END_OF_TEMPORARY_LICENCE

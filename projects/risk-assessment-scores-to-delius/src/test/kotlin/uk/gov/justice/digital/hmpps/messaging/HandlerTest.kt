@@ -10,7 +10,6 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.MessageGenerator
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.DeliusValidationError
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
@@ -28,8 +27,6 @@ internal class HandlerTest {
     @Mock lateinit var riskScoreService: RiskScoreService
 
     @Mock lateinit var riskAssessmentService: RiskAssessmentService
-
-    @Mock lateinit var featureFlags: FeatureFlags
 
     @Mock lateinit var converter: NotificationConverter<HmppsDomainEvent>
 
@@ -75,8 +72,6 @@ internal class HandlerTest {
 
     @Test
     fun `OGRS messages are processed`() {
-        whenever(featureFlags.enabled("ogrs")).thenReturn(true)
-
         // Given an OGRS message
         val message = Notification(
             message = MessageGenerator.OGRS_SCORES_DETERMINED,

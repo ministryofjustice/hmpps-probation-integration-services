@@ -6,6 +6,5 @@ object MovementReasonCodes {
 }
 
 object FeatureFlagCodes {
-    const val RECALL_TRANSFERRED = "messages_received_transferred"
     const val RELEASE_ETL23 = "messages_released_etl23"
 }

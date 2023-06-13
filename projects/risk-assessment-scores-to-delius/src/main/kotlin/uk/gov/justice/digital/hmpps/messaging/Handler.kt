@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.ZonedDateTimeDeserializer
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.DeliusValidationError
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskAssessmentService
 import uk.gov.justice.digital.hmpps.integrations.delius.RiskScoreService
@@ -17,7 +16,6 @@ class Handler(
     private val telemetryService: TelemetryService,
     private val riskScoreService: RiskScoreService,
     private val riskAssessmentService: RiskAssessmentService,
-    private val featureFlags: FeatureFlags,
     override val converter: NotificationConverter<HmppsDomainEvent>
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
@@ -47,8 +45,6 @@ class Handler(
 
             "risk-assessment.scores.ogrs.determined" -> {
                 try {
-                    if (!featureFlags.enabled("ogrs")) return
-
                     // if the message doesn't contain the event number then the event is coming from the prison side
                     // so ignore the message
                     if (!message.additionalInformation.containsKey("EventNumber")) {
