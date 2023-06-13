@@ -100,7 +100,7 @@ class Nsi(
     var actualEndDate: ZonedDateTime? = actualEndDate
         set(value) {
             field = value
-            active = value == null || value.isAfter(ZonedDateTime.now())
+            active = value == null
         }
 
     companion object {
