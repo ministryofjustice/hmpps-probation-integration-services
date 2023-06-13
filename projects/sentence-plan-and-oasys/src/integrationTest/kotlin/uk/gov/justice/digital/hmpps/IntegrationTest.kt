@@ -26,9 +26,9 @@ internal class IntegrationTest {
     lateinit var telemetryService: TelemetryService
 
     @Test
-    fun `API call retuns a success response`() {
+    fun `Get a list of neeeds for a CRN`() {
         mockMvc
-            .perform(get("/example/123").withOAuth2Token(wireMockServer))
+            .perform(get("/needs/X123123B").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful)
     }
 }
