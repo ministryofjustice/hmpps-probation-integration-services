@@ -44,6 +44,7 @@ runs:
         cache-to: type=gha,mode=max
         context: projects/${{ inputs.project }}/container
         push: ${{ inputs.push }}
+        provenance: false
         tags: |
           ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}:latest
           ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ inputs.project }}:${{ inputs.version }}
