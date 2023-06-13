@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.Address
 import uk.gov.justice.digital.hmpps.api.model.DeliveryUnit
+import uk.gov.justice.digital.hmpps.api.model.OfficeLocation
 import uk.gov.justice.digital.hmpps.api.model.Region
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Location
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.LocationRepository
@@ -23,6 +25,12 @@ class ProviderService(
     private val locationRepository: LocationRepository,
     private val pduRepository: PduRepository
 ) {
+
+    fun findActiveOfficeLocations() =
+        locationRepository.findAllLocationsForProvider(providerRepository.getCrsProvider().id).map {
+            OfficeLocation(it.code, it.description, it.address(), it.telephoneNumber)
+        }
+
     fun findCrsAssignationDetails(locationCode: String?): CrsAssignation {
         val provider = providerRepository.getCrsProvider()
         val team = teamRepository.getByCode(Team.INTENDED_TEAM_CODE)
@@ -37,3 +45,5 @@ class ProviderService(
 }
 
 data class CrsAssignation(val provider: Provider, val team: Team, val staff: Staff, val location: Location?)
+
+fun Location.address() = Address.from(buildingName, buildingNumber, streetName, townCity, county, postcode)
