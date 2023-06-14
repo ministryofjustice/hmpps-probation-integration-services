@@ -7,6 +7,7 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Immutable
@@ -18,6 +19,9 @@ class Person(
     @Column(columnDefinition = "char(7)")
     val crn: String,
 
+    @Column(name = "noms_number", columnDefinition = "char(7)")
+    val nomsId: String? = null,
+
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
 
@@ -28,6 +32,9 @@ class Person(
 
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrn(crn: String): Person?
+
+    @Query("select p.nomsId from Person p where p.crn = :crn")
+    fun findNomsId(crn: String): String?
 }
 
 fun PersonRepository.getByCrn(crn: String) = findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)

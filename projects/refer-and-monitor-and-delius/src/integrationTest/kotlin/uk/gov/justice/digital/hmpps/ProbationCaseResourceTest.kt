@@ -19,6 +19,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import uk.gov.justice.digital.hmpps.api.model.CaseIdentifier
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -75,6 +76,18 @@ class ProbationCaseResourceTest {
                 .withOAuth2Token(wireMockServer)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isNotFound)
+    }
+
+    @Test
+    fun `nomsId returned when populated`() {
+        val res = mockMvc.perform(
+            MockMvcRequestBuilders.get("/probation-case/${PersonGenerator.DEFAULT.crn}/identifiers")
+                .withOAuth2Token(wireMockServer)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isOk).andReturn().response.contentAsString
+
+        val identifiers = objectMapper.readValue<CaseIdentifier>(res)
+        assertThat(identifiers.nomsId, equalTo("A1234YZ"))
     }
 
     companion object {

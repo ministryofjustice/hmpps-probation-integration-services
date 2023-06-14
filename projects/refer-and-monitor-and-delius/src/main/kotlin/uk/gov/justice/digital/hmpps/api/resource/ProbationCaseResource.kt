@@ -5,14 +5,20 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.api.model.CaseIdentifier
 import uk.gov.justice.digital.hmpps.api.model.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.service.ManagerService
+import uk.gov.justice.digital.hmpps.service.PersonService
 
 @RestController
 @RequestMapping("probation-case/{crn}")
-class ProbationCaseResource(private val managerService: ManagerService) {
+class ProbationCaseResource(private val managerService: ManagerService, private val personService: PersonService) {
     @PreAuthorize("hasRole('CRS_REFERRAL')")
     @GetMapping("responsible-officer")
     fun findResponsibleOfficer(@PathVariable crn: String): ResponsibleOfficer =
         managerService.findResponsibleCommunityManager(crn)
+
+    @PreAuthorize("hasRole('CRS_REFERRAL')")
+    @GetMapping("identifiers")
+    fun findIdentifiers(@PathVariable crn: String): CaseIdentifier = personService.findIdentifiers(crn)
 }
