@@ -10,6 +10,9 @@ import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
+import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
+import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.generateExclusion
+import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.generateRestriction
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
@@ -23,6 +26,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementActio
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.limitedaccess.entity.Exclusion
+import uk.gov.justice.digital.hmpps.integrations.delius.limitedaccess.entity.Restriction
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PrisonManagerRepository
@@ -76,7 +81,9 @@ class DataLoader(
     private val nsiManagerRepository: NsiManagerRepository,
     private val requirementRepository: RequirementRepository,
     private val locationRepository: LocationRepository,
-    private val pduRepository: PduRepository
+    private val pduRepository: PduRepository,
+    private val restrictionRepository: RestrictionRepository,
+    private val exclusionRepository: ExclusionRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -272,6 +279,20 @@ class DataLoader(
         nsiManagerRepository.save(NsiGenerator.generateManager(NsiGenerator.FUZZY_SEARCH))
 
         NsiGenerator.TERMINATED = nsiRepository.save(NsiGenerator.TERMINATED)
+
+        auditUserRepository.save(UserGenerator.LIMITED_ACCESS_USER)
+        personRepository.saveAll(
+            listOf(
+                PersonGenerator.EXCLUSION,
+                PersonGenerator.RESTRICTION,
+                PersonGenerator.RESTRICTION_EXCLUSION
+            )
+        )
+
+        exclusionRepository.save(LimitedAccessGenerator.EXCLUSION)
+        restrictionRepository.save(LimitedAccessGenerator.RESTRICTION)
+        exclusionRepository.save(generateExclusion(person = PersonGenerator.RESTRICTION_EXCLUSION))
+        restrictionRepository.save(generateRestriction(person = PersonGenerator.RESTRICTION_EXCLUSION))
     }
 }
 
@@ -281,3 +302,5 @@ interface MainCatRepository : JpaRepository<RequirementMainCategory, Long>
 interface DisposalTypeRepository : JpaRepository<DisposalType, Long>
 interface StaffUserRepository : JpaRepository<StaffUser, Long>
 interface ResponsibleOfficerRepository : JpaRepository<ResponsibleOfficer, Long>
+interface RestrictionRepository : JpaRepository<Restriction, Long>
+interface ExclusionRepository : JpaRepository<Exclusion, Long>
