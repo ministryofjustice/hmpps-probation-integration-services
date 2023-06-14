@@ -98,7 +98,7 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
-        <a href="./api-reference.html#example-inputid"><span>/example/{inputId}</span></a>
+        <a href="./api-reference.html#needs-crn"><span>/needs/{crn}</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -134,14 +134,14 @@
 
 
 
-<h2 id="example-inputid">/example/{inputId}</h2>
+<h2 id="needs-crn">/needs/{crn}</h2>
 
-<h3 id="example-inputid-get">get</h3>
-
-
+<h3 id="needs-crn-get">get</h3>
 
 
-<h4 id="example-inputid-get-parameters">Parameters</h4>
+
+
+<h4 id="needs-crn-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -149,7 +149,7 @@
 <tbody>
 
 <tr>
-<td>inputId</td>
+<td>crn</td>
 <td>path</td>
 <td>string</td>
 <td>true</td>
@@ -164,7 +164,7 @@
 
 
 
-<h4 id="example-inputid-get-responses">Responses</h4>
+<h4 id="needs-crn-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -178,9 +178,18 @@
 
 
 
+<pre><code>{
+  "criminogenicNeeds": [
+    {
+      "key": "string",
+      "description": "string"
+    }
+  ]
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-needs'>Needs</a>
 </td>
 </tr>
 
@@ -192,6 +201,60 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-need">Need</h3>
+
+
+<table class='schema-need'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>key</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-needs">Needs</h3>
+
+
+<table class='schema-needs'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>criminogenicNeeds</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-need'>Need</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
 
 
             
