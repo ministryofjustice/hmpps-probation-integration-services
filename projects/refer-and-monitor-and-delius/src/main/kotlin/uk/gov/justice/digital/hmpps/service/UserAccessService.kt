@@ -22,8 +22,8 @@ class UserAccessService(private val uar: UserAccessRepository) {
                 crn,
                 any { !it.exclusionMessage.isNullOrBlank() },
                 any { !it.restrictionMessage.isNullOrBlank() },
-                firstOrNull { it.exclusionMessage?.isNotBlank() == true }?.exclusionMessage,
-                firstOrNull { it.restrictionMessage?.isNotBlank() == true }?.restrictionMessage
+                firstOrNull { !it.exclusionMessage.isNullOrBlank() }?.exclusionMessage,
+                firstOrNull { !it.restrictionMessage.isNullOrBlank() }?.restrictionMessage
             )
         }
     }
