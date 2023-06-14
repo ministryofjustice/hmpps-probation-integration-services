@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.api.resource
 
+import jakarta.validation.constraints.Size
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
@@ -12,6 +14,7 @@ import uk.gov.justice.digital.hmpps.api.model.UserAccess
 import uk.gov.justice.digital.hmpps.service.ManagerService
 import uk.gov.justice.digital.hmpps.service.UserAccessService
 
+@Validated
 @RestController
 @RequestMapping("users/{username}")
 class UserResource(private val managerService: ManagerService, private val userAccessService: UserAccessService) {
@@ -22,6 +25,8 @@ class UserResource(private val managerService: ManagerService, private val userA
 
     @PreAuthorize("hasRole('CRS_REFERRAL')")
     @RequestMapping("access", method = [RequestMethod.GET, RequestMethod.POST])
-    fun userAccessCheck(@PathVariable username: String, @RequestBody crns: List<String>): UserAccess =
-        userAccessService.userAccessFor(username, crns)
+    fun userAccessCheck(
+        @PathVariable username: String,
+        @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>
+    ): UserAccess = userAccessService.userAccessFor(username, crns)
 }

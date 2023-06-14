@@ -3,17 +3,21 @@ package uk.gov.justice.digital.hmpps
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.WireMockServer
+import jakarta.servlet.ServletException
+import jakarta.validation.ConstraintViolationException
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.hasItem
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.CaseAccess
 import uk.gov.justice.digital.hmpps.api.model.CaseIdentifier
 import uk.gov.justice.digital.hmpps.api.model.ManagedCases
@@ -40,7 +44,7 @@ class UserResourceTest {
             MockMvcRequestBuilders.get("/users/john-smith/managed-cases")
                 .withOAuth2Token(wireMockServer)
                 .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn().response.contentAsString
+        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsString
 
         val managedCases = objectMapper.readValue<ManagedCases>(res)
         assertThat(managedCases.managedCases.size, equalTo(2))
@@ -157,5 +161,19 @@ class UserResourceTest {
             result[default],
             equalTo(CaseAccess(default, false, false))
         )
+    }
+
+    @Test
+    fun `validates that between 1 and 500 crns are provided`() {
+        val ex = assertThrows<ServletException> {
+            mockMvc.perform(
+                MockMvcRequestBuilders.post("/users/${UserGenerator.AUDIT_USER.username.lowercase()}/access")
+                    .withOAuth2Token(wireMockServer)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(listOf<String>()))
+            ).andReturn().response.contentAsString
+        }
+        assertThat(ex.cause, instanceOf(ConstraintViolationException::class.java))
+        assertThat(ex.cause!!.message, equalTo("userAccessCheck.crns: Please provide between 1 and 500 crns"))
     }
 }
