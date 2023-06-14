@@ -82,7 +82,9 @@ SELECT json_object(
                                                                         to_char(d.FINISH_DATE, 'yyyy-MM-dd'),
                                                                         'notes' VALUE d.NOTES,
                                                                         'lastUpdatedDateTime' VALUE
-                                                                        d.LAST_UPDATED_DATETIME))
+                                                                        d.LAST_UPDATED_DATETIME ABSENT ON NULL
+                                                                        RETURNING CLOB)
+                                                            ABSENT ON NULL RETURNING CLOB)
                                              FROM DISABILITY d
                                                       JOIN R_STANDARD_REFERENCE_LIST dt
                                                            ON dt.STANDARD_REFERENCE_LIST_ID = d.DISABILITY_TYPE_ID
