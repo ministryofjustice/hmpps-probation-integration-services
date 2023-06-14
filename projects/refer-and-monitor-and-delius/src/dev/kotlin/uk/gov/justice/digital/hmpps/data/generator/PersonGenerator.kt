@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import java.time.ZonedDateTime
 
 object PersonGenerator {
-    val DEFAULT = generate("T140223")
+    val DEFAULT = generate("T140223", "A1234YZ")
     val FUZZY_SEARCH = generate("F123456")
     val SENTENCED_WITHOUT_NSI = generate("S123456")
     val NO_APPOINTMENTS = generate("N049975")
@@ -17,8 +17,12 @@ object PersonGenerator {
     val COMMUNITY_RESPONSIBLE = generate("C025519")
     val COMMUNITY_NOT_RESPONSIBLE = generate("C014150")
 
-    fun generate(crn: String, softDeleted: Boolean = false, id: Long = IdGenerator.getAndIncrement()) =
-        Person(crn, softDeleted, id)
+    fun generate(
+        crn: String,
+        nomsId: String? = null,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Person(crn, nomsId, softDeleted, id)
 
     fun generatePersonManager(
         person: Person,
