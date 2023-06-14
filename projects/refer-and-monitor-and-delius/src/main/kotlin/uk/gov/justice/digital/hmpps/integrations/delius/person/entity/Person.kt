@@ -22,6 +22,9 @@ class Person(
     @Column(name = "noms_number", columnDefinition = "char(7)")
     val nomsId: String? = null,
 
+    val exclusionMessage: String? = null,
+    val restrictionMessage: String? = null,
+
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
 
