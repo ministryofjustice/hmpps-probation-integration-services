@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.CaseIdentifier
+import uk.gov.justice.digital.hmpps.api.model.ManagedCases
 import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.Pdu
@@ -29,6 +31,11 @@ class ManagerService(
         val pom = if (com.responsibleOfficer == null) prisonManagerRepository.findByPersonId(com.person.id) else null
         return com.toResponsibleOfficer(pom)
     }
+
+    fun findCasesManagedBy(username: String) = ManagedCases(
+        (personManagerRepository.findCasesManagedBy(username) + personManagerRepository.findCasesManagedBy(username)).toSet()
+            .map { CaseIdentifier(it) }
+    )
 }
 
 fun PersonManager.toResponsibleOfficer(pom: PrisonManager?) = ResponsibleOfficer(
