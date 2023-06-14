@@ -1,0 +1,22 @@
+name: Check
+# Build, test and analyse source code before merging
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/build.yml
+
+  analyse:
+    name: Analyse
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/analyse
+        with:
+          token: ${{ secrets.SONAR_TOKEN }}

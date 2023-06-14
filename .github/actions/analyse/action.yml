@@ -1,0 +1,43 @@
+name: Analyse
+description: Publish test results to GitHub Actions, and analyse source code and results using Sonar
+
+inputs:
+  token:
+    description: Sonar token
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: test-results
+
+    - name: Publish test reports
+      uses: mikepenz/action-junit-report@4fa23552acda20a6a1d44f16224a90efbeb6c5f1 # v3.7.5
+      if: always() && github.actor != 'dependabot[bot]'
+      with:
+        check_name: |-
+          Unit test results
+          Integration test results
+        report_paths: |-
+          **/build/test-results/test/TEST-*.xml
+          **/build/test-results/integrationTest/TEST-*.xml
+
+    - uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Sonar analysis
+      uses: gradle/gradle-build-action@v2
+      if: github.actor != 'dependabot[bot]'
+      with:
+        arguments: sonar
+        cache-read-only: true
+      env:
+        SONAR_TOKEN: ${{ inputs.token }}
