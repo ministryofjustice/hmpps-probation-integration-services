@@ -59,7 +59,8 @@ class ApprovedPremisesService(
                 date = details.createdAt,
                 type = BOOKING_MADE,
                 notes = "To view details of the Approved Premises booking, click here: ${details.applicationUrl}",
-                description = "Approved Premises Booking for ${details.premises.name}"
+                description = "Approved Premises Booking for ${details.premises.name}",
+                locationCode = ap.locationCode
             ),
             person = personRepository.getByCrn(event.crn()),
             staffCode = details.bookedBy.staffMember.staffCode,
@@ -75,6 +76,7 @@ class ApprovedPremisesService(
             ContactDetails(
                 date = details.timestamp,
                 type = NOT_ARRIVED,
+                locationCode = ap.locationCode,
                 notes = listOfNotNull(
                     details.eventDetails.notes,
                     "For more details, click here: ${details.eventDetails.applicationUrl}"

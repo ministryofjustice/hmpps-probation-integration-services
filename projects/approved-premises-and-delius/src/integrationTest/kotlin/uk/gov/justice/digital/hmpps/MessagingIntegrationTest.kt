@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
@@ -114,6 +115,7 @@ internal class MessagingIntegrationTest {
             contact.notes,
             equalTo("To view details of the Approved Premises booking, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713")
         )
+        assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
     }
 
     @Test
@@ -142,6 +144,7 @@ internal class MessagingIntegrationTest {
                 """.trimIndent()
             )
         )
+        assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
     }
 
     @Test
@@ -173,6 +176,7 @@ internal class MessagingIntegrationTest {
                 """.trimIndent()
             )
         )
+        assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
 
         // And a residence NSI is created
         val nsi = nsiRepository.findAll()
@@ -232,6 +236,8 @@ internal class MessagingIntegrationTest {
             contact.notes,
             equalTo("For details, see the referral on the AP Service: ${details.applicationUrl}")
         )
+        assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
+        assertThat(contact.outcome?.code, equalTo("AP_N"))
 
         val nsi = nsiRepository.findByExternalReference(EXT_REF_BOOKING_PREFIX + details.bookingId)
         assertNotNull(nsi)

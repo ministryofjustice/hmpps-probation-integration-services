@@ -89,5 +89,6 @@ data class PersonDeparted(
     val bookingId: String,
     val keyWorker: StaffMember,
     val departedAt: ZonedDateTime,
-    val premises: Premises
+    val premises: Premises,
+    val legacyReasonCode: String
 )

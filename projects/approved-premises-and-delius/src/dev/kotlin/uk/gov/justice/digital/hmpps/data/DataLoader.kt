@@ -9,10 +9,12 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ContactOutcomeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiStatusGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
@@ -24,8 +26,10 @@ import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.Address
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.location.OfficeLocationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiStatusRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiTypeCode
@@ -50,12 +54,14 @@ class DataLoader(
     private val addressRepository: AddressRepository,
     private val approvedPremisesRepository: ApprovedPremisesRepository,
     private val probationAreaRepository: ProbationAreaRepository,
+    private val officeLocationRepository: OfficeLocationRepository,
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
     private val personAddressRepository: PersonAddressRepository,
     private val contactTypeRepository: ContactTypeRepository,
+    private val contactOutcomeRepository: ContactOutcomeRepository,
     private val nsiTypeRepository: NsiTypeRepository,
     private val nsiStatusRepository: NsiStatusRepository,
     private val transferReasonRepository: TransferReasonRepository,
@@ -84,6 +90,7 @@ class DataLoader(
             )
         )
         approvedPremisesRepository.save(ApprovedPremisesGenerator.NO_STAFF)
+        officeLocationRepository.save(OfficeLocationGenerator.DEFAULT)
 
         teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM)
         teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM_WITH_NO_STAFF)
@@ -125,6 +132,7 @@ class DataLoader(
         )
         AddressGenerator.PERSON_ADDRESS = personAddressRepository.save(AddressGenerator.PERSON_ADDRESS)
         contactTypeRepository.saveAll(ContactTypeCode.values().map { ContactTypeGenerator.generate(it.code) })
+        contactOutcomeRepository.save(ContactOutcomeGenerator.generate("AP_N"))
         nsiTypeRepository.saveAll(NsiTypeCode.values().map { NsiTypeGenerator.generate(it.code) })
         nsiStatusRepository.saveAll(NsiStatusCode.values().map { NsiStatusGenerator.generate(it.code) })
         transferReasonRepository.save(TransferReasonGenerator.NSI)

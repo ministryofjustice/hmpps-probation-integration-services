@@ -15,25 +15,17 @@
       "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
       "name": "Hope House",
       "apCode": "NEHOPE1",
-      "legacyApCode": "Q001",
-      "probationArea": {
-        "code": "N54",
-        "name": "North East Region"
-      }
+      "legacyApCode": "Q001"
     },
     "departedAt": "2023-01-16T17:21:30",
     "reason": "Absconded, still at large",
-    "legacyReasonCode": "J",
+    "legacyReasonCode": "N",
     "destination": {
       "premises": {
         "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "name": "Hope House",
         "apCode": "NEHOPE1",
-        "legacyApCode": "Q061",
-        "probationArea": {
-          "code": "N54",
-          "name": "North East Region"
-        }
+        "legacyApCode": "Q061"
       },
       "moveOnCategory": {
         "description": "B&B / Temp / Short-Term Housing",
