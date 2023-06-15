@@ -34,6 +34,7 @@ class ApprovedPremises(
 
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean = true
-)
-
-fun ApprovedPremises.locationCode(): String = probationArea.code + code.code
+) {
+    @Transient
+    val locationCode: String = probationArea.code + code.code
+}

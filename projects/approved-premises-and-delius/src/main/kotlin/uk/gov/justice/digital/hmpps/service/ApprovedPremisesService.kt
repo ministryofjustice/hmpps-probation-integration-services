@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremisesApiClient
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.getApprovedPremises
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.locationCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_ASSESSED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_SUBMITTED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.BOOKING_MADE
@@ -61,7 +60,7 @@ class ApprovedPremisesService(
                 type = BOOKING_MADE,
                 notes = "To view details of the Approved Premises booking, click here: ${details.applicationUrl}",
                 description = "Approved Premises Booking for ${details.premises.name}",
-                locationCode = ap.locationCode()
+                locationCode = ap.locationCode
             ),
             person = personRepository.getByCrn(event.crn()),
             staffCode = details.bookedBy.staffMember.staffCode,
@@ -77,7 +76,7 @@ class ApprovedPremisesService(
             ContactDetails(
                 date = details.timestamp,
                 type = NOT_ARRIVED,
-                locationCode = ap.locationCode(),
+                locationCode = ap.locationCode,
                 notes = listOfNotNull(
                     details.eventDetails.notes,
                     "For more details, click here: ${details.eventDetails.applicationUrl}"
