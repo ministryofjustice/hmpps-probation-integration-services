@@ -41,8 +41,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.Approve
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlertRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.location.OfficeLocationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiStatus
@@ -84,6 +86,12 @@ internal class ApprovedPremisesServiceTest {
 
     @Mock
     lateinit var contactTypeRepository: ContactTypeRepository
+
+    @Mock
+    lateinit var contactOutcomeRepository: ContactOutcomeRepository
+
+    @Mock
+    lateinit var officeLocationRepository: OfficeLocationRepository
 
     @Mock
     lateinit var contactAlertRepository: ContactAlertRepository
@@ -138,7 +146,9 @@ internal class ApprovedPremisesServiceTest {
         contactService = ContactService(
             contactRepository,
             contactTypeRepository,
+            contactOutcomeRepository,
             contactAlertRepository,
+            officeLocationRepository,
             teamRepository,
             staffRepository,
             personManagerRepository
