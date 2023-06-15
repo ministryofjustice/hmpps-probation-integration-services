@@ -80,7 +80,7 @@ class NsiService(
                     ContactDetails(
                         date = details.arrivedAt,
                         type = ContactTypeCode.ARRIVED,
-                        locationCode = ap.locationCode,
+                        locationCode = ap.locationCode(),
                         notes = listOfNotNull(
                             details.notes,
                             "For more details, click here: ${details.applicationUrl}"
@@ -104,7 +104,7 @@ class NsiService(
                 date = details.departedAt,
                 type = ContactTypeCode.DEPARTED,
                 outcomeCode = ContactOutcome.AP_DEPARTED_PREFIX + details.legacyReasonCode,
-                locationCode = ap.locationCode,
+                locationCode = ap.locationCode(),
                 notes = "For details, see the referral on the AP Service: ${details.applicationUrl}",
                 createAlert = false
             ),
