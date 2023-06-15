@@ -35,5 +35,5 @@ class ApprovedPremises(
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean = true
 ) {
-    val locationCode: String = probationArea.code + code.code
+    fun locationCode(): String = probationArea.code + code.code
 }
