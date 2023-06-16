@@ -39,6 +39,9 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArriv
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.SubmittedBy
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSourceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcomeRepository
@@ -129,9 +132,19 @@ internal class ApprovedPremisesServiceTest {
     @Mock
     lateinit var referenceDataRepository: ReferenceDataRepository
 
+    @Mock
+    lateinit var referralSourceRepository: ReferralSourceRepository
+
+    @Mock
+    lateinit var referralRepository: ReferralRepository
+
+    @Mock
+    lateinit var eventRepository: EventRepository
+
     lateinit var addressService: AddressService
     lateinit var contactService: ContactService
     lateinit var nsiService: NsiService
+    lateinit var referralService: ReferralService
     lateinit var approvedPremisesService: ApprovedPremisesService
 
     private val applicationSubmittedEvent = prepEvent("application-submitted").message
@@ -150,7 +163,6 @@ internal class ApprovedPremisesServiceTest {
             contactAlertRepository,
             officeLocationRepository,
             teamRepository,
-            staffRepository,
             personManagerRepository
         )
         nsiService = NsiService(
@@ -165,12 +177,24 @@ internal class ApprovedPremisesServiceTest {
             addressService,
             contactService
         )
+        referralService = ReferralService(
+            referenceDataRepository,
+            referralSourceRepository,
+            teamRepository,
+            staffRepository,
+            referralRepository,
+            personRepository,
+            eventRepository,
+            contactService
+        )
         approvedPremisesService = ApprovedPremisesService(
             approvedPremisesApiClient,
             approvedPremisesRepository,
+            staffRepository,
             personRepository,
             contactService,
-            nsiService
+            nsiService,
+            referralService
         )
     }
 

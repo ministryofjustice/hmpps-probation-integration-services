@@ -8,6 +8,8 @@ database:
       - contact_alert
       - nsi
       - nsi_manager
+      - approved_premises_referral
+      - approved_premises_residence
 
   audit:
     username: ApprovedPremisesAndDelius

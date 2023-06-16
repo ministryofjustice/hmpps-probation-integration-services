@@ -2,7 +2,9 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.ADDRESS_STATUS
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.ADDRESS_TYPE
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.ALL_DATASETS
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.HOSTEL_CODE
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSource
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
@@ -16,6 +18,15 @@ object ReferenceDataGenerator {
     val NHC_Q001 = generate("Q001", HOSTEL_CODE.id)
     val NHC_Q002 = generate("Q002", HOSTEL_CODE.id)
     val STAFF_GRADE = generate("TEST", DatasetGenerator.STAFF_GRADE.id, "Test staff grade")
+
+    val REFERRAL_DATE_TYPE = generate("CRC", ALL_DATASETS[DatasetCode.AP_REFERRAL_DATE_TYPE]!!.id)
+    val OTHER_REFERRAL_CATEGORY = generate("O", ALL_DATASETS[DatasetCode.AP_REFERRAL_CATEGORY]!!.id)
+    val ACCEPTED_DEFERRED_ADMISSION = generate("AD", ALL_DATASETS[DatasetCode.REFERRAL_DECISION]!!.id)
+    val AP_REFERRAL_SOURCE = generate("AP", ALL_DATASETS[DatasetCode.SOURCE_TYPE]!!.id)
+    val YN_UNKNOWN = generate("D", ALL_DATASETS[DatasetCode.YES_NO]!!.id)
+    val RISK_UNKNOWN = generate("K", ALL_DATASETS[DatasetCode.RISK_OF_HARM]!!.id)
+
+    val OTHER_REFERRAL_SOURCE = generateReferralSource("OTH")
 
     fun generate(
         code: String,
@@ -31,15 +42,24 @@ object ReferenceDataGenerator {
         PREV_ADDRESS_STATUS,
         NHC_Q001,
         NHC_Q002,
-        STAFF_GRADE
+        STAFF_GRADE,
+        REFERRAL_DATE_TYPE,
+        OTHER_REFERRAL_CATEGORY,
+        ACCEPTED_DEFERRED_ADMISSION,
+        AP_REFERRAL_SOURCE,
+        YN_UNKNOWN,
+        RISK_UNKNOWN
     )
+
+    fun generateReferralSource(code: String, id: Long = IdGenerator.getAndIncrement()) = ReferralSource(id, code)
 }
 
 object DatasetGenerator {
-    val ADDRESS_TYPE = Dataset(IdGenerator.getAndIncrement(), DatasetCode.ADDRESS_TYPE)
-    val ADDRESS_STATUS = Dataset(IdGenerator.getAndIncrement(), DatasetCode.ADDRESS_STATUS)
-    val HOSTEL_CODE = Dataset(IdGenerator.getAndIncrement(), DatasetCode.HOSTEL_CODE)
-    val STAFF_GRADE = Dataset(IdGenerator.getAndIncrement(), DatasetCode.STAFF_GRADE)
+    val ALL_DATASETS = DatasetCode.values().map { Dataset(IdGenerator.getAndIncrement(), it) }.associateBy { it.code }
+    val ADDRESS_TYPE = ALL_DATASETS[DatasetCode.ADDRESS_TYPE]!!
+    val ADDRESS_STATUS = ALL_DATASETS[DatasetCode.ADDRESS_STATUS]!!
+    val HOSTEL_CODE = ALL_DATASETS[DatasetCode.HOSTEL_CODE]!!
+    val STAFF_GRADE = ALL_DATASETS[DatasetCode.STAFF_GRADE]!!
 
-    fun all() = listOf(ADDRESS_TYPE, ADDRESS_STATUS, HOSTEL_CODE, STAFF_GRADE)
+    fun all() = ALL_DATASETS.values
 }

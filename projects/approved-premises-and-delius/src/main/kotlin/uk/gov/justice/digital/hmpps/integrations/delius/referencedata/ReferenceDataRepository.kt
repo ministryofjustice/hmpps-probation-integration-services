@@ -29,3 +29,18 @@ fun ReferenceDataRepository.previousAddressStatus() = getAddressStatus("P")
 fun ReferenceDataRepository.approvedPremisesAddressType() =
     findByCodeAndDatasetCode(APPROVED_PREMISES.code, DatasetCode.ADDRESS_TYPE)
         ?: throw NotFoundException("Address Type", "code", APPROVED_PREMISES.code)
+
+fun ReferenceDataRepository.otherReferralCategory() = findByCodeAndDatasetCode("O", DatasetCode.AP_REFERRAL_CATEGORY)
+    ?: throw NotFoundException("ReferralCategory", "code", "O")
+
+fun ReferenceDataRepository.acceptedDeferredAdmission() = findByCodeAndDatasetCode("AD", DatasetCode.REFERRAL_DECISION)
+    ?: throw NotFoundException("ReferralDecision", "code", "AD")
+
+fun ReferenceDataRepository.apReferralSource() = findByCodeAndDatasetCode("AP", DatasetCode.SOURCE_TYPE)
+    ?: throw NotFoundException("SourceType", "code", "AP")
+
+fun ReferenceDataRepository.ynUnknown() = findByCodeAndDatasetCode("D", DatasetCode.YES_NO)
+    ?: throw NotFoundException("YesNo", "code", "D")
+
+fun ReferenceDataRepository.unknownRisk() = findByCodeAndDatasetCode("K", DatasetCode.RISK_OF_HARM)
+    ?: throw NotFoundException("YesNo", "code", "K")

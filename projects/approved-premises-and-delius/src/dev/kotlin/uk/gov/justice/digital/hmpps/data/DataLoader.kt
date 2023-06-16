@@ -25,6 +25,8 @@ import uk.gov.justice.digital.hmpps.data.generator.TransferReasonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.Address
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSourceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
@@ -51,6 +53,7 @@ class DataLoader(
     private val auditUserRepository: AuditUserRepository,
     private val datasetRepository: DatasetRepository,
     private val referenceDataRepository: ReferenceDataRepository,
+    private val referralSourceRepository: ReferralSourceRepository,
     private val addressRepository: AddressRepository,
     private val approvedPremisesRepository: ApprovedPremisesRepository,
     private val probationAreaRepository: ProbationAreaRepository,
@@ -60,6 +63,7 @@ class DataLoader(
     private val personRepository: PersonRepository,
     private val personManagerRepository: PersonManagerRepository,
     private val personAddressRepository: PersonAddressRepository,
+    private val eventRepository: EventRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactOutcomeRepository: ContactOutcomeRepository,
     private val nsiTypeRepository: NsiTypeRepository,
@@ -76,6 +80,7 @@ class DataLoader(
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         datasetRepository.saveAll(DatasetGenerator.all())
         referenceDataRepository.saveAll(ReferenceDataGenerator.all())
+        referralSourceRepository.save(ReferenceDataGenerator.OTHER_REFERRAL_SOURCE)
 
         addressRepository.saveAll(listOf(AddressGenerator.Q001, AddressGenerator.Q002))
 
@@ -119,6 +124,14 @@ class DataLoader(
             )
         )
 
+        staffRepository.save(
+            StaffGenerator.generate(
+                "Unallocated",
+                TeamGenerator.APPROVED_PREMISES_TEAM.code + "U",
+                teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM)
+            )
+        )
+
         val personManagerStaff = StaffGenerator.generate(code = "N54A001")
         staffRepository.save(personManagerStaff)
         val person = PersonGenerator.DEFAULT
@@ -131,6 +144,7 @@ class DataLoader(
             )
         )
         AddressGenerator.PERSON_ADDRESS = personAddressRepository.save(AddressGenerator.PERSON_ADDRESS)
+        eventRepository.save(PersonGenerator.generateEvent("7", person.id))
         contactTypeRepository.saveAll(ContactTypeCode.values().map { ContactTypeGenerator.generate(it.code) })
         contactOutcomeRepository.save(ContactOutcomeGenerator.generate("AP_N"))
         nsiTypeRepository.saveAll(NsiTypeCode.values().map { NsiTypeGenerator.generate(it.code) })

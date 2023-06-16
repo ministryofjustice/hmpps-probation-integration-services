@@ -7,10 +7,13 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import jakarta.persistence.Transient
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 
 @Entity
 @Immutable
@@ -36,4 +39,10 @@ class ApprovedPremises(
     val selectable: Boolean = true
 ) {
     fun locationCode(): String = probationArea.code + code.code
+
+    @Transient
+    var team: Team? = null
+
+    @Transient
+    var staff: Staff? = null
 }
