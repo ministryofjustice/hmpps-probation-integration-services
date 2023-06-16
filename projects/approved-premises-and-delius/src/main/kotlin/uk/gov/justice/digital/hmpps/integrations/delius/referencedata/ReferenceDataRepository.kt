@@ -43,4 +43,4 @@ fun ReferenceDataRepository.ynUnknown() = findByCodeAndDatasetCode("D", DatasetC
     ?: throw NotFoundException("YesNo", "code", "D")
 
 fun ReferenceDataRepository.unknownRisk() = findByCodeAndDatasetCode("K", DatasetCode.RISK_OF_HARM)
-    ?: throw NotFoundException("YesNo", "code", "K")
+    ?: throw NotFoundException("RiskOfHarm", "code", "K")
