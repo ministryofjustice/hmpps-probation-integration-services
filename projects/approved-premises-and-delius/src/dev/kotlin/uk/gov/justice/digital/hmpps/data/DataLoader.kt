@@ -23,8 +23,8 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TransferReasonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.Address
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.Address
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSourceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository

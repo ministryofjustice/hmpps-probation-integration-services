@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremises
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Referral

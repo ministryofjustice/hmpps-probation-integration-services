@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises
+package uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Convert

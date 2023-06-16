@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremises
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository

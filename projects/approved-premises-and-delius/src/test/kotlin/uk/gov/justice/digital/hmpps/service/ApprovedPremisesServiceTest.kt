@@ -37,8 +37,8 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.SubmittedBy
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository

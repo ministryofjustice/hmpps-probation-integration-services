@@ -22,7 +22,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremises
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import java.time.LocalDate
