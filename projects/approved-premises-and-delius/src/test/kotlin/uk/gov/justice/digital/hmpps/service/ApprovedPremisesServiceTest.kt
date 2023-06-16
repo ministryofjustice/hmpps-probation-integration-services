@@ -12,6 +12,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.check
 import org.mockito.kotlin.whenever
+import org.springframework.boot.context.event.ApplicationStartedEvent
 import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
 import uk.gov.justice.digital.hmpps.data.generator.AssessedByGenerator
 import uk.gov.justice.digital.hmpps.data.generator.BookedByGenerator
@@ -26,6 +27,7 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffMemberGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SubmittedByGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationAssessed
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSubmitted
@@ -39,16 +41,18 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArriv
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.SubmittedBy
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Referral
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSourceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ResidenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.location.OfficeLocationRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiStatus
@@ -74,6 +78,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.messaging.url
 import uk.gov.justice.digital.hmpps.prepEvent
+import uk.gov.justice.digital.hmpps.security.ServiceContext
+import uk.gov.justice.digital.hmpps.user.AuditUserService
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -140,7 +146,16 @@ internal class ApprovedPremisesServiceTest {
     lateinit var referralRepository: ReferralRepository
 
     @Mock
+    lateinit var residenceRepository: ResidenceRepository
+
+    @Mock
     lateinit var eventRepository: EventRepository
+
+    @Mock
+    lateinit var auditUserService: AuditUserService
+
+    @Mock
+    lateinit var applicationStartedEvent: ApplicationStartedEvent
 
     lateinit var addressService: AddressService
     lateinit var contactService: ContactService
@@ -166,6 +181,17 @@ internal class ApprovedPremisesServiceTest {
             teamRepository,
             personManagerRepository
         )
+        referralService = ReferralService(
+            referenceDataRepository,
+            referralSourceRepository,
+            teamRepository,
+            staffRepository,
+            referralRepository,
+            residenceRepository,
+            personRepository,
+            eventRepository,
+            contactService
+        )
         nsiService = NsiService(
             nsiRepository,
             nsiTypeRepository,
@@ -176,17 +202,8 @@ internal class ApprovedPremisesServiceTest {
             staffRepository,
             transferReasonRepository,
             addressService,
-            contactService
-        )
-        referralService = ReferralService(
-            referenceDataRepository,
-            referralSourceRepository,
-            teamRepository,
-            staffRepository,
-            referralRepository,
-            personRepository,
-            eventRepository,
-            contactService
+            contactService,
+            referralService
         )
         approvedPremisesService = ApprovedPremisesService(
             approvedPremisesApiClient,
@@ -298,6 +315,8 @@ internal class ApprovedPremisesServiceTest {
         givenAnApprovedPremises(ApprovedPremisesGenerator.DEFAULT)
         givenAddressStatuses(listOf(ReferenceDataGenerator.MAIN_ADDRESS_STATUS))
         givenAddressTypes(listOf(ReferenceDataGenerator.AP_ADDRESS_TYPE))
+        givenAuditUser()
+        givenReferral(person, details.eventDetails.bookingId)
 
         approvedPremisesService.personArrived(personArrivedEvent)
 
@@ -319,7 +338,7 @@ internal class ApprovedPremisesServiceTest {
             status = NsiStatusCode.IN_RESIDENCE,
             referralDate = details.eventDetails.applicationSubmittedOn,
             actualStartDate = details.eventDetails.arrivedAt,
-            expectedStartDate = details.eventDetails.arrivedAt,
+            expectedStartDate = details.eventDetails.arrivedAt.toLocalDate(),
             expectedEndDate = details.eventDetails.expectedDepartureOn,
             person = person,
             staff = staff,
@@ -372,7 +391,7 @@ internal class ApprovedPremisesServiceTest {
         status: NsiStatusCode,
         referralDate: LocalDate,
         actualStartDate: ZonedDateTime?,
-        expectedStartDate: ZonedDateTime?,
+        expectedStartDate: LocalDate?,
         expectedEndDate: LocalDate?,
         person: Person,
         staff: Staff,
@@ -405,12 +424,6 @@ internal class ApprovedPremisesServiceTest {
         val person = PersonGenerator.generate(crn)
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(crn)).thenReturn(person)
         return person
-    }
-
-    private fun givenAnEvent(number: String, personId: Long): Event {
-        val event = PersonGenerator.generateEvent(number, personId)
-        whenever(eventRepository.findByPersonIdAndNumber(personId, number)).thenReturn(event)
-        return event
     }
 
     private fun givenAPersonManager(person: Person): PersonManager {
@@ -521,5 +534,47 @@ internal class ApprovedPremisesServiceTest {
             whenever(nsiStatusRepository.findByCode(it.code))
                 .thenReturn(NsiStatus(IdGenerator.getAndIncrement(), it.code))
         }
+    }
+
+    private fun givenAuditUser() {
+        val user = UserGenerator.AUDIT_USER
+        whenever(auditUserService.findUser(user.username)).thenReturn(user)
+        ServiceContext(user.username, auditUserService).onApplicationEvent(applicationStartedEvent)
+    }
+
+    private fun givenReferral(person: Person, bookingId: String): Referral {
+        val ref = Referral(
+            person,
+            PersonGenerator.generateEvent("3", person.id),
+            ApprovedPremisesGenerator.DEFAULT,
+            LocalDate.now(),
+            LocalDate.now(),
+            LocalDate.now(),
+            ZonedDateTime.now(),
+            Nsi.EXT_REF_BOOKING_PREFIX + bookingId,
+            ReferenceDataGenerator.REFERRAL_DATE_TYPE,
+            ReferenceDataGenerator.OTHER_REFERRAL_CATEGORY,
+            1, 1,
+            "Reason",
+            ReferenceDataGenerator.OTHER_REFERRAL_SOURCE,
+            ReferenceDataGenerator.AP_REFERRAL_SOURCE,
+            ReferenceDataGenerator.ACCEPTED_DEFERRED_ADMISSION,
+            1, 1, null,
+            ReferenceDataGenerator.YN_UNKNOWN, null,
+            ReferenceDataGenerator.YN_UNKNOWN, null,
+            ReferenceDataGenerator.YN_UNKNOWN, null,
+            true, true,
+            ReferenceDataGenerator.RISK_UNKNOWN,
+            ReferenceDataGenerator.RISK_UNKNOWN,
+            ReferenceDataGenerator.RISK_UNKNOWN,
+            ReferenceDataGenerator.RISK_UNKNOWN,
+            ReferenceDataGenerator.RISK_UNKNOWN,
+            ReferenceDataGenerator.RISK_UNKNOWN,
+            ReferenceDataGenerator.RISK_UNKNOWN,
+            null
+        )
+        whenever(referralRepository.findByPersonIdAndCreatedByUserId(person.id, UserGenerator.AUDIT_USER.id))
+            .thenReturn(listOf(ref))
+        return ref
     }
 }

@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.Lob
+import jakarta.persistence.LockModeType
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
@@ -21,8 +22,11 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Lock
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import java.time.LocalDate
@@ -63,8 +67,7 @@ class Referral(
 
     val referringTeamId: Long,
     val referringStaffId: Long,
-
-    @Lob
+    @Column(columnDefinition = "varchar2(400)")
     val reasonForReferral: String?,
 
     @ManyToOne
@@ -85,19 +88,19 @@ class Referral(
     @ManyToOne
     @JoinColumn(name = "active_arson_risk_id")
     val activeArsonRisk: ReferenceData,
-    @Lob
+    @Column(columnDefinition = "varchar2(400)")
     val arsonRiskDetails: String?,
 
     @ManyToOne
     @JoinColumn(name = "disability_issues_id")
     val disabilityIssues: ReferenceData,
-    @Lob
+    @Column(columnDefinition = "varchar2(400)")
     val disabilityDetails: String?,
 
     @ManyToOne
     @JoinColumn(name = "single_room_id")
     val singleRoom: ReferenceData,
-    @Lob
+    @Column(columnDefinition = "varchar2(400)")
     val singleRoomDetails: String?,
 
     @Convert(converter = YesNoConverter::class)
@@ -176,6 +179,9 @@ class Referral(
 
     @Column
     val partitionAreaId: Long = 0
+
+    fun isForBooking(bookingId: String): Boolean =
+        referralNotes?.contains(Nsi.Companion.EXT_REF_BOOKING_PREFIX + bookingId) == true
 }
 
 @Entity
@@ -204,15 +210,27 @@ class Event(
     val personId: Long
 )
 
-interface ReferralRepository : JpaRepository<Referral, Long>
+interface ReferralRepository : JpaRepository<Referral, Long> {
+    fun findByPersonIdAndCreatedByUserId(
+        personId: Long,
+        createdByUserId: Long
+    ): List<Referral>
+}
+
 interface ReferralSourceRepository : JpaRepository<ReferralSource, Long> {
     fun findByCode(code: String): ReferralSource?
 }
+
 fun ReferralSourceRepository.getByCode(code: String) = findByCode(code)
     ?: throw NotFoundException("ReferralSource", "code", code)
 
 interface EventRepository : JpaRepository<Event, Long> {
     fun findByPersonIdAndNumber(personId: Long, number: String): Event?
+
+    @Lock(LockModeType.PESSIMISTIC_READ)
+    @Query("select e.id from Event e where e.id = :id")
+    fun findForUpdate(id: Long): Long
 }
+
 fun EventRepository.getByEventNumber(personId: Long, number: String) =
     findByPersonIdAndNumber(personId, number) ?: throw NotFoundException("Event Not Found")

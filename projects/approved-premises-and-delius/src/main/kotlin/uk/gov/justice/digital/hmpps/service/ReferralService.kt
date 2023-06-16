@@ -3,15 +3,19 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Referral
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSourceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Residence
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ResidenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getByEventNumber
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrn
@@ -30,7 +34,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.getApprovedPremisesTeam
 import uk.gov.justice.digital.hmpps.integrations.delius.team.getUnallocatedTeam
+import uk.gov.justice.digital.hmpps.security.ServiceContext
 
+@Transactional
 @Service
 class ReferralService(
     private val referenceDataRepository: ReferenceDataRepository,
@@ -38,11 +44,11 @@ class ReferralService(
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
     private val referralRepository: ReferralRepository,
+    private val residenceRepository: ResidenceRepository,
     private val personRepository: PersonRepository,
     private val eventRepository: EventRepository,
     private val contactService: ContactService
 ) {
-    @Transactional
     fun bookingMade(crn: String, details: BookingMade, ap: ApprovedPremises) {
         val person = personRepository.getByCrn(crn)
         val event = eventRepository.getByEventNumber(person.id, details.eventNumber)
@@ -50,19 +56,41 @@ class ReferralService(
         val apStaff = staffRepository.getUnallocated(apTeam.code)
         val rTeam = teamRepository.getUnallocatedTeam(ap.probationArea.code)
         val rStaff = staffRepository.getByCode(details.bookedBy.staffMember.staffCode)
-        referralRepository.save(details.referral(person, event, ap, apTeam, apStaff, rTeam, rStaff))
-        contactService.createContact(
-            ContactDetails(
-                date = details.createdAt,
-                type = ContactTypeCode.BOOKING_MADE,
-                notes = "To view details of the Approved Premises booking, click here: ${details.applicationUrl}",
-                description = "Approved Premises Booking for ${details.premises.name}",
-                locationCode = ap.locationCode()
-            ),
-            person = person,
-            staff = rStaff,
-            probationAreaCode = ap.probationArea.code
-        )
+        val findReferral = {
+            referralRepository.findByPersonIdAndCreatedByUserId(
+                person.id,
+                ServiceContext.servicePrincipal()!!.userId
+            ).firstOrNull { it.isForBooking(details.bookingId) }
+        }
+        findReferral() ?: run {
+            eventRepository.findForUpdate(event.id)
+            findReferral() ?: run {
+                referralRepository.save(details.referral(person, event, ap, apTeam, apStaff, rTeam, rStaff))
+                contactService.createContact(
+                    ContactDetails(
+                        date = details.bookingMadeAt,
+                        type = ContactTypeCode.BOOKING_MADE,
+                        notes = "To view details of the Approved Premises booking, click here: ${details.applicationUrl}",
+                        description = "Approved Premises Booking for ${details.premises.name}",
+                        locationCode = ap.locationCode()
+                    ),
+                    person = person,
+                    staff = rStaff,
+                    probationAreaCode = ap.probationArea.code
+                )
+            }
+        }
+    }
+
+    fun personArrived(person: Person, ap: ApprovedPremises, details: PersonArrived) {
+        val referral =
+            referralRepository.findByPersonIdAndCreatedByUserId(
+                person.id,
+                ServiceContext.servicePrincipal()!!.userId
+            ).first { it.isForBooking(details.bookingId) }
+        referral.admissionDate = details.arrivedAt.toLocalDate()
+
+        residenceRepository.save(details.residence(person, ap, referral))
     }
 
     fun BookingMade.referral(
@@ -85,17 +113,17 @@ class ReferralService(
             person = person,
             event = event,
             approvedPremises = ap,
-            referralDate = createdAt.toLocalDate(),
+            referralDate = bookingMadeAt.toLocalDate(),
             referralDateType = referenceDataRepository.findByCodeAndDatasetCode(
                 "CRC",
                 DatasetCode.AP_REFERRAL_DATE_TYPE
             ),
             expectedArrivalDate = arrivalOn,
             expectedDepartureDate = departureOn,
-            decisionDate = createdAt,
+            decisionDate = bookingMadeAt,
             category = referenceDataRepository.otherReferralCategory(),
             decision = referenceDataRepository.acceptedDeferredAdmission(),
-            referralNotes = notes,
+            referralNotes = Nsi.EXT_REF_BOOKING_PREFIX + bookingId + System.lineSeparator() + notes,
             decisionNotes = notes,
             referralSource = referralSourceRepository.getByCode("OTH"),
             sourceType = referenceDataRepository.apReferralSource(),
@@ -122,4 +150,15 @@ class ReferralService(
             referringStaffId = referringStaff.id
         )
     }
+
+    fun PersonArrived.residence(person: Person, ap: ApprovedPremises, referral: Referral) = Residence(
+        person,
+        referral,
+        ap,
+        arrivedAt.toLocalDate(),
+        "This residence is being managed in the AP Referral Service. Please Do NOT make any updates to the record using Delius. Thank you.",
+        null,
+        null,
+        null
+    )
 }

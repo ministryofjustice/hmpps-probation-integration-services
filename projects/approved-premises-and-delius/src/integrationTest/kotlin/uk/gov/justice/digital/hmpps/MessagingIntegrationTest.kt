@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ResidenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.Nsi.Companion.EXT_REF_BOOKING_PREFIX
@@ -68,6 +69,9 @@ internal class MessagingIntegrationTest {
     @Autowired
     private lateinit var referralRepository: ReferralRepository
 
+    @Autowired
+    private lateinit var residenceRepository: ResidenceRepository
+
     @Test
     fun `application submission creates an alert contact`() {
         // Given an application-submitted event
@@ -107,12 +111,15 @@ internal class MessagingIntegrationTest {
     }
 
     @Test
+    @Order(1)
     fun `booking made creates referral and contact`() {
         // Given a booking-made event
         val event = prepEvent("booking-made", wireMockServer.port())
 
         // When it is received
         channelManager.getChannel(queueName).publishAndWait(event)
+
+        // Send twice to verify we only create one referral
 
         // Then it is logged to telemetry
         verify(telemetryService).notificationReceived(event)
@@ -129,9 +136,10 @@ internal class MessagingIntegrationTest {
         )
         assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
 
-        val referral = referralRepository.findAll()
-            .firstOrNull { it.person.crn == event.message.crn() && it.createdByUserId == UserGenerator.AUDIT_USER.id && it.referralDate == contact.date }
-        assertNotNull(referral!!)
+        val referrals = referralRepository.findAll()
+            .filter { it.person.crn == event.message.crn() && it.createdByUserId == UserGenerator.AUDIT_USER.id && it.referralDate == contact.date }
+        assertThat(referrals.size, equalTo(1))
+        val referral = referrals.first()
         assertThat(referral.activeArsonRisk.code, equalTo(ReferenceDataGenerator.YN_UNKNOWN.code))
         assertThat(referral.disabilityIssues.code, equalTo(ReferenceDataGenerator.YN_UNKNOWN.code))
         assertThat(referral.singleRoom.code, equalTo(ReferenceDataGenerator.YN_UNKNOWN.code))
@@ -145,6 +153,7 @@ internal class MessagingIntegrationTest {
     }
 
     @Test
+    @Order(2)
     fun `person not arrived creates an alert contact`() {
         // Given a person-not-arrived event
         val event = prepEvent("person-not-arrived", wireMockServer.port())
@@ -174,7 +183,7 @@ internal class MessagingIntegrationTest {
     }
 
     @Test
-    @Order(1)
+    @Order(3)
     fun `person arrived creates an alert contact and nsi`() {
         // Given a person-arrived event
         val event = prepEvent("person-arrived", wireMockServer.port())
@@ -244,10 +253,15 @@ internal class MessagingIntegrationTest {
         assertThat(main.town, equalTo(ap.town))
         assertThat(main.postcode, equalTo(ap.postcode))
         assertThat(main.telephoneNumber, equalTo(ap.telephoneNumber))
+
+        val residences = residenceRepository.findAll().filter { it.person.crn == event.message.crn() }
+        assertThat(residences.size, equalTo(1))
+        val residence = residences.first()
+        assertThat(residence.arrivalDate, equalTo(contact.date))
     }
 
     @Test
-    @Order(2)
+    @Order(4)
     fun `person departed creates a contact and closes nsi`() {
         val event = prepEvent("person-departed", wireMockServer.port())
         val departure = ResourceLoader.file<EventDetails<PersonDeparted>>("approved-premises-person-departed")

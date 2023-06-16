@@ -31,10 +31,6 @@ import java.time.ZonedDateTime
 @EntityListeners(AuditingEntityListener::class)
 @SequenceGenerator(name = "ap_residence_id_seq", sequenceName = "ap_residence_id_seq", allocationSize = 1)
 class Residence(
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ap_residence_id_seq")
-    @Column(name = "approved_premises_residence_id")
-    val id: Long,
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
@@ -52,7 +48,6 @@ class Residence(
     @Lob
     val arrivalNotes: String?,
 
-    val expectedDepartureDate: LocalDate?,
     val departureDate: LocalDate?,
 
     @ManyToOne
@@ -64,6 +59,11 @@ class Residence(
     val moveOnCategory: MoveOnCategory?
 
 ) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ap_residence_id_seq")
+    @Column(name = "approved_premises_residence_id")
+    val id: Long = 0
+
     @Version
     var rowVersion: Long = 0
 

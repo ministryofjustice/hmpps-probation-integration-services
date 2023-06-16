@@ -67,7 +67,7 @@ class ApprovedPremisesService(
                 notes = listOfNotNull(
                     details.eventDetails.notes,
                     "For more details, click here: ${details.eventDetails.applicationUrl}"
-                ).joinToString("\n\n")
+                ).joinToString(System.lineSeparator() + System.lineSeparator())
             ),
             person = personRepository.getByCrn(event.crn()),
             staff = staffRepository.getByCode(details.eventDetails.recordedBy.staffCode),

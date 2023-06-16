@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.getApprovedPremisesTeam
 
+@Transactional
 @Service
 class NsiService(
     private val nsiRepository: NsiRepository,
@@ -36,9 +37,9 @@ class NsiService(
     private val staffRepository: StaffRepository,
     private val transferReasonRepository: TransferReasonRepository,
     private val addressService: AddressService,
-    private val contactService: ContactService
+    private val contactService: ContactService,
+    private val referralService: ReferralService
 ) {
-    @Transactional
     fun personArrived(
         person: Person,
         details: PersonArrived,
@@ -55,13 +56,13 @@ class NsiService(
                         type = nsiTypeRepository.getByCode(NsiTypeCode.APPROVED_PREMISES_RESIDENCE.code),
                         status = nsiStatusRepository.getByCode(NsiStatusCode.IN_RESIDENCE.code),
                         referralDate = details.applicationSubmittedOn,
-                        expectedStartDate = details.arrivedAt,
+                        expectedStartDate = details.arrivedAt.toLocalDate(),
                         actualStartDate = details.arrivedAt,
                         expectedEndDate = details.expectedDepartureOn,
                         notes = listOfNotNull(
                             details.notes,
                             "For more details, click here: ${details.applicationUrl}"
-                        ).joinToString("\n\n"),
+                        ).joinToString(System.lineSeparator() + System.lineSeparator()),
                         externalReference = externalReference
                     )
                 )
@@ -85,18 +86,18 @@ class NsiService(
                         notes = listOfNotNull(
                             details.notes,
                             "For more details, click here: ${details.applicationUrl}"
-                        ).joinToString("\n\n")
+                        ).joinToString(System.lineSeparator() + System.lineSeparator())
                     ),
                     person = person,
                     team = team,
                     staff = staff,
                     probationAreaCode = ap.probationArea.code
                 )
+                referralService.personArrived(person, ap, details)
             }
         }
     }
 
-    @Transactional
     fun personDeparted(person: Person, details: PersonDeparted, ap: ApprovedPremises) {
         val nsi = nsiRepository.findByExternalReference(Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId)
         nsi?.actualEndDate = details.departedAt

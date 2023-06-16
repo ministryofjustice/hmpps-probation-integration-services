@@ -55,7 +55,7 @@ class Nsi(
     val referralDate: LocalDate,
 
     @Column
-    val expectedStartDate: ZonedDateTime? = null,
+    val expectedStartDate: LocalDate? = null,
 
     @Column
     val expectedEndDate: LocalDate? = null,
