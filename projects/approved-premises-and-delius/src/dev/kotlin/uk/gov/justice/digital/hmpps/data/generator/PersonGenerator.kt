@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
@@ -11,6 +12,9 @@ object PersonGenerator {
         crn: String,
         id: Long = IdGenerator.getAndIncrement()
     ) = Person(id = id, crn = crn)
+
+    fun generateEvent(number: String, personId: Long, id: Long = IdGenerator.getAndIncrement()) =
+        Event(id, number, personId)
 }
 
 object PersonManagerGenerator {

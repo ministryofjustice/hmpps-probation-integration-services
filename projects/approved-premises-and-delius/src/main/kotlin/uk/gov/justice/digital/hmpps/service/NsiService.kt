@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremises
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.Nsi
@@ -48,6 +48,7 @@ class NsiService(
         nsiRepository.findByExternalReference(externalReference) ?: run {
             personRepository.findForUpdate(person.id)
             nsiRepository.findByExternalReference(externalReference) ?: run {
+                val staff = staffRepository.getByCode(details.keyWorker.staffCode)
                 val nsi = nsiRepository.save(
                     Nsi(
                         person = person,
@@ -68,7 +69,7 @@ class NsiService(
                 nsiManagerRepository.save(
                     NsiManager(
                         nsi = nsi,
-                        staff = staffRepository.getByCode(details.keyWorker.staffCode),
+                        staff = staff,
                         team = team,
                         probationArea = team.probationArea,
                         startDate = details.arrivedAt,
@@ -87,7 +88,8 @@ class NsiService(
                         ).joinToString("\n\n")
                     ),
                     person = person,
-                    staffCode = details.keyWorker.staffCode,
+                    team = team,
+                    staff = staff,
                     probationAreaCode = ap.probationArea.code
                 )
             }
@@ -109,7 +111,7 @@ class NsiService(
                 createAlert = false
             ),
             person = person,
-            staffCode = details.keyWorker.staffCode,
+            staff = staffRepository.getByCode(details.keyWorker.staffCode),
             probationAreaCode = ap.probationArea.code
         )
     }

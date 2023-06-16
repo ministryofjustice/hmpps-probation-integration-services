@@ -19,10 +19,13 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.Nsi.Companion.EXT_REF_BOOKING_PREFIX
@@ -44,17 +47,26 @@ internal class MessagingIntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
 
-    @Autowired lateinit var channelManager: HmppsChannelManager
+    @Autowired
+    lateinit var channelManager: HmppsChannelManager
 
-    @Autowired lateinit var wireMockServer: WireMockServer
+    @Autowired
+    lateinit var wireMockServer: WireMockServer
 
-    @Autowired lateinit var contactRepository: ContactRepository
+    @Autowired
+    lateinit var contactRepository: ContactRepository
 
-    @Autowired lateinit var nsiRepository: NsiRepository
+    @Autowired
+    lateinit var nsiRepository: NsiRepository
 
-    @Autowired lateinit var personAddressRepository: PersonAddressRepository
+    @Autowired
+    lateinit var personAddressRepository: PersonAddressRepository
 
-    @MockBean lateinit var telemetryService: TelemetryService
+    @MockBean
+    lateinit var telemetryService: TelemetryService
+
+    @Autowired
+    private lateinit var referralRepository: ReferralRepository
 
     @Test
     fun `application submission creates an alert contact`() {
@@ -95,7 +107,7 @@ internal class MessagingIntegrationTest {
     }
 
     @Test
-    fun `booking made creates an alert contact`() {
+    fun `booking made creates referral and contact`() {
         // Given a booking-made event
         val event = prepEvent("booking-made", wireMockServer.port())
 
@@ -116,6 +128,20 @@ internal class MessagingIntegrationTest {
             equalTo("To view details of the Approved Premises booking, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713")
         )
         assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
+
+        val referral = referralRepository.findAll()
+            .firstOrNull { it.person.crn == event.message.crn() && it.createdByUserId == UserGenerator.AUDIT_USER.id && it.referralDate == contact.date }
+        assertNotNull(referral!!)
+        assertThat(referral.activeArsonRisk.code, equalTo(ReferenceDataGenerator.YN_UNKNOWN.code))
+        assertThat(referral.disabilityIssues.code, equalTo(ReferenceDataGenerator.YN_UNKNOWN.code))
+        assertThat(referral.singleRoom.code, equalTo(ReferenceDataGenerator.YN_UNKNOWN.code))
+        assertThat(referral.rohChildren.code, equalTo(ReferenceDataGenerator.RISK_UNKNOWN.code))
+        assertThat(referral.rohOthers.code, equalTo(ReferenceDataGenerator.RISK_UNKNOWN.code))
+        assertThat(referral.rohKnownPerson.code, equalTo(ReferenceDataGenerator.RISK_UNKNOWN.code))
+        assertThat(referral.rohSelf.code, equalTo(ReferenceDataGenerator.RISK_UNKNOWN.code))
+        assertThat(referral.rohPublic.code, equalTo(ReferenceDataGenerator.RISK_UNKNOWN.code))
+        assertThat(referral.rohStaff.code, equalTo(ReferenceDataGenerator.RISK_UNKNOWN.code))
+        assertThat(referral.rohResidents.code, equalTo(ReferenceDataGenerator.RISK_UNKNOWN.code))
     }
 
     @Test
@@ -194,7 +220,10 @@ internal class MessagingIntegrationTest {
         assertThat(nsi.externalReference, equalTo(EXT_REF_BOOKING_PREFIX + details.bookingId))
         assertThat(nsi.referralDate, equalTo(details.applicationSubmittedOn))
         assertNotNull(nsi.actualStartDate)
-        assertThat(nsi.actualStartDate!!.withZoneSameInstant(EuropeLondon), equalTo(details.arrivedAt.withZoneSameInstant(EuropeLondon)))
+        assertThat(
+            nsi.actualStartDate!!.withZoneSameInstant(EuropeLondon),
+            equalTo(details.arrivedAt.withZoneSameInstant(EuropeLondon))
+        )
 
         // And the main address is updated to be that of the approved premises - consequently any existing main address is made previous
         val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }

@@ -37,3 +37,6 @@ interface StaffRepository : JpaRepository<Staff, Long> {
 
 fun StaffRepository.getByCode(code: String): Staff =
     findByCode(code) ?: throw NotFoundException("Staff", "code", code)
+
+fun StaffRepository.getUnallocated(teamCode: String): Staff =
+    findByCode(teamCode + "U") ?: throw NotFoundException("Unable to find unallocated staff for $teamCode")

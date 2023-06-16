@@ -37,8 +37,12 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.SubmittedBy
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSourceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcomeRepository
@@ -129,9 +133,19 @@ internal class ApprovedPremisesServiceTest {
     @Mock
     lateinit var referenceDataRepository: ReferenceDataRepository
 
+    @Mock
+    lateinit var referralSourceRepository: ReferralSourceRepository
+
+    @Mock
+    lateinit var referralRepository: ReferralRepository
+
+    @Mock
+    lateinit var eventRepository: EventRepository
+
     lateinit var addressService: AddressService
     lateinit var contactService: ContactService
     lateinit var nsiService: NsiService
+    lateinit var referralService: ReferralService
     lateinit var approvedPremisesService: ApprovedPremisesService
 
     private val applicationSubmittedEvent = prepEvent("application-submitted").message
@@ -150,7 +164,6 @@ internal class ApprovedPremisesServiceTest {
             contactAlertRepository,
             officeLocationRepository,
             teamRepository,
-            staffRepository,
             personManagerRepository
         )
         nsiService = NsiService(
@@ -165,12 +178,24 @@ internal class ApprovedPremisesServiceTest {
             addressService,
             contactService
         )
+        referralService = ReferralService(
+            referenceDataRepository,
+            referralSourceRepository,
+            teamRepository,
+            staffRepository,
+            referralRepository,
+            personRepository,
+            eventRepository,
+            contactService
+        )
         approvedPremisesService = ApprovedPremisesService(
             approvedPremisesApiClient,
             approvedPremisesRepository,
+            staffRepository,
             personRepository,
             contactService,
-            nsiService
+            nsiService,
+            referralService
         )
     }
 
@@ -224,32 +249,6 @@ internal class ApprovedPremisesServiceTest {
     }
 
     @Test
-    fun `creates alert contact for booking made`() {
-        val crn = bookingMadeEvent.crn()
-        val person = givenAPerson(crn)
-        val manager = givenAPersonManager(person)
-        val booker = givenStaff()
-        val bookedBy = BookedByGenerator.generate(staffMember = StaffMemberGenerator.generate(staffCode = booker.code))
-        val unallocatedTeam = givenUnallocatedTeam()
-        val details = givenBookingMadeDetails(bookedBy = bookedBy)
-        givenAnApprovedPremises(ApprovedPremisesGenerator.DEFAULT)
-        givenContactTypes(listOf(ContactTypeCode.BOOKING_MADE))
-
-        approvedPremisesService.bookingMade(bookingMadeEvent)
-
-        verifyAlertContactIsCreated(
-            type = ContactTypeCode.BOOKING_MADE,
-            date = details.eventDetails.createdAt,
-            person = person,
-            staff = booker,
-            team = unallocatedTeam,
-            alertManager = manager,
-            description = "Approved Premises Booking for Test Premises",
-            notes = "To view details of the Approved Premises booking, click here: https://example.com"
-        )
-    }
-
-    @Test
     fun `throws not found when approved premises not found`() {
         val bookedBy = BookedByGenerator.generate()
         givenBookingMadeDetails(bookedBy = bookedBy)
@@ -292,7 +291,6 @@ internal class ApprovedPremisesServiceTest {
         val person = givenAPerson(crn)
         val manager = givenAPersonManager(person)
         val staff = givenStaff()
-        val unallocatedTeam = givenUnallocatedTeam()
         val approvedPremisesTeam = givenApprovedPremisesTeam()
         val details = givenPersonArrivedDetails(keyWorker = staff)
         givenContactTypes(listOf(ContactTypeCode.ARRIVED))
@@ -308,7 +306,7 @@ internal class ApprovedPremisesServiceTest {
             date = details.eventDetails.arrivedAt,
             person = person,
             staff = staff,
-            team = unallocatedTeam,
+            team = approvedPremisesTeam,
             alertManager = manager,
             notes = """
                 Arrived on time
@@ -407,6 +405,12 @@ internal class ApprovedPremisesServiceTest {
         val person = PersonGenerator.generate(crn)
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(crn)).thenReturn(person)
         return person
+    }
+
+    private fun givenAnEvent(number: String, personId: Long): Event {
+        val event = PersonGenerator.generateEvent(number, personId)
+        whenever(eventRepository.findByPersonIdAndNumber(personId, number)).thenReturn(event)
+        return event
     }
 
     private fun givenAPersonManager(person: Person): PersonManager {

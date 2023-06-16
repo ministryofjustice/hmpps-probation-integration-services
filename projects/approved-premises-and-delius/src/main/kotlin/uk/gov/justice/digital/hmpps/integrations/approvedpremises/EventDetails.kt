@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.approvedpremises
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -54,8 +55,12 @@ data class BookingMade(
     val applicationId: String,
     val applicationUrl: String,
     val createdAt: ZonedDateTime,
+    @JsonAlias("deliusEventNumber")
+    val eventNumber: String,
     val bookedBy: BookedBy,
-    val premises: Premises
+    val premises: Premises,
+    val arrivalOn: LocalDate,
+    val departureOn: LocalDate
 )
 
 data class BookedBy(
