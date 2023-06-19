@@ -70,17 +70,6 @@ internal class EventServiceTest {
     }
 
     @Test
-    fun multipleActiveCustodialEventsAreIgnored() {
-        whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse(PersonGenerator.RELEASABLE.nomsNumber))
-            .thenReturn(listOf(PersonGenerator.RELEASABLE))
-        whenever(eventRepository.findActiveCustodialEvents(PersonGenerator.RELEASABLE.id))
-            .thenReturn(List(3) { EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT) })
-        assertThrows<IgnorableMessageException> {
-            eventService.getActiveCustodialEvents(PersonGenerator.RELEASABLE.nomsNumber)
-        }
-    }
-
-    @Test
     fun newReleaseSetsReleaseDate() {
         val releaseDate = ZonedDateTime.now()
         val event = EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT)

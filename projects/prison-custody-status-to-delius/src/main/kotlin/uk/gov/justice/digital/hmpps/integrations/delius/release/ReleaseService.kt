@@ -34,6 +34,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.RELEASABLE_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.MultipleEventsReleased
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.PrisonerDied
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.PrisonerReleased
 import java.time.LocalDate.now
@@ -43,6 +44,7 @@ import java.time.temporal.ChronoUnit.DAYS
 const val ETL23_NOTES = "This is a ROTL release on Extended Temporary Licence (ETL23)"
 
 enum class ReleaseOutcome {
+    MultipleEventsReleased,
     PrisonerReleased,
     PrisonerDied
 }
@@ -77,7 +79,8 @@ class ReleaseService(
         val releaseType = referenceDataRepository.getReleaseType(mapToReleaseType(reason, movementReasonCode).code)
         val institution = lazy { institutionRepository.getByNomisCdeCode(prisonId) }
 
-        eventService.getActiveCustodialEvents(nomsNumber).forEach {
+        val events = eventService.getActiveCustodialEvents(nomsNumber)
+        events.forEach {
             addReleaseToEvent(
                 it,
                 institution,
@@ -86,7 +89,7 @@ class ReleaseService(
                 movementReasonCode
             )
         }
-        PrisonerReleased
+        if (events.size > 1) MultipleEventsReleased else PrisonerReleased
     }
 
     private fun addReleaseToEvent(
@@ -152,7 +155,10 @@ class ReleaseService(
 
             // This behaviour may change. See https://dsdmoj.atlassian.net/browse/PI-264
             if (custody.institution?.code != institution.code) {
-                throw IgnorableMessageException("UnexpectedInstitution", mapOf("current" to (custody.institution?.code ?: "null")))
+                throw IgnorableMessageException(
+                    "UnexpectedInstitution",
+                    mapOf("current" to (custody.institution?.code ?: "null"))
+                )
             }
         }
 
@@ -174,9 +180,11 @@ class ReleaseService(
             } else {
                 throw IgnorableMessageException("UnsupportedReleaseReason")
             }
+
         "RELEASED_TO_HOSPITAL", // -> TBC
         "SENT_TO_COURT",
         "TRANSFERRED" -> throw IgnorableMessageException("UnsupportedReleaseReason")
+
         else -> throw IllegalArgumentException("Unexpected release reason: $reason")
     }
 

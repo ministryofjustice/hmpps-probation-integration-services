@@ -45,7 +45,9 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.DAYS
 
 enum class RecallOutcome {
+    MultipleEventsRecalled,
     PrisonerRecalled,
+    MultipleDetailsUpdated,
     CustodialDetailsUpdated,
     NoCustodialUpdates
 }
@@ -86,7 +88,7 @@ class RecallService(
 
         return eventService.getActiveCustodialEvents(nomsNumber)
             .map { addRecallToEvent(it, institution, getRecallReason, recallDateTime, "TRANSFERRED" == reason) }
-            .minBy { it.ordinal } // return the most relevant outcome
+            .combined()
     }
 
     private fun addRecallToEvent(
@@ -306,6 +308,15 @@ class RecallService(
         "UNKNOWN" -> throw IgnorableMessageException("UnsupportedRecallReason")
 
         else -> throw IllegalArgumentException("Unexpected recall reason: $reason")
+    }
+
+    private fun List<RecallOutcome>.combined(): RecallOutcome {
+        if (size == 1) return first()
+        return when (val outcome = minBy { it.ordinal }) {
+            RecallOutcome.PrisonerRecalled -> RecallOutcome.MultipleEventsRecalled
+            RecallOutcome.CustodialDetailsUpdated -> RecallOutcome.MultipleDetailsUpdated
+            else -> outcome
+        }
     }
 
     private fun ReferenceData.canRecall() = !NO_RECALL_STATUSES.map { it.code }.contains(code)

@@ -17,8 +17,6 @@ class EventService(
 
         val events = eventRepository.findActiveCustodialEvents(persons.single().id)
         if (events.isEmpty()) throw IgnorableMessageException("NoActiveCustodialEvent")
-        if (events.size > 1) throw IgnorableMessageException("MultipleActiveCustodialEvents") // This behaviour may change - see https://dsdmoj.atlassian.net/browse/PI-262
-
         return events
     }
 
