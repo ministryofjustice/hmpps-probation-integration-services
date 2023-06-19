@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
 import org.mockito.Mockito.verify
+import org.mockito.kotlin.times
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -120,10 +121,11 @@ internal class MessagingIntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(event)
 
         // Send twice to verify we only create one referral
+        channelManager.getChannel(queueName).publishAndWait(event)
 
         // Then it is logged to telemetry
-        verify(telemetryService).notificationReceived(event)
-        verify(telemetryService).trackEvent("BookingMade", event.message.telemetryProperties())
+        verify(telemetryService, times(2)).notificationReceived(event)
+        verify(telemetryService, times(2)).trackEvent("BookingMade", event.message.telemetryProperties())
 
         // And a contact alert is created
         val contact = contactRepository.findAll()
