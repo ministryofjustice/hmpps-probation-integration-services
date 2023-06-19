@@ -7,9 +7,8 @@ import jakarta.persistence.EntityListeners
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
 import jakarta.persistence.Lob
-import jakarta.persistence.ManyToOne
+import jakarta.persistence.LockModeType
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.persistence.Version
@@ -21,10 +20,10 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Lock
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
-import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.Nsi
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -35,17 +34,11 @@ import java.time.temporal.ChronoUnit
 @SequenceGenerator(name = "ap_referral_id_seq", sequenceName = "ap_referral_id_seq", allocationSize = 1)
 class Referral(
 
-    @ManyToOne
-    @JoinColumn(name = "offender_id")
-    val person: Person,
+    @Column(name = "offender_id")
+    val personId: Long,
 
-    @ManyToOne
-    @JoinColumn(name = "event_id")
-    val event: Event,
-
-    @ManyToOne
-    @JoinColumn(name = "approved_premises_id")
-    val approvedPremises: ApprovedPremises,
+    val eventId: Long,
+    val approvedPremisesId: Long,
 
     val referralDate: LocalDate,
     val expectedArrivalDate: LocalDate?,
@@ -53,51 +46,34 @@ class Referral(
     val decisionDate: ZonedDateTime?,
     @Lob
     val referralNotes: String?,
-    @ManyToOne
-    @JoinColumn(name = "referral_date_type_id")
-    val referralDateType: ReferenceData?,
-
-    @ManyToOne
-    @JoinColumn(name = "referral_category_id")
-    val category: ReferenceData,
+    val referralDateTypeId: Long?,
+    @Column(name = "referral_category_id")
+    val categoryId: Long,
 
     val referringTeamId: Long,
     val referringStaffId: Long,
-
-    @Lob
+    @Column(columnDefinition = "varchar2(400)")
     val reasonForReferral: String?,
+    val referralSourceId: Long,
+    val sourceTypeId: Long,
 
-    @ManyToOne
-    @JoinColumn(name = "referral_source_id")
-    val referralSource: ReferralSource,
-    @ManyToOne
-    @JoinColumn(name = "source_type_id")
-    val sourceType: ReferenceData,
-
-    @ManyToOne
-    @JoinColumn(name = "referral_decision_id")
-    val decision: ReferenceData,
+    @Column(name = "referral_decision_id")
+    val decisionId: Long,
+    @Column(name = "decision_by_team_id")
     val decisionTeamId: Long,
+    @Column(name = "decision_by_staff_id")
     val decisionStaffId: Long,
     @Lob
     val decisionNotes: String?,
 
-    @ManyToOne
-    @JoinColumn(name = "active_arson_risk_id")
-    val activeArsonRisk: ReferenceData,
-    @Lob
+    val activeArsonRiskId: Long,
+    @Column(columnDefinition = "varchar2(400)")
     val arsonRiskDetails: String?,
-
-    @ManyToOne
-    @JoinColumn(name = "disability_issues_id")
-    val disabilityIssues: ReferenceData,
-    @Lob
+    val disabilityIssuesId: Long,
+    @Column(columnDefinition = "varchar2(400)")
     val disabilityDetails: String?,
-
-    @ManyToOne
-    @JoinColumn(name = "single_room_id")
-    val singleRoom: ReferenceData,
-    @Lob
+    val singleRoomId: Long,
+    @Column(columnDefinition = "varchar2(400)")
     val singleRoomDetails: String?,
 
     @Convert(converter = YesNoConverter::class)
@@ -105,37 +81,21 @@ class Referral(
     @Convert(converter = YesNoConverter::class)
     val gangAffiliated: Boolean,
 
-    @ManyToOne
-    @JoinColumn(name = "roh_public_id")
-    val rohPublic: ReferenceData,
-    @ManyToOne
-    @JoinColumn(name = "roh_staff_id")
-    val rohStaff: ReferenceData,
-    @ManyToOne
-    @JoinColumn(name = "roh_known_person_id")
-    val rohKnownPerson: ReferenceData,
-    @ManyToOne
-    @JoinColumn(name = "roh_children_id")
-    val rohChildren: ReferenceData,
-    @ManyToOne
-    @JoinColumn(name = "roh_residents_id")
-    val rohResidents: ReferenceData,
-    @ManyToOne
-    @JoinColumn(name = "roh_self_id")
-    val rohSelf: ReferenceData,
-    @ManyToOne
-    @JoinColumn(name = "roh_others_id")
-    val rohOthers: ReferenceData,
+    val rohPublicId: Long,
+    val rohStaffId: Long,
+    val rohKnownPersonId: Long,
+    val rohChildrenId: Long,
+    val rohResidentsId: Long,
+    val rohSelfId: Long,
+    val rohOthersId: Long,
     @Lob
     val riskInformation: String?
 ) {
     @Column(name = "original_ap_admit_date")
     var admissionDate: LocalDate? = null
-    var nonArrivalDate: LocalDate? = null
 
-    @ManyToOne
-    @JoinColumn(name = "non_arrival_reason_id")
-    var nonArrivalReason: ReferenceData? = null
+    var nonArrivalDate: LocalDate? = null
+    var nonArrivalReasonId: Long? = null
 
     @Lob
     var nonArrivalNotes: String? = null
@@ -176,6 +136,9 @@ class Referral(
 
     @Column
     val partitionAreaId: Long = 0
+
+    fun isForBooking(bookingId: String): Boolean =
+        referralNotes?.contains(Nsi.EXT_REF_BOOKING_PREFIX + bookingId) == true
 }
 
 @Entity
@@ -204,15 +167,28 @@ class Event(
     val personId: Long
 )
 
-interface ReferralRepository : JpaRepository<Referral, Long>
+interface ReferralRepository : JpaRepository<Referral, Long> {
+    fun findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
+        personId: Long,
+        createdByUserId: Long,
+        externalRef: String
+    ): Referral?
+}
+
 interface ReferralSourceRepository : JpaRepository<ReferralSource, Long> {
     fun findByCode(code: String): ReferralSource?
 }
+
 fun ReferralSourceRepository.getByCode(code: String) = findByCode(code)
     ?: throw NotFoundException("ReferralSource", "code", code)
 
 interface EventRepository : JpaRepository<Event, Long> {
     fun findByPersonIdAndNumber(personId: Long, number: String): Event?
+
+    @Lock(LockModeType.PESSIMISTIC_READ)
+    @Query("select e.id from Event e where e.id = :id")
+    fun findForUpdate(id: Long): Long
 }
+
 fun EventRepository.getByEventNumber(personId: Long, number: String) =
     findByPersonIdAndNumber(personId, number) ?: throw NotFoundException("Event Not Found")

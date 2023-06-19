@@ -7,17 +7,17 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.Nsi
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiManager
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiStatusCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiStatusRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.TransferReasonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.getNsiTransferReason
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.Nsi
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiManager
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusCode
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.TransferReasonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.getNsiTransferReason
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.getApprovedPremisesTeam
 
+@Transactional
 @Service
 class NsiService(
     private val nsiRepository: NsiRepository,
@@ -36,9 +37,9 @@ class NsiService(
     private val staffRepository: StaffRepository,
     private val transferReasonRepository: TransferReasonRepository,
     private val addressService: AddressService,
-    private val contactService: ContactService
+    private val contactService: ContactService,
+    private val referralService: ReferralService
 ) {
-    @Transactional
     fun personArrived(
         person: Person,
         details: PersonArrived,
@@ -55,13 +56,13 @@ class NsiService(
                         type = nsiTypeRepository.getByCode(NsiTypeCode.APPROVED_PREMISES_RESIDENCE.code),
                         status = nsiStatusRepository.getByCode(NsiStatusCode.IN_RESIDENCE.code),
                         referralDate = details.applicationSubmittedOn,
-                        expectedStartDate = details.arrivedAt,
+                        expectedStartDate = details.arrivedAt.toLocalDate(),
                         actualStartDate = details.arrivedAt,
                         expectedEndDate = details.expectedDepartureOn,
                         notes = listOfNotNull(
                             details.notes,
                             "For more details, click here: ${details.applicationUrl}"
-                        ).joinToString("\n\n"),
+                        ).joinToString(System.lineSeparator() + System.lineSeparator()),
                         externalReference = externalReference
                     )
                 )
@@ -85,18 +86,18 @@ class NsiService(
                         notes = listOfNotNull(
                             details.notes,
                             "For more details, click here: ${details.applicationUrl}"
-                        ).joinToString("\n\n")
+                        ).joinToString(System.lineSeparator() + System.lineSeparator())
                     ),
                     person = person,
                     team = team,
                     staff = staff,
                     probationAreaCode = ap.probationArea.code
                 )
+                referralService.personArrived(person, ap, details)
             }
         }
     }
 
-    @Transactional
     fun personDeparted(person: Person, details: PersonDeparted, ap: ApprovedPremises) {
         val nsi = nsiRepository.findByExternalReference(Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId)
         nsi?.actualEndDate = details.departedAt
@@ -114,5 +115,6 @@ class NsiService(
             staff = staffRepository.getByCode(details.keyWorker.staffCode),
             probationAreaCode = ap.probationArea.code
         )
+        referralService.personDeparted(person, details)
     }
 }

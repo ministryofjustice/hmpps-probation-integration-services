@@ -6,10 +6,7 @@ import jakarta.persistence.EntityListeners
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
 import jakarta.persistence.Lob
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.persistence.Version
@@ -20,9 +17,6 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
-import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -31,39 +25,30 @@ import java.time.ZonedDateTime
 @EntityListeners(AuditingEntityListener::class)
 @SequenceGenerator(name = "ap_residence_id_seq", sequenceName = "ap_residence_id_seq", allocationSize = 1)
 class Residence(
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ap_residence_id_seq")
-    @Column(name = "approved_premises_residence_id")
-    val id: Long,
 
-    @ManyToOne
-    @JoinColumn(name = "offender_id")
-    val person: Person,
+    @Column(name = "offender_id")
+    val personId: Long,
 
-    @OneToOne
-    @JoinColumn(name = "approved_premises_referral_id")
-    val referral: Referral,
+    @Column(name = "approved_premises_referral_id")
+    val referralId: Long,
 
-    @ManyToOne
-    @JoinColumn(name = "approved_premises_id")
-    val approvedPremises: ApprovedPremises,
+    @Column(name = "approved_premises_id")
+    val approvedPremisesId: Long,
 
     val arrivalDate: LocalDate,
     @Lob
-    val arrivalNotes: String?,
-
-    val expectedDepartureDate: LocalDate?,
-    val departureDate: LocalDate?,
-
-    @ManyToOne
-    @JoinColumn(name = "departure_reason_id")
-    val departureReason: ReferenceData?,
-
-    @ManyToOne
-    @JoinColumn(name = "move_on_category_id")
-    val moveOnCategory: MoveOnCategory?
+    val arrivalNotes: String?
 
 ) {
+    var departureDate: LocalDate? = null
+    var departureReasonId: Long? = null
+    var moveOnCategoryId: Long? = null
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ap_residence_id_seq")
+    @Column(name = "approved_premises_residence_id")
+    val id: Long = 0
+
     @Version
     var rowVersion: Long = 0
 
@@ -98,4 +83,10 @@ class MoveOnCategory(
     val code: String
 )
 
-interface ResidenceRepository : JpaRepository<Residence, Long>
+interface ResidenceRepository : JpaRepository<Residence, Long> {
+    fun findByReferralId(referralId: Long): Residence?
+}
+
+interface MoveOnCategoryRepository : JpaRepository<MoveOnCategory, Long> {
+    fun findByCode(code: String): MoveOnCategory?
+}

@@ -26,17 +26,18 @@ import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.Address
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.MoveOnCategoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSourceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.location.OfficeLocationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiStatusCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiStatusRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.TransferReasonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusCode
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.TransferReasonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
@@ -54,6 +55,7 @@ class DataLoader(
     private val datasetRepository: DatasetRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val referralSourceRepository: ReferralSourceRepository,
+    private val moveOnCategoryRepository: MoveOnCategoryRepository,
     private val addressRepository: AddressRepository,
     private val approvedPremisesRepository: ApprovedPremisesRepository,
     private val probationAreaRepository: ProbationAreaRepository,
@@ -81,6 +83,7 @@ class DataLoader(
         datasetRepository.saveAll(DatasetGenerator.all())
         referenceDataRepository.saveAll(ReferenceDataGenerator.all())
         referralSourceRepository.save(ReferenceDataGenerator.OTHER_REFERRAL_SOURCE)
+        moveOnCategoryRepository.save(ReferenceDataGenerator.MC05)
 
         addressRepository.saveAll(listOf(AddressGenerator.Q001, AddressGenerator.Q002))
 
