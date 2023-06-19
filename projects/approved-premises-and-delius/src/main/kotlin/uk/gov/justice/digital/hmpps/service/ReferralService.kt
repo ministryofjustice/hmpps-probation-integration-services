@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referra
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ResidenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getByEventNumber
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
@@ -89,20 +90,6 @@ class ReferralService(
     }
 
     fun personNotArrived(person: Person, ap: ApprovedPremises, dateTime: ZonedDateTime, details: PersonNotArrived) {
-        contactService.createContact(
-            ContactDetails(
-                date = dateTime,
-                type = ContactTypeCode.NOT_ARRIVED,
-                locationCode = ap.locationCode(),
-                notes = listOfNotNull(
-                    details.notes,
-                    "For more details, click here: ${details.applicationUrl}"
-                ).joinToString(System.lineSeparator() + System.lineSeparator())
-            ),
-            person = person,
-            staff = staffRepository.getByCode(details.recordedBy.staffCode),
-            probationAreaCode = ap.probationArea.code
-        )
         val referral = checkNotNull(
             referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
                 person.id,
@@ -114,6 +101,22 @@ class ReferralService(
         referral.nonArrivalNotes = details.notes
         referral.nonArrivalReasonId =
             referenceDataRepository.findByCodeAndDatasetCode("D", DatasetCode.AP_NON_ARRIVAL_REASON)?.id
+        contactService.createContact(
+            ContactDetails(
+                date = dateTime,
+                type = ContactTypeCode.NOT_ARRIVED,
+                locationCode = ap.locationCode(),
+                description = details.reason,
+                outcomeCode = ContactOutcome.AP_NON_ARRIVAL_PREFIX + details.reasonCode,
+                notes = listOfNotNull(
+                    details.notes,
+                    "For more details, click here: ${details.applicationUrl}"
+                ).joinToString(System.lineSeparator() + System.lineSeparator())
+            ),
+            person = person,
+            staff = staffRepository.getByCode(details.recordedBy.staffCode),
+            probationAreaCode = ap.probationArea.code
+        )
     }
 
     fun personArrived(person: Person, ap: ApprovedPremises, details: PersonArrived) {

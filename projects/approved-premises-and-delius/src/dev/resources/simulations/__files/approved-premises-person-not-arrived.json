@@ -25,6 +25,8 @@
       "surname": "Smith",
       "username": "JohnSmithNPS"
     },
-    "notes": "Notes about non-arrival."
+    "notes": "Notes about non-arrival.",
+    "reason": "Non Arrival Reason",
+    "legacyReasonCode": "D"
   }
 }

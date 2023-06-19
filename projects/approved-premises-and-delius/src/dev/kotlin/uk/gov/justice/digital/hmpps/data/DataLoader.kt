@@ -149,7 +149,12 @@ class DataLoader(
         AddressGenerator.PERSON_ADDRESS = personAddressRepository.save(AddressGenerator.PERSON_ADDRESS)
         eventRepository.save(PersonGenerator.generateEvent("7", person.id))
         contactTypeRepository.saveAll(ContactTypeCode.values().map { ContactTypeGenerator.generate(it.code) })
-        contactOutcomeRepository.save(ContactOutcomeGenerator.generate("AP_N"))
+        contactOutcomeRepository.saveAll(
+            listOf(
+                ContactOutcomeGenerator.generate("AP_N"),
+                ContactOutcomeGenerator.generate("AP-D")
+            )
+        )
         nsiTypeRepository.saveAll(NsiTypeCode.values().map { NsiTypeGenerator.generate(it.code) })
         nsiStatusRepository.saveAll(NsiStatusCode.values().map { NsiStatusGenerator.generate(it.code) })
         transferReasonRepository.save(TransferReasonGenerator.NSI)
