@@ -76,7 +76,10 @@ data class PersonNotArrived(
     val applicationUrl: String,
     val recordedBy: StaffMember,
     val premises: Premises,
-    val notes: String?
+    val notes: String?,
+    val reason: String,
+    @JsonAlias("legacyReasonCode")
+    val reasonCode: String
 )
 
 data class PersonArrived(
