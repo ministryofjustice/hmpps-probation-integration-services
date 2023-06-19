@@ -164,7 +164,7 @@ class ReferralService(
             |This referral was made in the new AP Referral System. 
             |Please follow this link to see the original referral: $applicationUrl
             |**Disclaimer** information about sex offences and gang affiliation unknown
-        """.trimIndent()
+        """.trimMargin()
         val ynUnknown = referenceDataRepository.ynUnknown()
         val riskUnknown = referenceDataRepository.unknownRisk()
         return Referral(
