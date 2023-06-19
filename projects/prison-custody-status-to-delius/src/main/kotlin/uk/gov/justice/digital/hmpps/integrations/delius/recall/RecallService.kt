@@ -310,17 +310,17 @@ class RecallService(
         else -> throw IllegalArgumentException("Unexpected recall reason: $reason")
     }
 
-    private fun List<RecallOutcome>.combined(): RecallOutcome {
-        if (size == 1) return first()
-        return when (val outcome = minBy { it.ordinal }) {
-            RecallOutcome.PrisonerRecalled -> RecallOutcome.MultipleEventsRecalled
-            RecallOutcome.CustodialDetailsUpdated -> RecallOutcome.MultipleDetailsUpdated
-            else -> outcome
-        }
-    }
-
     private fun ReferenceData.canRecall() = !NO_RECALL_STATUSES.map { it.code }.contains(code)
     private fun ReferenceData.canChange() = !NO_CHANGE_STATUSES.map { it.code }.contains(code)
 
     private fun ReferenceData.isTerminated() = TERMINATED_STATUSES.map { it.code }.contains(code)
+}
+
+fun List<RecallOutcome>.combined(): RecallOutcome {
+    if (size == 1) return first()
+    return when (val outcome = minBy { it.ordinal }) {
+        RecallOutcome.PrisonerRecalled -> RecallOutcome.MultipleEventsRecalled
+        RecallOutcome.CustodialDetailsUpdated -> RecallOutcome.MultipleDetailsUpdated
+        else -> outcome
+    }
 }
