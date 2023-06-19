@@ -72,7 +72,9 @@ object EventDetailsGenerator {
             applicationUrl = "https://example.com",
             premises = premises(),
             recordedBy = staffMember(recordedBy),
-            notes = "TEST"
+            notes = "TEST",
+            reason = "The reason they didn't attend",
+            reasonCode = "A"
         )
     )
 

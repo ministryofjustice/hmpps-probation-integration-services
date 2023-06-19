@@ -44,6 +44,9 @@ class Residence(
     var departureReasonId: Long? = null
     var moveOnCategoryId: Long? = null
 
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean = false
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ap_residence_id_seq")
     @Column(name = "approved_premises_residence_id")

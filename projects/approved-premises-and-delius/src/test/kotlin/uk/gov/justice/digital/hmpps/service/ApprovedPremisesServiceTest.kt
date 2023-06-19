@@ -305,7 +305,8 @@ internal class ApprovedPremisesServiceTest {
                 TEST
                 
                 For more details, click here: https://example.com
-            """.trimIndent()
+            """.trimIndent(),
+            description = "The reason they didn't attend"
         )
     }
 
