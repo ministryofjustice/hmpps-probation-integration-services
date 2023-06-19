@@ -40,10 +40,10 @@ class OGRSAssessment(
     val event: Event,
 
     @Column(name = "ogrs3_score_1")
-    var ogrs3Score1: Long,
+    var ogrs3Score1: Long?,
 
     @Column(name = "ogrs3_score_2")
-    var ogrs3Score2: Long,
+    var ogrs3Score2: Long?,
 
     @Column(name = "ogrs2_score")
     val ogrs2Score: Long? = null,
