@@ -98,5 +98,9 @@ data class PersonDeparted(
     val keyWorker: StaffMember,
     val departedAt: ZonedDateTime,
     val premises: Premises,
-    val legacyReasonCode: String
+    val legacyReasonCode: String,
+    val destination: Destination
 )
+
+data class Destination(val moveOnCategory: MoveOnCategory)
+data class MoveOnCategory(@JsonAlias("legacyMoveOnCategoryCode") val legacyCode: String)

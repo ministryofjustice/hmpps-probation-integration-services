@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.ADDRESS_STAT
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.ADDRESS_TYPE
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.ALL_DATASETS
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.HOSTEL_CODE
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.MoveOnCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSource
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.DatasetCode
@@ -25,8 +26,11 @@ object ReferenceDataGenerator {
     val AP_REFERRAL_SOURCE = generate("AP", ALL_DATASETS[DatasetCode.SOURCE_TYPE]!!.id)
     val YN_UNKNOWN = generate("D", ALL_DATASETS[DatasetCode.YES_NO]!!.id)
     val RISK_UNKNOWN = generate("K", ALL_DATASETS[DatasetCode.RISK_OF_HARM]!!.id)
+    val ORDER_EXPIRED = generate("N", ALL_DATASETS[DatasetCode.AP_DEPARTURE_REASON]!!.id)
+    val NON_ARRIVAL = generate("D", ALL_DATASETS[DatasetCode.AP_NON_ARRIVAL_REASON]!!.id)
 
     val OTHER_REFERRAL_SOURCE = generateReferralSource("OTH")
+    val MC05 = generateMoveOnCategory("MC05")
 
     fun generate(
         code: String,
@@ -48,10 +52,13 @@ object ReferenceDataGenerator {
         ACCEPTED_DEFERRED_ADMISSION,
         AP_REFERRAL_SOURCE,
         YN_UNKNOWN,
-        RISK_UNKNOWN
+        RISK_UNKNOWN,
+        ORDER_EXPIRED,
+        NON_ARRIVAL
     )
 
     fun generateReferralSource(code: String, id: Long = IdGenerator.getAndIncrement()) = ReferralSource(id, code)
+    fun generateMoveOnCategory(code: String, id: Long = IdGenerator.getAndIncrement()) = MoveOnCategory(id, code)
 }
 
 object DatasetGenerator {

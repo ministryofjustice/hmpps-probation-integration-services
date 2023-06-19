@@ -42,6 +42,7 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.SubmittedBy
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.MoveOnCategoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Referral
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSourceRepository
@@ -52,17 +53,17 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactO
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.location.OfficeLocationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.Nsi
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiStatus
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiStatusCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiStatusRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiType
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.NsiTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.TransferReason
-import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.TransferReasonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.Nsi
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatus
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusCode
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiType
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.TransferReason
+import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.TransferReasonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
@@ -143,6 +144,9 @@ internal class ApprovedPremisesServiceTest {
     lateinit var referralSourceRepository: ReferralSourceRepository
 
     @Mock
+    lateinit var moveOnCategoryRepository: MoveOnCategoryRepository
+
+    @Mock
     lateinit var referralRepository: ReferralRepository
 
     @Mock
@@ -184,6 +188,7 @@ internal class ApprovedPremisesServiceTest {
         referralService = ReferralService(
             referenceDataRepository,
             referralSourceRepository,
+            moveOnCategoryRepository,
             teamRepository,
             staffRepository,
             referralRepository,
@@ -284,6 +289,8 @@ internal class ApprovedPremisesServiceTest {
         val details = givenPersonNotArrivedDetails(recordedBy = staff)
         givenAnApprovedPremises(ApprovedPremisesGenerator.DEFAULT)
         givenContactTypes(listOf(ContactTypeCode.NOT_ARRIVED))
+        givenAuditUser()
+        givenReferral(person, details.eventDetails.bookingId)
 
         approvedPremisesService.personNotArrived(personNotArrivedEvent)
 
@@ -544,37 +551,42 @@ internal class ApprovedPremisesServiceTest {
 
     private fun givenReferral(person: Person, bookingId: String): Referral {
         val ref = Referral(
-            person,
-            PersonGenerator.generateEvent("3", person.id),
-            ApprovedPremisesGenerator.DEFAULT,
+            person.id,
+            564,
+            ApprovedPremisesGenerator.DEFAULT.id,
             LocalDate.now(),
             LocalDate.now(),
             LocalDate.now(),
             ZonedDateTime.now(),
             Nsi.EXT_REF_BOOKING_PREFIX + bookingId,
-            ReferenceDataGenerator.REFERRAL_DATE_TYPE,
-            ReferenceDataGenerator.OTHER_REFERRAL_CATEGORY,
+            ReferenceDataGenerator.REFERRAL_DATE_TYPE.id,
+            ReferenceDataGenerator.OTHER_REFERRAL_CATEGORY.id,
             1, 1,
             "Reason",
-            ReferenceDataGenerator.OTHER_REFERRAL_SOURCE,
-            ReferenceDataGenerator.AP_REFERRAL_SOURCE,
-            ReferenceDataGenerator.ACCEPTED_DEFERRED_ADMISSION,
+            ReferenceDataGenerator.OTHER_REFERRAL_SOURCE.id,
+            ReferenceDataGenerator.AP_REFERRAL_SOURCE.id,
+            ReferenceDataGenerator.ACCEPTED_DEFERRED_ADMISSION.id,
             1, 1, null,
-            ReferenceDataGenerator.YN_UNKNOWN, null,
-            ReferenceDataGenerator.YN_UNKNOWN, null,
-            ReferenceDataGenerator.YN_UNKNOWN, null,
+            ReferenceDataGenerator.YN_UNKNOWN.id, null,
+            ReferenceDataGenerator.YN_UNKNOWN.id, null,
+            ReferenceDataGenerator.YN_UNKNOWN.id, null,
             true, true,
-            ReferenceDataGenerator.RISK_UNKNOWN,
-            ReferenceDataGenerator.RISK_UNKNOWN,
-            ReferenceDataGenerator.RISK_UNKNOWN,
-            ReferenceDataGenerator.RISK_UNKNOWN,
-            ReferenceDataGenerator.RISK_UNKNOWN,
-            ReferenceDataGenerator.RISK_UNKNOWN,
-            ReferenceDataGenerator.RISK_UNKNOWN,
+            ReferenceDataGenerator.RISK_UNKNOWN.id,
+            ReferenceDataGenerator.RISK_UNKNOWN.id,
+            ReferenceDataGenerator.RISK_UNKNOWN.id,
+            ReferenceDataGenerator.RISK_UNKNOWN.id,
+            ReferenceDataGenerator.RISK_UNKNOWN.id,
+            ReferenceDataGenerator.RISK_UNKNOWN.id,
+            ReferenceDataGenerator.RISK_UNKNOWN.id,
             null
         )
-        whenever(referralRepository.findByPersonIdAndCreatedByUserId(person.id, UserGenerator.AUDIT_USER.id))
-            .thenReturn(listOf(ref))
+        whenever(
+            referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
+                person.id,
+                UserGenerator.AUDIT_USER.id,
+                Nsi.EXT_REF_BOOKING_PREFIX + bookingId
+            )
+        ).thenReturn(ref)
         return ref
     }
 }
