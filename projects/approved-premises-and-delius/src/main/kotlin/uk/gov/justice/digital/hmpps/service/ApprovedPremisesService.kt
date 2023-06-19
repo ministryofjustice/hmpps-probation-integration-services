@@ -6,7 +6,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.Approve
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.getApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_ASSESSED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_SUBMITTED
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.NOT_ARRIVED
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
@@ -59,19 +58,11 @@ class ApprovedPremisesService(
     fun personNotArrived(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getPersonNotArrivedDetails(event.url())
         val ap = approvedPremisesRepository.getApprovedPremises(details.eventDetails.premises.legacyApCode)
-        contactService.createContact(
-            ContactDetails(
-                date = details.timestamp,
-                type = NOT_ARRIVED,
-                locationCode = ap.locationCode(),
-                notes = listOfNotNull(
-                    details.eventDetails.notes,
-                    "For more details, click here: ${details.eventDetails.applicationUrl}"
-                ).joinToString("\n\n")
-            ),
-            person = personRepository.getByCrn(event.crn()),
-            staff = staffRepository.getByCode(details.eventDetails.recordedBy.staffCode),
-            probationAreaCode = ap.probationArea.code
+        referralService.personNotArrived(
+            personRepository.getByCrn(event.crn()),
+            ap,
+            details.timestamp,
+            details.eventDetails
         )
     }
 

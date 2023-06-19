@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 data class EventDetails<T>(
     val id: String,
@@ -54,14 +55,16 @@ data class BookingMade(
     val bookingId: String,
     val applicationId: String,
     val applicationUrl: String,
-    val createdAt: ZonedDateTime,
+    private val createdAt: ZonedDateTime,
     @JsonAlias("deliusEventNumber")
     val eventNumber: String,
     val bookedBy: BookedBy,
     val premises: Premises,
     val arrivalOn: LocalDate,
     val departureOn: LocalDate
-)
+) {
+    val bookingMadeAt: ZonedDateTime = createdAt.truncatedTo(ChronoUnit.SECONDS)
+}
 
 data class BookedBy(
     val staffMember: StaffMember
@@ -95,5 +98,9 @@ data class PersonDeparted(
     val keyWorker: StaffMember,
     val departedAt: ZonedDateTime,
     val premises: Premises,
-    val legacyReasonCode: String
+    val legacyReasonCode: String,
+    val destination: Destination
 )
+
+data class Destination(val moveOnCategory: MoveOnCategory)
+data class MoveOnCategory(@JsonAlias("legacyMoveOnCategoryCode") val legacyCode: String)
