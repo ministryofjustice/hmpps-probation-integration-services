@@ -47,6 +47,7 @@ class Referral(
     @Lob
     val referralNotes: String?,
     val referralDateTypeId: Long?,
+    @Column(name = "referral_category_id")
     val categoryId: Long,
 
     val referringTeamId: Long,
@@ -58,7 +59,9 @@ class Referral(
 
     @Column(name = "referral_decision_id")
     val decisionId: Long,
+    @Column(name = "decision_by_team_id")
     val decisionTeamId: Long,
+    @Column(name = "decision_by_staff_id")
     val decisionStaffId: Long,
     @Lob
     val decisionNotes: String?,
