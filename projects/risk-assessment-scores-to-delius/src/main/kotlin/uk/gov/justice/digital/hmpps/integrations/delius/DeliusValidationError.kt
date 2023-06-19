@@ -8,7 +8,8 @@ class DeliusValidationError(override val message: String) : RuntimeException(mes
             "No Event number provided",
             "Event is Terminated",
             "Event does not exist for crn",
-            "The Event is Soft Deleted"
+            "The Event is Soft Deleted",
+            "Event Number = Null and no active events for the case"
         )
 
         private val KNOWN_VALIDATION_MESSAGES = listOf(
@@ -16,7 +17,8 @@ class DeliusValidationError(override val message: String) : RuntimeException(mes
             "The Event is Soft Deleted",
             "The event number does not exist against the specified Offender",
             "CRN/Offender does not exist",
-            "No Event number provided"
+            "No Event number provided",
+            "Event Number = Null and no active events for the case"
         )
 
         fun isKnownValidationMessage(message: String): Boolean = message in KNOWN_VALIDATION_MESSAGES
