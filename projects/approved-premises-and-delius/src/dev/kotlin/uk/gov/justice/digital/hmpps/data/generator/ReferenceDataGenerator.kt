@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.ALL_DATASETS
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator.HOSTEL_CODE
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.MoveOnCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSource
+import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
@@ -31,6 +32,9 @@ object ReferenceDataGenerator {
 
     val OTHER_REFERRAL_SOURCE = generateReferralSource("OTH")
     val MC05 = generateMoveOnCategory("MC05")
+    val REGISTER_TYPES = RegisterType.Code.values()
+        .map { RegisterType(it.value, IdGenerator.getAndIncrement()) }
+        .associateBy { it.code }
 
     fun generate(
         code: String,
