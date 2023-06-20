@@ -246,7 +246,9 @@ internal class ApprovedPremisesServiceTest {
             person = person,
             staff = submitter,
             team = unallocatedTeam,
-            alertManager = manager
+            alertManager = manager,
+            notes = details.eventDetails.notes,
+            description = "Approved Premises Application Submitted"
         )
     }
 
@@ -271,7 +273,7 @@ internal class ApprovedPremisesServiceTest {
             team = unallocatedTeam,
             alertManager = manager,
             description = "Approved Premises Application Accepted",
-            notes = "Test decision rationale"
+            notes = details.eventDetails.notes
         )
     }
 

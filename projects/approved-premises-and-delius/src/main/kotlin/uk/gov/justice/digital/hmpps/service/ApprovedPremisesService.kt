@@ -27,7 +27,12 @@ class ApprovedPremisesService(
     fun applicationSubmitted(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getApplicationSubmittedDetails(event.url()).eventDetails
         contactService.createContact(
-            ContactDetails(date = details.submittedAt, type = APPLICATION_SUBMITTED),
+            ContactDetails(
+                date = details.submittedAt,
+                type = APPLICATION_SUBMITTED,
+                description = "Approved Premises Application Submitted",
+                notes = details.notes
+            ),
             person = personRepository.getByCrn(event.crn()),
             staff = staffRepository.getByCode(details.submittedBy.staffMember.staffCode),
             probationAreaCode = details.submittedBy.probationArea.code
@@ -40,7 +45,7 @@ class ApprovedPremisesService(
             ContactDetails(
                 date = details.assessedAt,
                 type = APPLICATION_ASSESSED,
-                notes = details.decisionRationale,
+                notes = details.notes,
                 description = "Approved Premises Application ${details.decision}"
             ),
             person = personRepository.getByCrn(event.crn()),
