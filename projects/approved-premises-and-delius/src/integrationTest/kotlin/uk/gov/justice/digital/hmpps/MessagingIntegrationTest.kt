@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -111,7 +112,16 @@ internal class MessagingIntegrationTest {
             .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.APPLICATION_ASSESSED.code }
         assertThat(contact.alert, equalTo(true))
         assertThat(contact.description, equalTo("Approved Premises Application Rejected"))
-        assertThat(contact.notes, equalTo("Risk too low"))
+        assertThat(
+            contact.notes,
+            containsString(
+                """
+                |The application for a placement in an Approved Premises has been assessed for suitability and has been rejected.
+                |Risk too low
+                |Details of the application can be found here:
+                """.trimMargin()
+            )
+        )
     }
 
     @Test

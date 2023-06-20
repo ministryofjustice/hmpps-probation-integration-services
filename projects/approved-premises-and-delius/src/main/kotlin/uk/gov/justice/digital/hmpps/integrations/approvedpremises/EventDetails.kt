@@ -19,7 +19,12 @@ data class ApplicationSubmitted(
     val targetLocation: String,
     val submittedAt: ZonedDateTime,
     val submittedBy: SubmittedBy
-)
+) {
+    val notes = """
+        |An application for a placement in an Approved Premises has been made. The application will be assessed for suitability.
+        |Details of the application can be found here: $applicationUrl
+    """.trimMargin()
+}
 
 data class SubmittedBy(
     val staffMember: StaffMember,
@@ -44,7 +49,21 @@ data class ApplicationAssessed(
     val assessedBy: AssessedBy,
     val decision: Decision,
     val decisionRationale: String?
-)
+) {
+    val notes: String
+        get() = when (decision) {
+            Decision.ACCEPTED -> """
+                |Application for a placement in an Approved Premises has been assessed as suitable. The application will now be matched to a suitable Approved Premises.
+                |Details of the application can be found here: $applicationUrl
+            """.trimMargin()
+
+            Decision.REJECTED -> """
+                |The application for a placement in an Approved Premises has been assessed for suitability and has been rejected.
+                |$decisionRationale
+                |Details of the application can be found here: $applicationUrl
+            """.trimMargin()
+        }
+}
 
 data class AssessedBy(
     val staffMember: StaffMember,
