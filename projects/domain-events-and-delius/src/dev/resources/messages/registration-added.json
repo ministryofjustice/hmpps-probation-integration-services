@@ -1,0 +1,26 @@
+{
+  "eventType": "probation-case.registration.added",
+  "version": 1,
+  "description": "A new registration has been added to the probation case",
+  "detailUrl": "https://example.com",
+  "occurredAt": "2023-06-19T18:35:59.442+01:00[Europe/London]",
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "X688738"
+      }
+    ]
+  },
+  "additionalInformation": {
+    "registrationLevelDescription": "",
+    "registerTypeDescription": "High RoSH",
+    "registrationCategoryCode": "",
+    "registrationId": "2500427774",
+    "registrationDate": "Mon Jun 19 00:00:00 BST 2023",
+    "registerTypeCode": "RHRH",
+    "createdDateAndTime": "Mon Jun 19 18:35:59 BST 2023",
+    "registrationCategoryDescription": "",
+    "registrationLevelCode": ""
+  }
+}
