@@ -41,6 +41,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegisterType
+import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
@@ -56,6 +58,7 @@ class DataLoader(
     private val referenceDataRepository: ReferenceDataRepository,
     private val referralSourceRepository: ReferralSourceRepository,
     private val moveOnCategoryRepository: MoveOnCategoryRepository,
+    private val registerTypeRepository: RegisterTypeRepository,
     private val addressRepository: AddressRepository,
     private val approvedPremisesRepository: ApprovedPremisesRepository,
     private val probationAreaRepository: ProbationAreaRepository,
@@ -71,7 +74,8 @@ class DataLoader(
     private val nsiTypeRepository: NsiTypeRepository,
     private val nsiStatusRepository: NsiStatusRepository,
     private val transferReasonRepository: TransferReasonRepository,
-    private val caseloadRepository: CaseloadRepository
+    private val caseloadRepository: CaseloadRepository,
+    private val registrationRepository: RegistrationRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -84,6 +88,7 @@ class DataLoader(
         referenceDataRepository.saveAll(ReferenceDataGenerator.all())
         referralSourceRepository.save(ReferenceDataGenerator.OTHER_REFERRAL_SOURCE)
         moveOnCategoryRepository.save(ReferenceDataGenerator.MC05)
+        registerTypeRepository.saveAll(ReferenceDataGenerator.REGISTER_TYPES.values)
 
         addressRepository.saveAll(listOf(AddressGenerator.Q001, AddressGenerator.Q002))
 
@@ -148,6 +153,13 @@ class DataLoader(
         )
         AddressGenerator.PERSON_ADDRESS = personAddressRepository.save(AddressGenerator.PERSON_ADDRESS)
         eventRepository.save(PersonGenerator.generateEvent("7", person.id))
+        registrationRepository.save(
+            PersonGenerator.generateRegistration(
+                person,
+                ReferenceDataGenerator.REGISTER_TYPES[RegisterType.Code.GANG_AFFILIATION.value]!!
+            )
+        )
+
         contactTypeRepository.saveAll(ContactTypeCode.values().map { ContactTypeGenerator.generate(it.code) })
         contactOutcomeRepository.saveAll(
             listOf(
@@ -168,3 +180,4 @@ class DataLoader(
 interface DatasetRepository : JpaRepository<Dataset, Long>
 interface ProbationAreaRepository : JpaRepository<ProbationArea, Long>
 interface AddressRepository : JpaRepository<Address, Long>
+interface RegisterTypeRepository : JpaRepository<RegisterType, Long>

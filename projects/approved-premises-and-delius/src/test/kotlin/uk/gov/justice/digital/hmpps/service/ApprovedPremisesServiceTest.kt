@@ -69,6 +69,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
@@ -156,6 +157,9 @@ internal class ApprovedPremisesServiceTest {
     lateinit var eventRepository: EventRepository
 
     @Mock
+    lateinit var registrationRepository: RegistrationRepository
+
+    @Mock
     lateinit var auditUserService: AuditUserService
 
     @Mock
@@ -195,6 +199,7 @@ internal class ApprovedPremisesServiceTest {
             residenceRepository,
             personRepository,
             eventRepository,
+            registrationRepository,
             contactService
         )
         nsiService = NsiService(

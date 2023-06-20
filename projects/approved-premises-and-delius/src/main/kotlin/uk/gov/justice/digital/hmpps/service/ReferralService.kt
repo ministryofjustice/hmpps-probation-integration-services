@@ -23,6 +23,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrn
+import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegisterType
+import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.acceptedDeferredAdmission
@@ -53,6 +55,7 @@ class ReferralService(
     private val residenceRepository: ResidenceRepository,
     private val personRepository: PersonRepository,
     private val eventRepository: EventRepository,
+    private val registrationRepository: RegistrationRepository,
     private val contactService: ContactService
 ) {
     fun bookingMade(crn: String, details: BookingMade, ap: ApprovedPremises) {
@@ -163,7 +166,6 @@ class ReferralService(
         val notes = """
             |This referral was made in the new AP Referral System. 
             |Please follow this link to see the original referral: $applicationUrl
-            |**Disclaimer** information about sex offences and gang affiliation unknown
         """.trimMargin()
         val ynUnknown = referenceDataRepository.ynUnknown()
         val riskUnknown = referenceDataRepository.unknownRisk()
@@ -194,8 +196,14 @@ class ReferralService(
             disabilityDetails = notes,
             singleRoomId = ynUnknown.id,
             singleRoomDetails = notes,
-            sexOffender = true, // This should be updated when info available from AP Service
-            gangAffiliated = true, // This should be updated when info available from AP Service
+            sexOffender = registrationRepository.existsByPersonIdAndTypeCode(
+                person.id,
+                RegisterType.Code.SEX_OFFENCE.value
+            ),
+            gangAffiliated = registrationRepository.existsByPersonIdAndTypeCode(
+                person.id,
+                RegisterType.Code.GANG_AFFILIATION.value
+            ),
             rohChildrenId = riskUnknown.id,
             rohKnownPersonId = riskUnknown.id,
             rohOthersId = riskUnknown.id,
