@@ -86,6 +86,7 @@ class ReferralService(
                     ),
                     person = person,
                     staff = rStaff,
+                    team = rTeam,
                     probationAreaCode = ap.probationArea.code
                 )
             }

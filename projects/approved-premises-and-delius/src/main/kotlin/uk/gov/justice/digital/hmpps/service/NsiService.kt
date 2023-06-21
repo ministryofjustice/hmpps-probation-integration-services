@@ -89,8 +89,8 @@ class NsiService(
                         ).joinToString(System.lineSeparator() + System.lineSeparator())
                     ),
                     person = person,
-                    team = team,
                     staff = staff,
+                    team = team,
                     probationAreaCode = ap.probationArea.code
                 )
                 referralService.personArrived(person, ap, details)
@@ -112,6 +112,7 @@ class NsiService(
                 createAlert = false
             ),
             person = person,
+            team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode),
             staff = staffRepository.getByCode(details.keyWorker.staffCode),
             probationAreaCode = ap.probationArea.code
         )
