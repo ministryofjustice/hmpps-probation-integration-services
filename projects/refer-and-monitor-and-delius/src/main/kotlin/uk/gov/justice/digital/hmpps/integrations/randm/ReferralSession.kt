@@ -6,12 +6,22 @@ import java.util.UUID
 
 data class ReferralSession(
     val id: UUID,
+    val appointmentId: UUID,
     val sessionNumber: Int,
     val appointmentTime: ZonedDateTime,
     @JsonAlias("deliusAppointmentId")
     val deliusId: Long?,
-    val sessionFeedback: SessionFeedback
-)
+    val sessionFeedback: SessionFeedback,
+    val oldAppointments: List<Appointment>
+) {
+    val latestFeedback: Appointment? =
+        if (sessionFeedback.attendance.attended != null) {
+            Appointment(appointmentId, sessionFeedback)
+        } else {
+            oldAppointments.filter { it.sessionFeedback.attendance.attended != null }
+                .maxByOrNull { it.sessionFeedback.attendance.submittedAt!! }
+        }
+}
 
 data class SessionFeedback(
     val attendance: Attendance,
