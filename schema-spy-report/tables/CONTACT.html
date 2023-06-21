@@ -124,6 +124,10 @@
                                                 <td class="constraint detail">R_1225<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
+                                                <td title="CONTACT.RAR_LINKED_CONTACT_ID references CONTACT.CONTACT_ID via R_1394"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.RAR_LINKED_CONTACT_ID</span></td>
+                                                <td class="constraint detail">R_1394<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="CONTACT_ALERT.CONTACT_ID references CONTACT.CONTACT_ID via R_772"><a href='CONTACT_ALERT.html'>CONTACT_ALERT</a><span class='relatedKey'>.CONTACT_ID</span></td>
                                                 <td class="constraint detail">R_772<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -806,12 +810,12 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="CONTACT.[TRUST_PROVIDER_FLAG, TRUST_PROVIDER_TEAM_ID] references ALL_TEAM.[TRUST_PROVIDER_FLAG, TRUST_PROVIDER_TEAM_ID] via SYS_C0021891"><a href='ALL_TEAM.html'>ALL_TEAM</a><span class='relatedKey'>.TRUST_PROVIDER_FLAG</span></td>
-                                                <td class="constraint detail">SYS_C0021891<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
                                                 <td title="CONTACT.[TRUST_PROVIDER_FLAG, STAFF_EMPLOYEE_ID] references OFFICER.[TRUST_PROVIDER_FLAG, STAFF_EMPLOYEE_ID] via R_1718"><a href='OFFICER.html'>OFFICER</a><span class='relatedKey'>.TRUST_PROVIDER_FLAG</span></td>
                                                 <td class="constraint detail">R_1718<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="CONTACT.[TRUST_PROVIDER_FLAG, TRUST_PROVIDER_TEAM_ID] references ALL_TEAM.[TRUST_PROVIDER_FLAG, TRUST_PROVIDER_TEAM_ID] via SYS_C0021891"><a href='ALL_TEAM.html'>ALL_TEAM</a><span class='relatedKey'>.TRUST_PROVIDER_FLAG</span></td>
+                                                <td class="constraint detail">SYS_C0021891<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -1117,6 +1121,27 @@
                                     </td>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="RAR_LINKED_CONTACT_ID">RAR_LINKED_CONTACT_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="CONTACT.RAR_LINKED_CONTACT_ID references CONTACT.CONTACT_ID via R_1394"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.CONTACT_ID</span></td>
+                                                <td class="constraint detail">R_1394<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -1364,6 +1389,12 @@
                                     <td>LINKED_DOCUMENT_CONTACT_ID</td>
                                 </tr>
                                 <tr>
+                                    <td title='Indexed'>XIF32CONTACT</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>RAR_LINKED_CONTACT_ID</td>
+                                </tr>
+                                <tr>
                                     <td title='Indexed'>XIF4CONTACT</td>
                                     <td>Performance</td>
                                     <td><span title='Ascending'>Asc</span></td>
@@ -1416,22 +1447,6 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>CONTACT_TYPE</td>
-                                    <td> (&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NOT NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NOT NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NOT NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NOT NULL)&#10;OR&#10;(EVENT_ID IS NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NOT NULL AND PSS_RQMNT_ID IS NULL )&#10;OR&#10;(EVENT_ID IS NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;) </td>
-                                </tr>
-                                <tr>
-                                    <td>PROVIDER_EMPLOYEE_OR_STAFF</td>
-                                    <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND STAFF_ID IS NOT NULL)&#10;) </td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_402</td>
-                                    <td>COMPLIED IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_403</td>
-                                    <td>SENSITIVE IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
                                     <td>ENFORCEMENT_ONE_OR_N_470810165</td>
                                     <td>ENFORCEMENT = 1 OR ENFORCEMENT IS NULL</td>
                                 </tr>
@@ -1444,12 +1459,24 @@
                                     <td>RAR_ACTIVITY IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>STAFF_OR_TEAM1</td>
-                                    <td> (&#10;STAFF_EMPLOYEE_ID = STAFF_ID&#10;OR&#10;STAFF_EMPLOYEE_ID = PROVIDER_EMPLOYEE_ID&#10;) </td>
+                                    <td>CONTACT_TABLE_69233217</td>
+                                    <td>TABLE_NAME IN (&#39;APPROVED_PREMISES_REFERRAL&#39;, &#39;APPROVED_PREMISES_RESIDENCE&#39;, &#39;COURT_REPORT&#39;,&#10;   &#39;INSTITUTIONAL_REPORT&#39;, &#39;REFERRAL&#39;, &#39;DRUGS_TEST&#39;, &#39;ASSESSMENT&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>TRUST_OR_PROVIDER1</td>
-                                    <td> (&#10;TRUST_PROVIDER_TEAM_ID = TEAM_ID&#10;OR&#10;TRUST_PROVIDER_TEAM_ID = PROVIDER_TEAM_ID&#10;) </td>
+                                    <td>YES_OR_NO_400</td>
+                                    <td>VISOR_EXPORTED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE16</td>
+                                    <td>SOFT_DELETED IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_402</td>
+                                    <td>COMPLIED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>STAFF_OR_TEAM1</td>
+                                    <td> (&#10;STAFF_EMPLOYEE_ID = STAFF_ID&#10;OR&#10;STAFF_EMPLOYEE_ID = PROVIDER_EMPLOYEE_ID&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE18</td>
@@ -1460,20 +1487,24 @@
                                     <td>ATTENDED IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>CONTACT_TABLE_69233217</td>
-                                    <td>TABLE_NAME IN (&#39;APPROVED_PREMISES_REFERRAL&#39;, &#39;APPROVED_PREMISES_RESIDENCE&#39;, &#39;COURT_REPORT&#39;,&#10;   &#39;INSTITUTIONAL_REPORT&#39;, &#39;REFERRAL&#39;, &#39;DRUGS_TEST&#39;, &#39;ASSESSMENT&#39;)</td>
+                                    <td>PROVIDER_EMPLOYEE_OR_STAFF</td>
+                                    <td> (&#10;(PROVIDER_EMPLOYEE_ID IS NOT NULL  AND STAFF_ID IS NULL)&#10;OR&#10;(PROVIDER_EMPLOYEE_ID IS NULL  AND STAFF_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
-                                    <td>TRUE_OR_FALSE16</td>
-                                    <td>SOFT_DELETED IN (0, 1)</td>
+                                    <td>YES_OR_NO_403</td>
+                                    <td>SENSITIVE IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO_400</td>
-                                    <td>VISOR_EXPORTED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>TRUST_OR_PROVIDER1</td>
+                                    <td> (&#10;TRUST_PROVIDER_TEAM_ID = TEAM_ID&#10;OR&#10;TRUST_PROVIDER_TEAM_ID = PROVIDER_TEAM_ID&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>GREATER_THAN_0</td>
                                     <td>HOURS_CREDITED &gt; 0</td>
+                                </tr>
+                                <tr>
+                                    <td>CONTACT_TYPE</td>
+                                    <td> (&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NOT NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NOT NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NOT NULL AND PSS_RQMNT_ID IS NULL)&#10;OR&#10;(EVENT_ID IS NOT NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NOT NULL)&#10;OR&#10;(EVENT_ID IS NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NOT NULL AND PSS_RQMNT_ID IS NULL )&#10;OR&#10;(EVENT_ID IS NULL AND RQMNT_ID IS NULL AND LIC_CONDITION_ID IS NULL AND NSI_ID IS NULL AND PSS_RQMNT_ID IS NULL)&#10;) </td>
                                 </tr>
                                 </tbody>
                             </table>
