@@ -87,6 +87,12 @@ subprojects {
     extensions.configure<NoArgExtension> {
         annotation("org.springframework.ldap.odm.annotations.Entry")
     }
+
+    if (!path.startsWith(":libs")) {
+        tasks.named("check") {
+            dependsOn(rootProject.subprojects.filter { it.path.startsWith(":libs") }.map { it.tasks.getByName("check") })
+        }
+    }
 }
 
 tasks.named("check") { dependsOn("ktlintCheck") }

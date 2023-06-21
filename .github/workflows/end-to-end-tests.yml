@@ -37,15 +37,17 @@ on:
         required: true
         options:
           - 'All'
-          - '["approved-premises-and-oasys"]'
           - '["approved-premises-and-delius"]'
+          - '["approved-premises-and-oasys"]'
           - '["court-case-and-delius"]'
           - '["create-and-vary-a-licence-and-delius"]'
           - '["custody-key-dates-and-delius"]'
+          - '["domain-events-and-delius"]'
           - '["effective-proposal-framework-and-delius"]'
           - '["make-recall-decisions-and-delius"]'
           - '["manage-pom-cases-and-delius"]'
           - '["offender-events-and-delius"]'
+          - '["pathfinder-and-delius"]'
           - '["person-search-index-from-delius"]'
           - '["pre-sentence-reports-to-delius"]'
           - '["prison-case-notes-to-probation"]'
@@ -53,12 +55,11 @@ on:
           - '["refer-and-monitor-and-delius"]'
           - '["risk-assessment-scores-to-delius"]'
           - '["sentence-plan-and-delius"]'
+          - '["sentence-plan-and-oasys"]'
+          - '["soc-and-delius"]'
           - '["tier-to-delius"]'
           - '["unpaid-work-and-delius"]'
           - '["workforce-allocations-to-delius"]'
-          - '["pathfinder-and-delius"]'
-          - '["soc-and-delius"]'
-          - '["sentence-plan-and-oasys"]'
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795

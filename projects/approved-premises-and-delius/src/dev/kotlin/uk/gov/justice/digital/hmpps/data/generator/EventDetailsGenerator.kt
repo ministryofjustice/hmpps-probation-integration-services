@@ -55,7 +55,10 @@ object EventDetailsGenerator {
             applicationUrl = "https://example.com",
             premises = premises(),
             createdAt = ZonedDateTime.now(),
-            bookedBy = bookedBy
+            bookedBy = bookedBy,
+            eventNumber = "23",
+            arrivalOn = LocalDate.now(),
+            departureOn = LocalDate.now()
         )
     )
 
@@ -69,7 +72,9 @@ object EventDetailsGenerator {
             applicationUrl = "https://example.com",
             premises = premises(),
             recordedBy = staffMember(recordedBy),
-            notes = "TEST"
+            notes = "TEST",
+            reason = "The reason they didn't attend",
+            reasonCode = "A"
         )
     )
 

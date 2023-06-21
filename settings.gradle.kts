@@ -1,34 +1,35 @@
 rootProject.name = "probation-integration-services"
 include(
     // ⌄ add new projects here
-    "sentence-plan-and-oasys",
-    "soc-and-delius",
-    "pathfinder-and-delius",
-    "sentence-plan-and-delius",
-    "effective-proposal-framework-and-delius",
+    "approved-premises-and-delius",
+    "approved-premises-and-oasys",
     "court-case-and-delius",
     "create-and-vary-a-licence-and-delius",
-    "refer-and-monitor-and-delius",
-    "manage-pom-cases-and-delius",
-    "unpaid-work-and-delius",
-    "make-recall-decisions-and-delius",
     "custody-key-dates-and-delius",
+    "domain-events-and-delius",
+    "effective-proposal-framework-and-delius",
+    "make-recall-decisions-and-delius",
+    "manage-pom-cases-and-delius",
     "offender-events-and-delius",
-    "approved-premises-and-oasys",
-    "approved-premises-and-delius",
-    "tier-to-delius",
-    "risk-assessment-scores-to-delius",
+    "pathfinder-and-delius",
     "person-search-index-from-delius",
-    "prison-custody-status-to-delius",
     "pre-sentence-reports-to-delius",
-    "workforce-allocations-to-delius",
     "prison-case-notes-to-probation",
-    "libs:oauth-server",
-    "libs:oauth-client",
+    "prison-custody-status-to-delius",
+    "refer-and-monitor-and-delius",
+    "risk-assessment-scores-to-delius",
+    "sentence-plan-and-delius",
+    "sentence-plan-and-oasys",
+    "soc-and-delius",
+    "tier-to-delius",
+    "unpaid-work-and-delius",
+    "workforce-allocations-to-delius",
+    "libs:audit",
+    "libs:commons",
     "libs:dev-tools",
     "libs:messaging",
-    "libs:commons",
-    "libs:audit"
+    "libs:oauth-client",
+    "libs:oauth-server"
 )
 
 // load children from the "projects" directory (and drop the prefix)
@@ -48,9 +49,9 @@ dependencyResolutionManagement {
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.0.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
-            library("insights", "com.microsoft.azure:applicationinsights-web:3.4.13")
+            library("insights", "com.microsoft.azure:applicationinsights-web:3.4.14")
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.22.0")
-            library("opentelemetry-annotations", "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.26.0")
+            library("opentelemetry-annotations", "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.27.0")
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.3")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
@@ -62,7 +63,7 @@ dependencyResolutionManagement {
     }
 }
 
-plugins { id("com.gradle.enterprise") version "3.13.3" }
+plugins { id("com.gradle.enterprise") version "3.13.4" }
 gradleEnterprise {
     buildScan {
         publishAlwaysIf(!System.getenv("CI").isNullOrEmpty())

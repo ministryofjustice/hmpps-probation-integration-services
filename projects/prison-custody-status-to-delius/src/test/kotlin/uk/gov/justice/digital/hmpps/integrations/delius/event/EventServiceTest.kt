@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import java.time.ZonedDateTime
 
@@ -27,8 +28,27 @@ internal class EventServiceTest {
     @Mock
     lateinit var eventRepository: EventRepository
 
+    @Mock
+    lateinit var featureFlags: FeatureFlags
+
     @InjectMocks
     lateinit var eventService: EventService
+
+    @Test
+    fun `multiple events ignored when feature flag not set`() {
+        whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse(PersonGenerator.RELEASABLE.nomsNumber))
+            .thenReturn(listOf(PersonGenerator.RELEASABLE))
+        whenever(eventRepository.findActiveCustodialEvents(PersonGenerator.RELEASABLE.id))
+            .thenReturn(
+                List(3) {
+                    EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT)
+                }
+            )
+        whenever(featureFlags.enabled("release_recall_multiple_events")).thenReturn(false)
+        assertThrows<IgnorableMessageException> {
+            eventService.getActiveCustodialEvents(PersonGenerator.RELEASABLE.nomsNumber)
+        }
+    }
 
     @Test
     fun activeCustodialEventIsReturned() {
@@ -64,17 +84,6 @@ internal class EventServiceTest {
         whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse(PersonGenerator.RELEASABLE.nomsNumber))
             .thenReturn(listOf(PersonGenerator.RELEASABLE))
         whenever(eventRepository.findActiveCustodialEvents(PersonGenerator.RELEASABLE.id)).thenReturn(emptyList())
-        assertThrows<IgnorableMessageException> {
-            eventService.getActiveCustodialEvents(PersonGenerator.RELEASABLE.nomsNumber)
-        }
-    }
-
-    @Test
-    fun multipleActiveCustodialEventsAreIgnored() {
-        whenever(personRepository.findByNomsNumberAndSoftDeletedIsFalse(PersonGenerator.RELEASABLE.nomsNumber))
-            .thenReturn(listOf(PersonGenerator.RELEASABLE))
-        whenever(eventRepository.findActiveCustodialEvents(PersonGenerator.RELEASABLE.id))
-            .thenReturn(List(3) { EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT) })
         assertThrows<IgnorableMessageException> {
             eventService.getActiveCustodialEvents(PersonGenerator.RELEASABLE.nomsNumber)
         }

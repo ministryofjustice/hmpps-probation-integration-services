@@ -4,6 +4,9 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doAnswer
@@ -40,9 +43,33 @@ internal class RecallServiceTest : RecallServiceTestBase() {
     fun unsupportedReleaseTypeIsIgnored() {
         val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
-        assertThrows<IgnorableMessageException> { recallService.recall(nomsNumber, prisonId, "RETURN_FROM_COURT", "R1", recallDateTime) }
-        assertThrows<IgnorableMessageException> { recallService.recall(nomsNumber, prisonId, "UNKNOWN", "UNKNOWN", recallDateTime) }
-        assertThrows<IgnorableMessageException> { recallService.recall(nomsNumber, prisonId, "TRANSFERRED", "NOTINT", recallDateTime) }
+        assertThrows<IgnorableMessageException> {
+            recallService.recall(
+                nomsNumber,
+                prisonId,
+                "RETURN_FROM_COURT",
+                "R1",
+                recallDateTime
+            )
+        }
+        assertThrows<IgnorableMessageException> {
+            recallService.recall(
+                nomsNumber,
+                prisonId,
+                "UNKNOWN",
+                "UNKNOWN",
+                recallDateTime
+            )
+        }
+        assertThrows<IgnorableMessageException> {
+            recallService.recall(
+                nomsNumber,
+                prisonId,
+                "TRANSFERRED",
+                "NOTINT",
+                recallDateTime
+            )
+        }
     }
 
     @Test
@@ -74,11 +101,26 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         assertThat(recall.firstValue.reason.code, equalTo("NN"))
 
         // custody details are updated
-        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT, recallDate, om, recallReason)
-        verify(custodyService).updateStatus(event.disposal!!.custody!!, CustodialStatusCode.IN_CUSTODY, recallDate, "Recall added in custody ")
+        verify(custodyService).updateLocation(
+            event.disposal!!.custody!!,
+            InstitutionGenerator.DEFAULT,
+            recallDate,
+            om,
+            recallReason
+        )
+        verify(custodyService).updateStatus(
+            event.disposal!!.custody!!,
+            CustodialStatusCode.IN_CUSTODY,
+            recallDate,
+            "Recall added in custody "
+        )
 
         // licence conditions are terminated
-        verify(licenceConditionService).terminateLicenceConditionsForDisposal(event.disposal!!.id, ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON, recallDate)
+        verify(licenceConditionService).terminateLicenceConditionsForDisposal(
+            event.disposal!!.id,
+            ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
+            recallDate
+        )
 
         // contact alert is created
         val contact = argumentCaptor<Contact>()
@@ -157,7 +199,10 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         val exception = assertThrows<NotFoundException> {
             recallService.recall(nomsNumber, prisonId, reason, "INT", recallDateTime)
         }
-        assertThat(exception.message, equalTo("Custody with disposalId of ${nonCustodialEvent.disposal!!.id} not found"))
+        assertThat(
+            exception.message,
+            equalTo("Custody with disposalId of ${nonCustodialEvent.disposal!!.id} not found")
+        )
     }
 
     @Test
@@ -175,8 +220,11 @@ internal class RecallServiceTest : RecallServiceTestBase() {
     @Test
     fun unexpectedCustodialStatusIsIgnored() {
         val status = CustodialStatusCode.POST_SENTENCE_SUPERVISION
-        val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT, custodialStatusCode = status)
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT])
+        val event =
+            EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT, custodialStatusCode = status)
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(
+            ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
+        )
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
@@ -188,7 +236,9 @@ internal class RecallServiceTest : RecallServiceTestBase() {
     @Test
     fun recallAlreadyExistsIsIgnored() {
         val event = EventGenerator.previouslyRecalledEvent(person, InstitutionGenerator.DEFAULT)
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT])
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(
+            ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
+        )
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
@@ -200,8 +250,11 @@ internal class RecallServiceTest : RecallServiceTestBase() {
     @Test
     fun unexpectedReleaseTypeIsIgnored() {
         val releaseType = ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE
-        val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT, releaseType = releaseType)
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT])
+        val event =
+            EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT, releaseType = releaseType)
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(
+            ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
+        )
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
@@ -213,7 +266,9 @@ internal class RecallServiceTest : RecallServiceTestBase() {
     @Test
     fun futureRecallDateIsIgnored() {
         val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT])
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(
+            ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
+        )
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
@@ -225,7 +280,9 @@ internal class RecallServiceTest : RecallServiceTestBase() {
     @Test
     fun recallDateBeforePreviousReleaseDateIsIgnored() {
         val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT])
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(
+            ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
+        )
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
@@ -237,7 +294,9 @@ internal class RecallServiceTest : RecallServiceTestBase() {
     @Test
     fun missingOrderManagerIsThrown() {
         val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT])
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(
+            ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
+        )
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(prisonId)).thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
         doAnswer<Recall> { it.getArgument(0) }.whenever(recallRepository).save(any())
@@ -251,7 +310,9 @@ internal class RecallServiceTest : RecallServiceTestBase() {
     @Test
     fun missingPersonManagerIsThrown() {
         val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT])
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(
+            ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
+        )
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(prisonId)).thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
         doAnswer<Recall> { it.getArgument(0) }.whenever(recallRepository).save(any())
@@ -266,12 +327,16 @@ internal class RecallServiceTest : RecallServiceTestBase() {
     @Test
     fun missingContactTypeIsThrown() {
         val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT])
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(
+            ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
+        )
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(prisonId)).thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
         doAnswer<Recall> { it.getArgument(0) }.whenever(recallRepository).save(any())
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
-        whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)).thenReturn(PersonManagerGenerator.generate(person))
+        whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)).thenReturn(
+            PersonManagerGenerator.generate(person)
+        )
 
         val exception = assertThrows<NotFoundException> {
             recallService.recall(nomsNumber, prisonId, reason, "INT", recallDateTime)
@@ -308,11 +373,26 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         assertThat(recall.firstValue.reason.code, equalTo("NN"))
 
         // custody details are updated
-        verify(custodyService).updateLocation(event.disposal!!.custody!!, InstitutionGenerator.DEFAULT, recallDate, om, recallReason)
-        verify(custodyService).updateStatus(event.disposal!!.custody!!, CustodialStatusCode.IN_CUSTODY, recallDate, "Recall added in custody ")
+        verify(custodyService).updateLocation(
+            event.disposal!!.custody!!,
+            InstitutionGenerator.DEFAULT,
+            recallDate,
+            om,
+            recallReason
+        )
+        verify(custodyService).updateStatus(
+            event.disposal!!.custody!!,
+            CustodialStatusCode.IN_CUSTODY,
+            recallDate,
+            "Recall added in custody "
+        )
 
         // licence conditions are terminated
-        verify(licenceConditionService).terminateLicenceConditionsForDisposal(event.disposal!!.id, ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON, recallDate)
+        verify(licenceConditionService).terminateLicenceConditionsForDisposal(
+            event.disposal!!.id,
+            ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
+            recallDate
+        )
 
         // contact alert is created
         val contact = argumentCaptor<Contact>()
@@ -334,37 +414,92 @@ internal class RecallServiceTest : RecallServiceTestBase() {
     fun recallToUnlawfullyAtLargeSetsCustodyStatusToRecalled() {
         val institution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNLAWFULLY_AT_LARGE]!!
         val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT])
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(
+            ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
+        )
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(institution.code)).thenReturn(institution)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
         doAnswer<Recall> { it.getArgument(0) }.whenever(recallRepository).save(any())
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
-        whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)).thenReturn(PersonManagerGenerator.generate(person))
-        whenever(contactTypeRepository.findByCode(ContactTypeCode.BREACH_PRISON_RECALL.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
+        whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)).thenReturn(
+            PersonManagerGenerator.generate(person)
+        )
+        whenever(contactTypeRepository.findByCode(ContactTypeCode.BREACH_PRISON_RECALL.code)).thenReturn(
+            ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL]
+        )
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
         recallService.recall(nomsNumber, institution.code, reason, "INT", recallDateTime)
 
         verify(custodyService)
-            .updateStatus(event.disposal!!.custody!!, CustodialStatusCode.RECALLED, recallDate, "Recall added unlawfully at large ")
+            .updateStatus(
+                event.disposal!!.custody!!,
+                CustodialStatusCode.RECALLED,
+                recallDate,
+                "Recall added unlawfully at large "
+            )
     }
 
     @Test
     fun recallToUnknownSetsCustodyStatusToRecalled() {
         val institution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]!!
         val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT])
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(
+            ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
+        )
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(institution.code)).thenReturn(institution)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
         doAnswer<Recall> { it.getArgument(0) }.whenever(recallRepository).save(any())
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
-        whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)).thenReturn(PersonManagerGenerator.generate(person))
-        whenever(contactTypeRepository.findByCode(ContactTypeCode.BREACH_PRISON_RECALL.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
+        whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)).thenReturn(
+            PersonManagerGenerator.generate(person)
+        )
+        whenever(contactTypeRepository.findByCode(ContactTypeCode.BREACH_PRISON_RECALL.code)).thenReturn(
+            ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL]
+        )
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
         recallService.recall(nomsNumber, institution.code, reason, "INT", recallDateTime)
 
         verify(custodyService)
-            .updateStatus(event.disposal!!.custody!!, CustodialStatusCode.RECALLED, recallDate, "Recall added but location unknown ")
+            .updateStatus(
+                event.disposal!!.custody!!,
+                CustodialStatusCode.RECALLED,
+                recallDate,
+                "Recall added but location unknown "
+            )
+    }
+
+    @ParameterizedTest
+    @MethodSource("recallOutcomes")
+    fun `correct outcome is applied across events`(input: List<RecallOutcome>, output: RecallOutcome) {
+        assertThat(input.combined(), equalTo(output))
+    }
+
+    companion object {
+        @JvmStatic
+        fun recallOutcomes() = listOf(
+            Arguments.of(listOf(RecallOutcome.PrisonerRecalled), RecallOutcome.PrisonerRecalled),
+            Arguments.of(
+                listOf(
+                    RecallOutcome.PrisonerRecalled,
+                    RecallOutcome.PrisonerRecalled,
+                    RecallOutcome.CustodialDetailsUpdated
+                ),
+                RecallOutcome.MultipleEventsRecalled
+            ),
+            Arguments.of(
+                listOf(
+                    RecallOutcome.CustodialDetailsUpdated,
+                    RecallOutcome.CustodialDetailsUpdated,
+                    RecallOutcome.NoCustodialUpdates
+                ),
+                RecallOutcome.MultipleDetailsUpdated
+            ),
+            Arguments.of(
+                listOf(RecallOutcome.NoCustodialUpdates, RecallOutcome.NoCustodialUpdates),
+                RecallOutcome.NoCustodialUpdates
+            )
+        )
     }
 }

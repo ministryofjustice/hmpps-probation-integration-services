@@ -14,37 +14,60 @@ jobs:
       push: true
     secrets: inherit
 
+  post-build:
+    name: Post-build
+    runs-on: ubuntu-latest
+    needs: build
+    outputs:
+      changes: ${{ steps.merge-changes.outputs.changes }}
+      version: ${{ needs.build.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Merge changes from the matrix build
+        id: merge-changes
+        uses: ./.github/actions/merge-changes
+
+  analyse:
+    name: Analyse
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/analyse
+        with:
+          token: ${{ secrets.SONAR_TOKEN }}
+
   deploy-to-test:
     name: Deploy to test
     uses: ./.github/workflows/deploy.yml
-    needs: build
-    if: ${{ needs.build.outputs.changes != '[]'}}
+    needs: post-build
+    if: ${{ needs.post-build.outputs.changes != '[]'}}
     with:
       environment: test
-      version: ${{ needs.build.outputs.version }}
-      projects: ${{ needs.build.outputs.changes }}
+      version: ${{ needs.post-build.outputs.version }}
+      projects: ${{ needs.post-build.outputs.changes }}
     secrets: inherit
 
   deploy-to-preprod:
     name: Deploy to preprod
     uses: ./.github/workflows/deploy.yml
-    needs: build
-    if: ${{ needs.build.outputs.changes != '[]'}}
+    needs: post-build
+    if: ${{ needs.post-build.outputs.changes != '[]'}}
     with:
       environment: preprod
-      version: ${{ needs.build.outputs.version }}
-      projects: ${{ needs.build.outputs.changes }}
+      version: ${{ needs.post-build.outputs.version }}
+      projects: ${{ needs.post-build.outputs.changes }}
     secrets: inherit
 
   end-to-end-tests:
     name: Run end-to-end tests
     uses: ./.github/workflows/end-to-end-tests.yml
     needs:
-      - build
+      - post-build
       - deploy-to-test
       - deploy-to-preprod
     with:
-      projects: ${{ needs.build.outputs.changes }}
+      projects: ${{ needs.post-build.outputs.changes }}
     secrets: inherit
 
   report-test-failures:
@@ -65,10 +88,10 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     if: ${{ (success() || (failure() && needs.end-to-end-tests.outputs.passed-projects != '[]')) && github.ref == 'refs/heads/main' }}
     needs:
-      - build
+      - post-build
       - end-to-end-tests
     with:
       environment: prod
-      version: ${{ needs.build.outputs.version }}
+      version: ${{ needs.post-build.outputs.version }}
       projects: ${{ needs.end-to-end-tests.outputs.passed-projects }}
     secrets: inherit

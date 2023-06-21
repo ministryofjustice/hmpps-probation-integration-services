@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention
+package uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -55,7 +55,7 @@ class Nsi(
     val referralDate: LocalDate,
 
     @Column
-    val expectedStartDate: ZonedDateTime? = null,
+    val expectedStartDate: LocalDate? = null,
 
     @Column
     val expectedEndDate: LocalDate? = null,

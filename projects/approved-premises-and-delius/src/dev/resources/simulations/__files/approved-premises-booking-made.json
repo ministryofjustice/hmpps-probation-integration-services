@@ -11,7 +11,7 @@
       "noms": "A0001AA"
     },
     "deliusEventNumber": "7",
-    "createdAt": "2022-11-30T14:51:30",
+    "createdAt": "2022-11-30T14:51:30.438714078Z",
     "bookedBy": {
       "staffMember": {
         "staffCode": "N54A001",
@@ -29,11 +29,7 @@
       "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
       "name": "Hope House",
       "apCode": "NEHOPE1",
-      "legacyApCode": "Q001",
-      "probationArea": {
-        "code": "N54",
-        "name": "North East Region"
-      }
+      "legacyApCode": "Q001"
     },
     "arrivalOn": "2023-01-30",
     "departureOn": "2023-04-30",

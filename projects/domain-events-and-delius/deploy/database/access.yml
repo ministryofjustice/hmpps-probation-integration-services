@@ -1,0 +1,11 @@
+database:
+  access:
+    username_key: /domain-events-and-delius/db-username
+    password_key: /domain-events-and-delius/db-password
+    tables:
+      - domain_event
+
+  audit:
+    username: DomainEventsAndDelius
+    forename: Domain Events
+    surname: Service

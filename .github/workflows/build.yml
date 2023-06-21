@@ -1,9 +1,6 @@
 name: Build
 
 on:
-  push:
-    branches-ignore:
-      - main
   workflow_call:
     inputs:
       push:
@@ -12,8 +9,6 @@ on:
     outputs:
       version:
         value: ${{ jobs.build-gradle.outputs.version }}
-      changes:
-        value: ${{ jobs.analyse.outputs.changes }}
   workflow_dispatch:
     inputs:
       push:
@@ -32,27 +27,28 @@ jobs:
       fail-fast: false
       matrix:
         project:
-          - approved-premises-and-oasys
           - approved-premises-and-delius
+          - approved-premises-and-oasys
+          - court-case-and-delius
+          - create-and-vary-a-licence-and-delius
+          - custody-key-dates-and-delius
+          - domain-events-and-delius
+          - effective-proposal-framework-and-delius
+          - make-recall-decisions-and-delius
+          - manage-pom-cases-and-delius
+          - offender-events-and-delius
+          - pathfinder-and-delius
           - pre-sentence-reports-to-delius
           - prison-case-notes-to-probation
           - prison-custody-status-to-delius
-          - risk-assessment-scores-to-delius
-          - tier-to-delius
-          - workforce-allocations-to-delius
-          - offender-events-and-delius
-          - custody-key-dates-and-delius
-          - make-recall-decisions-and-delius
-          - unpaid-work-and-delius
-          - manage-pom-cases-and-delius
           - refer-and-monitor-and-delius
-          - create-and-vary-a-licence-and-delius
-          - court-case-and-delius
-          - effective-proposal-framework-and-delius
+          - risk-assessment-scores-to-delius
           - sentence-plan-and-delius
-          - pathfinder-and-delius
-          - soc-and-delius
           - sentence-plan-and-oasys
+          - soc-and-delius
+          - tier-to-delius
+          - unpaid-work-and-delius
+          - workforce-allocations-to-delius
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
@@ -137,56 +133,3 @@ jobs:
           matrix-step-name: output-changes
           matrix-key: ${{ matrix.project }}
           outputs: ${{ steps.build.outputs.changes }}
-
-  analyse:
-    name: Analyse
-    runs-on: ubuntu-latest
-    needs:
-      - build-gradle
-      - build-docker
-    outputs:
-      changes: ${{ steps.check-changes.outputs.changes }}
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: test-results
-
-      - name: Publish test reports
-        uses: mikepenz/action-junit-report@4fa23552acda20a6a1d44f16224a90efbeb6c5f1 # v3.7.5
-        if: always() && github.actor != 'dependabot[bot]'
-        with:
-          check_name: |-
-            Unit test results
-            Integration test results
-          report_paths: |-
-            **/build/test-results/test/TEST-*.xml
-            **/build/test-results/integrationTest/TEST-*.xml
-
-      - uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Sonar analysis
-        if: github.actor != 'dependabot[bot]'
-        continue-on-error: true # don't fail the build when sonarcloud.io is down
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: sonar
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - uses: cloudposse/github-action-matrix-outputs-read@ea1c28d66c34b8400391ed74d510f66abc392d5e # v0.1.1
-        id: read-changes
-        with:
-          matrix-step-name: output-changes
-
-      - name: Check changes
-        id: check-changes
-        run: echo "changes=$(echo $changes | jq '. | values[] | [.]' | jq --slurp --compact-output 'add')" | tee -a $GITHUB_OUTPUT
-        env:
-          changes: ${{ steps.read-changes.outputs.result }}

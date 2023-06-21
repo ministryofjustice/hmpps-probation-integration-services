@@ -11,6 +11,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
@@ -104,9 +105,31 @@ class ResponsibleOfficer(
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     @EntityGraph(attributePaths = ["person", "responsibleOfficer", "staff.user", "team.district.borough"])
     fun findByPersonCrn(crn: String): PersonManager?
+
+    @Query(
+        """
+        select p.crn 
+        from PersonManager pm
+        join pm.person p
+        join pm.staff.user u
+        where u.username = :username
+    """
+    )
+    fun findCasesManagedBy(username: String): List<String>
 }
 
 interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
     @EntityGraph(attributePaths = ["responsibleOfficer", "staff", "team.district.borough"])
     fun findByPersonId(personId: Long): PrisonManager?
+
+    @Query(
+        """
+        select p.crn 
+        from PrisonManager pm
+        join Person p on p.id = pm.personId
+        join pm.staff.user u
+        where u.username = :username
+    """
+    )
+    fun findCasesManagedBy(username: String): List<String>
 }

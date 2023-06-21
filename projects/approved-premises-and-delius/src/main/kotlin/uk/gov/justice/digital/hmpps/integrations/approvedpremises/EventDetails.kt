@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps.integrations.approvedpremises
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
 import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 data class EventDetails<T>(
     val id: String,
@@ -17,7 +19,12 @@ data class ApplicationSubmitted(
     val targetLocation: String,
     val submittedAt: ZonedDateTime,
     val submittedBy: SubmittedBy
-)
+) {
+    val notes = """
+        |An application for a placement in an Approved Premises has been made. The application will be assessed for suitability.
+        |Details of the application can be found here: $applicationUrl
+    """.trimMargin()
+}
 
 data class SubmittedBy(
     val staffMember: StaffMember,
@@ -42,7 +49,21 @@ data class ApplicationAssessed(
     val assessedBy: AssessedBy,
     val decision: Decision,
     val decisionRationale: String?
-)
+) {
+    val notes: String
+        get() = when (decision) {
+            Decision.ACCEPTED -> """
+                |Application for a placement in an Approved Premises has been assessed as suitable. The application will now be matched to a suitable Approved Premises.
+                |Details of the application can be found here: $applicationUrl
+            """.trimMargin()
+
+            Decision.REJECTED -> """
+                |The application for a placement in an Approved Premises has been assessed for suitability and has been rejected.
+                |$decisionRationale
+                |Details of the application can be found here: $applicationUrl
+            """.trimMargin()
+        }
+}
 
 data class AssessedBy(
     val staffMember: StaffMember,
@@ -53,10 +74,16 @@ data class BookingMade(
     val bookingId: String,
     val applicationId: String,
     val applicationUrl: String,
-    val createdAt: ZonedDateTime,
+    private val createdAt: ZonedDateTime,
+    @JsonAlias("deliusEventNumber")
+    val eventNumber: String,
     val bookedBy: BookedBy,
-    val premises: Premises
-)
+    val premises: Premises,
+    val arrivalOn: LocalDate,
+    val departureOn: LocalDate
+) {
+    val bookingMadeAt: ZonedDateTime = createdAt.truncatedTo(ChronoUnit.SECONDS)
+}
 
 data class BookedBy(
     val staffMember: StaffMember
@@ -68,7 +95,10 @@ data class PersonNotArrived(
     val applicationUrl: String,
     val recordedBy: StaffMember,
     val premises: Premises,
-    val notes: String?
+    val notes: String?,
+    val reason: String,
+    @JsonAlias("legacyReasonCode")
+    val reasonCode: String
 )
 
 data class PersonArrived(
@@ -89,5 +119,10 @@ data class PersonDeparted(
     val bookingId: String,
     val keyWorker: StaffMember,
     val departedAt: ZonedDateTime,
-    val premises: Premises
+    val premises: Premises,
+    val legacyReasonCode: String,
+    val destination: Destination
 )
+
+data class Destination(val moveOnCategory: MoveOnCategory)
+data class MoveOnCategory(@JsonAlias("legacyMoveOnCategoryCode") val legacyCode: String)

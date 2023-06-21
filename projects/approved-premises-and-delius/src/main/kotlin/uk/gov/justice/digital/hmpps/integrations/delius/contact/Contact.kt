@@ -18,6 +18,7 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
@@ -66,6 +67,13 @@ class Contact(
     @ManyToOne
     @JoinColumn(name = "team_id", nullable = false)
     val team: Team,
+
+    @Column(name = "office_location_id")
+    val locationId: Long? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "contact_outcome_type_id")
+    val outcome: ContactOutcome? = null,
 
     @Column(name = "alert_active")
     @Convert(converter = YesNoConverter::class)
