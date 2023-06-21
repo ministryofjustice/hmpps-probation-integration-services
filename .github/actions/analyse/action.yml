@@ -28,6 +28,14 @@ runs:
           **/build/test-results/test/TEST-*.xml
           **/build/test-results/integrationTest/TEST-*.xml
 
+    - name: Set version
+      id: version
+      shell: bash
+      run: |
+        version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
+        echo "ORG_GRADLE_PROJECT_version=$version" >> $GITHUB_ENV
+        echo "version=$version" | tee -a $GITHUB_OUTPUT
+
     - uses: actions/setup-java@v3
       with:
         java-version: '17'
