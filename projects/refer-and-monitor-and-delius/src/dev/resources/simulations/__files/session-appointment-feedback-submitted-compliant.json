@@ -1,5 +1,5 @@
 {
-  "id": "48911ad2-1213-4bd3-8312-3824dc29f131",
+  "id": "223e2d09-63d2-4b7e-a07e-b35c550e26cb",
   "sessionNumber": 2,
   "appointmentTime": "2023-02-15T09:00:00.000Z",
   "durationInMinutes": 30,
@@ -74,5 +74,6 @@
       "userId": "userId"
     }
   },
-  "deliusAppointmentId": 2
+  "deliusAppointmentId": 2,
+  "appointmentId": "48911ad2-1213-4bd3-8312-3824dc29f131"
 }

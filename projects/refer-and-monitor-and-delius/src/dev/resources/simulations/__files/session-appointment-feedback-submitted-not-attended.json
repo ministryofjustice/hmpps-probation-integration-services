@@ -1,34 +1,60 @@
 {
-  "id": "3b8282cd-baa5-45d3-8489-b5836a58a0e8",
+  "id": "4bca159d-785a-41ba-b96e-01ddd843485a",
   "sessionNumber": 1,
-  "appointmentTime": "2023-04-17T09:34:00+01:00",
+  "appointmentTime": "2023-04-17T08:34:00+01:00",
   "durationInMinutes": 15,
   "appointmentDeliveryType": "PHONE_CALL",
-  "oldAppointments": [],
+  "oldAppointments": [
+    {
+      "id": "3b8282cd-baa5-45d3-8489-b5836a58a0e8",
+      "appointmentTime": "2023-04-17T09:34:00+01:00",
+      "durationInMinutes": 15,
+      "sessionFeedback": {
+        "attendance": {
+          "attended": "no",
+          "additionalAttendanceInformation": "",
+          "submittedAt": "2023-04-17T11:34:15.372669+01:00",
+          "submittedBy": {
+            "username": "INTERVENTIONS-DEVS@DIGITAL.JUSTICE.GOV.UK",
+            "authSource": "auth",
+            "userId": "bc7098ed-948e-456d-8b21-3afb0257aa23"
+          }
+        },
+        "behaviour": {
+          "behaviourDescription": null,
+          "notifyProbationPractitioner": null
+        },
+        "submitted": true,
+        "submittedBy": {
+          "username": "INTERVENTIONS-DEVS@DIGITAL.JUSTICE.GOV.UK",
+          "authSource": "auth",
+          "userId": "bc7098ed-948e-456d-8b21-3afb0257aa23"
+        }
+      },
+      "appointmentDeliveryType": "IN_PERSON_MEETING_PROBATION_OFFICE",
+      "sessionType": "ONE_TO_ONE",
+      "appointmentDeliveryAddress": null,
+      "npsOfficeCode": "CRS0149",
+      "createdAt": "2023-06-08T16:40:09.310708+01:00"
+    }
+  ],
   "sessionType": "ONE_TO_ONE",
   "npsOfficeCode": null,
   "appointmentDeliveryAddress": null,
   "sessionFeedback": {
     "attendance": {
-      "attended": "no",
-      "additionalAttendanceInformation": "",
-      "submittedAt": "2023-04-17T11:34:15.372669+01:00",
-      "submittedBy": {
-        "username": "INTERVENTIONS-DEVS@DIGITAL.JUSTICE.GOV.UK",
-        "authSource": "auth",
-        "userId": "bc7098ed-948e-456d-8b21-3afb0257aa23"
-      }
+      "attended": null,
+      "additionalAttendanceInformation": null,
+      "submittedAt": null,
+      "submittedBy": null
     },
     "behaviour": {
       "behaviourDescription": null,
       "notifyProbationPractitioner": null
     },
-    "submitted": true,
-    "submittedBy": {
-      "username": "INTERVENTIONS-DEVS@DIGITAL.JUSTICE.GOV.UK",
-      "authSource": "auth",
-      "userId": "bc7098ed-948e-456d-8b21-3afb0257aa23"
-    }
+    "submitted": false,
+    "submittedBy": null
   },
-  "deliusAppointmentId": 3
+  "deliusAppointmentId": 3,
+  "appointmentId": "f55ceae9-965e-4d26-bb11-ed3b2634ca01"
 }

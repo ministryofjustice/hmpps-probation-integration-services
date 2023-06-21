@@ -83,7 +83,7 @@ internal class FeedbackSubmittedTest {
         assertThat(ex, instanceOf(IllegalStateException::class.java))
         assertThat(
             ex.message,
-            equalTo("Unable to find appointment with feedback for referral $referralId: supplier assessment ${supplierAssessment.id}")
+            equalTo("No feedback information available for referral $referralId: supplier assessment ${supplierAssessment.id}")
         )
     }
 
