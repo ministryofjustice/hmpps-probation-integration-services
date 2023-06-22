@@ -169,7 +169,7 @@ class AppointmentService(
     fun updateOutcome(uao: UpdateAppointmentOutcome): Unit = audit(UPDATE_CONTACT) { audit ->
         audit["contactId"] = uao.id
 
-        val appointment = contactRepository.findByPersonCrnAndExternalReference(uao.crn, uao.id.toString())
+        val appointment = contactRepository.findByPersonCrnAndExternalReference(uao.crn, uao.urn)
             ?: uao.deliusId?.let { contactRepository.findByIdOrNull(it) }
             ?: throw AppointmentNotFoundException(
                 appointmentId = uao.id,
