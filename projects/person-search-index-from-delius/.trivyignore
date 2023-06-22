@@ -7,3 +7,6 @@ CVE-2022-1471
 #   Logstash versions 8.4.0 and 7.17.6 that are released on 2022-08-24 bundle unaffected JDK versions. Namely, Logstash version 8.4.0 bundles JDK 17.0.4 and Logstash version 7.17.6 bundles JDK 11.0.16.
 #   - https://discuss.elastic.co/t/elastic-stack-8-4-0-7-17-6-security-statement/312823
 CVE-2022-25647
+
+# Reason: snappy compression only used for trusted inputs
+CVE-2023-34455

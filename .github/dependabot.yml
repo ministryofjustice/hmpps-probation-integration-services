@@ -15,3 +15,7 @@ updates:
     directory: "/templates"
     schedule:
       interval: "daily"
+  - package-ecosystem: "docker"
+    directory: "/projects/person-search-index-from-delius"
+    schedule:
+      interval: "daily"
