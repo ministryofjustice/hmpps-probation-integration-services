@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.BusinessInteraction
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
+import uk.gov.justice.digital.hmpps.data.generator.CaseDetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
@@ -16,6 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator.genera
 import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
@@ -28,6 +30,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalTyp
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.limitedaccess.entity.Exclusion
 import uk.gov.justice.digital.hmpps.integrations.delius.limitedaccess.entity.Restriction
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Disability
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddressRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonDetailRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.entity.PrisonManagerRepository
@@ -40,15 +45,16 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.TeamRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.Dataset
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.RequirementRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Component
@@ -57,13 +63,13 @@ class DataLoader(
     private val auditUserRepository: AuditUserRepository,
     private val businessInteractionRepository: BusinessInteractionRepository,
     private val datasetRepository: DatasetRepository,
+    private val referenceDataRepository: ReferenceDataRepository,
     private val disposalTypeRepository: DisposalTypeRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactOutcomeRepository: ContactOutcomeRepository,
     private val enforcementActionRepository: EnforcementActionRepository,
     private val nsiTypeRepository: NsiTypeRepository,
     private val nsiStatusRepository: NsiStatusRepository,
-    private val nsiOutcomeRepository: NsiOutcomeRepository,
     private val mainCatRepository: MainCatRepository,
     private val providerRepository: ProviderRepository,
     private val districtRepository: DistrictRepository,
@@ -83,7 +89,10 @@ class DataLoader(
     private val locationRepository: LocationRepository,
     private val pduRepository: PduRepository,
     private val restrictionRepository: RestrictionRepository,
-    private val exclusionRepository: ExclusionRepository
+    private val exclusionRepository: ExclusionRepository,
+    private val personDetailRepository: PersonDetailRepository,
+    private val personAddressRepository: PersonAddressRepository,
+    private val disabilityRepository: DisabilityRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -118,8 +127,8 @@ class DataLoader(
         nsiTypeRepository.saveAll(NsiGenerator.TYPES.values)
         nsiStatusRepository.saveAll(listOf(NsiGenerator.INPROG_STATUS, NsiGenerator.COMP_STATUS))
 
-        datasetRepository.save(NsiGenerator.NSI_OUTCOME_DS)
-        nsiOutcomeRepository.saveAll(NsiGenerator.OUTCOMES.values)
+        datasetRepository.saveAll(ReferenceDataGenerator.allDatasets() + NsiGenerator.NSI_OUTCOME_DS)
+        referenceDataRepository.saveAll(ReferenceDataGenerator.allReferenceData() + NsiGenerator.OUTCOMES.values)
 
         mainCatRepository.save(SentenceGenerator.MAIN_CAT_F)
 
@@ -293,6 +302,33 @@ class DataLoader(
         restrictionRepository.save(LimitedAccessGenerator.RESTRICTION)
         exclusionRepository.save(generateExclusion(person = PersonGenerator.RESTRICTION_EXCLUSION))
         restrictionRepository.save(generateRestriction(person = PersonGenerator.RESTRICTION_EXCLUSION))
+
+        personDetailRepository.saveAll(listOf(CaseDetailsGenerator.MINIMAL_PERSON, CaseDetailsGenerator.FULL_PERSON))
+        personAddressRepository.saveAll(
+            listOf(
+                CaseDetailsGenerator.generateAddress(
+                    ReferenceDataGenerator.ADDRESS_MAIN,
+                    buildingName = "Some Building",
+                    streetName = "Some Street",
+                    postcode = "SB1 1SS"
+                ),
+                CaseDetailsGenerator.generateAddress(
+                    ReferenceDataGenerator.ADDRESS_OTHER,
+                    buildingName = "No Such Place",
+                    postcode = "NS1 1SP"
+                )
+            )
+        )
+        disabilityRepository.saveAll(
+            listOf(
+                CaseDetailsGenerator.generateDisability(ReferenceDataGenerator.DISABILITY1, notes = "Some notes about the disability"),
+                CaseDetailsGenerator.generateDisability(ReferenceDataGenerator.DISABILITY2, softDeleted = true),
+                CaseDetailsGenerator.generateDisability(
+                    ReferenceDataGenerator.DISABILITY2,
+                    endDate = LocalDate.now().minusDays(1)
+                )
+            )
+        )
     }
 }
 
@@ -304,3 +340,4 @@ interface StaffUserRepository : JpaRepository<StaffUser, Long>
 interface ResponsibleOfficerRepository : JpaRepository<ResponsibleOfficer, Long>
 interface RestrictionRepository : JpaRepository<Restriction, Long>
 interface ExclusionRepository : JpaRepository<Exclusion, Long>
+interface DisabilityRepository : JpaRepository<Disability, Long>

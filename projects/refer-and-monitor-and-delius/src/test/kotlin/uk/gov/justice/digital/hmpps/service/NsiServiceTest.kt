@@ -20,11 +20,11 @@ import uk.gov.justice.digital.hmpps.exception.FutureAppointmentLinkedException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiOutcomeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.Dataset
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
 import uk.gov.justice.digital.hmpps.messaging.NsiTermination
 import uk.gov.justice.digital.hmpps.messaging.ReferralEndType
@@ -44,7 +44,7 @@ internal class NsiServiceTest {
     lateinit var nsiStatusRepository: NsiStatusRepository
 
     @Mock
-    lateinit var nsiOutcomeRepository: NsiOutcomeRepository
+    lateinit var nsiOutcomeRepository: ReferenceDataRepository
 
     @Mock
     lateinit var statusHistoryRepository: NsiStatusHistoryRepository
@@ -76,7 +76,13 @@ internal class NsiServiceTest {
 
         nsiService.startNsi(
             crn,
-            ReferralStarted(referralId, nsi.referralDate.atTime(OffsetTime.now()).toZonedDateTime(), "E2E", 197L, "some notes about this referral")
+            ReferralStarted(
+                referralId,
+                nsi.referralDate.atTime(OffsetTime.now()).toZonedDateTime(),
+                "E2E",
+                197L,
+                "some notes about this referral"
+            )
         )
 
         verify(statusHistoryRepository).save(any())
@@ -98,7 +104,13 @@ internal class NsiServiceTest {
 
         nsiService.startNsi(
             crn,
-            ReferralStarted(referralId, nsi.referralDate.atTime(OffsetTime.now()).toZonedDateTime(), "E2E", 197L, "some notes about this referral")
+            ReferralStarted(
+                referralId,
+                nsi.referralDate.atTime(OffsetTime.now()).toZonedDateTime(),
+                "E2E",
+                197L,
+                "some notes about this referral"
+            )
         )
 
         verify(nsiRepository, times(2)).findByPersonCrnAndExternalReference(crn, ref)

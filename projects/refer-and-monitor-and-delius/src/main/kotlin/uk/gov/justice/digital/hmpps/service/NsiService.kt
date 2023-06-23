@@ -17,7 +17,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.NSI_REFERRAL
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.NSI_TERMINATED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiOutcomeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.nsiOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusRepository
@@ -26,7 +27,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatu
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus.Code.END
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatusHistory
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.nsiOutcome
 import uk.gov.justice.digital.hmpps.messaging.NsiTermination
 import java.time.ZonedDateTime
 
@@ -35,7 +35,7 @@ class NsiService(
     auditedInteractionService: AuditedInteractionService,
     private val nsiRepository: NsiRepository,
     private val nsiStatusRepository: NsiStatusRepository,
-    private val nsiOutcomeRepository: NsiOutcomeRepository,
+    private val nsiOutcomeRepository: ReferenceDataRepository,
     private val statusHistoryRepository: NsiStatusHistoryRepository,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
