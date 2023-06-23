@@ -7,6 +7,13 @@ eval "$(sentry-cli bash-hook --no-environ)"
 if [ -z "$SEARCH_INDEX_HOST" ]; then fail 'Missing environment variable: SEARCH_INDEX_HOST'; fi
 curl_json --retry 3 "$SEARCH_INDEX_HOST"
 
+# Configure cluster settings
+curl_json -XPUT "${SEARCH_INDEX_HOST}/_cluster/settings" --data '{
+  "persistent": {
+    "action.auto_create_index": "false"
+  }
+}'
+
 pipelines=$(grep 'pipeline.id' /usr/share/logstash/config/pipelines.yml | sed 's/.*: //')
 for pipeline in $pipelines; do
   if grep -v -q "$pipeline" <<<"$PIPELINES_ENABLED"; then
