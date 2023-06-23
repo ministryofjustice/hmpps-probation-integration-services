@@ -1,6 +1,7 @@
 # Common values
 generic-service:
   nameOverride: manage-pom-cases-and-delius
+  serviceAccount: manage-pom-cases-and-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/manage-pom-cases-and-delius
@@ -21,8 +22,6 @@ generic-service:
       SPRING_DATASOURCE_USERNAME: DB_USERNAME
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
     manage-pom-cases-and-delius-queue:
-      AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
     manage-pom-cases-and-delius-sentry:
       SENTRY_DSN: SENTRY_DSN

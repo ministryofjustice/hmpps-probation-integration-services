@@ -1,5 +1,6 @@
 generic-service:
   nameOverride: domain-events-and-delius
+  serviceAccount: domain-events-and-delius
   replicaCount: 1
 
   image:
@@ -17,8 +18,6 @@ generic-service:
     domain-events-and-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
     hmpps-domain-events-topic:
-      AWS_ACCESS_KEY_ID: access_key_id
-      AWS_SECRET_ACCESS_KEY: secret_access_key
       MESSAGING_PRODUCER_TOPIC: topic_arn
 
 generic-prometheus-alerts:

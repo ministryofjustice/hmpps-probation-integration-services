@@ -1,5 +1,6 @@
 generic-service:
   nameOverride: person-search-index-from-delius
+  serviceAccount: person-search-index-from-delius
   resources:
     limits:
       memory: 2Gi
@@ -41,20 +42,12 @@ generic-service:
       SENTRY_DSN: SENTRY_DSN
     person-search-index-from-delius-person-queue:
       PERSON_SQS_QUEUE_NAME: QUEUE_NAME
-      PERSON_SQS_QUEUE_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
-      PERSON_SQS_QUEUE_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
     person-search-index-from-delius-person-dlq:
       PERSON_SQS_DLQ_NAME: QUEUE_NAME
-      PERSON_SQS_DLQ_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
-      PERSON_SQS_DLQ_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
     person-search-index-from-delius-contact-queue:
       CONTACT_SQS_QUEUE_NAME: QUEUE_NAME
-      CONTACT_SQS_QUEUE_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
-      CONTACT_SQS_QUEUE_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
     person-search-index-from-delius-contact-dlq:
       CONTACT_SQS_DLQ_NAME: QUEUE_NAME
-      CONTACT_SQS_DLQ_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
-      CONTACT_SQS_DLQ_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
 
 generic-prometheus-alerts:
   targetApplication: person-search-index-from-delius
