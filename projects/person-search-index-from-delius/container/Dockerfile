@@ -4,7 +4,7 @@ COPY --chown=yq /pipelines /pipelines
 RUN find /pipelines -type f -name '*.yml' | xargs -n1 -I{} sh -c 'f={}; yq -o=json "$f" > "${f%.yml}.json"'
 
 
-FROM logstash:8.7.1
+FROM logstash:8.8.1
 
 USER root
 RUN apt-get update && apt-get upgrade -y \
