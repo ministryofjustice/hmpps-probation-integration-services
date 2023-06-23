@@ -16,6 +16,6 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "docker"
-    directory: "/projects/person-search-index-from-delius"
+    directory: "/projects/person-search-index-from-delius/container"
     schedule:
       interval: "daily"
