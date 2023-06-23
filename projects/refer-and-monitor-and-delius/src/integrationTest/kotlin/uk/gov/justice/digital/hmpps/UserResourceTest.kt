@@ -21,7 +21,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.CaseAccess
 import uk.gov.justice.digital.hmpps.api.model.CaseIdentifier
 import uk.gov.justice.digital.hmpps.api.model.ManagedCases
+import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.UserAccess
+import uk.gov.justice.digital.hmpps.api.model.UserDetail
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
@@ -175,5 +177,26 @@ class UserResourceTest {
         }
         assertThat(ex.cause, instanceOf(ConstraintViolationException::class.java))
         assertThat(ex.cause!!.message, equalTo("userAccessCheck.crns: Please provide between 1 and 500 crns"))
+    }
+
+    @Test
+    fun `user details not found returns 404`() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/users/non-existent-user/details")
+                .withOAuth2Token(wireMockServer)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `user details are correctly returned`() {
+        val res = mockMvc.perform(
+            MockMvcRequestBuilders.get("/users/john-smith/details")
+                .withOAuth2Token(wireMockServer)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andReturn().response.contentAsString
+
+        val userDetail = objectMapper.readValue<UserDetail>(res)
+        assertThat(userDetail, equalTo(UserDetail("john-smith", Name("John", "Smith"), "john.smith@moj.gov.uk")))
     }
 }
