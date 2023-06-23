@@ -28,6 +28,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.EnforcementActio
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.MainOffence
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Offence
 import uk.gov.justice.digital.hmpps.integrations.delius.limitedaccess.entity.Exclusion
 import uk.gov.justice.digital.hmpps.integrations.delius.limitedaccess.entity.Restriction
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Disability
@@ -92,7 +94,9 @@ class DataLoader(
     private val exclusionRepository: ExclusionRepository,
     private val personDetailRepository: PersonDetailRepository,
     private val personAddressRepository: PersonAddressRepository,
-    private val disabilityRepository: DisabilityRepository
+    private val disabilityRepository: DisabilityRepository,
+    private val offenceRepository: OffenceRepository,
+    private val mainOffenceRepository: MainOffenceRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -321,7 +325,10 @@ class DataLoader(
         )
         disabilityRepository.saveAll(
             listOf(
-                CaseDetailsGenerator.generateDisability(ReferenceDataGenerator.DISABILITY1, notes = "Some notes about the disability"),
+                CaseDetailsGenerator.generateDisability(
+                    ReferenceDataGenerator.DISABILITY1,
+                    notes = "Some notes about the disability"
+                ),
                 CaseDetailsGenerator.generateDisability(ReferenceDataGenerator.DISABILITY2, softDeleted = true),
                 CaseDetailsGenerator.generateDisability(
                     ReferenceDataGenerator.DISABILITY2,
@@ -329,6 +336,11 @@ class DataLoader(
                 )
             )
         )
+
+        offenceRepository.save(SentenceGenerator.OFFENCE)
+        eventRepository.save(SentenceGenerator.FULL_DETAIL_EVENT)
+        mainOffenceRepository.save(SentenceGenerator.FULL_DETAIL_MAIN_OFFENCE)
+        disposalRepository.save(SentenceGenerator.FULL_DETAIL_SENTENCE)
     }
 }
 
@@ -341,3 +353,5 @@ interface ResponsibleOfficerRepository : JpaRepository<ResponsibleOfficer, Long>
 interface RestrictionRepository : JpaRepository<Restriction, Long>
 interface ExclusionRepository : JpaRepository<Exclusion, Long>
 interface DisabilityRepository : JpaRepository<Disability, Long>
+interface OffenceRepository : JpaRepository<Offence, Long>
+interface MainOffenceRepository : JpaRepository<MainOffence, Long>
