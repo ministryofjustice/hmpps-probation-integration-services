@@ -21,6 +21,7 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -45,7 +46,7 @@ class Nsi(
 
     @JoinColumn(name = "nsi_outcome_id")
     @ManyToOne
-    var outcome: NsiOutcome? = null,
+    var outcome: ReferenceData? = null,
 
     @Column(name = "nsi_status_date")
     var statusDate: ZonedDateTime = ZonedDateTime.now(),
@@ -199,36 +200,6 @@ class NsiStatus(
     enum class Code(val value: String) {
         IN_PROGRESS("INPROG"),
         END("COMP")
-    }
-}
-
-@Immutable
-@Entity
-@Table(name = "r_standard_reference_list")
-class NsiOutcome(
-    @Column(name = "code_value")
-    val code: String,
-    @Column(name = "code_description")
-    val description: String,
-    @Id
-    @Column(name = "standard_reference_list_id")
-    val id: Long,
-    @Column(name = "reference_data_master_id")
-    val datasetId: Long
-)
-
-@Immutable
-@Entity
-@Table(name = "r_reference_data_master")
-class Dataset(
-    @Column(name = "code_set_name")
-    val name: String,
-    @Id
-    @Column(name = "reference_data_master_id")
-    val id: Long
-) {
-    enum class Code(val value: String) {
-        NSI_OUTCOME("NSI OUTCOME")
     }
 }
 

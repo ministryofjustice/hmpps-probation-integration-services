@@ -2,10 +2,10 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Dataset
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.Dataset
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiManager
-import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiType
 import uk.gov.justice.digital.hmpps.messaging.ReferralEndType
@@ -94,7 +94,7 @@ object NsiGenerator {
         code: String,
         description: String = "Description of $code",
         id: Long = IdGenerator.getAndIncrement()
-    ) = NsiOutcome(code, description, id, NSI_OUTCOME_DS.id)
+    ) = ReferenceData(code, description, id, NSI_OUTCOME_DS.id)
 
     fun generateManager(nsi: Nsi, startDateTime: ZonedDateTime = ZonedDateTime.now().minusDays(7)) = NsiManager(
         nsi,
