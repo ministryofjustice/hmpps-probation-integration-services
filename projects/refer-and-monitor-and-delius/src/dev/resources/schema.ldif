@@ -8,9 +8,10 @@ objectclass: top
 objectclass: organizationalUnit
 ou: Users
 
-dn: cn=DefaultStaff,ou=Users,dc=moj,dc=com
+dn: cn=john-smith,ou=Users,dc=moj,dc=com
 objectclass: top
 objectclass: inetOrgPerson
 cn: john-smith
-sn: Staff
+sn: Smith
+givenname: John
 mail: john.smith@moj.gov.uk
