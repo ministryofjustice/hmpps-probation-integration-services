@@ -1,6 +1,7 @@
 # Common values
 generic-service:
   nameOverride: $SERVICE_NAME
+  serviceAccount: $SERVICE_NAME
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/$SERVICE_NAME
@@ -20,8 +21,6 @@ generic-service:
     $SERVICE_NAME-sentry:
       SENTRY_DSN: SENTRY_DSN
     $SERVICE_NAME-queue:
-      AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY: AWS_ACCESS_KEY
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
 
 generic-prometheus-alerts:

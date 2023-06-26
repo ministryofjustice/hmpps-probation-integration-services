@@ -1,5 +1,6 @@
 generic-service:
   nameOverride: prison-custody-status-to-delius
+  serviceAccount: prison-custody-status-to-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-custody-status-to-delius
@@ -16,8 +17,6 @@ generic-service:
     prison-custody-status-to-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
     prison-custody-status-to-delius-queue:
-      AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
 
 generic-prometheus-alerts:

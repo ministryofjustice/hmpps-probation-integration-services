@@ -1,6 +1,7 @@
 # Common values
 generic-service:
   nameOverride: refer-and-monitor-and-delius
+  serviceAccount: refer-and-monitor-and-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/refer-and-monitor-and-delius
@@ -23,8 +24,6 @@ generic-service:
     refer-and-monitor-and-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
     refer-and-monitor-and-delius-queue:
-      AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
 
 generic-prometheus-alerts:

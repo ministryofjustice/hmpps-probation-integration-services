@@ -50,8 +50,21 @@ resource "kubernetes_secret" "SERVICE_NAME-queue-secret" {
     namespace = var.namespace
   }
   data = {
-    QUEUE_NAME            = module.SERVICE_NAME-queue.sqs_name
-    AWS_ACCESS_KEY_ID     = module.SERVICE_NAME-queue.access_key_id
-    AWS_SECRET_ACCESS_KEY = module.SERVICE_NAME-queue.secret_access_key
+    QUEUE_NAME = module.SERVICE_NAME-queue.sqs_name
   }
+}
+
+module "service_account" {
+  source                 = "github.com/ministryofjustice/cloud-platform-terraform-irsa?ref=2.0.0"
+  application            = var.application
+  business_unit          = var.business_unit
+  eks_cluster_name       = var.eks_cluster_name
+  environment_name       = var.environment
+  infrastructure_support = var.infrastructure_support
+  is_production          = var.is_production
+  namespace              = var.namespace
+  team_name              = var.team_name
+
+  service_account_name = "SERVICE_NAME"
+  role_policy_arns     = { sqs = module.SERVICE_NAME-queue.irsa_policy_arn }
 }

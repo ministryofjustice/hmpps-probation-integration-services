@@ -1,5 +1,6 @@
 generic-service:
   nameOverride: offender-events-and-delius
+  serviceAccount: offender-events-and-delius
   replicaCount: 1
 
   image:
@@ -17,8 +18,6 @@ generic-service:
     offender-events-and-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
     offender-events-and-delius-topic:
-      AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
       MESSAGING_PRODUCER_TOPIC: TOPIC_ARN
 
 generic-prometheus-alerts:

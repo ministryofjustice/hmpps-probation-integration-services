@@ -63,6 +63,4 @@ Add the following environment variables before running the application:
 MESSAGING_PRODUCER_TOPIC=arn:aws:sns:eu-west-2:000000000000:offender-events
 CLOUD_AWS_SQS_REGION=eu-west-2 # for localstack only - not required in AWS
 CLOUD_AWS_SQS_ENDPOINT=http://localhost:4566 # for localstack only - not required in AWS
-AWS_ACCESS_KEY_ID=<access-key-id>
-AWS_SECRET_ACCESS_KEY=<secret-access-key>
 ```

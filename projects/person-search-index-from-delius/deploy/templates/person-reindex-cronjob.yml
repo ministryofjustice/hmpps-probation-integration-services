@@ -90,16 +90,4 @@ spec:
                       name: person-search-index-from-delius-person-dlq
                       key: QUEUE_NAME
                       optional: false
-                - name: PERSON_SQS_DLQ_ACCESS_KEY_ID
-                  valueFrom:
-                    secretKeyRef:
-                      name: person-search-index-from-delius-person-dlq
-                      key: AWS_ACCESS_KEY_ID
-                      optional: false
-                - name: PERSON_SQS_DLQ_SECRET_ACCESS_KEY
-                  valueFrom:
-                    secretKeyRef:
-                      name: person-search-index-from-delius-person-dlq
-                      key: AWS_SECRET_ACCESS_KEY
-                      optional: false
           restartPolicy: Never
