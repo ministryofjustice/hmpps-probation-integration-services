@@ -10,6 +10,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.MergeAppointment
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
@@ -25,7 +26,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 @ExtendWith(MockitoExtension::class)
@@ -56,6 +59,9 @@ internal class AppointmentServiceTest {
 
     @Mock
     lateinit var nsiRepository: NsiRepository
+
+    @Mock
+    lateinit var telemetryService: TelemetryService
 
     @InjectMocks
     lateinit var appointmentService: AppointmentService
@@ -118,5 +124,15 @@ internal class AppointmentServiceTest {
 
         val id = assertDoesNotThrow { appointmentService.mergeAppointment(crn, mergeAppointment) }
         assertThat(id, equalTo(contact.id))
+
+        verify(telemetryService).trackEvent(
+            "Fuzzy Matched NSI for Merge Appointment",
+            mapOf(
+                "crn" to crn,
+                "urn" to mergeAppointment.urn,
+                "eventId" to mergeAppointment.sentenceId.toString(),
+                "startDate" to DateTimeFormatter.ISO_LOCAL_DATE.format(mergeAppointment.start.toLocalDate())
+            )
+        )
     }
 }

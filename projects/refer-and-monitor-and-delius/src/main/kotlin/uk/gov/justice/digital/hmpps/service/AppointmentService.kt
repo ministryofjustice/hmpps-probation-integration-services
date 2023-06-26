@@ -31,9 +31,11 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventReposi
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.Nsi
 import uk.gov.justice.digital.hmpps.messaging.Referral
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime.now
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 @Service
@@ -46,7 +48,8 @@ class AppointmentService(
     private val enforcementActionRepository: EnforcementActionRepository,
     private val enforcementRepository: EnforcementRepository,
     private val eventRepository: EventRepository,
-    private val nsiRepository: NsiRepository
+    private val nsiRepository: NsiRepository,
+    private val telemetryService: TelemetryService // temporarily added here for determining fuzzy matches
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -69,7 +72,22 @@ class AppointmentService(
                 mergeAppointment.previousUrn ?: mergeAppointment.urn
             )
         }
-        val appointment = find() ?: mergeAppointment.deliusId?.let { contactRepository.findByIdOrNull(it) } ?: run {
+        val appointment = find() ?: mergeAppointment.deliusId?.let {
+            val app = contactRepository.findByIdOrNull(it)
+            if (app != null) {
+                telemetryService.trackEvent(
+                    "Appointment Found By Delius Id - Feedback Submitted",
+                    mapOf(
+                        "crn" to crn,
+                        "urn" to mergeAppointment.urn,
+                        "deliusId" to mergeAppointment.deliusId.toString(),
+                        "referralReference" to mergeAppointment.referralReference,
+                        "referralUrn" to mergeAppointment.referralUrn
+                    )
+                )
+            }
+            app
+        } ?: run {
             nsiRepository.findForUpdate(nsi.id)
             find() ?: createContact(mergeAppointment, assignation, nsi)
         }
@@ -119,6 +137,17 @@ class AppointmentService(
                 nsi = nsis.first()
             } else if (nsis.size > 1) {
                 nsi = nsis.firstOrNull { it.notes?.contains(mergeAppointment.referralUrn) ?: false }
+            }
+            if (nsi != null) {
+                telemetryService.trackEvent(
+                    "Fuzzy Matched NSI for Merge Appointment",
+                    mapOf(
+                        "crn" to crn,
+                        "urn" to mergeAppointment.urn,
+                        "eventId" to mergeAppointment.sentenceId.toString(),
+                        "startDate" to DateTimeFormatter.ISO_LOCAL_DATE.format(mergeAppointment.start.toLocalDate())
+                    )
+                )
             }
         }
         if (nsi == null) {
@@ -170,7 +199,22 @@ class AppointmentService(
         audit["contactId"] = uao.id
 
         val appointment = contactRepository.findByPersonCrnAndExternalReference(uao.crn, uao.urn)
-            ?: uao.deliusId?.let { contactRepository.findByIdOrNull(it) }
+            ?: uao.deliusId?.let {
+                val app = contactRepository.findByIdOrNull(it)
+                if (app != null) {
+                    telemetryService.trackEvent(
+                        "Appointment Found By Delius Id - Feedback Submitted",
+                        mapOf(
+                            "crn" to uao.crn,
+                            "urn" to uao.urn,
+                            "deliusId" to uao.deliusId.toString(),
+                            "referralReference" to uao.referralReference,
+                            "referralUrn" to uao.referral.urn
+                        )
+                    )
+                }
+                app
+            }
             ?: throw AppointmentNotFoundException(
                 appointmentId = uao.id,
                 deliusId = uao.deliusId,

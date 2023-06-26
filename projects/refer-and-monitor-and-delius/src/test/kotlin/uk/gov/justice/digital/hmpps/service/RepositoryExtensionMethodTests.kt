@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusReposi
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
 import uk.gov.justice.digital.hmpps.messaging.NsiTermination
 import uk.gov.justice.digital.hmpps.messaging.ReferralEndType
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -52,6 +53,9 @@ internal class RepositoryExtensionMethodTests {
 
     @Mock
     lateinit var createNsi: CreateNsi
+
+    @Mock
+    lateinit var telemetryService: TelemetryService
 
     @InjectMocks
     lateinit var nsiService: NsiService
