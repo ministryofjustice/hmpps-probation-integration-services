@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.api.model.InitialAppointment
 import uk.gov.justice.digital.hmpps.api.model.ManagementStatus
 import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.NamedCourt
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.model.Sentence
 import uk.gov.justice.digital.hmpps.security.ServiceContext
@@ -65,6 +66,7 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
                     )
                 },
                 if (iad == null) null else InitialAppointment(iad.toLocalDate()),
+                NamedCourt(rs.getString("court_name")),
                 CaseType.valueOf(rs.getString("case_type")),
                 ProbationStatus(managementStatus),
                 if (managerCode.endsWith("U")) {
@@ -87,6 +89,18 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
 }
 
 const val QS_ALLOCATION_DEMAND = """
+WITH LATEST_COURT AS (SELECT e.EVENT_ID,
+                             c.COURT_NAME,
+                             ROW_NUMBER() OVER (partition by e.EVENT_ID order by ca.APPEARANCE_DATE desc) row_num
+                      FROM COURT_APPEARANCE ca
+                               JOIN COURT c ON ca.COURT_ID = c.COURT_ID
+                               JOIN EVENT e ON e.EVENT_ID = ca.EVENT_ID AND e.ACTIVE_FLAG = 1
+                               JOIN OFFENDER o ON o.OFFENDER_ID = ca.OFFENDER_ID
+                      WHERE (o.CRN, e.EVENT_NUMBER) in (:values)
+                        AND ca.APPEARANCE_DATE < current_date
+                        AND ca.OUTCOME_ID is not null
+                        AND e.SOFT_DELETED = 0
+                        AND ca.SOFT_DELETED = 0)
 SELECT o.CRN                                                            crn,
        o.FIRST_NAME                                                     forename,
        o.SECOND_NAME                                                    middle_name,
@@ -101,6 +115,7 @@ SELECT o.CRN                                                            crn,
        d.DISPOSAL_DATE                                                  sentence_date,
        d.ENTRY_LENGTH                                                   sentence_length_value,
        du.CODE_DESCRIPTION                                              sentence_length_unit,
+       court.COURT_NAME                                                 court_name,
        (SELECT max(to_date(to_char(c.CONTACT_DATE, 'yyyy-mm-dd') || to_char(c.CONTACT_START_TIME, 'hh24:mi:ss'),
                            'yyyy-mm-dd hh24:mi:ss'))
         FROM CONTACT c
@@ -185,7 +200,6 @@ SELECT o.CRN                                                            crn,
        cms.SURNAME                                                      community_manager_surname,
        cmt.CODE                                                         community_manager_team_code,
        cmsg.CODE_VALUE                                                  community_manager_grade
-
 FROM OFFENDER o
          JOIN EVENT e ON e.OFFENDER_ID = o.OFFENDER_ID AND e.ACTIVE_FLAG = 1
          JOIN OFFENDER_MANAGER cm ON cm.OFFENDER_ID = o.OFFENDER_ID AND cm.ACTIVE_FLAG = 1
@@ -196,6 +210,7 @@ FROM OFFENDER o
          JOIN STAFF s ON s.STAFF_ID = om.ALLOCATION_STAFF_ID
          JOIN DISPOSAL d ON d.EVENT_ID = e.EVENT_ID AND d.ACTIVE_FLAG = 1
          JOIN R_DISPOSAL_TYPE dt ON dt.DISPOSAL_TYPE_ID = d.DISPOSAL_TYPE_ID
+         JOIN LATEST_COURT court ON court.EVENT_ID = e.EVENT_ID AND court.row_num = 1
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST cmsg ON cms.STAFF_GRADE_ID = cmsg.STANDARD_REFERENCE_LIST_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST du ON du.STANDARD_REFERENCE_LIST_ID = d.ENTRY_LENGTH_UNITS_ID
          LEFT OUTER JOIN CUSTODY c ON c.DISPOSAL_ID = d.DISPOSAL_ID AND c.SOFT_DELETED = 0

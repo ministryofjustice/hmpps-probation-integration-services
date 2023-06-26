@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.api.model.InitialAppointment
 import uk.gov.justice.digital.hmpps.api.model.ManagementStatus
 import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.NamedCourt
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.model.Sentence
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
@@ -101,6 +102,7 @@ class AllocationDemandIntegrationTest {
                 Event("2", Manager("ST001", Name("John", null, "Smith"), "T001")),
                 Sentence("test", LocalDate.now(), "12 Months"),
                 InitialAppointment(LocalDate.now()),
+                NamedCourt("Court One"),
                 CaseType.CUSTODY,
                 ProbationStatus(ManagementStatus.CURRENTLY_MANAGED),
                 Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO")
@@ -111,6 +113,7 @@ class AllocationDemandIntegrationTest {
                 Event("1", Manager("ST001", Name("John", null, "Smith"), "T001")),
                 Sentence("test", LocalDate.now(), "12 Months"),
                 InitialAppointment(LocalDate.now()),
+                NamedCourt("Court Two"),
                 CaseType.CUSTODY,
                 ProbationStatus(ManagementStatus.CURRENTLY_MANAGED),
                 Manager("JJ001", Name("Chip", null, "Rockefeller"), "T001", "PO")
