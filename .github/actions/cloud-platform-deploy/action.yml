@@ -47,34 +47,24 @@ runs:
         namespace: ${{ inputs.namespace }}
         token: ${{ inputs.token }}
 
-    - name: Setup
+    - name: Deploy
       shell: bash
       run: |
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         brew install helm
-        yq -i ".appVersion = \"$VERSION\"" "projects/$PROJECT/deploy/Chart.yaml"
-        helm dependency update "projects/$PROJECT/deploy"
-      env:
-        PROJECT: ${{ inputs.project }}
-        VERSION: ${{ inputs.version }}
-
-    - name: Deploy
-      shell: bash
-      run: exec helm upgrade "$PROJECT" "projects/$PROJECT/deploy" \
+        yq -i ".appVersion = \"${{ inputs.version }}\"" "projects/${{ inputs.project }}/deploy/Chart.yaml"
+        helm dependency update "projects/${{ inputs.project }}/deploy"
+        exec helm upgrade '${{ inputs.project }}' 'projects/${{ inputs.project }}/deploy' \
           --atomic \
-          --force \
           --history-max 10 \
+          --force \
           --install \
           --reset-values \
-          --set "generic-service.env.VERSION=$VERSION" \
-          --set "generic-service.image.tag=$VERSION" \
-          --set "version=$VERSION" \
+          --set 'generic-service.env.VERSION=${{ inputs.version }}' \
+          --set 'generic-service.image.tag=${{ inputs.version }}' \
+          --set 'version=${{ inputs.version }}' \
           --timeout 10m \
           --values templates/helm-defaults.yml \
-          --values "projects/$PROJECT/deploy/values.yaml" \
-          --values "projects/$PROJECT/deploy/$VALUES_FILE" \
+          --values 'projects/${{ inputs.project }}/deploy/values.yaml' \
+          --values 'projects/${{ inputs.project }}/deploy/${{ steps.env.outputs.values-file }}' \
           --wait
-      env:
-        PROJECT: ${{ inputs.project }}
-        VALUES_FILE: ${{ steps.env.outputs.values-file }}
-        VERSION: ${{ inputs.version }}
