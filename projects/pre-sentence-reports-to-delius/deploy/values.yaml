@@ -1,6 +1,6 @@
 generic-service:
   nameOverride: pre-sentence-reports-to-delius
-  serviceAccount: pre-sentence-reports-to-delius
+  serviceAccountName: pre-sentence-reports-to-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/pre-sentence-reports-to-delius

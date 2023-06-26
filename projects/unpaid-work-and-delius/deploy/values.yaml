@@ -3,7 +3,7 @@
 # An additional set of default values can be found in templates/helm-defaults.yml, which is the same across all projects
 generic-service:
   nameOverride: unpaid-work-and-delius
-  serviceAccount: unpaid-work-and-delius
+  serviceAccountName: unpaid-work-and-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/unpaid-work-and-delius

@@ -3,7 +3,7 @@
 # An additional set of default values can be found in templates/helm-defaults.yml, which is the same across all projects
 generic-service:
   nameOverride: tier-to-delius
-  serviceAccount: tier-to-delius
+  serviceAccountName: tier-to-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/tier-to-delius

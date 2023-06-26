@@ -1,7 +1,7 @@
 # Common values
 generic-service:
   nameOverride: $SERVICE_NAME
-  serviceAccount: $SERVICE_NAME
+  serviceAccountName: $SERVICE_NAME
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/$SERVICE_NAME

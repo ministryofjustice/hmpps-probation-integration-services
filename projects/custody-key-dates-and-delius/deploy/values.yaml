@@ -1,6 +1,6 @@
 generic-service:
   nameOverride: custody-key-dates-and-delius
-  serviceAccount: custody-key-dates-and-delius
+  serviceAccountName: custody-key-dates-and-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/custody-key-dates-and-delius

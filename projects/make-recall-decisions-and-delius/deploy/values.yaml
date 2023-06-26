@@ -1,6 +1,6 @@
 generic-service:
   nameOverride: make-recall-decisions-and-delius
-  serviceAccount: make-recall-decisions-and-delius
+  serviceAccountName: make-recall-decisions-and-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/make-recall-decisions-and-delius

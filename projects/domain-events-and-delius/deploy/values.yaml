@@ -1,6 +1,6 @@
 generic-service:
   nameOverride: domain-events-and-delius
-  serviceAccount: domain-events-and-delius
+  serviceAccountName: domain-events-and-delius
   replicaCount: 1
 
   image:
