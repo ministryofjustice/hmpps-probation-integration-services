@@ -3,7 +3,7 @@
 # An additional set of default values can be found in templates/helm-defaults.yml, which is the same across all projects
 generic-service:
   nameOverride: prison-case-notes-to-probation
-  serviceAccount: prison-case-notes-to-probation
+  serviceAccountName: prison-case-notes-to-probation
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-case-notes-to-probation

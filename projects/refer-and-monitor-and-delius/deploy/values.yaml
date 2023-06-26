@@ -1,7 +1,7 @@
 # Common values
 generic-service:
   nameOverride: refer-and-monitor-and-delius
-  serviceAccount: refer-and-monitor-and-delius
+  serviceAccountName: refer-and-monitor-and-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/refer-and-monitor-and-delius

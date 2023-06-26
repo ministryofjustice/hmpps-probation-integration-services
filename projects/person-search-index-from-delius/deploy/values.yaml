@@ -1,6 +1,6 @@
 generic-service:
   nameOverride: person-search-index-from-delius
-  serviceAccount: person-search-index-from-delius
+  serviceAccountName: person-search-index-from-delius
   resources:
     limits:
       memory: 2Gi

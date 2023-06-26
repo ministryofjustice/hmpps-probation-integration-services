@@ -1,6 +1,6 @@
 generic-service:
   nameOverride: offender-events-and-delius
-  serviceAccount: offender-events-and-delius
+  serviceAccountName: offender-events-and-delius
   replicaCount: 1
 
   image:

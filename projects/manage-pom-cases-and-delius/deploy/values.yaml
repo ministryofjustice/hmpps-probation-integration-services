@@ -1,7 +1,7 @@
 # Common values
 generic-service:
   nameOverride: manage-pom-cases-and-delius
-  serviceAccount: manage-pom-cases-and-delius
+  serviceAccountName: manage-pom-cases-and-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/manage-pom-cases-and-delius

@@ -1,6 +1,6 @@
 generic-service:
   nameOverride: prison-custody-status-to-delius
-  serviceAccount: prison-custody-status-to-delius
+  serviceAccountName: prison-custody-status-to-delius
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-custody-status-to-delius
