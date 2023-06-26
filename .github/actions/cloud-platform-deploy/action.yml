@@ -62,6 +62,7 @@ runs:
       shell: bash
       run: exec helm upgrade "$PROJECT" "projects/$PROJECT/deploy" \
           --atomic \
+          --force \
           --history-max 10 \
           --install \
           --reset-values \
