@@ -28,6 +28,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.NsiStatusReposi
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatus
 import uk.gov.justice.digital.hmpps.messaging.NsiTermination
 import uk.gov.justice.digital.hmpps.messaging.ReferralEndType
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.OffsetTime
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -57,6 +58,9 @@ internal class NsiServiceTest {
 
     @Mock
     lateinit var createNsi: CreateNsi
+
+    @Mock
+    lateinit var telemetryService: TelemetryService
 
     @InjectMocks
     lateinit var nsiService: NsiService

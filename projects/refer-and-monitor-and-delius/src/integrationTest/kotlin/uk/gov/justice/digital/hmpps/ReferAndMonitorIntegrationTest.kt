@@ -361,6 +361,16 @@ internal class ReferAndMonitorIntegrationTest {
         )
         assertThat(saved.outcome?.code, equalTo(ReferralEndType.CANCELLED.outcome))
         assertFalse(saved.active)
+
+        verify(telemetryService).trackEvent(
+            "Fuzzy Matched NSI for termination",
+            mapOf(
+                "crn" to "F123456",
+                "urn" to "urn:hmpps:interventions-referral:71df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+                "eventId" to NsiGenerator.FUZZY_SEARCH.eventId.toString(),
+                "startDate" to "2023-02-14"
+            )
+        )
     }
 
     @Test

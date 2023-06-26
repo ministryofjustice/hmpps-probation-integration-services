@@ -28,7 +28,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatu
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiStatusHistory
 import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCode
 import uk.gov.justice.digital.hmpps.messaging.NsiTermination
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 
 @Service
 class NsiService(
@@ -39,7 +41,8 @@ class NsiService(
     private val statusHistoryRepository: NsiStatusHistoryRepository,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
-    private val createNsi: CreateNsi
+    private val createNsi: CreateNsi,
+    private val telemetryService: TelemetryService // temporarily added here for determining fuzzy matches
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -118,6 +121,17 @@ class NsiService(
             if (nsis.size == 1) {
                 nsi = nsis.first()
             } else if (nsis.size > 1) nsi = nsis.firstOrNull { it.notes?.contains(termination.urn) ?: false }
+            if (nsi != null) {
+                telemetryService.trackEvent(
+                    "Fuzzy Matched NSI for termination",
+                    mapOf(
+                        "crn" to termination.crn,
+                        "urn" to termination.urn,
+                        "eventId" to termination.eventId.toString(),
+                        "startDate" to ISO_LOCAL_DATE.format(termination.startDate.toLocalDate())
+                    )
+                )
+            }
         }
         if (nsi == null) {
             val nfr = nsiRepository.getNotFoundReason(termination.crn, termination.urn)
