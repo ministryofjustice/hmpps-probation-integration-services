@@ -47,15 +47,22 @@ runs:
         namespace: ${{ inputs.namespace }}
         token: ${{ inputs.token }}
 
-    - name: Deploy
+    - name: Setup
       shell: bash
       run: |
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         brew install helm
         yq -i ".appVersion = \"$VERSION\"" "projects/$PROJECT/deploy/Chart.yaml"
         helm dependency update "projects/$PROJECT/deploy"
-        helm upgrade "$PROJECT" "projects/$PROJECT/deploy" \
+      env:
+        PROJECT: ${{ inputs.project }}
+        VERSION: ${{ inputs.version }}
+
+    - name: Deploy
+      shell: bash
+      run: exec helm upgrade "$PROJECT" "projects/$PROJECT/deploy" \
           --atomic \
+          --force \
           --history-max 10 \
           --install \
           --reset-values \
