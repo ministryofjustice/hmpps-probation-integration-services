@@ -32,18 +32,28 @@ class Disposal(
     @JoinColumn(name = "disposal_type_id")
     val type: DisposalType,
 
+    @Column(name = "entered_notional_end_date")
+    val enteredEndDate: LocalDate? = null,
+
+    @Column(name = "notional_end_date")
+    val notionalEndDate: LocalDate? = null,
+
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean,
 
     @Id
     @Column(name = "disposal_id")
     val id: Long
-)
+) {
+    fun expectedEndDate() = enteredEndDate ?: notionalEndDate
+}
 
 @Entity
 @Immutable
 @Table(name = "r_disposal_type")
 class DisposalType(
+
+    val description: String,
 
     @Column(name = "sentence_type")
     val sentenceType: String? = null,

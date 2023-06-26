@@ -20,16 +20,22 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.api.model.Address
+import uk.gov.justice.digital.hmpps.api.model.CaseConviction
+import uk.gov.justice.digital.hmpps.api.model.CaseConvictions
 import uk.gov.justice.digital.hmpps.api.model.CaseDetail
 import uk.gov.justice.digital.hmpps.api.model.CaseIdentifier
 import uk.gov.justice.digital.hmpps.api.model.ContactDetails
+import uk.gov.justice.digital.hmpps.api.model.Conviction
 import uk.gov.justice.digital.hmpps.api.model.Disability
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.api.model.Offence
 import uk.gov.justice.digital.hmpps.api.model.Profile
 import uk.gov.justice.digital.hmpps.api.model.ResponsibleOfficer
+import uk.gov.justice.digital.hmpps.api.model.Sentence
 import uk.gov.justice.digital.hmpps.data.generator.CaseDetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
+import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import java.time.LocalDate
@@ -138,6 +144,45 @@ class ProbationCaseResourceTest {
         ).andExpect(MockMvcResultMatchers.status().isOk).andReturn().response.contentAsString
 
         val caseDetail = objectMapper.readValue<CaseDetail>(res)
+        assertFullPersonDetails(caseDetail)
+    }
+
+    @Test
+    fun `conviction details returned for case when available`() {
+        val res = mockMvc.perform(
+            MockMvcRequestBuilders.get("/probation-case/${CaseDetailsGenerator.FULL_PERSON.crn}/convictions")
+                .withOAuth2Token(wireMockServer)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isOk).andReturn().response.contentAsString
+
+        val cc = objectMapper.readValue<CaseConvictions>(res)
+        assertFullPersonDetails(cc.caseDetail)
+        assertThat(cc.convictions.size, equalTo(1))
+        assertFullConvictionDetails(cc.convictions.first())
+    }
+
+    @Test
+    fun `conviction details returned for individual conviction when available`() {
+        val res = mockMvc.perform(
+            MockMvcRequestBuilders.get("/probation-case/${CaseDetailsGenerator.FULL_PERSON.crn}/convictions/${SentenceGenerator.FULL_DETAIL_EVENT.id}")
+                .withOAuth2Token(wireMockServer)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isOk).andReturn().response.contentAsString
+
+        val cc = objectMapper.readValue<CaseConviction>(res)
+        assertFullPersonDetails(cc.caseDetail)
+        assertFullConvictionDetails(cc.conviction)
+    }
+
+    companion object {
+        @JvmStatic
+        fun existingCases() = listOf(
+            Arguments.of(PersonGenerator.COMMUNITY_RESPONSIBLE, true),
+            Arguments.of(PersonGenerator.COMMUNITY_NOT_RESPONSIBLE, false)
+        )
+    }
+
+    private fun assertFullPersonDetails(caseDetail: CaseDetail) {
         assertThat(
             caseDetail,
             equalTo(
@@ -174,11 +219,20 @@ class ProbationCaseResourceTest {
         )
     }
 
-    companion object {
-        @JvmStatic
-        fun existingCases() = listOf(
-            Arguments.of(PersonGenerator.COMMUNITY_RESPONSIBLE, true),
-            Arguments.of(PersonGenerator.COMMUNITY_NOT_RESPONSIBLE, false)
+    private fun assertFullConvictionDetails(conviction: Conviction) {
+        val event = SentenceGenerator.FULL_DETAIL_EVENT
+        val disposal = SentenceGenerator.FULL_DETAIL_SENTENCE
+        val mainOffence = SentenceGenerator.FULL_DETAIL_MAIN_OFFENCE
+        assertThat(
+            conviction,
+            equalTo(
+                Conviction(
+                    event.id,
+                    event.convictionDate!!,
+                    Sentence(disposal.type.description, disposal.expectedEndDate()),
+                    Offence(mainOffence.offence.mainCategoryDescription, mainOffence.offence.subCategoryDescription)
+                )
+            )
         )
     }
 }
