@@ -76,7 +76,7 @@ class AppointmentService(
             val app = contactRepository.findByIdOrNull(it)
             if (app != null) {
                 telemetryService.trackEvent(
-                    "Appointment Found By Delius Id - Feedback Submitted",
+                    "Appointment Found By Delius Id - Merge Appointment",
                     mapOf(
                         "crn" to crn,
                         "urn" to mergeAppointment.urn,
