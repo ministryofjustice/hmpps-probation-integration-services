@@ -6,6 +6,9 @@ on:
       push:
         type: boolean
         default: false
+      force-deploy:
+        type: boolean
+        default: false
     outputs:
       version:
         value: ${{ jobs.build-gradle.outputs.version }}
@@ -13,6 +16,10 @@ on:
     inputs:
       push:
         description: Push images
+        type: boolean
+        default: false
+      force-deploy:
+        description: Force re-tagging and deployment of images
         type: boolean
         default: false
 
@@ -81,6 +88,7 @@ jobs:
         env:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_PASSWORD: ${{ github.token }}
+          FORCE_DEPLOY: ${{ inputs.force-deploy }}
 
       - name: Check changes
         id: check-changes
@@ -124,6 +132,7 @@ jobs:
           project: ${{ matrix.project }}
           push: ${{ env.push }}
           version: ${{ steps.version.outputs.version }}
+          force-deploy: ${{ inputs.force-deploy }}
 
       - name: Output changes
         uses: cloudposse/github-action-matrix-outputs-write@928e2a2d3d6ae4eb94010827489805c17c81181f # v0.4.2
