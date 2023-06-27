@@ -41,6 +41,7 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArriv
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.SubmittedBy
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.MoveOnCategoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Referral
@@ -214,13 +215,15 @@ internal class ApprovedPremisesServiceTest {
             addressService,
             contactService,
             referralService,
-            referenceDataRepository
+            referenceDataRepository,
+            eventRepository
         )
         approvedPremisesService = ApprovedPremisesService(
             approvedPremisesApiClient,
             approvedPremisesRepository,
             staffRepository,
             personRepository,
+            eventRepository,
             contactService,
             nsiService,
             referralService
@@ -231,6 +234,7 @@ internal class ApprovedPremisesServiceTest {
     fun `creates alert contact for application submission`() {
         val person = givenAPerson(applicationSubmittedEvent.crn())
         val manager = givenAPersonManager(person)
+        givenAnEvent(person, "3")
         val submitter = givenStaff()
         val submittedBy = SubmittedByGenerator.generate(
             staffMember = StaffMemberGenerator.generate(staffCode = submitter.code)
@@ -257,6 +261,7 @@ internal class ApprovedPremisesServiceTest {
     fun `creates alert contact for application assessment`() {
         val person = givenAPerson(applicationAssessedEvent.crn())
         val manager = givenAPersonManager(person)
+        givenAnEvent(person, "7")
         val assessor = givenStaff()
         val unallocatedTeam = givenUnallocatedTeam()
         val assessedBy =
@@ -323,6 +328,7 @@ internal class ApprovedPremisesServiceTest {
         val crn = personArrivedEvent.crn()
         val person = givenAPerson(crn)
         val manager = givenAPersonManager(person)
+        givenAnEvent(person, "11")
         val staff = givenStaff()
         val approvedPremisesTeam = givenApprovedPremisesTeam()
         val details = givenPersonArrivedDetails(keyWorker = staff)
@@ -347,7 +353,8 @@ internal class ApprovedPremisesServiceTest {
                 Arrived on time
                 
                 For more details, click here: https://example.com
-            """.trimIndent()
+            """.trimIndent(),
+            description = "Arrived at Test Premises"
         )
         verifyNsiIsCreated(
             type = NsiTypeCode.APPROVED_PREMISES_RESIDENCE,
@@ -448,6 +455,13 @@ internal class ApprovedPremisesServiceTest {
             manager
         )
         return manager
+    }
+
+    private fun givenAnEvent(person: Person, eventNumber: String): Event {
+        val event = PersonGenerator.generateEvent(eventNumber, person.id)
+        whenever(eventRepository.findByPersonIdAndNumber(person.id, eventNumber))
+            .thenReturn(event)
+        return event
     }
 
     private fun givenStaff(staff: Staff = StaffGenerator.generate()): Staff {

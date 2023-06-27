@@ -85,6 +85,7 @@ class ReferralService(
                         locationCode = ap.locationCode()
                     ),
                     person = person,
+                    eventId = event.id,
                     staff = rStaff,
                     team = rTeam,
                     probationAreaCode = ap.probationArea.code
@@ -118,6 +119,7 @@ class ReferralService(
                 ).joinToString(System.lineSeparator() + System.lineSeparator())
             ),
             person = person,
+            eventId = referral.eventId,
             staff = staffRepository.getByCode(details.recordedBy.staffCode),
             probationAreaCode = ap.probationArea.code
         )

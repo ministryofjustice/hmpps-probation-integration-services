@@ -18,7 +18,9 @@ data class ApplicationSubmitted(
     val applicationUrl: String,
     val targetLocation: String,
     val submittedAt: ZonedDateTime,
-    val submittedBy: SubmittedBy
+    val submittedBy: SubmittedBy,
+    @JsonAlias("deliusEventNumber")
+    val eventNumber: String
 ) {
     val notes = """
         |An application for a placement in an Approved Premises has been made. The application will be assessed for suitability.
@@ -48,7 +50,9 @@ data class ApplicationAssessed(
     val assessedAt: ZonedDateTime,
     val assessedBy: AssessedBy,
     val decision: Decision,
-    val decisionRationale: String?
+    val decisionRationale: String?,
+    @JsonAlias("deliusEventNumber")
+    val eventNumber: String
 ) {
     val notes: String
         get() = when (decision) {
@@ -98,7 +102,9 @@ data class PersonNotArrived(
     val notes: String?,
     val reason: String,
     @JsonAlias("legacyReasonCode")
-    val reasonCode: String
+    val reasonCode: String,
+    @JsonAlias("deliusEventNumber")
+    val eventNumber: String
 )
 
 data class PersonArrived(
@@ -110,7 +116,9 @@ data class PersonArrived(
     val applicationSubmittedOn: LocalDate,
     val arrivedAt: ZonedDateTime,
     val expectedDepartureOn: LocalDate?,
-    val notes: String?
+    val notes: String?,
+    @JsonAlias("deliusEventNumber")
+    val eventNumber: String
 )
 
 data class PersonDeparted(
@@ -121,7 +129,9 @@ data class PersonDeparted(
     val departedAt: ZonedDateTime,
     val premises: Premises,
     val legacyReasonCode: String,
-    val destination: Destination
+    val destination: Destination,
+    @JsonAlias("deliusEventNumber")
+    val eventNumber: String
 )
 
 data class Destination(val moveOnCategory: MoveOnCategory)

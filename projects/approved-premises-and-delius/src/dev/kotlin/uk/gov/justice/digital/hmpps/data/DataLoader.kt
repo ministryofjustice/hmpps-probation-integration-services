@@ -152,7 +152,7 @@ class DataLoader(
             )
         )
         AddressGenerator.PERSON_ADDRESS = personAddressRepository.save(AddressGenerator.PERSON_ADDRESS)
-        eventRepository.save(PersonGenerator.generateEvent("7", person.id))
+        eventRepository.save(PersonGenerator.EVENT)
         registrationRepository.save(
             PersonGenerator.generateRegistration(
                 person,
