@@ -213,7 +213,8 @@ internal class ApprovedPremisesServiceTest {
             transferReasonRepository,
             addressService,
             contactService,
-            referralService
+            referralService,
+            referenceDataRepository
         )
         approvedPremisesService = ApprovedPremisesService(
             approvedPremisesApiClient,

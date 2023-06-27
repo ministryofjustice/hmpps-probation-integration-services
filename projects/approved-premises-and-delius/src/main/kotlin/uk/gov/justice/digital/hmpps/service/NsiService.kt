@@ -20,6 +20,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.getNsiTransferReason
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.referralCompleted
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
@@ -38,7 +40,8 @@ class NsiService(
     private val transferReasonRepository: TransferReasonRepository,
     private val addressService: AddressService,
     private val contactService: ContactService,
-    private val referralService: ReferralService
+    private val referralService: ReferralService,
+    private val referenceDataRepository: ReferenceDataRepository
 ) {
     fun personArrived(
         person: Person,
@@ -101,6 +104,7 @@ class NsiService(
     fun personDeparted(person: Person, details: PersonDeparted, ap: ApprovedPremises) {
         val nsi = nsiRepository.findByExternalReference(Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId)
         nsi?.actualEndDate = details.departedAt
+        nsi?.outcome = referenceDataRepository.referralCompleted()
         addressService.endMainAddress(person, details.departedAt.toLocalDate())
         contactService.createContact(
             ContactDetails(

@@ -311,6 +311,7 @@ internal class MessagingIntegrationTest {
         assertNotNull(nsi!!.actualEndDate)
         assertThat(nsi.actualEndDate!!, isCloseTo(details.departedAt))
         assertThat(nsi.active, equalTo(false))
+        assertThat(nsi.outcome!!.code, equalTo("APRC"))
 
         val addresses = personAddressRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
         assertThat(addresses.size, equalTo(2))
