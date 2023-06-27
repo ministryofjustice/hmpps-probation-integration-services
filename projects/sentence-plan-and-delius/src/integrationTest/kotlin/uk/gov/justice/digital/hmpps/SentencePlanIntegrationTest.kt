@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.model.CaseDetails
 import uk.gov.justice.digital.hmpps.model.Manager
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
-import uk.gov.justice.digital.hmpps.service.Person
+import uk.gov.justice.digital.hmpps.service.entity.Person
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @AutoConfigureMockMvc

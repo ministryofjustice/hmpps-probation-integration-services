@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.service.Person
+import uk.gov.justice.digital.hmpps.service.entity.Person
 import java.time.LocalDate
 
 object PersonGenerator {

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.service.event
+package uk.gov.justice.digital.hmpps.service.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -8,7 +8,8 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
-import uk.gov.justice.digital.hmpps.service.Person
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 
 @Entity
 @Immutable
@@ -31,3 +32,19 @@ class Event(
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 )
+
+interface EventRepository : JpaRepository<Event, Long> {
+
+    @Query(
+        """
+        select count(c) from Event e
+        join e.disposal d 
+        join d.custody c
+        where e.person.crn = :crn
+        and e.disposal.custody.status.code in ('A','C','D','R')
+        """
+    )
+    fun countCustodySentences(crn: String): Int
+}
+
+fun EventRepository.isInCustody(crn: String) = countCustodySentences(crn) > 0

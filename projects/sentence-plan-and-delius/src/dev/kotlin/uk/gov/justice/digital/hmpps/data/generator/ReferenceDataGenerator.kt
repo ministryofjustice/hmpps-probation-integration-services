@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.service.ReferenceData
+import uk.gov.justice.digital.hmpps.service.entity.ReferenceData
 
 object ReferenceDataGenerator {
     val TIER_1 = generate("T1", "Tier 1")

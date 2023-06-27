@@ -1,10 +1,10 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.service.Person
-import uk.gov.justice.digital.hmpps.service.ReferenceData
-import uk.gov.justice.digital.hmpps.service.custody.Custody
-import uk.gov.justice.digital.hmpps.service.event.Disposal
-import uk.gov.justice.digital.hmpps.service.event.Event
+import uk.gov.justice.digital.hmpps.service.entity.Custody
+import uk.gov.justice.digital.hmpps.service.entity.Disposal
+import uk.gov.justice.digital.hmpps.service.entity.Event
+import uk.gov.justice.digital.hmpps.service.entity.Person
+import uk.gov.justice.digital.hmpps.service.entity.ReferenceData
 
 object EventGenerator {
     val DEFAULT_EVENT = generateEvent(PersonGenerator.DEFAULT)

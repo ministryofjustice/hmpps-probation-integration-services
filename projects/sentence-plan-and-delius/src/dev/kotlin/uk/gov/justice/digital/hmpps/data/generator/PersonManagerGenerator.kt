@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.service.Person
-import uk.gov.justice.digital.hmpps.service.PersonManager
+import uk.gov.justice.digital.hmpps.service.entity.Person
+import uk.gov.justice.digital.hmpps.service.entity.PersonManager
 
 object PersonManagerGenerator {
     val DEFAULT = generate(PersonGenerator.DEFAULT)

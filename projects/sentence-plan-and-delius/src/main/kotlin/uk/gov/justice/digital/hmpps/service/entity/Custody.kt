@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.service.custody
+package uk.gov.justice.digital.hmpps.service.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -8,8 +8,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
-import uk.gov.justice.digital.hmpps.service.ReferenceData
-import uk.gov.justice.digital.hmpps.service.event.Disposal
 
 @Immutable
 @Entity
