@@ -25,9 +25,9 @@ class Event(
     @OneToOne(mappedBy = "event")
     var disposal: Disposal? = null,
 
-    @Column(name = "active_flag", updatable = false, columnDefinition = "number")
+    @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
-    @Column(updatable = false, columnDefinition = "number")
+    @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 )

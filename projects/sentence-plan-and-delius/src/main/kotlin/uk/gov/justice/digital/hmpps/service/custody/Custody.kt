@@ -24,9 +24,9 @@ class Custody(
     var status: ReferenceData,
 
     @OneToOne
-    @JoinColumn(name = "disposal_id", updatable = false)
+    @JoinColumn(name = "disposal_id")
     val disposal: Disposal,
 
-    @Column(columnDefinition = "number", nullable = false)
+    @Column(columnDefinition = "number")
     val softDeleted: Boolean = false
 )
