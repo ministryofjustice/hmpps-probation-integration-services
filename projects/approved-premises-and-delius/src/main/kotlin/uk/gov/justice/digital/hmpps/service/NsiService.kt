@@ -89,6 +89,7 @@ class NsiService(
                         date = details.arrivedAt,
                         type = ContactTypeCode.ARRIVED,
                         locationCode = ap.locationCode(),
+                        description = "Arrived at ${details.premises.name}",
                         notes = listOfNotNull(
                             details.notes,
                             "For more details, click here: ${details.applicationUrl}"

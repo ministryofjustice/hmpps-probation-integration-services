@@ -353,7 +353,8 @@ internal class ApprovedPremisesServiceTest {
                 Arrived on time
                 
                 For more details, click here: https://example.com
-            """.trimIndent()
+            """.trimIndent(),
+            description = "Arrived at Test Premises"
         )
         verifyNsiIsCreated(
             type = NsiTypeCode.APPROVED_PREMISES_RESIDENCE,
