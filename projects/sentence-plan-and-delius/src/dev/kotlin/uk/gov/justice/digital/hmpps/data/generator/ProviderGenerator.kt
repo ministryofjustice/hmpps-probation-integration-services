@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.service.ProbationArea
-import uk.gov.justice.digital.hmpps.service.Staff
-import uk.gov.justice.digital.hmpps.service.Team
+import uk.gov.justice.digital.hmpps.service.entity.ProbationArea
+import uk.gov.justice.digital.hmpps.service.entity.Staff
+import uk.gov.justice.digital.hmpps.service.entity.Team
 
 object ProviderGenerator {
     val DEFAULT_AREA = generateProbationArea()

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.service
+package uk.gov.justice.digital.hmpps.service.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

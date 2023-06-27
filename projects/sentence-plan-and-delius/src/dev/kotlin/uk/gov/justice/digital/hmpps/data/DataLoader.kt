@@ -7,6 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
@@ -31,11 +32,21 @@ class DataLoader(
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         em.saveAll(
             ReferenceDataGenerator.TIER_1,
+            ReferenceDataGenerator.TC_STATUS_CUSTODY,
+            ReferenceDataGenerator.TC_STATUS_NO_CUSTODY,
             ProviderGenerator.DEFAULT_AREA,
             ProviderGenerator.DEFAULT_TEAM,
             ProviderGenerator.DEFAULT_STAFF,
             PersonGenerator.DEFAULT,
-            PersonManagerGenerator.DEFAULT
+            PersonManagerGenerator.DEFAULT,
+            EventGenerator.DEFAULT_EVENT,
+            EventGenerator.DEFAULT_DISPOSAL,
+            EventGenerator.DEFAULT_CUSTODY,
+            PersonGenerator.NON_CUSTODIAL,
+            PersonManagerGenerator.NON_CUSTODIAL_MANAGER,
+            EventGenerator.NON_CUSTODIAL_EVENT,
+            EventGenerator.NON_CUSTODIAL_DISPOSAL,
+            EventGenerator.NON_CUSTODIAL_CUSTODY
         )
     }
 
