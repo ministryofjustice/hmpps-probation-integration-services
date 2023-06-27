@@ -1,13 +1,15 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.service.Person
 import uk.gov.justice.digital.hmpps.service.PersonManager
 
 object PersonManagerGenerator {
-    val DEFAULT = generate()
+    val DEFAULT = generate(PersonGenerator.DEFAULT)
+    val NON_CUSTODIAL_MANAGER = generate(PersonGenerator.NON_CUSTODIAL)
 
-    fun generate(softDeleted: Boolean = false, id: Long = IdGenerator.getAndIncrement()) =
+    fun generate(person: Person, softDeleted: Boolean = false, id: Long = IdGenerator.getAndIncrement()) =
         PersonManager(
-            PersonGenerator.DEFAULT,
+            person,
             ProviderGenerator.DEFAULT_STAFF,
             ProviderGenerator.DEFAULT_TEAM,
             softDeleted,

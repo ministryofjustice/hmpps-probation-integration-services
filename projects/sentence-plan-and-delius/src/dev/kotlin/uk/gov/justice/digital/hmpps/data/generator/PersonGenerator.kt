@@ -5,6 +5,7 @@ import java.time.LocalDate
 
 object PersonGenerator {
     val DEFAULT = generate("X123123")
+    val NON_CUSTODIAL = generate("X123124")
 
     fun generate(crn: String, softDeleted: Boolean = false, id: Long = IdGenerator.getAndIncrement()) =
         Person(

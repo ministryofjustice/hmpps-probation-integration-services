@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.model.CaseDetails
 import uk.gov.justice.digital.hmpps.model.Manager
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.service.Person
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @AutoConfigureMockMvc
@@ -42,20 +43,29 @@ internal class SentencePlanIntegrationTest {
             .perform(get("/case-details/X123123").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful).andReturn()
         val detailResponse = objectMapper.readValue(result.response.contentAsString, CaseDetails::class.java)
-        MatcherAssert.assertThat(detailResponse, Matchers.equalTo(getDetailResponse()))
+        MatcherAssert.assertThat(detailResponse, Matchers.equalTo(getDetailResponse(true, PersonGenerator.DEFAULT)))
     }
 
-    private fun getDetailResponse(): CaseDetails {
+    @Test
+    fun `API call retuns a non custody person`() {
+        val result = mockMvc
+            .perform(get("/case-details/X123124").withOAuth2Token(wireMockServer))
+            .andExpect(status().is2xxSuccessful).andReturn()
+        val detailResponse = objectMapper.readValue(result.response.contentAsString, CaseDetails::class.java)
+        MatcherAssert.assertThat(detailResponse, Matchers.equalTo(getDetailResponse(false, PersonGenerator.NON_CUSTODIAL)))
+    }
+
+    private fun getDetailResponse(custody: Boolean = true, person: Person): CaseDetails {
         return CaseDetails(
             Name(
-                PersonGenerator.DEFAULT.forename,
-                PersonGenerator.DEFAULT.secondName,
-                PersonGenerator.DEFAULT.surname
+                person.forename,
+                person.secondName,
+                person.surname
             ),
-            PersonGenerator.DEFAULT.crn,
-            PersonGenerator.DEFAULT.tier!!.description,
-            PersonGenerator.DEFAULT.dateOfBirth,
-            PersonGenerator.DEFAULT.nomisId,
+            person.crn,
+            person.tier!!.description,
+            person.dateOfBirth,
+            person.nomisId,
             ProviderGenerator.DEFAULT_AREA.description,
             Manager(
                 Name(
@@ -64,7 +74,8 @@ internal class SentencePlanIntegrationTest {
                     ProviderGenerator.DEFAULT_STAFF.surname
                 ),
                 ProviderGenerator.DEFAULT_STAFF.isUnallocated()
-            )
+            ),
+            custody
         )
     }
 }

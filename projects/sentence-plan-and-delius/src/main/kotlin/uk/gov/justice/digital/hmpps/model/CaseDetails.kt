@@ -9,7 +9,8 @@ data class CaseDetails(
     val dateOfBirth: LocalDate,
     val nomisId: String?,
     val region: String?,
-    val keyWorker: Manager
+    val keyWorker: Manager,
+    val inCustody: Boolean = false
 )
 
 data class Name(
