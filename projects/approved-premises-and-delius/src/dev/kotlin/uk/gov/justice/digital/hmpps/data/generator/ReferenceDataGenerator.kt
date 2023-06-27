@@ -36,6 +36,8 @@ object ReferenceDataGenerator {
         .map { RegisterType(it.value, IdGenerator.getAndIncrement()) }
         .associateBy { it.code }
 
+    val REFERRAL_COMPLETED = generate("APRC", ALL_DATASETS[DatasetCode.NSI_OUTCOME]!!.id)
+
     fun generate(
         code: String,
         datasetId: Long,
@@ -58,7 +60,8 @@ object ReferenceDataGenerator {
         YN_UNKNOWN,
         RISK_UNKNOWN,
         ORDER_EXPIRED,
-        NON_ARRIVAL
+        NON_ARRIVAL,
+        REFERRAL_COMPLETED
     )
 
     fun generateReferralSource(code: String, id: Long = IdGenerator.getAndIncrement()) = ReferralSource(id, code)

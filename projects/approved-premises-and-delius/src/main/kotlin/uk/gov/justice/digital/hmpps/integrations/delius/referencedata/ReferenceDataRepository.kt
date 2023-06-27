@@ -44,3 +44,6 @@ fun ReferenceDataRepository.ynUnknown() = findByCodeAndDatasetCode("D", DatasetC
 
 fun ReferenceDataRepository.unknownRisk() = findByCodeAndDatasetCode("K", DatasetCode.RISK_OF_HARM)
     ?: throw NotFoundException("RiskOfHarm", "code", "K")
+
+fun ReferenceDataRepository.referralCompleted() = findByCodeAndDatasetCode("APRC", DatasetCode.NSI_OUTCOME)
+    ?: throw NotFoundException("NsiOutcome", "code", "APRC")
