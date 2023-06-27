@@ -281,6 +281,7 @@ internal class ReferAndMonitorIntegrationTest {
         assertTrue(contacts have ContactType.Code.NSI_TERMINATED.value)
         assertTrue(contacts have ContactType.Code.CRSNOTE.value)
         val futureAppts = contacts.filter { it.date.isAfter(LocalDate.now()) }
+        assertThat(futureAppts.size, equalTo(1))
         futureAppts.forEach { assertThat(it.outcome?.code, equalTo(ContactOutcome.Code.WITHDRAWN.value)) }
     }
 
