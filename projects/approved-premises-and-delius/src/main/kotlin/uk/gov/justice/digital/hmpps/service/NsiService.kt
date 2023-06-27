@@ -5,6 +5,8 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getByEventNumber
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.Nsi
@@ -41,7 +43,8 @@ class NsiService(
     private val addressService: AddressService,
     private val contactService: ContactService,
     private val referralService: ReferralService,
-    private val referenceDataRepository: ReferenceDataRepository
+    private val referenceDataRepository: ReferenceDataRepository,
+    private val eventRepository: EventRepository
 ) {
     fun personArrived(
         person: Person,
@@ -92,6 +95,7 @@ class NsiService(
                         ).joinToString(System.lineSeparator() + System.lineSeparator())
                     ),
                     person = person,
+                    eventId = eventRepository.getByEventNumber(person.id, details.eventNumber).id,
                     staff = staff,
                     team = team,
                     probationAreaCode = ap.probationArea.code
@@ -116,6 +120,7 @@ class NsiService(
                 createAlert = false
             ),
             person = person,
+            eventId = eventRepository.getByEventNumber(person.id, details.eventNumber).id,
             team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode),
             staff = staffRepository.getByCode(details.keyWorker.staffCode),
             probationAreaCode = ap.probationArea.code

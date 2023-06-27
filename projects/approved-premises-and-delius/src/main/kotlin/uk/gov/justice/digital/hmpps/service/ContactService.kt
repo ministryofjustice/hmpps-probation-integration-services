@@ -36,7 +36,8 @@ class ContactService(
         person: Person,
         staff: Staff,
         probationAreaCode: String,
-        team: Team? = null
+        team: Team? = null,
+        eventId: Long? = null
     ): Contact {
         return contactRepository.findByPersonIdAndTypeCodeAndStartTime(person.id, details.type.code, details.date)
             ?: run {
@@ -53,7 +54,8 @@ class ContactService(
                         staff = staff,
                         team = contactTeam,
                         notes = details.notes,
-                        alert = details.createAlert
+                        alert = details.createAlert,
+                        eventId = eventId
                     )
                 )
                 if (details.createAlert) {
