@@ -131,12 +131,14 @@ jobs:
         if: always()
         id: json
         run: |
-          skipped_projects=$(echo "$all_projects" | jq -r '.[]' | while read project; do if [ ! -d "tests/$project" ]; then echo $project; fi; done | jq --raw-input . | jq --slurp --compact-output .)
-          failed_projects=$(cat results.json | jq -r '.suites[].specs[] | select(.ok == false).file' | xargs -n1 dirname | sort -u | jq --raw-input . | jq --slurp --compact-output .)
-          passed_projects=$(jq --compact-output --null-input --argjson all "$all_projects" --argjson failed "$failed_projects" --argjson skipped "$skipped_projects" '{all: $all, failed: $failed, skipped: $skipped} | .all - .failed - .skipped')
-          echo skipped-projects=$skipped_projects >> $GITHUB_OUTPUT
-          echo failed-projects=$failed_projects >> $GITHUB_OUTPUT
-          echo passed-projects=$passed_projects >> $GITHUB_OUTPUT
+          if [ -f results.json ]; then
+            skipped_projects=$(echo "$all_projects" | jq -r '.[]' | while read project; do if [ ! -d "tests/$project" ]; then echo $project; fi; done | jq --raw-input . | jq --slurp --compact-output .)
+            failed_projects=$(cat results.json | jq -r '.suites[].specs[] | select(.ok == false).file' | xargs -n1 dirname | sort -u | jq --raw-input . | jq --slurp --compact-output .)
+            passed_projects=$(jq --compact-output --null-input --argjson all "$all_projects" --argjson failed "$failed_projects" --argjson skipped "$skipped_projects" '{all: $all, failed: $failed, skipped: $skipped} | .all - .failed - .skipped')
+          fi
+          echo skipped-projects=${skipped_projects:-'[]'} >> $GITHUB_OUTPUT
+          echo failed-projects=${failed_projects:-'[]'} >> $GITHUB_OUTPUT
+          echo passed-projects=${passed_projects:-'[]'} >> $GITHUB_OUTPUT
           echo All tests passed for: $passed_projects
           echo Failures detected in: $failed_projects
           echo No results found for: $skipped_projects
@@ -144,14 +146,14 @@ jobs:
           all_projects: ${{ env.projects }}
       - name: Publish JUnit report
         if: always()
-        uses: mikepenz/action-junit-report@v3
+        uses: mikepenz/action-junit-report@4fa23552acda20a6a1d44f16224a90efbeb6c5f1 # v3.7.5
         id: junit
         with:
           check_name: End-to-end test results
           report_paths: junit.xml
       - name: Publish HTML report
         if: always()
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: JamesIves/github-pages-deploy-action@22a6ee251d6f13c6ab1ecb200d974f1a6feb1b8d # v4
         with:
           folder: playwright-report
           target-folder: ${{ env.report-dir }}
