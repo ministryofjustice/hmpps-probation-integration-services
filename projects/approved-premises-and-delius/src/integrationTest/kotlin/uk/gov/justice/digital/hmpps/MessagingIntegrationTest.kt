@@ -311,6 +311,7 @@ internal class MessagingIntegrationTest {
         assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
         assertThat(contact.outcome?.code, equalTo("AP_N"))
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
+        assertThat(contact.description, equalTo("Departed from Hope House"))
 
         val nsi = nsiRepository.findByExternalReference(EXT_REF_BOOKING_PREFIX + details.bookingId)
         assertNotNull(nsi)

@@ -115,6 +115,7 @@ class NsiService(
             ContactDetails(
                 date = details.departedAt,
                 type = ContactTypeCode.DEPARTED,
+                description = "Departed from ${details.premises.name}",
                 outcomeCode = ContactOutcome.AP_DEPARTED_PREFIX + details.legacyReasonCode,
                 locationCode = ap.locationCode(),
                 notes = "For details, see the referral on the AP Service: ${details.applicationUrl}",
