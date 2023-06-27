@@ -37,6 +37,8 @@ object ContactGenerator {
                 attendance = false,
                 compliantAcceptable = true
             )
+
+            ContactOutcome.Code.WITHDRAWN -> generateOutcome(it.value, attendance = false, compliantAcceptable = true)
             else -> generateOutcome(it.value)
         }
     }.associateBy { it.code }

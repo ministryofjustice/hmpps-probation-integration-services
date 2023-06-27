@@ -64,15 +64,19 @@ interface ContactRepository : JpaRepository<Contact, Long> {
     @Transactional
     @Query(
         """
-        delete from Contact c
+        update Contact c
+        set c.outcome = :appointmentWithdrawn,
+        c.attended = false,
+        c.complied = true
         where c.nsiId = :nsiId
         and c.type.id in (select ct.id from ContactType ct where ct.code in :contactTypes)
         and c.outcome is null
         and c.date >= :date
     """
     )
-    fun deleteFutureAppointmentsForNsi(
+    fun withdrawFutureAppointments(
         nsiId: Long,
+        appointmentWithdrawn: ContactOutcome,
         contactTypes: List<String> = listOf(CRSAPT.value, CRSSAA.value),
         date: LocalDate = LocalDate.now()
     )

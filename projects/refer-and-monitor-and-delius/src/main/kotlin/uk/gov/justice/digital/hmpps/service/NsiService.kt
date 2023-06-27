@@ -1,17 +1,17 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.ReferralStarted
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.exception.FutureAppointmentLinkedException
 import uk.gov.justice.digital.hmpps.exception.ReferralNotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.MANAGE_NSI
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.NSI_COMMENCED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType.Code.NSI_REFERRAL
@@ -41,6 +41,7 @@ class NsiService(
     private val statusHistoryRepository: NsiStatusHistoryRepository,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
+    private val contactOutcomeRepository: ContactOutcomeRepository,
     private val createNsi: CreateNsi,
     private val telemetryService: TelemetryService // temporarily added here for determining fuzzy matches
 ) : AuditableService(auditedInteractionService) {
@@ -90,11 +91,10 @@ class NsiService(
             nsi.statusDate = termination.endDate
             nsi.notes = listOfNotNull(nsi.notes, termination.notes).joinToString(System.lineSeparator())
             statusHistoryRepository.save(nsi.statusHistory())
-            try {
-                contactRepository.deleteFutureAppointmentsForNsi(nsi.id)
-            } catch (dive: DataIntegrityViolationException) {
-                throw FutureAppointmentLinkedException()
-            }
+            contactRepository.withdrawFutureAppointments(
+                nsi.id,
+                contactOutcomeRepository.getByCode(ContactOutcome.Code.WITHDRAWN.value)
+            )
             contactRepository.save(nsi.statusChangeContact())
         }
         if (nsi.outcome?.id != outcome.id) {

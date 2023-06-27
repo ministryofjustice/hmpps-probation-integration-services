@@ -232,14 +232,17 @@ internal class ReferAndMonitorIntegrationTest {
         assertNull(nsi.actualEndDate)
         assertNull(nsi.outcome)
 
-        val futureAppt = ContactGenerator.generate(
-            type = ContactGenerator.TYPES[ContactType.Code.CRSAPT.value]!!,
-            date = LocalDate.now().plusDays(7),
-            startTime = ZonedDateTime.now().plusDays(7),
-            nsi = nsi,
-            person = nsi.person,
-            id = 0
-        ).let { contactRepository.save(it) }
+        // save an appointment in the future
+        contactRepository.save(
+            ContactGenerator.generate(
+                type = ContactGenerator.TYPES[ContactType.Code.CRSAPT.value]!!,
+                date = LocalDate.now().plusDays(7),
+                startTime = ZonedDateTime.now().plusDays(7),
+                nsi = nsi,
+                person = nsi.person,
+                id = 0
+            )
+        )
 
         val notification = prepNotification(
             notification("referral-prematurely-ended"),
@@ -268,8 +271,6 @@ internal class ReferAndMonitorIntegrationTest {
         assertThat(saved.outcome?.code, equalTo(ReferralEndType.PREMATURELY_ENDED.outcome))
         assertFalse(saved.active)
 
-        assertTrue(contactRepository.findById(futureAppt.id).isEmpty)
-
         val sh = statusHistoryRepo.findAll().firstOrNull { it.nsiId == nsi.id }
         assertNotNull(sh)
         assertThat(sh!!.statusId, equalTo(saved.status.id))
@@ -279,6 +280,8 @@ internal class ReferAndMonitorIntegrationTest {
         assertTrue(contacts have ContactType.Code.COMPLETED.value)
         assertTrue(contacts have ContactType.Code.NSI_TERMINATED.value)
         assertTrue(contacts have ContactType.Code.CRSNOTE.value)
+        val futureAppts = contacts.filter { it.date.isAfter(LocalDate.now()) }
+        futureAppts.forEach { assertThat(it.outcome?.code, equalTo(ContactOutcome.Code.WITHDRAWN.value)) }
     }
 
     @Test
