@@ -27,7 +27,8 @@ object EventDetailsGenerator {
             applicationUrl = "https://example.com",
             targetLocation = "TEST",
             submittedAt = ZonedDateTime.now(),
-            submittedBy = submittedBy
+            submittedBy = submittedBy,
+            "3"
         )
     )
 
@@ -41,7 +42,8 @@ object EventDetailsGenerator {
             assessedAt = ZonedDateTime.now(),
             assessedBy = assessedBy,
             decision = Decision.ACCEPTED,
-            decisionRationale = "Test decision rationale"
+            decisionRationale = "Test decision rationale",
+            "7"
         )
     )
 
@@ -74,7 +76,8 @@ object EventDetailsGenerator {
             recordedBy = staffMember(recordedBy),
             notes = "TEST",
             reason = "The reason they didn't attend",
-            reasonCode = "A"
+            reasonCode = "A",
+            eventNumber = "17"
         )
     )
 
@@ -91,7 +94,8 @@ object EventDetailsGenerator {
             expectedDepartureOn = LocalDate.now().plusMonths(6),
             keyWorker = staffMember(keyWorker),
             notes = "Arrived on time",
-            applicationSubmittedOn = LocalDate.now().minusDays(1)
+            applicationSubmittedOn = LocalDate.now().minusDays(1),
+            eventNumber = "11"
         )
     )
 

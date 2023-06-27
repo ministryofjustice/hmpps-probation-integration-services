@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 
 object PersonGenerator {
     val DEFAULT = generate(crn = "A000001")
+    val EVENT = PersonGenerator.generateEvent("7", DEFAULT.id)
     fun generate(
         crn: String,
         id: Long = IdGenerator.getAndIncrement()

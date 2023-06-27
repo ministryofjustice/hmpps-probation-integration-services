@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremisesApiClient
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.ApprovedPremisesRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.getApprovedPremises
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getByEventNumber
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_ASSESSED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_SUBMITTED
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
@@ -20,12 +22,15 @@ class ApprovedPremisesService(
     private val approvedPremisesRepository: ApprovedPremisesRepository,
     private val staffRepository: StaffRepository,
     private val personRepository: PersonRepository,
+    private val eventRepository: EventRepository,
     private val contactService: ContactService,
     private val nsiService: NsiService,
     private val referralService: ReferralService
 ) {
     fun applicationSubmitted(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getApplicationSubmittedDetails(event.url()).eventDetails
+        val person = personRepository.getByCrn(event.crn())
+        val dEvent = eventRepository.getByEventNumber(person.id, details.eventNumber)
         contactService.createContact(
             ContactDetails(
                 date = details.submittedAt,
@@ -33,7 +38,8 @@ class ApprovedPremisesService(
                 description = "Approved Premises Application Submitted",
                 notes = details.notes
             ),
-            person = personRepository.getByCrn(event.crn()),
+            person = person,
+            eventId = dEvent.id,
             staff = staffRepository.getByCode(details.submittedBy.staffMember.staffCode),
             probationAreaCode = details.submittedBy.probationArea.code
         )
@@ -41,6 +47,8 @@ class ApprovedPremisesService(
 
     fun applicationAssessed(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getApplicationAssessedDetails(event.url()).eventDetails
+        val person = personRepository.getByCrn(event.crn())
+        val dEvent = eventRepository.getByEventNumber(person.id, details.eventNumber)
         contactService.createContact(
             ContactDetails(
                 date = details.assessedAt,
@@ -48,7 +56,8 @@ class ApprovedPremisesService(
                 notes = details.notes,
                 description = "Approved Premises Application ${details.decision}"
             ),
-            person = personRepository.getByCrn(event.crn()),
+            person = person,
+            eventId = dEvent.id,
             staff = staffRepository.getByCode(details.assessedBy.staffMember.staffCode),
             probationAreaCode = details.assessedBy.probationArea.code
         )

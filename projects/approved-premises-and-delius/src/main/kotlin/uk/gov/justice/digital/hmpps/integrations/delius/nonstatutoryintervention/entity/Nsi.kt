@@ -19,6 +19,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -73,6 +74,10 @@ class Nsi(
 
     @Column(columnDefinition = "number")
     val pendingTransfer: Boolean = false,
+
+    @JoinColumn(name = "nsi_outcome_id")
+    @ManyToOne
+    var outcome: ReferenceData? = null,
 
     @Column
     @CreatedDate
