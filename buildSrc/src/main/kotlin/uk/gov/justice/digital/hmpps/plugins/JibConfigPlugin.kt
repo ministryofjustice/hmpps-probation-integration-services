@@ -58,6 +58,9 @@ class JibConfigPlugin : Plugin<Project> {
                         }
                     }
                 }
+                if (System.getenv("FORCE_DEPLOY") == "true") {
+                    jib!!.to.tags = setOf("${project.version}")
+                }
                 doLast {
                     val dir = File("${project.rootDir}/changed")
                     if (!dir.exists()) dir.mkdirs()
