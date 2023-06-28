@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exception.ReferralNotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
@@ -50,6 +51,9 @@ internal class RepositoryExtensionMethodTests {
 
     @Mock
     lateinit var contactTypeRepository: ContactTypeRepository
+
+    @Mock
+    lateinit var contactOutcomeRepository: ContactOutcomeRepository
 
     @Mock
     lateinit var createNsi: CreateNsi

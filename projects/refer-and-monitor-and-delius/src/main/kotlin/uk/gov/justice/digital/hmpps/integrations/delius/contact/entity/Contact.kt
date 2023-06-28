@@ -233,7 +233,8 @@ class ContactOutcome(
         COMPLIED("ATTC"),
         FAILED_TO_COMPLY("AFTC"),
         FAILED_TO_ATTEND("AFTA"),
-        RESCHEDULED_SERVICE_REQUEST("RSSR")
+        RESCHEDULED_SERVICE_REQUEST("RSSR"),
+        WITHDRAWN("APPW")
     }
 }
 
