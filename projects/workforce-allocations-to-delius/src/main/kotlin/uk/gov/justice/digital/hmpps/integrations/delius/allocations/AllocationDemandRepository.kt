@@ -116,7 +116,7 @@ SELECT o.CRN                                                            crn,
        d.ENTRY_LENGTH                                                   sentence_length_value,
        du.CODE_DESCRIPTION                                              sentence_length_unit,
        court.COURT_NAME                                                 court_name,
-       (SELECT max(to_date(to_char(c.CONTACT_DATE, 'yyyy-mm-dd') || to_char(c.CONTACT_START_TIME, 'hh24:mi:ss'),
+       (SELECT max(to_date(to_char(c.CONTACT_DATE, 'yyyy-mm-dd')  || ' ' || to_char(c.CONTACT_START_TIME, 'hh24:mi:ss'),
                            'yyyy-mm-dd hh24:mi:ss'))
         FROM CONTACT c
                  JOIN R_CONTACT_TYPE ct ON ct.CONTACT_TYPE_ID = c.CONTACT_TYPE_ID
