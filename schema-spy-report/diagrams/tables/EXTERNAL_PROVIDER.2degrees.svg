@@ -863,7 +863,7 @@
 <text text-anchor="start" x="1381" y="-3638.0466" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 5</text>
 <polygon fill="#ffffff" stroke="transparent" points="1457,-3631.9466 1457,-3650.9466 1545,-3650.9466 1545,-3631.9466 1457,-3631.9466"/>
 <polygon fill="none" stroke="#000000" points="1457,-3631.9466 1457,-3650.9466 1545,-3650.9466 1545,-3631.9466 1457,-3631.9466"/>
-<text text-anchor="start" x="1488.2089" y="-3638.0466" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">6,968 rows</text>
+<text text-anchor="start" x="1488.2089" y="-3638.0466" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">7,012 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="1545,-3631.9466 1545,-3650.9466 1602,-3650.9466 1602,-3631.9466 1545,-3631.9466"/>
 <polygon fill="none" stroke="#000000" points="1545,-3631.9466 1545,-3650.9466 1602,-3650.9466 1602,-3631.9466 1545,-3631.9466"/>
 <text text-anchor="start" x="1577.2904" y="-3638.0466" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">11 &gt;</text>
@@ -3842,7 +3842,7 @@
 <text text-anchor="start" x="1730.5" y="-3813.0466" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 2</text>
 <polygon fill="#ffffff" stroke="transparent" points="1761.5,-3806.9466 1761.5,-3825.9466 1818.5,-3825.9466 1818.5,-3806.9466 1761.5,-3806.9466"/>
 <polygon fill="none" stroke="#000000" points="1761.5,-3806.9466 1761.5,-3825.9466 1818.5,-3825.9466 1818.5,-3806.9466 1761.5,-3806.9466"/>
-<text text-anchor="start" x="1770.8807" y="-3813.0466" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">235 rows</text>
+<text text-anchor="start" x="1770.8807" y="-3813.0466" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">238 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="1818.5,-3806.9466 1818.5,-3825.9466 1837.5,-3825.9466 1837.5,-3806.9466 1818.5,-3806.9466"/>
 <polygon fill="none" stroke="#000000" points="1818.5,-3806.9466 1818.5,-3825.9466 1837.5,-3825.9466 1837.5,-3806.9466 1818.5,-3806.9466"/>
 <text text-anchor="start" x="1828.3862" y="-3813.0466" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000"> &#160;</text>

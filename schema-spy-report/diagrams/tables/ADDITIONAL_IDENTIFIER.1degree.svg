@@ -409,7 +409,7 @@
 <g id="node5" class="node">
 <title>NSI</title>
 <g id="a_node5"><a xlink:href="../../tables/NSI.html" xlink:title="NSI" target="_top">
-<polygon fill="#ffffff" stroke="transparent" points="892,-274.0414 892,-643.0414 1075,-643.0414 1075,-274.0414 892,-274.0414"/>
+<polygon fill="#ffffff" stroke="transparent" points="892,-252.0414 892,-643.0414 1075,-643.0414 1075,-252.0414 892,-252.0414"/>
 <polygon fill="#f5f5f5" stroke="transparent" points="892.5,-619.5414 892.5,-642.5414 1075.5,-642.5414 1075.5,-619.5414 892.5,-619.5414"/>
 <polygon fill="none" stroke="#000000" points="892.5,-619.5414 892.5,-642.5414 1075.5,-642.5414 1075.5,-619.5414 892.5,-619.5414"/>
 <text text-anchor="start" x="897.5" y="-628.6414" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#000000">NSI</text>
@@ -456,17 +456,20 @@
 <polygon fill="none" stroke="#000000" points="892.5,-311.5414 892.5,-333.5414 1075.5,-333.5414 1075.5,-311.5414 892.5,-311.5414"/>
 <image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="897.5" y="-328.541"/>
 <text text-anchor="start" x="906.8578" y="-318.6414" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">ADDITIONAL_REFERENCE_2_ID</text>
-<polygon fill="none" stroke="#000000" points="892.5,-292.5414 892.5,-311.5414 1075.5,-311.5414 1075.5,-292.5414 892.5,-292.5414"/>
-<text text-anchor="start" x="895.5" y="-298.6414" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">...</text>
-<polygon fill="#ffffff" stroke="transparent" points="892.5,-273.5414 892.5,-292.5414 961.5,-292.5414 961.5,-273.5414 892.5,-273.5414"/>
-<polygon fill="none" stroke="#000000" points="892.5,-273.5414 892.5,-292.5414 961.5,-292.5414 961.5,-273.5414 892.5,-273.5414"/>
-<text text-anchor="start" x="895.5" y="-279.6414" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 12</text>
-<polygon fill="#ffffff" stroke="transparent" points="961.5,-273.5414 961.5,-292.5414 1032.5,-292.5414 1032.5,-273.5414 961.5,-273.5414"/>
-<polygon fill="none" stroke="#000000" points="961.5,-273.5414 961.5,-292.5414 1032.5,-292.5414 1032.5,-273.5414 961.5,-273.5414"/>
-<text text-anchor="start" x="984.8807" y="-279.6414" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">718 rows</text>
-<polygon fill="#ffffff" stroke="transparent" points="1032.5,-273.5414 1032.5,-292.5414 1075.5,-292.5414 1075.5,-273.5414 1032.5,-273.5414"/>
-<polygon fill="none" stroke="#000000" points="1032.5,-273.5414 1032.5,-292.5414 1075.5,-292.5414 1075.5,-273.5414 1032.5,-273.5414"/>
-<text text-anchor="start" x="1056.9053" y="-279.6414" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">6 &gt;</text>
+<polygon fill="none" stroke="#000000" points="892.5,-289.5414 892.5,-311.5414 1075.5,-311.5414 1075.5,-289.5414 892.5,-289.5414"/>
+<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="897.5" y="-306.541"/>
+<text text-anchor="start" x="912.5" y="-296.6414" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">EXTERNAL_REFERENCE</text>
+<polygon fill="none" stroke="#000000" points="892.5,-270.5414 892.5,-289.5414 1075.5,-289.5414 1075.5,-270.5414 892.5,-270.5414"/>
+<text text-anchor="start" x="895.5" y="-276.6414" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">...</text>
+<polygon fill="#ffffff" stroke="transparent" points="892.5,-251.5414 892.5,-270.5414 961.5,-270.5414 961.5,-251.5414 892.5,-251.5414"/>
+<polygon fill="none" stroke="#000000" points="892.5,-251.5414 892.5,-270.5414 961.5,-270.5414 961.5,-251.5414 892.5,-251.5414"/>
+<text text-anchor="start" x="895.5" y="-257.6414" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 12</text>
+<polygon fill="#ffffff" stroke="transparent" points="961.5,-251.5414 961.5,-270.5414 1032.5,-270.5414 1032.5,-251.5414 961.5,-251.5414"/>
+<polygon fill="none" stroke="#000000" points="961.5,-251.5414 961.5,-270.5414 1032.5,-270.5414 1032.5,-251.5414 961.5,-251.5414"/>
+<text text-anchor="start" x="984.8807" y="-257.6414" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">718 rows</text>
+<polygon fill="#ffffff" stroke="transparent" points="1032.5,-251.5414 1032.5,-270.5414 1075.5,-270.5414 1075.5,-251.5414 1032.5,-251.5414"/>
+<polygon fill="none" stroke="#000000" points="1032.5,-251.5414 1032.5,-270.5414 1075.5,-270.5414 1075.5,-251.5414 1032.5,-251.5414"/>
+<text text-anchor="start" x="1056.9053" y="-257.6414" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">6 &gt;</text>
 </a>
 </g>
 </g>

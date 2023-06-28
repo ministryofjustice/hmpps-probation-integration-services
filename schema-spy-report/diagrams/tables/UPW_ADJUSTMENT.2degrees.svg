@@ -1165,7 +1165,7 @@
 <text text-anchor="start" x="1876" y="-8366.8799" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 5</text>
 <polygon fill="#ffffff" stroke="transparent" points="1952,-8360.7799 1952,-8379.7799 2040,-8379.7799 2040,-8360.7799 1952,-8360.7799"/>
 <polygon fill="none" stroke="#000000" points="1952,-8360.7799 1952,-8379.7799 2040,-8379.7799 2040,-8360.7799 1952,-8360.7799"/>
-<text text-anchor="start" x="1983.2089" y="-8366.8799" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">6,968 rows</text>
+<text text-anchor="start" x="1983.2089" y="-8366.8799" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">7,012 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="2040,-8360.7799 2040,-8379.7799 2097,-8379.7799 2097,-8360.7799 2040,-8360.7799"/>
 <polygon fill="none" stroke="#000000" points="2040,-8360.7799 2040,-8379.7799 2097,-8379.7799 2097,-8360.7799 2040,-8360.7799"/>
 <text text-anchor="start" x="2072.2904" y="-8366.8799" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">11 &gt;</text>
@@ -10636,7 +10636,7 @@
 <text text-anchor="start" x="2242.5" y="-8393.8799" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 2</text>
 <polygon fill="#ffffff" stroke="transparent" points="2273.5,-8387.7799 2273.5,-8406.7799 2330.5,-8406.7799 2330.5,-8387.7799 2273.5,-8387.7799"/>
 <polygon fill="none" stroke="#000000" points="2273.5,-8387.7799 2273.5,-8406.7799 2330.5,-8406.7799 2330.5,-8387.7799 2273.5,-8387.7799"/>
-<text text-anchor="start" x="2282.8807" y="-8393.8799" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">235 rows</text>
+<text text-anchor="start" x="2282.8807" y="-8393.8799" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">238 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="2330.5,-8387.7799 2330.5,-8406.7799 2349.5,-8406.7799 2349.5,-8387.7799 2330.5,-8387.7799"/>
 <polygon fill="none" stroke="#000000" points="2330.5,-8387.7799 2330.5,-8406.7799 2349.5,-8406.7799 2349.5,-8387.7799 2330.5,-8387.7799"/>
 <text text-anchor="start" x="2340.3862" y="-8393.8799" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000"> &#160;</text>

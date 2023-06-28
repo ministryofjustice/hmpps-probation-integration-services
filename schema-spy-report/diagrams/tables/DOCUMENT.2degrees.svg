@@ -1328,7 +1328,7 @@
 <text text-anchor="start" x="1934.5" y="-3322.2519" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 5</text>
 <polygon fill="#ffffff" stroke="transparent" points="2010.5,-3316.1519 2010.5,-3335.1519 2098.5,-3335.1519 2098.5,-3316.1519 2010.5,-3316.1519"/>
 <polygon fill="none" stroke="#000000" points="2010.5,-3316.1519 2010.5,-3335.1519 2098.5,-3335.1519 2098.5,-3316.1519 2010.5,-3316.1519"/>
-<text text-anchor="start" x="2041.7089" y="-3322.2519" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">6,968 rows</text>
+<text text-anchor="start" x="2041.7089" y="-3322.2519" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">7,012 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="2098.5,-3316.1519 2098.5,-3335.1519 2155.5,-3335.1519 2155.5,-3316.1519 2098.5,-3316.1519"/>
 <polygon fill="none" stroke="#000000" points="2098.5,-3316.1519 2098.5,-3335.1519 2155.5,-3335.1519 2155.5,-3316.1519 2098.5,-3316.1519"/>
 <text text-anchor="start" x="2130.7904" y="-3322.2519" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">11 &gt;</text>
@@ -9673,7 +9673,7 @@
 <text text-anchor="start" x="2331" y="-3406.2519" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 2</text>
 <polygon fill="#ffffff" stroke="transparent" points="2362,-3400.1519 2362,-3419.1519 2419,-3419.1519 2419,-3400.1519 2362,-3400.1519"/>
 <polygon fill="none" stroke="#000000" points="2362,-3400.1519 2362,-3419.1519 2419,-3419.1519 2419,-3400.1519 2362,-3400.1519"/>
-<text text-anchor="start" x="2371.3807" y="-3406.2519" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">235 rows</text>
+<text text-anchor="start" x="2371.3807" y="-3406.2519" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">238 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="2419,-3400.1519 2419,-3419.1519 2438,-3419.1519 2438,-3400.1519 2419,-3400.1519"/>
 <polygon fill="none" stroke="#000000" points="2419,-3400.1519 2419,-3419.1519 2438,-3419.1519 2438,-3400.1519 2419,-3400.1519"/>
 <text text-anchor="start" x="2428.8862" y="-3406.2519" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000"> &#160;</text>
