@@ -46,7 +46,9 @@ class DataLoader(
             PersonManagerGenerator.NON_CUSTODIAL_MANAGER,
             EventGenerator.NON_CUSTODIAL_EVENT,
             EventGenerator.NON_CUSTODIAL_DISPOSAL,
-            EventGenerator.NON_CUSTODIAL_CUSTODY
+            EventGenerator.NON_CUSTODIAL_CUSTODY,
+            EventGenerator.FIRST_APPT_CT,
+            EventGenerator.FIRST_APPT_CONTACT
         )
     }
 

@@ -15,4 +15,10 @@ class CaseDetailsController(
     fun getCaseDetails(
         @PathVariable("crn") crn: String
     ) = personDetailsService.getPersonalDetails(crn)
+
+    @PreAuthorize("hasRole('ROLE_SENTENCE_PLAN_RW')")
+    @GetMapping(value = ["case-details/{crn}/first-appointment-date"])
+    fun getFirstAppointmentDate(
+        @PathVariable("crn") crn: String
+    ) = personDetailsService.getFirstAppointmentDate(crn)
 }
