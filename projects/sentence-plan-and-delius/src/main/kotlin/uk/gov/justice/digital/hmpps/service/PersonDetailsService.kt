@@ -2,16 +2,19 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.model.CaseDetails
+import uk.gov.justice.digital.hmpps.model.FirstAppointment
 import uk.gov.justice.digital.hmpps.model.Manager
 import uk.gov.justice.digital.hmpps.model.Name
+import uk.gov.justice.digital.hmpps.service.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.service.entity.EventRepository
 import uk.gov.justice.digital.hmpps.service.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.service.entity.getPerson
 import uk.gov.justice.digital.hmpps.service.entity.isInCustody
 import uk.gov.justice.digital.hmpps.service.entity.name
+import java.time.ZoneId
 
 @Service
-class PersonDetailsService(val personRepository: PersonRepository, val eventRepository: EventRepository) {
+class PersonDetailsService(val personRepository: PersonRepository, val eventRepository: EventRepository, val contactRepository: ContactRepository) {
     fun getPersonalDetails(crn: String): CaseDetails {
         val personEntity = personRepository.getPerson(crn)
         val manager = personEntity.manager
@@ -28,5 +31,11 @@ class PersonDetailsService(val personRepository: PersonRepository, val eventRepo
             ),
             eventRepository.isInCustody(crn)
         )
+    }
+
+    fun getFirstAppointmentDate(crn: String): FirstAppointment {
+        val dateTime = contactRepository.getFirstAppointmentDate(crn)
+        val zoneId = ZoneId.of("Europe/London")
+        return FirstAppointment(dateTime?.atZone(zoneId))
     }
 }
