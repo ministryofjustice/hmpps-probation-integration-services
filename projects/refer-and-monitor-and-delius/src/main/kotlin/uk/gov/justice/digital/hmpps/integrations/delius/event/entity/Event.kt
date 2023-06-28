@@ -8,7 +8,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -18,7 +17,6 @@ import java.util.Optional
 
 @Entity
 @Table(name = "event")
-@Where(clause = "active_flag = 1 and soft_deleted = 0")
 class Event(
 
     @Column(name = "offender_id")
@@ -55,7 +53,6 @@ class Event(
 @Immutable
 @Entity
 @Table(name = "main_offence")
-@Where(clause = "soft_deleted = 0")
 class MainOffence(
 
     @OneToOne
@@ -98,6 +95,9 @@ interface EventRepository : JpaRepository<Event, Long> {
         join fetch mo.offence
         join Person p on p.id = e.personId
         where p.crn = :crn
+        and e.active = true and e.softDeleted = false
+        and d.active = true and d.softDeleted = false
+        and mo.softDeleted = false
     """
     )
     fun findAllByCrn(crn: String): List<Event>
@@ -111,6 +111,9 @@ interface EventRepository : JpaRepository<Event, Long> {
         join fetch mo.offence
         join Person p on p.id = e.personId
         where p.crn = :crn and e.id = :id
+        and e.active = true and e.softDeleted = false
+        and d.active = true and d.softDeleted = false
+        and mo.softDeleted = false
     """
     )
     fun findByCrnAndId(crn: String, id: Long): Event?

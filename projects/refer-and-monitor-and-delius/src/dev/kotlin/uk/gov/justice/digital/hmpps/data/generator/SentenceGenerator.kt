@@ -47,9 +47,10 @@ object SentenceGenerator {
         type: DisposalType = DEFAULT_DISPOSAL_TYPE,
         enteredEndDate: LocalDate? = null,
         notionalEndDate: LocalDate? = null,
+        active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Disposal(event, date, type, enteredEndDate, notionalEndDate, softDeleted, id)
+    ) = Disposal(event, date, type, enteredEndDate, notionalEndDate, active, softDeleted, id)
 
     fun generateMainOffence(
         event: Event,
