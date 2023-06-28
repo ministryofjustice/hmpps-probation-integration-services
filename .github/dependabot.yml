@@ -1,5 +1,5 @@
 # Please see the documentation for all configuration options:
-# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 
 version: 2
 updates:
@@ -7,14 +7,26 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    ignore:
+      - dependency-name: "software.amazon.awssdk:*"
+
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "monthly" # reduce the noise of frequent AWS SDK updates
+    allow:
+      - dependency-name: "software.amazon.awssdk:*"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
+
   - package-ecosystem: "terraform"
     directory: "/templates"
     schedule:
       interval: "daily"
+
   - package-ecosystem: "docker"
     directory: "/projects/person-search-index-from-delius/container"
     schedule:
