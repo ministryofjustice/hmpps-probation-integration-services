@@ -65,6 +65,9 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         join offender o on e.offender_id = o.offender_id
         join r_contact_type ct on c.contact_type_id = ct.contact_type_id
         where o.crn = :crn
+        and e.ACTIVE_FLAG = 1
+        and e.SOFT_DELETED = 0
+        and c.SOFT_DELETED = 0
         and ct.code in ('COAI', 'COVI', 'CODI', 'COHV')
         """,
         nativeQuery = true
