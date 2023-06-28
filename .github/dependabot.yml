@@ -8,14 +8,8 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "software.amazon.awssdk:*"
-
-  - package-ecosystem: "gradle"
-    directory: "/"
-    schedule:
-      interval: "monthly" # reduce the noise of frequent AWS SDK updates
-    allow:
-      - dependency-name: "software.amazon.awssdk:*"
+      - dependency-name: "software.amazon.awssdk:*" # reduce the noise of frequent AWS SDK updates
+        update-types: ["version-update:semver-patch"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
