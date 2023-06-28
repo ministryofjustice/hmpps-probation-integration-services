@@ -66,7 +66,8 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         join r_contact_type ct on c.contact_type_id = ct.contact_type_id
         where o.crn = :crn
         and ct.code in ('COAI', 'COVI', 'CODI', 'COHV')
-        """
-    , nativeQuery = true)
+        """,
+        nativeQuery = true
+    )
     fun getFirstAppointmentDate(crn: String): LocalDateTime?
 }

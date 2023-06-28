@@ -42,6 +42,3 @@ object EventGenerator {
 
     fun generateContactType(id: Long = IdGenerator.getAndIncrement()) = ContactType(id, "COAI")
 }
-
-
-

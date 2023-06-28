@@ -65,7 +65,7 @@ internal class SentencePlanIntegrationTest {
             .andExpect(status().is2xxSuccessful).andReturn()
         val detailResponse = objectMapper.readValue(result.response.contentAsString, FirstAppointment::class.java)
 
-        val date = ZonedDateTime.of(2020, 12, 1, 12,12,12,0, ZoneId.of("Europe/London") )
+        val date = ZonedDateTime.of(2020, 12, 1, 12, 12, 12, 0, ZoneId.of("Europe/London"))
 
         MatcherAssert.assertThat(detailResponse, Matchers.equalTo(FirstAppointment(date)))
     }
