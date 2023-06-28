@@ -38,6 +38,9 @@ class Disposal(
     @Column(name = "notional_end_date")
     val notionalEndDate: LocalDate? = null,
 
+    @Column(name = "active_flag", columnDefinition = "number")
+    val active: Boolean,
+
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean,
 
