@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.findHandoverDates
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.keyDateType
+import uk.gov.justice.digital.hmpps.messaging.IgnorableMessageException
 import java.time.LocalDate
 
 @Transactional
@@ -19,12 +20,13 @@ class KeyDateService(
     private val keyDateRepository: KeyDateRepository,
     private val referenceDataRepository: ReferenceDataRepository
 ) {
+    @Transactional
     fun mergeHandoverDates(personId: Long, date: LocalDate, startDate: LocalDate?): KeyDateMergeResult {
         val custodyList = custodyRepository.findAllByDisposalEventPersonId(personId)
         val custody = when (custodyList.size) {
-            0 -> error("No active custodial sentence")
+            0 -> throw IgnorableMessageException("NoActiveCustodialSentence")
             1 -> custodyList.first()
-            else -> error("Multiple active custodial sentences")
+            else -> throw IgnorableMessageException("MultipleActiveCustodialSentences")
         }
 
         val existing = keyDateRepository.findHandoverDates(custody.id).associateBy { it.type.code }
