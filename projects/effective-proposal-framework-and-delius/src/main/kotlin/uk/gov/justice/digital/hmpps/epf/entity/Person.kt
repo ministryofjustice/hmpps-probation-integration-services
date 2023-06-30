@@ -16,7 +16,7 @@ import java.time.LocalDate
 @Immutable
 @Table(name = "offender")
 @Entity
-@Where(clause = "soft_deleted = 0")
+@Where(clause = "soft_deleted = 0 and current_exclusion = 0 and current_restriction = 0")
 class Person(
     @Id
     @Column(name = "offender_id")
@@ -43,6 +43,12 @@ class Person(
 
     @Column(name = "surname", length = 35)
     val surname: String,
+
+    @Column(columnDefinition = "number")
+    val currentExclusion: Boolean,
+
+    @Column(columnDefinition = "number")
+    val currentRestriction: Boolean,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false

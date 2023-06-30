@@ -37,7 +37,9 @@ class DataLoader(
             SentenceGenerator.DEFAULT_COURT_APPEARANCE,
             ProviderGenerator.DEFAULT,
             ManagerGenerator.DEFAULT_PERSON_MANAGER,
-            ManagerGenerator.DEFAULT_RESPONSIBLE_OFFICER
+            ManagerGenerator.DEFAULT_RESPONSIBLE_OFFICER,
+            PersonGenerator.EXCLUDED,
+            PersonGenerator.RESTRICTED
         )
     }
 
