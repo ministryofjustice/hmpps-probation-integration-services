@@ -59,24 +59,24 @@ jobs:
       - name: Set CVE from Issue Title automatically
         if: github.event_name=='issue_comment'
         run: |
-          echo "cve_id=$(echo "$TITLE" | sed -E 's/(.*) .*/\1/')" | tee -a $GITHUB_ENV      # CVE-123
-          echo "project=$(echo "$TITLE" | sed -E 's/.* \((.*)\)/\1/')" | tee -a $GITHUB_ENV # project-name
-          echo "reason=$COMMENT" | tee -a $GITHUB_ENV
+          echo "cve_id=$(echo "$TITLE" | sed -E 's/(.*) .*/\1/')" | tee -a "$GITHUB_ENV"      # CVE-123
+          echo "project=$(echo "$TITLE" | sed -E 's/.* \((.*)\)/\1/')" | tee -a "$GITHUB_ENV" # project-name
+          echo "reason=$COMMENT" | tee -a "$GITHUB_ENV"
         env:
-          TITLE=${{ github.event.issue.title }}
-          COMMENT=${{ github.event.comment.body }}
-          REASON=${{ inputs.reason }}
+          TITLE: ${{ github.event.issue.title }}
+          COMMENT: ${{ github.event.comment.body }}
+          REASON: ${{ inputs.reason }}
 
       - name: Set CVE from manual input
         if: github.event_name=='workflow_dispatch'
         run:  |
-          echo "cve_id=$CVE_ID" | tee -a $GITHUB_ENV
-          echo "project=$PROJECT" | tee -a $GITHUB_ENV
-          echo "reason=$REASON" | tee -a $GITHUB_ENV
+          echo "cve_id=$CVE_ID" | tee -a "$GITHUB_ENV"
+          echo "project=$PROJECT" | tee -a "$GITHUB_ENV"
+          echo "reason=$REASON" | tee -a "$GITHUB_ENV"
         env:
-          CVE_ID=${{ inputs.cve_id }}
-          PROJECT=${{ inputs.project }}
-          REASON=${{ inputs.reason }}
+          CVE_ID: ${{ inputs.cve_id }}
+          PROJECT: ${{ inputs.project }}
+          REASON: ${{ inputs.reason }}
 
       - name: Update trivyignore file and create pull request
         run: |

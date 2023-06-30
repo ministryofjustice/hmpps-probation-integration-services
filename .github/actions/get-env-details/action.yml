@@ -32,8 +32,8 @@ runs:
         if [ '${{ inputs.environment }}' == 'test' ];    then namespace='dev'; fi
         if [ '${{ inputs.environment }}' == 'preprod' ]; then namespace='preprod'; fi
         if [ '${{ inputs.environment }}' == 'prod' ];    then namespace='prod'; fi
-        echo "namespace=${namespace}" >> $GITHUB_OUTPUT
-        echo "values-file=values-${namespace}.yml" >> $GITHUB_OUTPUT
+        echo "namespace=${namespace}" | tee -a "$GITHUB_OUTPUT"
+        echo "values-file=values-${namespace}.yml" | tee -a "$GITHUB_OUTPUT"
 
     - name: Map GitHub environment to Delius environment name
       id: delius
@@ -42,6 +42,6 @@ runs:
         if [ '${{ inputs.environment }}' == 'test' ];    then environment_name='delius-test'; fi
         if [ '${{ inputs.environment }}' == 'preprod' ]; then environment_name='delius-pre-prod'; fi
         if [ '${{ inputs.environment }}' == 'prod' ];    then environment_name='delius-prod'; fi
-        echo "name=${environment_name}" >> $GITHUB_OUTPUT
-        echo "short-name=${environment_name/delius-/del-}" >> $GITHUB_OUTPUT
+        echo "name=${environment_name}" | tee -a "$GITHUB_OUTPUT"
+        echo "short-name=${environment_name/delius-/del-}" | tee -a "$GITHUB_OUTPUT"
 

@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - id: get-projects
-        run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_OUTPUT
+        run: echo "projects=$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_OUTPUT"
 
   trivy-scan:
     runs-on: ubuntu-latest
@@ -67,14 +67,14 @@ jobs:
       - name: Create GitHub issues
         if: failure()
         run: |
-          cat results.json | jq -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[]' | while read -r vulnerability; do
+          jq -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[]' results.json | while read -r vulnerability; do
             id=$(echo "$vulnerability" | jq -r '.VulnerabilityID')
             if [[ $(gh issue list --state open --label dependencies --label security --search "$id (${{ matrix.project }})" | wc -l) -gt 0 ]]; then
               echo "Issue '$id (${{ matrix.project }})' already exists"
             else
               gh issue create \
                 --title "$id (${{ matrix.project }})" \
-                --body "$(echo $vulnerability | jq -r '.Title + "\n* Project: ${{ matrix.project }}\n* Package: `" + .PkgName + ":" + .InstalledVersion + "`\n* Location: `" + .PkgPath + "`\n\n>" + .Description + "\n\n" + .PrimaryURL + "\n\nIf the vulnerability does not impact the `${{ matrix.project }}` project, you can suppress this alert by adding a comment starting with `Suppress`. For example, \"Suppressed because we do not process any untrusted XML content\"."')" \
+                --body "$(echo "$vulnerability" | jq -r '.Title + "\n* Project: ${{ matrix.project }}\n* Package: `" + .PkgName + ":" + .InstalledVersion + "`\n* Location: `" + .PkgPath + "`\n\n>" + .Description + "\n\n" + .PrimaryURL + "\n\nIf the vulnerability does not impact the `${{ matrix.project }}` project, you can suppress this alert by adding a comment starting with `Suppress`. For example, \"Suppressed because we do not process any untrusted XML content\"."')" \
                 --label 'dependencies,security'
             fi
           done
@@ -85,7 +85,7 @@ jobs:
         if: always()
         run: |
           openissues="$(gh issue list --state open --label dependencies --label security --search '(${{ matrix.project }})' | awk '{print $3}')"
-          scanresults="$(cat results.json | jq -r -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[].VulnerabilityID')"
+          scanresults="$(jq -r -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[].VulnerabilityID' results.json)"
           issuestoclose="$(comm -23 <(echo "$openissues" | sort -u) <(echo "$scanresults" | sort -u))" #print lines only present in first file
           echo "openissues=$openissues"
           echo "scanresults=$scanresults"
@@ -93,7 +93,7 @@ jobs:
           for cve in $issuestoclose; do
             echo "$cve is already resolved, removing matching issue..."
             issuenumber=$(gh issue list --state open --label dependencies --label security --search "$cve (${{ matrix.project }})" | awk '{print $1}')
-            echo $issuenumber | xargs -n1 gh issue close
+            echo "$issuenumber" | xargs -n1 gh issue close
           done
 
         env:
@@ -116,7 +116,7 @@ jobs:
           arguments: jar
 
       - name: Package jars
-        run: find . -name *.jar | zip -r package.zip -@
+        run: find . -name '*.jar' | zip -r package.zip -@
 
       - name: Upload to Veracode
         uses: veracode/veracode-uploadandscan-action@0.2.6

@@ -20,3 +20,29 @@ jobs:
       - uses: ./.github/actions/analyse
         with:
           token: ${{ secrets.SONAR_TOKEN }}
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Lint changes
+        uses: github/super-linter/slim@v5
+        env:
+          DEFAULT_BRANCH: main
+          VALIDATE_ALL_CODEBASE: false # changes only
+          VALIDATE_BASH: true
+          VALIDATE_BASH_EXEC: true
+          VALIDATE_DOCKERFILE_HADOLINT: true
+          VALIDATE_GITHUB_ACTIONS: true
+          VALIDATE_GITLEAKS: true
+          VALIDATE_RUBY: true
+          VALIDATE_XML: true
+          VALIDATE_YAML: true
+          GITHUB_TOKEN: ${{ github.token }}
