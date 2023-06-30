@@ -16,17 +16,12 @@ object ManagerGenerator {
         communityManager: PersonManager?,
         prisonManager: PrisonManager?,
         endDate: ZonedDateTime?
-    ) =
-        ResponsibleOfficer(id, PersonGenerator.DEFAULT.id, communityManager, prisonManager, endDate)
+    ) = ResponsibleOfficer(id, PersonGenerator.DEFAULT.id, communityManager, prisonManager, endDate)
 
     fun personManagerGenerator(
         provider: Provider = ProviderGenerator.DEFAULT,
         id: Long = IdGenerator.getAndIncrement()
     ) = PersonManager(provider, id = id)
-    fun prisonManagerGenerator(
-        provider: Provider = ProviderGenerator.DEFAULT,
-        id: Long = IdGenerator.getAndIncrement()
-    ) = PrisonManager(id, provider)
 }
 
 object ProviderGenerator {
