@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
