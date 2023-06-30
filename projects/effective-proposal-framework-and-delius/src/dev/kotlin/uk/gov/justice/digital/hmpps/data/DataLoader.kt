@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import java.time.LocalDate
 
 @Component
 @ConditionalOnProperty("seed.database")
@@ -39,7 +40,10 @@ class DataLoader(
             ManagerGenerator.DEFAULT_PERSON_MANAGER,
             ManagerGenerator.DEFAULT_RESPONSIBLE_OFFICER,
             PersonGenerator.EXCLUDED,
-            PersonGenerator.RESTRICTED
+            PersonGenerator.RESTRICTED,
+            SentenceGenerator.generateOgrsAssessment(LocalDate.now().minusDays(1), 3),
+            SentenceGenerator.generateOgrsAssessment(LocalDate.now().minusDays(5), 1),
+            SentenceGenerator.generateOgrsAssessment(LocalDate.now(), 5, softDeleted = true)
         )
     }
 

@@ -67,6 +67,7 @@ internal class IntegrationTest {
 
     private fun getDetailResponse(): CaseDetails {
         return CaseDetails(
+            PersonGenerator.DEFAULT.nomsId,
             Name(
                 PersonGenerator.DEFAULT.forename,
                 PersonGenerator.DEFAULT.secondName,
@@ -75,7 +76,8 @@ internal class IntegrationTest {
             PersonGenerator.DEFAULT.dateOfBirth,
             PersonGenerator.DEFAULT.gender.description,
             Sentence(SentenceGenerator.DEFAULT_SENTENCE.date, Court(SentenceGenerator.DEFAULT_COURT.name), null),
-            Provider(ProviderGenerator.DEFAULT.code, ProviderGenerator.DEFAULT.description)
+            Provider(ProviderGenerator.DEFAULT.code, ProviderGenerator.DEFAULT.description),
+            3
         )
     }
 

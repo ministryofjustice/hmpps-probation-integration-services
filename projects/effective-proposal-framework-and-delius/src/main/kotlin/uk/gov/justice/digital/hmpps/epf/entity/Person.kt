@@ -25,6 +25,9 @@ class Person(
     @Column(columnDefinition = "char(7)")
     val crn: String,
 
+    @Column(name = "noms_number", columnDefinition = "char(7)")
+    val nomsId: String?,
+
     @ManyToOne
     @JoinColumn(name = "gender_id")
     val gender: ReferenceData,

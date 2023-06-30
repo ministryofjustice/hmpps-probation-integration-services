@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.epf.entity.Court
 import uk.gov.justice.digital.hmpps.epf.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.epf.entity.Disposal
 import uk.gov.justice.digital.hmpps.epf.entity.Event
+import uk.gov.justice.digital.hmpps.epf.entity.OgrsAssessment
 import uk.gov.justice.digital.hmpps.epf.entity.Person
 import java.time.LocalDate
 
@@ -37,4 +38,12 @@ object SentenceGenerator {
         id: Long = IdGenerator.getAndIncrement(),
         name: String = "CourtName"
     ) = Court(id, name)
+
+    fun generateOgrsAssessment(
+        date: LocalDate,
+        score: Long?,
+        event: Event = DEFAULT_EVENT,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = OgrsAssessment(event.id, date, score, softDeleted, id)
 }

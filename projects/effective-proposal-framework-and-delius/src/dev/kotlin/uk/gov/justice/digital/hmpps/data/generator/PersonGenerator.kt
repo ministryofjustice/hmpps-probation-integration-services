@@ -6,12 +6,13 @@ import java.time.LocalDate
 
 object PersonGenerator {
     val DEFAULT_GENDER = generateGender("Male")
-    val DEFAULT = generate("N123456")
+    val DEFAULT = generate("N123456", "A1234YZ")
     val EXCLUDED = generate("E123456", currentExclusion = true)
     val RESTRICTED = generate("R123456", currentRestriction = true)
 
     fun generate(
         crn: String,
+        nomsId: String? = null,
         currentExclusion: Boolean = false,
         currentRestriction: Boolean = false,
         softDeleted: Boolean = false,
@@ -19,6 +20,7 @@ object PersonGenerator {
     ) = Person(
         id,
         crn,
+        nomsId,
         DEFAULT_GENDER,
         LocalDate.now().minusYears(18),
         "David",
