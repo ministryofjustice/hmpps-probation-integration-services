@@ -1,8 +1,7 @@
 FROM mikefarah/yq:4 as yml
 # Convert yml files to json
 COPY --chown=yq /pipelines /pipelines
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN find /pipelines -type f -name '*.yml' | xargs -n1 -I{} sh -c 'f={}; yq -o=json "$f" > "${f%.yml}.json"'
+RUN find /pipelines -type f -name '*.yml' -exec sh -c 'f="$1"; yq -o=json "$f" > "${f%.yml}.json"' shell {} +;
 
 
 FROM logstash:8.8.1
