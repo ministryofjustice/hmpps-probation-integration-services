@@ -5,9 +5,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("commons-pool:commons-pool")
     implementation(libs.bundles.telemetry)
     implementation(libs.flipt)
-    implementation("commons-pool:commons-pool:1.6")
 
     testImplementation("org.springframework.boot:spring-boot-starter-data-ldap")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
