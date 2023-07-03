@@ -9,7 +9,7 @@ import org.springframework.ldap.core.support.LdapContextSource
 import org.springframework.ldap.pool.factory.PoolingContextSource
 
 @Configuration
-@ConditionalOnClass(name = ["org.springframework.ldap.core.support.LdapContextSource"])
+@ConditionalOnClass(LdapContextSource::class)
 class LdapConfig {
     @Bean
     @Primary
