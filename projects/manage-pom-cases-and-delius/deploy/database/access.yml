@@ -1,0 +1,11 @@
+database:
+  access:
+    username_key: /manage-pom-cases-and-delius/db-username
+    password_key: /manage-pom-cases-and-delius/db-password
+    tables:
+      - key_date
+
+  audit:
+    username: ManagePomCasesAndDelius
+    forename: Probation Integration # TODO change this to something meaningful for your service
+    surname: Service

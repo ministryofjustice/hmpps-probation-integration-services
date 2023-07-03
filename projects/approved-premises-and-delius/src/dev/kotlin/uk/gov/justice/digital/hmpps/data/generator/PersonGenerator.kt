@@ -1,0 +1,43 @@
+package uk.gov.justice.digital.hmpps.data.generator
+
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManager
+import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegisterType
+import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.Registration
+import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
+
+object PersonGenerator {
+    val DEFAULT = generate(crn = "A000001")
+    val EVENT = PersonGenerator.generateEvent("7", DEFAULT.id)
+    fun generate(
+        crn: String,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Person(id = id, crn = crn)
+
+    fun generateEvent(number: String, personId: Long, id: Long = IdGenerator.getAndIncrement()) =
+        Event(id, number, personId)
+
+    fun generateRegistration(
+        person: Person,
+        type: RegisterType,
+        softDeleted: Boolean = false,
+        deregistered: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Registration(person.id, type, softDeleted, deregistered, id)
+}
+
+object PersonManagerGenerator {
+    fun generate(
+        person: Person,
+        team: Team = TeamGenerator.generate(),
+        staff: Staff = StaffGenerator.generate(teams = listOf(team)),
+        id: Long = IdGenerator.getAndIncrement()
+    ) = PersonManager(
+        id = id,
+        personId = person.id,
+        staff = staff,
+        team = team
+    )
+}

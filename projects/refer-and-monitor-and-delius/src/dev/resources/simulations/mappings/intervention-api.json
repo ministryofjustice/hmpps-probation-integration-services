@@ -1,0 +1,82 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/referral/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080/delivery-session-appointments/8802fcba-8c4f-4ca9-aca0-bdce9bfeed30"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "session-appointment-feedback-submitted-non-compliant.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/referral/89a3f79c-f12b-43de-9616-77ae19813cfe/delivery-session-appointments/4bca159d-785a-41ba-b96e-01ddd843485a"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "session-appointment-feedback-submitted-not-attended.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/referral/cb293dcb-c201-4743-aa9d-acb14c8a1ddd/delivery-session-appointments/0586f524-d70b-4a5e-99fc-086dd457ef52"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "session-appointment-feedback-submitted-not-found.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/referral/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080/delivery-session-appointments/223e2d09-63d2-4b7e-a07e-b35c550e26cb"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "session-appointment-feedback-submitted-compliant.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/sent-referral/f56c5f7c-632f-4cad-a1b3-693541cb5f22"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "referral-prematurely-ended.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/sent-referral/71df9f6c-3fcb-4ec6-8fcf-96551cd9b080"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "fuzzy-search-referral-ended.json"
+      }
+    }
+  ]
+}

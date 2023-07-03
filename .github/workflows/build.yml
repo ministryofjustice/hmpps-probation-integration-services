@@ -1,0 +1,142 @@
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      push:
+        type: boolean
+        default: false
+      force-deploy:
+        type: boolean
+        default: false
+    outputs:
+      version:
+        value: ${{ jobs.build-gradle.outputs.version }}
+  workflow_dispatch:
+    inputs:
+      push:
+        description: Push images
+        type: boolean
+        default: false
+      force-deploy:
+        description: Force re-tagging and deployment of images
+        type: boolean
+        default: false
+
+env:
+  push: ${{ !(github.event_name == 'push' && github.ref_name != 'main') && inputs.push }}
+
+jobs:
+  build-gradle:
+    name: Gradle build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - approved-premises-and-delius
+          - approved-premises-and-oasys
+          - court-case-and-delius
+          - create-and-vary-a-licence-and-delius
+          - custody-key-dates-and-delius
+          - domain-events-and-delius
+          - effective-proposal-framework-and-delius
+          - make-recall-decisions-and-delius
+          - manage-pom-cases-and-delius
+          - offender-events-and-delius
+          - pathfinder-and-delius
+          - pre-sentence-reports-to-delius
+          - prison-case-notes-to-probation
+          - prison-custody-status-to-delius
+          - refer-and-monitor-and-delius
+          - risk-assessment-scores-to-delius
+          - sentence-plan-and-delius
+          - sentence-plan-and-oasys
+          - soc-and-delius
+          - tier-to-delius
+          - unpaid-work-and-delius
+          - workforce-allocations-to-delius
+          # ^ add new projects here
+          # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
+          # See https://github.com/community/community/discussions/11795
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      changes: ${{ steps.check-changes.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - uses: gradle/gradle-build-action@v2
+
+      - name: Set version
+        id: version
+        run: |
+          version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
+          echo "ORG_GRADLE_PROJECT_version=$version" >> $GITHUB_ENV
+          echo "version=$version" | tee -a $GITHUB_OUTPUT
+
+      - name: Build and test
+        run: ./gradlew ${{ matrix.project }}:check
+        env:
+          SPRING_PROFILES_ACTIVE: oracle
+
+      - name: Push images
+        if: env.push == 'true'
+        run: ./gradlew ${{ matrix.project }}:jib
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_PASSWORD: ${{ github.token }}
+          FORCE_DEPLOY: ${{ inputs.force-deploy }}
+
+      - name: Check changes
+        id: check-changes
+        run: echo "changes=$((ls changed || true) | jq --raw-input . | jq --slurp --compact-output .)" | tee -a $GITHUB_OUTPUT
+
+      - name: Output changes
+        uses: cloudposse/github-action-matrix-outputs-write@928e2a2d3d6ae4eb94010827489805c17c81181f # v0.4.2
+        with:
+          matrix-step-name: output-changes
+          matrix-key: ${{ matrix.project }}
+          outputs: ${{ steps.check-changes.outputs.changes }}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: |
+            **/build/jacoco
+            **/build/reports/jacoco/**/*.xml
+            **/build/test-results
+
+  build-docker:
+    name: Docker build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project:
+          - person-search-index-from-delius
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set version
+        id: version
+        run: |
+          version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
+          echo "version=$version" | tee -a $GITHUB_OUTPUT
+
+      - name: Build Docker images
+        uses: ./.github/actions/docker-build
+        id: build
+        with:
+          project: ${{ matrix.project }}
+          push: ${{ env.push }}
+          version: ${{ steps.version.outputs.version }}
+          force-deploy: ${{ inputs.force-deploy }}
+
+      - name: Output changes
+        uses: cloudposse/github-action-matrix-outputs-write@928e2a2d3d6ae4eb94010827489805c17c81181f # v0.4.2
+        with:
+          matrix-step-name: output-changes
+          matrix-key: ${{ matrix.project }}
+          outputs: ${{ steps.build.outputs.changes }}

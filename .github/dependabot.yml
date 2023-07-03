@@ -1,0 +1,27 @@
+# Please see the documentation for all configuration options:
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "software.amazon.awssdk:*" # reduce the noise of frequent AWS SDK updates
+        update-types: ["version-update:semver-patch"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "terraform"
+    directory: "/templates"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "docker"
+    directory: "/projects/person-search-index-from-delius/container"
+    schedule:
+      interval: "daily"

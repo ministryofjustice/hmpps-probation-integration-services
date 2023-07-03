@@ -1,0 +1,23 @@
+generic-service:
+  nameOverride: prison-custody-status-to-delius
+  serviceAccountName: prison-custody-status-to-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-custody-status-to-delius
+
+  ingress:
+    tlsSecretName: prison-custody-status-to-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    prison-custody-status-to-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    prison-custody-status-to-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    prison-custody-status-to-delius-queue:
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+
+generic-prometheus-alerts:
+  targetApplication: prison-custody-status-to-delius

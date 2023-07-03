@@ -1,0 +1,25 @@
+# Common values
+generic-service:
+  nameOverride: $SERVICE_NAME
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/$SERVICE_NAME
+
+  ingress:
+    tlsSecretName: $SERVICE_NAME-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    $SERVICE_NAME-client-credentials:
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
+    $SERVICE_NAME-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    $SERVICE_NAME-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: $SERVICE_NAME
+

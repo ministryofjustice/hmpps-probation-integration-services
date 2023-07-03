@@ -1,0 +1,17 @@
+{
+  "Type": "Notification",
+  "MessageId": "a7c8e4ab-5d55-45a5-b69d-2ad0539245de",
+  "TopicArn": "",
+  "Message": "{\"eventType\":\"prison-offender-events.prisoner.received\",\"additionalInformation\":{\"nomsNumber\":\"A0002AA\",\"reason\":\"ADMISSION\",\"probableCause\":\"RECALL\",\"source\":\"PRISON\",\"nomisMovementReasonCode\":\"R1\",\"details\":\"ACTIVE IN:ADM-L\",\"currentLocation\":\"IN_PRISON\",\"prisonId\":\"WSI\",\"currentPrisonStatus\":\"UNDER_PRISON_CARE\"},\"version\":1,\"occurredAt\":\"2022-05-04T08:09:36.649098+01:00\",\"publishedAt\":\"2022-05-04T09:06:46.65281576+01:00\",\"description\":\"A prisoner has been received into prison\"}",
+  "Timestamp": "2022-05-04T08:06:46.704Z",
+  "SignatureVersion": "1",
+  "Signature": "",
+  "SigningCertURL": "",
+  "UnsubscribeURL": "",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "prison-offender-events.prisoner.received"
+    }
+  }
+}

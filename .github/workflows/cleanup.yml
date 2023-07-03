@@ -1,0 +1,51 @@
+name: Cleanup
+# Delete old reports from GitHub Pages, and delete unused images from GitHub Container Registry
+# Note: deleted images are still retained by GitHub for 30 days.  To recover them, see: https://docs.github.com/en/rest/packages#restore-package-version-for-an-organization
+
+on:
+  schedule:
+    - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
+  workflow_dispatch:
+
+jobs:
+  delete-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete untagged images older than 1 week
+        uses: snok/container-retention-policy@v2
+        with:
+          account-type: org
+          org-name: ministryofjustice
+          image-names: hmpps-probation-integration-services/*
+          cut-off: A week ago UTC
+          keep-at-least: 1
+          untagged-only: true
+          token: ${{ secrets.BOT_GITHUB_PACKAGES_TOKEN }}
+
+  delete-reports:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: gh-pages
+          fetch-depth: 0
+      - name: Delete Playwright reports older than 1 week
+        run: |
+          wget https://raw.githubusercontent.com/newren/git-filter-repo/main/git-filter-repo
+          git pull origin gh-pages
+          python3 git-filter-repo \
+            --path 'tech-docs' \
+            --path 'tech-docs-drafts' \
+            --path 'schema-spy-report' \
+            --path "playwright-report/test/main/$(date -d '-7 days' '+%Y-%m-%d')" \
+            --path "playwright-report/test/main/$(date -d '-6 days' '+%Y-%m-%d')" \
+            --path "playwright-report/test/main/$(date -d '-5 days' '+%Y-%m-%d')" \
+            --path "playwright-report/test/main/$(date -d '-4 days' '+%Y-%m-%d')" \
+            --path "playwright-report/test/main/$(date -d '-3 days' '+%Y-%m-%d')" \
+            --path "playwright-report/test/main/$(date -d '-2 days' '+%Y-%m-%d')" \
+            --path "playwright-report/test/main/$(date -d '-1 days' '+%Y-%m-%d')" \
+            --path "playwright-report/test/main/$(date '+%Y-%m-%d')" \
+            --refs gh-pages \
+            --force
+          git gc --prune=now
+          git push origin gh-pages --force

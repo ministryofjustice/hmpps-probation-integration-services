@@ -1,0 +1,179 @@
+name: Database access
+# Configure credentials and audit user in the Delius database
+
+on:
+  workflow_dispatch:
+    inputs:
+      projects:
+        description: Project
+        type: choice
+        required: true
+        options:
+          - 'All'
+          - '["approved-premises-and-delius"]'
+          - '["approved-premises-and-oasys"]'
+          - '["court-case-and-delius"]'
+          - '["create-and-vary-a-licence-and-delius"]'
+          - '["custody-key-dates-and-delius"]'
+          - '["domain-events-and-delius"]'
+          - '["effective-proposal-framework-and-delius"]'
+          - '["make-recall-decisions-and-delius"]'
+          - '["manage-pom-cases-and-delius"]'
+          - '["offender-events-and-delius"]'
+          - '["pathfinder-and-delius"]'
+          - '["person-search-index-from-delius"]'
+          - '["pre-sentence-reports-to-delius"]'
+          - '["prison-case-notes-to-probation"]'
+          - '["prison-custody-status-to-delius"]'
+          - '["refer-and-monitor-and-delius"]'
+          - '["risk-assessment-scores-to-delius"]'
+          - '["sentence-plan-and-delius"]'
+          - '["sentence-plan-and-oasys"]'
+          - '["soc-and-delius"]'
+          - '["tier-to-delius"]'
+          - '["unpaid-work-and-delius"]'
+          - '["workforce-allocations-to-delius"]'
+          # ^ add new projects here
+          # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
+          # See https://github.com/community/community/discussions/11795
+  push:
+    branches:
+      - main
+    paths:
+      - 'projects/**/deploy/database/access.yml'
+
+jobs:
+  get-projects:
+    outputs:
+      projects: ${{ steps.output.outputs.projects }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - id: check-changes
+        if: github.event_name == 'push'
+        uses: ./.github/actions/check-changes
+        with:
+          filters: |
+            projects:
+              - 'projects/**/deploy/database/access.yml'
+      - name: Get projects - changed
+        if: github.event_name == 'push'
+        run: echo 'projects=${{ steps.check-changes.outputs.projects }}' >> $GITHUB_ENV
+      - name: Get projects - all
+        if: github.event_name == 'workflow_dispatch' && inputs.projects == 'All'
+        run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_ENV
+      - name: Get projects - selected
+        if: github.event_name == 'workflow_dispatch' && inputs.projects != 'All'
+        run: echo 'projects=${{ inputs.projects }}' >> $GITHUB_ENV
+      - id: output
+        run: echo 'projects=${{ env.projects }}' >> $GITHUB_OUTPUT
+
+  setup-access:
+    runs-on: ubuntu-latest
+    needs: get-projects
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        environment: ["test", "preprod", "prod"]
+        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+    environment: ${{ matrix.environment }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check if DB access is required
+        id: check_file
+        uses: andstor/file-existence-action@20b4d2e596410855db8f9ca21e96fbe18e12930b # v2
+        with:
+          files: projects/${{ matrix.project }}/deploy/database/access.yml
+
+      - uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2
+        if: ${{ steps.check_file.outputs.files_exists == 'true' }}
+        with:
+          aws-region: eu-west-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-skip-session-tagging: true
+          role-duration-seconds: 1200
+
+      - name: Get environment details
+        if: ${{ steps.check_file.outputs.files_exists == 'true' }}
+        uses: ./.github/actions/get-env-details
+        id: env
+        with:
+          environment: ${{ matrix.environment }}
+
+      - uses: ./.github/actions/cloud-platform-auth
+        with:
+          api: ${{ secrets.KUBE_ENV_API }}
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
+
+      - name: Create DB credentials
+        if: ${{ steps.check_file.outputs.files_exists == 'true' }}
+        shell: bash
+        run: |
+          if ! kubectl get secret "$PROJECT-database" > /dev/null; then
+            sudo apt-get install pwgen
+            kubectl create secret generic "$PROJECT-database" \
+              --from-literal "DB_USERNAME=$(echo "$PROJECT" | sed 's/-/_/g')" \
+              --from-literal "DB_PASSWORD=$(pwgen -N1 16)"
+          fi
+        env:
+          PROJECT: ${{ matrix.project }}
+
+      - name: Add DB credentials to AWS parameter store
+        if: ${{ steps.check_file.outputs.files_exists == 'true' }}
+        shell: bash
+        run: |
+          secret=$(kubectl get secret "$PROJECT-database" -o json)
+          aws ssm put-parameter --name "$PARAMETER_PATH/db-username" --value "$(echo "$secret" | jq -r '.data.DB_USERNAME' | base64 -d)" --overwrite --type SecureString --region eu-west-2
+          aws ssm put-parameter --name "$PARAMETER_PATH/db-password" --value "$(echo "$secret" | jq -r '.data.DB_PASSWORD' | base64 -d)" --overwrite --type SecureString --region eu-west-2
+        env:
+          PROJECT: ${{ matrix.project }}
+          PARAMETER_PATH: '/${{ steps.env.outputs.delius-name }}/delius/probation-integration/${{ matrix.project }}'
+
+      - name: Disable audit user creation in preprod # user_ table records are automatically copied from prod to preprod within 1 hour of creation
+        if: ${{ matrix.environment == 'preprod' && steps.check_file.outputs.files_exists == 'true' }}
+        shell: bash
+        run: yq -i 'del(.database.audit)' database/access.yml
+        working-directory: projects/${{ matrix.project }}/deploy
+
+      - name: Configure database access and audit
+        if: ${{ steps.check_file.outputs.files_exists == 'true' }}
+        shell: bash
+        run: |
+          aws ssm start-automation-execution --document-name oracle-${{ steps.env.outputs.delius-short-name }}-probation-integration-access \
+                                             --parameters "Configuration='$(yq database/access.yml -o json)'" \
+                                             --region eu-west-2 \
+          | jq --raw-output '.AutomationExecutionId' > id
+          while [ -z "$status" ] || [ "$status" == "InProgress" ] || [ "$status" == "Pending" ] || [ "$status" == "Waiting" ]; do
+            sleep 5
+            echo "Execution $status. Follow the logs in AWS: https://eu-west-2.console.aws.amazon.com/systems-manager/automation/execution/$(cat id)?region=eu-west-2"
+            status=$(aws ssm get-automation-execution --automation-execution-id "$(cat id)" | jq -r '.AutomationExecution.AutomationExecutionStatus')
+          done
+          echo "Completed with status: $status"
+          if [ "$status" != "Success" ]; then exit 1; fi
+        working-directory: projects/${{ matrix.project }}/deploy
+
+  create-issue:
+    runs-on: ubuntu-latest
+    needs: get-projects
+    strategy:
+      matrix:
+        project: ${{ fromJson(needs.get-projects.outputs.projects) }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create issue for manual approval step
+        run: |
+          gh issue create \
+            --title 'Complete database access setup for ${{ matrix.project }}' \
+            --body '
+          The ${{ matrix.project }} [database/access.yml](https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/${{ matrix.project }}/deploy/database/access.yml) file was recently changed. For these changes to take effect in production, the [Database Access](https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/workflows/access.yml) workflow must be manually approved. 
+          - [ ] Approve workflow: https://github.com/ministryofjustice/hmpps-probation-integration-services/actions/runs/${{ github.run_id }}' \
+            --label bootstrap
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

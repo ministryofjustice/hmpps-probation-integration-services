@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v3.7.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          configurationJSON: |
+            {  
+              "template": "#{{CHANGELOG}}\n\n<details>\n<summary>❓ Other changes</summary>\n\n#{{UNCATEGORIZED}}\n</details>",
+              "pr_template": "- #{{TITLE}} (##{{NUMBER}})",
+              "empty_template": "- no changes",
+              "categories": [
+                {
+                  "title": "## ✨ Features",
+                  "labels": ["enhancement"]
+                },
+                {
+                  "title": "## 🐛 Fixes",
+                  "labels": ["bug"]
+                },
+                {
+                  "title": "## 📄 Documentation",
+                  "labels": ["documentation"]
+                },
+                {
+                  "title": "## ⬆️ Dependencies",
+                  "labels": ["dependencies"]
+                }
+              ]
+            }
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: ${{ steps.github_release.outputs.changelog }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: true

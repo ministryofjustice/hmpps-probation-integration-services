@@ -1,0 +1,29 @@
+---
+# Values here are the same across all environments
+# An additional set of default values can be found in templates/helm-defaults.yml, which is the same across all projects
+generic-service:
+  nameOverride: tier-to-delius
+  serviceAccountName: tier-to-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/tier-to-delius
+
+  ingress:
+    tlsSecretName: tier-to-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    tier-to-delius-client-credentials:
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_TIER-TO-DELIUS_CLIENT-ID: CLIENT_ID
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_TIER-TO-DELIUS_CLIENT-SECRET: CLIENT_SECRET
+    tier-to-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    tier-to-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    tier-to-delius-queue:
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+
+generic-prometheus-alerts:
+  targetApplication: tier-to-delius
