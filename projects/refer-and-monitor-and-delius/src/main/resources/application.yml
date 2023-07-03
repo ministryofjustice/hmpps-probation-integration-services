@@ -16,7 +16,10 @@ spring:
           global_temporary:
             create_tables: false
             drop_tables: false
-  ldap.base: dc=moj,dc=com
+  ldap:
+    base: dc=moj,dc=com
+    base-environment:
+      java.naming.ldap.derefAliases: never
   security.oauth2.client:
     registration:
       refer-and-monitor-and-delius:
