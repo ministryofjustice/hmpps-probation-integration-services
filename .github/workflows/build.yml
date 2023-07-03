@@ -74,8 +74,8 @@ jobs:
         id: version
         run: |
           version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
-          echo "ORG_GRADLE_PROJECT_version=$version" >> $GITHUB_ENV
-          echo "version=$version" | tee -a $GITHUB_OUTPUT
+          echo "ORG_GRADLE_PROJECT_version=$version" | tee -a "$GITHUB_ENV"
+          echo "version=$version" | tee -a "$GITHUB_OUTPUT"
 
       - name: Build and test
         run: ./gradlew ${{ matrix.project }}:check
@@ -92,7 +92,7 @@ jobs:
 
       - name: Check changes
         id: check-changes
-        run: echo "changes=$((ls changed || true) | jq --raw-input . | jq --slurp --compact-output .)" | tee -a $GITHUB_OUTPUT
+        run: echo "changes=$(find changed -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_OUTPUT"
 
       - name: Output changes
         uses: cloudposse/github-action-matrix-outputs-write@928e2a2d3d6ae4eb94010827489805c17c81181f # v0.4.2
@@ -123,7 +123,7 @@ jobs:
         id: version
         run: |
           version=$(date '+%Y-%m-%d').${{ github.run_number }}.$(echo ${{ github.sha }} | cut -c1-7)
-          echo "version=$version" | tee -a $GITHUB_OUTPUT
+          echo "version=$version" | tee -a "$GITHUB_OUTPUT"
 
       - name: Build Docker images
         uses: ./.github/actions/docker-build

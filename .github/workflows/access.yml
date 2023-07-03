@@ -58,15 +58,17 @@ jobs:
               - 'projects/**/deploy/database/access.yml'
       - name: Get projects - changed
         if: github.event_name == 'push'
-        run: echo 'projects=${{ steps.check-changes.outputs.projects }}' >> $GITHUB_ENV
+        run: echo "projects=$PROJECTS" | tee -a "$GITHUB_ENV"
+        env:
+          PROJECTS: ${{ steps.check-changes.outputs.projects }}
       - name: Get projects - all
         if: github.event_name == 'workflow_dispatch' && inputs.projects == 'All'
-        run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_ENV
+        run: echo "projects=$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_ENV"
       - name: Get projects - selected
         if: github.event_name == 'workflow_dispatch' && inputs.projects != 'All'
-        run: echo 'projects=${{ inputs.projects }}' >> $GITHUB_ENV
+        run: echo 'projects=${{ inputs.projects }}' | tee -a "$GITHUB_ENV"
       - id: output
-        run: echo 'projects=${{ env.projects }}' >> $GITHUB_OUTPUT
+        run: echo 'projects=${{ env.projects }}' | tee -a "$GITHUB_OUTPUT"
 
   setup-access:
     runs-on: ubuntu-latest
@@ -119,7 +121,7 @@ jobs:
           if ! kubectl get secret "$PROJECT-database" > /dev/null; then
             sudo apt-get install pwgen
             kubectl create secret generic "$PROJECT-database" \
-              --from-literal "DB_USERNAME=$(echo "$PROJECT" | sed 's/-/_/g')" \
+              --from-literal "DB_USERNAME=${PROJECT//-/_/}" \
               --from-literal "DB_PASSWORD=$(pwgen -N1 16)"
           fi
         env:

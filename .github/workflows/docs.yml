@@ -54,12 +54,12 @@ jobs:
       - uses: actions/checkout@v3
       - name: Get projects - all
         if: github.event_name != 'workflow_dispatch'
-        run: echo "projects=$(cd projects && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_ENV
+        run: echo "projects=$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_ENV"
       - name: Get projects - selected
         if: github.event_name == 'workflow_dispatch'
-        run: echo 'projects=${{ inputs.projects }}' >> $GITHUB_ENV
+        run: echo 'projects=${{ inputs.projects }}' | tee -a "$GITHUB_ENV"
       - id: output
-        run: echo 'projects=${{ env.projects }}' | tee -a $GITHUB_OUTPUT
+        run: echo 'projects=${{ env.projects }}' | tee -a "$GITHUB_OUTPUT"
 
   build-index:
     runs-on: ubuntu-latest
@@ -100,7 +100,7 @@ jobs:
 
       - name: Check if OpenAPI is configured
         id: check_config
-        run: echo "api_path=$(yq '.api_path' 'projects/${{ matrix.project }}/tech-docs/config/tech-docs.yml')" >> $GITHUB_OUTPUT
+        run: echo "api_path=$(yq '.api_path' 'projects/${{ matrix.project }}/tech-docs/config/tech-docs.yml')" | tee -a "$GITHUB_OUTPUT"
       - uses: actions/setup-java@v3
         if: startsWith(steps.check_config.outputs.api_path, 'http')
         with:
@@ -163,6 +163,7 @@ jobs:
           mv artifacts/index/ tech-docs
           mkdir -p tech-docs/projects
           ls artifacts | xargs -I{} mv artifacts/{}/ tech-docs/projects/{}
+          find artifacts -mindepth 1 -maxdepth 1 -printf "%f\n" -print0 | xargs -0 -I{} mv 'artifacts/{}/' 'tech-docs/projects/{}/' \;
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4

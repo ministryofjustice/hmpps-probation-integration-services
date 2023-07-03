@@ -1,13 +1,14 @@
 #!/bin/bash
 set -eo pipefail
 eval "$(sentry-cli bash-hook --no-environ)"
-. "$(dirname -- "$0")/functions.sh"
+source "$(dirname -- "$0")/functions.sh"
 
 function help {
   echo -e "\\nSCRIPT USAGE\\n"
   echo "-i The prefix of the primary and standby index name (e.g. 'person-search')"
   echo "-t The maximum time (in seconds) to wait for indexing to complete"
   echo "-u Search Host URL"
+  echo "$1"
   exit 1
 }
 
@@ -25,8 +26,8 @@ while getopts h:i:t:u: FLAG; do
     ;;
   esac
 done
-if [ -z "$INDEX_PREFIX" ]; then help; fail 'Missing -i'; fi
-if [ -z "$REINDEXING_TIMEOUT" ]; then help; fail 'Missing -t'; fi
+if [ -z "$INDEX_PREFIX" ]; then help 'Missing -i'; fi
+if [ -z "$REINDEXING_TIMEOUT" ]; then help 'Missing -t'; fi
 
 function stop_logstash() {
     exit_code=$?
@@ -40,7 +41,7 @@ function stop_logstash() {
       _sentry_err_trap "${BASH_COMMAND:-unknown}" "$exit_code"
       pgrep java | xargs -n1 kill -KILL
     fi
-    exit $exit_code
+    exit "$exit_code"
 }
 trap stop_logstash EXIT
 

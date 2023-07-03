@@ -1,4 +1,6 @@
-require 'govuk_tech_docs'
+# frozen_string_literal: true
+
+require "govuk_tech_docs"
 
 GovukTechDocs.configure(self)
 

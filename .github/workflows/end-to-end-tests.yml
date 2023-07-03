@@ -79,12 +79,14 @@ jobs:
           ref: ${{ inputs.test-branch }}
       - name: Get tests to run - all tests
         if: inputs.projects == '' || inputs.projects == 'All'
-        run: echo "projects=$(cd tests && ls | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_ENV
+        run: echo "projects=$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_ENV"
       - name: Get tests to run - specific tests
         if: inputs.projects != '' && inputs.projects != 'All'
-        run: echo 'projects=${{ inputs.projects }}' >> $GITHUB_ENV
+        run: echo 'projects=${{ inputs.projects }}' | tee -a "$GITHUB_ENV"
       - name: Get report output directory
-        run: echo "report-dir=playwright-report/test/${{ github.ref_name }}/$(date '+%Y-%m-%d')/${{ github.sha }}/${{ github.run_id }}/${{ github.run_attempt }}" >> $GITHUB_ENV
+        run: echo "report-dir=playwright-report/test/$REF/$(date '+%Y-%m-%d')/${{ github.sha }}/${{ github.run_id }}/${{ github.run_attempt }}" | tee -a "$GITHUB_ENV"
+        env:
+          REF: ${{ github.ref_name }}
       - uses: actions/setup-node@v3
         with:
           node-version: 16
@@ -132,16 +134,13 @@ jobs:
         id: json
         run: |
           if [ -f results.json ]; then
-            skipped_projects=$(echo "$all_projects" | jq -r '.[]' | while read project; do if [ ! -d "tests/$project" ]; then echo $project; fi; done | jq --raw-input . | jq --slurp --compact-output .)
-            failed_projects=$(cat results.json | jq -r '.suites[].specs[] | select(.ok == false).file' | xargs -n1 dirname | sort -u | jq --raw-input . | jq --slurp --compact-output .)
+            skipped_projects=$(echo "$all_projects" | jq -r '.[]' | while read -r project; do if [ ! -d "tests/$project" ]; then echo $project; fi; done | jq --raw-input . | jq --slurp --compact-output .)
+            failed_projects=$(jq -r '.suites[].specs[] | select(.ok == false).file' results.json | xargs -n1 dirname | sort -u | jq --raw-input . | jq --slurp --compact-output .)
             passed_projects=$(jq --compact-output --null-input --argjson all "$all_projects" --argjson failed "$failed_projects" --argjson skipped "$skipped_projects" '{all: $all, failed: $failed, skipped: $skipped} | .all - .failed - .skipped')
           fi
-          echo skipped-projects=${skipped_projects:-'[]'} >> $GITHUB_OUTPUT
-          echo failed-projects=${failed_projects:-'[]'} >> $GITHUB_OUTPUT
-          echo passed-projects=${passed_projects:-'[]'} >> $GITHUB_OUTPUT
-          echo All tests passed for: $passed_projects
-          echo Failures detected in: $failed_projects
-          echo No results found for: $skipped_projects
+          echo "skipped-projects=${skipped_projects:-'[]'}" | tee -a "$GITHUB_OUTPUT"
+          echo "failed-projects=${failed_projects:-'[]'}" | tee -a "$GITHUB_OUTPUT"
+          echo "passed-projects=${passed_projects:-'[]'}" | tee -a "$GITHUB_OUTPUT"
         env:
           all_projects: ${{ env.projects }}
       - name: Publish JUnit report
@@ -161,8 +160,8 @@ jobs:
         id: html
         if: always()
         run: |
-          echo '[🎭 Playwright HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.report-dir }})' >> $GITHUB_STEP_SUMMARY
-          echo 'report-url=https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.report-dir }}' >> $GITHUB_OUTPUT
+          echo '[🎭 Playwright HTML Report](https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.report-dir }})' | tee -a "$GITHUB_STEP_SUMMARY"
+          echo 'report-url=https://ministryofjustice.github.io/hmpps-probation-integration-services/${{ env.report-dir }}' | tee -a "$GITHUB_OUTPUT"
       - name: Send message to Slack
         uses: slackapi/slack-github-action@e28cf165c92ffef168d23c5c9000cffc8a25e117 # v1.24.0
         if: ${{ failure() && github.event_name == 'schedule' }}

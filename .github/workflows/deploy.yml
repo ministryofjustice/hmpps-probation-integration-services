@@ -81,8 +81,10 @@ jobs:
       - name: Get enabled flag from values file
         id: enabled
         shell: bash
-        run: echo "enabled=$(cat ${{ steps.env.outputs.values-file }} | yq '.enabled' | sed 's/^null$/true/')" >> $GITHUB_OUTPUT
+        run: echo "enabled=$(yq '.enabled' "$VALUES_FILE" | sed 's/^null$/true/')" | tee -a "$GITHUB_OUTPUT"
         working-directory: projects/${{ matrix.project }}/deploy
+        env:
+          VALUES_FILE: ${{ steps.env.outputs.values-file }}
 
       - name: Check Chart.yaml file exists
         id: check_files
