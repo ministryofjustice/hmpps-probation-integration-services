@@ -22,5 +22,8 @@ class LdapUserDetails(
     val forename: String,
 
     @Attribute(name = "mail")
-    val email: String?
+    val email: String?,
+
+    @Attribute(name = "telephoneNumber")
+    val telephone: String?
 )

@@ -47,8 +47,14 @@ object ProviderGenerator {
         id: Long = IdGenerator.getAndIncrement()
     ) = District(code, description, borough, id)
 
-    fun generateTeam(code: String, district: District = PROBATION_DISTRICT, id: Long = IdGenerator.getAndIncrement()) =
-        Team(code, district, id)
+    fun generateTeam(
+        code: String,
+        description: String = "Team $code",
+        district: District = PROBATION_DISTRICT,
+        email: String? = "team@$code.co.uk",
+        telephone: String? = "020 785 4451",
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Team(code, description, district, email, telephone, id)
 
     fun generateStaff(
         code: String,

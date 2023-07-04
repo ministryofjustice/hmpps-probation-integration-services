@@ -50,10 +50,11 @@ object PersonGenerator {
         team: Team,
         responsibleOfficer: ResponsibleOfficer? = null,
         emailAddress: String? = "manager@prison.gov.uk",
+        telephone: String? = "020 010 3445",
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = PrisonManager(person.id, staff, team, responsibleOfficer, emailAddress, active, softDeleted, id)
+    ) = PrisonManager(person.id, staff, team, responsibleOfficer, emailAddress, telephone, active, softDeleted, id)
 
     fun generateResponsibleOfficer(
         communityManager: PersonManager?,

@@ -52,6 +52,9 @@ class StaffUser(
 ) {
     @Transient
     var email: String? = null
+
+    @Transient
+    var telephone: String? = null
 }
 
 interface StaffRepository : JpaRepository<Staff, Long> {
