@@ -40,9 +40,14 @@ class Team(
     @Column(name = "code", columnDefinition = "char(6)")
     val code: String,
 
+    val description: String,
+
     @ManyToOne
     @JoinColumn(name = "district_id")
     val district: District,
+
+    val email: String?,
+    val telephone: String?,
 
     @Id
     @Column(name = "team_id")

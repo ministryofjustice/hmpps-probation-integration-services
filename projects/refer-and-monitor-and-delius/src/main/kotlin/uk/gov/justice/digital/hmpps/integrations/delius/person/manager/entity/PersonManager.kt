@@ -71,6 +71,8 @@ class PrisonManager(
 
     val emailAddress: String?,
 
+    val telephoneNumber: String?,
+
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
