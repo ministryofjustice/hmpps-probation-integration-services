@@ -46,6 +46,7 @@ class Team(
     @JoinColumn(name = "district_id")
     val district: District,
 
+    @Column(name = "email_address")
     val email: String?,
     val telephone: String?,
 
