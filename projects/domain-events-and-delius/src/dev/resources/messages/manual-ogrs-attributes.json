@@ -1,7 +1,6 @@
 {
   "eventType": {
-    "dataType": "String",
-    "stringValue": "probation-case.risk-scores.ogrs.manual-calculation",
-    "binaryValue": null
+    "Type": "String",
+    "Value": "probation-case.risk-scores.ogrs.manual-calculation"
   }
 }

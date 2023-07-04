@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.beans.factory.annotation.Value
@@ -9,8 +8,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.delius.DomainEvent
 import uk.gov.justice.digital.hmpps.integrations.delius.DomainEventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.MessageAttribute
-import uk.gov.justice.digital.hmpps.integrations.delius.toSnsAttributes
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
@@ -33,10 +30,6 @@ class DomainEventService(
 
     fun DomainEvent.asNotification() = Notification<HmppsDomainEvent>(
         message = objectMapper.readValue(messageBody),
-        attributes = try {
-            objectMapper.readValue<Map<String, MessageAttribute>>(messageAttributes).toSnsAttributes()
-        } catch (e: JacksonException) {
-            objectMapper.readValue(messageAttributes)
-        }
+        attributes = objectMapper.readValue(messageAttributes)
     )
 }
