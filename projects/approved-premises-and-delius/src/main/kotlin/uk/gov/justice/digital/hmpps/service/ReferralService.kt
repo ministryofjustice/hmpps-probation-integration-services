@@ -138,14 +138,17 @@ class ReferralService(
     }
 
     fun personDeparted(person: Person, details: PersonDeparted) {
+        val serviceUserId = ServiceContext.servicePrincipal()!!.userId
         val referral = checkNotNull(
             referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
                 person.id,
-                ServiceContext.servicePrincipal()!!.userId,
+                serviceUserId,
                 Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
             )
         ) { "Unable to find referral for ${person.crn} => ${details.bookingId}" }
-        val residence = checkNotNull(residenceRepository.findByReferralId(referral.id)) {
+        val residence = checkNotNull(
+            residenceRepository.findByReferralIdAndCreatedByUserId(referral.id, serviceUserId)
+        ) {
             "Unable to find residence for ${person.crn} => ${details.bookingId}"
         }
         residence.departureDate = details.departedAt.toLocalDate()
