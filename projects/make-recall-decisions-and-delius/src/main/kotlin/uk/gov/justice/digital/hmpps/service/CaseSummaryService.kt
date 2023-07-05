@@ -136,7 +136,7 @@ class CaseSummaryService(
             personalDetails = personalDetails,
             mainAddress = mainAddress?.toAddress(),
             lastRelease = lastRelease?.dates(),
-            lastReleasedFromInstitution = lastRelease?.institution?.let { Institution(it.name) },
+            lastReleasedFromInstitution = lastRelease?.institution?.let { Institution(it.name, it.description) },
             mappa = mappa,
             activeConvictions = events.map { it.toConviction() },
             activeCustodialConvictions = events.custodial().map { it.toConvictionDetails() }
