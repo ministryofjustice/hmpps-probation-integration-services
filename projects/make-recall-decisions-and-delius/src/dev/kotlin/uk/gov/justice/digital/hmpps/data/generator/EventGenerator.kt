@@ -81,7 +81,7 @@ object EventGenerator {
             id = IdGenerator.getAndIncrement(),
             custodyId = id,
             date = LocalDate.now().minusMonths(6),
-            institution = Institution(IdGenerator.getAndIncrement(), "Test institution")
+            institution = Institution(IdGenerator.getAndIncrement(), "Test institution", "Description of institution")
         )
         release.set(
             Release::recall,

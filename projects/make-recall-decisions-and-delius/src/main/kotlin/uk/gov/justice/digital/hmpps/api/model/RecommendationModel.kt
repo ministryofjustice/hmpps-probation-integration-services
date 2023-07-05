@@ -15,7 +15,8 @@ data class RecommendationModel(
     val activeCustodialConvictions: List<ConvictionDetails>
 ) {
     data class Institution(
-        val name: String
+        val name: String?,
+        val description: String
     )
     data class ConvictionDetails(
         val number: String,
