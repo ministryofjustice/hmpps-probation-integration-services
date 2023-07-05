@@ -286,7 +286,7 @@ internal class MessagingIntegrationTest {
         val residences = residenceRepository.findAll().filter { it.personId == contact.person.id }
         assertThat(residences.size, equalTo(1))
         val residence = residences.first()
-        assertThat(residence.arrivalDate, equalTo(contact.date))
+        assertThat(residence.arrivalDate, equalTo(nsi.actualStartDate))
     }
 
     @Test

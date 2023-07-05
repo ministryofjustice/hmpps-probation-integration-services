@@ -229,7 +229,7 @@ class ReferralService(
         person.id,
         referral.id,
         ap.id,
-        arrivedAt.toLocalDate(),
+        arrivedAt,
         "This residence is being managed in the AP Referral Service. Please Do NOT make any updates to the record using Delius. Thank you."
     )
 }
