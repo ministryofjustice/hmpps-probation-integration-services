@@ -40,7 +40,7 @@ class Residence(
     val arrivalNotes: String?
 
 ) {
-    var departureDate: LocalDate? = null
+    var departureDate: ZonedDateTime? = null
     var departureReasonId: Long? = null
     var moveOnCategoryId: Long? = null
 

@@ -151,7 +151,7 @@ class ReferralService(
         ) {
             "Unable to find residence for ${person.crn} => ${details.bookingId}"
         }
-        residence.departureDate = details.departedAt.toLocalDate()
+        residence.departureDate = details.departedAt
         residence.departureReasonId = referenceDataRepository.findByCodeAndDatasetCode(
             details.legacyReasonCode,
             DatasetCode.AP_DEPARTURE_REASON
