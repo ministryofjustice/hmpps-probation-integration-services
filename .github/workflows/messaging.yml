@@ -1,0 +1,72 @@
+name: Replay messages
+# Copy HMPPS Domain Event messages from production to pre-production
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_time:
+        description: Start time
+        type: string
+        required: true
+        default: 'ago(1d)'
+      end_time:
+        description: End time
+        type: string
+        required: true
+        default: 'now()'
+      queue_name:
+        description: Queue
+        type: choice
+        required: true
+        options:
+          - approved-premises-and-delius-queue
+          - custody-key-dates-and-delius-queue
+          - domain-events-and-delius-queue
+          - make-recall-decisions-and-delius-queue
+          - manage-pom-cases-and-delius-queue
+          - person-search-index-from-delius-person-queue
+          - person-search-index-from-delius-contact-queue
+          - pre-sentence-reports-to-delius-queue
+          - prison-case-notes-to-probation-queue
+          - prison-custody-status-to-delius-queue
+          - refer-and-monitor-and-delius-queue
+          - risk-assessment-scores-to-delius-queue
+          - tier-to-delius-queue
+          - unpaid-work-and-delius-queue
+          - workforce-allocations-to-delius-queue
+          # ^ add new queues here
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    environment: preprod
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Authenticate to MOJ Cloud Platform
+        uses: ./.github/actions/cloud-platform-auth
+        with:
+          api: ${{ secrets.KUBE_ENV_API }}
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
+
+      - name: Checkout scripts repo
+        uses: actions/checkout@v3
+        with:
+          path: scripts
+          repository: ministryofjustice/hmpps-probation-integration-scripts
+
+      - name: Replay messages
+        env:
+          APP_INSIGHTS_APPLICATION_GUID: ${{ secrets.APP_INSIGHTS_APPLICATION_GUID }}
+          APP_INSIGHTS_API_KEY: ${{ secrets.APP_INSIGHTS_API_KEY }}
+          START_TIME: ${{ env.start_time }}
+          END_TIME: ${{ env.end_time }}
+          QUEUE_NAME: ${{ env.queue_name }}
+        run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew install terraform
+          ./replay-messages.sh
+        working-directory: scripts
