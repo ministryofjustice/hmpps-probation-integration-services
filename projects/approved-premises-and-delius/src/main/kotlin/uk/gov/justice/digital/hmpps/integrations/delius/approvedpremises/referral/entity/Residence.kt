@@ -17,7 +17,6 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
-import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
@@ -35,12 +34,12 @@ class Residence(
     @Column(name = "approved_premises_id")
     val approvedPremisesId: Long,
 
-    val arrivalDate: LocalDate,
+    val arrivalDate: ZonedDateTime,
     @Lob
     val arrivalNotes: String?
 
 ) {
-    var departureDate: LocalDate? = null
+    var departureDate: ZonedDateTime? = null
     var departureReasonId: Long? = null
     var moveOnCategoryId: Long? = null
 

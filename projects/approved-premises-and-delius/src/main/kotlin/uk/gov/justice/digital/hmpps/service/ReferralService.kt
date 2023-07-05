@@ -151,7 +151,7 @@ class ReferralService(
         ) {
             "Unable to find residence for ${person.crn} => ${details.bookingId}"
         }
-        residence.departureDate = details.departedAt.toLocalDate()
+        residence.departureDate = details.departedAt
         residence.departureReasonId = referenceDataRepository.findByCodeAndDatasetCode(
             details.legacyReasonCode,
             DatasetCode.AP_DEPARTURE_REASON
@@ -229,7 +229,7 @@ class ReferralService(
         person.id,
         referral.id,
         ap.id,
-        arrivedAt.toLocalDate(),
+        arrivedAt,
         "This residence is being managed in the AP Referral Service. Please Do NOT make any updates to the record using Delius. Thank you."
     )
 }
