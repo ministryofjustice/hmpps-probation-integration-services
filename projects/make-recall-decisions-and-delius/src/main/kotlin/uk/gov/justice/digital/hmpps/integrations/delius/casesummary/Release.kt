@@ -68,7 +68,10 @@ class Institution(
     val id: Long,
 
     @Column(name = "institution_name")
-    val name: String
+    val name: String?,
+
+    @Column
+    val description: String
 )
 
 interface CaseSummaryReleaseRepository : JpaRepository<Release, Long> {
