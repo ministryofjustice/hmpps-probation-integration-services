@@ -38,6 +38,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
@@ -76,6 +78,9 @@ internal class MessagingIntegrationTest {
 
     @Autowired
     private lateinit var residenceRepository: ResidenceRepository
+
+    @Autowired
+    private lateinit var staffRepository: StaffRepository
 
     @Test
     fun `application submission creates an alert contact`() {
@@ -283,10 +288,12 @@ internal class MessagingIntegrationTest {
         assertThat(main.postcode, equalTo(ap.postcode))
         assertThat(main.telephoneNumber, equalTo(ap.telephoneNumber))
 
+        val keyWorker = staffRepository.getByCode("N54A001")
         val residences = residenceRepository.findAll().filter { it.personId == contact.person.id }
         assertThat(residences.size, equalTo(1))
         val residence = residences.first()
         assertThat(residence.arrivalDate, equalTo(nsi.actualStartDate))
+        assertThat(residence.keyWorkerStaffId, equalTo(keyWorker.id))
     }
 
     @Test
