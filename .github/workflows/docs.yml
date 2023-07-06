@@ -163,8 +163,7 @@ jobs:
         run: |
           mv artifacts/index/ tech-docs
           mkdir -p tech-docs/projects
-          ls artifacts | xargs -I{} mv artifacts/{}/ tech-docs/projects/{}
-          find artifacts -mindepth 1 -maxdepth 1 -printf "%f\n" -print0 | xargs -0 -I{} mv 'artifacts/{}/' 'tech-docs/projects/{}/' \;
+          find projects -mindepth 1 -maxdepth 1 -execdir mv 'artifacts/{}/' 'tech-docs/projects/{}/' \;
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
