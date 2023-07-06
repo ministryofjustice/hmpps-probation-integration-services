@@ -23,7 +23,8 @@ class DomainEventService(
     @Transactional
     fun publishBatch(): Int {
         val deltas = domainEventRepository.findAll(Pageable.ofSize(batchSize)).content
-        deltas.forEach { notificationPublisher.publish(it.asNotification()) }
+        val notifications = deltas.map { it.asNotification() }
+        notifications.forEach { notificationPublisher.publish(it) }
         domainEventRepository.deleteAllByIdInBatch(deltas.map { it.id })
         return deltas.size
     }
