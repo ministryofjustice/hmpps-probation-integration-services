@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /external-api-and-delius/db-username
+    password_key: /external-api-and-delius/db-password
+
+  audit:
+    username: ExternalApiAndDelius
+    forename: Probation Integration # TODO change this to something meaningful for your service
+    surname: Service
