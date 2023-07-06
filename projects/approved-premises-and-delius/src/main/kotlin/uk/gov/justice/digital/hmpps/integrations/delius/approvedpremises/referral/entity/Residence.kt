@@ -36,8 +36,9 @@ class Residence(
 
     val arrivalDate: ZonedDateTime,
     @Lob
-    val arrivalNotes: String?
+    val arrivalNotes: String?,
 
+    val keyWorkerStaffId: Long?
 ) {
     var departureDate: ZonedDateTime? = null
     var departureReasonId: Long? = null

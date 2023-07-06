@@ -134,7 +134,8 @@ class ReferralService(
             )
         ) { "Unable to find referral for ${person.crn} => ${details.bookingId}" }
         referral.admissionDate = details.arrivedAt.toLocalDate()
-        residenceRepository.save(details.residence(person, ap, referral))
+        val kw = staffRepository.getByCode(details.keyWorker.staffCode)
+        residenceRepository.save(details.residence(person, ap, referral, kw))
     }
 
     fun personDeparted(person: Person, details: PersonDeparted) {
@@ -225,11 +226,12 @@ class ReferralService(
         )
     }
 
-    fun PersonArrived.residence(person: Person, ap: ApprovedPremises, referral: Referral) = Residence(
+    fun PersonArrived.residence(person: Person, ap: ApprovedPremises, referral: Referral, keyWorker: Staff) = Residence(
         person.id,
         referral.id,
         ap.id,
         arrivedAt,
-        "This residence is being managed in the AP Referral Service. Please Do NOT make any updates to the record using Delius. Thank you."
+        "This residence is being managed in the AP Referral Service. Please Do NOT make any updates to the record using Delius. Thank you.",
+        keyWorker.id
     )
 }
