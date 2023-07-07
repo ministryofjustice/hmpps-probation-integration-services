@@ -122,7 +122,7 @@ jobs:
           if ! kubectl get secret "$PROJECT-database" > /dev/null; then
             sudo apt-get install pwgen
             kubectl create secret generic "$PROJECT-database" \
-              --from-literal "DB_USERNAME=${PROJECT//-/_/}" \
+              --from-literal "DB_USERNAME=${PROJECT//-/_}" \
               --from-literal "DB_PASSWORD=$(pwgen -N1 16)"
           fi
         env:
