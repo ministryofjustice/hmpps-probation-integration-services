@@ -42,6 +42,19 @@ interface EventRepository : JpaRepository<Event, Long> {
         """
     )
     fun findAllOffencesByEventId(eventId: Long): List<Offence>
+
+    @Query(
+        """
+        select count(r) 
+        from Requirement r
+        where r.disposal.event.id = :eventId
+        and (r.mainCategory.code = 'RM38'
+            or (r.mainCategory.code = '7' and (r.subCategory.code is null or r.subCategory.code <> 'RS66'))
+            or (r.additionalMainCategory.code in ('RM38', '7'))
+        )
+    """
+    )
+    fun countAccreditedProgrammeRequirements(eventId: Long): Int
 }
 
 fun EventRepository.getByPersonCrnAndNumber(crn: String, number: String) = findByPersonCrnAndNumber(crn, number)
