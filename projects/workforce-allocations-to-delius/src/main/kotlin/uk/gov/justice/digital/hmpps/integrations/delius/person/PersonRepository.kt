@@ -102,6 +102,19 @@ interface PersonRepository : JpaRepository<Person, Long> {
         sentenceEndDateKeyDateTypeCode: String = "SED",
         custodialStatusCodes: List<String> = listOf("A", "C", "D", "R", "I", "AT")
     ): CaseType?
+
+    @Query(
+        """
+        select count(r) 
+        from Requirement r
+        where r.person.id = :personId
+        and (r.mainCategory.code = 'RM38'
+            or (r.mainCategory.code = '7' and (r.subCategory.code is null or r.subCategory.code <> 'RS66'))
+            or (r.additionalMainCategory.code in ('RM38', '7'))
+        )
+    """
+    )
+    fun countAccreditedProgrammeRequirements(personId: Long): Int
 }
 
 fun PersonRepository.getCaseType(crn: String) = findCaseType(crn) ?: CaseType.UNKNOWN

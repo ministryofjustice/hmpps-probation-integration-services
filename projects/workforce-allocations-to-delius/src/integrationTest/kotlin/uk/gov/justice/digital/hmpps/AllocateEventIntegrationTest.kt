@@ -14,7 +14,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.repository.findByIdOrNull
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
-import uk.gov.justice.digital.hmpps.data.repository.IapsEventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
@@ -41,9 +40,6 @@ class AllocateEventIntegrationTest {
 
     @Autowired
     private lateinit var orderManagerRepository: OrderManagerRepository
-
-    @Autowired
-    private lateinit var iapsEventRepository: IapsEventRepository
 
     @MockBean
     private lateinit var telemetryService: TelemetryService
@@ -112,8 +108,6 @@ class AllocateEventIntegrationTest {
 
         val updatedOmCount = orderManagerRepository.findAll().count { it.eventId == event.id }
         assertThat(updatedOmCount, equalTo(originalOmCount + 1))
-
-        assert(iapsEventRepository.findById(event.id).isPresent)
 
         val cadeContact = contactRepository.findAll()
             .firstOrNull { it.eventId == oldOm.eventId && it.type.code == ContactTypeCode.CASE_ALLOCATION_DECISION_EVIDENCE.value }

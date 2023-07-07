@@ -80,7 +80,9 @@ class AllocatePersonService(
                 )
             )
 
-            personRepository.updateIaps(personId)
+            if (personRepository.countAccreditedProgrammeRequirements(personId) > 0) {
+                personRepository.updateIaps(personId)
+            }
         }
 
     private fun updateResponsibleOfficer(
