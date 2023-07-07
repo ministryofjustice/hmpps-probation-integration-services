@@ -98,7 +98,7 @@ jobs:
         run: npx playwright install
       - name: Run Playwright tests
         id: tests
-        run: npx playwright test --reporter=html,junit,json,line $(echo '${{ env.projects }}' | jq -r 'join(" ")')
+        run: echo '${{ env.projects }}' | jq -r '.[]' | xargs npx playwright test --reporter=html,junit,json,line
         env:
           TZ: Europe/London
           ENV: test
