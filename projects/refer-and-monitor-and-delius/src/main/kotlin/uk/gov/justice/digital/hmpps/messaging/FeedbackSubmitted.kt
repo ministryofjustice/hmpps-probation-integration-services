@@ -77,7 +77,7 @@ private fun ReferralSession.appointmentOutcome(
     providerName: String,
     url: String
 ): UpdateAppointmentOutcome {
-    val sessionFeedback = checkNotNull(latestFeedback?.sessionFeedback) {
+    val feedback = checkNotNull(latestFeedback?.appointmentFeedback) {
         "No feedback information available for referral $referralId : session $id"
     }
     return UpdateAppointmentOutcome(
@@ -87,8 +87,8 @@ private fun ReferralSession.appointmentOutcome(
         referralReference,
         Referral(referralId, Provider(providerName), contractType),
         Outcome(
-            Attended.of(sessionFeedback.attendance.attended!!),
-            sessionFeedback.behaviour.notifyProbationPractitioner ?: true
+            Attended.of(feedback.attendanceFeedback.attended!!),
+            feedback.sessionFeedback.notifyProbationPractitioner ?: true
         ),
         url
     )
@@ -102,7 +102,7 @@ private fun SupplierAssessment.appointmentOutcome(
     url: String,
     deliusId: Long?
 ): UpdateAppointmentOutcome {
-    val sessionFeedback = checkNotNull(latestFeedback?.sessionFeedback) {
+    val feedback = checkNotNull(latestFeedback?.appointmentFeedback) {
         "No feedback information available for referral $referralId: supplier assessment $id"
     }
     return UpdateAppointmentOutcome(
@@ -112,8 +112,8 @@ private fun SupplierAssessment.appointmentOutcome(
         referralReference,
         Referral(referralId.toString(), Provider(providerName), contractType),
         Outcome(
-            Attended.of(sessionFeedback.attendance.attended!!),
-            sessionFeedback.behaviour.notifyProbationPractitioner ?: true
+            Attended.of(feedback.attendanceFeedback.attended!!),
+            feedback.sessionFeedback.notifyProbationPractitioner ?: true
         ),
         url
     )

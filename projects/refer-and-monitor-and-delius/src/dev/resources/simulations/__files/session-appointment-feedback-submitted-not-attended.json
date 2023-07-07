@@ -9,8 +9,8 @@
       "id": "3b8282cd-baa5-45d3-8489-b5836a58a0e8",
       "appointmentTime": "2023-04-17T09:34:00+01:00",
       "durationInMinutes": 15,
-      "sessionFeedback": {
-        "attendance": {
+      "appointmentFeedback": {
+        "attendanceFeedback": {
           "attended": "no",
           "additionalAttendanceInformation": "",
           "submittedAt": "2023-04-17T11:34:15.372669+01:00",
@@ -20,7 +20,7 @@
             "userId": "bc7098ed-948e-456d-8b21-3afb0257aa23"
           }
         },
-        "behaviour": {
+        "sessionFeedback": {
           "behaviourDescription": null,
           "notifyProbationPractitioner": null
         },
@@ -41,14 +41,14 @@
   "sessionType": "ONE_TO_ONE",
   "npsOfficeCode": null,
   "appointmentDeliveryAddress": null,
-  "sessionFeedback": {
-    "attendance": {
+  "appointmentFeedback": {
+    "attendanceFeedback": {
       "attended": null,
       "additionalAttendanceInformation": null,
       "submittedAt": null,
       "submittedBy": null
     },
-    "behaviour": {
+    "sessionFeedback": {
       "behaviourDescription": null,
       "notifyProbationPractitioner": null
     },
