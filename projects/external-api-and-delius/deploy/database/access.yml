@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /external-api-and-delius/db-username
+    password_key: /external-api-and-delius/db-password
+
+  audit:
+    username: ExternalApiAndDelius
+    forename: External API
+    surname: Service

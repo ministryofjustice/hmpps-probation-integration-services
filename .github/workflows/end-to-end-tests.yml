@@ -44,6 +44,7 @@ on:
           - '["custody-key-dates-and-delius"]'
           - '["domain-events-and-delius"]'
           - '["effective-proposal-framework-and-delius"]'
+          - '["external-api-and-delius"]'
           - '["make-recall-decisions-and-delius"]'
           - '["manage-pom-cases-and-delius"]'
           - '["offender-events-and-delius"]'
@@ -97,7 +98,7 @@ jobs:
         run: npx playwright install
       - name: Run Playwright tests
         id: tests
-        run: npx playwright test --reporter=html,junit,json,line $(echo '${{ env.projects }}' | jq -r 'join(" ")')
+        run: echo '${{ env.projects }}' | jq -r '.[]' | xargs npx playwright test --reporter=html,junit,json,line
         env:
           TZ: Europe/London
           ENV: test

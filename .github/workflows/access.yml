@@ -17,6 +17,7 @@ on:
           - '["custody-key-dates-and-delius"]'
           - '["domain-events-and-delius"]'
           - '["effective-proposal-framework-and-delius"]'
+          - '["external-api-and-delius"]'
           - '["make-recall-decisions-and-delius"]'
           - '["manage-pom-cases-and-delius"]'
           - '["offender-events-and-delius"]'
