@@ -89,7 +89,9 @@ class AllocateEventService(
 
             createCadeContact(allocationDetail, event, newOrderManager)
 
-            eventRepository.updateIaps(event.id)
+            if (event.hasAccreditedProgrammeRequirement()) {
+                eventRepository.updateIaps(event.id)
+            }
         }
 
     fun createCadeContact(allocationDetail: EventAllocationDetail, event: Event, orderManager: OrderManager) {
@@ -108,4 +110,7 @@ class AllocateEventService(
             )
         )
     }
+
+    fun Event.hasAccreditedProgrammeRequirement(): Boolean =
+        eventRepository.countAccreditedProgrammeRequirements(id) > 0
 }
