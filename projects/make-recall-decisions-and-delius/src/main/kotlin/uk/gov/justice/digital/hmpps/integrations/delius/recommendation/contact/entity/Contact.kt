@@ -107,7 +107,6 @@ class ContactType(
 ) {
     companion object {
         const val MANAGEMENT_OVERSIGHT_RECALL = "MO5"
-        const val RECOMMENDATION_STARTED = "MRD01"
     }
 }
 

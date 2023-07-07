@@ -37,21 +37,6 @@ internal class RecommendationIntegrationTest {
     lateinit var telemetryService: TelemetryService
 
     @Test
-    fun `when recommendation started - a contact is created`() {
-        val notification = prepEvent("recommendation-started", wireMockServer.port())
-        channelManager.getChannel(queueName).publishAndWait(notification)
-
-        val person = PersonGenerator.RECOMMENDATION_STARTED
-        val contact = getContact(person.id)
-        assertNotNull(contact!!)
-        assertThat(contact.providerId, equalTo(PersonGenerator.DEFAULT_PROVIDER.id))
-        assertThat(contact.teamId, equalTo(PersonGenerator.DEFAULT_TEAM.id))
-        assertThat(contact.staffId, equalTo(PersonGenerator.DEFAULT_STAFF.id))
-        assertThat(contact.notes, equalTo("View details of this Recommendation: http://mrd.case.crn/overview"))
-        verify(telemetryService, atLeastOnce()).notificationReceived(notification)
-    }
-
-    @Test
     fun `management overview decision to recall`() {
         val notification = prepEvent("management-oversight-recall", wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(notification)
