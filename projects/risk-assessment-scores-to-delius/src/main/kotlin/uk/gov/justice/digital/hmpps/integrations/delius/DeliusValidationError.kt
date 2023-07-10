@@ -15,7 +15,7 @@ class DeliusValidationError(override val message: String) : RuntimeException(mes
 
         private val IGNORED_VALIDATION_MESSAGES = listOf(
             "Event is Terminated",
-            "Event does not exist for crn",
+            "Event does not exist for crn"
         ) + KNOWN_VALIDATION_MESSAGES
 
         fun isKnownValidationMessage(message: String): Boolean = message in KNOWN_VALIDATION_MESSAGES
