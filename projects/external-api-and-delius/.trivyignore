@@ -1,0 +1,5 @@
+# Suppressed as this service doesn't handle file uploads
+CVE-2023-24998 exp:2023-08-01
+
+# Suppressed as we do not process any untrusted YML content
+CVE-2022-1471 exp:2023-08-01
