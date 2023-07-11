@@ -17,7 +17,6 @@ import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.service.ManagementOversightRecall
-import uk.gov.justice.digital.hmpps.service.RecommendationStarted
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.net.URI
@@ -31,9 +30,6 @@ internal class HandlerTest {
     lateinit var converter: NotificationConverter<HmppsDomainEvent>
 
     @Mock
-    lateinit var recommendationStarted: RecommendationStarted
-
-    @Mock
     lateinit var managementOversightRecall: ManagementOversightRecall
 
     @Mock
@@ -44,7 +40,7 @@ internal class HandlerTest {
 
     @Test
     fun `message is logged to telemetry`() {
-        val message = MessageGenerator.RECOMMENDATION_STARTED
+        val message = MessageGenerator.DECISION_NOT_TO_RECALL
         val notification = Notification(message, MessageAttributes(message.eventType))
 
         handler.handle(notification)

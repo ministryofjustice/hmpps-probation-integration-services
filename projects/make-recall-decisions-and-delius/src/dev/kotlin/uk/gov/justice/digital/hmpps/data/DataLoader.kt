@@ -33,7 +33,6 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(ape: ApplicationReadyEvent) {
         entityManager.run {
-            persist(ContactTypeGenerator.RECOMMENDATION_STARTED)
             persist(ContactTypeGenerator.MANAGEMENT_OVERSIGHT_RECALL)
             persist(ContactOutcomeGenerator.DECISION_TO_RECALL)
             persist(ContactOutcomeGenerator.DECISION_NOT_TO_RECALL)
