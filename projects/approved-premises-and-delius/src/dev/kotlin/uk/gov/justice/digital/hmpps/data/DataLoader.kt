@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferralGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TransferReasonGenerator
@@ -27,6 +28,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.Approve
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.Address
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.MoveOnCategoryRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSourceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcomeRepository
@@ -75,7 +77,8 @@ class DataLoader(
     private val nsiStatusRepository: NsiStatusRepository,
     private val transferReasonRepository: TransferReasonRepository,
     private val caseloadRepository: CaseloadRepository,
-    private val registrationRepository: RegistrationRepository
+    private val registrationRepository: RegistrationRepository,
+    private val referralRepository: ReferralRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -160,20 +163,22 @@ class DataLoader(
             )
         )
 
-        contactTypeRepository.saveAll(ContactTypeCode.values().map { ContactTypeGenerator.generate(it.code) })
+        contactTypeRepository.saveAll(ContactTypeCode.entries.map { ContactTypeGenerator.generate(it.code) })
         contactOutcomeRepository.saveAll(
             listOf(
                 ContactOutcomeGenerator.generate("AP_N"),
                 ContactOutcomeGenerator.generate("AP-D")
             )
         )
-        nsiTypeRepository.saveAll(NsiTypeCode.values().map { NsiTypeGenerator.generate(it.code) })
-        nsiStatusRepository.saveAll(NsiStatusCode.values().map { NsiStatusGenerator.generate(it.code) })
+        nsiTypeRepository.saveAll(NsiTypeCode.entries.map { NsiTypeGenerator.generate(it.code) })
+        nsiStatusRepository.saveAll(NsiStatusCode.entries.map { NsiStatusGenerator.generate(it.code) })
         transferReasonRepository.save(TransferReasonGenerator.NSI)
 
         caseloadRepository.save(CaseloadGenerator.generate(person, TeamGenerator.NON_APPROVED_PREMISES_TEAM))
         caseloadRepository.save(CaseloadGenerator.generate(person, TeamGenerator.APPROVED_PREMISES_TEAM))
         caseloadRepository.save(CaseloadGenerator.generate(person, TeamGenerator.UNALLOCATED))
+
+        referralRepository.save(ReferralGenerator.EXISTING_REFERRAL)
     }
 }
 
