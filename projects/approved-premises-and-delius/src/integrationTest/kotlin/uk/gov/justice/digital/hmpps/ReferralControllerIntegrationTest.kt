@@ -44,6 +44,5 @@ class ReferralControllerIntegrationTest {
 
         val er = objectMapper.readValue<ExistingReferrals>(res)
         assertThat(er.referrals.size, equalTo(1))
-        println(er)
     }
 }
