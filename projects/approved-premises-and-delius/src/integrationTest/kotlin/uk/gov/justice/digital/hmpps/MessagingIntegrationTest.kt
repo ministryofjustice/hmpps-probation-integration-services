@@ -209,7 +209,7 @@ internal class MessagingIntegrationTest {
         assertThat(contact.outcome?.code, equalTo(ContactOutcome.AP_NON_ARRIVAL_PREFIX + "D"))
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
 
-        val referral = referralRepository.findAll().first { it.personId == contact.person.id }
+        val referral = referralRepository.findAll().first { it.personId == contact.person.id && it.nonArrivalDate != null }
         assertThat(referral.nonArrivalDate, equalTo(contact.date))
         assertThat(referral.nonArrivalNotes, equalTo("Notes about non-arrival."))
         assertThat(referral.nonArrivalReasonId, equalTo(ReferenceDataGenerator.NON_ARRIVAL.id))

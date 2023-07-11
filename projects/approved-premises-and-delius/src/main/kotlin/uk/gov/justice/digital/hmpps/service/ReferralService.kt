@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referra
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Referral
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralSourceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralWithAp
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Residence
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ResidenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getByCode
@@ -40,6 +41,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.getApprovedPremisesTeam
 import uk.gov.justice.digital.hmpps.integrations.delius.team.getUnallocatedTeam
+import uk.gov.justice.digital.hmpps.model.ApReferral
+import uk.gov.justice.digital.hmpps.model.ExistingReferrals
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 import java.time.ZonedDateTime
 
@@ -161,7 +164,13 @@ class ReferralService(
             moveOnCategoryRepository.findByCode(details.destination.moveOnCategory.legacyCode)?.id
     }
 
-    fun BookingMade.referral(
+    fun findExistingReferrals(crn: String): ExistingReferrals {
+        val person = personRepository.getByCrn(crn)
+        val referrals = referralRepository.findAllByPersonId(person.id).map { it.apReferral() }
+        return ExistingReferrals(person.crn, referrals)
+    }
+
+    private fun BookingMade.referral(
         person: Person,
         event: Event,
         ap: ApprovedPremises,
@@ -226,12 +235,21 @@ class ReferralService(
         )
     }
 
-    fun PersonArrived.residence(person: Person, ap: ApprovedPremises, referral: Referral, keyWorker: Staff) = Residence(
-        person.id,
-        referral.id,
-        ap.id,
-        arrivedAt,
-        "This residence is being managed in the AP Referral Service. Please Do NOT make any updates to the record using Delius. Thank you.",
-        keyWorker.id
+    private fun PersonArrived.residence(person: Person, ap: ApprovedPremises, referral: Referral, keyWorker: Staff) =
+        Residence(
+            person.id,
+            referral.id,
+            ap.id,
+            arrivedAt,
+            "This residence is being managed in the AP Referral Service. Please Do NOT make any updates to the record using Delius. Thank you.",
+            keyWorker.id
+        )
+
+    private fun ReferralWithAp.apReferral() = ApReferral(
+        referral.referralDate,
+        referral.expectedArrivalDate,
+        referral.expectedDepartureDate,
+        referral.decisionDate,
+        uk.gov.justice.digital.hmpps.model.ApprovedPremises(approvedPremises)
     )
 }

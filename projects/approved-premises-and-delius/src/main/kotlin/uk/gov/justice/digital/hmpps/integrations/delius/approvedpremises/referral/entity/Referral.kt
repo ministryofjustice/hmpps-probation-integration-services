@@ -173,6 +173,23 @@ interface ReferralRepository : JpaRepository<Referral, Long> {
         createdByUserId: Long,
         externalRef: String
     ): Referral?
+
+    @Query(
+        """
+        select r as referral, ap.code.description as approvedPremises 
+        from Referral r 
+        join ApprovedPremises ap on r.approvedPremisesId = ap.id
+        where r.personId = :personId
+        and r.softDeleted = false
+        and r.admissionDate is null and r.nonArrivalDate is null
+    """
+    )
+    fun findAllByPersonId(personId: Long): List<ReferralWithAp>
+}
+
+interface ReferralWithAp {
+    val referral: Referral
+    val approvedPremises: String
 }
 
 interface ReferralSourceRepository : JpaRepository<ReferralSource, Long> {
