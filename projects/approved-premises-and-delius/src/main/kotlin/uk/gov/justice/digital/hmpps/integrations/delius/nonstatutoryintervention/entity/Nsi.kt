@@ -114,5 +114,5 @@ class Nsi(
 }
 
 interface NsiRepository : JpaRepository<Nsi, Long> {
-    fun findByExternalReference(externalReference: String): Nsi?
+    fun findByPersonIdAndExternalReference(personId: Long, externalReference: String): Nsi?
 }

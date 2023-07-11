@@ -52,9 +52,9 @@ class NsiService(
         ap: ApprovedPremises
     ) {
         val externalReference = Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
-        nsiRepository.findByExternalReference(externalReference) ?: run {
+        nsiRepository.findByPersonIdAndExternalReference(person.id, externalReference) ?: run {
             personRepository.findForUpdate(person.id)
-            nsiRepository.findByExternalReference(externalReference) ?: run {
+            nsiRepository.findByPersonIdAndExternalReference(person.id, externalReference) ?: run {
                 val staff = staffRepository.getByCode(details.keyWorker.staffCode)
                 val nsi = nsiRepository.save(
                     Nsi(
@@ -107,7 +107,8 @@ class NsiService(
     }
 
     fun personDeparted(person: Person, details: PersonDeparted, ap: ApprovedPremises) {
-        val nsi = nsiRepository.findByExternalReference(Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId)
+        val nsi =
+            nsiRepository.findByPersonIdAndExternalReference(person.id, Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId)
         nsi?.actualEndDate = details.departedAt
         nsi?.outcome = referenceDataRepository.referralCompleted()
         addressService.endMainAddress(person, details.departedAt.toLocalDate())

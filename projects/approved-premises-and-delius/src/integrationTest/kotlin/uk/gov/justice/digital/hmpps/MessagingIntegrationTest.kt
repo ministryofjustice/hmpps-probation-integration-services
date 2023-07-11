@@ -320,7 +320,7 @@ internal class MessagingIntegrationTest {
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
         assertThat(contact.description, equalTo("Departed from Hope House"))
 
-        val nsi = nsiRepository.findByExternalReference(EXT_REF_BOOKING_PREFIX + details.bookingId)
+        val nsi = nsiRepository.findByPersonIdAndExternalReference(contact.person.id, EXT_REF_BOOKING_PREFIX + details.bookingId)
         assertNotNull(nsi)
         assertNotNull(nsi!!.actualEndDate)
         assertThat(nsi.actualEndDate!!, isCloseTo(details.departedAt))
