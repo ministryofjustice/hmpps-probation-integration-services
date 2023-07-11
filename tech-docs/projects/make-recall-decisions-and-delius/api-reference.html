@@ -232,6 +232,10 @@
   },
   "username": "string",
   "email": "string",
+  "homeArea": {
+    "code": "string",
+    "name": "string"
+  },
   "staffCode": "string"
 }</code></pre>
 
@@ -1202,6 +1206,38 @@
 </tbody>
 </table>
 
+<h3 id="schema-provider">Provider</h3>
+
+
+<table class='schema-provider'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-userdetails">UserDetails</h3>
 
 
@@ -1238,6 +1274,16 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+<tr>
+<td>homeArea</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-provider'>Provider</a>
 </td>
 </tr>
 
@@ -2138,38 +2184,6 @@
 <td></td>
 <td>
   <a href='#schema-manager'>Manager</a>
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-provider">Provider</h3>
-
-
-<table class='schema-provider'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>code</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>name</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
 </td>
 </tr>
 
