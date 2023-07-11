@@ -29,6 +29,8 @@ internal class UserIntegrationTest {
             .andExpect(jsonPath("$.username", equalTo("TestUser")))
             .andExpect(jsonPath("$.staffCode", equalTo("TEST002")))
             .andExpect(jsonPath("$.email", equalTo("test@example.com")))
+            .andExpect(jsonPath("$.homeArea.code", equalTo("TST")))
+            .andExpect(jsonPath("$.homeArea.name", equalTo("Provider description")))
     }
 
     @Test
