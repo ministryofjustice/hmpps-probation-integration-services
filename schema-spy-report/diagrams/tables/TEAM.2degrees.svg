@@ -52,7 +52,7 @@
 <text text-anchor="start" x="62.9956" y="-3701.4822" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">44 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="104.5,-3695.3822 104.5,-3714.3822 145.5,-3714.3822 145.5,-3695.3822 104.5,-3695.3822"/>
 <polygon fill="none" stroke="#000000" points="104.5,-3695.3822 104.5,-3714.3822 145.5,-3714.3822 145.5,-3695.3822 104.5,-3695.3822"/>
-<text text-anchor="start" x="120.7904" y="-3701.4822" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">82 &gt;</text>
+<text text-anchor="start" x="120.7904" y="-3701.4822" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">81 &gt;</text>
 </a>
 </g>
 </g>
@@ -142,7 +142,7 @@
 <text text-anchor="start" x="448.094" y="-4958.4822" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">15,391 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="511,-4952.3822 511,-4971.3822 570,-4971.3822 570,-4952.3822 511,-4952.3822"/>
 <polygon fill="none" stroke="#000000" points="511,-4952.3822 511,-4971.3822 570,-4971.3822 570,-4952.3822 511,-4952.3822"/>
-<text text-anchor="start" x="539.1755" y="-4958.4822" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">297 &gt;</text>
+<text text-anchor="start" x="539.1755" y="-4958.4822" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">295 &gt;</text>
 </a>
 </g>
 </g>
@@ -202,7 +202,7 @@
 <text text-anchor="start" x="1283.547" y="-4958.4822" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">18,527 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="1346,-4952.3822 1346,-4971.3822 1373,-4971.3822 1373,-4952.3822 1346,-4952.3822"/>
 <polygon fill="none" stroke="#000000" points="1346,-4952.3822 1346,-4971.3822 1373,-4971.3822 1373,-4952.3822 1346,-4952.3822"/>
-<text text-anchor="start" x="1348.6452" y="-4958.4822" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">96 &gt;</text>
+<text text-anchor="start" x="1348.6452" y="-4958.4822" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">95 &gt;</text>
 </a>
 </g>
 </g>
@@ -6639,9 +6639,10 @@
 <!-- DOCUMENT&#45;&gt;OFFENDER -->
 <g id="edge234" class="edge">
 <title>DOCUMENT:w&#45;&gt;OFFENDER:e</title>
-<path fill="none" stroke="#000000" d="M2114.6434,-13985.5893C2015.5213,-13913.6746 2056.3352,-13055.0434 2052,-12943.3822 2050.0977,-12894.3839 2047.5906,-5922.2198 2019,-5882.3822 1943.9338,-5777.7864 1823.2328,-5890.6311 1745,-5788.3822 1677.3355,-5699.9459 1788.6572,-5369.1481 1712,-5288.3822 1639.2863,-5211.7711 1558.9089,-5325.8242 1476,-5260.3822 1371.9192,-5178.2287 1505.5972,-4980.3822 1373,-4980.3822"/>
-<polygon fill="#000000" stroke="#000000" points="2120.9395,-13987.767 2127.3232,-13993.7844 2124.7198,-13989.0746 2128.5,-13990.3822 2128.5,-13990.3822 2128.5,-13990.3822 2124.7198,-13989.0746 2129.6768,-13986.98 2120.9395,-13987.767 2120.9395,-13987.767"/>
-<ellipse fill="none" stroke="#000000" cx="2117.9153" cy="-13986.721" rx="3.2" ry="3.2"/>
+<path fill="none" stroke="#000000" d="M2118.3441,-13987.8724C2014.516,-13934.7926 2056.3882,-13056.4093 2052,-12943.3822 2050.0977,-12894.3839 2047.5906,-5922.2198 2019,-5882.3822 1943.9338,-5777.7864 1823.2328,-5890.6311 1745,-5788.3822 1677.3355,-5699.9459 1788.6572,-5369.1481 1712,-5288.3822 1639.2863,-5211.7711 1558.9089,-5325.8242 1476,-5260.3822 1371.9192,-5178.2287 1505.5972,-4980.3822 1373,-4980.3822"/>
+<polygon fill="#000000" stroke="#000000" points="2128.683,-13986.3071 2126.7637,-13994.0735 2125.2104,-13993.6896 2127.1298,-13985.9232 2128.683,-13986.3071"/>
+<polyline fill="none" stroke="#000000" points="2128.5,-13990.3822 2124.6168,-13989.4225 "/>
+<ellipse fill="none" stroke="#000000" cx="2121.5103" cy="-13988.6548" rx="3.2" ry="3.2"/>
 </g>
 <!-- DOCUMENT&#45;&gt;PROBATION_AREA -->
 <g id="edge231" class="edge">

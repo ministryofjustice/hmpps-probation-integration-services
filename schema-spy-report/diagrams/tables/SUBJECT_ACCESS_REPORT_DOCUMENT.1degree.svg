@@ -202,16 +202,17 @@
 <text text-anchor="start" x="380.094" y="-129.5381" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">18,527 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="443,-123.4381 443,-142.4381 495,-142.4381 495,-123.4381 443,-123.4381"/>
 <polygon fill="none" stroke="#000000" points="443,-123.4381 443,-142.4381 495,-142.4381 495,-123.4381 443,-123.4381"/>
-<text text-anchor="start" x="470.2904" y="-129.5381" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">96 &gt;</text>
+<text text-anchor="start" x="470.2904" y="-129.5381" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">95 &gt;</text>
 </a>
 </g>
 </g>
 <!-- DOCUMENT&#45;&gt;OFFENDER -->
 <g id="edge1" class="edge">
 <title>DOCUMENT:w&#45;&gt;OFFENDER:e</title>
-<path fill="none" stroke="#000000" d="M529.9165,-530.5554C466.2002,-573.7598 582.6294,-942.4381 495,-942.4381"/>
-<polygon fill="#000000" stroke="#000000" points="536.3214,-528.6829 545.0102,-529.8934 540.1607,-527.5605 544,-526.4381 544,-526.4381 544,-526.4381 540.1607,-527.5605 542.9898,-522.9827 536.3214,-528.6829 536.3214,-528.6829"/>
-<ellipse fill="none" stroke="#000000" cx="533.25" cy="-529.5809" rx="3.2" ry="3.2"/>
+<path fill="none" stroke="#000000" d="M533.6766,-528.4801C461.7811,-559.8632 584.2656,-942.4381 495,-942.4381"/>
+<polygon fill="#000000" stroke="#000000" points="542.439,-522.6693 543.9914,-530.5173 542.4219,-530.8278 540.8694,-522.9798 542.439,-522.6693"/>
+<polyline fill="none" stroke="#000000" points="544,-526.4381 540.076,-527.2143 "/>
+<ellipse fill="none" stroke="#000000" cx="536.9369" cy="-527.8353" rx="3.2" ry="3.2"/>
 </g>
 <!-- R_STANDARD_REFERENCE_LIST -->
 <g id="node3" class="node">
@@ -244,7 +245,7 @@
 <text text-anchor="start" x="106.094" y="-371.5381" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">15,391 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="169,-365.4381 169,-384.4381 228,-384.4381 228,-365.4381 169,-365.4381"/>
 <polygon fill="none" stroke="#000000" points="169,-365.4381 169,-384.4381 228,-384.4381 228,-365.4381 169,-365.4381"/>
-<text text-anchor="start" x="197.1755" y="-371.5381" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">297 &gt;</text>
+<text text-anchor="start" x="197.1755" y="-371.5381" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">295 &gt;</text>
 </a>
 </g>
 </g>
