@@ -34,6 +34,7 @@ class PersonAddress(
     val addressNumber: String?,
     @Column(name = "street_name")
     val streetName: String?,
+    val district: String?,
     @Column(name = "town_city")
     val town: String?,
     val county: String?,

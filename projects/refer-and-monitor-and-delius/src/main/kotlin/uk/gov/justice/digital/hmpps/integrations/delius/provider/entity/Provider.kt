@@ -70,6 +70,7 @@ class Location(
     val buildingName: String?,
     val buildingNumber: String?,
     val streetName: String?,
+    val district: String?,
     val townCity: String?,
     val county: String?,
     val postcode: String?,

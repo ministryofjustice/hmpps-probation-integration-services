@@ -5,6 +5,7 @@ import java.time.LocalDate
 data class CaseDetail(
     val crn: String,
     val name: Name,
+    val dateOfBirth: LocalDate,
     val gender: String?,
     val profile: Profile?,
     val contactDetails: ContactDetails
@@ -33,8 +34,7 @@ data class Profile(
 
 data class Disability(
     val type: String,
-    val start: LocalDate,
-    val endDate: LocalDate?,
+    val startDate: LocalDate,
     val notes: String?
 )
 

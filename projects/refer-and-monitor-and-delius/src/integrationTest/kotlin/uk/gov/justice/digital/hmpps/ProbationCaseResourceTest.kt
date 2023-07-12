@@ -131,6 +131,7 @@ class ProbationCaseResourceTest {
                 CaseDetail(
                     "M123456",
                     Name("Minimal", "Person"),
+                    LocalDate.now().minusYears(27),
                     null,
                     null,
                     ContactDetails(false, null, null, null, null)
@@ -193,6 +194,7 @@ class ProbationCaseResourceTest {
                 CaseDetail(
                     "F987462",
                     Name("Full", "Person"),
+                    LocalDate.now().minusYears(42),
                     "Description of GEN1",
                     Profile(
                         "Description of LANG1",
@@ -202,7 +204,6 @@ class ProbationCaseResourceTest {
                             Disability(
                                 "Description of DIS1",
                                 LocalDate.now().minusDays(14),
-                                null,
                                 "Some notes about the disability"
                             )
                         )
