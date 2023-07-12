@@ -46,4 +46,4 @@ class ProviderService(
 
 data class CrsAssignation(val provider: Provider, val team: Team, val staff: Staff, val location: Location?)
 
-fun Location.address() = Address.from(buildingName, buildingNumber, streetName, townCity, county, postcode)
+fun Location.address() = Address.from(buildingName, buildingNumber, streetName, district, townCity, county, postcode)

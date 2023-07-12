@@ -30,6 +30,7 @@ class PersonService(
         return CaseDetail(
             crn,
             Name(forename, surname),
+            dob,
             gender?.description,
             Profile.from(
                 language?.description,
@@ -51,11 +52,10 @@ class PersonService(
         uk.gov.justice.digital.hmpps.api.model.Disability(
             it.type.description,
             it.startDate,
-            it.endDate,
             it.notes
         )
     }
 
     fun PersonAddress.forContactDetails() =
-        Address.from(buildingName, addressNumber, streetName, town, county, postcode)
+        Address.from(buildingName, addressNumber, streetName, district, town, county, postcode)
 }
