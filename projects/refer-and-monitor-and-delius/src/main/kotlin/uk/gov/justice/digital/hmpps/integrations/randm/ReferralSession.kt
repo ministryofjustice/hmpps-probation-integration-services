@@ -11,45 +11,24 @@ data class ReferralSession(
     val appointmentTime: ZonedDateTime,
     @JsonAlias("deliusAppointmentId")
     val deliusId: Long?,
-    val sessionFeedback: SessionFeedback,
+    val appointmentFeedback: AppointmentFeedback,
     val oldAppointments: List<Appointment>
 ) {
     val latestFeedback: Appointment? =
-        if (sessionFeedback.attendance.attended != null) {
-            Appointment(appointmentId, sessionFeedback)
+        if (appointmentFeedback.attendanceFeedback.attended != null) {
+            Appointment(appointmentId, appointmentFeedback)
         } else {
-            oldAppointments.filter { it.sessionFeedback.attendance.attended != null }
-                .maxByOrNull { it.sessionFeedback.attendance.submittedAt!! }
+            oldAppointments.latestAttendanceRecorded()
         }
 }
-
-data class SessionFeedback(
-    val attendance: Attendance,
-    val behaviour: Behaviour
-)
-
-// Non-null behaviour with nullable attended to match model from Interventions Service
-data class Attendance(
-    val attended: String?,
-    val submittedAt: ZonedDateTime?
-)
-
-// Non-null behaviour with nullable notify to match model from Interventions Service
-data class Behaviour(
-    val notifyProbationPractitioner: Boolean?
-)
 
 data class SupplierAssessment(
     val id: UUID,
     val appointments: List<Appointment>,
     val referralId: UUID
 ) {
-    val latestFeedback =
-        appointments.filter { it.sessionFeedback.attendance.attended != null }
-            .maxByOrNull { it.sessionFeedback.attendance.submittedAt!! }
+    val latestFeedback = appointments.latestAttendanceRecorded()
 }
 
-data class Appointment(
-    val id: UUID,
-    val sessionFeedback: SessionFeedback
-)
+fun List<Appointment>.latestAttendanceRecorded() =
+    filter(Appointment::attendanceRecorded).maxByOrNull { it.attendanceSubmittedAt()!! }

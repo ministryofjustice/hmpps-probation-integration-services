@@ -12,8 +12,8 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.integrations.randm.Appointment
-import uk.gov.justice.digital.hmpps.integrations.randm.Attendance
-import uk.gov.justice.digital.hmpps.integrations.randm.Behaviour
+import uk.gov.justice.digital.hmpps.integrations.randm.AppointmentFeedback
+import uk.gov.justice.digital.hmpps.integrations.randm.AttendanceFeedback
 import uk.gov.justice.digital.hmpps.integrations.randm.ReferAndMonitorClient
 import uk.gov.justice.digital.hmpps.integrations.randm.SessionFeedback
 import uk.gov.justice.digital.hmpps.integrations.randm.SupplierAssessment
@@ -92,7 +92,7 @@ internal class FeedbackSubmittedTest {
         val appointment =
             Appointment(
                 UUID.randomUUID(),
-                SessionFeedback(Attendance(Attended.YES.name, ZonedDateTime.now()), Behaviour(false))
+                AppointmentFeedback(AttendanceFeedback(Attended.YES.name, ZonedDateTime.now()), SessionFeedback(false))
             )
         whenever(ramClient.getSupplierAssessment(URI(domainEvent.detailUrl!!)))
             .thenReturn(

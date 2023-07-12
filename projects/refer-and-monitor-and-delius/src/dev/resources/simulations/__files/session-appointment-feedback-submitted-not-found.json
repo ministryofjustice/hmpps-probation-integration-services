@@ -8,8 +8,8 @@
   "sessionType": "ONE_TO_ONE",
   "npsOfficeCode": null,
   "appointmentDeliveryAddress": null,
-  "sessionFeedback": {
-    "attendance": {
+  "appointmentFeedback": {
+    "attendanceFeedback": {
       "attended": "no",
       "additionalAttendanceInformation": "",
       "submittedAt": "2023-04-17T11:34:15.372669+01:00",
@@ -19,7 +19,7 @@
         "userId": "bc7098ed-948e-456d-8b21-3afb0257aa23"
       }
     },
-    "behaviour": {
+    "sessionFeedback": {
       "behaviourDescription": null,
       "notifyProbationPractitioner": null
     },

@@ -9,8 +9,8 @@
       "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
       "appointmentTime": "2023-02-12T16:00:00.000Z",
       "durationInMinutes": 0,
-      "sessionFeedback": {
-        "attendance": {
+      "appointmentFeedback": {
+        "attendanceFeedback": {
           "attended": "yes",
           "additionalAttendanceInformation": "some additional information",
           "submittedAt": "2023-02-12T16:07:03.774Z",
@@ -20,7 +20,7 @@
             "userId": "userId"
           }
         },
-        "behaviour": {
+        "sessionFeedback": {
           "behaviourDescription": "A description of the beahviour",
           "notifyProbationPractitioner": true
         },
@@ -52,8 +52,8 @@
     "county": "Heath",
     "postCode": "H3 4TH"
   },
-  "sessionFeedback": {
-    "attendance": {
+  "appointmentFeedback": {
+    "attendanceFeedback": {
       "attended": "yes",
       "additionalAttendanceInformation": "additional information about the attendance",
       "submittedAt": "2023-02-14T15:07:03.774Z",
@@ -63,7 +63,7 @@
         "userId": "userId"
       }
     },
-    "behaviour": {
+    "sessionFeedback": {
       "behaviourDescription": "a description of the behaviour",
       "notifyProbationPractitioner": true
     },

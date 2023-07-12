@@ -328,7 +328,7 @@ enum class Attended {
     YES, LATE, NO;
 
     companion object {
-        fun of(value: String): Attended = values().first { it.name.lowercase() == value.lowercase() }
+        fun of(value: String): Attended = entries.first { it.name.lowercase() == value.lowercase() }
     }
 }
 
