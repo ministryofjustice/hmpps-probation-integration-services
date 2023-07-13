@@ -334,50 +334,6 @@ internal class ReferAndMonitorIntegrationTest {
     }
 
     @Test
-    fun `fuzzy search referral end submitted`() {
-        val nsi = nsiRepository.findById(NsiGenerator.FUZZY_SEARCH.id).orElseThrow()
-        assertNull(nsi.actualEndDate)
-        assertNull(nsi.outcome)
-
-        val notification = prepNotification(
-            notification("fuzzy-search-referral-ended"),
-            wireMockServer.port()
-        )
-
-        channelManager.getChannel(queueName).publishAndWait(notification)
-
-        verify(telemetryService).trackEvent(
-            "ReferralEnded",
-            mapOf(
-                "crn" to "F123456",
-                "referralId" to "f56c5f7c-632f-4cad-a1b3-693541cb5f22",
-                "referralUrn" to "urn:hmpps:interventions-referral:71df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
-                "endDate" to "2023-02-23T15:29:54.197Z[Europe/London]",
-                "endType" to "CANCELLED"
-            )
-        )
-
-        val saved = nsiRepository.findById(NsiGenerator.FUZZY_SEARCH.id).orElseThrow()
-        assertThat(saved.status.code, equalTo(NsiStatus.Code.END.value))
-        assertThat(
-            saved.actualEndDate!!.withZoneSameInstant(EuropeLondon),
-            isCloseTo(ZonedDateTime.parse("2023-02-23T15:29:54.197Z").withZoneSameInstant(EuropeLondon))
-        )
-        assertThat(saved.outcome?.code, equalTo(ReferralEndType.CANCELLED.outcome))
-        assertFalse(saved.active)
-
-        verify(telemetryService).trackEvent(
-            "Fuzzy Matched NSI for termination",
-            mapOf(
-                "crn" to "F123456",
-                "urn" to "urn:hmpps:interventions-referral:71df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
-                "eventId" to NsiGenerator.FUZZY_SEARCH.eventId.toString(),
-                "startDate" to "2023-02-14"
-            )
-        )
-    }
-
-    @Test
     fun `failure to find appointment is rejected with reason`() {
         val notification = prepNotification(
             notification("session-appointment-feedback-submitted-not-found"),

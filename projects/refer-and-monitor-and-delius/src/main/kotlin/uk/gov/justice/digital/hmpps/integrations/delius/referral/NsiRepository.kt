@@ -20,22 +20,6 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
     @Query(
         """
         select nsi from Nsi nsi
-        join fetch nsi.person p
-        join fetch nsi.type t
-        join fetch nsi.status
-        join fetch nsi.managers
-        join Provider pr on nsi.intendedProviderId = pr.id
-        where p.crn = :crn
-        and nsi.eventId = :eventId
-        and t.code in :types
-        and pr.code = 'CRS'
-        """
-    )
-    fun fuzzySearch(crn: String, eventId: Long, types: Set<String>): List<Nsi>
-
-    @Query(
-        """
-        select nsi from Nsi nsi
         join Requirement r on r.id = nsi.requirementId
         join r.mainCategory rt
         where nsi.id = :id and rt.code = 'F'

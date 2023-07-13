@@ -35,7 +35,6 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime.now
-import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 @Service
@@ -54,7 +53,10 @@ class AppointmentService(
 
     @Transactional
     fun mergeAppointment(crn: String, mergeAppointment: MergeAppointment): Long = audit(ADD_CONTACT) { audit ->
-        val nsi = findNsi(crn, mergeAppointment)
+        val nsi = nsiRepository.findByPersonCrnAndExternalReference(crn, mergeAppointment.referralUrn)
+            ?: throw NotFoundException(
+                "Unable to match Referral ${mergeAppointment.referralUrn} => CRN $crn"
+            )
         audit["offenderId"] = nsi.person.id
 
         if (now().isAfter(mergeAppointment.start) && mergeAppointment.outcome == null) {
@@ -123,39 +125,6 @@ class AppointmentService(
         contactRepository.saveAndFlush(appointment)
         nsiRepository.findByIdIfRar(appointment.nsiId!!)?.rarCount = contactRepository.countNsiRar(appointment.nsiId)
         return appointment.id
-    }
-
-    private fun findNsi(crn: String, mergeAppointment: MergeAppointment): Nsi {
-        var nsi: Nsi? = nsiRepository.findByPersonCrnAndExternalReference(crn, mergeAppointment.referralUrn)
-        if (nsi == null && mergeAppointment.sentenceId != null) {
-            val nsis = nsiRepository.fuzzySearch(
-                crn,
-                mergeAppointment.sentenceId,
-                ContractTypeNsiType.MAPPING.values.toSet()
-            )
-            if (nsis.size == 1) {
-                nsi = nsis.first()
-            } else if (nsis.size > 1) {
-                nsi = nsis.firstOrNull { it.notes?.contains(mergeAppointment.referralUrn) ?: false }
-            }
-            if (nsi != null) {
-                telemetryService.trackEvent(
-                    "Fuzzy Matched NSI for Merge Appointment",
-                    mapOf(
-                        "crn" to crn,
-                        "urn" to mergeAppointment.urn,
-                        "eventId" to mergeAppointment.sentenceId.toString(),
-                        "startDate" to DateTimeFormatter.ISO_LOCAL_DATE.format(mergeAppointment.start.toLocalDate())
-                    )
-                )
-            }
-        }
-        if (nsi == null) {
-            throw NotFoundException(
-                "Unable to match Referral ${mergeAppointment.referralUrn} => CRN $crn : EventId ${mergeAppointment.sentenceId}"
-            )
-        }
-        return nsi
     }
 
     private fun createContact(mergeAppointment: MergeAppointment, assignation: CrsAssignation, nsi: Nsi): Contact =
