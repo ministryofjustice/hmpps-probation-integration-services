@@ -11,7 +11,7 @@ plugins {
     kotlin("plugin.jpa") version "1.9.0" apply false
     kotlin("kapt") version "1.9.0" apply false
     id("org.springframework.boot") version "3.1.1" apply false
-    id("io.spring.dependency-management") version "1.1.0" apply false
+    id("io.spring.dependency-management") version "1.1.1" apply false
     id("com.google.cloud.tools.jib") apply false
     id("org.jlleitschuh.gradle.ktlint") version "11.5.0"
     id("base")
