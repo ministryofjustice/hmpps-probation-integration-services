@@ -33,6 +33,10 @@
             }
           ],
           "percentage": 0
+        },
+        {
+          "telemetryType": "dependency",
+          "percentage": 5
         }
       ]
     }
