@@ -236,6 +236,9 @@ class LicenceCondition(
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal,
 
+    @Column
+    val startDate: LocalDate,
+
     @ManyToOne
     @JoinColumn(name = "lic_cond_type_main_cat_id")
     val mainCategory: LicenceConditionMainCategory,
@@ -246,7 +249,7 @@ class LicenceCondition(
 
     @Lob
     @Column(name = "lic_condition_notes")
-    val notes: String,
+    val notes: String?,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,

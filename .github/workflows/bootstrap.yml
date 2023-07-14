@@ -241,9 +241,12 @@ jobs:
 
       - name: Update IAM access to queues
         run: |
-          sed -i '/managed_sqs_queues = \[/a \    module.${{ inputs.project_name }}-queue,\n    module.${{ inputs.project_name }}-dlq,' 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/iam.tf'
-          sed -i '/managed_sqs_queues = \[/a \    module.${{ inputs.project_name }}-queue,\n    module.${{ inputs.project_name }}-dlq,' 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/iam.tf'
-          sed -i '/managed_sqs_queues = \[/a \    module.${{ inputs.project_name }}-queue,\n    module.${{ inputs.project_name }}-dlq,' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/iam.tf'
+          sed -i '/queue = \[/a \      module.${{ inputs.project_name }}-queue,' 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/iam.tf'
+          sed -i '/queue = \[/a \      module.${{ inputs.project_name }}-queue,' 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/iam.tf'
+          sed -i '/queue = \[/a \      module.${{ inputs.project_name }}-queue,' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/iam.tf'
+          sed -i '/dlq = \[/a \      module.${{ inputs.project_name }}-dlq,' 'cloud-platform-environments-dev/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-dev/resources/iam.tf'
+          sed -i '/dlq = \[/a \      module.${{ inputs.project_name }}-dlq,' 'cloud-platform-environments-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/iam.tf'
+          sed -i '/dlq = \[/a \      module.${{ inputs.project_name }}-dlq,' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/iam.tf'
 
       - name: Create dev pull request
         id: dev-pr

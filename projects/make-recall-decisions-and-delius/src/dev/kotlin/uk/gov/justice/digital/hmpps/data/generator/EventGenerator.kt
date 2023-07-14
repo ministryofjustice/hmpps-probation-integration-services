@@ -97,12 +97,13 @@ object EventGenerator {
     fun Disposal.licenceCondition(code: String, description: String) = LicenceCondition(
         id = IdGenerator.getAndIncrement(),
         disposal = this,
-        notes = "Test notes",
+        startDate = LocalDate.of(2020, 1, 1),
         mainCategory = LicenceConditionMainCategory(
             id = IdGenerator.getAndIncrement(),
             code = code,
             description = description
         ),
-        subCategory = null
+        subCategory = null,
+        notes = "Test notes"
     )
 }

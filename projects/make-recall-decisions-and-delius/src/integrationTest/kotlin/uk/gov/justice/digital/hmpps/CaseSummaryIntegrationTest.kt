@@ -77,6 +77,7 @@ internal class CaseSummaryIntegrationTest {
             .andExpect(status().is2xxSuccessful)
             .andExpectPersonalDetailsToMatch(person)
             .andExpect(jsonPath("$.activeConvictions[0].licenceConditions.size()", equalTo(1)))
+            .andExpect(jsonPath("$.activeConvictions[0].licenceConditions[0].startDate", equalTo("2020-01-01")))
             .andExpect(jsonPath("$.activeConvictions[0].licenceConditions[0].mainCategory.description", equalTo(event.disposal!!.licenceConditions[0].mainCategory.description)))
             .andExpect(jsonPath("$.activeConvictions[0].licenceConditions[0].notes", equalTo(event.disposal!!.licenceConditions[0].notes)))
     }

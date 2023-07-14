@@ -4,6 +4,7 @@ import uk.gov.justice.digital.hmpps.api.model.LicenceConditions.ConvictionWithLi
 import uk.gov.justice.digital.hmpps.api.model.LicenceConditions.LicenceCondition
 import uk.gov.justice.digital.hmpps.api.model.LicenceConditions.LicenceConditionCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Event
+import java.time.LocalDate
 
 data class LicenceConditions(
     val personalDetails: PersonalDetailsOverview,
@@ -17,6 +18,7 @@ data class LicenceConditions(
         val licenceConditions: List<LicenceCondition>
     )
     data class LicenceCondition(
+        val startDate: LocalDate,
         val mainCategory: LicenceConditionCategory,
         val subCategory: LicenceConditionCategory?,
         val notes: String?
@@ -35,6 +37,7 @@ fun Event.toConvictionWithLicenceConditions() = toConviction().let {
         sentence = it.sentence,
         licenceConditions = disposal?.licenceConditions?.map { lc ->
             LicenceCondition(
+                startDate = lc.startDate,
                 mainCategory = LicenceConditionCategory(lc.mainCategory.code, lc.mainCategory.description),
                 subCategory = lc.subCategory?.let { subCategory -> LicenceConditionCategory(subCategory.code, subCategory.description) },
                 notes = lc.notes
