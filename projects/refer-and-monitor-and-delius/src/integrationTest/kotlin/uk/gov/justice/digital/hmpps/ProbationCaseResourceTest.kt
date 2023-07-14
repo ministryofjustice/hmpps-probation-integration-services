@@ -75,6 +75,7 @@ class ProbationCaseResourceTest {
         assertThat(com.team.code, equalTo("N01PRO"))
         assertThat(com.team.email, equalTo("team@N01PRO.co.uk"))
         assertThat(com.team.telephoneNumber, equalTo("020 785 4451"))
+        assertThat(com.unallocated, equalTo(false))
 
         if (communityResponsible) {
             assertNull(ro.prisonManager)
