@@ -14,7 +14,9 @@ data class Manager(
     val responsibleOfficer: Boolean,
     val pdu: Pdu,
     val team: Team
-)
+) {
+    val unallocated = code.endsWith("U")
+}
 
 data class Name(val forename: String, val surname: String)
 

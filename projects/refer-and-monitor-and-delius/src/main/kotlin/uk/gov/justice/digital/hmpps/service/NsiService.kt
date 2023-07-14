@@ -30,7 +30,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.getByCode
 import uk.gov.justice.digital.hmpps.messaging.NsiTermination
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 
 @Service
 class NsiService(
@@ -109,30 +108,7 @@ class NsiService(
     }
 
     private fun findNsi(termination: NsiTermination): Nsi {
-        var nsi: Nsi? = nsiRepository.findByPersonCrnAndExternalReference(termination.crn, termination.urn)
-        if (nsi == null) {
-            val nsis = nsiRepository.fuzzySearch(
-                termination.crn,
-                termination.eventId,
-                ContractTypeNsiType.MAPPING.values.toSet()
-            ).filter {
-                it.referralDate == termination.startDate.toLocalDate()
-            }
-            if (nsis.size == 1) {
-                nsi = nsis.first()
-            } else if (nsis.size > 1) nsi = nsis.firstOrNull { it.notes?.contains(termination.urn) ?: false }
-            if (nsi != null) {
-                telemetryService.trackEvent(
-                    "Fuzzy Matched NSI for termination",
-                    mapOf(
-                        "crn" to termination.crn,
-                        "urn" to termination.urn,
-                        "eventId" to termination.eventId.toString(),
-                        "startDate" to ISO_LOCAL_DATE.format(termination.startDate.toLocalDate())
-                    )
-                )
-            }
-        }
+        val nsi: Nsi? = nsiRepository.findByPersonCrnAndExternalReference(termination.crn, termination.urn)
         if (nsi == null) {
             val nfr = nsiRepository.getNotFoundReason(termination.crn, termination.urn)
             throw ReferralNotFoundException(
