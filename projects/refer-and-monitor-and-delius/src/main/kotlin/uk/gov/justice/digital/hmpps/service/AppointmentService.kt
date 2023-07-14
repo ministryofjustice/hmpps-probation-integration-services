@@ -118,7 +118,7 @@ class AppointmentService(
         val outcome = outcomeRepository.getByCode(attendanceOutcome(this).value)
         appointment.outcome = outcome
 
-        if (notify && outcome.compliantAcceptable == false) {
+        if (outcome.compliantAcceptable == false) {
             handleNonCompliance(appointment)
         }
 
@@ -199,7 +199,7 @@ class AppointmentService(
             appointment.addNotes(uao.notes)
         }
 
-        if (uao.outcome.notify && outcome.compliantAcceptable == false) {
+        if (outcome.compliantAcceptable == false) {
             handleNonCompliance(appointment)
         }
 
@@ -303,5 +303,5 @@ enum class Attended {
 
 data class Outcome(
     val attended: Attended,
-    val notify: Boolean = true
+    val notify: Boolean = false
 )
