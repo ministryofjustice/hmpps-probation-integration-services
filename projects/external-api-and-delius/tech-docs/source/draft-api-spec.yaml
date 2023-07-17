@@ -51,6 +51,9 @@ components:
           type: string
         active:
           type: boolean
+        date:
+          type: string
+          format: date
         sentence:
           type: object
           properties:
@@ -84,15 +87,12 @@ components:
           items:
             type: object
             properties:
-              appearanceType:
+              type:
                 type: string
                 example: Sentence
-              appearanceDate:
+              date:
                 type: string
                 format: date-time
-              convictionDate:
-                type: string
-                format: date
               court:
                 type: string
                 example: Reading Magistrates Court
