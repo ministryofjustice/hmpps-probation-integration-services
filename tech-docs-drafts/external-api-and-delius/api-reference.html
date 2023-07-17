@@ -126,8 +126,8 @@
 <p>The following documentation is also available in these formats:</p>
 
 <ul>
-<li><a href="https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/PI-1260-draft-spec/projects/external-api-and-delius/tech-docs/source/draft-api-spec.yaml">OpenAPI YAML</a></li>
-<li><a href="https://editor.swagger.io/?url=https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/PI-1260-draft-spec/projects/external-api-and-delius/tech-docs/source/draft-api-spec.yaml">Swagger UI</a></li>
+<li><a href="https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/main/projects/external-api-and-delius/tech-docs/source/draft-api-spec.yaml">OpenAPI YAML</a></li>
+<li><a href="https://editor.swagger.io/?url=https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/main/projects/external-api-and-delius/tech-docs/source/draft-api-spec.yaml">Swagger UI</a></li>
 </ul>
 <h1 id="api-reference">API Reference v1</h1>
 <p>An example API specification for sharing Delius probation data with the HMPPS External API service.</p>
@@ -216,6 +216,7 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
     {
       "number": 4,
       "active": "boolean",
+      "date": "string",
       "sentence": {
         "description": "ORA Suspended Sentence Order",
         "startDate": "string",
@@ -256,58 +257,12 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
       ],
       "courtAppearances": [
         {
-          "appearanceType": "Sentence",
-          "appearanceDate": "string",
-          "convictionDate": "string",
+          "type": "Sentence",
+          "date": "string",
           "court": "Reading Magistrates Court",
           "plea": "Guilty"
         }
-      ],
-      "custody": {
-        "prisonBookingId": "12345A",
-        "status": {
-          "code": "D",
-          "description": "In custody"
-        },
-        "location": {
-          "code": "MRIHMP",
-          "name": "Manchester HMP",
-          "prisonCode": "MRI"
-        },
-        "keyDates": [
-          {
-            "type": {
-              "code": "SED",
-              "description": "Sentence Expiry Date"
-            },
-            "date": "string"
-          }
-        ]
-      },
-      "responsibleOfficer": {
-        "type": "string",
-        "officerCode": "N07A123",
-        "name": {
-          "forename": "string",
-          "middleName": "string",
-          "surname": "string"
-        }
-      },
-      "release": {
-        "releaseDate": "string",
-        "recallDate": "string"
-      },
-      "licenceConditions": [
-        {
-          "mainCategory": "Freedom of movement",
-          "subCategory": "Police escort",
-          "notes": "string"
-        }
-      ],
-      "breach": {
-        "failureToComplyCount": 1,
-        "inBreach": "boolean"
-      }
+      ]
     }
   ]
 }</code></pre>
@@ -369,6 +324,16 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
 </tr>
 
 <tr>
+<td>date</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
 <td>sentence</td>
 <td>object</td>
 <td>false</td>
@@ -402,58 +367,6 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
 <tr>
 <td>courtAppearances</td>
 <td>array</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>custody</td>
-<td>object</td>
-<td>false</td>
-<td><p>Information relating to custodial events</p>
-</td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>responsibleOfficer</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>release</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>licenceConditions</td>
-<td>array</td>
-<td>false</td>
-<td><p>List of licence conditions that must be followed after release</p>
-</td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>breach</td>
-<td>object</td>
 <td>false</td>
 <td></td>
 <td>
