@@ -1,0 +1,237 @@
+openapi: 3.0.1
+info:
+  title: API Reference
+  description: An example API specification for sharing Delius probation data with the HMPPS External API service.
+  termsOfService: ""
+  version: "1"
+servers:
+  - description: dev
+    url: https://external-api-and-delius-dev.hmpps.service.justice.gov.uk
+  - description: preprod
+    url: https://external-api-and-delius-preprod.hmpps.service.justice.gov.uk
+  - description: prod
+    url: https://external-api-and-delius.hmpps.service.justice.gov.uk
+paths:
+  /case/{crn}/convictions:
+    get:
+      tags:
+        - Case Details
+      summary: Get a list of convictions (called "events" in Delius) for a probation case by CRN.
+      description: |
+        Note: This endpoint is only an example to show a range of fields that are available from Delius. 
+        Some fields are likely to be removed as the endpoint is tailored to the needs of the HMPPS Integration team.
+      parameters:
+        - name: crn
+          in: path
+          description: The CRN (case reference number)
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: if the case exists
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  convictions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Event'
+        404:
+          description: if the case does not exist, has been soft-deleted, or merged
+components:
+  schemas:
+    Event:
+      type: object
+      properties:
+        number:
+          example: 4
+          type: string
+        active:
+          type: boolean
+        sentence:
+          type: object
+          properties:
+            description:
+              type: string
+              example: ORA Suspended Sentence Order
+            startDate:
+              type: string
+              format: date
+            length:
+              type: number
+              example: 16
+            lengthUnits:
+              type: string
+              enum:
+                - Days
+                - Weeks
+                - Months
+                - Years
+              example: Weeks
+        mainOffence:
+          $ref: '#/components/schemas/Offence'
+        additionalOffences:
+          description: List of additional offences
+          type: array
+          example: []
+          items:
+            $ref: '#/components/schemas/Offence'
+        courtAppearances:
+          type: array
+          items:
+            type: object
+            properties:
+              appearanceType:
+                type: string
+                example: Sentence
+              appearanceDate:
+                type: string
+                format: date-time
+              convictionDate:
+                type: string
+                format: date
+              court:
+                type: string
+                example: Reading Magistrates Court
+              plea:
+                type: string
+                example: Guilty
+        custody:
+          description: Information relating to custodial events
+          type: object
+          properties:
+            prisonBookingId:
+              description: Booking reference in the NOMIS prison system, if the Delius custody record has been matched with a NOMIS booking.
+              type: string
+              example: 12345A
+            status:
+              type: object
+              properties:
+                code:
+                  type: string
+                  example: D
+                description:
+                  type: string
+                  example: In custody
+            location:
+              type: object
+              properties:
+                code:
+                  type: string
+                  example: MRIHMP
+                name:
+                  type: string
+                  example: Manchester HMP
+                prisonCode:
+                  description: The NOMIS CDE code used by the prison system
+                  type: string
+                  example: MRI
+            keyDates:
+              description: A list of optional custodial key dates
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: SED
+                      description:
+                        type: string
+                        example: Sentence Expiry Date
+                  date:
+                    type: string
+                    format: date
+        responsibleOfficer:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - Community manager
+                - Prison manager
+            officerCode:
+              type: string
+              example: N07A123
+            name:
+              type: object
+              properties:
+                forename:
+                  type: string
+                middleName:
+                  type: string
+                surname:
+                  type: string
+        release:
+          type: object
+          properties:
+            releaseDate:
+              type: string
+              format: date
+            recallDate:
+              type: string
+              format: date
+        licenceConditions:
+          description: List of licence conditions that must be followed after release
+          type: array
+          items:
+            type: object
+            properties:
+              mainCategory:
+                type: string
+                example: Freedom of movement
+              subCategory:
+                type: string
+                example: Police escort
+              notes:
+                type: string
+        breach:
+          type: object
+          properties:
+            failureToComplyCount:
+              type: number
+              example: 1
+            inBreach:
+              type: boolean
+              example: false
+    Offence:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        code:
+          type: string
+          example: 02802
+        description:
+          type: string
+          example: Burglary with violence or the threat of violence - 02802
+        schedule15SexualOffence:
+          type: boolean
+          example: false
+        schedule15ViolentOffence:
+          type: boolean
+          example: false
+        mainCategory:
+          type: object
+          properties:
+            code:
+              type: string
+              example: 028
+            description:
+              type: string
+              example: Burglary in a dwelling
+        subCategory:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "02"
+            description:
+              type: string
+              example: Burglary with violence or the threat of violence
