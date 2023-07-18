@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @Service
 @Transactional
@@ -20,7 +21,8 @@ class CustodyDateUpdateService(
     private val custodyRepository: CustodyRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val keyDateRepository: KeyDateRepository,
-    private val contactService: ContactService
+    private val contactService: ContactService,
+    private val telemetryService: TelemetryService
 ) {
     fun updateCustodyKeyDates(nomsId: String) {
         val booking = prisonApi.getBookingFromNomsNumber(nomsId)
@@ -33,25 +35,27 @@ class CustodyDateUpdateService(
     }
 
     private fun updateCustodyKeyDates(booking: Booking) {
-        if (booking.active) {
-            val sentenceDetail = prisonApi.getSentenceDetail(booking.id)
-            val person = personRepository.findByNomsIdAndSoftDeletedIsFalse(booking.offenderNo) ?: return
-            val custody = findCustody(person.id, booking.bookingNo)
-            val changes = calculateKeyDateChanges(sentenceDetail, custody).groupBy { it.softDeleted }
-            changes[true]?.let {
-                keyDateRepository.deleteAll(it)
-            }
-            changes[false]?.let {
-                keyDateRepository.saveAll(it)
-            }
-            contactService.createForKeyDateChanges(custody, changes[false] ?: listOf(), changes[true] ?: listOf())
-        }
+        if (!booking.active) return telemetryService.trackEvent("BookingNotActive", booking.telemetry())
+        val sentenceDetail = prisonApi.getSentenceDetail(booking.id)
+        val person = personRepository.findByNomsIdAndSoftDeletedIsFalse(booking.offenderNo)
+            ?: return telemetryService.trackEvent("MissingNomsNumber", booking.telemetry())
+        val custody = findCustody(person.id, booking.bookingNo)
+        val (deleted, updated) = calculateKeyDateChanges(sentenceDetail, custody).partition { it.softDeleted }
+        keyDateRepository.deleteAll(deleted)
+        keyDateRepository.saveAll(updated)
+        contactService.createForKeyDateChanges(custody, updated, deleted)
+        telemetryService.trackEvent(
+            "KeyDatesUpdated",
+            booking.telemetry() +
+                updated.associateBy({ it.type.code }, { it.date.toString() }) +
+                deleted.associateBy({ it.type.code }, { "deleted" })
+        )
     }
 
     private fun calculateKeyDateChanges(
         sentenceDetail: SentenceDetail,
         custody: Custody
-    ): List<KeyDate> = CustodyDateType.values().mapNotNull { cdt ->
+    ): List<KeyDate> = CustodyDateType.entries.mapNotNull { cdt ->
         val date = cdt.field.getter.call(sentenceDetail)
         if (date != null) {
             val existing = custody.keyDates.find(cdt.code)
@@ -78,4 +82,6 @@ class CustodyDateUpdateService(
     }
 
     private fun List<KeyDate>.find(code: String): KeyDate? = firstOrNull { it.type.code == code }
+
+    private fun Booking.telemetry() = mapOf("nomsNumber" to offenderNo, "bookingRef" to bookingNo)
 }
