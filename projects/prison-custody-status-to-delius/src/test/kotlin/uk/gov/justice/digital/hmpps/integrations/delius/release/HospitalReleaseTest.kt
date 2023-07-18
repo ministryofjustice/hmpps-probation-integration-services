@@ -69,7 +69,7 @@ class HospitalReleaseTest : ReleaseServiceTestBase() {
         val custody = event.disposal!!.custody!!
 
         whenever(featureFlags.enabled(FeatureFlagCodes.HOSPITAL_RELEASE)).thenReturn(true)
-        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode))
+        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
             .thenReturn(institution)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
@@ -100,7 +100,7 @@ class HospitalReleaseTest : ReleaseServiceTestBase() {
         val releaseDateTime = ZonedDateTime.now()
 
         whenever(featureFlags.enabled(FeatureFlagCodes.HOSPITAL_RELEASE)).thenReturn(true)
-        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode))
+        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
             .thenReturn(institution)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
@@ -135,7 +135,7 @@ class HospitalReleaseTest : ReleaseServiceTestBase() {
         val custody = event.disposal!!.custody!!
 
         whenever(featureFlags.enabled(FeatureFlagCodes.HOSPITAL_RELEASE)).thenReturn(true)
-        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode))
+        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
             .thenReturn(institution)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
         whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.TRANSFER_TO_SECURE_HOSPITAL.code, true))

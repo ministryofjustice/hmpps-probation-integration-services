@@ -38,7 +38,7 @@ class Handler(
                 "prison-offender-events.prisoner.received" -> {
                     val outcome = recallService.recall(
                         hmppsEvent.additionalInformation.nomsNumber(),
-                        hmppsEvent.additionalInformation.prisonId(),
+                        hmppsEvent.additionalInformation.prisonId()!!,
                         hmppsEvent.additionalInformation.reason(),
                         hmppsEvent.additionalInformation.movementReason(),
                         hmppsEvent.occurredAt
@@ -56,14 +56,14 @@ class Handler(
 }
 
 fun AdditionalInformation.nomsNumber() = this["nomsNumber"] as String
-fun AdditionalInformation.prisonId() = this["prisonId"] as String
+fun AdditionalInformation.prisonId() = this["prisonId"] as String?
 fun AdditionalInformation.reason() = this["reason"] as String
 fun AdditionalInformation.movementReason() = this["nomisMovementReasonCode"] as String
 fun AdditionalInformation.details() = this["details"] as String?
 fun HmppsDomainEvent.telemetryProperties() = listOfNotNull(
     "occurredAt" to occurredAt.toString(),
     "nomsNumber" to additionalInformation.nomsNumber(),
-    "institution" to additionalInformation.prisonId(),
+    additionalInformation.prisonId()?.let { "institution" to it },
     "reason" to additionalInformation.reason(),
     "nomisMovementReasonCode" to additionalInformation.movementReason(),
     additionalInformation.details()?.let { "details" to it }

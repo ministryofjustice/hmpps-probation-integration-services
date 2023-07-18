@@ -118,7 +118,7 @@ class RecallService(
         val recall = createRecall(custody, recallReason, recallDateTime, latestRelease)
 
         val toInstitution = lazyInstitution.value
-        val custodialStatusUpdated = updateCustodialStatus(toInstitution, custody, recallDate, recall)
+        val custodialStatusUpdated = updateCustodialStatus(custody, recallDate, recall)
 
         val custodialLocationUpdated = updateCustodialLocation(custody, toInstitution, event, recallDate, recallReason)
 
@@ -154,11 +154,10 @@ class RecallService(
     }
 
     private fun updateCustodialStatus(
-        toInstitution: Institution,
         custody: Custody,
         recallDate: ZonedDateTime,
         recall: Recall?
-    ) = when (toInstitution.code) {
+    ) = when (custody.institution?.code) {
         InstitutionCode.UNLAWFULLY_AT_LARGE.code -> {
             custodyService.updateStatus(
                 custody,

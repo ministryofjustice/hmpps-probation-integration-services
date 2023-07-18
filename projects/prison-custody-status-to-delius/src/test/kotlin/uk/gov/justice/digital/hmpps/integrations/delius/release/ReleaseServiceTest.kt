@@ -242,7 +242,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(institutionRepository.findByCode(inCom.code)).thenReturn(inCom)
         whenever(referenceDataRepository.findByCodeAndSetName(ReleaseTypeCode.ADULT_LICENCE.code, "RELEASE TYPE"))
             .thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.nomisCdeCode)).thenReturn(DEFAULT)
+        whenever(institutionRepository.findByNomisCdeCode(DEFAULT.nomisCdeCode!!)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(orderManager)
         whenever(contactTypeRepository.findByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code))

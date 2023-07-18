@@ -78,7 +78,7 @@ class ReleaseService(
     @Transactional
     fun release(
         nomsNumber: String,
-        prisonId: String,
+        prisonId: String?,
         reason: String,
         movementReasonCode: String,
         releaseDateTime: ZonedDateTime
@@ -89,7 +89,10 @@ class ReleaseService(
         val releaseType = mapToReleaseType(reason, movementReasonCode)?.let {
             referenceDataRepository.getReleaseType(it.code)
         }
-        val institution = lazy { institutionRepository.getByNomisCdeCode(prisonId) }
+        val institution = lazy {
+            prisonId?.let { institutionRepository.getByNomisCdeCode(it) }
+                ?: institutionRepository.getByCode(InstitutionCode.OTHER_SECURE_UNIT.code)
+        }
 
         val events = eventService.getActiveCustodialEvents(nomsNumber)
         events.forEach {

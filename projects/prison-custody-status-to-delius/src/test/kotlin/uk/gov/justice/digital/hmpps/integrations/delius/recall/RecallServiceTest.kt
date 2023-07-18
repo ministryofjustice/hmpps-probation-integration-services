@@ -34,7 +34,7 @@ import java.time.temporal.ChronoUnit.DAYS
 internal class RecallServiceTest : RecallServiceTestBase() {
     private val person = PersonGenerator.RECALLABLE
     private val nomsNumber = person.nomsNumber
-    private val prisonId = InstitutionGenerator.DEFAULT.code
+    private val prisonId = InstitutionGenerator.DEFAULT.nomisCdeCode!!
     private val reason = "ADMISSION"
     private val recallDateTime = ZonedDateTime.now()
     private val recallDate = recallDateTime.truncatedTo(DAYS)
@@ -421,12 +421,13 @@ internal class RecallServiceTest : RecallServiceTestBase() {
 
     @Test
     fun recallToUnlawfullyAtLargeSetsCustodyStatusToRecalled() {
-        val institution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNLAWFULLY_AT_LARGE]!!
-        val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
+        val fromInstitution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNLAWFULLY_AT_LARGE]!!
+        val toInstitution = InstitutionGenerator.DEFAULT
+        val event = EventGenerator.previouslyReleasedEvent(person, fromInstitution)
         whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(
             ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
         )
-        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(institution.code)).thenReturn(institution)
+        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(toInstitution.nomisCdeCode!!)).thenReturn(toInstitution)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
         doAnswer<Recall> { it.getArgument(0) }.whenever(recallRepository).save(any())
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
@@ -438,7 +439,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         )
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
-        recallService.recall(nomsNumber, institution.code, reason, "INT", recallDateTime)
+        recallService.recall(nomsNumber, toInstitution.nomisCdeCode!!, reason, "INT", recallDateTime)
 
         verify(custodyService)
             .updateStatus(
@@ -451,12 +452,13 @@ internal class RecallServiceTest : RecallServiceTestBase() {
 
     @Test
     fun recallToUnknownSetsCustodyStatusToRecalled() {
-        val institution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]!!
-        val event = EventGenerator.previouslyReleasedEvent(person, InstitutionGenerator.DEFAULT)
+        val fromInstitution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]!!
+        val toInstitution = InstitutionGenerator.DEFAULT
+        val event = EventGenerator.previouslyReleasedEvent(person, fromInstitution)
         whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.code)).thenReturn(
             ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
         )
-        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(institution.code)).thenReturn(institution)
+        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(toInstitution.nomisCdeCode!!)).thenReturn(toInstitution)
         whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
         doAnswer<Recall> { it.getArgument(0) }.whenever(recallRepository).save(any())
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
@@ -468,7 +470,7 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         )
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
-        recallService.recall(nomsNumber, institution.code, reason, "INT", recallDateTime)
+        recallService.recall(nomsNumber, toInstitution.nomisCdeCode!!, reason, "INT", recallDateTime)
 
         verify(custodyService)
             .updateStatus(

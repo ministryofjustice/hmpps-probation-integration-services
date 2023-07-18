@@ -10,5 +10,6 @@ object MovementReasonCodes {
 
 object FeatureFlagCodes {
     const val RELEASE_ETL23 = "messages_released_etl23"
+    const val MULTIPLE_EVENTS = "release_recall_multiple_events"
     const val HOSPITAL_RELEASE = "messages_released_hospital"
 }

@@ -193,7 +193,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         val person = PersonGenerator.generate("A22345B")
         val event = EventGenerator.previouslyRecalledEvent(
             person,
-            InstitutionGenerator.generate("TSP")
+            InstitutionGenerator.generate("TSPHMP", "TSP")
         )
         val recallDateTime = ZonedDateTime.now()
         val recallDate = recallDateTime.truncatedTo(DAYS)
