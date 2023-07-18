@@ -6,16 +6,16 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.messaging.prisonId
 
 object InstitutionGenerator {
-    val DEFAULT = generate(MessageGenerator.PRISONER_RELEASED.additionalInformation.prisonId())
-    val STANDARD_INSTITUTIONS = InstitutionCode.values().associateWith { generate(it.code) }
+    val DEFAULT = MessageGenerator.PRISONER_RELEASED.additionalInformation.prisonId()!!.let { generate(it + "HMP", it) }
+    val STANDARD_INSTITUTIONS = InstitutionCode.entries.associateWith { generate(it.code, null) }
 
-    fun generate(prisonId: String): Institution {
+    fun generate(code: String, prisonId: String?): Institution {
         val institution = Institution(
             id = InstitutionId(IdGenerator.getAndIncrement(), true),
-            code = prisonId.padEnd(6, 'X'),
+            code = code,
             nomisCdeCode = prisonId,
-            description = "Test institution ($prisonId)",
-            probationArea = if (prisonId.length == 3) ProbationAreaGenerator.generate(prisonId) else null
+            description = "Test institution ($code)",
+            probationArea = prisonId?.length?.let { ProbationAreaGenerator.generate(prisonId) }
         )
         institution.probationArea?.institution = institution
         return institution

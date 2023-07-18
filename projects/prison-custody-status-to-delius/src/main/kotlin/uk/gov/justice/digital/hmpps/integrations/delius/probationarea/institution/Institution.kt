@@ -25,7 +25,7 @@ class Institution(
     val code: String,
 
     @Column
-    val nomisCdeCode: String,
+    val nomisCdeCode: String?,
 
     @Column(nullable = false)
     val description: String,

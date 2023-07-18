@@ -60,7 +60,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
                 "RELEASE TYPE"
             )
         ).thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode)).thenReturn(
+        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!)).thenReturn(
             institution
         )
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
@@ -99,7 +99,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
                 "RELEASE TYPE"
             )
         ).thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode)).thenReturn(
+        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!)).thenReturn(
             institution
         )
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
@@ -142,7 +142,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
                 "RELEASE TYPE"
             )
         ).thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode)).thenReturn(
+        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!)).thenReturn(
             institution
         )
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
@@ -212,7 +212,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
                 "RELEASE TYPE"
             )
         ).thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode)).thenReturn(
+        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!)).thenReturn(
             institution
         )
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
@@ -259,7 +259,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
                 "RELEASE TYPE"
             )
         ).thenReturn(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE])
-        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode)).thenReturn(
+        whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!)).thenReturn(
             institution
         )
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))

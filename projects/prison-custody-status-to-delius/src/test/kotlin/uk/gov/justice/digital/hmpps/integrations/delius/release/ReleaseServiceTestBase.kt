@@ -13,6 +13,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host.HostRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallService
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 
 @ExtendWith(MockitoExtension::class)
@@ -52,6 +54,12 @@ open class ReleaseServiceTestBase {
 
     @Mock
     internal lateinit var featureFlags: FeatureFlags
+
+    @Mock
+    internal lateinit var recallReasonRepository: RecallReasonRepository
+
+    @Mock
+    internal lateinit var recallService: RecallService
 
     @InjectMocks
     internal lateinit var releaseService: ReleaseService

@@ -167,7 +167,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         val custodyHistory = getCustodyHistory(custody)
         assertThat(custodyHistory, hasSize(2))
         assertThat(custodyHistory.map { it.type.code }, hasItems(STATUS_CHANGE.code, LOCATION_CHANGE.code))
-        assertThat(custodyHistory.map { it.detail }, hasItems("Recall added in custody ", "Test institution (WSI)"))
+        assertThat(custodyHistory.map { it.detail }, hasItems("Recall added in custody ", "Test institution (WSIHMP)"))
 
         // and a prison manager is created
         val prisonManager = getPrisonManagers(nomsNumber).single()

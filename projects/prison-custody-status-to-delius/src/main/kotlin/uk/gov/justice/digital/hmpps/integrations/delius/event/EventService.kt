@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.FeatureFlagCodes.MULTIPLE_EVENTS
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
@@ -20,7 +21,7 @@ class EventService(
         val events = eventRepository.findActiveCustodialEvents(persons.single().id)
         if (events.isEmpty()) throw IgnorableMessageException("NoActiveCustodialEvent")
 
-        if (events.size > 1 && !featureFlags.enabled("release_recall_multiple_events")) {
+        if (events.size > 1 && !featureFlags.enabled(MULTIPLE_EVENTS)) {
             throw IgnorableMessageException("MultipleActiveCustodialEvents")
         }
         return events
