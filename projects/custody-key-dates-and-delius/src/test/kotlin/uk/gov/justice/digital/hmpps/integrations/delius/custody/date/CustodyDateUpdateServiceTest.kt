@@ -10,6 +10,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -23,6 +24,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.integrations.prison.SentenceDetail
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
@@ -46,6 +48,9 @@ internal class CustodyDateUpdateServiceTest {
     @Mock
     lateinit var contactService: ContactService
 
+    @Mock
+    lateinit var telemetryService: TelemetryService
+
     @InjectMocks
     lateinit var custodyDateUpdateService: CustodyDateUpdateService
 
@@ -59,6 +64,7 @@ internal class CustodyDateUpdateServiceTest {
 
         verify(personRepository, never()).findByNomsIdAndSoftDeletedIsFalse(any())
         verify(contactService, never()).createForKeyDateChanges(any(), any(), any())
+        verify(telemetryService).trackEvent(eq("BookingNotActive"), any(), any())
     }
 
     @Test
@@ -72,6 +78,7 @@ internal class CustodyDateUpdateServiceTest {
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
         verify(contactService, never()).createForKeyDateChanges(any(), any(), any())
+        verify(telemetryService).trackEvent(eq("MissingNomsNumber"), any(), any())
     }
 
     @Test
@@ -143,7 +150,7 @@ internal class CustodyDateUpdateServiceTest {
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
-        verify(keyDateRepository, never()).saveAll(anyList())
-        verify(keyDateRepository, never()).deleteAll(any())
+        verify(keyDateRepository).saveAll(emptyList())
+        verify(keyDateRepository).deleteAll(emptyList())
     }
 }
