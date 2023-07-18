@@ -22,7 +22,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustody
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getKeyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.release.Release
 import java.time.ZonedDateTime
 
 val EOTL_LOCATION_CHANGE_CONTACT_NOTES = """${System.lineSeparator()}
@@ -100,12 +99,12 @@ class CustodyService(
     }
 
     fun allocatePrisonManager(
-        latestRelease: Release?,
         toInstitution: Institution,
         custody: Custody,
         allocationDateTime: ZonedDateTime
     ) {
         // allocate a prison manager if institution has changed and institution is linked to a provider
+        val latestRelease = custody.mostRecentRelease()
         if ((
             (latestRelease != null && toInstitution.id != latestRelease.institutionId) ||
                 (latestRelease == null && toInstitution.id != custody.institution?.id)

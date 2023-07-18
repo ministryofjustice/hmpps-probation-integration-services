@@ -122,7 +122,7 @@ class RecallService(
 
         val custodialLocationUpdated = updateCustodialLocation(custody, toInstitution, event, recallDate, recallReason)
 
-        custodyService.allocatePrisonManager(latestRelease, toInstitution, custody, recallDateTime)
+        custodyService.allocatePrisonManager(toInstitution, custody, recallDateTime)
 
         if (recall != null) {
             licenceConditionService.terminateLicenceConditionsForDisposal(
