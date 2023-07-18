@@ -1,9 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyList
 import org.mockito.InjectMocks
@@ -16,8 +13,6 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
-import uk.gov.justice.digital.hmpps.exception.ConflictException
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
@@ -82,7 +77,7 @@ internal class CustodyDateUpdateServiceTest {
     }
 
     @Test
-    fun `Multiple matching custody records throws exception`() {
+    fun `Multiple matching custody logged to telemetry`() {
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId)
 
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail())
@@ -103,15 +98,16 @@ internal class CustodyDateUpdateServiceTest {
                 )
             )
 
-        assertThrows<ConflictException> { custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id) }
+        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
         verify(keyDateRepository, never()).saveAll(anyList())
         verify(keyDateRepository, never()).deleteAll(any())
         verify(contactService, never()).createForKeyDateChanges(any(), any(), any())
+        verify(telemetryService).trackEvent(eq("DuplicateBookingRef"), any(), any())
     }
 
     @Test
-    fun `No matching custody records throws exception`() {
+    fun `No matching custody logged to telemetry`() {
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId)
 
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail())
@@ -120,14 +116,12 @@ internal class CustodyDateUpdateServiceTest {
             .thenReturn(PersonGenerator.DEFAULT)
         whenever(custodyRepository.findCustody(PersonGenerator.DEFAULT.id, booking.bookingNo)).thenReturn(listOf())
 
-        val ex = assertThrows<NotFoundException> {
-            custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
-        }
+        custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
-        assertThat(ex.message, equalTo("Custody with bookingRef of ${booking.bookingNo} not found"))
         verify(keyDateRepository, never()).saveAll(anyList())
         verify(keyDateRepository, never()).deleteAll(any())
         verify(contactService, never()).createForKeyDateChanges(any(), any(), any())
+        verify(telemetryService).trackEvent(eq("MissingBookingRef"), any(), any())
     }
 
     @Test

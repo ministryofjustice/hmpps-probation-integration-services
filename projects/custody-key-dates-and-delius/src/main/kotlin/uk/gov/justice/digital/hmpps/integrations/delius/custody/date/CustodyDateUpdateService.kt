@@ -2,8 +2,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius.custody.date
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.exception.ConflictException
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.findKeyDateType
@@ -39,7 +37,10 @@ class CustodyDateUpdateService(
         val sentenceDetail = prisonApi.getSentenceDetail(booking.id)
         val person = personRepository.findByNomsIdAndSoftDeletedIsFalse(booking.offenderNo)
             ?: return telemetryService.trackEvent("MissingNomsNumber", booking.telemetry())
-        val custody = findCustody(person.id, booking.bookingNo)
+        val custody = custodyRepository.findCustody(person.id, booking.bookingNo).run {
+            if (size > 1) return telemetryService.trackEvent("DuplicateBookingRef", booking.telemetry())
+            singleOrNull() ?: return telemetryService.trackEvent("MissingBookingRef", booking.telemetry())
+        }
         val (deleted, updated) = calculateKeyDateChanges(sentenceDetail, custody).partition { it.softDeleted }
         keyDateRepository.deleteAll(deleted)
         keyDateRepository.saveAll(updated)
@@ -69,16 +70,6 @@ class CustodyDateUpdateService(
         } else {
             custody.keyDates.find(cdt.code)?.let { it.softDeleted = true; it }
         }
-    }
-
-    private fun findCustody(
-        personId: Long,
-        bookingRef: String
-    ): Custody {
-        val sentences = custodyRepository.findCustody(personId, bookingRef)
-        if (sentences.isEmpty()) throw NotFoundException("Custody", "bookingRef", bookingRef)
-        if (sentences.size > 1) throw ConflictException("Multiple custody records matched booking reference $bookingRef")
-        return sentences[0]
     }
 
     private fun List<KeyDate>.find(code: String): KeyDate? = firstOrNull { it.type.code == code }
