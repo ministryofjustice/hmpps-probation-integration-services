@@ -9,4 +9,13 @@ CVE-2022-1471
 CVE-2022-25647
 
 # Reason: snappy compression only used for trusted inputs
+# Package: org.xerial.snappy:snappy-java:1.1.0.1
 CVE-2023-34455
+
+# Reason: No unauthorized access to local temporary filesystem
+# Package: com.google.guava:guava:18.0
+CVE-2023-2976
+
+# Reason: No parsing of untrusted HTML or XML
+# Package: org.jsoup:jsoup:1.7.2
+CVE-2021-37714
