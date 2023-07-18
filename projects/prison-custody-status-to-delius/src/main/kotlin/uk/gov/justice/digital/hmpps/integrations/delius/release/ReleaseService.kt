@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.release
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.FeatureFlagCodes.HOSPITAL_RELEASE
 import uk.gov.justice.digital.hmpps.FeatureFlagCodes.RELEASE_ETL23
 import uk.gov.justice.digital.hmpps.MovementReasonCodes
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
@@ -27,10 +28,17 @@ import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institutio
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.getByNomisCdeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallService
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonCode
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.getByCodeAndSelectableIsTrue
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getReleaseType
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode.CUSTODY_ROTL
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode.IN_CUSTODY
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode.RECALLED
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode.RELEASED_ON_LICENCE
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.RELEASABLE_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
@@ -62,6 +70,8 @@ class ReleaseService(
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val personDied: PersonDied,
+    private val recallReasonRepository: RecallReasonRepository,
+    private val recallService: RecallService,
     private val featureFlags: FeatureFlags
 ) : AuditableService(auditedInteractionService) {
 
@@ -76,7 +86,9 @@ class ReleaseService(
         personDied.inCustody(nomsNumber, releaseDateTime)
         PrisonerDied
     } else {
-        val releaseType = referenceDataRepository.getReleaseType(mapToReleaseType(reason, movementReasonCode).code)
+        val releaseType = mapToReleaseType(reason, movementReasonCode)?.let {
+            referenceDataRepository.getReleaseType(it.code)
+        }
         val institution = lazy { institutionRepository.getByNomisCdeCode(prisonId) }
 
         val events = eventService.getActiveCustodialEvents(nomsNumber)
@@ -95,11 +107,11 @@ class ReleaseService(
     private fun addReleaseToEvent(
         event: Event,
         lazyInstitution: Lazy<Institution>,
-        releaseType: ReferenceData,
+        releaseType: ReferenceData?,
         releaseDateTime: ZonedDateTime,
         movementReasonCode: String
-    ): Unit = audit(BusinessInteractionCode.ADD_RELEASE) {
-        it["eventId"] = event.id
+    ): Unit = audit(BusinessInteractionCode.ADD_RELEASE) { audit ->
+        audit["eventId"] = event.id
         OptimisationContext.offenderId.set(event.person.id)
 
         val disposal = event.disposal ?: throw NotFoundException("Disposal", "eventId", event.id)
@@ -111,30 +123,57 @@ class ReleaseService(
         validateRelease(custody, fromInstitution, releaseDate, movementReasonCode)
 
         // create the release
-        release(releaseDateTime, releaseType, custody, fromInstitution, movementReasonCode)
+        releaseType?.also {
+            release(releaseDateTime, it, custody, fromInstitution, movementReasonCode)
+        }
 
-        // update custody status + location
-        val statusCode = when (releaseType.code) {
-            ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE.code -> CustodialStatusCode.CUSTODY_ROTL
-            else -> CustodialStatusCode.RELEASED_ON_LICENCE
+        val statusCode = when {
+            releaseType?.code == ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE.code -> CUSTODY_ROTL
+            movementReasonCode.isHospitalRelease() -> {
+                if (custody.isInCustody()) {
+                    IN_CUSTODY
+                } else if (custody.status.code == RELEASED_ON_LICENCE.code) {
+                    RECALLED
+                } else {
+                    throw IgnorableMessageException(
+                        "NoActionHospitalRelease",
+                        listOfNotNull(
+                            "currentStatusCode" to custody.status.code,
+                            "custodyStatusDescription" to custody.status.description,
+                            custody.institution?.code?.let { "currentLocation" to it }
+                        ).toMap()
+                    )
+                }
+            }
+
+            else -> RELEASED_ON_LICENCE
         }
         custodyService.updateStatus(
             custody,
             statusCode,
             releaseDate,
-            when (statusCode) {
-                CustodialStatusCode.CUSTODY_ROTL -> "Released on Temporary Licence"
+            when {
+                statusCode == CUSTODY_ROTL -> "Released on Temporary Licence"
+                movementReasonCode.isHospitalRelease() -> "Transfer to/from Hospital"
                 else -> "Released on Licence"
             }
         )
 
-        val institution = when (releaseType.code) {
+        val institution = when (releaseType?.code) {
             ReleaseTypeCode.ADULT_LICENCE.code -> institutionRepository.getByCode(InstitutionCode.IN_COMMUNITY.code)
             else -> fromInstitution
         }
         if (locationChanged(custody, institution)) {
             custodyService.updateLocation(custody, institution, releaseDate)
-            custodyService.allocatePrisonManager(null, fromInstitution, custody, releaseDateTime)
+            if (!movementReasonCode.isHospitalRelease()) {
+                custodyService.allocatePrisonManager(null, fromInstitution, custody, releaseDateTime)
+            }
+        }
+
+        if (statusCode == RECALLED) {
+            val recallReason =
+                recallReasonRepository.getByCodeAndSelectableIsTrue(RecallReasonCode.TRANSFER_TO_SECURE_HOSPITAL.code)
+            recallService.createRecall(custody, recallReason, releaseDateTime, custody.mostRecentRelease())
         }
     }
 
@@ -148,7 +187,7 @@ class ReleaseService(
         movementReasonCode: String
     ) {
         // do not carry out this validation for ETL23 - logic later to deal with these scenarios
-        if (movementReasonCode != MovementReasonCodes.EXTENDED_TEMPORARY_LICENCE) {
+        if (movementReasonCode != MovementReasonCodes.EXTENDED_TEMPORARY_LICENCE && !movementReasonCode.isHospitalRelease()) {
             if (!custody.isInCustody()) {
                 throw IgnorableMessageException("UnexpectedCustodialStatus")
             }
@@ -172,8 +211,17 @@ class ReleaseService(
         }
     }
 
-    private fun mapToReleaseType(reason: String, movementReasonCode: String) = when (reason) {
-        "RELEASED" -> ReleaseTypeCode.ADULT_LICENCE
+    private fun mapToReleaseType(reason: String, movementReasonCode: String): ReleaseTypeCode? = when (reason) {
+        "RELEASED" -> {
+            if (movementReasonCode.isHospitalRelease() && featureFlags.enabled(HOSPITAL_RELEASE)) {
+                null
+            } else if (movementReasonCode.isHospitalRelease()) {
+                throw IgnorableMessageException("UnsupportedReleaseReason")
+            } else {
+                ReleaseTypeCode.ADULT_LICENCE
+            }
+        }
+
         "TEMPORARY_ABSENCE_RELEASE" ->
             if (movementReasonCode == "ETL23" && featureFlags.enabled(RELEASE_ETL23)) {
                 ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE
@@ -181,7 +229,14 @@ class ReleaseService(
                 throw IgnorableMessageException("UnsupportedReleaseReason")
             }
 
-        "RELEASED_TO_HOSPITAL", // -> TBC
+        "RELEASED_TO_HOSPITAL" -> {
+            if (movementReasonCode.isHospitalRelease() && featureFlags.enabled(HOSPITAL_RELEASE)) {
+                null
+            } else {
+                throw IgnorableMessageException("UnsupportedReleaseReason")
+            }
+        }
+
         "SENT_TO_COURT",
         "TRANSFERRED" -> throw IgnorableMessageException("UnsupportedReleaseReason")
 
@@ -239,3 +294,10 @@ class ReleaseService(
 }
 
 fun ReferenceData.canRelease() = RELEASABLE_STATUSES.map { it.code }.contains(code)
+
+fun String.isHospitalRelease() =
+    this in listOf(
+        MovementReasonCodes.DETAINED_MENTAL_HEALTH,
+        MovementReasonCodes.RELEASE_MENTAL_HEALTH,
+        MovementReasonCodes.FINAL_DISCHARGE_PSYCHIATRIC
+    )

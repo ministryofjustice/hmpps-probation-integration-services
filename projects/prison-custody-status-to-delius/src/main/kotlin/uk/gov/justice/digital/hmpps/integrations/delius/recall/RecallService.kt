@@ -101,7 +101,6 @@ class RecallService(
         audit["eventId"] = event.id
         OptimisationContext.offenderId.set(event.person.id)
 
-        val person = event.person
         val disposal = event.disposal ?: throw NotFoundException("Disposal", "eventId", event.id)
         val custody = disposal.custody ?: throw NotFoundException("Custody", "disposalId", disposal.id)
         val latestRelease = custody.mostRecentRelease()
@@ -116,7 +115,7 @@ class RecallService(
         // perform validation
         validateRecall(recallReason, custody, latestRelease, recallDate, isTransfer)
 
-        val recall = createRecall(custody, recallReason, recallDate, latestRelease, person)
+        val recall = createRecall(custody, recallReason, recallDateTime, latestRelease)
 
         val toInstitution = lazyInstitution.value
         val custodialStatusUpdated = updateCustodialStatus(toInstitution, custody, recallDate, recall)
@@ -132,7 +131,6 @@ class RecallService(
                 terminationDate = recallDate,
                 endOfTemporaryLicence = recallReason.isEotl()
             )
-            createRecallAlertContact(event, person, recallDateTime, recallReason, recall)
             RecallOutcome.PrisonerRecalled
         } else if (custodialStatusUpdated || custodialLocationUpdated) {
             RecallOutcome.CustodialDetailsUpdated
@@ -226,95 +224,95 @@ class RecallService(
         )
     }
 
-    private fun createRecall(
+    fun createRecall(
         custody: Custody,
         recallReason: RecallReason,
-        recallDate: ZonedDateTime,
-        latestRelease: Release?,
-        person: Person
-    ): Recall? {
-        return if (!custody.status.canRecall()) {
-            null
-        } else {
-            recallRepository.save(
-                Recall(
-                    date = recallDate,
-                    reason = recallReason,
-                    release = latestRelease!!, // Only possible to be null if no recall to be created
-                    person = person
-                )
+        recallDateTime: ZonedDateTime,
+        latestRelease: Release?
+    ): Recall? = if (!custody.status.canRecall()) {
+        null
+    } else {
+        val person = custody.disposal.event.person
+        val recall = recallRepository.save(
+            Recall(
+                date = recallDateTime.truncatedTo(DAYS),
+                reason = recallReason,
+                release = latestRelease!!, // Only possible to be null if no recall to be created
+                person = person
             )
-        }
+        )
+        createRecallAlertContact(custody.disposal.event, person, recallDateTime, recallReason, recall)
+        recall
     }
-
-    private fun validateRecall(
-        reason: RecallReason,
-        custody: Custody,
-        latestRelease: Release?,
-        recallDate: ZonedDateTime,
-        isTransfer: Boolean
-    ) {
-        if (custody.status.code == CustodialStatusCode.POST_SENTENCE_SUPERVISION.code ||
-            (reason.code == RecallReasonCode.END_OF_TEMPORARY_LICENCE.code && custody.status.code == CustodialStatusCode.IN_CUSTODY_IRC.code)
-        ) {
-            throw IgnorableMessageException("UnexpectedCustodialStatus")
-        }
-
-        require(!custody.status.isTerminated()) { "TerminatedCustodialStatus" }
-
-        if (!isTransfer && reason.code != RecallReasonCode.END_OF_TEMPORARY_LICENCE.code) {
-            if (latestRelease?.recall != null) {
-                throw IgnorableMessageException("RecallAlreadyExists")
-            }
-
-            if (latestRelease?.type?.code != ReleaseTypeCode.ADULT_LICENCE.code) {
-                throw IgnorableMessageException("UnexpectedReleaseType")
-            }
-        }
-
-        if (recallDate.isAfter(ZonedDateTime.now()) ||
-            (latestRelease != null && recallDate.isBefore(latestRelease.date))
-        ) {
-            throw IgnorableMessageException("InvalidRecallDate")
-        }
-    }
-
-    private fun decideRecallReason(
-        reason: String,
-        movementReason: String
-    ): (code: CustodialStatusCode) -> RecallReasonCode = when (reason) {
-        "ADMISSION" -> {
-            { RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT }
-        }
-
-        "TEMPORARY_ABSENCE_RETURN" -> {
-            { RecallReasonCode.END_OF_TEMPORARY_LICENCE }
-        }
-
-        "TRANSFERRED" -> {
-            if (movementReason == "INT") {
-                {
-                    when (it) {
-                        CustodialStatusCode.CUSTODY_ROTL -> RecallReasonCode.END_OF_TEMPORARY_LICENCE
-                        else -> RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT
-                    }
-                }
-            } else {
-                throw IgnorableMessageException("UnsupportedRecallReason")
-            }
-        }
-
-        "RETURN_FROM_COURT",
-        "UNKNOWN" -> throw IgnorableMessageException("UnsupportedRecallReason")
-
-        else -> throw IllegalArgumentException("Unexpected recall reason: $reason")
-    }
-
-    private fun ReferenceData.canRecall() = !NO_RECALL_STATUSES.map { it.code }.contains(code)
-    private fun ReferenceData.canChange() = !NO_CHANGE_STATUSES.map { it.code }.contains(code)
-
-    private fun ReferenceData.isTerminated() = TERMINATED_STATUSES.map { it.code }.contains(code)
 }
+
+private fun validateRecall(
+    reason: RecallReason,
+    custody: Custody,
+    latestRelease: Release?,
+    recallDate: ZonedDateTime,
+    isTransfer: Boolean
+) {
+    if (custody.status.code == CustodialStatusCode.POST_SENTENCE_SUPERVISION.code ||
+        (reason.code == RecallReasonCode.END_OF_TEMPORARY_LICENCE.code && custody.status.code == CustodialStatusCode.IN_CUSTODY_IRC.code)
+    ) {
+        throw IgnorableMessageException("UnexpectedCustodialStatus")
+    }
+
+    require(!custody.status.isTerminated()) { "TerminatedCustodialStatus" }
+
+    if (!isTransfer && reason.code != RecallReasonCode.END_OF_TEMPORARY_LICENCE.code) {
+        if (latestRelease?.recall != null) {
+            throw IgnorableMessageException("RecallAlreadyExists")
+        }
+
+        if (latestRelease?.type?.code != ReleaseTypeCode.ADULT_LICENCE.code) {
+            throw IgnorableMessageException("UnexpectedReleaseType")
+        }
+    }
+
+    if (recallDate.isAfter(ZonedDateTime.now()) ||
+        (latestRelease != null && recallDate.isBefore(latestRelease.date))
+    ) {
+        throw IgnorableMessageException("InvalidRecallDate")
+    }
+}
+
+private fun decideRecallReason(
+    reason: String,
+    movementReason: String
+): (code: CustodialStatusCode) -> RecallReasonCode = when (reason) {
+    "ADMISSION" -> {
+        { RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT }
+    }
+
+    "TEMPORARY_ABSENCE_RETURN" -> {
+        { RecallReasonCode.END_OF_TEMPORARY_LICENCE }
+    }
+
+    "TRANSFERRED" -> {
+        if (movementReason == "INT") {
+            {
+                when (it) {
+                    CustodialStatusCode.CUSTODY_ROTL -> RecallReasonCode.END_OF_TEMPORARY_LICENCE
+                    else -> RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT
+                }
+            }
+        } else {
+            throw IgnorableMessageException("UnsupportedRecallReason")
+        }
+    }
+
+    "RETURN_FROM_COURT",
+    "UNKNOWN" -> throw IgnorableMessageException("UnsupportedRecallReason")
+
+    else -> throw IllegalArgumentException("Unexpected recall reason: $reason")
+}
+
+private fun ReferenceData.canRecall() = !NO_RECALL_STATUSES.map { it.code }.contains(code)
+private fun ReferenceData.canChange() = !NO_CHANGE_STATUSES.map { it.code }.contains(code)
+
+private fun ReferenceData.isTerminated() = TERMINATED_STATUSES.map { it.code }.contains(code)
 
 fun List<RecallOutcome>.combined(): RecallOutcome {
     if (size == 1) return first()
