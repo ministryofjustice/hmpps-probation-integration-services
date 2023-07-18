@@ -134,7 +134,7 @@ class ReleaseService(
         }
         if (locationChanged(custody, institution)) {
             custodyService.updateLocation(custody, institution, releaseDate)
-            custodyService.allocatePrisonManager(null, fromInstitution, custody, releaseDateTime)
+            custodyService.allocatePrisonManager(institution, custody, releaseDateTime)
         }
     }
 
