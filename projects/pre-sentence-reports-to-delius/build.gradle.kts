@@ -13,6 +13,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.reactivestreams:reactive-streams") // Note: this is only required so we can use MultipartBodyBuilder in DocumentService - we should remove this when moving off Feign.
     implementation("org.jetbrains.kotlin:kotlin-reflect")

@@ -14,8 +14,10 @@ import uk.gov.justice.digital.hmpps.data.generator.PsrMessageGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.entity.UserRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
 import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
@@ -32,6 +34,12 @@ class DocumentServiceTest {
 
     @Mock
     private lateinit var alfrescoClient: AlfrescoClient
+
+    @Mock
+    private lateinit var providerRepository: ProviderRepository
+
+    @Mock
+    private lateinit var userRepository: UserRepository
 
     @InjectMocks
     private lateinit var documentService: DocumentService
@@ -76,7 +84,12 @@ class DocumentServiceTest {
         )
 
         whenever(courtReportRepository.findById(DocumentGenerator.DEFAULT.courtReportId)).thenReturn(
-            Optional.of(CourtReportGenerator.generate(Person(crn = "X111111B", id = 123L)))
+            Optional.of(
+                CourtReportGenerator.generate(
+                    Person(crn = "X111111B", id = 123L),
+                    CourtReportGenerator.generateAppearance(CourtReportGenerator.generateEvent("1"))
+                )
+            )
         )
 
         assertThrows<ConflictException> {

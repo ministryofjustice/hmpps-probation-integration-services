@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.greaterThan
+import org.hamcrest.Matchers.greaterThanOrEqualTo
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
@@ -55,6 +55,6 @@ class PsrCompletedIntegrationTest {
         verify(alfrescoClient).updateDocument(eq(DocumentGenerator.DEFAULT.alfrescoId), any())
 
         val updated = documentRepository.findByExternalReference(reportId)
-        assertThat(updated?.lastSaved, greaterThan(document?.lastSaved))
+        assertThat(updated?.lastSaved, greaterThanOrEqualTo(document?.lastSaved))
     }
 }

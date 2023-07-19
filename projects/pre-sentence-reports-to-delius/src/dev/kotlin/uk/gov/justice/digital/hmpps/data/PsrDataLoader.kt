@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
+import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
@@ -11,7 +12,9 @@ import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtAppearance
 import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
@@ -22,6 +25,8 @@ class PsrDataLoader(
     private val auditUserRepository: AuditUserRepository,
     private val businessInteractionRepository: BusinessInteractionRepository,
     private val personRepository: PersonRepository,
+    private val eventRepository: EventRepository,
+    private val courtAppearanceRepository: CourtAppearanceRepository,
     private val documentRepository: DocumentRepository,
     private val courtReportRepository: CourtReportRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
@@ -39,7 +44,12 @@ class PsrDataLoader(
         )
 
         personRepository.save(PersonGenerator.DEFAULT)
+        eventRepository.save(CourtReportGenerator.DEFAULT_EVENT)
+        courtAppearanceRepository.save(CourtReportGenerator.DEFAULT_CA)
         courtReportRepository.save(CourtReportGenerator.DEFAULT)
         documentRepository.save(DocumentGenerator.DEFAULT)
     }
 }
+
+interface EventRepository : JpaRepository<Event, Long>
+interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long>

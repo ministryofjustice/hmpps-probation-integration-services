@@ -2,22 +2,20 @@ package uk.gov.justice.digital.hmpps.integrations.delius.document
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import jakarta.persistence.Version
-import org.springframework.data.annotation.LastModifiedBy
-import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "document")
-@EntityListeners(AuditingEntityListener::class)
 class Document(
     @Id
     @Column(name = "document_id")
     val id: Long = 0,
+
+    @Column(name = "offender_id")
+    val personId: Long,
 
     @Column(name = "primary_key_id")
     val courtReportId: Long,
@@ -27,18 +25,32 @@ class Document(
 
     val externalReference: String,
 
+    val tableName: String = "COURT_REPORT",
+    val documentType: String = "DOCUMENT",
+
     @Column(name = "document_name")
     var name: String,
 
-    @LastModifiedDate
+    val createdByUserId: Long,
+    @Column(name = "created_datetime")
+    val createdDateTime: ZonedDateTime,
+
     var lastSaved: ZonedDateTime? = null,
 
-    @LastModifiedBy
     var lastUpdatedUserId: Long? = null,
+
+    @Column(name = "last_upd_author_provider_id")
+    var lastUpdatedProviderId: Long?,
+
+    @Column(name = "created_provider_id")
+    var createdProviderId: Long?,
 
     @Version
     var rowVersion: Long? = null,
 
-    @Column(columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean = false,
+
+    @Column(name = "partition_area_id")
+    private val partitionAreaId: Long = 0
 )

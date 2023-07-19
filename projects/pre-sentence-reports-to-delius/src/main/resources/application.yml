@@ -66,6 +66,7 @@ integrations:
   pre-sentence-reports:
     client-id: pre-sentence-reports-to-delius
     client-secret: pre-sentence-reports-to-delius
+    base-url: http://localhost:${wiremock.port}
   alfresco:
     url: http://localhost:${wiremock.port}
 
