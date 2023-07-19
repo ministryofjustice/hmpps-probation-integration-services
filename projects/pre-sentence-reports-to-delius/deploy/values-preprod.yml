@@ -1,3 +1,5 @@
+enabled: false
+
 generic-service:
   ingress:
     host: pre-sentence-reports-to-delius-preprod.hmpps.service.justice.gov.uk
@@ -12,6 +14,8 @@ generic-service:
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/issuer
 
     INTEGRATIONS_ALFRESCO_URL: https://alfresco.pre-prod.delius.probation.hmpps.dsd.io/alfresco/service/noms-spg/
+    INTEGRATIONS_PRE-SENTENCE-REPORTS_BASE-URL: https://pre-sentence-service-preprod.hmpps.service.justice.gov.uk
+    INTEGRATIONS_NEW-TECH_BASE-URL: https://ndelius.pre-prod.delius.probation.hmpps.dsd.io/newTech
 
 generic-prometheus-alerts:
   businessHoursOnly: true

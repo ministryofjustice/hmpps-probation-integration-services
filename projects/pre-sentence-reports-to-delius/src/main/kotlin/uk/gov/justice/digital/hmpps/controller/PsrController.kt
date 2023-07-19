@@ -52,7 +52,7 @@ class PsrController(
         } catch (e: IllegalArgumentException) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "URN $urn is invalid.")
         }
-        val url = urn.apply {
+        val url = with(urn) {
             when {
                 startsWith("urn:uk:gov:hmpps:pre-sentence-service:report:") ->
                     psrService.getPreSentenceReportUrl(uuid)
