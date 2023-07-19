@@ -6,6 +6,7 @@ import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.MultiValueMap
+import org.springframework.web.util.UriComponentsBuilder
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.ConflictException
@@ -18,10 +19,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReport
 import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.PsrReference
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
+import uk.gov.justice.digital.hmpps.integrations.newtech.NewTechEncoder
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 import java.time.ZonedDateTime
+import java.util.UUID
 
 @Service
 class DocumentService(
@@ -30,7 +33,8 @@ class DocumentService(
     private val providerRepository: ProviderRepository,
     private val documentRepository: DocumentRepository,
     private val courtReportRepository: CourtReportRepository,
-    private val alfrescoClient: AlfrescoClient
+    private val alfrescoClient: AlfrescoClient,
+    private val newTechEncoder: NewTechEncoder
 ) : AuditableService(auditedInteractionService) {
     fun AdditionalInformation.reportId() = this["reportId"] as String
 
@@ -93,6 +97,7 @@ class DocumentService(
             Document(
                 personId = courtReport.person.id,
                 courtReportId = courtReport.id,
+                templateName = reportType,
                 name = filename,
                 externalReference = psrRef.urn,
                 alfrescoId = aur.id,
@@ -107,6 +112,24 @@ class DocumentService(
 
         audit["documentId"] = document.id
         audit["alfrescoDocumentId"] = document.alfrescoId
+    }
+
+    fun getPreSentenceReportUrl(uuid: UUID, psrBaseUrl: String): String {
+        val templateName = documentRepository.findByExternalReference(uuid.toString())?.templateName
+        return "$psrBaseUrl/$templateName/$uuid"
+    }
+
+    fun getLegacyNewTechReportUrl(uuid: UUID, newTechBaseUrl: String, username: String): String {
+        val user = userRepository.findByUsername(username)
+        val doc = documentRepository.findByExternalReference(uuid.toString())
+            ?: throw NotFoundException("Document", "externalReference", uuid)
+        return UriComponentsBuilder
+            .fromUriString("$newTechBaseUrl/report/${doc.templateName}")
+            .queryParam("t", newTechEncoder.encode(System.currentTimeMillis().toString()))
+            .queryParam("user", newTechEncoder.encode(user.username))
+            .queryParam("onBehalfOfUser", newTechEncoder.encode(user.name()))
+            .queryParam("documentId", newTechEncoder.encode(uuid.toString()))
+            .build().toUriString()
     }
 
     private fun populateBodyValues(

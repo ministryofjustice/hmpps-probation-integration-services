@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReport
 import uk.gov.justice.digital.hmpps.integrations.delius.document.Document
 import java.time.ZonedDateTime
@@ -17,6 +18,7 @@ object DocumentGenerator {
         alfrescoId: String,
         externalReference: String,
         documentName: String,
+        templateName: String = "cr-type",
         id: Long = IdGenerator.getAndIncrement()
     ) = Document(
         id,
@@ -30,6 +32,7 @@ object DocumentGenerator {
         createdByUserId = 23,
         createdDateTime = ZonedDateTime.now(),
         lastSaved = ZonedDateTime.now(),
-        lastUpdatedUserId = 23
+        lastUpdatedUserId = 23,
+        templateName = templateName
     )
 }

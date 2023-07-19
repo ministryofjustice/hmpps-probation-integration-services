@@ -25,6 +25,8 @@ class Document(
 
     val externalReference: String,
 
+    val templateName: String,
+
     val tableName: String = "COURT_REPORT",
     val documentType: String = "DOCUMENT",
 

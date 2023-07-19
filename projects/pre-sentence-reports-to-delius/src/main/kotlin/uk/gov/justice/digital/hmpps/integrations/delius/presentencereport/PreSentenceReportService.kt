@@ -17,6 +17,7 @@ import java.util.UUID
 class PreSentenceReportService(
     auditedInteractionService: AuditedInteractionService,
     @Value("\${integrations.pre-sentence-reports.base-url}") private val psrBaseUrl: String,
+    @Value("\${integrations.new-tech.base-url}") private val newTechBaseUrl: String,
     private val courtReportRepository: CourtReportRepository,
     private val objectMapper: ObjectMapper,
     private val psrClient: PsrClient,
@@ -41,6 +42,12 @@ class PreSentenceReportService(
         documentService.createNewCourtReportDocument(reportType, courtReport, psrRef, pdf, username)
         return psrRef
     }
+
+    fun getPreSentenceReportUrl(uuid: UUID): String =
+        documentService.getPreSentenceReportUrl(uuid, psrBaseUrl)
+
+    fun getLegacyNewTechReportUrl(uuid: UUID, username: String): String =
+        documentService.getLegacyNewTechReportUrl(uuid, newTechBaseUrl, username)
 }
 
 data class PsrReference(val id: UUID, val urn: String)

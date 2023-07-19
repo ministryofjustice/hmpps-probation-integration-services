@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.audit.entity.UserReposit
 import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
+import uk.gov.justice.digital.hmpps.integrations.newtech.NewTechEncoder
 import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
@@ -40,6 +41,9 @@ class DocumentServiceTest {
 
     @Mock
     private lateinit var userRepository: UserRepository
+
+    @Mock
+    private lateinit var newTechEncoder: NewTechEncoder
 
     @InjectMocks
     private lateinit var documentService: DocumentService
