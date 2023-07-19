@@ -36,7 +36,25 @@
         },
         {
           "telemetryType": "dependency",
-          "percentage": 5
+          "attributes": [
+            {
+              "key": "db.statement",
+              "value": ".*CLIENT_IDENTIFIER.*",
+              "matchType": "regexp"
+            }
+          ],
+          "percentage": 0
+        },
+        {
+          "telemetryType": "dependency",
+          "attributes": [
+            {
+              "key": "db.operation",
+              "value": "SELECT",
+              "matchType": "strict"
+            }
+          ],
+          "percentage": 10
         }
       ]
     }

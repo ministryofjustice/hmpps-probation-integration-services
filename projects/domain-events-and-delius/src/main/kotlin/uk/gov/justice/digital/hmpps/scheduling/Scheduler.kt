@@ -1,9 +1,6 @@
 package uk.gov.justice.digital.hmpps.scheduling
 
-import io.opentelemetry.api.trace.SpanKind
-import io.opentelemetry.instrumentation.annotations.WithSpan
 import io.sentry.Sentry
-import io.sentry.spring.jakarta.tracing.SentryTransaction
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.service.DomainEventService
@@ -15,8 +12,6 @@ class Scheduler(
     private val telemetryService: TelemetryService
 ) {
     @Scheduled(fixedDelayString = "\${poller.fixed-delay:100}")
-    @SentryTransaction(operation = "poll")
-    @WithSpan("poll", kind = SpanKind.PRODUCER)
     fun poll() {
         try {
             val count = domainEventService.publishBatch()
