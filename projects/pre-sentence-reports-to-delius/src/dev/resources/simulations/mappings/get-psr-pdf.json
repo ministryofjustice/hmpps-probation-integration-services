@@ -17,6 +17,24 @@
           "Content-Type": "application/octet-stream"
         }
       }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/api/v1/report/cr-type",
+        "headers": {
+          "Authorization": {
+            "matches": "^Bearer (.*)$"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "create-psr-document.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
     }
   ]
 }

@@ -35,6 +35,7 @@ configure<ClassPathExtension> {
     jacocoExclusions = listOf(
         "**/config/**",
         "**/entity/**",
+        "**/newtech/**",
         "**/AppKt.class"
     )
 }

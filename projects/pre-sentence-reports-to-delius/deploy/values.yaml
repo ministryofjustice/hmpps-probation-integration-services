@@ -21,6 +21,8 @@ generic-service:
       SENTRY_DSN: SENTRY_DSN
     pre-sentence-reports-to-delius-queue:
       MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+    pre-sentence-reports-to-delius-newtech:
+      INTEGRATIONS_NEW-TECH_SECRET: NEWTECH_SECRET
 
 generic-prometheus-alerts:
   targetApplication: pre-sentence-reports-to-delius
