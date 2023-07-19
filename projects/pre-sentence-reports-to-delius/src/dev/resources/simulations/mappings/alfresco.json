@@ -106,6 +106,94 @@
       "response": {
         "status": 200
       }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/uploadnew",
+        "headers": {
+          "X-DocRepository-Remote-User": {
+            "equalTo": "N00"
+          },
+          "Authorization": {
+            "doesNotMatch": "^Bearer (.*)$"
+          }
+        },
+        "multipartPatterns": [
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"CRN\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "D001022"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"author\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "Creator,Document"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"entityType\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "COURTREPORT"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"docType\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "DOCUMENT"
+              }
+            ]
+          },
+          {
+            "matchingType": "ANY",
+            "headers": {
+              "Content-Disposition": {
+                "contains": "name=\"entityId\""
+              }
+            },
+            "bodyPatterns": [
+              {
+                "contains": "8"
+              }
+            ]
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "create-psr-alfresco.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
     }
   ]
 }

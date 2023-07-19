@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 @Immutable
 @Entity
 @Table(name = "user_")
-open class User(
+class User(
     @Id
     @Column(name = "user_id")
     val id: Long,

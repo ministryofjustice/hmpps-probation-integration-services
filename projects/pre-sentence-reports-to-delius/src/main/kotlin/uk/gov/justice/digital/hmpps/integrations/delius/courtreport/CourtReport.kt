@@ -6,12 +6,13 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 
+@Immutable
 @Entity
+@Where(clause = "soft_deleted = 0")
 class CourtReport(
 
     @Id
@@ -24,12 +25,14 @@ class CourtReport(
 
     @ManyToOne
     @JoinColumn(name = "court_appearance_id")
-    val appearance: CourtAppearance
+    val appearance: CourtAppearance,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean = false
 )
 
 @Immutable
 @Entity
-@Table
 @Where(clause = "soft_deleted = 0")
 class CourtAppearance(
     @Id

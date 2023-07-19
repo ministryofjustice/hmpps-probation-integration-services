@@ -10,8 +10,12 @@ object CourtReportGenerator {
     val DEFAULT_CA = generateAppearance(DEFAULT_EVENT)
     val DEFAULT = generate(PersonGenerator.DEFAULT, DEFAULT_CA)
 
-    fun generate(person: Person, courtAppearance: CourtAppearance, id: Long = IdGenerator.getAndIncrement()) =
-        CourtReport(id, person, courtAppearance)
+    fun generate(
+        person: Person,
+        courtAppearance: CourtAppearance,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = CourtReport(id, person, courtAppearance, softDeleted)
 
     fun generateAppearance(event: Event, softDeleted: Boolean = false, id: Long = IdGenerator.getAndIncrement()) =
         CourtAppearance(id, event, softDeleted)

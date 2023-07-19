@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.presentencereport
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
@@ -15,6 +16,7 @@ import java.util.UUID
 @Service
 class PreSentenceReportService(
     auditedInteractionService: AuditedInteractionService,
+    @Value("\${integrations.pre-sentence-reports.base-url}") private val psrBaseUrl: String,
     private val courtReportRepository: CourtReportRepository,
     private val objectMapper: ObjectMapper,
     private val psrClient: PsrClient,
@@ -32,10 +34,10 @@ class PreSentenceReportService(
         val person = courtReport.person
         check(person.crn == crn) { "Mismatch between crn and court report id" }
         val psrRef = psrClient.createReport(
-            URI.create("/api/v1/report/$reportType"),
+            URI.create("$psrBaseUrl/api/v1/report/$reportType"),
             mapOf("crn" to person.crn, "eventNumber" to courtReport.appearance.event.number)
         )
-        val pdf = psrClient.getPsrReport(URI.create("/api/v1/report/${psrRef.id}/pdf"))
+        val pdf = psrClient.getPsrReport(URI.create("$psrBaseUrl/api/v1/report/${psrRef.id}/pdf"))
         documentService.createNewCourtReportDocument(reportType, courtReport, psrRef, pdf, username)
         return psrRef
     }
