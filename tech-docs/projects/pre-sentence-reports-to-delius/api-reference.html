@@ -106,6 +106,12 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#probation-cases-crn-court-reports-courtreportid-pre-sentence-reports"><span>/probation-cases/{crn}/court-reports/{courtReportId}/pre-sentence-reports</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#probation-cases-crn-pre-sentence-reports"><span>/probation-cases/{crn}/pre-sentence-reports</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#context-reportid"><span>/context/{reportId}</span></a>
       </li>
       <li>
@@ -141,6 +147,148 @@
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="probation-cases-crn-court-reports-courtreportid-pre-sentence-reports">/probation-cases/{crn}/court-reports/{courtReportId}/pre-sentence-reports</h2>
+
+<h3 id="probation-cases-crn-court-reports-courtreportid-pre-sentence-reports-post">post</h3>
+
+
+
+
+<h4 id="probation-cases-crn-court-reports-courtreportid-pre-sentence-reports-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>courtReportId</td>
+<td>path</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-cases-crn-court-reports-courtreportid-pre-sentence-reports-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "id": "string",
+  "urn": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-psrreference'>PsrReference</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-cases-crn-pre-sentence-reports">/probation-cases/{crn}/pre-sentence-reports</h2>
+
+<h3 id="probation-cases-crn-pre-sentence-reports-get">get</h3>
+
+
+
+
+<h4 id="probation-cases-crn-pre-sentence-reports-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>urn</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-cases-crn-pre-sentence-reports-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "id": "string",
+  "urn": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-psrreference'>PsrReference</a>
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -248,6 +396,60 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-createpsr">CreatePsr</h3>
+
+
+<table class='schema-createpsr'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-psrreference">PsrReference</h3>
+
+
+<table class='schema-psrreference'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>urn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-address">Address</h3>
 
 
