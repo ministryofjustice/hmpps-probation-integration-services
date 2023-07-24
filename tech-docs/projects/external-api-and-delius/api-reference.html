@@ -101,7 +101,7 @@
         <a href="./api-reference.html#servers"><span>Servers</span></a>
       </li>
       <li>
-        <a href="./api-reference.html#case-crn-convictions"><span>/case/{crn}/convictions</span></a>
+        <a href="./api-reference.html#case-crn-supervisions"><span>/case/{crn}/supervisions</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -160,11 +160,11 @@
 
 
 
-<h2 id="case-crn-convictions">/case/{crn}/convictions</h2>
+<h2 id="case-crn-supervisions">/case/{crn}/supervisions</h2>
 
-<h3 id="case-crn-convictions-get">get</h3>
+<h3 id="case-crn-supervisions-get">get</h3>
 
-  <p><em>Get a list of convictions (called &ldquo;events&rdquo; in Delius) for a probation case by CRN.</em></p>
+  <p><em>Get a list of supervisions (called &ldquo;events&rdquo; in Delius) for a probation case by CRN.</em></p>
 
 
   <p>Note: This endpoint is only an example to show a range of fields that are available from Delius. 
@@ -173,7 +173,7 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
 
 
 
-<h4 id="case-crn-convictions-get-parameters">Parameters</h4>
+<h4 id="case-crn-supervisions-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -197,7 +197,7 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
 
 
 
-<h4 id="case-crn-convictions-get-responses">Responses</h4>
+<h4 id="case-crn-supervisions-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -212,7 +212,7 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
 
 
 <pre><code>{
-  "convictions": [
+  "supervisions": [
     {
       "number": 4,
       "active": "boolean",

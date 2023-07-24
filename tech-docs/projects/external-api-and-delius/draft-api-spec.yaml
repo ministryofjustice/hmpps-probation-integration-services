@@ -12,11 +12,11 @@ servers:
   - description: prod
     url: https://external-api-and-delius.hmpps.service.justice.gov.uk
 paths:
-  /case/{crn}/convictions:
+  /case/{crn}/supervisions:
     get:
       tags:
         - Case Details
-      summary: Get a list of convictions (called "events" in Delius) for a probation case by CRN.
+      summary: Get a list of supervisions (called "events" in Delius) for a probation case by CRN.
       description: |
         Note: This endpoint is only an example to show a range of fields that are available from Delius. 
         Some fields are likely to be removed as the endpoint is tailored to the needs of the HMPPS Integration team.
@@ -35,7 +35,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  convictions:
+                  supervisions:
                     type: array
                     items:
                       $ref: '#/components/schemas/Event'
