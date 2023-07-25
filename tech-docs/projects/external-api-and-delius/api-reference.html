@@ -95,11 +95,8 @@
     <a href="./index.html"><span>external-api-and-delius</span></a>
   </li>
   <li>
-    <a href="./api-reference.html"><span>API Reference v1</span></a>
+    <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
-      <li>
-        <a href="./api-reference.html#servers"><span>Servers</span></a>
-      </li>
       <li>
         <a href="./api-reference.html#case-crn-supervisions"><span>/case/{crn}/supervisions</span></a>
       </li>
@@ -126,37 +123,14 @@
 <p>The following documentation is also available in these formats:</p>
 
 <ul>
-<li><a href="https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/main/projects/external-api-and-delius/tech-docs/source/draft-api-spec.yaml">OpenAPI YAML</a></li>
-<li><a href="https://editor.swagger.io/?url=https://raw.githubusercontent.com/ministryofjustice/hmpps-probation-integration-services/main/projects/external-api-and-delius/tech-docs/source/draft-api-spec.yaml">Swagger UI</a></li>
+<li><a href="https://external-api-and-delius-dev.hmpps.service.justice.gov.uk/v3/api-docs">OpenAPI JSON</a></li>
+<li><a href="https://external-api-and-delius-dev.hmpps.service.justice.gov.uk/v3/api-docs.yaml">OpenAPI YAML</a></li>
+<li><a href="https://external-api-and-delius-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html">Swagger UI</a></li>
 </ul>
-<h1 id="api-reference">API Reference v1</h1>
-<p>An example API specification for sharing Delius probation data with the HMPPS External API service.</p>
+<h1 id="api-reference">API Reference v1.0</h1>
 
 
 
-
-  <h2 id="servers">Servers</h2>
-  <div id="server-list">
-    
-    
-    <p><strong><p>dev</p>
-</strong></p>
-    
-    <a href="https://external-api-and-delius-dev.hmpps.service.justice.gov.uk">https://external-api-and-delius-dev.hmpps.service.justice.gov.uk</a>
-  
-    
-    <p><strong><p>preprod</p>
-</strong></p>
-    
-    <a href="https://external-api-and-delius-preprod.hmpps.service.justice.gov.uk">https://external-api-and-delius-preprod.hmpps.service.justice.gov.uk</a>
-  
-    
-    <p><strong><p>prod</p>
-</strong></p>
-    
-    <a href="https://external-api-and-delius.hmpps.service.justice.gov.uk">https://external-api-and-delius.hmpps.service.justice.gov.uk</a>
-  
-  </div>
 
 
 
@@ -164,11 +138,7 @@
 
 <h3 id="case-crn-supervisions-get">get</h3>
 
-  <p><em>Get a list of supervisions (called &ldquo;events&rdquo; in Delius) for a probation case by CRN.</em></p>
-
-
-  <p>Note: This endpoint is only an example to show a range of fields that are available from Delius. 
-Some fields are likely to be removed as the endpoint is tailored to the needs of the HMPPS Integration team.</p>
+  <p><em>Get a list of supervisions (called “events” in Delius) for a probation case, by CRN</em></p>
 
 
 
@@ -185,8 +155,7 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
 <td>path</td>
 <td>string</td>
 <td>true</td>
-<td><p>The CRN (case reference number)</p>
-
+<td>
 
 </td>
 </tr>
@@ -207,78 +176,12 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
 <tr>
 <td>200</td>
 <td>
-<p>if the case exists</p>
+<p>OK</p>
 
 
 
 <pre><code>{
-  "supervisions": [
-    {
-      "number": 4,
-      "active": "boolean",
-      "date": "string",
-      "sentence": {
-        "description": "ORA Suspended Sentence Order",
-        "startDate": "string",
-        "length": 16,
-        "lengthUnits": "Weeks"
-      },
-      "mainOffence": {
-        "date": "string",
-        "code": "02802",
-        "description": "Burglary with violence or the threat of violence - 02802",
-        "schedule15SexualOffence": "boolean",
-        "schedule15ViolentOffence": "boolean",
-        "mainCategory": {
-          "code": "028",
-          "description": "Burglary in a dwelling"
-        },
-        "subCategory": {
-          "code": "02",
-          "description": "Burglary with violence or the threat of violence"
-        }
-      },
-      "additionalOffences": [
-        {
-          "date": "string",
-          "code": "02802",
-          "description": "Burglary with violence or the threat of violence - 02802",
-          "schedule15SexualOffence": "boolean",
-          "schedule15ViolentOffence": "boolean",
-          "mainCategory": {
-            "code": "028",
-            "description": "Burglary in a dwelling"
-          },
-          "subCategory": {
-            "code": "02",
-            "description": "Burglary with violence or the threat of violence"
-          }
-        }
-      ],
-      "courtAppearances": [
-        {
-          "type": "Sentence",
-          "date": "string",
-          "court": "Reading Magistrates Court",
-          "plea": "Guilty"
-        }
-      ]
-    }
-  ]
 }</code></pre>
-
-</td>
-<td>
-
-</td>
-</tr>
-
-<tr>
-<td>404</td>
-<td>
-<p>if the case does not exist, has been soft-deleted, or merged</p>
-
-
 
 </td>
 <td>
@@ -294,29 +197,19 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
 
 
 <h2 id="schemas">Schemas</h2>
-<h3 id="schema-event">Event</h3>
+<h3 id="schema-courtappearance">CourtAppearance</h3>
 
 
-<table class='schema-event'>
+<table class='schema-courtappearance'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
 
 <tr>
-<td>number</td>
+<td>type</td>
 <td>string</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>active</td>
-<td>boolean</td>
-<td>false</td>
+<td>true</td>
 <td></td>
 <td>
   
@@ -326,7 +219,7 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
 <tr>
 <td>date</td>
 <td>string</td>
-<td>false</td>
+<td>true</td>
 <td></td>
 <td>
   
@@ -334,9 +227,9 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
 </tr>
 
 <tr>
-<td>sentence</td>
-<td>object</td>
-<td>false</td>
+<td>court</td>
+<td>string</td>
+<td>true</td>
 <td></td>
 <td>
   
@@ -344,29 +237,8 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
 </tr>
 
 <tr>
-<td>mainOffence</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-offence'>Offence</a>
-</td>
-</tr>
-
-<tr>
-<td>additionalOffences</td>
-<td>array</td>
-<td>false</td>
-<td><p>List of additional offences</p>
-</td>
-<td>
-  <a href='#schema-offence'>Offence</a>
-</td>
-</tr>
-
-<tr>
-<td>courtAppearances</td>
-<td>array</td>
+<td>plea</td>
+<td>string</td>
 <td>false</td>
 <td></td>
 <td>
@@ -397,9 +269,19 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
 </tr>
 
 <tr>
+<td>count</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
 <td>code</td>
 <td>string</td>
-<td>false</td>
+<td>true</td>
 <td></td>
 <td>
   
@@ -409,10 +291,30 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
 <tr>
 <td>description</td>
 <td>string</td>
-<td>false</td>
+<td>true</td>
 <td></td>
 <td>
   
+</td>
+</tr>
+
+<tr>
+<td>mainCategory</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-offencecategory'>OffenceCategory</a>
+</td>
+</tr>
+
+<tr>
+<td>subCategory</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-offencecategory'>OffenceCategory</a>
 </td>
 </tr>
 
@@ -436,9 +338,73 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
 </td>
 </tr>
 
+</tbody>
+</table>
+
+<h3 id="schema-offencecategory">OffenceCategory</h3>
+
+
+<table class='schema-offencecategory'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
 <tr>
-<td>mainCategory</td>
-<td>object</td>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-sentence">Sentence</h3>
+
+
+<table class='schema-sentence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>date</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>integer</td>
 <td>false</td>
 <td></td>
 <td>
@@ -447,12 +413,94 @@ Some fields are likely to be removed as the endpoint is tailored to the needs of
 </tr>
 
 <tr>
-<td>subCategory</td>
-<td>object</td>
+<td>lengthUnits</td>
+<td>string</td>
 <td>false</td>
 <td></td>
 <td>
   
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-supervision">Supervision</h3>
+
+
+<table class='schema-supervision'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>number</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>active</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>date</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sentence</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-sentence'>Sentence</a>
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+<tr>
+<td>additionalOffences</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+<tr>
+<td>courtAppearances</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-courtappearance'>CourtAppearance</a>
 </td>
 </tr>
 
