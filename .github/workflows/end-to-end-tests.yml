@@ -111,7 +111,8 @@ jobs:
           REFERANDMONITOR_URL: https://hmpps-interventions-ui-dev.apps.live-1.cloud-platform.service.justice.gov.uk
           OASYS_URL: https://ords.t2.oasys.service.justice.gov.uk/eor/f?p=100:101
           APPROVEDPREMISES_URL: https://approved-premises-dev.hmpps.service.justice.gov.uk/
-          MAKE_RECALL_DECISIONS_URL: https://make-recall-decision-dev.hmpps.service.justice.gov.uk
+          CONSIDER_A_RECALL_URL: https://consider-a-recall-dev.hmpps.service.justice.gov.uk
+          MANAGE_POM_CASES_URL: https://test.moic.service.justice.gov.uk
           DELIUS_USERNAME: ${{ secrets.E2E_DELIUS_USERNAME }}
           DELIUS_PASSWORD: ${{ secrets.E2E_DELIUS_PASSWORD }}
           DPS_USERNAME: ${{ secrets.E2E_DPS_USERNAME }}
@@ -128,7 +129,8 @@ jobs:
           OASYS_PASSWORD_TIMELINE: ${{ secrets.E2E_OASYS_PASSWORD_TIMELINE }}
           APPROVEDPREMISES_USERNAME: ${{ secrets.E2E_DELIUS_USERNAME }}
           APPROVEDPREMISES_PASSWORD: ${{ secrets.E2E_DELIUS_PASSWORD }}
-          CONSIDER_RECALL_MRD_USERNAME: ${{ secrets.E2E_CONSIDER_RECALL_MRD_USERNAME }}
+          CONSIDER_A_RECALL_MRD_USERNAME: ${{ secrets.E2E_CONSIDER_RECALL_MRD_USERNAME }}
+          CONSIDER_A_RECALL_MRD_PASSWORD: ${{ secrets.E2E_CONSIDER_RECALL_MRD_PASSWORD }}
           CONSIDER_RECALL_MRD_PASSWORD: ${{ secrets.E2E_CONSIDER_RECALL_MRD_PASSWORD }}
           PLAYWRIGHT_JUNIT_OUTPUT_NAME: junit.xml
           PLAYWRIGHT_JSON_OUTPUT_NAME: results.json
