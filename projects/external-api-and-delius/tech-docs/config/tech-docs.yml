@@ -41,5 +41,4 @@ owner_slack_workspace: mojdt
 default_owner_slack: '#probation-integration-tech'
 
 # OpenAPI
-#api_path: https://external-api-and-delius-dev.hmpps.service.justice.gov.uk/v3/api-docs.yaml
-api_path: source/draft-api-spec.yaml
+api_path: https://external-api-and-delius-dev.hmpps.service.justice.gov.uk/v3/api-docs.yaml
