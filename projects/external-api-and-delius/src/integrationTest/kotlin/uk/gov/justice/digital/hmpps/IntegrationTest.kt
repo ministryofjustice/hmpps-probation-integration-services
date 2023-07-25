@@ -30,35 +30,21 @@ internal class IntegrationTest {
             .andExpect(
                 content().json(
                     """
-                    [
-                        {
-                            "number": 1,
-                            "active": true,
-                            "date": "2023-01-02",
-                            "sentence": {
-                                "description": "ORA Suspended Sentence Order",
-                                "date": "2023-03-04",
-                                "length": 6,
-                                "lengthUnits": "Months"
-                            },
-                            "mainOffence": {
-                                "date": "2023-01-01",
-                                "count": 1,
-                                "code": "12345",
-                                "description": "Test offence",
-                                "mainCategory": {
-                                    "code": "123",
-                                    "description": "Test"
+                    {
+                        "supervisions": [
+                            {
+                                "number": 1,
+                                "active": true,
+                                "date": "2023-01-02",
+                                "sentence": {
+                                    "description": "ORA Suspended Sentence Order",
+                                    "date": "2023-03-04",
+                                    "length": 6,
+                                    "lengthUnits": "Months"
                                 },
-                                "subCategory": {
-                                    "code": "45",
-                                    "description": "offence"
-                                },
-                                "schedule15SexualOffence": true
-                            },
-                            "additionalOffences": [
-                                {
-                                    "count": 3,
+                                "mainOffence": {
+                                    "date": "2023-01-01",
+                                    "count": 1,
                                     "code": "12345",
                                     "description": "Test offence",
                                     "mainCategory": {
@@ -70,18 +56,34 @@ internal class IntegrationTest {
                                         "description": "offence"
                                     },
                                     "schedule15SexualOffence": true
-                                }
-                            ],
-                            "courtAppearances": [
-                                {
-                                    "type": "Sentence",
-                                    "date": "2023-02-03T10:00:00Z",
-                                    "court": "Manchester Crown Court",
-                                    "plea": "Not guilty"
-                                }
-                            ]
-                        }
-                    ]
+                                },
+                                "additionalOffences": [
+                                    {
+                                        "count": 3,
+                                        "code": "12345",
+                                        "description": "Test offence",
+                                        "mainCategory": {
+                                            "code": "123",
+                                            "description": "Test"
+                                        },
+                                        "subCategory": {
+                                            "code": "45",
+                                            "description": "offence"
+                                        },
+                                        "schedule15SexualOffence": true
+                                    }
+                                ],
+                                "courtAppearances": [
+                                    {
+                                        "type": "Sentence",
+                                        "date": "2023-02-03T10:00:00Z",
+                                        "court": "Manchester Crown Court",
+                                        "plea": "Not guilty"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
                     """.trimIndent()
                 )
             )
