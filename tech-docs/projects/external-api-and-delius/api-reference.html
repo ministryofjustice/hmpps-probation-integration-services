@@ -181,11 +181,66 @@
 
 
 <pre><code>{
+  "supervisions": [
+    {
+      "number": "integer",
+      "active": "boolean",
+      "date": "string",
+      "sentence": {
+        "description": "string",
+        "date": "string",
+        "length": "integer",
+        "lengthUnits": "string"
+      },
+      "mainOffence": {
+        "date": "string",
+        "count": "integer",
+        "code": "string",
+        "description": "string",
+        "mainCategory": {
+          "code": "string",
+          "description": "string"
+        },
+        "subCategory": {
+          "code": "string",
+          "description": "string"
+        },
+        "schedule15SexualOffence": "boolean",
+        "schedule15ViolentOffence": "boolean"
+      },
+      "additionalOffences": [
+        {
+          "date": "string",
+          "count": "integer",
+          "code": "string",
+          "description": "string",
+          "mainCategory": {
+            "code": "string",
+            "description": "string"
+          },
+          "subCategory": {
+            "code": "string",
+            "description": "string"
+          },
+          "schedule15SexualOffence": "boolean",
+          "schedule15ViolentOffence": "boolean"
+        }
+      ],
+      "courtAppearances": [
+        {
+          "type": "string",
+          "date": "string",
+          "court": "string",
+          "plea": "string"
+        }
+      ]
+    }
+  ]
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-supervisionresponse'>SupervisionResponse</a>
 </td>
 </tr>
 
@@ -501,6 +556,28 @@
 <td></td>
 <td>
   <a href='#schema-courtappearance'>CourtAppearance</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-supervisionresponse">SupervisionResponse</h3>
+
+
+<table class='schema-supervisionresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>supervisions</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-supervision'>Supervision</a>
 </td>
 </tr>
 
