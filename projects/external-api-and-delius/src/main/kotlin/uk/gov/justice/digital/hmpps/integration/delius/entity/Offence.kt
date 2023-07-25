@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integration.delius.entity
 
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
@@ -9,6 +10,7 @@ import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
+import org.hibernate.type.YesNoConverter
 import java.time.LocalDate
 
 @Entity
@@ -89,9 +91,11 @@ data class Offence(
     @Column
     val subCategoryDescription: String,
 
-    @Column
+    @Convert(converter = YesNoConverter::class)
+    @Column(name = "schedule15_sexual_offence")
     val schedule15SexualOffence: Boolean?,
 
-    @Column
+    @Convert(converter = YesNoConverter::class)
+    @Column(name = "schedule15_violent_offence")
     val schedule15ViolentOffence: Boolean?
 )
