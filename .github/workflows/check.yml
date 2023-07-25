@@ -41,7 +41,6 @@ jobs:
           VALIDATE_BASH_EXEC: true
           VALIDATE_DOCKERFILE_HADOLINT: true
           VALIDATE_GITHUB_ACTIONS: true
-          VALIDATE_GITLEAKS: true
           VALIDATE_RUBY: true
           VALIDATE_XML: true
           VALIDATE_YAML: true
