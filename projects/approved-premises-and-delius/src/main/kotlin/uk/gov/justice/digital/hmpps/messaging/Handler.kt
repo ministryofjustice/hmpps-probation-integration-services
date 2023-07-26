@@ -28,9 +28,21 @@ class Handler(
                 approvedPremisesService.applicationAssessed(event)
                 telemetryService.trackEvent("ApplicationAssessed", event.telemetryProperties())
             }
+            "approved-premises.application.withdrawn" -> {
+                approvedPremisesService.applicationWithdrawn(event)
+                telemetryService.trackEvent("ApplicationWithdrawn", event.telemetryProperties())
+            }
             "approved-premises.booking.made" -> {
                 approvedPremisesService.bookingMade(event)
                 telemetryService.trackEvent("BookingMade", event.telemetryProperties())
+            }
+            "approved-premises.booking.changed" -> {
+                approvedPremisesService.bookingChanged(event)
+                telemetryService.trackEvent("BookingChanged", event.telemetryProperties())
+            }
+            "approved-premises.booking.cancelled" -> {
+                approvedPremisesService.bookingCancelled(event)
+                telemetryService.trackEvent("BookingCancelled", event.telemetryProperties())
             }
             "approved-premises.person.not-arrived" -> {
                 approvedPremisesService.personNotArrived(event)

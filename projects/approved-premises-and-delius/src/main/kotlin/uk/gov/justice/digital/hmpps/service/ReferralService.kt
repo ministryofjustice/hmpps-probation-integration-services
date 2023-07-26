@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingCancelled
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingChanged
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonDeparted
@@ -95,6 +97,45 @@ class ReferralService(
                 )
             }
         }
+    }
+
+    fun bookingChanged(crn: String, details: BookingChanged, ap: ApprovedPremises) {
+        val person = personRepository.getByCrn(crn)
+        referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
+            person.id,
+            ServiceContext.servicePrincipal()!!.userId,
+            Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
+        )?.apply {
+            expectedArrivalDate = details.arrivalOn
+            expectedDepartureDate = details.departureOn
+        } ?: throw IllegalStateException("Unable to find referral for ${person.crn} => ${details.bookingId}")
+    }
+
+    fun bookingCancelled(crn: String, details: BookingCancelled, ap: ApprovedPremises) {
+        val person = personRepository.getByCrn(crn)
+        val referral = checkNotNull(
+            referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
+                person.id,
+                ServiceContext.servicePrincipal()!!.userId,
+                Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
+            )
+        ) { "Unable to find referral for ${person.crn} => ${details.bookingId}" }.apply { softDeleted = true }
+        contactService.createContact(
+            ContactDetails(
+                date = details.cancelledAt,
+                type = ContactTypeCode.BOOKING_CANCELLED,
+                locationCode = ap.locationCode(),
+                description = "Booking cancelled for ${details.premises.name}",
+                notes = listOfNotNull(
+                    details.cancelledReason,
+                    "For more details, click here: ${details.applicationUrl}"
+                ).joinToString(System.lineSeparator() + System.lineSeparator())
+            ),
+            person = person,
+            eventId = referral.eventId,
+            staff = staffRepository.getByCode(details.cancelledBy.staffCode),
+            probationAreaCode = ap.probationArea.code
+        )
     }
 
     fun personNotArrived(person: Person, ap: ApprovedPremises, dateTime: ZonedDateTime, details: PersonNotArrived) {

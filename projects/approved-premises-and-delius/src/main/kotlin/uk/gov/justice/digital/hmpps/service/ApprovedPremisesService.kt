@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referra
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.getByEventNumber
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_ASSESSED
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_SUBMITTED
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode.APPLICATION_WITHDRAWN
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
@@ -63,10 +64,42 @@ class ApprovedPremisesService(
         )
     }
 
+    fun applicationWithdrawn(event: HmppsDomainEvent) {
+        val details = approvedPremisesApiClient.getApplicationWithdrawnDetails(event.url()).eventDetails
+        val person = personRepository.getByCrn(event.crn())
+        val dEvent = eventRepository.getByEventNumber(person.id, details.eventNumber)
+        contactService.createContact(
+            ContactDetails(
+                date = details.withdrawnAt,
+                type = APPLICATION_WITHDRAWN,
+                notes = listOfNotNull(
+                    details.withdrawalReason,
+                    "For more details, click here: ${details.applicationUrl}"
+                ).joinToString(System.lineSeparator() + System.lineSeparator())
+            ),
+            person = person,
+            eventId = dEvent.id,
+            staff = staffRepository.getByCode(details.withdrawnBy.staffMember.staffCode),
+            probationAreaCode = details.withdrawnBy.probationArea.code
+        )
+    }
+
     fun bookingMade(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getBookingMadeDetails(event.url()).eventDetails
         val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
         referralService.bookingMade(event.crn(), details, ap)
+    }
+
+    fun bookingChanged(event: HmppsDomainEvent) {
+        val details = approvedPremisesApiClient.getBookingChangedDetails(event.url()).eventDetails
+        val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
+        referralService.bookingChanged(event.crn(), details, ap)
+    }
+
+    fun bookingCancelled(event: HmppsDomainEvent) {
+        val details = approvedPremisesApiClient.getBookingCancelledDetails(event.url()).eventDetails
+        val ap = approvedPremisesRepository.getApprovedPremises(details.premises.legacyApCode)
+        referralService.bookingCancelled(event.crn(), details, ap)
     }
 
     fun personNotArrived(event: HmppsDomainEvent) {

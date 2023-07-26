@@ -20,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -47,6 +48,7 @@ import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
+import java.time.LocalDate
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -209,7 +211,8 @@ internal class MessagingIntegrationTest {
         assertThat(contact.outcome?.code, equalTo(ContactOutcome.AP_NON_ARRIVAL_PREFIX + "D"))
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
 
-        val referral = referralRepository.findAll().first { it.personId == contact.person.id && it.nonArrivalDate != null }
+        val referral =
+            referralRepository.findAll().first { it.personId == contact.person.id && it.nonArrivalDate != null }
         assertThat(referral.nonArrivalDate, equalTo(contact.date))
         assertThat(referral.nonArrivalNotes, equalTo("Notes about non-arrival."))
         assertThat(referral.nonArrivalReasonId, equalTo(ReferenceDataGenerator.NON_ARRIVAL.id))
@@ -320,7 +323,10 @@ internal class MessagingIntegrationTest {
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
         assertThat(contact.description, equalTo("Departed from Hope House"))
 
-        val nsi = nsiRepository.findByPersonIdAndExternalReference(contact.person.id, EXT_REF_BOOKING_PREFIX + details.bookingId)
+        val nsi = nsiRepository.findByPersonIdAndExternalReference(
+            contact.person.id,
+            EXT_REF_BOOKING_PREFIX + details.bookingId
+        )
         assertNotNull(nsi)
         assertNotNull(nsi!!.actualEndDate)
         assertThat(nsi.actualEndDate!!, isCloseTo(details.departedAt))
@@ -340,5 +346,82 @@ internal class MessagingIntegrationTest {
         assertThat(residence.departureDate, equalTo(nsi.actualEndDate))
         assertThat(residence.departureReasonId, equalTo(ReferenceDataGenerator.ORDER_EXPIRED.id))
         assertThat(residence.moveOnCategoryId, equalTo(ReferenceDataGenerator.MC05.id))
+    }
+
+    @Test
+    @Order(5)
+    fun `booking changed updates referral`() {
+        val event = prepEvent("booking-changed", wireMockServer.port())
+
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        verify(telemetryService).notificationReceived(event)
+        verify(telemetryService).trackEvent("BookingChanged", event.message.telemetryProperties())
+
+        val referral = referralRepository.findAll().first {
+            it.personId == PersonGenerator.DEFAULT.id && it.eventId == PersonGenerator.EVENT.id
+        }
+        assertThat(referral.expectedArrivalDate, equalTo(LocalDate.parse("2023-08-14")))
+        assertThat(referral.expectedDepartureDate, equalTo(LocalDate.parse("2023-08-30")))
+    }
+
+    @Test
+    @Order(6)
+    fun `booking cancelled creates a contact`() {
+        val event = prepEvent("booking-cancelled", wireMockServer.port())
+
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        verify(telemetryService).notificationReceived(event)
+        verify(telemetryService).trackEvent("BookingCancelled", event.message.telemetryProperties())
+
+        val contact = contactRepository.findAll()
+            .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.BOOKING_CANCELLED.code }
+        assertThat(contact.alert, equalTo(true))
+        assertThat(
+            contact.notes,
+            equalTo(
+                """
+            Reason for application cancellation
+            
+            For more details, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/364145f9-0af8-488e-9901-b4c46cd9ba37
+                """.trimIndent()
+            )
+        )
+        assertThat(contact.locationId, equalTo(OfficeLocationGenerator.DEFAULT.id))
+        assertThat(contact.description, equalTo("Booking cancelled for Hope House"))
+        assertNull(contact.outcome)
+        assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
+
+        val referral = referralRepository.findAll().first {
+            it.personId == contact.person.id && it.eventId == contact.eventId
+        }
+        assertTrue(referral.softDeleted)
+    }
+
+    @Test
+    @Order(7)
+    fun `application withdrawn creates a contact`() {
+        val event = prepEvent("application-withdrawn", wireMockServer.port())
+
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        verify(telemetryService).notificationReceived(event)
+        verify(telemetryService).trackEvent("ApplicationWithdrawn", event.message.telemetryProperties())
+
+        val contact = contactRepository.findAll()
+            .single { it.person.crn == event.message.crn() && it.type.code == ContactTypeCode.APPLICATION_WITHDRAWN.code }
+        assertThat(contact.alert, equalTo(true))
+        assertThat(
+            contact.notes,
+            equalTo(
+                """
+            Reason for application withdrawal
+            
+            For more details, click here: https://approved-premises-dev.hmpps.service.justice.gov.uk/applications/484b8b5e-6c3b-4400-b200-425bbe410713
+                """.trimIndent()
+            )
+        )
+        assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
     }
 }

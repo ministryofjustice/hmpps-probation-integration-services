@@ -74,6 +74,21 @@ data class AssessedBy(
     val probationArea: ProbationArea
 )
 
+data class ApplicationWithdrawn(
+    val applicationId: String,
+    val applicationUrl: String,
+    @JsonAlias("deliusEventNumber")
+    val eventNumber: String,
+    val withdrawnAt: ZonedDateTime,
+    val withdrawnBy: WithdrawnBy,
+    val withdrawalReason: String
+)
+
+data class WithdrawnBy(
+    val staffMember: StaffMember,
+    val probationArea: ProbationArea
+)
+
 data class BookingMade(
     val bookingId: String,
     val applicationId: String,
@@ -88,6 +103,31 @@ data class BookingMade(
 ) {
     val bookingMadeAt: ZonedDateTime = createdAt.truncatedTo(ChronoUnit.SECONDS)
 }
+
+data class BookingChanged(
+    val bookingId: String,
+    val applicationId: String,
+    val applicationUrl: String,
+    @JsonAlias("deliusEventNumber")
+    val eventNumber: String,
+    val premises: Premises,
+    val changedBy: StaffMember,
+    val changedAt: ZonedDateTime,
+    val arrivalOn: LocalDate,
+    val departureOn: LocalDate
+)
+
+data class BookingCancelled(
+    val bookingId: String,
+    val applicationId: String,
+    val applicationUrl: String,
+    @JsonAlias("deliusEventNumber")
+    val eventNumber: String,
+    val premises: Premises,
+    val cancelledBy: StaffMember,
+    val cancelledAt: ZonedDateTime,
+    val cancelledReason: String
+)
 
 data class BookedBy(
     val staffMember: StaffMember
