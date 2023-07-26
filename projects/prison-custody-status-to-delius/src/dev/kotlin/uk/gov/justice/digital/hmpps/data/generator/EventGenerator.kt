@@ -1,17 +1,17 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.Custody
-import uk.gov.justice.digital.hmpps.integrations.delius.event.Disposal
-import uk.gov.justice.digital.hmpps.integrations.delius.event.DisposalType
-import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.Institution
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.Recall
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonCode
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalType
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.Recall
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.release.Release
+import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
 import java.time.ZonedDateTime
 
 object EventGenerator {
@@ -90,7 +90,7 @@ object EventGenerator {
         val release = event.disposal!!.custody!!.releases[0]
         val recall = Recall(
             date = recallDate,
-            reason = ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]!!,
+            reason = ReferenceDataGenerator.RECALL_REASON[RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]!!,
             release = release,
             person = person
         )

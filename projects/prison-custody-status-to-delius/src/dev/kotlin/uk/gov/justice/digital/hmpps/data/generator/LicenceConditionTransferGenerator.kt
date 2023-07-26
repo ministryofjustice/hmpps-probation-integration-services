@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceCondition
-import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.transfer.entity.LicenceConditionTransfer
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceCondition
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionTransfer
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.TransferStatusCode
 import java.time.ZonedDateTime
 

@@ -4,7 +4,9 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.FeatureFlagCodes.MULTIPLE_EVENTS
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import java.time.ZonedDateTime
 
 @Service

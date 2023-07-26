@@ -19,10 +19,11 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlert
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonCode
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactAlert
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.Recall
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.TERMINATED_STATUSES
@@ -43,9 +44,9 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         val recallDateTime = ZonedDateTime.now()
         val recallDate = recallDateTime.truncatedTo(DAYS)
         val om = OrderManagerGenerator.generate(event)
-        val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE]
+        val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReason.Code.END_OF_TEMPORARY_LICENCE]
 
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReason.Code.END_OF_TEMPORARY_LICENCE.value))
             .thenReturn(recallReason)
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment("WSI"))
             .thenReturn(InstitutionGenerator.DEFAULT)
@@ -54,8 +55,8 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(om)
         whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id))
             .thenReturn(PersonManagerGenerator.generate(person))
-        whenever(contactTypeRepository.findByCode(ContactTypeCode.BREACH_PRISON_RECALL.code))
-            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
+        whenever(contactTypeRepository.findByCode(ContactType.Code.BREACH_PRISON_RECALL.value))
+            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.BREACH_PRISON_RECALL])
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
         val outcome = recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", "R1", recallDateTime)
@@ -68,7 +69,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         assertThat(recall.firstValue.date, equalTo(recallDate))
         assertThat(recall.firstValue.createdDatetime, isCloseTo(recallDateTime))
         assertThat(recall.firstValue.lastUpdatedDatetime, isCloseTo(recallDateTime))
-        assertThat(recall.firstValue.reason.code, equalTo(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
+        assertThat(recall.firstValue.reason.code, equalTo(RecallReason.Code.END_OF_TEMPORARY_LICENCE.value))
 
         // custody details are updated
         verify(custodyService).updateStatus(
@@ -123,15 +124,15 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         val recallDateTime = ZonedDateTime.now()
         val recallDate = recallDateTime.truncatedTo(DAYS)
         val om = OrderManagerGenerator.generate(event)
-        val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE]
+        val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReason.Code.END_OF_TEMPORARY_LICENCE]
 
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code)).thenReturn(recallReason)
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReason.Code.END_OF_TEMPORARY_LICENCE.value)).thenReturn(recallReason)
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment("WSI")).thenReturn(InstitutionGenerator.DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
         doAnswer<Recall> { it.getArgument(0) }.whenever(recallRepository).save(any())
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(om)
         whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)).thenReturn(PersonManagerGenerator.generate(person))
-        whenever(contactTypeRepository.findByCode(ContactTypeCode.BREACH_PRISON_RECALL.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
+        whenever(contactTypeRepository.findByCode(ContactType.Code.BREACH_PRISON_RECALL.value)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.BREACH_PRISON_RECALL])
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
         val outcome = recallService.recall(person.nomsNumber, "WSI", "TRANSFERRED", "INT", recallDateTime)
@@ -144,7 +145,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         assertThat(recall.firstValue.date, equalTo(recallDate))
         assertThat(recall.firstValue.createdDatetime, isCloseTo(recallDateTime))
         assertThat(recall.firstValue.lastUpdatedDatetime, isCloseTo(recallDateTime))
-        assertThat(recall.firstValue.reason.code, equalTo(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
+        assertThat(recall.firstValue.reason.code, equalTo(RecallReason.Code.END_OF_TEMPORARY_LICENCE.value))
 
         // custody details are updated
         verify(custodyService).updateStatus(
@@ -198,9 +199,9 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         val recallDateTime = ZonedDateTime.now()
         val recallDate = recallDateTime.truncatedTo(DAYS)
         val om = OrderManagerGenerator.generate(event)
-        val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE]
+        val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReason.Code.END_OF_TEMPORARY_LICENCE]
 
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReason.Code.END_OF_TEMPORARY_LICENCE.value))
             .thenReturn(recallReason)
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment("WSI"))
             .thenReturn(InstitutionGenerator.DEFAULT)
@@ -238,9 +239,9 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
             InstitutionGenerator.DEFAULT
         )
         val recallDateTime = ZonedDateTime.now()
-        val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE]
+        val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReason.Code.END_OF_TEMPORARY_LICENCE]
 
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReason.Code.END_OF_TEMPORARY_LICENCE.value))
             .thenReturn(recallReason)
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment("WSI"))
             .thenReturn(InstitutionGenerator.DEFAULT)
@@ -266,8 +267,8 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
             InstitutionGenerator.DEFAULT,
             custodialStatusCode = CustodialStatusCode.IN_CUSTODY_IRC
         )
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
-            .thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE])
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReason.Code.END_OF_TEMPORARY_LICENCE.value))
+            .thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReason.Code.END_OF_TEMPORARY_LICENCE])
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
@@ -289,9 +290,9 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         val recallDateTime = ZonedDateTime.now()
         val recallDate = recallDateTime.truncatedTo(DAYS)
         val om = OrderManagerGenerator.generate(event)
-        val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE]
+        val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReason.Code.END_OF_TEMPORARY_LICENCE]
 
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReason.Code.END_OF_TEMPORARY_LICENCE.value))
             .thenReturn(recallReason)
         whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment("WSI"))
             .thenReturn(InstitutionGenerator.DEFAULT)
@@ -301,8 +302,8 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id))
             .thenReturn(PersonManagerGenerator.generate(person))
 
-        whenever(contactTypeRepository.findByCode(ContactTypeCode.BREACH_PRISON_RECALL.code))
-            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.BREACH_PRISON_RECALL])
+        whenever(contactTypeRepository.findByCode(ContactType.Code.BREACH_PRISON_RECALL.value))
+            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.BREACH_PRISON_RECALL])
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
         val outcome = recallService.recall(person.nomsNumber, "WSI", "TEMPORARY_ABSENCE_RETURN", "R1", recallDateTime)
@@ -315,7 +316,7 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
         assertThat(recall.firstValue.date, equalTo(recallDate))
         assertThat(recall.firstValue.createdDatetime, isCloseTo(recallDateTime))
         assertThat(recall.firstValue.lastUpdatedDatetime, isCloseTo(recallDateTime))
-        assertThat(recall.firstValue.reason.code, equalTo(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
+        assertThat(recall.firstValue.reason.code, equalTo(RecallReason.Code.END_OF_TEMPORARY_LICENCE.value))
 
         // custody details are updated
         verify(custodyService).updateStatus(
@@ -368,8 +369,8 @@ class TemporaryAbsenceRecallTests : RecallServiceTestBase() {
             InstitutionGenerator.DEFAULT,
             custodialStatusCode = status
         )
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.END_OF_TEMPORARY_LICENCE.code))
-            .thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReasonCode.END_OF_TEMPORARY_LICENCE])
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReason.Code.END_OF_TEMPORARY_LICENCE.value))
+            .thenReturn(ReferenceDataGenerator.RECALL_REASON[RecallReason.Code.END_OF_TEMPORARY_LICENCE])
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IllegalArgumentException> {

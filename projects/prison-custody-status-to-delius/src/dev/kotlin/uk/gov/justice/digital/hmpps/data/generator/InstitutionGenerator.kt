@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.Institution
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionId
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionId
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.messaging.prisonId
 

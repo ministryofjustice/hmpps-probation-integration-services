@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManager
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.OrderManager
 import kotlin.random.Random
 
 object OrderManagerGenerator {

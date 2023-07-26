@@ -8,31 +8,27 @@ import uk.gov.justice.digital.hmpps.datasource.OptimisationContext
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlert
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlertRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.Custody
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactDetail
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.CustodyService
-import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
-import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.getByEventId
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.OrderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.getByEventId
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceConditionService
-import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.Institution
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.getByNomisCdeCodeAndIdEstablishment
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReason
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonCode
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.getByCodeAndSelectableIsTrue
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.isEotl
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.entity.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.getByNomisCdeCodeAndIdEstablishment
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.Recall
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReasonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.getByCodeAndSelectableIsTrue
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.isEotl
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
@@ -40,7 +36,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.NO_RECALL_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.TERMINATED_STATUSES
-import uk.gov.justice.digital.hmpps.integrations.delius.release.Release
+import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.DAYS
 
@@ -68,9 +64,7 @@ class RecallService(
     private val licenceConditionService: LicenceConditionService,
     private val orderManagerRepository: OrderManagerRepository,
     private val personManagerRepository: PersonManagerRepository,
-    private val contactTypeRepository: ContactTypeRepository,
-    private val contactRepository: ContactRepository,
-    private val contactAlertRepository: ContactAlertRepository
+    private val contactService: ContactService
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
@@ -82,7 +76,7 @@ class RecallService(
         recallDateTime: ZonedDateTime
     ): RecallOutcome {
         val getRecallReason = { csc: CustodialStatusCode ->
-            recallReasonRepository.getByCodeAndSelectableIsTrue(decideRecallReason(reason, movementReason)(csc).code)
+            recallReasonRepository.getByCodeAndSelectableIsTrue(decideRecallReason(reason, movementReason)(csc).value)
         }
         val institution = lazy { institutionRepository.getByNomisCdeCodeAndIdEstablishment(prisonId) }
 
@@ -192,34 +186,22 @@ class RecallService(
         person: Person,
         recallDateTime: ZonedDateTime,
         recallReason: RecallReason,
-        recall: Recall
+        createdDateTimeOverride: ZonedDateTime?
     ) {
         val orderManager = orderManagerRepository.getByEventId(event.id)
-        val personManager = personManagerRepository.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)
         val notes = "Reason for Recall: ${recallReason.description}" +
             if (recallReason.isEotl()) EOTL_RECALL_CONTACT_NOTES else ""
-        val contact = contactRepository.save(
-            Contact(
-                type = contactTypeRepository.getByCode(ContactTypeCode.BREACH_PRISON_RECALL.code),
-                date = recallDateTime,
-                event = event,
-                person = person,
-                notes = notes,
-                staffId = orderManager.staffId,
-                teamId = orderManager.teamId,
-                createdDatetime = recall.createdDatetime,
-                alert = true
-            )
-        )
-        contactAlertRepository.save(
-            ContactAlert(
-                contactId = contact.id,
-                typeId = contact.type.id,
-                personId = person.id,
-                personManagerId = personManager.id,
-                staffId = personManager.staff.id,
-                teamId = personManager.team.id
-            )
+        contactService.createContact(
+            ContactDetail(
+                ContactType.Code.BREACH_PRISON_RECALL,
+                recallDateTime,
+                notes,
+                true,
+                createdDateTimeOverride
+            ),
+            person,
+            event,
+            orderManager
         )
     }
 
@@ -240,7 +222,7 @@ class RecallService(
                 person = person
             )
         )
-        createRecallAlertContact(custody.disposal.event, person, recallDateTime, recallReason, recall)
+        createRecallAlertContact(custody.disposal.event, person, recallDateTime, recallReason, recall.createdDatetime)
         recall
     }
 }
@@ -253,14 +235,14 @@ private fun validateRecall(
     isTransfer: Boolean
 ) {
     if (custody.status.code == CustodialStatusCode.POST_SENTENCE_SUPERVISION.code ||
-        (reason.code == RecallReasonCode.END_OF_TEMPORARY_LICENCE.code && custody.status.code == CustodialStatusCode.IN_CUSTODY_IRC.code)
+        (reason.code == RecallReason.Code.END_OF_TEMPORARY_LICENCE.value && custody.status.code == CustodialStatusCode.IN_CUSTODY_IRC.code)
     ) {
         throw IgnorableMessageException("UnexpectedCustodialStatus")
     }
 
     require(!custody.status.isTerminated()) { "TerminatedCustodialStatus" }
 
-    if (!isTransfer && reason.code != RecallReasonCode.END_OF_TEMPORARY_LICENCE.code) {
+    if (!isTransfer && reason.code != RecallReason.Code.END_OF_TEMPORARY_LICENCE.value) {
         if (latestRelease?.recall != null) {
             throw IgnorableMessageException("RecallAlreadyExists")
         }
@@ -280,21 +262,21 @@ private fun validateRecall(
 private fun decideRecallReason(
     reason: String,
     movementReason: String
-): (code: CustodialStatusCode) -> RecallReasonCode = when (reason) {
+): (code: CustodialStatusCode) -> RecallReason.Code = when (reason) {
     "ADMISSION" -> {
-        { RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT }
+        { RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT }
     }
 
     "TEMPORARY_ABSENCE_RETURN" -> {
-        { RecallReasonCode.END_OF_TEMPORARY_LICENCE }
+        { RecallReason.Code.END_OF_TEMPORARY_LICENCE }
     }
 
     "TRANSFERRED" -> {
         if (movementReason == "INT") {
             {
                 when (it) {
-                    CustodialStatusCode.CUSTODY_ROTL -> RecallReasonCode.END_OF_TEMPORARY_LICENCE
-                    else -> RecallReasonCode.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT
+                    CustodialStatusCode.CUSTODY_ROTL -> RecallReason.Code.END_OF_TEMPORARY_LICENCE
+                    else -> RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT
                 }
             }
         } else {

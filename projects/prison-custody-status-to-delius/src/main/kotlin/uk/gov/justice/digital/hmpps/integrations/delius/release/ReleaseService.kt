@@ -12,26 +12,24 @@ import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.Custody
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactDetail
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.CustodyService
-import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
-import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.getByEventId
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host.HostRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.Institution
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.InstitutionRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.getByNomisCdeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.OrderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.getByEventId
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host.entity.HostRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.getByNomisCdeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallService
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonCode
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.getByCodeAndSelectableIsTrue
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReasonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.getByCodeAndSelectableIsTrue
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getReleaseType
@@ -45,6 +43,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.MultipleEventsReleased
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.PrisonerDied
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.PrisonerReleased
+import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
+import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.ReleaseRepository
 import java.time.LocalDate.now
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.DAYS
@@ -67,8 +67,7 @@ class ReleaseService(
     private val releaseRepository: ReleaseRepository,
     private val custodyService: CustodyService,
     private val orderManagerRepository: OrderManagerRepository,
-    private val contactRepository: ContactRepository,
-    private val contactTypeRepository: ContactTypeRepository,
+    private val contactService: ContactService,
     private val personDied: PersonDied,
     private val recallReasonRepository: RecallReasonRepository,
     private val recallService: RecallService,
@@ -175,7 +174,7 @@ class ReleaseService(
 
         if (statusCode == RECALLED) {
             val recallReason =
-                recallReasonRepository.getByCodeAndSelectableIsTrue(RecallReasonCode.TRANSFER_TO_SECURE_HOSPITAL.code)
+                recallReasonRepository.getByCodeAndSelectableIsTrue(RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL.value)
             recallService.createRecall(custody, recallReason, releaseDateTime, custody.mostRecentRelease())
         }
     }
@@ -281,16 +280,15 @@ class ReleaseService(
         )
         val event = custody.disposal.event
         val orderManager = orderManagerRepository.getByEventId(event.id)
-        contactRepository.save(
-            Contact(
-                type = contactTypeRepository.getByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code),
-                date = dateTime,
-                event = event,
-                person = event.person,
-                notes = if (movementReasonCode == MovementReasonCodes.EXTENDED_TEMPORARY_LICENCE) ETL23_NOTES else "Release Type: ${type.description}",
-                staffId = orderManager.staffId,
-                teamId = orderManager.teamId
-            )
+        contactService.createContact(
+            ContactDetail(
+                ContactType.Code.RELEASE_FROM_CUSTODY,
+                dateTime,
+                if (movementReasonCode == MovementReasonCodes.EXTENDED_TEMPORARY_LICENCE) ETL23_NOTES else "Release Type: ${type.description}"
+            ),
+            event.person,
+            event,
+            orderManager
         )
         eventService.updateReleaseDateAndIapsFlag(event, releaseDate)
     }

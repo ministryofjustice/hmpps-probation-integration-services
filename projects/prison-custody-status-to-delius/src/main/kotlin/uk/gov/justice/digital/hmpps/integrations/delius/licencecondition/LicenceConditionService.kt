@@ -1,22 +1,24 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.licencecondition
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.getByEventId
-import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.transfer.LicenceConditionTransferRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.transfer.entity.LicenceConditionTransfer
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.OrderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.getByEventId
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceCondition
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionTransfer
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionTransferRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getByCodeAndSetName
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getTransferStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.TransferStatusCode
-import uk.gov.justice.digital.hmpps.integrations.delius.transfer.RejectedTransferDiary
-import uk.gov.justice.digital.hmpps.integrations.delius.transfer.RejectedTransferDiaryRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.transfer.entity.RejectedTransferDiary
+import uk.gov.justice.digital.hmpps.integrations.delius.transfer.entity.RejectedTransferDiaryRepository
 import java.time.ZonedDateTime
 
 val EOTL_TERMINATE_LICENCE_CONTACT_NOTES = """${System.lineSeparator()}
@@ -72,7 +74,7 @@ class LicenceConditionService(
             if (endOfTemporaryLicence) EOTL_TERMINATE_LICENCE_CONTACT_NOTES else ""
         contactRepository.save(
             Contact(
-                type = contactTypeRepository.getByCode(ContactTypeCode.COMPONENT_TERMINATED.code),
+                type = contactTypeRepository.getByCode(ContactType.Code.COMPONENT_TERMINATED.value),
                 date = terminationDate,
                 event = event,
                 person = event.person,
@@ -113,7 +115,7 @@ class LicenceConditionService(
     ) {
         contactRepository.save(
             Contact(
-                type = contactTypeRepository.getByCode(ContactTypeCode.COMPONENT_PROVIDER_TRANSFER_REJECTED.code),
+                type = contactTypeRepository.getByCode(ContactType.Code.COMPONENT_PROVIDER_TRANSFER_REJECTED.value),
                 date = terminationDate,
                 startTime = terminationDate,
                 event = transfer.licenceCondition.disposal.event,

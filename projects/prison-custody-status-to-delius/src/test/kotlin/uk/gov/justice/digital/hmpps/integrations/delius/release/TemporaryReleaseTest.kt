@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -19,12 +20,13 @@ import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.keydate.entity.KeyDate
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -147,9 +149,10 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
         )
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(orderManager)
-        whenever(contactTypeRepository.findByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code))
-            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY])
+        whenever(contactTypeRepository.findByCode(ContactType.Code.RELEASE_FROM_CUSTODY.value))
+            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.RELEASE_FROM_CUSTODY])
         whenever(custodyService.findAutoConditionalReleaseDate(custody.id)).thenReturn(acrKd)
+        doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
         releaseService.release(
             person.nomsNumber,
@@ -180,7 +183,7 @@ class TemporaryReleaseTest : ReleaseServiceTestBase() {
         verify(contactRepository).save(savedContact.capture())
 
         val contact = savedContact.firstValue
-        assertThat(contact.type.code, equalTo(ContactTypeCode.RELEASE_FROM_CUSTODY.code))
+        assertThat(contact.type.code, equalTo(ContactType.Code.RELEASE_FROM_CUSTODY.value))
         assertThat(contact.notes, containsString("This is a ROTL release on Extended Temporary Licence (ETL23)"))
 
         verify(custodyService).updateStatus(

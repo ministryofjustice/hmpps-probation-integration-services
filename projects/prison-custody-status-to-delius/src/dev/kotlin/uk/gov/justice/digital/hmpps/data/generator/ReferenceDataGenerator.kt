@@ -1,8 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactType
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonCode
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataSet
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
@@ -12,13 +11,13 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 
 object ReferenceDataGenerator {
     val CUSTODIAL_STATUS =
-        CustodialStatusCode.values().associateWith { generate(it.code, ReferenceDataSetGenerator.CUSTODIAL_STATUS) }
+        CustodialStatusCode.entries.associateWith { generate(it.code, ReferenceDataSetGenerator.CUSTODIAL_STATUS) }
 
     val CUSTODY_EVENT_TYPE =
-        CustodyEventTypeCode.values().associateWith { generate(it.code, ReferenceDataSetGenerator.CUSTODY_EVENT_TYPE) }
+        CustodyEventTypeCode.entries.associateWith { generate(it.code, ReferenceDataSetGenerator.CUSTODY_EVENT_TYPE) }
 
     val TRANSFER_STATUS =
-        TransferStatusCode.values().associateWith { generate(it.code, ReferenceDataSetGenerator.TRANSFER_STATUS) }
+        TransferStatusCode.entries.associateWith { generate(it.code, ReferenceDataSetGenerator.TRANSFER_STATUS) }
 
     val LICENCE_CONDITION_TERMINATION_REASON =
         generate("TEST", ReferenceDataSetGenerator.generate("TERMINATION REASON"))
@@ -30,13 +29,13 @@ object ReferenceDataGenerator {
         generate("AUT", ReferenceDataSetGenerator.generate("POM ALLOCATION REASON"))
 
     val RELEASE_TYPE =
-        ReleaseTypeCode.values().associateWith { generate(it.code, ReferenceDataSetGenerator.RELEASE_TYPE) }
+        ReleaseTypeCode.entries.associateWith { generate(it.code, ReferenceDataSetGenerator.RELEASE_TYPE) }
 
     val RECALL_REASON =
-        RecallReasonCode.values().associateWith { RecallReasonGenerator.generate(it.code) }
+        RecallReason.Code.entries.associateWith { RecallReasonGenerator.generate(it.value) }
 
     val CONTACT_TYPE =
-        ContactTypeCode.values().associateWith { ContactType(IdGenerator.getAndIncrement(), it.code) }
+        ContactType.Code.entries.associateWith { ContactType(IdGenerator.getAndIncrement(), it.value) }
 
     val ACR_DATE_TYPE = generate("ACR", ReferenceDataSetGenerator.KEY_DATE_TYPE)
 

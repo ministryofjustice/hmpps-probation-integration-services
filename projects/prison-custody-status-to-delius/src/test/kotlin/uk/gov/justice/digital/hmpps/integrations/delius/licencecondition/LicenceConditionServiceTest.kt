@@ -25,17 +25,19 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.transfer.LicenceConditionTransferRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.transfer.entity.LicenceConditionTransfer
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.OrderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceCondition
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionTransfer
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionTransferRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.TransferStatusCode
-import uk.gov.justice.digital.hmpps.integrations.delius.transfer.RejectedTransferDiaryRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.transfer.entity.RejectedTransferDiaryRepository
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -142,8 +144,8 @@ internal class LicenceConditionServiceTest {
             ReferenceDataGenerator.generate("TWR", ReferenceDataSetGenerator.generate("LICENCE AREA TRANSFER REJECTION REASON"))
         )
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
-        whenever(contactTypeRepository.findByCode(ContactTypeCode.COMPONENT_TERMINATED.code))
-            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.COMPONENT_TERMINATED])
+        whenever(contactTypeRepository.findByCode(ContactType.Code.COMPONENT_TERMINATED.value))
+            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.COMPONENT_TERMINATED])
 
         licenceConditionService.terminateLicenceConditionsForDisposal(event.disposal!!.id, ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON, now, true)
 
@@ -176,8 +178,8 @@ internal class LicenceConditionServiceTest {
             ReferenceDataGenerator.generate("TWR", ReferenceDataSetGenerator.generate("LICENCE AREA TRANSFER REJECTION REASON"))
         )
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
-        whenever(contactTypeRepository.findByCode(ContactTypeCode.COMPONENT_TERMINATED.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.COMPONENT_TERMINATED])
-        whenever(contactTypeRepository.findByCode(ContactTypeCode.COMPONENT_PROVIDER_TRANSFER_REJECTED.code)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.COMPONENT_PROVIDER_TRANSFER_REJECTED])
+        whenever(contactTypeRepository.findByCode(ContactType.Code.COMPONENT_TERMINATED.value)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.COMPONENT_TERMINATED])
+        whenever(contactTypeRepository.findByCode(ContactType.Code.COMPONENT_PROVIDER_TRANSFER_REJECTED.value)).thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.COMPONENT_PROVIDER_TRANSFER_REJECTED])
 
         licenceConditionService.terminateLicenceConditionsForDisposal(event.disposal!!.id, ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON, now)
 
