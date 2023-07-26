@@ -126,7 +126,7 @@ data class BookingCancelled(
     val premises: Premises,
     val cancelledBy: StaffMember,
     val cancelledAt: ZonedDateTime,
-    val cancelledReason: String
+    val cancellationReason: String
 )
 
 data class BookedBy(
