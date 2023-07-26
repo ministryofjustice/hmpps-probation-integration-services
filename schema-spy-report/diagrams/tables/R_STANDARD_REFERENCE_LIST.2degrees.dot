@@ -199,6 +199,7 @@ digraph "twoDegreesRelationshipsDiagram" {
   "CONTACT":"elipses":w -> "PROVIDER_TEAM":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT":"elipses":w -> "PSS_RQMNT":"PSS_RQMNT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT":"elipses":w -> "RQMNT":"RQMNT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT":"elipses":w -> "R_CONTACT_TYPE":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT":"elipses":w -> "OFFICER":"STAFF_EMPLOYEE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT":"elipses":w -> "STAFF":"STAFF_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT":"elipses":w -> "TEAM":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -1506,7 +1507,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>CONTACT</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 25</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">165,869 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">14 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 26</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">165,869 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">14 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/CONTACT.html"
     target="_top"
@@ -3500,7 +3501,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>R_CONTACT_TYPE</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3,021 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">21 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3,021 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">22 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/R_CONTACT_TYPE.html"
     target="_top"
