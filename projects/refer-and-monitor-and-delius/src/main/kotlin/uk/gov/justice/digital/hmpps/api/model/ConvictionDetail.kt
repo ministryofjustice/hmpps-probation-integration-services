@@ -14,7 +14,7 @@ data class CaseConviction(
 
 data class Conviction(
     val id: Long,
-    val date: LocalDate,
+    val date: LocalDate?,
     val sentence: Sentence,
     val mainOffence: Offence
 )
