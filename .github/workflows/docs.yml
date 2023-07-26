@@ -15,6 +15,7 @@ on:
         type: choice
         required: true
         options:
+          - 'All'
           - '["approved-premises-and-delius"]'
           - '["approved-premises-and-oasys"]'
           - '["court-case-and-delius"]'
@@ -54,10 +55,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Get projects - all
-        if: github.event_name != 'workflow_dispatch'
+        if: github.event_name != 'workflow_dispatch' || inputs.projects == 'All'
         run: echo "projects=$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_ENV"
       - name: Get projects - selected
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && inputs.projects != 'All'
         run: echo 'projects=${{ inputs.projects }}' | tee -a "$GITHUB_ENV"
       - id: output
         run: echo 'projects=${{ env.projects }}' | tee -a "$GITHUB_OUTPUT"
