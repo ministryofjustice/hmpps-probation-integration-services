@@ -24,6 +24,6 @@
       "surname": "Smith",
       "username": "JohnSmithNPS"
     },
-    "cancelledReason": "Reason for application cancellation"
+    "cancellationReason": "Reason for application cancellation"
   }
 }

@@ -127,7 +127,7 @@ class ReferralService(
                 locationCode = ap.locationCode(),
                 description = "Booking cancelled for ${details.premises.name}",
                 notes = listOfNotNull(
-                    details.cancelledReason,
+                    details.cancellationReason,
                     "For more details, click here: ${details.applicationUrl}"
                 ).joinToString(System.lineSeparator() + System.lineSeparator())
             ),
