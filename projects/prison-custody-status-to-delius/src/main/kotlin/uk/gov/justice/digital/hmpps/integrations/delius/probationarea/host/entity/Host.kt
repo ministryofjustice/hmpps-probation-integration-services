@@ -7,6 +7,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.time.ZonedDateTime
 
 @Immutable
@@ -33,3 +35,16 @@ class Host(
     @Column
     val endDate: ZonedDateTime? = null
 )
+
+interface HostRepository : JpaRepository<Host, Long> {
+    @Query(
+        """
+        select host.probationAreaId from Host host
+        where host.leadHost = true 
+        and host.institutionId = :institutionId
+        and host.startDate <= :date
+        and (host.endDate is null or host.endDate >= :date)
+        """
+    )
+    fun findLeadHostProviderIdByInstitutionId(institutionId: Long, date: ZonedDateTime): Long?
+}

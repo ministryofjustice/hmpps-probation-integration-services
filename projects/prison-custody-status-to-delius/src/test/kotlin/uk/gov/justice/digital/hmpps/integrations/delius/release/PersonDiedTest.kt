@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.release
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
@@ -13,12 +14,13 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.alert.ContactAlertRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactAlertRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.entity.PersonManagerRepository
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -40,7 +42,14 @@ internal class PersonDiedTest {
     lateinit var contactAlertRepository: ContactAlertRepository
 
     @InjectMocks
+    lateinit var contactService: ContactService
+
     lateinit var personDied: PersonDied
+
+    @BeforeEach
+    fun setUp() {
+        personDied = PersonDied(personRepository, contactService)
+    }
 
     @ParameterizedTest
     @MethodSource("peopleAndExceptions")

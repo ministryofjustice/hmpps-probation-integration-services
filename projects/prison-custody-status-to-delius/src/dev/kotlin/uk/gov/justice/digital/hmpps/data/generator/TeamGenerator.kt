@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
-import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.entity.ProbationArea
+import uk.gov.justice.digital.hmpps.integrations.delius.team.entity.Team
 
 object TeamGenerator {
     val DEFAULT = generate(

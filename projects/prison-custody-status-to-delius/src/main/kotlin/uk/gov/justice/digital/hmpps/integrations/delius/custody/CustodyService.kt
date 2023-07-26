@@ -2,20 +2,20 @@ package uk.gov.justice.digital.hmpps.integrations.delius.custody
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyHistory
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.history.CustodyHistoryRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactDetail
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistory
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistoryRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.keydate.entity.KeyDate
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.keydate.entity.KeyDateRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.manager.OrderManager
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.PrisonManagerService
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.Institution
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReason
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.isEotl
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.isEotl
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustodialStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustodyEventType
@@ -34,10 +34,9 @@ class CustodyService(
     private val referenceDataRepository: ReferenceDataRepository,
     private val custodyRepository: CustodyRepository,
     private val custodyHistoryRepository: CustodyHistoryRepository,
-    private val contactTypeRepository: ContactTypeRepository,
-    private val contactRepository: ContactRepository,
     private val keyDateRepository: KeyDateRepository,
-    private val prisonManagerService: PrisonManagerService
+    private val prisonManagerService: PrisonManagerService,
+    private val contactService: ContactService
 ) {
     fun updateStatus(custody: Custody, status: CustodialStatusCode, date: ZonedDateTime, detail: String) {
         if (custody.status.code != status.code) {
@@ -83,17 +82,11 @@ class CustodyService(
                 "Location Change Date: ${DeliusDateTimeFormatter.format(date)}\n" +
                 "-------------------------------" +
                 if (recallReason.isEotl()) EOTL_LOCATION_CHANGE_CONTACT_NOTES else ""
-            contactRepository.save(
-                Contact(
-                    type = contactTypeRepository.getByCode(ContactTypeCode.CHANGE_OF_INSTITUTION.code),
-                    date = date,
-                    person = person,
-                    notes = notes,
-                    staffId = orderManager.staffId,
-                    teamId = orderManager.teamId,
-                    createdDatetime = ZonedDateTime.now(),
-                    alert = false
-                )
+            contactService.createContact(
+                ContactDetail(ContactType.Code.CHANGE_OF_INSTITUTION, date, notes),
+                person,
+                event = custody.disposal.event,
+                manager = orderManager
             )
         }
     }

@@ -6,7 +6,9 @@ import org.hamcrest.Matchers.matchesPattern
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
@@ -18,11 +20,12 @@ import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
+import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -245,8 +248,9 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(institutionRepository.findByNomisCdeCode(DEFAULT.nomisCdeCode!!)).thenReturn(DEFAULT)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(orderManager)
-        whenever(contactTypeRepository.findByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code))
-            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY])
+        whenever(contactTypeRepository.findByCode(ContactType.Code.RELEASE_FROM_CUSTODY.value))
+            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.RELEASE_FROM_CUSTODY])
+        doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
         releaseService.release(person.nomsNumber, DEFAULT.nomisCdeCode, RELEASED, "OPA", releaseDateTime)
 
@@ -289,8 +293,9 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(institutionRepository.findByCode(inCom.code)).thenReturn(inCom)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(orderManager)
-        whenever(contactTypeRepository.findByCode(ContactTypeCode.RELEASE_FROM_CUSTODY.code))
-            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY])
+        whenever(contactTypeRepository.findByCode(ContactType.Code.RELEASE_FROM_CUSTODY.value))
+            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.RELEASE_FROM_CUSTODY])
+        doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
         releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", releaseDateTime)
 
@@ -301,7 +306,7 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         assertThat(contact.createdDatetime, isCloseTo(ZonedDateTime.now()))
         assertThat(contact.lastUpdatedDatetime, isCloseTo(ZonedDateTime.now()))
         assertThat(contact.date, equalTo(releaseDateTime))
-        assertThat(contact.type, equalTo(ReferenceDataGenerator.CONTACT_TYPE[ContactTypeCode.RELEASE_FROM_CUSTODY]!!))
+        assertThat(contact.type, equalTo(ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.RELEASE_FROM_CUSTODY]!!))
         assertThat(contact.person, equalTo(person))
         assertThat(contact.event, equalTo(event))
         assertThat(contact.notes, equalTo("Release Type: description of ADL"))

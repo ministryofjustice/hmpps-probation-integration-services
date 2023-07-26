@@ -17,7 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.RecallReasonGenerator
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.reason.RecallReasonCode
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import java.time.ZonedDateTime
@@ -138,8 +138,8 @@ class HospitalReleaseTest : ReleaseServiceTestBase() {
         whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
             .thenReturn(institution)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReasonCode.TRANSFER_TO_SECURE_HOSPITAL.code, true))
-            .thenReturn(RecallReasonGenerator.generate(RecallReasonCode.TRANSFER_TO_SECURE_HOSPITAL.code))
+        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL.value, true))
+            .thenReturn(RecallReasonGenerator.generate(RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL.value))
 
         releaseService.release(
             person.nomsNumber,

@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.staff.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.team.entity.Team
 
 object StaffGenerator {
     var DEFAULT = generate(

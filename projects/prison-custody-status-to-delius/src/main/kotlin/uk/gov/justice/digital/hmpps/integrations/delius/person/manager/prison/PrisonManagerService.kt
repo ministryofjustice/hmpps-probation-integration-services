@@ -1,25 +1,24 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.event.Disposal
-import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.responsibleofficer.ResponsibleOfficer
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.responsibleofficer.ResponsibleOfficerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManager
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.entity.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getByCodeAndSetName
-import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
-import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCodeAndTeamsId
-import uk.gov.justice.digital.hmpps.integrations.delius.team.Team
-import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.team.getByCodeAndProbationAreaId
+import uk.gov.justice.digital.hmpps.integrations.delius.staff.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.staff.entity.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.staff.entity.getByCodeAndTeamsId
+import uk.gov.justice.digital.hmpps.integrations.delius.team.entity.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.team.entity.TeamRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.team.entity.getByCodeAndProbationAreaId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -30,8 +29,7 @@ class PrisonManagerService(
     private val referenceDataRepository: ReferenceDataRepository,
     private val prisonManagerRepository: PrisonManagerRepository,
     private val contactRepository: ContactRepository,
-    private val contactTypeRepository: ContactTypeRepository,
-    private val responsibleOfficerRepository: ResponsibleOfficerRepository
+    private val contactTypeRepository: ContactTypeRepository
 ) {
     fun allocateToProbationArea(
         disposal: Disposal,
@@ -69,7 +67,7 @@ class PrisonManagerService(
             prisonManagerRepository.saveAndFlush(activePrisonManager)
             contactRepository.save(
                 Contact(
-                    type = contactTypeRepository.getByCode(ContactTypeCode.PRISON_MANAGER_AUTOMATIC_TRANSFER.code),
+                    type = contactTypeRepository.getByCode(ContactType.Code.PRISON_MANAGER_AUTOMATIC_TRANSFER.value),
                     date = allocationDate,
                     person = person,
                     teamId = team.id,
@@ -85,8 +83,7 @@ class PrisonManagerService(
             )
         }
 
-        // create a new prison manager
-        val newPrisonManager = prisonManagerRepository.save(
+        prisonManagerRepository.save(
             PrisonManager(
                 date = allocationDate,
                 endDate = activePrisonManagerEndDate,
@@ -98,55 +95,5 @@ class PrisonManagerService(
                 probationArea = probationArea
             )
         )
-
-        // update Responsible Officer to the new Prison Manager if disposal is longer than 20 months.
-        if (disposal.isLongerThan20Months() == true) {
-            updateResponsibleOfficer(person, newPrisonManager, allocationDate)
-        }
-    }
-
-    private fun updateResponsibleOfficer(person: Person, prisonManager: PrisonManager, allocationDate: ZonedDateTime) {
-        val activeResponsibleOfficer = responsibleOfficerRepository.findActiveManagerAtDate(person.id, allocationDate)
-        val activeResponsibleOfficerEndDate = activeResponsibleOfficer?.endDate
-
-        // end-date previous responsible officer
-        if (activeResponsibleOfficer != null) {
-            activeResponsibleOfficer.endDate = allocationDate
-            // Need to flush changes here to ensure single active RO constraint isn't violated when new RO is added.
-            responsibleOfficerRepository.saveAndFlush(activeResponsibleOfficer)
-        }
-
-        // create new responsible officer
-        val newResponsibleOfficer = responsibleOfficerRepository.save(
-            ResponsibleOfficer(
-                personId = person.id,
-                prisonManager = prisonManager,
-                startDate = allocationDate,
-                endDate = activeResponsibleOfficerEndDate
-            )
-        )
-
-        // create contact with change details
-        contactRepository.save(
-            Contact(
-                type = contactTypeRepository.getByCode(ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE.code),
-                date = allocationDate,
-                person = person,
-                staffId = prisonManager.staff.id,
-                teamId = prisonManager.team.id,
-                notes = generateResponsibleOfficerChangeNotes(activeResponsibleOfficer, newResponsibleOfficer)
-            )
-        )
-    }
-
-    private fun generateResponsibleOfficerChangeNotes(
-        oldResponsibleOfficer: ResponsibleOfficer?,
-        newResponsibleOfficer: ResponsibleOfficer
-    ): String {
-        var notes = "New Details:\n${newResponsibleOfficer.stringDetails()}"
-        oldResponsibleOfficer?.stringDetails()?.let {
-            notes += "\n\nPrevious Details:\n$it"
-        }
-        return notes
     }
 }
