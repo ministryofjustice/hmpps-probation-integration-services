@@ -26,7 +26,7 @@ class ConvictionService(private val personService: PersonService, private val ev
 
 fun Event.asConviction() = Conviction(
     id,
-    convictionDate!!,
+    convictionDate,
     Sentence(disposal!!.type.description, disposal.expectedEndDate()),
     Offence(mainOffence!!.offence.mainCategoryDescription, mainOffence.offence.subCategoryDescription)
 )
