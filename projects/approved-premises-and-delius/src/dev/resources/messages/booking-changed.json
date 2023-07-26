@@ -1,0 +1,18 @@
+{
+  "eventType": "approved-premises.booking.changed",
+  "version": 1,
+  "description": "An Approved Premises Booking has been changed",
+  "detailUrl": "http://localhost:{wiremock.port}/approved-premises-api/events/booking-changed/364145f9-0af8-488e-9901-b4c46cd9ba37",
+  "occurredAt": "2023-07-25T15:09:32.143736077Z",
+  "additionalInformation": {
+    "applicationId": "364145f9-0af8-488e-9901-b4c46cd9ba37"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000001"
+      }
+    ]
+  }
+}

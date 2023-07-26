@@ -15,7 +15,6 @@
     "bookedBy": {
       "staffMember": {
         "staffCode": "N54A001",
-        "staffIdentifier": 1501234567,
         "forenames": "John",
         "surname": "Smith",
         "username": "JohnSmithNPS"

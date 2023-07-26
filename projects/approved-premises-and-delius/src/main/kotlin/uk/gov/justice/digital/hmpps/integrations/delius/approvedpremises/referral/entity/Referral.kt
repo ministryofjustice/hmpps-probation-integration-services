@@ -41,8 +41,8 @@ class Referral(
     val approvedPremisesId: Long,
 
     val referralDate: LocalDate,
-    val expectedArrivalDate: LocalDate?,
-    val expectedDepartureDate: LocalDate?,
+    var expectedArrivalDate: LocalDate?,
+    var expectedDepartureDate: LocalDate?,
     val decisionDate: ZonedDateTime?,
     @Lob
     val referralNotes: String?,
