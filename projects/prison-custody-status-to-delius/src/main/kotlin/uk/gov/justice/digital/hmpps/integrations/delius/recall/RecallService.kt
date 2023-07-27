@@ -114,9 +114,8 @@ class RecallService(
         val toInstitution = lazyInstitution.value
         val custodialStatusUpdated = updateCustodialStatus(custody, recallDate, recall)
 
-        val custodialLocationUpdated = updateCustodialLocation(custody, toInstitution, event, recallDate, recallReason)
-
-        custodyService.allocatePrisonManager(toInstitution, custody, recallDateTime)
+        val custodialLocationUpdated =
+            updateCustodialLocation(custody, toInstitution, event, recallDateTime, recallReason)
 
         if (recall != null) {
             licenceConditionService.terminateLicenceConditionsForDisposal(
@@ -137,11 +136,18 @@ class RecallService(
         custody: Custody,
         toInstitution: Institution,
         event: Event,
-        recallDate: ZonedDateTime,
+        recallDateTime: ZonedDateTime,
         recallReason: RecallReason
     ) = if (custody.institution?.id != toInstitution.id || custody.status.canRecall()) {
         val orderManager = orderManagerRepository.getByEventId(event.id)
-        custodyService.updateLocation(custody, toInstitution, recallDate, orderManager, recallReason)
+        custodyService.allocatePrisonManager(toInstitution, custody, recallDateTime)
+        custodyService.updateLocation(
+            custody,
+            toInstitution,
+            recallDateTime.truncatedTo(DAYS),
+            orderManager,
+            recallReason
+        )
         true
     } else {
         false
