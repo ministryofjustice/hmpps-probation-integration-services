@@ -114,7 +114,7 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
         from PersonManager pm
         join pm.person p
         join pm.staff.user u
-        where lower(u.username) = lower(:username)
+        where upper(u.username) = upper(:username)
     """
     )
     fun findCasesManagedBy(username: String): List<String>
