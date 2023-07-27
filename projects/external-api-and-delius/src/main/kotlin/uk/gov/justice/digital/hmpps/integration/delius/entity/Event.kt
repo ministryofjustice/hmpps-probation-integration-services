@@ -28,7 +28,7 @@ data class Event(
     val number: String,
 
     @Column
-    val convictionDate: LocalDate,
+    val convictionDate: LocalDate?,
 
     @OneToOne(mappedBy = "event")
     val mainOffence: MainOffence,
