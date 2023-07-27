@@ -10,14 +10,12 @@ database:
       - custody_history
       - event
       - iaps_event
-      - key_date
       - lic_condition
       - lic_condition_transfer
       - prison_offender_manager
       - recall
       - rejected_transfer_diary
       - release
-      - responsible_officer
     packages:
       - pkg_triggersupport # for caseload rebuild
 

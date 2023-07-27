@@ -19,7 +19,6 @@ import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
@@ -30,8 +29,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistory
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.keydate.entity.KeyDate
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.keydate.entity.KeyDateRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.PrisonManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionRepository
@@ -42,7 +39,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode.LOCATION_CHANGE
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode.STATUS_CHANGE
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
-import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
@@ -67,9 +63,6 @@ internal class CustodyServiceTest {
     private lateinit var contactRepository: ContactRepository
 
     @Mock
-    private lateinit var keyDateRepository: KeyDateRepository
-
-    @Mock
     private lateinit var prisonManagerService: PrisonManagerService
 
     @Mock
@@ -89,7 +82,6 @@ internal class CustodyServiceTest {
             referenceDataRepository,
             custodyRepository,
             custodyHistoryRepository,
-            keyDateRepository,
             prisonManagerService,
             contactService
         )
@@ -161,29 +153,5 @@ internal class CustodyServiceTest {
                     EOTL_LOCATION_CHANGE_CONTACT_NOTES
             )
         )
-    }
-
-    @Test
-    fun `add RoTL end date sets to day before acr`() {
-        val acrDate = KeyDate(42, ReferenceDataGenerator.ACR_DATE_TYPE, LocalDate.now().plusDays(7))
-        whenever(
-            referenceDataRepository.findByCodeAndSetName(
-                KeyDate.TypeCode.ROTL_END_DATE.value,
-                ReferenceDataSetGenerator.KEY_DATE_TYPE.name
-            )
-        ).thenReturn(
-            ReferenceDataGenerator.generate(
-                KeyDate.TypeCode.ROTL_END_DATE.value,
-                ReferenceDataSetGenerator.KEY_DATE_TYPE
-            )
-        )
-
-        val redSaved = argumentCaptor<KeyDate>()
-        custodyService.addRotlEndDate(acrDate)
-
-        verify(keyDateRepository).save(redSaved.capture())
-        val red = redSaved.firstValue
-        assertThat(red.type.code, equalTo(KeyDate.TypeCode.ROTL_END_DATE.value))
-        assertThat(red.date, equalTo(LocalDate.now().plusDays(6)))
     }
 }
