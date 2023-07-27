@@ -9,8 +9,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistory
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.keydate.entity.KeyDate
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.keydate.entity.KeyDateRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.OrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.PrisonManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
@@ -19,7 +17,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.isEotl
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustodialStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustodyEventType
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getKeyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode
 import java.time.ZonedDateTime
@@ -34,7 +31,6 @@ class CustodyService(
     private val referenceDataRepository: ReferenceDataRepository,
     private val custodyRepository: CustodyRepository,
     private val custodyHistoryRepository: CustodyHistoryRepository,
-    private val keyDateRepository: KeyDateRepository,
     private val prisonManagerService: PrisonManagerService,
     private val contactService: ContactService
 ) {
@@ -74,7 +70,6 @@ class CustodyService(
                 custody = custody
             )
         )
-
         if (orderManager != null) {
             val person = custody.disposal.event.person
             val notes = "Custodial Status: ${custody.status.description}\n" +
@@ -110,13 +105,5 @@ class CustodyService(
                 allocationDateTime
             )
         }
-    }
-
-    fun findAutoConditionalReleaseDate(custodyId: Long): KeyDate? =
-        keyDateRepository.findByCustodyIdAndTypeCode(custodyId, KeyDate.TypeCode.AUTO_CONDITIONAL_RELEASE_DATE.value)
-
-    fun addRotlEndDate(acrDate: KeyDate) {
-        val type = referenceDataRepository.getKeyDateType(KeyDate.TypeCode.ROTL_END_DATE.value)
-        keyDateRepository.save(KeyDate(acrDate.custodyId, type, acrDate.date.minusDays(1)))
     }
 }

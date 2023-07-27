@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius.release
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.FeatureFlagCodes.HOSPITAL_RELEASE
-import uk.gov.justice.digital.hmpps.FeatureFlagCodes.RELEASE_ETL23
 import uk.gov.justice.digital.hmpps.MovementReasonCodes
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
@@ -33,7 +32,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.getByCodeA
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getReleaseType
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode.CUSTODY_ROTL
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode.IN_CUSTODY
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode.RECALLED
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode.RELEASED_ON_LICENCE
@@ -45,11 +43,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.P
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.PrisonerReleased
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.ReleaseRepository
-import java.time.LocalDate.now
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.DAYS
-
-const val ETL23_NOTES = "This is a ROTL release on Extended Temporary Licence (ETL23)"
 
 enum class ReleaseOutcome {
     MultipleEventsReleased,
@@ -126,11 +121,10 @@ class ReleaseService(
 
         // create the release
         releaseType?.also {
-            release(releaseDateTime, it, custody, fromInstitution, movementReasonCode)
+            release(releaseDateTime, it, custody, fromInstitution)
         }
 
         val statusCode = when {
-            releaseType?.code == ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE.code -> CUSTODY_ROTL
             movementReasonCode.isHospitalRelease() -> {
                 if (custody.isInCustody()) {
                     IN_CUSTODY
@@ -155,7 +149,6 @@ class ReleaseService(
             statusCode,
             releaseDate,
             when {
-                statusCode == CUSTODY_ROTL -> "Released on Temporary Licence"
                 movementReasonCode.isHospitalRelease() -> "Transfer to/from Hospital"
                 else -> "Released on Licence"
             }
@@ -165,11 +158,9 @@ class ReleaseService(
             ReleaseTypeCode.ADULT_LICENCE.code -> institutionRepository.getByCode(InstitutionCode.IN_COMMUNITY.code)
             else -> fromInstitution
         }
-        if (locationChanged(custody, institution)) {
+
+        if (custody.institution?.id != institution.id) {
             custodyService.updateLocation(custody, institution, releaseDate)
-            if (!movementReasonCode.isHospitalRelease()) {
-                custodyService.allocatePrisonManager(institution, custody, releaseDateTime)
-            }
         }
 
         if (statusCode == RECALLED) {
@@ -179,17 +170,13 @@ class ReleaseService(
         }
     }
 
-    private fun locationChanged(custody: Custody, institution: Institution): Boolean =
-        institution.code == InstitutionCode.IN_COMMUNITY.code || custody.institution?.id != institution.id
-
     private fun validateRelease(
         custody: Custody,
         institution: Institution,
         releaseDate: ZonedDateTime,
         movementReasonCode: String
     ) {
-        // do not carry out this validation for ETL23 - logic later to deal with these scenarios
-        if (movementReasonCode != MovementReasonCodes.EXTENDED_TEMPORARY_LICENCE && !movementReasonCode.isHospitalRelease()) {
+        if (!movementReasonCode.isHospitalRelease()) {
             if (!custody.isInCustody()) {
                 throw IgnorableMessageException("UnexpectedCustodialStatus")
             }
@@ -224,13 +211,7 @@ class ReleaseService(
             }
         }
 
-        "TEMPORARY_ABSENCE_RELEASE" ->
-            if (movementReasonCode == "ETL23" && featureFlags.enabled(RELEASE_ETL23)) {
-                ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE
-            } else {
-                throw IgnorableMessageException("UnsupportedReleaseReason")
-            }
-
+        "TEMPORARY_ABSENCE_RELEASE" -> throw IgnorableMessageException("UnsupportedReleaseReason")
         "RELEASED_TO_HOSPITAL" -> {
             if (movementReasonCode.isHospitalRelease() && featureFlags.enabled(HOSPITAL_RELEASE)) {
                 null
@@ -249,19 +230,9 @@ class ReleaseService(
         dateTime: ZonedDateTime,
         type: ReferenceData,
         custody: Custody,
-        fromInstitution: Institution,
-        movementReasonCode: String
+        fromInstitution: Institution
     ) {
         if (!custody.status.canRelease()) return
-        val length = if (type.code == ReleaseTypeCode.RELEASED_ON_TEMPORARY_LICENCE.code) {
-            val acr = custodyService.findAutoConditionalReleaseDate(custody.id)
-                ?: throw IgnorableMessageException("No Auto-Conditional Release date is present")
-            if (acr.date.isBefore(now())) throw IgnorableMessageException("Auto-Conditional Release date in the past")
-            custodyService.addRotlEndDate(acr)
-            maxOf(DAYS.between(acr.date.minusDays(1), now()), 1)
-        } else {
-            null
-        }
         val releaseDate = dateTime.truncatedTo(DAYS)
         releaseRepository.save(
             Release(
@@ -274,8 +245,7 @@ class ReleaseService(
                     fromInstitution.id.institutionId,
                     dateTime
                 ),
-                recall = custody.mostRecentRelease()?.recall,
-                length = length
+                recall = custody.mostRecentRelease()?.recall
             )
         )
         val event = custody.disposal.event
@@ -284,7 +254,7 @@ class ReleaseService(
             ContactDetail(
                 ContactType.Code.RELEASE_FROM_CUSTODY,
                 dateTime,
-                if (movementReasonCode == MovementReasonCodes.EXTENDED_TEMPORARY_LICENCE) ETL23_NOTES else "Release Type: ${type.description}"
+                "Release Type: ${type.description}"
             ),
             event.person,
             event,
