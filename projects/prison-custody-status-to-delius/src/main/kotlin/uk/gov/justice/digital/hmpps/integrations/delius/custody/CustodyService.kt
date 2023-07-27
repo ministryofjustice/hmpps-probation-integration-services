@@ -97,13 +97,7 @@ class CustodyService(
         allocationDateTime: ZonedDateTime
     ) {
         // allocate a prison manager if institution has changed and institution is linked to a provider
-        val latestRelease = custody.mostRecentRelease()
-        if ((
-            (latestRelease != null && toInstitution.id != latestRelease.institutionId) ||
-                (latestRelease == null && toInstitution.id != custody.institution?.id)
-            ) &&
-            toInstitution.probationArea != null
-        ) {
+        if (toInstitution.id != custody.institution?.id && toInstitution.probationArea != null) {
             prisonManagerService.allocateToProbationArea(
                 custody.disposal,
                 toInstitution.probationArea,

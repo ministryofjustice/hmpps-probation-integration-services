@@ -175,6 +175,8 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
                 ContactType.Code.CHANGE_OF_INSTITUTION.value
             )
         )
+        val coi = contacts.first { it.type.code == ContactType.Code.CHANGE_OF_INSTITUTION.value }
+        assertThat(coi.event?.id, equalTo(custody.disposal.event.id))
 
         // and telemetry is updated
         verify(telemetryService).trackEvent(
