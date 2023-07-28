@@ -35,7 +35,7 @@ fun LocalDeliveryUnit.forManager() =
 fun Team.forManager() =
     uk.gov.justice.digital.hmpps.api.model.Team(code, description, ldu?.forManager())
 
-fun Staff.name() = Name(forename, middleName, surname)
+fun Staff.name() = Name(listOfNotNull(forename, middleName).joinToString(" "), surname)
 fun PersonManager.manager() =
     if (staff.isUnallocated()) {
         Manager(team.forManager())
