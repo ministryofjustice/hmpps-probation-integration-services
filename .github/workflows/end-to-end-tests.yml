@@ -106,11 +106,11 @@ jobs:
           WORKFORCE_URL: https://workforce-management-dev.hmpps.service.justice.gov.uk
           DPS_URL: https://digital-dev.prison.service.justice.gov.uk
           AUTH_URL: https://sign-in-dev.hmpps.service.justice.gov.uk
-          PRISON_API: https://api-dev.prison.service.justice.gov.uk/
-          EPF_API: https://effective-proposal-framework-and-delius-dev.hmpps.service.justice.gov.uk/
+          PRISON_API: https://api-dev.prison.service.justice.gov.uk
+          EPF_API: https://effective-proposal-framework-and-delius-dev.hmpps.service.justice.gov.uk
           REFERANDMONITOR_URL: https://hmpps-interventions-ui-dev.apps.live-1.cloud-platform.service.justice.gov.uk
           OASYS_URL: https://t2.oasys.service.justice.gov.uk/eor/f?p=100:101
-          APPROVEDPREMISES_URL: https://approved-premises-dev.hmpps.service.justice.gov.uk/
+          APPROVEDPREMISES_URL: https://approved-premises-dev.hmpps.service.justice.gov.uk
           CONSIDER_A_RECALL_URL: https://consider-a-recall-dev.hmpps.service.justice.gov.uk
           MANAGE_POM_CASES_URL: https://test.moic.service.justice.gov.uk
           DELIUS_USERNAME: ${{ secrets.E2E_DELIUS_USERNAME }}
