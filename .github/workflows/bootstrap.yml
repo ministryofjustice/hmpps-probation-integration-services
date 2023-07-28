@@ -61,7 +61,7 @@ jobs:
           gh issue create \
             --title "${{ inputs.issue_number }} Request HMPPS Auth client for ${{ inputs.project_name }}" \
             --body '
-          - [ ] Clone Jira ticket: [HAAR-928](https://dsdmoj.atlassian.net/browse/HAAR-928)
+          - [ ] Clone Jira ticket: [HAAR-1662](https://dsdmoj.atlassian.net/browse/HAAR-1662)
           - [ ] Raise in Slack: [#hmpps-auth-audit-registers](https://mojdt.slack.com/archives/C02S71KUBED)' \
             --label bootstrap
         env:
@@ -293,7 +293,6 @@ jobs:
           - [ ] Enter the event types the service will consume into the filter_policy for preprod: [Edit file](https://github.com/ministryofjustice/cloud-platform-environments/edit/${{ inputs.issue_number }}-create-${{ inputs.project_name }}-queue-preprod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-preprod/resources/${{ inputs.project_name }}-queue.tf)
           - [ ] Enter the event types the service will consume into the filter_policy for prod: [Edit file](https://github.com/ministryofjustice/cloud-platform-environments/edit/${{ inputs.issue_number }}-create-${{ inputs.project_name }}-queue-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/${{ inputs.project_name }}-queue.tf)
           - [ ] Request approval in [#ask-cloud-platform](https://mojdt.slack.com/archives/C57UPMZLY)
-          > Hi there, please could you review these 3 PRs:
           > ${{ steps.dev-pr.outputs.pull-request-url }}
           > ${{ steps.preprod-pr.outputs.pull-request-url }}
           > ${{ steps.prod-pr.outputs.pull-request-url }}
