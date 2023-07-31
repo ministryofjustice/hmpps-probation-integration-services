@@ -28,5 +28,6 @@ fun Event.asConviction() = Conviction(
     id,
     convictionDate,
     Sentence(disposal!!.type.description, disposal.expectedEndDate()),
-    Offence(mainOffence!!.offence.mainCategoryDescription, mainOffence.offence.subCategoryDescription)
+    Offence(mainOffence!!.offence.mainCategoryDescription, mainOffence.offence.subCategoryDescription),
+    active && disposal.active
 )
