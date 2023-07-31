@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /manage-offences-and-delius/db-username
+    password_key: /manage-offences-and-delius/db-password
+
+  audit:
+    username: ManageOffencesAndDelius
+    forename: Manage Offences
+    surname: Service
