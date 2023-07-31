@@ -10,7 +10,6 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
@@ -19,17 +18,19 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallService
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseService
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
+import uk.gov.justice.digital.hmpps.integrations.prison.BookingId
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.MessageAttribute
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.message.PersonIdentifier
+import uk.gov.justice.digital.hmpps.message.PersonReference
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.time.ZonedDateTime
 
-@Suppress("UNCHECKED_CAST")
 @ExtendWith(MockitoExtension::class)
 internal class HandlerTest {
     @Mock
@@ -69,11 +70,6 @@ internal class HandlerTest {
         attributes = MessageAttributes("prison-offender-events.prisoner.released")
     )
 
-    private val poe = Notification(
-        CustodialStatusChanged(1208804, 1, null, ZonedDateTime.now()),
-        MessageAttributes("EXTERNAL_MOVEMENT_RECORD-INSERTED")
-    )
-
     private val booking = Booking(
         1208804,
         "45680A",
@@ -83,6 +79,15 @@ internal class HandlerTest {
         "ADM",
         "INT",
         Booking.InOutStatus.IN
+    )
+
+    private val identifierAddedNotification = notification.copy(
+        message = HmppsDomainEvent(
+            eventType = "probation-case.prison-identifier.added",
+            version = 1,
+            personReference = PersonReference(listOf(PersonIdentifier("NOMS", booking.personReference)))
+        ),
+        attributes = MessageAttributes("probation-case.prison-identifier.added")
     )
 
     @Test
@@ -98,7 +103,7 @@ internal class HandlerTest {
                 )
             )
         ).thenReturn(ReleaseOutcome.PrisonerReleased)
-        handler.handle(notification as Notification<Any>)
+        handler.handle(notification)
         verify(telemetryService).notificationReceived(notification)
     }
 
@@ -116,7 +121,7 @@ internal class HandlerTest {
             )
         ).thenReturn(ReleaseOutcome.PrisonerReleased)
 
-        handler.handle(notification as Notification<Any>)
+        handler.handle(notification)
         verify(releaseService).release(
             PrisonerMovement.Released(
                 notification.message.additionalInformation.nomsNumber(),
@@ -148,7 +153,7 @@ internal class HandlerTest {
             notification.copy(
                 message = notification.message.copy(eventType = "prison-offender-events.prisoner.received"),
                 attributes = attrs
-            ) as Notification<Any>
+            )
         )
         verify(telemetryService).trackEvent("PrisonerRecalled", notification.message.telemetryProperties())
     }
@@ -160,36 +165,29 @@ internal class HandlerTest {
                 notification.copy(
                     message = notification.message.copy(eventType = "unknown"),
                     attributes = MessageAttributes("unknown")
-                ) as Notification<Any>
+                )
             )
         }
     }
 
     @Test
     fun `messages with inactive booking are ignored`() {
-        whenever(prisonApiClient.getBooking(poe.message.bookingId)).thenReturn(booking.copy(active = false))
-        handler.handle(poe as Notification<Any>)
-        verify(telemetryService).trackEvent("BookingInactive", poe.message.telemetryProperties())
-    }
-
-    @Test
-    fun `ignores messages with imprisonment status sequence greater than 0`() {
-        val notification = poe.copy(message = poe.message.copy(imprisonmentStatusSeq = 1))
-        handler.handle(notification as Notification<Any>)
-        verify(prisonApiClient, never()).getBooking(any(), any(), any())
-        verify(telemetryService).trackEvent("DuplicateImprisonmentStatus", notification.message.telemetryProperties())
+        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
+        whenever(prisonApiClient.getBooking(booking.id)).thenReturn(booking.copy(active = false))
+        handler.handle(identifierAddedNotification)
+        verify(telemetryService).trackEvent("BookingInactive", mapOf("nomsId" to booking.personReference))
     }
 
     @Test
     fun `logs telemetry event when unknown reason given`() {
-        whenever(prisonApiClient.getBooking(poe.message.bookingId))
+        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
+        whenever(prisonApiClient.getBooking(booking.id))
             .thenReturn(booking.copy(movementType = "UNKNOWN", movementReason = ""))
-        handler.handle(poe as Notification<Any>)
+        handler.handle(identifierAddedNotification)
         verify(telemetryService).trackEvent(
             "UnableToCalculateMovementType",
             mapOf(
-                "bookingId" to "1208804",
-                "movementSeq" to "1",
+                "nomsId" to booking.personReference,
                 "movementType" to "UNKNOWN",
                 "movementReason" to ""
             )
@@ -197,32 +195,33 @@ internal class HandlerTest {
     }
 
     @Test
-    fun `booking is correctly mapped to a received prisoner movement`() {
-        whenever(prisonApiClient.getBooking(poe.message.bookingId)).thenReturn(booking)
+    fun `booking is correctly mapped to a received prisoner movement when identifier added`() {
+        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
+        whenever(prisonApiClient.getBooking(booking.id)).thenReturn(booking.copy(movementReason = "N"))
         whenever(recallService.recall(any())).thenReturn(RecallOutcome.PrisonerRecalled)
 
-        handler.handle(poe as Notification<Any>)
+        handler.handle(identifierAddedNotification)
         val received = argumentCaptor<PrisonerMovement.Received>()
         verify(recallService).recall(received.capture())
         assertThat(received.firstValue.nomsId, equalTo("A5295DZ"))
-        assertThat(received.firstValue.movementReason, equalTo("INT"))
-        assertThat(received.firstValue.reason, equalTo("TRANSFERRED"))
+        assertThat(received.firstValue.movementReason, equalTo("N"))
+        assertThat(received.firstValue.reason, equalTo("ADMISSION"))
         assertThat(received.firstValue.prisonId, equalTo("SWI"))
     }
 
     @Test
-    fun `booking is correctly mapped to a released prisoner movement`() {
-        whenever(prisonApiClient.getBooking(poe.message.bookingId))
-            .thenReturn(
-                booking.copy(
-                    movementType = "REL",
-                    movementReason = "HQ",
-                    inOutStatus = Booking.InOutStatus.OUT
-                )
+    fun `booking is correctly mapped to a released prisoner movement when identifier added`() {
+        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
+        whenever(prisonApiClient.getBooking(booking.id)).thenReturn(
+            booking.copy(
+                movementType = "REL",
+                movementReason = "HQ",
+                inOutStatus = Booking.InOutStatus.OUT
             )
+        )
         whenever(releaseService.release(any())).thenReturn(ReleaseOutcome.PrisonerReleased)
 
-        handler.handle(poe as Notification<Any>)
+        handler.handle(identifierAddedNotification)
         val released = argumentCaptor<PrisonerMovement.Released>()
         verify(releaseService).release(released.capture())
         assertThat(released.firstValue.nomsId, equalTo("A5295DZ"))

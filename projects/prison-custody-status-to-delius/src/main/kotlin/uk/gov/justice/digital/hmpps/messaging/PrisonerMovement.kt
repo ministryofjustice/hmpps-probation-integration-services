@@ -25,10 +25,3 @@ sealed interface PrisonerMovement {
         override val occurredAt: ZonedDateTime
     ) : PrisonerMovement
 }
-
-data class CustodialStatusChanged(
-    val bookingId: Long,
-    val movementSeq: Long?,
-    val imprisonmentStatusSeq: Long?,
-    val eventDatetime: ZonedDateTime
-)

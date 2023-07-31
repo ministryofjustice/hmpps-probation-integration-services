@@ -2,7 +2,7 @@
   "Type": "Notification",
   "MessageId": "b11f8b6c-a7bc-4a3e-af9c-3e4870924eaa",
   "TopicArn": "",
-  "Message": "{\n\"eventType\":\"EXTERNAL_MOVEMENT_RECORD-INSERTED\",\n\"bookingId\":1208804,\n\"movementSeq\":1,\n\"eventDatetime\":\"2023-07-31T10:37:28\"\n}",
+  "Message": "{\"eventType\":\"probation-case.prison-identifier.added\",\"version\":1,\"occurredAt\":\"2023-07-31T09:26:39+01:00\",\"publishedAt\":\"2023-07-31T09:26:39.362Z+01:00\",\"description\":\"A prisoner identifier has been added\",\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"A5295DZ\"}]}}",
   "Timestamp": "2023-07-31T09:26:39.362Z",
   "SignatureVersion": "1",
   "Signature": "",
@@ -11,7 +11,7 @@
   "MessageAttributes": {
     "eventType": {
       "Type": "String",
-      "Value": "EXTERNAL_MOVEMENT_RECORD-INSERTED"
+      "Value": "probation-case.prison-identifier.added"
     }
   }
 }

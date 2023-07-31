@@ -15,7 +15,22 @@ interface PrisonApiClient {
         @RequestParam basicInfo: Boolean = false,
         @RequestParam extraInfo: Boolean = true
     ): Booking
+
+    @GetMapping(value = ["/offenderNo/{nomsId}"])
+    fun getBookingByNomsId(
+        @PathVariable("nomsId") id: String,
+        @RequestParam basicInfo: Boolean = false,
+        @RequestParam extraInfo: Boolean = true
+    ): BookingId
+
+    @GetMapping(value = ["/{bookingId}/movement/{movementSeq}"])
+    fun getMovement(
+        @PathVariable("bookingId") bookingId: Long,
+        @PathVariable("movementSeq") movementSeq: Long
+    ): Movement
 }
+
+data class BookingId(@JsonAlias("bookingId") val id: Long)
 
 data class Booking(
     @JsonAlias("bookingId")
@@ -74,3 +89,8 @@ data class Booking(
             }
         }
 }
+
+data class Movement(
+    val fromAgency: String?,
+    val toAgency: String?
+)
