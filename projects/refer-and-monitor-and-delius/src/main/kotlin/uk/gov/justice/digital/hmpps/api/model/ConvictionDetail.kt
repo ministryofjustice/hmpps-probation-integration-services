@@ -16,7 +16,8 @@ data class Conviction(
     val id: Long,
     val date: LocalDate?,
     val sentence: Sentence,
-    val mainOffence: Offence
+    val mainOffence: Offence,
+    val active: Boolean
 )
 
 data class Sentence(val description: String, val expectedEndDate: LocalDate?)

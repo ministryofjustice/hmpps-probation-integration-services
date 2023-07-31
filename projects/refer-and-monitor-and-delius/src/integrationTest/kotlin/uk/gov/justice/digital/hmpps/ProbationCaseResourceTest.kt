@@ -236,7 +236,8 @@ class ProbationCaseResourceTest {
                     event.id,
                     event.convictionDate!!,
                     Sentence(disposal.type.description, disposal.expectedEndDate()),
-                    Offence(mainOffence.offence.mainCategoryDescription, mainOffence.offence.subCategoryDescription)
+                    Offence(mainOffence.offence.mainCategoryDescription, mainOffence.offence.subCategoryDescription),
+                    true
                 )
             )
         )
