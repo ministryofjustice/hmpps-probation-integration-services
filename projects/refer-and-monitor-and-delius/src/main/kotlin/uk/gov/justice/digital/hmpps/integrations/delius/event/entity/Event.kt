@@ -111,9 +111,6 @@ interface EventRepository : JpaRepository<Event, Long> {
         join fetch mo.offence
         join Person p on p.id = e.personId
         where p.crn = :crn and e.id = :id
-        and e.active = true and e.softDeleted = false
-        and d.active = true and d.softDeleted = false
-        and mo.softDeleted = false
     """
     )
     fun findByCrnAndId(crn: String, id: Long): Event?
