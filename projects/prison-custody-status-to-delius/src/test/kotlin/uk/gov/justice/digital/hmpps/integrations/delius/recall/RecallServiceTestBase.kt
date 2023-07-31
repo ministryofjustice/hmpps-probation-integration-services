@@ -73,7 +73,6 @@ abstract class RecallServiceTestBase {
             custodyService,
             licenceConditionService,
             orderManagerRepository,
-            personManagerRepository,
             contactService
         )
     }

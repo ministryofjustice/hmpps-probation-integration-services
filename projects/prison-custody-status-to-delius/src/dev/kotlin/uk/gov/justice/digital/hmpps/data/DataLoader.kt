@@ -92,7 +92,7 @@ class DataLoader(
         referenceDataRepository.save(ReferenceDataGenerator.PRISON_MANAGER_ALLOCATION_REASON)
         recallReasonRepository.saveAll(ReferenceDataGenerator.RECALL_REASON.values)
         contactTypeRepository.saveAll(ReferenceDataGenerator.CONTACT_TYPE.values)
-        institutionRepository.save(InstitutionGenerator.DEFAULT)
+        institutionRepository.saveAll(listOf(InstitutionGenerator.DEFAULT, InstitutionGenerator.MOVED_TO))
         probationAreaRepository.save(InstitutionGenerator.DEFAULT.probationArea!!)
         val team = teamRepository.save(TeamGenerator.allStaff(InstitutionGenerator.DEFAULT.probationArea!!))
         staffRepository.save(StaffGenerator.unallocated(team))
@@ -132,5 +132,14 @@ class DataLoader(
 
         personRepository.save(PersonGenerator.DIED)
         personManagerRepository.save(PersonManagerGenerator.generate(PersonGenerator.DIED))
+
+        personRepository.save(PersonGenerator.MOVEABLE)
+        personManagerRepository.save(PersonManagerGenerator.generate(PersonGenerator.MOVEABLE))
+        val moveableEvent = EventGenerator.custodialEvent(PersonGenerator.MOVEABLE, InstitutionGenerator.DEFAULT)
+        eventRepository.save(moveableEvent)
+        disposalTypeRepository.save(moveableEvent.disposal!!.type)
+        disposalRepository.save(moveableEvent.disposal!!)
+        custodyRepository.save(moveableEvent.disposal!!.custody!!)
+        orderManagerRepository.save(OrderManagerGenerator.generate(moveableEvent))
     }
 }

@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps
 
-import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.hasItems
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
@@ -188,6 +189,48 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
                 "reason" to "ADMISSION",
                 "nomisMovementReasonCode" to "R1",
                 "details" to "ACTIVE IN:ADM-L"
+            )
+        )
+    }
+
+    @Test
+    fun `move a prisoner`() {
+        val person = PersonGenerator.MOVEABLE
+        val before = getCustody(person.nomsNumber)
+        assertThat(before.institution?.code, equalTo(InstitutionGenerator.DEFAULT.code))
+
+        val notification = Notification(
+            message = MessageGenerator.PRISONER_MOVED,
+            attributes = MessageAttributes("EXTERNAL_MOVEMENT_RECORD-INSERTED")
+        )
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custody = getCustody(person.nomsNumber)
+        assertTrue(custody.isInCustody())
+        assertThat(custody.institution?.code, equalTo(InstitutionGenerator.MOVED_TO.code))
+
+        val contacts = getContacts(person.nomsNumber)
+        assertThat(contacts, hasSize(1))
+        assertThat(
+            contacts.map { it.type.code },
+            hasItems(
+                ContactType.Code.CHANGE_OF_INSTITUTION.value
+            )
+        )
+        val coi = contacts.first { it.type.code == ContactType.Code.CHANGE_OF_INSTITUTION.value }
+        assertThat(coi.event?.id, equalTo(custody.disposal.event.id))
+
+        verify(telemetryService).trackEvent(
+            "CustodialDetailsUpdated",
+            mapOf(
+                "bookingId" to "1208804",
+                "movementSeq" to "1",
+                "occurredAt" to ZonedDateTime.parse("2023-07-31T10:37:28+01:00[Europe/London]").toString(),
+                "nomsNumber" to PersonGenerator.MOVEABLE.nomsNumber,
+                "institution" to InstitutionGenerator.MOVED_TO.nomisCdeCode!!,
+                "reason" to "TRANSFERRED",
+                "movementReasonCode" to "INT",
+                "movementType" to "Received"
             )
         )
     }
