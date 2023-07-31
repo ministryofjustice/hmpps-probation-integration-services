@@ -57,8 +57,8 @@ context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockIniti
 messaging.consumer.queue: message-queue
 
 integrations:
-  example:
-    url: http://localhost:${wiremock.port}/example
+  manage-offences:
+    url: http://localhost:${wiremock.port}/manage-offences
 
 oauth2:
   client-id: manage-offences-and-delius
