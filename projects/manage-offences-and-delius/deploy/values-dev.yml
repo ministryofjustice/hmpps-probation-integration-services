@@ -1,3 +1,5 @@
+enabled: false # TODO set this to true when you're ready to deploy your service
+
 generic-service:
   ingress:
     host: manage-offences-and-delius-dev.hmpps.service.justice.gov.uk
