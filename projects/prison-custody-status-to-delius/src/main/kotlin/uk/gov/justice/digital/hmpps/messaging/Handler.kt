@@ -77,7 +77,6 @@ class Handler(
 
             is PrisonerMovement.Released -> {
                 telemetryService.trackEvent("IdentifierAddedForReleasedPrisoner", prisonerMovement.telemetryProperties())
-                throw IllegalStateException("NomsNumberAddedAfterRelease")
             }
         }
     }

@@ -211,17 +211,21 @@ internal class HandlerTest {
     }
 
     @Test
-    fun `if booking is released when identifier added and exception is raised`() {
-        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
-        whenever(prisonApiClient.getBooking(booking.id)).thenReturn(
-            booking.copy(
-                movementType = "REL",
-                movementReason = "HQ",
-                inOutStatus = Booking.InOutStatus.OUT
-            )
+    fun `if booking is released when identifier added - telemetry is tracked`() {
+        val releaseBooking = booking.copy(
+            movementType = "REL",
+            movementReason = "HQ",
+            inOutStatus = Booking.InOutStatus.OUT
         )
+        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
+        whenever(prisonApiClient.getBooking(booking.id)).thenReturn(releaseBooking)
 
-        assertThrows<IllegalStateException> { handler.handle(identifierAddedNotification) }
+        handler.handle(identifierAddedNotification)
         verify(releaseService, never()).release(any())
+        verify(telemetryService).trackEvent(
+            "IdentifierAddedForReleasedPrisoner",
+            releaseBooking.prisonerMovement(identifierAddedNotification.message.occurredAt).telemetryProperties(),
+            mapOf()
+        )
     }
 }

@@ -177,6 +177,7 @@ class ReleaseService(
             }
 
             // This behaviour may change. See https://dsdmoj.atlassian.net/browse/PI-264
+            // If we remove this - we need to handle PrisonerMovement.Released from identifier added/updated
             if (custody.institution?.code != institution.code) {
                 throw IgnorableMessageException(
                     "UnexpectedInstitution",
