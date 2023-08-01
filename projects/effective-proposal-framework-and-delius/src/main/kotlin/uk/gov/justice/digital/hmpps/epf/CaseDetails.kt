@@ -15,6 +15,9 @@ data class CaseDetails(
 ) {
     val age
         get() = YEARS.between(dateOfBirth, LocalDate.now())
+
+    val ageAtRelease
+        get() = sentence?.releaseDate?.let { YEARS.between(dateOfBirth, it) }
 }
 
 data class Name(val forename: String, val middleName: String?, val surname: String)
