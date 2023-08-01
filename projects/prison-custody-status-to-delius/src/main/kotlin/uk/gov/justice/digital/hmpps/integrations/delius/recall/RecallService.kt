@@ -160,43 +160,43 @@ class RecallService(
         custody: Custody,
         recallDate: ZonedDateTime,
         recall: Recall?
-    ) = if (recall == null && custody.status.canChange()) {
-        custodyService.updateStatus(custody, CustodialStatusCode.IN_CUSTODY, recallDate, "In custody ")
-        true
-    } else {
-        when (custody.institution?.code) {
-            InstitutionCode.UNLAWFULLY_AT_LARGE.code -> {
-                custodyService.updateStatus(
-                    custody,
-                    CustodialStatusCode.RECALLED,
-                    recallDate,
-                    "Recall added unlawfully at large "
-                )
-                true
-            }
+    ) = if (custody.status.canChange()) {
+        if (recall == null) {
+            custodyService.updateStatus(custody, CustodialStatusCode.IN_CUSTODY, recallDate, "In custody ")
+            true
+        } else {
+            when (custody.institution?.code) {
+                InstitutionCode.UNLAWFULLY_AT_LARGE.code -> {
+                    custodyService.updateStatus(
+                        custody,
+                        CustodialStatusCode.RECALLED,
+                        recallDate,
+                        "Recall added unlawfully at large "
+                    )
+                }
 
-            InstitutionCode.UNKNOWN.code -> {
-                custodyService.updateStatus(
-                    custody,
-                    CustodialStatusCode.RECALLED,
-                    recallDate,
-                    "Recall added but location unknown "
-                )
-                true
-            }
+                InstitutionCode.UNKNOWN.code -> {
+                    custodyService.updateStatus(
+                        custody,
+                        CustodialStatusCode.RECALLED,
+                        recallDate,
+                        "Recall added but location unknown "
+                    )
+                }
 
-            else -> if (custody.status.canChange()) {
-                custodyService.updateStatus(
-                    custody,
-                    CustodialStatusCode.IN_CUSTODY,
-                    recallDate,
-                    "Recall added in custody "
-                )
-                true
-            } else {
-                false
+                else -> {
+                    custodyService.updateStatus(
+                        custody,
+                        CustodialStatusCode.IN_CUSTODY,
+                        recallDate,
+                        "Recall added in custody "
+                    )
+                }
             }
+            true
         }
+    } else {
+        false
     }
 
     private fun createRecallAlertContact(
