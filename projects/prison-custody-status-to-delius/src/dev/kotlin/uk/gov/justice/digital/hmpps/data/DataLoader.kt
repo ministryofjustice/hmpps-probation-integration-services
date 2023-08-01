@@ -133,9 +133,9 @@ class DataLoader(
         personRepository.save(PersonGenerator.DIED)
         personManagerRepository.save(PersonManagerGenerator.generate(PersonGenerator.DIED))
 
-        personRepository.save(PersonGenerator.MOVEABLE)
-        personManagerRepository.save(PersonManagerGenerator.generate(PersonGenerator.MOVEABLE))
-        val moveableEvent = EventGenerator.custodialEvent(PersonGenerator.MOVEABLE, InstitutionGenerator.DEFAULT)
+        personRepository.save(PersonGenerator.MATCHABLE)
+        personManagerRepository.save(PersonManagerGenerator.generate(PersonGenerator.MATCHABLE))
+        val moveableEvent = EventGenerator.custodialEvent(PersonGenerator.MATCHABLE, InstitutionGenerator.DEFAULT)
         eventRepository.save(moveableEvent)
         disposalTypeRepository.save(moveableEvent.disposal!!.type)
         disposalRepository.save(moveableEvent.disposal!!)

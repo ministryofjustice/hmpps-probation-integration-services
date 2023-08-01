@@ -195,12 +195,12 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
 
     @Test
     fun `move a prisoner`() {
-        val person = PersonGenerator.MOVEABLE
+        val person = PersonGenerator.MATCHABLE
         val before = getCustody(person.nomsNumber)
         assertThat(before.institution?.code, equalTo(InstitutionGenerator.DEFAULT.code))
 
         val notification = Notification(
-            message = MessageGenerator.PRISONER_MOVED,
+            message = MessageGenerator.PRISONER_MATCHED,
             attributes = MessageAttributes("probation-case.prison-identifier.added")
         )
         channelManager.getChannel(queueName).publishAndWait(notification)
@@ -209,7 +209,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
             "CustodialDetailsUpdated",
             mapOf(
                 "occurredAt" to ZonedDateTime.parse("2023-07-31T09:26:39+01:00[Europe/London]").toString(),
-                "nomsNumber" to PersonGenerator.MOVEABLE.nomsNumber,
+                "nomsNumber" to PersonGenerator.MATCHABLE.nomsNumber,
                 "institution" to InstitutionGenerator.MOVED_TO.nomisCdeCode!!,
                 "reason" to "TRANSFERRED",
                 "movementReason" to "INT",
