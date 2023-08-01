@@ -9,17 +9,13 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.DataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.repository.DetailedOffenceRepository
-import uk.gov.justice.digital.hmpps.repository.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
 @ConditionalOnProperty("seed.database")
 class DataLoader(
     private val auditUserRepository: AuditUserRepository,
-    private val entityManager: EntityManager,
-    private val referenceDataRepository: ReferenceDataRepository,
-    private val detailedOffenceRepository: DetailedOffenceRepository
+    private val entityManager: EntityManager
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -29,8 +25,10 @@ class DataLoader(
 
     @Transactional
     override fun onApplicationEvent(applicationReadyEvent: ApplicationReadyEvent) {
-        entityManager.persist(DataGenerator.COURT_CATEGORY_SET)
-        referenceDataRepository.save(DataGenerator.COURT_CATEGORY)
-        detailedOffenceRepository.save(DataGenerator.EXISTING_OFFENCE)
+        with(entityManager) {
+            merge(DataGenerator.COURT_CATEGORY_SET)
+            merge(DataGenerator.COURT_CATEGORY)
+            merge(DataGenerator.EXISTING_OFFENCE)
+        }
     }
 }
