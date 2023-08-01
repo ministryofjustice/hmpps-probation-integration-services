@@ -57,7 +57,7 @@ dependencyResolutionManagement {
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.27.0")
             library("opentelemetry-annotations", "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.28.0")
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
-            library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.3")
+            library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.4")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
             library("wiremock", "com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
             library("mapstruct", "org.mapstruct:mapstruct:1.5.5.Final")
