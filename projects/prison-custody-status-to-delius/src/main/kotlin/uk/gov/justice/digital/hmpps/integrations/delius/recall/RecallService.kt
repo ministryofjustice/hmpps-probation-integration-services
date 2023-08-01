@@ -33,7 +33,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.NO_CHANGE_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.NO_RECALL_STATUSES
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.TERMINATED_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
@@ -84,8 +83,7 @@ class RecallService(
                     it,
                     institution,
                     getRecallReason,
-                    receive.occurredAt,
-                    "TRANSFERRED" == receive.reason
+                    receive.occurredAt
                 )
             }
             .combined()
@@ -95,8 +93,7 @@ class RecallService(
         event: Event,
         lazyInstitution: Lazy<Institution>,
         getRecallReason: (csc: CustodialStatusCode) -> RecallReason,
-        recallDateTime: ZonedDateTime,
-        isTransfer: Boolean
+        recallDateTime: ZonedDateTime
     ): RecallOutcome = audit(BusinessInteractionCode.ADD_RECALL) { audit ->
         audit["eventId"] = event.id
         OptimisationContext.offenderId.set(event.person.id)
@@ -113,7 +110,7 @@ class RecallService(
         val recallReason = getRecallReason(CustodialStatusCode.withCode(custody.status.code))
 
         // perform validation
-        validateRecall(recallReason, custody, latestRelease, recallDate, isTransfer)
+        validateRecall(recallReason, custody, latestRelease, recallDate)
 
         val recall = createRecall(custody, recallReason, recallDateTime, latestRelease)
 
@@ -163,33 +160,42 @@ class RecallService(
         custody: Custody,
         recallDate: ZonedDateTime,
         recall: Recall?
-    ) = when (custody.institution?.code) {
-        InstitutionCode.UNLAWFULLY_AT_LARGE.code -> {
-            custodyService.updateStatus(
-                custody,
-                CustodialStatusCode.RECALLED,
-                recallDate,
-                "Recall added unlawfully at large "
-            )
-            true
-        }
+    ) = if (recall == null && custody.status.canChange()) {
+        custodyService.updateStatus(custody, CustodialStatusCode.IN_CUSTODY, recallDate, "In custody ")
+        true
+    } else {
+        when (custody.institution?.code) {
+            InstitutionCode.UNLAWFULLY_AT_LARGE.code -> {
+                custodyService.updateStatus(
+                    custody,
+                    CustodialStatusCode.RECALLED,
+                    recallDate,
+                    "Recall added unlawfully at large "
+                )
+                true
+            }
 
-        InstitutionCode.UNKNOWN.code -> {
-            custodyService.updateStatus(
-                custody,
-                CustodialStatusCode.RECALLED,
-                recallDate,
-                "Recall added but location unknown "
-            )
-            true
-        }
+            InstitutionCode.UNKNOWN.code -> {
+                custodyService.updateStatus(
+                    custody,
+                    CustodialStatusCode.RECALLED,
+                    recallDate,
+                    "Recall added but location unknown "
+                )
+                true
+            }
 
-        else -> if (custody.status.canChange()) {
-            val detail = if (recall == null) "In custody " else "Recall added in custody "
-            custodyService.updateStatus(custody, CustodialStatusCode.IN_CUSTODY, recallDate, detail)
-            true
-        } else {
-            false
+            else -> if (custody.status.canChange()) {
+                custodyService.updateStatus(
+                    custody,
+                    CustodialStatusCode.IN_CUSTODY,
+                    recallDate,
+                    "Recall added in custody "
+                )
+                true
+            } else {
+                false
+            }
         }
     }
 
@@ -222,7 +228,7 @@ class RecallService(
         recallReason: RecallReason,
         recallDateTime: ZonedDateTime,
         latestRelease: Release?
-    ): Recall? = if (!custody.status.canRecall()) {
+    ): Recall? = if (latestRelease == null || latestRelease.recall != null || !custody.status.canRecall()) {
         null
     } else {
         val person = custody.disposal.event.person
@@ -230,7 +236,7 @@ class RecallService(
             Recall(
                 date = recallDateTime.truncatedTo(DAYS),
                 reason = recallReason,
-                release = latestRelease!!, // Only possible to be null if no recall to be created
+                release = latestRelease,
                 person = person
             )
         )
@@ -243,8 +249,7 @@ private fun validateRecall(
     reason: RecallReason,
     custody: Custody,
     latestRelease: Release?,
-    recallDate: ZonedDateTime,
-    isTransfer: Boolean
+    recallDate: ZonedDateTime
 ) {
     if (custody.status.code == CustodialStatusCode.POST_SENTENCE_SUPERVISION.code ||
         (reason.code == RecallReason.Code.END_OF_TEMPORARY_LICENCE.value && custody.status.code == CustodialStatusCode.IN_CUSTODY_IRC.code)
@@ -253,16 +258,6 @@ private fun validateRecall(
     }
 
     require(!custody.status.isTerminated()) { "TerminatedCustodialStatus" }
-
-    if (!isTransfer && reason.code != RecallReason.Code.END_OF_TEMPORARY_LICENCE.value) {
-        if (latestRelease?.recall != null) {
-            throw IgnorableMessageException("RecallAlreadyExists")
-        }
-
-        if (latestRelease?.type?.code != ReleaseTypeCode.ADULT_LICENCE.code) {
-            throw IgnorableMessageException("UnexpectedReleaseType")
-        }
-    }
 
     if (recallDate.isAfter(ZonedDateTime.now()) ||
         (latestRelease != null && recallDate.isBefore(latestRelease.date))

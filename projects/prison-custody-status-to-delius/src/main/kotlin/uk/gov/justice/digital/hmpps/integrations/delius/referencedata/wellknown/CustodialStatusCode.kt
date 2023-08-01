@@ -13,7 +13,7 @@ enum class CustodialStatusCode(val code: String) {
 
     companion object {
         fun withCode(code: String) =
-            values().firstOrNull { it.code == code } ?: throw IllegalArgumentException("Unknown custodial status")
+            entries.firstOrNull { it.code == code } ?: throw IllegalArgumentException("Unknown custodial status")
     }
 }
 
