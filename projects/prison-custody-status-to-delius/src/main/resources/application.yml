@@ -37,12 +37,6 @@ spring:
 
 delius.db.username: PrisonCustodyStatusService # See deploy/database/access.yml
 
-context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
-
-integrations:
-  prison-api:
-    url: http://localhost:${wiremock.port}
-
 management.endpoints.web:
   base-path: /
   exposure.include: [ "health", "info" ]
@@ -58,6 +52,12 @@ spring:
 seed.database: true
 
 messaging.consumer.queue: prison-custody-status-events
+
+context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+
+integrations:
+  prison-api:
+    url: http://localhost:${wiremock.port}
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
