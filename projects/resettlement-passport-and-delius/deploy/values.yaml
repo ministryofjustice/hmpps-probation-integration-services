@@ -1,0 +1,22 @@
+# Common values
+generic-service:
+  nameOverride: resettlement-passport-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/resettlement-passport-and-delius
+
+  ingress:
+    tlsSecretName: resettlement-passport-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    resettlement-passport-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    resettlement-passport-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: resettlement-passport-and-delius
+
