@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
+import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
@@ -32,29 +33,35 @@ class HospitalReleaseTest : ReleaseServiceTestBase() {
 
         assertThrows<IgnorableMessageException> {
             releaseService.release(
-                "",
-                "",
-                "RELEASED",
-                "HO",
-                ZonedDateTime.now()
+                PrisonerMovement.Received(
+                    "",
+                    "",
+                    "RELEASED",
+                    "HO",
+                    ZonedDateTime.now()
+                )
             )
         }
         assertThrows<IgnorableMessageException> {
             releaseService.release(
-                "",
-                "",
-                "RELEASED",
-                "HQ",
-                ZonedDateTime.now()
+                PrisonerMovement.Received(
+                    "",
+                    "",
+                    "RELEASED",
+                    "HQ",
+                    ZonedDateTime.now()
+                )
             )
         }
         assertThrows<IgnorableMessageException> {
             releaseService.release(
-                "",
-                "",
-                "RELEASED_TO_HOSPITAL",
-                "HP",
-                ZonedDateTime.now()
+                PrisonerMovement.Received(
+                    "",
+                    "",
+                    "RELEASED_TO_HOSPITAL",
+                    "HP",
+                    ZonedDateTime.now()
+                )
             )
         }
     }
@@ -74,11 +81,13 @@ class HospitalReleaseTest : ReleaseServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         releaseService.release(
-            person.nomsNumber,
-            institution.nomisCdeCode,
-            "RELEASED",
-            "HQ",
-            releaseDateTime
+            PrisonerMovement.Released(
+                person.nomsNumber,
+                institution.nomisCdeCode,
+                "RELEASED",
+                "HQ",
+                releaseDateTime
+            )
         )
 
         verify(releaseRepository, never()).save(any())
@@ -106,11 +115,13 @@ class HospitalReleaseTest : ReleaseServiceTestBase() {
 
         val ex = assertThrows<IgnorableMessageException> {
             releaseService.release(
-                person.nomsNumber,
-                institution.nomisCdeCode,
-                "RELEASED",
-                "HO",
-                releaseDateTime
+                PrisonerMovement.Released(
+                    person.nomsNumber,
+                    institution.nomisCdeCode,
+                    "RELEASED",
+                    "HO",
+                    releaseDateTime
+                )
             )
         }
 
@@ -138,15 +149,22 @@ class HospitalReleaseTest : ReleaseServiceTestBase() {
         whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
             .thenReturn(institution)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL.value, true))
+        whenever(
+            recallReasonRepository.findByCodeAndSelectable(
+                RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL.value,
+                true
+            )
+        )
             .thenReturn(RecallReasonGenerator.generate(RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL.value))
 
         releaseService.release(
-            person.nomsNumber,
-            institution.nomisCdeCode,
-            "RELEASED_TO_HOSPITAL",
-            "HP",
-            releaseDateTime
+            PrisonerMovement.Released(
+                person.nomsNumber,
+                institution.nomisCdeCode,
+                "RELEASED_TO_HOSPITAL",
+                "HP",
+                releaseDateTime
+            )
         )
 
         verify(releaseRepository, never()).save(any())

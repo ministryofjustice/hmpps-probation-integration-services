@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
+import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -43,38 +44,46 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
     fun unsupportedReleaseTypeIsIgnored() {
         assertThrows<IgnorableMessageException> {
             releaseService.release(
-                "",
-                "",
-                "TEMPORARY_ABSENCE_RELEASE",
-                "BL",
-                ZonedDateTime.now()
+                PrisonerMovement.Released(
+                    "",
+                    "",
+                    "TEMPORARY_ABSENCE_RELEASE",
+                    "BL",
+                    ZonedDateTime.now()
+                )
             )
         }
         assertThrows<IgnorableMessageException> {
             releaseService.release(
-                "",
-                "",
-                "RELEASED_TO_HOSPITAL",
-                "BL",
-                ZonedDateTime.now()
+                PrisonerMovement.Released(
+                    "",
+                    "",
+                    "RELEASED_TO_HOSPITAL",
+                    "BL",
+                    ZonedDateTime.now()
+                )
             )
         }
         assertThrows<IgnorableMessageException> {
             releaseService.release(
-                "",
-                "",
-                "SENT_TO_COURT",
-                "BL",
-                ZonedDateTime.now()
+                PrisonerMovement.Released(
+                    "",
+                    "",
+                    "SENT_TO_COURT",
+                    "BL",
+                    ZonedDateTime.now()
+                )
             )
         }
         assertThrows<IgnorableMessageException> {
             releaseService.release(
-                "",
-                "",
-                "TRANSFERRED",
-                "BL",
-                ZonedDateTime.now()
+                PrisonerMovement.Released(
+                    "",
+                    "",
+                    "TRANSFERRED",
+                    "BL",
+                    ZonedDateTime.now()
+                )
             )
         }
     }
@@ -82,14 +91,14 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
     @Test
     fun unexpectedReleaseTypeIsThrown() {
         assertThrows<IllegalArgumentException> {
-            releaseService.release("", "", "Invalid reason!", "BL", ZonedDateTime.now())
+            releaseService.release(PrisonerMovement.Released("", "", "Invalid reason!", "BL", ZonedDateTime.now()))
         }
     }
 
     @Test
     fun missingReleaseTypeIsThrown() {
         assertThrows<NotFoundException> {
-            releaseService.release("", "", RELEASED, "BL", ZonedDateTime.now())
+            releaseService.release(PrisonerMovement.Released("", "", RELEASED, "BL", ZonedDateTime.now()))
         }
     }
 
@@ -102,7 +111,15 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         assertThrows<NotFoundException> {
-            releaseService.release(person.nomsNumber, "TEST", RELEASED, "BL", ZonedDateTime.now())
+            releaseService.release(
+                PrisonerMovement.Released(
+                    person.nomsNumber,
+                    "TEST",
+                    RELEASED,
+                    "BL",
+                    ZonedDateTime.now()
+                )
+            )
         }
     }
 
@@ -113,7 +130,15 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents("INVALID")).thenThrow(IllegalArgumentException())
 
         assertThrows<IllegalArgumentException> {
-            releaseService.release("INVALID", DEFAULT.code, RELEASED, "BL", ZonedDateTime.now())
+            releaseService.release(
+                PrisonerMovement.Released(
+                    "INVALID",
+                    DEFAULT.code,
+                    RELEASED,
+                    "BL",
+                    ZonedDateTime.now()
+                )
+            )
         }
     }
 
@@ -125,7 +150,15 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<NotFoundException> {
-            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "BL", ZonedDateTime.now())
+            releaseService.release(
+                PrisonerMovement.Released(
+                    person.nomsNumber,
+                    DEFAULT.code,
+                    RELEASED,
+                    "BL",
+                    ZonedDateTime.now()
+                )
+            )
         }
         assertThat(exception.message, matchesPattern("Disposal with eventId of \\d* not found"))
     }
@@ -138,7 +171,15 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<NotFoundException> {
-            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "BL", ZonedDateTime.now())
+            releaseService.release(
+                PrisonerMovement.Released(
+                    person.nomsNumber,
+                    DEFAULT.code,
+                    RELEASED,
+                    "BL",
+                    ZonedDateTime.now()
+                )
+            )
         }
         assertThat(exception.message, matchesPattern("Custody with disposalId of \\d* not found"))
     }
@@ -153,7 +194,15 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
             .thenReturn(listOf(EventGenerator.custodialEvent(person, DEFAULT, status)))
 
         val exception = assertThrows<IgnorableMessageException> {
-            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", ZonedDateTime.now())
+            releaseService.release(
+                PrisonerMovement.Released(
+                    person.nomsNumber,
+                    DEFAULT.code,
+                    RELEASED,
+                    "OPA",
+                    ZonedDateTime.now()
+                )
+            )
         }
         assertEquals(exception.message, "UnexpectedCustodialStatus")
     }
@@ -168,7 +217,15 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
             .thenReturn(listOf(EventGenerator.custodialEvent(person, institution)))
 
         val exception = assertThrows<IgnorableMessageException> {
-            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", ZonedDateTime.now())
+            releaseService.release(
+                PrisonerMovement.Released(
+                    person.nomsNumber,
+                    DEFAULT.code,
+                    RELEASED,
+                    "OPA",
+                    ZonedDateTime.now()
+                )
+            )
         }
         assertEquals(exception.message, "UnexpectedInstitution")
     }
@@ -183,7 +240,15 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
             .thenReturn(listOf(EventGenerator.custodialEvent(person, DEFAULT)))
 
         val exception = assertThrows<IgnorableMessageException> {
-            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", releaseDate)
+            releaseService.release(
+                PrisonerMovement.Released(
+                    person.nomsNumber,
+                    DEFAULT.code,
+                    RELEASED,
+                    "OPA",
+                    releaseDate
+                )
+            )
         }
         assertThat(exception.message, equalTo("InvalidReleaseDate"))
     }
@@ -199,7 +264,15 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<IgnorableMessageException> {
-            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", releaseDate)
+            releaseService.release(
+                PrisonerMovement.Released(
+                    person.nomsNumber,
+                    DEFAULT.code,
+                    RELEASED,
+                    "OPA",
+                    releaseDate
+                )
+            )
         }
         assertThat(exception.message, equalTo("InvalidReleaseDate"))
     }
@@ -213,7 +286,15 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
 
         val exception = assertThrows<NotFoundException> {
-            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", ZonedDateTime.now())
+            releaseService.release(
+                PrisonerMovement.Released(
+                    person.nomsNumber,
+                    DEFAULT.code,
+                    RELEASED,
+                    "OPA",
+                    ZonedDateTime.now()
+                )
+            )
         }
         assertThat(exception.message, matchesPattern("OrderManager with eventId of \\d* not found"))
     }
@@ -229,7 +310,15 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
         whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(orderManager)
 
         val exception = assertThrows<NotFoundException> {
-            releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "ANY", ZonedDateTime.now())
+            releaseService.release(
+                PrisonerMovement.Released(
+                    person.nomsNumber,
+                    DEFAULT.code,
+                    RELEASED,
+                    "ANY",
+                    ZonedDateTime.now()
+                )
+            )
         }
         assertThat(exception.message, equalTo("ContactType with code of EREL not found"))
     }
@@ -252,7 +341,15 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.RELEASE_FROM_CUSTODY])
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
-        releaseService.release(person.nomsNumber, DEFAULT.nomisCdeCode, RELEASED, "OPA", releaseDateTime)
+        releaseService.release(
+            PrisonerMovement.Released(
+                person.nomsNumber,
+                DEFAULT.nomisCdeCode,
+                RELEASED,
+                "OPA",
+                releaseDateTime
+            )
+        )
 
         val saved = argumentCaptor<Release>()
         verify(releaseRepository).save(saved.capture())
@@ -297,7 +394,15 @@ internal class ReleaseServiceTest : ReleaseServiceTestBase() {
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.RELEASE_FROM_CUSTODY])
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
-        releaseService.release(person.nomsNumber, DEFAULT.code, RELEASED, "OPA", releaseDateTime)
+        releaseService.release(
+            PrisonerMovement.Released(
+                person.nomsNumber,
+                DEFAULT.code,
+                RELEASED,
+                "OPA",
+                releaseDateTime
+            )
+        )
 
         val saved = argumentCaptor<Contact>()
         verify(contactRepository).save(saved.capture())

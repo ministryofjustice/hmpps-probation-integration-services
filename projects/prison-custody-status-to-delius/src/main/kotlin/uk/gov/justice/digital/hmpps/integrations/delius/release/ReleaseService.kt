@@ -43,6 +43,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.P
 import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseOutcome.PrisonerReleased
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.ReleaseRepository
+import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.DAYS
 
@@ -70,32 +71,26 @@ class ReleaseService(
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
-    fun release(
-        nomsNumber: String,
-        prisonId: String?,
-        reason: String,
-        movementReasonCode: String,
-        releaseDateTime: ZonedDateTime
-    ) = if (movementReasonCode == MovementReasonCodes.DIED) {
-        personDied.inCustody(nomsNumber, releaseDateTime)
+    fun release(release: PrisonerMovement) = if (release.movementReason == MovementReasonCodes.DIED) {
+        personDied.inCustody(release.nomsId, release.occurredAt)
         PrisonerDied
     } else {
-        val releaseType = mapToReleaseType(reason, movementReasonCode)?.let {
+        val releaseType = mapToReleaseType(release.reason, release.movementReason)?.let {
             referenceDataRepository.getReleaseType(it.code)
         }
         val institution = lazy {
-            prisonId?.let { institutionRepository.getByNomisCdeCode(it) }
+            release.prisonId?.let { institutionRepository.getByNomisCdeCode(it) }
                 ?: institutionRepository.getByCode(InstitutionCode.OTHER_SECURE_UNIT.code)
         }
 
-        val events = eventService.getActiveCustodialEvents(nomsNumber)
+        val events = eventService.getActiveCustodialEvents(release.nomsId)
         events.forEach {
             addReleaseToEvent(
                 it,
                 institution,
                 releaseType,
-                releaseDateTime,
-                movementReasonCode
+                release.occurredAt,
+                release.movementReason
             )
         }
         if (events.size > 1) MultipleEventsReleased else PrisonerReleased
@@ -182,6 +177,7 @@ class ReleaseService(
             }
 
             // This behaviour may change. See https://dsdmoj.atlassian.net/browse/PI-264
+            // If we remove this - we need to handle PrisonerMovement.Released from identifier added/updated
             if (custody.institution?.code != institution.code) {
                 throw IgnorableMessageException(
                     "UnexpectedInstitution",

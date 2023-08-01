@@ -19,7 +19,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.OrderManage
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.getByEventId
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceConditionService
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.getByNomisCdeCodeAndIdEstablishment
@@ -37,6 +36,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.TERMINATED_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
+import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.DAYS
 
@@ -63,25 +63,31 @@ class RecallService(
     private val custodyService: CustodyService,
     private val licenceConditionService: LicenceConditionService,
     private val orderManagerRepository: OrderManagerRepository,
-    private val personManagerRepository: PersonManagerRepository,
     private val contactService: ContactService
 ) : AuditableService(auditedInteractionService) {
 
     @Transactional
-    fun recall(
-        nomsNumber: String,
-        prisonId: String,
-        reason: String,
-        movementReason: String,
-        recallDateTime: ZonedDateTime
-    ): RecallOutcome {
+    fun recall(receive: PrisonerMovement): RecallOutcome {
         val getRecallReason = { csc: CustodialStatusCode ->
-            recallReasonRepository.getByCodeAndSelectableIsTrue(decideRecallReason(reason, movementReason)(csc).value)
+            recallReasonRepository.getByCodeAndSelectableIsTrue(
+                decideRecallReason(
+                    receive.reason,
+                    receive.movementReason
+                )(csc).value
+            )
         }
-        val institution = lazy { institutionRepository.getByNomisCdeCodeAndIdEstablishment(prisonId) }
+        val institution = lazy { institutionRepository.getByNomisCdeCodeAndIdEstablishment(receive.prisonId!!) }
 
-        return eventService.getActiveCustodialEvents(nomsNumber)
-            .map { addRecallToEvent(it, institution, getRecallReason, recallDateTime, "TRANSFERRED" == reason) }
+        return eventService.getActiveCustodialEvents(receive.nomsId)
+            .map {
+                addRecallToEvent(
+                    it,
+                    institution,
+                    getRecallReason,
+                    receive.occurredAt,
+                    "TRANSFERRED" == receive.reason
+                )
+            }
             .combined()
     }
 
