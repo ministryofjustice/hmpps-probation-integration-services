@@ -76,8 +76,8 @@ class Handler(
             }
 
             is PrisonerMovement.Released -> {
-                val outcome = releaseService.release(prisonerMovement)
-                telemetryService.trackEvent(outcome.name, prisonerMovement.telemetryProperties())
+                telemetryService.trackEvent("IdentifierAddedForReleasedPrisoner", prisonerMovement.telemetryProperties())
+                throw IllegalStateException("NomsNumberAddedAfterRelease")
             }
         }
     }

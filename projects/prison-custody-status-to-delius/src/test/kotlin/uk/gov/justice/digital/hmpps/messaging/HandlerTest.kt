@@ -10,6 +10,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
@@ -210,7 +211,7 @@ internal class HandlerTest {
     }
 
     @Test
-    fun `booking is correctly mapped to a released prisoner movement when identifier added`() {
+    fun `if booking is released when identifier added and exception is raised`() {
         whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
         whenever(prisonApiClient.getBooking(booking.id)).thenReturn(
             booking.copy(
@@ -219,14 +220,8 @@ internal class HandlerTest {
                 inOutStatus = Booking.InOutStatus.OUT
             )
         )
-        whenever(releaseService.release(any())).thenReturn(ReleaseOutcome.PrisonerReleased)
 
-        handler.handle(identifierAddedNotification)
-        val released = argumentCaptor<PrisonerMovement.Released>()
-        verify(releaseService).release(released.capture())
-        assertThat(released.firstValue.nomsId, equalTo("A5295DZ"))
-        assertThat(released.firstValue.movementReason, equalTo("HQ"))
-        assertThat(released.firstValue.reason, equalTo("RELEASE_TO_HOSPITAL"))
-        assertThat(released.firstValue.prisonId, equalTo("SWI"))
+        assertThrows<IllegalStateException> { handler.handle(identifierAddedNotification) }
+        verify(releaseService, never()).release(any())
     }
 }
