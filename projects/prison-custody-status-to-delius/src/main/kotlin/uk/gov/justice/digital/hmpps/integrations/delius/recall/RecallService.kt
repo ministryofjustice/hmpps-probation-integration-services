@@ -160,7 +160,7 @@ class RecallService(
         custody: Custody,
         recallDate: ZonedDateTime,
         recall: Recall?
-    ) = if (custody.status.canChange()) {
+    ) = if (custody.status.canChange() || custody.isRecentAndUnknown()) {
         if (recall == null) {
             custodyService.updateStatus(custody, CustodialStatusCode.IN_CUSTODY, recallDate, "In custody ")
             true
@@ -244,6 +244,9 @@ class RecallService(
         recall
     }
 }
+
+private fun Custody.isRecentAndUnknown() =
+    institution?.code == InstitutionCode.UNKNOWN.code && status.code == CustodialStatusCode.SENTENCED_IN_CUSTODY.code
 
 private fun validateRecall(
     reason: RecallReason,
