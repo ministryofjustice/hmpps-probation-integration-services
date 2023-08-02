@@ -101,4 +101,17 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
     """
     )
     fun findDutyToReferByCrn(crn: String): Nsi?
+
+    @Query(
+        """
+        select nsi from Nsi nsi
+        join fetch nsi.status
+        join fetch nsi.type
+        where nsi.person.noms = :noms
+        and nsi.type.code = 'DTR'
+        and nsi.status.code = 'INIT'
+        order by nsi.createdDatetime desc
+    """
+    )
+    fun findDutyToReferByNoms(noms: String): Nsi?
 }

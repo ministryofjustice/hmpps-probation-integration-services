@@ -25,7 +25,14 @@ internal class IntegrationTest {
     @Test
     fun `API call retuns a success response`() {
         mockMvc
-            .perform(get("/example/123").withOAuth2Token(wireMockServer))
+            .perform(get("/duty-to-refer-nsi/123?type=CRN").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful)
+    }
+
+    @Test
+    fun `API call retuns a 404 response`() {
+        mockMvc
+            .perform(get("/duty-to-refer-nsi/N123123B?type=CRN").withOAuth2Token(wireMockServer))
+            .andExpect(status().is4xxClientError)
     }
 }

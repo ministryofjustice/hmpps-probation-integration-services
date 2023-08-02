@@ -1,6 +1,9 @@
 package uk.gov.justice.digital.hmpps.controller
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.controller.ApiController.IdentifierType
+import uk.gov.justice.digital.hmpps.controller.ApiController.IdentifierType.CRN
+import uk.gov.justice.digital.hmpps.controller.ApiController.IdentifierType.NOMS
 import uk.gov.justice.digital.hmpps.entity.NsiManagerRepository
 import uk.gov.justice.digital.hmpps.entity.NsiRepository
 import uk.gov.justice.digital.hmpps.entity.PersonAddress
@@ -13,11 +16,14 @@ import uk.gov.justice.digital.hmpps.model.Officer
 
 @Service
 class ResettlementPassportService(val addressRepository: PersonAddressRepository, val nsiRepository: NsiRepository, val nsiManagerRepository: NsiManagerRepository) {
-    fun getDutyToReferNSI(crn: String): DutyToReferNSI {
+    fun getDutyToReferNSI(value: String, type: IdentifierType): DutyToReferNSI {
         // get the main address for this person and also the most recent NSI type of DTR associated with this person
-        val dutyToRefer = nsiRepository.findDutyToReferByCrn(crn) ?: throw NotFoundException("DTR NSI", "crn", crn)
+        val dutyToRefer = when (type) {
+            CRN -> nsiRepository.findDutyToReferByCrn(value) ?: throw NotFoundException("DTR NSI", "crn", value)
+            NOMS -> nsiRepository.findDutyToReferByNoms(value) ?: throw NotFoundException("DTR NSI", "noms", value)
+        }
         val nsiManager = nsiManagerRepository.getNSIManagerByNsi(dutyToRefer.id)
-        val mainAddress = addressRepository.getMainAddressByCrn(crn)?.toModel()
+        val mainAddress = addressRepository.getMainAddressByPersonId(dutyToRefer.person.id)?.toModel()
         return DutyToReferNSI(
             dutyToRefer.subType.description,
             dutyToRefer.referralDate,

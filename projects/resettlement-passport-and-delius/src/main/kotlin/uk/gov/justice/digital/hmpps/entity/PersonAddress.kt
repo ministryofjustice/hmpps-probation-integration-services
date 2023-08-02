@@ -24,9 +24,6 @@ class PersonAddress(
     @JoinColumn(name = "offender_id")
     val person: Person,
     @ManyToOne
-    @JoinColumn(name = "address_type_id")
-    val type: ReferenceData,
-    @ManyToOne
     @JoinColumn(name = "address_status_id")
     var status: ReferenceData,
     val buildingName: String?,
@@ -50,10 +47,13 @@ class PersonAddress(
 class Person(
     @Id
     @Column(name = "offender_id")
-    private val id: Long,
+    val id: Long,
 
     @Column(columnDefinition = "char(7)")
     private val crn: String,
+
+    @Column(name = "noms_number", columnDefinition = "char(7)")
+    private val noms: String?,
 
     val softDeleted: Boolean = false
 )
@@ -64,12 +64,11 @@ interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
         """
         select pa from PersonAddress pa
         join fetch pa.status
-        join fetch pa.type
-        where pa.person.crn = :crn 
+        where pa.person.id = :personId 
         and pa.softDeleted = false  
         and pa.endDate is null 
         and pa.status.code = 'M'
     """
     )
-    fun getMainAddressByCrn(crn: String): PersonAddress?
+    fun getMainAddressByPersonId(personId: Long): PersonAddress?
 }
