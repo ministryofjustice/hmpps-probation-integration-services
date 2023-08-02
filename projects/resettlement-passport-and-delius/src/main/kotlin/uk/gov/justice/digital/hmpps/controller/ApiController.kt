@@ -6,12 +6,10 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class ApiController {
-    @PreAuthorize("hasRole('ROLE_EXAMPLE')")
-    @GetMapping(value = ["/example/{inputId}"])
+class ApiController(private val service: ResettlementPassportService) {
+    @PreAuthorize("hasRole('ROLE_RESETTLEMENT_PASSPORT')")
+    @GetMapping(value = ["/duty-to-refer-nsi/{crn}"])
     fun handle(
-        @PathVariable("inputId") inputId: String
-    ) {
-        // TODO Not yet implemented
-    }
+        @PathVariable("crn") crn: String
+    ) = service.getDutyToReferNSI(crn)
 }
