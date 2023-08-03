@@ -6,7 +6,6 @@ import uk.gov.justice.digital.hmpps.entity.NsiStatus
 import uk.gov.justice.digital.hmpps.entity.NsiType
 import uk.gov.justice.digital.hmpps.entity.Person
 import java.time.LocalDate
-import java.time.ZonedDateTime
 
 object NSIGenerator {
     val DEFAULT = generate(PersonGenerator.DEFAULT)
@@ -19,7 +18,7 @@ object NSIGenerator {
             ReferenceDataGenerator.DTR_SUB_TYPE,
             NSIStatusGenerator.INITIATED,
             LocalDate.now(),
-            ZonedDateTime.now(),
+            null,
             "Duty to refer notes"
         )
 }
