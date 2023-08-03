@@ -49,8 +49,8 @@ internal class HandlerTest {
     @Test
     fun `missing reference data is thrown`() {
         val notification = Notification(ResourceLoader.event("offence-changed"))
-        whenever(manageOffencesClient.getOffence(notification.message.offenceCode))
-            .thenReturn(listOf(Offence(code = notification.message.offenceCode, offenceType = COURT_CATEGORY.code, startDate = LocalDate.now())))
+        val offenceCode = notification.message.offenceCode
+        whenever(manageOffencesClient.getOffence(offenceCode)).thenReturn(listOf(offence(offenceCode)))
 
         assertThrows<NotFoundException> { handler.handle(notification) }
             .run { assertThat(message, equalTo("Court category with code of CS not found")) }
@@ -60,8 +60,7 @@ internal class HandlerTest {
     fun `offence is created`() {
         val notification = Notification(ResourceLoader.event("offence-changed"))
         val offenceCode = notification.message.offenceCode
-        whenever(manageOffencesClient.getOffence(offenceCode))
-            .thenReturn(listOf(Offence(code = notification.message.offenceCode, offenceType = COURT_CATEGORY.code, startDate = LocalDate.now())))
+        whenever(manageOffencesClient.getOffence(offenceCode)).thenReturn(listOf(offence(offenceCode)))
         whenever(referenceDataRepository.findByCodeAndSetName(COURT_CATEGORY.code, COURT_CATEGORY.set.name)).thenReturn(COURT_CATEGORY)
 
         handler.handle(notification)
@@ -81,8 +80,7 @@ internal class HandlerTest {
     fun `offence is updated`() {
         val notification = Notification(ResourceLoader.event("offence-changed"))
         val offenceCode = notification.message.offenceCode
-        whenever(manageOffencesClient.getOffence(offenceCode))
-            .thenReturn(listOf(Offence(code = notification.message.offenceCode, offenceType = COURT_CATEGORY.code, startDate = LocalDate.now())))
+        whenever(manageOffencesClient.getOffence(offenceCode)).thenReturn(listOf(offence(notification.message.offenceCode)))
         whenever(referenceDataRepository.findByCodeAndSetName(COURT_CATEGORY.code, COURT_CATEGORY.set.name)).thenReturn(COURT_CATEGORY)
         whenever(detailedOffenceRepository.findByCode(EXISTING_OFFENCE.code)).thenReturn(EXISTING_OFFENCE)
 
@@ -98,4 +96,11 @@ internal class HandlerTest {
         )
         verify(telemetryService).trackEvent("OffenceCodeUpdated", mapOf("offenceCode" to offenceCode), mapOf())
     }
+
+    private fun offence(code: String) = Offence(
+        code = code,
+        description = "some offence",
+        offenceType = COURT_CATEGORY.code,
+        startDate = LocalDate.now()
+    )
 }

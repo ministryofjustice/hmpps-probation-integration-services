@@ -39,7 +39,7 @@ data class DetailedOffence(
     val code: String, // Criminal Justice System code
 
     @Column(name = "offence_description")
-    val description: String?,
+    val description: String?, // Criminal Justice System title
 
     @Column
     val startDate: LocalDate,
@@ -50,7 +50,7 @@ data class DetailedOffence(
     @Column(name = "ho_code", columnDefinition = "varchar2(6)")
     val homeOfficeCode: String?,
 
-    @Column(name = "ho_description", columnDefinition = "varchar2(200)")
+    @Column(name = "ho_description")
     val homeOfficeDescription: String?,
 
     @Column(columnDefinition = "varchar2(8)")
