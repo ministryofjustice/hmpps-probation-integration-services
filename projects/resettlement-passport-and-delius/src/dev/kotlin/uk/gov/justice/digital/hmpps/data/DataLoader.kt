@@ -7,6 +7,11 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
+import uk.gov.justice.digital.hmpps.data.generator.NSIGenerator
+import uk.gov.justice.digital.hmpps.data.generator.NSIManagerGenerator
+import uk.gov.justice.digital.hmpps.data.generator.NSIStatusGenerator
+import uk.gov.justice.digital.hmpps.data.generator.NSITypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
@@ -28,12 +33,17 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         em.saveAll(
+            NSITypeGenerator.DTR,
+            NSIStatusGenerator.INITIATED,
             ReferenceDataGenerator.ADDRESS_STATUS,
+            ReferenceDataGenerator.DTR_SUB_TYPE,
             ProviderGenerator.DEFAULT_AREA,
             ProviderGenerator.DEFAULT_TEAM,
             ProviderGenerator.DEFAULT_STAFF,
-            PersonGenerator.DEFAULT
-
+            PersonGenerator.DEFAULT,
+            NSIGenerator.DEFAULT,
+            NSIManagerGenerator.DEFAULT,
+            AddressGenerator.DEFAULT
         )
     }
 

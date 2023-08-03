@@ -81,11 +81,11 @@ class NsiStatus(
     @Column(name = "nsi_status_id")
     val id: Long,
 
-    @Column(name = "description")
-    val description: String,
-
     @Column(name = "code")
-    val code: String
+    val code: String,
+
+    @Column(name = "description")
+    val description: String
 )
 interface NsiRepository : JpaRepository<Nsi, Long> {
 

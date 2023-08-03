@@ -37,6 +37,5 @@ class ResettlementPassportService(val addressRepository: PersonAddressRepository
         )
     }
 }
-
-private fun PersonAddress.toModel() = MainAddress(buildingName, addressNumber, streetName, district, town, county, postcode, noFixedAbode)
-private fun Staff.officer() = Officer(forename, surname, middleName)
+fun PersonAddress.toModel() = MainAddress(buildingName, addressNumber, streetName, district, town, county, postcode, noFixedAbode)
+fun Staff.officer() = Officer(forename, surname, middleName)
