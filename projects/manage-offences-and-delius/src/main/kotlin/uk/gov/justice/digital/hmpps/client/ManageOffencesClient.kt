@@ -18,10 +18,11 @@ interface ManageOffencesClient {
 
 data class Offence(
     val code: String,
-    val description: String? = null,
-    val offenceType: String? = null,
+    val description: String,
+    val offenceType: String,
     val startDate: LocalDate,
     val endDate: LocalDate? = null,
     val homeOfficeStatsCode: String? = null,
+    val homeOfficeDescription: String? = null,
     val legislation: String? = null
 )

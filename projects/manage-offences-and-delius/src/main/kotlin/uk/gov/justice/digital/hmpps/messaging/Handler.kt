@@ -40,15 +40,14 @@ class Handler(
         startDate = startDate,
         endDate = endDate,
         homeOfficeCode = homeOfficeStatsCode,
-        homeOfficeDescription = description,
+        homeOfficeDescription = homeOfficeDescription,
         legislation = legislation,
-        category = offenceType?.let { referenceDataRepository.findCourtCategory(it) }
-            ?: throw NotFoundException("Court category", "code", offenceType.toString()) // TODO change once nullability matches up between Delius + Manage Offences
+        category = referenceDataRepository.findCourtCategory(offenceType) ?: throw NotFoundException("Court category", "code", offenceType)
     )
 
     fun DetailedOffence?.mergeWith(newEntity: DetailedOffence) = this?.copy(
         code = newEntity.code,
-        description = description, // Description is only set on creation
+        description = newEntity.description,
         startDate = newEntity.startDate,
         endDate = newEntity.endDate,
         homeOfficeCode = newEntity.homeOfficeCode,
