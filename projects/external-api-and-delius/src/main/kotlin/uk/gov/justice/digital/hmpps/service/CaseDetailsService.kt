@@ -26,7 +26,8 @@ class CaseDetailsService(
                         description = disposal.type.description,
                         date = disposal.date,
                         length = disposal.length?.toInt(),
-                        lengthUnits = disposal.lengthUnits?.let { LengthUnit.valueOf(it.description) }
+                        lengthUnits = disposal.lengthUnits?.let { LengthUnit.valueOf(it.description) },
+                        custodial = disposal.type.custodialOrder
                     )
                 },
                 mainOffence = event.mainOffence.let { Offence.of(it.date, it.count, it.offence) },

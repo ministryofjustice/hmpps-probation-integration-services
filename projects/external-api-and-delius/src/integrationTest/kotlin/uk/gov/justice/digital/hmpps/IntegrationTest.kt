@@ -40,7 +40,8 @@ internal class IntegrationTest {
                                     "description": "ORA Suspended Sentence Order",
                                     "date": "2023-03-04",
                                     "length": 6,
-                                    "lengthUnits": "Months"
+                                    "lengthUnits": "Months",
+                                    "custodial": true
                                 },
                                 "mainOffence": {
                                     "date": "2023-01-01",
