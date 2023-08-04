@@ -60,7 +60,8 @@ internal class CaseDetailsServiceTest {
                         description = "ORA Suspended Sentence Order",
                         date = LocalDate.of(2023, 3, 4),
                         length = 6,
-                        lengthUnits = LengthUnit.Months
+                        lengthUnits = LengthUnit.Months,
+                        custodial = true
                     ),
                     mainOffence = Offence(
                         date = LocalDate.of(2023, 1, 1),
