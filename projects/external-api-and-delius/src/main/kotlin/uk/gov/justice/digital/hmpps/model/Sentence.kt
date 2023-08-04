@@ -6,7 +6,8 @@ data class Sentence(
     val description: String,
     val date: LocalDate,
     val length: Int?,
-    val lengthUnits: LengthUnit?
+    val lengthUnits: LengthUnit?,
+    val custodial: Boolean = false
 )
 
 enum class LengthUnit {

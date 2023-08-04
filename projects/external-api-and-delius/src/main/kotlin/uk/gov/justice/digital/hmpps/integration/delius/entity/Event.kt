@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integration.delius.entity
 
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
@@ -10,6 +11,7 @@ import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
+import org.hibernate.type.YesNoConverter
 import java.time.LocalDate
 
 @Entity
@@ -91,5 +93,8 @@ data class DisposalType(
     val id: Long,
 
     @Column(name = "description")
-    val description: String
+    val description: String,
+
+    @Convert(converter = YesNoConverter::class)
+    val custodialOrder: Boolean
 )
