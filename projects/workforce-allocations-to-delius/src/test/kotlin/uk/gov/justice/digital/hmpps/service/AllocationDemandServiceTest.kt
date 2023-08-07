@@ -116,7 +116,7 @@ class AllocationDemandServiceTest {
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
         whenever(personRepository.getProbationStatus(person.crn)).thenReturn(CURRENTLY_MANAGED)
         whenever(personManagerRepository.findActiveManager(eq(person.id), any())).thenReturn(manager)
-        whenever(staffRepository.findAllByTeamsCode(team.code)).thenReturn(listOf(staff))
+        whenever(staffRepository.findActiveStaffInTeam(team.code)).thenReturn(listOf(staff))
         whenever(ldapService.findEmailsForStaffIn(listOf(staff))).thenReturn(mapOf(user.username to user.email))
 
         val response = allocationDemandService.getChoosePractitionerResponse(person.crn, listOf(team.code))

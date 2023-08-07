@@ -72,7 +72,7 @@ class AllocationDemandService(
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val personManager = personManagerRepository.findActiveManager(person.id)
         val staffInTeams = teamCodes.associateWith { teamCode ->
-            val staff = staffRepository.findAllByTeamsCode(teamCode)
+            val staff = staffRepository.findActiveStaffInTeam(teamCode)
             val emails = ldapService.findEmailsForStaffIn(staff)
             staff.map { it.toStaffMember(emails[it.user?.username]) }
         }
