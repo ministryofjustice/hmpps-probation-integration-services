@@ -98,7 +98,7 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
-        <a href="./api-reference.html#example-inputid"><span>/example/{inputId}</span></a>
+        <a href="./api-reference.html#duty-to-refer-nsi-value"><span>/duty-to-refer-nsi/{value}</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -134,14 +134,14 @@
 
 
 
-<h2 id="example-inputid">/example/{inputId}</h2>
+<h2 id="duty-to-refer-nsi-value">/duty-to-refer-nsi/{value}</h2>
 
-<h3 id="example-inputid-get">get</h3>
-
-
+<h3 id="duty-to-refer-nsi-value-get">get</h3>
 
 
-<h4 id="example-inputid-get-parameters">Parameters</h4>
+
+
+<h4 id="duty-to-refer-nsi-value-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -149,11 +149,30 @@
 <tbody>
 
 <tr>
-<td>inputId</td>
+<td>value</td>
 <td>path</td>
 <td>string</td>
 <td>true</td>
 <td>
+
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+<p>Available items:</p>
+<ul>
+
+<li>CRN</li>
+
+<li>NOMS</li>
+
+</ul>
 
 </td>
 </tr>
@@ -164,7 +183,7 @@
 
 
 
-<h4 id="example-inputid-get-responses">Responses</h4>
+<h4 id="duty-to-refer-nsi-value-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -178,9 +197,34 @@
 
 
 
+<pre><code>{
+  "nsiSubType": "string",
+  "referralDate": "string",
+  "provider": "string",
+  "team": "string",
+  "officer": {
+    "forename": "string",
+    "surname": "string",
+    "middleName": "string"
+  },
+  "status": "string",
+  "startDateTime": "string",
+  "notes": "string",
+  "mainAddress": {
+    "buildingName": "string",
+    "addressNumber": "string",
+    "streetName": "string",
+    "district": "string",
+    "town": "string",
+    "county": "string",
+    "postcode": "string",
+    "noFixedAbode": "boolean"
+  }
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-dutytorefernsi'>DutyToReferNSI</a>
 </td>
 </tr>
 
@@ -192,6 +236,242 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-dutytorefernsi">DutyToReferNSI</h3>
+
+
+<table class='schema-dutytorefernsi'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>nsiSubType</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>referralDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>provider</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>officer</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-officer'>Officer</a>
+</td>
+</tr>
+
+<tr>
+<td>status</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDateTime</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainAddress</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-mainaddress'>MainAddress</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-mainaddress">MainAddress</h3>
+
+
+<table class='schema-mainaddress'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>buildingName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>addressNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>streetName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>district</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>town</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>county</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>noFixedAbode</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-officer">Officer</h3>
+
+
+<table class='schema-officer'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 
 
             
