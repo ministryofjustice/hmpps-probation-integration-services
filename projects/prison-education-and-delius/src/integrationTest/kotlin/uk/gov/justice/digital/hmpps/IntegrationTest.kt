@@ -1,31 +1,35 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.data.generator.DataGenerator.PERSON
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest {
-    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    @Autowired lateinit var wireMockServer: WireMockServer
-
-    @MockBean lateinit var telemetryService: TelemetryService
+    @Autowired
+    lateinit var wireMockServer: WireMockServer
 
     @Test
-    fun `API call retuns a success response`() {
+    fun `get community manager`() {
         mockMvc
-            .perform(get("/example/123").withOAuth2Token(wireMockServer))
+            .perform(get("/probation-case/${PERSON.prisonerId}/community-manager").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("firstName", equalTo("Test")))
+            .andExpect(jsonPath("lastName", equalTo("User")))
+            .andExpect(jsonPath("email", equalTo("test@example.com")))
     }
 }
