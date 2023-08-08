@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /prison-education-and-delius/db-username
+    password_key: /prison-education-and-delius/db-password
+
+  audit:
+    username: PrisonEducationAndDelius
+    forename: Prison Education
+    surname: Service
