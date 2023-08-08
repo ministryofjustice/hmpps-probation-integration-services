@@ -5,5 +5,5 @@ database:
 
   audit:
     username: PrisonEducationAndDelius
-    forename: Probation Integration # TODO change this to something meaningful for your service
+    forename: Prison Education
     surname: Service
