@@ -1,0 +1,4226 @@
+<!doctype html>
+<html lang="en" class="govuk-template no-js">
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <title>API Reference - HMPPS Workforce Allocations to Delius</title>
+
+    <link href="stylesheets/manifest.css" rel="stylesheet" />
+
+    <link rel="canonical" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius/api-reference.html">
+
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:domain" content="ministryofjustice.github.io" />
+      <meta name="twitter:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius/images/govuk-large.png" />
+      <meta name="twitter:title" content="API Reference - HMPPS Workforce Allocations to Delius" />
+      <meta name="twitter:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius/api-reference.html" />
+
+      <meta property="og:image" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius/images/govuk-large.png" />
+      <meta property="og:site_name" content="HMPPS Workforce Allocations to Delius" />
+      <meta property="og:title" content="API Reference" />
+      <meta property="og:type" content="object" />
+      <meta property="og:url" content="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius/api-reference.html" />
+
+    
+  </head>
+
+  <body class="govuk-template__body">
+    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+
+    <div class="app-pane">
+      <div class="app-pane__header toc-open-disabled">
+        <a href="#content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+        <header class="govuk-header app-header" role="banner" data-module="govuk-header">
+  <div class="govuk-header__container govuk-header__container--full-width">
+    <div class="govuk-header__logo">
+      <a href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius" class="govuk-header__link govuk-header__link--homepage">
+        <span class="govuk-header__product-name">
+          HMPPS Workforce Allocations to Delius
+        </span>
+      </a>
+    </div>
+    <div class="govuk-header__content">
+      <nav class="govuk-header__navigation govuk-header__navigation--end" aria-label="Menu">
+        <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide menu">Menu</button>
+        <ul id="navigation" class="govuk-header__navigation-list">
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs">Home</a>
+            </li>
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://github.com/ministryofjustice/hmpps-probation-integration-services#readme">GitHub</a>
+            </li>
+            <li class="govuk-header__navigation-item">
+              <a class="govuk-header__link" href="https://mojdt.slack.com/archives/C02HQ4M2YQN">Slack</a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+      </div>
+
+        <div id="toc-heading" class="toc-show fixedsticky">
+          <button type="button" class="toc-show__label js-toc-show" aria-controls="toc">
+            Table of contents <span class="toc-show__icon"></span>
+          </button>
+        </div>
+
+      <div class="app-pane__body" data-module="in-page-navigation">
+          <div class="app-pane__toc">
+            <div class="toc" data-module="table-of-contents" tabindex="-1" aria-label="Table of contents" role="dialog">
+              <div class="search" data-module="search" data-path-to-site-root="./">
+  <form action="https://www.google.co.uk/search" method="get" role="search" class="search__form govuk-!-margin-bottom-4">
+    <input type="hidden" name="as_sitesearch" value="https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/workforce-allocations-to-delius"/>
+    <label class="govuk-label search__label" for="search" aria-hidden="true">
+      Search (via Google)
+    </label>
+    <input
+      type="text"
+      id="search" name="q"
+      class="govuk-input govuk-!-margin-bottom-0 search__input"
+      aria-controls="search-results"
+      placeholder="Search">
+    <button type="submit" class="search__button">Search</button>
+  </form>
+</div>
+
+              <button type="button" class="toc__close js-toc-close" aria-controls="toc" aria-label="Hide table of contents"></button>
+              <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
+                      <ul>
+  <li>
+    <a href="./index.html"><span>Workforce Allocations to Delius</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#probation-business-need"><span>Probation Business Need</span></a>
+      </li>
+      <li>
+        <a href="./index.html#context-map"><span>Context Map</span></a>
+      </li>
+      <li>
+        <a href="./index.html#interfaces"><span>Interfaces</span></a>
+      </li>
+      <li>
+        <a href="./index.html#historic-allocations"><span>Historic Allocations</span></a>
+      </li>
+      <li>
+        <a href="./index.html#event-triggers"><span>Event Triggers</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./api-reference.html"><span>API Reference v1.0</span></a>
+    <ul>
+      <li>
+        <a href="./api-reference.html#user-username-access-controls"><span>/user/{username}/access-controls</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#staff-code-active-cases"><span>/staff/{code}/active-cases</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#allocation-details"><span>/allocation/details</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#allocation-demand"><span>/allocation-demand</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#staff-code-officer-view"><span>/staff/{code}/officer-view</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#person-value"><span>/person/{value}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#offenders-crn-documents"><span>/offenders/{crn}/documents</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#offenders-crn-documents-id"><span>/offenders/{crn}/documents/{id}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#allocation-demand-crn-eventnumber-probation-record"><span>/allocation-demand/{crn}/{eventNumber}/probation-record</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#allocation-demand-crn-eventnumber-case-view"><span>/allocation-demand/{crn}/{eventNumber}/case-view</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#allocation-demand-crn-eventnumber-allocation"><span>/allocation-demand/{crn}/{eventNumber}/allocation</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#allocation-demand-crn-unallocated-events"><span>/allocation-demand/{crn}/unallocated-events</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#allocation-demand-crn-risk"><span>/allocation-demand/{crn}/risk</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#allocation-demand-impact"><span>/allocation-demand/impact</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#allocation-demand-choose-practitioner"><span>/allocation-demand/choose-practitioner</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#allocation-completed-details"><span>/allocation-completed/details</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#schemas"><span>Schemas</span></a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <a href="./async-api-reference.html"><span>ASyncAPI Reference</span></a>
+  </li>
+</ul>
+
+
+              </nav>
+            </div>
+          </div>
+
+        <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
+          <main id="content" class="technical-documentation" data-module="anchored-headings">
+            <header id="api" class="anchored-heading govuk-heading-xl" style="padding-top: 30px">
+    <a href="#api" class="anchored-heading__icon" aria-hidden="true" tabindex="-1"></a>
+    API Reference
+</header>
+
+<style>.technical-documentation > h1 { display: none !important }</style>
+<p>The following documentation is also available in these formats:</p>
+
+<ul>
+<li><a href="https://workforce-allocations-to-delius-dev.hmpps.service.justice.gov.uk/v3/api-docs">OpenAPI JSON</a></li>
+<li><a href="https://workforce-allocations-to-delius-dev.hmpps.service.justice.gov.uk/v3/api-docs.yaml">OpenAPI YAML</a></li>
+<li><a href="https://workforce-allocations-to-delius-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html">Swagger UI</a></li>
+</ul>
+<h1 id="api-reference">API Reference v1.0</h1>
+
+
+
+
+
+
+<h2 id="user-username-access-controls">/user/{username}/access-controls</h2>
+
+<h3 id="user-username-access-controls-get">get</h3>
+
+  <p><em>Data access restriction information for the combination of the Delius
+            user and the supplied list of CRNs</em></p>
+
+
+  <p>Probation case records in Delius may have access restrictions
+            defined for particular Delius users. This restrictions may be in place to stop
+            identified users accessing information on specific people or they may restrict
+            access to all users other than those named. The restrictions may be in place
+            for a number of reasons related to the case supervision and clients should use
+            the restriction information to mask data access from any identified user that
+            has a restriction in place</p>
+
+
+
+
+<h4 id="user-username-access-controls-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>crns</td>
+<td>query</td>
+<td>array</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="user-username-access-controls-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+<h3 id="user-username-access-controls-post">post</h3>
+
+  <p><em>Data access restriction information for the combination of the Delius
+            user and the supplied list of CRNs</em></p>
+
+
+  <p>Probation case records in Delius may have access restrictions
+            defined for particular Delius users. This restrictions may be in place to stop
+            identified users accessing information on specific people or they may restrict
+            access to all users other than those named. The restrictions may be in place
+            for a number of reasons related to the case supervision and clients should use
+            the restriction information to mask data access from any identified user that
+            has a restriction in place</p>
+
+
+
+
+<h4 id="user-username-access-controls-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="user-username-access-controls-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="staff-code-active-cases">/staff/{code}/active-cases</h2>
+
+<h3 id="staff-code-active-cases-post">post</h3>
+
+  <p><em>Personal information along with a list of active
+            cases for the identified probation practitioner</em></p>
+
+
+  <p>Summary information on the full case list of
+            of the probation practitioner identified in the request.
+            Used to support the &lsquo;Case Details&rsquo; capability of the HMPPS
+            Workload service, which show details of the current case load
+            of the staff member for capacity planning</p>
+
+
+
+
+<h4 id="staff-code-active-cases-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="staff-code-active-cases-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "code": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "grade": "string",
+  "email": "string",
+  "cases": [
+    {
+      "crn": "string",
+      "name": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "type": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-activecasesresponse'>ActiveCasesResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="allocation-details">/allocation/details</h2>
+
+<h3 id="allocation-details-post">post</h3>
+
+  <p><em>Summary information on the person on probation and probation practitioner</em></p>
+
+
+  <p>Summary information on the person on probation and probation practitioner
+            identified by the list of CRNs and staff codes provided in the request. Used to support
+            showing the impact of case allocations in the HMPPS Workforce service</p>
+
+
+
+
+
+
+
+<h4 id="allocation-details-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "cases": [
+    {
+      "crn": "string",
+      "name": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "staff": {
+        "code": "string",
+        "name": {
+          "forename": "string",
+          "middleName": "string",
+          "surname": "string"
+        },
+        "email": "string",
+        "grade": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-allocationdetails'>AllocationDetails</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="allocation-demand">/allocation-demand</h2>
+
+<h3 id="allocation-demand-post">post</h3>
+
+  <p><em>List of summary probation case details for cases that require allocation</em></p>
+
+
+  <p>Summary information on the probation case list provided in the request.
+            Used to support the list of &lsquo;Unallocated Community Cases&rsquo; in the HMPPS Workforce
+            service which shows the list of cases that require allocation to a probation
+            practitioner</p>
+
+
+
+
+
+
+
+<h4 id="allocation-demand-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "cases": [
+    {
+      "crn": "string",
+      "name": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "event": {
+        "number": "string",
+        "manager": {
+          "code": "string",
+          "name": {
+            "forename": "string",
+            "middleName": "string",
+            "surname": "string"
+          },
+          "teamCode": "string",
+          "grade": "string"
+        }
+      },
+      "sentence": {
+        "type": "string",
+        "date": "string",
+        "length": "string"
+      },
+      "initialAppointment": {
+        "date": "string"
+      },
+      "court": {
+        "name": "string"
+      },
+      "type": "string",
+      "probationStatus": {
+        "status": "string",
+        "description": "string"
+      },
+      "communityPersonManager": {
+        "code": "string",
+        "name": {
+          "forename": "string",
+          "middleName": "string",
+          "surname": "string"
+        },
+        "teamCode": "string",
+        "grade": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-allocationdemandresponse'>AllocationDemandResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="staff-code-officer-view">/staff/{code}/officer-view</h2>
+
+<h3 id="staff-code-officer-view-get">get</h3>
+
+  <p><em>Personal and and summary caseload information for
+            the identified probation officer</em></p>
+
+
+  <p>Summary information on the probation caseload
+            for the probation officer identified in the request. Used
+            to support the &lsquo;Officer View&rsquo; capability of the HMPPS
+            Workload service which shows statistics on the staff members
+            caseload</p>
+
+
+
+
+<h4 id="staff-code-officer-view-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="staff-code-officer-view-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "code": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "grade": "string",
+  "email": "string",
+  "casesDueToEndInNext4Weeks": "integer",
+  "releasesWithinNext4Weeks": "integer",
+  "paroleReportsToCompleteInNext4Weeks": "integer"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-officerview'>OfficerView</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="person-value">/person/{value}</h2>
+
+<h3 id="person-value-get">get</h3>
+
+  <p><em>Basic information on the person on probation</em></p>
+
+
+  <p>Basic information on the person on probation as held in Delius,
+            identified by either the CRN or NOMS number provided in the request. Supports
+            display of the overview person information in the HMPPS Workload service</p>
+
+
+
+
+<h4 id="person-value-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>value</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+<p>Available items:</p>
+<ul>
+
+<li>CRN</li>
+
+<li>NOMS</li>
+
+</ul>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="person-value-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "type": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-person'>Person</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="offenders-crn-documents">/offenders/{crn}/documents</h2>
+
+<h3 id="offenders-crn-documents-get">get</h3>
+
+  <p><em>List of documents held in Delius for the probation case</em></p>
+
+
+  <p>List of documents available in Delius for the probation
+            case identified by the CRN provided in the request. Document list
+            includes summary information on the type and purpose of document held.
+            Used to support the &lsquo;Document List&rsquo; view of the HMPPS Workforce service
+            which is used to give detailed information on the case when allocating
+            to a probation practitioner</p>
+
+
+
+
+<h4 id="offenders-crn-documents-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="offenders-crn-documents-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="offenders-crn-documents-id">/offenders/{crn}/documents/{id}</h2>
+
+<h3 id="offenders-crn-documents-id-get">get</h3>
+
+  <p><em>Fetch a complete document from Delius/Alfresco</em></p>
+
+
+  <p>Returns the full document identified by the CRN and
+            document id provided in the request. Document is returned in the
+            format stored in Alfresco. Used to support downloading documents
+            from the document list in the HMPPS Workload service</p>
+
+
+
+
+<h4 id="offenders-crn-documents-id-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>id</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="offenders-crn-documents-id-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="allocation-demand-crn-eventnumber-probation-record">/allocation-demand/{crn}/{eventNumber}/probation-record</h2>
+
+<h3 id="allocation-demand-crn-eventnumber-probation-record-get">get</h3>
+
+  <p><em>Detailed information on the probation supervision history</em></p>
+
+
+  <p>Detailed information on all current and previous cases, offences, sentences
+            and management by probation practitioners for the person identified by the CRN and event
+            provided in the request. Supports the &lsquo;Probation Record&rsquo; screen of case allocation in
+            the HMPPS Workforce service which is part of the case allocation workflow</p>
+
+
+
+
+<h4 id="allocation-demand-crn-eventnumber-probation-record-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>eventNumber</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="allocation-demand-crn-eventnumber-probation-record-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "event": {
+    "number": "string",
+    "manager": {
+      "code": "string",
+      "name": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "teamCode": "string",
+      "grade": "string"
+    }
+  },
+  "activeEvents": [
+    {
+      "sentence": {
+        "description": "string",
+        "length": "string",
+        "startDate": "string",
+        "terminationDate": "string"
+      },
+      "offences": [
+        {
+          "description": "string",
+          "main": "boolean"
+        }
+      ],
+      "manager": {
+        "code": "string",
+        "name": {
+          "forename": "string",
+          "middleName": "string",
+          "surname": "string"
+        },
+        "email": "string",
+        "grade": "string"
+      }
+    }
+  ],
+  "inactiveEvents": [
+    {
+      "sentence": {
+        "description": "string",
+        "length": "string",
+        "startDate": "string",
+        "terminationDate": "string"
+      },
+      "offences": [
+        {
+          "description": "string",
+          "main": "boolean"
+        }
+      ],
+      "manager": {
+        "code": "string",
+        "name": {
+          "forename": "string",
+          "middleName": "string",
+          "surname": "string"
+        },
+        "email": "string",
+        "grade": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-probationrecord'>ProbationRecord</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="allocation-demand-crn-eventnumber-case-view">/allocation-demand/{crn}/{eventNumber}/case-view</h2>
+
+<h3 id="allocation-demand-crn-eventnumber-case-view-get">get</h3>
+
+  <p><em>Detailed information on the probation case</em></p>
+
+
+  <p>Detailed information on the probation case identified
+            by the CRN and event number provided in the request. Returns information
+            on the person on probation, offences, sentence, requirements and case
+            documents held in Delius. Used to support the &lsquo;Case View&rsquo; screen of the
+            HMPPS Workforce service which provides a detailed overview of the case
+            when allocating to a probation practitioner</p>
+
+
+
+
+<h4 id="allocation-demand-crn-eventnumber-case-view-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>eventNumber</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="allocation-demand-crn-eventnumber-case-view-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "dateOfBirth": "string",
+  "gender": "string",
+  "pncNumber": "string",
+  "mainAddress": {
+    "buildingName": "string",
+    "addressNumber": "string",
+    "streetName": "string",
+    "town": "string",
+    "county": "string",
+    "postcode": "string",
+    "noFixedAbode": "boolean",
+    "typeVerified": "boolean",
+    "typeDescription": "string",
+    "startDate": "string"
+  },
+  "sentence": {
+    "description": "string",
+    "startDate": "string",
+    "length": "string",
+    "endDate": "string"
+  },
+  "offences": [
+    {
+      "mainCategory": "string",
+      "subCategory": "string",
+      "mainOffence": "boolean"
+    }
+  ],
+  "requirements": [
+    {
+      "mainCategory": "string",
+      "subCategory": "string",
+      "length": "string"
+    }
+  ],
+  "cpsPack": {
+    "documentId": "string",
+    "documentName": "string",
+    "dateCreated": "string",
+    "description": "string"
+  },
+  "preConvictionDocument": {
+    "documentId": "string",
+    "documentName": "string",
+    "dateCreated": "string",
+    "description": "string"
+  },
+  "courtReport": {
+    "documentId": "string",
+    "documentName": "string",
+    "dateCreated": "string",
+    "description": "string"
+  },
+  "age": "integer"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-caseview'>CaseView</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="allocation-demand-crn-eventnumber-allocation">/allocation-demand/{crn}/{eventNumber}/allocation</h2>
+
+<h3 id="allocation-demand-crn-eventnumber-allocation-get">get</h3>
+
+  <p><em>Detailed information on the case allocation</em></p>
+
+
+  <p>Detailed information on the probation case, event and probation practitioners
+            identified in the request. Used to display a summary page after case allocation has been
+            completed in the HMPPS Workforce service</p>
+
+
+
+
+<h4 id="allocation-demand-crn-eventnumber-allocation-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>eventNumber</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>staff</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>allocatingStaffUsername</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="allocation-demand-crn-eventnumber-allocation-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "staff": {
+    "code": "string",
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "email": "string",
+    "grade": "string"
+  },
+  "allocatingStaff": {
+    "code": "string",
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "email": "string",
+    "grade": "string"
+  },
+  "initialAppointment": {
+    "date": "string"
+  },
+  "ogrs": {
+    "lastUpdatedDate": "string",
+    "score": "integer"
+  },
+  "sentence": {
+    "description": "string",
+    "code": "string",
+    "date": "string",
+    "lengthValue": "integer",
+    "lengthDescription": "string",
+    "length": "string"
+  },
+  "court": {
+    "name": "string",
+    "appearanceDate": "string"
+  },
+  "offences": [
+    {
+      "mainCategory": "string",
+      "mainOffence": "boolean"
+    }
+  ],
+  "activeRequirements": [
+    {
+      "mainCategory": "string",
+      "subCategory": "string",
+      "length": "string",
+      "id": "integer"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-allocationdemandstaffresponse'>AllocationDemandStaffResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="allocation-demand-crn-unallocated-events">/allocation-demand/{crn}/unallocated-events</h2>
+
+<h3 id="allocation-demand-crn-unallocated-events-get">get</h3>
+
+  <p><em>Summary information on all Delius events without a case allocation for a person
+            on probation</em></p>
+
+
+  <p>Summary information on the person on probation identified by the CRN provided
+            in the request with a list of all active Delius events for that person that do not currently
+            have a case allocation. Used to support choosing the event to allocate in the case allocation
+            workflow of the HMPPS Workforce service</p>
+
+
+
+
+<h4 id="allocation-demand-crn-unallocated-events-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="allocation-demand-crn-unallocated-events-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "activeEvents": [
+    {
+      "eventNumber": "string",
+      "teamCode": "string",
+      "providerCode": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-unallocatedeventsresponse'>UnallocatedEventsResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="allocation-demand-crn-risk">/allocation-demand/{crn}/risk</h2>
+
+<h3 id="allocation-demand-crn-risk-get">get</h3>
+
+  <p><em>Detailed information on the risk information held in Delius</em></p>
+
+
+  <p>Detailed information on the risk factors held and managed in Delius for the
+            person on probation identified by the CRN provided in the request. Supports the &lsquo;Risk&rsquo;
+            section of the &lsquo;Case View&rsquo; within the HMPPS Workload service which is part of the case
+            allocation workflow</p>
+
+
+
+
+<h4 id="allocation-demand-crn-risk-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="allocation-demand-crn-risk-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "activeRegistrations": [
+    {
+      "description": "string",
+      "startDate": "string",
+      "endDate": "string",
+      "notes": "string"
+    }
+  ],
+  "inactiveRegistrations": [
+    {
+      "description": "string",
+      "startDate": "string",
+      "endDate": "string",
+      "notes": "string"
+    }
+  ],
+  "ogrs": {
+    "lastUpdatedDate": "string",
+    "score": "integer"
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-riskrecord'>RiskRecord</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="allocation-demand-impact">/allocation-demand/impact</h2>
+
+<h3 id="allocation-demand-impact-get">get</h3>
+
+  <p><em>Summary information on the person on probation and probation practitioner</em></p>
+
+
+  <p>Summary information on the person on probation and probation practitioner
+            identified by the CRN and staff code provided in the request. Used to support the
+            post-allocation &lsquo;Impact&rsquo; screen of the HMPPS Workforce service</p>
+
+
+
+
+<h4 id="allocation-demand-impact-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>staff</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="allocation-demand-impact-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "staff": {
+    "code": "string",
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "email": "string",
+    "grade": "string"
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-allocationimpact'>AllocationImpact</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="allocation-demand-choose-practitioner">/allocation-demand/choose-practitioner</h2>
+
+<h3 id="allocation-demand-choose-practitioner-get">get</h3>
+
+  <p><em>List of summary probation case details with probation practioner details</em></p>
+
+
+  <p>Summary information on the probation case provided in the request along
+            with a list of probation practitioners associated with the teams provided in the
+            request. Used to support the &lsquo;Choose Practitioner&rsquo; screen of the HMPPS Workforce
+            service which is part of the case allocation workflow</p>
+
+
+
+
+<h4 id="allocation-demand-choose-practitioner-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>teamCode</td>
+<td>query</td>
+<td>array</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="allocation-demand-choose-practitioner-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "probationStatus": {
+    "status": "string",
+    "description": "string"
+  },
+  "communityPersonManager": {
+    "code": "string",
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "teamCode": "string",
+    "grade": "string"
+  },
+  "teams": {
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-choosepractitionerresponse'>ChoosePractitionerResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="allocation-completed-details">/allocation-completed/details</h2>
+
+<h3 id="allocation-completed-details-get">get</h3>
+
+  <p><em>Summary case allocation information as currently held in Delius</em></p>
+
+
+  <p>Summary case allocation information for the probation case
+            identified by the CRN and Event Number in the request. Also provided
+            information on the probation practitioner identified by the staff code
+            in the request. Used to support the post-allocation information page of
+            the HMPPS Workforce service</p>
+
+
+
+
+<h4 id="allocation-completed-details-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>eventNumber</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>staffCode</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="allocation-completed-details-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "event": {
+    "number": "string",
+    "manager": {
+      "code": "string",
+      "name": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "teamCode": "string",
+      "grade": "string"
+    }
+  },
+  "type": "string",
+  "initialAppointment": {
+    "date": "string"
+  },
+  "staff": {
+    "code": "string",
+    "name": {
+      "forename": "string",
+      "middleName": "string",
+      "surname": "string"
+    },
+    "email": "string",
+    "grade": "string"
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-allocationcompletedresponse'>AllocationCompletedResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+
+<h2 id="schemas">Schemas</h2>
+<h3 id="schema-useraccess">UserAccess</h3>
+
+
+<table class='schema-useraccess'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>userExcluded</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>userRestricted</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>exclusionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>restrictionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-activecasesresponse">ActiveCasesResponse</h3>
+
+
+<table class='schema-activecasesresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>grade</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>cases</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-case'>Case</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-case">Case</h3>
+
+
+<table class='schema-case'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-name">Name</h3>
+
+
+<table class='schema-name'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-allocationdetailrequest">AllocationDetailRequest</h3>
+
+
+<table class='schema-allocationdetailrequest'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>staffCode</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-allocationdetailrequests">AllocationDetailRequests</h3>
+
+
+<table class='schema-allocationdetailrequests'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>cases</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-allocationdetailrequest'>AllocationDetailRequest</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-allocationdetails">AllocationDetails</h3>
+
+
+<table class='schema-allocationdetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>cases</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-allocationimpact'>AllocationImpact</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-allocationimpact">AllocationImpact</h3>
+
+
+<table class='schema-allocationimpact'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>staff</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-staffmember'>StaffMember</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-staffmember">StaffMember</h3>
+
+
+<table class='schema-staffmember'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>grade</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-allocationdemandrequest">AllocationDemandRequest</h3>
+
+
+<table class='schema-allocationdemandrequest'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>cases</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-allocationrequest'>AllocationRequest</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-allocationrequest">AllocationRequest</h3>
+
+
+<table class='schema-allocationrequest'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>eventNumber</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-allocationdemandresponse">AllocationDemandResponse</h3>
+
+
+<table class='schema-allocationdemandresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>cases</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-allocationresponse'>AllocationResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-allocationresponse">AllocationResponse</h3>
+
+
+<table class='schema-allocationresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>event</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-event'>Event</a>
+</td>
+</tr>
+
+<tr>
+<td>sentence</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-sentence'>Sentence</a>
+</td>
+</tr>
+
+<tr>
+<td>initialAppointment</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-initialappointment'>InitialAppointment</a>
+</td>
+</tr>
+
+<tr>
+<td>court</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-namedcourt'>NamedCourt</a>
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>probationStatus</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-probationstatus'>ProbationStatus</a>
+</td>
+</tr>
+
+<tr>
+<td>communityPersonManager</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-manager'>Manager</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-event">Event</h3>
+
+
+<table class='schema-event'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>number</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>manager</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-manager'>Manager</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-initialappointment">InitialAppointment</h3>
+
+
+<table class='schema-initialappointment'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>date</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-manager">Manager</h3>
+
+
+<table class='schema-manager'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>teamCode</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>grade</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-namedcourt">NamedCourt</h3>
+
+
+<table class='schema-namedcourt'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationstatus">ProbationStatus</h3>
+
+
+<table class='schema-probationstatus'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>status</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-sentence">Sentence</h3>
+
+
+<table class='schema-sentence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>date</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-officerview">OfficerView</h3>
+
+
+<table class='schema-officerview'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>grade</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>casesDueToEndInNext4Weeks</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>releasesWithinNext4Weeks</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>paroleReportsToCompleteInNext4Weeks</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-person">Person</h3>
+
+
+<table class='schema-person'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-documentevent">DocumentEvent</h3>
+
+
+<table class='schema-documentevent'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>eventType</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>eventNumber</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-persondocument">PersonDocument</h3>
+
+
+<table class='schema-persondocument'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>relatedTo</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-relatedto'>RelatedTo</a>
+</td>
+</tr>
+
+<tr>
+<td>dateSaved</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateCreated</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>sensitive</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-relatedto">RelatedTo</h3>
+
+
+<table class='schema-relatedto'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>event</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-documentevent'>DocumentEvent</a>
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-prevent">PrEvent</h3>
+
+
+<table class='schema-prevent'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>sentence</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-prsentence'>PrSentence</a>
+</td>
+</tr>
+
+<tr>
+<td>offences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-proffence'>PrOffence</a>
+</td>
+</tr>
+
+<tr>
+<td>manager</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-staffmember'>StaffMember</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-proffence">PrOffence</h3>
+
+
+<table class='schema-proffence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>main</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-prsentence">PrSentence</h3>
+
+
+<table class='schema-prsentence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>terminationDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationrecord">ProbationRecord</h3>
+
+
+<table class='schema-probationrecord'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>event</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-event'>Event</a>
+</td>
+</tr>
+
+<tr>
+<td>activeEvents</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-prevent'>PrEvent</a>
+</td>
+</tr>
+
+<tr>
+<td>inactiveEvents</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-prevent'>PrEvent</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-caseview">CaseView</h3>
+
+
+<table class='schema-caseview'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>gender</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pncNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainAddress</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-cvaddress'>CvAddress</a>
+</td>
+</tr>
+
+<tr>
+<td>sentence</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-cvsentence'>CvSentence</a>
+</td>
+</tr>
+
+<tr>
+<td>offences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-cvoffence'>CvOffence</a>
+</td>
+</tr>
+
+<tr>
+<td>requirements</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-cvrequirement'>CvRequirement</a>
+</td>
+</tr>
+
+<tr>
+<td>cpsPack</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-cvdocument'>CvDocument</a>
+</td>
+</tr>
+
+<tr>
+<td>preConvictionDocument</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-cvdocument'>CvDocument</a>
+</td>
+</tr>
+
+<tr>
+<td>courtReport</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-cvdocument'>CvDocument</a>
+</td>
+</tr>
+
+<tr>
+<td>age</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-cvaddress">CvAddress</h3>
+
+
+<table class='schema-cvaddress'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>buildingName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>addressNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>streetName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>town</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>county</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>noFixedAbode</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>typeVerified</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>typeDescription</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-cvdocument">CvDocument</h3>
+
+
+<table class='schema-cvdocument'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>documentId</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>documentName</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateCreated</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-cvoffence">CvOffence</h3>
+
+
+<table class='schema-cvoffence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>mainCategory</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>subCategory</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-cvrequirement">CvRequirement</h3>
+
+
+<table class='schema-cvrequirement'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>mainCategory</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>subCategory</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-cvsentence">CvSentence</h3>
+
+
+<table class='schema-cvsentence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-allocationdemandsentence">AllocationDemandSentence</h3>
+
+
+<table class='schema-allocationdemandsentence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>date</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lengthValue</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lengthDescription</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-allocationdemandstaffresponse">AllocationDemandStaffResponse</h3>
+
+
+<table class='schema-allocationdemandstaffresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>staff</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-staffmember'>StaffMember</a>
+</td>
+</tr>
+
+<tr>
+<td>allocatingStaff</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-staffmember'>StaffMember</a>
+</td>
+</tr>
+
+<tr>
+<td>initialAppointment</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-initialappointment'>InitialAppointment</a>
+</td>
+</tr>
+
+<tr>
+<td>ogrs</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-riskogrs'>RiskOGRS</a>
+</td>
+</tr>
+
+<tr>
+<td>sentence</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-allocationdemandsentence'>AllocationDemandSentence</a>
+</td>
+</tr>
+
+<tr>
+<td>court</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-court'>Court</a>
+</td>
+</tr>
+
+<tr>
+<td>offences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+<tr>
+<td>activeRequirements</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-requirement'>Requirement</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-court">Court</h3>
+
+
+<table class='schema-court'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>appearanceDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offence">Offence</h3>
+
+
+<table class='schema-offence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>mainCategory</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>mainOffence</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-requirement">Requirement</h3>
+
+
+<table class='schema-requirement'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>mainCategory</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>subCategory</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>length</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-riskogrs">RiskOGRS</h3>
+
+
+<table class='schema-riskogrs'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>lastUpdatedDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>score</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-activeevent">ActiveEvent</h3>
+
+
+<table class='schema-activeevent'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>eventNumber</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>teamCode</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>providerCode</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-unallocatedeventsresponse">UnallocatedEventsResponse</h3>
+
+
+<table class='schema-unallocatedeventsresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>activeEvents</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-activeevent'>ActiveEvent</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-riskrecord">RiskRecord</h3>
+
+
+<table class='schema-riskrecord'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>activeRegistrations</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-riskregistration'>RiskRegistration</a>
+</td>
+</tr>
+
+<tr>
+<td>inactiveRegistrations</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-riskregistration'>RiskRegistration</a>
+</td>
+</tr>
+
+<tr>
+<td>ogrs</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-riskogrs'>RiskOGRS</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-riskregistration">RiskRegistration</h3>
+
+
+<table class='schema-riskregistration'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>endDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>notes</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-choosepractitionerresponse">ChoosePractitionerResponse</h3>
+
+
+<table class='schema-choosepractitionerresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>probationStatus</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-probationstatus'>ProbationStatus</a>
+</td>
+</tr>
+
+<tr>
+<td>communityPersonManager</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-manager'>Manager</a>
+</td>
+</tr>
+
+<tr>
+<td>teams</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-allocationcompletedresponse">AllocationCompletedResponse</h3>
+
+
+<table class='schema-allocationcompletedresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>event</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-event'>Event</a>
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>initialAppointment</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-initialappointment'>InitialAppointment</a>
+</td>
+</tr>
+
+<tr>
+<td>staff</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-staffmember'>StaffMember</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+            
+          </main>
+
+          <aside>
+              <ul class="contribution-banner">
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/projects/workforce-allocations-to-delius/tech-docs/source/api-reference.html.md.erb">View source</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services/issues/new?body=Problem+with+%27API+Reference%27+%28https%3A%2F%2Fministryofjustice.github.io%2Fhmpps-probation-integration-services%2Ftech-docs%2Fprojects%2Fworkforce-allocations-to-delius%2Fapi-reference.html%29&amp;labels=bug&amp;title=Re%3A+%27API+Reference%27">Report problem</a></li>
+                <li><a href="https://github.com/ministryofjustice/hmpps-probation-integration-services">GitHub Repo</a></li>
+              </ul>
+          </aside>
+
+          <footer class="govuk-footer app-footer" role="contentinfo">
+  <div class="govuk-footer__meta">
+    <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+
+
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        class="govuk-footer__licence-logo"
+        xmlns="http://www.w3.org/2000/svg"
+        viewbox="0 0 483.2 195.7"
+        height="17"
+        width="41"
+      >
+        <path
+          fill="currentColor"
+          d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"
+        />
+      </svg>
+      <span class="govuk-footer__licence-description">
+        All content is available under the
+        <a
+          class="govuk-footer__link"
+          href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+          rel="license"
+        >Open Government Licence v3.0</a>, except where otherwise stated
+      </span>
+    </div>
+    <div class="govuk-footer__meta-item">
+      <a
+        class="govuk-footer__link govuk-footer__copyright-logo"
+        href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+      >© Crown copyright</a>
+    </div>
+  </div>
+</footer>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <script src="javascripts/application.js"></script>
+  </body>
+</html>
