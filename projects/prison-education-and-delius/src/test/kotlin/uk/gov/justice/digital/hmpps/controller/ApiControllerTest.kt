@@ -39,7 +39,7 @@ class ApiControllerTest {
         assertThrows<NotFoundException> {
             apiController.getCommunityManager(PERSON.prisonerId)
         }.run {
-            assertThat(message, equalTo("Person with id of A0000AA not found"))
+            assertThat(message, equalTo("Person with prisonerId of A0000AA not found"))
         }
     }
 
