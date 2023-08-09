@@ -139,6 +139,8 @@ class AllocationsDataLoader(
         teamRepository.save(TeamGenerator.ALLOCATION_TEAM)
         staffRepository.save(StaffGenerator.STAFF_WITH_USER)
         staffUserRepository.save(StaffGenerator.STAFF_WITH_USER.user!!)
+        staffRepository.save(StaffGenerator.INACTIVE_STAFF)
+        staffUserRepository.save(StaffGenerator.INACTIVE_STAFF.user!!)
 
         personAllocationDataLoader.loadData()
         caseViewDataLoader.loadData()

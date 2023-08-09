@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffWithUser
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.user.StaffUser
 import uk.gov.justice.digital.hmpps.set
+import java.time.ZonedDateTime
 
 object StaffGenerator {
     val DEFAULT = generateStaff(
@@ -27,6 +28,14 @@ object StaffGenerator {
         listOf(TeamGenerator.ALLOCATION_TEAM),
         StaffUserGenerator.DEFAULT
     )
+    val INACTIVE_STAFF = generateStaffWithUser(
+        "${TeamGenerator.ALLOCATION_TEAM.code}2",
+        "Joe",
+        "Bloggs",
+        listOf(TeamGenerator.ALLOCATION_TEAM),
+        StaffUserGenerator.generate("inactive"),
+        endDate = ZonedDateTime.now().minusDays(7)
+    )
 
     fun generateStaffWithUser(
         code: String,
@@ -35,8 +44,9 @@ object StaffGenerator {
         teams: List<Team> = listOf(),
         user: StaffUser? = StaffUserGenerator.generate(code),
         grade: ReferenceData = ReferenceDataGenerator.PSQ_GRADE,
+        endDate: ZonedDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ): StaffWithUser = generate(code, forename, surname, grade, teams, id, user, true) as StaffWithUser
+    ): StaffWithUser = generate(code, forename, surname, grade, teams, id, user, endDate, true) as StaffWithUser
 
     fun generateStaff(
         code: String,
@@ -55,6 +65,7 @@ object StaffGenerator {
         teams: List<Team> = listOf(),
         id: Long = IdGenerator.getAndIncrement(),
         user: StaffUser? = null,
+        endDate: ZonedDateTime? = null,
         withUser: Boolean = false
     ): StaffRecord =
         if (withUser) {
@@ -65,7 +76,8 @@ object StaffGenerator {
                 surname = surname,
                 grade = grade,
                 user = user,
-                teams = teams
+                teams = teams,
+                endDate = endDate
             )
             user?.set("staff", staff)
             staff

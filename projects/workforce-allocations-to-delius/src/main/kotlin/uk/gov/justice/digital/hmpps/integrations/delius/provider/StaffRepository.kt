@@ -31,8 +31,8 @@ interface StaffRepository : JpaRepository<StaffRecord, Long> {
     )
     fun countTeamMembership(staffId: Long, teamId: Long): Int
 
-    @Query("select s from StaffWithUser s join s.teams t where t.code = :teamCode")
-    fun findAllByTeamsCode(teamCode: String): List<StaffWithUser>
+    @Query("select s from StaffWithUser s join s.teams t where t.code = :teamCode and (s.endDate is null or s.endDate > current_date)")
+    fun findActiveStaffInTeam(teamCode: String): List<StaffWithUser>
 
     @Query(
         """
