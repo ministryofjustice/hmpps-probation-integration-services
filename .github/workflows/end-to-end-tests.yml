@@ -115,7 +115,7 @@ jobs:
           OASYS_URL: https://t2.oasys.service.justice.gov.uk/eor/f?p=100:101
           APPROVEDPREMISES_URL: https://approved-premises-dev.hmpps.service.justice.gov.uk
           CONSIDER_A_RECALL_URL: https://consider-a-recall-dev.hmpps.service.justice.gov.uk
-          MANAGE_POM_CASES_URL: https://test.moic.service.justice.gov.uk
+          MANAGE_POM_CASES_URL: https://dev.moic.service.justice.gov.uk
           DELIUS_USERNAME: ${{ secrets.E2E_DELIUS_USERNAME }}
           DELIUS_PASSWORD: ${{ secrets.E2E_DELIUS_PASSWORD }}
           DPS_USERNAME: ${{ secrets.E2E_DPS_USERNAME }}
