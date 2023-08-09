@@ -165,34 +165,12 @@ class RecallService(
             custodyService.updateStatus(custody, CustodialStatusCode.IN_CUSTODY, recallDate, "In custody ")
             true
         } else {
-            when (custody.institution?.code) {
-                InstitutionCode.UNLAWFULLY_AT_LARGE.code -> {
-                    custodyService.updateStatus(
-                        custody,
-                        CustodialStatusCode.RECALLED,
-                        recallDate,
-                        "Recall added unlawfully at large "
-                    )
-                }
-
-                InstitutionCode.UNKNOWN.code -> {
-                    custodyService.updateStatus(
-                        custody,
-                        CustodialStatusCode.RECALLED,
-                        recallDate,
-                        "Recall added but location unknown "
-                    )
-                }
-
-                else -> {
-                    custodyService.updateStatus(
-                        custody,
-                        CustodialStatusCode.IN_CUSTODY,
-                        recallDate,
-                        "Recall added in custody "
-                    )
-                }
-            }
+            custodyService.updateStatus(
+                custody,
+                CustodialStatusCode.IN_CUSTODY,
+                recallDate,
+                "Recall added in custody "
+            )
             true
         }
     } else {

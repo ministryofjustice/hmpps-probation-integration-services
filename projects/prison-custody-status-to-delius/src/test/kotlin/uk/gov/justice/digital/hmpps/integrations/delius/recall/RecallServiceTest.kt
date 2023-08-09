@@ -26,7 +26,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.Recall
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
@@ -382,72 +381,6 @@ internal class RecallServiceTest : RecallServiceTestBase() {
         val contactAlert = argumentCaptor<ContactAlert>()
         verify(contactAlertRepository).save(contactAlert.capture())
         assertThat(contactAlert.firstValue.contactId, equalTo(contact.firstValue.id))
-    }
-
-    @Test
-    fun recallToUnlawfullyAtLargeSetsCustodyStatusToRecalled() {
-        val fromInstitution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNLAWFULLY_AT_LARGE]!!
-        val toInstitution = InstitutionGenerator.DEFAULT
-        val event = EventGenerator.previouslyReleasedEvent(person, fromInstitution)
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.value)).thenReturn(
-            ReferenceDataGenerator.RECALL_REASON[RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
-        )
-        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(toInstitution.nomisCdeCode!!)).thenReturn(
-            toInstitution
-        )
-        whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
-        doAnswer<Recall> { it.getArgument(0) }.whenever(recallRepository).save(any())
-        whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
-        whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)).thenReturn(
-            PersonManagerGenerator.generate(person)
-        )
-        whenever(contactTypeRepository.findByCode(ContactType.Code.BREACH_PRISON_RECALL.value)).thenReturn(
-            ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.BREACH_PRISON_RECALL]
-        )
-        doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
-
-        recallService.recall(PrisonerMovement.Received(nomsNumber, toInstitution.nomisCdeCode!!, reason, "INT", recallDateTime))
-
-        verify(custodyService)
-            .updateStatus(
-                event.disposal!!.custody!!,
-                CustodialStatusCode.RECALLED,
-                recallDate,
-                "Recall added unlawfully at large "
-            )
-    }
-
-    @Test
-    fun recallToUnknownSetsCustodyStatusToRecalled() {
-        val fromInstitution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]!!
-        val toInstitution = InstitutionGenerator.DEFAULT
-        val event = EventGenerator.previouslyReleasedEvent(person, fromInstitution)
-        whenever(recallReasonRepository.findByCodeAndSelectable(RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT.value)).thenReturn(
-            ReferenceDataGenerator.RECALL_REASON[RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT]
-        )
-        whenever(institutionRepository.findByNomisCdeCodeAndIdEstablishment(toInstitution.nomisCdeCode!!)).thenReturn(
-            toInstitution
-        )
-        whenever(eventService.getActiveCustodialEvents(nomsNumber)).thenReturn(listOf(event))
-        doAnswer<Recall> { it.getArgument(0) }.whenever(recallRepository).save(any())
-        whenever(orderManagerRepository.findByEventId(event.id)).thenReturn(OrderManagerGenerator.generate(event))
-        whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)).thenReturn(
-            PersonManagerGenerator.generate(person)
-        )
-        whenever(contactTypeRepository.findByCode(ContactType.Code.BREACH_PRISON_RECALL.value)).thenReturn(
-            ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.BREACH_PRISON_RECALL]
-        )
-        doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
-
-        recallService.recall(PrisonerMovement.Received(nomsNumber, toInstitution.nomisCdeCode!!, reason, "INT", recallDateTime))
-
-        verify(custodyService)
-            .updateStatus(
-                event.disposal!!.custody!!,
-                CustodialStatusCode.RECALLED,
-                recallDate,
-                "Recall added but location unknown "
-            )
     }
 
     @ParameterizedTest

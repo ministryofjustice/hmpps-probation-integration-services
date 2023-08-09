@@ -26,19 +26,24 @@ import uk.gov.justice.digital.hmpps.data.repository.ProbationAreaRepository
 import uk.gov.justice.digital.hmpps.data.repository.ReferenceDataSetRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.OrderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReasonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.ReleaseRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.entity.TeamRepository
 import uk.gov.justice.digital.hmpps.user.AuditUser
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import java.time.ZonedDateTime
 
 @Component
 @ConditionalOnProperty("seed.database")
@@ -58,6 +63,7 @@ class DataLoader(
     private val custodyRepository: CustodyRepository,
     private val orderManagerRepository: OrderManagerRepository,
     private val releaseRepository: ReleaseRepository,
+    private val recallRepository: RecallRepository,
     private val personManagerRepository: PersonManagerRepository,
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
@@ -70,12 +76,20 @@ class DataLoader(
     }
 
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        businessInteractionRepository.saveAll(BusinessInteractionGenerator.ALL.values)
+        createReferenceData()
+        createReleasablePerson()
+        createRecallablePerson()
+        createPerson(PersonGenerator.DIED)
+        createMatchablePerson()
+        createNewCustodyPerson()
+        createRecalledPerson()
+    }
 
+    private fun createReferenceData() {
+        businessInteractionRepository.saveAll(BusinessInteractionGenerator.ALL.values)
         probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
         teamRepository.save(TeamGenerator.DEFAULT)
         staffRepository.save(StaffGenerator.UNALLOCATED)
-
         referenceDataSetRepository.save(ReferenceDataSetGenerator.RELEASE_TYPE)
         referenceDataRepository.saveAll(ReferenceDataGenerator.RELEASE_TYPE.values)
         referenceDataSetRepository.save(ReferenceDataSetGenerator.CUSTODIAL_STATUS)
@@ -104,42 +118,70 @@ class DataLoader(
                 .map { TeamGenerator.allStaff(it) }
         )
         staffRepository.saveAll(teams.map { StaffGenerator.unallocated(it) })
+    }
 
-        val releasablePerson = PersonGenerator.RELEASABLE
-        personRepository.save(releasablePerson)
-        val releasableEvent = EventGenerator.custodialEvent(releasablePerson, InstitutionGenerator.DEFAULT)
-        eventRepository.save(releasableEvent)
-        disposalTypeRepository.save(releasableEvent.disposal!!.type)
-        disposalRepository.save(releasableEvent.disposal!!)
-        custodyRepository.save(releasableEvent.disposal!!.custody!!)
-        orderManagerRepository.save(OrderManagerGenerator.generate(releasableEvent))
+    private fun createReleasablePerson() {
+        createPerson(PersonGenerator.RELEASABLE)
+        createEvent(EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT))
+    }
 
-        val recallablePerson = PersonGenerator.RECALLABLE
-        personRepository.save(recallablePerson)
-        val recallableEvent = EventGenerator.previouslyReleasedEvent(
-            person = recallablePerson,
-            institution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]!!,
-            releaseDate = MessageGenerator.PRISONER_RECEIVED.occurredAt.minusMonths(6),
-            lengthInDays = 999
+    private fun createRecallablePerson() {
+        createPerson(PersonGenerator.RECALLABLE)
+        createEvent(
+            EventGenerator.previouslyReleasedEvent(
+                person = PersonGenerator.RECALLABLE,
+                institution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]!!,
+                releaseDate = MessageGenerator.PRISONER_RECEIVED.occurredAt.minusMonths(6),
+                lengthInDays = 999
+            )
         )
-        eventRepository.save(recallableEvent)
-        disposalTypeRepository.save(recallableEvent.disposal!!.type)
-        disposalRepository.save(recallableEvent.disposal!!)
-        custodyRepository.save(recallableEvent.disposal!!.custody!!)
-        releaseRepository.save(recallableEvent.disposal!!.custody!!.mostRecentRelease()!!)
-        orderManagerRepository.save(OrderManagerGenerator.generate(recallableEvent))
-        personManagerRepository.save(PersonManagerGenerator.generate(recallablePerson))
+    }
 
-        personRepository.save(PersonGenerator.DIED)
-        personManagerRepository.save(PersonManagerGenerator.generate(PersonGenerator.DIED))
+    private fun createMatchablePerson() {
+        createPerson(PersonGenerator.MATCHABLE)
+        createEvent(EventGenerator.custodialEvent(PersonGenerator.MATCHABLE, InstitutionGenerator.DEFAULT))
+    }
 
-        personRepository.save(PersonGenerator.MATCHABLE)
-        personManagerRepository.save(PersonManagerGenerator.generate(PersonGenerator.MATCHABLE))
-        val moveableEvent = EventGenerator.custodialEvent(PersonGenerator.MATCHABLE, InstitutionGenerator.DEFAULT)
-        eventRepository.save(moveableEvent)
-        disposalTypeRepository.save(moveableEvent.disposal!!.type)
-        disposalRepository.save(moveableEvent.disposal!!)
-        custodyRepository.save(moveableEvent.disposal!!.custody!!)
-        orderManagerRepository.save(OrderManagerGenerator.generate(moveableEvent))
+    private fun createNewCustodyPerson() {
+        createPerson(PersonGenerator.NEW_CUSTODY)
+        createEvent(
+            EventGenerator.custodialEvent(
+                PersonGenerator.NEW_CUSTODY,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]!!,
+                CustodialStatusCode.SENTENCED_IN_CUSTODY
+            )
+        )
+    }
+
+    private fun createRecalledPerson() {
+        createPerson(PersonGenerator.RECALLED)
+        createEvent(
+            EventGenerator.previouslyRecalledEvent(
+                PersonGenerator.RECALLED,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]!!,
+                CustodialStatusCode.RECALLED,
+                recallDate = ZonedDateTime.parse("2023-08-04T08:09:36.649098+01:00")
+            )
+        )
+    }
+
+    private fun createPerson(person: Person) {
+        personRepository.save(person)
+        personManagerRepository.save(PersonManagerGenerator.generate(person))
+    }
+
+    private fun createEvent(event: Event) {
+        eventRepository.save(event)
+        disposalTypeRepository.save(event.disposal!!.type)
+        disposalRepository.save(event.disposal!!)
+        custodyRepository.save(event.disposal!!.custody!!)
+        orderManagerRepository.save(OrderManagerGenerator.generate(event))
+        val release = event.disposal?.custody?.mostRecentRelease()
+        val recall = release?.recall
+        if (recall != null) {
+            release.recall = null
+        }
+        release?.also { releaseRepository.save(it) }
+        recall?.also { recallRepository.save(it) }
     }
 }

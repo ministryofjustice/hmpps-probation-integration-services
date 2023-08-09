@@ -7,7 +7,9 @@ object PersonGenerator {
     val RELEASABLE = generate(MessageGenerator.PRISONER_RELEASED.additionalInformation.nomsNumber())
     val RECALLABLE = generate(MessageGenerator.PRISONER_RECEIVED.additionalInformation.nomsNumber())
     val DIED = generate(MessageGenerator.PRISONER_DIED.additionalInformation.nomsNumber())
-    val MATCHABLE = generate("A5295DZ")
+    val MATCHABLE = generate(MessageGenerator.PRISONER_MATCHED.personReference.findNomsNumber()!!)
+    val NEW_CUSTODY = generate(MessageGenerator.PRISONER_NEW_CUSTODY.personReference.findNomsNumber()!!)
+    val RECALLED = generate(MessageGenerator.PRISONER_RECALLED.personReference.findNomsNumber()!!)
 
     fun generate(nomsNumber: String, id: Long = IdGenerator.getAndIncrement()) = Person(id, nomsNumber)
 }

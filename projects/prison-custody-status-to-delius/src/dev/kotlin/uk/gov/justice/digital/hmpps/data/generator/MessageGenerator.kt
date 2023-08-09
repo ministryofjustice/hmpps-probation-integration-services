@@ -8,4 +8,6 @@ object MessageGenerator {
     val PRISONER_RECEIVED = ResourceLoader.message<HmppsDomainEvent>("prisoner-received")
     val PRISONER_DIED = ResourceLoader.message<HmppsDomainEvent>("prisoner-died")
     val PRISONER_MATCHED = ResourceLoader.message<HmppsDomainEvent>("prisoner-matched")
+    val PRISONER_NEW_CUSTODY = ResourceLoader.message<HmppsDomainEvent>("prisoner-received-new-custody")
+    val PRISONER_RECALLED = ResourceLoader.message<HmppsDomainEvent>("prisoner-received-recalled")
 }
