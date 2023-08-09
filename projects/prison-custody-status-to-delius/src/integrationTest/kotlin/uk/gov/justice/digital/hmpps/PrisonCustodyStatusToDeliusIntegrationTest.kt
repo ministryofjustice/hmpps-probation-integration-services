@@ -6,6 +6,7 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.verify
@@ -28,6 +29,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.en
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.entity.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode.LOCATION_CHANGE
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode.STATUS_CHANGE
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.ReleaseRepository
@@ -263,6 +265,104 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         assertThat(dus.staffId, equalTo(personManager.staff.id))
         val alert = contactAlertRepository.findAll().firstOrNull { it.contactId == dus.id }
         assertNotNull(alert)
+    }
+
+    @Test
+    fun `receieve a new custodial sentence`() {
+        val nomsNumber = MessageGenerator.PRISONER_NEW_CUSTODY.personReference.findNomsNumber()!!
+        val before = getCustody(nomsNumber)
+        assertThat(before.status.code, equalTo(CustodialStatusCode.SENTENCED_IN_CUSTODY.code))
+
+        val notification = Notification(
+            message = MessageGenerator.PRISONER_NEW_CUSTODY,
+            attributes = MessageAttributes("prison-offender-events.prisoner.received")
+        )
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custody = getCustody(nomsNumber)
+        assertThat(custody.status.code, equalTo(CustodialStatusCode.IN_CUSTODY.code))
+
+        // No recall is created (already in custody)
+        val recall = getRecalls(custody).singleOrNull()
+        assertNull(recall)
+
+        val custodyHistory = getCustodyHistory(custody)
+        assertThat(custodyHistory, hasSize(2))
+        assertThat(custodyHistory.map { it.type.code }, hasItems(STATUS_CHANGE.code, LOCATION_CHANGE.code))
+        assertThat(custodyHistory.map { it.detail }, hasItems("In custody ", "Test institution (WSIHMP)"))
+
+        val prisonManager = getPrisonManagers(nomsNumber).single()
+        assertThat(prisonManager.date, isCloseTo(ZonedDateTime.now()))
+        assertThat(prisonManager.allocationReason.code, equalTo("AUT"))
+
+        val contacts = getContacts(nomsNumber)
+        assertThat(contacts, hasSize(1))
+        assertThat(
+            contacts.map { it.type.code },
+            hasItems(
+                ContactType.Code.CHANGE_OF_INSTITUTION.value
+            )
+        )
+        val coi = contacts.first { it.type.code == ContactType.Code.CHANGE_OF_INSTITUTION.value }
+        assertThat(coi.event?.id, equalTo(custody.disposal.event.id))
+
+        verify(telemetryService).trackEvent(
+            "CustodialDetailsUpdated",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0004AA",
+                "institution" to "WSI",
+                "reason" to "ADMISSION",
+                "nomisMovementReasonCode" to "N",
+                "details" to "ACTIVE IN:ADM-N"
+            )
+        )
+    }
+
+    @Test
+    fun `receieve a prisoner already recalled in delius`() {
+        val nomsNumber = MessageGenerator.PRISONER_RECALLED.personReference.findNomsNumber()!!
+
+        val notification = Notification(
+            message = MessageGenerator.PRISONER_RECALLED,
+            attributes = MessageAttributes("prison-offender-events.prisoner.received")
+        )
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custody = getCustody(nomsNumber)
+        assertThat(custody.status.code, equalTo(CustodialStatusCode.IN_CUSTODY.code))
+
+        val custodyHistory = getCustodyHistory(custody)
+        assertThat(custodyHistory, hasSize(2))
+        assertThat(custodyHistory.map { it.type.code }, hasItems(STATUS_CHANGE.code, LOCATION_CHANGE.code))
+        assertThat(custodyHistory.map { it.detail }, hasItems("In custody ", "Test institution (WSIHMP)"))
+
+        val prisonManager = getPrisonManagers(nomsNumber).single()
+        assertThat(prisonManager.date, isCloseTo(ZonedDateTime.now()))
+        assertThat(prisonManager.allocationReason.code, equalTo("AUT"))
+
+        val contacts = getContacts(nomsNumber)
+        assertThat(contacts, hasSize(1))
+        assertThat(
+            contacts.map { it.type.code },
+            hasItems(
+                ContactType.Code.CHANGE_OF_INSTITUTION.value
+            )
+        )
+        val coi = contacts.first { it.type.code == ContactType.Code.CHANGE_OF_INSTITUTION.value }
+        assertThat(coi.event?.id, equalTo(custody.disposal.event.id))
+
+        verify(telemetryService).trackEvent(
+            "CustodialDetailsUpdated",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0006AA",
+                "institution" to "WSI",
+                "reason" to "ADMISSION",
+                "nomisMovementReasonCode" to "24",
+                "details" to "ACTIVE IN:ADM-24"
+            )
+        )
     }
 
     private fun getPersonId(nomsNumber: String) =
