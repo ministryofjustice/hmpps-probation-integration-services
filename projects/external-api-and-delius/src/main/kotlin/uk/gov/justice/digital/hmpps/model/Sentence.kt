@@ -7,7 +7,7 @@ data class Sentence(
     val date: LocalDate,
     val length: Int?,
     val lengthUnits: LengthUnit?,
-    val custodial: Boolean = false
+    val custodial: Boolean
 )
 
 enum class LengthUnit {
