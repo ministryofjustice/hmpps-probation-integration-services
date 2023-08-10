@@ -19,8 +19,8 @@ class Team(
     val description: String,
 
     @ManyToOne
-    @JoinColumn(name = "local_delivery_unit_id")
-    val ldu: LocalDeliveryUnit?,
+    @JoinColumn(name = "district_id")
+    val district: District?,
 
     @Id
     @Column(name = "team_id")
@@ -29,8 +29,7 @@ class Team(
 
 @Immutable
 @Entity
-@Table(name = "local_delivery_unit")
-class LocalDeliveryUnit(
+class District(
 
     @Column(name = "code")
     val code: String,
@@ -38,6 +37,6 @@ class LocalDeliveryUnit(
     val description: String,
 
     @Id
-    @Column(name = "local_delivery_unit_id")
+    @Column(name = "district_id")
     val id: Long
 )

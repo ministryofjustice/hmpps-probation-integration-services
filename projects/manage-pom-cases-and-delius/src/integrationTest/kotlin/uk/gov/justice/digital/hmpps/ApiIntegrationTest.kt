@@ -46,7 +46,7 @@ internal class ApiIntegrationTest {
             .andReturn().response.contentAsString
 
         val record = objectMapper.readValue<ProbationRecord>(res)
-        val ldu = ProviderGenerator.DEFAULT_LDU
+        val district = ProviderGenerator.DEFAULT_DISTRICT
         val team = ProviderGenerator.DEFAULT_TEAM
         val staff = ProviderGenerator.DEFAULT_STAFF
         assertThat(
@@ -61,7 +61,7 @@ internal class ApiIntegrationTest {
                         Team(
                             team.code,
                             team.description,
-                            LocalDeliveryUnit(ldu.code, ldu.description)
+                            LocalDeliveryUnit(district.code, district.description)
                         ),
                         ProviderGenerator.DEFAULT_STAFF.code,
                         Name(staff.forename, staff.surname),
