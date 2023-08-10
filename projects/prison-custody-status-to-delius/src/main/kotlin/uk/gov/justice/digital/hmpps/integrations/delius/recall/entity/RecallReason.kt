@@ -45,9 +45,8 @@ class RecallReason(
 fun RecallReason?.isEotl() = this != null && RecallReason.Code.END_OF_TEMPORARY_LICENCE.value == code
 
 interface RecallReasonRepository : JpaRepository<RecallReason, Long> {
-
-    fun findByCodeAndSelectable(code: String, selectable: Boolean = true): RecallReason?
+    fun findByCode(code: String): RecallReason?
 }
 
-fun RecallReasonRepository.getByCodeAndSelectableIsTrue(code: String): RecallReason =
-    findByCodeAndSelectable(code) ?: throw NotFoundException("RecallReason", "code", code)
+fun RecallReasonRepository.getByCode(code: String): RecallReason =
+    findByCode(code) ?: throw NotFoundException("RecallReason", "code", code)

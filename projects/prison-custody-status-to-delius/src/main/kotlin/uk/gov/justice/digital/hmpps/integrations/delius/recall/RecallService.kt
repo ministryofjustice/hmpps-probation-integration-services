@@ -26,7 +26,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.Recall
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReasonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.getByCodeAndSelectableIsTrue
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.isEotl
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
@@ -68,7 +68,7 @@ class RecallService(
     @Transactional
     fun recall(receive: PrisonerMovement): RecallOutcome {
         val getRecallReason = { csc: CustodialStatusCode ->
-            recallReasonRepository.getByCodeAndSelectableIsTrue(
+            recallReasonRepository.getByCode(
                 decideRecallReason(
                     receive.reason,
                     receive.movementReason
