@@ -149,12 +149,7 @@ class HospitalReleaseTest : ReleaseServiceTestBase() {
         whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
             .thenReturn(institution)
         whenever(eventService.getActiveCustodialEvents(person.nomsNumber)).thenReturn(listOf(event))
-        whenever(
-            recallReasonRepository.findByCodeAndSelectable(
-                RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL.value,
-                true
-            )
-        )
+        whenever(recallReasonRepository.findByCode(RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL.value))
             .thenReturn(RecallReasonGenerator.generate(RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL.value))
 
         releaseService.release(

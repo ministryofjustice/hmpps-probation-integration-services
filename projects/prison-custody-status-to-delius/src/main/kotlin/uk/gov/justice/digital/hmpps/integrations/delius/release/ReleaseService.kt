@@ -28,7 +28,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institutio
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallService
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReasonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.getByCodeAndSelectableIsTrue
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getReleaseType
@@ -160,7 +160,7 @@ class ReleaseService(
 
         if (statusCode == RECALLED) {
             val recallReason =
-                recallReasonRepository.getByCodeAndSelectableIsTrue(RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL.value)
+                recallReasonRepository.getByCode(RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL.value)
             recallService.createRecall(custody, recallReason, releaseDateTime, custody.mostRecentRelease())
         }
     }
