@@ -40,9 +40,9 @@ internal class ProbationRecordMappingKtTest {
     }
 
     @Test
-    fun `team mapping handles null ldu`() {
+    fun `team mapping handles null district`() {
         assertThat(
-            ProviderGenerator.generateTeam("TEST", ldu = null).forManager(),
+            ProviderGenerator.generateTeam("TEST", district = null).forManager(),
             equalTo(Team("TEST", "Team TEST", null))
         )
     }

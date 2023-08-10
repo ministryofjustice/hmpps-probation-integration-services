@@ -1,25 +1,25 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.LocalDeliveryUnit
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.set
 
 object ProviderGenerator {
-    val DEFAULT_LDU = generateLdu("N03LDU1")
-    val DEFAULT_TEAM = generateTeam("N03DEF", ldu = DEFAULT_LDU)
+    val DEFAULT_DISTRICT = generateDistrict("N03LDU1")
+    val DEFAULT_TEAM = generateTeam("N03DEF", district = DEFAULT_DISTRICT)
     val DEFAULT_STAFF = generateStaff("N03DEF0", "Default", "Staff", user = UserGenerator.DEFAULT_STAFF_USER)
 
-    fun generateLdu(code: String, description: String = "LDU $code", id: Long = IdGenerator.getAndIncrement()) =
-        LocalDeliveryUnit(code, description, id)
+    fun generateDistrict(code: String, description: String = "LDU $code", id: Long = IdGenerator.getAndIncrement()) =
+        District(code, description, id)
 
     fun generateTeam(
         code: String,
         description: String = "Team $code",
-        ldu: LocalDeliveryUnit? = DEFAULT_LDU,
+        district: District? = DEFAULT_DISTRICT,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Team(code, description, ldu, id)
+    ) = Team(code, description, district, id)
 
     fun generateStaff(
         code: String,

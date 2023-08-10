@@ -78,7 +78,7 @@ class PersonManager(
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {
-    @EntityGraph(attributePaths = ["currentTier", "managers.team.ldu", "managers.staff.user"])
+    @EntityGraph(attributePaths = ["currentTier", "managers.team.district", "managers.staff.user"])
     fun findByNomsId(nomsId: String): Person?
 
     @Query("select p.id from Person p where p.nomsId = :nomsId and p.softDeleted = false")

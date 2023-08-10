@@ -23,7 +23,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonMana
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.LocalDeliveryUnit
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
@@ -40,7 +40,7 @@ class DataLoader(
     private val referenceDataSetRepository: ReferenceDataSetRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val registerTypeRepository: RegisterTypeRepository,
-    private val lduRepository: LocalDeliveryUnitRepository,
+    private val districtRepository: DistrictRepository,
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
     private val personRepository: PersonRepository,
@@ -68,7 +68,7 @@ class DataLoader(
                 RegistrationGenerator.TYPE_DASO
             )
         )
-        lduRepository.save(ProviderGenerator.DEFAULT_LDU)
+        districtRepository.save(ProviderGenerator.DEFAULT_DISTRICT)
         teamRepository.saveAll(PersonManagerGenerator.ALL.map { it.team })
         staffRepository.saveAll(PersonManagerGenerator.ALL.map { it.staff })
         staffUserRepository.save(UserGenerator.DEFAULT_STAFF_USER)
@@ -145,7 +145,7 @@ class DataLoader(
 
 interface ReferenceDataSetRepository : JpaRepository<ReferenceDataSet, Long>
 interface StaffUserRepository : JpaRepository<StaffUser, Long>
-interface LocalDeliveryUnitRepository : JpaRepository<LocalDeliveryUnit, Long>
+interface DistrictRepository : JpaRepository<District, Long>
 interface TeamRepository : JpaRepository<Team, Long>
 interface StaffRepository : JpaRepository<Staff, Long>
 interface PersonManagerRepository : JpaRepository<PersonManager, Long>

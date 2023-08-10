@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.api.model.Resourcing
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.Registration
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.LocalDeliveryUnit
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
@@ -29,11 +29,11 @@ fun ReferenceData?.resourcing() = when (this?.code) {
     else -> null
 }
 
-fun LocalDeliveryUnit.forManager() =
+fun District.forManager() =
     uk.gov.justice.digital.hmpps.api.model.LocalDeliveryUnit(code, description)
 
 fun Team.forManager() =
-    uk.gov.justice.digital.hmpps.api.model.Team(code, description, ldu?.forManager())
+    uk.gov.justice.digital.hmpps.api.model.Team(code, description, district?.forManager())
 
 fun Staff.name() = Name(listOfNotNull(forename, middleName).joinToString(" "), surname)
 fun PersonManager.manager() =
