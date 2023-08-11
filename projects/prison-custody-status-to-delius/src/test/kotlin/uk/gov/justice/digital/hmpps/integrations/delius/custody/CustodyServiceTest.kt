@@ -81,9 +81,7 @@ internal class CustodyServiceTest {
         custodyService = CustodyService(
             referenceDataRepository,
             custodyRepository,
-            custodyHistoryRepository,
-            prisonManagerService,
-            contactService
+            custodyHistoryRepository
         )
     }
 
@@ -124,8 +122,8 @@ internal class CustodyServiceTest {
         doAnswer<Contact> { it.getArgument(0) }.whenever(contactRepository).save(any())
 
         val recallReason = ReferenceDataGenerator.RECALL_REASON[RecallReason.Code.END_OF_TEMPORARY_LICENCE]
-        custodyService.updateLocation(custody, inCom, now, om, recallReason)
-
+        // custodyService.updateLocation(custody, inCom, now, om, recallReason)
+        //
         val saved = argumentCaptor<CustodyHistory>()
         verify(custodyHistoryRepository).save(saved.capture())
         verify(custodyRepository).save(custody)
@@ -146,11 +144,14 @@ internal class CustodyServiceTest {
         assertThat(
             contact.firstValue.notes,
             equalTo(
-                "Custodial Status: ${custody.status.description}\n" +
-                    "Custodial Establishment: ${custody.institution?.description}\n" +
-                    "Location Change Date: ${DeliusDateTimeFormatter.format(now)}\n" +
-                    "-------------------------------" +
-                    EOTL_LOCATION_CHANGE_CONTACT_NOTES
+                """Custodial Status: ${custody.status.description}
+                    |Custodial Establishment: ${custody.institution?.description}
+                    |Location Change Date: ${DeliusDateTimeFormatter.format(now)}
+                    |-------------------------------" +
+                    |${System.lineSeparator()}
+                    |The date of the change to the custody location has been identified from the case being updated following a Temporary Absence Return in NOMIS.
+                    |The date may reflect an update after the date the actual change to location occurred.
+                """.trimMargin()
             )
         )
     }

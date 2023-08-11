@@ -56,30 +56,29 @@ data class Booking(
         OTHER(null, null)
     }
 
-    val reason: String?
-        get() {
-            val type = when (movementType) {
-                "CRT" -> Type.COURT
-                "TAP" -> Type.TEMPORARY_ABSENCE
-                "ADM" -> {
-                    when (movementReason) {
-                        "INT", "TRNCRT", "TRNTAP" -> Type.TRANSFER
-                        else -> Type.ADMISSION
-                    }
+    val reason = run {
+        val type = when (movementType) {
+            "CRT" -> Type.COURT
+            "TAP" -> Type.TEMPORARY_ABSENCE
+            "ADM" -> {
+                when (movementReason) {
+                    "INT", "TRNCRT", "TRNTAP" -> Type.TRANSFER
+                    else -> Type.ADMISSION
                 }
+            }
 
-                "REL" -> {
-                    when (movementReason) {
-                        "HO", "HP", "HQ" -> Type.HOSPITAL
-                        else -> Type.RELEASE
-                    }
+            "REL" -> {
+                when (movementReason) {
+                    "HO", "HP", "HQ" -> Type.HOSPITAL
+                    else -> Type.RELEASE
                 }
+            }
 
-                else -> Type.OTHER
-            }
-            return when (inOutStatus) {
-                InOutStatus.IN -> type.received
-                InOutStatus.OUT -> type.released
-            }
+            else -> Type.OTHER
         }
+        when (inOutStatus) {
+            InOutStatus.IN -> type.received
+            InOutStatus.OUT -> type.released
+        }
+    }
 }

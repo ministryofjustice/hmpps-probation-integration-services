@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
+import uk.gov.justice.digital.hmpps.data.generator.NotificationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactAlertRepository
@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTy
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.entity.PersonManagerRepository
@@ -32,11 +33,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode.LOCATION_CHANGE
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode.STATUS_CHANGE
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.ReleaseRepository
-import uk.gov.justice.digital.hmpps.message.MessageAttributes
-import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
-import uk.gov.justice.digital.hmpps.messaging.nomsNumber
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
@@ -78,20 +77,20 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
     @Autowired
     private lateinit var personManagerRepository: PersonManagerRepository
 
+    @Autowired
+    private lateinit var licenceConditionRepository: LicenceConditionRepository
+
     @MockBean
     private lateinit var telemetryService: TelemetryService
 
     @Test
     fun `release a prisoner`() {
         // given a prisoner who is in custody
-        val nomsNumber = MessageGenerator.PRISONER_RELEASED.additionalInformation.nomsNumber()
+        val nomsNumber = NotificationGenerator.PRISONER_RELEASED.message.personReference.findNomsNumber()!!
         assertTrue(getCustody(nomsNumber).isInCustody())
 
         // when they are released
-        val notification = Notification(
-            message = MessageGenerator.PRISONER_RELEASED,
-            attributes = MessageAttributes("prison-offender-events.prisoner.released")
-        )
+        val notification = NotificationGenerator.PRISONER_RELEASED
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         // then they are no longer in custody
@@ -105,7 +104,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
             release.date.withZoneSameInstant(EuropeLondon),
             equalTo(notification.message.occurredAt.truncatedTo(DAYS))
         )
-        assertThat(release.person.nomsNumber, equalTo(notification.message.additionalInformation.nomsNumber()))
+        assertThat(release.person.nomsNumber, equalTo(notification.message.personReference.findNomsNumber()))
 
         // and the history is recorded correctly
         val custodyHistory = getCustodyHistory(custody)
@@ -120,14 +119,14 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
 
         // and telemetry is updated
         verify(telemetryService).trackEvent(
-            "PrisonerReleased",
+            "Released",
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0001AA",
                 "institution" to "WSI",
                 "reason" to "RELEASED",
-                "nomisMovementReasonCode" to "NCS",
-                "details" to "Movement reason code NCS"
+                "movementReason" to "NCS",
+                "movementType" to "Released"
             )
         )
     }
@@ -135,14 +134,11 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
     @Test
     fun `recall a prisoner`() {
         // given a prisoner who is not in custody
-        val nomsNumber = MessageGenerator.PRISONER_RECEIVED.additionalInformation.nomsNumber()
+        val nomsNumber = NotificationGenerator.PRISONER_RECEIVED.message.personReference.findNomsNumber()!!
         assertFalse(getCustody(nomsNumber).isInCustody())
 
         // when they are recalled
-        val notification = Notification(
-            message = MessageGenerator.PRISONER_RECEIVED,
-            attributes = MessageAttributes("prison-offender-events.prisoner.received")
-        )
+        val notification = NotificationGenerator.PRISONER_RECEIVED
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         // then they are now in custody
@@ -170,45 +166,50 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
 
         // and contacts are recorded
         val contacts = getContacts(nomsNumber)
-        assertThat(contacts, hasSize(2))
+        assertThat(contacts, hasSize(4))
         assertThat(
             contacts.map { it.type.code },
             hasItems(
                 ContactType.Code.BREACH_PRISON_RECALL.value,
-                ContactType.Code.CHANGE_OF_INSTITUTION.value
+                ContactType.Code.CHANGE_OF_INSTITUTION.value,
+                ContactType.Code.COMPONENT_TERMINATED.value
             )
         )
         val coi = contacts.first { it.type.code == ContactType.Code.CHANGE_OF_INSTITUTION.value }
         assertThat(coi.event?.id, equalTo(custody.disposal.event.id))
 
+        licenceConditionRepository.findAll().filter {
+            it.disposal.id == custody.disposal.id
+        }.forEach {
+            assertNotNull(it.terminationDate)
+            assertThat(it.terminationReason?.code, equalTo("TEST"))
+        }
+
         // and telemetry is updated
         verify(telemetryService).trackEvent(
-            "PrisonerRecalled",
+            "Recalled",
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0002AA",
                 "institution" to "WSI",
                 "reason" to "ADMISSION",
-                "nomisMovementReasonCode" to "R1",
-                "details" to "ACTIVE IN:ADM-L"
+                "movementReason" to "R1",
+                "movementType" to "Received"
             )
         )
     }
 
     @Test
-    fun `move a prisoner`() {
+    fun `when a prisoner is matched`() {
         val person = PersonGenerator.MATCHABLE
         val before = getCustody(person.nomsNumber)
         assertThat(before.institution?.code, equalTo(InstitutionGenerator.DEFAULT.code))
 
-        val notification = Notification(
-            message = MessageGenerator.PRISONER_MATCHED,
-            attributes = MessageAttributes("probation-case.prison-identifier.added")
-        )
+        val notification = NotificationGenerator.PRISONER_MATCHED
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(telemetryService).trackEvent(
-            "CustodialDetailsUpdated",
+            "LocationUpdated",
             mapOf(
                 "occurredAt" to ZonedDateTime.parse("2023-07-31T09:26:39+01:00[Europe/London]").toString(),
                 "nomsNumber" to PersonGenerator.MATCHABLE.nomsNumber,
@@ -239,20 +240,18 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
     fun `a person died in custody alerts manager`() {
         val person = PersonGenerator.DIED
 
-        val notification = Notification(
-            message = MessageGenerator.PRISONER_DIED,
-            attributes = MessageAttributes("prison-offender-events.prisoner.released")
-        )
+        val notification = NotificationGenerator.PRISONER_DIED
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(telemetryService).trackEvent(
-            "PrisonerDied",
+            "Died",
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to person.nomsNumber,
                 "institution" to "WSI",
                 "reason" to "RELEASED",
-                "nomisMovementReasonCode" to "DEC"
+                "movementReason" to "DEC",
+                "movementType" to "Released"
             )
         )
 
@@ -269,14 +268,11 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
 
     @Test
     fun `receieve a new custodial sentence`() {
-        val nomsNumber = MessageGenerator.PRISONER_NEW_CUSTODY.personReference.findNomsNumber()!!
+        val nomsNumber = NotificationGenerator.PRISONER_NEW_CUSTODY.message.personReference.findNomsNumber()!!
         val before = getCustody(nomsNumber)
         assertThat(before.status.code, equalTo(CustodialStatusCode.SENTENCED_IN_CUSTODY.code))
 
-        val notification = Notification(
-            message = MessageGenerator.PRISONER_NEW_CUSTODY,
-            attributes = MessageAttributes("prison-offender-events.prisoner.received")
-        )
+        val notification = NotificationGenerator.PRISONER_NEW_CUSTODY
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val custody = getCustody(nomsNumber)
@@ -307,26 +303,35 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         assertThat(coi.event?.id, equalTo(custody.disposal.event.id))
 
         verify(telemetryService).trackEvent(
-            "CustodialDetailsUpdated",
+            "StatusUpdated",
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0004AA",
                 "institution" to "WSI",
                 "reason" to "ADMISSION",
-                "nomisMovementReasonCode" to "N",
-                "details" to "ACTIVE IN:ADM-N"
+                "movementReason" to "N",
+                "movementType" to "Received"
+            )
+        )
+
+        verify(telemetryService).trackEvent(
+            "LocationUpdated",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0004AA",
+                "institution" to "WSI",
+                "reason" to "ADMISSION",
+                "movementReason" to "N",
+                "movementType" to "Received"
             )
         )
     }
 
     @Test
     fun `receieve a prisoner already recalled in delius`() {
-        val nomsNumber = MessageGenerator.PRISONER_RECALLED.personReference.findNomsNumber()!!
+        val nomsNumber = NotificationGenerator.PRISONER_RECALLED.message.personReference.findNomsNumber()!!
 
-        val notification = Notification(
-            message = MessageGenerator.PRISONER_RECALLED,
-            attributes = MessageAttributes("prison-offender-events.prisoner.received")
-        )
+        val notification = NotificationGenerator.PRISONER_RECALLED
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         val custody = getCustody(nomsNumber)
@@ -353,14 +358,137 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         assertThat(coi.event?.id, equalTo(custody.disposal.event.id))
 
         verify(telemetryService).trackEvent(
-            "CustodialDetailsUpdated",
+            "StatusUpdated",
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0006AA",
                 "institution" to "WSI",
                 "reason" to "ADMISSION",
-                "nomisMovementReasonCode" to "24",
-                "details" to "ACTIVE IN:ADM-24"
+                "movementReason" to "24",
+                "movementType" to "Received"
+            )
+        )
+
+        verify(telemetryService).trackEvent(
+            "LocationUpdated",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0006AA",
+                "institution" to "WSI",
+                "reason" to "ADMISSION",
+                "movementReason" to "24",
+                "movementType" to "Received"
+            )
+        )
+    }
+
+    @Test
+    fun `hospital release when released on licence in delius`() {
+        val notification = NotificationGenerator.PRISONER_HOSPITAL_RELEASED
+        val nomsNumber = notification.message.personReference.findNomsNumber()!!
+        assertFalse(getCustody(nomsNumber).isInCustody())
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custody = getCustody(nomsNumber)
+        assertTrue(custody.isInCustody())
+        assertThat(custody.institution?.code, equalTo(InstitutionCode.OTHER_SECURE_UNIT.code))
+
+        val recall = getRecalls(custody).single()
+        assertThat(recall.createdDatetime, isCloseTo(ZonedDateTime.now()))
+        assertThat(
+            recall.date.withZoneSameInstant(EuropeLondon),
+            equalTo(notification.message.occurredAt.truncatedTo(DAYS))
+        )
+
+        val custodyHistory = getCustodyHistory(custody)
+        assertThat(custodyHistory, hasSize(2))
+        assertThat(custodyHistory.map { it.type.code }, hasItems(STATUS_CHANGE.code, LOCATION_CHANGE.code))
+        assertThat(custodyHistory.map { it.detail }, hasItems("Transfer to/from Hospital", "Test institution (XXX056)"))
+
+        val contacts = getContacts(nomsNumber)
+        assertThat(contacts, hasSize(2))
+        assertThat(
+            contacts.map { it.type.code },
+            hasItems(
+                ContactType.Code.BREACH_PRISON_RECALL.value,
+                ContactType.Code.CHANGE_OF_INSTITUTION.value
+            )
+        )
+        val coi = contacts.first { it.type.code == ContactType.Code.CHANGE_OF_INSTITUTION.value }
+        assertThat(coi.event?.id, equalTo(custody.disposal.event.id))
+
+        verify(telemetryService).trackEvent(
+            "Recalled",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0005AA",
+                "reason" to "RELEASED",
+                "movementReason" to "HO",
+                "movementType" to "Released"
+            )
+        )
+
+        verify(telemetryService).trackEvent(
+            "StatusUpdated",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0005AA",
+                "reason" to "RELEASED",
+                "movementReason" to "HO",
+                "movementType" to "Released"
+            )
+        )
+
+        verify(telemetryService).trackEvent(
+            "LocationUpdated",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0005AA",
+                "reason" to "RELEASED",
+                "movementReason" to "HO",
+                "movementType" to "Released"
+            )
+        )
+    }
+
+    @Test
+    fun `hospital release when in custody in delius`() {
+        val notification = NotificationGenerator.PRISONER_HOSPITAL_IN_CUSTODY
+        val nomsNumber = notification.message.personReference.findNomsNumber()!!
+        assertTrue(getCustody(nomsNumber).isInCustody())
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custody = getCustody(nomsNumber)
+        assertTrue(custody.isInCustody())
+        assertThat(custody.institution?.code, equalTo(InstitutionGenerator.MOVED_TO.code))
+
+        val custodyHistory = getCustodyHistory(custody)
+        assertThat(custodyHistory, hasSize(1))
+        assertThat(custodyHistory.map { it.type.code }, hasItems(LOCATION_CHANGE.code))
+        assertThat(custodyHistory.map { it.detail }, hasItems("Test institution (SWIHMP)"))
+
+        val contacts = getContacts(nomsNumber)
+        assertThat(contacts, hasSize(1))
+        assertThat(
+            contacts.map { it.type.code },
+            hasItems(
+                ContactType.Code.CHANGE_OF_INSTITUTION.value
+            )
+        )
+        val coi = contacts.first { it.type.code == ContactType.Code.CHANGE_OF_INSTITUTION.value }
+        assertThat(coi.event?.id, equalTo(custody.disposal.event.id))
+
+        verify(telemetryService).trackEvent(
+            "LocationUpdated",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0007AA",
+                "institution" to "SWI",
+                "reason" to "RELEASED_TO_HOSPITAL",
+                "movementReason" to "HQ",
+                "movementType" to "Released"
             )
         )
     }

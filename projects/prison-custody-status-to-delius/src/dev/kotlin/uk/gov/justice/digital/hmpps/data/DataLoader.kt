@@ -5,13 +5,15 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
+import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.audit.repository.BusinessInteractionRepository
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
-import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
+import uk.gov.justice.digital.hmpps.data.generator.LicenceConditionGenerator
+import uk.gov.justice.digital.hmpps.data.generator.NotificationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
@@ -29,6 +31,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRe
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.OrderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionCategory
+import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.entity.PersonManagerRepository
@@ -67,7 +71,9 @@ class DataLoader(
     private val personManagerRepository: PersonManagerRepository,
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
-    private val probationAreaRepository: ProbationAreaRepository
+    private val probationAreaRepository: ProbationAreaRepository,
+    private val licenceConditionRepository: LicenceConditionRepository,
+    private val licenceConditionCategoryRepository: LicenceConditionCategoryRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -79,10 +85,12 @@ class DataLoader(
         createReferenceData()
         createReleasablePerson()
         createRecallablePerson()
-        createPerson(PersonGenerator.DIED)
+        createPersonToDie()
         createMatchablePerson()
         createNewCustodyPerson()
         createRecalledPerson()
+        createHospitalReleased()
+        createHospitalInCustody()
     }
 
     private fun createReferenceData() {
@@ -90,20 +98,32 @@ class DataLoader(
         probationAreaRepository.save(ProbationAreaGenerator.DEFAULT)
         teamRepository.save(TeamGenerator.DEFAULT)
         staffRepository.save(StaffGenerator.UNALLOCATED)
-        referenceDataSetRepository.save(ReferenceDataSetGenerator.RELEASE_TYPE)
-        referenceDataRepository.saveAll(ReferenceDataGenerator.RELEASE_TYPE.values)
-        referenceDataSetRepository.save(ReferenceDataSetGenerator.CUSTODIAL_STATUS)
-        referenceDataRepository.saveAll(ReferenceDataGenerator.CUSTODIAL_STATUS.values)
-        referenceDataSetRepository.save(ReferenceDataSetGenerator.CUSTODY_EVENT_TYPE)
-        referenceDataRepository.saveAll(ReferenceDataGenerator.CUSTODY_EVENT_TYPE.values)
-        referenceDataSetRepository.save(ReferenceDataSetGenerator.TRANSFER_STATUS)
-        referenceDataRepository.saveAll(ReferenceDataGenerator.TRANSFER_STATUS.values)
-        referenceDataSetRepository.save(ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON.set)
-        referenceDataRepository.save(ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON)
-        referenceDataSetRepository.save(ReferenceDataGenerator.PERSON_MANAGER_ALLOCATION_REASON.set)
-        referenceDataRepository.save(ReferenceDataGenerator.PERSON_MANAGER_ALLOCATION_REASON)
-        referenceDataSetRepository.save(ReferenceDataGenerator.PRISON_MANAGER_ALLOCATION_REASON.set)
-        referenceDataRepository.save(ReferenceDataGenerator.PRISON_MANAGER_ALLOCATION_REASON)
+        referenceDataSetRepository.saveAll(
+            listOf(
+                ReferenceDataSetGenerator.RELEASE_TYPE,
+                ReferenceDataSetGenerator.CUSTODIAL_STATUS,
+                ReferenceDataSetGenerator.CUSTODY_EVENT_TYPE,
+                ReferenceDataSetGenerator.TRANSFER_STATUS,
+                ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON.set,
+                ReferenceDataGenerator.PERSON_MANAGER_ALLOCATION_REASON.set,
+                ReferenceDataGenerator.PRISON_MANAGER_ALLOCATION_REASON.set,
+                ReferenceDataSetGenerator.ACCEPTED_DECISION,
+                ReferenceDataSetGenerator.LICENCE_AREA_TRANSFER_REJECTION_REASON,
+            )
+        )
+        referenceDataRepository.saveAll(
+            ReferenceDataGenerator.RELEASE_TYPE.values +
+                ReferenceDataGenerator.CUSTODIAL_STATUS.values +
+                ReferenceDataGenerator.CUSTODY_EVENT_TYPE.values +
+                ReferenceDataGenerator.TRANSFER_STATUS.values +
+                listOf(
+                    ReferenceDataGenerator.PERSON_MANAGER_ALLOCATION_REASON,
+                    ReferenceDataGenerator.PRISON_MANAGER_ALLOCATION_REASON,
+                    ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
+                    ReferenceDataGenerator.LC_REJECTED_DECISION,
+                    ReferenceDataGenerator.LC_REJECTED_REASON
+                )
+        )
         recallReasonRepository.saveAll(ReferenceDataGenerator.RECALL_REASON.values)
         contactTypeRepository.saveAll(ReferenceDataGenerator.CONTACT_TYPE.values)
         institutionRepository.saveAll(listOf(InstitutionGenerator.DEFAULT, InstitutionGenerator.MOVED_TO))
@@ -120,6 +140,11 @@ class DataLoader(
         staffRepository.saveAll(teams.map { StaffGenerator.unallocated(it) })
     }
 
+    private fun createPersonToDie() {
+        createPerson(PersonGenerator.DIED)
+        createEvent(EventGenerator.custodialEvent(PersonGenerator.DIED, InstitutionGenerator.DEFAULT))
+    }
+
     private fun createReleasablePerson() {
         createPerson(PersonGenerator.RELEASABLE)
         createEvent(EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT))
@@ -127,14 +152,18 @@ class DataLoader(
 
     private fun createRecallablePerson() {
         createPerson(PersonGenerator.RECALLABLE)
-        createEvent(
-            EventGenerator.previouslyReleasedEvent(
-                person = PersonGenerator.RECALLABLE,
-                institution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]!!,
-                releaseDate = MessageGenerator.PRISONER_RECEIVED.occurredAt.minusMonths(6),
-                lengthInDays = 999
-            )
+        val event = EventGenerator.previouslyReleasedEvent(
+            person = PersonGenerator.RECALLABLE,
+            institution = requireNotNull(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]),
+            releaseDate = NotificationGenerator.PRISONER_RECEIVED.message.occurredAt.minusMonths(6),
+            lengthInDays = 999
         )
+        createEvent(event)
+        val conditions = listOf(LicenceConditionGenerator.generate(event), LicenceConditionGenerator.generate(event))
+        conditions.forEach {
+            licenceConditionCategoryRepository.save(it.mainCategory)
+            licenceConditionRepository.save(it)
+        }
     }
 
     private fun createMatchablePerson() {
@@ -147,7 +176,7 @@ class DataLoader(
         createEvent(
             EventGenerator.custodialEvent(
                 PersonGenerator.NEW_CUSTODY,
-                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]!!,
+                requireNotNull(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]),
                 CustodialStatusCode.SENTENCED_IN_CUSTODY
             )
         )
@@ -158,11 +187,28 @@ class DataLoader(
         createEvent(
             EventGenerator.previouslyRecalledEvent(
                 PersonGenerator.RECALLED,
-                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]!!,
+                requireNotNull(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]),
                 CustodialStatusCode.RECALLED,
                 recallDate = ZonedDateTime.parse("2023-08-04T08:09:36.649098+01:00")
             )
         )
+    }
+
+    private fun createHospitalReleased() {
+        createPerson(PersonGenerator.HOSPITAL_RELEASED)
+        createEvent(EventGenerator.previouslyReleasedEvent(
+            PersonGenerator.HOSPITAL_RELEASED,
+            requireNotNull(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY])
+        ))
+    }
+
+
+    private fun createHospitalInCustody() {
+        createPerson(PersonGenerator.HOSPITAL_IN_CUSTODY)
+        createEvent(EventGenerator.custodialEvent(
+            PersonGenerator.HOSPITAL_IN_CUSTODY,
+            InstitutionGenerator.DEFAULT
+        ))
     }
 
     private fun createPerson(person: Person) {
@@ -185,3 +231,5 @@ class DataLoader(
         recall?.also { recallRepository.save(it) }
     }
 }
+
+interface LicenceConditionCategoryRepository : JpaRepository<LicenceConditionCategory, Long>

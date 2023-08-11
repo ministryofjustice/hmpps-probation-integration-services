@@ -3,93 +3,88 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.RecallService
-import uk.gov.justice.digital.hmpps.integrations.delius.release.ReleaseService
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.messaging.DomainEventType.IdentifierAdded
+import uk.gov.justice.digital.hmpps.messaging.DomainEventType.IdentifierUpdated
+import uk.gov.justice.digital.hmpps.messaging.DomainEventType.PrisonerReceived
+import uk.gov.justice.digital.hmpps.messaging.DomainEventType.PrisonerReleased
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.time.ZonedDateTime
 
 @Component
 class Handler(
+    configContainer: PrisonerMovementConfigs,
     private val telemetryService: TelemetryService,
-    private val releaseService: ReleaseService,
-    private val recallService: RecallService,
     private val prisonApiClient: PrisonApiClient,
+    private val actionProcessor: ActionProcessor,
     override val converter: NotificationConverter<HmppsDomainEvent>
 ) : NotificationHandler<HmppsDomainEvent> {
+    private val configs = configContainer.configs
+
     override fun handle(notification: Notification<HmppsDomainEvent>) {
-        telemetryService.notificationReceived(notification)
-        handleDomainEvent(notification.message)
-    }
-
-    private fun handleDomainEvent(hmppsEvent: HmppsDomainEvent) {
-        var prisonerMovement: PrisonerMovement? = null
+        val message = notification.message
+        val eventType = DomainEventType.of(message.eventType)
         try {
-            when (hmppsEvent.eventType) {
-                "probation-case.prison-identifier.added", "probation-case.prison-identifier.updated" -> {
-                    val nomsId = hmppsEvent.personReference.findNomsNumber()!!
-                    val booking = prisonApiClient.getBookingByNomsId(nomsId).let { b ->
-                        prisonApiClient.getBooking(b.id)
-                            .takeIf { it.active } ?: throw IgnorableMessageException(
-                            "BookingInactive",
-                            mapOf("nomsId" to nomsId)
-                        )
-                    }
-                    prisonerMovement = booking.prisonerMovement(hmppsEvent.occurredAt)
-                    recordMovement(prisonerMovement)
-                }
+            val movement = when (eventType) {
+                IdentifierAdded, IdentifierUpdated ->
+                    prisonApiClient.bookingFromNomsId(message.personReference.findNomsNumber()!!)
+                        .prisonerMovement(message.occurredAt)
 
-                "prison-offender-events.prisoner.released" -> {
-                    prisonerMovement = hmppsEvent.asReleased()
-                    val outcome = releaseService.release(prisonerMovement)
-                    telemetryService.trackEvent(outcome.name, hmppsEvent.telemetryProperties())
-                }
+                PrisonerReceived -> message.asReceived()
 
-                "prison-offender-events.prisoner.received" -> {
-                    prisonerMovement = hmppsEvent.asReceived()
-                    val outcome = recallService.recall(prisonerMovement)
-                    telemetryService.trackEvent(outcome.toString(), hmppsEvent.telemetryProperties())
-                }
+                PrisonerReleased -> message.asReleased()
 
                 else -> {
-                    throw IllegalArgumentException("Unknown event type ${hmppsEvent.eventType}")
+                    throw IllegalArgumentException("Unknown event type ${message.eventType}")
                 }
+            }
+            val config = configs.firstOrNull { it.validFor(movement.type, movement.reason) }
+                ?: throw IgnorableMessageException(
+                    "NoConfigForMovement",
+                    mapOf(
+                        "nomsId" to movement.nomsId,
+                        "movementType" to movement.type.name,
+                        "movementReason" to movement.reason
+                    )
+                )
+            val results = actionProcessor.processActions(movement, config.actionNames)
+            val failure = results.firstOrNull { it is ActionResult.Failure } as ActionResult.Failure?
+            if (failure == null) {
+                results.forEach {
+                    when (it) {
+                        is ActionResult.Success -> telemetryService.trackEvent(it.type.name, it.properties)
+                        is ActionResult.Ignored -> telemetryService.trackEvent(it.reason, it.properties)
+                        else -> throw IllegalArgumentException("Unexpected Action Result: $it")
+                    }
+                }
+            } else {
+                throw failure.exception
             }
         } catch (e: IgnorableMessageException) {
             telemetryService.trackEvent(
                 e.message,
-                prisonerMovement.telemetryProperties() + e.additionalProperties
+                message.telemetryProperties() + e.additionalProperties
             )
         }
     }
 
-    private fun recordMovement(prisonerMovement: PrisonerMovement) {
-        when (prisonerMovement) {
-            is PrisonerMovement.Received -> {
-                val outcome = recallService.recall(prisonerMovement)
-                telemetryService.trackEvent(outcome.name, prisonerMovement.telemetryProperties())
-            }
-
-            is PrisonerMovement.Released -> {
-                telemetryService.trackEvent("IdentifierAddedForReleasedPrisoner", prisonerMovement.telemetryProperties())
-            }
-        }
+    private fun PrisonApiClient.bookingFromNomsId(nomsId: String) = getBookingByNomsId(nomsId).let { b ->
+        getBooking(b.id).takeIf { it.active }
+            ?: throw IgnorableMessageException("BookingInactive", mapOf("nomsId" to nomsId))
     }
 }
 
-fun AdditionalInformation.nomsNumber() = this["nomsNumber"] as String
 fun AdditionalInformation.prisonId() = this["prisonId"] as String?
 fun AdditionalInformation.reason() = this["reason"] as String
 fun AdditionalInformation.movementReason() = this["nomisMovementReasonCode"] as String
 fun AdditionalInformation.details() = this["details"] as String?
 fun HmppsDomainEvent.telemetryProperties() = listOfNotNull(
     "occurredAt" to occurredAt.toString(),
-    "nomsNumber" to additionalInformation.nomsNumber(),
+    "nomsNumber" to personReference.findNomsNumber()!!,
     additionalInformation.prisonId()?.let { "institution" to it },
     "reason" to additionalInformation.reason(),
     "nomisMovementReasonCode" to additionalInformation.movementReason(),
@@ -103,24 +98,24 @@ fun PrisonerMovement?.telemetryProperties() = if (this == null) {
         "occurredAt" to occurredAt.toString(),
         "nomsNumber" to nomsId,
         prisonId?.let { "institution" to it },
-        "reason" to reason,
-        "movementReason" to movementReason,
+        "reason" to type.name,
+        "movementReason" to reason,
         "movementType" to this::class.java.simpleName
     ).toMap()
 }
 
 fun HmppsDomainEvent.asReceived() = PrisonerMovement.Received(
-    additionalInformation.nomsNumber(),
+    personReference.findNomsNumber()!!,
     additionalInformation.prisonId()!!,
-    additionalInformation.reason(),
+    PrisonerMovement.Type.valueOf(additionalInformation.reason()),
     additionalInformation.movementReason(),
     occurredAt
 )
 
 fun HmppsDomainEvent.asReleased() = PrisonerMovement.Released(
-    additionalInformation.nomsNumber(),
-    additionalInformation.prisonId()!!,
-    additionalInformation.reason(),
+    personReference.findNomsNumber()!!,
+    additionalInformation.prisonId(),
+    PrisonerMovement.Type.valueOf(additionalInformation.reason()),
     additionalInformation.movementReason(),
     occurredAt
 )
@@ -136,15 +131,15 @@ fun Booking.prisonerMovement(dateTime: ZonedDateTime): PrisonerMovement {
         Booking.InOutStatus.IN -> PrisonerMovement.Received(
             personReference,
             agencyId,
-            reason!!,
+            PrisonerMovement.Type.valueOf(reason),
             movementReason,
             dateTime
         )
 
         Booking.InOutStatus.OUT -> PrisonerMovement.Released(
             personReference,
-            agencyId,
-            reason!!,
+            null,
+            PrisonerMovement.Type.valueOf(reason),
             movementReason,
             dateTime
         )

@@ -65,7 +65,10 @@ class LicenceConditionService(
         terminatePendingTransfers(licenceCondition, terminationDate)
 
         // delete any future-dated contacts
-        contactRepository.deleteAllByLicenceConditionIdAndDateAfterAndOutcomeIdIsNull(licenceCondition.id, terminationDate)
+        contactRepository.deleteAllByLicenceConditionIdAndDateAfterAndOutcomeIdIsNull(
+            licenceCondition.id,
+            terminationDate
+        )
 
         // create "component terminated" contact
         val event = licenceCondition.disposal.event
@@ -87,26 +90,35 @@ class LicenceConditionService(
     }
 
     private fun terminatePendingTransfers(licenceCondition: LicenceCondition, terminationDate: ZonedDateTime) {
-        val rejectedStatus = referenceDataRepository.getTransferStatus(TransferStatusCode.REJECTED.code)
-        val rejectedDecision = referenceDataRepository.getByCodeAndSetName("R", "ACCEPTED DECISION")
-        val rejectionReason = referenceDataRepository.getByCodeAndSetName("TWR", "LICENCE AREA TRANSFER REJECTION REASON")
+        val pendingTransfers = licenceConditionTransferRepository.findAllByLicenceConditionIdAndStatusCode(
+            licenceCondition.id,
+            TransferStatusCode.PENDING.code
+        )
+        if (pendingTransfers.isNotEmpty()) {
+            val rejectedStatus = referenceDataRepository.getTransferStatus(TransferStatusCode.REJECTED.code)
+            val rejectedDecision = referenceDataRepository.getByCodeAndSetName("R", "ACCEPTED DECISION")
+            val rejectionReason =
+                referenceDataRepository.getByCodeAndSetName("TWR", "LICENCE AREA TRANSFER REJECTION REASON")
 
-        val pendingTransfers = licenceConditionTransferRepository.findAllByLicenceConditionIdAndStatusCode(licenceCondition.id, TransferStatusCode.PENDING.code)
-        pendingTransfers.forEach { transfer ->
-            // reject the transfer
-            transfer.status = rejectedStatus
-            transfer.decision = rejectedDecision
-            transfer.rejectionReason = rejectionReason
-            transfer.statusDate = terminationDate
-            transfer.notes = listOfNotNull(transfer.notes, "Transfer automatically rejected due to termination of licence condition.").joinToString("\n")
+            pendingTransfers.forEach { transfer ->
+                // reject the transfer
+                transfer.status = rejectedStatus
+                transfer.decision = rejectedDecision
+                transfer.rejectionReason = rejectionReason
+                transfer.statusDate = terminationDate
+                transfer.notes = listOfNotNull(
+                    transfer.notes,
+                    "Transfer automatically rejected due to termination of licence condition."
+                ).joinToString("\n")
 
-            // created an entry in the 'rejected transfer diary'
-            updateRejectedTransferDiary(transfer)
+                // created an entry in the 'rejected transfer diary'
+                updateRejectedTransferDiary(transfer)
 
-            // create a 'transfer rejected' contact
-            createRejectedTransferContact(transfer, terminationDate)
+                // create a 'transfer rejected' contact
+                createRejectedTransferContact(transfer, terminationDate)
+            }
+            licenceConditionTransferRepository.saveAll(pendingTransfers)
         }
-        licenceConditionTransferRepository.saveAll(pendingTransfers)
     }
 
     private fun createRejectedTransferContact(
