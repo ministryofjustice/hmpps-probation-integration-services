@@ -83,6 +83,9 @@ class LicenceConditionTransfer(
     @Column
     val masterTransferId: Long? = null,
 
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean = false,
+
     @CreatedBy
     @Column(nullable = false)
     var createdByUserId: Long = 0,
