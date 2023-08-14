@@ -7,7 +7,7 @@ import io.opentelemetry.api.trace.SpanKind
 import io.opentelemetry.instrumentation.annotations.WithSpan
 import io.sentry.Sentry
 import io.sentry.spring.jakarta.tracing.SentryTransaction
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.context.annotation.Conditional
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.config.AwsCondition
@@ -16,7 +16,7 @@ import java.util.concurrent.CompletionException
 
 @Component
 @Conditional(AwsCondition::class)
-@ConditionalOnProperty("messaging.consumer.queue")
+@ConditionalOnExpression("\${messaging.consumer.enabled:true} and '\${messaging.consumer.queue:}' != ''")
 class AwsNotificationListener(
     private val handler: NotificationHandler<*>
 ) {

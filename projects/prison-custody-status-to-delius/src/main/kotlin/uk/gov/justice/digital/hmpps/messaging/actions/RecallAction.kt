@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.Recall
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReasonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.getByCodeAndSelectableIsTrue
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.isEotl
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode.Companion.withCode
@@ -44,7 +44,7 @@ class RecallAction(
     override fun accept(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
         checkPreconditions(prisonerMovement, custody)
-        val recallReason = recallReasonRepository.getByCodeAndSelectableIsTrue(
+        val recallReason = recallReasonRepository.getByCode(
             recallReason(
                 prisonerMovement,
                 withCode(custody.status.code)
