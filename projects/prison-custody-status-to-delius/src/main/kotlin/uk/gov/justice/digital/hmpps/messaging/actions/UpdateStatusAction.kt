@@ -67,7 +67,7 @@ class UpdateStatusAction(
                         "NoActionHospitalRelease",
                         listOfNotNull(
                             "currentStatusCode" to custody.status.code,
-                            "custodyStatusDescription" to custody.status.description,
+                            "currentStatusDescription" to custody.status.description,
                             custody.institution?.code?.let { "currentLocation" to it }
                         ).toMap()
                     )

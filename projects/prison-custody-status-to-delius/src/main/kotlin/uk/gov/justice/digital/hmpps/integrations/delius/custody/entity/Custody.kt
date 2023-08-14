@@ -93,8 +93,9 @@ class Custody(
         institution: Institution,
         dateTime: ZonedDateTime,
         historyType: () -> ReferenceData
-    ): CustodyHistory? = if (this.institution?.code == institution.code) null
-    else {
+    ): CustodyHistory? = if (this.institution?.code == institution.code) {
+        null
+    } else {
         this.institution = institution
         this.locationChangeDate = dateTime
         CustodyHistory(
@@ -111,8 +112,9 @@ class Custody(
         dateTime: ZonedDateTime,
         detail: String,
         historyType: () -> ReferenceData
-    ): CustodyHistory? = if (this.status.code == status.code) null
-    else {
+    ): CustodyHistory? = if (this.status.code == status.code) {
+        null
+    } else {
         this.status = status
         this.statusChangeDate = dateTime
         CustodyHistory(

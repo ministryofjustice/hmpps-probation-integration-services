@@ -134,7 +134,9 @@ class RecallAction(
         PrisonerMovement.Type.RELEASED_TO_HOSPITAL,
         PrisonerMovement.Type.RELEASED -> if (prisonerMovement.isHospitalRelease()) {
             RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL
-        } else throw IllegalArgumentException("Unexpected prisoner movement reason: ${prisonerMovement.reason}")
+        } else {
+            throw IllegalArgumentException("Unexpected prisoner movement reason: ${prisonerMovement.reason}")
+        }
 
         else -> throw IllegalArgumentException("Unexpected prisoner movement type: ${prisonerMovement.type}")
     }

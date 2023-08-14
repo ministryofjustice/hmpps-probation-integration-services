@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReas
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
+import uk.gov.justice.digital.hmpps.set
 import java.time.ZonedDateTime
 
 object EventGenerator {
@@ -96,4 +97,10 @@ object EventGenerator {
         release.recall = recall
         return event
     }
+}
+
+fun Event.withManager(): Event {
+    val om = OrderManagerGenerator.generate(this)
+    this.set(Event::managers, listOf(om))
+    return this
 }

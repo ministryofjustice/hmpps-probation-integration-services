@@ -108,7 +108,7 @@ class DataLoader(
                 ReferenceDataGenerator.PERSON_MANAGER_ALLOCATION_REASON.set,
                 ReferenceDataGenerator.PRISON_MANAGER_ALLOCATION_REASON.set,
                 ReferenceDataSetGenerator.ACCEPTED_DECISION,
-                ReferenceDataSetGenerator.LICENCE_AREA_TRANSFER_REJECTION_REASON,
+                ReferenceDataSetGenerator.LICENCE_AREA_TRANSFER_REJECTION_REASON
             )
         )
         referenceDataRepository.saveAll(
@@ -196,19 +196,22 @@ class DataLoader(
 
     private fun createHospitalReleased() {
         createPerson(PersonGenerator.HOSPITAL_RELEASED)
-        createEvent(EventGenerator.previouslyReleasedEvent(
-            PersonGenerator.HOSPITAL_RELEASED,
-            requireNotNull(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY])
-        ))
+        createEvent(
+            EventGenerator.previouslyReleasedEvent(
+                PersonGenerator.HOSPITAL_RELEASED,
+                requireNotNull(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY])
+            )
+        )
     }
-
 
     private fun createHospitalInCustody() {
         createPerson(PersonGenerator.HOSPITAL_IN_CUSTODY)
-        createEvent(EventGenerator.custodialEvent(
-            PersonGenerator.HOSPITAL_IN_CUSTODY,
-            InstitutionGenerator.DEFAULT
-        ))
+        createEvent(
+            EventGenerator.custodialEvent(
+                PersonGenerator.HOSPITAL_IN_CUSTODY,
+                InstitutionGenerator.DEFAULT
+            )
+        )
     }
 
     private fun createPerson(person: Person) {

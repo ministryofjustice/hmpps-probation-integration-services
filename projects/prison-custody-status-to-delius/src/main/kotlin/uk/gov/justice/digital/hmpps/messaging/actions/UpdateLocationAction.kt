@@ -72,7 +72,7 @@ class UpdateLocationAction(
             createLocationChangeContact(prisonerMovement, custody)
 
             ActionResult.Success(ActionResult.Type.LocationUpdated, prisonerMovement.telemetryProperties())
-        } ?: ActionResult.Ignored("PrisonerLocationCorrect")
+        } ?: ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
     }
 
     private fun createLocationChangeContact(prisonerMovement: PrisonerMovement, custody: Custody) {

@@ -46,7 +46,7 @@ class Handler(
                 ?: throw IgnorableMessageException(
                     "NoConfigForMovement",
                     mapOf(
-                        "nomsId" to movement.nomsId,
+                        "nomsNumber" to movement.nomsId,
                         "movementType" to movement.type.name,
                         "movementReason" to movement.reason
                     )
@@ -74,7 +74,7 @@ class Handler(
 
     private fun PrisonApiClient.bookingFromNomsId(nomsId: String) = getBookingByNomsId(nomsId).let { b ->
         getBooking(b.id).takeIf { it.active }
-            ?: throw IgnorableMessageException("BookingInactive", mapOf("nomsId" to nomsId))
+            ?: throw IgnorableMessageException("BookingInactive", mapOf("nomsNumber" to nomsId))
     }
 }
 
@@ -86,8 +86,6 @@ fun HmppsDomainEvent.telemetryProperties() = listOfNotNull(
     "occurredAt" to occurredAt.toString(),
     "nomsNumber" to personReference.findNomsNumber()!!,
     additionalInformation.prisonId()?.let { "institution" to it },
-    "reason" to additionalInformation.reason(),
-    "nomisMovementReasonCode" to additionalInformation.movementReason(),
     additionalInformation.details()?.let { "details" to it }
 ).toMap()
 
@@ -124,7 +122,7 @@ fun Booking.prisonerMovement(dateTime: ZonedDateTime): PrisonerMovement {
     if (reason == null) {
         throw IgnorableMessageException(
             "UnableToCalculateMovementType",
-            mapOf("nomsId" to personReference, "movementType" to movementType, "movementReason" to movementReason)
+            mapOf("nomsNumber" to personReference, "movementType" to movementType, "movementReason" to movementReason)
         )
     }
     return when (inOutStatus) {

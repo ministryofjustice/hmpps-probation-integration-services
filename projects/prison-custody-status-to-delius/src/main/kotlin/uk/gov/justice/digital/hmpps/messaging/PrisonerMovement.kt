@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.messaging
 
-import uk.gov.justice.digital.hmpps.MovementReasonCodes
 import java.time.ZonedDateTime
 
 sealed interface PrisonerMovement {
@@ -38,9 +37,12 @@ sealed interface PrisonerMovement {
     }
 
     fun isHospitalRelease() =
-        this is Released && reason in listOf(
-            MovementReasonCodes.DETAINED_MENTAL_HEALTH,
-            MovementReasonCodes.RELEASE_MENTAL_HEALTH,
-            MovementReasonCodes.FINAL_DISCHARGE_PSYCHIATRIC
-        )
+        this is Released && (
+            type == Type.RELEASED_TO_HOSPITAL ||
+                reason in listOf(
+                MovementReasonCodes.DETAINED_MENTAL_HEALTH,
+                MovementReasonCodes.RELEASE_MENTAL_HEALTH,
+                MovementReasonCodes.FINAL_DISCHARGE_PSYCHIATRIC
+            )
+            )
 }

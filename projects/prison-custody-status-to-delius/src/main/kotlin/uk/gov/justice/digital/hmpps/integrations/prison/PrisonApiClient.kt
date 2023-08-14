@@ -49,7 +49,7 @@ data class Booking(
     enum class Type(val received: String?, val released: String?) {
         ADMISSION("ADMISSION", null),
         COURT("RETURN_FROM_COURT", "SENT_TO_COURT"),
-        HOSPITAL(null, "RELEASE_TO_HOSPITAL"),
+        HOSPITAL(null, "RELEASED_TO_HOSPITAL"),
         RELEASE(null, "RELEASED"),
         TEMPORARY_ABSENCE("TEMPORARY_ABSENCE_RETURN", "TEMPORARY_ABSENCE_RELEASE"),
         TRANSFER("TRANSFERRED", "TRANSFERRED"),

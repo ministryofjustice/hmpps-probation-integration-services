@@ -26,7 +26,8 @@ class ContactService(
         detail: ContactDetail,
         person: Person,
         event: Event? = null,
-        manager: Manager? = null
+        manager: Manager? = null,
+        licenceConditionId: Long? = null
     ) {
         val cm = lazy { personManagerRepository.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id) }
         val contact = contactRepository.save(
@@ -35,6 +36,7 @@ class ContactService(
                 date = detail.date,
                 person = person,
                 event = event,
+                licenceConditionId = licenceConditionId,
                 notes = detail.notes,
                 staffId = manager?.staffId ?: cm.value.staff.id,
                 teamId = manager?.teamId ?: cm.value.team.id,
@@ -55,6 +57,9 @@ class ContactService(
             )
         }
     }
+
+    fun deleteFutureDatedLicenceConditionContacts(id: Long, terminationDate: ZonedDateTime) =
+        contactRepository.deleteAllByLicenceConditionIdAndDateAfterAndOutcomeIdIsNull(id, terminationDate)
 }
 
 data class ContactDetail(

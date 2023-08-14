@@ -208,18 +208,6 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         val notification = NotificationGenerator.PRISONER_MATCHED
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        verify(telemetryService).trackEvent(
-            "LocationUpdated",
-            mapOf(
-                "occurredAt" to ZonedDateTime.parse("2023-07-31T09:26:39+01:00[Europe/London]").toString(),
-                "nomsNumber" to PersonGenerator.MATCHABLE.nomsNumber,
-                "institution" to InstitutionGenerator.MOVED_TO.nomisCdeCode!!,
-                "reason" to "TRANSFERRED",
-                "movementReason" to "INT",
-                "movementType" to "Received"
-            )
-        )
-
         val custody = getCustody(person.nomsNumber)
         assertTrue(custody.isInCustody())
         assertThat(custody.institution?.code, equalTo(InstitutionGenerator.MOVED_TO.code))
@@ -234,6 +222,18 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         )
         val coi = contacts.first { it.type.code == ContactType.Code.CHANGE_OF_INSTITUTION.value }
         assertThat(coi.event?.id, equalTo(custody.disposal.event.id))
+
+        verify(telemetryService).trackEvent(
+            "LocationUpdated",
+            mapOf(
+                "occurredAt" to ZonedDateTime.parse("2023-07-31T09:26:39+01:00[Europe/London]").toString(),
+                "nomsNumber" to PersonGenerator.MATCHABLE.nomsNumber,
+                "institution" to InstitutionGenerator.MOVED_TO.nomisCdeCode!!,
+                "reason" to "TRANSFERRED",
+                "movementReason" to "INT",
+                "movementType" to "Received"
+            )
+        )
     }
 
     @Test

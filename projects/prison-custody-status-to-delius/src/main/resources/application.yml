@@ -34,60 +34,15 @@ spring:
       default-request-headers:
         Accept: application/json
         Content-Type: application/json
+  profiles:
+    include:
+      - prisoner-movement
 
 delius.db.username: PrisonCustodyStatusService # See deploy/database/access.yml
 
 management.endpoints.web:
   base-path: /
   exposure.include: [ "health", "info" ]
-
-prisoner.movement.configs:
-  - types:
-      - ADMISSION
-    actionNames:
-      - Recall
-      - UpdateStatus
-      - UpdateLocation
-  - types:
-      - RELEASED_TO_HOSPITAL
-    actionNames:
-      - Recall
-      - UpdateStatus
-      - UpdateLocation
-  - types:
-      - RELEASED
-    reasons:
-      - DEC
-    actionNames:
-      - Died
-  - types:
-      - RELEASED
-    reasons:
-      - HO
-      - HP
-      - HQ
-    actionNames:
-      - Recall
-      - UpdateStatus
-      - UpdateLocation
-  - types:
-      - RELEASED
-    actionNames:
-      - Release
-      - UpdateStatus
-      - UpdateLocation
-  - types:
-      - TEMPORARY_ABSENCE_RETURN
-    actionNames:
-      - Recall
-      - UpdateStatus
-      - UpdateLocation
-  - types:
-      - TRANSFERRED
-    actionNames:
-      - Recall
-      - UpdateStatus
-      - UpdateLocation
 
 ---
 # Shared dev/test config
