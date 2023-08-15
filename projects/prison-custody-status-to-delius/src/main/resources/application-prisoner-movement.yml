@@ -41,6 +41,8 @@ prisoner.movement.configs:
       - UpdateLocation
   - types:
       - TRANSFERRED
+    reasons:
+      - INT
     actionNames:
       - Recall
       - UpdateStatus

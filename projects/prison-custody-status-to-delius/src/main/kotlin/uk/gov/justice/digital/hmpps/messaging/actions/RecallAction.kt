@@ -111,28 +111,18 @@ class RecallAction(
         }
 
         PrisonerMovement.Type.TRANSFERRED -> {
-            if (prisonerMovement.reason == "INT") {
-                when (statusCode) {
-                    CustodialStatusCode.CUSTODY_ROTL -> RecallReason.Code.END_OF_TEMPORARY_LICENCE
-                    else -> RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT
-                }
-            } else {
-                throw IgnorableMessageException("UnsupportedRecallReason", prisonerMovement.telemetryProperties())
+            when (statusCode) {
+                CustodialStatusCode.CUSTODY_ROTL -> RecallReason.Code.END_OF_TEMPORARY_LICENCE
+                else -> RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT
             }
         }
 
-        PrisonerMovement.Type.RETURN_FROM_COURT -> throw IgnorableMessageException(
-            "UnsupportedRecallReason",
-            prisonerMovement.telemetryProperties()
-        )
-
-        PrisonerMovement.Type.RELEASED_TO_HOSPITAL,
         PrisonerMovement.Type.RELEASED -> if (prisonerMovement.isHospitalRelease()) {
             RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL
         } else {
-            throw IllegalArgumentException("Unexpected prisoner movement reason: ${prisonerMovement.reason}")
+            throw IgnorableMessageException("RecallNotSupported", prisonerMovement.telemetryProperties())
         }
 
-        else -> throw IllegalArgumentException("Unexpected prisoner movement type: ${prisonerMovement.type}")
+        else -> throw IgnorableMessageException("RecallNotSupported", prisonerMovement.telemetryProperties())
     }
 }
