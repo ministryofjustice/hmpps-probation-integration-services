@@ -36,13 +36,11 @@ sealed interface PrisonerMovement {
         TRANSFERRED
     }
 
-    fun isHospitalRelease() =
-        this is Released && (
-            type == Type.RELEASED_TO_HOSPITAL ||
-                reason in listOf(
-                MovementReasonCodes.DETAINED_MENTAL_HEALTH,
-                MovementReasonCodes.RELEASE_MENTAL_HEALTH,
-                MovementReasonCodes.FINAL_DISCHARGE_PSYCHIATRIC
-            )
-            )
+    fun isHospitalRelease() = this is Released && (
+        type == Type.RELEASED_TO_HOSPITAL || reason in listOf(
+            MovementReasonCodes.DETAINED_MENTAL_HEALTH,
+            MovementReasonCodes.RELEASE_MENTAL_HEALTH,
+            MovementReasonCodes.FINAL_DISCHARGE_PSYCHIATRIC
+        )
+        )
 }

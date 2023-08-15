@@ -12,4 +12,5 @@ object NotificationGenerator {
     val PRISONER_RECALLED = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-recalled")
     val PRISONER_HOSPITAL_RELEASED = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-hospital-released")
     val PRISONER_HOSPITAL_IN_CUSTODY = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-hospital-custody")
+    val PRISONER_ROTL_RETURN = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-rotl")
 }

@@ -11,7 +11,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host.entit
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.getByCode
-import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.getByNomisCdeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getReleaseType
@@ -43,15 +42,17 @@ class ReleaseAction(
     override fun accept(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
         checkPreConditions(prisonerMovement, custody)
+        val rt = prisonerMovement.releaseType()
+        println(rt)
         val releaseType = referenceDataRepository.getReleaseType(prisonerMovement.releaseType().code)
-        val releasedFrom = prisonerMovement.prisonId?.let { institutionRepository.getByNomisCdeCode(it) }
+        val releasedFrom = prisonerMovement.prisonId?.let { institutionRepository.findByNomisCdeCode(it) }
             ?: custody.institution ?: institutionRepository.getByCode(InstitutionCode.UNKNOWN.code)
         return release(prisonerMovement, releaseType, custody, releasedFrom)
     }
 
     private fun checkPreConditions(prisonerMovement: PrisonerMovement, custody: Custody) {
         if (prisonerMovement.occurredBefore(custody.disposal.date, custody.mostRecentRelease()?.recall?.date)) {
-            throw IgnorableMessageException("InvalidReleaseDate")
+            throw IgnorableMessageException("InvalidReleaseDate", prisonerMovement.telemetryProperties())
         }
     }
 
@@ -73,8 +74,7 @@ class ReleaseAction(
                     probationAreaId = hostRepository.findLeadHostProviderIdByInstitutionId(
                         institution.id.institutionId,
                         prisonerMovement.occurredAt
-                    ),
-                    recall = custody.mostRecentRelease()?.recall
+                    )
                 )
             )
             val event = custody.disposal.event

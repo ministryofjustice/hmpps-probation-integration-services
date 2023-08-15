@@ -11,6 +11,7 @@ object PersonGenerator {
     val RECALLED = generate(NotificationGenerator.PRISONER_RECALLED.message.personReference.findNomsNumber()!!)
     val HOSPITAL_RELEASED = generate(NotificationGenerator.PRISONER_HOSPITAL_RELEASED.message.personReference.findNomsNumber()!!)
     val HOSPITAL_IN_CUSTODY = generate(NotificationGenerator.PRISONER_HOSPITAL_IN_CUSTODY.message.personReference.findNomsNumber()!!)
+    val ROTL = generate(NotificationGenerator.PRISONER_ROTL_RETURN.message.personReference.findNomsNumber()!!)
 
     fun generate(nomsNumber: String, id: Long = IdGenerator.getAndIncrement()) = Person(id, nomsNumber)
 }

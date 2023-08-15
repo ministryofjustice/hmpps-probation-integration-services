@@ -16,12 +16,12 @@ import uk.gov.justice.digital.hmpps.set
 import java.time.ZonedDateTime
 
 object EventGenerator {
-    fun unSentencedEvent(person: Person) = Event(
-        id = IdGenerator.getAndIncrement(),
-        person = person
-    )
 
-    fun nonCustodialEvent(person: Person, lengthInDays: Long = 365): Event {
+    fun nonCustodialEvent(
+        person: Person,
+        lengthInDays: Long = 365,
+        disposalDate: ZonedDateTime = ZonedDateTime.of(2022, 5, 1, 0, 0, 0, 0, EuropeLondon)
+    ): Event {
         val event = Event(
             id = IdGenerator.getAndIncrement(),
             person = person
@@ -29,7 +29,7 @@ object EventGenerator {
         val disposal = Disposal(
             id = IdGenerator.getAndIncrement(),
             type = DisposalType(IdGenerator.getAndIncrement(), "NC"),
-            date = ZonedDateTime.of(2022, 5, 1, 0, 0, 0, 0, EuropeLondon), // must be before release date in message
+            date = disposalDate,
             lengthInDays = lengthInDays,
             event = event
         )
@@ -39,11 +39,12 @@ object EventGenerator {
 
     fun custodialEvent(
         person: Person,
-        institution: Institution,
+        institution: Institution?,
         custodialStatusCode: CustodialStatusCode = CustodialStatusCode.IN_CUSTODY,
+        disposalDate: ZonedDateTime = ZonedDateTime.of(2022, 5, 1, 0, 0, 0, 0, EuropeLondon),
         lengthInDays: Long = 365
     ): Event {
-        val event = nonCustodialEvent(person, lengthInDays)
+        val event = nonCustodialEvent(person, lengthInDays, disposalDate)
         val disposal = event.disposal!!
         val custody = Custody(
             id = IdGenerator.getAndIncrement(),
@@ -59,20 +60,20 @@ object EventGenerator {
 
     fun previouslyReleasedEvent(
         person: Person,
-        institution: Institution,
+        institution: Institution?,
         custodialStatusCode: CustodialStatusCode = CustodialStatusCode.RELEASED_ON_LICENCE,
         lengthInDays: Long = 365,
         releaseDate: ZonedDateTime = ZonedDateTime.now().minusMonths(6),
         releaseType: ReleaseTypeCode = ReleaseTypeCode.ADULT_LICENCE
     ): Event {
-        val event = custodialEvent(person, institution, custodialStatusCode, lengthInDays)
+        val event = custodialEvent(person, institution, custodialStatusCode, lengthInDays = lengthInDays)
         val custody = event.disposal!!.custody!!
         val release = Release(
             date = releaseDate,
             type = ReferenceDataGenerator.RELEASE_TYPE[releaseType]!!,
             custody = custody,
             person = person,
-            institutionId = institution.id
+            institutionId = institution?.id
         )
         custody.releases.add(release)
         event.firstReleaseDate = release.date
@@ -81,7 +82,7 @@ object EventGenerator {
 
     fun previouslyRecalledEvent(
         person: Person,
-        institution: Institution,
+        institution: Institution?,
         custodialStatusCode: CustodialStatusCode = CustodialStatusCode.RECALLED,
         recallDate: ZonedDateTime = ZonedDateTime.now().minusWeeks(1),
         releaseDate: ZonedDateTime = recallDate.minusMonths(6)

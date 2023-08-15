@@ -7,7 +7,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canRecall
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.isTerminated
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceConditionService
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.Recall
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
@@ -87,16 +86,9 @@ class RecallAction(
 
     private fun checkPreconditions(prisonerMovement: PrisonerMovement, custody: Custody) {
         val latestRelease = custody.mostRecentRelease()
+
         if (latestRelease == null || latestRelease.recall != null || !custody.status.canRecall()) {
             throw IgnorableMessageException("RecallNotPossible")
-        }
-
-        if (custody.isUnexpectedStatus(prisonerMovement)) {
-            throw IgnorableMessageException("UnexpectedCustodialStatus")
-        }
-
-        if (custody.status.isTerminated()) {
-            throw IgnorableMessageException("TerminatedCustodialStatus")
         }
 
         if (prisonerMovement.occurredAt.isAfter(ZonedDateTime.now()) ||
@@ -125,11 +117,14 @@ class RecallAction(
                     else -> RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT
                 }
             } else {
-                throw IgnorableMessageException("UnsupportedRecallReason")
+                throw IgnorableMessageException("UnsupportedRecallReason", prisonerMovement.telemetryProperties())
             }
         }
 
-        PrisonerMovement.Type.RETURN_FROM_COURT -> throw IgnorableMessageException("UnsupportedRecallReason")
+        PrisonerMovement.Type.RETURN_FROM_COURT -> throw IgnorableMessageException(
+            "UnsupportedRecallReason",
+            prisonerMovement.telemetryProperties()
+        )
 
         PrisonerMovement.Type.RELEASED_TO_HOSPITAL,
         PrisonerMovement.Type.RELEASED -> if (prisonerMovement.isHospitalRelease()) {
@@ -140,12 +135,4 @@ class RecallAction(
 
         else -> throw IllegalArgumentException("Unexpected prisoner movement type: ${prisonerMovement.type}")
     }
-}
-
-private fun Custody.isUnexpectedStatus(prisonerMovement: PrisonerMovement): Boolean {
-    return status.code == CustodialStatusCode.POST_SENTENCE_SUPERVISION.code ||
-        (
-            prisonerMovement.type == PrisonerMovement.Type.TEMPORARY_ABSENCE_RETURN &&
-                status.code == CustodialStatusCode.IN_CUSTODY_IRC.code
-            )
 }

@@ -91,6 +91,7 @@ class DataLoader(
         createRecalledPerson()
         createHospitalReleased()
         createHospitalInCustody()
+        createTemporaryAbsenceReturnFromRotl()
     }
 
     private fun createReferenceData() {
@@ -154,7 +155,7 @@ class DataLoader(
         createPerson(PersonGenerator.RECALLABLE)
         val event = EventGenerator.previouslyReleasedEvent(
             person = PersonGenerator.RECALLABLE,
-            institution = requireNotNull(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]),
+            institution = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY],
             releaseDate = NotificationGenerator.PRISONER_RECEIVED.message.occurredAt.minusMonths(6),
             lengthInDays = 999
         )
@@ -176,7 +177,7 @@ class DataLoader(
         createEvent(
             EventGenerator.custodialEvent(
                 PersonGenerator.NEW_CUSTODY,
-                requireNotNull(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]),
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN],
                 CustodialStatusCode.SENTENCED_IN_CUSTODY
             )
         )
@@ -187,7 +188,7 @@ class DataLoader(
         createEvent(
             EventGenerator.previouslyRecalledEvent(
                 PersonGenerator.RECALLED,
-                requireNotNull(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]),
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN],
                 CustodialStatusCode.RECALLED,
                 recallDate = ZonedDateTime.parse("2023-08-04T08:09:36.649098+01:00")
             )
@@ -199,7 +200,7 @@ class DataLoader(
         createEvent(
             EventGenerator.previouslyReleasedEvent(
                 PersonGenerator.HOSPITAL_RELEASED,
-                requireNotNull(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY])
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]
             )
         )
     }
@@ -210,6 +211,17 @@ class DataLoader(
             EventGenerator.custodialEvent(
                 PersonGenerator.HOSPITAL_IN_CUSTODY,
                 InstitutionGenerator.DEFAULT
+            )
+        )
+    }
+
+    private fun createTemporaryAbsenceReturnFromRotl() {
+        createPerson(PersonGenerator.ROTL)
+        createEvent(
+            EventGenerator.previouslyReleasedEvent(
+                PersonGenerator.ROTL,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY],
+                CustodialStatusCode.CUSTODY_ROTL
             )
         )
     }

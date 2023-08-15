@@ -493,6 +493,77 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
         )
     }
 
+    @Test
+    fun `received into prison when on rotl`() {
+        val nomsNumber = NotificationGenerator.PRISONER_ROTL_RETURN.message.personReference.findNomsNumber()!!
+        assertFalse(getCustody(nomsNumber).isInCustody())
+
+        val notification = NotificationGenerator.PRISONER_ROTL_RETURN
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custody = getCustody(nomsNumber)
+        assertTrue(custody.isInCustody())
+
+        val recall = getRecalls(custody).single()
+        assertThat(recall.createdDatetime, isCloseTo(ZonedDateTime.now()))
+        assertThat(
+            recall.date.withZoneSameInstant(EuropeLondon),
+            equalTo(notification.message.occurredAt.truncatedTo(DAYS))
+        )
+
+        val custodyHistory = getCustodyHistory(custody)
+        assertThat(custodyHistory, hasSize(2))
+        assertThat(custodyHistory.map { it.type.code }, hasItems(STATUS_CHANGE.code))
+        assertThat(custodyHistory.map { it.detail }, hasItems("Recall added in custody ", "Test institution (WSIHMP)"))
+
+        // and contacts are recorded
+        val contacts = getContacts(nomsNumber)
+        assertThat(contacts, hasSize(2))
+        assertThat(
+            contacts.map { it.type.code },
+            hasItems(
+                ContactType.Code.BREACH_PRISON_RECALL.value,
+                ContactType.Code.CHANGE_OF_INSTITUTION.value
+            )
+        )
+
+        verify(telemetryService).trackEvent(
+            "Recalled",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0008AA",
+                "institution" to "WSI",
+                "reason" to "TEMPORARY_ABSENCE_RETURN",
+                "movementReason" to "24",
+                "movementType" to "Received"
+            )
+        )
+
+        verify(telemetryService).trackEvent(
+            "LocationUpdated",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0008AA",
+                "institution" to "WSI",
+                "reason" to "TEMPORARY_ABSENCE_RETURN",
+                "movementReason" to "24",
+                "movementType" to "Received"
+            )
+        )
+
+        verify(telemetryService).trackEvent(
+            "StatusUpdated",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0008AA",
+                "institution" to "WSI",
+                "reason" to "TEMPORARY_ABSENCE_RETURN",
+                "movementReason" to "24",
+                "movementType" to "Received"
+            )
+        )
+    }
+
     private fun getPersonId(nomsNumber: String) =
         personRepository.findByNomsNumberAndSoftDeletedIsFalse(nomsNumber).single().id
 
