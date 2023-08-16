@@ -112,7 +112,7 @@
 <text text-anchor="start" x="106.094" y="-1217.2794" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">15,391 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="169,-1211.1794 169,-1230.1794 228,-1230.1794 228,-1211.1794 169,-1211.1794"/>
 <polygon fill="none" stroke="#000000" points="169,-1211.1794 169,-1230.1794 228,-1230.1794 228,-1211.1794 169,-1211.1794"/>
-<text text-anchor="start" x="197.1755" y="-1217.2794" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">295 &gt;</text>
+<text text-anchor="start" x="197.1755" y="-1217.2794" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">308 &gt;</text>
 </a>
 </g>
 </g>
@@ -249,15 +249,15 @@
 <text text-anchor="start" x="297" y="-1256.2794" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">GENDER_IDENTITY_ID</text>
 <polygon fill="none" stroke="#000000" points="277,-1230.1794 277,-1249.1794 495,-1249.1794 495,-1230.1794 277,-1230.1794"/>
 <text text-anchor="start" x="280" y="-1236.2794" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">...</text>
-<polygon fill="#ffffff" stroke="transparent" points="277,-1211.1794 277,-1230.1794 353,-1230.1794 353,-1211.1794 277,-1211.1794"/>
-<polygon fill="none" stroke="#000000" points="277,-1211.1794 277,-1230.1794 353,-1230.1794 353,-1211.1794 277,-1211.1794"/>
+<polygon fill="#ffffff" stroke="transparent" points="277,-1211.1794 277,-1230.1794 350,-1230.1794 350,-1211.1794 277,-1211.1794"/>
+<polygon fill="none" stroke="#000000" points="277,-1211.1794 277,-1230.1794 350,-1230.1794 350,-1211.1794 277,-1211.1794"/>
 <text text-anchor="start" x="280" y="-1217.2794" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 16</text>
-<polygon fill="#ffffff" stroke="transparent" points="353,-1211.1794 353,-1230.1794 443,-1230.1794 443,-1211.1794 353,-1211.1794"/>
-<polygon fill="none" stroke="#000000" points="353,-1211.1794 353,-1230.1794 443,-1230.1794 443,-1211.1794 353,-1211.1794"/>
-<text text-anchor="start" x="380.094" y="-1217.2794" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">18,527 rows</text>
-<polygon fill="#ffffff" stroke="transparent" points="443,-1211.1794 443,-1230.1794 495,-1230.1794 495,-1211.1794 443,-1211.1794"/>
-<polygon fill="none" stroke="#000000" points="443,-1211.1794 443,-1230.1794 495,-1230.1794 495,-1211.1794 443,-1211.1794"/>
-<text text-anchor="start" x="470.2904" y="-1217.2794" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">95 &gt;</text>
+<polygon fill="#ffffff" stroke="transparent" points="350,-1211.1794 350,-1230.1794 438,-1230.1794 438,-1211.1794 350,-1211.1794"/>
+<polygon fill="none" stroke="#000000" points="350,-1211.1794 350,-1230.1794 438,-1230.1794 438,-1211.1794 350,-1211.1794"/>
+<text text-anchor="start" x="375.094" y="-1217.2794" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">18,527 rows</text>
+<polygon fill="#ffffff" stroke="transparent" points="438,-1211.1794 438,-1230.1794 495,-1230.1794 495,-1211.1794 438,-1211.1794"/>
+<polygon fill="none" stroke="#000000" points="438,-1211.1794 438,-1230.1794 495,-1230.1794 495,-1211.1794 438,-1211.1794"/>
+<text text-anchor="start" x="464.1755" y="-1217.2794" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">101 &gt;</text>
 </a>
 </g>
 </g>
@@ -823,7 +823,7 @@
 <text text-anchor="start" x="619.7089" y="-779.2794" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">3,352 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="676.5,-773.1794 676.5,-792.1794 717.5,-792.1794 717.5,-773.1794 676.5,-773.1794"/>
 <polygon fill="none" stroke="#000000" points="676.5,-773.1794 676.5,-792.1794 717.5,-792.1794 717.5,-773.1794 676.5,-773.1794"/>
-<text text-anchor="start" x="692.7904" y="-779.2794" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">56 &gt;</text>
+<text text-anchor="start" x="692.7904" y="-779.2794" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">58 &gt;</text>
 </a>
 </g>
 </g>

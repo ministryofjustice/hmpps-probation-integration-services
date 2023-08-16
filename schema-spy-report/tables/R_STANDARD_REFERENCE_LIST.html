@@ -848,12 +848,12 @@
                                                 <td class="constraint detail">R_1036<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="R_DETAILED_OFFENCE.COURT_CATEGORY_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1389"><a href='R_DETAILED_OFFENCE.html'>R_DETAILED_OFFENCE</a><span class='relatedKey'>.COURT_CATEGORY_ID</span></td>
-                                                <td class="constraint detail">R_1389<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="R_CVL_LIC_COND_MAPPING.LIC_COND_TYPE_SUB_CAT_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1397"><a href='R_CVL_LIC_COND_MAPPING.html'>R_CVL_LIC_COND_MAPPING</a><span class='relatedKey'>.LIC_COND_TYPE_SUB_CAT_ID</span></td>
+                                                <td class="constraint detail">R_1397<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="R_DETAILED_OFFENCE.OFFENCE_TYPE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1390"><a href='R_DETAILED_OFFENCE.html'>R_DETAILED_OFFENCE</a><span class='relatedKey'>.OFFENCE_TYPE_ID</span></td>
-                                                <td class="constraint detail">R_1390<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="R_DETAILED_OFFENCE.COURT_CATEGORY_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1389"><a href='R_DETAILED_OFFENCE.html'>R_DETAILED_OFFENCE</a><span class='relatedKey'>.COURT_CATEGORY_ID</span></td>
+                                                <td class="constraint detail">R_1389<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="R_DISABILITY_TYPE_CONDITION.DISABILITY_CONDITION_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1382"><a href='R_DISABILITY_TYPE_CONDITION.html'>R_DISABILITY_TYPE_CONDITION</a><span class='relatedKey'>.DISABILITY_CONDITION_ID</span></td>
@@ -1124,6 +1124,50 @@
                                                 <td class="constraint detail">R_1056<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
+                                                <td title="SPG_ERROR.RESOLUTION_STATUS_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1140"><a href='SPG_ERROR.html'>SPG_ERROR</a><span class='relatedKey'>.RESOLUTION_STATUS_ID</span></td>
+                                                <td class="constraint detail">R_1140<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_ERROR.SPG_ERROR_CATEGORY_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1139"><a href='SPG_ERROR.html'>SPG_ERROR</a><span class='relatedKey'>.SPG_ERROR_CATEGORY_ID</span></td>
+                                                <td class="constraint detail">R_1139<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_ERROR.SPG_MESSAGE_TYPE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1128"><a href='SPG_ERROR.html'>SPG_ERROR</a><span class='relatedKey'>.SPG_MESSAGE_TYPE_ID</span></td>
+                                                <td class="constraint detail">R_1128<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_ERROR_DETAIL.SPG_ERROR_CODE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1136"><a href='SPG_ERROR_DETAIL.html'>SPG_ERROR_DETAIL</a><span class='relatedKey'>.SPG_ERROR_CODE_ID</span></td>
+                                                <td class="constraint detail">R_1136<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_ERROR_ELEMENT.SPG_ELEMENT_TYPE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1131"><a href='SPG_ERROR_ELEMENT.html'>SPG_ERROR_ELEMENT</a><span class='relatedKey'>.SPG_ELEMENT_TYPE_ID</span></td>
+                                                <td class="constraint detail">R_1131<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_EXCEPTION.ENTITY_TYPE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1123"><a href='SPG_EXCEPTION.html'>SPG_EXCEPTION</a><span class='relatedKey'>.ENTITY_TYPE_ID</span></td>
+                                                <td class="constraint detail">R_1123<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_EXCEPTION.EXCEPTION_TYPE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1124"><a href='SPG_EXCEPTION.html'>SPG_EXCEPTION</a><span class='relatedKey'>.EXCEPTION_TYPE_ID</span></td>
+                                                <td class="constraint detail">R_1124<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_EXCEPTION.STATUS_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1126"><a href='SPG_EXCEPTION.html'>SPG_EXCEPTION</a><span class='relatedKey'>.STATUS_ID</span></td>
+                                                <td class="constraint detail">R_1126<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_NOTIFICATION.SPG_INTERCHANGE_STATUS_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1138"><a href='SPG_NOTIFICATION.html'>SPG_NOTIFICATION</a><span class='relatedKey'>.SPG_INTERCHANGE_STATUS_ID</span></td>
+                                                <td class="constraint detail">R_1138<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_NOTIFICATION.SPG_MESSAGE_CONTEXT_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1137"><a href='SPG_NOTIFICATION.html'>SPG_NOTIFICATION</a><span class='relatedKey'>.SPG_MESSAGE_CONTEXT_ID</span></td>
+                                                <td class="constraint detail">R_1137<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_SEARCH_REQUEST.GENDER_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1114"><a href='SPG_SEARCH_REQUEST.html'>SPG_SEARCH_REQUEST</a><span class='relatedKey'>.GENDER_ID</span></td>
+                                                <td class="constraint detail">R_1114<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="STAFF.STAFF_GRADE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0021311"><a href='STAFF.html'>STAFF</a><span class='relatedKey'>.STAFF_GRADE_ID</span></td>
                                                 <td class="constraint detail">SYS_C0021311<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -1290,6 +1334,14 @@
                                             <tr>
                                                 <td title="UPW_WORK_NATURE_QUALIFICATIONS.OPPORTUNITY_5 references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0021596"><a href='UPW_WORK_NATURE_QUALIFICATIONS.html'>UPW_WORK_NATURE_QUALIFICATIONS</a><span class='relatedKey'>.OPPORTUNITY_5</span></td>
                                                 <td class="constraint detail">SYS_C0021596<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_NOTIFICATION.SPG_INTERCHANGE_STATUS_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1138"><a href='../../RSINGH_DBA/tables/SPG_NOTIFICATION.html'>SPG_NOTIFICATION</a><span class='relatedKey'>.SPG_INTERCHANGE_STATUS_ID</span></td>
+                                                <td class="constraint detail">R_1138<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_NOTIFICATION.SPG_MESSAGE_CONTEXT_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1137"><a href='../../RSINGH_DBA/tables/SPG_NOTIFICATION.html'>SPG_NOTIFICATION</a><span class='relatedKey'>.SPG_MESSAGE_CONTEXT_ID</span></td>
+                                                <td class="constraint detail">R_1137<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -1578,16 +1630,16 @@
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td>TRUE_OR_FALSE_1883892480</td>
+                                    <td>SPG_INTEREST IN (0, 1)</td>
+                                </tr>
+                                <tr>
                                     <td>YES_OR_NO27</td>
                                     <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE_1684532474</td>
                                     <td>SPG_OVERRIDE IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE_1883892480</td>
-                                    <td>SPG_INTEREST IN (0, 1)</td>
                                 </tr>
                                 </tbody>
                             </table>

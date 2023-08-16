@@ -138,6 +138,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
   "NSI_MANAGER":"elipses":w -> "STAFF":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "NSI_MANAGER":"elipses":w -> "TEAM":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "OFFENDER_CRC_EXPORT":"elipses":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "OFFENDER_CRC_EXPORT":"elipses":w -> "SPG_NOTIFICATION":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "OFFENDER_MANAGER":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "OFFENDER_MANAGER":"elipses":w -> "STAFF":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "OFFENDER_MANAGER":"elipses":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -201,6 +202,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
   "R_INSTITUTION":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_NSI_TYPE_PROBATION_AREA":"elipses":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_REGISTER_TYPE_PROVIDER":"elipses":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_SPG_XSD_PROBATION_AREA":"elipses":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REJECTED_TRANSFER_DIARY":"elipses":w -> "MASTER_TRANSFER":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "REJECTED_TRANSFER_DIARY":"elipses":w -> "NSI":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "REJECTED_TRANSFER_DIARY":"elipses":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -233,6 +235,18 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
   "RQMNT_MANAGER":"elipses":w -> "ALL_TEAM":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "SC_PROVIDER":"elipses":w -> "ADDRESS":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "SC_PROVIDER":"elipses":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_DOCUMENT":"elipses":w -> "IAPS_OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "SPG_DOCUMENT_REQUEST":"elipses":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_EXCEPTION":"elipses":w -> "STAFF":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_EXCEPTION":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_EXCEPTION":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_EXCEPTION":"elipses":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_EXCEPTION":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_INBOUND_INDEX":"elipses":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_NOTIFICATION":"elipses":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_NOTIFICATION":"elipses":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_NOTIFICATION":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_NOTIFICATION":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "STAFF":"elipses":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "STAFF":"elipses":w -> "SC_PROVIDER":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "STAFF":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -264,6 +278,10 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
   "UPW_PROJECT":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "UPW_PROJECT":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "V_CONTACT_ES":"elipses":w -> "IAPS_OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "RSINGH_DBA.SPG_NOTIFICATION":"elipses":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "RSINGH_DBA.SPG_NOTIFICATION":"elipses":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "RSINGH_DBA.SPG_NOTIFICATION":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "RSINGH_DBA.SPG_NOTIFICATION":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "ADDRESS" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -478,7 +496,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>IAPS_OFFENDER</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="OFFENDER_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="121" HEIGHT="16">OFFENDER_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">388 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">388 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">4 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/IAPS_OFFENDER.html"
     target="_top"
@@ -555,7 +573,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>OFFENDER_CRC_EXPORT</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">983 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">983 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
     </TABLE>>
     URL="../../tables/OFFENDER_CRC_EXPORT.html"
     target="_top"
@@ -686,7 +704,7 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
       <TR><TD PORT="DEFAULT_COURT_TEAM_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="191" HEIGHT="16">DEFAULT_COURT_TEAM_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="DEFAULT_POSTCODE_TEAM_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="191" HEIGHT="16">DEFAULT_POSTCODE_TEAM_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 8</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">223 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">59 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 8</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">223 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">67 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/PROBATION_AREA.html"
     target="_top"
@@ -824,12 +842,23 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
     target="_top"
     tooltip="R_REGISTER_TYPE_PROVIDER"
   ];
+  "R_SPG_XSD_PROBATION_AREA" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>R_SPG_XSD_PROBATION_AREA</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">215 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/R_SPG_XSD_PROBATION_AREA.html"
+    target="_top"
+    tooltip="R_SPG_XSD_PROBATION_AREA"
+  ];
   "R_STANDARD_REFERENCE_LIST" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>R_STANDARD_REFERENCE_LIST</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">15,391 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">295 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">15,391 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">308 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/R_STANDARD_REFERENCE_LIST.html"
     target="_top"
@@ -890,12 +919,66 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
     target="_top"
     tooltip="SC_PROVIDER"
   ];
+  "SPG_DOCUMENT" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_DOCUMENT</B></TD><TD ALIGN="RIGHT">[view]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_DOCUMENT.html"
+    target="_top"
+    tooltip="SPG_DOCUMENT"
+  ];
+  "SPG_DOCUMENT_REQUEST" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_DOCUMENT_REQUEST</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">131 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_DOCUMENT_REQUEST.html"
+    target="_top"
+    tooltip="SPG_DOCUMENT_REQUEST"
+  ];
+  "SPG_EXCEPTION" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_EXCEPTION</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 6</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">28 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_EXCEPTION.html"
+    target="_top"
+    tooltip="SPG_EXCEPTION"
+  ];
+  "SPG_INBOUND_INDEX" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_INBOUND_INDEX</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">308,337 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_INBOUND_INDEX.html"
+    target="_top"
+    tooltip="SPG_INBOUND_INDEX"
+  ];
+  "SPG_NOTIFICATION" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_NOTIFICATION</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 8</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">428,992 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">5 &gt;</TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_NOTIFICATION.html"
+    target="_top"
+    tooltip="SPG_NOTIFICATION"
+  ];
   "STAFF" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>STAFF</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3,352 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">56 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3,352 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">58 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/STAFF.html"
     target="_top"
@@ -943,5 +1026,14 @@ digraph "twoDegreesRelationshipsDiagramImplied" {
     URL="../../tables/V_CONTACT_ES.html"
     target="_top"
     tooltip="V_CONTACT_ES"
+  ];
+  "RSINGH_DBA.SPG_NOTIFICATION" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>RSINGH_DBA.SPG_NOTIFICATION</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 7</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    tooltip="RSINGH_DBA.SPG_NOTIFICATION"
   ];
 }

@@ -316,6 +316,14 @@
                                                 <td class="constraint detail">R_878<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
+                                                <td title="SPG_ERROR.ASSIGNED_TO_STAFF_ID references STAFF.STAFF_ID via R_1229"><a href='SPG_ERROR.html'>SPG_ERROR</a><span class='relatedKey'>.ASSIGNED_TO_STAFF_ID</span></td>
+                                                <td class="constraint detail">R_1229<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_EXCEPTION.ASSIGNED_TO_STAFF_ID references STAFF.STAFF_ID via R_1230"><a href='SPG_EXCEPTION.html'>SPG_EXCEPTION</a><span class='relatedKey'>.ASSIGNED_TO_STAFF_ID</span></td>
+                                                <td class="constraint detail">R_1230<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="STAFF_TEAM.STAFF_ID references STAFF.STAFF_ID via SYS_C0021057"><a href='STAFF_TEAM.html'>STAFF_TEAM</a><span class='relatedKey'>.STAFF_ID</span></td>
                                                 <td class="constraint detail">SYS_C0021057<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -749,12 +757,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>PROVIDER_LOCATION_DATE_VALID7</td>
-                                    <td> (&#10;(START_DATE &lt;= END_DATE) OR (END_DATE IS NULL)&#10;) </td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE_925119186</td>
                                     <td>PRIVATE IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>PROVIDER_LOCATION_DATE_VALID7</td>
+                                    <td> (&#10;(START_DATE &lt;= END_DATE) OR (END_DATE IS NULL)&#10;) </td>
                                 </tr>
                                 </tbody>
                             </table>

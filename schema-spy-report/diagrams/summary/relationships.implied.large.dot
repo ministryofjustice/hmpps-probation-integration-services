@@ -177,7 +177,7 @@ digraph "largeImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>BUSINESS_INTERACTION</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1,090 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1,090 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">4 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/BUSINESS_INTERACTION.html"
     target="_top"
@@ -215,6 +215,17 @@ digraph "largeImpliedRelationshipsDiagram" {
     URL="../../tables/CASELOAD.html"
     target="_top"
     tooltip="CASELOAD"
+  ];
+  "CHANGE_CAPTURE_KEY" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>CHANGE_CAPTURE_KEY</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/CHANGE_CAPTURE_KEY.html"
+    target="_top"
+    tooltip="CHANGE_CAPTURE_KEY"
   ];
   "COHORT" [
    label=<
@@ -276,7 +287,7 @@ digraph "largeImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>CONTACT_ALERT_CLEAR</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">52,166 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 5</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">52,166 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
     </TABLE>>
     URL="../../tables/CONTACT_ALERT_CLEAR.html"
     target="_top"
@@ -386,7 +397,7 @@ digraph "largeImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>DATA_SCRIPT_MESSAGE</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">132 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">132 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/DATA_SCRIPT_MESSAGE.html"
     target="_top"
@@ -759,7 +770,7 @@ digraph "largeImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>EVENT</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 5</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">14,604 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">26 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 5</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">14,604 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">27 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/EVENT.html"
     target="_top"
@@ -1265,7 +1276,7 @@ digraph "largeImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>OFFENDER</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 16</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">18,527 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">95 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 16</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">18,527 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">101 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/OFFENDER.html"
     target="_top"
@@ -1287,7 +1298,7 @@ digraph "largeImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>OFFENDER_CRC_EXPORT</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">983 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">983 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
     </TABLE>>
     URL="../../tables/OFFENDER_CRC_EXPORT.html"
     target="_top"
@@ -1540,7 +1551,7 @@ digraph "largeImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>PROBATION_AREA</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 8</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">223 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">59 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 8</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">223 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">67 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/PROBATION_AREA.html"
     target="_top"
@@ -2074,12 +2085,23 @@ digraph "largeImpliedRelationshipsDiagram" {
     target="_top"
     tooltip="R_COURT_TRANSFER_REASON"
   ];
+  "R_CVL_LIC_COND_MAPPING" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>R_CVL_LIC_COND_MAPPING</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/R_CVL_LIC_COND_MAPPING.html"
+    target="_top"
+    tooltip="R_CVL_LIC_COND_MAPPING"
+  ];
   "R_DETAILED_OFFENCE" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>R_DETAILED_OFFENCE</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/R_DETAILED_OFFENCE.html"
     target="_top"
@@ -2244,7 +2266,7 @@ digraph "largeImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>R_LIC_COND_TYPE_MAIN_CAT</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">550 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">8 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">550 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">9 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/R_LIC_COND_TYPE_MAIN_CAT.html"
     target="_top"
@@ -2657,12 +2679,23 @@ digraph "largeImpliedRelationshipsDiagram" {
     target="_top"
     tooltip="R_RQMNT_TYPE_TERMINATION"
   ];
+  "R_SPG_XSD_PROBATION_AREA" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>R_SPG_XSD_PROBATION_AREA</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">215 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/R_SPG_XSD_PROBATION_AREA.html"
+    target="_top"
+    tooltip="R_SPG_XSD_PROBATION_AREA"
+  ];
   "R_STANDARD_REFERENCE_LIST" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>R_STANDARD_REFERENCE_LIST</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">15,391 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">295 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">15,391 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">308 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/R_STANDARD_REFERENCE_LIST.html"
     target="_top"
@@ -2855,12 +2888,176 @@ digraph "largeImpliedRelationshipsDiagram" {
     target="_top"
     tooltip="SC_PROVIDER"
   ];
+  "SPG_DOCUMENT" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_DOCUMENT</B></TD><TD ALIGN="RIGHT">[view]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_DOCUMENT.html"
+    target="_top"
+    tooltip="SPG_DOCUMENT"
+  ];
+  "SPG_DOCUMENT_REQUEST" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_DOCUMENT_REQUEST</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">131 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_DOCUMENT_REQUEST.html"
+    target="_top"
+    tooltip="SPG_DOCUMENT_REQUEST"
+  ];
+  "SPG_ERROR" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_ERROR</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 5</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">25,460 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_ERROR.html"
+    target="_top"
+    tooltip="SPG_ERROR"
+  ];
+  "SPG_ERROR_CLEAR_REQUEST" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_ERROR_CLEAR_REQUEST</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_ERROR_CLEAR_REQUEST.html"
+    target="_top"
+    tooltip="SPG_ERROR_CLEAR_REQUEST"
+  ];
+  "SPG_ERROR_DETAIL" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_ERROR_DETAIL</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">10,734 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_ERROR_DETAIL.html"
+    target="_top"
+    tooltip="SPG_ERROR_DETAIL"
+  ];
+  "SPG_ERROR_ELEMENT" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_ERROR_ELEMENT</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_ERROR_ELEMENT.html"
+    target="_top"
+    tooltip="SPG_ERROR_ELEMENT"
+  ];
+  "SPG_ERROR_LOG" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_ERROR_LOG</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">14,533 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_ERROR_LOG.html"
+    target="_top"
+    tooltip="SPG_ERROR_LOG"
+  ];
+  "SPG_EXCEPTION" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_EXCEPTION</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 6</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">28 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_EXCEPTION.html"
+    target="_top"
+    tooltip="SPG_EXCEPTION"
+  ];
+  "SPG_INBOUND_INDEX" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_INBOUND_INDEX</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">308,337 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_INBOUND_INDEX.html"
+    target="_top"
+    tooltip="SPG_INBOUND_INDEX"
+  ];
+  "SPG_MESSAGE_LOG" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_MESSAGE_LOG</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">92,042,847 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_MESSAGE_LOG.html"
+    target="_top"
+    tooltip="SPG_MESSAGE_LOG"
+  ];
+  "SPG_NOTIFICATION" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_NOTIFICATION</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 8</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">428,992 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">5 &gt;</TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_NOTIFICATION.html"
+    target="_top"
+    tooltip="SPG_NOTIFICATION"
+  ];
+  "SPG_SEARCH_OFFENDER" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_SEARCH_OFFENDER</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">184 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_SEARCH_OFFENDER.html"
+    target="_top"
+    tooltip="SPG_SEARCH_OFFENDER"
+  ];
+  "SPG_SEARCH_REQUEST" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_SEARCH_REQUEST</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">223 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_SEARCH_REQUEST.html"
+    target="_top"
+    tooltip="SPG_SEARCH_REQUEST"
+  ];
+  "SPG_VERSION_ENTRY" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_VERSION_ENTRY</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">441,439 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_VERSION_ENTRY.html"
+    target="_top"
+    tooltip="SPG_VERSION_ENTRY"
+  ];
+  "SPG_XSD" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>SPG_XSD</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">5 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
+    </TABLE>>
+    URL="../../tables/SPG_XSD.html"
+    target="_top"
+    tooltip="SPG_XSD"
+  ];
   "STAFF" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>STAFF</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3,352 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">56 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3,352 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">58 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/STAFF.html"
     target="_top"
@@ -3058,7 +3255,7 @@ digraph "largeImpliedRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>UPW_STATUS_HISTORY</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">59,241 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
     </TABLE>>
     URL="../../tables/UPW_STATUS_HISTORY.html"
     target="_top"
@@ -3106,6 +3303,15 @@ digraph "largeImpliedRelationshipsDiagram" {
     URL="../../tables/V_CONTACT_ES.html"
     target="_top"
     tooltip="V_CONTACT_ES"
+  ];
+  "RSINGH_DBA.SPG_NOTIFICATION" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>RSINGH_DBA.SPG_NOTIFICATION</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 7</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+    </TABLE>>
+    tooltip="RSINGH_DBA.SPG_NOTIFICATION"
   ];
   "ADDITIONAL_IDENTIFIER":"IDENTIFIER_NAME_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "ADDITIONAL_IDENTIFIER":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -3314,6 +3520,7 @@ digraph "largeImpliedRelationshipsDiagram" {
   "CONTACT_ALERT_CLEAR":"CREATED_BY_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT_ALERT_CLEAR":"LAST_UPDATED_USER_ID":w -> "USER_":"USER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT_ALERT_CLEAR":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT_ALERT_CLEAR":"SPG_NOTIFICATION_ID":w -> "SPG_NOTIFICATION":"SPG_NOTIFICATION_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT_UPLOAD_DOCUMENT":"CONTACT_ID":w -> "CONTACT":"CONTACT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "COURT":"BOROUGH_ID":w -> "BOROUGH":"BOROUGH_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "COURT":"COURT_TYPE_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -3661,6 +3868,7 @@ digraph "largeImpliedRelationshipsDiagram" {
   "OFFENDER_ADDRESS":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"PARTITION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "OFFENDER_CRC_EXPORT":"CRC_PROVIDER_ID":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "OFFENDER_CRC_EXPORT":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "OFFENDER_CRC_EXPORT":"SPG_NOTIFICATION_ID":w -> "SPG_NOTIFICATION":"SPG_NOTIFICATION_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "OFFENDER_DRUG_PROFILE":"CONTACT_INTERVAL_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "OFFENDER_DRUG_PROFILE":"CONTEXT_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "OFFENDER_DRUG_PROFILE":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -3905,8 +4113,9 @@ digraph "largeImpliedRelationshipsDiagram" {
   "R_COURT_TEAM":"TEAM_ID":w -> "TEAM":"TEAM_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_COURT_TRANSFER_REASON":"COURT_REPORT_TYPE_ID":w -> "R_COURT_REPORT_TYPE":"COURT_REPORT_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_COURT_TRANSFER_REASON":"TRANSFER_REASON_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_CVL_LIC_COND_MAPPING":"LIC_COND_TYPE_MAIN_CAT_ID":w -> "R_LIC_COND_TYPE_MAIN_CAT":"LIC_COND_TYPE_MAIN_CAT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_CVL_LIC_COND_MAPPING":"LIC_COND_TYPE_SUB_CAT_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_DETAILED_OFFENCE":"COURT_CATEGORY_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
-  "R_DETAILED_OFFENCE":"OFFENCE_TYPE_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_DISABILITY_TYPE_CONDITION":"DISABILITY_CONDITION_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_DISABILITY_TYPE_CONDITION":"DISABILITY_TYPE_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_DISPOSAL_TYPE":"OUTCOME_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -4000,6 +4209,8 @@ digraph "largeImpliedRelationshipsDiagram" {
   "R_RQMNT_TYPE_MAIN_CATEGORY":"UNITS_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_RQMNT_TYPE_TERMINATION":"RQMNT_TERMINATION_REASON_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_RQMNT_TYPE_TERMINATION":"RQMNT_TYPE_MAIN_CATEGORY_ID":w -> "R_RQMNT_TYPE_MAIN_CATEGORY":"RQMNT_TYPE_MAIN_CATEGORY_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_SPG_XSD_PROBATION_AREA":"PROBATION_AREA_ID":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "R_SPG_XSD_PROBATION_AREA":"SPG_XSD_ID":w -> "SPG_XSD":"SPG_XSD_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_STANDARD_REFERENCE_LIST":"REFERENCE_DATA_MASTER_ID":w -> "R_REFERENCE_DATA_MASTER":"REFERENCE_DATA_MASTER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_TEAM_LONG_POSTCODE":"LONG_POSTCODE_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "R_TEAM_LONG_POSTCODE":"TEAM_ID":w -> "TEAM":"TEAM_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -4141,6 +4352,43 @@ digraph "largeImpliedRelationshipsDiagram" {
   "RQMNT_TRANSFER":"WITHDRAWAL_REASON_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "SC_PROVIDER":"ADDRESS_ID":w -> "ADDRESS":"ADDRESS_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "SC_PROVIDER":"PROVIDER_ID":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_DOCUMENT":"OFFENDER_ID":w -> "IAPS_OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "SPG_DOCUMENT":"SOURCE_TABLE_KEY":w -> "CHANGE_CAPTURE_KEY":"KEY":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "SPG_DOCUMENT_REQUEST":"EVENT_ID":w -> "EVENT":"EVENT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_DOCUMENT_REQUEST":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_DOCUMENT_REQUEST":"TARGET_PROVIDER_ID":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_ERROR":"ASSIGNED_TO_STAFF_ID":w -> "STAFF":"STAFF_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_ERROR":"RESOLUTION_STATUS_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_ERROR":"SPG_ERROR_CATEGORY_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_ERROR":"SPG_MESSAGE_TYPE_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_ERROR":"SPG_NOTIFICATION_ID":w -> "SPG_NOTIFICATION":"SPG_NOTIFICATION_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_ERROR_CLEAR_REQUEST":"SPG_NOTIFICATION_ID":w -> "SPG_NOTIFICATION":"SPG_NOTIFICATION_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_ERROR_DETAIL":"SPG_ERROR_CODE_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_ERROR_DETAIL":"SPG_ERROR_ELEMENT_ID":w -> "SPG_ERROR_ELEMENT":"SPG_ERROR_ELEMENT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_ERROR_DETAIL":"SPG_ERROR_ID":w -> "SPG_ERROR":"SPG_ERROR_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_ERROR_ELEMENT":"SPG_ELEMENT_TYPE_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_ERROR_ELEMENT":"SPG_ERROR_ID":w -> "SPG_ERROR":"SPG_ERROR_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_EXCEPTION":"ASSIGNED_TO_STAFF_ID":w -> "STAFF":"STAFF_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_EXCEPTION":"ENTITY_TYPE_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_EXCEPTION":"EXCEPTION_TYPE_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_EXCEPTION":"IMS_PROVIDER_ID":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_EXCEPTION":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_EXCEPTION":"STATUS_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_INBOUND_INDEX":"SOURCE_PROVIDER_ID":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_MESSAGE_LOG":"SPG_ERROR_LOG_ID":w -> "SPG_ERROR_LOG":"SPG_ERROR_LOG_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "SPG_NOTIFICATION":"BUSINESS_INTERACTION_ID":w -> "BUSINESS_INTERACTION":"BUSINESS_INTERACTION_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_NOTIFICATION":"DATA_SCRIPT_MESSAGE_ID":w -> "DATA_SCRIPT_MESSAGE":"DATA_SCRIPT_MESSAGE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_NOTIFICATION":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_NOTIFICATION":"RECEIVER_IDENTITY_ID":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_NOTIFICATION":"REGENERATED_NOTIFICATION_ID":w -> "SPG_NOTIFICATION":"SPG_NOTIFICATION_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_NOTIFICATION":"SENDER_IDENTITY_ID":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_NOTIFICATION":"SPG_INTERCHANGE_STATUS_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_NOTIFICATION":"SPG_MESSAGE_CONTEXT_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_SEARCH_OFFENDER":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_SEARCH_OFFENDER":"SPG_SEARCH_REQUEST_ID":w -> "SPG_SEARCH_REQUEST":"SPG_SEARCH_REQUEST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_SEARCH_REQUEST":"GENDER_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_VERSION_ENTRY":"BUSINESS_INTERACTION_ID":w -> "BUSINESS_INTERACTION":"BUSINESS_INTERACTION_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "SPG_VERSION_ENTRY":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "STAFF":"PROBATION_AREA_ID":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "STAFF":"SC_PROVIDER_ID":w -> "SC_PROVIDER":"SC_PROVIDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "STAFF":"STAFF_GRADE_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -4264,4 +4512,11 @@ digraph "largeImpliedRelationshipsDiagram" {
   "V_CONTACT_ES":"LIC_CONDITION_ID":w -> "IAPS_LIC_CONDITION":"LIC_CONDITION_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "V_CONTACT_ES":"OFFENDER_ID":w -> "IAPS_OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
   "V_CONTACT_ES":"RQMNT_ID":w -> "IAPS_RQMNT":"RQMNT_ID":e [arrowhead=none dir=back arrowtail=crowodot style=dashed];
+  "RSINGH_DBA.SPG_NOTIFICATION":"BUSINESS_INTERACTION_ID":w -> "BUSINESS_INTERACTION":"BUSINESS_INTERACTION_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "RSINGH_DBA.SPG_NOTIFICATION":"DATA_SCRIPT_MESSAGE_ID":w -> "DATA_SCRIPT_MESSAGE":"DATA_SCRIPT_MESSAGE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "RSINGH_DBA.SPG_NOTIFICATION":"OFFENDER_ID":w -> "OFFENDER":"OFFENDER_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "RSINGH_DBA.SPG_NOTIFICATION":"RECEIVER_IDENTITY_ID":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "RSINGH_DBA.SPG_NOTIFICATION":"SENDER_IDENTITY_ID":w -> "PROBATION_AREA":"PROBATION_AREA_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "RSINGH_DBA.SPG_NOTIFICATION":"SPG_INTERCHANGE_STATUS_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "RSINGH_DBA.SPG_NOTIFICATION":"SPG_MESSAGE_CONTEXT_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID":e [arrowhead=none dir=back arrowtail=crowodot];
 }

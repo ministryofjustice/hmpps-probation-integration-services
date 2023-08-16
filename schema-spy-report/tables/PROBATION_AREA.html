@@ -308,6 +308,10 @@
                                                 <td class="constraint detail">R_1098<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
+                                                <td title="R_SPG_XSD_PROBATION_AREA.PROBATION_AREA_ID references PROBATION_AREA.PROBATION_AREA_ID via R_1196"><a href='R_SPG_XSD_PROBATION_AREA.html'>R_SPG_XSD_PROBATION_AREA</a><span class='relatedKey'>.PROBATION_AREA_ID</span></td>
+                                                <td class="constraint detail">R_1196<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="REJECTED_TRANSFER_DIARY.ORIGIN_PROVIDER_ID references PROBATION_AREA.PROBATION_AREA_ID via R_1147"><a href='REJECTED_TRANSFER_DIARY.html'>REJECTED_TRANSFER_DIARY</a><span class='relatedKey'>.ORIGIN_PROVIDER_ID</span></td>
                                                 <td class="constraint detail">R_1147<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -332,6 +336,26 @@
                                                 <td class="constraint detail">R_888<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
+                                                <td title="SPG_DOCUMENT_REQUEST.TARGET_PROVIDER_ID references PROBATION_AREA.PROBATION_AREA_ID via R_1246"><a href='SPG_DOCUMENT_REQUEST.html'>SPG_DOCUMENT_REQUEST</a><span class='relatedKey'>.TARGET_PROVIDER_ID</span></td>
+                                                <td class="constraint detail">R_1246<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_EXCEPTION.IMS_PROVIDER_ID references PROBATION_AREA.PROBATION_AREA_ID via R_1125"><a href='SPG_EXCEPTION.html'>SPG_EXCEPTION</a><span class='relatedKey'>.IMS_PROVIDER_ID</span></td>
+                                                <td class="constraint detail">R_1125<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_INBOUND_INDEX.SOURCE_PROVIDER_ID references PROBATION_AREA.PROBATION_AREA_ID via R_1049"><a href='SPG_INBOUND_INDEX.html'>SPG_INBOUND_INDEX</a><span class='relatedKey'>.SOURCE_PROVIDER_ID</span></td>
+                                                <td class="constraint detail">R_1049<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_NOTIFICATION.RECEIVER_IDENTITY_ID references PROBATION_AREA.PROBATION_AREA_ID via R_1048"><a href='SPG_NOTIFICATION.html'>SPG_NOTIFICATION</a><span class='relatedKey'>.RECEIVER_IDENTITY_ID</span></td>
+                                                <td class="constraint detail">R_1048<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_NOTIFICATION.SENDER_IDENTITY_ID references PROBATION_AREA.PROBATION_AREA_ID via R_1047"><a href='SPG_NOTIFICATION.html'>SPG_NOTIFICATION</a><span class='relatedKey'>.SENDER_IDENTITY_ID</span></td>
+                                                <td class="constraint detail">R_1047<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="STAFF.PROBATION_AREA_ID references PROBATION_AREA.PROBATION_AREA_ID via R_917"><a href='STAFF.html'>STAFF</a><span class='relatedKey'>.PROBATION_AREA_ID</span></td>
                                                 <td class="constraint detail">R_917<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -346,6 +370,14 @@
                                             <tr>
                                                 <td title="UPW_PROJECT.PROBATION_AREA_ID references PROBATION_AREA.PROBATION_AREA_ID via SYS_C0021747"><a href='UPW_PROJECT.html'>UPW_PROJECT</a><span class='relatedKey'>.PROBATION_AREA_ID</span></td>
                                                 <td class="constraint detail">SYS_C0021747<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_NOTIFICATION.RECEIVER_IDENTITY_ID references PROBATION_AREA.PROBATION_AREA_ID via R_1048"><a href='../../RSINGH_DBA/tables/SPG_NOTIFICATION.html'>SPG_NOTIFICATION</a><span class='relatedKey'>.RECEIVER_IDENTITY_ID</span></td>
+                                                <td class="constraint detail">R_1048<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_NOTIFICATION.SENDER_IDENTITY_ID references PROBATION_AREA.PROBATION_AREA_ID via R_1047"><a href='../../RSINGH_DBA/tables/SPG_NOTIFICATION.html'>SPG_NOTIFICATION</a><span class='relatedKey'>.SENDER_IDENTITY_ID</span></td>
+                                                <td class="constraint detail">R_1047<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -1107,6 +1139,18 @@
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td>TRUE_OR_FALSE_1316924380</td>
+                                    <td>PRIVATE IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE_3459496</td>
+                                    <td>QUEUE_SPG_TRANSFER_REQUEST IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE_466213457</td>
+                                    <td>SELECTABLE_WHEN_ALLOCATED IN (1,0)</td>
+                                </tr>
+                                <tr>
                                     <td>TRUE_OR_FALSE_1716605211</td>
                                     <td>ALLOCATE_DOCUMENT_LIST IN (0, 1)</td>
                                 </tr>
@@ -1119,24 +1163,12 @@
                                     <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>TRUE_OR_FALSE_1001946058</td>
-                                    <td>TRANSITION_TRANSFER_MESSAGES IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE_3459496</td>
-                                    <td>QUEUE_SPG_TRANSFER_REQUEST IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE_466213457</td>
-                                    <td>SELECTABLE_WHEN_ALLOCATED IN (1,0)</td>
-                                </tr>
-                                <tr>
                                     <td>PRIVATE_DIVISION_ID_1805490531</td>
                                     <td> (PRIVATE = 0 AND DIVISION_ID IS NULL)&#10;OR&#10;(PRIVATE = 1 AND DIVISION_ID IS NOT NULL)&#10; </td>
                                 </tr>
                                 <tr>
-                                    <td>TRUE_OR_FALSE_1316924380</td>
-                                    <td>PRIVATE IN (0, 1)</td>
+                                    <td>TRUE_OR_FALSE_1001946058</td>
+                                    <td>TRANSITION_TRANSFER_MESSAGES IN (0, 1)</td>
                                 </tr>
                                 </tbody>
                             </table>
