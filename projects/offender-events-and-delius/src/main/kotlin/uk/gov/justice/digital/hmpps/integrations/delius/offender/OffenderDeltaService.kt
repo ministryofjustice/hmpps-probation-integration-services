@@ -2,8 +2,10 @@ package uk.gov.justice.digital.hmpps.integrations.delius.offender
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.integrations.delius.tier.ManagementTierEventRepository
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
@@ -13,6 +15,7 @@ class OffenderDeltaService(
     @Value("\${offender-events.batch-size:50}")
     private val batchSize: Int,
     private val repository: OffenderDeltaRepository,
+    private val managementTierEventRepository: ManagementTierEventRepository,
     private val notificationPublisher: NotificationPublisher
 ) {
     @Transactional
@@ -25,12 +28,12 @@ class OffenderDeltaService(
     }
 
     fun OffenderDelta.asNotifications(): List<Notification<OffenderEvent>> {
-        fun sourceToEventType(sourceTable: String, action: String): String = when (sourceTable) {
+        fun sourceToEventType(sourceTable: String, action: String): String? = when (sourceTable) {
             "ALIAS" -> "OFFENDER_ALIAS_CHANGED"
             "DEREGISTRATION" -> "OFFENDER_REGISTRATION_DEREGISTERED"
             "DISPOSAL" -> "SENTENCE_CHANGED"
             "EVENT" -> "CONVICTION_CHANGED"
-            "MANAGEMENT_TIER_EVENT" -> "OFFENDER_MANAGEMENT_TIER_CALCULATION_REQUIRED"
+            "MANAGEMENT_TIER_EVENT" -> if (registrationTierChange()) null else "OFFENDER_MANAGEMENT_TIER_CALCULATION_REQUIRED"
             "MERGE_HISTORY" -> "OFFENDER_MERGED"
             "OFFENDER" -> "OFFENDER_DETAILS_CHANGED"
             "OFFICER" -> "OFFENDER_OFFICER_CHANGED"
@@ -41,15 +44,25 @@ class OffenderDeltaService(
         }
 
         return if (offender != null) {
-            val oe = OffenderEvent(offender.id, offender.crn, offender.nomsNumber, sourceRecordId, dateChanged)
-            val list: MutableList<Notification<OffenderEvent>> = mutableListOf()
-            if (sourceTable in listOf("ALIAS", "OFFENDER", "OFFENDER_MANAGER", "OFFENDER_ADDRESS", "OFFICER")) {
-                list += Notification(oe, MessageAttributes("OFFENDER_CHANGED"))
-            }
-            list += Notification(oe, MessageAttributes(sourceToEventType(sourceTable, action)))
-            list
+            sourceToEventType(sourceTable, action)?.let {
+                val oe = OffenderEvent(offender.id, offender.crn, offender.nomsNumber, sourceRecordId, dateChanged)
+                val list: MutableList<Notification<OffenderEvent>> = mutableListOf()
+                if (sourceTable in listOf("ALIAS", "OFFENDER", "OFFENDER_MANAGER", "OFFENDER_ADDRESS", "OFFICER")) {
+                    list += Notification(oe, MessageAttributes("OFFENDER_CHANGED"))
+                }
+                list += Notification(oe, MessageAttributes(it))
+                list
+            } ?: listOf()
         } else {
             listOf()
         }
     }
+
+    private fun OffenderDelta.registrationTierChange() =
+        managementTierEventRepository.findByIdOrNull(sourceRecordId)?.reason?.code in listOf(
+            "ROSH",
+            "MAP",
+            "REG",
+            "DEREG"
+        )
 }
