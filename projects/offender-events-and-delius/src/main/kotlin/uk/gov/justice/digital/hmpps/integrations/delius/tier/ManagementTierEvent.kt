@@ -34,5 +34,3 @@ class ReferenceData(
 )
 
 interface ManagementTierEventRepository : JpaRepository<ManagementTierEvent, Long>
-
-interface ReferenceDataRepository : JpaRepository<ReferenceData, Long>
