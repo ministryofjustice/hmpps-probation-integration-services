@@ -92,6 +92,8 @@ class DataLoader(
         createHospitalReleased()
         createHospitalInCustody()
         createTemporaryAbsenceReturnFromRotl()
+        createIrcReleased()
+        createIrcInCustody()
     }
 
     private fun createReferenceData() {
@@ -220,8 +222,27 @@ class DataLoader(
         createEvent(
             EventGenerator.previouslyReleasedEvent(
                 PersonGenerator.ROTL,
-                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY],
-                CustodialStatusCode.CUSTODY_ROTL
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]
+            )
+        )
+    }
+
+    private fun createIrcReleased() {
+        createPerson(PersonGenerator.IRC_RELEASED)
+        createEvent(
+            EventGenerator.previouslyReleasedEvent(
+                PersonGenerator.IRC_RELEASED,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]
+            )
+        )
+    }
+
+    private fun createIrcInCustody() {
+        createPerson(PersonGenerator.IRC_IN_CUSTODY)
+        createEvent(
+            EventGenerator.custodialEvent(
+                PersonGenerator.IRC_IN_CUSTODY,
+                InstitutionGenerator.DEFAULT
             )
         )
     }

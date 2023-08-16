@@ -29,6 +29,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.prison.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.entity.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse
+import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode.LOCATION_CHANGE
@@ -400,6 +401,7 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
             recall.date.withZoneSameInstant(EuropeLondon),
             equalTo(notification.message.occurredAt.truncatedTo(DAYS))
         )
+        assertThat(recall.reason.code, equalTo(RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL.value))
 
         val custodyHistory = getCustodyHistory(custody)
         assertThat(custodyHistory, hasSize(2))
@@ -560,6 +562,134 @@ internal class PrisonCustodyStatusToDeliusIntegrationTest {
                 "reason" to "TEMPORARY_ABSENCE_RETURN",
                 "movementReason" to "24",
                 "movementType" to "Received"
+            )
+        )
+    }
+
+    @Test
+    fun `IRC release when released on licence in delius`() {
+        val notification = NotificationGenerator.PRISONER_IRC_RELEASED
+        val nomsNumber = notification.message.personReference.findNomsNumber()!!
+        assertFalse(getCustody(nomsNumber).isInCustody())
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custody = getCustody(nomsNumber)
+        assertTrue(custody.isInCustody())
+        assertThat(custody.institution?.code, equalTo(InstitutionCode.OTHER_IRC.code))
+
+        val recall = getRecalls(custody).single()
+        assertThat(recall.createdDatetime, isCloseTo(ZonedDateTime.now()))
+        assertThat(
+            recall.date.withZoneSameInstant(EuropeLondon),
+            equalTo(notification.message.occurredAt.truncatedTo(DAYS))
+        )
+        assertThat(recall.reason.code, equalTo(RecallReason.Code.TRANSFER_TO_IRC.value))
+
+        val custodyHistory = getCustodyHistory(custody)
+        assertThat(custodyHistory, hasSize(2))
+        assertThat(custodyHistory.map { it.type.code }, hasItems(STATUS_CHANGE.code, LOCATION_CHANGE.code))
+        assertThat(
+            custodyHistory.map { it.detail },
+            hasItems("Transfer to Immigration Removal Centre", "Test institution (XXX054)")
+        )
+
+        val contacts = getContacts(nomsNumber)
+        assertThat(contacts, hasSize(2))
+        assertThat(
+            contacts.map { it.type.code },
+            hasItems(
+                ContactType.Code.BREACH_PRISON_RECALL.value,
+                ContactType.Code.CHANGE_OF_INSTITUTION.value
+            )
+        )
+
+        verify(telemetryService).trackEvent(
+            "Recalled",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0009AA",
+                "institution" to "WSI",
+                "reason" to "RELEASED",
+                "movementReason" to "DE",
+                "movementType" to "Released"
+            )
+        )
+
+        verify(telemetryService).trackEvent(
+            "StatusUpdated",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0009AA",
+                "institution" to "WSI",
+                "reason" to "RELEASED",
+                "movementReason" to "DE",
+                "movementType" to "Released"
+            )
+        )
+
+        verify(telemetryService).trackEvent(
+            "LocationUpdated",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0009AA",
+                "institution" to "WSI",
+                "reason" to "RELEASED",
+                "movementReason" to "DE",
+                "movementType" to "Released"
+            )
+        )
+    }
+
+    @Test
+    fun `irc release when in custody in delius`() {
+        val notification = NotificationGenerator.PRISONER_IRC_IN_CUSTODY
+        val nomsNumber = notification.message.personReference.findNomsNumber()!!
+        assertTrue(getCustody(nomsNumber).isInCustody())
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custody = getCustody(nomsNumber)
+        assertTrue(custody.isInCustody())
+        assertThat(custody.institution?.code, equalTo(InstitutionCode.OTHER_IRC.code))
+
+        val custodyHistory = getCustodyHistory(custody)
+        assertThat(custodyHistory, hasSize(1))
+        assertThat(custodyHistory.map { it.type.code }, hasItems(LOCATION_CHANGE.code))
+        assertThat(custodyHistory.map { it.detail }, hasItems("Test institution (XXX054)"))
+
+        val contacts = getContacts(nomsNumber)
+        assertThat(contacts, hasSize(1))
+        assertThat(
+            contacts.map { it.type.code },
+            hasItems(
+                ContactType.Code.CHANGE_OF_INSTITUTION.value
+            )
+        )
+        val coi = contacts.first { it.type.code == ContactType.Code.CHANGE_OF_INSTITUTION.value }
+        assertThat(coi.event?.id, equalTo(custody.disposal.event.id))
+
+        verify(telemetryService).trackEvent(
+            "LocationUpdated",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0011AA",
+                "institution" to "SWI",
+                "reason" to "RELEASED",
+                "movementReason" to "DD",
+                "movementType" to "Released"
+            )
+        )
+
+        verify(telemetryService).trackEvent(
+            "PrisonerStatusCorrect",
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0011AA",
+                "institution" to "SWI",
+                "reason" to "RELEASED",
+                "movementReason" to "DD",
+                "movementType" to "Released"
             )
         )
     }

@@ -55,8 +55,9 @@ class UpdateLocationAction(
                 prisonerMovement.prisonId?.let { institutionRepository.findByNomisCdeCode(it) }
                     ?: run { institutionRepository.getByCode(InstitutionCode.OTHER_SECURE_UNIT.code) }
             } else if (prisonerMovement.isIrcRelease()) {
-                if (custody.institution?.irc == true) {
-                    custody.institution!!
+                val institution = prisonerMovement.prisonId?.let { institutionRepository.findByNomisCdeCode(it) }
+                if (institution?.irc == true) {
+                    institution
                 } else {
                     institutionRepository.getByCode(InstitutionCode.OTHER_IRC.code)
                 }
