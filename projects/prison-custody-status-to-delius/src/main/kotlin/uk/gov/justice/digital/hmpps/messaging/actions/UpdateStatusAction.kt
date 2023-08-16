@@ -5,7 +5,7 @@ import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canRecall
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canBeRecalled
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustodialStatus
@@ -39,19 +39,17 @@ class UpdateStatusAction(
 
     private fun inboundStatusChange(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
-        if (custody.status.canChange()) {
-            return if (custody.mostRecentRelease() != null && custody.status.canRecall()) {
-                updateStatus(
-                    custody,
-                    CustodialStatusCode.IN_CUSTODY,
-                    prisonerMovement,
-                    "Recall added in custody "
-                )
-            } else {
-                updateStatus(custody, CustodialStatusCode.IN_CUSTODY, prisonerMovement, "In custody ")
-            }
+        return if (custody.status.canChange()) {
+            val detail = if (custody.canBeRecalled()) "Recall added in custody " else "In custody "
+            updateStatus(
+                custody,
+                CustodialStatusCode.IN_CUSTODY,
+                prisonerMovement,
+                detail
+            )
+        } else {
+            ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
         }
-        return ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
     }
 
     private fun outboundStatusChange(context: PrisonerMovementContext): ActionResult {
@@ -74,6 +72,14 @@ class UpdateStatusAction(
                 }
             }
 
+            prisonerMovement.isIrcRelease() -> if (custody.canBeRecalled()) {
+                CustodialStatusCode.RECALLED
+            } else if (custody.status.canChange()) {
+                CustodialStatusCode.IN_CUSTODY
+            } else {
+                throw IgnorableMessageException("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
+            }
+
             else -> CustodialStatusCode.RELEASED_ON_LICENCE
         }
         return updateStatus(
@@ -82,6 +88,7 @@ class UpdateStatusAction(
             prisonerMovement,
             when {
                 prisonerMovement.isHospitalRelease() -> "Transfer to/from Hospital"
+                prisonerMovement.isIrcRelease() -> "Transfer to Immigration Removal Centre"
                 else -> "Released on Licence"
             }
         )
@@ -102,7 +109,7 @@ class UpdateStatusAction(
         custodyRepository.save(custody)
         custodyHistoryRepository.save(history)
         return ActionResult.Success(ActionResult.Type.StatusUpdated, prisonerMovement.telemetryProperties())
-    } ?: ActionResult.Ignored("PrisonerStatusCorrect")
+    } ?: ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
 }
 
 private fun ReferenceData.canChange() = !NO_CHANGE_STATUSES.map { it.code }.contains(code)

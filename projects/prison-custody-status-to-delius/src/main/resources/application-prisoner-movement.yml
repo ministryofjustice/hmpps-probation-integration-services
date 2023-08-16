@@ -29,6 +29,16 @@ prisoner.movement.configs:
       - UpdateLocation
   - types:
       - RELEASED
+    reasons:
+      - DD
+      - DE
+      - DL
+    actionNames:
+      - Recall
+      - UpdateStatus
+      - UpdateLocation
+  - types:
+      - RELEASED
     actionNames:
       - Release
       - UpdateStatus

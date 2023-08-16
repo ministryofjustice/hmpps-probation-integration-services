@@ -127,6 +127,10 @@ class Custody(
     }
 }
 
-fun ReferenceData.canRecall() = CAN_RECALL_STATUSES.map { it.code }.contains(code)
+fun Custody.canBeRecalled(): Boolean {
+    val mrr = mostRecentRelease()
+    return mrr != null && mrr.recall == null && status.code in CAN_RECALL_STATUSES.map { it.code }
+}
+
 fun ReferenceData.isTerminated() = TERMINATED_STATUSES.map { it.code }.contains(code)
 interface CustodyRepository : JpaRepository<Custody, Long>

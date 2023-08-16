@@ -42,7 +42,6 @@ class ReleaseAction(
     override fun accept(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
         checkPreConditions(prisonerMovement, custody)
-        val rt = prisonerMovement.releaseType()
         val releaseType = referenceDataRepository.getReleaseType(prisonerMovement.releaseType().code)
         val releasedFrom = prisonerMovement.prisonId?.let { institutionRepository.findByNomisCdeCode(it) }
             ?: custody.institution ?: institutionRepository.getByCode(InstitutionCode.UNKNOWN.code)
