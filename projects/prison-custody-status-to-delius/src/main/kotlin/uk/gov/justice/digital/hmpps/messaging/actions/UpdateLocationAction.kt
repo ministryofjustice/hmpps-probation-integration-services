@@ -51,19 +51,7 @@ class UpdateLocationAction(
 
         val institution = when (prisonerMovement) {
             is PrisonerMovement.Received -> institutionRepository.getByNomisCdeCode(prisonerMovement.prisonId)
-            is PrisonerMovement.Released -> if (prisonerMovement.isHospitalRelease()) {
-                prisonerMovement.prisonId?.let { institutionRepository.findByNomisCdeCode(it) }
-                    ?: run { institutionRepository.getByCode(InstitutionCode.OTHER_SECURE_UNIT.code) }
-            } else if (prisonerMovement.isIrcRelease()) {
-                val institution = prisonerMovement.prisonId?.let { institutionRepository.findByNomisCdeCode(it) }
-                if (institution?.irc == true) {
-                    institution
-                } else {
-                    institutionRepository.getByCode(InstitutionCode.OTHER_IRC.code)
-                }
-            } else {
-                institutionRepository.getByCode(InstitutionCode.IN_COMMUNITY.code)
-            }
+            is PrisonerMovement.Released -> prisonerMovement.releaseLocation()
         }
 
         return custody.updateLocationAt(institution, prisonerMovement.occurredAt) {
@@ -83,6 +71,13 @@ class UpdateLocationAction(
             ActionResult.Success(ActionResult.Type.LocationUpdated, prisonerMovement.telemetryProperties())
         } ?: ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
     }
+
+    private fun PrisonerMovement.releaseLocation() =
+        when {
+            isHospitalRelease() -> institutionRepository.getByCode(InstitutionCode.OTHER_SECURE_UNIT.code)
+            isIrcRelease() -> institutionRepository.getByCode(InstitutionCode.OTHER_IRC.code)
+            else -> institutionRepository.getByCode(InstitutionCode.IN_COMMUNITY.code)
+        }
 
     private fun createLocationChangeContact(prisonerMovement: PrisonerMovement, custody: Custody) {
         if (prisonerMovement is PrisonerMovement.Received ||

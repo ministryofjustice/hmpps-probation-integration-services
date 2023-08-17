@@ -55,31 +55,7 @@ class UpdateStatusAction(
     private fun outboundStatusChange(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
         val statusCode = when {
-            prisonerMovement.isHospitalRelease() -> {
-                if (custody.isInCustody()) {
-                    CustodialStatusCode.IN_CUSTODY
-                } else if (custody.status.code == CustodialStatusCode.RELEASED_ON_LICENCE.code) {
-                    CustodialStatusCode.RECALLED
-                } else {
-                    throw IgnorableMessageException(
-                        "NoActionHospitalRelease",
-                        listOfNotNull(
-                            "currentStatusCode" to custody.status.code,
-                            "currentStatusDescription" to custody.status.description,
-                            custody.institution?.code?.let { "currentLocation" to it }
-                        ).toMap()
-                    )
-                }
-            }
-
-            prisonerMovement.isIrcRelease() -> if (custody.canBeRecalled()) {
-                CustodialStatusCode.RECALLED
-            } else if (custody.status.canChange()) {
-                CustodialStatusCode.IN_CUSTODY
-            } else {
-                throw IgnorableMessageException("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
-            }
-
+            prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease() -> custody.nextStatus()
             else -> CustodialStatusCode.RELEASED_ON_LICENCE
         }
         return updateStatus(
@@ -93,6 +69,13 @@ class UpdateStatusAction(
             }
         )
     }
+
+    private fun Custody.nextStatus() =
+        when {
+            canBeRecalled() -> CustodialStatusCode.RECALLED
+            status.canChange() -> CustodialStatusCode.IN_CUSTODY
+            else -> throw IgnorableMessageException("PrisonerStatusCorrect")
+        }
 
     private fun updateStatus(
         custody: Custody,

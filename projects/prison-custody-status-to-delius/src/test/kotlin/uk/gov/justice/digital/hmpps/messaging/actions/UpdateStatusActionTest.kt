@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.messaging.actions
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasEntry
 import org.hamcrest.Matchers.instanceOf
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -17,6 +16,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.CustodyGenerator
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
@@ -76,25 +76,16 @@ internal class UpdateStatusActionTest {
         val ex = assertThrows<IgnorableMessageException> {
             action.accept(PrisonerMovementContext(prisonerMovement, custody))
         }
-        assertThat(ex.message, equalTo("NoActionHospitalRelease"))
-        assertThat(
-            ex.additionalProperties,
-            hasEntry("currentStatusCode", CustodialStatusCode.POST_SENTENCE_SUPERVISION.code)
-        )
-        assertThat(
-            ex.additionalProperties,
-            hasEntry("currentLocation", InstitutionCode.UNKNOWN.code)
-        )
+        assertThat(ex.message, equalTo("PrisonerStatusCorrect"))
     }
 
     @Test
     fun `hospital release when released in delius results in recall status`() {
         val person = PersonGenerator.generate("R1234CL")
-        val custody = CustodyGenerator.generate(
+        val custody = EventGenerator.previouslyReleasedEvent(
             person,
-            InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY],
-            CustodialStatusCode.RELEASED_ON_LICENCE
-        )
+            InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]
+        ).disposal!!.custody!!
         val prisonerMovement = PrisonerMovement.Released(
             custody.disposal.event.person.nomsNumber,
             InstitutionGenerator.DEFAULT.nomisCdeCode,

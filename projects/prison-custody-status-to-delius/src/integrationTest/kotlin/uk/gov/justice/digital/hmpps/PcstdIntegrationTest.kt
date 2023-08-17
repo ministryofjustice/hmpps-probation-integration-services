@@ -298,13 +298,19 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
         val custody = getCustody(nomsNumber)
         assertTrue(custody.isInCustody())
-        assertThat(custody.institution?.code, equalTo(InstitutionGenerator.MOVED_TO.code))
+        assertThat(
+            custody.institution?.code,
+            equalTo(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.OTHER_SECURE_UNIT]?.code)
+        )
         assertThat(custody.locationChangeDate!!, isCloseTo(notification.message.occurredAt))
         assertThat(custody.status.code, equalTo(CustodialStatusCode.IN_CUSTODY.code))
 
         verifyCustodyHistory(
             custody,
-            CustodyEventTester(CustodyEventTypeCode.LOCATION_CHANGE, InstitutionGenerator.MOVED_TO.description)
+            CustodyEventTester(
+                CustodyEventTypeCode.LOCATION_CHANGE,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.OTHER_SECURE_UNIT]?.description
+            )
         )
 
         verifyContact(custody, ContactType.Code.CHANGE_OF_INSTITUTION)
