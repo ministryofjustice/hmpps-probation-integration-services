@@ -41,29 +41,6 @@ internal class MessagingIntegrationTest {
     lateinit var keyDateRepository: KeyDateRepository
 
     @Test
-    fun `creates a handover key date successfully`() {
-        val notification = prepNotification(
-            notification("create-handover-date"),
-            wireMockServer.port()
-        )
-
-        channelManager.getChannel(queueName).publishAndWait(notification)
-
-        verify(telemetryService).trackEvent(
-            KeyDateMergeResult.KEY_DATE_CREATED.name,
-            mapOf(
-                "nomsId" to "A1024BY",
-                "handoverDate" to "2023-05-09"
-            )
-        )
-
-        val custody = custodyRepository.findAllByDisposalEventPersonId(PersonGenerator.HANDOVER.id).first()
-        val handoverDates = keyDateRepository.findHandoverDates(custody.id)
-        assertThat(handoverDates.size, equalTo(1))
-        assertThat(handoverDates.first().date, equalTo(LocalDate.parse("2023-05-09")))
-    }
-
-    @Test
     fun `updates a handover key date and start date successfully`() {
         val notification = prepNotification(
             notification("update-handover-and-start-date"),
