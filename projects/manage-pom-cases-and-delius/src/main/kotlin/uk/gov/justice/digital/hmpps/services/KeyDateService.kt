@@ -21,7 +21,7 @@ class KeyDateService(
     private val referenceDataRepository: ReferenceDataRepository
 ) {
     @Transactional
-    fun mergeHandoverDates(personId: Long, date: LocalDate, startDate: LocalDate?): KeyDateMergeResult {
+    fun mergeHandoverDates(personId: Long, date: LocalDate, startDate: LocalDate): KeyDateMergeResult {
         val custodyList = custodyRepository.findAllByDisposalEventPersonId(personId)
         val custody = when (custodyList.size) {
             0 -> throw IgnorableMessageException("NoActiveCustodialSentence")
@@ -32,10 +32,8 @@ class KeyDateService(
         val existing = keyDateRepository.findHandoverDates(custody.id).associateBy { it.type.code }
         val handoverDate = existing[HANDOVER_DATE.value]?.apply { this.date = date }
             ?: keyDate(custody.id, HANDOVER_DATE, date)
-        val handoverStartDate = startDate?.let {
-            existing[HANDOVER_START_DATE.value]?.apply { this.date = it }
-                ?: keyDate(custody.id, HANDOVER_START_DATE, it)
-        }
+        val handoverStartDate = existing[HANDOVER_START_DATE.value]?.apply { this.date = startDate }
+            ?: keyDate(custody.id, HANDOVER_START_DATE, startDate)
 
         val saved = keyDateRepository.saveAll(listOfNotNull(handoverDate, handoverStartDate))
         return if (saved.size > existing.size) KeyDateMergeResult.KEY_DATE_CREATED else KeyDateMergeResult.KEY_DATE_UPDATED
