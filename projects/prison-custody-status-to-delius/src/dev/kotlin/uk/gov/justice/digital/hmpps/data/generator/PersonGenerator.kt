@@ -1,8 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.notification.nomsId
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
-import uk.gov.justice.digital.hmpps.message.Notification
 
 object PersonGenerator {
     val RELEASABLE = generate(NotificationGenerator.PRISONER_RELEASED.nomsId())
@@ -18,6 +17,4 @@ object PersonGenerator {
     val IRC_IN_CUSTODY = generate(NotificationGenerator.PRISONER_IRC_IN_CUSTODY.nomsId())
 
     fun generate(nomsNumber: String, id: Long = IdGenerator.getAndIncrement()) = Person(id, nomsNumber)
-
-    private fun Notification<HmppsDomainEvent>.nomsId() = message.personReference.findNomsNumber()!!
 }
