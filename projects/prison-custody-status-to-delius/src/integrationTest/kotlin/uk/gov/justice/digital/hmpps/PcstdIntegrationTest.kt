@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NotificationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -251,6 +252,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
     @Test
     fun `hospital release when released on licence in delius`() {
+        whenever(featureFlags.enabled("messages_released_hospital")).thenReturn(true)
         val notification = NotificationGenerator.PRISONER_HOSPITAL_RELEASED
         val nomsNumber = notification.nomsId()
         assertFalse(getCustody(nomsNumber).isInCustody())
@@ -290,6 +292,8 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
     @Test
     fun `hospital release when in custody in delius`() {
+        whenever(featureFlags.enabled("messages_released_hospital")).thenReturn(true)
+
         val notification = NotificationGenerator.PRISONER_HOSPITAL_IN_CUSTODY
         val nomsNumber = notification.nomsId()
         assertTrue(getCustody(nomsNumber).isInCustody())

@@ -14,6 +14,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.integrations.prison.BookingId
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
@@ -28,6 +29,9 @@ import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class HandlerTest {
+
+    @Mock
+    lateinit var featureFlags: FeatureFlags
 
     @Mock
     lateinit var telemetryService: TelemetryService
@@ -49,7 +53,8 @@ internal class HandlerTest {
             ),
             PrisonerMovementConfig(
                 listOf(PrisonerMovement.Type.RELEASED_TO_HOSPITAL),
-                actionNames = listOf("Recall", "UpdateStatus", "UpdateLocation")
+                actionNames = listOf("Recall", "UpdateStatus", "UpdateLocation"),
+                featureFlag = "messages_released_hospital"
             )
         )
     )
@@ -58,7 +63,7 @@ internal class HandlerTest {
 
     @BeforeEach
     fun setup() {
-        handler = Handler(configs, telemetryService, prisonApiClient, actionProcessor, converter)
+        handler = Handler(configs, featureFlags, telemetryService, prisonApiClient, actionProcessor, converter)
     }
 
     private val notification = Notification(
@@ -189,6 +194,7 @@ internal class HandlerTest {
 
     @Test
     fun `if booking is released when identifier added - telemetry is tracked`() {
+        whenever(featureFlags.enabled("messages_released_hospital")).thenReturn(true)
         val releaseBooking = booking.copy(
             movementType = "REL",
             movementReason = "HQ",
@@ -235,6 +241,37 @@ internal class HandlerTest {
             "StatusUpdated",
             prisonerMovement.telemetryProperties(),
             mapOf()
+        )
+    }
+
+    @Test
+    fun `noop whenever feature flagged and not active`() {
+        whenever(featureFlags.enabled("messages_released_hospital")).thenReturn(false)
+        val hospitalNotification = notification.copy(
+            message = notification.message.copy(
+                additionalInformation = AdditionalInformation(
+                    mutableMapOf(
+                        "nomsNumber" to "Z0001ZZ",
+                        "prisonId" to "OUT",
+                        "reason" to "RELEASED_TO_HOSPITAL",
+                        "nomisMovementReasonCode" to "HP",
+                        "details" to "REL-HQ"
+                    )
+                )
+            )
+        )
+        handler.handle(hospitalNotification)
+        verify(telemetryService).trackEvent(
+            "FeatureFlagNotActive",
+            mapOf(
+                "featureFlag" to "messages_released_hospital",
+                "occurredAt" to hospitalNotification.message.occurredAt.toString(),
+                "nomsNumber" to "Z0001ZZ",
+                "institution" to "OUT",
+                "reason" to "RELEASED_TO_HOSPITAL",
+                "movementReason" to "HP",
+                "movementType" to "Released"
+            )
         )
     }
 }

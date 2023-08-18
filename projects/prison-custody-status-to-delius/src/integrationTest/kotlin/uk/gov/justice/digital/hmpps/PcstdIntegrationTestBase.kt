@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactAlertRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
@@ -73,6 +74,9 @@ open class PcstdIntegrationTestBase {
 
     @MockBean
     internal lateinit var telemetryService: TelemetryService
+
+    @MockBean
+    internal lateinit var featureFlags: FeatureFlags
 
     internal fun getPersonId(nomsNumber: String) =
         personRepository.findByNomsNumberAndSoftDeletedIsFalse(nomsNumber).single().id

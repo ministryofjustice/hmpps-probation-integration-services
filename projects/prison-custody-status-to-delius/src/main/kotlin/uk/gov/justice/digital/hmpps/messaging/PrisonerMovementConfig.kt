@@ -11,7 +11,8 @@ data class PrisonerMovementConfigs(
 data class PrisonerMovementConfig(
     val types: List<PrisonerMovement.Type>,
     val reasons: List<String> = listOf(),
-    val actionNames: List<String> = listOf()
+    val actionNames: List<String> = listOf(),
+    val featureFlag: String? = null
 ) {
     fun validFor(type: PrisonerMovement.Type, reason: String): Boolean =
         type in types && (reasons.isEmpty() || reason in reasons)
