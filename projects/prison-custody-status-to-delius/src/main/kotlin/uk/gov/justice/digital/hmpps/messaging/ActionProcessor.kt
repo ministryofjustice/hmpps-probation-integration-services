@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.isTerminated
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 
 @Service
@@ -15,9 +14,6 @@ class ActionProcessor(actionsList: List<PrisonerMovementAction>, private val eve
         try {
             eventService.getActiveCustodialEvents(prisonerMovement.nomsId)
                 .flatMap { event ->
-                    if (event.disposal?.custody?.status?.isTerminated() == true) {
-                        return listOf(ActionResult.Ignored("CustodyTerminated", prisonerMovement.telemetryProperties()))
-                    }
                     actionNames.map {
                         try {
                             actions[it]?.accept(PrisonerMovementContext(prisonerMovement, event.disposal!!.custody!!))
