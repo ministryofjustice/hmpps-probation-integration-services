@@ -29,7 +29,7 @@ resource "aws_sqs_queue_policy" "SERVICE_NAME-queue-policy" {
 }
 
 module "SERVICE_NAME-dlq" {
-  source                 = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=4.11.0"
+  source                 = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=4.12.0"
   namespace              = var.namespace
   team_name              = var.team_name
   environment-name       = var.environment_name
