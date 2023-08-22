@@ -35,7 +35,7 @@ jobs:
                     -u "${USERNAME}" \
                     -p "${PASSWORD}" \
                     -cat "${SCHEMA}" \
-                    -I "^(^Z.*$|^.*[0-9]$|^SPG.*$|^R_SPG.*$|^PRF_.*$|^PERF_.*$|^MIS_.*$|^.*_MV$|^.*\\$.*$|^.*TRAINING.*$|^PDT_THREAD$|^CHANGE_CAPTURE$)$" \
+                    -I "^(^Z.*$|^.*[0-9]$|^PRF_.*$|^PERF_.*$|^MIS_.*$|^.*_MV$|^.*\\$.*$|^.*TRAINING.*$|^PDT_THREAD$|^CHANGE_CAPTURE$)$" \
                     -vizjs \
                     -o ./schema-spy-report
 
