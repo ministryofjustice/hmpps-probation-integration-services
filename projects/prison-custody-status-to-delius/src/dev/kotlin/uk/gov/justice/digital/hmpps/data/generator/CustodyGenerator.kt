@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 object CustodyGenerator {
     fun generate(
         person: Person,
-        institution: Institution,
+        institution: Institution?,
         custodialStatusCode: CustodialStatusCode = CustodialStatusCode.IN_CUSTODY
     ) = EventGenerator.custodialEvent(person, institution, custodialStatusCode = custodialStatusCode).disposal!!.custody!!
 }

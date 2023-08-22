@@ -20,7 +20,9 @@ import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CAN_RECALL_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.TERMINATED_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
 import java.time.ZonedDateTime
 
@@ -86,6 +88,49 @@ class Custody(
     )
 
     fun mostRecentRelease() = releases.maxWithOrNull(compareBy({ it.date }, { it.createdDatetime }))
+
+    fun updateLocationAt(
+        institution: Institution,
+        dateTime: ZonedDateTime,
+        historyType: () -> ReferenceData
+    ): CustodyHistory? = if (this.institution?.code == institution.code) {
+        null
+    } else {
+        this.institution = institution
+        this.locationChangeDate = dateTime
+        CustodyHistory(
+            date = dateTime,
+            type = historyType(),
+            detail = institution.description,
+            person = disposal.event.person,
+            custody = this
+        )
+    }
+
+    fun updateStatusAt(
+        status: ReferenceData,
+        dateTime: ZonedDateTime,
+        detail: String,
+        historyType: () -> ReferenceData
+    ): CustodyHistory? = if (this.status.code == status.code) {
+        null
+    } else {
+        this.status = status
+        this.statusChangeDate = dateTime
+        CustodyHistory(
+            date = dateTime,
+            type = historyType(),
+            detail = detail,
+            person = disposal.event.person,
+            custody = this
+        )
+    }
 }
 
+fun Custody.canBeRecalled(): Boolean {
+    val mrr = mostRecentRelease()
+    return mrr != null && mrr.recall == null && status.code in CAN_RECALL_STATUSES.map { it.code }
+}
+
+fun ReferenceData.isTerminated() = TERMINATED_STATUSES.map { it.code }.contains(code)
 interface CustodyRepository : JpaRepository<Custody, Long>
