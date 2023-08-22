@@ -368,6 +368,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
     @Test
     fun `IRC release when released on licence in delius`() {
+        whenever(featureFlags.enabled("messages_released_irc")).thenReturn(true)
         val notification = NotificationGenerator.PRISONER_IRC_RELEASED
         val nomsNumber = notification.nomsId()
         assertFalse(getCustody(nomsNumber).isInCustody())
@@ -406,6 +407,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
     @Test
     fun `irc release when in custody in delius`() {
+        whenever(featureFlags.enabled("messages_released_irc")).thenReturn(true)
         val notification = NotificationGenerator.PRISONER_IRC_IN_CUSTODY
         val nomsNumber = notification.nomsId()
         assertTrue(getCustody(nomsNumber).isInCustody())
