@@ -8,7 +8,6 @@ import jakarta.persistence.Entity
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -18,7 +17,6 @@ import java.io.Serializable
 @Immutable
 @Entity
 @Table(name = "r_institution")
-@Where(clause = "selectable = 'Y'")
 class Institution(
     @EmbeddedId
     val id: InstitutionId,
@@ -31,10 +29,6 @@ class Institution(
 
     @Column(nullable = false)
     val description: String,
-
-    @Column
-    @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean = true,
 
     @OneToOne(mappedBy = "institution")
     val probationArea: ProbationArea? = null,
