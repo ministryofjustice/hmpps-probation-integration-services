@@ -39,6 +39,7 @@ prisoner.movement.configs:
       - Recall
       - UpdateStatus
       - UpdateLocation
+    featureFlag: messages_released_irc
   - types:
       - RELEASED
     actionNames:
