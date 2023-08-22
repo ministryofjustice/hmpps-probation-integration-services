@@ -34,6 +34,9 @@ spring:
       default-request-headers:
         Accept: application/json
         Content-Type: application/json
+  profiles:
+    include:
+      - prisoner-movement
 
 delius.db.username: PrisonCustodyStatusService # See deploy/database/access.yml
 

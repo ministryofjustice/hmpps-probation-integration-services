@@ -1,5 +1,3 @@
-enabled: false # TODO set this to true when you're ready to deploy your service
-
 generic-service:
   ingress:
     host: manage-offences-and-delius-dev.hmpps.service.justice.gov.uk
@@ -10,6 +8,7 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: dev
     SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/oauth/token
+    INTEGRATIONS_MANAGE-OFFENCES_URL: https://manage-offences-api-dev.hmpps.service.justice.gov.uk
 
     LOGGING_LEVEL_UK_GOV_DIGITAL_JUSTICE_HMPPS: DEBUG
 

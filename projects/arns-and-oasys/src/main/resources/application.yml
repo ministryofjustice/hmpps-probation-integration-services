@@ -1,0 +1,48 @@
+# Default config
+spring:
+  jackson:
+    default-property-inclusion: non_null
+    parser:
+      allow-unquoted-control-chars: true
+  security.oauth2.client:
+    registration:
+      arns-and-oasys:
+        provider: ords-oasys-auth
+        authorization-grant-type: client_credentials
+        client-id: ${ords.client-id}
+        client-secret: ${ords.client-secret}
+    provider:
+      ords-oasys-auth:
+        token-uri: http://localhost:${wiremock.port}/eor/oasys/oauth/token
+  cloud.openfeign.client.config:
+    default:
+      logger-level: full
+      connect-timeout: 5000
+      read-timeout: 5000
+      default-request-headers:
+        Accept: application/json
+        Content-Type: application/json
+
+springdoc.default-produces-media-type: application/json
+
+management.endpoints.web:
+  base-path: /
+  exposure.include: [ "health", "info" ]
+
+---
+# Shared dev/test config
+spring.config.activate.on-profile: [ "dev", "integration-test" ]
+
+spring:
+  security.oauth2.resourceserver.jwt.public-key-location: classpath:local-public-key.pub
+
+wiremock.enabled: true
+context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+
+ords:
+  client-id: arns-and-oasys
+  client-secret: arns-and-oasys
+
+logging.level:
+  uk.gov.justice.digital.hmpps: DEBUG
+

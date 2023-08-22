@@ -1,6 +1,7 @@
 rootProject.name = "probation-integration-services"
 include(
     // ⌄ add new projects here
+    "arns-and-oasys",
     "prison-education-and-delius",
     "resettlement-passport-and-delius",
     "manage-offences-and-delius",
@@ -51,7 +52,7 @@ dependencyResolutionManagement {
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.0.1")
             library("aws-sts", "software.amazon.awssdk:sts:2.20.92")
             bundle("aws-messaging", listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs", "aws-sts"))
-            library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.0.0")
+            library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.1.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
             library("insights", "com.microsoft.azure:applicationinsights-web:3.4.15")

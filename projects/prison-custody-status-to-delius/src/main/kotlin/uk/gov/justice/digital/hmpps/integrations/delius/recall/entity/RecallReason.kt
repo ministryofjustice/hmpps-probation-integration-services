@@ -38,7 +38,8 @@ class RecallReason(
     enum class Code(val value: String) {
         NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT("NN"),
         END_OF_TEMPORARY_LICENCE("EOTL"),
-        TRANSFER_TO_SECURE_HOSPITAL("TSH")
+        TRANSFER_TO_SECURE_HOSPITAL("TSH"),
+        TRANSFER_TO_IRC("IRC")
     }
 }
 
