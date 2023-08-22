@@ -9,11 +9,6 @@ generic-service:
     tlsSecretName: arns-and-oasys-cert
 
   namespace_secrets:
-    common:
-      SPRING_DATASOURCE_URL: DB_URL
-    arns-and-oasys-database:
-      SPRING_DATASOURCE_USERNAME: DB_USERNAME
-      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
     arns-and-oasys-sentry:
       SENTRY_DSN: SENTRY_DSN
 

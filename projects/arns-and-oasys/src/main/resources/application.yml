@@ -17,8 +17,8 @@ spring:
   cloud.openfeign.client.config:
     default:
       logger-level: full
-      connect-timeout: 90000
-      read-timeout: 90000
+      connect-timeout: 5000
+      read-timeout: 5000
       default-request-headers:
         Accept: application/json
         Content-Type: application/json
