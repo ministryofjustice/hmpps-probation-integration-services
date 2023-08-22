@@ -41,20 +41,17 @@ class UpdateLocationAction(
 
     override fun accept(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
-        if ((prisonerMovement is PrisonerMovement.Received || prisonerMovement.isHospitalRelease()) &&
-            prisonerMovement.prisonId != null && custody.institution?.nomisCdeCode == prisonerMovement.prisonId
+        if ((
+            prisonerMovement is PrisonerMovement.Received ||
+                prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease()
+            ) && prisonerMovement.prisonId != null && custody.institution?.nomisCdeCode == prisonerMovement.prisonId
         ) {
             return ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
         }
 
         val institution = when (prisonerMovement) {
             is PrisonerMovement.Received -> institutionRepository.getByNomisCdeCode(prisonerMovement.prisonId)
-            is PrisonerMovement.Released -> if (prisonerMovement.isHospitalRelease()) {
-                prisonerMovement.prisonId?.let { institutionRepository.findByNomisCdeCode(it) }
-                    ?: run { institutionRepository.getByCode(InstitutionCode.OTHER_SECURE_UNIT.code) }
-            } else {
-                institutionRepository.getByCode(InstitutionCode.IN_COMMUNITY.code)
-            }
+            is PrisonerMovement.Released -> prisonerMovement.releaseLocation(custody)
         }
 
         return custody.updateLocationAt(institution, prisonerMovement.occurredAt) {
@@ -75,8 +72,22 @@ class UpdateLocationAction(
         } ?: ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
     }
 
+    private fun PrisonerMovement.releaseLocation(custody: Custody) =
+        when {
+            isHospitalRelease() -> institutionRepository.getByCode(InstitutionCode.OTHER_SECURE_UNIT.code)
+            isIrcRelease() -> if (custody.institution?.irc == true) {
+                custody.institution!!
+            } else {
+                institutionRepository.getByCode(InstitutionCode.OTHER_IRC.code)
+            }
+
+            else -> institutionRepository.getByCode(InstitutionCode.IN_COMMUNITY.code)
+        }
+
     private fun createLocationChangeContact(prisonerMovement: PrisonerMovement, custody: Custody) {
-        if (prisonerMovement is PrisonerMovement.Received || prisonerMovement.isHospitalRelease()) {
+        if (prisonerMovement is PrisonerMovement.Received ||
+            prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease()
+        ) {
             val notes = """
             |Custodial Status: ${custody.status.description}
             |Custodial Establishment: ${custody.institution!!.description}

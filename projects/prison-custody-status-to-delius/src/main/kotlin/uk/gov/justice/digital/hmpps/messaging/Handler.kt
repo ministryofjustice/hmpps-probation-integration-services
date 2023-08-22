@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
@@ -18,6 +19,7 @@ import java.time.ZonedDateTime
 @Component
 class Handler(
     configContainer: PrisonerMovementConfigs,
+    private val featureFlags: FeatureFlags,
     private val telemetryService: TelemetryService,
     private val prisonApiClient: PrisonApiClient,
     private val actionProcessor: ActionProcessor,
@@ -51,6 +53,14 @@ class Handler(
                         "movementReason" to movement.reason
                     )
                 )
+
+            if (config.featureFlag != null && !featureFlags.enabled(config.featureFlag)) {
+                return telemetryService.trackEvent(
+                    "FeatureFlagNotActive",
+                    movement.telemetryProperties() + ("featureFlag" to config.featureFlag)
+                )
+            }
+
             val results = actionProcessor.processActions(movement, config.actionNames)
             val failure = results.firstOrNull { it is ActionResult.Failure } as ActionResult.Failure?
             if (failure == null) {

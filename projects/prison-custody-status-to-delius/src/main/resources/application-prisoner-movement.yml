@@ -11,6 +11,7 @@ prisoner.movement.configs:
       - Recall
       - UpdateStatus
       - UpdateLocation
+    featureFlag: messages_released_hospital
   - types:
       - RELEASED
     reasons:
@@ -23,6 +24,17 @@ prisoner.movement.configs:
       - HO
       - HP
       - HQ
+    actionNames:
+      - Recall
+      - UpdateStatus
+      - UpdateLocation
+    featureFlag: messages_released_hospital
+  - types:
+      - RELEASED
+    reasons:
+      - DD
+      - DE
+      - DL
     actionNames:
       - Recall
       - UpdateStatus

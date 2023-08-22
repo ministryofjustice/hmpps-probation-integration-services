@@ -43,4 +43,10 @@ sealed interface PrisonerMovement {
             MovementReasonCodes.FINAL_DISCHARGE_PSYCHIATRIC
         )
         )
+
+    fun isIrcRelease() = this is Released && reason in listOf(
+        MovementReasonCodes.DISCHARGED_OR_DEPORTED,
+        MovementReasonCodes.DEPORTED_NO_SENTENCE,
+        MovementReasonCodes.DEPORTED_LICENCE
+    )
 }

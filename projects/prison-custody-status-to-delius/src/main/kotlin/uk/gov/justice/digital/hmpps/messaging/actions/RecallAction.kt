@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactDetail
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
-import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canRecall
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canBeRecalled
 import uk.gov.justice.digital.hmpps.integrations.delius.licencecondition.LicenceConditionService
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.Recall
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
@@ -86,13 +86,12 @@ class RecallAction(
 
     private fun checkPreconditions(prisonerMovement: PrisonerMovement, custody: Custody) {
         val latestRelease = custody.mostRecentRelease()
-
-        if (latestRelease == null || latestRelease.recall != null || !custody.status.canRecall()) {
+        if (!custody.canBeRecalled()) {
             throw IgnorableMessageException("RecallNotPossible")
         }
 
         if (prisonerMovement.occurredAt.isAfter(ZonedDateTime.now()) ||
-            (prisonerMovement.occurredAt.isBefore(latestRelease.date))
+            (prisonerMovement.occurredAt.isBefore(latestRelease?.date))
         ) {
             throw IgnorableMessageException("InvalidRecallDate")
         }
@@ -119,6 +118,8 @@ class RecallAction(
 
         PrisonerMovement.Type.RELEASED -> if (prisonerMovement.isHospitalRelease()) {
             RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL
+        } else if (prisonerMovement.isIrcRelease()) {
+            RecallReason.Code.TRANSFER_TO_IRC
         } else {
             throw IgnorableMessageException("RecallNotSupported", prisonerMovement.telemetryProperties())
         }

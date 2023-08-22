@@ -56,6 +56,7 @@ interface EventRepository : JpaRepository<Event, Long> {
         and e.disposal.type.sentenceType in ('NC', 'SC')
         and e.disposal.active = true and e.active = true
         and e.disposal.softDeleted = false and e.softDeleted = false
+        and e.disposal.custody.status.code not in ('AT', 'T')
         """
     )
     fun findActiveCustodialEvents(personId: Long): List<Event>
