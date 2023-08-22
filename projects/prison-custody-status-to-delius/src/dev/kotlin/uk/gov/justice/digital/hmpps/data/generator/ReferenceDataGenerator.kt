@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator.ACCEPTED_DECISION
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataSetGenerator.LICENCE_AREA_TRANSFER_REJECTION_REASON
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReason
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
@@ -37,7 +39,8 @@ object ReferenceDataGenerator {
     val CONTACT_TYPE =
         ContactType.Code.entries.associateWith { ContactType(IdGenerator.getAndIncrement(), it.value) }
 
-    val ACR_DATE_TYPE = generate("ACR", ReferenceDataSetGenerator.KEY_DATE_TYPE)
+    val LC_REJECTED_DECISION = generate("R", ACCEPTED_DECISION)
+    val LC_REJECTED_REASON = generate("TWR", LICENCE_AREA_TRANSFER_REJECTION_REASON)
 
     fun generate(
         code: String,
@@ -52,7 +55,8 @@ object ReferenceDataSetGenerator {
     val CUSTODIAL_STATUS = generate("THROUGHCARE STATUS")
     val CUSTODY_EVENT_TYPE = generate("CUSTODY EVENT TYPE")
     val TRANSFER_STATUS = generate("TRANSFER STATUS")
-    val KEY_DATE_TYPE = generate("THROUGHCARE DATE TYPE")
+    val ACCEPTED_DECISION = generate("ACCEPTED DECISION")
+    val LICENCE_AREA_TRANSFER_REJECTION_REASON = generate("LICENCE AREA TRANSFER REJECTION REASON")
 
     fun generate(name: String, id: Long = IdGenerator.getAndIncrement()) = ReferenceDataSet(id, name)
 }

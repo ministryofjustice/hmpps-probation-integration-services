@@ -33,15 +33,15 @@ internal class MovementTest {
             Arguments.of(BOOKING.copy(movementType = "REL", inOutStatus = Booking.InOutStatus.OUT), "RELEASED"),
             Arguments.of(
                 BOOKING.copy(movementType = "REL", movementReason = "HO", inOutStatus = Booking.InOutStatus.OUT),
-                "RELEASE_TO_HOSPITAL"
+                "RELEASED_TO_HOSPITAL"
             ),
             Arguments.of(
                 BOOKING.copy(movementType = "REL", movementReason = "HP", inOutStatus = Booking.InOutStatus.OUT),
-                "RELEASE_TO_HOSPITAL"
+                "RELEASED_TO_HOSPITAL"
             ),
             Arguments.of(
                 BOOKING.copy(movementType = "REL", movementReason = "HQ", inOutStatus = Booking.InOutStatus.OUT),
-                "RELEASE_TO_HOSPITAL"
+                "RELEASED_TO_HOSPITAL"
             ),
             Arguments.of(BOOKING.copy(movementType = "OTHER", movementReason = "ANY"), null)
         )

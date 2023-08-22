@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event.entity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
@@ -17,8 +19,9 @@ class OrderManager(
     @Column(name = "order_manager_id", nullable = false)
     val id: Long,
 
-    @Column(nullable = false)
-    val eventId: Long,
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    val event: Event,
 
     @Column(name = "allocation_staff_id")
     override val staffId: Long,

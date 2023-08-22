@@ -5,6 +5,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Version
 import org.springframework.data.jpa.repository.JpaRepository
@@ -37,8 +38,13 @@ class Event(
     val softDeleted: Boolean = false,
 
     @Column
-    var firstReleaseDate: ZonedDateTime? = null
-)
+    var firstReleaseDate: ZonedDateTime? = null,
+
+    @OneToMany(mappedBy = "event")
+    val managers: List<OrderManager> = listOf()
+) {
+    fun manager() = managers.first()
+}
 
 interface EventRepository : JpaRepository<Event, Long> {
 
@@ -50,6 +56,7 @@ interface EventRepository : JpaRepository<Event, Long> {
         and e.disposal.type.sentenceType in ('NC', 'SC')
         and e.disposal.active = true and e.active = true
         and e.disposal.softDeleted = false and e.softDeleted = false
+        and e.disposal.custody.status.code not in ('AT', 'T')
         """
     )
     fun findActiveCustodialEvents(personId: Long): List<Event>
