@@ -1,0 +1,53 @@
+{
+  "source": "OASys",
+  "inputs": {
+    "crn": "W960724",
+    "laoPrivilege": "ALLOW"
+  },
+  "crn": "W960724",
+  "limitedAccessOffender": false,
+  "timeline": [
+    {
+      "assessmentPk": 9326320,
+      "assessmentType": "LAYER1",
+      "initiationDate": "2016-01-13T12:13:03",
+      "status": "COMPLETE",
+      "completedDate": "2016-01-13T12:15:00"
+    },
+    {
+      "assessmentPk": 9329331,
+      "assessmentType": "LAYER3",
+      "initiationDate": "2016-01-29T16:08:45",
+      "status": "COMPLETE",
+      "completedDate": "2016-01-29T16:21:40"
+    }
+  ],
+  "assessments": [
+    {
+      "assessmentPk": 9329331,
+      "assessmentType": "LAYER3",
+      "dateCompleted": "2016-01-29T16:21:40",
+      "assessorSignedDate": "2016-01-29T16:21:40",
+      "initiationDate": "2016-01-29T16:08:45",
+      "assessmentStatus": "COMPLETE",
+      "superStatus": "COMPLETE",
+      "laterWIPAssessmentExists": false,
+      "latestWIPDate": null,
+      "laterSignLockAssessmentExists": false,
+      "latestSignLockDate": null,
+      "laterPartCompUnsignedAssessmentExists": false,
+      "latestPartCompUnsignedDate": null,
+      "laterPartCompSignedAssessmentExists": false,
+      "latestPartCompSignedDate": null,
+      "laterCompleteAssessmentExists": false,
+      "latestCompleteDate": "2016-01-29T16:21:40",
+      "keyInformationCurrentSituation": null,
+      "furtherConsiderationsCurrentSituation": null,
+      "supervision": null,
+      "monitoringAndControl": null,
+      "interventionsAndTreatment": null,
+      "victimSafetyPlanning": null,
+      "contingencyPlans": null
+    }
+  ]
+}
