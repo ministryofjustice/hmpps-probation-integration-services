@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CAN_RECALL_STATUSES
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CAN_RELEASE_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.TERMINATED_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
@@ -132,5 +133,6 @@ fun Custody.canBeRecalled(): Boolean {
     return mrr != null && mrr.recall == null && status.code in CAN_RECALL_STATUSES.map { it.code }
 }
 
-fun ReferenceData.isTerminated() = TERMINATED_STATUSES.map { it.code }.contains(code)
+fun Custody.canBeReleased() = status.code in CAN_RELEASE_STATUSES.map { it.code }
+
 interface CustodyRepository : JpaRepository<Custody, Long>
