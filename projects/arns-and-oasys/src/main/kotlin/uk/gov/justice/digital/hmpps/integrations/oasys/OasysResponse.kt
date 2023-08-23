@@ -54,7 +54,7 @@ data class RiskManagementPlan(
     val monitoringAndControl: String? = null,
     val interventionsAndTreatment: String? = null,
     val victimSafetyPlanning: String? = null,
-    val contingencyPlans: String? = null,
+    val contingencyPlans: String? = null
 ) : OasysAssessment
 
 data class RiskPredictors(
@@ -79,7 +79,7 @@ data class RiskPredictors(
     @JsonAlias("OGRS") val ogrs: Ogrs,
     @JsonAlias("OSP") val osp: Osp,
     @JsonAlias("OVP") val ovp: Ovp,
-    @JsonAlias("RSR") val rsr: Rsr,
+    @JsonAlias("RSR") val rsr: Rsr
 ) : OasysAssessment
 
 data class OffenceDetails(
@@ -109,7 +109,7 @@ data class OffenceDetails(
     val victimOtherInfo: String? = null,
     val evidencedMotivations: List<String>? = listOf(),
     val offenceDetails: List<OffenceDetail>? = listOf(),
-    val victimDetails: List<VictimDetail>? = listOf(),
+    val victimDetails: List<VictimDetail>? = listOf()
 ) : OasysAssessment
 
 data class OffenceDetail(
@@ -125,7 +125,7 @@ data class VictimDetail(
     val age: String? = null,
     val gender: String? = null,
     val ethnicCategory: String? = null,
-    val victimRelation: String? = null,
+    val victimRelation: String? = null
 )
 
 data class Ogp(
