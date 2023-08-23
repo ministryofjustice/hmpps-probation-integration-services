@@ -28,7 +28,7 @@ class OffenderDeltaService(
     }
 
     fun OffenderDelta.asNotifications(): List<Notification<OffenderEvent>> {
-        fun sourceToEventType(sourceTable: String, action: String): String? = when (sourceTable) {
+        fun sourceToEventType(): String? = when (sourceTable) {
             "ALIAS" -> "OFFENDER_ALIAS_CHANGED"
             "DEREGISTRATION" -> "OFFENDER_REGISTRATION_DEREGISTERED"
             "DISPOSAL" -> "SENTENCE_CHANGED"
@@ -44,7 +44,7 @@ class OffenderDeltaService(
         }
 
         return if (offender != null) {
-            sourceToEventType(sourceTable, action)?.let {
+            sourceToEventType()?.let {
                 val oe = OffenderEvent(offender.id, offender.crn, offender.nomsNumber, sourceRecordId, dateChanged)
                 val list: MutableList<Notification<OffenderEvent>> = mutableListOf()
                 if (sourceTable in listOf("ALIAS", "OFFENDER", "OFFENDER_MANAGER", "OFFENDER_ADDRESS", "OFFICER")) {
@@ -58,6 +58,6 @@ class OffenderDeltaService(
         }
     }
 
-    private fun OffenderDelta.managementTierMessageIgnored() = action === "DELETE" ||
+    private fun OffenderDelta.managementTierMessageIgnored() = action == "DELETE" ||
         managementTierEventRepository.findByIdOrNull(sourceRecordId)?.reason?.code in listOf("ROSH", "MAP", "REG", "DEREG")
 }
