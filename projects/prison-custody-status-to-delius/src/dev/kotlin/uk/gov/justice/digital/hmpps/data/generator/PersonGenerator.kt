@@ -1,15 +1,20 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.data.notification.nomsId
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.messaging.nomsNumber
 
 object PersonGenerator {
-    val RELEASABLE = generate(MessageGenerator.PRISONER_RELEASED.additionalInformation.nomsNumber())
-    val RECALLABLE = generate(MessageGenerator.PRISONER_RECEIVED.additionalInformation.nomsNumber())
-    val DIED = generate(MessageGenerator.PRISONER_DIED.additionalInformation.nomsNumber())
-    val MATCHABLE = generate(MessageGenerator.PRISONER_MATCHED.personReference.findNomsNumber()!!)
-    val NEW_CUSTODY = generate(MessageGenerator.PRISONER_NEW_CUSTODY.personReference.findNomsNumber()!!)
-    val RECALLED = generate(MessageGenerator.PRISONER_RECALLED.personReference.findNomsNumber()!!)
+    val RELEASABLE = generate(NotificationGenerator.PRISONER_RELEASED.nomsId())
+    val RECALLABLE = generate(NotificationGenerator.PRISONER_RECEIVED.nomsId())
+    val DIED = generate(NotificationGenerator.PRISONER_DIED.nomsId())
+    val MATCHABLE = generate(NotificationGenerator.PRISONER_MATCHED.nomsId())
+    val NEW_CUSTODY = generate(NotificationGenerator.PRISONER_NEW_CUSTODY.nomsId())
+    val RECALLED = generate(NotificationGenerator.PRISONER_RECALLED.nomsId())
+    val HOSPITAL_RELEASED = generate(NotificationGenerator.PRISONER_HOSPITAL_RELEASED.nomsId())
+    val HOSPITAL_IN_CUSTODY = generate(NotificationGenerator.PRISONER_HOSPITAL_IN_CUSTODY.nomsId())
+    val ROTL = generate(NotificationGenerator.PRISONER_ROTL_RETURN.nomsId())
+    val IRC_RELEASED = generate(NotificationGenerator.PRISONER_IRC_RELEASED.nomsId())
+    val IRC_IN_CUSTODY = generate(NotificationGenerator.PRISONER_IRC_IN_CUSTODY.nomsId())
 
     fun generate(nomsNumber: String, id: Long = IdGenerator.getAndIncrement()) = Person(id, nomsNumber)
 }

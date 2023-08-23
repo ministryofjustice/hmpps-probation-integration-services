@@ -9,7 +9,7 @@ object OrderManagerGenerator {
         event: Event
     ): OrderManager = OrderManager(
         IdGenerator.getAndIncrement(),
-        event.id,
+        event,
         Random.nextLong(),
         Random.nextLong(),
         Random.nextLong()
