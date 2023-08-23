@@ -22,14 +22,20 @@ digraph "twoDegreesRelationshipsDiagram" {
   "ASSESSMENT":"elipses":w -> "R_ENFORCEMENT_ACTION":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "ASSESSMENT":"elipses":w -> "R_CONTACT_OUTCOME_TYPE":"CONTACT_OUTCOME_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "ASSESSMENT":"elipses":w -> "CONTACT":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "ASSESSMENT":"elipses":w -> "CONTACT_REDEF":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "ASSESSMENT":"elipses":w -> "REFERRAL":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT":"elipses":w -> "R_CONTACT_OUTCOME_TYPE":"CONTACT_OUTCOME_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT":"elipses":w -> "R_CONTACT_TYPE":"CONTACT_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT":"elipses":w -> "R_ENFORCEMENT_ACTION":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT":"elipses":w -> "R_CONTACT_TYPE":"CONTACT_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT_ALERT":"elipses":w -> "CONTACT":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT_ALERT":"elipses":w -> "CONTACT_REDEF":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT_ALERT":"elipses":w -> "R_CONTACT_OUTCOME_TYPE":"CONTACT_OUTCOME_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT_ALERT":"elipses":w -> "R_CONTACT_TYPE":"CONTACT_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT_REDEF":"elipses":w -> "R_CONTACT_OUTCOME_TYPE":"CONTACT_OUTCOME_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT_REDEF":"elipses":w -> "R_CONTACT_TYPE":"CONTACT_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT_REDEF":"elipses":w -> "R_ENFORCEMENT_ACTION":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT_REDEF":"elipses":w -> "R_CONTACT_TYPE":"CONTACT_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "DRUGS_TEST":"elipses":w -> "R_ENFORCEMENT_ACTION":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "DRUGS_TEST":"elipses":w -> "R_CONTACT_OUTCOME_TYPE":"CONTACT_OUTCOME_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "MANAGEMENT_TIER_EVENT":"elipses":w -> "R_CONTACT_TYPE":"CONTACT_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -61,13 +67,14 @@ digraph "twoDegreesRelationshipsDiagram" {
   "REFERRAL":"elipses":w -> "R_CONTACT_OUTCOME_TYPE":"CONTACT_OUTCOME_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "REFERRAL":"elipses":w -> "R_REFERRAL_TYPE":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "UPW_APPOINTMENT":"elipses":w -> "CONTACT":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "UPW_APPOINTMENT":"elipses":w -> "CONTACT_REDEF":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "UPW_APPOINTMENT":"elipses":w -> "R_CONTACT_OUTCOME_TYPE":"CONTACT_OUTCOME_TYPE_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "ASSESSMENT" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>ASSESSMENT</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 13</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">284 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 14</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">284 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
     </TABLE>>
     URL="../../tables/ASSESSMENT.html"
     target="_top"
@@ -89,11 +96,22 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>CONTACT_ALERT</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 9</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">19,615 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 10</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">19,615 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
     </TABLE>>
     URL="../../tables/CONTACT_ALERT.html"
     target="_top"
     tooltip="CONTACT_ALERT"
+  ];
+  "CONTACT_REDEF" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>CONTACT_REDEF</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 26</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">165,869 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">14 &gt;</TD></TR>
+    </TABLE>>
+    URL="../../tables/CONTACT_REDEF.html"
+    target="_top"
+    tooltip="CONTACT_REDEF"
   ];
   "CONTACT_TYPE_ICON" [
    label=<
@@ -190,7 +208,7 @@ digraph "twoDegreesRelationshipsDiagram" {
       <TR><TD PORT="CONTACT_OUTCOME_TYPE_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="194" HEIGHT="16">CONTACT_OUTCOME_TYPE_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="TRAINING_SESSION_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="194" HEIGHT="16">TRAINING_SESSION_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">220 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">10 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">220 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">11 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/R_CONTACT_OUTCOME_TYPE.html"
     target="_top"
@@ -216,7 +234,7 @@ digraph "twoDegreesRelationshipsDiagram" {
       <TR><TD PORT="TRAINING_SESSION_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="208" HEIGHT="16">TRAINING_SESSION_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="CONTACT_TYPE_ICON_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="208" HEIGHT="16">CONTACT_TYPE_ICON_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3,021 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">22 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3,021 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">24 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/R_CONTACT_TYPE.html"
     target="_top"
@@ -307,7 +325,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>R_ENFORCEMENT_ACTION</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">49 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">6 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">49 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">7 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/R_ENFORCEMENT_ACTION.html"
     target="_top"
@@ -362,7 +380,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>UPW_APPOINTMENT</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 16</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">8,642 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 17</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">8,642 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/UPW_APPOINTMENT.html"
     target="_top"

@@ -1343,6 +1343,14 @@
                                                 <td title="SPG_NOTIFICATION.SPG_MESSAGE_CONTEXT_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1137"><a href='../../RSINGH_DBA/tables/SPG_NOTIFICATION.html'>SPG_NOTIFICATION</a><span class='relatedKey'>.SPG_MESSAGE_CONTEXT_ID</span></td>
                                                 <td class="constraint detail">R_1137<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
+                                            <tr>
+                                                <td title="SPG_NOTIFICATION_INTERIM.SPG_INTERCHANGE_STATUS_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via TMP$$_R_11380"><a href='../../RSINGH_DBA/tables/SPG_NOTIFICATION_INTERIM.html'>SPG_NOTIFICATION_INTERIM</a><span class='relatedKey'>.SPG_INTERCHANGE_STATUS_ID</span></td>
+                                                <td class="constraint detail">TMP$$_R_11380<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_NOTIFICATION_INTERIM.SPG_MESSAGE_CONTEXT_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via TMP$$_R_11370"><a href='../../RSINGH_DBA/tables/SPG_NOTIFICATION_INTERIM.html'>SPG_NOTIFICATION_INTERIM</a><span class='relatedKey'>.SPG_MESSAGE_CONTEXT_ID</span></td>
+                                                <td class="constraint detail">TMP$$_R_11370<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td>
@@ -1630,12 +1638,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>TRUE_OR_FALSE_1883892480</td>
-                                    <td>SPG_INTEREST IN (0, 1)</td>
-                                </tr>
-                                <tr>
                                     <td>YES_OR_NO27</td>
                                     <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE_1883892480</td>
+                                    <td>SPG_INTEREST IN (0, 1)</td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE_1684532474</td>

@@ -120,6 +120,10 @@
                                                 <td class="constraint detail">R_895<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
+                                                <td title="CONTACT_REDEF.NSI_ID references NSI.NSI_ID via TMP$$_R_8950"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.NSI_ID</span></td>
+                                                <td class="constraint detail">TMP$$_R_8950<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="NSI_MANAGER.NSI_ID references NSI.NSI_ID via R_837"><a href='NSI_MANAGER.html'>NSI_MANAGER</a><span class='relatedKey'>.NSI_ID</span></td>
                                                 <td class="constraint detail">R_837<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -957,16 +961,16 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>ACTIVE_FLAG_ACTUAL_E_385237158</td>
-                                    <td> (ACTIVE_FLAG = 0 AND ACTUAL_END_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG = 1 AND ACTUAL_END_DATE IS NULL)&#10; </td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE_1566803328</td>
                                     <td>PENDING_TRANSFER IN (0, 1)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_ONLY_1986954636</td>
                                     <td>DOCUMENT_LINKED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>ACTIVE_FLAG_ACTUAL_E_385237158</td>
+                                    <td> (ACTIVE_FLAG = 0 AND ACTUAL_END_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG = 1 AND ACTUAL_END_DATE IS NULL)&#10; </td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE_421013047</td>

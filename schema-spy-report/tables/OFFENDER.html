@@ -172,6 +172,10 @@
                                                 <td class="constraint detail">R_1215<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
+                                                <td title="CONTACT_REDEF.OFFENDER_ID references OFFENDER.OFFENDER_ID via TMP$$_SYS_C00218930"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.OFFENDER_ID</span></td>
+                                                <td class="constraint detail">TMP$$_SYS_C00218930<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="COURT_APPEARANCE.OFFENDER_ID references OFFENDER.OFFENDER_ID via SYS_C0021932"><a href='COURT_APPEARANCE.html'>COURT_APPEARANCE</a><span class='relatedKey'>.OFFENDER_ID</span></td>
                                                 <td class="constraint detail">SYS_C0021932<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -514,6 +518,10 @@
                                             <tr>
                                                 <td title="SPG_NOTIFICATION.OFFENDER_ID references OFFENDER.OFFENDER_ID via R_1046"><a href='../../RSINGH_DBA/tables/SPG_NOTIFICATION.html'>SPG_NOTIFICATION</a><span class='relatedKey'>.OFFENDER_ID</span></td>
                                                 <td class="constraint detail">R_1046<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SPG_NOTIFICATION_INTERIM.OFFENDER_ID references OFFENDER.OFFENDER_ID via TMP$$_R_10460"><a href='../../RSINGH_DBA/tables/SPG_NOTIFICATION_INTERIM.html'>SPG_NOTIFICATION_INTERIM</a><span class='relatedKey'>.OFFENDER_ID</span></td>
+                                                <td class="constraint detail">TMP$$_R_10460<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -2063,20 +2071,40 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>TRUE_OR_FALSE65</td>
-                                    <td>SOFT_DELETED IN (0, 1)</td>
-                                </tr>
-                                <tr>
                                     <td>YES_OR_NO_ONLY_1345657105</td>
                                     <td>TRANSGENDER_CONSENT_DISCLOSE IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>CON_CURRENT_DISPOSAL</td>
-                                    <td>CURRENT_DISPOSAL IN (0, 1)</td>
+                                    <td>YES_OR_NO_ONLY_1819182291</td>
+                                    <td>IOM_NOMINAL IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_OR_UNKNOWN10</td>
+                                    <td>INTERPRETER_REQUIRED IN (&#39;N&#39;,&#39;Y&#39;,&#39;U&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE65</td>
+                                    <td>SOFT_DELETED IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>CON_CURRENT_RESTRICTION</td>
+                                    <td>CURRENT_RESTRICTION IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_2054319986</td>
+                                    <td>DISABILITY IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE66</td>
                                     <td>PENDING_TRANSFER IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>CON_CURRENT_EXCLUSION</td>
+                                    <td>CURRENT_EXCLUSION IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_887952511</td>
+                                    <td>VULNERABILITY_ISSUE IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_ONLY32</td>
@@ -2087,36 +2115,16 @@
                                     <td>ALLOW_SMS IN (&#39;N&#39;,&#39;Y&#39;,&#39;U&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>CON_CURRENT_RESTRICTION</td>
-                                    <td>CURRENT_RESTRICTION IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY_1967808043</td>
-                                    <td>MENTAL_HEALTH IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_OR_UNKNOWN10</td>
-                                    <td>INTERPRETER_REQUIRED IN (&#39;N&#39;,&#39;Y&#39;,&#39;U&#39;)</td>
-                                </tr>
-                                <tr>
                                     <td>YES_OR_NO_ONLY_489520233</td>
                                     <td>LEARNING IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>CON_CURRENT_EXCLUSION</td>
-                                    <td>CURRENT_EXCLUSION IN (0, 1)</td>
+                                    <td>CON_CURRENT_DISPOSAL</td>
+                                    <td>CURRENT_DISPOSAL IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY_2054319986</td>
-                                    <td>DISABILITY IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY_887952511</td>
-                                    <td>VULNERABILITY_ISSUE IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY_1819182291</td>
-                                    <td>IOM_NOMINAL IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>YES_OR_NO_ONLY_1967808043</td>
+                                    <td>MENTAL_HEALTH IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_ONLY_854915354</td>

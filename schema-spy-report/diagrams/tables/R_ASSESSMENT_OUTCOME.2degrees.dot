@@ -23,6 +23,7 @@ digraph "twoDegreesRelationshipsDiagram" {
   "ASSESSMENT":"CONTACT_EA_ID":w -> "R_ENFORCEMENT_ACTION":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "ASSESSMENT":"CONTACT_OUTCOME_TYPE_ID":w -> "R_CONTACT_OUTCOME_TYPE":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "ASSESSMENT":"ENFORCEABLE_CONTACT_ID":w -> "CONTACT":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "ASSESSMENT":"ENFORCEABLE_CONTACT_ID":w -> "CONTACT_REDEF":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "ASSESSMENT":"EVENT_ID":w -> "EVENT":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "ASSESSMENT":"OFFENDER_ID":w -> "OFFENDER":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "ASSESSMENT":"PARTITION_AREA_ID":w -> "PARTITION_AREA":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -40,6 +41,15 @@ digraph "twoDegreesRelationshipsDiagram" {
   "CONTACT":"elipses":w -> "PROVIDER_TEAM":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT":"elipses":w -> "STAFF":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT":"elipses":w -> "TEAM":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT_REDEF":"elipses":w -> "R_CONTACT_OUTCOME_TYPE":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT_REDEF":"elipses":w -> "EVENT":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT_REDEF":"elipses":w -> "R_ENFORCEMENT_ACTION":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT_REDEF":"elipses":w -> "OFFENDER":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT_REDEF":"elipses":w -> "PARTITION_AREA":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT_REDEF":"elipses":w -> "PROVIDER_EMPLOYEE":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT_REDEF":"elipses":w -> "PROVIDER_TEAM":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT_REDEF":"elipses":w -> "STAFF":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "CONTACT_REDEF":"elipses":w -> "TEAM":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "EVENT":"elipses":w -> "OFFENDER":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "EVENT":"elipses":w -> "PARTITION_AREA":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "OFFENDER":"elipses":w -> "PARTITION_AREA":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -75,7 +85,7 @@ digraph "twoDegreesRelationshipsDiagram" {
       <TR><TD PORT="ENFORCEABLE_CONTACT_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="184" HEIGHT="16">ENFORCEABLE_CONTACT_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="EVENT_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="184" HEIGHT="16">EVENT_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 13</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">284 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 14</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">284 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD></TR>
     </TABLE>>
     URL="../../tables/ASSESSMENT.html"
     target="_top"
@@ -92,12 +102,23 @@ digraph "twoDegreesRelationshipsDiagram" {
     target="_top"
     tooltip="CONTACT"
   ];
+  "CONTACT_REDEF" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>CONTACT_REDEF</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 26</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">165,869 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">14 &gt;</TD></TR>
+    </TABLE>>
+    URL="../../tables/CONTACT_REDEF.html"
+    target="_top"
+    tooltip="CONTACT_REDEF"
+  ];
   "EVENT" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>EVENT</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 5</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">14,604 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">27 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 5</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">14,604 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">28 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/EVENT.html"
     target="_top"
@@ -108,7 +129,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>OFFENDER</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 16</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">18,527 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">101 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 16</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">18,527 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">103 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/OFFENDER.html"
     target="_top"
@@ -119,7 +140,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>PARTITION_AREA</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">44 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">81 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">44 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">82 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/PARTITION_AREA.html"
     target="_top"
@@ -130,7 +151,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>PROVIDER_EMPLOYEE</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 row</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">22 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 row</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">23 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/PROVIDER_EMPLOYEE.html"
     target="_top"
@@ -141,7 +162,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>PROVIDER_TEAM</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 row</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">24 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 2</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 row</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">25 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/PROVIDER_TEAM.html"
     target="_top"
@@ -199,7 +220,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>R_CONTACT_OUTCOME_TYPE</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">220 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">10 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">220 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">11 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/R_CONTACT_OUTCOME_TYPE.html"
     target="_top"
@@ -210,7 +231,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>R_ENFORCEMENT_ACTION</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">49 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">6 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">49 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">7 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/R_ENFORCEMENT_ACTION.html"
     target="_top"
@@ -232,7 +253,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>STAFF</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3,352 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">58 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3,352 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">59 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/STAFF.html"
     target="_top"
@@ -243,7 +264,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>TEAM</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1,458 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">62 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1,458 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">63 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/TEAM.html"
     target="_top"

@@ -115,6 +115,10 @@
                                                 <td title="CONTACT.EXPLANATION_ID references R_EXPLANATION.EXPLANATION_ID via SYS_C0021887"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.EXPLANATION_ID</span></td>
                                                 <td class="constraint detail">SYS_C0021887<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
+                                            <tr>
+                                                <td title="CONTACT_REDEF.EXPLANATION_ID references R_EXPLANATION.EXPLANATION_ID via TMP$$_SYS_C00218870"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.EXPLANATION_ID</span></td>
+                                                <td class="constraint detail">TMP$$_SYS_C00218870<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td>
@@ -358,12 +362,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY37</td>
-                                    <td>ACCEPTABLE IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
                                     <td>YES_OR_NO20</td>
                                     <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY37</td>
+                                    <td>ACCEPTABLE IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>

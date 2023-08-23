@@ -120,6 +120,10 @@
                                                 <td class="constraint detail">R_786<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
+                                                <td title="CONTACT_REDEF.LATEST_ENFORCEMENT_ACTION_ID references R_ENFORCEMENT_ACTION.ENFORCEMENT_ACTION_ID via TMP$$_R_7860"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.LATEST_ENFORCEMENT_ACTION_ID</span></td>
+                                                <td class="constraint detail">TMP$$_R_7860<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="DRUGS_TEST.CONTACT_EA_ID references R_ENFORCEMENT_ACTION.ENFORCEMENT_ACTION_ID via R_1327"><a href='DRUGS_TEST.html'>DRUGS_TEST</a><span class='relatedKey'>.CONTACT_EA_ID</span></td>
                                                 <td class="constraint detail">R_1327<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -433,12 +437,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>YES_OR_429</td>
-                                    <td>OUTSTANDING_CONTACT_ACTION IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE_1999790266</td>
                                     <td>SPG_OVERRIDE IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_429</td>
+                                    <td>OUTSTANDING_CONTACT_ACTION IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO19</td>
