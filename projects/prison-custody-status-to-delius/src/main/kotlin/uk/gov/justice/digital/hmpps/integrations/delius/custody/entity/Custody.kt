@@ -23,7 +23,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceD
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CAN_RECALL_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CAN_RELEASE_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.TERMINATED_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
 import java.time.ZonedDateTime
 

@@ -57,8 +57,11 @@ class UpdateStatusAction(
         val (prisonerMovement, custody) = context
         val statusCode = when {
             prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease() -> custody.nextStatus()
-            else -> if (custody.canBeReleased()) CustodialStatusCode.RELEASED_ON_LICENCE
-            else throw IgnorableMessageException("PrisonerStatusCorrect")
+            else -> if (custody.canBeReleased()) {
+                CustodialStatusCode.RELEASED_ON_LICENCE
+            } else {
+                throw IgnorableMessageException("PrisonerStatusCorrect")
+            }
         }
         return updateStatus(
             custody,
