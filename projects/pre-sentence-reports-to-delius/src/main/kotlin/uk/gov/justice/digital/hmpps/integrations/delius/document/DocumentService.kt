@@ -6,7 +6,6 @@ import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.MultiValueMap
-import org.springframework.web.util.UriComponentsBuilder
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.ConflictException
@@ -14,27 +13,18 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.entity.User
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.entity.UserRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReport
 import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.PsrReference
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
-import uk.gov.justice.digital.hmpps.integrations.newtech.NewTechEncoder
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 import java.time.ZonedDateTime
-import java.util.UUID
 
 @Service
 class DocumentService(
     auditedInteractionService: AuditedInteractionService,
-    private val userRepository: UserRepository,
-    private val providerRepository: ProviderRepository,
     private val documentRepository: DocumentRepository,
     private val courtReportRepository: CourtReportRepository,
-    private val alfrescoClient: AlfrescoClient,
-    private val newTechEncoder: NewTechEncoder
+    private val alfrescoClient: AlfrescoClient
 ) : AuditableService(auditedInteractionService) {
     fun AdditionalInformation.reportId() = this["reportId"] as String
 
@@ -66,71 +56,6 @@ class DocumentService(
             document.lastSaved = ZonedDateTime.now()
             document.lastUpdatedUserId = ServiceContext.servicePrincipal()!!.userId
         }
-
-    @Transactional
-    fun createNewCourtReportDocument(
-        reportType: String,
-        courtReport: CourtReport,
-        psrRef: PsrReference,
-        pdf: ByteArray,
-        username: String
-    ) = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) { audit ->
-        audit["entityId"] = courtReport.id
-        audit["tableName"] = "COURT_REPORT"
-
-        val filename = "$reportType-${psrRef.id}.pdf"
-        val user = userRepository.findByUsername(username)
-        // Can be improved later to look for provider of actual user
-        val provider = providerRepository.findByCode("N00")
-        val aur = alfrescoClient.uploadNewDocument(
-            populateBodyValues(
-                courtReport.person.crn,
-                courtReport.id,
-                filename,
-                pdf,
-                user.name(),
-                true
-            )
-        )
-
-        val document = documentRepository.save(
-            Document(
-                personId = courtReport.person.id,
-                courtReportId = courtReport.id,
-                templateName = reportType,
-                name = filename,
-                externalReference = psrRef.urn,
-                alfrescoId = aur.id,
-                createdDateTime = ZonedDateTime.now(),
-                createdByUserId = user.id,
-                lastSaved = ZonedDateTime.now(),
-                lastUpdatedUserId = user.id,
-                createdProviderId = provider.id,
-                lastUpdatedProviderId = provider.id
-            )
-        )
-
-        audit["documentId"] = document.id
-        audit["alfrescoDocumentId"] = document.alfrescoId
-    }
-
-    fun getPreSentenceReportUrl(uuid: UUID, psrBaseUrl: String): String {
-        val templateName = documentRepository.findByExternalReference(uuid.toString())?.templateName
-        return "$psrBaseUrl/$templateName/$uuid"
-    }
-
-    fun getLegacyNewTechReportUrl(uuid: UUID, newTechBaseUrl: String, username: String): String {
-        val user = userRepository.findByUsername(username)
-        val doc = documentRepository.findByExternalReference(uuid.toString())
-            ?: throw NotFoundException("Document", "externalReference", uuid)
-        return UriComponentsBuilder
-            .fromUriString("$newTechBaseUrl/report/${doc.templateName}")
-            .queryParam("t", newTechEncoder.encode(System.currentTimeMillis().toString()))
-            .queryParam("user", newTechEncoder.encode(user.username))
-            .queryParam("onBehalfOfUser", newTechEncoder.encode(user.name()))
-            .queryParam("documentId", newTechEncoder.encode(uuid.toString()))
-            .build().toUriString()
-    }
 
     private fun populateBodyValues(
         hmppsEvent: HmppsDomainEvent,
