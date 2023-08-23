@@ -87,7 +87,7 @@ class RecallAction(
     private fun checkPreconditions(prisonerMovement: PrisonerMovement, custody: Custody) {
         val latestRelease = custody.mostRecentRelease()
         if (!custody.canBeRecalled()) {
-            throw IgnorableMessageException("RecallNotPossible")
+            throw IgnorableMessageException("RecallNotRequired")
         }
 
         if (prisonerMovement.occurredAt.isAfter(ZonedDateTime.now()) ||
