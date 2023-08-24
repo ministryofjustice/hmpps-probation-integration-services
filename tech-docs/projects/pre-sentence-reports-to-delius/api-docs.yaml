@@ -14,59 +14,6 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /probation-cases/{crn}/court-reports/{courtReportId}/pre-sentence-reports:
-    post:
-      tags:
-      - psr-controller
-      operationId: createPreSentenceReport
-      parameters:
-      - name: crn
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: courtReportId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreatePsr'
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PsrReference'
-  /probation-cases/{crn}/pre-sentence-reports:
-    get:
-      tags:
-      - psr-controller
-      operationId: findUrl
-      parameters:
-      - name: crn
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: urn
-        in: query
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PsrReference'
   /context/{reportId}:
     get:
       tags:
@@ -95,24 +42,6 @@ paths:
                 $ref: '#/components/schemas/PreSentenceReportContext'
 components:
   schemas:
-    CreatePsr:
-      required:
-      - type
-      type: object
-      properties:
-        type:
-          type: string
-    PsrReference:
-      required:
-      - id
-      - urn
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        urn:
-          type: string
     Address:
       required:
       - noFixedAbode
