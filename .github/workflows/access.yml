@@ -94,7 +94,7 @@ jobs:
         with:
           files: projects/${{ matrix.project }}/deploy/database/access.yml
 
-      - uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2
+      - uses: aws-actions/configure-aws-credentials@04b98b3f9e85f563fb061be8751a0352327246b0 # v2
         if: ${{ steps.check_file.outputs.files_exists == 'true' }}
         with:
           aws-region: eu-west-2
