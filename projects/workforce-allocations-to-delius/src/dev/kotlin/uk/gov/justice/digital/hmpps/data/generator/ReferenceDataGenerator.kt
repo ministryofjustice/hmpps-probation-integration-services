@@ -18,6 +18,7 @@ object ReferenceDataGenerator {
     val ADDRESS_TYPE = generate(DatasetGenerator.ADDRESS_TYPE, "AT", "AddressType")
     val ADDRESS_STATUS_MAIN = generate(DatasetGenerator.ADDRESS_TYPE, "M", "Main Address Type")
     val ADDRESS_STATUS_PREVIOUS = generate(DatasetGenerator.ADDRESS_TYPE, "P", "Main Address Type")
+    val SENTENCE_APPEARANCE = generate(DatasetGenerator.COURT_APPEARANCE_TYPE, "S", "Sentence")
 
     fun generate(
         dataset: Dataset,
