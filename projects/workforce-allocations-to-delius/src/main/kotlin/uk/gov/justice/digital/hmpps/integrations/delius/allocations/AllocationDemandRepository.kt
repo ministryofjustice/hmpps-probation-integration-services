@@ -89,9 +89,9 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
 }
 
 const val QS_ALLOCATION_DEMAND = """
-WITH LATEST_COURT AS (SELECT e.EVENT_ID,
+WITH ORIGIN_COURT AS (SELECT e.EVENT_ID,
                              c.COURT_NAME,
-                             ROW_NUMBER() OVER (partition by e.EVENT_ID order by ca.APPEARANCE_DATE desc) row_num
+                             ROW_NUMBER() OVER (partition by e.EVENT_ID order by ca.APPEARANCE_DATE) row_num
                       FROM COURT_APPEARANCE ca
                                JOIN COURT c ON ca.COURT_ID = c.COURT_ID
                                JOIN EVENT e ON e.EVENT_ID = ca.EVENT_ID AND e.ACTIVE_FLAG = 1
@@ -210,7 +210,7 @@ FROM OFFENDER o
          JOIN STAFF s ON s.STAFF_ID = om.ALLOCATION_STAFF_ID
          JOIN DISPOSAL d ON d.EVENT_ID = e.EVENT_ID AND d.ACTIVE_FLAG = 1
          JOIN R_DISPOSAL_TYPE dt ON dt.DISPOSAL_TYPE_ID = d.DISPOSAL_TYPE_ID
-         JOIN LATEST_COURT court ON court.EVENT_ID = e.EVENT_ID AND court.row_num = 1
+         JOIN ORIGIN_COURT court ON court.EVENT_ID = e.EVENT_ID AND court.row_num = 1
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST cmsg ON cms.STAFF_GRADE_ID = cmsg.STANDARD_REFERENCE_LIST_ID
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST du ON du.STANDARD_REFERENCE_LIST_ID = d.ENTRY_LENGTH_UNITS_ID
          LEFT OUTER JOIN CUSTODY c ON c.DISPOSAL_ID = d.DISPOSAL_ID AND c.SOFT_DELETED = 0
