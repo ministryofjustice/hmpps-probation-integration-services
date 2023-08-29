@@ -59,8 +59,8 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
         """
         select ca.court.name as name, ca.appearanceDate as appearanceDate from CourtAppearance ca
         where ca.event.id = :eventId
-        order by ca.appearanceDate desc
+        order by ca.appearanceDate
     """
     )
-    fun findLatestByEventId(eventId: Long, page: PageRequest = PageRequest.of(0, 1)): uk.gov.justice.digital.hmpps.api.model.Court?
+    fun findOriginalCourt(eventId: Long, page: PageRequest = PageRequest.of(0, 1)): uk.gov.justice.digital.hmpps.api.model.Court?
 }
