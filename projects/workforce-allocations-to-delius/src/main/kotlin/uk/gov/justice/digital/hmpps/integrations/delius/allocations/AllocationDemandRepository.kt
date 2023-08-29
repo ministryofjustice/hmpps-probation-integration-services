@@ -93,10 +93,12 @@ WITH ORIGIN_COURT AS (SELECT e.EVENT_ID,
                              c.COURT_NAME,
                              ROW_NUMBER() OVER (partition by e.EVENT_ID order by ca.APPEARANCE_DATE) row_num
                       FROM COURT_APPEARANCE ca
+                               JOIN R_STANDARD_REFERENCE_LIST at ON at.STANDARD_REFERENCE_LIST_ID = ca.APPEARANCE_TYPE_ID 
                                JOIN COURT c ON ca.COURT_ID = c.COURT_ID
                                JOIN EVENT e ON e.EVENT_ID = ca.EVENT_ID AND e.ACTIVE_FLAG = 1
                                JOIN OFFENDER o ON o.OFFENDER_ID = ca.OFFENDER_ID
                       WHERE (o.CRN, e.EVENT_NUMBER) in (:values)
+                        AND at.CODE_VALUE = 'S'
                         AND ca.APPEARANCE_DATE < current_date
                         AND ca.OUTCOME_ID is not null
                         AND e.SOFT_DELETED = 0
