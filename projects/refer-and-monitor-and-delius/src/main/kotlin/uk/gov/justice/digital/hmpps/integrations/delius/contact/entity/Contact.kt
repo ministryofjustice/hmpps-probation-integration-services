@@ -174,6 +174,7 @@ class Contact(
                 teamId = teamId,
                 staffId = staffId,
                 locationId = locationId,
+                rarActivity = rarActivity,
                 externalReference = externalReference
             )
         } else {

@@ -110,7 +110,7 @@ jobs:
           WORKFORCE_URL: https://workforce-management-dev.hmpps.service.justice.gov.uk
           DPS_URL: https://digital-dev.prison.service.justice.gov.uk
           AUTH_URL: https://sign-in-dev.hmpps.service.justice.gov.uk
-          PRISON_API: https://api-dev.prison.service.justice.gov.uk
+          PRISON_API: https://prison-api-dev.prison.service.justice.gov.uk
           EPF_API: https://effective-proposal-framework-and-delius-dev.hmpps.service.justice.gov.uk
           EXTERNAL_API: https://external-api-and-delius-dev.hmpps.service.justice.gov.uk
           REFERANDMONITOR_URL: https://hmpps-interventions-ui-dev.apps.live-1.cloud-platform.service.justice.gov.uk

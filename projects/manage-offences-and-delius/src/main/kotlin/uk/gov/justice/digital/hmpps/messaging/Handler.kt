@@ -25,7 +25,7 @@ class Handler(
 
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
-        val offence = manageOffencesClient.getOffence(notification.message.offenceCode).single()
+        val offence = manageOffencesClient.getOffence(notification.message.offenceCode)
         val existingEntity = detailedOffenceRepository.findByCode(offence.code)
         detailedOffenceRepository.save(existingEntity.mergeWith(offence.newEntity))
         telemetryService.trackEvent(

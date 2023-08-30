@@ -1,21 +1,19 @@
-[
-  {
-    "id": 2154601,
-    "code": "AB06001",
-    "description": "Obstruct person acting in execution of the regulations",
-    "offenceType": "CS",
-    "revisionId": 345132,
-    "startDate": "2006-05-12",
-    "endDate": null,
-    "homeOfficeStatsCode": "091/55",
-    "changedDate": "2010-03-10T16:12:00",
-    "loadDate": "2023-06-05T10:01:42.867727",
-    "schedules": null,
-    "isChild": false,
-    "parentOffenceId": null,
-    "childOffenceIds": [],
-    "legislation": "",
-    "maxPeriodIsLife": false,
-    "maxPeriodOfIndictmentYears": null
-  }
-]
+{
+  "id": 2154601,
+  "code": "AB06001",
+  "description": "Obstruct person acting in execution of the regulations",
+  "offenceType": "CS",
+  "revisionId": 345132,
+  "startDate": "2006-05-12",
+  "endDate": null,
+  "homeOfficeStatsCode": "091/55",
+  "changedDate": "2010-03-10T16:12:00",
+  "loadDate": "2023-06-05T10:01:42.867727",
+  "schedules": null,
+  "isChild": false,
+  "parentOffenceId": null,
+  "childOffenceIds": [],
+  "legislation": "",
+  "maxPeriodIsLife": false,
+  "maxPeriodOfIndictmentYears": null
+}
