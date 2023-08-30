@@ -30,7 +30,7 @@ class ReferenceData(
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean = true
+    val selectable: Boolean
 )
 
 @Immutable

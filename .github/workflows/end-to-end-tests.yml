@@ -64,6 +64,7 @@ on:
           - '["manage-offences-and-delius"]'
           - '["resettlement-passport-and-delius"]'
           - '["prison-education-and-delius"]'
+          - '["arns-and-oasys"]'
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
@@ -109,7 +110,7 @@ jobs:
           WORKFORCE_URL: https://workforce-management-dev.hmpps.service.justice.gov.uk
           DPS_URL: https://digital-dev.prison.service.justice.gov.uk
           AUTH_URL: https://sign-in-dev.hmpps.service.justice.gov.uk
-          PRISON_API: https://api-dev.prison.service.justice.gov.uk
+          PRISON_API: https://prison-api-dev.prison.service.justice.gov.uk
           EPF_API: https://effective-proposal-framework-and-delius-dev.hmpps.service.justice.gov.uk
           EXTERNAL_API: https://external-api-and-delius-dev.hmpps.service.justice.gov.uk
           REFERANDMONITOR_URL: https://hmpps-interventions-ui-dev.apps.live-1.cloud-platform.service.justice.gov.uk

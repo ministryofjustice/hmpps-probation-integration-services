@@ -1,9 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.event
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.FeatureFlagCodes.MULTIPLE_EVENTS
 import uk.gov.justice.digital.hmpps.exception.IgnorableMessageException
-import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
@@ -12,8 +10,7 @@ import java.time.ZonedDateTime
 @Service
 class EventService(
     private val personRepository: PersonRepository,
-    private val eventRepository: EventRepository,
-    private val featureFlags: FeatureFlags
+    private val eventRepository: EventRepository
 ) {
     fun getActiveCustodialEvents(nomsNumber: String): List<Event> {
         val persons = personRepository.findByNomsNumberAndSoftDeletedIsFalse(nomsNumber)
@@ -22,10 +19,6 @@ class EventService(
 
         val events = eventRepository.findActiveCustodialEvents(persons.single().id)
         if (events.isEmpty()) throw IgnorableMessageException("NoActiveCustodialEvent")
-
-        if (events.size > 1 && !featureFlags.enabled(MULTIPLE_EVENTS)) {
-            throw IgnorableMessageException("MultipleActiveCustodialEvents")
-        }
         return events
     }
 

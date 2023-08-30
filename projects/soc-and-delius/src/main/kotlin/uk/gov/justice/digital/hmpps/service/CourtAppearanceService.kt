@@ -6,22 +6,22 @@ import uk.gov.justice.digital.hmpps.entity.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.model.CourtAppearance
 import uk.gov.justice.digital.hmpps.model.CourtAppearancesContainer
 import uk.gov.justice.digital.hmpps.model.Type
-import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
+import java.time.LocalDate
 
 @Service
 class CourtAppearanceService(private val courtAppearanceRepository: CourtAppearanceRepository) {
-    fun getCourtAppearances(value: String, type: IdentifierType): CourtAppearancesContainer {
+    fun getCourtAppearances(value: String, type: IdentifierType, requestDate: LocalDate?): CourtAppearancesContainer {
         val courtAppearanceModels = mutableListOf<CourtAppearance>()
-
+        var fromDate = LocalDate.now()
+        requestDate?.also { fromDate = it }
         val courtAppearances = when (type) {
-            IdentifierType.CRN -> courtAppearanceRepository.findMostRecentCourtAppearancesByCrn(ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS), value)
-            IdentifierType.NOMS -> courtAppearanceRepository.findMostRecentCourtAppearancesByNomsNumber(ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS), value)
+            IdentifierType.CRN -> courtAppearanceRepository.findMostRecentCourtAppearancesByCrn(fromDate, value)
+            IdentifierType.NOMS -> courtAppearanceRepository.findMostRecentCourtAppearancesByNomsNumber(fromDate, value)
         }
         courtAppearances.map {
             courtAppearanceModels.add(
                 CourtAppearance(
-                    it.appearanceDate.toLocalDate(),
+                    it.appearanceDate,
                     Type(it.appearanceType.code, it.appearanceType.description),
                     it.court.code,
                     it.court.name,
