@@ -150,6 +150,27 @@
 
 
 
+<h4 id="probation-areas-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>includeNonSelectable</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td><p>Include (true) or exclude (false) any probation areas that are not selectable</p>
+
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
 
 
 
@@ -342,6 +363,16 @@
 </td>
 </tr>
 
+<tr>
+<td>fromDate</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -462,7 +493,24 @@
           "description": "string",
           "mainOffence": "boolean"
         }
-      ]
+      ],
+      "sentence": {
+        "startDate": "string",
+        "expectedEndDate": "string",
+        "custody": {
+          "status": {
+            "code": "string",
+            "description": "string"
+          },
+          "keyDates": [
+            {
+              "code": "string",
+              "description": "string",
+              "data": "string"
+            }
+          ]
+        }
+      }
     }
   ]
 }</code></pre>
@@ -958,6 +1006,16 @@
 </td>
 </tr>
 
+<tr>
+<td>sentence</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-sentence'>Sentence</a>
+</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -977,6 +1035,70 @@
 <td></td>
 <td>
   <a href='#schema-conviction'>Conviction</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-custody">Custody</h3>
+
+
+<table class='schema-custody'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>status</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-custodystatus'>CustodyStatus</a>
+</td>
+</tr>
+
+<tr>
+<td>keyDates</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-keydate'>KeyDate</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-custodystatus">CustodyStatus</h3>
+
+
+<table class='schema-custodystatus'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 
@@ -1009,6 +1131,48 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-sentence">Sentence</h3>
+
+
+<table class='schema-sentence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>expectedEndDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>custody</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-custody'>Custody</a>
 </td>
 </tr>
 

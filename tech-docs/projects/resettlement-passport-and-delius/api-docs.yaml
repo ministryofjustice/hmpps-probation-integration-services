@@ -17,7 +17,7 @@ paths:
   /duty-to-refer-nsi/{value}:
     get:
       tags:
-      - api-controller
+      - duty-to-refer-controller
       operationId: findPerson
       parameters:
       - name: value
@@ -41,6 +41,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DutyToReferNSI'
+  /appointments/{crn}:
+    get:
+      tags:
+      - appointment-controller
+      operationId: findPerson_1
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: startDate
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: endDate
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: page
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultSetAppointment'
 components:
   schemas:
     DutyToReferNSI:
@@ -100,6 +142,151 @@ components:
         surname:
           type: string
         middleName:
+          type: string
+    Address:
+      type: object
+      properties:
+        buildingName:
+          type: string
+        buildingNumber:
+          type: string
+        streetName:
+          type: string
+        district:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+    Appointment:
+      required:
+      - dateTime
+      - duration
+      - staff
+      - type
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/Type'
+        dateTime:
+          type: string
+          format: date-time
+        duration:
+          type: object
+          properties:
+            seconds:
+              type: integer
+              format: int64
+            nano:
+              type: integer
+              format: int32
+            negative:
+              type: boolean
+            zero:
+              type: boolean
+            units:
+              type: array
+              items:
+                type: object
+                properties:
+                  dateBased:
+                    type: boolean
+                  timeBased:
+                    type: boolean
+                  durationEstimated:
+                    type: boolean
+        staff:
+          $ref: '#/components/schemas/Staff'
+        location:
+          $ref: '#/components/schemas/Location'
+        description:
+          type: string
+        outcome:
+          $ref: '#/components/schemas/Outcome'
+    Location:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        telephoneNumber:
+          type: string
+    Name:
+      required:
+      - forename
+      - surname
+      type: object
+      properties:
+        forename:
+          type: string
+        surname:
+          type: string
+    Outcome:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+    ResultSetAppointment:
+      required:
+      - page
+      - results
+      - size
+      - totalElements
+      - totalPages
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Appointment'
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+    Staff:
+      required:
+      - code
+      - name
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          $ref: '#/components/schemas/Name'
+        email:
+          type: string
+        telephone:
+          type: string
+    Type:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
           type: string
   securitySchemes:
     hmpps-auth-token:

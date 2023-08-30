@@ -19,6 +19,15 @@ paths:
       tags:
       - probation-areas-controller
       operationId: probationAreas
+      parameters:
+      - name: includeNonSelectable
+        in: query
+        description: Include (true) or exclude (false) any probation areas that are
+          not selectable
+        required: false
+        schema:
+          type: boolean
+          default: false
       responses:
         "200":
           description: OK
@@ -73,6 +82,12 @@ paths:
           enum:
           - CRN
           - NOMS
+      - name: fromDate
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
       responses:
         "200":
           description: OK
@@ -264,6 +279,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Offence'
+        sentence:
+          $ref: '#/components/schemas/Sentence'
     ConvictionsContainer:
       required:
       - convictions
@@ -273,6 +290,28 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Conviction'
+    Custody:
+      required:
+      - keyDates
+      - status
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/CustodyStatus'
+        keyDates:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyDate'
+    CustodyStatus:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
     Offence:
       required:
       - description
@@ -283,6 +322,19 @@ components:
           type: string
         mainOffence:
           type: boolean
+    Sentence:
+      required:
+      - startDate
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date
+        expectedEndDate:
+          type: string
+          format: date
+        custody:
+          $ref: '#/components/schemas/Custody'
   securitySchemes:
     hmpps-auth-token:
       type: http
