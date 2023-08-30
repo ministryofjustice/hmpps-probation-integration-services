@@ -10,7 +10,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import java.time.ZonedDateTime
+import java.time.LocalDate
 
 @Entity
 @Immutable
@@ -35,7 +35,7 @@ class Court(
 class CourtAppearanceEntity(
 
     @Column(name = "appearance_date")
-    val appearanceDate: ZonedDateTime,
+    val appearanceDate: LocalDate,
 
     @Id
     @Column(name = "court_appearance_id")
@@ -107,7 +107,7 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearanceEntity, Long>
         order by ca.appearanceDate desc
     """
     )
-    fun findMostRecentCourtAppearancesByCrn(dateFrom: ZonedDateTime, crn: String): List<CourtAppearanceEntity>
+    fun findMostRecentCourtAppearancesByCrn(dateFrom: LocalDate, crn: String): List<CourtAppearanceEntity>
 
     @Query(
         """
@@ -117,5 +117,5 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearanceEntity, Long>
         order by ca.appearanceDate desc
     """
     )
-    fun findMostRecentCourtAppearancesByNomsNumber(dateFrom: ZonedDateTime, nomsNumber: String): List<CourtAppearanceEntity>
+    fun findMostRecentCourtAppearancesByNomsNumber(dateFrom: LocalDate, nomsNumber: String): List<CourtAppearanceEntity>
 }

@@ -44,6 +44,16 @@ internal class ProbationAreaIntegrationTest {
         Assertions.assertThat(detailResponse).isEqualTo(getProbationAreas())
     }
 
+    @Test
+    fun `API call including non selectable retuns a success response`() {
+        val result = mockMvc
+            .perform(get("/probation-areas?includeNonSelectable=true").withOAuth2Token(wireMockServer))
+            .andExpect(status().is2xxSuccessful).andReturn()
+
+        val detailResponse = objectMapper.readValue(result.response.contentAsString, ProbationAreaContainer::class.java)
+        Assertions.assertThat(detailResponse).isEqualTo(getProbationAreasIncludingNonSelectable())
+    }
+
     private fun getProbationAreas(): ProbationAreaContainer = ProbationAreaContainer(
         listOf(
             ProbationArea(
@@ -57,6 +67,34 @@ internal class ProbationAreaIntegrationTest {
                     LocalDeliveryUnit(
                         ProbationAreaGenerator.DEFAULT_LDU2.code,
                         ProbationAreaGenerator.DEFAULT_LDU2.description
+                    )
+                )
+            )
+        )
+    )
+    private fun getProbationAreasIncludingNonSelectable(): ProbationAreaContainer = ProbationAreaContainer(
+        listOf(
+            ProbationArea(
+                ProbationAreaGenerator.DEFAULT_PA.code,
+                ProbationAreaGenerator.DEFAULT_PA.description,
+                listOf(
+                    LocalDeliveryUnit(
+                        ProbationAreaGenerator.DEFAULT_LDU.code,
+                        ProbationAreaGenerator.DEFAULT_LDU.description
+                    ),
+                    LocalDeliveryUnit(
+                        ProbationAreaGenerator.DEFAULT_LDU2.code,
+                        ProbationAreaGenerator.DEFAULT_LDU2.description
+                    )
+                )
+            ),
+            ProbationArea(
+                ProbationAreaGenerator.NON_SELECTABLE_PA.code,
+                ProbationAreaGenerator.NON_SELECTABLE_PA.description,
+                listOf(
+                    LocalDeliveryUnit(
+                        ProbationAreaGenerator.NON_SELECTABLE_LDU.code,
+                        ProbationAreaGenerator.NON_SELECTABLE_LDU.description
                     )
                 )
             )

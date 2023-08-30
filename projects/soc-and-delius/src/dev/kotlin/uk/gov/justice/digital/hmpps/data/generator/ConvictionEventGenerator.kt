@@ -47,7 +47,8 @@ object ConvictionEventGenerator {
     val DISPOSAL = Disposal(
         IdGenerator.getAndIncrement(),
         DISPOSAL_TYPE,
-        DEFAULT_EVENT
+        DEFAULT_EVENT,
+        LocalDate.now()
     )
 
     val PERSON_2 = ConvictionEventPerson(
@@ -73,6 +74,7 @@ object ConvictionEventGenerator {
     val DISPOSAL_2 = Disposal(
         IdGenerator.getAndIncrement(),
         DISPOSAL_TYPE,
-        EVENT_2
+        EVENT_2,
+        LocalDate.now()
     )
 }
