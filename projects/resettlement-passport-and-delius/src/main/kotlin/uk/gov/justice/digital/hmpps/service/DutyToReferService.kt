@@ -1,18 +1,18 @@
-package uk.gov.justice.digital.hmpps.controller
+package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.controller.ApiController.IdentifierType
-import uk.gov.justice.digital.hmpps.controller.ApiController.IdentifierType.CRN
-import uk.gov.justice.digital.hmpps.controller.ApiController.IdentifierType.NOMS
+import uk.gov.justice.digital.hmpps.api.controller.DutyToReferController.IdentifierType
+import uk.gov.justice.digital.hmpps.api.controller.DutyToReferController.IdentifierType.CRN
+import uk.gov.justice.digital.hmpps.api.controller.DutyToReferController.IdentifierType.NOMS
+import uk.gov.justice.digital.hmpps.api.model.DutyToReferNSI
+import uk.gov.justice.digital.hmpps.api.model.MainAddress
+import uk.gov.justice.digital.hmpps.api.model.Officer
 import uk.gov.justice.digital.hmpps.entity.NsiManagerRepository
 import uk.gov.justice.digital.hmpps.entity.NsiRepository
 import uk.gov.justice.digital.hmpps.entity.PersonAddress
 import uk.gov.justice.digital.hmpps.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.entity.Staff
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.model.DutyToReferNSI
-import uk.gov.justice.digital.hmpps.model.MainAddress
-import uk.gov.justice.digital.hmpps.model.Officer
 
 @Service
 class ResettlementPassportService(val addressRepository: PersonAddressRepository, val nsiRepository: NsiRepository, val nsiManagerRepository: NsiManagerRepository) {

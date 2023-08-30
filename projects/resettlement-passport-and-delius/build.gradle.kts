@@ -9,6 +9,7 @@ dependencies {
     implementation(project(":libs:oauth-server"))
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-data-ldap")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -21,6 +22,7 @@ dependencies {
     dev(project(":libs:dev-tools"))
     dev("com.h2database:h2")
     dev("org.testcontainers:oracle-xe")
+    dev("com.unboundid:unboundid-ldapsdk")
 
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
 
@@ -31,6 +33,7 @@ dependencies {
 configure<ClassPathExtension> {
     jacocoExclusions = listOf(
         "**/config/**",
+        "**/model/**",
         "**/entity/**",
         "**/AppKt.class"
     )
