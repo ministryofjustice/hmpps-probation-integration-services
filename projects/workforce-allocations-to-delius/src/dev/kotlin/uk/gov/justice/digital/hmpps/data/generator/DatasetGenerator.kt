@@ -17,6 +17,7 @@ object DatasetGenerator {
     val REQUIREMENT_SUB_CATEGORY = generate(DatasetCode.REQUIREMENT_SUB_CATEGORY)
     val ADDRESS_TYPE = generate(DatasetCode.ADDRESS_TYPE)
     val ADDRESS_STATUS = generate(DatasetCode.ADDRESS_STATUS)
+    val COURT_APPEARANCE_TYPE = generate(DatasetCode.COURT_APPEARANCE_TYPE)
 
     fun generate(code: DatasetCode, id: Long = IdGenerator.getAndIncrement()) = Dataset(id, code)
 }
