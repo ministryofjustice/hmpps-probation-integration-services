@@ -143,5 +143,8 @@ internal class IntegrationTest {
         } else if (dateTime.minute == 30) {
             assertThat(location?.code, equalTo(AppointmentGenerator.DEFAULT_LOCATION.code))
         }
+        assertThat(staff.code, equalTo(ProviderGenerator.DEFAULT_STAFF.code))
+        assertThat(staff.email, equalTo("john.smith@moj.gov.uk"))
+        assertThat(staff.telephone, equalTo("07321165373"))
     }
 }

@@ -46,6 +46,7 @@ class DataLoader(
             ProviderGenerator.DEFAULT_AREA,
             ProviderGenerator.DEFAULT_TEAM,
             ProviderGenerator.DEFAULT_STAFF,
+            ProviderGenerator.DEFAULT_STAFF_USER,
             PersonGenerator.DEFAULT,
             NSIGenerator.DEFAULT,
             NSIManagerGenerator.DEFAULT,
