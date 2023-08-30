@@ -8,8 +8,11 @@ import uk.gov.justice.digital.hmpps.model.ProbationAreaContainer
 
 @Service
 class ProbationAreaService(private val probationAreaRepository: ProbationAreaRepository) {
-    fun getProbationAreas(): ProbationAreaContainer {
-        val pad = probationAreaRepository.probationAreaDistricts()
+    fun getProbationAreas(includeNonSelectable: Boolean): ProbationAreaContainer {
+        val pad = when (includeNonSelectable) {
+            true -> probationAreaRepository.probationAreaDistrictsNonSelectable()
+            false -> probationAreaRepository.probationAreaDistricts()
+        }
 
         return ProbationAreaContainer(
             pad.groupBy { Pair(it.pCode, it.pDesc) }

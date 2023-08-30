@@ -23,6 +23,10 @@ class Custody(
     @Column(name = "disposal_id")
     val disposalId: Long,
 
+    @ManyToOne
+    @JoinColumn(name = "custodial_status_id")
+    val status: ReferenceData,
+
     @OneToMany(mappedBy = "custody")
     val keyDates: List<KeyDate> = listOf(),
 

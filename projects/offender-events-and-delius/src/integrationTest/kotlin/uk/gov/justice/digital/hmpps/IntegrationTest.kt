@@ -4,16 +4,20 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import org.mockito.kotlin.after
 import org.mockito.kotlin.any
-import org.mockito.kotlin.timeout
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.boot.test.mock.mockito.SpyBean
 import uk.gov.justice.digital.hmpps.data.generator.OffenderDeltaGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDelta
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaService
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -28,23 +32,26 @@ internal class IntegrationTest {
     @Autowired
     lateinit var offenderDeltaRepository: OffenderDeltaRepository
 
+    @SpyBean
+    lateinit var offenderDeltaService: OffenderDeltaService
+
     @MockBean
     lateinit var telemetryService: TelemetryService
 
     @ParameterizedTest
     @MethodSource("deltas")
-    fun `offender delta test`(delta: OffenderDelta, eventTypes: List<String>) {
+    fun `offender delta test`(delta: OffenderDelta, expected: List<String>) {
         offenderDeltaRepository.save(delta)
 
-        val topic = channelManager.getChannel(topicName)
-        val messages = mutableListOf<String>()
-        while (messages.size < eventTypes.size) {
-            topic.receive()?.eventType?.let { messages.add(it) }
-        }
+        verify(offenderDeltaService, after(250).atLeastOnce()).checkAndSendEvents()
+        val received = generateSequence { channelManager.getChannel(topicName).receive()?.eventType }.toList()
 
-        assertEquals(eventTypes.sorted(), messages.sorted())
-        verify(telemetryService, timeout(3000)).trackEvent(any(), any(), any())
-        assertEquals(0, offenderDeltaRepository.count())
+        assertEquals(expected.sorted(), received.sorted())
+        if (expected.isNotEmpty()) {
+            verify(telemetryService).trackEvent(eq("OffenderEventsProcessed"), any(), any())
+        } else {
+            verify(telemetryService, never()).trackEvent(any(), any(), any())
+        }
     }
 
     companion object {
@@ -73,6 +80,10 @@ internal class IntegrationTest {
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "MANAGEMENT_TIER_EVENT", sourceId = 99),
                 listOf("OFFENDER_MANAGEMENT_TIER_CALCULATION_REQUIRED")
+            ),
+            Arguments.of(
+                OffenderDeltaGenerator.generate(sourceTable = "MANAGEMENT_TIER_EVENT", action = "DELETE", sourceId = 99),
+                emptyList<String>()
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "MERGE_HISTORY", sourceId = 99),

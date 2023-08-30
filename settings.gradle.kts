@@ -1,6 +1,7 @@
 rootProject.name = "probation-integration-services"
 include(
     // ⌄ add new projects here
+    "arns-and-oasys",
     "prison-education-and-delius",
     "resettlement-passport-and-delius",
     "manage-offences-and-delius",
@@ -45,18 +46,18 @@ rootProject.allChildren()
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.0.1")
-            library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.0.1")
-            library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.0.1")
-            library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.0.1")
+            library("aws-autoconfigure", "io.awspring.cloud:spring-cloud-aws-autoconfigure:3.0.2")
+            library("aws-starter", "io.awspring.cloud:spring-cloud-aws-starter:3.0.2")
+            library("aws-sns", "io.awspring.cloud:spring-cloud-aws-starter-sns:3.0.2")
+            library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.0.2")
             library("aws-sts", "software.amazon.awssdk:sts:2.20.92")
             bundle("aws-messaging", listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs", "aws-sts"))
-            library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.0.0")
+            library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.1.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
             library("insights", "com.microsoft.azure:applicationinsights-web:3.4.15")
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.28.0")
-            library("opentelemetry-annotations", "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.28.0")
+            library("opentelemetry-annotations", "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.29.0")
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.4")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")

@@ -8,7 +8,6 @@ import jakarta.persistence.Entity
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -18,7 +17,6 @@ import java.io.Serializable
 @Immutable
 @Entity
 @Table(name = "r_institution")
-@Where(clause = "selectable = 'Y'")
 class Institution(
     @EmbeddedId
     val id: InstitutionId,
@@ -32,12 +30,12 @@ class Institution(
     @Column(nullable = false)
     val description: String,
 
-    @Column
-    @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean = true,
-
     @OneToOne(mappedBy = "institution")
-    val probationArea: ProbationArea? = null
+    val probationArea: ProbationArea? = null,
+
+    @Column(name = "immigration_removal_centre")
+    @Convert(converter = YesNoConverter::class)
+    val irc: Boolean? = null
 )
 
 @Embeddable
@@ -58,7 +56,13 @@ interface InstitutionRepository : JpaRepository<Institution, InstitutionId> {
 
 fun InstitutionRepository.getByNomisCdeCode(code: String): Institution =
     findByNomisCdeCode(code) ?: throw NotFoundException("Institution", "nomisCdeCode", code)
+
 fun InstitutionRepository.getByNomisCdeCodeAndIdEstablishment(code: String, selectable: Boolean = true): Institution =
-    findByNomisCdeCodeAndIdEstablishment(code, selectable) ?: throw NotFoundException("Institution", "nomisCdeCode", code)
+    findByNomisCdeCodeAndIdEstablishment(code, selectable) ?: throw NotFoundException(
+        "Institution",
+        "nomisCdeCode",
+        code
+    )
+
 fun InstitutionRepository.getByCode(code: String): Institution =
     findByCode(code) ?: throw NotFoundException("Institution", "code", code)

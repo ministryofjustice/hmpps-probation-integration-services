@@ -181,7 +181,7 @@ class AllocationDemandService(
             contactRepository.getInitialAppointmentDate(person.id, eventId)?.let { InitialAppointment(it) },
             allocationRiskService.getRiskOgrs(person),
             disposalRepository.findSentenceForEventNumberAndPersonId(person.id, eventNumber),
-            courtAppearanceRepository.findLatestByEventId(eventId),
+            courtAppearanceRepository.findOriginalCourt(eventId),
             eventRepository.findAllOffencesByEventId(eventId).sortedByDescending { it.mainOffence },
             requirements
         )
