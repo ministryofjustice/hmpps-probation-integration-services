@@ -1,0 +1,39 @@
+---
+openapi: 3.0.1
+info:
+  title: POM Allocated
+  description: ""
+  termsOfService: ""
+  version: "1"
+servers:
+  - url: /
+tags:
+  - name: MPC
+paths:
+  /allocations/{noms}:
+    get:
+      description: POM Allocation for a given noms identifier
+      responses:
+        "200":
+          description: ""
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/PomAllocation"
+components:
+  schemas:
+    PomAllocation:
+      type: object
+      properties:
+        manager:
+          type: object
+          properties:
+            forename:
+              type: string
+            surname:
+              type: string
+        prison:
+          type: object
+          properties:
+            code:
+              type: string

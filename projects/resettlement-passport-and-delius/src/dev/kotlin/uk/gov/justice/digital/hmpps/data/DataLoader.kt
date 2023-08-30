@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
+import uk.gov.justice.digital.hmpps.data.generator.AppointmentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NSIGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NSIManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NSIStatusGenerator
@@ -16,7 +17,12 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZonedDateTime
 
 @Component
 @ConditionalOnProperty("seed.database")
@@ -40,12 +46,59 @@ class DataLoader(
             ProviderGenerator.DEFAULT_AREA,
             ProviderGenerator.DEFAULT_TEAM,
             ProviderGenerator.DEFAULT_STAFF,
+            ProviderGenerator.DEFAULT_STAFF_USER,
             PersonGenerator.DEFAULT,
             NSIGenerator.DEFAULT,
             NSIManagerGenerator.DEFAULT,
-            AddressGenerator.DEFAULT
+            AddressGenerator.DEFAULT,
+            AppointmentGenerator.ATTENDANCE_TYPE,
+            AppointmentGenerator.NON_ATTENDANCE_TYPE,
+            AppointmentGenerator.ATTENDED_OUTCOME,
+            AppointmentGenerator.NON_ATTENDED_OUTCOME,
+            AppointmentGenerator.DEFAULT_LOCATION
         )
+
+        createAppointments(PersonGenerator.DEFAULT)
     }
 
     fun EntityManager.saveAll(vararg any: Any) = any.forEach { persist(it) }
+
+    private fun createAppointments(person: Person) {
+        dates().flatMap { date ->
+            times().map {
+                val start = ZonedDateTime.of(date, it, EuropeLondon)
+                AppointmentGenerator.generate(
+                    person,
+                    AppointmentGenerator.ATTENDANCE_TYPE,
+                    date,
+                    start,
+                    start.plusMinutes(30),
+                    if (start.minute == 30) AppointmentGenerator.DEFAULT_LOCATION else null,
+                    ProviderGenerator.DEFAULT_STAFF,
+                    if (start.isAfter(ZonedDateTime.now())) {
+                        null
+                    } else {
+                        AppointmentGenerator.ATTENDED_OUTCOME
+                    },
+                    if (start.minute == 0) {
+                        "On the hour"
+                    } else {
+                        null
+                    }
+                )
+            }
+        }.forEach { em.persist(it) }
+    }
+
+    private fun dates(): List<LocalDate> {
+        return (-7L..14L).map { LocalDate.now().plusDays(it) }
+    }
+
+    private fun times(): List<LocalTime> = listOf(
+        LocalTime.of(9, 0),
+        LocalTime.of(10, 30),
+        LocalTime.of(14, 30),
+        LocalTime.of(17, 0),
+        LocalTime.of(23, 45)
+    )
 }

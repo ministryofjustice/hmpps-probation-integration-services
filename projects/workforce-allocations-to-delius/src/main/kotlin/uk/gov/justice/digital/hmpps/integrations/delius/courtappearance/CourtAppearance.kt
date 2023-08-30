@@ -11,6 +11,7 @@ import org.hibernate.annotations.Where
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
 import java.time.LocalDate
 
@@ -25,7 +26,11 @@ class CourtAppearance(
     val id: Long,
 
     @Column(name = "appearance_date")
-    val appearanceDate: LocalDate,
+    val date: LocalDate,
+
+    @ManyToOne
+    @JoinColumn(name = "appearance_type_id")
+    val type: ReferenceData,
 
     @JoinColumn(name = "event_id")
     @ManyToOne
@@ -34,6 +39,8 @@ class CourtAppearance(
     @JoinColumn(name = "court_id")
     @ManyToOne
     val court: Court,
+
+    val outcomeId: Long,
 
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
     var softDeleted: Boolean = false
@@ -57,10 +64,15 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
 
     @Query(
         """
-        select ca.court.name as name, ca.appearanceDate as appearanceDate from CourtAppearance ca
+        select ca.court.name as name, ca.date as appearanceDate from CourtAppearance ca
         where ca.event.id = :eventId
-        order by ca.appearanceDate desc
+        and ca.type.code = 'S'
+        and ca.outcomeId is not null
+        order by ca.date
     """
     )
-    fun findLatestByEventId(eventId: Long, page: PageRequest = PageRequest.of(0, 1)): uk.gov.justice.digital.hmpps.api.model.Court?
+    fun findOriginalCourt(
+        eventId: Long,
+        page: PageRequest = PageRequest.of(0, 1)
+    ): uk.gov.justice.digital.hmpps.api.model.Court?
 }

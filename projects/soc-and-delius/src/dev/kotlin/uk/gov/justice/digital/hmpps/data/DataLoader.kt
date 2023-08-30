@@ -34,6 +34,9 @@ class DataLoader(
             ProbationAreaGenerator.DEFAULT_BOROUGH,
             ProbationAreaGenerator.DEFAULT_LDU,
             ProbationAreaGenerator.DEFAULT_LDU2,
+            ProbationAreaGenerator.NON_SELECTABLE_PA,
+            ProbationAreaGenerator.NON_SELECTABLE_BOROUGH,
+            ProbationAreaGenerator.NON_SELECTABLE_LDU,
             CourtAppearanceGenerator.DEFAULT_CA_TYPE,
             CourtAppearanceGenerator.DEFAULT_COURT,
             CourtAppearanceGenerator.DEFAULT_PERSON,
@@ -59,9 +62,12 @@ class DataLoader(
             ConvictionEventGenerator.MAIN_OFFENCE_2,
             ConvictionEventGenerator.OTHER_OFFENCE_2,
             ConvictionEventGenerator.DISPOSAL_2,
+            KeyDateGenerator.CUSTODY_STATUS,
             KeyDateGenerator.SED_KEYDATE,
             KeyDateGenerator.CUSTODY,
-            KeyDateGenerator.KEYDATE
+            KeyDateGenerator.KEYDATE,
+            KeyDateGenerator.CUSTODY_1,
+            KeyDateGenerator.KEYDATE_1
         )
 
         em.createNativeQuery(

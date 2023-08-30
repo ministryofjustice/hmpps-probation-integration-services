@@ -12,8 +12,8 @@ import java.time.LocalDate
     configuration = [FeignOAuth2Config::class]
 )
 interface ManageOffencesClient {
-    @GetMapping(value = ["/offences/code/{code}"])
-    fun getOffence(@PathVariable code: String): List<Offence>
+    @GetMapping(value = ["/offences/code/unique/{code}"])
+    fun getOffence(@PathVariable code: String): Offence
 }
 
 data class Offence(

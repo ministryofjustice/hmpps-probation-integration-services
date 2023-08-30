@@ -82,7 +82,8 @@ class AllocationsDataLoader(
                 DatasetGenerator.GENDER,
                 DatasetGenerator.REQUIREMENT_SUB_CATEGORY,
                 DatasetGenerator.ADDRESS_TYPE,
-                DatasetGenerator.ADDRESS_STATUS
+                DatasetGenerator.ADDRESS_STATUS,
+                DatasetGenerator.COURT_APPEARANCE_TYPE
             )
         )
 
@@ -101,7 +102,8 @@ class AllocationsDataLoader(
                 ReferenceDataGenerator.REQUIREMENT_SUB_CATEGORY,
                 ReferenceDataGenerator.ADDRESS_TYPE,
                 ReferenceDataGenerator.ADDRESS_STATUS_MAIN,
-                ReferenceDataGenerator.ADDRESS_STATUS_PREVIOUS
+                ReferenceDataGenerator.ADDRESS_STATUS_PREVIOUS,
+                ReferenceDataGenerator.SENTENCE_APPEARANCE
             )
         )
 
