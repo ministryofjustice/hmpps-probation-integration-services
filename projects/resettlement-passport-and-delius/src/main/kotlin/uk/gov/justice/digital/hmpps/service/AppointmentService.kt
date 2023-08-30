@@ -2,10 +2,6 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.data.domain.Pageable
 import org.springframework.ldap.core.LdapTemplate
-import org.springframework.ldap.odm.annotations.Attribute
-import org.springframework.ldap.odm.annotations.DnAttribute
-import org.springframework.ldap.odm.annotations.Entry
-import org.springframework.ldap.odm.annotations.Id
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.Address
 import uk.gov.justice.digital.hmpps.api.model.Appointment
@@ -14,6 +10,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.Staff
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.AppointmentRepository
+import uk.gov.justice.digital.hmpps.entity.LdapUserDetails
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -54,19 +51,3 @@ class AppointmentService(
             telephoneNumber
         )
 }
-
-@Entry(objectClasses = ["inetOrgPerson", "top"], base = "ou=Users")
-class LdapUserDetails(
-    @Id
-    val dn: javax.naming.Name,
-
-    @Attribute(name = "cn")
-    @DnAttribute(value = "cn", index = 1)
-    val username: String,
-
-    @Attribute(name = "mail")
-    val email: String?,
-
-    @Attribute(name = "telephoneNumber")
-    val telephone: String?
-)

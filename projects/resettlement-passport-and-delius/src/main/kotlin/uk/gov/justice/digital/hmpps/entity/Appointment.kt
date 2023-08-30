@@ -136,6 +136,7 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
         join fetch a.staff s
         left join fetch s.user u
         left join fetch a.location
+        left join fetch a.outcome
         where a.person.crn = :crn
         and t.attendanceContact = true
         and a.date >= :start and a.date <= :end
