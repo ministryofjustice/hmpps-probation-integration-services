@@ -62,9 +62,12 @@ class DataLoader(
             ConvictionEventGenerator.MAIN_OFFENCE_2,
             ConvictionEventGenerator.OTHER_OFFENCE_2,
             ConvictionEventGenerator.DISPOSAL_2,
+            KeyDateGenerator.CUSTODY_STATUS,
             KeyDateGenerator.SED_KEYDATE,
             KeyDateGenerator.CUSTODY,
-            KeyDateGenerator.KEYDATE
+            KeyDateGenerator.KEYDATE,
+            KeyDateGenerator.CUSTODY_1,
+            KeyDateGenerator.KEYDATE_1
         )
 
         em.createNativeQuery(
