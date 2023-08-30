@@ -58,23 +58,6 @@ class ProbationArea(
 
 @Entity
 @Immutable
-class Staff(
-    @Id
-    @Column(name = "staff_id")
-    val id: Long = 0,
-
-    @Column
-    val forename: String,
-
-    @Column(name = "forename2")
-    val middleName: String?,
-
-    @Column
-    val surname: String
-)
-
-@Entity
-@Immutable
 class Team(
     @Id
     @Column(name = "team_id")

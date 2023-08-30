@@ -50,10 +50,10 @@ class Person(
     val id: Long,
 
     @Column(columnDefinition = "char(7)")
-    private val crn: String,
+    val crn: String,
 
     @Column(name = "noms_number", columnDefinition = "char(7)")
-    private val noms: String?,
+    val noms: String?,
 
     val softDeleted: Boolean = false
 )

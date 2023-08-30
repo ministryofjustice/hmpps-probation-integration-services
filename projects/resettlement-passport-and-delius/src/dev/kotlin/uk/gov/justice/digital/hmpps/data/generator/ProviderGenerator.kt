@@ -7,13 +7,14 @@ import uk.gov.justice.digital.hmpps.entity.Team
 object ProviderGenerator {
     val DEFAULT_AREA = generateProbationArea()
     val DEFAULT_TEAM = generateTeam("N03DEF")
-    val DEFAULT_STAFF = generateStaff("Default", "Middlename", "Staff")
+    val DEFAULT_STAFF = generateStaff("N03DEF1", "Default", "Staff", "Middlename")
 
     fun generateProbationArea(
         id: Long = IdGenerator.getAndIncrement(),
         code: String = "LDN",
         description: String = "London"
     ) = ProbationArea(id, code, description)
+
     fun generateTeam(
         code: String,
         description: String = "Team $code",
@@ -21,9 +22,10 @@ object ProviderGenerator {
     ) = Team(id, code, description)
 
     fun generateStaff(
+        code: String,
         forename: String,
         surname: String,
         middleName: String? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Staff(id, forename, middleName, surname)
+    ) = Staff(code, forename, surname, middleName, null, id)
 }
