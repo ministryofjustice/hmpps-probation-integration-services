@@ -44,4 +44,4 @@ channels:
     subscribe:
       operationId: intervention.referral.ended
       message:
-        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/refer-and-monitor/referal-ended.yml
+        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/refer-and-monitor/referral-ended.yml
