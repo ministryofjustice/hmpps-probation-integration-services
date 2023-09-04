@@ -51,6 +51,19 @@
         "status": 200,
         "bodyFileName": "oasys-all-risk-w960724-allow.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/eor/oasys/ass/timeline/W960724/ALLOW"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "oasys-timeline-w960724-allow.json"
+      }
     }
   ]
 }

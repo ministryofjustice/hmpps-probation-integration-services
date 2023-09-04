@@ -48,4 +48,12 @@ internal class IntegrationTest {
                 .withOAuth2Token(wireMockServer)
         ).andExpect(status().is2xxSuccessful)
     }
+
+    @Test
+    fun `get timeline is successful`() {
+        mockMvc.perform(
+            get("/assessments/timeline/W960724/ALLOW")
+                .withOAuth2Token(wireMockServer)
+        ).andExpect(status().is2xxSuccessful)
+    }
 }
