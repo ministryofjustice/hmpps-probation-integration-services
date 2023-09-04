@@ -38,7 +38,7 @@ channels:
     subscribe:
       operationId: intervention.session-appointment.session-feedback-submitted
       message:
-        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/refer-and-monitor/initial-assessment-appointment-feedback-submitted.yml
+        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/refer-and-monitor/session-appointment-feedback-submitted.yml
 
   hmpps-domain-events/interventions/referral-ended:
     subscribe:
