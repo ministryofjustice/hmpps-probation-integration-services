@@ -14,3 +14,24 @@ servers:
   production:
     url: https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-prod-refer-and-monitor-and-delius-queue
     protocol: sqs
+
+channels:
+  hmpps-domain-events/interventions/action-plan-submitted:
+    subscribe:
+      operationId: intervention.action-plan.submitted
+
+  hmpps-domain-events/interventions/action-plan-approved:
+    subscribe:
+      operationId: intervention.action-plan.approved
+
+  hmpps-domain-events/interventions/initial-assessment-appointment-feedback-submitted:
+    subscribe:
+      operationId: intervention.initial-assessment-appointment.session-feedback-submitted
+
+  hmpps-domain-events/interventions/session-appointment-feedback-submitted:
+    subscribe:
+      operationId: intervention.session-appointment.session-feedback-submitted
+
+  hmpps-domain-events/interventions/referral-ended:
+    subscribe:
+      operationId: intervention.referral.ended
