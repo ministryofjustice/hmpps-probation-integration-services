@@ -24,4 +24,9 @@ class AssessmentResource(private val assessmentService: AssessmentService) {
     @GetMapping("all-risk-predictors/{crn}/{lao}")
     fun getRiskPredictors(@PathVariable("crn") crn: String, @PathVariable("lao") lao: String) =
         assessmentService.getRiskPredictors(crn, lao)
+
+    @PreAuthorize("hasRole('ARNS_ASSESSMENTS')")
+    @GetMapping("timeline/{crn}/{lao}")
+    fun getTimeline(@PathVariable("crn") crn: String, @PathVariable("lao") lao: String) =
+        assessmentService.getTimeline(crn, lao)
 }
