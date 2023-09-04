@@ -98,7 +98,16 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
-        <a href="./api-reference.html#example-inputid"><span>/example/{inputId}</span></a>
+        <a href="./api-reference.html#assessments-timeline-crn-lao"><span>/assessments/timeline/{crn}/{lao}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#assessments-risk-management-plans-crn-lao"><span>/assessments/risk-management-plans/{crn}/{lao}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#assessments-offences-crn-lao"><span>/assessments/offences/{crn}/{lao}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#assessments-all-risk-predictors-crn-lao"><span>/assessments/all-risk-predictors/{crn}/{lao}</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -134,14 +143,14 @@
 
 
 
-<h2 id="example-inputid">/example/{inputId}</h2>
+<h2 id="assessments-timeline-crn-lao">/assessments/timeline/{crn}/{lao}</h2>
 
-<h3 id="example-inputid-get">get</h3>
-
-
+<h3 id="assessments-timeline-crn-lao-get">get</h3>
 
 
-<h4 id="example-inputid-get-parameters">Parameters</h4>
+
+
+<h4 id="assessments-timeline-crn-lao-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -149,7 +158,17 @@
 <tbody>
 
 <tr>
-<td>inputId</td>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>lao</td>
 <td>path</td>
 <td>string</td>
 <td>true</td>
@@ -164,7 +183,7 @@
 
 
 
-<h4 id="example-inputid-get-responses">Responses</h4>
+<h4 id="assessments-timeline-crn-lao-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -178,7 +197,61 @@
 
 
 
+<pre><code>{
+  "crn": "string",
+  "limitedAccess": "boolean",
+  "timeline": [
+    {
+      "id": "integer",
+      "type": "string",
+      "initiationDate": "string",
+      "status": "string",
+      "completedDate": "string"
+    }
+  ]
+}</code></pre>
+
 </td>
+<td>
+<a href='#schema-oasystimelineresponse'>OasysTimelineResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="assessments-risk-management-plans-crn-lao">/assessments/risk-management-plans/{crn}/{lao}</h2>
+
+<h3 id="assessments-risk-management-plans-crn-lao-get">get</h3>
+
+
+
+
+<h4 id="assessments-risk-management-plans-crn-lao-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>lao</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
 <td>
 
 </td>
@@ -190,8 +263,1729 @@
 
 
 
+<h4 id="assessments-risk-management-plans-crn-lao-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "limitedAccess": "boolean",
+  "assessments": [
+    {
+      "id": "integer",
+      "type": "string",
+      "status": "string",
+      "superStatus": "string",
+      "initiationDate": "string",
+      "dateCompleted": "string",
+      "assessorSignedDate": "string",
+      "laterWipAssessmentExists": "boolean",
+      "latestWipDate": "string",
+      "laterSignLockAssessmentExists": "boolean",
+      "latestSignLockDate": "string",
+      "laterPartCompUnsignedAssessmentExists": "boolean",
+      "latestPartCompUnsignedDate": "string",
+      "laterPartCompSignedAssessmentExists": "boolean",
+      "latestPartCompSignedDate": "string",
+      "laterCompleteAssessmentExists": "boolean",
+      "latestCompleteDate": "string",
+      "keyInformationCurrentSituation": "string",
+      "furtherConsiderationsCurrentSituation": "string",
+      "supervision": "string",
+      "monitoringAndControl": "string",
+      "interventionsAndTreatment": "string",
+      "victimSafetyPlanning": "string",
+      "contingencyPlans": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-oasysresponseriskmanagementplan'>OasysResponseRiskManagementPlan</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="assessments-offences-crn-lao">/assessments/offences/{crn}/{lao}</h2>
+
+<h3 id="assessments-offences-crn-lao-get">get</h3>
+
+
+
+
+<h4 id="assessments-offences-crn-lao-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>lao</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="assessments-offences-crn-lao-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "limitedAccess": "boolean",
+  "assessments": [
+    {
+      "id": "integer",
+      "type": "string",
+      "status": "string",
+      "superStatus": "string",
+      "initiationDate": "string",
+      "dateCompleted": "string",
+      "assessorSignedDate": "string",
+      "laterWipAssessmentExists": "boolean",
+      "latestWipDate": "string",
+      "laterSignLockAssessmentExists": "boolean",
+      "latestSignLockDate": "string",
+      "laterPartCompUnsignedAssessmentExists": "boolean",
+      "latestPartCompUnsignedDate": "string",
+      "laterPartCompSignedAssessmentExists": "boolean",
+      "latestPartCompSignedDate": "string",
+      "laterCompleteAssessmentExists": "boolean",
+      "latestCompleteDate": "string",
+      "offence": "string",
+      "disinhibitors": [
+        {
+        }
+      ],
+      "patternOfOffending": "string",
+      "offenceInvolved": [
+        {
+        }
+      ],
+      "specificWeapon": "string",
+      "victimPerpetratorRelationship": "string",
+      "victimOtherInfo": "string",
+      "evidencedMotivations": [
+        {
+        }
+      ],
+      "offenceDetails": [
+        {
+          "type": "string",
+          "date": "string",
+          "code": "string",
+          "subCode": "string",
+          "offence": "string",
+          "subOffence": "string"
+        }
+      ],
+      "victimDetails": [
+        {
+          "age": "string",
+          "gender": "string",
+          "ethnicCategory": "string",
+          "victimRelation": "string"
+        }
+      ]
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-oasysresponseoffencedetails'>OasysResponseOffenceDetails</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="assessments-all-risk-predictors-crn-lao">/assessments/all-risk-predictors/{crn}/{lao}</h2>
+
+<h3 id="assessments-all-risk-predictors-crn-lao-get">get</h3>
+
+
+
+
+<h4 id="assessments-all-risk-predictors-crn-lao-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>lao</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="assessments-all-risk-predictors-crn-lao-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "crn": "string",
+  "limitedAccess": "boolean",
+  "assessments": [
+    {
+      "id": "integer",
+      "type": "string",
+      "status": "string",
+      "superStatus": "string",
+      "initiationDate": "string",
+      "dateCompleted": "string",
+      "assessorSignedDate": "string",
+      "laterWipAssessmentExists": "boolean",
+      "latestWipDate": "string",
+      "laterSignLockAssessmentExists": "boolean",
+      "latestSignLockDate": "string",
+      "laterPartCompUnsignedAssessmentExists": "boolean",
+      "latestPartCompUnsignedDate": "string",
+      "laterPartCompSignedAssessmentExists": "boolean",
+      "latestPartCompSignedDate": "string",
+      "laterCompleteAssessmentExists": "boolean",
+      "latestCompleteDate": "string",
+      "ogp": {
+        "stWesc": "number",
+        "dyWesc": "number",
+        "totWesc": "number",
+        "oneYear": "number",
+        "twoYear": "number",
+        "risk": "string"
+      },
+      "ogrs": {
+        "oneYear": "number",
+        "twoYear": "number",
+        "riskRecon": "string"
+      },
+      "osp": {
+        "imagePercentage": "number",
+        "contactPercentage": "number",
+        "imageLevel": "string",
+        "contactLevel": "string"
+      },
+      "ovp": {
+        "stWesc": "number",
+        "dyWesc": "number",
+        "totWesc": "number",
+        "oneYear": "number",
+        "twoYear": "number",
+        "risk": "string"
+      },
+      "rsr": {
+        "score": "number",
+        "type": "string",
+        "algorithmVersion": "string",
+        "level": "string"
+      }
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-oasysresponseriskpredictors'>OasysResponseRiskPredictors</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-oasystimelineresponse">OasysTimelineResponse</h3>
+
+
+<table class='schema-oasystimelineresponse'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>limitedAccess</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>timeline</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-timeline'>Timeline</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-timeline">Timeline</h3>
+
+
+<table class='schema-timeline'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>initiationDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>status</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>completedDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-oasysresponseriskmanagementplan">OasysResponseRiskManagementPlan</h3>
+
+
+<table class='schema-oasysresponseriskmanagementplan'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>limitedAccess</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>assessments</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-riskmanagementplan'>RiskManagementPlan</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-riskmanagementplan">RiskManagementPlan</h3>
+
+
+<table class='schema-riskmanagementplan'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>status</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>superStatus</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>initiationDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateCompleted</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>assessorSignedDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>laterWipAssessmentExists</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestWipDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>laterSignLockAssessmentExists</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestSignLockDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>laterPartCompUnsignedAssessmentExists</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestPartCompUnsignedDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>laterPartCompSignedAssessmentExists</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestPartCompSignedDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>laterCompleteAssessmentExists</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestCompleteDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>keyInformationCurrentSituation</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>furtherConsiderationsCurrentSituation</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>supervision</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>monitoringAndControl</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>interventionsAndTreatment</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>victimSafetyPlanning</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>contingencyPlans</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-oasysresponseoffencedetails">OasysResponseOffenceDetails</h3>
+
+
+<table class='schema-oasysresponseoffencedetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>limitedAccess</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>assessments</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offencedetails'>OffenceDetails</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offencedetail">OffenceDetail</h3>
+
+
+<table class='schema-offencedetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>date</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>subCode</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offence</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>subOffence</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offencedetails">OffenceDetails</h3>
+
+
+<table class='schema-offencedetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>status</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>superStatus</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>initiationDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateCompleted</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>assessorSignedDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>laterWipAssessmentExists</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestWipDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>laterSignLockAssessmentExists</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestSignLockDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>laterPartCompUnsignedAssessmentExists</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestPartCompUnsignedDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>laterPartCompSignedAssessmentExists</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestPartCompSignedDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>laterCompleteAssessmentExists</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestCompleteDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offence</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>disinhibitors</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>patternOfOffending</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenceInvolved</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>specificWeapon</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>victimPerpetratorRelationship</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>victimOtherInfo</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>evidencedMotivations</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenceDetails</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-offencedetail'>OffenceDetail</a>
+</td>
+</tr>
+
+<tr>
+<td>victimDetails</td>
+<td>array</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-victimdetail'>VictimDetail</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-victimdetail">VictimDetail</h3>
+
+
+<table class='schema-victimdetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>age</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>gender</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ethnicCategory</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>victimRelation</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-oasysresponseriskpredictors">OasysResponseRiskPredictors</h3>
+
+
+<table class='schema-oasysresponseriskpredictors'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>limitedAccess</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>assessments</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-riskpredictors'>RiskPredictors</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-ogp">Ogp</h3>
+
+
+<table class='schema-ogp'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>stWesc</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dyWesc</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totWesc</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>oneYear</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>twoYear</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>risk</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-ogrs">Ogrs</h3>
+
+
+<table class='schema-ogrs'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>oneYear</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>twoYear</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>riskRecon</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-osp">Osp</h3>
+
+
+<table class='schema-osp'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>imagePercentage</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>contactPercentage</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>imageLevel</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>contactLevel</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-ovp">Ovp</h3>
+
+
+<table class='schema-ovp'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>stWesc</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dyWesc</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>totWesc</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>oneYear</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>twoYear</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>risk</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-riskpredictors">RiskPredictors</h3>
+
+
+<table class='schema-riskpredictors'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>status</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>superStatus</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>initiationDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateCompleted</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>assessorSignedDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>laterWipAssessmentExists</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestWipDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>laterSignLockAssessmentExists</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestSignLockDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>laterPartCompUnsignedAssessmentExists</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestPartCompUnsignedDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>laterPartCompSignedAssessmentExists</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestPartCompSignedDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>laterCompleteAssessmentExists</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>latestCompleteDate</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>ogp</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-ogp'>Ogp</a>
+</td>
+</tr>
+
+<tr>
+<td>ogrs</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-ogrs'>Ogrs</a>
+</td>
+</tr>
+
+<tr>
+<td>osp</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-osp'>Osp</a>
+</td>
+</tr>
+
+<tr>
+<td>ovp</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-ovp'>Ovp</a>
+</td>
+</tr>
+
+<tr>
+<td>rsr</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-rsr'>Rsr</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-rsr">Rsr</h3>
+
+
+<table class='schema-rsr'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>score</td>
+<td>number</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>type</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>algorithmVersion</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>level</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 
 
             

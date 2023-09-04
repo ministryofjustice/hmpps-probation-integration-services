@@ -14,13 +14,18 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
+  /assessments/timeline/{crn}/{lao}:
     get:
       tags:
-      - api-controller
-      operationId: handle
+      - assessment-resource
+      operationId: getTimeline
       parameters:
-      - name: inputId
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: lao
         in: path
         required: true
         schema:
@@ -28,7 +33,487 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OasysTimelineResponse'
+  /assessments/risk-management-plans/{crn}/{lao}:
+    get:
+      tags:
+      - assessment-resource
+      operationId: getRiskManagementPlans
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: lao
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OasysResponseRiskManagementPlan'
+  /assessments/offences/{crn}/{lao}:
+    get:
+      tags:
+      - assessment-resource
+      operationId: getOffenceDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: lao
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OasysResponseOffenceDetails'
+  /assessments/all-risk-predictors/{crn}/{lao}:
+    get:
+      tags:
+      - assessment-resource
+      operationId: getRiskPredictors
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: lao
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OasysResponseRiskPredictors'
 components:
+  schemas:
+    OasysTimelineResponse:
+      required:
+      - crn
+      - limitedAccess
+      - timeline
+      type: object
+      properties:
+        crn:
+          type: string
+        limitedAccess:
+          type: boolean
+        timeline:
+          type: array
+          items:
+            $ref: '#/components/schemas/Timeline'
+    Timeline:
+      required:
+      - id
+      - initiationDate
+      - status
+      - type
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        type:
+          type: string
+        initiationDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+        completedDate:
+          type: string
+          format: date-time
+    OasysResponseRiskManagementPlan:
+      required:
+      - assessments
+      - crn
+      - limitedAccess
+      type: object
+      properties:
+        crn:
+          type: string
+        limitedAccess:
+          type: boolean
+        assessments:
+          type: array
+          items:
+            $ref: '#/components/schemas/RiskManagementPlan'
+    RiskManagementPlan:
+      required:
+      - id
+      - initiationDate
+      - laterCompleteAssessmentExists
+      - laterPartCompSignedAssessmentExists
+      - laterPartCompUnsignedAssessmentExists
+      - laterSignLockAssessmentExists
+      - laterWipAssessmentExists
+      - status
+      - superStatus
+      - type
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        status:
+          type: string
+        superStatus:
+          type: string
+        initiationDate:
+          type: string
+          format: date-time
+        dateCompleted:
+          type: string
+          format: date-time
+        assessorSignedDate:
+          type: string
+          format: date-time
+        laterWipAssessmentExists:
+          type: boolean
+        latestWipDate:
+          type: string
+          format: date-time
+        laterSignLockAssessmentExists:
+          type: boolean
+        latestSignLockDate:
+          type: string
+          format: date-time
+        laterPartCompUnsignedAssessmentExists:
+          type: boolean
+        latestPartCompUnsignedDate:
+          type: string
+          format: date-time
+        laterPartCompSignedAssessmentExists:
+          type: boolean
+        latestPartCompSignedDate:
+          type: string
+          format: date-time
+        laterCompleteAssessmentExists:
+          type: boolean
+        latestCompleteDate:
+          type: string
+          format: date-time
+        keyInformationCurrentSituation:
+          type: string
+        furtherConsiderationsCurrentSituation:
+          type: string
+        supervision:
+          type: string
+        monitoringAndControl:
+          type: string
+        interventionsAndTreatment:
+          type: string
+        victimSafetyPlanning:
+          type: string
+        contingencyPlans:
+          type: string
+    OasysResponseOffenceDetails:
+      required:
+      - assessments
+      - crn
+      - limitedAccess
+      type: object
+      properties:
+        crn:
+          type: string
+        limitedAccess:
+          type: boolean
+        assessments:
+          type: array
+          items:
+            $ref: '#/components/schemas/OffenceDetails'
+    OffenceDetail:
+      required:
+      - code
+      - date
+      - offence
+      - subCode
+      - subOffence
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+        date:
+          type: string
+          format: date-time
+        code:
+          type: string
+        subCode:
+          type: string
+        offence:
+          type: string
+        subOffence:
+          type: string
+    OffenceDetails:
+      required:
+      - id
+      - initiationDate
+      - laterCompleteAssessmentExists
+      - laterPartCompSignedAssessmentExists
+      - laterPartCompUnsignedAssessmentExists
+      - laterSignLockAssessmentExists
+      - laterWipAssessmentExists
+      - status
+      - superStatus
+      - type
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        status:
+          type: string
+        superStatus:
+          type: string
+        initiationDate:
+          type: string
+          format: date-time
+        dateCompleted:
+          type: string
+          format: date-time
+        assessorSignedDate:
+          type: string
+          format: date-time
+        laterWipAssessmentExists:
+          type: boolean
+        latestWipDate:
+          type: string
+          format: date-time
+        laterSignLockAssessmentExists:
+          type: boolean
+        latestSignLockDate:
+          type: string
+          format: date-time
+        laterPartCompUnsignedAssessmentExists:
+          type: boolean
+        latestPartCompUnsignedDate:
+          type: string
+          format: date-time
+        laterPartCompSignedAssessmentExists:
+          type: boolean
+        latestPartCompSignedDate:
+          type: string
+          format: date-time
+        laterCompleteAssessmentExists:
+          type: boolean
+        latestCompleteDate:
+          type: string
+          format: date-time
+        offence:
+          type: string
+        disinhibitors:
+          type: array
+          items:
+            type: string
+        patternOfOffending:
+          type: string
+        offenceInvolved:
+          type: array
+          items:
+            type: string
+        specificWeapon:
+          type: string
+        victimPerpetratorRelationship:
+          type: string
+        victimOtherInfo:
+          type: string
+        evidencedMotivations:
+          type: array
+          items:
+            type: string
+        offenceDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/OffenceDetail'
+        victimDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/VictimDetail'
+    VictimDetail:
+      type: object
+      properties:
+        age:
+          type: string
+        gender:
+          type: string
+        ethnicCategory:
+          type: string
+        victimRelation:
+          type: string
+    OasysResponseRiskPredictors:
+      required:
+      - assessments
+      - crn
+      - limitedAccess
+      type: object
+      properties:
+        crn:
+          type: string
+        limitedAccess:
+          type: boolean
+        assessments:
+          type: array
+          items:
+            $ref: '#/components/schemas/RiskPredictors'
+    Ogp:
+      type: object
+      properties:
+        stWesc:
+          type: number
+        dyWesc:
+          type: number
+        totWesc:
+          type: number
+        oneYear:
+          type: number
+        twoYear:
+          type: number
+        risk:
+          type: string
+    Ogrs:
+      type: object
+      properties:
+        oneYear:
+          type: number
+        twoYear:
+          type: number
+        riskRecon:
+          type: string
+    Osp:
+      type: object
+      properties:
+        imagePercentage:
+          type: number
+        contactPercentage:
+          type: number
+        imageLevel:
+          type: string
+        contactLevel:
+          type: string
+    Ovp:
+      type: object
+      properties:
+        stWesc:
+          type: number
+        dyWesc:
+          type: number
+        totWesc:
+          type: number
+        oneYear:
+          type: number
+        twoYear:
+          type: number
+        risk:
+          type: string
+    RiskPredictors:
+      required:
+      - id
+      - initiationDate
+      - laterCompleteAssessmentExists
+      - laterPartCompSignedAssessmentExists
+      - laterPartCompUnsignedAssessmentExists
+      - laterSignLockAssessmentExists
+      - laterWipAssessmentExists
+      - ogp
+      - ogrs
+      - osp
+      - ovp
+      - rsr
+      - status
+      - superStatus
+      - type
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        status:
+          type: string
+        superStatus:
+          type: string
+        initiationDate:
+          type: string
+          format: date-time
+        dateCompleted:
+          type: string
+          format: date-time
+        assessorSignedDate:
+          type: string
+          format: date-time
+        laterWipAssessmentExists:
+          type: boolean
+        latestWipDate:
+          type: string
+          format: date-time
+        laterSignLockAssessmentExists:
+          type: boolean
+        latestSignLockDate:
+          type: string
+          format: date-time
+        laterPartCompUnsignedAssessmentExists:
+          type: boolean
+        latestPartCompUnsignedDate:
+          type: string
+          format: date-time
+        laterPartCompSignedAssessmentExists:
+          type: boolean
+        latestPartCompSignedDate:
+          type: string
+          format: date-time
+        laterCompleteAssessmentExists:
+          type: boolean
+        latestCompleteDate:
+          type: string
+          format: date-time
+        ogp:
+          $ref: '#/components/schemas/Ogp'
+        ogrs:
+          $ref: '#/components/schemas/Ogrs'
+        osp:
+          $ref: '#/components/schemas/Osp'
+        ovp:
+          $ref: '#/components/schemas/Ovp'
+        rsr:
+          $ref: '#/components/schemas/Rsr'
+    Rsr:
+      type: object
+      properties:
+        score:
+          type: number
+        type:
+          type: string
+        algorithmVersion:
+          type: string
+        level:
+          type: string
   securitySchemes:
     hmpps-auth-token:
       type: http
