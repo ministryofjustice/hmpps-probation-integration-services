@@ -16,19 +16,44 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest {
-    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    @Autowired lateinit var wireMockServer: WireMockServer
+    @Autowired
+    lateinit var wireMockServer: WireMockServer
 
-    @MockBean lateinit var telemetryService: TelemetryService
+    @MockBean
+    lateinit var telemetryService: TelemetryService
 
     @Test
-    fun `API call retuns a success response`() {
-        mockMvc
-            .perform(
-                get("/example/123")
-                    .withOAuth2Token(wireMockServer)
-            )
-            .andExpect(status().is2xxSuccessful)
+    fun `get assessment offences is successful`() {
+        mockMvc.perform(
+            get("/assessments/offences/W960724/ALLOW")
+                .withOAuth2Token(wireMockServer)
+        ).andExpect(status().is2xxSuccessful)
+    }
+
+    @Test
+    fun `get risk management plans is successful`() {
+        mockMvc.perform(
+            get("/assessments/risk-management-plans/W960724/ALLOW")
+                .withOAuth2Token(wireMockServer)
+        ).andExpect(status().is2xxSuccessful)
+    }
+
+    @Test
+    fun `get risk predictors is successful`() {
+        mockMvc.perform(
+            get("/assessments/all-risk-predictors/W960724/ALLOW")
+                .withOAuth2Token(wireMockServer)
+        ).andExpect(status().is2xxSuccessful)
+    }
+
+    @Test
+    fun `get timeline is successful`() {
+        mockMvc.perform(
+            get("/assessments/timeline/W960724/ALLOW")
+                .withOAuth2Token(wireMockServer)
+        ).andExpect(status().is2xxSuccessful)
     }
 }
