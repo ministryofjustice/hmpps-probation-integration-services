@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ inputs.create_oauth_client }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Create issue for manual steps
         run: |
           gh issue create \
@@ -71,7 +71,7 @@ jobs:
     if: ${{ inputs.project_template != 'No template - I want to create the project from scratch' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
@@ -112,7 +112,7 @@ jobs:
     outputs:
       project_slug: ${{ steps.project.outputs.slug }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Create project
         id: project
@@ -175,7 +175,7 @@ jobs:
         environment: ["test", "preprod", "prod"]
     environment: ${{ matrix.environment }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: ./.github/actions/cloud-platform-auth
         with:
@@ -211,23 +211,23 @@ jobs:
       - id: project_name
         run: echo "with_underscores_uppercase=$(echo '${{ inputs.project_name }}' | sed 's/-/_/g' | tr '[:lower:]' '[:upper:]')" | tee -a "$GITHUB_OUTPUT"
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-dev
           repository: ministryofjustice/cloud-platform-environments
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-preprod
           repository: ministryofjustice/cloud-platform-environments
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-prod
           repository: ministryofjustice/cloud-platform-environments
@@ -308,23 +308,23 @@ jobs:
       - id: project_name
         run: echo "hash=$(echo -n '${{ inputs.project_name }}' | sha1sum | head -c 8)" | tee -a "$GITHUB_OUTPUT"
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-dev
           repository: ministryofjustice/cloud-platform-environments
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-preprod
           repository: ministryofjustice/cloud-platform-environments
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-prod
           repository: ministryofjustice/cloud-platform-environments

@@ -16,7 +16,7 @@ jobs:
     outputs:
       projects: ${{ steps.get-projects.outputs.projects }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: get-projects
         run: echo "projects=$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_OUTPUT"
 
@@ -29,7 +29,7 @@ jobs:
       matrix:
         project: ${{ fromJson(needs.get-projects.outputs.projects) }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Scan image
         uses: aquasecurity/trivy-action@41f05d9ecffa2ed3f1580af306000f734b733e54 # v0.11.2
@@ -104,7 +104,7 @@ jobs:
     needs:
       - get-projects
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-java@v3
         with:
           java-version: 17

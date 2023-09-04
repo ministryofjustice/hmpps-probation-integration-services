@@ -13,14 +13,14 @@ jobs:
   validate-wrapper:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: gradle/wrapper-validation-action@v1
 
   update-wrapper:
     runs-on: ubuntu-latest
     if: github.ref_name == 'main'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
