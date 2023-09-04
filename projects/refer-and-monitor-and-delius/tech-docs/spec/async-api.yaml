@@ -1,0 +1,16 @@
+asyncapi: 2.6.0
+info:
+  title: Refer & Monitor and Delius
+  description: Reflect progress of interventions in Delius
+  version: 0.1.0
+
+servers:
+  development:
+    url: https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-dev-refer-and-monitor-and-delius-queue
+    protocol: sqs
+  preproduction:
+    url: https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-preprod-refer-and-monitor-and-delius-queue
+    protocol: sqs
+  production:
+    url: https://sqs.eu-west-2.amazonaws.com/754256621582/probation-integration-prod-refer-and-monitor-and-delius-queue
+    protocol: sqs
