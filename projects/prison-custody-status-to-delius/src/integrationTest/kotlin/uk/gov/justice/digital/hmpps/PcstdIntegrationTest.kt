@@ -132,7 +132,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
         verifyContact(custody, ContactType.Code.CHANGE_OF_INSTITUTION)
 
-        verifyTelemetry("RecallNotPossible", "PrisonerStatusCorrect", "LocationUpdated") {
+        verifyTelemetry("RecallNotRequired", "PrisonerStatusCorrect", "LocationUpdated") {
             mapOf(
                 "occurredAt" to ZonedDateTime.parse("2023-07-31T09:26:39+01:00[Europe/London]").toString(),
                 "nomsNumber" to PersonGenerator.MATCHABLE.nomsNumber,
@@ -201,7 +201,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
         verifyContact(custody, ContactType.Code.CHANGE_OF_INSTITUTION)
 
-        verifyTelemetry("RecallNotPossible", "StatusUpdated", "LocationUpdated") {
+        verifyTelemetry("RecallNotRequired", "StatusUpdated", "LocationUpdated") {
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0004AA",
@@ -238,7 +238,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
         verifyContact(custody, ContactType.Code.CHANGE_OF_INSTITUTION)
 
-        verifyTelemetry("RecallNotPossible", "StatusUpdated", "LocationUpdated") {
+        verifyTelemetry("RecallNotRequired", "StatusUpdated", "LocationUpdated") {
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0006AA",
@@ -319,7 +319,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
         verifyContact(custody, ContactType.Code.CHANGE_OF_INSTITUTION)
 
-        verifyTelemetry("RecallNotPossible", "PrisonerStatusCorrect", "LocationUpdated") {
+        verifyTelemetry("RecallNotRequired", "PrisonerStatusCorrect", "LocationUpdated") {
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0007AA",
@@ -429,7 +429,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
         verifyContact(custody, ContactType.Code.CHANGE_OF_INSTITUTION)
 
-        verifyTelemetry("RecallNotPossible", "PrisonerStatusCorrect", "LocationUpdated") {
+        verifyTelemetry("RecallNotRequired", "PrisonerStatusCorrect", "LocationUpdated") {
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0011AA",

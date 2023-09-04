@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactDetail
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canBeReleased
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventService
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.host.entity.HostRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
@@ -14,7 +15,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institutio
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getReleaseType
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CAN_RELEASE_STATUSES
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.Release
@@ -60,7 +60,7 @@ class ReleaseAction(
         custody: Custody,
         institution: Institution
     ): ActionResult {
-        if (custody.status.canRelease()) {
+        if (custody.canBeReleased()) {
             val releaseDate = prisonerMovement.occurredAt.truncatedTo(ChronoUnit.DAYS)
             releaseRepository.save(
                 Release(
@@ -95,8 +95,6 @@ class ReleaseAction(
         )
     }
 }
-
-private fun ReferenceData.canRelease() = CAN_RELEASE_STATUSES.map { it.code }.contains(code)
 
 private fun PrisonerMovement.occurredBefore(sentenceDate: ZonedDateTime, recalledDateTime: ZonedDateTime?): Boolean {
     return occurredAt.isBefore(sentenceDate) || recalledDateTime?.let { occurredAt.isBefore(it) } ?: false

@@ -68,7 +68,7 @@ internal class RecallActionTest {
         val ex = assertThrows<IgnorableMessageException> {
             action.accept(PrisonerMovementContext(prisonerMovement, custody))
         }
-        assertThat(ex.message, equalTo("RecallNotPossible"))
+        assertThat(ex.message, equalTo("RecallNotRequired"))
     }
 
     @ParameterizedTest

@@ -50,7 +50,7 @@ internal class HandlerTest {
     fun `missing reference data is thrown`() {
         val notification = Notification(ResourceLoader.event("offence-changed"))
         val offenceCode = notification.message.offenceCode
-        whenever(manageOffencesClient.getOffence(offenceCode)).thenReturn(listOf(offence(offenceCode)))
+        whenever(manageOffencesClient.getOffence(offenceCode)).thenReturn(offence(offenceCode))
 
         assertThrows<NotFoundException> { handler.handle(notification) }
             .run { assertThat(message, equalTo("Court category with code of CS not found")) }
@@ -60,7 +60,7 @@ internal class HandlerTest {
     fun `offence is created`() {
         val notification = Notification(ResourceLoader.event("offence-changed"))
         val offenceCode = notification.message.offenceCode
-        whenever(manageOffencesClient.getOffence(offenceCode)).thenReturn(listOf(offence(offenceCode)))
+        whenever(manageOffencesClient.getOffence(offenceCode)).thenReturn(offence(offenceCode))
         whenever(referenceDataRepository.findByCodeAndSetName(COURT_CATEGORY.code, COURT_CATEGORY.set.name)).thenReturn(COURT_CATEGORY)
 
         handler.handle(notification)
@@ -80,7 +80,7 @@ internal class HandlerTest {
     fun `offence is updated`() {
         val notification = Notification(ResourceLoader.event("offence-changed"))
         val offenceCode = notification.message.offenceCode
-        whenever(manageOffencesClient.getOffence(offenceCode)).thenReturn(listOf(offence(notification.message.offenceCode)))
+        whenever(manageOffencesClient.getOffence(offenceCode)).thenReturn(offence(notification.message.offenceCode))
         whenever(referenceDataRepository.findByCodeAndSetName(COURT_CATEGORY.code, COURT_CATEGORY.set.name)).thenReturn(COURT_CATEGORY)
         whenever(detailedOffenceRepository.findByCode(EXISTING_OFFENCE.code)).thenReturn(EXISTING_OFFENCE)
 

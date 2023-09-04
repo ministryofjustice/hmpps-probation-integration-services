@@ -20,7 +20,7 @@ class ProbationAreaEntity(
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean = true,
+    val selectable: Boolean,
 
     val description: String,
 
@@ -42,7 +42,7 @@ class District(
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean = true,
+    val selectable: Boolean,
 
     @Column(name = "code")
     val code: String,
@@ -65,7 +65,7 @@ class Borough(
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean = true,
+    val selectable: Boolean,
 
     @Id
     @Column(name = "borough_id")
@@ -98,6 +98,18 @@ interface ProbationAreaRepository : JpaRepository<ProbationAreaEntity, Long> {
     """
     )
     fun probationAreaDistricts(): List<ProbationAreaDistrict>
+
+    @Query(
+        """
+        select new uk.gov.justice.digital.hmpps.entity.ProbationAreaDistrict(pa.code, pa.description, d.code, d.description)
+        from District d
+        join d.borough b
+        join b.probationArea pa
+        where pa.description not like 'ZZ%'
+        and d.code <> '-1'
+    """
+    )
+    fun probationAreaDistrictsNonSelectable(): List<ProbationAreaDistrict>
 }
 
 data class ProbationAreaDistrict(val pCode: String, val pDesc: String, val dCode: String, val dDesc: String)

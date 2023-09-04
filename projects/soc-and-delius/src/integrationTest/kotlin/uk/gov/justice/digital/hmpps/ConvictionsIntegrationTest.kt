@@ -13,9 +13,14 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ConvictionEventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
 import uk.gov.justice.digital.hmpps.model.Conviction
 import uk.gov.justice.digital.hmpps.model.ConvictionsContainer
+import uk.gov.justice.digital.hmpps.model.Custody
+import uk.gov.justice.digital.hmpps.model.CustodyStatus
+import uk.gov.justice.digital.hmpps.model.KeyDate
 import uk.gov.justice.digital.hmpps.model.Offence
+import uk.gov.justice.digital.hmpps.model.Sentence
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -64,6 +69,23 @@ internal class ConvictionsIntegrationTest {
                 listOf(
                     Offence(ConvictionEventGenerator.OFFENCE_MAIN.description, true),
                     Offence(ConvictionEventGenerator.OFFENCE_OTHER.description, false)
+                ),
+                Sentence(
+                    ConvictionEventGenerator.DISPOSAL.startDate,
+                    null,
+                    Custody(
+                        CustodyStatus(
+                            KeyDateGenerator.CUSTODY.status.code,
+                            KeyDateGenerator.CUSTODY.status.description
+                        ),
+                        listOf(
+                            KeyDate(
+                                KeyDateGenerator.KEYDATE.type.code,
+                                KeyDateGenerator.KEYDATE.type.description,
+                                KeyDateGenerator.KEYDATE.date
+                            )
+                        )
+                    )
                 )
             )
         )

@@ -82,6 +82,12 @@ class Disposal(
     @JoinColumn(name = "event_id")
     val event: ConvictionEventEntity,
 
+    @Column(name = "disposal_date")
+    val startDate: LocalDate,
+
+    @Column(name = "notional_end_date")
+    val expectedEndDate: LocalDate? = null,
+
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 

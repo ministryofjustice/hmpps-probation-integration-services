@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyHistoryRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canBeRecalled
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.entity.canBeReleased
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.getCustodialStatus
@@ -56,7 +57,11 @@ class UpdateStatusAction(
         val (prisonerMovement, custody) = context
         val statusCode = when {
             prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease() -> custody.nextStatus()
-            else -> CustodialStatusCode.RELEASED_ON_LICENCE
+            else -> if (custody.canBeReleased()) {
+                CustodialStatusCode.RELEASED_ON_LICENCE
+            } else {
+                throw IgnorableMessageException("PrisonerStatusCorrect")
+            }
         }
         return updateStatus(
             custody,

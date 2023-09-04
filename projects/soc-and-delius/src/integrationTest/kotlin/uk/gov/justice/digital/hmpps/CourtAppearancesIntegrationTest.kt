@@ -45,10 +45,21 @@ internal class CourtAppearancesIntegrationTest {
         Assertions.assertThat(detailResponse).isEqualTo(getCourtAppearances())
     }
 
+    @Test
+    fun `API call retuns no results`() {
+        val crn = CourtAppearanceGenerator.DEFAULT_PERSON.crn
+        val result = mockMvc
+            .perform(get("/court-appearances/$crn?fromDate=2099-12-12").withOAuth2Token(wireMockServer))
+            .andExpect(status().is2xxSuccessful).andReturn()
+
+        val detailResponse = objectMapper.readValue(result.response.contentAsString, CourtAppearancesContainer::class.java)
+        Assertions.assertThat(detailResponse).isEqualTo(CourtAppearancesContainer(listOf()))
+    }
+
     private fun getCourtAppearances(): CourtAppearancesContainer = CourtAppearancesContainer(
         listOf(
             CourtAppearance(
-                CourtAppearanceGenerator.DEFAULT_CA.appearanceDate.toLocalDate(),
+                CourtAppearanceGenerator.DEFAULT_CA.appearanceDate,
                 Type(CourtAppearanceGenerator.DEFAULT_CA_TYPE.code, CourtAppearanceGenerator.DEFAULT_CA_TYPE.description),
                 CourtAppearanceGenerator.DEFAULT_COURT.code,
                 CourtAppearanceGenerator.DEFAULT_COURT.name,
