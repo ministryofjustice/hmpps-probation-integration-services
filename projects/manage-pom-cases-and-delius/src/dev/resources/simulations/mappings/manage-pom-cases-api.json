@@ -38,6 +38,19 @@
         "status": 200,
         "bodyFileName": "create-handover-and-start-date.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/api/pom-allocation/A00123Y"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "new-allocation.json"
+      }
     }
   ]
 }

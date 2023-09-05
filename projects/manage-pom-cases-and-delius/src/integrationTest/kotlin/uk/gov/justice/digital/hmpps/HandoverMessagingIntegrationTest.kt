@@ -21,7 +21,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 
 @SpringBootTest
-internal class MessagingIntegrationTest {
+internal class HandoverMessagingIntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
 
