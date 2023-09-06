@@ -559,7 +559,6 @@ digraph "oneDegreeRelationshipsDiagram" {
   "SPG_ERROR":"RESOLUTION_STATUS_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "SPG_ERROR":"SPG_ERROR_CATEGORY_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "SPG_ERROR":"SPG_MESSAGE_TYPE_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
-  "SPG_ERROR":"SPG_NOTIFICATION_ID":w -> "SPG_NOTIFICATION":"SPG_NOTIFICATION_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "SPG_ERROR_DETAIL":"SPG_ERROR_CODE_ID":w -> "R_STANDARD_REFERENCE_LIST":"STANDARD_REFERENCE_LIST_ID.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "SPG_ERROR_DETAIL":"SPG_ERROR_ELEMENT_ID":w -> "SPG_ERROR_ELEMENT":"SPG_ERROR_ELEMENT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "SPG_ERROR_DETAIL":"SPG_ERROR_ID":w -> "SPG_ERROR":"SPG_ERROR_ID":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -3116,7 +3115,7 @@ digraph "oneDegreeRelationshipsDiagram" {
       <TR><TD PORT="RESOLUTION_STATUS_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="144" HEIGHT="16">RESOLUTION_STATUS_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="ASSIGNED_TO_STAFF_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="144" HEIGHT="16">ASSIGNED_TO_STAFF_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 5</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">25,460 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 4</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">25,460 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/SPG_ERROR.html"
     target="_top"
@@ -3189,7 +3188,7 @@ digraph "oneDegreeRelationshipsDiagram" {
       <TR><TD PORT="MT_COMPONENT_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="177" HEIGHT="16">MT_COMPONENT_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="DATA_SCRIPT_MESSAGE_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="177" HEIGHT="16">DATA_SCRIPT_MESSAGE_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 8</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">428,992 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">5 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 8</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">428,992 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">4 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/SPG_NOTIFICATION.html"
     target="_top"
