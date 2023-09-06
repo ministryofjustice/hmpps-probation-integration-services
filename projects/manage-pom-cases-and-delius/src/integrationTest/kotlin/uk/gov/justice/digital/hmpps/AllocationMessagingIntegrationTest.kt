@@ -18,7 +18,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRep
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.time.Duration
 import java.time.ZonedDateTime
 
 @SpringBootTest
@@ -48,7 +47,7 @@ internal class AllocationMessagingIntegrationTest {
             wireMockServer.port()
         )
 
-        channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofSeconds(10000))
+        channelManager.getChannel(queueName).publishAndWait(notification)
 
         val captor = argumentCaptor<Staff>()
         verify(staffRepository).save(captor.capture())
