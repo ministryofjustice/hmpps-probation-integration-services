@@ -41,7 +41,7 @@ class ReferenceDataSet(
     val id: Long
 ) {
     enum class Code(val value: String) {
-        KEY_DATE_TYPE("THROUGHCARE DATE TYPE")
+        KEY_DATE_TYPE("THROUGHCARE DATE TYPE"), POM_ALLOCATION_REASON("POM ALLOCATION REASON")
     }
 }
 
@@ -58,3 +58,6 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
 
 fun ReferenceDataRepository.keyDateType(code: String) =
     findByCode(code, ReferenceDataSet.Code.KEY_DATE_TYPE.value) ?: throw NotFoundException("KeyDateType", "code", code)
+
+fun ReferenceDataRepository.pomAllocationReason(code: String) =
+    findByCode(code, ReferenceDataSet.Code.POM_ALLOCATION_REASON.value) ?: throw NotFoundException("PomAllocationReason", "code", code)

@@ -24,9 +24,11 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.District
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Institution
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffUser
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.TeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceDataSet
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
@@ -40,6 +42,8 @@ class DataLoader(
     private val referenceDataSetRepository: ReferenceDataSetRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val registerTypeRepository: RegisterTypeRepository,
+    private val institutionRepository: InstitutionRepository,
+    private val probationAreaRepository: ProbationAreaRepository,
     private val districtRepository: DistrictRepository,
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
@@ -51,6 +55,7 @@ class DataLoader(
     private val caseAllocationRepository: CaseAllocationRepository,
     private val registrationRepository: RegistrationRepository,
     private val keyDateRepository: KeyDateRepository
+
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -59,7 +64,10 @@ class DataLoader(
     }
 
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
+        institutionRepository.save(ProviderGenerator.DEFAULT_PROVIDER.institution!!)
+        probationAreaRepository.save(ProviderGenerator.DEFAULT_PROVIDER)
         referenceDataSetRepository.save(ReferenceDataGenerator.KEY_DATE_TYPE_DATASET)
+        referenceDataSetRepository.save(ReferenceDataGenerator.POM_ALLOCATION_DATASET)
         referenceDataRepository.saveAll(ReferenceDataGenerator.ALL)
         registerTypeRepository.saveAll(
             listOf(
@@ -69,9 +77,15 @@ class DataLoader(
             )
         )
         districtRepository.save(ProviderGenerator.DEFAULT_DISTRICT)
-        teamRepository.saveAll(PersonManagerGenerator.ALL.map { it.team })
-        staffRepository.saveAll(PersonManagerGenerator.ALL.map { it.staff })
-        staffUserRepository.save(UserGenerator.DEFAULT_STAFF_USER)
+        teamRepository.saveAll(PersonManagerGenerator.ALL.map { it.team } + ProviderGenerator.POM_TEAM)
+        val staffMap = staffRepository.saveAll(PersonManagerGenerator.ALL.map { it.staff }).associateBy { it.code }
+        UserGenerator.DEFAULT_STAFF_USER = staffUserRepository.save(
+            StaffUser(
+                UserGenerator.DEFAULT_STAFF_USER.username,
+                staffMap[ProviderGenerator.DEFAULT_STAFF.code],
+                UserGenerator.DEFAULT_STAFF_USER.id
+            )
+        )
 
         personRepository.saveAll(
             listOf(
@@ -81,7 +95,15 @@ class DataLoader(
                 PersonGenerator.UPDATE_HANDOVER_AND_START
             )
         )
-        personManagerRepository.saveAll(PersonManagerGenerator.ALL)
+        personManagerRepository.saveAll(
+            PersonManagerGenerator.ALL.map {
+                PersonManagerGenerator.generate(
+                    it.team,
+                    staffMap[it.staff.code]!!,
+                    it.person
+                )
+            }
+        )
 
         eventRepository.saveAll(CaseAllocationGenerator.ALL.map { it.event })
         disposalRepository.saveAll(CaseAllocationGenerator.ALL.map { it.event.disposal })
@@ -146,9 +168,8 @@ class DataLoader(
 interface ReferenceDataSetRepository : JpaRepository<ReferenceDataSet, Long>
 interface StaffUserRepository : JpaRepository<StaffUser, Long>
 interface DistrictRepository : JpaRepository<District, Long>
-interface TeamRepository : JpaRepository<Team, Long>
-interface StaffRepository : JpaRepository<Staff, Long>
 interface PersonManagerRepository : JpaRepository<PersonManager, Long>
 interface EventRepository : JpaRepository<Event, Long>
 interface DisposalRepository : JpaRepository<Disposal, Long>
 interface RegisterTypeRepository : JpaRepository<RegisterType, Long>
+interface InstitutionRepository : JpaRepository<Institution, Long>
