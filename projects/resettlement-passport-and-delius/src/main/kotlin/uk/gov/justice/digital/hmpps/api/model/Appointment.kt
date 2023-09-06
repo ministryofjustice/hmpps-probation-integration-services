@@ -9,7 +9,7 @@ data class Appointment(
     val duration: Duration,
     val staff: Staff,
     val location: Location?,
-    val description: String?,
+    val description: String,
     val outcome: Outcome?
 ) {
     data class Type(val code: String, val description: String)
