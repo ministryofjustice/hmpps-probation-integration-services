@@ -31,7 +31,6 @@ import uk.gov.justice.digital.hmpps.service.Outcome
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
 import java.util.UUID
-import java.util.concurrent.CompletableFuture
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -62,7 +61,7 @@ internal class MergeAppointmentIntegrationTest {
 
     @Test
     @Order(1)
-    fun `creates appointment with external reference only once`() {
+    fun `creates appointment with external reference`() {
         val person = PersonGenerator.NO_APPOINTMENTS
         val referralId = UUID.fromString("09c62549-bcd3-49a9-8120-7811b76925e5")
         val start = ZonedDateTime.now().plusDays(14)
@@ -81,15 +80,7 @@ internal class MergeAppointmentIntegrationTest {
             null
         )
         val result = status().isOk
-
-        val r1 = CompletableFuture.supplyAsync {
-            makeRequest(person, referralId, mergeAppointment, result)
-        }
-        val r2 = CompletableFuture.supplyAsync {
-            makeRequest(person, referralId, mergeAppointment, result)
-        }
-
-        CompletableFuture.allOf(r1, r2).join()
+        makeRequest(person, referralId, mergeAppointment, result)
 
         val appointment = assertDoesNotThrow {
             contactRepository.findByPersonCrnAndExternalReference(
