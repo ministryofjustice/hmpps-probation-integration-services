@@ -163,6 +163,7 @@ components:
     Appointment:
       required:
       - dateTime
+      - description
       - duration
       - staff
       - type
