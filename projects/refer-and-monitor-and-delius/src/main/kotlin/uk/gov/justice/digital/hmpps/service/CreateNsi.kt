@@ -42,7 +42,6 @@ class CreateNsi(
         val type = nsiTypeRepository.getByCode(nsiTypeCode)
         val status = nsiStatusRepository.getByCode(NsiStatus.Code.IN_PROGRESS.value)
 
-        val eventId = disposalRepository.findForUpdate(sentence.id)
         val existing = nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn)
         if (existing != null) return existing
 
@@ -51,7 +50,7 @@ class CreateNsi(
                 person = person,
                 intendedProviderId = providerRepository.getCrsProvider().id,
                 type = type,
-                eventId = eventId,
+                eventId = sentence.event.id,
                 requirementId = req?.id,
                 referralDate = rs.startedAt.toLocalDate(),
                 actualStartDate = rs.startedAt,
