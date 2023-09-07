@@ -41,10 +41,6 @@ class CreateNsi(
             ?: throw IllegalArgumentException("Unexpected Contract Type")
         val type = nsiTypeRepository.getByCode(nsiTypeCode)
         val status = nsiStatusRepository.getByCode(NsiStatus.Code.IN_PROGRESS.value)
-
-        val existing = nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn)
-        if (existing != null) return existing
-
         val nsi = nsiRepository.save(
             Nsi(
                 person = person,

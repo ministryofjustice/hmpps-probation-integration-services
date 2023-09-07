@@ -54,8 +54,7 @@ class NsiService(
                 contactRepository.save(it.contact(NSI_REFERRAL.value, it.statusDate))
                 contactRepository.save(it.statusChangeContact())
                 contactRepository.save(it.contact(NSI_COMMENCED.value, it.actualStartDate!!))
-            }
-            ?: find() ?: throw IllegalStateException("Unable to find or create NSI for ${rs.urn}")
+            } ?: find() ?: throw IllegalStateException("Unable to find or create NSI for ${rs.urn}")
 
         audit["offenderId"] = nsi.person.id
         audit["nsiId"] = nsi.id
