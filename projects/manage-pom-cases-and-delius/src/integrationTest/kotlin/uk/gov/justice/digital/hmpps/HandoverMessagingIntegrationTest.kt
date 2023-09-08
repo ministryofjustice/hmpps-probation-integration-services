@@ -50,7 +50,7 @@ internal class HandoverMessagingIntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(telemetryService).trackEvent(
-            KeyDateMergeResult.KEY_DATE_UPDATED.name,
+            KeyDateMergeResult.KeyDateUpdated.name,
             mapOf(
                 "nomsId" to "A2048BY",
                 "handoverDate" to "2023-05-09",
@@ -76,7 +76,7 @@ internal class HandoverMessagingIntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(notification)
 
         verify(telemetryService).trackEvent(
-            KeyDateMergeResult.KEY_DATE_CREATED.name,
+            KeyDateMergeResult.KeyDateCreated.name,
             mapOf(
                 "nomsId" to "A4096BY",
                 "handoverDate" to "2023-05-10",
