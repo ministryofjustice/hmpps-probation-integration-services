@@ -18,8 +18,8 @@ interface ManagePomCasesClient {
 
 data class Handover(
     @JsonAlias("nomsNumber") val nomsId: String,
-    @JsonAlias("handoverDate") val date: LocalDate,
-    @JsonAlias("handoverStartDate") val startDate: LocalDate
+    @JsonAlias("handoverDate") val date: LocalDate?,
+    @JsonAlias("handoverStartDate") val startDate: LocalDate?
 )
 
 data class PomAllocation(

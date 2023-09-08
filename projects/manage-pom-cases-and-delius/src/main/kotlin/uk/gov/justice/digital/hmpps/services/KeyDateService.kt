@@ -21,7 +21,7 @@ class KeyDateService(
     private val referenceDataRepository: ReferenceDataRepository
 ) {
     @Transactional
-    fun mergeHandoverDates(personId: Long, date: LocalDate, startDate: LocalDate): KeyDateMergeResult {
+    fun mergeHandoverDates(personId: Long, date: LocalDate?, startDate: LocalDate?): KeyDateMergeResult {
         val custodyList = custodyRepository.findAllByDisposalEventPersonId(personId)
         val custody = when (custodyList.size) {
             0 -> throw IgnorableMessageException("NoActiveCustodialSentence")
@@ -30,19 +30,32 @@ class KeyDateService(
         }
 
         val existing = keyDateRepository.findHandoverDates(custody.id).associateBy { it.type.code }
-        val handoverDate = existing[HANDOVER_DATE.value]?.apply { this.date = date }
-            ?: keyDate(custody.id, HANDOVER_DATE, date)
-        val handoverStartDate = existing[HANDOVER_START_DATE.value]?.apply { this.date = startDate }
-            ?: keyDate(custody.id, HANDOVER_START_DATE, startDate)
-
-        val saved = keyDateRepository.saveAll(listOfNotNull(handoverDate, handoverStartDate))
-        return if (saved.size > existing.size) KeyDateMergeResult.KEY_DATE_CREATED else KeyDateMergeResult.KEY_DATE_UPDATED
+        val hod = updateOrDelete(custody.id, HANDOVER_DATE, existing[HANDOVER_DATE.value], date)
+        val hsd = updateOrDelete(custody.id, HANDOVER_START_DATE, existing[HANDOVER_START_DATE.value], startDate)
+        return listOf(hod, hsd).maxByOrNull { it.ordinal }!!
     }
+
+    private fun updateOrDelete(
+        custodyId: Long,
+        typeCode: KeyDate.TypeCode,
+        keyDate: KeyDate?,
+        date: LocalDate?
+    ): KeyDateMergeResult =
+        if (keyDate != null && date == null) {
+            keyDateRepository.delete(keyDate)
+            KeyDateMergeResult.KeyDateDeleted
+        } else {
+            date?.let {
+                keyDateRepository.save(keyDate?.apply { this.date = date } ?: keyDate(custodyId, typeCode, it))
+                return if (keyDate == null) KeyDateMergeResult.KeyDateCreated else KeyDateMergeResult.KeyDateUpdated
+            }
+            KeyDateMergeResult.NoChange
+        }
 
     private fun keyDate(custodyId: Long, typeCode: KeyDate.TypeCode, date: LocalDate): KeyDate =
         KeyDate(custodyId, referenceDataRepository.keyDateType(typeCode.value), date, null)
 }
 
 enum class KeyDateMergeResult {
-    KEY_DATE_CREATED, KEY_DATE_UPDATED
+    NoChange, KeyDateDeleted, KeyDateUpdated, KeyDateCreated
 }
