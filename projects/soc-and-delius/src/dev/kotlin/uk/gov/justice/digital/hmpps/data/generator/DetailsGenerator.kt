@@ -34,7 +34,7 @@ object DetailsGenerator {
 
     val INSTITUTION = Institution(IdGenerator.getAndIncrement(), "HMP-LDN")
 
-    val RElEASE = DetailRelease(
+    val RELEASE = DetailRelease(
         IdGenerator.getAndIncrement(),
         KeyDateGenerator.CUSTODY.id,
         INSTITUTION,
@@ -44,7 +44,7 @@ object DetailsGenerator {
 
     val RECALL = Recall(
         IdGenerator.getAndIncrement(),
-        RElEASE,
+        RELEASE,
         LocalDate.now()
     )
 

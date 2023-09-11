@@ -59,7 +59,7 @@ class DataLoader(
             DetailsGenerator.TEAM,
             DetailsGenerator.STAFF,
             DetailsGenerator.PERSON_MANAGER,
-            DetailsGenerator.RElEASE,
+            DetailsGenerator.RELEASE,
             DetailsGenerator.RECALL,
             NSIGenerator.BREACH_RD,
             NSIGenerator.RECALL_RD,

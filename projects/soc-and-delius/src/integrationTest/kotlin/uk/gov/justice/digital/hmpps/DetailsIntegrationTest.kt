@@ -72,7 +72,7 @@ internal class DetailsIntegrationTest {
         ConvictionEventGenerator.OFFENCE_MAIN.description,
         DetailsGenerator.PERSON.religion?.description,
         listOf(KeyDate(KeyDateGenerator.SED_KEYDATE.code, KeyDateGenerator.SED_KEYDATE.description, KeyDateGenerator.KEYDATE.date)),
-        DetailsGenerator.RElEASE.date,
+        DetailsGenerator.RELEASE.date,
         DetailsGenerator.INSTITUTION.name,
         DetailsGenerator.RECALL.date,
         NSIGenerator.RECALL_NSI.referralDate,
