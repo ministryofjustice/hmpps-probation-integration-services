@@ -3,8 +3,11 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.entity.DetailDistrict
 import uk.gov.justice.digital.hmpps.entity.DetailPerson
 import uk.gov.justice.digital.hmpps.entity.DetailProbationArea
+import uk.gov.justice.digital.hmpps.entity.DetailRelease
 import uk.gov.justice.digital.hmpps.entity.DetailStaff
+import uk.gov.justice.digital.hmpps.entity.Institution
 import uk.gov.justice.digital.hmpps.entity.PersonManager
+import uk.gov.justice.digital.hmpps.entity.Recall
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.Team
 import java.time.LocalDate
@@ -27,6 +30,20 @@ object DetailsGenerator {
         "Bob",
         "Richard",
         "Clive"
+    )
+
+    val INSTITUTION = Institution(IdGenerator.getAndIncrement(), "HMP-LDN")
+
+    val RElEASE = DetailRelease(IdGenerator.getAndIncrement(),
+        KeyDateGenerator.CUSTODY.id,
+        INSTITUTION,
+        null,
+        LocalDate.now()
+        )
+
+    val RECALL = Recall(IdGenerator.getAndIncrement(),
+        RElEASE,
+        LocalDate.now()
     )
 
     val DEFAULT_PA = DetailProbationArea(true, "London", "LDN", IdGenerator.getAndIncrement())
