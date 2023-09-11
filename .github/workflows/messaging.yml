@@ -32,6 +32,7 @@ on:
           - unpaid-work-and-delius-queue
           - workforce-allocations-to-delius-queue
           - manage-offences-and-delius-queue
+          - opd-and-delius-queue
           # ^ add new queues here
 
 jobs:
