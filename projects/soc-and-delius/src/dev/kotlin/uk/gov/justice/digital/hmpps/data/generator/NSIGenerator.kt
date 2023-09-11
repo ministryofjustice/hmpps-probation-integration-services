@@ -31,5 +31,4 @@ object NSIGenerator {
         LocalDate.now(),
         IdGenerator.getAndIncrement()
     )
-
 }
