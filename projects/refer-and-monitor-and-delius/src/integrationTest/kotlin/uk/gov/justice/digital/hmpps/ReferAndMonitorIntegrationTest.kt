@@ -167,7 +167,7 @@ internal class ReferAndMonitorIntegrationTest {
         assertThat(event.ftcCount, equalTo(2))
 
         val nsi = nsiRepository.findById(appointment.nsiId!!).orElseThrow()
-        assertThat(nsi.rarCount, equalTo(2))
+        assertThat(nsi.rarCount, equalTo(1))
 
         val reviewCreated = contactRepository.countEnforcementUnderReview(
             event.id,
@@ -221,7 +221,7 @@ internal class ReferAndMonitorIntegrationTest {
         assertThat(event.ftcCount, equalTo(2))
 
         val nsi = nsiRepository.findById(appointment.nsiId!!).orElseThrow()
-        assertThat(nsi.rarCount, equalTo(2))
+        assertThat(nsi.rarCount, equalTo(1))
     }
 
     @Test
