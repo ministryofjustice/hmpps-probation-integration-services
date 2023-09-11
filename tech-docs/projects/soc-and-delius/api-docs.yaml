@@ -199,6 +199,15 @@ components:
           format: date
         releaseLocation:
           type: string
+        lastRecallDate:
+          type: string
+          format: date
+        nsiRecallDate:
+          type: string
+          format: date
+        nsiBreachDate:
+          type: string
+          format: date
     KeyDate:
       required:
       - code
