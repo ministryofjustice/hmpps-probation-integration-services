@@ -11,13 +11,13 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 object ContactGenerator {
-    val TYPES = Code.values().map {
+    val TYPES = Code.entries.map {
         when (it) {
             Code.CRSAPT, Code.CRSSAA -> generateType(it.value, nationalStandards = true, attendance = true)
             else -> generateType(it.value)
         }
     }.associateBy { it.code }
-    val OUTCOMES = ContactOutcome.Code.values().map {
+    val OUTCOMES = ContactOutcome.Code.entries.map {
         when (it) {
             ContactOutcome.Code.COMPLIED -> generateOutcome(it.value, attendance = true, compliantAcceptable = true)
             ContactOutcome.Code.FAILED_TO_COMPLY -> generateOutcome(

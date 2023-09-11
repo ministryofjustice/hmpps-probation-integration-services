@@ -54,6 +54,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             join Requirement rq on rq.id = nsi.requirementId
             where c.rarActivity = true and c.softDeleted = false
             and (c.attended is null or c.attended = true) 
+            and (c.complied is null or c.complied = true)
             and nsi.id = :nsiId 
             and rq.mainCategory.code = 'F'
         """
