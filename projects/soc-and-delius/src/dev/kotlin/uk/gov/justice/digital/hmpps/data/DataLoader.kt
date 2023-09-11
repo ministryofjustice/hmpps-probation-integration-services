@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ConvictionEventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtAppearanceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
+import uk.gov.justice.digital.hmpps.data.generator.NSIGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
@@ -50,6 +51,7 @@ class DataLoader(
             ConvictionEventGenerator.OTHER_OFFENCE,
             ConvictionEventGenerator.DISPOSAL_TYPE,
             ConvictionEventGenerator.DISPOSAL,
+            DetailsGenerator.INSTITUTION,
             DetailsGenerator.RELIGION,
             DetailsGenerator.PERSON,
             DetailsGenerator.DEFAULT_PA,
@@ -57,6 +59,12 @@ class DataLoader(
             DetailsGenerator.TEAM,
             DetailsGenerator.STAFF,
             DetailsGenerator.PERSON_MANAGER,
+            DetailsGenerator.RELEASE,
+            DetailsGenerator.RECALL,
+            NSIGenerator.BREACH_RD,
+            NSIGenerator.RECALL_RD,
+            NSIGenerator.BREACH_NSI,
+            NSIGenerator.RECALL_NSI,
             ConvictionEventGenerator.PERSON_2,
             ConvictionEventGenerator.EVENT_2,
             ConvictionEventGenerator.MAIN_OFFENCE_2,
