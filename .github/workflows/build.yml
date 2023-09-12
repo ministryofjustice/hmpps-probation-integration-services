@@ -60,7 +60,7 @@ jobs:
           - manage-offences-and-delius
           - resettlement-passport-and-delius
           - prison-education-and-delius
-          - arns-and-oasys
+          - opd-and-delius
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
@@ -68,7 +68,7 @@ jobs:
       version: ${{ steps.version.outputs.version }}
       changes: ${{ steps.check-changes.outputs.changes }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
@@ -122,7 +122,7 @@ jobs:
         project:
           - person-search-index-from-delius
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set version
         id: version

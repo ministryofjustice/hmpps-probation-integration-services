@@ -19,7 +19,7 @@ jobs:
         project:
           - feature-flags
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Authenticate
         uses: ./.github/actions/cloud-platform-auth
@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'schedule' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch') }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: 16

@@ -1,7 +1,7 @@
 rootProject.name = "probation-integration-services"
 include(
     // ⌄ add new projects here
-    "arns-and-oasys",
+    "opd-and-delius",
     "prison-education-and-delius",
     "resettlement-passport-and-delius",
     "manage-offences-and-delius",
@@ -55,8 +55,8 @@ dependencyResolutionManagement {
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.1.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
-            library("insights", "com.microsoft.azure:applicationinsights-web:3.4.16")
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.28.0")
+            library("insights", "com.microsoft.azure:applicationinsights-web:3.4.15")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.29.0")
             library("opentelemetry-annotations", "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.29.0")
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.4")

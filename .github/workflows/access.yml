@@ -37,7 +37,7 @@ on:
           - '["manage-offences-and-delius"]'
           - '["resettlement-passport-and-delius"]'
           - '["prison-education-and-delius"]'
-          - '["arns-and-oasys"]'
+          - '["opd-and-delius"]'
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
@@ -53,7 +53,7 @@ jobs:
       projects: ${{ steps.output.outputs.projects }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: check-changes
         if: github.event_name == 'push'
         uses: ./.github/actions/check-changes
@@ -86,7 +86,7 @@ jobs:
         project: ${{ fromJson(needs.get-projects.outputs.projects) }}
     environment: ${{ matrix.environment }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Check if DB access is required
         id: check_file
@@ -173,7 +173,7 @@ jobs:
       matrix:
         project: ${{ fromJson(needs.get-projects.outputs.projects) }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Create issue for manual approval step
         run: |
           gh issue create \

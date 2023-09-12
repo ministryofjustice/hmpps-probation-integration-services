@@ -28,6 +28,7 @@ on:
           - '["court-case-and-delius"]'
           - '["create-and-vary-a-licence-and-delius"]'
           - '["custody-key-dates-and-delius"]'
+          - '["domain-events-and-delius"]'
           - '["effective-proposal-framework-and-delius"]'
           - '["external-api-and-delius"]'
           - '["make-recall-decisions-and-delius"]'
@@ -49,7 +50,7 @@ on:
           - '["manage-offences-and-delius"]'
           - '["resettlement-passport-and-delius"]'
           - '["prison-education-and-delius"]'
-          - '["arns-and-oasys"]'
+          - '["opd-and-delius"]'
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
@@ -77,7 +78,7 @@ jobs:
     environment:
       name: ${{ inputs.environment }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/get-env-details
         id: env
         with:

@@ -1,0 +1,105 @@
+package uk.gov.justice.digital.hmpps.integrations.delius.provider.entity
+
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.SequenceGenerator
+import jakarta.persistence.Table
+import jakarta.persistence.Version
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
+import java.time.ZonedDateTime
+
+@Entity
+@EntityListeners(AuditingEntityListener::class)
+@Table(name = "prison_offender_manager")
+class PrisonManager(
+    @Id
+    @SequenceGenerator(
+        name = "prison_manager_id_generator",
+        sequenceName = "prison_offender_manager_id_seq",
+        allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prison_manager_id_generator")
+    @Column(name = "prison_offender_manager_id", nullable = false)
+    val id: Long = 0,
+
+    @Version
+    @Column(name = "row_version", nullable = false)
+    val version: Long = 0,
+
+    @Column(name = "offender_id", nullable = false)
+    val personId: Long,
+
+    @Column(name = "allocation_date", nullable = false)
+    val date: ZonedDateTime,
+
+    @ManyToOne
+    @JoinColumn(name = "allocation_reason_id", nullable = false)
+    val allocationReason: ReferenceData,
+
+    @ManyToOne
+    @JoinColumn(name = "allocation_staff_id", nullable = false)
+    val staff: Staff,
+
+    @ManyToOne
+    @JoinColumn(name = "allocation_team_id", nullable = false)
+    val team: Team,
+
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id", nullable = false)
+    val probationArea: ProbationArea,
+
+    @Column(columnDefinition = "number", nullable = false)
+    val softDeleted: Boolean = false
+) {
+    @Column
+    var endDate: ZonedDateTime? = null
+        set(value) {
+            field = value
+            active = value == null
+        }
+
+    @Column(name = "active_flag", columnDefinition = "number", nullable = false)
+    var active: Boolean = true
+
+    @CreatedBy
+    @Column(nullable = false, updatable = false)
+    var createdByUserId: Long = 0
+
+    @LastModifiedBy
+    @Column(nullable = false)
+    var lastUpdatedUserId: Long = 0
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now()
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
+}
+
+interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
+    @Query(
+        """
+            select pm from PrisonManager pm
+            where pm.personId = :personId
+            and pm.softDeleted = false
+            and pm.date <= :date
+            and (pm.endDate is null or pm.endDate > :date)
+        """
+    )
+    fun findActiveManagerAtDate(personId: Long, date: ZonedDateTime): PrisonManager?
+}

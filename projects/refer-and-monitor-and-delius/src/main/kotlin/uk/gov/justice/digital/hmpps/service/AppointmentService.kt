@@ -89,10 +89,7 @@ class AppointmentService(
                 )
             }
             app
-        } ?: run {
-            nsiRepository.findForUpdate(nsi.id)
-            find() ?: createContact(mergeAppointment, assignation, nsi)
-        }
+        } ?: createContact(mergeAppointment, assignation, nsi)
 
         audit["contactId"] = appointment.id
         appointment.locationId = assignation.location?.id
