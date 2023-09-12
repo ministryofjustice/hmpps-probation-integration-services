@@ -1,7 +1,7 @@
 rootProject.name = "probation-integration-services"
 include(
     // ⌄ add new projects here
-    "arns-and-oasys",
+    "opd-and-delius",
     "prison-education-and-delius",
     "resettlement-passport-and-delius",
     "manage-offences-and-delius",
@@ -61,7 +61,7 @@ dependencyResolutionManagement {
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.4")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
-            library("wiremock", "com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
+            library("wiremock", "com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
             library("mapstruct", "org.mapstruct:mapstruct:1.5.5.Final")
             library("mapstructprocessor", "org.mapstruct:mapstruct-processor:1.5.5.Final")
             library("flipt", "io.flipt:flipt-java:0.1.8")

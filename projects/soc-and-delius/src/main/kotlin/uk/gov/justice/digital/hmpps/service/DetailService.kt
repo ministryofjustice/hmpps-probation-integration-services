@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.entity.ConvictionEventRepository
 import uk.gov.justice.digital.hmpps.entity.CustodyRepository
 import uk.gov.justice.digital.hmpps.entity.DetailReleaseRepository
 import uk.gov.justice.digital.hmpps.entity.DetailRepository
+import uk.gov.justice.digital.hmpps.entity.NsiRepository
 import uk.gov.justice.digital.hmpps.entity.findByCrn
 import uk.gov.justice.digital.hmpps.entity.findByNomsNumber
 import uk.gov.justice.digital.hmpps.entity.getLatestConviction
@@ -20,7 +21,8 @@ class DetailService(
     private val detailRepository: DetailRepository,
     private val convictionEventRepository: ConvictionEventRepository,
     private val custodyRepository: CustodyRepository,
-    private val detailReleaseRepository: DetailReleaseRepository
+    private val detailReleaseRepository: DetailReleaseRepository,
+    private val nsiRepository: NsiRepository
 ) {
     fun getDetails(value: String, type: IdentifierType): Detail {
         val p = when (type) {
@@ -31,6 +33,7 @@ class DetailService(
         var mainOffence = ""
         var releaseLocation: String? = null
         var releaseDate: LocalDate? = null
+        var recallDate: LocalDate? = null
         var keyDates = listOf<KeyDate>()
         if (c != null) {
             mainOffence = c.mainOffence!!.offence.description
@@ -40,10 +43,13 @@ class DetailService(
                     val release = detailReleaseRepository.findFirstByCustodyIdOrderByDateDesc(custody.id)
                     releaseLocation = release?.institution?.name
                     releaseDate = release?.date
+                    recallDate = release?.recall?.date
                     keyDates = custody.keyDates.map { KeyDate(it.type.code, it.type.description, it.date) }
                 }
             }
         }
+
+        val nsiDates = nsiRepository.findBreachAndRecallDates(p.id)
 
         val personManager = p.personManager.first()
         return Detail(
@@ -59,7 +65,10 @@ class DetailService(
             p.religion?.description,
             keyDates,
             releaseDate,
-            releaseLocation
+            releaseLocation,
+            recallDate,
+            nsiDates.firstOrNull { it.name == "recall" }?.referralDate,
+            nsiDates.firstOrNull { it.name == "breach" }?.referralDate
         )
     }
 }

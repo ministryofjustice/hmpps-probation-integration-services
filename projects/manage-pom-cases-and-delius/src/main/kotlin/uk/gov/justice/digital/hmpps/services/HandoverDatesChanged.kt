@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.net.URI
-import java.time.format.DateTimeFormatter
 
 @Service
 class HandoverDatesChanged(
@@ -39,7 +38,7 @@ class HandoverDatesChanged(
 
     fun Handover.properties() = listOfNotNull(
         "nomsId" to nomsId,
-        "handoverDate" to date.format(DateTimeFormatter.ISO_LOCAL_DATE),
-        startDate?.let { "handoverStartDate" to it.format(DateTimeFormatter.ISO_LOCAL_DATE) }
+        "handoverDate" to date.toString(),
+        "handoverStartDate" to startDate.toString()
     ).toMap()
 }

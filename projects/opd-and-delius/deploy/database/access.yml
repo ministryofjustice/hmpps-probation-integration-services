@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /opd-and-delius/db-username
+    password_key: /opd-and-delius/db-password
+
+  audit:
+    username: OpdAndDelius
+    forename: Probation Integration # TODO change this to something meaningful for your service
+    surname: Service

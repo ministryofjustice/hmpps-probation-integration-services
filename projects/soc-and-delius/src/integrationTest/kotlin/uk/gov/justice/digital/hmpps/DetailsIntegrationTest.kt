@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ConvictionEventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
+import uk.gov.justice.digital.hmpps.data.generator.NSIGenerator
 import uk.gov.justice.digital.hmpps.model.Detail
 import uk.gov.justice.digital.hmpps.model.KeyDate
 import uk.gov.justice.digital.hmpps.model.Name
@@ -70,6 +71,11 @@ internal class DetailsIntegrationTest {
         Name(DetailsGenerator.STAFF.forename, DetailsGenerator.STAFF.middleName, DetailsGenerator.STAFF.surname),
         ConvictionEventGenerator.OFFENCE_MAIN.description,
         DetailsGenerator.PERSON.religion?.description,
-        listOf(KeyDate(KeyDateGenerator.SED_KEYDATE.code, KeyDateGenerator.SED_KEYDATE.description, KeyDateGenerator.KEYDATE.date))
+        listOf(KeyDate(KeyDateGenerator.SED_KEYDATE.code, KeyDateGenerator.SED_KEYDATE.description, KeyDateGenerator.KEYDATE.date)),
+        DetailsGenerator.RELEASE.date,
+        DetailsGenerator.INSTITUTION.name,
+        DetailsGenerator.RECALL.date,
+        NSIGenerator.RECALL_NSI.referralDate,
+        NSIGenerator.BREACH_NSI.referralDate
     )
 }
