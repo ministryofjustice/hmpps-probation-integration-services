@@ -3,7 +3,7 @@ resource "aws_sns_topic_subscription" "SERVICE_NAME-queue-subscription" {
   protocol  = "sqs"
   endpoint  = module.SERVICE_NAME-queue.sqs_arn
   filter_policy = jsonencode({
-    eventType = [] # TODO add event type filter
+    eventType = [] # TODO add event type filter e.g ["queue.name"]
   })
 }
 
@@ -54,7 +54,7 @@ resource "kubernetes_secret" "SERVICE_NAME-queue-secret" {
   }
 }
 
-module "service_account" {
+module "SERVICE_NAME-service-account" {
   source                 = "github.com/ministryofjustice/cloud-platform-terraform-irsa?ref=2.0.0"
   application            = var.application
   business_unit          = var.business_unit
