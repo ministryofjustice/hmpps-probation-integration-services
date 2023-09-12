@@ -28,6 +28,7 @@ on:
           - '["court-case-and-delius"]'
           - '["create-and-vary-a-licence-and-delius"]'
           - '["custody-key-dates-and-delius"]'
+          - '["domain-events-and-delius"]'
           - '["effective-proposal-framework-and-delius"]'
           - '["external-api-and-delius"]'
           - '["make-recall-decisions-and-delius"]'
