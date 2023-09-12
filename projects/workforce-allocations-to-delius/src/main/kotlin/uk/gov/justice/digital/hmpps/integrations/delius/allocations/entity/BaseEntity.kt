@@ -17,7 +17,7 @@ abstract class BaseEntity {
 
     @Column(name = "row_version", nullable = false)
     @Version
-    var version: Long? = null
+    var version: Long = 0
 
     @Column(name = "created_datetime", nullable = false)
     @CreatedDate

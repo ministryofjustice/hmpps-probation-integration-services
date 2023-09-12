@@ -59,7 +59,7 @@ class Document(
     var lastUpdatedUserId: Long? = null,
 
     @Version
-    var rowVersion: Long? = null,
+    var rowVersion: Long = 0,
 
     @Column(columnDefinition = "NUMBER")
     val softDeleted: Boolean = false,
