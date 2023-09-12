@@ -30,6 +30,5 @@ internal class IntegrationTest {
         channelManager.getChannel(queueName).publishAndWait(message)
 
         verify(telemetryService).notificationReceived(message)
-
     }
 }

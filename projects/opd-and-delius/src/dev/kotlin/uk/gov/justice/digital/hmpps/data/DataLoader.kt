@@ -27,7 +27,7 @@ class DataLoader(
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         em.saveAll(
             PersonGenerator.DEFAULT_PERSON
-            )
+        )
     }
     fun EntityManager.saveAll(vararg any: Any) = any.forEach { persist(it) }
 }

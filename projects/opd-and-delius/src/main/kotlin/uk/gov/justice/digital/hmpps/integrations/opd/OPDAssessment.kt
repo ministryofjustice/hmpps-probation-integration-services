@@ -4,7 +4,7 @@ import java.time.ZonedDateTime
 
 data class OPDAssessment(
     val assessmentDate: ZonedDateTime,
-    val opdScore: String,
+    val opdScore: String
 )
 
 fun OPDAssessment.telemetryProperties(crn: String) = mapOf(
