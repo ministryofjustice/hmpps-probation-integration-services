@@ -3,7 +3,7 @@ resource "aws_sns_topic_subscription" "SERVICE_NAME-queue-subscription" {
   protocol  = "sqs"
   endpoint  = module.SERVICE_NAME-queue.sqs_arn
   filter_policy = jsonencode({
-    eventType = [] # TODO add event type filter
+    eventType = [] # TODO add event type filter e.g ["queue.name"]
   })
 }
 
@@ -11,8 +11,10 @@ module "SERVICE_NAME-queue" {
   source                 = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=5.0.0"
   namespace              = var.namespace
   team_name              = var.team_name
-  environment-name       = var.environment_name
-  infrastructure-support = var.infrastructure_support
+  environment_name       = var.environment_name
+  infrastructure_support = var.infrastructure_support
+  is_production          = var.is_production
+  business_unit          = var.business_unit
 
   application = "SERVICE_NAME"
   sqs_name    = "SERVICE_NAME-queue"
@@ -29,11 +31,13 @@ resource "aws_sqs_queue_policy" "SERVICE_NAME-queue-policy" {
 }
 
 module "SERVICE_NAME-dlq" {
-  source                 = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=4.12.0"
+  source                 = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=5.0.0"
   namespace              = var.namespace
   team_name              = var.team_name
-  environment-name       = var.environment_name
-  infrastructure-support = var.infrastructure_support
+  environment_name       = var.environment_name
+  infrastructure_support = var.infrastructure_support
+  is_production          = var.is_production
+  business_unit          = var.business_unit
 
   application = "SERVICE_NAME"
   sqs_name    = "SERVICE_NAME-dlq"
@@ -54,7 +58,7 @@ resource "kubernetes_secret" "SERVICE_NAME-queue-secret" {
   }
 }
 
-module "service_account" {
+module "SERVICE_NAME-service-account" {
   source                 = "github.com/ministryofjustice/cloud-platform-terraform-irsa?ref=2.0.0"
   application            = var.application
   business_unit          = var.business_unit

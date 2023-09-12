@@ -42,7 +42,7 @@ on:
           - manage-offences-and-delius
           - resettlement-passport-and-delius
           - prison-education-and-delius
-          - arns-and-oasys
+          - opd-and-delius
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: main
 

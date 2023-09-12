@@ -5,6 +5,7 @@ database:
     tables:
       - domain_event
 
+
   audit:
     username: DomainEventsAndDelius
     forename: Domain Events

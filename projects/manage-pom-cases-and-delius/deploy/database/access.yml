@@ -4,6 +4,9 @@ database:
     password_key: /manage-pom-cases-and-delius/db-password
     tables:
       - key_date
+      - staff
+      - staff_team
+      - prison_offender_manager
 
   audit:
     username: ManagePomCasesAndDelius

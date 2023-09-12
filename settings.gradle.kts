@@ -1,7 +1,7 @@
 rootProject.name = "probation-integration-services"
 include(
     // ⌄ add new projects here
-    "arns-and-oasys",
+    "opd-and-delius",
     "prison-education-and-delius",
     "resettlement-passport-and-delius",
     "manage-offences-and-delius",
@@ -55,13 +55,13 @@ dependencyResolutionManagement {
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.1.0")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
-            library("insights", "com.microsoft.azure:applicationinsights-web:3.4.16")
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.28.0")
+            library("insights", "com.microsoft.azure:applicationinsights-web:3.4.15")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.29.0")
             library("opentelemetry-annotations", "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.29.0")
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.4")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
-            library("wiremock", "com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
+            library("wiremock", "com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
             library("mapstruct", "org.mapstruct:mapstruct:1.5.5.Final")
             library("mapstructprocessor", "org.mapstruct:mapstruct-processor:1.5.5.Final")
             library("flipt", "io.flipt:flipt-java:0.1.8")

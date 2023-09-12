@@ -49,7 +49,7 @@ internal class ProbationRecordMappingKtTest {
 
     @Test
     fun `unallocated om provides null staff details`() {
-        val unallocated = Staff("N07UATU", "Unallocated", "Staff", id = 99)
+        val unallocated = Staff("N07UATU", "Unallocated", "Staff", probationAreaId = 1, id = 99)
         val om = PersonManager(PersonGenerator.DEFAULT, ProviderGenerator.DEFAULT_TEAM, unallocated, id = 99)
         assertNull(om.manager().code)
         assertNull(om.manager().name)

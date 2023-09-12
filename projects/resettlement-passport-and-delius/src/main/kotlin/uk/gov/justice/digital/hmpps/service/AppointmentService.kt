@@ -34,7 +34,7 @@ class AppointmentService(
             duration,
             staff.asStaff(),
             location?.asLocation(),
-            description,
+            description ?: type.description,
             outcome?.let { Appointment.Outcome(it.code, it.description) }
         )
 
