@@ -57,7 +57,7 @@ jobs:
     outputs:
       projects: ${{ steps.output.outputs.projects }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Get projects - all
         if: github.event_name != 'workflow_dispatch' || inputs.projects == 'All'
         run: echo "projects=$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_ENV"
@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1
@@ -97,7 +97,7 @@ jobs:
       matrix:
         project: ${{ fromJson(needs.get-projects.outputs.projects) }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1
@@ -166,7 +166,7 @@ jobs:
       - build-index
       - build-projects
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           path: artifacts
