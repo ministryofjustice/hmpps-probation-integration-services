@@ -1,18 +1,15 @@
 package uk.gov.justice.digital.hmpps
 
+import com.github.tomakehurst.wiremock.WireMockServer
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.atLeastOnce
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
-import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
-import java.util.concurrent.TimeoutException
 
 @SpringBootTest
 internal class IntegrationTest {
@@ -23,19 +20,16 @@ internal class IntegrationTest {
 
     @MockBean lateinit var telemetryService: TelemetryService
 
+    @Autowired
+    lateinit var wireMockServer: WireMockServer
+
     @Test
-    fun `message is logged to telemetry`() {
-        // Given a message
-        val notification = Notification(message = MessageGenerator.EXAMPLE)
+    fun `process opd assessment`() {
+        val message = prepMessage("opd-assessment", wireMockServer.port())
 
-        // When it is received
-        try {
-            channelManager.getChannel(queueName).publishAndWait(notification)
-        } catch (_: TimeoutException) {
-            // Note: Remove this try/catch when the MessageListener logic has been implemented
-        }
+        channelManager.getChannel(queueName).publishAndWait(message)
 
-        // Then it is logged to telemetry
-        verify(telemetryService, atLeastOnce()).notificationReceived(notification)
+        verify(telemetryService).notificationReceived(message)
+
     }
 }
