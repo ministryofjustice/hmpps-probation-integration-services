@@ -10,7 +10,7 @@ jobs:
     if: startsWith(github.event.pull_request.title, 'PI-')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check if PR is already labelled
         id: labels
         run: echo "count=$(gh pr view '${{ github.event.pull_request.number }}' --json 'labels' --jq '.labels | length')" | tee -a "$GITHUB_OUTPUT"
