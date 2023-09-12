@@ -49,7 +49,7 @@ class ResponsibleOfficer(
 
     @Version
     @Column(name = "row_version")
-    var version: Long? = null,
+    var version: Long = 0,
 
     @CreatedBy
     var createdByUserId: Long = 0,

@@ -21,7 +21,7 @@ object ResponsibleOfficerGenerator {
         lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
         createdUserId: Long = UserGenerator.AUDIT_USER.id,
         lastModifiedUserId: Long = UserGenerator.AUDIT_USER.id,
-        version: Long? = null
+        version: Long = 0
     ) = ResponsibleOfficer(
         id,
         personId,

@@ -48,7 +48,7 @@ class Document(
     var createdProviderId: Long?,
 
     @Version
-    var rowVersion: Long? = null,
+    var rowVersion: Long = 0,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
