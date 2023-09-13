@@ -11,6 +11,9 @@ on:
         type: boolean
         default: false
 
+env:
+  force-deploy: ${{ inputs.force-deploy > '' && inputs.force-deploy || false }}
+
 jobs:
   force-build:
     if: "${{ inputs.force-deploy != '' }}"
@@ -18,7 +21,7 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       push: true
-      force-deploy: ${{ inputs.force-deploy }}
+      force-deploy: ${{ env.force-deploy }}
     secrets: inherit
 
   build:
