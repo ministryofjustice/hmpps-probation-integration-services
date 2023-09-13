@@ -60,7 +60,7 @@ jobs:
     name: Deploy to test
     uses: ./.github/workflows/deploy.yml
     needs: post-build
-    if: ${{ needs.post-build.outputs.changes != '[]'}}
+    if: ${{ needs.post-build.outputs.changes != '[]' || inputs.force-deploy }}
     with:
       environment: test
       version: ${{ needs.post-build.outputs.version }}
