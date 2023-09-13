@@ -82,7 +82,6 @@ jobs:
         with:
           repository: ministryofjustice/hmpps-probation-integration-e2e-tests
           ref: ${{ inputs.test-branch }}
-          node-version: 16
       - name: Get tests to run - all tests
         if: inputs.projects == '' || inputs.projects == 'All'
         run: echo "projects=$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_ENV"
