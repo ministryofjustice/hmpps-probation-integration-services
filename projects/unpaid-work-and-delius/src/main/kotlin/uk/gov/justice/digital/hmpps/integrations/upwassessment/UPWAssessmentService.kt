@@ -55,12 +55,23 @@ class UPWAssessmentService(
                 notification.message.occurredAt
             )
         } catch (e: DataIntegrityViolationException) {
-            if (e.message?.contains("XIE10DOCUMENT") == true) {
-                return
+            if (e.isUniqueConstraintViolation()) {
+                return telemetryService.trackEvent(
+                    "DuplicateMessageReceived",
+                    mapOf(
+                        "episodeId" to notification.message.additionalInformation.episodeId(),
+                        "crn" to notification.message.personReference.findCrn()!!
+                    )
+                )
             }
             throw e
         }
     }
 
     private fun ByteArray.isPdf() = take(4).toByteArray().contentEquals("%PDF".toByteArray())
+
+    private fun DataIntegrityViolationException.isUniqueConstraintViolation(): Boolean =
+        message?.let {
+            it.contains("XAK2CONTACT") || it.contains("XIE10DOCUMENT")
+        } ?: false
 }
