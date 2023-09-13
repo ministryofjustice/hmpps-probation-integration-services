@@ -55,7 +55,7 @@ class UPWAssessmentService(
                 notification.message.occurredAt
             )
         } catch (e: DataIntegrityViolationException) {
-            if (e.message?.contains("XIE10DOCUMENT") == true) {
+            if (e.isUniqueConstraintViolation()) {
                 return
             }
             throw e
@@ -63,4 +63,7 @@ class UPWAssessmentService(
     }
 
     private fun ByteArray.isPdf() = take(4).toByteArray().contentEquals("%PDF".toByteArray())
+
+    private fun DataIntegrityViolationException.isUniqueConstraintViolation(): Boolean =
+        message!!.contains("XAK2CONTACT") || message!!.contains("XIE10DOCUMENT")
 }
