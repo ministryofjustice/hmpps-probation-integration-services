@@ -17,7 +17,7 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       push: true
-      force-deploy: "${{ inputs.force-deploy }}"
+      force-deploy: "${{ inputs.force-deploy || false }}"
     secrets: inherit
 
   post-build:
