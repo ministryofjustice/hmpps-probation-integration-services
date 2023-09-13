@@ -56,7 +56,13 @@ class UPWAssessmentService(
             )
         } catch (e: DataIntegrityViolationException) {
             if (e.isUniqueConstraintViolation()) {
-                return
+                return telemetryService.trackEvent(
+                    "DuplicateMessageReceived",
+                    mapOf(
+                        "episodeId" to notification.message.additionalInformation.episodeId(),
+                        "crn" to notification.message.personReference.findCrn()!!
+                    )
+                )
             }
             throw e
         }
