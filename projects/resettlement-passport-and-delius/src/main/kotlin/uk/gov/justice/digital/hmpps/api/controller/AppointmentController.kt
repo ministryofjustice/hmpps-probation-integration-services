@@ -14,7 +14,7 @@ import java.time.LocalDate
 @RestController
 @RequestMapping("/appointments")
 class AppointmentController(private val appointmentService: AppointmentService) {
-    @PreAuthorize("hasRole('RESETTLEMENT_PASSPORT')")
+    @PreAuthorize("hasRole('RESETTLEMENT_PASSPORT_SUPERVISION_ACCESS')")
     @GetMapping("/{crn}")
     fun findPerson(
         @PathVariable crn: String,
