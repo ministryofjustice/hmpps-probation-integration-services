@@ -65,5 +65,7 @@ class UPWAssessmentService(
     private fun ByteArray.isPdf() = take(4).toByteArray().contentEquals("%PDF".toByteArray())
 
     private fun DataIntegrityViolationException.isUniqueConstraintViolation(): Boolean =
-        message!!.contains("XAK2CONTACT") || message!!.contains("XIE10DOCUMENT")
+        message?.let {
+            it.contains("XAK2CONTACT") || it.contains("XIE10DOCUMENT")
+        } ?: false
 }
