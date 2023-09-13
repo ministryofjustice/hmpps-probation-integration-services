@@ -14,7 +14,7 @@ on:
 jobs:
   force-build:
     if: "${{ inputs.force-deploy != '' }}"
-    name: Build
+    name: Force Build
     uses: ./.github/workflows/build.yml
     with:
       push: true
