@@ -15,7 +15,8 @@ env:
   force-deploy: ${{ inputs.force-deploy > '' && inputs.force-deploy || false }}
 
 jobs:
-  build:
+  force-build:
+    if: "${{ inputs.force-deploy != '' }}"
     name: Build
     uses: ./.github/workflows/build.yml
     with:
@@ -23,10 +24,22 @@ jobs:
       force-deploy: ${{ env.force-deploy }}
     secrets: inherit
 
+  build:
+    if: "${{ inputs.force-deploy == '' }}"
+    name: Build
+    uses: ./.github/workflows/build.yml
+    with:
+      push: true
+    secrets: inherit
+
   post-build:
     name: Post-build
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, force-build]
+    if: |
+      always()
+      && contains(needs.*.result, 'success')
+      && !contains(needs.*.result, 'failure')
     outputs:
       changes: ${{ steps.merge-changes.outputs.changes }}
       version: ${{ needs.build.outputs.version }}
