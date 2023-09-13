@@ -5,6 +5,11 @@ on:
     branches:
       - main
   workflow_dispatch: # Can be triggered manually from a branch
+    inputs:
+      force-deploy:
+        type: boolean
+        description: Force re-tagging and deployment of images
+        default: false
 
 jobs:
   build:
@@ -12,6 +17,7 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       push: true
+      force-deploy: ${{ inputs.force-deploy }}
     secrets: inherit
 
   post-build:
