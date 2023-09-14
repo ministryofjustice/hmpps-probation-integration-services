@@ -64,7 +64,7 @@ internal class AllocationMessagingIntegrationTest {
             "POM Allocated",
             mapOf(
                 "prisonId" to "SWI",
-                "nomsId" to "A00123Y",
+                "nomsId" to "A0123BY",
                 "allocationDate" to "2023-05-09"
             )
         )

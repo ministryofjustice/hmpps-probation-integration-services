@@ -39,7 +39,7 @@ internal class ProbationRecordServiceTest {
 
     @Test
     fun `no user results in null email`() {
-        val person = PersonGenerator.generate("N123456", "NU1234SR")
+        val person = PersonGenerator.generate("N123456", "N1234SR")
         PersonManagerGenerator.generate(
             staff = ProviderGenerator.generateStaff("NoUser", "No", "User"),
             person = person
@@ -47,7 +47,7 @@ internal class ProbationRecordServiceTest {
 
         whenever(personRepository.findByNomsId(person.nomsId!!)).thenReturn(person)
 
-        service.findByNomsId(person.nomsId!!)
+        service.findByIdentifier(Identifier(person.nomsId!!))
 
         verify(ldapTemplate, never()).search(any(), any<AttributesMapper<String?>>())
     }

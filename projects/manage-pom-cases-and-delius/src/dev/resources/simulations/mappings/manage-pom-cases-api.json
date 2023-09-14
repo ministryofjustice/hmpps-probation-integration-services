@@ -42,7 +42,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/api/pom-allocation/A00123Y"
+        "url": "/api/pom-allocation/A0123BY"
       },
       "response": {
         "headers": {
