@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
 
 object PersonGenerator {
-    val DEFAULT = generate("T123456", "A00123Y", ReferenceDataGenerator.TIER_2)
+    val DEFAULT = generate("T123456", "A0123BY", ReferenceDataGenerator.TIER_2)
     val HANDOVER = generate("H123456", "A1024BY")
     val UPDATE_HANDOVER_AND_START = generate("H123457", "A2048BY")
     val CREATE_HANDOVER_AND_START = generate("H123458", "A4096BY")

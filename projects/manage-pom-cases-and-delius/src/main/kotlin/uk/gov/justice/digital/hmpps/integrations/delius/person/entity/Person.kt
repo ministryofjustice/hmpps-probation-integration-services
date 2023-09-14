@@ -81,9 +81,15 @@ interface PersonRepository : JpaRepository<Person, Long> {
     @EntityGraph(attributePaths = ["currentTier", "managers.team.district", "managers.staff.user"])
     fun findByNomsId(nomsId: String): Person?
 
+    @EntityGraph(attributePaths = ["currentTier", "managers.team.district", "managers.staff.user"])
+    fun findByCrn(crn: String): Person?
+
     @Query("select p.id from Person p where p.nomsId = :nomsId and p.softDeleted = false")
     fun findIdFromNomsId(nomsId: String): Long?
 }
 
 fun PersonRepository.getByNomsId(nomsId: String) =
     findByNomsId(nomsId) ?: throw NotFoundException("Person", "nomsId", nomsId)
+
+fun PersonRepository.getByCrn(crn: String) =
+    findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)

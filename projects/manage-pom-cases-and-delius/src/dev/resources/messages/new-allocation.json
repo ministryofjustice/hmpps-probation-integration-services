@@ -2,7 +2,7 @@
   "Type": "Notification",
   "MessageId": "63ba0b4b-340e-4853-b343-6429965a3961",
   "TopicArn": "arn:aws:sns:eu-west-2:000000000000:domain-event",
-  "Message": "{\"eventType\":\"offender-management.pom.allocated\",\"detailUrl\":\"http://localhost:{wiremock.port}/api/pom-allocation/A00123Y\",\"occurredAt\":\"2023-05-09T13:25:19.102Z\",\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"A00123Y\"}]}}",
+  "Message": "{\"eventType\":\"offender-management.pom.allocated\",\"detailUrl\":\"http://localhost:{wiremock.port}/api/pom-allocation/A0123BY\",\"occurredAt\":\"2023-05-09T13:25:19.102Z\",\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"A0123BY\"}]}}",
   "Timestamp": "2023-05-09T13:25:20.000Z",
   "MessageAttributes": {
     "eventType": {

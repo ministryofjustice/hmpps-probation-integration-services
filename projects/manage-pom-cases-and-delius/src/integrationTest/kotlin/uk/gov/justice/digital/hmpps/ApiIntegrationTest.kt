@@ -5,7 +5,9 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -22,6 +24,7 @@ import uk.gov.justice.digital.hmpps.api.model.Team
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 
 @AutoConfigureMockMvc
@@ -37,11 +40,14 @@ internal class ApiIntegrationTest {
     @Autowired
     lateinit var objectMapper: ObjectMapper
 
-    @Test
-    fun `successful retrieval of a case record by noms id`() {
-        val person = PersonGenerator.DEFAULT
+    @ParameterizedTest
+    @MethodSource("caseIdentifiers")
+    fun `successful retrieval of a case record by crn or noms id`(identifier: String, person: Person) {
         val res = mockMvc
-            .perform(get("/case-records/${person.nomsId}").withOAuth2Token(wireMockServer))
+            .perform(
+                get("/case-records/$identifier")
+                    .withOAuth2Token(wireMockServer)
+            )
             .andExpect(status().is2xxSuccessful)
             .andReturn().response.contentAsString
 
@@ -71,6 +77,14 @@ internal class ApiIntegrationTest {
                     false
                 )
             )
+        )
+    }
+
+    companion object {
+        @JvmStatic
+        fun caseIdentifiers() = listOf(
+            Arguments.of(PersonGenerator.DEFAULT.crn, PersonGenerator.DEFAULT),
+            Arguments.of(PersonGenerator.DEFAULT.nomsId, PersonGenerator.DEFAULT)
         )
     }
 }
