@@ -14,13 +14,13 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /case-records/{nomsId}:
+  /case-records/{identifier}:
     get:
       tags:
       - probation-record-resource
       operationId: handle
       parameters:
-      - name: nomsId
+      - name: identifier
         in: path
         required: true
         schema:
