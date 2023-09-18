@@ -1,4 +1,5 @@
 package uk.gov.justice.digital.hmpps.entity
+
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
@@ -71,4 +72,9 @@ interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
     """
     )
     fun getMainAddressByPersonId(personId: Long): PersonAddress?
+}
+
+interface PersonRepository : JpaRepository<Person, Long> {
+    @Query("select p.crn from Person p where p.noms = :nomsId")
+    fun findCrnByNomsId(nomsId: String): String?
 }

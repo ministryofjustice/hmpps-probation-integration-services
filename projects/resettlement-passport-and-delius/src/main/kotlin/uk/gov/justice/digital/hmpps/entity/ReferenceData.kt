@@ -21,3 +21,6 @@ class ReferenceData(
     @Column(name = "standard_reference_list_id")
     val id: Long
 )
+
+enum class Category(val number: Int) { X9(0), M1(1), M2(2), M3(3), M4(4) }
+enum class Level(val number: Int) { M0(0), M1(1), M2(2), M3(3) }
