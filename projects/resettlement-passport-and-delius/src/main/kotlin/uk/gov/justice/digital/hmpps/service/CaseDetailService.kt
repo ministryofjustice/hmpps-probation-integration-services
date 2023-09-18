@@ -39,10 +39,10 @@ class CaseDetailService(
         ?: throw NotFoundException("Person", "crn", crn)
 }
 
-fun String.toMappaLevel() = Level.entries.find { it.name == this }?.number
+private fun String.toMappaLevel() = Level.entries.find { it.name == this }?.number
     ?: throw IllegalStateException("Unexpected MAPPA level: $this")
 
-fun String.toMappaCategory() = Category.entries.find { it.name == this }?.number
+private fun String.toMappaCategory() = Category.entries.find { it.name == this }?.number
     ?: throw IllegalStateException("Unexpected MAPPA category: $this")
 
 private fun Staff.asManager() = if (code.endsWith("U")) {
