@@ -15,7 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.Referen
 fun Person.record(decision: ReferenceData?, registration: Registration?, vloAssigned: Boolean): ProbationRecord =
     ProbationRecord(
         crn,
-        nomsId!!,
+        nomsId,
         currentTier?.description,
         decision?.resourcing(),
         manager.manager(),
