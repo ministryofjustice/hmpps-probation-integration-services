@@ -87,6 +87,9 @@
             "probationArea.code": {
               "type": "keyword"
             },
+            "probationArea.description": {
+              "type": "keyword"
+            },
             "team.code": {
               "type": "keyword"
             },
