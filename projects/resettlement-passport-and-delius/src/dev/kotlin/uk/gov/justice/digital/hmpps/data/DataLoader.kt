@@ -16,8 +16,11 @@ import uk.gov.justice.digital.hmpps.data.generator.NSITypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.entity.Category
+import uk.gov.justice.digital.hmpps.entity.Level
 import uk.gov.justice.digital.hmpps.entity.Person
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
@@ -48,6 +51,7 @@ class DataLoader(
             ProviderGenerator.DEFAULT_STAFF,
             ProviderGenerator.DEFAULT_STAFF_USER,
             PersonGenerator.DEFAULT,
+            PersonGenerator.DEFAULT_MANAGER,
             NSIGenerator.DEFAULT,
             NSIManagerGenerator.DEFAULT,
             AddressGenerator.DEFAULT,
@@ -55,7 +59,19 @@ class DataLoader(
             AppointmentGenerator.NON_ATTENDANCE_TYPE,
             AppointmentGenerator.ATTENDED_OUTCOME,
             AppointmentGenerator.NON_ATTENDED_OUTCOME,
-            AppointmentGenerator.DEFAULT_LOCATION
+            AppointmentGenerator.DEFAULT_LOCATION,
+            RegistrationGenerator.MAPPA_TYPE
+        )
+
+        RegistrationGenerator.CATEGORIES.values.forEach { em.persist(it) }
+        RegistrationGenerator.LEVELS.values.forEach { em.persist(it) }
+        em.persist(
+            RegistrationGenerator.generate(
+                date = LocalDate.now().minusDays(30),
+                category = RegistrationGenerator.CATEGORIES[Category.M1.name],
+                level = RegistrationGenerator.LEVELS[Level.M2.name],
+                reviewDate = LocalDate.now().plusDays(60)
+            )
         )
 
         createAppointments(PersonGenerator.DEFAULT)
