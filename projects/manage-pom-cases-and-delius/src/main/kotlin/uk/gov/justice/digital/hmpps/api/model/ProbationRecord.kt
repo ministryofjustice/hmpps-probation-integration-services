@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.api.model
 
 data class ProbationRecord(
     val crn: String,
-    val nomsId: String,
+    val nomsId: String?,
     val currentTier: String?,
     val resourcing: Resourcing?,
     val manager: Manager,
