@@ -72,7 +72,6 @@ components:
       - crn
       - manager
       - mappaLevel
-      - nomsId
       - vloAssigned
       type: object
       properties:

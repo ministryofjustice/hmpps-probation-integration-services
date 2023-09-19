@@ -14,6 +14,60 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /probation-cases/{nomsId}/crn:
+    get:
+      tags:
+      - case-detail-controller
+      operationId: findCrn
+      parameters:
+      - name: nomsId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseIdentifiers'
+  /probation-cases/{crn}/mappa:
+    get:
+      tags:
+      - case-detail-controller
+      operationId: findMappaInfo
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MappaDetail'
+  /probation-cases/{crn}/community-manager:
+    get:
+      tags:
+      - case-detail-controller
+      operationId: getCommunityManager
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manager'
   /duty-to-refer-nsi/{value}:
     get:
       tags:
@@ -85,6 +139,53 @@ paths:
                 $ref: '#/components/schemas/ResultSetAppointment'
 components:
   schemas:
+    CaseIdentifiers:
+      required:
+      - crn
+      type: object
+      properties:
+        crn:
+          type: string
+    MappaDetail:
+      required:
+      - startDate
+      type: object
+      properties:
+        level:
+          type: integer
+          format: int32
+        levelDescription:
+          type: string
+        category:
+          type: integer
+          format: int32
+        categoryDescription:
+          type: string
+        startDate:
+          type: string
+          format: date
+        reviewDate:
+          type: string
+          format: date
+    Manager:
+      required:
+      - unallocated
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        unallocated:
+          type: boolean
+    Name:
+      required:
+      - forename
+      - surname
+      type: object
+      properties:
+        forename:
+          type: string
+        surname:
+          type: string
     DutyToReferNSI:
       required:
       - nsiSubType
@@ -219,16 +320,6 @@ components:
         address:
           $ref: '#/components/schemas/Address'
         telephoneNumber:
-          type: string
-    Name:
-      required:
-      - forename
-      - surname
-      type: object
-      properties:
-        forename:
-          type: string
-        surname:
           type: string
     Outcome:
       required:
