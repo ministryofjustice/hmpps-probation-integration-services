@@ -46,6 +46,7 @@ class DomainEventServiceTest {
             notificationPublisher = notificationPublisher,
             notificationEnhancer = notificationEnhancer
         )
+        whenever(notificationEnhancer.enhance(any())).thenAnswer { it.getArgument(0) }
     }
 
     @Test
