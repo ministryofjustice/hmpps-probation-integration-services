@@ -896,6 +896,10 @@
                                                 <td class="constraint detail">SYS_C0021417<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
+                                                <td title="R_INSTITUTION_NOMIS_HOSPITAL.NOMIS_HOSPITAL_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1400"><a href='R_INSTITUTION_NOMIS_HOSPITAL.html'>R_INSTITUTION_NOMIS_HOSPITAL</a><span class='relatedKey'>.NOMIS_HOSPITAL_ID</span></td>
+                                                <td class="constraint detail">R_1400<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="R_LIC_COND_REJECTION_REASON.REJECTION_REASON_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_996"><a href='R_LIC_COND_REJECTION_REASON.html'>R_LIC_COND_REJECTION_REASON</a><span class='relatedKey'>.REJECTION_REASON_ID</span></td>
                                                 <td class="constraint detail">R_996<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -1638,16 +1642,16 @@
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td>TRUE_OR_FALSE_1883892480</td>
+                                    <td>SPG_INTEREST IN (0, 1)</td>
+                                </tr>
+                                <tr>
                                     <td>YES_OR_NO27</td>
                                     <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE_1684532474</td>
                                     <td>SPG_OVERRIDE IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE_1883892480</td>
-                                    <td>SPG_INTEREST IN (0, 1)</td>
                                 </tr>
                                 </tbody>
                             </table>

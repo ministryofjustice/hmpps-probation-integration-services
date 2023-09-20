@@ -140,6 +140,10 @@
                                                 <td class="constraint detail">R_1178<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
+                                                <td title="R_INSTITUTION_NOMIS_HOSPITAL.[INSTITUTION_ID, ESTABLISHMENT] references R_INSTITUTION.[INSTITUTION_ID, ESTABLISHMENT] via R_1399"><a href='R_INSTITUTION_NOMIS_HOSPITAL.html'>R_INSTITUTION_NOMIS_HOSPITAL</a><span class='relatedKey'>.INSTITUTION_ID</span></td>
+                                                <td class="constraint detail">R_1399<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="RELEASE.[INSTITUTION_ID, ESTABLISHMENT] references R_INSTITUTION.[INSTITUTION_ID, ESTABLISHMENT] via R_1182"><a href='RELEASE.html'>RELEASE</a><span class='relatedKey'>.INSTITUTION_ID</span></td>
                                                 <td class="constraint detail">R_1182<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -187,6 +191,10 @@
                                             <tr>
                                                 <td title="R_HOST.[INSTITUTION_ID, ESTABLISHMENT] references R_INSTITUTION.[INSTITUTION_ID, ESTABLISHMENT] via R_1178"><a href='R_HOST.html'>R_HOST</a><span class='relatedKey'>.ESTABLISHMENT</span></td>
                                                 <td class="constraint detail">R_1178<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="R_INSTITUTION_NOMIS_HOSPITAL.[INSTITUTION_ID, ESTABLISHMENT] references R_INSTITUTION.[INSTITUTION_ID, ESTABLISHMENT] via R_1399"><a href='R_INSTITUTION_NOMIS_HOSPITAL.html'>R_INSTITUTION_NOMIS_HOSPITAL</a><span class='relatedKey'>.ESTABLISHMENT</span></td>
+                                                <td class="constraint detail">R_1399<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="RELEASE.[INSTITUTION_ID, ESTABLISHMENT] references R_INSTITUTION.[INSTITUTION_ID, ESTABLISHMENT] via R_1182"><a href='RELEASE.html'>RELEASE</a><span class='relatedKey'>.ESTABLISHMENT</span></td>
@@ -480,6 +488,23 @@
                                     </td>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                    <td><span id="SECURE_HOSPITAL">SECURE_HOSPITAL</span></td>
+                                    <td>CHAR</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -563,16 +588,20 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY30</td>
-                                    <td>ESTABLISHMENT IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
                                     <td>YES_OR_NO_ONLY_567802777</td>
                                     <td>IMMIGRATION_REMOVAL_CENTRE IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
+                                    <td>YES_OR_NO_ONLY_47352672</td>
+                                    <td>SECURE_HOSPITAL IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
                                     <td>TRUE_OR_FALSE_2088138974</td>
                                     <td>PRIVATE IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY30</td>
+                                    <td>ESTABLISHMENT IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO10</td>

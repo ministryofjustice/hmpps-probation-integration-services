@@ -369,7 +369,6 @@
 <polygon fill="none" stroke="#000000" points="1222.5,-2071.7714 1222.5,-2093.7714 1295.5,-2093.7714 1295.5,-2071.7714 1222.5,-2071.7714"/>
 <text text-anchor="start" x="1225.5" y="-2079.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">date[7]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-2049.7714 1010.5,-2071.7714 1222.5,-2071.7714 1222.5,-2049.7714 1010.5,-2049.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-2066.77"/>
 <text text-anchor="start" x="1030.5" y="-2056.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">CONTACT_END_TIME</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-2049.7714 1222.5,-2071.7714 1295.5,-2071.7714 1295.5,-2049.7714 1222.5,-2049.7714"/>
 <text text-anchor="start" x="1225.5" y="-2057.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">date[7]</text>
@@ -384,12 +383,12 @@
 <polygon fill="none" stroke="#000000" points="1222.5,-2005.7714 1222.5,-2027.7714 1295.5,-2027.7714 1295.5,-2005.7714 1222.5,-2005.7714"/>
 <text text-anchor="start" x="1225.5" y="-2013.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1983.7714 1010.5,-2005.7714 1222.5,-2005.7714 1222.5,-1983.7714 1010.5,-1983.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-2000.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-2000.77"/>
 <text text-anchor="start" x="1030.5" y="-1990.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">PROVIDER_LOCATION_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1983.7714 1222.5,-2005.7714 1295.5,-2005.7714 1295.5,-1983.7714 1222.5,-1983.7714"/>
 <text text-anchor="start" x="1225.5" y="-1991.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1961.7714 1010.5,-1983.7714 1222.5,-1983.7714 1222.5,-1961.7714 1010.5,-1961.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1978.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1978.77"/>
 <text text-anchor="start" x="1030.5" y="-1968.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">PROVIDER_EMPLOYEE_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1961.7714 1222.5,-1983.7714 1295.5,-1983.7714 1295.5,-1961.7714 1222.5,-1961.7714"/>
 <text text-anchor="start" x="1225.5" y="-1969.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
@@ -407,12 +406,12 @@
 <polygon fill="none" stroke="#000000" points="1222.5,-1895.7714 1222.5,-1917.7714 1295.5,-1917.7714 1295.5,-1895.7714 1222.5,-1895.7714"/>
 <text text-anchor="start" x="1225.5" y="-1903.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">char[1]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1873.7714 1010.5,-1895.7714 1222.5,-1895.7714 1222.5,-1873.7714 1010.5,-1873.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1890.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1890.77"/>
 <text text-anchor="start" x="1030.5" y="-1880.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">STAFF_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1873.7714 1222.5,-1895.7714 1295.5,-1895.7714 1295.5,-1873.7714 1222.5,-1873.7714"/>
 <text text-anchor="start" x="1225.5" y="-1881.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1851.7714 1010.5,-1873.7714 1222.5,-1873.7714 1222.5,-1851.7714 1010.5,-1851.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1868.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1868.77"/>
 <text text-anchor="start" x="1030.5" y="-1858.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">TEAM_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1851.7714 1222.5,-1873.7714 1295.5,-1873.7714 1295.5,-1851.7714 1222.5,-1851.7714"/>
 <text text-anchor="start" x="1225.5" y="-1859.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
@@ -427,42 +426,36 @@
 <polygon fill="none" stroke="#000000" points="1222.5,-1807.7714 1222.5,-1829.7714 1295.5,-1829.7714 1295.5,-1807.7714 1222.5,-1807.7714"/>
 <text text-anchor="start" x="1225.5" y="-1815.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">char[1]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1785.7714 1010.5,-1807.7714 1222.5,-1807.7714 1222.5,-1785.7714 1010.5,-1785.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1802.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1802.77"/>
 <text text-anchor="start" x="1030.5" y="-1792.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">PARTITION_AREA_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1785.7714 1222.5,-1807.7714 1295.5,-1807.7714 1295.5,-1785.7714 1222.5,-1785.7714"/>
 <text text-anchor="start" x="1225.5" y="-1793.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1763.7714 1010.5,-1785.7714 1222.5,-1785.7714 1222.5,-1763.7714 1010.5,-1763.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1780.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1780.77"/>
 <text text-anchor="start" x="1030.5" y="-1770.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">OFFICE_LOCATION_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1763.7714 1222.5,-1785.7714 1295.5,-1785.7714 1295.5,-1763.7714 1222.5,-1763.7714"/>
 <text text-anchor="start" x="1225.5" y="-1771.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1741.7714 1010.5,-1763.7714 1222.5,-1763.7714 1222.5,-1741.7714 1010.5,-1741.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1758.77"/>
 <text text-anchor="start" x="1030.5" y="-1748.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">ROW_VERSION</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1741.7714 1222.5,-1763.7714 1295.5,-1763.7714 1295.5,-1741.7714 1222.5,-1741.7714"/>
 <text text-anchor="start" x="1225.5" y="-1749.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1719.7714 1010.5,-1741.7714 1222.5,-1741.7714 1222.5,-1719.7714 1010.5,-1719.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1736.77"/>
 <text text-anchor="start" x="1030.5" y="-1726.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">ALERT_ACTIVE</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1719.7714 1222.5,-1741.7714 1295.5,-1741.7714 1295.5,-1719.7714 1222.5,-1719.7714"/>
 <text text-anchor="start" x="1225.5" y="-1727.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">char[1]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1697.7714 1010.5,-1719.7714 1222.5,-1719.7714 1222.5,-1697.7714 1010.5,-1697.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1714.77"/>
 <text text-anchor="start" x="1030.5" y="-1704.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">ATTENDED</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1697.7714 1222.5,-1719.7714 1295.5,-1719.7714 1295.5,-1697.7714 1222.5,-1697.7714"/>
 <text text-anchor="start" x="1225.5" y="-1705.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">char[1]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1675.7714 1010.5,-1697.7714 1222.5,-1697.7714 1222.5,-1675.7714 1010.5,-1675.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1692.77"/>
 <text text-anchor="start" x="1030.5" y="-1682.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">CREATED_DATETIME</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1675.7714 1222.5,-1697.7714 1295.5,-1697.7714 1295.5,-1675.7714 1222.5,-1675.7714"/>
 <text text-anchor="start" x="1225.5" y="-1683.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">date[7]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1653.7714 1010.5,-1675.7714 1222.5,-1675.7714 1222.5,-1653.7714 1010.5,-1653.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1670.77"/>
 <text text-anchor="start" x="1030.5" y="-1660.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">COMPLIED</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1653.7714 1222.5,-1675.7714 1295.5,-1675.7714 1295.5,-1653.7714 1222.5,-1653.7714"/>
 <text text-anchor="start" x="1225.5" y="-1661.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">char[1]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1631.7714 1010.5,-1653.7714 1222.5,-1653.7714 1222.5,-1631.7714 1010.5,-1631.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1648.77"/>
 <text text-anchor="start" x="1030.5" y="-1638.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">SENSITIVE</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1631.7714 1222.5,-1653.7714 1295.5,-1653.7714 1295.5,-1631.7714 1222.5,-1631.7714"/>
 <text text-anchor="start" x="1225.5" y="-1639.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">char[1]</text>
@@ -481,12 +474,12 @@
 <polygon fill="none" stroke="#000000" points="1222.5,-1565.7714 1222.5,-1587.7714 1295.5,-1587.7714 1295.5,-1565.7714 1222.5,-1565.7714"/>
 <text text-anchor="start" x="1225.5" y="-1573.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1543.7714 1010.5,-1565.7714 1222.5,-1565.7714 1222.5,-1543.7714 1010.5,-1543.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1560.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1560.77"/>
 <text text-anchor="start" x="1030.5" y="-1550.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">PROVIDER_TEAM_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1543.7714 1222.5,-1565.7714 1295.5,-1565.7714 1295.5,-1543.7714 1222.5,-1543.7714"/>
 <text text-anchor="start" x="1225.5" y="-1551.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1521.7714 1010.5,-1543.7714 1222.5,-1543.7714 1222.5,-1521.7714 1010.5,-1521.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1538.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1538.77"/>
 <text text-anchor="start" x="1030.5" y="-1528.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">CONTACT_OUTCOME_TYPE_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1521.7714 1222.5,-1543.7714 1295.5,-1543.7714 1295.5,-1521.7714 1222.5,-1521.7714"/>
 <text text-anchor="start" x="1225.5" y="-1529.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
@@ -495,7 +488,7 @@
 <polygon fill="none" stroke="#000000" points="1222.5,-1499.7714 1222.5,-1521.7714 1295.5,-1521.7714 1295.5,-1499.7714 1222.5,-1499.7714"/>
 <text text-anchor="start" x="1225.5" y="-1507.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1477.7714 1010.5,-1499.7714 1222.5,-1499.7714 1222.5,-1477.7714 1010.5,-1477.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1494.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1494.77"/>
 <text text-anchor="start" x="1030.5" y="-1484.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">EXPLANATION_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1477.7714 1222.5,-1499.7714 1295.5,-1499.7714 1295.5,-1477.7714 1222.5,-1477.7714"/>
 <text text-anchor="start" x="1225.5" y="-1485.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
@@ -504,27 +497,26 @@
 <polygon fill="none" stroke="#000000" points="1222.5,-1455.7714 1222.5,-1477.7714 1295.5,-1477.7714 1295.5,-1455.7714 1222.5,-1455.7714"/>
 <text text-anchor="start" x="1225.5" y="-1463.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1433.7714 1010.5,-1455.7714 1222.5,-1455.7714 1222.5,-1433.7714 1010.5,-1433.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1450.77"/>
 <text text-anchor="start" x="1030.5" y="-1440.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">TRAINING_SESSION_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1433.7714 1222.5,-1455.7714 1295.5,-1455.7714 1295.5,-1433.7714 1222.5,-1433.7714"/>
 <text text-anchor="start" x="1225.5" y="-1441.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1411.7714 1010.5,-1433.7714 1222.5,-1433.7714 1222.5,-1411.7714 1010.5,-1411.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1428.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1428.77"/>
 <text text-anchor="start" x="1030.5" y="-1418.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">TRUST_PROVIDER_FLAG</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1411.7714 1222.5,-1433.7714 1295.5,-1433.7714 1295.5,-1411.7714 1222.5,-1411.7714"/>
 <text text-anchor="start" x="1225.5" y="-1419.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1389.7714 1010.5,-1411.7714 1222.5,-1411.7714 1222.5,-1389.7714 1010.5,-1389.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1406.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1406.77"/>
 <text text-anchor="start" x="1030.5" y="-1396.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">STAFF_EMPLOYEE_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1389.7714 1222.5,-1411.7714 1295.5,-1411.7714 1295.5,-1389.7714 1222.5,-1389.7714"/>
 <text text-anchor="start" x="1225.5" y="-1397.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1367.7714 1010.5,-1389.7714 1222.5,-1389.7714 1222.5,-1367.7714 1010.5,-1367.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1384.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1384.77"/>
 <text text-anchor="start" x="1030.5" y="-1374.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">PROBATION_AREA_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1367.7714 1222.5,-1389.7714 1295.5,-1389.7714 1295.5,-1367.7714 1222.5,-1367.7714"/>
 <text text-anchor="start" x="1225.5" y="-1375.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1345.7714 1010.5,-1367.7714 1222.5,-1367.7714 1222.5,-1345.7714 1010.5,-1345.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1362.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1362.77"/>
 <text text-anchor="start" x="1030.5" y="-1352.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">TRUST_PROVIDER_TEAM_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1345.7714 1222.5,-1367.7714 1295.5,-1367.7714 1295.5,-1345.7714 1222.5,-1345.7714"/>
 <text text-anchor="start" x="1225.5" y="-1353.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
@@ -534,7 +526,6 @@
 <polygon fill="none" stroke="#000000" points="1222.5,-1323.7714 1222.5,-1345.7714 1295.5,-1345.7714 1295.5,-1323.7714 1222.5,-1323.7714"/>
 <text text-anchor="start" x="1225.5" y="-1331.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1301.7714 1010.5,-1323.7714 1222.5,-1323.7714 1222.5,-1301.7714 1010.5,-1301.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1318.77"/>
 <text text-anchor="start" x="1030.5" y="-1308.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">DOCUMENT_LINKED</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1301.7714 1222.5,-1323.7714 1295.5,-1323.7714 1295.5,-1301.7714 1222.5,-1301.7714"/>
 <text text-anchor="start" x="1225.5" y="-1309.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">char[1]</text>
@@ -543,27 +534,25 @@
 <polygon fill="none" stroke="#000000" points="1222.5,-1279.7714 1222.5,-1301.7714 1295.5,-1301.7714 1295.5,-1279.7714 1222.5,-1279.7714"/>
 <text text-anchor="start" x="1225.5" y="-1287.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">char[1]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1257.7714 1010.5,-1279.7714 1222.5,-1279.7714 1222.5,-1257.7714 1010.5,-1257.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1274.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1274.77"/>
 <text text-anchor="start" x="1025.3069" y="-1264.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">LATEST_ENFORCEMENT_ACTION_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1257.7714 1222.5,-1279.7714 1295.5,-1279.7714 1295.5,-1257.7714 1222.5,-1257.7714"/>
-<text text-anchor="start" x="1225.5" y="-1265.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
+<text text-anchor="start" x="1225.5" y="-1265.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[22]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1235.7714 1010.5,-1257.7714 1222.5,-1257.7714 1222.5,-1235.7714 1010.5,-1235.7714"/>
 <image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1252.77"/>
 <text text-anchor="start" x="1030.5" y="-1242.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">NSI_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1235.7714 1222.5,-1257.7714 1295.5,-1257.7714 1295.5,-1235.7714 1222.5,-1235.7714"/>
 <text text-anchor="start" x="1225.5" y="-1243.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1213.7714 1010.5,-1235.7714 1222.5,-1235.7714 1222.5,-1213.7714 1010.5,-1213.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1230.77"/>
 <text text-anchor="start" x="1030.5" y="-1220.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">TABLE_NAME</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1213.7714 1222.5,-1235.7714 1295.5,-1235.7714 1295.5,-1213.7714 1222.5,-1213.7714"/>
 <text text-anchor="start" x="1225.5" y="-1221.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">varchar2[30]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1191.7714 1010.5,-1213.7714 1222.5,-1213.7714 1222.5,-1191.7714 1010.5,-1191.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1208.77"/>
 <text text-anchor="start" x="1030.5" y="-1198.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">PRIMARY_KEY_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1191.7714 1222.5,-1213.7714 1295.5,-1213.7714 1295.5,-1191.7714 1222.5,-1191.7714"/>
 <text text-anchor="start" x="1225.5" y="-1199.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[22]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1169.7714 1010.5,-1191.7714 1222.5,-1191.7714 1222.5,-1169.7714 1010.5,-1169.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1186.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1186.77"/>
 <text text-anchor="start" x="1030.5" y="-1176.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">PSS_RQMNT_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1169.7714 1222.5,-1191.7714 1295.5,-1191.7714 1295.5,-1169.7714 1222.5,-1169.7714"/>
 <text text-anchor="start" x="1225.5" y="-1177.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[22]</text>
@@ -596,7 +585,7 @@
 <polygon fill="none" stroke="#000000" points="1222.5,-1037.7714 1222.5,-1059.7714 1295.5,-1059.7714 1295.5,-1037.7714 1222.5,-1037.7714"/>
 <text text-anchor="start" x="1225.5" y="-1045.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
 <polygon fill="none" stroke="#000000" points="1010.5,-1015.7714 1010.5,-1037.7714 1222.5,-1037.7714 1222.5,-1015.7714 1010.5,-1015.7714"/>
-<image xlink:href="../../images/primaryKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1032.77"/>
+<image xlink:href="../../images/foreignKeys.png" width="11px" height="12px" preserveAspectRatio="xMinYMin meet" x="1015.5" y="-1032.77"/>
 <text text-anchor="start" x="1024.07" y="-1022.8714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">SESSION_DELIVERED_CON_TYPE_ID</text>
 <polygon fill="none" stroke="#000000" points="1222.5,-1015.7714 1222.5,-1037.7714 1295.5,-1037.7714 1295.5,-1015.7714 1222.5,-1015.7714"/>
 <text text-anchor="start" x="1225.5" y="-1023.4714" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">number[38]</text>
