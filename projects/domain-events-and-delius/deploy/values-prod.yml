@@ -3,4 +3,5 @@ generic-service:
     host: domain-events-and-delius.hmpps.service.justice.gov.uk
 
   env:
+    DOMAIN_EVENTS_BASE_URL: domain-events-and-delius.hmpps.service.justice.gov.uk
     SENTRY_ENVIRONMENT: prod

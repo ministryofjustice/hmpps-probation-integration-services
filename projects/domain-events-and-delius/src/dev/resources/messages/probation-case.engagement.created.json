@@ -1,0 +1,15 @@
+{
+  "eventType": "probation-case.engagement.created",
+  "version": 1,
+  "description": "A new probation case has been created",
+  "detailUrl": "https://example.com",
+  "occurredAt": "2023-09-20T16:05:59.442+01:00",
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "X789654"
+      }
+    ]
+  }
+}
