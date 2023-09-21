@@ -1,8 +1,15 @@
 package uk.gov.justice.digital.hmpps.retry
 
+import java.time.Duration
+import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
-fun <T> retry(maxRetries: Int, exceptions: List<KClass<out Exception>> = listOf(Exception::class), code: () -> T): T {
+fun <T> retry(
+    maxRetries: Int,
+    delay: Duration = Duration.ofMillis(100),
+    exceptions: List<KClass<out Exception>> = listOf(Exception::class),
+    code: () -> T
+): T {
     var throwable: Throwable?
     (1..maxRetries).forEach { count ->
         try {
@@ -14,8 +21,9 @@ fun <T> retry(maxRetries: Int, exceptions: List<KClass<out Exception>> = listOf(
             } else {
                 e
             }
-
-            if (throwable != null) {
+            if (throwable == null) {
+                TimeUnit.MILLISECONDS.sleep(delay.toMillis() * count * count)
+            }else{
                 throw throwable!!
             }
         }

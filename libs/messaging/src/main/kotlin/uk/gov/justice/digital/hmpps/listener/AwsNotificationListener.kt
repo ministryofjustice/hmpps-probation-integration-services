@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.listener
 
 import feign.FeignException
-import feign.RetryableException
 import io.awspring.cloud.sqs.annotation.SqsListener
 import io.awspring.cloud.sqs.listener.AsyncAdapterBlockingExecutionFailedException
 import io.awspring.cloud.sqs.listener.ListenerExecutionFailedException
@@ -11,6 +10,7 @@ import io.sentry.Sentry
 import io.sentry.spring.jakarta.tracing.SentryTransaction
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.context.annotation.Conditional
+import org.springframework.dao.CannotAcquireLockException
 import org.springframework.jdbc.CannotGetJdbcConnectionException
 import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.stereotype.Component
@@ -35,7 +35,7 @@ class AwsNotificationListener(
                 3,
                 listOf(
                     FeignException.NotFound::class,
-                    RetryableException::class,
+                    CannotAcquireLockException::class,
                     ObjectOptimisticLockingFailureException::class,
                     CannotCreateTransactionException::class,
                     CannotGetJdbcConnectionException::class

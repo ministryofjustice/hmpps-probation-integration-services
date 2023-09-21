@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.config.feign
 
 import feign.RequestInterceptor
+import feign.Retryer
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.AnonymousAuthenticationToken
@@ -15,6 +16,9 @@ abstract class FeignConfig(
 ) {
 
     abstract fun registrationId(): String
+
+    @Bean
+    open fun retryer() = Retryer.Default()
 
     @Bean
     open fun requestInterceptor() = RequestInterceptor { template ->
