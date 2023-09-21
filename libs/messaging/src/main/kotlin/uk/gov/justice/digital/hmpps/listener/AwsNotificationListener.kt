@@ -33,13 +33,14 @@ class AwsNotificationListener(
     fun receive(message: String) {
         try {
             retry(
-                3, listOf(
+                3,
+                listOf(
                     ObjectOptimisticLockingFailureException::class,
                     ConstraintViolationException::class,
                     RetryableException::class,
                     CannotCreateTransactionException::class,
                     FeignException.NotFound::class,
-                    CannotGetJdbcConnectionException::class,
+                    CannotGetJdbcConnectionException::class
                 )
             ) { handler.handle(message) }
         } catch (e: Throwable) {

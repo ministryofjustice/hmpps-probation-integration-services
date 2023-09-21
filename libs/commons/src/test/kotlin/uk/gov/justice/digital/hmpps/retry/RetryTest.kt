@@ -57,4 +57,3 @@ internal class RetryTest {
         assertThat(counter.get(), equalTo(1))
     }
 }
-
