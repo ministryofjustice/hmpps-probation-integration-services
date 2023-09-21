@@ -5,8 +5,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation(libs.bundles.telemetry)
-    compileOnly(libs.openfeign)
-    compileOnly("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation(libs.openfeign)
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     api(libs.bundles.aws.messaging)
 
