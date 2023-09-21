@@ -2,9 +2,12 @@ package uk.gov.justice.digital.hmpps.retry
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.json.JSONException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.springframework.dao.OptimisticLockingFailureException
 import java.rmi.UnexpectedException
+import java.sql.SQLException
 import java.util.concurrent.atomic.AtomicInteger
 
 internal class RetryTest {
@@ -28,5 +31,29 @@ internal class RetryTest {
             counter.incrementAndGet()
         }
         assertThat(result, equalTo(1))
+    }
+
+    @Test
+    fun `when optimistic lock exception thrown retry until max retries`() {
+        val counter = AtomicInteger(0)
+        assertThrows<OptimisticLockingFailureException> {
+            retry(3, listOf(OptimisticLockingFailureException::class, JSONException::class)) {
+                counter.incrementAndGet()
+                throw OptimisticLockingFailureException("OLE")
+            }
+        }
+        assertThat(counter.get(), equalTo(3))
+    }
+
+    @Test
+    fun `when SQL exception thrown no retries`() {
+        val counter = AtomicInteger(0)
+        assertThrows<SQLException> {
+            retry(3, listOf(OptimisticLockingFailureException::class)) {
+                counter.incrementAndGet()
+                throw SQLException("SQLE")
+            }
+        }
+        assertThat(counter.get(), equalTo(1))
     }
 }
