@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable
 import uk.gov.justice.digital.hmpps.data.generator.DomainEventGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.DomainEventRepository
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
+import uk.gov.justice.digital.hmpps.service.enhancement.NotificationEnhancer
 
 @ExtendWith(MockitoExtension::class)
 class DomainEventServiceTest {
@@ -31,6 +32,9 @@ class DomainEventServiceTest {
     @Mock
     private lateinit var notificationPublisher: NotificationPublisher
 
+    @Mock
+    private lateinit var notificationEnhancer: NotificationEnhancer
+
     private lateinit var service: DomainEventService
 
     @BeforeEach
@@ -39,8 +43,10 @@ class DomainEventServiceTest {
             batchSize = 50,
             objectMapper = jacksonObjectMapper().findAndRegisterModules(),
             domainEventRepository = domainEventRepository,
-            notificationPublisher = notificationPublisher
+            notificationPublisher = notificationPublisher,
+            notificationEnhancer = notificationEnhancer
         )
+        whenever(notificationEnhancer.enhance(any())).thenAnswer { it.getArgument(0) }
     }
 
     @Test

@@ -1,0 +1,6 @@
+{
+  "eventType": {
+    "Type": "String",
+    "Value": "probation-case.engagement.created"
+  }
+}

@@ -16,6 +16,8 @@ spring:
           global_temporary:
             create_tables: false
             drop_tables: false
+springdoc.default-produces-media-type: application/json
+
 
 delius.db.username: DomainEventsAndDelius # Should match value in [deploy/database/access.yml].
 
@@ -31,12 +33,18 @@ spring.config.activate.on-profile: [ "dev", "integration-test" ]
 spring:
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
+  security.oauth2.resourceserver.jwt.public-key-location: classpath:local-public-key.pub
 
 seed.database: true
 
 poller.fixed-delay: 2000
 
 messaging.producer.topic: domain-events
+
+context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+
+domain-events:
+  base-url: http://localhost:${wiremock.port}
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
