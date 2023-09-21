@@ -6,8 +6,8 @@ import kotlin.reflect.KClass
 
 fun <T> retry(
     maxRetries: Int,
-    delay: Duration = Duration.ofMillis(100),
     exceptions: List<KClass<out Exception>> = listOf(Exception::class),
+    delay: Duration = Duration.ofMillis(100),
     code: () -> T
 ): T {
     var throwable: Throwable?
