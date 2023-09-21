@@ -9,7 +9,6 @@ import io.opentelemetry.api.trace.SpanKind
 import io.opentelemetry.instrumentation.annotations.WithSpan
 import io.sentry.Sentry
 import io.sentry.spring.jakarta.tracing.SentryTransaction
-import org.hibernate.exception.ConstraintViolationException
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.context.annotation.Conditional
 import org.springframework.jdbc.CannotGetJdbcConnectionException
@@ -35,11 +34,10 @@ class AwsNotificationListener(
             retry(
                 3,
                 listOf(
-                    ObjectOptimisticLockingFailureException::class,
-                    ConstraintViolationException::class,
-                    RetryableException::class,
-                    CannotCreateTransactionException::class,
                     FeignException.NotFound::class,
+                    RetryableException::class,
+                    ObjectOptimisticLockingFailureException::class,
+                    CannotCreateTransactionException::class,
                     CannotGetJdbcConnectionException::class
                 )
             ) { handler.handle(message) }
