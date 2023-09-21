@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Conditional
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
+import uk.gov.justice.digital.hmpps.retry.retry
 import java.util.concurrent.CompletionException
 
 @Component
@@ -25,7 +26,12 @@ class AwsNotificationListener(
     @WithSpan(kind = SpanKind.CONSUMER)
     fun receive(message: String) {
         try {
-            handler.handle(message)
+            retry(3,listOf(ObjectOptimisticLockingFailureException::class,
+                ConstraintViolationException::class,
+                RetryableException::class,
+                CannotCreateTransactionException::class,
+                FeignException.NotFound::class,
+                CannotGetJdbcConnectionException::class,)) { handler.handle(message) }
         } catch (e: Throwable) {
             Sentry.captureException(unwrapSqsExceptions(e))
             throw e
