@@ -7,7 +7,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation(libs.bundles.telemetry)
     implementation(libs.flipt)
-    implementation(libs.openfeign)
 
     testImplementation("org.springframework.boot:spring-boot-starter-data-ldap")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

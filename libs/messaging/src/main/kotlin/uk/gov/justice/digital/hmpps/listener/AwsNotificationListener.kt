@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.listener
 
+import feign.FeignException
+import feign.RetryableException
 import io.awspring.cloud.sqs.annotation.SqsListener
 import io.awspring.cloud.sqs.listener.AsyncAdapterBlockingExecutionFailedException
 import io.awspring.cloud.sqs.listener.ListenerExecutionFailedException
@@ -7,9 +9,13 @@ import io.opentelemetry.api.trace.SpanKind
 import io.opentelemetry.instrumentation.annotations.WithSpan
 import io.sentry.Sentry
 import io.sentry.spring.jakarta.tracing.SentryTransaction
+import org.hibernate.exception.ConstraintViolationException
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.context.annotation.Conditional
+import org.springframework.jdbc.CannotGetJdbcConnectionException
+import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.stereotype.Component
+import org.springframework.transaction.CannotCreateTransactionException
 import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
 import uk.gov.justice.digital.hmpps.retry.retry
@@ -26,12 +32,16 @@ class AwsNotificationListener(
     @WithSpan(kind = SpanKind.CONSUMER)
     fun receive(message: String) {
         try {
-            retry(3,listOf(ObjectOptimisticLockingFailureException::class,
-                ConstraintViolationException::class,
-                RetryableException::class,
-                CannotCreateTransactionException::class,
-                FeignException.NotFound::class,
-                CannotGetJdbcConnectionException::class,)) { handler.handle(message) }
+            retry(
+                3, listOf(
+                    ObjectOptimisticLockingFailureException::class,
+                    ConstraintViolationException::class,
+                    RetryableException::class,
+                    CannotCreateTransactionException::class,
+                    FeignException.NotFound::class,
+                    CannotGetJdbcConnectionException::class,
+                )
+            ) { handler.handle(message) }
         } catch (e: Throwable) {
             Sentry.captureException(unwrapSqsExceptions(e))
             throw e
