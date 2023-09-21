@@ -23,7 +23,7 @@ fun <T> retry(
             }
             if (throwable == null) {
                 TimeUnit.MILLISECONDS.sleep(delay.toMillis() * count * count)
-            }else{
+            } else {
                 throw throwable!!
             }
         }
