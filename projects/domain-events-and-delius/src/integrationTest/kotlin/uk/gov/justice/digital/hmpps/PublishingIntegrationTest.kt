@@ -22,7 +22,7 @@ import uk.gov.justice.digital.hmpps.service.enhancement.EnhancedEventType
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
 @SpringBootTest
-internal class IntegrationTest {
+internal class PublishingIntegrationTest {
     @Value("\${messaging.producer.topic}")
     lateinit var topicName: String
 
