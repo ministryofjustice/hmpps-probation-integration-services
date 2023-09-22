@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.LinkedList
 import java.util.Queue
 import java.util.UUID
@@ -67,6 +68,24 @@ abstract class NotificationChannel(
             if (end.isBefore(LocalDateTime.now())) throw TimeoutException("Took too long to process")
             TimeUnit.MILLISECONDS.sleep(100)
         }
+    }
+
+    fun pollFor(
+        numberOfMessages: Int,
+        duration: Duration = Duration.ofSeconds(10),
+        interval: Duration = Duration.ofMillis(500)
+    ): List<Notification<*>> {
+        val maxTime = LocalTime.now().plus(duration)
+        val notifications: MutableList<Notification<*>> = mutableListOf()
+        while (notifications.size < numberOfMessages && !LocalTime.now().isAfter(maxTime)) {
+            val notification = receive()
+            if (notification != null) {
+                notifications.add(notification)
+            }
+            TimeUnit.MILLISECONDS.sleep(interval.toMillis())
+        }
+        check(notifications.size == numberOfMessages) { "Unable to find the correct number of messages in time" }
+        return notifications
     }
 }
 

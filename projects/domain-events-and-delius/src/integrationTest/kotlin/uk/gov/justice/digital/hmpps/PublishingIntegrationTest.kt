@@ -16,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.data.generator.DomainEventGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.DomainEventRepository
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
-import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.service.enhancement.EnhancedEventType
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -48,10 +47,7 @@ internal class PublishingIntegrationTest {
         )
 
         val topic = hmppsChannelManager.getChannel(topicName)
-        val messages = mutableListOf<String>()
-        while (messages.size < 2) {
-            topic.receive()?.eventType?.let { messages.add(it) }
-        }
+        val messages = topic.pollFor(2).mapNotNull { it.eventType }
 
         assertThat(
             messages.sorted(),
@@ -66,16 +62,12 @@ internal class PublishingIntegrationTest {
         domainEventRepository.save(DomainEventGenerator.generate(EnhancedEventType.ProbationCaseEngagementCreated.value))
 
         val topic = hmppsChannelManager.getChannel(topicName)
-        val messages = mutableListOf<Notification<*>>()
-        while (messages.size < 1) {
-            topic.receive()?.let { messages.add(it) }
-        }
-
+        val message = topic.pollFor(1).first()
         assertThat(
-            messages.first().eventType,
+            message.eventType,
             equalTo("probation-case.engagement.created")
         )
-        val domainEvent = messages.first().message as HmppsDomainEvent
+        val domainEvent = message.message as HmppsDomainEvent
         assertThat(domainEvent.eventType, equalTo("probation-case.engagement.created"))
         assertThat(domainEvent.detailUrl, equalTo("http://localhost:${wireMockServer.port()}/probation-case.engagement.created/X789654"))
         verify(telemetryService, timeout(30000)).trackEvent(eq("DomainEventsProcessed"), any(), any())
