@@ -72,7 +72,7 @@ abstract class NotificationChannel(
 
     fun pollFor(
         numberOfMessages: Int,
-        duration: Duration = Duration.ofSeconds(10),
+        duration: Duration = Duration.ofSeconds(30),
         interval: Duration = Duration.ofMillis(500)
     ): List<Notification<*>> {
         val maxTime = LocalTime.now().plus(duration)
