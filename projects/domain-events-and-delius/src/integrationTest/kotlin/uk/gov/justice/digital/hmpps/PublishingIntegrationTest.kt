@@ -42,34 +42,33 @@ internal class PublishingIntegrationTest {
         domainEventRepository.saveAll(
             listOf(
                 DomainEventGenerator.generate("manual-ogrs"),
-                DomainEventGenerator.generate("registration-added")
+                DomainEventGenerator.generate("registration-added"),
+                DomainEventGenerator.generate(EnhancedEventType.ProbationCaseEngagementCreated.value)
             )
         )
 
         val topic = hmppsChannelManager.getChannel(topicName)
-        val messages = topic.pollFor(2).mapNotNull { it.eventType }
+        val messages = topic.pollFor(3)
 
+        val messageTypes = messages.mapNotNull { it.eventType }
         assertThat(
-            messages.sorted(),
-            equalTo(listOf("probation-case.registration.added", "probation-case.risk-scores.ogrs.manual-calculation"))
+            messageTypes.sorted(),
+            equalTo(
+                listOf(
+                    "probation-case.engagement.created",
+                    "probation-case.registration.added",
+                    "probation-case.risk-scores.ogrs.manual-calculation"
+                )
+            )
         )
-        verify(telemetryService, timeout(30000)).trackEvent(eq("DomainEventsProcessed"), any(), any())
-        assertEquals(0, domainEventRepository.count())
-    }
 
-    @Test
-    fun `engagement created messages include detail url`() {
-        domainEventRepository.save(DomainEventGenerator.generate(EnhancedEventType.ProbationCaseEngagementCreated.value))
-
-        val topic = hmppsChannelManager.getChannel(topicName)
-        val message = topic.pollFor(1).first()
+        val engagementCreated =
+            messages.first { it.eventType == EnhancedEventType.ProbationCaseEngagementCreated.value }.message as HmppsDomainEvent
         assertThat(
-            message.eventType,
-            equalTo("probation-case.engagement.created")
+            engagementCreated.detailUrl,
+            equalTo("http://localhost:${wireMockServer.port()}/probation-case.engagement.created/X789654")
         )
-        val domainEvent = message.message as HmppsDomainEvent
-        assertThat(domainEvent.eventType, equalTo("probation-case.engagement.created"))
-        assertThat(domainEvent.detailUrl, equalTo("http://localhost:${wireMockServer.port()}/probation-case.engagement.created/X789654"))
+
         verify(telemetryService, timeout(30000)).trackEvent(eq("DomainEventsProcessed"), any(), any())
         assertEquals(0, domainEventRepository.count())
     }
