@@ -4,6 +4,7 @@ import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Borough
@@ -18,13 +19,13 @@ class ManagerService(
     private val ldapTemplate: LdapTemplate,
     private val personManagerRepository: PersonManagerRepository
 ) {
-    fun findCommunityManager(crn: String): Manager? =
+    fun findCommunityManager(crn: String): Manager =
         personManagerRepository.findByPersonCrn(crn)?.let { ro ->
             ro.staff.user?.apply {
                 email = ldapTemplate.findEmailByUsername(username)
             }
             ro.asManager()
-        }
+        } ?: throw NotFoundException("CommunityManager", "crn", crn)
 }
 
 fun PersonManager.asManager() = Manager(

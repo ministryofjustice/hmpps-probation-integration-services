@@ -1,0 +1,67 @@
+package uk.gov.justice.digital.hmpps.integrations.delius.person.entity
+
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.Table
+import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.Where
+import org.hibernate.type.YesNoConverter
+import java.time.LocalDate
+
+@Immutable
+@Entity
+@Table(name = "offender_address")
+@Where(clause = "soft_deleted = 0 and end_date is null")
+class PersonAddress(
+
+    @Column(name = "offender_id")
+    val personId: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "address_status_id")
+    val status: AddressStatus,
+
+    @Column(name = "building_name")
+    val buildingName: String?,
+    @Column(name = "address_number")
+    val addressNumber: String?,
+    @Column(name = "street_name")
+    val streetName: String?,
+    val district: String?,
+    @Column(name = "town_city")
+    val town: String?,
+    val county: String?,
+    val postcode: String?,
+
+    @Convert(converter = YesNoConverter::class)
+    val noFixedAbode: Boolean,
+    val startDate: LocalDate,
+    val endDate: LocalDate?,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean,
+
+    @Id
+    @Column(name = "offender_address_id")
+    val id: Long
+)
+
+@Immutable
+@Entity
+@Table(name = "r_standard_reference_list")
+class AddressStatus(
+
+    @Column(name = "code_value")
+    val code: String,
+
+    @Column(name = "code_description")
+    val description: String,
+
+    @Id
+    @Column(name = "standard_reference_list_id")
+    val id: Long
+)

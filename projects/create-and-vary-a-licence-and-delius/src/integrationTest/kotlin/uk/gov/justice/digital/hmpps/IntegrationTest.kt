@@ -47,4 +47,12 @@ internal class IntegrationTest {
             )
         )
     }
+
+    @Test
+    fun `returns 404 if no crn or community officer`() {
+        mockMvc.perform(
+            get("/probation-case/Z123456/responsible-community-manager")
+                .withOAuth2Token(wireMockServer)
+        ).andExpect(status().isNotFound)
+    }
 }
