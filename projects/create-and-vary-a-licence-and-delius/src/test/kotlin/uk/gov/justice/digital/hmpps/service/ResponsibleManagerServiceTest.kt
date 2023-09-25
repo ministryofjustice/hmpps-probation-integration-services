@@ -15,27 +15,30 @@ import org.springframework.ldap.core.AttributesMapper
 import org.springframework.ldap.core.LdapTemplate
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.ResponsibleOfficerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
 
 @ExtendWith(MockitoExtension::class)
 internal class ResponsibleManagerServiceTest {
-    @Mock lateinit var responsibleOfficerRepository: ResponsibleOfficerRepository
 
-    @Mock lateinit var ldapTemplate: LdapTemplate
+    @Mock
+    lateinit var personManagerRepository: PersonManagerRepository
 
-    @InjectMocks lateinit var service: ResponsibleManagerService
+    @Mock
+    lateinit var ldapTemplate: LdapTemplate
+
+    @InjectMocks
+    lateinit var service: ManagerService
 
     @Test
     fun `does not call ldap when no staff user`() {
-        val crn = "L123456"
+        val person = PersonGenerator.generatePerson("L123456")
         val staff = StaffGenerator.generateStaff("NoLdap", "No", "User")
-        val cm = PersonGenerator.generateManager(staff = staff)
-        val ro = PersonGenerator.generateResponsibleOfficer(communityManager = cm)
+        val cm = PersonGenerator.generateManager(person, staff = staff)
 
-        whenever(responsibleOfficerRepository.findResponsibleOfficer(crn)).thenReturn(ro)
+        whenever(personManagerRepository.findByPersonCrn(person.crn)).thenReturn(cm)
 
-        val res = service.findResponsibleCommunityManager(crn)
-        assertThat(res, equalTo(ro.asManager()))
+        val res = service.findCommunityManager(person.crn)
+        assertThat(res, equalTo(cm.asManager()))
         verify(ldapTemplate, never()).search(any(), any<AttributesMapper<String?>>())
     }
 }

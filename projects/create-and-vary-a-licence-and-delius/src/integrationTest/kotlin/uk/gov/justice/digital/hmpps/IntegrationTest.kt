@@ -43,16 +43,8 @@ internal class IntegrationTest {
         assertThat(
             manager,
             equalTo(
-                PersonGenerator.DEFAULT_RO.asManager().copy(username = "john-smith", email = "john.smith@moj.gov.uk")
+                PersonGenerator.DEFAULT_CM.asManager().copy(username = "john-smith", email = "john.smith@moj.gov.uk")
             )
         )
-    }
-
-    @Test
-    fun `returns 204 if active no responsible community officer`() {
-        mockMvc.perform(
-            get("/probation-case/N123456/responsible-community-manager")
-                .withOAuth2Token(wireMockServer)
-        ).andExpect(status().isNoContent)
     }
 }
