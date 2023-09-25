@@ -7,12 +7,12 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
-import java.time.ZonedDateTime
 
 @Component
 @ConditionalOnProperty("seed.database")
@@ -38,18 +38,17 @@ class DataLoader(
 
         entityManager.persist(PersonGenerator.DEFAULT_PERSON)
         entityManager.persist(PersonGenerator.DEFAULT_CM)
-        entityManager.persist(PersonGenerator.DEFAULT_RO)
 
-        val person = PersonGenerator.generatePerson("N123456")
-        val cm = PersonGenerator.generateManager()
-        entityManager.persist(person)
-        entityManager.persist(cm)
-        entityManager.persist(
-            PersonGenerator.generateResponsibleOfficer(
-                person,
-                cm,
-                endDate = ZonedDateTime.now().minusMinutes(20)
-            )
-        )
+        val person = PersonGenerator.generatePerson("N123456").also(entityManager::persist)
+        PersonGenerator.generateManager(person).also(entityManager::persist)
+        listOf(
+            AddressGenerator.ADDRESS_STATUS_MAIN,
+            AddressGenerator.ADDRESS_STATUS_PREVIOUS,
+            AddressGenerator.ADDRESS_STATUS_OTHER,
+            AddressGenerator.ADDRESS_MAIN,
+            AddressGenerator.ADDRESS_PREVIOUS,
+            AddressGenerator.ADDRESS_OTHER,
+            AddressGenerator.ADDRESS_DELETED
+        ).forEach(entityManager::persist)
     }
 }

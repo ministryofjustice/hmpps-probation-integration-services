@@ -6,7 +6,8 @@ data class Manager(
     val provider: Provider,
     val team: Team,
     val username: String?,
-    val email: String?
+    val email: String?,
+    val unallocated: Boolean
 )
 
 data class Name(val forename: String, val middleName: String?, val surname: String)

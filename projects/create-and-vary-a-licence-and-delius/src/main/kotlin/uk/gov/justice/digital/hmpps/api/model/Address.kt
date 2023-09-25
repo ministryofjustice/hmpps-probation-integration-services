@@ -1,0 +1,37 @@
+package uk.gov.justice.digital.hmpps.api.model
+
+import java.time.LocalDate
+
+data class Address(
+    val buildingName: String?,
+    val buildingNumber: String?,
+    val streetName: String?,
+    val district: String?,
+    val town: String?,
+    val county: String?,
+    val postcode: String?,
+    val from: LocalDate,
+    val to: LocalDate?
+) {
+    companion object {
+        fun from(
+            buildingName: String? = null,
+            buildingNumber: String? = null,
+            streetName: String? = null,
+            district: String? = null,
+            town: String? = null,
+            county: String? = null,
+            postcode: String? = null,
+            from: LocalDate,
+            to: LocalDate? = null
+        ): Address? =
+            if (
+                buildingName == null && buildingNumber == null && streetName == null &&
+                district == null && town == null && county == null && postcode == null
+            ) {
+                null
+            } else {
+                Address(buildingName, buildingNumber, streetName, district, town, county, postcode, from, to)
+            }
+    }
+}
