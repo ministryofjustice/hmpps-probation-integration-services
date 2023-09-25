@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.entity
 
 import jakarta.persistence.Column
-import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
@@ -9,17 +8,18 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
-import org.hibernate.type.YesNoConverter
+import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 @Immutable
 @Entity
 @Table(name = "offender_address")
-@Where(clause = "soft_deleted = 0 and end_date is null")
+@Where(clause = "soft_deleted = 0")
 class PersonAddress(
 
-    @Column(name = "offender_id")
-    val personId: Long,
+    @ManyToOne
+    @JoinColumn(name = "offender_id")
+    val person: Person,
 
     @ManyToOne
     @JoinColumn(name = "address_status_id")
@@ -28,7 +28,7 @@ class PersonAddress(
     @Column(name = "building_name")
     val buildingName: String?,
     @Column(name = "address_number")
-    val addressNumber: String?,
+    val buildingNumber: String?,
     @Column(name = "street_name")
     val streetName: String?,
     val district: String?,
@@ -37,8 +37,6 @@ class PersonAddress(
     val county: String?,
     val postcode: String?,
 
-    @Convert(converter = YesNoConverter::class)
-    val noFixedAbode: Boolean,
     val startDate: LocalDate,
     val endDate: LocalDate?,
 
@@ -65,3 +63,7 @@ class AddressStatus(
     @Column(name = "standard_reference_list_id")
     val id: Long
 )
+
+interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
+    fun findAllByPersonCrnOrderByStartDateDesc(crn: String): List<PersonAddress>
+}
