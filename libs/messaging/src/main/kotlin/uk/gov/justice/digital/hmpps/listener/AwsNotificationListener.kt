@@ -40,7 +40,7 @@ class AwsNotificationListener(
                     ObjectOptimisticLockingFailureException::class,
                     CannotCreateTransactionException::class,
                     CannotGetJdbcConnectionException::class,
-                    UnexpectedRollbackException::class,
+                    UnexpectedRollbackException::class
                 )
             ) { handler.handle(message) }
         } catch (e: Throwable) {
