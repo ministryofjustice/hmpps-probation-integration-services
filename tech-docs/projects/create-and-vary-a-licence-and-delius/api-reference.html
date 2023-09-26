@@ -101,6 +101,9 @@
         <a href="./api-reference.html#probation-case-crn-responsible-community-manager"><span>/probation-case/{crn}/responsible-community-manager</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#probation-case-crn-addresses"><span>/probation-case/{crn}/addresses</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
       </li>
     </ul>
@@ -202,12 +205,72 @@
     }
   },
   "username": "string",
-  "email": "string"
+  "email": "string",
+  "unallocated": "boolean"
 }</code></pre>
 
 </td>
 <td>
 <a href='#schema-manager'>Manager</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-case-crn-addresses">/probation-case/{crn}/addresses</h2>
+
+<h3 id="probation-case-crn-addresses-get">get</h3>
+
+
+
+
+<h4 id="probation-case-crn-addresses-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-case-crn-addresses-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
 </td>
 </tr>
 
@@ -362,6 +425,16 @@
 </td>
 </tr>
 
+<tr>
+<td>unallocated</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -475,6 +548,108 @@
 <td></td>
 <td>
   <a href='#schema-district'>District</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-address">Address</h3>
+
+
+<table class='schema-address'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>buildingName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>buildingNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>streetName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>district</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>town</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>county</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>postcode</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>from</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>to</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 

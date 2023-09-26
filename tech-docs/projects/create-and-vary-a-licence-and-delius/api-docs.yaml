@@ -18,7 +18,7 @@ paths:
     get:
       tags:
       - probation-case-resource
-      operationId: handle
+      operationId: findCommunityManager
       parameters:
       - name: crn
         in: path
@@ -32,6 +32,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Manager'
+  /probation-case/{crn}/addresses:
+    get:
+      tags:
+      - probation-case-resource
+      operationId: findAddresses
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Address'
 components:
   schemas:
     Borough:
@@ -63,6 +83,7 @@ components:
       - name
       - provider
       - team
+      - unallocated
       type: object
       properties:
         code:
@@ -77,6 +98,8 @@ components:
           type: string
         email:
           type: string
+        unallocated:
+          type: boolean
     Name:
       required:
       - forename
@@ -112,6 +135,31 @@ components:
           type: string
         district:
           $ref: '#/components/schemas/District'
+    Address:
+      required:
+      - from
+      type: object
+      properties:
+        buildingName:
+          type: string
+        buildingNumber:
+          type: string
+        streetName:
+          type: string
+        district:
+          type: string
+        town:
+          type: string
+        county:
+          type: string
+        postcode:
+          type: string
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
   securitySchemes:
     hmpps-auth-token:
       type: http
