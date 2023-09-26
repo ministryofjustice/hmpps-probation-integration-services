@@ -15,6 +15,7 @@ import org.springframework.jdbc.CannotGetJdbcConnectionException
 import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.stereotype.Component
 import org.springframework.transaction.CannotCreateTransactionException
+import org.springframework.transaction.UnexpectedRollbackException
 import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
 import uk.gov.justice.digital.hmpps.retry.retry
@@ -38,7 +39,8 @@ class AwsNotificationListener(
                     CannotAcquireLockException::class,
                     ObjectOptimisticLockingFailureException::class,
                     CannotCreateTransactionException::class,
-                    CannotGetJdbcConnectionException::class
+                    CannotGetJdbcConnectionException::class,
+                    UnexpectedRollbackException::class,
                 )
             ) { handler.handle(message) }
         } catch (e: Throwable) {
