@@ -83,7 +83,7 @@ jobs:
           repository: ministryofjustice/hmpps-probation-integration-e2e-tests
           ref: ${{ inputs.test-branch }}
       - name: Set auto-passing projects
-        run: echo 'auto-pass-projects=["manage-offences-and-delius"]' | tee -a "$GITHUB_ENV"
+        run: echo 'auto_pass_projects=["manage-offences-and-delius"]' | tee -a "$GITHUB_ENV"
       - name: Get tests to run - all tests
         if: inputs.projects == '' || inputs.projects == 'All'
         run: echo "projects=$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_ENV"
@@ -151,7 +151,7 @@ jobs:
             failed_projects=$(jq -r '.suites[].specs[] | select(.ok == false).file' results.json | xargs -n1 dirname | sort -u | jq --raw-input . | jq --slurp --compact-output .)
             passed_projects=$(jq --compact-output --null-input --argjson all "$all_projects" --argjson failed "$failed_projects" --argjson skipped "$skipped_projects" '{all: $all, failed: $failed, skipped: $skipped} | .all - .failed - .skipped')
           fi
-          echo "$auto-pass-projects" | jq -c '.[]' | while read app; do
+          echo "$auto_pass_projects" | jq -c '.[]' | while read app; do
             if [[ $(echo "$projects" | jq "any(.[]; . == $app)") == true ]]
             then
               passed_projects=$(echo "$passed_projects" | jq ". += [$app]")
