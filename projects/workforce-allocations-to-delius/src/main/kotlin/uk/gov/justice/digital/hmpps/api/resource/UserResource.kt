@@ -27,7 +27,7 @@ class UserResource(private val userAccessService: UserAccessService) {
             has a restriction in place
         """
     )
-    @RequestMapping("/{username}/access-controls", method = [RequestMethod.GET, RequestMethod.POST])
+    @RequestMapping("/{username}/access", method = [RequestMethod.GET, RequestMethod.POST])
     fun userAccessCheck(
         @PathVariable username: String,
         @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>
