@@ -636,10 +636,6 @@
                                                 <td title="OASYS_ASSESSMENT.CONTACT_ID references CONTACT.CONTACT_ID via SYS_C0021957"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.CONTACT_ID</span></td>
                                                 <td class="constraint detail">SYS_C0021957<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
-                                            <tr>
-                                                <td title="OASYS_ASSESSMENT.CONTACT_ID references CONTACT_REDEF.CONTACT_ID via TMP$$_SYS_C00219570"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.CONTACT_ID</span></td>
-                                                <td class="constraint detail">TMP$$_SYS_C00219570<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -784,6 +780,27 @@
                                     </td>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ASSESSMENT_STATUS_ID">ASSESSMENT_STATUS_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="OASYS_ASSESSMENT.ASSESSMENT_STATUS_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1401"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                <td class="constraint detail">R_1401<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -845,6 +862,12 @@
                                     <td>TIER_CODE_ID</td>
                                 </tr>
                                 <tr>
+                                    <td title='Indexed'>XIF12OASYS_ASSESSMENT</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>ASSESSMENT_STATUS_ID</td>
+                                </tr>
+                                <tr>
                                     <td title='Indexed'>XIF1OASYS_ASSESSMENT</td>
                                     <td>Performance</td>
                                     <td><span title='Ascending'>Asc</span></td>
@@ -897,20 +920,20 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>GREATER_THAN_09</td>
-                                    <td>OGRS_SCORE_2 &gt; 0</td>
+                                    <td>YES_OR_NO_420</td>
+                                    <td>REVIEW_TERMINATED IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>GREATER_THAN_08</td>
-                                    <td>OGRS_SCORE_1 &gt; 0</td>
+                                    <td>GREATER_THAN_09</td>
+                                    <td>OGRS_SCORE_2 &gt; 0</td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE59</td>
                                     <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO_420</td>
-                                    <td>REVIEW_TERMINATED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>GREATER_THAN_08</td>
+                                    <td>OGRS_SCORE_1 &gt; 0</td>
                                 </tr>
                                 </tbody>
                             </table>

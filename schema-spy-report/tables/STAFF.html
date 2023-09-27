@@ -156,10 +156,6 @@
                                                 <td class="constraint detail">SYS_C0021898<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="CONTACT_REDEF.STAFF_ID references STAFF.STAFF_ID via TMP$$_SYS_C00218980"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">TMP$$_SYS_C00218980<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
                                                 <td title="COURT_APPEARANCE.STAFF_ID references STAFF.STAFF_ID via SYS_C0021934"><a href='COURT_APPEARANCE.html'>COURT_APPEARANCE</a><span class='relatedKey'>.STAFF_ID</span></td>
                                                 <td class="constraint detail">SYS_C0021934<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -761,12 +757,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>PROVIDER_LOCATION_DATE_VALID7</td>
-                                    <td> (&#10;(START_DATE &lt;= END_DATE) OR (END_DATE IS NULL)&#10;) </td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE_925119186</td>
                                     <td>PRIVATE IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>PROVIDER_LOCATION_DATE_VALID7</td>
+                                    <td> (&#10;(START_DATE &lt;= END_DATE) OR (END_DATE IS NULL)&#10;) </td>
                                 </tr>
                                 </tbody>
                             </table>

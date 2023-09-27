@@ -26,8 +26,6 @@ digraph "twoDegreesRelationshipsDiagram" {
   "CASELOAD":"elipses":w -> "R_PSS_RQMNT_TYPE_MAIN_CATEGORY":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT":"elipses":w -> "OFFENDER":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "CONTACT":"elipses":w -> "PSS_RQMNT":"PSS_RQMNT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
-  "CONTACT_REDEF":"elipses":w -> "OFFENDER":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
-  "CONTACT_REDEF":"elipses":w -> "PSS_RQMNT":"PSS_RQMNT_ID":e [arrowhead=none dir=back arrowtail=crowodot];
   "CUSTODY":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "CUSTODY":"elipses":w -> "OFFENDER":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "OFFENDER":"elipses":w -> "R_STANDARD_REFERENCE_LIST":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -87,17 +85,6 @@ digraph "twoDegreesRelationshipsDiagram" {
     target="_top"
     tooltip="CONTACT"
   ];
-  "CONTACT_REDEF" [
-   label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
-      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>CONTACT_REDEF</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 26</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">165,869 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">14 &gt;</TD></TR>
-    </TABLE>>
-    URL="../../tables/CONTACT_REDEF.html"
-    target="_top"
-    tooltip="CONTACT_REDEF"
-  ];
   "CUSTODY" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
@@ -114,7 +101,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>OFFENDER</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 16</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">18,527 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">103 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 16</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">18,527 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">102 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/OFFENDER.html"
     target="_top"
@@ -131,7 +118,7 @@ digraph "twoDegreesRelationshipsDiagram" {
       <TR><TD PORT="PSS_RQMNT_TERM_REASON_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="175" HEIGHT="16">PSS_RQMNT_TERM_REASON_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="OFFENDER_ID" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="175" HEIGHT="16">OFFENDER_ID</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 5</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">746 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">6 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 5</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">746 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">5 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/PSS_RQMNT.html"
     target="_top"
@@ -211,7 +198,7 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>R_STANDARD_REFERENCE_LIST</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">15,391 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">311 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 1</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">15,391 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">312 &gt;</TD></TR>
     </TABLE>>
     URL="../../tables/R_STANDARD_REFERENCE_LIST.html"
     target="_top"

@@ -639,10 +639,6 @@
                                                 <td title="ASSESSMENT.ENFORCEABLE_CONTACT_ID references CONTACT.CONTACT_ID via R_1332"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.CONTACT_ID</span></td>
                                                 <td class="constraint detail">R_1332<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
-                                            <tr>
-                                                <td title="ASSESSMENT.ENFORCEABLE_CONTACT_ID references CONTACT_REDEF.CONTACT_ID via TMP$$_R_13320"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.CONTACT_ID</span></td>
-                                                <td class="constraint detail">TMP$$_R_13320<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -817,16 +813,16 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>YES_OR_NO_OR_UNKNOWN</td>
-                                    <td>OFFENDERS_AGREEMENT IN (&#39;N&#39;,&#39;Y&#39;,&#39;U&#39;)</td>
-                                </tr>
-                                <tr>
                                     <td>ASSESSMENT_TEAM_XOR</td>
                                     <td> (&#10;(TEAM_ID IS NOT NULL AND PROVIDER_TEAM_ID IS NULL)&#10;OR&#10;(TEAM_ID IS NULL AND PROVIDER_TEAM_ID IS NOT NULL)&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_ONLY_1291962580</td>
                                     <td>DOCUMENT_LINKED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_OR_UNKNOWN</td>
+                                    <td>OFFENDERS_AGREEMENT IN (&#39;N&#39;,&#39;Y&#39;,&#39;U&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE15</td>

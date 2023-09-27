@@ -50,12 +50,12 @@
 <text text-anchor="start" x="24.081" y="-32.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">CLIENT_BUSINESS_INTERACT_CODE</text>
 <polygon fill="none" stroke="#000000" points="222.5,-25 222.5,-47 301.5,-47 301.5,-25 222.5,-25"/>
 <text text-anchor="start" x="225.5" y="-32.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">varchar2[20]</text>
-<polygon fill="#ffffff" stroke="transparent" points="10.5,-6 10.5,-25 83.5,-25 83.5,-6 10.5,-6"/>
-<polygon fill="none" stroke="#000000" points="10.5,-6 10.5,-25 83.5,-25 83.5,-6 10.5,-6"/>
+<polygon fill="#ffffff" stroke="transparent" points="10.5,-6 10.5,-25 90.5,-25 90.5,-6 10.5,-6"/>
+<polygon fill="none" stroke="#000000" points="10.5,-6 10.5,-25 90.5,-25 90.5,-6 10.5,-6"/>
 <text text-anchor="start" x="13.5" y="-12.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">&lt; 0</text>
-<polygon fill="#ffffff" stroke="transparent" points="83.5,-6 83.5,-25 222.5,-25 222.5,-6 83.5,-6"/>
-<polygon fill="none" stroke="#000000" points="83.5,-6 83.5,-25 222.5,-25 222.5,-6 83.5,-6"/>
-<text text-anchor="start" x="138.1924" y="-12.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">37,275,190 rows</text>
+<polygon fill="#ffffff" stroke="transparent" points="90.5,-6 90.5,-25 222.5,-25 222.5,-6 90.5,-6"/>
+<polygon fill="none" stroke="#000000" points="90.5,-6 90.5,-25 222.5,-25 222.5,-6 90.5,-6"/>
+<text text-anchor="start" x="153.4791" y="-12.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">703,484 rows</text>
 <polygon fill="#ffffff" stroke="transparent" points="222.5,-6 222.5,-25 301.5,-25 301.5,-6 222.5,-6"/>
 <polygon fill="none" stroke="#000000" points="222.5,-6 222.5,-25 301.5,-25 301.5,-6 222.5,-6"/>
 <text text-anchor="start" x="282.9053" y="-12.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#000000">0 &gt;</text>

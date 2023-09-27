@@ -152,10 +152,6 @@
                                                 <td class="constraint detail">SYS_C0021901<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="CONTACT_REDEF.TEAM_ID references TEAM.TEAM_ID via TMP$$_SYS_C00219010"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.TEAM_ID</span></td>
-                                                <td class="constraint detail">TMP$$_SYS_C00219010<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
                                                 <td title="COURT_APPEARANCE.TEAM_ID references TEAM.TEAM_ID via SYS_C0021933"><a href='COURT_APPEARANCE.html'>COURT_APPEARANCE</a><span class='relatedKey'>.TEAM_ID</span></td>
                                                 <td class="constraint detail">SYS_C0021933<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -845,20 +841,20 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>PROVIDER_LOCATION_DATE_VALID8</td>
-                                    <td> (&#10;(START_DATE &lt;= END_DATE) OR (END_DATE IS NULL)&#10;) </td>
+                                    <td>YES_OR_NO_OR_UNKNOWN8</td>
+                                    <td>UNPAID_WORK_TEAM IN (&#39;N&#39;,&#39;Y&#39;,&#39;U&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE_871680176</td>
                                     <td>DESIGNATED_TRANSFER_TEAM IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>TRUE_OR_FALSE_924858398</td>
-                                    <td>PRIVATE IN (0, 1)</td>
+                                    <td>PROVIDER_LOCATION_DATE_VALID8</td>
+                                    <td> (&#10;(START_DATE &lt;= END_DATE) OR (END_DATE IS NULL)&#10;) </td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO_OR_UNKNOWN8</td>
-                                    <td>UNPAID_WORK_TEAM IN (&#39;N&#39;,&#39;Y&#39;,&#39;U&#39;)</td>
+                                    <td>TRUE_OR_FALSE_924858398</td>
+                                    <td>PRIVATE IN (0, 1)</td>
                                 </tr>
                                 </tbody>
                             </table>
