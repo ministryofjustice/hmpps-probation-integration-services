@@ -1,12 +1,10 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.CaseAccess
-import uk.gov.justice.digital.hmpps.api.model.UserAccess
-import uk.gov.justice.digital.hmpps.integrations.delius.user.access.PersonAccess
-import uk.gov.justice.digital.hmpps.integrations.delius.user.access.UserAccessRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.access.isExcluded
-import uk.gov.justice.digital.hmpps.integrations.delius.user.access.isRestricted
+import uk.gov.justice.digital.hmpps.entity.PersonAccess
+import uk.gov.justice.digital.hmpps.entity.UserAccessRepository
+import uk.gov.justice.digital.hmpps.entity.isExcluded
+import uk.gov.justice.digital.hmpps.entity.isRestricted
 
 @Service
 class UserAccessService(private val uar: UserAccessRepository) {
@@ -29,3 +27,13 @@ class UserAccessService(private val uar: UserAccessRepository) {
         }
     }
 }
+
+data class CaseAccess(
+    val crn: String,
+    val userExcluded: Boolean,
+    val userRestricted: Boolean,
+    val exclusionMessage: String? = null,
+    val restrictionMessage: String? = null
+)
+
+data class UserAccess(val access: List<CaseAccess>)
