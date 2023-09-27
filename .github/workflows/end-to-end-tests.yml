@@ -155,7 +155,6 @@ jobs:
             if [[ $(echo "$projects" | jq "any(.[]; . == $app)") == true ]]
             then
               passed_projects=$(echo "$passed_projects" | jq ". += [$app]")
-            echo "$passed_projects"
             fi
           done
           echo "skipped-projects=${skipped_projects:-'[]'}" | tee -a "$GITHUB_OUTPUT"
