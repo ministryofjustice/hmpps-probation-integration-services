@@ -8,6 +8,8 @@ import uk.gov.justice.digital.hmpps.api.model.UserAccess
 import uk.gov.justice.digital.hmpps.api.model.UserDetail
 import uk.gov.justice.digital.hmpps.integrations.delius.limitedaccess.entity.PersonAccess
 import uk.gov.justice.digital.hmpps.integrations.delius.limitedaccess.entity.UserAccessRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.limitedaccess.entity.isExcluded
+import uk.gov.justice.digital.hmpps.integrations.delius.limitedaccess.entity.isRestricted
 import uk.gov.justice.digital.hmpps.integrations.ldap.entity.LdapUserDetails
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 
@@ -29,10 +31,10 @@ class UserService(private val uar: UserAccessRepository, private val ldapTemplat
         } else {
             CaseAccess(
                 crn,
-                any { !it.exclusionMessage.isNullOrBlank() },
-                any { !it.restrictionMessage.isNullOrBlank() },
-                firstOrNull { !it.exclusionMessage.isNullOrBlank() }?.exclusionMessage,
-                firstOrNull { !it.restrictionMessage.isNullOrBlank() }?.restrictionMessage
+                any { it.isExcluded() },
+                any { it.isRestricted() },
+                firstOrNull { it.isExcluded() }?.exclusionMessage,
+                firstOrNull { it.isRestricted() }?.restrictionMessage
             )
         }
     }

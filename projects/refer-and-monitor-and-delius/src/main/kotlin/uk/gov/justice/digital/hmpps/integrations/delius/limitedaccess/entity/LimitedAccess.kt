@@ -71,3 +71,6 @@ interface PersonAccess {
     val exclusionMessage: String?
     val restrictionMessage: String?
 }
+
+fun PersonAccess.isExcluded() = !exclusionMessage.isNullOrBlank()
+fun PersonAccess.isRestricted() = !restrictionMessage.isNullOrBlank()

@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import uk.gov.justice.digital.hmpps.api.model.CaseAccess
 import uk.gov.justice.digital.hmpps.api.model.UserAccess
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
@@ -47,11 +48,12 @@ class LimitedAccessIntegrationTest {
                 )
         ).andReturn().response.contentAsString
 
-        val result = objectMapper.readValue<Map<String, UserAccess>>(res)
+        val result = objectMapper.readValue<UserAccess>(res)
         assertThat(
-            result[PersonGenerator.EXCLUSION.crn],
+            result.access.first { it.crn == PersonGenerator.EXCLUSION.crn },
             equalTo(
-                UserAccess(
+                CaseAccess(
+                    PersonGenerator.EXCLUSION.crn,
                     userExcluded = true,
                     userRestricted = false,
                     exclusionMessage = PersonGenerator.EXCLUSION.exclusionMessage
@@ -59,9 +61,10 @@ class LimitedAccessIntegrationTest {
             )
         )
         assertThat(
-            result[PersonGenerator.RESTRICTION.crn],
+            result.access.first { it.crn == PersonGenerator.RESTRICTION.crn },
             equalTo(
-                UserAccess(
+                CaseAccess(
+                    PersonGenerator.RESTRICTION.crn,
                     userExcluded = false,
                     userRestricted = true,
                     restrictionMessage = PersonGenerator.RESTRICTION.restrictionMessage
@@ -69,18 +72,20 @@ class LimitedAccessIntegrationTest {
             )
         )
         assertThat(
-            result[PersonGenerator.DEFAULT.crn],
+            result.access.first { it.crn == PersonGenerator.DEFAULT.crn },
             equalTo(
-                UserAccess(
+                CaseAccess(
+                    PersonGenerator.DEFAULT.crn,
                     userExcluded = false,
                     userRestricted = false
                 )
             )
         )
         assertThat(
-            result[PersonGenerator.RESTRICTION_EXCLUSION.crn],
+            result.access.first { it.crn == PersonGenerator.RESTRICTION_EXCLUSION.crn },
             equalTo(
-                UserAccess(
+                CaseAccess(
+                    PersonGenerator.RESTRICTION_EXCLUSION.crn,
                     userExcluded = true,
                     userRestricted = true,
                     exclusionMessage = PersonGenerator.RESTRICTION_EXCLUSION.exclusionMessage,
@@ -107,18 +112,18 @@ class LimitedAccessIntegrationTest {
                 )
         ).andReturn().response.contentAsString
 
-        val result = objectMapper.readValue<Map<String, UserAccess>>(res)
+        val result = objectMapper.readValue<UserAccess>(res)
         assertThat(
-            result[PersonGenerator.EXCLUSION.crn],
-            equalTo(UserAccess.NO_ACCESS_LIMITATIONS)
+            result.access.first { it.crn == PersonGenerator.EXCLUSION.crn },
+            equalTo(CaseAccess(PersonGenerator.EXCLUSION.crn, userExcluded = false, userRestricted = false))
         )
         assertThat(
-            result[PersonGenerator.RESTRICTION.crn],
-            equalTo(UserAccess.NO_ACCESS_LIMITATIONS)
+            result.access.first { it.crn == PersonGenerator.RESTRICTION.crn },
+            equalTo(CaseAccess(PersonGenerator.RESTRICTION.crn, userExcluded = false, userRestricted = false))
         )
         assertThat(
-            result[PersonGenerator.DEFAULT.crn],
-            equalTo(UserAccess.NO_ACCESS_LIMITATIONS)
+            result.access.first { it.crn == PersonGenerator.DEFAULT.crn },
+            equalTo(CaseAccess(PersonGenerator.DEFAULT.crn, userExcluded = false, userRestricted = false))
         )
     }
 }
