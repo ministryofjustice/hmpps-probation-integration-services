@@ -83,7 +83,7 @@ jobs:
           repository: ministryofjustice/hmpps-probation-integration-e2e-tests
           ref: ${{ inputs.test-branch }}
       - name: Set auto-passing projects
-        run: echo "auto-pass-projects=['manage-offences-and-delius']" | tee -a "$GITHUB_ENV"
+        run: echo 'auto-pass-projects=["manage-offences-and-delius"]' | tee -a "$GITHUB_ENV"
       - name: Get tests to run - all tests
         if: inputs.projects == '' || inputs.projects == 'All'
         run: echo "projects=$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_ENV"
