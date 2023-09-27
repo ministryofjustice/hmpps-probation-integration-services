@@ -18,6 +18,6 @@ servers:
 channels:
   hmpps-domain-events/manage-offences-and-delius/offence-changed:
     subscribe:
-      operationId: 
+      operationId: manage-offences.offence.changed
       message:
         $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/manage-offences/offence-changed.yml

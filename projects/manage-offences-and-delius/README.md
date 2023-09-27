@@ -4,6 +4,10 @@
 
 Inbound service that responds to events raised by the HMPPS Manage Offences service when there are changes to the set of [CJS Offence Codes](https://www.criminaljusticehub.org.uk/jargon-buster/cjs-offence-code/) managed by that service. Any changes to the set of offence codes is reflected in the Delius database. This ensures that Delius is up-to-date with the common set of offence codes used across HMPPS Digital services.
 
+## Context Map
+
+![Context Map](tech-docs/source/img/manage-offences-and-delius-context-map.svg)
+
 ## Interfaces
 
 ### Message Formats
