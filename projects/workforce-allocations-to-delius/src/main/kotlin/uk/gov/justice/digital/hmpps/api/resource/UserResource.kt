@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.service.UserAccessService
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 class UserResource(private val userAccessService: UserAccessService) {
 
     @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT', 'ROLE_WORKFORCE_DOCUMENT')")
