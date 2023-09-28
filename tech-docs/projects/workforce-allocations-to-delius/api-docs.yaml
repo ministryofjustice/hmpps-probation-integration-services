@@ -14,7 +14,7 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /user/{username}/access-controls:
+  /users/{username}/access:
     get:
       tags:
       - user-resource
@@ -40,8 +40,12 @@ paths:
         in: query
         required: true
         schema:
+          maxItems: 500
+          minItems: 1
           type: array
           items:
+            maxLength: 500
+            minLength: 1
             type: string
       responses:
         "200":
@@ -49,9 +53,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  $ref: '#/components/schemas/UserAccess'
+                $ref: '#/components/schemas/UserAccess'
     post:
       tags:
       - user-resource
@@ -77,8 +79,12 @@ paths:
         content:
           application/json:
             schema:
+              maxItems: 500
+              minItems: 1
               type: array
               items:
+                maxLength: 500
+                minLength: 1
                 type: string
         required: true
       responses:
@@ -87,9 +93,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  $ref: '#/components/schemas/UserAccess'
+                $ref: '#/components/schemas/UserAccess'
   /staff/{code}/active-cases:
     post:
       tags:
@@ -532,12 +536,15 @@ paths:
                 $ref: '#/components/schemas/AllocationCompletedResponse'
 components:
   schemas:
-    UserAccess:
+    CaseAccess:
       required:
+      - crn
       - userExcluded
       - userRestricted
       type: object
       properties:
+        crn:
+          type: string
         userExcluded:
           type: boolean
         userRestricted:
@@ -546,6 +553,15 @@ components:
           type: string
         restrictionMessage:
           type: string
+    UserAccess:
+      required:
+      - access
+      type: object
+      properties:
+        access:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseAccess'
     ActiveCasesResponse:
       required:
       - cases

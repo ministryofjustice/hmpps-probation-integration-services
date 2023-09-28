@@ -115,7 +115,7 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
-        <a href="./api-reference.html#user-username-access-controls"><span>/user/{username}/access-controls</span></a>
+        <a href="./api-reference.html#users-username-access"><span>/users/{username}/access</span></a>
       </li>
       <li>
         <a href="./api-reference.html#staff-code-active-cases"><span>/staff/{code}/active-cases</span></a>
@@ -199,9 +199,9 @@
 
 
 
-<h2 id="user-username-access-controls">/user/{username}/access-controls</h2>
+<h2 id="users-username-access">/users/{username}/access</h2>
 
-<h3 id="user-username-access-controls-get">get</h3>
+<h3 id="users-username-access-get">get</h3>
 
   <p><em>Data access restriction information for the combination of the Delius
             user and the supplied list of CRNs</em></p>
@@ -218,7 +218,7 @@
 
 
 
-<h4 id="user-username-access-controls-get-parameters">Parameters</h4>
+<h4 id="users-username-access-get-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -251,7 +251,7 @@
 
 
 
-<h4 id="user-username-access-controls-get-responses">Responses</h4>
+<h4 id="users-username-access-get-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -266,11 +266,20 @@
 
 
 <pre><code>{
+  "access": [
+    {
+      "crn": "string",
+      "userExcluded": "boolean",
+      "userRestricted": "boolean",
+      "exclusionMessage": "string",
+      "restrictionMessage": "string"
+    }
+  ]
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-useraccess'>UserAccess</a>
 </td>
 </tr>
 
@@ -278,7 +287,7 @@
 </table>
 
 
-<h3 id="user-username-access-controls-post">post</h3>
+<h3 id="users-username-access-post">post</h3>
 
   <p><em>Data access restriction information for the combination of the Delius
             user and the supplied list of CRNs</em></p>
@@ -295,7 +304,7 @@
 
 
 
-<h4 id="user-username-access-controls-post-parameters">Parameters</h4>
+<h4 id="users-username-access-post-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -318,7 +327,7 @@
 
 
 
-<h4 id="user-username-access-controls-post-responses">Responses</h4>
+<h4 id="users-username-access-post-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -333,11 +342,20 @@
 
 
 <pre><code>{
+  "access": [
+    {
+      "crn": "string",
+      "userExcluded": "boolean",
+      "userRestricted": "boolean",
+      "exclusionMessage": "string",
+      "restrictionMessage": "string"
+    }
+  ]
 }</code></pre>
 
 </td>
 <td>
-
+<a href='#schema-useraccess'>UserAccess</a>
 </td>
 </tr>
 
@@ -1844,14 +1862,24 @@
 
 
 <h2 id="schemas">Schemas</h2>
-<h3 id="schema-useraccess">UserAccess</h3>
+<h3 id="schema-caseaccess">CaseAccess</h3>
 
 
-<table class='schema-useraccess'>
+<table class='schema-caseaccess'>
 <thead>
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
 
 <tr>
 <td>userExcluded</td>
@@ -1890,6 +1918,28 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-useraccess">UserAccess</h3>
+
+
+<table class='schema-useraccess'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>access</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-caseaccess'>CaseAccess</a>
 </td>
 </tr>
 
