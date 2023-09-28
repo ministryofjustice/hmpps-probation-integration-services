@@ -3,10 +3,10 @@ package uk.gov.justice.digital.hmpps.api.resource
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.constraints.Size
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.service.UserAccessService
 
@@ -27,9 +27,9 @@ class UserResource(private val userAccessService: UserAccessService) {
             has a restriction in place
         """
     )
-    @RequestMapping("/{username}/access", method = [RequestMethod.GET, RequestMethod.POST])
-    fun userAccessCheck(
-        @PathVariable username: String,
-        @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>
-    ) = userAccessService.userAccessFor(username, crns)
+    @RequestMapping("/limited-access", method = [RequestMethod.GET, RequestMethod.POST])
+    fun limitedAccessCheck(
+        @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>,
+        @RequestParam(required = false) username: String?
+    ) = username?.let { userAccessService.userAccessFor(it, crns) } ?: userAccessService.checkLimitedAccessFor(crns)
 }
