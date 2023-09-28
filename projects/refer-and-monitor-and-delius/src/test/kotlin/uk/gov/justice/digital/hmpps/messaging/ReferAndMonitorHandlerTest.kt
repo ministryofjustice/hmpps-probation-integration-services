@@ -144,7 +144,7 @@ internal class ReferAndMonitorHandlerTest {
             1,
             occurredAt = ZonedDateTime.now(),
             detailUrl = "DetailUrl",
-            additionalInformation = AdditionalInformation(mutableMapOf("referralId" to UUID.randomUUID().toString())),
+            nullableAdditionalInformation = AdditionalInformation(mutableMapOf("referralId" to UUID.randomUUID().toString())),
             personReference = PersonReference(listOf(PersonIdentifier("CRN", "T123456")))
         ),
         MessageAttributes(SessionAppointmentSubmitted.name)
