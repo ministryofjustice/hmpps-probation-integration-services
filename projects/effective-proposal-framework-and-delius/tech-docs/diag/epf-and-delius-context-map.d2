@@ -1,0 +1,42 @@
+
+style {
+  fill: "#ffffff"
+}
+
+context-epf: Effective Proposals Framework Context {
+
+  entities: Entities {
+    grid-columns: 3
+    person-on-probation: Person on Probation
+    sentence: Sentence
+    provider: Responsible Provider
+  }
+
+  interface: EPF {
+    type: Customer
+  }
+}
+
+context-delius: Delius Context {
+  link: https://github.com/ministryofjustice/delius
+  style.stroke-width: 8
+
+  entities: Entities {
+    grid-columns: 3
+    event: Event
+    disposal: Disposal
+    responsible-officer: Responsible Officer
+    person-on-probation: Person on Probation
+    probation-area: Probation Area
+  }
+  interface: Effective Proposal Framework and Delius {
+    link: https://github.com/ministryofjustice/hmpps-probation-integration-services/tree/main/projects/effective-proposal-framework-and-delius
+    type: Supplier
+  }
+}
+
+context-delius.interface--context-epf.interface: Upstream\n\n\nDownstream
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2
