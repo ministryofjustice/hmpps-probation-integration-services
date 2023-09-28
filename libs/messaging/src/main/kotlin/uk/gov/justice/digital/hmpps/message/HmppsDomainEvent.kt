@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.message
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import java.time.ZonedDateTime
@@ -10,9 +11,11 @@ data class HmppsDomainEvent(
     val detailUrl: String? = null,
     val occurredAt: ZonedDateTime = ZonedDateTime.now(),
     val description: String? = null,
-    val additionalInformation: AdditionalInformation = AdditionalInformation(),
+    @JsonAlias("additionalInformation") private val nullableAdditionalInformation: AdditionalInformation? = AdditionalInformation(),
     val personReference: PersonReference = PersonReference()
-)
+) {
+    val additionalInformation = nullableAdditionalInformation ?: AdditionalInformation()
+}
 
 data class PersonReference(val identifiers: List<PersonIdentifier> = listOf()) {
     fun findCrn() = get("CRN")
@@ -30,6 +33,7 @@ data class AdditionalInformation(
     operator fun set(key: String, value: Any) {
         info[key] = value
     }
+
     fun containsKey(key: String): Boolean {
         return info.containsKey(key)
     }

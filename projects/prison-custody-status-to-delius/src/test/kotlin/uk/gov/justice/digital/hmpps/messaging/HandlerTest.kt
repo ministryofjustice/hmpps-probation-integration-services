@@ -72,7 +72,7 @@ internal class HandlerTest {
             1,
             "https//detail/url",
             ZonedDateTime.now(),
-            additionalInformation = AdditionalInformation(
+            nullableAdditionalInformation = AdditionalInformation(
                 mutableMapOf(
                     "nomsNumber" to "Z0001ZZ",
                     "prisonId" to "ZZZ",
@@ -249,7 +249,7 @@ internal class HandlerTest {
         whenever(featureFlags.enabled("messages_released_hospital")).thenReturn(false)
         val hospitalNotification = notification.copy(
             message = notification.message.copy(
-                additionalInformation = AdditionalInformation(
+                nullableAdditionalInformation = AdditionalInformation(
                     mutableMapOf(
                         "nomsNumber" to "Z0001ZZ",
                         "prisonId" to "OUT",

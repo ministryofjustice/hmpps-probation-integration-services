@@ -49,7 +49,7 @@ internal class FeedbackSubmittedTest {
         DomainEventType.InitialAppointmentSubmitted.name,
         1,
         "https://interventions-service/referral/$referralId/supplier-assessment",
-        additionalInformation = AdditionalInformation(
+        nullableAdditionalInformation = AdditionalInformation(
             mutableMapOf(
                 "serviceUserCRN" to crn,
                 "referralId" to referralId.toString(),

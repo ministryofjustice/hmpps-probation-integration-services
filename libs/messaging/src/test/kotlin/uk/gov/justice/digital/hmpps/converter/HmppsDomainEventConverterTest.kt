@@ -88,7 +88,7 @@ class HmppsDomainEventConverterTest {
             message,
             equalTo(
                 """
-                |{"Message":"{\"eventType\":\"message.event.type\",\"version\":1,\"detailUrl\":\"http://detail/url\",\"occurredAt\":\"2022-07-27T15:22:08.509+01:00\",\"description\":\"A description for the event\",\"additionalInformation\":{\"specialId\":\"6aafe304-861f-4479-8380-fec5f90f6d17\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"X123456\"}]}}",
+                |{"Message":"{\"eventType\":\"message.event.type\",\"version\":1,\"detailUrl\":\"http://detail/url\",\"occurredAt\":\"2022-07-27T15:22:08.509+01:00\",\"description\":\"A description for the event\",\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"X123456\"}]},\"additionalInformation\":{\"specialId\":\"6aafe304-861f-4479-8380-fec5f90f6d17\"}}",
                 |"MessageAttributes":{"eventType":{"Type":"String","Value":"attribute.event.type"}},"MessageId":"${hmppsEvent.id}"}
                 """.trimMargin().replace("\\n".toRegex(), "")
             )
