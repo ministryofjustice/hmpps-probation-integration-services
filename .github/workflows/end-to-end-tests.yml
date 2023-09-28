@@ -68,6 +68,8 @@ on:
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
+env:
+  auto_pass_projects: '["manage-offences-and-delius"]'
 
 jobs:
   test:
@@ -148,6 +150,8 @@ jobs:
             skipped_projects=$(echo "$all_projects" | jq -r '.[]' | while read -r project; do if [ ! -d "tests/$project" ]; then echo $project; fi; done | jq --raw-input . | jq --slurp --compact-output .)
             failed_projects=$(jq -r '.suites[].specs[] | select(.ok == false).file' results.json | xargs -n1 dirname | sort -u | jq --raw-input . | jq --slurp --compact-output .)
             passed_projects=$(jq --compact-output --null-input --argjson all "$all_projects" --argjson failed "$failed_projects" --argjson skipped "$skipped_projects" '{all: $all, failed: $failed, skipped: $skipped} | .all - .failed - .skipped')
+            merged=$(echo "$auto_pass_projects $passed_projects" | jq -s 'add')
+            passed_projects=$(echo "$merged $projects" | jq -sc '.[0] - (.[0] - .[1])')
           fi
           echo "skipped-projects=${skipped_projects:-'[]'}" | tee -a "$GITHUB_OUTPUT"
           echo "failed-projects=${failed_projects:-'[]'}" | tee -a "$GITHUB_OUTPUT"
