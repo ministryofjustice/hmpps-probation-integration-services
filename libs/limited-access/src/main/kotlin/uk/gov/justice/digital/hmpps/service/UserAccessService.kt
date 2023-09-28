@@ -13,6 +13,11 @@ class UserAccessService(private val uar: UserAccessRepository) {
         return UserAccess(crns.map { limitations[it].combined(it) })
     }
 
+    fun checkLimitedAccessFor(crns: List<String>): UserAccess {
+        val limitations: Map<String, List<PersonAccess>> = uar.checkLimitedAccessFor(crns).groupBy { it.crn }
+        return UserAccess(crns.map { limitations[it].combined(it) })
+    }
+
     private fun List<PersonAccess>?.combined(crn: String): CaseAccess {
         return if (this == null) {
             CaseAccess(crn, userExcluded = false, userRestricted = false)
