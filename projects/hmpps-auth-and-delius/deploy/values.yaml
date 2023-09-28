@@ -1,0 +1,22 @@
+# Common values
+generic-service:
+  nameOverride: hmpps-auth-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/hmpps-auth-and-delius
+
+  ingress:
+    tlsSecretName: hmpps-auth-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    hmpps-auth-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    hmpps-auth-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: hmpps-auth-and-delius
+
