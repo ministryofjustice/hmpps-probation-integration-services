@@ -11,7 +11,7 @@ used by probation practitioners as part of the probation case history
 
 ## Context Map
 
-![Context Map](tech-docs/source/img/prison-case-notes-to-probation-context-map.png)
+![Context Map](tech-docs/source/img/prison-case-notes-to-probation-context-map.svg)
 
 ## Interfaces
 
