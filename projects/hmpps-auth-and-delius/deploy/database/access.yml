@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /hmpps-auth-and-delius/db-username
+    password_key: /hmpps-auth-and-delius/db-password
+
+  audit:
+    username: HmppsAuthAndDelius
+    forename: Probation Integration # TODO change this to something meaningful for your service
+    surname: Service
