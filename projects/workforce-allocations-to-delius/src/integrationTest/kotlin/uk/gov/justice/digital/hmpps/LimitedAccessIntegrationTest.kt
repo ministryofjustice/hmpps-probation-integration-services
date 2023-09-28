@@ -33,7 +33,7 @@ class LimitedAccessIntegrationTest {
     @Test
     fun `limited access controls are correctly returned`() {
         val res = mockMvc.perform(
-            MockMvcRequestBuilders.post("/users/${UserGenerator.LIMITED_ACCESS_USER.username}/access")
+            MockMvcRequestBuilders.post("/users/limited-access?username=${UserGenerator.LIMITED_ACCESS_USER.username}")
                 .withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
@@ -98,7 +98,7 @@ class LimitedAccessIntegrationTest {
     @Test
     fun `limited access controls do not prevent legitimate access`() {
         val res = mockMvc.perform(
-            MockMvcRequestBuilders.post("/users/${UserGenerator.AUDIT_USER.username}/access")
+            MockMvcRequestBuilders.post("/users/limited-access?username=${UserGenerator.AUDIT_USER.username}")
                 .withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(

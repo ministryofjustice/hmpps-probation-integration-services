@@ -21,15 +21,30 @@ internal class UserAccessServiceTest {
 
     @Test
     fun `user limited access is correctly returned`() {
-        givenLimitedAccessResults()
+        val pas = givenLimitedAccessResults()
+        whenever(uar.getAccessFor("john-smith", listOf("E123456", "R123456", "B123456", "N123456")))
+            .thenReturn(pas)
+
         val res = userAccessService.userAccessFor("john-smith", listOf("E123456", "R123456", "B123456", "N123456"))
 
         assertThat(res.access.size, equalTo(4))
         assertThat(res, equalTo(userAccess()))
     }
 
-    private fun givenLimitedAccessResults() {
-        val personAccesses = listOf(
+    @Test
+    fun `limited access is correctly returned`() {
+        val pas = givenLimitedAccessResults()
+        whenever(uar.checkLimitedAccessFor(listOf("E123456", "R123456", "B123456", "N123456")))
+            .thenReturn(pas)
+
+        val res = userAccessService.checkLimitedAccessFor(listOf("E123456", "R123456", "B123456", "N123456"))
+
+        assertThat(res.access.size, equalTo(4))
+        assertThat(res, equalTo(userAccess()))
+    }
+
+    private fun givenLimitedAccessResults() =
+        listOf(
             object : PersonAccess {
                 override val crn = "E123456"
                 override val exclusionMessage = "This person has an exclusion"
@@ -51,10 +66,6 @@ internal class UserAccessServiceTest {
                 override val restrictionMessage = null
             }
         )
-
-        whenever(uar.getAccessFor("john-smith", listOf("E123456", "R123456", "B123456", "N123456")))
-            .thenReturn(personAccesses)
-    }
 
     private fun userAccess(): UserAccess =
         UserAccess(

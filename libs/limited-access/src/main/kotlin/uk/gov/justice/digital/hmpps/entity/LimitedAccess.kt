@@ -94,6 +94,19 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
     """
     )
     fun getAccessFor(username: String, crns: List<String>): List<PersonAccess>
+
+    @Query(
+        """
+        select p.crn as crn, '' as exclusionMessage, p.restrictionMessage as restrictionMessage
+        from LimitedAccessPerson p where p.crn in :crns
+        and exists (select r from Restriction r where r.person.id = p.id and (r.end is null or r.end > current_date ))
+        union
+        select p.crn as crn, p.exclusionMessage as exclusionMessage, '' as restrictionMessage
+        from LimitedAccessPerson p where p.crn in :crns
+        and exists (select e from Exclusion e where e.person.id = p.id and (e.end is null or e.end > current_date ))
+    """
+    )
+    fun checkLimitedAccessFor(crns: List<String>): List<PersonAccess>
 }
 
 interface PersonAccess {
