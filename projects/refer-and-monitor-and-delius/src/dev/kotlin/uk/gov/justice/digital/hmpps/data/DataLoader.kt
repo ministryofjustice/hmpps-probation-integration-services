@@ -20,6 +20,8 @@ import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.entity.Exclusion
+import uk.gov.justice.digital.hmpps.entity.Restriction
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -30,8 +32,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.DisposalTyp
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.MainOffence
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Offence
-import uk.gov.justice.digital.hmpps.integrations.delius.limitedaccess.entity.Exclusion
-import uk.gov.justice.digital.hmpps.integrations.delius.limitedaccess.entity.Restriction
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Disability
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonAddressRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonDetailRepository

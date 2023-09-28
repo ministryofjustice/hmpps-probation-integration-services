@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.entity.Exclusion
+import uk.gov.justice.digital.hmpps.entity.LimitedAccessPerson
+import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
+import uk.gov.justice.digital.hmpps.entity.Restriction
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Exclusion
-import uk.gov.justice.digital.hmpps.integrations.delius.user.access.entity.Restriction
 import uk.gov.justice.digital.hmpps.user.AuditUser
 import java.time.LocalDateTime
 
@@ -15,12 +17,15 @@ object LimitedAccessGenerator {
         person: Person = PersonGenerator.EXCLUSION,
         endDateTime: LocalDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Exclusion(id, person, user, endDateTime)
+    ) = Exclusion(person.limitedAccess(), user.limitedAccess(), endDateTime, id)
 
     fun generateRestriction(
         user: AuditUser = UserGenerator.AUDIT_USER,
         person: Person = PersonGenerator.RESTRICTION,
         endDateTime: LocalDateTime? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Restriction(id, person, user, endDateTime)
+    ) = Restriction(person.limitedAccess(), user.limitedAccess(), endDateTime, id)
+
+    private fun Person.limitedAccess() = LimitedAccessPerson(crn, exclusionMessage, restrictionMessage, id)
+    private fun AuditUser.limitedAccess() = LimitedAccessUser(username, id)
 }

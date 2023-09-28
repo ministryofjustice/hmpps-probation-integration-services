@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.api.model.ManagedCases
-import uk.gov.justice.digital.hmpps.api.model.UserAccess
 import uk.gov.justice.digital.hmpps.api.model.UserDetail
 import uk.gov.justice.digital.hmpps.service.ManagerService
+import uk.gov.justice.digital.hmpps.service.UserAccess
 import uk.gov.justice.digital.hmpps.service.UserService
 
 @Validated

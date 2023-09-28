@@ -18,15 +18,15 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.api.model.CaseAccess
 import uk.gov.justice.digital.hmpps.api.model.CaseIdentifier
 import uk.gov.justice.digital.hmpps.api.model.ManagedCases
 import uk.gov.justice.digital.hmpps.api.model.Name
-import uk.gov.justice.digital.hmpps.api.model.UserAccess
 import uk.gov.justice.digital.hmpps.api.model.UserDetail
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.service.CaseAccess
+import uk.gov.justice.digital.hmpps.service.UserAccess
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
