@@ -14,7 +14,7 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /users/{username}/access:
+  /users/limited-access:
     get:
       tags:
       - user-resource
@@ -29,13 +29,8 @@ paths:
         \ of reasons related to the case supervision and clients should use\n    \
         \        the restriction information to mask data access from any identified\
         \ user that\n            has a restriction in place\n        "
-      operationId: userAccessCheck
+      operationId: limitedAccessCheck
       parameters:
-      - name: username
-        in: path
-        required: true
-        schema:
-          type: string
       - name: crns
         in: query
         required: true
@@ -47,6 +42,11 @@ paths:
             maxLength: 500
             minLength: 1
             type: string
+      - name: username
+        in: query
+        required: false
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -68,11 +68,11 @@ paths:
         \ of reasons related to the case supervision and clients should use\n    \
         \        the restriction information to mask data access from any identified\
         \ user that\n            has a restriction in place\n        "
-      operationId: userAccessCheck_1
+      operationId: limitedAccessCheck_1
       parameters:
       - name: username
-        in: path
-        required: true
+        in: query
+        required: false
         schema:
           type: string
       requestBody:
