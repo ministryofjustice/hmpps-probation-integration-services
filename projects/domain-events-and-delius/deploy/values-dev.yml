@@ -6,7 +6,7 @@ generic-service:
     enabled: true
 
   env:
-    DOMAIN_EVENTS_BASE_URL: domain-events-and-delius-dev.hmpps.service.justice.gov.uk
+    DOMAIN_EVENTS_BASE_URL: https://domain-events-and-delius-dev.hmpps.service.justice.gov.uk
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-dev.hmpps.service.justice.gov.uk/auth/issuer
     SENTRY_ENVIRONMENT: dev
