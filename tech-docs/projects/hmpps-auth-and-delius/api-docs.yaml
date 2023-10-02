@@ -18,7 +18,7 @@ paths:
     post:
       tags:
       - User details
-      description: Change a Delius user's password. Requires ROLE_DELIUS_USER_AUTH.
+      description: Change a Delius user's password. Requires `ROLE_DELIUS_USER_AUTH`.
       operationId: changePassword
       parameters:
       - name: username
@@ -34,12 +34,14 @@ paths:
         required: true
       responses:
         "200":
-          description: OK
+          description: Password changed successfully
+        "404":
+          description: User not found
   /authenticate:
     post:
       tags:
       - Authentication
-      description: Authenticate a Delius username and password. Requires ROLE_DELIUS_USER_AUTH.
+      description: Authenticate a Delius username and password. Requires `ROLE_DELIUS_USER_AUTH`.
       operationId: authenticate
       requestBody:
         content:
@@ -48,17 +50,23 @@ paths:
               $ref: '#/components/schemas/AuthenticationRequest'
         required: true
       responses:
-        "200":
-          description: OK
+        "401":
+          description: Authentication failure
           content:
-            application/json:
-              schema:
-                type: string
+            text/plain: {}
+        "200":
+          description: User authenticated
+          content:
+            text/plain: {}
+        "403":
+          description: "Client role required: `ROLE_DELIUS_USER_AUTH`"
+          content:
+            text/plain: {}
   /user:
     get:
       tags:
       - User details
-      description: Get users by email. Requires ROLE_DELIUS_USER_AUTH.
+      description: Get users by email. Requires `ROLE_DELIUS_USER_AUTH`.
       operationId: getUsersByEmail
       parameters:
       - name: email
@@ -79,7 +87,7 @@ paths:
     get:
       tags:
       - User details
-      description: Get user details. Requires ROLE_DELIUS_USER_AUTH.
+      description: Get user details. Requires `ROLE_DELIUS_USER_AUTH`.
       operationId: getUserDetails
       parameters:
       - name: username

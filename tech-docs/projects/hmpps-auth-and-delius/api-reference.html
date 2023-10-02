@@ -148,7 +148,7 @@
 <h3 id="user-username-password-post">post</h3>
 
 
-  <p>Change a Delius user&rsquo;s password. Requires ROLE<em>DELIUS</em>USER_AUTH.</p>
+  <p>Change a Delius user&rsquo;s password. Requires <code>ROLE_DELIUS_USER_AUTH</code>.</p>
 
 
 
@@ -186,7 +186,20 @@
 <tr>
 <td>200</td>
 <td>
-<p>OK</p>
+<p>Password changed successfully</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>404</td>
+<td>
+<p>User not found</p>
 
 
 
@@ -207,7 +220,7 @@
 <h3 id="authenticate-post">post</h3>
 
 
-  <p>Authenticate a Delius username and password. Requires ROLE<em>DELIUS</em>USER_AUTH.</p>
+  <p>Authenticate a Delius username and password. Requires <code>ROLE_DELIUS_USER_AUTH</code>.</p>
 
 
 
@@ -223,14 +236,37 @@
 <tbody>
 
 <tr>
+<td>401</td>
+<td>
+<p>Authentication failure</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
 <td>200</td>
 <td>
-<p>OK</p>
+<p>User authenticated</p>
 
 
 
-<pre><code>{
-}</code></pre>
+</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>403</td>
+<td>
+<p>Client role required: <code>ROLE_DELIUS_USER_AUTH</code></p>
+
+
 
 </td>
 <td>
@@ -249,7 +285,7 @@
 <h3 id="user-get">get</h3>
 
 
-  <p>Get users by email. Requires ROLE<em>DELIUS</em>USER_AUTH.</p>
+  <p>Get users by email. Requires <code>ROLE_DELIUS_USER_AUTH</code>.</p>
 
 
 
@@ -311,7 +347,7 @@
 <h3 id="user-username-get">get</h3>
 
 
-  <p>Get user details. Requires ROLE<em>DELIUS</em>USER_AUTH.</p>
+  <p>Get user details. Requires <code>ROLE_DELIUS_USER_AUTH</code>.</p>
 
 
 
