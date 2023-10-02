@@ -25,7 +25,7 @@ class AuthenticationController(private val ldapTemplate: LdapTemplate) {
 
     @PostMapping("/authenticate")
     @PreAuthorize("hasRole('ROLE_DELIUS_USER_AUTH')")
-    @Operation(description = "Authenticate a Delius username and password. Requires ROLE_DELIUS_USER_AUTH.")
+    @Operation(description = "Authenticate a Delius username and password. Requires `ROLE_DELIUS_USER_AUTH`.")
     fun authenticate(
         @Valid @RequestBody
         request: AuthenticationRequest

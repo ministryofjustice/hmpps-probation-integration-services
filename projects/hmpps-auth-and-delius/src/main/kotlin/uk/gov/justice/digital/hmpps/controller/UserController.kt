@@ -22,18 +22,18 @@ import uk.gov.justice.digital.hmpps.service.UserService
 class UserController(private val userService: UserService) {
     @GetMapping(value = ["/user/{username}"])
     @PreAuthorize("hasAnyRole('ROLE_DELIUS_USER_AUTH')")
-    @Operation(description = "Get user details. Requires ROLE_DELIUS_USER_AUTH.")
+    @Operation(description = "Get user details. Requires `ROLE_DELIUS_USER_AUTH`.")
     fun getUserDetails(@PathVariable username: String) = userService.getUserDetails(username)
         ?: throw NotFoundException("User", "username", username)
 
     @GetMapping(value = ["/user"])
     @PreAuthorize("hasAnyRole('ROLE_DELIUS_USER_AUTH')")
-    @Operation(description = "Get users by email. Requires ROLE_DELIUS_USER_AUTH.")
+    @Operation(description = "Get users by email. Requires `ROLE_DELIUS_USER_AUTH`.")
     fun getUsersByEmail(@RequestParam email: String) = userService.getUsersByEmail(email)
 
     @PostMapping("/user/{username}/password")
     @PreAuthorize("hasRole('ROLE_DELIUS_USER_AUTH')")
-    @Operation(description = "Change a Delius user's password. Requires ROLE_DELIUS_USER_AUTH.")
+    @Operation(description = "Change a Delius user's password. Requires `ROLE_DELIUS_USER_AUTH`.")
     fun changePassword(
         @PathVariable("username") @NotBlank username: String,
         @Valid @RequestBody
