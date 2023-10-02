@@ -1,6 +1,9 @@
 package uk.gov.justice.digital.hmpps.controller
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
@@ -26,6 +29,13 @@ class AuthenticationController(private val ldapTemplate: LdapTemplate) {
     @PostMapping("/authenticate")
     @PreAuthorize("hasRole('ROLE_DELIUS_USER_AUTH')")
     @Operation(description = "Authenticate a Delius username and password. Requires `ROLE_DELIUS_USER_AUTH`.")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "User authenticated", content = [Content(mediaType = "text/plain")]),
+            ApiResponse(responseCode = "401", description = "Authentication failure", content = [Content(mediaType = "text/plain")]),
+            ApiResponse(responseCode = "403", description = "Client role required: `ROLE_DELIUS_USER_AUTH`", content = [Content(mediaType = "text/plain")])
+        ]
+    )
     fun authenticate(
         @Valid @RequestBody
         request: AuthenticationRequest
