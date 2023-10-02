@@ -1,0 +1,39 @@
+package uk.gov.justice.digital.hmpps.controller
+
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
+import org.slf4j.LoggerFactory
+import org.springframework.http.ResponseEntity
+import org.springframework.ldap.core.LdapTemplate
+import org.springframework.ldap.query.LdapQueryBuilder.query
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.ldap.byUsername
+import uk.gov.justice.digital.hmpps.model.AuthenticationRequest
+
+@Validated
+@RestController
+@Tag(name = "Authentication")
+class AuthenticationController(private val ldapTemplate: LdapTemplate) {
+    companion object {
+        private val log = LoggerFactory.getLogger(this::class.java)
+    }
+
+    @PostMapping("/authenticate")
+    @PreAuthorize("hasRole('ROLE_DELIUS_USER_AUTH')")
+    @Operation(description = "Authenticate a Delius username and password. Requires ROLE_DELIUS_USER_AUTH.")
+    fun authenticate(
+        @Valid @RequestBody
+        request: AuthenticationRequest
+    ) = try {
+        ldapTemplate.authenticate(query().byUsername(request.username), request.password)
+        ResponseEntity.ok().build()
+    } catch (e: Exception) {
+        log.error("Authentication failed for '${request.username}'", e)
+        ResponseEntity.status(401).body("Authentication failed for '${request.username}'")
+    }
+}
