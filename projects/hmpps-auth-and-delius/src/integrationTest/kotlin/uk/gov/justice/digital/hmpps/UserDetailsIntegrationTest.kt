@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.data.generator.UserGenerator.TEST_USER
 import uk.gov.justice.digital.hmpps.model.UserDetails
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 
@@ -39,6 +40,7 @@ internal class UserDetailsIntegrationTest {
             .andExpect(status().isOk)
             .andExpectJson(
                 UserDetails(
+                    userId = TEST_USER.id,
                     username = "test.user",
                     firstName = "Test",
                     surname = "User",
@@ -56,6 +58,7 @@ internal class UserDetailsIntegrationTest {
             .andExpectJson(
                 listOf(
                     UserDetails(
+                        userId = TEST_USER.id,
                         username = "test.user",
                         firstName = "Test",
                         surname = "User",
