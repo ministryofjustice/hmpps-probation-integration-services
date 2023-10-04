@@ -21,6 +21,8 @@ class Team(
     @Column(name = "code", columnDefinition = "char(6)")
     val code: String,
 
+    val description: String,
+
     @ManyToOne
     @JoinColumn(name = "probation_area_id", nullable = false)
     val probationArea: ProbationArea,

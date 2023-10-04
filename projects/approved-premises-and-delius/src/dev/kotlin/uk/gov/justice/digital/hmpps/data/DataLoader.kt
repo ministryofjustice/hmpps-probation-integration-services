@@ -78,7 +78,8 @@ class DataLoader(
     private val transferReasonRepository: TransferReasonRepository,
     private val caseloadRepository: CaseloadRepository,
     private val registrationRepository: RegistrationRepository,
-    private val referralRepository: ReferralRepository
+    private val referralRepository: ReferralRepository,
+    private val probationCaseDataLoader: ProbationCaseDataLoader
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -179,6 +180,8 @@ class DataLoader(
         caseloadRepository.save(CaseloadGenerator.generate(person, TeamGenerator.UNALLOCATED))
 
         referralRepository.save(ReferralGenerator.EXISTING_REFERRAL)
+
+        probationCaseDataLoader.loadData()
     }
 }
 
