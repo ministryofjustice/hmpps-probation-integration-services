@@ -1,0 +1,94 @@
+package uk.gov.justice.digital.hmpps.data
+
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.data.generator.asPerson
+import uk.gov.justice.digital.hmpps.data.generator.asPersonManager
+import uk.gov.justice.digital.hmpps.data.generator.asTeam
+import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCaseRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.AdditionalOffence
+import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.MainOffenceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.Offence
+import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegisterType
+import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegistrationRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
+import java.time.LocalDate
+
+@Component
+class ProbationCaseDataLoader(
+    private val probationAreaRepository: ProbationAreaRepository,
+    private val teamRepository: TeamRepository,
+    private val staffRepository: StaffRepository,
+    private val personManagerRepository: PersonManagerRepository,
+    private val probationCaseRepository: ProbationCaseRepository,
+    private val registrationRepository: RegistrationRepository,
+    private val eventRepository: EventRepository,
+    private val offenceRepository: OffenceRepository,
+    private val mainOffenceRepository: MainOffenceRepository,
+    private val additionalOffenceRepository: AdditionalOffenceRepository
+) {
+    fun loadData() {
+        offenceRepository.saveAll(listOf(OffenceGenerator.OFFENCE_ONE, OffenceGenerator.OFFENCE_TWO))
+        probationAreaRepository.save(ProbationCaseGenerator.COM_PROVIDER)
+        teamRepository.save(ProbationCaseGenerator.COM_TEAM.asTeam())
+        staffRepository.save(ProbationCaseGenerator.COM_UNALLOCATED)
+        probationCaseRepository.save(ProbationCaseGenerator.CASE_COMPLEX)
+        probationCaseRepository.save(ProbationCaseGenerator.CASE_SIMPLE)
+
+        personManagerRepository.saveAll(
+            listOf(
+                ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_COMPLEX).asPersonManager(),
+                ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_SIMPLE).asPersonManager()
+            )
+        )
+
+        registrationRepository.save(
+            PersonGenerator.generateRegistration(
+                ProbationCaseGenerator.CASE_COMPLEX.asPerson(),
+                ReferenceDataGenerator.REGISTER_TYPES[RegisterType.Code.MAPPA.value]!!,
+                LocalDate.now().minusDays(7),
+                ReferenceDataGenerator.REGISTER_CATEGORIES["M3"],
+                ReferenceDataGenerator.REGISTER_LEVELS["M2"]
+            )
+        )
+
+        registrationRepository.save(
+            PersonGenerator.generateRegistration(
+                ProbationCaseGenerator.CASE_COMPLEX.asPerson(),
+                ReferenceDataGenerator.REGISTER_TYPES[RegisterType.Code.SEX_OFFENCE.value]!!,
+                LocalDate.now().minusDays(7)
+            )
+        )
+
+        val event = PersonGenerator.generateEvent(
+            "1",
+            ProbationCaseGenerator.CASE_COMPLEX.id
+        ).apply(eventRepository::save)
+
+        mainOffenceRepository.save(
+            OffenceGenerator.generateMainOffence(
+                event,
+                OffenceGenerator.OFFENCE_ONE,
+                LocalDate.now().minusDays(7)
+            )
+        )
+
+        additionalOffenceRepository.save(
+            OffenceGenerator.generateAdditionalOffence(
+                event,
+                OffenceGenerator.OFFENCE_TWO,
+                LocalDate.now().minusDays(5)
+            )
+        )
+    }
+}
+
+interface OffenceRepository : JpaRepository<Offence, Long>
+interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long>

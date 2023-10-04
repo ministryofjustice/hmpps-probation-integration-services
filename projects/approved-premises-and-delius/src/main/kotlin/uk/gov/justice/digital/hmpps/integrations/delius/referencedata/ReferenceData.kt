@@ -47,16 +47,23 @@ enum class DatasetCode(val value: String) {
     AP_NON_ARRIVAL_REASON("AP NON ARRIVAL REASON"),
     AP_REFERRAL_CATEGORY("AP REFERRAL CATEGORY"),
     AP_REFERRAL_DATE_TYPE("AP REFERRAL DATE TYPE"),
+    ETHNICITY("ETHNICITY"),
+    GENDER("GENDER"),
+    GENDER_IDENTITY("GENDER IDENTITY"),
     HOSTEL_CODE("HOSTEL CODE"),
+    NATIONALITY("NATIONALITY"),
     NSI_OUTCOME("NSI OUTCOME"),
     REFERRAL_DECISION("REFERRAL DECISION"),
+    REGISTER_CATEGORY("REGISTER CATEGORY"),
+    REGISTER_LEVEL("REGISTER LEVEL"),
+    RELIGION("RELIGION/FAITH"),
     RISK_OF_HARM("RISK OF HARM"),
     SOURCE_TYPE("SOURCE TYPE"),
     STAFF_GRADE("OFFICER GRADE"),
     YES_NO("YES NO DONT KNOW");
 
     companion object {
-        private val index = DatasetCode.values().associateBy { it.value }
+        private val index = DatasetCode.entries.associateBy { it.value }
         fun fromString(value: String): DatasetCode =
             index[value] ?: throw IllegalArgumentException("Invalid DatasetCode")
     }

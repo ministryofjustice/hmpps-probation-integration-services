@@ -15,15 +15,20 @@ object TeamGenerator {
 
     fun generate(
         approvedPremises: ApprovedPremises? = null,
-        code: String = "N54${teamCodeGenerator.getAndIncrement().toString().padStart(3, '0')}"
+        code: String = "N54${teamCodeGenerator.getAndIncrement().toString().padStart(3, '0')}",
+        description: String = "Description of Team $code"
     ) = Team(
         id = IdGenerator.getAndIncrement(),
         code = code,
+        description = description,
         probationArea = ProbationAreaGenerator.DEFAULT,
         approvedPremises = approvedPremises
     )
 }
 
 object ProbationAreaGenerator {
-    val DEFAULT = ProbationArea(IdGenerator.getAndIncrement(), "N54")
+    val DEFAULT = generate("N54")
+
+    fun generate(code: String, id: Long = IdGenerator.getAndIncrement()) =
+        ProbationArea(id, code)
 }

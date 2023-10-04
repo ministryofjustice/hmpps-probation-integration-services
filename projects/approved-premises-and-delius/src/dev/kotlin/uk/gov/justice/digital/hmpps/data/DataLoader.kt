@@ -51,6 +51,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceD
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import java.time.LocalDate
 
 @Component
 @ConditionalOnProperty("seed.database")
@@ -78,7 +79,8 @@ class DataLoader(
     private val transferReasonRepository: TransferReasonRepository,
     private val caseloadRepository: CaseloadRepository,
     private val registrationRepository: RegistrationRepository,
-    private val referralRepository: ReferralRepository
+    private val referralRepository: ReferralRepository,
+    private val probationCaseDataLoader: ProbationCaseDataLoader
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -159,7 +161,8 @@ class DataLoader(
         registrationRepository.save(
             PersonGenerator.generateRegistration(
                 person,
-                ReferenceDataGenerator.REGISTER_TYPES[RegisterType.Code.GANG_AFFILIATION.value]!!
+                ReferenceDataGenerator.REGISTER_TYPES[RegisterType.Code.GANG_AFFILIATION.value]!!,
+                LocalDate.now()
             )
         )
 
@@ -179,6 +182,8 @@ class DataLoader(
         caseloadRepository.save(CaseloadGenerator.generate(person, TeamGenerator.UNALLOCATED))
 
         referralRepository.save(ReferralGenerator.EXISTING_REFERRAL)
+
+        probationCaseDataLoader.loadData()
     }
 }
 
