@@ -16,7 +16,7 @@ object StaffGenerator {
         middleName: String? = null,
         user: StaffUser? = null,
         id: Long = IdGenerator.getAndIncrement(),
-        teams: List<Team> = listOf(ProviderGenerator.DEFAULT_TEAM),
+        teams: List<Team> = listOf(ProviderGenerator.DEFAULT_TEAM)
     ) = Staff(code, forename, surname, middleName, user, id, teams).apply { user?.set("staff", this) }
 
     fun generateStaffUser(
