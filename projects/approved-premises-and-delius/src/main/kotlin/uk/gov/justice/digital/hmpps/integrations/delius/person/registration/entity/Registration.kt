@@ -8,6 +8,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import java.time.LocalDate
@@ -74,6 +75,7 @@ class RegisterType(
 interface RegistrationRepository : JpaRepository<Registration, Long> {
     fun existsByPersonIdAndTypeCode(personId: Long, code: String): Boolean
 
+    @EntityGraph(attributePaths = ["type", "category", "level"])
     fun findByPersonId(personId: Long): List<Registration>
 }
 
