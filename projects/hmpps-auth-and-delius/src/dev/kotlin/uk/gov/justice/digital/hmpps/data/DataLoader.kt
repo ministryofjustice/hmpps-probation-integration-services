@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data
 
 import jakarta.annotation.PostConstruct
+import jakarta.transaction.Transactional
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
@@ -19,7 +20,9 @@ class DataLoader(
         auditUserRepository.save(UserGenerator.AUDIT_USER)
     }
 
+    @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        // Perform dev/test database setup here, using JPA repositories and generator classes...
+        auditUserRepository.save(UserGenerator.TEST_USER)
+        auditUserRepository.save(UserGenerator.INACTIVE_USER)
     }
 }

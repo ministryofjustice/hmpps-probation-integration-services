@@ -11,10 +11,14 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.ldap.byUsername
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.model.UserDetails
+import uk.gov.justice.digital.hmpps.user.AuditUserService
 import javax.naming.Name
 
 @Service
-class UserService(private val ldapTemplate: LdapTemplate) {
+class UserService(
+    private val ldapTemplate: LdapTemplate,
+    private val auditUserService: AuditUserService
+) {
 
     fun getUserDetails(username: String) = ldapTemplate.findByUsername<LdapUser>(username)?.toUserDetails()
 
@@ -44,6 +48,7 @@ class UserService(private val ldapTemplate: LdapTemplate) {
     )
 
     private fun LdapUser.toUserDetails() = UserDetails(
+        userId = auditUserService.findUser(username)?.id ?: throw NotFoundException("User entity", "username", username),
         username = username,
         firstName = forename,
         surname = surname,
