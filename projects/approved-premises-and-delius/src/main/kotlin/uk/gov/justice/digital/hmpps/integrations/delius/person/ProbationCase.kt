@@ -123,4 +123,7 @@ class CommunityManagerTeam(
 interface ProbationCaseRepository : JpaRepository<ProbationCase, Long> {
     @EntityGraph(attributePaths = ["gender", "ethnicity", "nationality", "religion", "genderIdentity", "communityManagers.team"])
     fun findByCrnIn(crns: List<String>): List<ProbationCase>
+
+    @EntityGraph(attributePaths = ["gender", "ethnicity", "nationality", "religion", "genderIdentity", "communityManagers.team"])
+    fun findByCrn(crn: String): ProbationCase?
 }

@@ -5,15 +5,18 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator
+import uk.gov.justice.digital.hmpps.model.CaseDetail
 import uk.gov.justice.digital.hmpps.model.CaseSummaries
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
@@ -51,6 +54,29 @@ class ProbationCaseIntegrationTest {
         val complexCase = summaries.cases.first { it.crn == complex.crn }
         assertThat(complexCase.name, equalTo(Name("James", "Brown", listOf("John", "Jack"))))
         assertThat(complexCase.dateOfBirth, equalTo(LocalDate.of(1979, 3, 12)))
+        assertTrue(complexCase.currentExclusion)
+        assertTrue(complexCase.currentRestriction)
+    }
 
+    @Test
+    fun `case details are correctly returned`() {
+        val case = ProbationCaseGenerator.CASE_COMPLEX
+        val response = mockMvc
+            .perform(
+                get("/probation-cases/${case.crn}/details")
+                    .contentType("application/json")
+                    .withOAuth2Token(wireMockServer)
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsString
+
+        val detail = objectMapper.readValue<CaseDetail>(response)
+        assertThat(detail.case.name, equalTo(Name("James", "Brown", listOf("John", "Jack"))))
+        assertThat(detail.case.dateOfBirth, equalTo(LocalDate.of(1979, 3, 12)))
+        assertTrue(detail.case.currentExclusion)
+        assertTrue(detail.case.currentRestriction)
+        assertThat(detail.mappaDetail?.category, equalTo(3))
+        assertThat(detail.mappaDetail?.level, equalTo(2))
+        assertThat(detail.registrations.map { it.description }, equalTo(listOf("Description of ARSO")))
     }
 }

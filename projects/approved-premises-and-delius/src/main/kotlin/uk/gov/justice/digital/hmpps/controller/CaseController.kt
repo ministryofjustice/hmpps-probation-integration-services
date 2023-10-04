@@ -23,6 +23,6 @@ class CaseController(private val caseService: CaseService) {
     ): CaseSummaries = caseService.getCaseSummaries(crns)
 
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_STAFF')")
-    @GetMapping("/{crn}/detail")
-    fun getCaseDetail(@PathVariable crn: String): CaseDetail = TODO()
+    @GetMapping("/{crn}/details")
+    fun getCaseDetail(@PathVariable crn: String): CaseDetail = caseService.getCaseDetail(crn)
 }
