@@ -35,7 +35,7 @@ fun PersonManager.asManager() = Manager(
     team.asTeam(),
     staff.user?.username,
     staff.user?.email,
-    isUnallocated()
+    staff.isUnallocated()
 )
 
 fun Staff.name() = Name(forename, middleName, surname)
