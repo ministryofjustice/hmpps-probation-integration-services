@@ -15,9 +15,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Address
 import uk.gov.justice.digital.hmpps.api.model.Manager
+import uk.gov.justice.digital.hmpps.api.model.Staff
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.service.asManager
+import uk.gov.justice.digital.hmpps.service.asStaff
 import java.time.LocalDate
 
 @AutoConfigureMockMvc
@@ -92,6 +95,24 @@ internal class IntegrationTest {
                     from = LocalDate.now().minusDays(12),
                     to = LocalDate.now().minusDays(1)
                 )
+            )
+        )
+    }
+
+    @Test
+    fun `returns staff details`() {
+        val username = StaffGenerator.DEFAULT_STAFF_USER.username
+
+        val res = mockMvc
+            .perform(get("/staff/$username").withOAuth2Token(wireMockServer))
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsString
+
+        val staff = objectMapper.readValue<Staff>(res)
+        assertThat(
+            staff,
+            equalTo(
+                StaffGenerator.DEFAULT.asStaff().copy(username = "john-smith", email = "john.smith@moj.gov.uk")
             )
         )
     }

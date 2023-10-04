@@ -46,9 +46,7 @@ class PersonManager(
     @Id
     @Column(name = "offender_manager_id")
     val id: Long
-) {
-    fun isUnallocated() = staff.code.endsWith("U")
-}
+)
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     @EntityGraph(attributePaths = ["person", "provider", "team", "staff.user"])
