@@ -13,6 +13,7 @@ import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.persistence.Version
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.Where
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
@@ -155,6 +156,7 @@ class ReferralSource(
 @Entity
 @Immutable
 @Table
+@Where(clause = "active_flag = 1 and soft_deleted = 0")
 class Event(
     @Id
     @Column(name = "event_id")
@@ -164,7 +166,13 @@ class Event(
     val number: String,
 
     @Column(name = "offender_id")
-    val personId: Long
+    val personId: Long,
+
+    @Column(name = "active_flag", columnDefinition = "number")
+    val active: Boolean,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean
 )
 
 interface ReferralRepository : JpaRepository<Referral, Long> {

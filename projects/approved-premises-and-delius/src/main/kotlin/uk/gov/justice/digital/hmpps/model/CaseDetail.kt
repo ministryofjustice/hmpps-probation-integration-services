@@ -51,5 +51,5 @@ data class MappaDetail(
     val lastUpdated: ZonedDateTime
 )
 
-data class Offence(val description: String, val date: LocalDate)
+data class Offence(val description: String, val date: LocalDate, val main: Boolean, val eventNumber: String)
 data class Registration(val description: String, val startDate: LocalDate)

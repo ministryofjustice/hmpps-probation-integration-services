@@ -78,5 +78,9 @@ class ProbationCaseIntegrationTest {
         assertThat(detail.mappaDetail?.category, equalTo(3))
         assertThat(detail.mappaDetail?.level, equalTo(2))
         assertThat(detail.registrations.map { it.description }, equalTo(listOf("Description of ARSO")))
+        val mainOffence = detail.offences.first { it.main }
+        assertThat(mainOffence.description, equalTo("Offence One"))
+        val otherOffence = detail.offences.first { !it.main }
+        assertThat(otherOffence.description, equalTo("Offence Two"))
     }
 }
