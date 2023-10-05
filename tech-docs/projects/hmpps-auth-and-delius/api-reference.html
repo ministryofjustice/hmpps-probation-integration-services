@@ -236,9 +236,9 @@
 <tbody>
 
 <tr>
-<td>200</td>
+<td>401</td>
 <td>
-<p>User authenticated</p>
+<p>Authentication failure</p>
 
 
 
@@ -262,9 +262,9 @@
 </tr>
 
 <tr>
-<td>401</td>
+<td>200</td>
 <td>
-<p>Authentication failure</p>
+<p>User authenticated</p>
 
 
 
@@ -390,6 +390,7 @@
 
 
 <pre><code>{
+  "userId": "integer",
   "username": "string",
   "firstName": "string",
   "surname": "string",
@@ -477,6 +478,16 @@
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
+
+<tr>
+<td>userId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
 
 <tr>
 <td>username</td>

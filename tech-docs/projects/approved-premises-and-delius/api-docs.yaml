@@ -14,6 +14,111 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /users/access:
+    get:
+      tags:
+      - user-controller
+      operationId: userAccessCheck
+      parameters:
+      - name: username
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: crns
+        in: query
+        required: true
+        schema:
+          maxItems: 500
+          minItems: 1
+          type: array
+          items:
+            maxLength: 500
+            minLength: 1
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAccess'
+    post:
+      tags:
+      - user-controller
+      operationId: userAccessCheck_1
+      parameters:
+      - name: username
+        in: query
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              maxItems: 500
+              minItems: 1
+              type: array
+              items:
+                maxLength: 500
+                minLength: 1
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAccess'
+  /probation-cases/summaries:
+    get:
+      tags:
+      - case-controller
+      operationId: getCaseSummaries
+      parameters:
+      - name: crns
+        in: query
+        required: true
+        schema:
+          maxItems: 500
+          minItems: 1
+          type: array
+          items:
+            maxLength: 500
+            minLength: 1
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseSummaries'
+    post:
+      tags:
+      - case-controller
+      operationId: getCaseSummaries_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              maxItems: 500
+              minItems: 1
+              type: array
+              items:
+                maxLength: 500
+                minLength: 1
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseSummaries'
   /teams/managingCase/{crn}:
     get:
       tags:
@@ -46,6 +151,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TeamCodeResponse'
+  /probation-cases/{crn}/details:
+    get:
+      tags:
+      - case-controller
+      operationId: getCaseDetail
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseDetail'
   /probation-case/{crn}/referrals:
     get:
       tags:
@@ -104,6 +227,113 @@ paths:
                 $ref: '#/components/schemas/PageStaffResponse'
 components:
   schemas:
+    CaseAccess:
+      required:
+      - crn
+      - userExcluded
+      - userRestricted
+      type: object
+      properties:
+        crn:
+          type: string
+        userExcluded:
+          type: boolean
+        userRestricted:
+          type: boolean
+        exclusionMessage:
+          type: string
+        restrictionMessage:
+          type: string
+    UserAccess:
+      required:
+      - access
+      type: object
+      properties:
+        access:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseAccess'
+    CaseSummaries:
+      required:
+      - cases
+      type: object
+      properties:
+        cases:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseSummary'
+    CaseSummary:
+      required:
+      - crn
+      - currentExclusion
+      - currentRestriction
+      - dateOfBirth
+      - manager
+      - name
+      type: object
+      properties:
+        crn:
+          type: string
+        nomsId:
+          type: string
+        name:
+          $ref: '#/components/schemas/Name'
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+        profile:
+          $ref: '#/components/schemas/Profile'
+        manager:
+          $ref: '#/components/schemas/Manager'
+        currentExclusion:
+          type: boolean
+        currentRestriction:
+          type: boolean
+    Manager:
+      required:
+      - team
+      type: object
+      properties:
+        team:
+          $ref: '#/components/schemas/Team'
+    Name:
+      required:
+      - forename
+      - middleNames
+      - surname
+      type: object
+      properties:
+        forename:
+          type: string
+        surname:
+          type: string
+        middleNames:
+          type: array
+          items:
+            type: string
+    Profile:
+      type: object
+      properties:
+        ethnicity:
+          type: string
+        genderIdentity:
+          type: string
+        nationality:
+          type: string
+        religion:
+          type: string
+    Team:
+      required:
+      - code
+      - name
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
     TeamCodeResponse:
       required:
       - teamCodes
@@ -113,6 +343,75 @@ components:
           type: array
           items:
             type: string
+    CaseDetail:
+      required:
+      - case
+      - offences
+      - registrations
+      type: object
+      properties:
+        case:
+          $ref: '#/components/schemas/CaseSummary'
+        offences:
+          type: array
+          items:
+            $ref: '#/components/schemas/Offence'
+        registrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Registration'
+        mappaDetail:
+          $ref: '#/components/schemas/MappaDetail'
+    MappaDetail:
+      required:
+      - lastUpdated
+      - startDate
+      type: object
+      properties:
+        level:
+          type: integer
+          format: int32
+        levelDescription:
+          type: string
+        category:
+          type: integer
+          format: int32
+        categoryDescription:
+          type: string
+        startDate:
+          type: string
+          format: date
+        lastUpdated:
+          type: string
+          format: date-time
+    Offence:
+      required:
+      - date
+      - description
+      - eventNumber
+      - main
+      type: object
+      properties:
+        description:
+          type: string
+        date:
+          type: string
+          format: date
+        main:
+          type: boolean
+        eventNumber:
+          type: string
+    Registration:
+      required:
+      - description
+      - startDate
+      type: object
+      properties:
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date
     ApReferral:
       required:
       - approvedPremises
@@ -188,15 +487,15 @@ components:
           format: int32
         sort:
           $ref: '#/components/schemas/SortObject'
-        first:
-          type: boolean
-        last:
-          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: '#/components/schemas/PageableObject'
+        first:
+          type: boolean
+        last:
+          type: boolean
         empty:
           type: boolean
     PageableObject:

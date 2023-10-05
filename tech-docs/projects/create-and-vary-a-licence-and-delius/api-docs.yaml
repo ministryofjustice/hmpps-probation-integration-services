@@ -14,6 +14,24 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /staff/{username}:
+    get:
+      tags:
+      - staff-resource
+      operationId: findStaff
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Staff'
   /probation-case/{crn}/responsible-community-manager:
     get:
       tags:
@@ -77,6 +95,53 @@ components:
           type: string
         borough:
           $ref: '#/components/schemas/Borough'
+    Name:
+      required:
+      - forename
+      - surname
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+    Staff:
+      required:
+      - code
+      - name
+      - teams
+      - unallocated
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          $ref: '#/components/schemas/Name'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+        email:
+          type: string
+        unallocated:
+          type: boolean
+    Team:
+      required:
+      - code
+      - description
+      - district
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        district:
+          $ref: '#/components/schemas/District'
     Manager:
       required:
       - code
@@ -100,18 +165,6 @@ components:
           type: string
         unallocated:
           type: boolean
-    Name:
-      required:
-      - forename
-      - surname
-      type: object
-      properties:
-        forename:
-          type: string
-        middleName:
-          type: string
-        surname:
-          type: string
     Provider:
       required:
       - code
@@ -122,19 +175,6 @@ components:
           type: string
         description:
           type: string
-    Team:
-      required:
-      - code
-      - description
-      - district
-      type: object
-      properties:
-        code:
-          type: string
-        description:
-          type: string
-        district:
-          $ref: '#/components/schemas/District'
     Address:
       required:
       - from

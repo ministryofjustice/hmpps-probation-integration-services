@@ -115,7 +115,16 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
+        <a href="./api-reference.html#users-access"><span>/users/access</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#probation-cases-summaries"><span>/probation-cases/summaries</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#teams-managingcase-crn"><span>/teams/managingCase/{crn}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#probation-cases-crn-details"><span>/probation-cases/{crn}/details</span></a>
       </li>
       <li>
         <a href="./api-reference.html#probation-case-crn-referrals"><span>/probation-case/{crn}/referrals</span></a>
@@ -156,6 +165,302 @@
 <h1 id="api-reference">API Reference v1.0</h1>
 
 
+
+
+
+
+<h2 id="users-access">/users/access</h2>
+
+<h3 id="users-access-get">get</h3>
+
+
+
+
+<h4 id="users-access-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>crns</td>
+<td>query</td>
+<td>array</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="users-access-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "access": [
+    {
+      "crn": "string",
+      "userExcluded": "boolean",
+      "userRestricted": "boolean",
+      "exclusionMessage": "string",
+      "restrictionMessage": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-useraccess'>UserAccess</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+<h3 id="users-access-post">post</h3>
+
+
+
+
+<h4 id="users-access-post-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>query</td>
+<td>string</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="users-access-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "access": [
+    {
+      "crn": "string",
+      "userExcluded": "boolean",
+      "userRestricted": "boolean",
+      "exclusionMessage": "string",
+      "restrictionMessage": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-useraccess'>UserAccess</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-cases-summaries">/probation-cases/summaries</h2>
+
+<h3 id="probation-cases-summaries-get">get</h3>
+
+
+
+
+<h4 id="probation-cases-summaries-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crns</td>
+<td>query</td>
+<td>array</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-cases-summaries-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "cases": [
+    {
+      "crn": "string",
+      "nomsId": "string",
+      "name": {
+        "forename": "string",
+        "surname": "string",
+        "middleNames": [
+          {
+          }
+        ]
+      },
+      "dateOfBirth": "string",
+      "gender": "string",
+      "profile": {
+        "ethnicity": "string",
+        "genderIdentity": "string",
+        "nationality": "string",
+        "religion": "string"
+      },
+      "manager": {
+        "team": {
+          "code": "string",
+          "name": "string"
+        }
+      },
+      "currentExclusion": "boolean",
+      "currentRestriction": "boolean"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-casesummaries'>CaseSummaries</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+<h3 id="probation-cases-summaries-post">post</h3>
+
+
+
+
+
+
+
+<h4 id="probation-cases-summaries-post-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "cases": [
+    {
+      "crn": "string",
+      "nomsId": "string",
+      "name": {
+        "forename": "string",
+        "surname": "string",
+        "middleNames": [
+          {
+          }
+        ]
+      },
+      "dateOfBirth": "string",
+      "gender": "string",
+      "profile": {
+        "ethnicity": "string",
+        "genderIdentity": "string",
+        "nationality": "string",
+        "religion": "string"
+      },
+      "manager": {
+        "team": {
+          "code": "string",
+          "name": "string"
+        }
+      },
+      "currentExclusion": "boolean",
+      "currentRestriction": "boolean"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-casesummaries'>CaseSummaries</a>
+</td>
+</tr>
+
+</tbody>
+</table>
 
 
 
@@ -235,6 +540,115 @@
 </td>
 <td>
 <a href='#schema-teamcoderesponse'>TeamCodeResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="probation-cases-crn-details">/probation-cases/{crn}/details</h2>
+
+<h3 id="probation-cases-crn-details-get">get</h3>
+
+
+
+
+<h4 id="probation-cases-crn-details-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="probation-cases-crn-details-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "case": {
+    "crn": "string",
+    "nomsId": "string",
+    "name": {
+      "forename": "string",
+      "surname": "string",
+      "middleNames": [
+        {
+        }
+      ]
+    },
+    "dateOfBirth": "string",
+    "gender": "string",
+    "profile": {
+      "ethnicity": "string",
+      "genderIdentity": "string",
+      "nationality": "string",
+      "religion": "string"
+    },
+    "manager": {
+      "team": {
+        "code": "string",
+        "name": "string"
+      }
+    },
+    "currentExclusion": "boolean",
+    "currentRestriction": "boolean"
+  },
+  "offences": [
+    {
+      "description": "string",
+      "date": "string",
+      "main": "boolean",
+      "eventNumber": "string"
+    }
+  ],
+  "registrations": [
+    {
+      "description": "string",
+      "startDate": "string"
+    }
+  ],
+  "mappaDetail": {
+    "level": "integer",
+    "levelDescription": "string",
+    "category": "integer",
+    "categoryDescription": "string",
+    "startDate": "string",
+    "lastUpdated": "string"
+  }
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-casedetail'>CaseDetail</a>
 </td>
 </tr>
 
@@ -414,8 +828,6 @@
     "sorted": "boolean",
     "unsorted": "boolean"
   },
-  "first": "boolean",
-  "last": "boolean",
   "numberOfElements": "integer",
   "pageable": {
     "offset": "integer",
@@ -429,6 +841,8 @@
     "pageSize": "integer",
     "unpaged": "boolean"
   },
+  "first": "boolean",
+  "last": "boolean",
   "empty": "boolean"
 }</code></pre>
 
@@ -446,6 +860,362 @@
 
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-caseaccess">CaseAccess</h3>
+
+
+<table class='schema-caseaccess'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>userExcluded</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>userRestricted</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>exclusionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>restrictionMessage</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-useraccess">UserAccess</h3>
+
+
+<table class='schema-useraccess'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>access</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-caseaccess'>CaseAccess</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-casesummaries">CaseSummaries</h3>
+
+
+<table class='schema-casesummaries'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>cases</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-casesummary'>CaseSummary</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-casesummary">CaseSummary</h3>
+
+
+<table class='schema-casesummary'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nomsId</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>dateOfBirth</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>gender</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>profile</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-profile'>Profile</a>
+</td>
+</tr>
+
+<tr>
+<td>manager</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-manager'>Manager</a>
+</td>
+</tr>
+
+<tr>
+<td>currentExclusion</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>currentRestriction</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-manager">Manager</h3>
+
+
+<table class='schema-manager'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>team</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-name">Name</h3>
+
+
+<table class='schema-name'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleNames</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-profile">Profile</h3>
+
+
+<table class='schema-profile'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>ethnicity</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>genderIdentity</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>nationality</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>religion</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-team">Team</h3>
+
+
+<table class='schema-team'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-teamcoderesponse">TeamCodeResponse</h3>
 
 
@@ -458,6 +1228,214 @@
 <tr>
 <td>teamCodes</td>
 <td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-casedetail">CaseDetail</h3>
+
+
+<table class='schema-casedetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>case</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-casesummary'>CaseSummary</a>
+</td>
+</tr>
+
+<tr>
+<td>offences</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-offence'>Offence</a>
+</td>
+</tr>
+
+<tr>
+<td>registrations</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-registration'>Registration</a>
+</td>
+</tr>
+
+<tr>
+<td>mappaDetail</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-mappadetail'>MappaDetail</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-mappadetail">MappaDetail</h3>
+
+
+<table class='schema-mappadetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>level</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>levelDescription</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>category</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>categoryDescription</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>lastUpdated</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-offence">Offence</h3>
+
+
+<table class='schema-offence'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>date</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>main</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>eventNumber</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-registration">Registration</h3>
+
+
+<table class='schema-registration'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>startDate</td>
+<td>string</td>
 <td>true</td>
 <td></td>
 <td>
@@ -696,26 +1674,6 @@
 </tr>
 
 <tr>
-<td>first</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>last</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
 <td>numberOfElements</td>
 <td>integer</td>
 <td>false</td>
@@ -732,6 +1690,26 @@
 <td></td>
 <td>
   <a href='#schema-pageableobject'>PageableObject</a>
+</td>
+</tr>
+
+<tr>
+<td>first</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>last</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 
