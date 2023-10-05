@@ -15,11 +15,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Address
 import uk.gov.justice.digital.hmpps.api.model.Manager
+import uk.gov.justice.digital.hmpps.api.model.PDUHead
 import uk.gov.justice.digital.hmpps.api.model.Staff
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.service.asManager
+import uk.gov.justice.digital.hmpps.service.asPDUHead
 import uk.gov.justice.digital.hmpps.service.asStaff
 import java.time.LocalDate
 
@@ -113,6 +116,26 @@ internal class IntegrationTest {
             staff,
             equalTo(
                 StaffGenerator.DEFAULT.asStaff().copy(username = "john-smith", email = "john.smith@moj.gov.uk")
+            )
+        )
+    }
+
+    @Test
+    fun `returns pdu heads`() {
+        val boroughCode = ProviderGenerator.DEFAULT_BOROUGH.code
+
+        val res = mockMvc
+            .perform(get("/staff/$boroughCode/pdu-head").withOAuth2Token(wireMockServer))
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsString
+
+        val pduHeads = objectMapper.readValue<List<PDUHead>>(res)
+        assertThat(
+            pduHeads,
+            equalTo(
+                listOf(
+                    StaffGenerator.DEFAULT.asPDUHead().copy(email = "john.smith@moj.gov.uk")
+                )
             )
         )
     }
