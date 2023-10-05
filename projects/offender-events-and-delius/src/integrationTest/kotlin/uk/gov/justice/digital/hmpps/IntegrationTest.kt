@@ -82,10 +82,6 @@ internal class IntegrationTest {
                 listOf("OFFENDER_MANAGEMENT_TIER_CALCULATION_REQUIRED")
             ),
             Arguments.of(
-                OffenderDeltaGenerator.generate(sourceTable = "MANAGEMENT_TIER_EVENT", action = "DELETE", sourceId = 99),
-                emptyList<String>()
-            ),
-            Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "MERGE_HISTORY", sourceId = 99),
                 listOf("OFFENDER_MERGED")
             ),

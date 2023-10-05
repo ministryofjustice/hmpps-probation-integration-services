@@ -2,10 +2,8 @@ package uk.gov.justice.digital.hmpps.integrations.delius.offender
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.integrations.delius.tier.ManagementTierEventRepository
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
@@ -15,7 +13,6 @@ class OffenderDeltaService(
     @Value("\${offender-events.batch-size:50}")
     private val batchSize: Int,
     private val repository: OffenderDeltaRepository,
-    private val managementTierEventRepository: ManagementTierEventRepository,
     private val notificationPublisher: NotificationPublisher
 ) {
     @Transactional
@@ -33,7 +30,7 @@ class OffenderDeltaService(
             "DEREGISTRATION" -> "OFFENDER_REGISTRATION_DEREGISTERED"
             "DISPOSAL" -> "SENTENCE_CHANGED"
             "EVENT" -> "CONVICTION_CHANGED"
-            "MANAGEMENT_TIER_EVENT" -> if (managementTierMessageIgnored()) null else "OFFENDER_MANAGEMENT_TIER_CALCULATION_REQUIRED"
+            "MANAGEMENT_TIER_EVENT" -> "OFFENDER_MANAGEMENT_TIER_CALCULATION_REQUIRED"
             "MERGE_HISTORY" -> "OFFENDER_MERGED"
             "OFFENDER" -> "OFFENDER_DETAILS_CHANGED"
             "OFFICER" -> "OFFENDER_OFFICER_CHANGED"
@@ -57,7 +54,4 @@ class OffenderDeltaService(
             listOf()
         }
     }
-
-    private fun OffenderDelta.managementTierMessageIgnored() = action == "DELETE" ||
-        managementTierEventRepository.findByIdOrNull(sourceRecordId)?.reason?.code in listOf("ROSH", "MAP", "REG", "DEREG")
 }
