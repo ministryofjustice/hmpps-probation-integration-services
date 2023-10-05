@@ -23,8 +23,8 @@ import uk.gov.justice.digital.hmpps.service.UserService
 @Tag(name = "User details")
 class UserController(private val userService: UserService) {
     @GetMapping(value = ["/user/{username}"])
-    @PreAuthorize("hasAnyRole('ROLE_DELIUS_USER_AUTH')")
-    @Operation(description = "Get user details. Requires `ROLE_DELIUS_USER_AUTH`.")
+    @PreAuthorize("hasAnyRole('ROLE_DELIUS_USER_AUTH', 'ROLE_DELIUS_USER_DETAILS')")
+    @Operation(description = "Get user details. Requires `ROLE_DELIUS_USER_AUTH` or `ROLE_DELIUS_USER_DETAILS`.")
     fun getUserDetails(@PathVariable username: String) = userService.getUserDetails(username)
         ?: throw NotFoundException("User", "username", username)
 
