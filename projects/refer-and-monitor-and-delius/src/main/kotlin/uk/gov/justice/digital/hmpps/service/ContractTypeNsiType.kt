@@ -14,6 +14,7 @@ object ContractTypeNsiType {
         "FBD-L" to "CRS08",
         "FBD-SC" to "CRS08",
         "FBD-NE" to "CRS08",
+        "FBD-SW" to "CRS08",
         "FBD-W" to "CRS08",
         "FBD-Y" to "CRS08",
         "FBD-NW" to "CRS08",
