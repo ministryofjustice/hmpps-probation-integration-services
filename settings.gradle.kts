@@ -71,7 +71,7 @@ dependencyResolutionManagement {
     }
 }
 
-plugins { id("com.gradle.enterprise") version "3.15" }
+plugins { id("com.gradle.enterprise") version "3.15.1" }
 gradleEnterprise {
     buildScan {
         publishAlwaysIf(!System.getenv("CI").isNullOrEmpty())
