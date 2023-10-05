@@ -39,7 +39,7 @@ class Staff(
         joinColumns = [JoinColumn(name = "staff_id")],
         inverseJoinColumns = [JoinColumn(name = "team_id")]
     )
-    val teams: List<Team>
+    val teams: List<Team>?
 
 ) {
     fun isUnallocated() = code.endsWith("U")
@@ -66,6 +66,6 @@ class StaffUser(
 }
 
 interface StaffRepository : JpaRepository<Staff, Long> {
-    @EntityGraph(attributePaths = ["user"])
+    @EntityGraph(attributePaths = ["user", "teams"])
     fun findByUserUsername(username: String): Staff?
 }

@@ -24,7 +24,7 @@ object ProviderGenerator {
         code: String,
         description: String = "Description of $code",
         id: Long = IdGenerator.getAndIncrement(),
-        pduHeads: List<Staff> = listOf(StaffGenerator.DEFAULT)
+        pduHeads: List<Staff> = listOf(StaffGenerator.PDUHEAD)
     ) = Borough(code, description, id, pduHeads, DEFAULT_PROVIDER)
 
     fun generateDistrict(

@@ -6,17 +6,19 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.set
 
 object StaffGenerator {
-    val DEFAULT = generateStaff("N01BDT1", "John", "Smith")
+    val PDUHEAD = generateStaff("N01BDT2", "Bob", "Smith")
+    val DEFAULT_PDUSTAFF_USER = generateStaffUser("bob-smith", PDUHEAD)
+    var DEFAULT = generateStaff("N01BDT1", "John", "Smith")
     val DEFAULT_STAFF_USER = generateStaffUser("john-smith", DEFAULT)
 
     fun generateStaff(
         code: String,
         forename: String,
         surname: String,
+        teams: List<Team> = listOf(),
         middleName: String? = null,
         user: StaffUser? = null,
-        id: Long = IdGenerator.getAndIncrement(),
-        teams: List<Team> = listOf(ProviderGenerator.DEFAULT_TEAM)
+        id: Long = IdGenerator.getAndIncrement()
     ) = Staff(code, forename, surname, middleName, user, id, teams).apply { user?.set("staff", this) }
 
     fun generateStaffUser(

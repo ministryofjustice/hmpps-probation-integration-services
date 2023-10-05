@@ -134,7 +134,7 @@ internal class IntegrationTest {
             pduHeads,
             equalTo(
                 listOf(
-                    StaffGenerator.DEFAULT.asPDUHead().copy(email = "john.smith@moj.gov.uk")
+                    StaffGenerator.PDUHEAD.asPDUHead().copy(email = "bob.smith@moj.gov.uk")
                 )
             )
         )

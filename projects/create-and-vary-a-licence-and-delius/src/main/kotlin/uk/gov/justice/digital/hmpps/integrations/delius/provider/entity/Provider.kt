@@ -50,6 +50,8 @@ class Team(
     val id: Long
 )
 
+interface TeamRepository : JpaRepository<Team, Long>
+
 @Immutable
 @Entity
 @Table(name = "district")
@@ -93,7 +95,7 @@ class Borough(
 
     @JoinColumn(name = "PROBATION_AREA_ID")
     @OneToOne
-    var provider: Provider
+    val provider: Provider
 )
 
 interface BoroughRepository : JpaRepository<Borough?, Long?> {
@@ -104,5 +106,5 @@ interface BoroughRepository : JpaRepository<Borough?, Long?> {
         and (b.provider.endDate is null or b.provider.endDate > current_date)
     """
     )
-    fun findActiveByCode(code: String?): Borough?
+    fun findActiveByCode(code: String): Borough?
 }
