@@ -29,11 +29,23 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         entityManager.persist(ProviderGenerator.DEFAULT_PROVIDER)
+        entityManager.persist(StaffGenerator.PDUHEAD)
+        entityManager.persist(StaffGenerator.DEFAULT_PDUSTAFF_USER)
         entityManager.persist(ProviderGenerator.DEFAULT_BOROUGH)
         entityManager.persist(ProviderGenerator.DEFAULT_DISTRICT)
         entityManager.persist(ProviderGenerator.DEFAULT_TEAM)
 
+        StaffGenerator.DEFAULT = StaffGenerator.generateStaff(
+            StaffGenerator.DEFAULT.code,
+            StaffGenerator.DEFAULT.forename,
+            StaffGenerator.DEFAULT.surname,
+            listOf(ProviderGenerator.DEFAULT_TEAM),
+            StaffGenerator.DEFAULT.middleName,
+            StaffGenerator.DEFAULT.user,
+            StaffGenerator.DEFAULT.id
+        )
         entityManager.persist(StaffGenerator.DEFAULT)
+
         entityManager.persist(StaffGenerator.DEFAULT_STAFF_USER)
 
         entityManager.persist(PersonGenerator.DEFAULT_PERSON)

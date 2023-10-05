@@ -8,3 +8,8 @@ data class Staff(
     val email: String?,
     val unallocated: Boolean
 )
+
+data class PDUHead(
+    val name: Name,
+    val email: String?
+)

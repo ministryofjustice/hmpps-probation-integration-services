@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.api.model.PDUHead
 import uk.gov.justice.digital.hmpps.api.model.Staff
 import uk.gov.justice.digital.hmpps.service.StaffService
 
@@ -16,4 +17,8 @@ class StaffResource(
     @PreAuthorize("hasRole('CVL_CONTEXT')")
     @GetMapping("/{username}")
     fun findStaff(@PathVariable username: String): Staff = staffService.findStaff(username)
+
+    @PreAuthorize("hasRole('CVL_CONTEXT')")
+    @GetMapping("/{boroughCode}/pdu-head")
+    fun findPDUHead(@PathVariable boroughCode: String): List<PDUHead> = staffService.findPDUHeads(boroughCode)
 }

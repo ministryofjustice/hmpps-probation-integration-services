@@ -3,7 +3,9 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Borough
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.District
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
+import java.time.LocalDate
 
 object ProviderGenerator {
     val DEFAULT_PROVIDER = generateProvider("N01")
@@ -14,14 +16,16 @@ object ProviderGenerator {
     fun generateProvider(
         code: String,
         description: String = "Description of $code",
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Provider(code, description, id)
+        id: Long = IdGenerator.getAndIncrement(),
+        endDate: LocalDate? = null
+    ) = Provider(code, description, id, endDate)
 
     fun generateBorough(
         code: String,
         description: String = "Description of $code",
-        id: Long = IdGenerator.getAndIncrement()
-    ) = Borough(code, description, id)
+        id: Long = IdGenerator.getAndIncrement(),
+        pduHeads: List<Staff> = listOf(StaffGenerator.PDUHEAD)
+    ) = Borough(code, description, id, pduHeads, DEFAULT_PROVIDER)
 
     fun generateDistrict(
         code: String,

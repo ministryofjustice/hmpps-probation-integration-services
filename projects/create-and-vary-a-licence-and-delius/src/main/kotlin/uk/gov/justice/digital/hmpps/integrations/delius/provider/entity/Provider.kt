@@ -4,9 +4,15 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.JoinTable
+import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import java.time.LocalDate
 
 @Immutable
 @Entity
@@ -19,7 +25,10 @@ class Provider(
 
     @Id
     @Column(name = "probation_area_id")
-    val id: Long
+    val id: Long,
+
+    @Column(name = "end_date")
+    var endDate: LocalDate? = null
 )
 
 @Immutable
@@ -40,6 +49,8 @@ class Team(
     @Column(name = "team_id")
     val id: Long
 )
+
+interface TeamRepository : JpaRepository<Team, Long>
 
 @Immutable
 @Entity
@@ -72,5 +83,28 @@ class Borough(
 
     @Id
     @Column(name = "borough_id")
-    val id: Long
+    val id: Long,
+
+    @ManyToMany
+    @JoinTable(
+        name = "r_level_2_head_of_level_2",
+        joinColumns = [JoinColumn(name = "borough_id")],
+        inverseJoinColumns = [JoinColumn(name = "staff_id")]
+    )
+    val pduHeads: List<Staff>,
+
+    @JoinColumn(name = "PROBATION_AREA_ID")
+    @OneToOne
+    val provider: Provider
 )
+
+interface BoroughRepository : JpaRepository<Borough?, Long?> {
+    @Query(
+        """
+        select b from Borough b
+        where b.code = :code
+        and (b.provider.endDate is null or b.provider.endDate > current_date)
+    """
+    )
+    fun findActiveByCode(code: String): Borough?
+}
