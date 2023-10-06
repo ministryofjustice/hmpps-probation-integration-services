@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicLong
 object TeamGenerator {
     private val teamCodeGenerator = AtomicLong(1)
 
+    val AP_TEAM_LDU = ProbationCaseGenerator.generateLdu("N54LDU")
     val APPROVED_PREMISES_TEAM = generate(ApprovedPremisesGenerator.DEFAULT)
     val APPROVED_PREMISES_TEAM_WITH_NO_STAFF = generate(ApprovedPremisesGenerator.NO_STAFF)
     val NON_APPROVED_PREMISES_TEAM = generate()
@@ -16,13 +17,15 @@ object TeamGenerator {
     fun generate(
         approvedPremises: ApprovedPremises? = null,
         code: String = "N54${teamCodeGenerator.getAndIncrement().toString().padStart(3, '0')}",
-        description: String = "Description of Team $code"
+        description: String = "Description of Team $code",
+        districtId: Long = AP_TEAM_LDU.id
     ) = Team(
         id = IdGenerator.getAndIncrement(),
         code = code,
         description = description,
         probationArea = ProbationAreaGenerator.DEFAULT,
-        approvedPremises = approvedPremises
+        approvedPremises = approvedPremises,
+        districtId
     )
 }
 

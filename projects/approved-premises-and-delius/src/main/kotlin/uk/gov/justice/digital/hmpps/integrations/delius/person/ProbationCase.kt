@@ -115,15 +115,34 @@ class CommunityManagerTeam(
 
     val description: String,
 
+    @ManyToOne
+    @JoinColumn(name = "district_id")
+    val ldu: Ldu,
+
     @Id
     @Column(name = "team_id")
     val id: Long
 )
 
+@Immutable
+@Entity
+@Table(name = "district")
+class Ldu(
+
+    @Column(name = "code")
+    val code: String,
+
+    val description: String,
+
+    @Id
+    @Column(name = "district_id")
+    val id: Long
+)
+
 interface ProbationCaseRepository : JpaRepository<ProbationCase, Long> {
-    @EntityGraph(attributePaths = ["gender", "ethnicity", "nationality", "religion", "genderIdentity", "communityManagers.team"])
+    @EntityGraph(attributePaths = ["gender", "ethnicity", "nationality", "religion", "genderIdentity", "communityManagers.team.ldu"])
     fun findByCrnIn(crns: List<String>): List<ProbationCase>
 
-    @EntityGraph(attributePaths = ["gender", "ethnicity", "nationality", "religion", "genderIdentity", "communityManagers.team"])
+    @EntityGraph(attributePaths = ["gender", "ethnicity", "nationality", "religion", "genderIdentity", "communityManagers.team.ldu"])
     fun findByCrn(crn: String): ProbationCase?
 }

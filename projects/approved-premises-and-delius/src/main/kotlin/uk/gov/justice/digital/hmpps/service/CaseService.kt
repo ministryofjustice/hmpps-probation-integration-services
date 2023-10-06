@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.enti
 import uk.gov.justice.digital.hmpps.model.CaseDetail
 import uk.gov.justice.digital.hmpps.model.CaseSummaries
 import uk.gov.justice.digital.hmpps.model.CaseSummary
+import uk.gov.justice.digital.hmpps.model.Ldu
 import uk.gov.justice.digital.hmpps.model.Manager
 import uk.gov.justice.digital.hmpps.model.MappaDetail
 import uk.gov.justice.digital.hmpps.model.Name
@@ -65,7 +66,7 @@ fun ProbationCase.manager(): Manager =
         Manager(team())
     }
 
-fun CommunityManager.team() = Team(team.code, team.description)
+fun CommunityManager.team() = Team(team.code, team.description, Ldu(team.ldu.code, team.ldu.description))
 
 fun CaseOffence.asOffence() = Offence(description, date, main, eventNumber)
 

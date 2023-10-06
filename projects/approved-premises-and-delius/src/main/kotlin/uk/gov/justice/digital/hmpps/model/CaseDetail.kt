@@ -33,14 +33,11 @@ data class Profile(
     val religion: String?
 )
 
-data class Manager(
-    val team: Team
-)
+data class Manager(val team: Team)
 
-data class Team(
-    val code: String,
-    val name: String
-)
+data class Team(val code: String, val name: String, val ldu: Ldu)
+
+data class Ldu(val code: String, val name: String)
 
 data class MappaDetail(
     val level: Int?,

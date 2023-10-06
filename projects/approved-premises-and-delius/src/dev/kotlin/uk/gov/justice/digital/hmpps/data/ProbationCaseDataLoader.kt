@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.data.generator.asPerson
 import uk.gov.justice.digital.hmpps.data.generator.asPersonManager
 import uk.gov.justice.digital.hmpps.data.generator.asTeam
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.Ldu
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ProbationCaseRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.offence.entity.AdditionalOffence
@@ -24,6 +25,7 @@ import java.time.LocalDate
 @Component
 class ProbationCaseDataLoader(
     private val probationAreaRepository: ProbationAreaRepository,
+    private val lduRepository: LduRepository,
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
     private val personManagerRepository: PersonManagerRepository,
@@ -37,6 +39,7 @@ class ProbationCaseDataLoader(
     fun loadData() {
         offenceRepository.saveAll(listOf(OffenceGenerator.OFFENCE_ONE, OffenceGenerator.OFFENCE_TWO))
         probationAreaRepository.save(ProbationCaseGenerator.COM_PROVIDER)
+        lduRepository.save(ProbationCaseGenerator.COM_LDU)
         teamRepository.save(ProbationCaseGenerator.COM_TEAM.asTeam())
         staffRepository.save(ProbationCaseGenerator.COM_UNALLOCATED)
         probationCaseRepository.save(ProbationCaseGenerator.CASE_COMPLEX)
@@ -90,5 +93,6 @@ class ProbationCaseDataLoader(
     }
 }
 
+interface LduRepository : JpaRepository<Ldu, Long>
 interface OffenceRepository : JpaRepository<Offence, Long>
 interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long>

@@ -16,9 +16,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator.COM_TEAM
 import uk.gov.justice.digital.hmpps.model.CaseDetail
 import uk.gov.justice.digital.hmpps.model.CaseSummaries
+import uk.gov.justice.digital.hmpps.model.Ldu
 import uk.gov.justice.digital.hmpps.model.Name
+import uk.gov.justice.digital.hmpps.model.Team
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import java.time.LocalDate
 
@@ -75,6 +78,10 @@ class ProbationCaseIntegrationTest {
         assertThat(detail.case.dateOfBirth, equalTo(LocalDate.of(1979, 3, 12)))
         assertTrue(detail.case.currentExclusion)
         assertTrue(detail.case.currentRestriction)
+        assertThat(
+            detail.case.manager.team,
+            equalTo(Team(COM_TEAM.code, COM_TEAM.description, Ldu(COM_TEAM.ldu.code, COM_TEAM.ldu.description)))
+        )
         assertThat(detail.mappaDetail?.category, equalTo(3))
         assertThat(detail.mappaDetail?.level, equalTo(2))
         assertThat(detail.registrations.map { it.description }, equalTo(listOf("Description of ARSO")))
