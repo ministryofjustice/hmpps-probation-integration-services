@@ -12,11 +12,13 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Address
 import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.PDUHead
 import uk.gov.justice.digital.hmpps.api.model.Staff
+import uk.gov.justice.digital.hmpps.api.model.StaffName
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
@@ -24,6 +26,7 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.service.asManager
 import uk.gov.justice.digital.hmpps.service.asPDUHead
 import uk.gov.justice.digital.hmpps.service.asStaff
+import uk.gov.justice.digital.hmpps.service.asStaffName
 import java.time.LocalDate
 
 @AutoConfigureMockMvc
@@ -135,6 +138,32 @@ internal class IntegrationTest {
             equalTo(
                 listOf(
                     StaffGenerator.PDUHEAD.asPDUHead().copy(email = "bob.smith@moj.gov.uk")
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `returns staff names for usernames`() {
+        val usernames =
+            listOf(StaffGenerator.DEFAULT_PDUSTAFF_USER.username, StaffGenerator.DEFAULT_STAFF_USER.username)
+
+        val res = mockMvc
+            .perform(
+                post("/staff").withOAuth2Token(wireMockServer)
+                    .contentType("application/json")
+                    .content(objectMapper.writeValueAsString(usernames))
+            )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsString
+
+        val staffNames = objectMapper.readValue<List<StaffName>>(res)
+        assertThat(
+            staffNames,
+            equalTo(
+                listOf(
+                    StaffGenerator.PDUHEAD.asStaffName(),
+                    StaffGenerator.DEFAULT.asStaffName()
                 )
             )
         )

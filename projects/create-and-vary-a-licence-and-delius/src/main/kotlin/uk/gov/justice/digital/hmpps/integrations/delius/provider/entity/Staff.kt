@@ -68,4 +68,7 @@ class StaffUser(
 interface StaffRepository : JpaRepository<Staff, Long> {
     @EntityGraph(attributePaths = ["user", "teams"])
     fun findByUserUsername(username: String): Staff?
+
+    @EntityGraph(attributePaths = ["user"])
+    fun findByUserUsernameIn(usernames: List<String>): List<Staff>
 }
