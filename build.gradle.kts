@@ -26,7 +26,7 @@ dependencies {
 
 val copyAgentTask = project.tasks.register<Copy>("copyAgent") {
     from(agentDeps)
-    into("${project.layout.buildDirectory}/agent")
+    into("${project.layout.buildDirectory.dir("agent").get().asFile}")
     rename("applicationinsights-agent(.+).jar", "agent.jar")
 }
 
