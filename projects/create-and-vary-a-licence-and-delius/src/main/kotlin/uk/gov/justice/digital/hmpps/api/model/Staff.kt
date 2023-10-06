@@ -13,3 +13,8 @@ data class PDUHead(
     val name: Name,
     val email: String?
 )
+
+data class StaffName(
+    val name: Name,
+    val code: String
+)

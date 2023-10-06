@@ -4,6 +4,7 @@ import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.PDUHead
 import uk.gov.justice.digital.hmpps.api.model.Staff
+import uk.gov.justice.digital.hmpps.api.model.StaffName
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.BoroughRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
@@ -34,6 +35,11 @@ class StaffService(
                 pduHead.asPDUHead()
             }
         } ?: listOf()
+
+    fun findStaffForUsernames(usernames: List<String>): List<StaffName> =
+        staffRepository.findByUserUsernameIn(usernames).map {
+            it.asStaffName()
+        }
 }
 
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asStaff() = Staff(
@@ -48,4 +54,9 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asSta
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asPDUHead() = PDUHead(
     name(),
     user?.email
+)
+
+fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asStaffName() = StaffName(
+    name(),
+    code
 )
