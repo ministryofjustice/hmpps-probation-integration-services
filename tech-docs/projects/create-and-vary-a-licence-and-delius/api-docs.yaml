@@ -32,6 +32,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Staff'
+  /staff/{boroughCode}/pdu-head:
+    get:
+      tags:
+      - staff-resource
+      operationId: findPDUHead
+      parameters:
+      - name: boroughCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PDUHead'
   /probation-case/{crn}/responsible-community-manager:
     get:
       tags:
@@ -142,6 +162,15 @@ components:
           type: string
         district:
           $ref: '#/components/schemas/District'
+    PDUHead:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        email:
+          type: string
     Manager:
       required:
       - code

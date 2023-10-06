@@ -87,7 +87,7 @@ paths:
     get:
       tags:
       - User details
-      description: Get user details. Requires `ROLE_DELIUS_USER_AUTH`.
+      description: Get user details. Requires `ROLE_DELIUS_USER_AUTH` or `ROLE_DELIUS_USER_DETAILS`.
       operationId: getUserDetails
       parameters:
       - name: username
