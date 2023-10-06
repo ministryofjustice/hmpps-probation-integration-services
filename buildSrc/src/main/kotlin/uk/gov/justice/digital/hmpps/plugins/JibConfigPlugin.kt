@@ -30,11 +30,11 @@ class JibConfigPlugin : Plugin<Project> {
                 extraDirectories {
                     paths {
                         path {
-                            setFrom("${project.rootProject.buildDir}")
+                            setFrom("${project.rootProject.layout.buildDirectory}")
                             includes.add("agent/agent.jar")
                         }
                         path {
-                            setFrom("${project.buildDir}/agent")
+                            setFrom("${project.layout.buildDirectory}/agent")
                             includes.add("applicationinsights*.json")
                             into = "/agent"
                         }
@@ -45,7 +45,7 @@ class JibConfigPlugin : Plugin<Project> {
             val copyAgent = project.rootProject.tasks.named("copyAgent")
             val copyAppInsightsConfig = project.tasks.register<Copy>("copyAppInsightsConfig") {
                 from("${project.projectDir}/applicationinsights.json")
-                into("${project.buildDir}/agent")
+                into("${project.layout.buildDirectory}/agent")
             }
             val assemble = project.tasks.named("assemble")
             project.tasks.withType<BuildImageTask>().named("jib") {
@@ -70,13 +70,13 @@ class JibConfigPlugin : Plugin<Project> {
                 dependsOn(copyAgent, copyAppInsightsConfig, assemble)
                 inputs.dir("deploy")
                 inputs.files(
-                    "${project.buildDir}/agent",
-                    "${project.buildDir}/classes",
-                    "${project.buildDir}/generated",
-                    "${project.buildDir}/resources",
+                    "${project.layout.buildDirectory}/agent",
+                    "${project.layout.buildDirectory}/classes",
+                    "${project.layout.buildDirectory}/generated",
+                    "${project.layout.buildDirectory}/resources",
                     project.configurations[jib!!.configurationName.get()].resolvedConfiguration.files
                 )
-                outputs.file("${project.buildDir}/jib-image.id")
+                outputs.file("${project.layout.buildDirectory}/jib-image.id")
                 outputs.cacheIf { true }
             }
         }
