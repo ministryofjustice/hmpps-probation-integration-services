@@ -161,7 +161,7 @@ jobs:
           all_projects: ${{ env.projects }}
       - name: Publish JUnit report
         if: always()
-        uses: mikepenz/action-junit-report@150e2f992e4fad1379da2056d1d1c279f520e058 # v3.8.0
+        uses: mikepenz/action-junit-report@0a8a5ba57593d67b2e45de2c543b438412382b7b # v4.0.1
         id: junit
         with:
           check_name: End-to-end test results
