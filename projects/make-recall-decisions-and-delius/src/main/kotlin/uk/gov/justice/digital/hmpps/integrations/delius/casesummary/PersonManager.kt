@@ -10,6 +10,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 
 @Immutable
 @Table(name = "offender_manager")
@@ -95,21 +96,6 @@ class District(
     @Id
     @Column(name = "district_id")
     val id: Long = 0,
-
-    @Column
-    val description: String
-)
-
-@Immutable
-@Table(name = "probation_area")
-@Entity(name = "CaseSummaryProvider")
-class Provider(
-    @Id
-    @Column(name = "probation_area_id")
-    val id: Long,
-
-    @Column(name = "code", columnDefinition = "char(3)")
-    val code: String,
 
     @Column
     val description: String

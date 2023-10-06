@@ -14,11 +14,11 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
 import org.springframework.ldap.core.LdapTemplate
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.access.UserAccessRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.details.UserDetailsRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.details.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.user.details.entity.UserDetails
-import uk.gov.justice.digital.hmpps.integrations.delius.user.details.entity.UserDetailsProviderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.ldap.entity.LdapUser
 import javax.naming.ldap.LdapName
 
@@ -28,7 +28,7 @@ internal class UserServiceTest {
     lateinit var userDetailsRepository: UserDetailsRepository
 
     @Mock
-    lateinit var userDetailsProviderRepository: UserDetailsProviderRepository
+    lateinit var providerRepository: ProviderRepository
 
     @Mock
     lateinit var userAccessRepository: UserAccessRepository
@@ -59,7 +59,7 @@ internal class UserServiceTest {
         )
         whenever(userDetailsRepository.findByUsername(username))
             .thenReturn(UserDetails(1, username, "forename", "forename2", "surname", null))
-        whenever(userDetailsProviderRepository.findByCode("N01"))
+        whenever(providerRepository.findByCode("N01"))
             .thenReturn(Provider(1, "N01", "London"))
         whenever(ldapTemplate.find(any(), eq(LdapUser::class.java))).thenReturn(listOf(ldapUser))
 

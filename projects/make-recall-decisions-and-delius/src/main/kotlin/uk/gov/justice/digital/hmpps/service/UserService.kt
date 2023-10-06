@@ -6,9 +6,9 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.Provider
 import uk.gov.justice.digital.hmpps.api.model.UserDetails
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProviderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.access.UserAccessRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.details.UserDetailsRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.user.details.entity.UserDetailsProviderRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.user.ldap.entity.LdapUser
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 
@@ -16,7 +16,7 @@ import uk.gov.justice.digital.hmpps.ldap.findByUsername
 class UserService(
     private val userDetailsRepository: UserDetailsRepository,
     private val userAccessRepository: UserAccessRepository,
-    private val userDetailsProviderRepository: UserDetailsProviderRepository,
+    private val providerRepository: ProviderRepository,
     private val ldapTemplate: LdapTemplate
 ) {
     fun checkUserAccess(username: String, crn: String) = if (userAccessRepository.existsByCrn(crn)) {
@@ -33,7 +33,7 @@ class UserService(
             staffCode = user.staff?.code,
             email = ldapUser?.email,
             homeArea = ldapUser?.homeArea
-                ?.let(userDetailsProviderRepository::findByCode)
+                ?.let(providerRepository::findByCode)
                 ?.let { Provider(it.code, it.description) }
         )
     }
