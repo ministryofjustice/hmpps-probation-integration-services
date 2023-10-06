@@ -33,5 +33,8 @@ class Team(
         joinColumns = [JoinColumn(name = "team_id")],
         inverseJoinColumns = [JoinColumn(name = "approved_premises_id")]
     )
-    val approvedPremises: ApprovedPremises?
+    val approvedPremises: ApprovedPremises?,
+
+    @Column(name = "district_id")
+    val districtId: Long
 )

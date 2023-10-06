@@ -80,7 +80,8 @@ class DataLoader(
     private val caseloadRepository: CaseloadRepository,
     private val registrationRepository: RegistrationRepository,
     private val referralRepository: ReferralRepository,
-    private val probationCaseDataLoader: ProbationCaseDataLoader
+    private val probationCaseDataLoader: ProbationCaseDataLoader,
+    private val lduRepository: LduRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -110,6 +111,7 @@ class DataLoader(
         approvedPremisesRepository.save(ApprovedPremisesGenerator.NO_STAFF)
         officeLocationRepository.save(OfficeLocationGenerator.DEFAULT)
 
+        lduRepository.save(TeamGenerator.AP_TEAM_LDU)
         teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM)
         teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM_WITH_NO_STAFF)
         teamRepository.save(TeamGenerator.NON_APPROVED_PREMISES_TEAM)
