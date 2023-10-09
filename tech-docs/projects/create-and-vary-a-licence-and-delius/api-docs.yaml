@@ -14,6 +14,28 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /staff:
+    post:
+      tags:
+      - staff-resource
+      operationId: findStaffForUsernames
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StaffName'
   /staff/{username}:
     get:
       tags:
@@ -92,6 +114,28 @@ paths:
                   $ref: '#/components/schemas/Address'
 components:
   schemas:
+    Name:
+      required:
+      - forename
+      - surname
+      type: object
+      properties:
+        forename:
+          type: string
+        middleName:
+          type: string
+        surname:
+          type: string
+    StaffName:
+      required:
+      - code
+      - name
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        code:
+          type: string
     Borough:
       required:
       - code
@@ -115,18 +159,6 @@ components:
           type: string
         borough:
           $ref: '#/components/schemas/Borough'
-    Name:
-      required:
-      - forename
-      - surname
-      type: object
-      properties:
-        forename:
-          type: string
-        middleName:
-          type: string
-        surname:
-          type: string
     Staff:
       required:
       - code

@@ -291,6 +291,16 @@ components:
           type: boolean
         currentRestriction:
           type: boolean
+    Ldu:
+      required:
+      - code
+      - name
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
     Manager:
       required:
       - team
@@ -327,6 +337,7 @@ components:
     Team:
       required:
       - code
+      - ldu
       - name
       type: object
       properties:
@@ -334,6 +345,8 @@ components:
           type: string
         name:
           type: string
+        ldu:
+          $ref: '#/components/schemas/Ldu'
     TeamCodeResponse:
       required:
       - teamCodes
@@ -487,15 +500,15 @@ components:
           format: int32
         sort:
           $ref: '#/components/schemas/SortObject'
-        first:
-          type: boolean
-        last:
-          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: '#/components/schemas/PageableObject'
+        first:
+          type: boolean
+        last:
+          type: boolean
         empty:
           type: boolean
     PageableObject:

@@ -379,7 +379,11 @@
       "manager": {
         "team": {
           "code": "string",
-          "name": "string"
+          "name": "string",
+          "ldu": {
+            "code": "string",
+            "name": "string"
+          }
         }
       },
       "currentExclusion": "boolean",
@@ -444,7 +448,11 @@
       "manager": {
         "team": {
           "code": "string",
-          "name": "string"
+          "name": "string",
+          "ldu": {
+            "code": "string",
+            "name": "string"
+          }
         }
       },
       "currentExclusion": "boolean",
@@ -616,7 +624,11 @@
     "manager": {
       "team": {
         "code": "string",
-        "name": "string"
+        "name": "string",
+        "ldu": {
+          "code": "string",
+          "name": "string"
+        }
       }
     },
     "currentExclusion": "boolean",
@@ -828,8 +840,6 @@
     "sorted": "boolean",
     "unsorted": "boolean"
   },
-  "first": "boolean",
-  "last": "boolean",
   "numberOfElements": "integer",
   "pageable": {
     "offset": "integer",
@@ -843,6 +853,8 @@
     "pageSize": "integer",
     "unpaged": "boolean"
   },
+  "first": "boolean",
+  "last": "boolean",
   "empty": "boolean"
 }</code></pre>
 
@@ -1068,6 +1080,38 @@
 </tbody>
 </table>
 
+<h3 id="schema-ldu">Ldu</h3>
+
+
+<table class='schema-ldu'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-manager">Manager</h3>
 
 
@@ -1210,6 +1254,16 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+<tr>
+<td>ldu</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-ldu'>Ldu</a>
 </td>
 </tr>
 
@@ -1674,26 +1728,6 @@
 </tr>
 
 <tr>
-<td>first</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>last</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
 <td>numberOfElements</td>
 <td>integer</td>
 <td>false</td>
@@ -1710,6 +1744,26 @@
 <td></td>
 <td>
   <a href='#schema-pageableobject'>PageableObject</a>
+</td>
+</tr>
+
+<tr>
+<td>first</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>last</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 
