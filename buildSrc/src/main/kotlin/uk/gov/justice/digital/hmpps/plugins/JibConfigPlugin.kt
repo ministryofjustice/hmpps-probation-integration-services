@@ -30,11 +30,11 @@ class JibConfigPlugin : Plugin<Project> {
                 extraDirectories {
                     paths {
                         path {
-                            setFrom("${project.rootProject.layout.buildDirectory}")
+                            setFrom("${project.rootProject.layout.buildDirectory.get().asFile}")
                             includes.add("agent/agent.jar")
                         }
                         path {
-                            setFrom("${project.layout.buildDirectory}/agent")
+                            setFrom("${project.layout.buildDirectory.dir("agent").get().asFile}")
                             includes.add("applicationinsights*.json")
                             into = "/agent"
                         }
@@ -45,7 +45,7 @@ class JibConfigPlugin : Plugin<Project> {
             val copyAgent = project.rootProject.tasks.named("copyAgent")
             val copyAppInsightsConfig = project.tasks.register<Copy>("copyAppInsightsConfig") {
                 from("${project.projectDir}/applicationinsights.json")
-                into("${project.layout.buildDirectory}/agent")
+                into("${project.layout.buildDirectory.dir("agent").get().asFile}")
             }
             val assemble = project.tasks.named("assemble")
             project.tasks.withType<BuildImageTask>().named("jib") {
@@ -69,14 +69,15 @@ class JibConfigPlugin : Plugin<Project> {
                 }
                 dependsOn(copyAgent, copyAppInsightsConfig, assemble)
                 inputs.dir("deploy")
+                val buildDir = project.layout.buildDirectory.get().asFile.path
                 inputs.files(
-                    "${project.layout.buildDirectory}/agent",
-                    "${project.layout.buildDirectory}/classes",
-                    "${project.layout.buildDirectory}/generated",
-                    "${project.layout.buildDirectory}/resources",
+                    "$buildDir/agent",
+                    "$buildDir/classes",
+                    "$buildDir/generated",
+                    "$buildDir/resources",
                     project.configurations[jib!!.configurationName.get()].resolvedConfiguration.files
                 )
-                outputs.file("${project.layout.buildDirectory}/jib-image.id")
+                outputs.file("$buildDir/jib-image.id")
                 outputs.cacheIf { true }
             }
         }
