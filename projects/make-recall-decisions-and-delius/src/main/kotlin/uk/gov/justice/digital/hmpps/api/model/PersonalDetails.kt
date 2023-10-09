@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.api.model
 
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.PersonManager
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Team
 import java.time.LocalDate
 
@@ -33,10 +32,6 @@ data class PersonalDetails(
         val provider: Provider,
         val team: Team
     ) {
-        data class Provider(
-            val code: String,
-            val name: String
-        )
         data class Team(
             val code: String,
             val name: String,
@@ -48,7 +43,6 @@ data class PersonalDetails(
 }
 
 fun Team.toTeam() = PersonalDetails.Manager.Team(code, description, localAdminUnit = district.description, telephone, emailAddress)
-fun Provider.toProvider() = PersonalDetails.Manager.Provider(code, description)
 fun PersonManager.toManager() = PersonalDetails.Manager(
     staffCode = staff.code,
     name = staff.name(),

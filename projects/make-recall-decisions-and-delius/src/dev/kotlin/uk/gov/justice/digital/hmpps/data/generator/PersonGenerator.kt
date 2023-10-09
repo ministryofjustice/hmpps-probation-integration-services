@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.District
-import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.person.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
