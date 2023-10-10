@@ -31,4 +31,15 @@ class StaffController(
         @RequestParam(required = false, defaultValue = "false") keyWorker: Boolean,
         @PageableDefault(value = 100) pageable: Pageable = Pageable.ofSize(100)
     ) = staffService.getStaffInApprovedPremises(code, keyWorker, pageable)
+
+    @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_STAFF')")
+    @Operation(
+        summary = "Get the staff name by username",
+        description = """Returns the Staff name associated with the given username.
+            """
+    )
+    @GetMapping(value = ["/staff/{userName}"])
+    fun getStaffByUsername(
+        @PathVariable userName: String
+    ) = staffService.getStaffByUsername(userName)
 }

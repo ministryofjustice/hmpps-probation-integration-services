@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.Approve
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.model.PersonName
+import uk.gov.justice.digital.hmpps.model.StaffDetail
 import uk.gov.justice.digital.hmpps.model.StaffGrade
 import uk.gov.justice.digital.hmpps.model.StaffResponse
 
@@ -18,7 +19,11 @@ class StaffService(
     private val staffRepository: StaffRepository
 ) {
     @Transactional
-    fun getStaffInApprovedPremises(approvedPremisesCode: String, keyWorkersOnly: Boolean, pageable: Pageable): Page<StaffResponse> {
+    fun getStaffInApprovedPremises(
+        approvedPremisesCode: String,
+        keyWorkersOnly: Boolean,
+        pageable: Pageable
+    ): Page<StaffResponse> {
         if (!approvedPremisesRepository.existsByCodeCode(approvedPremisesCode)) {
             throw NotFoundException("Approved Premises", "code", approvedPremisesCode)
         }
@@ -34,10 +39,23 @@ class StaffService(
         }
     }
 
+    fun getStaffByUsername(username: String) =
+        staffRepository.findByUserUsername(username)?.toStaffDetail() ?: throw NotFoundException(
+            "Staff",
+            "username",
+            username
+        )
+
     fun Staff.toResponse(approvedPremisesCode: String) = StaffResponse(
         code = code,
         name = PersonName(forename, surname, middleName),
         grade = grade?.let { grade -> StaffGrade(grade.code, grade.description) },
         keyWorker = approvedPremises.map { ap -> ap.code.code }.contains(approvedPremisesCode)
+    )
+
+    fun Staff.toStaffDetail() = StaffDetail(
+        user!!.username,
+        PersonName(forename, surname, middleName),
+        code
     )
 }

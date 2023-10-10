@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.staff
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -33,6 +34,9 @@ interface StaffRepository : JpaRepository<Staff, Long> {
     ): Page<Staff>
 
     fun findByCode(code: String): Staff?
+
+    @EntityGraph(attributePaths = ["user"])
+    fun findByUserUsername(username: String): Staff?
 }
 
 fun StaffRepository.getByCode(code: String): Staff =
