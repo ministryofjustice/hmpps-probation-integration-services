@@ -49,6 +49,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationA
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffUser
 import uk.gov.justice.digital.hmpps.integrations.delius.team.TeamRepository
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
@@ -81,7 +82,8 @@ class DataLoader(
     private val registrationRepository: RegistrationRepository,
     private val referralRepository: ReferralRepository,
     private val probationCaseDataLoader: ProbationCaseDataLoader,
-    private val lduRepository: LduRepository
+    private val lduRepository: LduRepository,
+    private val staffUserRepository: StaffUserRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -147,6 +149,9 @@ class DataLoader(
             )
         )
 
+        staffRepository.save(StaffGenerator.DEFAULT_STAFF)
+        staffUserRepository.save(StaffGenerator.DEFAULT_STAFF_USER)
+
         val personManagerStaff = StaffGenerator.generate(code = "N54A001")
         staffRepository.save(personManagerStaff)
         val person = PersonGenerator.DEFAULT
@@ -193,3 +198,5 @@ interface DatasetRepository : JpaRepository<Dataset, Long>
 interface ProbationAreaRepository : JpaRepository<ProbationArea, Long>
 interface AddressRepository : JpaRepository<Address, Long>
 interface RegisterTypeRepository : JpaRepository<RegisterType, Long>
+
+interface StaffUserRepository : JpaRepository<StaffUser, Long>

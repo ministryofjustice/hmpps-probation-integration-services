@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 
 @AutoConfigureMockMvc
@@ -59,5 +60,16 @@ class StaffControllerIntegrationTest {
             .andExpect(jsonPath("$.numberOfElements", equalTo(1)))
             .andExpect(jsonPath("$.content[*].name.surname", equalTo(listOf("Key-worker"))))
             .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(true))))
+    }
+
+    @Test
+    fun `Get staff by username`() {
+        val username = StaffGenerator.DEFAULT_STAFF.user!!.username
+        mockMvc.perform(get("/staff/$username").withOAuth2Token(wireMockServer))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.username", equalTo(username)))
+            .andExpect(jsonPath("$.name.surname", equalTo(StaffGenerator.DEFAULT_STAFF.surname)))
+            .andExpect(jsonPath("$.name.forename", equalTo(StaffGenerator.DEFAULT_STAFF.forename)))
+            .andExpect(jsonPath("$.code", equalTo(StaffGenerator.DEFAULT_STAFF.code)))
     }
 }

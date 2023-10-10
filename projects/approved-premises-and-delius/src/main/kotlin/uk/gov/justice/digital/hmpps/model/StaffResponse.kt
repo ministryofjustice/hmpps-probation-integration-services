@@ -17,3 +17,9 @@ data class StaffGrade(
     val code: String,
     val description: String
 )
+
+data class StaffDetail(
+    val username: String,
+    val name: PersonName,
+    val code: String,
+)
