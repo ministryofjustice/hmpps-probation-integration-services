@@ -121,6 +121,12 @@
         <a href="./api-reference.html#user-username-access-crn"><span>/user/{username}/access/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#provider"><span>/provider</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#provider-code"><span>/provider/{code}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#document-crn-id"><span>/document/{crn}/{id}</span></a>
       </li>
       <li>
@@ -320,6 +326,110 @@
 </td>
 <td>
 <a href='#schema-useraccess'>UserAccess</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="provider">/provider</h2>
+
+<h3 id="provider-get">get</h3>
+
+  <p><em>List active providers</em></p>
+
+
+
+
+
+
+
+<h4 id="provider-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="provider-code">/provider/{code}</h2>
+
+<h3 id="provider-code-get">get</h3>
+
+  <p><em>Provider details by code</em></p>
+
+
+
+
+<h4 id="provider-code-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="provider-code-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "code": "string",
+  "name": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-provider'>Provider</a>
 </td>
 </tr>
 

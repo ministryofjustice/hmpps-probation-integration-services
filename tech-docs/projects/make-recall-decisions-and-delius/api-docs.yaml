@@ -63,6 +63,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserAccess'
+  /provider:
+    get:
+      tags:
+      - Providers
+      summary: List active providers
+      operationId: getProviders
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Provider'
+  /provider/{code}:
+    get:
+      tags:
+      - Providers
+      summary: Provider details by code
+      operationId: getProvider
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Provider'
   /document/{crn}/{id}:
     get:
       tags:
