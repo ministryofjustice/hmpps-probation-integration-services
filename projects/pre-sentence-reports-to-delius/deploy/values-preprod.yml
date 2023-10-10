@@ -1,5 +1,3 @@
-enabled: false
-
 generic-service:
   ingress:
     host: pre-sentence-reports-to-delius-preprod.hmpps.service.justice.gov.uk
