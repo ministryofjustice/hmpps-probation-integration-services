@@ -21,5 +21,5 @@ data class StaffGrade(
 data class StaffDetail(
     val username: String,
     val name: PersonName,
-    val code: String,
+    val code: String
 )
