@@ -124,6 +124,9 @@
         <a href="./api-reference.html#teams-managingcase-crn"><span>/teams/managingCase/{crn}</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#staff-username"><span>/staff/{userName}</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#probation-cases-crn-details"><span>/probation-cases/{crn}/details</span></a>
       </li>
       <li>
@@ -557,6 +560,77 @@
 
 
 
+<h2 id="staff-username">/staff/{userName}</h2>
+
+<h3 id="staff-username-get">get</h3>
+
+  <p><em>Get the staff name by username</em></p>
+
+
+  <p>Returns the Staff name associated with the given username.</p>
+
+
+
+
+<h4 id="staff-username-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>userName</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="staff-username-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "username": "string",
+  "name": {
+    "forename": "string",
+    "surname": "string",
+    "middleName": "string"
+  },
+  "code": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-staffdetail'>StaffDetail</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 <h2 id="probation-cases-crn-details">/probation-cases/{crn}/details</h2>
 
 <h3 id="probation-cases-crn-details-get">get</h3>
@@ -840,6 +914,8 @@
     "sorted": "boolean",
     "unsorted": "boolean"
   },
+  "first": "boolean",
+  "last": "boolean",
   "numberOfElements": "integer",
   "pageable": {
     "offset": "integer",
@@ -853,8 +929,6 @@
     "pageSize": "integer",
     "unpaged": "boolean"
   },
-  "first": "boolean",
-  "last": "boolean",
   "empty": "boolean"
 }</code></pre>
 
@@ -1282,6 +1356,90 @@
 <tr>
 <td>teamCodes</td>
 <td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-personname">PersonName</h3>
+
+
+<table class='schema-personname'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>forename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>middleName</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-staffdetail">StaffDetail</h3>
+
+
+<table class='schema-staffdetail'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-personname'>PersonName</a>
+</td>
+</tr>
+
+<tr>
+<td>code</td>
+<td>string</td>
 <td>true</td>
 <td></td>
 <td>
@@ -1728,26 +1886,6 @@
 </tr>
 
 <tr>
-<td>numberOfElements</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>pageable</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-pageableobject'>PageableObject</a>
-</td>
-</tr>
-
-<tr>
 <td>first</td>
 <td>boolean</td>
 <td>false</td>
@@ -1764,6 +1902,26 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+<tr>
+<td>numberOfElements</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pageable</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-pageableobject'>PageableObject</a>
 </td>
 </tr>
 
@@ -1842,48 +2000,6 @@
 <tr>
 <td>unpaged</td>
 <td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-</tbody>
-</table>
-
-<h3 id="schema-personname">PersonName</h3>
-
-
-<table class='schema-personname'>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
-</thead>
-<tbody>
-
-<tr>
-<td>forename</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>surname</td>
-<td>string</td>
-<td>true</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>middleName</td>
-<td>string</td>
 <td>false</td>
 <td></td>
 <td>

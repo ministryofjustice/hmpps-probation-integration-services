@@ -151,6 +151,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TeamCodeResponse'
+  /staff/{userName}:
+    get:
+      tags:
+      - staff-controller
+      summary: Get the staff name by username
+      description: "Returns the Staff name associated with the given username.\n \
+        \           "
+      operationId: getStaffByUsername
+      parameters:
+      - name: userName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffDetail'
   /probation-cases/{crn}/details:
     get:
       tags:
@@ -356,6 +377,31 @@ components:
           type: array
           items:
             type: string
+    PersonName:
+      required:
+      - forename
+      - surname
+      type: object
+      properties:
+        forename:
+          type: string
+        surname:
+          type: string
+        middleName:
+          type: string
+    StaffDetail:
+      required:
+      - code
+      - name
+      - username
+      type: object
+      properties:
+        username:
+          type: string
+        name:
+          $ref: '#/components/schemas/PersonName'
+        code:
+          type: string
     CaseDetail:
       required:
       - case
@@ -500,15 +546,15 @@ components:
           format: int32
         sort:
           $ref: '#/components/schemas/SortObject'
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: '#/components/schemas/PageableObject'
-        first:
-          type: boolean
-        last:
-          type: boolean
         empty:
           type: boolean
     PageableObject:
@@ -529,18 +575,6 @@ components:
           format: int32
         unpaged:
           type: boolean
-    PersonName:
-      required:
-      - forename
-      - surname
-      type: object
-      properties:
-        forename:
-          type: string
-        surname:
-          type: string
-        middleName:
-          type: string
     SortObject:
       type: object
       properties:
