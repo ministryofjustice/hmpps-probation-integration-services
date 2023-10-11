@@ -1163,7 +1163,7 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="LAST_CAPTURE" nullable="true" remarks="" size="7" type="DATE" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="NEXT_CAPTURE" nullable="true" remarks="" size="7" type="DATE" typeCode="93"/>
       </table>
-      <table name="AUDITED_INTERACTION" numRows="703496" remarks="" schema="DELIUS_APP_SCHEMA" type="TABLE">
+      <table name="AUDITED_INTERACTION" numRows="703606" remarks="" schema="DELIUS_APP_SCHEMA" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="DATE_TIME" nullable="false" remarks="" size="7" type="DATE" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="OUTCOME" nullable="false" remarks="" size="1" type="CHAR" typeCode="1"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="INTERACTION_PARAMETERS" nullable="true" remarks="" size="4000" type="VARCHAR2" typeCode="12"/>
