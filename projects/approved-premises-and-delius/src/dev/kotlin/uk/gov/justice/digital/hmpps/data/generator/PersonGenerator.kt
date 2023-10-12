@@ -14,6 +14,7 @@ import java.time.ZonedDateTime
 object PersonGenerator {
     val DEFAULT = generate(crn = "A000001")
     val EVENT = generateEvent("7", DEFAULT.id)
+    val ANOTHER_EVENT = generateEvent("8", DEFAULT.id)
     fun generate(
         crn: String,
         id: Long = IdGenerator.getAndIncrement()

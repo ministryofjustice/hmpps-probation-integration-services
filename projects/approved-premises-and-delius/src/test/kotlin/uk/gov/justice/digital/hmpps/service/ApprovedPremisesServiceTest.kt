@@ -558,7 +558,7 @@ internal class ApprovedPremisesServiceTest {
         whenever(transferReasonRepository.findByCode("NSI"))
             .thenReturn(TransferReason(IdGenerator.getAndIncrement(), "NSI"))
         types.forEach {
-            whenever(nsiTypeRepository.findByCode(it.code)).thenReturn(NsiType(IdGenerator.getAndIncrement(), it.code))
+            whenever(nsiTypeRepository.findByCode(it.code)).thenReturn(NsiType(IdGenerator.getAndIncrement(), it.code, "description of ${it.code}"))
         }
         statuses.forEach {
             whenever(nsiStatusRepository.findByCode(it.code))

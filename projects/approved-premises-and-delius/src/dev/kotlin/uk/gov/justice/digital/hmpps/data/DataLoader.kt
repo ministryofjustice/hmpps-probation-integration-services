@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.data.generator.NsiStatusGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator.ANOTHER_EVENT
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
@@ -188,6 +189,7 @@ class DataLoader(
         caseloadRepository.save(CaseloadGenerator.generate(person, TeamGenerator.APPROVED_PREMISES_TEAM))
         caseloadRepository.save(CaseloadGenerator.generate(person, TeamGenerator.UNALLOCATED))
 
+        eventRepository.save(ANOTHER_EVENT)
         referralRepository.save(ReferralGenerator.EXISTING_REFERRAL)
 
         probationCaseDataLoader.loadData()
