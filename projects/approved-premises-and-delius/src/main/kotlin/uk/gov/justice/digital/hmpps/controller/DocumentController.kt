@@ -34,7 +34,7 @@ class DocumentController(private val documentService: DocumentService) {
             to a probation practitioner
         """
     )
-    @GetMapping
+    @GetMapping(value = ["/all"])
     fun findDocuments(@PathVariable crn: String): List<APDocument> =
         documentService.getDocumentsByCrn(crn)
 }

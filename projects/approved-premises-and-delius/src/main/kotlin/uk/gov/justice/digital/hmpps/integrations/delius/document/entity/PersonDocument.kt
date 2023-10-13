@@ -2,18 +2,10 @@ package uk.gov.justice.digital.hmpps.integrations.delius.document.entity
 
 import java.time.ZonedDateTime
 
-data class PersonDocument(
-    val id: String?,
-    val name: String,
-    val relatedTo: RelatedTo,
-    val dateSaved: ZonedDateTime?,
-    val dateCreated: ZonedDateTime?,
-    val sensitive: Boolean
-)
-
 data class APDocument(
     val id: String?,
     val level: String,
+    val eventNumber: String?,
     val filename: String,
     val typeCode: String,
     val typeDescription: String,

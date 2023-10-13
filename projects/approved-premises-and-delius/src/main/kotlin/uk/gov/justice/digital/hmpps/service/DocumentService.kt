@@ -51,8 +51,9 @@ class DocumentService(
                 APDocument(
                     it.alfrescoId,
                     if (it.findRelatedTo().event == null) "Offender" else "Conviction",
+                    it.findRelatedTo().event?.eventNumber,
                     it.name,
-                    it.findRelatedTo().name,
+                    it.findRelatedTo().type.name,
                     it.findRelatedTo().description,
                     it.createdDate,
                     it.lastSaved,

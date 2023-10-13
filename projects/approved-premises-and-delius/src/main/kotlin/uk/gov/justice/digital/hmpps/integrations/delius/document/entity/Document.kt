@@ -34,7 +34,7 @@ abstract class Document : Relatable {
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
-    open val person: Person? = null
+    open var person: Person? = null
 
     @Column(name = "primary_key_id")
     open var primaryKeyId: Long = 0

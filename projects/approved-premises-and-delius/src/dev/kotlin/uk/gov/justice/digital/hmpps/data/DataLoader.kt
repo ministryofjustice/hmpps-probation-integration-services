@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactOutcomeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator
+import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiStatusGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NsiTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
@@ -35,6 +36,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.caseload.CaseloadReposit
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.outcome.ContactOutcomeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.type.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.location.OfficeLocationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiStatusRepository
@@ -84,7 +86,8 @@ class DataLoader(
     private val referralRepository: ReferralRepository,
     private val probationCaseDataLoader: ProbationCaseDataLoader,
     private val lduRepository: LduRepository,
-    private val staffUserRepository: StaffUserRepository
+    private val staffUserRepository: StaffUserRepository,
+    private val documentRepository: DocumentRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -191,6 +194,8 @@ class DataLoader(
 
         eventRepository.save(ANOTHER_EVENT)
         referralRepository.save(ReferralGenerator.EXISTING_REFERRAL)
+
+        documentRepository.save(DocumentGenerator.EVENT_DOC)
 
         probationCaseDataLoader.loadData()
     }
