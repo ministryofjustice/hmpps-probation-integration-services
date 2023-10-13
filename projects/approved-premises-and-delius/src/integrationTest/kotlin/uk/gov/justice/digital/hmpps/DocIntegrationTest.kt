@@ -46,13 +46,16 @@ internal class DocIntegrationTest {
     fun `list documents`() {
         mockMvc.perform(get("/document/${PersonGenerator.DEFAULT.crn}/all").withOAuth2Token(wireMockserver))
             .andExpect(status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].id",Matchers.equalTo("uuid1")))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].level",Matchers.equalTo("Conviction")))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].eventNumber",Matchers.equalTo("8")))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].filename",Matchers.equalTo("test.doc")))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].typeCode",Matchers.equalTo("EVENT")))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].typeDescription",Matchers.equalTo("Event")))
-
-
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Matchers.equalTo("uuid1")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].level", Matchers.equalTo("Conviction")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].eventNumber", Matchers.equalTo("8")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].filename", Matchers.equalTo("test.doc")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].typeCode", Matchers.equalTo("EVENT")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].typeDescription", Matchers.equalTo("Event")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[1].id", Matchers.equalTo("uuid2")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[1].level", Matchers.equalTo("Offender")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[1].filename", Matchers.equalTo("offender.doc")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[1].typeCode", Matchers.equalTo("PERSON")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[1].typeDescription", Matchers.equalTo("Person")))
     }
 }

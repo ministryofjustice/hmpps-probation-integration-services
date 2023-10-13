@@ -196,6 +196,7 @@ class DataLoader(
         referralRepository.save(ReferralGenerator.EXISTING_REFERRAL)
 
         documentRepository.save(DocumentGenerator.EVENT_DOC)
+        documentRepository.save(DocumentGenerator.PERSON_DOC)
 
         probationCaseDataLoader.loadData()
     }

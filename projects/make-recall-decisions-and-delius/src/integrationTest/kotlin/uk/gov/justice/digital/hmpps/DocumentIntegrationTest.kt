@@ -22,7 +22,7 @@ internal class DocumentIntegrationTest {
 
     @Test
     fun `document is downloaded`() {
-        mockMvc.perform(get("/document/A000001/uuid1").accept("application/octet-stream").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/document/X000004/uuid1").accept("application/octet-stream").withOAuth2Token(wireMockserver))
             .andExpect(status().is2xxSuccessful)
             .andExpect(header().string("Content-Type", "application/octet-stream"))
             .andExpect(header().string("Content-Disposition", "attachment; filename=\"=?UTF-8?Q?doc1?=\"; filename*=UTF-8''doc1"))
