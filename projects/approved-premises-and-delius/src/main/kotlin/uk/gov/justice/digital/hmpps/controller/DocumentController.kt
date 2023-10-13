@@ -29,9 +29,6 @@ class DocumentController(private val documentService: DocumentService) {
         description = """List of documents available in Delius for the probation
             case identified by the CRN provided in the request. Document list
             includes summary information on the type and purpose of document held.
-            Used to support the 'Document List' view of the HMPPS Workforce service
-            which is used to give detailed information on the case when allocating
-            to a probation practitioner
         """
     )
     @GetMapping(value = ["/all"])
