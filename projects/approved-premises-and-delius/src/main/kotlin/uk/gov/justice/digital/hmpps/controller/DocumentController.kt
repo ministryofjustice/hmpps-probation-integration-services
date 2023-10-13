@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.service.DocumentService
 
 @RestController
 @Tag(name = "Documents")
-@RequestMapping("/document/{crn}")
+@RequestMapping("/documents/{crn}")
 @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_STAFF')")
 class DocumentController(private val documentService: DocumentService) {
 

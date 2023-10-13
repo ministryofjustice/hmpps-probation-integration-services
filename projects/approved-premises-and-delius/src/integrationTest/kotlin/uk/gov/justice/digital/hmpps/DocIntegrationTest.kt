@@ -28,7 +28,7 @@ internal class DocIntegrationTest {
     @Test
     fun `document is downloaded`() {
         mockMvc.perform(
-            get("/document/A000001/uuid1").accept("application/octet-stream").withOAuth2Token(wireMockserver)
+            get("/documents/A000001/uuid1").accept("application/octet-stream").withOAuth2Token(wireMockserver)
         )
             .andExpect(status().is2xxSuccessful)
             .andExpect(header().string("Content-Type", "application/octet-stream"))
@@ -44,7 +44,7 @@ internal class DocIntegrationTest {
 
     @Test
     fun `list documents`() {
-        mockMvc.perform(get("/document/${PersonGenerator.DEFAULT.crn}/all").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/documents/${PersonGenerator.DEFAULT.crn}/all").withOAuth2Token(wireMockserver))
             .andExpect(status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Matchers.equalTo("uuid1")))
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].level", Matchers.equalTo("Conviction")))
