@@ -13,7 +13,7 @@ import org.hibernate.annotations.Immutable
 class AddressAssessment(
     @Id
     @Column(name = "address_assessment_id")
-    var id: Long,
+    val id: Long,
 
     @ManyToOne
     @JoinColumn(name = "offender_address_id", insertable = false, updatable = false)
@@ -26,7 +26,7 @@ class AddressAssessment(
 class DocPersonAddress(
     @Id
     @Column(name = "offender_address_id")
-    var id: Long,
+    val id: Long,
     val buildingName: String?,
     val addressNumber: String?,
     val streetName: String?

@@ -15,7 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceD
 class DocPersonalContact(
     @Id
     @Column(name = "personal_contact_id")
-    var id: Long,
+    val id: Long,
 
     @Column(name = "first_name")
     val forename: String,

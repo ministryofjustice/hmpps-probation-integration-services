@@ -14,7 +14,7 @@ import org.hibernate.annotations.Immutable
 class DocRegistration(
     @Id
     @Column(name = "registration_id")
-    var id: Long,
+    val id: Long,
 
     @ManyToOne
     @JoinColumn(name = "register_type_id", updatable = false)
@@ -27,7 +27,7 @@ class DocRegistration(
 class DocRegistrationType(
     @Id
     @Column(name = "REGISTER_TYPE_ID")
-    var id: Long,
+    val id: Long,
 
     @Column
     val description: String
