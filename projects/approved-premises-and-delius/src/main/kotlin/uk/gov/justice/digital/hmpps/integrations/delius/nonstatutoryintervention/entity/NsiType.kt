@@ -17,7 +17,9 @@ class NsiType(
     val id: Long = 0,
 
     @Column(name = "code")
-    val code: String
+    val code: String,
+
+    val description: String
 )
 
 enum class NsiTypeCode(val code: String) {

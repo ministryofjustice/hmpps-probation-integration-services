@@ -38,6 +38,7 @@ class Referral(
     @Column(name = "offender_id")
     val personId: Long,
 
+    @Column(name = "event_id")
     val eventId: Long,
     val approvedPremisesId: Long,
 

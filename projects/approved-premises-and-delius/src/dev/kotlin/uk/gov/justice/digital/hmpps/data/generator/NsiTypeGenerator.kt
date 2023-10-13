@@ -4,7 +4,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiType
 
 object NsiTypeGenerator {
-    fun generate(code: String, id: Long = IdGenerator.getAndIncrement()) = NsiType(id, code)
+    fun generate(code: String, id: Long = IdGenerator.getAndIncrement()) = NsiType(id, code, "description of $code")
 }
 
 object NsiStatusGenerator {
