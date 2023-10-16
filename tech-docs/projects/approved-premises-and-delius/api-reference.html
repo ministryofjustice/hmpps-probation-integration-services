@@ -133,6 +133,12 @@
         <a href="./api-reference.html#probation-case-crn-referrals"><span>/probation-case/{crn}/referrals</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#documents-crn-id"><span>/documents/{crn}/{id}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#documents-crn-all"><span>/documents/{crn}/all</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#approved-premises-code-staff"><span>/approved-premises/{code}/staff</span></a>
       </li>
       <li>
@@ -815,6 +821,143 @@
 
 
 
+<h2 id="documents-crn-id">/documents/{crn}/{id}</h2>
+
+<h3 id="documents-crn-id-get">get</h3>
+
+  <p><em>Download document content</em></p>
+
+
+
+
+<h4 id="documents-crn-id-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>id</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="documents-crn-id-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="documents-crn-all">/documents/{crn}/all</h2>
+
+<h3 id="documents-crn-all-get">get</h3>
+
+  <p><em>List of documents held in Delius for the probation case</em></p>
+
+
+  <p>List of documents available in Delius for the probation
+            case identified by the CRN provided in the request. Document list
+            includes summary information on the type and purpose of document held.</p>
+
+
+
+
+<h4 id="documents-crn-all-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="documents-crn-all-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 <h2 id="approved-premises-code-staff">/approved-premises/{code}/staff</h2>
 
 <h3 id="approved-premises-code-staff-get">get</h3>
@@ -914,6 +1057,8 @@
     "sorted": "boolean",
     "unsorted": "boolean"
   },
+  "first": "boolean",
+  "last": "boolean",
   "numberOfElements": "integer",
   "pageable": {
     "offset": "integer",
@@ -927,8 +1072,6 @@
     "pageSize": "integer",
     "unpaged": "boolean"
   },
-  "first": "boolean",
-  "last": "boolean",
   "empty": "boolean"
 }</code></pre>
 
@@ -1774,6 +1917,108 @@
 </tbody>
 </table>
 
+<h3 id="schema-apdocument">APDocument</h3>
+
+
+<table class='schema-apdocument'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>id</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>level</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>eventNumber</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>filename</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>typeCode</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>typeDescription</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateSaved</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>dateCreated</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 <h3 id="schema-pageable">Pageable</h3>
 
 
@@ -1886,26 +2131,6 @@
 </tr>
 
 <tr>
-<td>numberOfElements</td>
-<td>integer</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>pageable</td>
-<td>object</td>
-<td>false</td>
-<td></td>
-<td>
-  <a href='#schema-pageableobject'>PageableObject</a>
-</td>
-</tr>
-
-<tr>
 <td>first</td>
 <td>boolean</td>
 <td>false</td>
@@ -1922,6 +2147,26 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+<tr>
+<td>numberOfElements</td>
+<td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>pageable</td>
+<td>object</td>
+<td>false</td>
+<td></td>
+<td>
+  <a href='#schema-pageableobject'>PageableObject</a>
 </td>
 </tr>
 

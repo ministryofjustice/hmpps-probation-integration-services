@@ -208,6 +208,56 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ExistingReferrals'
+  /documents/{crn}/{id}:
+    get:
+      tags:
+      - Documents
+      summary: Download document content
+      operationId: downloadDocument
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+  /documents/{crn}/all:
+    get:
+      tags:
+      - Documents
+      summary: List of documents held in Delius for the probation case
+      description: "List of documents available in Delius for the probation\n    \
+        \        case identified by the CRN provided in the request. Document list\n\
+        \            includes summary information on the type and purpose of document\
+        \ held.\n        "
+      operationId: findDocuments
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/APDocument'
   /approved-premises/{code}/staff:
     get:
       tags:
@@ -510,6 +560,34 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ApReferral'
+    APDocument:
+      required:
+      - filename
+      - level
+      - typeCode
+      - typeDescription
+      type: object
+      properties:
+        id:
+          type: string
+        level:
+          type: string
+        eventNumber:
+          type: string
+        filename:
+          type: string
+        typeCode:
+          type: string
+        typeDescription:
+          type: string
+        dateSaved:
+          type: string
+          format: date-time
+        dateCreated:
+          type: string
+          format: date-time
+        description:
+          type: string
     Pageable:
       type: object
       properties:
@@ -546,15 +624,15 @@ components:
           format: int32
         sort:
           $ref: '#/components/schemas/SortObject'
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: '#/components/schemas/PageableObject'
-        first:
-          type: boolean
-        last:
-          type: boolean
         empty:
           type: boolean
     PageableObject:
