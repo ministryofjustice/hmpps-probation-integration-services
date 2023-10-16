@@ -80,6 +80,7 @@ class DocumentService(
         bodyBuilder.part("entityId", courtReportId.toString(), MediaType.TEXT_PLAIN)
         bodyBuilder.part("author", authorName, MediaType.TEXT_PLAIN)
         bodyBuilder.part("filedata", file, MediaType.APPLICATION_OCTET_STREAM).filename(filename)
+        bodyBuilder.part("fileName", filename, MediaType.TEXT_PLAIN)
         bodyBuilder.part("docType", "DOCUMENT", MediaType.TEXT_PLAIN)
         bodyBuilder.part("entityType", "COURTREPORT", MediaType.TEXT_PLAIN)
         if (locked) {
