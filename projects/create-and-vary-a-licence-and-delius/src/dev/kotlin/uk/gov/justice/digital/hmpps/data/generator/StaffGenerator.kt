@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.set
 object StaffGenerator {
     val PDUHEAD = generateStaff("N01BDT2", "Bob", "Smith")
     val DEFAULT_PDUSTAFF_USER = generateStaffUser("bob-smith", PDUHEAD)
-    var DEFAULT = generateStaff("N01BDT1", "John", "Smith")
+    var DEFAULT = generateStaff("N01BDT1", "John", "Smith", teams = listOf(ProviderGenerator.DEFAULT_TEAM))
     val DEFAULT_STAFF_USER = generateStaffUser("john-smith", DEFAULT)
 
     fun generateStaff(

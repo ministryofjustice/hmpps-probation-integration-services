@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/cvl/events/licence-condition-applied/df2d3748-2619-4e27-b864-946e125ffb3e"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200,
+    "bodyFileName": "licence-activated-L453621.json"
+  }
+}

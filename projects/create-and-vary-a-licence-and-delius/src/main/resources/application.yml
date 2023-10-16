@@ -30,6 +30,14 @@ spring:
     provider:
       hmpps-auth:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
+  cloud.openfeign.client.config:
+    default:
+      logger-level: full
+      connect-timeout: 5000
+      read-timeout: 5000
+      default-request-headers:
+        Accept: application/json
+        Content-Type: application/json
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: CreateAndVaryALicenceAndDelius # Should match value in [deploy/database/access.yml].
@@ -51,6 +59,12 @@ spring:
 seed.database: true
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+
+messaging.consumer.queue: message-queue
+
+oauth2:
+  client-id: create-and-vary-a-licence-and-delius
+  client-secret: create-and-vary-a-licence-and-delius
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
