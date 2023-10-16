@@ -198,7 +198,7 @@ class AdditionalOffence(
     val event: Event?,
 
     @Column(name = "offence_date")
-    val date: LocalDate,
+    val date: LocalDate?,
 
     @JoinColumn(name = "offence_id")
     @ManyToOne(cascade = [CascadeType.PERSIST])
