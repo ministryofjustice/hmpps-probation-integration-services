@@ -16,7 +16,7 @@ import java.time.LocalDate
 
 interface CaseOffence {
     val description: String
-    val date: LocalDate
+    val date: LocalDate?
     val main: Boolean
     val eventNumber: String
 }
@@ -61,7 +61,7 @@ class AdditionalOffence(
     val offence: Offence,
 
     @Column(name = "offence_date")
-    val date: LocalDate,
+    val date: LocalDate?,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
