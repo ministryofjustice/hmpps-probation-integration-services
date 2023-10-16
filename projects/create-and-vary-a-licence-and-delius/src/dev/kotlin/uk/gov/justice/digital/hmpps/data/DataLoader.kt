@@ -78,6 +78,7 @@ class DataLoader(
             ReferenceDataGenerator.LC_STANDARD_SUB_CATEGORY,
             ReferenceDataGenerator.LC_BESPOKE_CATEGORY,
             ReferenceDataGenerator.LC_BESPOKE_SUB_CATEGORY,
+            ReferenceDataGenerator.CONTACT_TYPE_LPOP,
             PersonGenerator.PERSON_CREATE_LC,
             SentenceGenerator.EVENT_CREATE_LC,
             SentenceGenerator.SENTENCE_CREATE_LC,

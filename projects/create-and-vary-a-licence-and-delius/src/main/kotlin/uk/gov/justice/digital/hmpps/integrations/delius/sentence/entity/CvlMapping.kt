@@ -29,10 +29,10 @@ class CvlMapping(
     val id: Long
 ) {
     companion object {
-        val STANDARD_CATEGORY_CODE = "StdMain"
-        val STANDARD_SUB_CATEGORY_CODE = "StdSub"
-        val BESPOKE_CATEGORY_CODE = "BesMain"
-        val BESPOKE_SUB_CATEGORY_CODE = "BesSub"
+        val STANDARD_CATEGORY_CODE = "SL1"
+        val STANDARD_SUB_CATEGORY_CODE = "SL1"
+        val BESPOKE_CATEGORY_CODE = "BESP"
+        val BESPOKE_SUB_CATEGORY_CODE = "NSTT9"
     }
 }
 

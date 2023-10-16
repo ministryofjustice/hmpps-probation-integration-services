@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMapping
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategory
@@ -25,6 +26,7 @@ object ReferenceDataGenerator {
             generateLcSubCategory("ADD2S")
         )
     )
+    val CONTACT_TYPE_LPOP = generateContactType(ContactType.LPOP)
 
     fun generateLcCategory(code: String, id: Long = IdGenerator.getAndIncrement()) = LicenceConditionCategory(code, id)
     fun generateDataset(code: String, id: Long = IdGenerator.getAndIncrement()) = Dataset(code, id)
@@ -44,4 +46,6 @@ object ReferenceDataGenerator {
         subCategory: ReferenceData,
         id: Long = IdGenerator.getAndIncrement()
     ) = CvlMapping(cvlCode, mainCategory, subCategory, id)
+
+    fun generateContactType(code: String, id: Long = IdGenerator.getAndIncrement()) = ContactType(code, id)
 }

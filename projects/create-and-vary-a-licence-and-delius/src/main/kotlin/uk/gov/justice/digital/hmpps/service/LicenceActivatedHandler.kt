@@ -15,7 +15,7 @@ class LicenceActivatedHandler(
         val (crn, url) = validateEvent(domainEvent)
         val activatedLicence = cvlClient.getActivatedLicence(url)
             ?: throw NotFoundException("Activated Licence", "detailUrl", url)
-        lca.applyLicenceConditions(crn, activatedLicence)
+        lca.applyLicenceConditions(crn, activatedLicence, domainEvent.occurredAt)
     } catch (e: Exception) {
         listOf(ActionResult.Failure(e))
     }

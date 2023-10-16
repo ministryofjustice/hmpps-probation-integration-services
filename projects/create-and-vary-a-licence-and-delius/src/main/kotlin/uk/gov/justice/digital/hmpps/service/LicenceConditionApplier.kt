@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Referenc
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCvlCode
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getLicenceConditionSubCategory
+import java.time.ZonedDateTime
 
 @Service
 class LicenceConditionApplier(
@@ -31,23 +32,30 @@ class LicenceConditionApplier(
     private val cvlMappingRepository: CvlMappingRepository,
     private val licenceConditionCategoryRepository: LicenceConditionCategoryRepository,
     private val referenceDataRepository: ReferenceDataRepository,
-    private val licenceConditionService: LicenceConditionService
+    private val licenceConditionService: LicenceConditionService,
+    private val contactService: ContactService
 ) {
     @Transactional
-    fun applyLicenceConditions(crn: String, activatedLicence: ActivatedLicence): List<ActionResult> {
+    fun applyLicenceConditions(
+        crn: String,
+        activatedLicence: ActivatedLicence,
+        occurredAt: ZonedDateTime
+    ): List<ActionResult> {
         val com = personManagerRepository.findByPersonCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
         return disposalRepository.findCustodialSentences(crn)
             .flatMap {
                 applyLicenceConditions(
                     SentencedCase(com, it, licenceConditionService.findByDisposalId(it.id)),
-                    activatedLicence
+                    activatedLicence,
+                    occurredAt
                 )
             }
     }
 
     private fun applyLicenceConditions(
         sentencedCase: SentencedCase,
-        activatedLicence: ActivatedLicence
+        activatedLicence: ActivatedLicence,
+        occurredAt: ZonedDateTime
     ): List<ActionResult> {
         val standardResult = activatedLicence.groupedConditions(
             sentencedCase,
@@ -64,7 +72,11 @@ class LicenceConditionApplier(
             activatedLicence.bespokeLicenceConditions,
             ActionResult.Type.BespokeLicenceConditionAdded
         )
-        return listOfNotNull(standardResult, additionalResult, bespokeResult).ifEmpty {
+        val results = listOfNotNull(standardResult, additionalResult, bespokeResult)
+        if (results.isNotEmpty()) {
+            contactService.createContact(sentencedCase.sentence, sentencedCase.com, occurredAt)
+        }
+        return results.ifEmpty {
             listOf(
                 ActionResult.Success(
                     ActionResult.Type.NoChangeToLicenceConditions,
