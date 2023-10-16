@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.cvl.ActivatedLicence
+import uk.gov.justice.digital.hmpps.integrations.cvl.Describable
 import uk.gov.justice.digital.hmpps.integrations.cvl.telemetryProperties
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
@@ -15,8 +16,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMappi
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceCondition
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionCategoryRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.LicenceConditionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getByCvlCode
@@ -26,7 +28,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.getLicen
 class LicenceConditionApplier(
     private val disposalRepository: DisposalRepository,
     private val personManagerRepository: PersonManagerRepository,
-    private val licenceConditionRepository: LicenceConditionRepository,
     private val cvlMappingRepository: CvlMappingRepository,
     private val licenceConditionCategoryRepository: LicenceConditionCategoryRepository,
     private val referenceDataRepository: ReferenceDataRepository,
@@ -36,49 +37,66 @@ class LicenceConditionApplier(
     fun applyLicenceConditions(crn: String, activatedLicence: ActivatedLicence): List<ActionResult> {
         val com = personManagerRepository.findByPersonCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
         return disposalRepository.findCustodialSentences(crn)
-            .flatMap { applyLicenceConditions(it, com, activatedLicence) }
+            .flatMap {
+                applyLicenceConditions(
+                    SentencedCase(com, it, licenceConditionService.findByDisposalId(it.id)),
+                    activatedLicence
+                )
+            }
     }
 
     private fun applyLicenceConditions(
-        disposal: Disposal,
-        com: PersonManager,
+        sentencedCase: SentencedCase,
         activatedLicence: ActivatedLicence
     ): List<ActionResult> {
-        val existingConditions = licenceConditionRepository.findByDisposalId(disposal.id)
-        val standardResult = activatedLicence.standardConditions(disposal, com, existingConditions)
-        val additionalResults = activatedLicence.additionalConditions(disposal, com, existingConditions)
-        val bespokeResult = activatedLicence.bespokeConditions(disposal, com, existingConditions)
-        return listOfNotNull(standardResult, additionalResults, bespokeResult).ifEmpty {
+        val standardResult = activatedLicence.groupedConditions(
+            sentencedCase,
+            licenceConditionCategoryRepository.getByCode(STANDARD_CATEGORY_CODE),
+            referenceDataRepository.getLicenceConditionSubCategory(STANDARD_SUB_CATEGORY_CODE),
+            activatedLicence.standardLicenceConditions,
+            ActionResult.Type.StandardLicenceConditionAdded
+        )
+        val additionalResult = activatedLicence.additionalConditions(sentencedCase)
+        val bespokeResult = activatedLicence.groupedConditions(
+            sentencedCase,
+            licenceConditionCategoryRepository.getByCode(BESPOKE_CATEGORY_CODE),
+            referenceDataRepository.getLicenceConditionSubCategory(BESPOKE_SUB_CATEGORY_CODE),
+            activatedLicence.bespokeLicenceConditions,
+            ActionResult.Type.BespokeLicenceConditionAdded
+        )
+        return listOfNotNull(standardResult, additionalResult, bespokeResult).ifEmpty {
             listOf(
                 ActionResult.Success(
                     ActionResult.Type.NoChangeToLicenceConditions,
-                    activatedLicence.telemetryProperties(disposal.event.number)
+                    activatedLicence.telemetryProperties(sentencedCase.sentence.event.number)
                 )
             )
         }
     }
 
-    private fun ActivatedLicence.standardConditions(
-        disposal: Disposal,
-        com: PersonManager,
-        licenceConditions: List<LicenceCondition>
+    private fun ActivatedLicence.groupedConditions(
+        sentencedCase: SentencedCase,
+        category: LicenceConditionCategory,
+        subCategory: ReferenceData,
+        described: List<Describable>,
+        successType: ActionResult.Type
     ): ActionResult? {
         return if (
-            licenceConditions.none {
-                it.mainCategory.code == STANDARD_CATEGORY_CODE && it.subCategory.code == STANDARD_SUB_CATEGORY_CODE
+            sentencedCase.licenceConditions.none {
+                it.mainCategory.code == category.code && it.subCategory.code == subCategory.code
             }
         ) {
             licenceConditionService.createLicenceCondition(
-                disposal,
+                sentencedCase.sentence,
                 releaseDate,
-                licenceConditionCategoryRepository.getByCode(STANDARD_CATEGORY_CODE),
-                referenceDataRepository.getLicenceConditionSubCategory(STANDARD_SUB_CATEGORY_CODE),
-                standardLicenceConditions.joinToString(System.lineSeparator()) { it.description },
-                com
+                category,
+                subCategory,
+                described.joinToString(System.lineSeparator()) { it.description },
+                sentencedCase.com
             )
             ActionResult.Success(
-                ActionResult.Type.StandardLicenceConditionAdded,
-                telemetryProperties(disposal.event.number)
+                successType,
+                telemetryProperties(sentencedCase.sentence.event.number)
             )
         } else {
             null
@@ -86,24 +104,22 @@ class LicenceConditionApplier(
     }
 
     private fun ActivatedLicence.additionalConditions(
-        disposal: Disposal,
-        com: PersonManager,
-        licenceConditions: List<LicenceCondition>
+        sentencedCase: SentencedCase
     ): ActionResult? {
         val additions = additionalLicenceConditions.mapNotNull { condition ->
             val cvlMapping = cvlMappingRepository.getByCvlCode(condition.code)
             if (
-                licenceConditions.none {
+                sentencedCase.licenceConditions.none {
                     it.mainCategory.code == cvlMapping.mainCategory.code && it.subCategory.code == cvlMapping.subCategory.code
                 }
             ) {
                 licenceConditionService.createLicenceCondition(
-                    disposal,
+                    sentencedCase.sentence,
                     releaseDate,
                     cvlMapping.mainCategory,
                     cvlMapping.subCategory,
                     condition.description,
-                    com
+                    sentencedCase.com
                 )
             } else {
                 null
@@ -112,37 +128,16 @@ class LicenceConditionApplier(
         return if (additions.isNotEmpty()) {
             ActionResult.Success(
                 ActionResult.Type.AdditionalLicenceConditionsAdded,
-                telemetryProperties(disposal.event.number)
-            )
-        } else {
-            null
-        }
-    }
-
-    private fun ActivatedLicence.bespokeConditions(
-        disposal: Disposal,
-        com: PersonManager,
-        licenceConditions: List<LicenceCondition>
-    ): ActionResult? {
-        return if (
-            licenceConditions.none {
-                it.mainCategory.code == BESPOKE_CATEGORY_CODE && it.subCategory.code == BESPOKE_SUB_CATEGORY_CODE
-            }
-        ) {
-            licenceConditionService.createLicenceCondition(
-                disposal,
-                releaseDate,
-                licenceConditionCategoryRepository.getByCode(BESPOKE_CATEGORY_CODE),
-                referenceDataRepository.getLicenceConditionSubCategory(BESPOKE_SUB_CATEGORY_CODE),
-                bespokeLicenceConditions.joinToString(System.lineSeparator()) { it.description },
-                com
-            )
-            ActionResult.Success(
-                ActionResult.Type.BespokeLicenceConditionAdded,
-                telemetryProperties(disposal.event.number)
+                telemetryProperties(sentencedCase.sentence.event.number)
             )
         } else {
             null
         }
     }
 }
+
+class SentencedCase(
+    val com: PersonManager,
+    val sentence: Disposal,
+    val licenceConditions: List<LicenceCondition>
+)

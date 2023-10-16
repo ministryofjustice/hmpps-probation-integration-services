@@ -21,21 +21,25 @@ data class ActivatedLicence(
     val bespokeLicenceConditions: List<BespokeLicenceCondition>
 )
 
+interface Describable {
+    val description: String
+}
+
 data class StandardLicenceCondition(
     val code: String,
-    val description: String,
+    override val description: String,
     val pssCondition: Boolean
-)
+) : Describable
 
 data class AdditionalLicenceCondition(
     val code: String,
-    val description: String,
+    override val description: String,
     val pssCondition: Boolean
-)
+) : Describable
 
 data class BespokeLicenceCondition(
-    val description: String
-)
+    override val description: String
+) : Describable
 
 fun ActivatedLicence.telemetryProperties(eventNumber: String): Map<String, String> = mapOf(
     "crn" to crn,

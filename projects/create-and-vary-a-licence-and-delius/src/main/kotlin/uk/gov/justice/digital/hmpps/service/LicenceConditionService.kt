@@ -16,6 +16,8 @@ class LicenceConditionService(
     private val licenceConditionRepository: LicenceConditionRepository,
     private val licenceConditionManagerRepository: LicenceConditionManagerRepository
 ) {
+
+    fun findByDisposalId(id: Long) = licenceConditionRepository.findByDisposalId(id)
     fun createLicenceCondition(
         disposal: Disposal,
         releaseDate: LocalDate,

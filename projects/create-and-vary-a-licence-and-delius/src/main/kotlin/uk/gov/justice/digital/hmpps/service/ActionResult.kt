@@ -14,6 +14,3 @@ sealed interface ActionResult {
         NoChangeToLicenceConditions
     }
 }
-
-infix fun ActionResult?.or(actionResult: ActionResult?): ActionResult =
-    this ?: actionResult ?: ActionResult.Success(ActionResult.Type.NoChangeToLicenceConditions)
