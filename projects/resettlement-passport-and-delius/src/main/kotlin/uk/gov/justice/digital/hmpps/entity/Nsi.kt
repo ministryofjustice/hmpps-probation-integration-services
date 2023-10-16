@@ -10,6 +10,7 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
@@ -100,7 +101,7 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
         order by nsi.createdDatetime desc
     """
     )
-    fun findDutyToReferByCrn(crn: String): Nsi?
+    fun findDutyToReferByCrn(crn: String, page: PageRequest = PageRequest.of(0, 1)): Nsi?
 
     @Query(
         """
@@ -113,5 +114,5 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
         order by nsi.createdDatetime desc
     """
     )
-    fun findDutyToReferByNoms(noms: String): Nsi?
+    fun findDutyToReferByNoms(noms: String, page: PageRequest = PageRequest.of(0, 1)): Nsi?
 }
