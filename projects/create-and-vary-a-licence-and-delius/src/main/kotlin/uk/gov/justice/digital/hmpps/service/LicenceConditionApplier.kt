@@ -2,12 +2,12 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.cvl.ActivatedLicence
 import uk.gov.justice.digital.hmpps.integrations.cvl.Describable
 import uk.gov.justice.digital.hmpps.integrations.cvl.telemetryProperties
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMapping.Companion.BESPOKE_CATEGORY_CODE
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMapping.Companion.BESPOKE_SUB_CATEGORY_CODE
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMapping.Companion.STANDARD_CATEGORY_CODE
@@ -41,15 +41,16 @@ class LicenceConditionApplier(
         activatedLicence: ActivatedLicence,
         occurredAt: ZonedDateTime
     ): List<ActionResult> {
-        val com = personManagerRepository.findByPersonCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
-        return disposalRepository.findCustodialSentences(crn)
-            .flatMap {
-                applyLicenceConditions(
-                    SentencedCase(com, it, licenceConditionService.findByDisposalId(it.id)),
-                    activatedLicence,
-                    occurredAt
-                )
-            }
+        val com = personManagerRepository.getByCrn(crn)
+        return disposalRepository.findCustodialSentences(crn).ifEmpty {
+            throw IllegalStateException("No Custodial Sentences to apply Licence Conditions")
+        }.flatMap {
+            applyLicenceConditions(
+                SentencedCase(com, it, licenceConditionService.findByDisposalId(it.id)),
+                activatedLicence,
+                occurredAt
+            )
+        }
     }
 
     private fun applyLicenceConditions(

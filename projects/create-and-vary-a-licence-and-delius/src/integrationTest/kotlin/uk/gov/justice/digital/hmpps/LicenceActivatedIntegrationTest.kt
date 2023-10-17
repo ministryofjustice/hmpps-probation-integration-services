@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMapping.Companion.BESPOKE_CATEGORY_CODE
 import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMapping.Companion.STANDARD_CATEGORY_CODE
@@ -20,6 +22,8 @@ import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.service.ActionResult
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
+import java.time.ZonedDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class LicenceActivatedIntegrationTest {
@@ -43,6 +47,9 @@ class LicenceActivatedIntegrationTest {
 
     @Autowired
     lateinit var pmr: PersonManagerRepository
+
+    @Autowired
+    lateinit var contactRepository: ContactRepository
 
     @Test
     fun `add licence conditions`() {
@@ -70,6 +77,7 @@ class LicenceActivatedIntegrationTest {
             ActionResult.Type.AdditionalLicenceConditionsAdded.name,
             telemetryProperties
         )
+        verify(telemetryService).trackEvent(ActionResult.Type.BespokeLicenceConditionAdded.name, telemetryProperties)
 
         val conditions = lcr.findByDisposalId(sentence.id)
         assertThat(conditions.size, equalTo(4))
@@ -110,5 +118,24 @@ class LicenceActivatedIntegrationTest {
             additional.map { it.notes },
             containsInAnyOrder("Additional Licence Condition One", "Additional Licence Condition Two")
         )
+
+        val lpop = contactRepository.findAll().filter { it.personId == person.id && it.type.code == ContactType.LPOP }
+        assertThat(lpop.size, equalTo(1))
+        assertThat(
+            lpop.first().notes,
+            equalTo(
+                """
+            |Delius has been updated with licence conditions entered in the Create and Vary a licence service.
+            |Select the following link to navigate to Create and Vary a licence service and view the licence.
+                """.trimMargin()
+            )
+        )
+        val occurredAt = ZonedDateTime.parse("2022-12-04T10:42:43+00:00")
+        assertThat(lpop.first().date, equalTo(occurredAt.toLocalDate()))
+        assertThat(lpop.first().startTime!!, isCloseTo(occurredAt))
+
+        // send again to confirm licence conditions are not duplicated
+        channelManager.getChannel(queueName).publishAndWait(notification)
+        verify(telemetryService).trackEvent(ActionResult.Type.NoChangeToLicenceConditions.name, telemetryProperties)
     }
 }

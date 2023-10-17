@@ -13,6 +13,6 @@ sealed interface DomainEventType {
         private val types = listOf(LicenceActivated)
             .associateBy { it.name }
 
-        fun of(name: String) = types[name] ?: Other(name)
+        fun of(name: String): DomainEventType = types[name] ?: Other(name)
     }
 }

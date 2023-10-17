@@ -10,6 +10,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Provider
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
@@ -52,3 +53,6 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     @EntityGraph(attributePaths = ["person", "provider", "team", "staff.user"])
     fun findByPersonCrn(crn: String): PersonManager?
 }
+
+fun PersonManagerRepository.getByCrn(crn: String) =
+    findByPersonCrn(crn) ?: throw NotFoundException("Person", "crn", crn)

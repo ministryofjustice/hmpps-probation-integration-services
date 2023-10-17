@@ -15,21 +15,25 @@ class CvlHandler(
 ) : NotificationHandler<HmppsDomainEvent> {
 
     override fun handle(notification: Notification<HmppsDomainEvent>) {
-        val results = when (notification.eventType?.let { DomainEventType.of(it) }) {
-            is DomainEventType.LicenceActivated -> licenceActivatedHandler.licenceActivated(notification.message)
-            else -> listOf(
-                ActionResult.Ignored("Unexpected Event Type"),
-                mapOf("eventType" to (notification.eventType ?: ""))
-            )
-        }
+        val eventType = (notification.eventType ?: notification.message.eventType).let { DomainEventType.of(it) }
+        val results =
+            when (eventType) {
+                is DomainEventType.LicenceActivated -> licenceActivatedHandler.licenceActivated(notification.message)
+                else -> listOf(
+                    ActionResult.Ignored(
+                        "UnexpectedEventType",
+                        mapOf("eventType" to eventType.name)
+                    )
+                )
+            }
 
         val failure = results.firstOrNull { it is ActionResult.Failure } as ActionResult.Failure?
         if (failure == null) {
             results.forEach {
-                when (it) {
-                    is ActionResult.Success -> telemetryService.trackEvent(it.type.name, it.properties)
-                    is ActionResult.Ignored -> telemetryService.trackEvent(it.reason, it.properties)
-                    else -> throw IllegalArgumentException("Unexpected Action Result: $it")
+                if (it is ActionResult.Success) {
+                    telemetryService.trackEvent(it.type.name, it.properties)
+                } else if (it is ActionResult.Ignored) {
+                    telemetryService.trackEvent(it.reason, it.properties)
                 }
             }
         } else {
