@@ -31,7 +31,7 @@ internal class LimitedAccessTest {
     lateinit var objectMapper: ObjectMapper
 
     @Test
-    fun `limited access controls are correctly returned`() {
+    fun `limited access controls are correctly returned with username`() {
         val res = mockMvc.perform(
             MockMvcRequestBuilders.post("/users/access?username=${LimitedAccessGenerator.LIMITED_ACCESS_USER.username}")
                 .withOAuth2Token(wireMockserver)
@@ -47,6 +47,30 @@ internal class LimitedAccessTest {
                 )
         ).andReturn().response.contentAsString
 
+        validateResults(res)
+    }
+
+    @Test
+    fun `limited access controls are correctly returned without username`() {
+        val res = mockMvc.perform(
+            MockMvcRequestBuilders.post("/users/access")
+                .withOAuth2Token(wireMockserver)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    objectMapper.writeValueAsString(
+                        listOf(
+                            LimitedAccessGenerator.EXCLUDED_CASE.crn,
+                            LimitedAccessGenerator.RESTRICTED_CASE.crn,
+                            LimitedAccessGenerator.UNLIMITED_ACCESS.crn
+                        )
+                    )
+                )
+        ).andReturn().response.contentAsString
+
+        validateResults(res)
+    }
+
+    private fun validateResults(res: String) {
         val result = objectMapper.readValue<UserAccess>(res)
         assertThat(
             result.access.first { it.crn == LimitedAccessGenerator.EXCLUDED_CASE.crn },
