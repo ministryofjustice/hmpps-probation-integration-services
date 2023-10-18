@@ -47,14 +47,15 @@ class DocumentService(
                 throw ConflictException("Court report ${courtReport.id} not for ${hmppsEvent.personReference.findCrn()}")
             }
 
+            document.name = document.name.replace(Regex("\\.doc$"), ".pdf")
+            document.lastSaved = ZonedDateTime.now()
+            document.lastUpdatedUserId = ServiceContext.servicePrincipal()!!.userId
+
             alfrescoClient.releaseDocument(document.alfrescoId)
             alfrescoClient.updateDocument(
                 document.alfrescoId,
                 populateBodyValues(hmppsEvent, document, file)
             )
-
-            document.lastSaved = ZonedDateTime.now()
-            document.lastUpdatedUserId = ServiceContext.servicePrincipal()!!.userId
         }
 
     private fun populateBodyValues(
@@ -79,6 +80,7 @@ class DocumentService(
         bodyBuilder.part("entityId", courtReportId.toString(), MediaType.TEXT_PLAIN)
         bodyBuilder.part("author", authorName, MediaType.TEXT_PLAIN)
         bodyBuilder.part("filedata", file, MediaType.APPLICATION_OCTET_STREAM).filename(filename)
+        bodyBuilder.part("fileName", filename, MediaType.TEXT_PLAIN)
         bodyBuilder.part("docType", "DOCUMENT", MediaType.TEXT_PLAIN)
         bodyBuilder.part("entityType", "COURTREPORT", MediaType.TEXT_PLAIN)
         if (locked) {

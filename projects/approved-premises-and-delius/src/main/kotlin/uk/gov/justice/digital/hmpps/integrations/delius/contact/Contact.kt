@@ -56,6 +56,7 @@ class Contact(
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
 
+    @Column(name = "event_id")
     val eventId: Long? = null,
 
     @Lob

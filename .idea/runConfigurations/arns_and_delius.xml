@@ -1,10 +1,10 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="arns-and-oasys" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+  <configuration default="false" name="arns-and-delius" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="dev" />
-    <module name="probation-integration-services.court-case-and-delius.main" />
+    <module name="probation-integration-services.arns-and-delius.dev" />
     <option name="SHORTEN_COMMAND_LINE" value="ARGS_FILE" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="uk.gov.justice.digital.hmpps.App" />
-    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/projects/arns-and-oasys" />
+    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/projects/arns-and-delius" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

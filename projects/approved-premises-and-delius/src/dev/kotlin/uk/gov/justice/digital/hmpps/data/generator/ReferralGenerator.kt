@@ -11,7 +11,7 @@ object ReferralGenerator {
 
     fun generateReferral(
         person: Person = PersonGenerator.DEFAULT,
-        eventId: Long = IdGenerator.getAndIncrement(),
+        eventId: Long = PersonGenerator.ANOTHER_EVENT.id,
         approvedPremises: ApprovedPremises = ApprovedPremisesGenerator.DEFAULT,
         referralDate: LocalDate = LocalDate.now(),
         expectedArrivalDate: LocalDate? = LocalDate.now().plusDays(1),

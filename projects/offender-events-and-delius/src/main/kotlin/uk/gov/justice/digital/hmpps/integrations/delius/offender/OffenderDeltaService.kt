@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.message.MessageAttributes
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.publisher.NotificationPublisher
+import java.time.temporal.ChronoUnit
 
 @Service
 class OffenderDeltaService(
@@ -16,16 +17,16 @@ class OffenderDeltaService(
     private val notificationPublisher: NotificationPublisher
 ) {
     @Transactional
-    fun checkAndSendEvents(): Pair<Int, Int> {
+    fun checkAndSendEvents(): List<Notification<OffenderEvent>> {
         val deltas = repository.findAll(Pageable.ofSize(batchSize)).content
         val events = deltas.flatMap { it.asNotifications() }
         events.forEach { notificationPublisher.publish(it) }
         repository.deleteAllByIdInBatch(deltas.map { it.id })
-        return Pair(events.size, deltas.count { it.offender == null })
+        return events
     }
 
     fun OffenderDelta.asNotifications(): List<Notification<OffenderEvent>> {
-        fun sourceToEventType(): String? = when (sourceTable) {
+        fun sourceToEventType(): String = when (sourceTable) {
             "ALIAS" -> "OFFENDER_ALIAS_CHANGED"
             "DEREGISTRATION" -> "OFFENDER_REGISTRATION_DEREGISTERED"
             "DISPOSAL" -> "SENTENCE_CHANGED"
@@ -41,15 +42,21 @@ class OffenderDeltaService(
         }
 
         return if (offender != null) {
-            sourceToEventType()?.let {
-                val oe = OffenderEvent(offender.id, offender.crn, offender.nomsNumber, sourceRecordId, dateChanged)
+            sourceToEventType().let {
+                val oe = OffenderEvent(
+                    offender.id,
+                    offender.crn,
+                    offender.nomsNumber,
+                    sourceRecordId,
+                    dateChanged.truncatedTo(ChronoUnit.SECONDS)
+                )
                 val list: MutableList<Notification<OffenderEvent>> = mutableListOf()
                 if (sourceTable in listOf("ALIAS", "OFFENDER", "OFFENDER_MANAGER", "OFFENDER_ADDRESS", "OFFICER")) {
                     list += Notification(oe, MessageAttributes("OFFENDER_CHANGED"))
                 }
                 list += Notification(oe, MessageAttributes(it))
                 list
-            } ?: listOf()
+            }
         } else {
             listOf()
         }
