@@ -5,6 +5,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME
 
 @Service
 class OffenderDeltaPoller(private val service: OffenderDeltaService, private val telemetryService: TelemetryService) {
@@ -12,11 +13,14 @@ class OffenderDeltaPoller(private val service: OffenderDeltaService, private val
     @Scheduled(fixedDelayString = "\${offender-events.fixed-delay:100}")
     fun checkAndSendEvents() {
         try {
-            val counts = service.checkAndSendEvents()
-            if (counts.first > 0 || counts.second > 0) {
+            service.checkAndSendEvents().forEach {
                 telemetryService.trackEvent(
-                    "OffenderEventsProcessed",
-                    mapOf("EventsSent" to counts.first.toString(), "PersonNotFound" to counts.second.toString())
+                    "OffenderEventPublished",
+                    mapOf(
+                        "crn" to it.message.crn,
+                        "eventType" to it.eventType!!,
+                        "occurredAt" to ISO_ZONED_DATE_TIME.format(it.message.eventDatetime)
+                    )
                 )
             }
         } catch (e: Exception) {

@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -20,6 +19,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaRe
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaService
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME
+import java.time.temporal.ChronoUnit
 
 @SpringBootTest
 internal class IntegrationTest {
@@ -40,74 +41,111 @@ internal class IntegrationTest {
 
     @ParameterizedTest
     @MethodSource("deltas")
-    fun `offender delta test`(delta: OffenderDelta, expected: List<String>) {
+    fun `offender delta test`(delta: OffenderDelta, expected: List<Map<String, String>>) {
         offenderDeltaRepository.save(delta)
 
         verify(offenderDeltaService, after(250).atLeastOnce()).checkAndSendEvents()
-        val received = generateSequence { channelManager.getChannel(topicName).receive()?.eventType }.toList()
+        generateSequence { channelManager.getChannel(topicName).receive()?.eventType }.toList()
 
-        assertEquals(expected.sorted(), received.sorted())
         if (expected.isNotEmpty()) {
-            verify(telemetryService).trackEvent(eq("OffenderEventsProcessed"), any(), any())
+            expected.forEach {
+                verify(telemetryService).trackEvent(
+                    eq("OffenderEventPublished"),
+                    eq(it + ("occurredAt" to ISO_ZONED_DATE_TIME.format(delta.dateChanged.truncatedTo(ChronoUnit.SECONDS)))),
+                    any()
+                )
+            }
         } else {
             verify(telemetryService, never()).trackEvent(any(), any(), any())
         }
     }
 
     companion object {
+        private val properties = mapOf("crn" to "X123456")
+
         @JvmStatic
         private fun deltas() = listOf(
             Arguments.of(
                 OffenderDeltaGenerator.generate(),
-                listOf("OFFENDER_CHANGED", "OFFENDER_DETAILS_CHANGED")
+                listOf(
+                    properties + ("eventType" to "OFFENDER_CHANGED"),
+                    properties + ("eventType" to "OFFENDER_DETAILS_CHANGED")
+                )
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "ALIAS", sourceId = 99),
-                listOf("OFFENDER_CHANGED", "OFFENDER_ALIAS_CHANGED")
+                listOf(
+                    properties + ("eventType" to "OFFENDER_CHANGED"),
+                    properties + ("eventType" to "OFFENDER_ALIAS_CHANGED")
+                )
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "DEREGISTRATION", sourceId = 99),
-                listOf("OFFENDER_REGISTRATION_DEREGISTERED")
+                listOf(
+                    properties + ("eventType" to "OFFENDER_REGISTRATION_DEREGISTERED")
+                )
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "DISPOSAL", sourceId = 99),
-                listOf("SENTENCE_CHANGED")
+                listOf(
+                    properties + ("eventType" to "SENTENCE_CHANGED")
+                )
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "EVENT", sourceId = 99),
-                listOf("CONVICTION_CHANGED")
+                listOf(
+                    properties + ("eventType" to "CONVICTION_CHANGED")
+                )
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "MANAGEMENT_TIER_EVENT", sourceId = 99),
-                listOf("OFFENDER_MANAGEMENT_TIER_CALCULATION_REQUIRED")
+                listOf(
+                    properties + ("eventType" to "OFFENDER_MANAGEMENT_TIER_CALCULATION_REQUIRED")
+                )
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "MERGE_HISTORY", sourceId = 99),
-                listOf("OFFENDER_MERGED")
+                listOf(
+                    properties + ("eventType" to "OFFENDER_MERGED")
+                )
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "OFFENDER_MANAGER", sourceId = 99),
-                listOf("OFFENDER_CHANGED", "OFFENDER_MANAGER_CHANGED")
+                listOf(
+                    properties + ("eventType" to "OFFENDER_CHANGED"),
+                    properties + ("eventType" to "OFFENDER_MANAGER_CHANGED")
+                )
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "OFFICER", sourceId = 99),
-                listOf("OFFENDER_CHANGED", "OFFENDER_OFFICER_CHANGED")
+                listOf(
+                    properties + ("eventType" to "OFFENDER_CHANGED"),
+                    properties + ("eventType" to "OFFENDER_OFFICER_CHANGED")
+                )
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "OGRS_ASSESSMENT", sourceId = 99),
-                listOf("OFFENDER_OGRS_ASSESSMENT_CHANGED")
+                listOf(
+                    properties + ("eventType" to "OFFENDER_OGRS_ASSESSMENT_CHANGED")
+                )
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "REGISTRATION", sourceId = 99),
-                listOf("OFFENDER_REGISTRATION_CHANGED")
+                listOf(
+                    properties + ("eventType" to "OFFENDER_REGISTRATION_CHANGED")
+                )
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "RQMNT", sourceId = 99),
-                listOf("SENTENCE_ORDER_REQUIREMENT_CHANGED")
+                listOf(
+                    properties + ("eventType" to "SENTENCE_ORDER_REQUIREMENT_CHANGED")
+                )
             ),
             Arguments.of(
                 OffenderDeltaGenerator.generate(sourceTable = "REGISTRATION", sourceId = 99, action = "DELETE"),
-                listOf("OFFENDER_REGISTRATION_DELETED")
+                listOf(
+                    properties + ("eventType" to "OFFENDER_REGISTRATION_DELETED")
+                )
             )
         )
     }

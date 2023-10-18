@@ -3,9 +3,6 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
@@ -13,7 +10,12 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderDeltaService
+import uk.gov.justice.digital.hmpps.integrations.delius.offender.OffenderEvent
+import uk.gov.justice.digital.hmpps.message.MessageAttributes
+import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @ExtendWith(MockitoExtension::class)
 class OffenderDeltaPollerTest {
@@ -45,33 +47,71 @@ class OffenderDeltaPollerTest {
 
     @Test
     fun `poller receives no events and doesn't call telemetry`() {
-        whenever(service.checkAndSendEvents()).thenReturn(Pair(0, 0))
+        whenever(service.checkAndSendEvents()).thenReturn(listOf())
         poller.checkAndSendEvents()
         verify(telemetryService, never()).trackEvent(any(), any(), any())
     }
 
-    @ParameterizedTest
-    @MethodSource("counts")
-    fun `poller calls telemetry if either events or not found`(
-        counts: Pair<Int, Int>,
-        telemetryProperties: Map<String, String>
-    ) {
-        whenever(service.checkAndSendEvents()).thenReturn(counts)
+    @Test
+    fun `poller calls telemetry if either events or not found`() {
+        val dateTime = ZonedDateTime.now()
+        whenever(service.checkAndSendEvents()).thenReturn(
+            listOf(
+                Notification(
+                    OffenderEvent(123456, "X123456", null, 67891, dateTime),
+                    MessageAttributes("OFFENDER_CHANGED")
+                ),
+                Notification(
+                    OffenderEvent(123456, "X123456", null, 67891, dateTime),
+                    MessageAttributes("OFFENDER_MANAGER_CHANGED")
+                ),
+                Notification(
+                    OffenderEvent(223456, "X223456", null, 67890, dateTime),
+                    MessageAttributes("ORDER_MANAGER_CHANGED")
+                ),
+                Notification(
+                    OffenderEvent(223456, "X223456", null, 67890, dateTime),
+                    MessageAttributes("CONVICTION_CHANGED")
+                )
+            )
+        )
 
         poller.checkAndSendEvents()
         verify(telemetryService).trackEvent(
-            "OffenderEventsProcessed",
-            telemetryProperties,
+            "OffenderEventPublished",
+            mapOf(
+                "crn" to "X123456",
+                "eventType" to "OFFENDER_CHANGED",
+                "occurredAt" to DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime)
+            ),
             mapOf()
         )
-    }
-
-    companion object {
-        @JvmStatic
-        private fun counts() = listOf(
-            Arguments.of(Pair(0, 1), mapOf("EventsSent" to "0", "PersonNotFound" to "1")),
-            Arguments.of(Pair(1, 0), mapOf("EventsSent" to "1", "PersonNotFound" to "0")),
-            Arguments.of(Pair(1, 1), mapOf("EventsSent" to "1", "PersonNotFound" to "1"))
+        verify(telemetryService).trackEvent(
+            "OffenderEventPublished",
+            mapOf(
+                "crn" to "X123456",
+                "eventType" to "OFFENDER_MANAGER_CHANGED",
+                "occurredAt" to DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime)
+            ),
+            mapOf()
+        )
+        verify(telemetryService).trackEvent(
+            "OffenderEventPublished",
+            mapOf(
+                "crn" to "X223456",
+                "eventType" to "ORDER_MANAGER_CHANGED",
+                "occurredAt" to DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime)
+            ),
+            mapOf()
+        )
+        verify(telemetryService).trackEvent(
+            "OffenderEventPublished",
+            mapOf(
+                "crn" to "X223456",
+                "eventType" to "CONVICTION_CHANGED",
+                "occurredAt" to DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime)
+            ),
+            mapOf()
         )
     }
 }
