@@ -18,7 +18,7 @@ spring:
             drop_tables: false
   security.oauth2.client:
     registration:
-      court-case-and-delius:
+      court-case-notes:
         provider: hmpps-auth
         authorization-grant-type: client_credentials
         client-id: court-case-and-delius
@@ -26,6 +26,14 @@ spring:
     provider:
       hmpps-auth:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
+  cloud.openfeign.client.config:
+    default:
+      logger-level: full
+      connect-timeout: 5000
+      read-timeout: 5000
+      default-request-headers:
+        Accept: application/json
+        Content-Type: application/json
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: CourtCaseAndDelius # Should match value in [deploy/database/access.yml].
@@ -46,6 +54,13 @@ spring:
 seed.database: true
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+
+messaging.consumer.queue: events
+
+integrations:
+  court-case-notes:
+    client-id: court-case-and-delius
+    client-secret: court-case-and-delius
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

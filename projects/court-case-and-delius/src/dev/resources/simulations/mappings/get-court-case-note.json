@@ -1,0 +1,48 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/court-case-notes/1111"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-new-court-case-note.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/court-case-notes/2222"
+      },
+      "response": {
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "get-existing-court-case-note.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/court-case-notes/3333"
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "status": 404,
+          "userMessage": "Resource with id [3333] not found.",
+          "developerMessage": "Resource with id [3333] not found."
+        }
+      }
+    }
+  ]
+}

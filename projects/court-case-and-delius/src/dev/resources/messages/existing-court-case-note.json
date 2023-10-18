@@ -1,0 +1,12 @@
+{
+  "MessageId": "ae06c49e-1f41-4b9f-b2f2-dcca610d02cd",
+  "Type": "Notification",
+  "Timestamp": "2019-10-21T14:01:18.500Z",
+  "Message": "{\"eventType\":\"court-case-note.published\",\"version\":1,\"description\":\"A court case note has been created or amended\",\"occurredAt\":\"2023-10-18T08:19:19.451579+01:00\",\"detailUrl\":\"http://localhost:{wiremock.port}/court-case-notes/2222\",\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"C123456\"}]}}",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "court-case-note.published"
+    }
+  }
+}

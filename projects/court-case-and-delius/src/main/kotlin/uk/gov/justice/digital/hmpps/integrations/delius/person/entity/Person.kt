@@ -51,6 +51,8 @@ interface PersonRepository : JpaRepository<Person, Long> {
         nativeQuery = true
     )
     fun statusOf(crn: String): SentenceCounts?
+
+    fun findByCrnAndSoftDeletedIsFalse(crn: String): Person?
 }
 
 interface SentenceCounts {
