@@ -13,7 +13,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.persistence.Version
-import org.hibernate.Hibernate
 import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
@@ -24,7 +23,7 @@ import java.time.ZonedDateTime
 @EntityListeners(AuditingEntityListener::class)
 @Entity
 @Table(name = "contact")
-data class CaseNote(
+class CaseNote(
     @Id
     @Column(name = "contact_id", updatable = false)
     @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
@@ -41,13 +40,13 @@ data class CaseNote(
     val type: CaseNoteType,
 
     @Lob
-    val notes: String,
+    var notes: String,
 
     @Column(name = "contact_date")
-    val date: ZonedDateTime,
+    var date: ZonedDateTime,
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime,
+    var startTime: ZonedDateTime,
 
     @Column(updatable = false)
     val staffId: Long,
@@ -94,24 +93,7 @@ data class CaseNote(
 
     @Column(updatable = false, columnDefinition = "NUMBER")
     var softDeleted: Boolean = false
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-        other as CaseNote
-
-        return id == other.id
-    }
-
-    override fun hashCode(): Int = javaClass.hashCode()
-
-    override fun toString(): String {
-        return this::class.simpleName + "(id = $id , offenderId = $offenderId , type = $type , " +
-            "notes = $notes , date = $date , startTime = $startTime , lastModifiedDate = $lastModifiedDateTime , " +
-            "lastModifiedUserId = $lastModifiedUserId , createdByUserId = $createdByUserId , " +
-            "createdDateTime = $createdDateTime , version = $version )"
-    }
-}
+)
 
 @Immutable
 @Entity

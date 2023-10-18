@@ -11,5 +11,5 @@ import uk.gov.justice.digital.hmpps.integrations.courtcase.CourtCaseClient
 class CourtCaseFeignConfig(
     authorizedClientManager: OAuth2AuthorizedClientManager
 ) : FeignConfig(authorizedClientManager) {
-    override fun registrationId() = "court-case-notes"
+    override fun registrationId() = "court-case-and-delius"
 }

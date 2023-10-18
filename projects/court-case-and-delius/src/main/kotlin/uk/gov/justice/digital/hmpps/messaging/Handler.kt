@@ -39,27 +39,18 @@ class Handler(
             return
         }
 
-        if (courtCaseNote == null) {
-            log.warn(
-                "Ignoring case note for crn {} and type {} because court case note was not found",
-                crn,
-                notification.eventType
-            )
-            return
-        }
-
         log.debug(
             "Found court case note in court case service for crn {}, now pushing to delius",
             crn
         )
 
         try {
-            deliusIntegrationService.mergeCourtCaseNote(crn!!, courtCaseNote, notification.message.occurredAt)
+            deliusIntegrationService.mergeCourtCaseNote(crn!!, courtCaseNote!!, notification.message.occurredAt)
             telemetryService.trackEvent("CourtCaseNoteMerged", courtCaseNote.properties())
         } catch (e: Exception) {
             telemetryService.trackEvent(
                 "CourtCaseNoteMergeFailed",
-                courtCaseNote.properties() + ("exception" to (e.message ?: ""))
+                courtCaseNote!!.properties() + ("exception" to (e.message ?: ""))
             )
             if (e !is NotFoundException) throw e
         }

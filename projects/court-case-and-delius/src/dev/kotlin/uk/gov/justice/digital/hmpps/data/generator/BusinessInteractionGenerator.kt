@@ -5,9 +5,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractio
 import java.time.ZonedDateTime
 
 object BusinessInteractionGenerator {
-    val CASE_NOTES_MERGE = BusinessInteraction(
+    val UPDATE_CONTACT = BusinessInteraction(
         IdGenerator.getAndIncrement(),
-        BusinessInteractionCode.CASE_NOTES_MERGE.code,
+        BusinessInteractionCode.UPDATE_CONTACT.code,
         ZonedDateTime.now().minusMonths(6)
     )
 }

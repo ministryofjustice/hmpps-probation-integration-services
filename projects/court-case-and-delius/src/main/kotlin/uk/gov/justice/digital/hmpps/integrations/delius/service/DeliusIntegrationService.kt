@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.courtcase.CourtCaseNote
-import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.CASE_NOTES_MERGE
+import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.UPDATE_CONTACT
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.CaseNoteType.Companion.DEFAULT_CODE
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
@@ -27,7 +27,7 @@ class DeliusIntegrationService(
     private val personManagerRepository: PersonManagerRepository
 ) : AuditableService(auditedInteractionService) {
     @Transactional
-    fun mergeCourtCaseNote(crn: String, caseNote: CourtCaseNote, occurredAt: ZonedDateTime) = audit(CASE_NOTES_MERGE) {
+    fun mergeCourtCaseNote(crn: String, caseNote: CourtCaseNote, occurredAt: ZonedDateTime) = audit(UPDATE_CONTACT) {
         val person = personRepository.findByCrnAndSoftDeletedIsFalse(crn)
             ?: throw NotFoundException("Person", "crn", crn)
         val externalReference = caseNote.reference
@@ -53,11 +53,10 @@ class DeliusIntegrationService(
         val last = lastModifiedDateTime.truncatedTo(ChronoUnit.SECONDS)
         val current = occurredAt.truncatedTo(ChronoUnit.SECONDS)
         return if (last.isBefore(current)) {
-            copy(
-                notes = caseNote.notes,
-                date = occurredAt,
-                startTime = occurredAt
-            )
+            notes = caseNote.notes
+            date = occurredAt
+            startTime = occurredAt
+            this
         } else {
             log.warn("Court Case Note update ignored because it was out of sequence ${caseNote.reference}")
             null

@@ -34,7 +34,7 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         em.saveAll(
-            BusinessInteractionGenerator.CASE_NOTES_MERGE,
+            BusinessInteractionGenerator.UPDATE_CONTACT,
             ContactTypeGenerator.CONTACT_TYPE,
             PersonGenerator.NEW_TO_PROBATION,
             PersonGenerator.CURRENTLY_MANAGED,
