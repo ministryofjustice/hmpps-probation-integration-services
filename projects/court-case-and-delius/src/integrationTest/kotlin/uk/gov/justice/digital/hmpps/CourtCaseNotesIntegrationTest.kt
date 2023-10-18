@@ -58,7 +58,6 @@ class CaseNotesIntegrationTest {
 
     @Test
     fun `replace a court case note succesfully`() {
-
         val message = CourtCaseNoteMessageGenerator.EXISTS.copy(occurredAt = ZonedDateTime.now())
 
         channelManager.getChannel(queueName).publishAndWait(
