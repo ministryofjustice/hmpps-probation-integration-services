@@ -1,0 +1,49 @@
+
+style {
+  fill: "#ffffff"
+}
+
+context-manage-offences: Manage POM Cases Context {
+  link: https://github.com/ministryofjustice/offender-management-allocation-manager
+
+  entities: Entities {
+    grid-columns: 3
+    prison: Prison
+    pom: Prison Offender Manager (POM)
+    com: Community Offender Manager (COM)
+    officer: Officer
+    responsiblity: Responsibility
+    handover: Handover
+  }
+
+  interface: Manage POM Cases API {
+    type: Open Host Service
+  }
+}
+
+context-delius: Delius Context {
+  link: https://github.com/ministryofjustice/delius
+  style.stroke-width: 8
+
+  entities: Entities {
+    grid-columns: 3
+    institution: Institution
+    pom: Prison Offender Manager (POM)
+    com: Community Offender Manager (COM)
+    responsible-officer: Responsible Officer (RO)
+    staff: Probation Staff Member
+    local-delivery-unit: Local Delivery Unit
+    mappa: MAPPA Registration
+    victim-liason-officer: Victim Liason Officer
+  }
+  interface: Manage POM Cases and Delius {
+    link: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/manage-pom-cases-and-delius/
+    type: Anti-Corruption Layer
+  }
+}
+
+context-manage-offences.interface--context-delius.interface: Upstream\n\n\nDownstream
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2
