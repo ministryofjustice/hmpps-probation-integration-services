@@ -2,6 +2,9 @@ database:
   access:
     username_key: /court-case-and-delius/db-username
     password_key: /court-case-and-delius/db-password
+    tables:
+      - audited_interaction
+      - contact
 
   audit:
     username: CourtCaseAndDelius
