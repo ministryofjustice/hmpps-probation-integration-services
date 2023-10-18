@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
@@ -11,13 +12,16 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 class CvlHandler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
-    private val licenceActivatedHandler: LicenceActivatedHandler
+    private val licenceActivatedHandler: LicenceActivatedHandler,
+    private val featureFlags: FeatureFlags
 ) : NotificationHandler<HmppsDomainEvent> {
 
     override fun handle(notification: Notification<HmppsDomainEvent>) {
-        val eventType = (notification.eventType ?: notification.message.eventType).let { DomainEventType.of(it) }
+        if (!featureFlags.enabled("cvl-licence-activated")) {
+            return
+        }
         val results =
-            when (eventType) {
+            when (val eventType = (notification.eventType ?: notification.message.eventType).let { DomainEventType.of(it) }) {
                 is DomainEventType.LicenceActivated -> licenceActivatedHandler.licenceActivated(notification.message)
                 else -> listOf(
                     ActionResult.Ignored(
