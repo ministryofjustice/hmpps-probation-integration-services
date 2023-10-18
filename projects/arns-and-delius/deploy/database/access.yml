@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /arns-and-delius/db-username
+    password_key: /arns-and-delius/db-password
+
+  audit:
+    username: ArnsAndDelius
+    forename: ARNs and Delius
+    surname: Service
