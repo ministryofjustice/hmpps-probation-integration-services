@@ -100,8 +100,12 @@ private fun PrisonerMovement.occurredBefore(sentenceDate: ZonedDateTime, recalle
     return occurredAt.isBefore(sentenceDate) || recalledDateTime?.let { occurredAt.isBefore(it) } ?: false
 }
 
-private fun PrisonerMovement.releaseType(): ReleaseTypeCode =
-    when (type) {
-        PrisonerMovement.Type.RELEASED -> ReleaseTypeCode.ADULT_LICENCE
-        else -> throw IgnorableMessageException("UnsupportedReleaseType")
+private fun PrisonerMovement.releaseType(): ReleaseTypeCode {
+    if (type != PrisonerMovement.Type.RELEASED) {
+        throw IgnorableMessageException("UnsupportedReleaseType")
     }
+    return when (reason) {
+        "ECSL" -> ReleaseTypeCode.END_CUSTODY_SUPERVISED_LICENCE
+        else -> ReleaseTypeCode.ADULT_LICENCE
+    }
+}
