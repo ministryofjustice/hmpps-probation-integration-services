@@ -54,7 +54,7 @@ class DeliusIntegrationService(
         val current = occurredAt.truncatedTo(ChronoUnit.SECONDS)
         return if (last.isBefore(current)) {
             notes = caseNote.notes
-            date = occurredAt
+            date = occurredAt.toLocalDate()
             startTime = occurredAt
             this
         } else {
@@ -79,7 +79,7 @@ class DeliusIntegrationService(
             offenderId = personId,
             type = caseNoteType,
             notes = notes,
-            date = occurredAt,
+            date = occurredAt.toLocalDate(),
             startTime = occurredAt,
             isSensitive = caseNoteType.isSensitive,
             probationAreaId = comDetails.probationAreaId,

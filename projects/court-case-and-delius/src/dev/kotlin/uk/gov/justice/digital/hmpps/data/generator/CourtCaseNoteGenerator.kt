@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.CaseNote
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 object CourtCaseNoteGenerator {
@@ -10,8 +11,8 @@ object CourtCaseNoteGenerator {
         PersonGenerator.CURRENTLY_MANAGED.id,
         ContactTypeGenerator.CONTACT_TYPE,
         "Existing notes",
-        ZonedDateTime.now(),
-        ZonedDateTime.now(),
+        LocalDate.now(),
+        ZonedDateTime.now().minusMinutes(1),
         StaffGenerator.ALLOCATED.id,
         StaffGenerator.ALLOCATED.id,
         1,

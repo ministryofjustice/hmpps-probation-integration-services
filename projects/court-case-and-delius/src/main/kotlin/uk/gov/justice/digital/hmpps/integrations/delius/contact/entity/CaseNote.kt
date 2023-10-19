@@ -18,6 +18,7 @@ import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @EntityListeners(AuditingEntityListener::class)
@@ -43,7 +44,7 @@ class CaseNote(
     var notes: String,
 
     @Column(name = "contact_date")
-    var date: ZonedDateTime,
+    var date: LocalDate,
 
     @Column(name = "contact_start_time")
     var startTime: ZonedDateTime,
