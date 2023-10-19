@@ -146,6 +146,15 @@
 
 <h3 id="case-details-crn-eventnumber-get">get</h3>
 
+  <p><em>Probation case information for the Effective Proposals Framework service</em></p>
+
+
+  <p>Accepts the probation identifier (CRN) and Delius Event number
+            and returns a data structure giving background information on the probation case
+            for use in the Effective Proposals Framework system. The information is used to
+            reduce the need for the EPF user to re-key information already held in Delius.</p>
+<div class="highlight"><pre class="highlight plaintext" tabindex="0"><code>        &lt;p&gt;Requires `ROLE_EPF_CONTEXT`.&lt;/p&gt;
+</code></pre></div>
 
 
 
@@ -193,6 +202,45 @@
 <td>200</td>
 <td>
 <p>OK</p>
+
+
+
+<pre><code>{
+  "nomsId": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "dateOfBirth": "string",
+  "gender": "string",
+  "sentence": {
+    "date": "string",
+    "sentencingCourt": {
+      "name": "string"
+    },
+    "releaseDate": "string"
+  },
+  "responsibleProvider": {
+    "code": "string",
+    "name": "string"
+  },
+  "ogrsScore": "integer",
+  "age": "integer",
+  "ageAtRelease": "integer"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-casedetails'>CaseDetails</a>
+</td>
+</tr>
+
+<tr>
+<td>404</td>
+<td>
+<p>A case with the provided CRN does not exist in Delius.
+                    Note: this could be the result of a merge or a deletion.</p>
 
 
 

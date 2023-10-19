@@ -18,6 +18,13 @@ paths:
     get:
       tags:
       - case-details-controller
+      summary: Probation case information for the Effective Proposals Framework service
+      description: "<p>Accepts the probation identifier (CRN) and Delius Event number\n\
+        \            and returns a data structure giving background information on\
+        \ the probation case\n            for use in the Effective Proposals Framework\
+        \ system. The information is used to\n            reduce the need for the\
+        \ EPF user to re-key information already held in Delius.</p>\n           \
+        \ <p>Requires `ROLE_EPF_CONTEXT`.</p>\n        "
       operationId: handle
       parameters:
       - name: crn
@@ -34,6 +41,14 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseDetails'
+        "404":
+          description: "A case with the provided CRN does not exist in Delius.\n \
+            \                   Note: this could be the result of a merge or a deletion.\n\
+            \            "
           content:
             application/json:
               schema:
