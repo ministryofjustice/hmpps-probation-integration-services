@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.service.UserAccessService
 @RestController
 @RequestMapping("users")
 class UserResource(private val uas: UserAccessService) {
-    @PreAuthorize("hasRole('PROBATION-API_ARNS_USER-ACCESS')")
+    @PreAuthorize("hasRole('ROLE__PROBATION_API__ARNS__USER_ACCESS')")
     @RequestMapping("access", method = [RequestMethod.GET, RequestMethod.POST])
     fun userAccessCheck(
         @RequestParam(required = false) username: String?,
