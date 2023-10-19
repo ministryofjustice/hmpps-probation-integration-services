@@ -1,0 +1,29 @@
+# Manage POM Cases Workflow: Update Delius POM to COM Handover Dates
+
+direction: right
+
+style {
+  fill: "#ffffff"
+}
+
+# What triggers the workflow?
+mpc: Manage POM Cases {
+     style.font-size: 15
+     mpc_responsibility: POM to COM handover\ndates updated {
+         shape: oval
+     }
+}
+
+# What happens in Delius?
+delius: Delius {
+    style {
+        font-size: 20
+    }
+    d_key_dates: Update key dates
+}
+
+mpc -> delius
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2
