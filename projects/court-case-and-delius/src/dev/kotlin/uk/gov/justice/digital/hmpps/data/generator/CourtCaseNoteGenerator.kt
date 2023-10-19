@@ -12,10 +12,11 @@ object CourtCaseNoteGenerator {
         ContactTypeGenerator.CONTACT_TYPE,
         "Existing notes",
         LocalDate.now(),
-        ZonedDateTime.now().minusMinutes(1),
+        ZonedDateTime.now(),
         StaffGenerator.ALLOCATED.id,
         StaffGenerator.ALLOCATED.id,
         1,
-        1
+        1,
+        lastModifiedDateTime = ZonedDateTime.now().minusMinutes(1)
     )
 }
