@@ -18,6 +18,12 @@ paths:
     get:
       tags:
       - probation-record-resource
+      summary: Background information on the probation case
+      description: "<p>Background details of the probation case for the purposes\n\
+        \            of allocating a new Prison Offender Manager. The service will\
+        \ return\n            case information for either the CRN or NOMS number supplied\
+        \ in the\n            request.</p>\n            <p>Requires `ROLE_MANAGE_POM_CASES`.</p>\n\
+        \        "
       operationId: handle
       parameters:
       - name: identifier
@@ -32,8 +38,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProbationRecord'
+        "404":
+          description: |-
+            No probation case found with the given identifier.
+                                For a prison identifier this could mean the Prison and Probation cases
+                                have not been linked yet.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
+    ErrorResponse:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+        message:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldError'
+    FieldError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+        field:
+          type: string
     LocalDeliveryUnit:
       required:
       - code

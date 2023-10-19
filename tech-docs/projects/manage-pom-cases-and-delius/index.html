@@ -92,7 +92,24 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>manage-pom-cases-and-delius</span></a>
+    <a href="./index.html"><span>Manage POM Cases and Delius</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#business-need"><span>Business Need</span></a>
+      </li>
+      <li>
+        <a href="./index.html#context-map"><span>Context Map</span></a>
+      </li>
+      <li>
+        <a href="./index.html#interfaces"><span>Interfaces</span></a>
+      </li>
+      <li>
+        <a href="./index.html#workflows"><span>Workflows</span></a>
+      </li>
+      <li>
+        <a href="./index.html#delius-case-allocation"><span>Delius Case Allocation</span></a>
+      </li>
+    </ul>
   </li>
   <li>
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
@@ -105,6 +122,9 @@
       </li>
     </ul>
   </li>
+  <li>
+    <a href="./async-api-reference.html"><span>ASyncAPI Reference</span></a>
+  </li>
 </ul>
 
 
@@ -114,8 +134,47 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="manage-pom-cases-and-delius">manage-pom-cases-and-delius</h1>
-<p>// TODO Describe the service</p>
+            <h1 id="manage-pom-cases-and-delius">Manage POM Cases and Delius</h1>
+<h2 id="business-need">Business Need</h2>
+<p>Service that manages data exchange between Delius and the &lsquo;Manage POM Cases&rsquo; service, which is part of the Offender Management in Custody (OMiC) model. Allocation of a Prison Offender Manager (POM) within &lsquo;Manage POM Cases&rsquo; uses information from the probation case stored in Delius. All Prison Offender Manager allocations and handover dates must be reflected in the Delius supervision record.</p>
+<h2 id="context-map">Context Map</h2>
+<p><a href="././img/manage-pom-cases-and-delius-context-map.svg" rel="noopener noreferrer"><img src="img/manage-pom-cases-and-delius-context-map.svg" alt="Context Map" /></a></p>
+<h2 id="interfaces">Interfaces</h2>
+<p>The service manages three integration points between &lsquo;Manage POM Cases&rsquo; and Delius.</p>
+
+<ol>
+<li>Providing an API endpoint for probation case information held in Delius</li>
+<li>Consuming a domain event raised by &lsquo;Manage POM Cases&rsquo; when handover dates are changed</li>
+<li>Consuming a domain event raised by &lsquo;Manage POM Cases&rsquo; when POM allocation is updated</li>
+</ol>
+<p>The domain events are raised by the <a href="https://github.com/ministryofjustice/offender-management-allocation-manager">Manage POM Cases</a> service when significant changes are made to case allocation in custody.</p>
+<h3 id="domain-event-triggers">Domain Event Triggers</h3>
+<p>The service responds to an HMPPS Domain Event message via an
+<a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/manage-pom-cases-and-delius-queue.tf">SQS Queue</a>.</p>
+<p>Example <a href="./src/dev/resources/messages/">messages</a> are in the development source tree</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Class</th>
+<th>Message Event Type / Filter</th>
+</tr><tr>
+<td>POM to COM handover of responsibility dates have changed</td>
+<td>HMPPS Domain Event</td>
+<td>offender-management.handover.changed</td>
+</tr><tr>
+<td>The POM allocated to the case has changed</td>
+<td>HMPPS Domain Event</td>
+<td>offender-management.pom.allocated</td>
+</tr>
+        </table>
+      </div><h2 id="workflows">Workflows</h2>
+<h3 id="prison-offender-manager-handover-dates">Prison Offender Manager Handover Dates</h3>
+<p><a href="././img/manage-pom-cases-workflow-handover-dates.svg" rel="noopener noreferrer"><img src="img/manage-pom-cases-workflow-handover-dates.svg" alt="Handover Dates Workflow" /></a></p>
+<h3 id="responsibility-change">Responsibility Change</h3>
+<p><a href="././img/manage-pom-cases-workflow-responsibility.svg" rel="noopener noreferrer"><img src="img/manage-pom-cases-workflow-responsibility.svg" alt="Responsibiliy Change Workflow" /></a></p>
+<h2 id="delius-case-allocation">Delius Case Allocation</h2>
+<p>Delius records details of POM allocations, COM allocations and handover dates for a probation case. It also has the concept of a &lsquo;Responsible Officer&rsquo; which is the member of staff currently responsible for the case. A case may have a number of POM and COM records in Delius, indicating the allocation history, however there can only be one Responsible Officer at any one time. This will be one of the currently active POM or COM. The integration service will update POM allocations and handover dates in Delius. It will not change the Responsible Officer in Delius unless the current responsible officer is the active POM and this is changed by the MPC allocation.</p>
 
             
           </main>
