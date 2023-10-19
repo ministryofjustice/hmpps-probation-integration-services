@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
 import org.mockito.kotlin.eq
@@ -51,7 +51,7 @@ class CaseNotesIntegrationTest {
         )
 
         val caseNote = caseNoteRepository.findByExternalReferenceAndOffenderIdAndSoftDeletedIsFalse("1111", PersonGenerator.NEW_TO_PROBATION.id)
-        MatcherAssert.assertThat(caseNote!!.notes, Matchers.equalTo("Some new notes about the court case."))
+        assertThat(caseNote!!.notes, equalTo("Some new notes about the court case."))
 
         verify(telemetryService).trackEvent(eq(COURT_CASE_NOTE_MERGED), anyMap(), anyMap())
     }
@@ -65,7 +65,7 @@ class CaseNotesIntegrationTest {
         )
 
         val caseNote = caseNoteRepository.findByExternalReferenceAndOffenderIdAndSoftDeletedIsFalse("2222", PersonGenerator.CURRENTLY_MANAGED.id)
-        MatcherAssert.assertThat(caseNote!!.notes, Matchers.equalTo("Overwritten the existing notes about the court case."))
+        assertThat(caseNote!!.notes, equalTo("Overwritten the existing notes about the court case."))
 
         verify(telemetryService).trackEvent(eq(COURT_CASE_NOTE_MERGED), anyMap(), anyMap())
     }

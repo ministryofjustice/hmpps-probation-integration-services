@@ -10,6 +10,8 @@ object PersonGenerator {
     val DEFAULT_PERSON = generatePerson("T123456")
     val DEFAULT_CM = generateManager(DEFAULT_PERSON)
 
+    val PERSON_CREATE_LC = generatePerson("L453621")
+
     fun generatePerson(
         crn: String,
         softDeleted: Boolean = false,

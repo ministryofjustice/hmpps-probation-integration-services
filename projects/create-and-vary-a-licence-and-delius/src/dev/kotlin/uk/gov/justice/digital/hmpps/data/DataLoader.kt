@@ -10,8 +10,11 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.sentence.entity.CvlMapping
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
 @Component
@@ -47,13 +50,14 @@ class DataLoader(
         entityManager.persist(StaffGenerator.DEFAULT)
 
         entityManager.persist(StaffGenerator.DEFAULT_STAFF_USER)
+        entityManager.flush()
 
         entityManager.persist(PersonGenerator.DEFAULT_PERSON)
         entityManager.persist(PersonGenerator.DEFAULT_CM)
 
         val person = PersonGenerator.generatePerson("N123456").also(entityManager::persist)
         PersonGenerator.generateManager(person).also(entityManager::persist)
-        listOf(
+        entityManager.persistAll(
             AddressGenerator.ADDRESS_STATUS_MAIN,
             AddressGenerator.ADDRESS_STATUS_PREVIOUS,
             AddressGenerator.ADDRESS_STATUS_OTHER,
@@ -61,6 +65,35 @@ class DataLoader(
             AddressGenerator.ADDRESS_PREVIOUS,
             AddressGenerator.ADDRESS_OTHER,
             AddressGenerator.ADDRESS_DELETED
-        ).forEach(entityManager::persist)
+        )
+
+        createForAddingLicenceConditions()
+    }
+
+    private fun createForAddingLicenceConditions() {
+        entityManager.persistAll(
+            SentenceGenerator.SENTENCE_TYPE_SC,
+            ReferenceDataGenerator.DATASET_LC_SUB_CAT,
+            ReferenceDataGenerator.LC_STANDARD_CATEGORY,
+            ReferenceDataGenerator.LC_STANDARD_SUB_CATEGORY,
+            ReferenceDataGenerator.LC_BESPOKE_CATEGORY,
+            ReferenceDataGenerator.LC_BESPOKE_SUB_CATEGORY,
+            ReferenceDataGenerator.CONTACT_TYPE_LPOP,
+            PersonGenerator.PERSON_CREATE_LC,
+            SentenceGenerator.EVENT_CREATE_LC,
+            SentenceGenerator.SENTENCE_CREATE_LC,
+            PersonGenerator.generateManager(PersonGenerator.PERSON_CREATE_LC)
+        )
+        entityManager.saveCvlMappings(ReferenceDataGenerator.CVL_MAPPINGS)
+    }
+
+    private fun EntityManager.persistAll(vararg entities: Any) {
+        entities.forEach { persist(it) }
+    }
+
+    private fun EntityManager.saveCvlMappings(mappings: List<CvlMapping>) {
+        mappings.forEach {
+            persistAll(it.mainCategory, it.subCategory, it)
+        }
     }
 }
