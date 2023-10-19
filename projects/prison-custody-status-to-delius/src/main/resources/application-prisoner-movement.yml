@@ -42,6 +42,15 @@ prisoner.movement.configs:
     featureFlag: messages_released_irc
   - types:
       - RELEASED
+    reasons:
+      - ECSL
+    actionNames:
+      - Release
+      - UpdateStatus
+      - UpdateLocation
+    featureFlag: messages_released_ecsl
+  - types:
+      - RELEASED
     actionNames:
       - Release
       - UpdateStatus

@@ -94,6 +94,7 @@ class DataLoader(
         createTemporaryAbsenceReturnFromRotl()
         createIrcReleased()
         createIrcInCustody()
+        createReleasableEcslPerson()
     }
 
     private fun createReferenceData() {
@@ -151,6 +152,11 @@ class DataLoader(
     private fun createReleasablePerson() {
         createPerson(PersonGenerator.RELEASABLE)
         createEvent(EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT))
+    }
+
+    private fun createReleasableEcslPerson() {
+        createPerson(PersonGenerator.RELEASABLE_ECSL)
+        createEvent(EventGenerator.custodialEvent(PersonGenerator.RELEASABLE_ECSL, InstitutionGenerator.DEFAULT))
     }
 
     private fun createRecallablePerson() {

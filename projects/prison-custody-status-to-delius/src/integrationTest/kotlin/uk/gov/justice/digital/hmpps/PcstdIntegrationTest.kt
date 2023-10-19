@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallReas
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodialStatusCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
 
@@ -33,7 +34,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         val custody = getCustody(nomsNumber)
         assertFalse(custody.isInCustody())
 
-        verifyRelease(custody, notification.message.occurredAt)
+        verifyRelease(custody, notification.message.occurredAt, ReleaseTypeCode.ADULT_LICENCE)
 
         verifyCustodyHistory(
             custody,
@@ -436,6 +437,43 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
                 "institution" to "SWI",
                 "reason" to "RELEASED",
                 "movementReason" to "DD",
+                "movementType" to "Released"
+            )
+        }
+    }
+
+    @Test
+    fun `release a ecsl prisoner`() {
+        whenever(featureFlags.enabled("messages_released_ecsl")).thenReturn(true)
+        val notification = NotificationGenerator.PRISONER_RELEASED_ECSL
+        val nomsNumber = notification.nomsId()
+        assertTrue(getCustody(nomsNumber).isInCustody())
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custody = getCustody(nomsNumber)
+        assertFalse(custody.isInCustody())
+
+        verifyRelease(custody, notification.message.occurredAt, ReleaseTypeCode.END_CUSTODY_SUPERVISED_LICENCE)
+
+        verifyCustodyHistory(
+            custody,
+            CustodyEventTester(CustodyEventTypeCode.STATUS_CHANGE, "Released on Licence"),
+            CustodyEventTester(
+                CustodyEventTypeCode.LOCATION_CHANGE,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]?.description
+            )
+        )
+
+        verifyContact(custody, ContactType.Code.RELEASE_FROM_CUSTODY)
+
+        verifyTelemetry("Released", "LocationUpdated", "StatusUpdated") {
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0013AA",
+                "institution" to "WSI",
+                "reason" to "RELEASED",
+                "movementReason" to "ECSL",
                 "movementType" to "Released"
             )
         }
