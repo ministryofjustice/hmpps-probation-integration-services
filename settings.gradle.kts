@@ -60,7 +60,7 @@ dependencyResolutionManagement {
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
             library("insights", "com.microsoft.azure:applicationinsights-web:3.4.17")
-            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.31.0")
+            library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.32.0")
             library("opentelemetry-annotations", "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.31.0")
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.4")
