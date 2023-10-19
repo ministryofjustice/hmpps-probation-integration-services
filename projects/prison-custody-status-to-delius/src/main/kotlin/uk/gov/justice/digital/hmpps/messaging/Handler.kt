@@ -55,10 +55,14 @@ class Handler(
                 )
 
             if (config.featureFlag != null && !featureFlags.enabled(config.featureFlag)) {
-                return telemetryService.trackEvent(
-                    "FeatureFlagNotActive",
-                    movement.telemetryProperties() + ("featureFlag" to config.featureFlag)
-                )
+                if (config.reasonOverride == null) {
+                    return telemetryService.trackEvent(
+                        "FeatureFlagNotActive",
+                        movement.telemetryProperties() + ("featureFlag" to config.featureFlag)
+                    )
+                } else {
+                    movement.reasonOverride = config.reasonOverride
+                }
             }
 
             val results = actionProcessor.processActions(movement, config.actionNames)

@@ -8,13 +8,15 @@ sealed interface PrisonerMovement {
     val type: Type
     val reason: String
     val occurredAt: ZonedDateTime
+    var reasonOverride: String?
 
     data class Received(
         override val nomsId: String,
         override val prisonId: String,
         override val type: Type,
         override val reason: String,
-        override val occurredAt: ZonedDateTime
+        override val occurredAt: ZonedDateTime,
+        override var reasonOverride: String? = null
     ) : PrisonerMovement
 
     data class Released(
@@ -22,7 +24,8 @@ sealed interface PrisonerMovement {
         override val prisonId: String?,
         override val type: Type,
         override val reason: String,
-        override val occurredAt: ZonedDateTime
+        override val occurredAt: ZonedDateTime,
+        override var reasonOverride: String? = null
     ) : PrisonerMovement
 
     enum class Type {

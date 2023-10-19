@@ -15,5 +15,6 @@ object NotificationGenerator {
     val PRISONER_ROTL_RETURN = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-rotl")
     val PRISONER_IRC_RELEASED = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-irc-released")
     val PRISONER_IRC_IN_CUSTODY = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-irc-custody")
-    val PRISONER_RELEASED_ECSL = ResourceLoader.notification<HmppsDomainEvent>("prisoner-released-ecsl")
+    val PRISONER_RELEASED_ECSL_ACTIVE = ResourceLoader.notification<HmppsDomainEvent>("prisoner-released-ecsl-active")
+    val PRISONER_RELEASED_ECSL_INACTIVE = ResourceLoader.notification<HmppsDomainEvent>("prisoner-released-ecsl-inactive")
 }
