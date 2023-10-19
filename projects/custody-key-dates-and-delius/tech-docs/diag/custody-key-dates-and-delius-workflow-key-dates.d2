@@ -1,0 +1,35 @@
+# Custody Key Dates Workflow: Update Delius Key Dates
+
+direction: right
+
+style {
+  fill: "#ffffff"
+}
+
+# What triggers the workflow?
+nomis: NOMIS/DPS {
+     style.font-size: 15
+     nomis_key_dates: Any custody\nkey date updated {
+         shape: oval
+     }
+}
+
+# What happens in Delius?
+delius: Delius {
+    style {
+        font-size: 20
+    }
+
+    d_key_date_comparison: Compare key dates
+    d_key_date_update: Update changed\ndate values
+    d_contact: Create contact\nto record activity
+
+    d_key_date_comparison -> d_key_date_update -> d_contact
+}
+
+nomis -> delius
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2
+*.*.style.font-size: 12
