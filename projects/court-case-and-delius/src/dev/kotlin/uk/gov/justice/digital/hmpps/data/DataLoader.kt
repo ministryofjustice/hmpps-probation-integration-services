@@ -7,6 +7,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CourtCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
@@ -31,6 +34,8 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         em.saveAll(
+            BusinessInteractionGenerator.UPDATE_CONTACT,
+            ContactTypeGenerator.CONTACT_TYPE,
             PersonGenerator.NEW_TO_PROBATION,
             PersonGenerator.CURRENTLY_MANAGED,
             PersonGenerator.PREVIOUSLY_MANAGED,
@@ -38,6 +43,11 @@ class DataLoader(
         )
 
         em.saveAll(StaffGenerator.ALLOCATED, StaffGenerator.UNALLOCATED)
+
+        em.saveAll(
+            PersonGenerator.generatePersonManager(PersonGenerator.NEW_TO_PROBATION),
+            PersonGenerator.generatePersonManager(PersonGenerator.CURRENTLY_MANAGED)
+        )
 
         val noSentenceEvent = SentenceGenerator.generateEvent(PersonGenerator.NO_SENTENCE)
         val noSentenceManager = SentenceGenerator.generateOrderManager(noSentenceEvent, StaffGenerator.UNALLOCATED)
@@ -59,6 +69,8 @@ class DataLoader(
         val preSentence = SentenceGenerator.generateSentence(preEvent, ZonedDateTime.now().minusDays(7), active = false)
         val preManager = SentenceGenerator.generateOrderManager(preEvent, StaffGenerator.ALLOCATED)
         em.saveAll(preEvent, preSentence, preManager)
+
+        em.merge(CourtCaseNoteGenerator.CASE_NOTE)
     }
 }
 
