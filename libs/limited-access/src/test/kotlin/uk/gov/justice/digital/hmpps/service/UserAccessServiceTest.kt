@@ -8,6 +8,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.entity.LimitedAccessUser
 import uk.gov.justice.digital.hmpps.entity.PersonAccess
 import uk.gov.justice.digital.hmpps.entity.UserAccessRepository
 
@@ -22,10 +23,23 @@ internal class UserAccessServiceTest {
     @Test
     fun `user limited access is correctly returned`() {
         val pas = givenLimitedAccessResults()
+        whenever(uar.findByUsername("john-smith")).thenReturn(LimitedAccessUser("john-smith", 1))
         whenever(uar.getAccessFor("john-smith", listOf("E123456", "R123456", "B123456", "N123456")))
             .thenReturn(pas)
 
         val res = userAccessService.userAccessFor("john-smith", listOf("E123456", "R123456", "B123456", "N123456"))
+
+        assertThat(res.access.size, equalTo(4))
+        assertThat(res, equalTo(userAccess()))
+    }
+
+    @Test
+    fun `user limited access is correctly returned when user doesn't exist`() {
+        val pas = givenLimitedAccessResults()
+        whenever(uar.checkLimitedAccessFor(listOf("E123456", "R123456", "B123456", "N123456")))
+            .thenReturn(pas)
+
+        val res = userAccessService.userAccessFor("jane-smith", listOf("E123456", "R123456", "B123456", "N123456"))
 
         assertThat(res.access.size, equalTo(4))
         assertThat(res, equalTo(userAccess()))

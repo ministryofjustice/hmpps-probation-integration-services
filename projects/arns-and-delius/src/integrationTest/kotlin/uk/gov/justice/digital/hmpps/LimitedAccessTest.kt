@@ -105,4 +105,54 @@ internal class LimitedAccessTest {
             )
         )
     }
+
+    @Test
+    fun `limited access controls are correctly returned with full access`() {
+        val res = mockMvc.perform(
+            MockMvcRequestBuilders.post("/users/access?username=${LimitedAccessGenerator.FULL_ACCESS_USER.username}")
+                .withOAuth2Token(wireMockserver)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    objectMapper.writeValueAsString(
+                        listOf(
+                            LimitedAccessGenerator.EXCLUDED_CASE.crn,
+                            LimitedAccessGenerator.RESTRICTED_CASE.crn,
+                            LimitedAccessGenerator.UNLIMITED_ACCESS.crn
+                        )
+                    )
+                )
+        ).andReturn().response.contentAsString
+
+        val result = objectMapper.readValue<UserAccess>(res)
+        assertThat(
+            result.access.first { it.crn == LimitedAccessGenerator.EXCLUDED_CASE.crn },
+            equalTo(
+                CaseAccess(
+                    LimitedAccessGenerator.EXCLUDED_CASE.crn,
+                    userExcluded = false,
+                    userRestricted = false
+                )
+            )
+        )
+        assertThat(
+            result.access.first { it.crn == LimitedAccessGenerator.RESTRICTED_CASE.crn },
+            equalTo(
+                CaseAccess(
+                    LimitedAccessGenerator.RESTRICTED_CASE.crn,
+                    userExcluded = false,
+                    userRestricted = false
+                )
+            )
+        )
+        assertThat(
+            result.access.first { it.crn == LimitedAccessGenerator.UNLIMITED_ACCESS.crn },
+            equalTo(
+                CaseAccess(
+                    LimitedAccessGenerator.UNLIMITED_ACCESS.crn,
+                    userExcluded = false,
+                    userRestricted = false
+                )
+            )
+        )
+    }
 }
