@@ -83,7 +83,7 @@ class DataLoader(
 
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         createReferenceData()
-        createReleasablePerson()
+        createReleasablePerson(PersonGenerator.RELEASABLE)
         createRecallablePerson()
         createPersonToDie()
         createMatchablePerson()
@@ -94,7 +94,8 @@ class DataLoader(
         createTemporaryAbsenceReturnFromRotl()
         createIrcReleased()
         createIrcInCustody()
-        createReleasableEcslPerson()
+        createReleasablePerson(PersonGenerator.RELEASABLE_ECSL_ACTIVE)
+        createReleasablePerson(PersonGenerator.RELEASABLE_ECSL_INACTIVE)
     }
 
     private fun createReferenceData() {
@@ -149,14 +150,9 @@ class DataLoader(
         createEvent(EventGenerator.custodialEvent(PersonGenerator.DIED, InstitutionGenerator.DEFAULT))
     }
 
-    private fun createReleasablePerson() {
-        createPerson(PersonGenerator.RELEASABLE)
-        createEvent(EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT))
-    }
-
-    private fun createReleasableEcslPerson() {
-        createPerson(PersonGenerator.RELEASABLE_ECSL)
-        createEvent(EventGenerator.custodialEvent(PersonGenerator.RELEASABLE_ECSL, InstitutionGenerator.DEFAULT))
+    private fun createReleasablePerson(person: Person) {
+        createPerson(person)
+        createEvent(EventGenerator.custodialEvent(person, InstitutionGenerator.DEFAULT))
     }
 
     private fun createRecallablePerson() {

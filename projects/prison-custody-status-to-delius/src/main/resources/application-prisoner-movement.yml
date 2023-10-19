@@ -44,6 +44,7 @@ prisoner.movement.configs:
       - RELEASED
     reasons:
       - ECSL
+    reasonOverride: RO
     actionNames:
       - Release
       - UpdateStatus

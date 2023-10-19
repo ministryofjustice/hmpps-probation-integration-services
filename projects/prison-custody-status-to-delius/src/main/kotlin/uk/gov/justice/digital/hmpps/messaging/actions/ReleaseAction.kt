@@ -104,7 +104,7 @@ private fun PrisonerMovement.releaseType(): ReleaseTypeCode {
     if (type != PrisonerMovement.Type.RELEASED) {
         throw IgnorableMessageException("UnsupportedReleaseType")
     }
-    return when (reason) {
+    return when (reasonOverride ?: reason) {
         "ECSL" -> ReleaseTypeCode.END_CUSTODY_SUPERVISED_LICENCE
         else -> ReleaseTypeCode.ADULT_LICENCE
     }

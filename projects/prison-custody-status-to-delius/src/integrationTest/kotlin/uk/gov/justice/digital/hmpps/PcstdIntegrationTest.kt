@@ -23,6 +23,8 @@ import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
 
 class PcstdIntegrationTest : PcstdIntegrationTestBase() {
+    private val releaseOnLicence = "Released on Licence"
+
     @Test
     fun `release a prisoner`() {
         val notification = NotificationGenerator.PRISONER_RELEASED
@@ -38,7 +40,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
         verifyCustodyHistory(
             custody,
-            CustodyEventTester(CustodyEventTypeCode.STATUS_CHANGE, "Released on Licence"),
+            CustodyEventTester(CustodyEventTypeCode.STATUS_CHANGE, releaseOnLicence),
             CustodyEventTester(
                 CustodyEventTypeCode.LOCATION_CHANGE,
                 InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]?.description
@@ -443,9 +445,9 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     }
 
     @Test
-    fun `release a ecsl prisoner`() {
+    fun `release a ecsl prisoner with feature active`() {
         whenever(featureFlags.enabled("messages_released_ecsl")).thenReturn(true)
-        val notification = NotificationGenerator.PRISONER_RELEASED_ECSL
+        val notification = NotificationGenerator.PRISONER_RELEASED_ECSL_ACTIVE
         val nomsNumber = notification.nomsId()
         assertTrue(getCustody(nomsNumber).isInCustody())
 
@@ -458,7 +460,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
         verifyCustodyHistory(
             custody,
-            CustodyEventTester(CustodyEventTypeCode.STATUS_CHANGE, "Released on Licence"),
+            CustodyEventTester(CustodyEventTypeCode.STATUS_CHANGE, releaseOnLicence),
             CustodyEventTester(
                 CustodyEventTypeCode.LOCATION_CHANGE,
                 InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]?.description
@@ -471,6 +473,43 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0013AA",
+                "institution" to "WSI",
+                "reason" to "RELEASED",
+                "movementReason" to "ECSL",
+                "movementType" to "Released"
+            )
+        }
+    }
+
+    @Test
+    fun `release a ecsl prisoner with feature inactive`() {
+        whenever(featureFlags.enabled("messages_released_ecsl")).thenReturn(false)
+        val notification = NotificationGenerator.PRISONER_RELEASED_ECSL_INACTIVE
+        val nomsNumber = notification.nomsId()
+        assertTrue(getCustody(nomsNumber).isInCustody())
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custody = getCustody(nomsNumber)
+        assertFalse(custody.isInCustody())
+
+        verifyRelease(custody, notification.message.occurredAt, ReleaseTypeCode.ADULT_LICENCE)
+
+        verifyCustodyHistory(
+            custody,
+            CustodyEventTester(CustodyEventTypeCode.STATUS_CHANGE, releaseOnLicence),
+            CustodyEventTester(
+                CustodyEventTypeCode.LOCATION_CHANGE,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]?.description
+            )
+        )
+
+        verifyContact(custody, ContactType.Code.RELEASE_FROM_CUSTODY)
+
+        verifyTelemetry("Released", "LocationUpdated", "StatusUpdated") {
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0015AA",
                 "institution" to "WSI",
                 "reason" to "RELEASED",
                 "movementReason" to "ECSL",
