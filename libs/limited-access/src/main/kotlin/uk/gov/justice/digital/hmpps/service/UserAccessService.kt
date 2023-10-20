@@ -9,8 +9,11 @@ import uk.gov.justice.digital.hmpps.entity.isRestricted
 @Service
 class UserAccessService(private val uar: UserAccessRepository) {
     fun userAccessFor(username: String, crns: List<String>): UserAccess {
-        val limitations: Map<String, List<PersonAccess>> = uar.getAccessFor(username, crns).groupBy { it.crn }
-        return UserAccess(crns.map { limitations[it].combined(it) })
+        val user = uar.findByUsername(username)
+
+        val limitations: List<PersonAccess> =
+            user?.let { uar.getAccessFor(it.username, crns) } ?: uar.checkLimitedAccessFor(crns)
+        return UserAccess(crns.map { limitations.groupBy { it.crn }[it].combined(it) })
     }
 
     fun checkLimitedAccessFor(crns: List<String>): UserAccess {

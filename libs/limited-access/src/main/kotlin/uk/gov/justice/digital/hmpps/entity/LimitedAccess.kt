@@ -81,6 +81,9 @@ class LimitedAccessUser(
 )
 
 interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
+    @Query("select u from LimitedAccessUser u where upper(u.username) = upper(:username) ")
+    fun findByUsername(username: String): LimitedAccessUser?
+
     @Query(
         """
         select p.crn as crn, '' as exclusionMessage, p.restrictionMessage as restrictionMessage
