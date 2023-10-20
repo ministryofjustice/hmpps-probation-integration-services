@@ -1,0 +1,44 @@
+# Custody Key Dates and Delius Context Map
+
+style {
+  fill: "#ffffff"
+}
+
+context-nomis: NOMIS/DPS Context {
+  entities: Entities {
+    grid-columns: 3
+    pip: Person in Prison
+    booking: Booking
+    sentence: Sentence
+  }
+
+  interface: Prison API {
+    type: Open Host Service
+  }
+}
+
+context-delius: Delius Context {
+  link: https://github.com/ministryofjustice/delius
+  style.stroke-width: 8
+
+  entities: Entities {
+    grid-columns: 3
+    pop: Person on Probation
+    event: Event
+    disposal: Disposal
+    custody: Custody
+    key_dates: Key Dates
+    contact: Contact
+  }
+
+  interface: Custody Key Dates and Delius {
+    link: https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/custody-key-dates-and-delius/
+    type: Anti-Corruption Layer
+  }
+}
+
+context-nomis.interface--context-delius.interface: Upstream\n\n\nDownstream
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2
