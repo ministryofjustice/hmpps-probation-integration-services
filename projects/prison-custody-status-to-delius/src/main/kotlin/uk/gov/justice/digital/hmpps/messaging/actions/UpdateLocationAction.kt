@@ -74,7 +74,12 @@ class UpdateLocationAction(
 
     private fun PrisonerMovement.releaseLocation(custody: Custody) =
         when {
-            isHospitalRelease() -> institutionRepository.getByCode(InstitutionCode.OTHER_SECURE_UNIT.code)
+            isHospitalRelease() -> if (custody.institution?.secureHospital == true) {
+                custody.institution!!
+            } else {
+                institutionRepository.getByCode(InstitutionCode.OTHER_SECURE_UNIT.code)
+            }
+
             isIrcRelease() -> if (custody.institution?.irc == true) {
                 custody.institution!!
             } else {
