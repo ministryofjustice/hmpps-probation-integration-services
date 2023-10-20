@@ -19,8 +19,8 @@ generic-service:
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
     create-and-vary-a-licence-and-delius-sentry:
       SENTRY_DSN: SENTRY_DSN
-    create-and-vary-a-licence-and-delius-queue:
-      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+#    create-and-vary-a-licence-and-delius-queue:
+#      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
 
 generic-prometheus-alerts:
   targetApplication: create-and-vary-a-licence-and-delius
