@@ -75,6 +75,18 @@ class AllocationDemandIntegrationTest {
             .andExpect(status().is2xxSuccessful)
     }
 
+    @Test
+    fun `providing over 500 crns throws exception`() {
+        val requests = MutableList(501) { n -> AllocationRequest("T${String.format("%06d", n)}", n.toString()) }
+
+        mockMvc.perform(
+            post("/allocation-demand").withOAuth2Token(wireMockserver)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(AllocationDemandRequest(requests)))
+        )
+            .andExpect(status().is4xxClientError)
+    }
+
     @ParameterizedTest
     @MethodSource("allocationRequests")
     fun `get allocation demand invalid inputs`(allocationRequest: AllocationRequest) {
