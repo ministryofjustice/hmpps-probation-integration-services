@@ -1,5 +1,3 @@
-enabled: false # TODO set this to true when you're ready to deploy your service
-
 generic-service:
   ingress:
     host: dps-and-delius-preprod.hmpps.service.justice.gov.uk
@@ -11,7 +9,7 @@ generic-service:
     SENTRY_ENVIRONMENT: preprod
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/issuer
-    INTEGRATIONS_ALFRESCO_URL: https://alfresco.pre-prod.delius.probation.hmpps.dsd.io/alfresco/service/noms-spg/
+    INTEGRATIONS_ALFRESCO_URL: https://alfresco.pre-prod.delius.probation.hmpps.dsd.io/alfresco/service/noms-spg
 
 generic-prometheus-alerts:
   businessHoursOnly: true
