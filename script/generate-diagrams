@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <project-directory>"
+    exit 1
+fi
+
+PROJECT=$1
+
+# Run from the base directory
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+cd $SCRIPTPATH/..
+
+# Create SVGs for all d2 diagrams in the project
+for diagram in $(find projects/${PROJECT}/tech-docs/diag/ -iname *.d2 -exec basename {} \;); do
+    svg=${diagram%.d2}.svg
+    d2 -t 8 --layout elk --pad 25 projects/${PROJECT}/tech-docs/diag/$diagram projects/${PROJECT}/tech-docs/source/img/$svg
+done
