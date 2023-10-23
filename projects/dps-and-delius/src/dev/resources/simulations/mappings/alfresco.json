@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/alfresco/fetch/uuid1"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/octet-stream",
+      "Content-Disposition": "attachment; filename=\"doc1\"; filename*=UTF-8''doc1",
+      "Custom-Alfresco-Header": "should be ignored"
+    },
+    "status": 200,
+    "bodyFileName": "document.pdf"
+  }
+}
