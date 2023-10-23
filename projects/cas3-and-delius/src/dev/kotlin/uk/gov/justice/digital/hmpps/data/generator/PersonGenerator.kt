@@ -7,7 +7,7 @@ object PersonGenerator {
     val PERSON_CRN = generate("A000001", null)
 
     fun generate(crn: String, noms: String?, softDeleted: Boolean = false, id: Long = IdGenerator.getAndIncrement()) =
-        Person(crn,noms, softDeleted, id)
+        Person(crn, noms, softDeleted, id)
 
     fun generatePersonManager(person: Person) =
         PersonManager(IdGenerator.getAndIncrement(), person.id, 1, 1, 1, 1)

@@ -38,4 +38,3 @@ fun PersonRepository.getByCrn(crn: String) =
 
 fun PersonRepository.getByNoms(noms: String) =
     findByNomsNumberAndSoftDeletedIsFalse(noms) ?: throw NotFoundException("Person", "noms", noms)
-

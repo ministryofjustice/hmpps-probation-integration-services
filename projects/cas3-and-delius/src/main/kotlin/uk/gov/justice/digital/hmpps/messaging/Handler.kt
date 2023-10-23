@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
-    private val contactService: ContactService,
+    private val contactService: ContactService
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
@@ -29,7 +29,7 @@ class Handler(
     fun HmppsDomainEvent.telemetryProperties() = mapOf(
         "occurredAt" to occurredAt.toString(),
         "crn" to crn(),
-        "noms" to noms(),
+        "noms" to noms()
 
     )
 

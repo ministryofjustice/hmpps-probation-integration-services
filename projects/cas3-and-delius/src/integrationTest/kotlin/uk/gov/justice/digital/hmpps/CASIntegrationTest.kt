@@ -28,7 +28,6 @@ internal class CASIntegrationTest {
 
     @Autowired lateinit var contactRepository: ContactRepository
 
-
     @Test
     fun `message is processed correctly`() {
         // Given a message
@@ -45,11 +44,10 @@ internal class CASIntegrationTest {
         // Then it is logged to telemetry
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
 
-        //verify that the contact has been created:
+        // verify that the contact has been created:
 
         val contact = contactRepository.getByExternalReference(message.additionalInformation["applicationId"] as String)
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EARS"))
-
     }
 }

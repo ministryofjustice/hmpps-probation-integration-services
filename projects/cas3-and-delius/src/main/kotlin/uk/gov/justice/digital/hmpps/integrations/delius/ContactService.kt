@@ -46,7 +46,7 @@ class ContactService(
             }
         }
         if (contactRepository.getByExternalReference(externalReference) != null) {
-            telemetryService.trackEvent("Duplicate ApplicationSubmitted event received for crn/noms ${crn}/${noms}")
+            telemetryService.trackEvent("Duplicate ApplicationSubmitted event received for crn/noms $crn/$noms")
         } else {
             contactRepository.save(newContact(event.occurredAt, person.id, REFERRAL_SUBMITTED, externalReference))
         }

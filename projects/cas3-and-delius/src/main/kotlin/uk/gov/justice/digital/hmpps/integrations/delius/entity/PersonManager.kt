@@ -48,6 +48,3 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     )
     fun findActiveManager(personId: Long): PersonManager?
 }
-
-
-
