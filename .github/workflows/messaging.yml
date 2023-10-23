@@ -33,6 +33,7 @@ on:
           - workforce-allocations-to-delius-queue
           - manage-offences-and-delius-queue
           - opd-and-delius-queue
+          - cas3-and-delius-queue
           # ^ add new queues here
 
 jobs:

@@ -64,6 +64,7 @@ jobs:
           - hmpps-auth-and-delius
           - dps-and-delius
           - arns-and-delius
+          - cas3-and-delius
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795

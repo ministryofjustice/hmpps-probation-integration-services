@@ -1,0 +1,25 @@
+# Common values
+generic-service:
+  nameOverride: cas3-and-delius
+  serviceAccountName: cas3-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/cas3-and-delius
+
+  ingress:
+    tlsSecretName: cas3-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    cas3-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    cas3-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    cas3-and-delius-queue:
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+
+generic-prometheus-alerts:
+  targetApplication: cas3-and-delius
+

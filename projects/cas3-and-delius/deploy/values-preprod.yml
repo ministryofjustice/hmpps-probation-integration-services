@@ -1,0 +1,14 @@
+enabled: false # TODO set this to true when you're ready to deploy your service
+
+generic-service:
+  ingress:
+    host: cas3-and-delius-preprod.hmpps.service.justice.gov.uk
+
+  scheduledDowntime:
+    enabled: true
+
+  env:
+    SENTRY_ENVIRONMENT: preprod
+
+generic-prometheus-alerts:
+  businessHoursOnly: true
