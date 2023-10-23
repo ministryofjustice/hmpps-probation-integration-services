@@ -2,8 +2,11 @@ database:
   access:
     username_key: /cas3-and-delius/db-username
     password_key: /cas3-and-delius/db-password
+    tables:
+      - audited_interaction
+      - contact
 
   audit:
     username: Cas3AndDelius
-    forename: Probation Integration # TODO change this to something meaningful for your service
+    forename: cas3
     surname: Service
