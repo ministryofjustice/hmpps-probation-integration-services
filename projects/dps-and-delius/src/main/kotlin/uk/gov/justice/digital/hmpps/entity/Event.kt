@@ -16,7 +16,7 @@ import java.time.LocalDate
 @Entity
 @Immutable
 @Where(clause = "soft_deleted = 0")
-data class Event(
+class Event(
     @Id
     @Column(name = "event_id")
     val id: Long,
@@ -47,7 +47,7 @@ data class Event(
 @Entity
 @Immutable
 @Where(clause = "soft_deleted = 0")
-data class Disposal(
+class Disposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long,
@@ -80,7 +80,7 @@ data class Disposal(
 @Entity
 @Immutable
 @Table(name = "r_disposal_type")
-data class DisposalType(
+class DisposalType(
     @Id
     @Column(name = "disposal_type_id")
     val id: Long,
@@ -90,7 +90,8 @@ data class DisposalType(
 )
 
 @Entity
-data class Custody(
+@Immutable
+class Custody(
     @Id
     @Column(name = "custody_id")
     val id: Long,
@@ -108,8 +109,9 @@ data class Custody(
 )
 
 @Entity
+@Immutable
 @Table(name = "r_institution")
-data class Institution(
+class Institution(
     @Id
     @Column(name = "institution_id")
     val id: Long,

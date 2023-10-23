@@ -12,7 +12,7 @@ import java.time.ZonedDateTime
 @Entity
 @Immutable
 @Where(clause = "soft_deleted = 0")
-data class CourtAppearance(
+class CourtAppearance(
     @Id
     @Column(name = "court_appearance_id")
     val id: Long,

@@ -13,7 +13,7 @@ import org.hibernate.annotations.Where
 @Entity
 @Immutable
 @Where(clause = "soft_deleted = 0")
-data class MainOffence(
+class MainOffence(
     @Id
     @Column(name = "main_offence_id")
     val id: Long,
@@ -30,8 +30,8 @@ data class MainOffence(
     val softDeleted: Boolean = false
 )
 
-@Immutable
 @Entity
+@Immutable
 @Table(name = "r_offence")
 data class Offence(
     @Id

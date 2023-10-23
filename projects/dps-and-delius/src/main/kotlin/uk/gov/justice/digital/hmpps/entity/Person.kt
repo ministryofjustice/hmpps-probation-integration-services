@@ -14,7 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 @Immutable
 @Table(name = "offender")
 @Where(clause = "soft_deleted = 0")
-data class Person(
+class Person(
     @Id
     @Column(name = "offender_id")
     val id: Long,

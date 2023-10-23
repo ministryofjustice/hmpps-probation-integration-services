@@ -10,7 +10,7 @@ import java.time.ZonedDateTime
 
 @Entity
 @Immutable
-data class Document(
+class Document(
     @Id
     @Column(name = "document_id")
     val id: Long,
