@@ -1,12 +1,18 @@
 {
-  "MessageId": "ae06c49e-1f41-4b9f-b2f2-dcca610d02cd",
-  "Type": "Notification",
-  "Timestamp": "2019-10-21T14:01:18.500Z",
-  "Message": "{\n  \"eventType\": \"accommodation.cas3.referral.submitted\",\n  \"version\": 1,\n  \"description\": \"CAS3 Referral has been submitted\",\n  \"detailUrl\": \"\",\n  \"occurredAt\": \"2022-12-04T10:42:43+00:00\",\n  \"additionalInformation\": {\n    \"applicationId\": \"68df9f6c-3fcb-4ec6-8fcf-96551cd9b080\"\n  },\n  \"personReference\": {\n    \"identifiers\": [\n      {\n        \"type\": \"CRN\",\n        \"value\": \"A000001\"\n      }\n    ]\n  }\n}",
-  "MessageAttributes": {
-    "eventType": {
-      "Type": "String",
-      "Value": "accommodation.cas3.referral.submitted"
-    }
+  "eventType": "accommodation.cas3.referral.submitted",
+  "version": 1,
+  "description": "A cas3 referral has been submitted",
+  "detailUrl": "http://localhost:{wiremock.port}/cas3-api/events/referral-submitted/1234",
+  "occurredAt": "2022-12-04T10:42:43+00:00",
+  "additionalInformation": {
+    "applicationId": "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000001"
+      }
+    ]
   }
 }

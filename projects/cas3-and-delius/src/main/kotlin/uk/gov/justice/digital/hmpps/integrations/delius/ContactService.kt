@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.ApprovedPremisesApiClient
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
@@ -12,8 +13,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeReposi
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCrn
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByNoms
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.messaging.url
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
@@ -24,29 +25,18 @@ class ContactService(
     private val personManagerRepository: PersonManagerRepository,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
-    private val telemetryService: TelemetryService
+    private val telemetryService: TelemetryService,
+    private val approvedPremisesApiClient: ApprovedPremisesApiClient
 ) : AuditableService(auditedInteractionService) {
 
     fun createReferralSubmitted(event: HmppsDomainEvent) = audit(BusinessInteractionCode.UPDATE_CONTACT) {
+        val details = approvedPremisesApiClient.getApplicationSubmittedDetails(event.url()).eventDetails
         val crn = event.personReference.findCrn()
-        val noms = event.personReference.findNomsNumber()
-        val externalReference = event.additionalInformation["applicationId"] as String
+        val externalReference = details.applicationId
+        val person = personRepository.getByCrn(crn!!)
 
-        val person = when {
-            crn != null -> {
-                personRepository.getByCrn(crn)
-            }
-
-            noms != null -> {
-                personRepository.getByNoms(noms)
-            }
-
-            else -> {
-                throw IllegalArgumentException("crn or noms number should be supplied in the message")
-            }
-        }
         if (contactRepository.getByExternalReference(externalReference) != null) {
-            telemetryService.trackEvent("Duplicate ApplicationSubmitted event received for crn/noms $crn/$noms")
+            telemetryService.trackEvent("Duplicate ApplicationSubmitted event received for crn $crn")
         } else {
             contactRepository.save(newContact(event.occurredAt, person.id, REFERRAL_SUBMITTED, externalReference))
         }
