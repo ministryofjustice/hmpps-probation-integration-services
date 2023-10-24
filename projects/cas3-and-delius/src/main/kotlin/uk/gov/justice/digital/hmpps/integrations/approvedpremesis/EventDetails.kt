@@ -12,3 +12,12 @@ data class EventDetails<T>(
 data class ApplicationSubmitted(
     val applicationId: String
 )
+
+data class BookingCancelled(
+    val applicationId: String,
+    val applicationUrl: String?,
+    val bookingId: String,
+    val bookingUrl: String,
+    val cancellationReason: String,
+    val cancellationContext: String?
+)

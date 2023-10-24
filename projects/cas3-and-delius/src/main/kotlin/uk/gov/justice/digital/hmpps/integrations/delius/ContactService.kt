@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Cas3ApiClient
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactType.Companion.BOOKING_CANCELLED
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactType.Companion.REFERRAL_SUBMITTED
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
@@ -38,15 +39,38 @@ class ContactService(
         if (contactRepository.getByExternalReference(externalReference) != null) {
             telemetryService.trackEvent("Duplicate ApplicationSubmitted event received for crn $crn")
         } else {
-            contactRepository.save(newContact(event.occurredAt, person.id, REFERRAL_SUBMITTED, externalReference))
+            contactRepository.save(newContact(event.occurredAt, person.id, REFERRAL_SUBMITTED, externalReference, ""))
         }
     }
 
-    fun newContact(occurredAt: ZonedDateTime, personId: Long, typeCode: String, reference: String): Contact {
-        val contactType = contactTypeRepository.findByCode(REFERRAL_SUBMITTED) ?: throw NotFoundException(
+    fun createBookingCancelled(event: HmppsDomainEvent) = audit(BusinessInteractionCode.UPDATE_CONTACT) {
+        val details = cas3ApiClient.getBookingCancelledDetails(event.url()).eventDetails
+        val crn = event.personReference.findCrn()
+        val externalReference = details.bookingId
+        val person = personRepository.getByCrn(crn!!)
+
+        contactRepository.save(
+            newContact(
+                event.occurredAt,
+                person.id,
+                BOOKING_CANCELLED,
+                externalReference,
+                "${details.cancellationReason} ${details.cancellationContext} ${details.bookingUrl}"
+            )
+        )
+    }
+
+    fun newContact(
+        occurredAt: ZonedDateTime,
+        personId: Long,
+        typeCode: String,
+        reference: String,
+        notes: String
+    ): Contact {
+        val contactType = contactTypeRepository.findByCode(typeCode) ?: throw NotFoundException(
             "ContactType",
             "code",
-            REFERRAL_SUBMITTED
+            typeCode
         )
         val comDetails = personManagerRepository.findActiveManager(personId) ?: throw NotFoundException(
             "PersonManager",
@@ -57,7 +81,7 @@ class ContactService(
         return Contact(
             offenderId = personId,
             type = contactType,
-            notes = "",
+            notes = notes,
             date = occurredAt.toLocalDate(),
             startTime = occurredAt,
             isSensitive = contactType.isSensitive,

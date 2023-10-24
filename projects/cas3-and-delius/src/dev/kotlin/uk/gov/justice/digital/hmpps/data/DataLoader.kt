@@ -29,7 +29,8 @@ class DataLoader(
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         em.saveAll(
             BusinessInteractionGenerator.UPDATE_CONTACT,
-            ContactTypeGenerator.CONTACT_TYPE,
+            ContactTypeGenerator.EARS_CONTACT_TYPE,
+            ContactTypeGenerator.EACA_CONTACT_TYPE,
             PersonGenerator.PERSON_CRN,
             PersonGenerator.generatePersonManager(PersonGenerator.PERSON_CRN)
         )

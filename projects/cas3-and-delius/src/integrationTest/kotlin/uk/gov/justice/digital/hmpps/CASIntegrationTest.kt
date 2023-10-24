@@ -38,8 +38,7 @@ internal class CASIntegrationTest {
     lateinit var telemetryService: TelemetryService
 
     @Test
-    fun `message is processed correctly`() {
-        // Given an application-submitted event
+    fun `referral submitted message is processed correctly`() {
         val event = prepEvent("referral-submitted", wireMockServer.port())
 
         // When it is received
@@ -52,5 +51,21 @@ internal class CASIntegrationTest {
             contactRepository.getByExternalReference(event.message.additionalInformation["applicationId"] as String)
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EARS"))
+    }
+
+    @Test
+    fun `booking cancelled message is processed correctly`() {
+        val event = prepEvent("booking-cancelled", wireMockServer.port())
+
+        // When it is received
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        // Then it is logged to telemetry
+        Mockito.verify(telemetryService).notificationReceived(event)
+
+        val contact =
+            contactRepository.getByExternalReference("14c80733-4b6d-4f35-b724-66955aac320c")
+
+        MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EACA"))
     }
 }
