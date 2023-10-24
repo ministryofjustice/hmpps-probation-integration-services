@@ -68,4 +68,20 @@ internal class CASIntegrationTest {
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EACA"))
     }
+
+    @Test
+    fun `booking confirmed message is processed correctly`() {
+        val event = prepEvent("booking-confirmed", wireMockServer.port())
+
+        // When it is received
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        // Then it is logged to telemetry
+        Mockito.verify(telemetryService).notificationReceived(event)
+
+        val contact =
+            contactRepository.getByExternalReference("14c80733-4b6d-4f35-b724-66955aac320d")
+
+        MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EACO"))
+    }
 }

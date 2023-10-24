@@ -9,12 +9,14 @@ import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractio
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactType.Companion.BOOKING_CANCELLED
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactType.Companion.BOOKING_CONFIRMED
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactType.Companion.REFERRAL_SUBMITTED
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCrn
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
+import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.messaging.url
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
@@ -30,35 +32,69 @@ class ContactService(
     private val cas3ApiClient: Cas3ApiClient
 ) : AuditableService(auditedInteractionService) {
 
-    fun createReferralSubmitted(event: HmppsDomainEvent) = audit(BusinessInteractionCode.UPDATE_CONTACT) {
+    fun createReferralSubmitted(event: HmppsDomainEvent) {
         val details = cas3ApiClient.getApplicationSubmittedDetails(event.url()).eventDetails
-        val crn = event.personReference.findCrn()
+        val crn = event.crn()
         val externalReference = details.applicationId
-        val person = personRepository.getByCrn(crn!!)
 
         if (contactRepository.getByExternalReference(externalReference) != null) {
             telemetryService.trackEvent("Duplicate ApplicationSubmitted event received for crn $crn")
         } else {
-            contactRepository.save(newContact(event.occurredAt, person.id, REFERRAL_SUBMITTED, externalReference, ""))
+            createContact(
+                event.occurredAt,
+                crn,
+                "",
+                REFERRAL_SUBMITTED,
+                externalReference
+            )
         }
     }
 
-    fun createBookingCancelled(event: HmppsDomainEvent) = audit(BusinessInteractionCode.UPDATE_CONTACT) {
+    fun createBookingCancelled(event: HmppsDomainEvent) {
         val details = cas3ApiClient.getBookingCancelledDetails(event.url()).eventDetails
-        val crn = event.personReference.findCrn()
+        val crn = event.crn()
         val externalReference = details.bookingId
-        val person = personRepository.getByCrn(crn!!)
-
-        contactRepository.save(
-            newContact(
-                event.occurredAt,
-                person.id,
-                BOOKING_CANCELLED,
-                externalReference,
-                "${details.cancellationReason} ${details.cancellationContext} ${details.bookingUrl}"
-            )
+        createContact(
+            event.occurredAt,
+            crn,
+            "${details.cancellationReason} ${details.cancellationContext} ${details.bookingUrl}",
+            BOOKING_CANCELLED,
+            externalReference
         )
     }
+
+    fun createBookingConfirmed(event: HmppsDomainEvent) {
+        val details = cas3ApiClient.getBookingConfirmedDetails(event.url()).eventDetails
+        val crn = event.crn()
+        val externalReference = details.bookingId
+        createContact(
+            event.occurredAt,
+            crn,
+            "${details.expectedArrivedAt} ${details.notes} ${details.bookingUrl}",
+            BOOKING_CONFIRMED,
+            externalReference
+        )
+    }
+
+    fun createContact(
+        contactDate: ZonedDateTime,
+        crn: String,
+        notes: String,
+        contactTypeCode: String,
+        externalReference: String
+    ) =
+        audit(BusinessInteractionCode.UPDATE_CONTACT) {
+            val person = personRepository.getByCrn(crn)
+            contactRepository.save(
+                newContact(
+                    contactDate,
+                    person.id,
+                    contactTypeCode,
+                    externalReference,
+                    notes
+                )
+            )
+        }
 
     fun newContact(
         occurredAt: ZonedDateTime,

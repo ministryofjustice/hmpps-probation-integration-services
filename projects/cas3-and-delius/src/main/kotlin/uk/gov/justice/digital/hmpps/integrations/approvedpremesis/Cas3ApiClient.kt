@@ -14,4 +14,6 @@ interface Cas3ApiClient {
     @GetMapping fun getApplicationSubmittedDetails(uri: URI): EventDetails<ApplicationSubmitted>
 
     @GetMapping fun getBookingCancelledDetails(uri: URI): EventDetails<BookingCancelled>
+
+    @GetMapping fun getBookingConfirmedDetails(uri: URI): EventDetails<BookingConfirmed>
 }
