@@ -74,11 +74,11 @@ class Contact(
 
     @CreatedBy
     @Column(name = "created_by_user_id", updatable = false)
-    val createdByUserId: Long = 0,
+    var createdByUserId: Long = 0,
 
     @LastModifiedBy
     @Column(name = "last_updated_user_id")
-    val lastModifiedUserId: Long = 0,
+    var lastModifiedUserId: Long = 0,
 
     @Version
     @Column(name = "row_version")
