@@ -7,8 +7,9 @@ database:
       - staff
       - staff_team
       - prison_offender_manager
+      - responsible_officer
 
   audit:
     username: ManagePomCasesAndDelius
-    forename: Probation Integration # TODO change this to something meaningful for your service
+    forename: Manage POM Cases
     surname: Service
