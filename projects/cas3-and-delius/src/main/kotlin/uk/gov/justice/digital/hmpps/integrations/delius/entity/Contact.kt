@@ -114,6 +114,7 @@ class ContactType(
     companion object {
         const val REFERRAL_SUBMITTED = "EARS"
         const val BOOKING_CANCELLED = "EACA"
+        const val BOOKING_CONFIRMED = "EACO"
     }
 }
 

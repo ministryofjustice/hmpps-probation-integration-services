@@ -31,6 +31,7 @@ class DataLoader(
             BusinessInteractionGenerator.UPDATE_CONTACT,
             ContactTypeGenerator.EARS_CONTACT_TYPE,
             ContactTypeGenerator.EACA_CONTACT_TYPE,
+            ContactTypeGenerator.EACO_CONTACT_TYPE,
             PersonGenerator.PERSON_CRN,
             PersonGenerator.generatePersonManager(PersonGenerator.PERSON_CRN)
         )

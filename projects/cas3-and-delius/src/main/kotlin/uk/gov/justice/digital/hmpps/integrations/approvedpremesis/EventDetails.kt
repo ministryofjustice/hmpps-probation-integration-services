@@ -21,3 +21,12 @@ data class BookingCancelled(
     val cancellationReason: String,
     val cancellationContext: String?
 )
+
+data class BookingConfirmed(
+    val applicationId: String,
+    val applicationUrl: String?,
+    val bookingId: String,
+    val bookingUrl: String,
+    val expectedArrivedAt: ZonedDateTime,
+    val notes: String
+)
