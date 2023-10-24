@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonMa
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.TeamRepository
@@ -32,32 +33,57 @@ class PrisonManagerService(
         val probationArea = probationAreaRepository.getByNomisCdeCode(allocation.prison.code)
         val team = teamRepository.getByCode(probationArea.code + Team.POM_SUFFIX)
         val staff = getStaff(probationArea, team, allocation.manager, allocationDate)
-        val currentPom = prisonManagerRepository.findActiveManagerAtDate(personId, allocationDate)?.apply {
-            endDate = allocationDate
-        }
-        val allocationReason = referenceDataRepository.pomAllocationReason(
-            when {
-                currentPom == null -> "AUT"
-                currentPom.probationArea.id == probationArea.id -> "INA"
-                else -> "EXT"
-            }
-        )
-
-        val newPom = PrisonManager(
-            personId = personId,
-            probationArea = probationArea,
-            allocationReason = allocationReason,
-            date = allocationDate,
-            staff = staff,
-            team = team
-        )
+        val currentPom = prisonManagerRepository.findActiveManagerAtDate(personId, allocationDate)
+        val newPom = currentPom.changeTo(personId, allocationDate, probationArea, team, staff)
         prisonManagerRepository.save(newPom)
     }
 
-    private fun getStaff(probationArea: ProbationArea, team: Team, staffName: Name, allocationDate: ZonedDateTime): Staff {
+    private fun getStaff(
+        probationArea: ProbationArea,
+        team: Team,
+        staffName: Name,
+        allocationDate: ZonedDateTime
+    ): Staff {
         val findStaff = { staffService.findStaff(probationArea.id, staffName) }
         return retry(3) {
             findStaff() ?: staffService.create(probationArea, team, staffName, allocationDate)
         }
+    }
+
+    private fun PrisonManager.hasChanged(probationArea: ProbationArea, team: Team, staff: Staff) =
+        this.probationArea.id != probationArea.id || this.team.id != team.id || this.staff.id != staff.id
+
+    private fun PrisonManager?.changeTo(
+        personId: Long,
+        date: ZonedDateTime,
+        probationArea: ProbationArea,
+        team: Team,
+        staff: Staff
+    ) = if (this?.hasChanged(probationArea, team, staff) != false) {
+        val allocationReason = referenceDataRepository.pomAllocationReason(
+            when {
+                this == null -> "AUT"
+                this.probationArea.id == probationArea.id -> "INA"
+                else -> "EXT"
+            }
+        )
+        val newPom = PrisonManager(
+            personId = personId,
+            probationArea = probationArea,
+            allocationReason = allocationReason,
+            date = date,
+            staff = staff,
+            team = team
+        )
+        this?.apply {
+            endDate = date
+            responsibleOfficer?.also {
+                it.endDate = date
+                newPom.responsibleOfficer = ResponsibleOfficer(personId, newPom, date)
+            }
+        }
+        newPom
+    } else {
+        this
     }
 }

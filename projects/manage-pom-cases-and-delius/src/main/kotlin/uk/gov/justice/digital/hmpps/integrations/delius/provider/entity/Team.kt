@@ -8,6 +8,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
@@ -35,6 +36,7 @@ class Team(
 }
 
 interface TeamRepository : JpaRepository<Team, Long> {
+    @EntityGraph(attributePaths = ["district"])
     fun findByCode(code: String): Team?
 }
 fun TeamRepository.getByCode(code: String) = findByCode(code) ?: throw NotFoundException("Team", "code", code)
