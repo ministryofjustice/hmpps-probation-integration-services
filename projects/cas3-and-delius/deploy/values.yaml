@@ -1,4 +1,3 @@
-# Common values
 generic-service:
   nameOverride: cas3-and-delius
   serviceAccountName: cas3-and-delius
@@ -12,6 +11,9 @@ generic-service:
   namespace_secrets:
     common:
       SPRING_DATASOURCE_URL: DB_URL
+    cas3-and-delius-client-credentials:
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
     cas3-and-delius-database:
       SPRING_DATASOURCE_USERNAME: DB_USERNAME
       SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
