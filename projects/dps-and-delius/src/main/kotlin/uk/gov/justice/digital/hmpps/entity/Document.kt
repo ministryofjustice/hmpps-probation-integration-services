@@ -3,14 +3,17 @@ package uk.gov.justice.digital.hmpps.entity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
+import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import java.time.Instant
 import java.time.ZonedDateTime
 
 @Entity
 @Immutable
-class Document(
+@Table(name = "document")
+class DocumentEntity(
     @Id
     @Column(name = "document_id")
     val id: Long,
@@ -43,47 +46,47 @@ class Document(
     val lastUpdatedUserId: Long = 0,
 
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false,
+    val softDeleted: Boolean = false
+)
 
-    // Derived fields:
-    val author: String? = null,
-    val description: String? = null,
-    val eventId: Long? = null
-) {
-    fun isEventRelated() = eventId != null
-    fun typeDescription() = when (tableName) {
-        "OFFENDER" -> if (type == "PREVIOUS_CONVICTION") "PNC previous convictions" else "Offender related"
-        "EVENT" -> if (type == "CPS_PACK") "Crown Prosecution Service case pack" else "Sentence related"
-        "COURT_REPORT" -> "Court Report"
-        "INSTITUTIONAL_REPORT" -> "Institutional Report"
-        "ADDRESSASSESSMENT" -> "Address assessment related document"
-        "APPROVED_PREMISES_REFERRAL" -> "Approved premises referral related document"
-        "ASSESSMENT" -> "Assessment document"
-        "CASE_ALLOCATION" -> "Case allocation document"
-        "PERSONALCONTACT" -> "Personal contact related document"
-        "REFERRAL" -> "Referral related document"
-        "NSI" -> "Non Statutory Intervention related document"
-        "PERSONAL_CIRCUMSTANCE" -> "Personal circumstance related document"
-        "UPW_APPOINTMENT" -> "Unpaid work appointment document"
-        "CONTACT" -> "Contact related document"
-        else -> error("Un-mapped document type ($tableName/$type)")
-    }
+interface Document {
+    val alfrescoId: String
+    val name: String
+    val type: String
+    val tableName: String
+    val createdAt: Instant?
+    val author: String?
+    val description: String?
+    val eventId: Long?
 }
 
-interface DocumentRepository : JpaRepository<Document, Long> {
+fun Document.relatesToEvent() = eventId != null
+fun Document.typeDescription() = when (tableName) {
+    "OFFENDER" -> if (type == "PREVIOUS_CONVICTION") "PNC previous convictions" else "Offender related"
+    "EVENT" -> if (type == "CPS_PACK") "Crown Prosecution Service case pack" else "Sentence related"
+    "COURT_REPORT" -> "Court Report"
+    "INSTITUTIONAL_REPORT" -> "Institutional Report"
+    "ADDRESSASSESSMENT" -> "Address assessment related document"
+    "APPROVED_PREMISES_REFERRAL" -> "Approved premises referral related document"
+    "ASSESSMENT" -> "Assessment document"
+    "CASE_ALLOCATION" -> "Case allocation document"
+    "PERSONALCONTACT" -> "Personal contact related document"
+    "REFERRAL" -> "Referral related document"
+    "NSI" -> "Non Statutory Intervention related document"
+    "PERSONAL_CIRCUMSTANCE" -> "Personal circumstance related document"
+    "UPW_APPOINTMENT" -> "Unpaid work appointment document"
+    "CONTACT" -> "Contact related document"
+    else -> error("Un-mapped document type ($tableName/$type)")
+}
+
+interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
     @Query(
         """
-        select document.document_id,
-               document.alfresco_document_id,
-               document.primary_key_id,
-               document.offender_id,
-               document.document_name,
-               document.document_type,
-               document.table_name,
-               document.created_datetime,
-               document.created_by_user_id,
-               document.last_updated_user_id,
-               document.soft_deleted,
+        select document.alfresco_document_id as "alfrescoId",
+               document.document_name as name,
+               document.document_type as type,
+               document.table_name as "tableName",
+               document.created_datetime as "createdAt",
                case
                  when created_by.user_id is not null then created_by.forename || ' ' || created_by.surname
                  when updated_by.user_id is not null then updated_by.forename || ' ' || updated_by.surname
@@ -123,7 +126,7 @@ interface DocumentRepository : JpaRepository<Document, Long> {
                        upw_appointment_disposal.event_id,
                        contact.event_id,
                        nsi.event_id
-               ) as event_id
+               ) as "eventId"
         from document
             -- the following joins are to get the event_id from the related entities, for event-level documents
             left join event                        on document.table_name = 'EVENT' and document.primary_key_id = event.event_id
@@ -161,6 +164,7 @@ interface DocumentRepository : JpaRepository<Document, Long> {
             left join user_ created_by on created_by.user_id = document.created_by_user_id
             left join user_ updated_by on updated_by.user_id = document.last_updated_user_id
         where document.offender_id = :personId
+          and document.alfresco_document_id is not null
           and document.soft_deleted = 0
           and document.table_name in ('OFFENDER', 'ADDRESSASSESSMENT', 'PERSONALCONTACT', 'PERSONAL_CIRCUMSTANCE',
                                       'EVENT', 'COURT_REPORT', 'INSTITUTIONAL_REPORT', 'APPROVED_PREMISES_REFERRAL', 'ASSESSMENT', 'CASE_ALLOCATION', 'REFERRAL', 'UPW_APPOINTMENT',
@@ -170,6 +174,6 @@ interface DocumentRepository : JpaRepository<Document, Long> {
     )
     fun getPersonAndEventDocuments(personId: Long): List<Document>
 
-    @Query("select d.name from Document d where d.alfrescoId = :alfrescoId")
+    @Query("select d.name from DocumentEntity d where d.alfrescoId = :alfrescoId")
     fun findNameByAlfrescoId(alfrescoId: String): String?
 }

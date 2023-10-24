@@ -8,5 +8,5 @@ data class Document(
     val description: String?,
     val type: String,
     val author: String?,
-    val createdAt: ZonedDateTime
+    val createdAt: ZonedDateTime?
 )
