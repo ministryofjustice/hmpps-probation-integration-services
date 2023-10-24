@@ -42,13 +42,13 @@ class Contact(
     val type: ContactType,
 
     @Lob
-    var notes: String,
+    val notes: String,
 
     @Column(name = "contact_date")
-    var date: LocalDate,
+    val date: LocalDate,
 
     @Column(name = "contact_start_time")
-    var startTime: ZonedDateTime,
+    val startTime: ZonedDateTime,
 
     @Column(updatable = false)
     val staffId: Long,
@@ -74,15 +74,15 @@ class Contact(
 
     @CreatedBy
     @Column(name = "created_by_user_id", updatable = false)
-    var createdByUserId: Long = 0,
+    val createdByUserId: Long = 0,
 
     @LastModifiedBy
     @Column(name = "last_updated_user_id")
-    var lastModifiedUserId: Long = 0,
+    val lastModifiedUserId: Long = 0,
 
     @Version
     @Column(name = "row_version")
-    var version: Long = 0,
+    val version: Long = 0,
 
     @Column(updatable = false)
     val trustProviderTeamId: Long = teamId,
@@ -94,7 +94,7 @@ class Contact(
     val partitionAreaId: Long = 0L,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
-    var softDeleted: Boolean = false
+    val softDeleted: Boolean = false
 )
 
 @Immutable

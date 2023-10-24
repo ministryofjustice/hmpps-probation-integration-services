@@ -33,7 +33,7 @@ class PersonManager(
     val active: Boolean = true,
 
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
-    var softDeleted: Boolean = false
+    val softDeleted: Boolean = false
 
 )
 
