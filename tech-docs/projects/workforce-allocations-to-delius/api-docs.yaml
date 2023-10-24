@@ -663,6 +663,8 @@ components:
       type: object
       properties:
         cases:
+          maxItems: 500
+          minItems: 0
           type: array
           items:
             $ref: '#/components/schemas/AllocationRequest'
