@@ -6,10 +6,10 @@ import uk.gov.justice.digital.hmpps.config.FeignOAuth2Config
 import java.net.URI
 
 @FeignClient(
-    name = "approved-premises-api",
+    name = "cas3-api",
     url = "https://dummy-url/to/be/overridden",
     configuration = [FeignOAuth2Config::class]
 )
-interface ApprovedPremisesApiClient {
+interface Cas3ApiClient {
     @GetMapping fun getApplicationSubmittedDetails(uri: URI): EventDetails<ApplicationSubmitted>
 }

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.ApprovedPremisesApiClient
+import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Cas3ApiClient
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
@@ -26,11 +26,11 @@ class ContactService(
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val telemetryService: TelemetryService,
-    private val approvedPremisesApiClient: ApprovedPremisesApiClient
+    private val cas3ApiClient: Cas3ApiClient
 ) : AuditableService(auditedInteractionService) {
 
     fun createReferralSubmitted(event: HmppsDomainEvent) = audit(BusinessInteractionCode.UPDATE_CONTACT) {
-        val details = approvedPremisesApiClient.getApplicationSubmittedDetails(event.url()).eventDetails
+        val details = cas3ApiClient.getApplicationSubmittedDetails(event.url()).eventDetails
         val crn = event.personReference.findCrn()
         val externalReference = details.applicationId
         val person = personRepository.getByCrn(crn!!)
