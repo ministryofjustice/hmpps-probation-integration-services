@@ -7,10 +7,13 @@ import org.springframework.http.HttpHeaders.CONTENT_DISPOSITION
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.client.AlfrescoClient
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.entity.Disposal
 import uk.gov.justice.digital.hmpps.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.entity.PersonRepository
+import uk.gov.justice.digital.hmpps.entity.relatesToEvent
+import uk.gov.justice.digital.hmpps.entity.typeDescription
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.Conviction
 import uk.gov.justice.digital.hmpps.model.Document
@@ -41,7 +44,7 @@ class DocumentService(
 
     fun getDocumentsForCase(nomisId: String) = personRepository.findByNomisId(nomisId)?.let { person ->
         val documents = documentRepository.getPersonAndEventDocuments(person.id)
-        val eventDocuments = documents.filter { it.isEventRelated() }.groupBy { it.eventId }
+        val eventDocuments = documents.filter { it.relatesToEvent() }.groupBy { it.eventId }
         ProbationDocumentsResponse(
             crn = person.crn,
             name = Name(
@@ -49,14 +52,14 @@ class DocumentService(
                 listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
                 person.surname
             ),
-            documents = documents.filter { !it.isEventRelated() }.map { document ->
+            documents = documents.filter { !it.relatesToEvent() }.map { document ->
                 Document(
                     id = document.alfrescoId,
                     name = document.name,
                     description = document.description,
                     type = document.typeDescription(),
                     author = document.author,
-                    createdAt = document.createdAt
+                    createdAt = document.createdAt?.atZone(EuropeLondon)
                 )
             }.sortedBy { it.createdAt },
             convictions = person.events.map { event ->
@@ -73,7 +76,7 @@ class DocumentService(
                             description = document.description,
                             type = document.typeDescription(),
                             author = document.author,
-                            createdAt = document.createdAt
+                            createdAt = document.createdAt?.atZone(EuropeLondon)
                         )
                     }?.sortedBy { it.createdAt } ?: emptyList()
                 )

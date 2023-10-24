@@ -48,7 +48,7 @@ object EventGenerator {
     val INSTITUTION = Institution(
         id = IdGenerator.getAndIncrement(),
         name = "test institution",
-        establishment = "Y"
+        establishment = true
     )
     val CUSTODY = Custody(
         id = IdGenerator.getAndIncrement(),
@@ -78,7 +78,7 @@ object EventGenerator {
         institutionId = INSTITUTION.id,
         institutionReportTypeId = INSTITUTIONAL_REPORT_TYPE.id,
         custodyId = CUSTODY.id,
-        establishment = "Y",
+        establishment = true,
         dateRequested = LocalDate.of(2000, 1, 2)
     )
 

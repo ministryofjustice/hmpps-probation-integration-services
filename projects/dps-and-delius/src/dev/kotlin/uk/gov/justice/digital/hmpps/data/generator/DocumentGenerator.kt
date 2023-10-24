@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.entity.Document
+import uk.gov.justice.digital.hmpps.entity.DocumentEntity
 import java.time.ZonedDateTime
 import java.util.UUID
 
@@ -19,7 +19,7 @@ object DocumentGenerator {
     val OFFENDER_NSI = generate("NSI")
     val EVENT_NSI = generate("NSI", primaryKeyId = EventGenerator.NSI.nsiId)
 
-    fun generate(tableName: String, type: String = "DOCUMENT", primaryKeyId: Long = 0, alfrescoId: String = UUID.randomUUID().toString()) = Document(
+    fun generate(tableName: String, type: String = "DOCUMENT", primaryKeyId: Long = 0, alfrescoId: String = UUID.randomUUID().toString()) = DocumentEntity(
         id = IdGenerator.getAndIncrement(),
         personId = PersonGenerator.DEFAULT.id,
         alfrescoId = alfrescoId,

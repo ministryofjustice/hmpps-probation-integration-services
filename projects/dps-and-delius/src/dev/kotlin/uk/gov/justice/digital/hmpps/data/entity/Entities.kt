@@ -1,9 +1,11 @@
 package uk.gov.justice.digital.hmpps.data.entity
 
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import org.hibernate.type.YesNoConverter
 import java.time.LocalDate
 
 @Entity
@@ -40,7 +42,16 @@ class CourtReportType(@Id val courtReportTypeId: Long, val description: String)
 class CourtReport(@Id val courtReportId: Long, val courtReportTypeId: Long, val courtAppearanceId: Long, val dateRequested: LocalDate)
 
 @Entity
-class InstitutionalReport(@Id val institutionalReportId: Long, val institutionReportTypeId: Long, val institutionId: Long, val establishment: String, val custodyId: Long, val dateRequested: LocalDate)
+class InstitutionalReport(
+    @Id
+    val institutionalReportId: Long,
+    val institutionReportTypeId: Long,
+    val institutionId: Long,
+    @Convert(converter = YesNoConverter::class)
+    val establishment: Boolean,
+    val custodyId: Long,
+    val dateRequested: LocalDate
+)
 
 @Entity
 class Nsi(@Id val nsiId: Long, val nsiTypeId: Long, val eventId: Long?, val referralDate: LocalDate)
@@ -73,7 +84,7 @@ class UpwAppointment(@Id val upwAppointmentId: Long, val upwDetailsId: Long, val
 class UpwDetails(@Id val upwDetailsId: Long, val disposalId: Long)
 
 @Entity
-class UpwProject(@Id val upwProjectId: Long, val disposalId: Long, val name: String)
+class UpwProject(@Id val upwProjectId: Long, val name: String)
 
 @Entity
 @Table(name = "user_")
