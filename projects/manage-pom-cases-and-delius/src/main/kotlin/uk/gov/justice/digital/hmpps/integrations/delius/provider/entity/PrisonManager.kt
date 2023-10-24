@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.provider.entity
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
@@ -8,9 +9,11 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.persistence.Version
+import org.hibernate.annotations.Where
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -74,6 +77,10 @@ class PrisonManager(
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     var active: Boolean = true
 
+    @OneToOne(mappedBy = "prisonManager", cascade = [CascadeType.PERSIST, CascadeType.MERGE])
+    @Where(clause = "end_date is null")
+    var responsibleOfficer: ResponsibleOfficer? = null
+
     @CreatedBy
     @Column(nullable = false, updatable = false)
     var createdByUserId: Long = 0
@@ -91,14 +98,60 @@ class PrisonManager(
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
 }
 
+@Entity
+@EntityListeners(AuditingEntityListener::class)
+@Table(name = "responsible_officer")
+@SequenceGenerator(
+    name = "responsible_officer_id_generator",
+    sequenceName = "responsible_officer_id_seq",
+    allocationSize = 1
+)
+class ResponsibleOfficer(
+
+    @Column(name = "offender_id")
+    val personId: Long,
+
+    @OneToOne
+    @JoinColumn(name = "PRISON_OFFENDER_MANAGER_ID")
+    var prisonManager: PrisonManager?,
+
+    val startDate: ZonedDateTime,
+
+    @Version
+    @Column(name = "row_version")
+    val version: Long = 0,
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "responsible_officer_id_generator")
+    @Column(name = "responsible_officer_id", nullable = false)
+    val id: Long = 0
+) {
+
+    @CreatedBy
+    var createdByUserId: Long = 0
+
+    @LastModifiedBy
+    var lastUpdatedUserId: Long = 0
+
+    @CreatedDate
+    var createdDatetime: ZonedDateTime = ZonedDateTime.now()
+
+    @LastModifiedDate
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
+
+    var endDate: ZonedDateTime? = null
+}
+
 interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
     @Query(
         """
             select pm from PrisonManager pm
+            left join fetch pm.responsibleOfficer ro
             where pm.personId = :personId
             and pm.softDeleted = false
             and pm.date <= :date
             and (pm.endDate is null or pm.endDate > :date)
+            and (ro is null or ro.endDate is null) 
         """
     )
     fun findActiveManagerAtDate(personId: Long, date: ZonedDateTime): PrisonManager?

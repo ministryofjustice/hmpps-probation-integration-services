@@ -42,7 +42,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "/api/pom-allocation/A0123BY"
+        "url": "/api/pom-allocation/A0123BY/1"
       },
       "response": {
         "headers": {
@@ -50,6 +50,19 @@
         },
         "status": 200,
         "bodyFileName": "new-allocation.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/api/pom-allocation/A0123BY/2"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "pom-reallocated.json"
       }
     }
   ]

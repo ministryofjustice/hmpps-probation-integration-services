@@ -20,7 +20,7 @@ class PomCaseMessageHandler(
         telemetryService.notificationReceived(notification)
         when (notification.eventType) {
             "offender-management.handover.changed" -> handoverDatesChanged.process(notification.message)
-            "offender-management.pom.allocated" -> pomAllocated.process(notification.message)
+            "offender-management.allocation.changed" -> pomAllocated.process(notification.message)
             else -> throw NotImplementedError("Unhandled message type received: ${notification.eventType}")
         }
     }
