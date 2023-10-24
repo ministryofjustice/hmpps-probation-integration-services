@@ -11,7 +11,7 @@ generic-service:
   namespace_secrets:
     common:
       SPRING_DATASOURCE_URL: DB_URL
-    as3-and-delius-client-credentials:
+    cas3-and-delius-client-credentials:
       OAUTH2_CLIENT-ID: CLIENT_ID
       OAUTH2_CLIENT-SECRET: CLIENT_SECRET
     cas3-and-delius-database:
