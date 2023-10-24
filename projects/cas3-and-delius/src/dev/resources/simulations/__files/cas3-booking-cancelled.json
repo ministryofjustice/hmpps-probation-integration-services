@@ -1,0 +1,17 @@
+{
+  "id": "364145f9-0af8-488e-9901-b4c46cd9ba37",
+  "timestamp": "2022-11-30T14:53:44",
+  "eventType": "accommodation.cas3.booking.cancelled",
+  "eventDetails": {
+    "applicationId": "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+    "applicationUrl": "https://approved-premises-dev.hmpps.service.justice.gov.uk/booking/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+    "personReference": {
+      "crn": "A000001",
+      "noms": "A0001AA"
+    },
+    "bookingId": "14c80733-4b6d-4f35-b724-66955aac320c",
+    "bookingUrl": "https://approved-premises-dev.hmpps.service.justice.gov.uk/someURLtoTheBooking",
+    "cancellationReason": "Not appropriate",
+    "cancellationContext": "Suitability"
+  }
+}

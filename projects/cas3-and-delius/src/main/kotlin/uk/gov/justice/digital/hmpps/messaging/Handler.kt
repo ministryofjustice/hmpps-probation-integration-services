@@ -23,6 +23,10 @@ class Handler(
                 contactService.createReferralSubmitted(event)
                 telemetryService.trackEvent("ApplicationSubmitted", event.telemetryProperties())
             }
+            "accommodation.cas3.booking.cancelled" -> {
+                contactService.createBookingCancelled(event)
+                telemetryService.trackEvent("ApplicationSubmitted", event.telemetryProperties())
+            }
 
             else -> throw IllegalArgumentException("Unexpected event type ${event.eventType}")
         }
