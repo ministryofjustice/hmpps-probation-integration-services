@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.Duration
 import java.time.ZonedDateTime
+import kotlin.jvm.optionals.getOrNull
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
@@ -82,6 +83,7 @@ internal class AllocationMessagingIntegrationTest {
     @Order(2)
     @Test
     fun `reallocate POM successfully`() {
+        // add RO to existing pom to test RO behaviour
         val existingPom =
             prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.DEFAULT.id, ZonedDateTime.now())!!
         existingPom.responsibleOfficer =
@@ -107,6 +109,10 @@ internal class AllocationMessagingIntegrationTest {
         assertThat(prisonManager?.staff?.surname, equalTo("Brown"))
         assertNotNull(prisonManager?.responsibleOfficer)
         assertNull(prisonManager?.responsibleOfficer?.endDate)
+
+        val previousPom = prisonManagerRepository.findById(existingPom.id).getOrNull()
+        assertNotNull(previousPom?.endDate)
+        assertNotNull(previousPom?.responsibleOfficer?.endDate)
 
         verify(telemetryService).trackEvent(
             "POM Allocated",
