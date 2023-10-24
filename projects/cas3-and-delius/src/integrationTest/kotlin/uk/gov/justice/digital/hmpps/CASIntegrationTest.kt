@@ -80,7 +80,7 @@ internal class CASIntegrationTest {
         Mockito.verify(telemetryService).notificationReceived(event)
 
         val contact =
-            contactRepository.getByExternalReference("14c80733-4b6d-4f35-b724-66955aac320c")
+            contactRepository.getByExternalReference("14c80733-4b6d-4f35-b724-66955aac320d")
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EACO"))
     }
