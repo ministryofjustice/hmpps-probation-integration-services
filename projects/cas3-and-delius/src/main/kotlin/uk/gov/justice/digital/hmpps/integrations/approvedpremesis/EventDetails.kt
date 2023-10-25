@@ -11,7 +11,9 @@ data class EventDetails<T>(
 
 data class ApplicationSubmitted(
     val applicationId: String
-)
+){
+    val urn = "urn:hmpps:cas3:application-submitted:$applicationId"
+}
 
 data class BookingCancelled(
     val applicationId: String?,
@@ -21,8 +23,11 @@ data class BookingCancelled(
     val cancellationReason: String,
     val cancellationContext: String?
 )
+{
+    val urn = "urn:hmpps:cas3:booking-cancelled:$bookingId"
+}
 
-data class BookingProvisionalOrConfirmed(
+data class BookingProvisional(
     val applicationId: String?,
     val applicationUrl: String?,
     val bookingId: String,
@@ -30,3 +35,19 @@ data class BookingProvisionalOrConfirmed(
     val expectedArrivedAt: ZonedDateTime,
     val notes: String
 )
+{
+    val urn = "urn:hmpps:cas3:booking-provisional:$bookingId"
+}
+
+data class BookingConfirmed(
+    val applicationId: String?,
+    val applicationUrl: String?,
+    val bookingId: String,
+    val bookingUrl: String,
+    val expectedArrivedAt: ZonedDateTime,
+    val notes: String
+)
+{
+    val urn = "urn:hmpps:cas3:booking-confirmed:$bookingId"
+}
+

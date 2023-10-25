@@ -36,7 +36,7 @@ class ContactService(
     fun createReferralSubmitted(event: HmppsDomainEvent) {
         val details = cas3ApiClient.getApplicationSubmittedDetails(event.url()).eventDetails
         val crn = event.crn()
-        val externalReference = details.applicationId
+        val externalReference = details.urn
 
         if (contactRepository.getByExternalReference(externalReference) != null) {
             telemetryService.trackEvent("Duplicate ApplicationSubmitted event received for crn $crn")
@@ -54,39 +54,36 @@ class ContactService(
     fun createBookingCancelled(event: HmppsDomainEvent) {
         val details = cas3ApiClient.getBookingCancelledDetails(event.url()).eventDetails
         val crn = event.crn()
-        val externalReference = details.bookingId
         createContact(
             event.occurredAt,
             crn,
             "${details.cancellationReason} ${details.cancellationContext} ${details.bookingUrl}",
             BOOKING_CANCELLED,
-            externalReference
+            details.urn
         )
     }
 
     fun createBookingConfirmed(event: HmppsDomainEvent) {
         val details = cas3ApiClient.getBookingConfirmedDetails(event.url()).eventDetails
         val crn = event.crn()
-        val externalReference = details.bookingId
         createContact(
             event.occurredAt,
             crn,
             "${details.expectedArrivedAt} ${details.notes} ${details.bookingUrl}",
             BOOKING_CONFIRMED,
-            externalReference
+            details.urn
         )
     }
 
     fun createBookingProvisionallyMade(event: HmppsDomainEvent) {
         val crn = event.crn()
         val details = cas3ApiClient.getBookingProvisionallyMade(event.url()).eventDetails
-        val externalReference = details.bookingId
         createContact(
             event.occurredAt,
             crn,
             "${details.expectedArrivedAt} ${details.notes} ${details.bookingUrl}",
             BOOKING_PROVISIONAL,
-            externalReference
+            details.urn
         )
     }
 
