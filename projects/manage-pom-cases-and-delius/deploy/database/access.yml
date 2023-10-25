@@ -8,6 +8,7 @@ database:
       - staff_team
       - prison_offender_manager
       - responsible_officer
+      - contact
 
   audit:
     username: ManagePomCasesAndDelius

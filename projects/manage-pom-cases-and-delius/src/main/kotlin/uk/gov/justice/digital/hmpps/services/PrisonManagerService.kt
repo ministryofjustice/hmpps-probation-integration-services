@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.services
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationArea
@@ -25,7 +26,8 @@ class PrisonManagerService(
     private val probationAreaRepository: ProbationAreaRepository,
     private val teamRepository: TeamRepository,
     private val prisonManagerRepository: PrisonManagerRepository,
-    private val referenceDataRepository: ReferenceDataRepository
+    private val referenceDataRepository: ReferenceDataRepository,
+    private val contactService: ContactService
 ) {
 
     @Transactional
@@ -58,31 +60,32 @@ class PrisonManagerService(
 
     private fun PrisonManager?.changeTo(
         personId: Long,
-        date: ZonedDateTime,
+        dateTime: ZonedDateTime,
         probationArea: ProbationArea,
         team: Team,
         staff: Staff
     ) = if (this?.hasChanged(probationArea, team, staff) != false) {
-        val allocationReason = referenceDataRepository.pomAllocationReason(
+        val allocationReasonCode =
             when {
-                this == null -> "AUT"
-                this.probationArea.id == probationArea.id -> "INA"
-                else -> "EXT"
+                this == null -> PrisonManager.AllocationReasonCode.AUTO
+                this.probationArea.id == probationArea.id -> PrisonManager.AllocationReasonCode.INTERNAL
+                else -> PrisonManager.AllocationReasonCode.EXTERNAL
             }
-        )
         val newPom = PrisonManager(
             personId = personId,
             probationArea = probationArea,
-            allocationReason = allocationReason,
-            date = date,
+            allocationReason = referenceDataRepository.pomAllocationReason(allocationReasonCode.value),
+            date = dateTime,
             staff = staff,
             team = team
         )
+        contactService.createContact(personId, allocationReasonCode.ctc, dateTime)
         this?.apply {
-            endDate = date
+            endDate = dateTime
             responsibleOfficer?.also {
-                it.endDate = date
-                newPom.responsibleOfficer = ResponsibleOfficer(personId, newPom, date)
+                it.endDate = dateTime
+                newPom.responsibleOfficer = ResponsibleOfficer(personId, newPom, dateTime)
+                contactService.createContact(personId, ContactType.Code.RESPONSIBLE_OFFICER_CHANGE, dateTime)
             }
         }
         newPom

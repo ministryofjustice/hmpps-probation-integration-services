@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasItems
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.MethodOrderer
@@ -17,6 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
@@ -49,6 +52,9 @@ internal class AllocationMessagingIntegrationTest {
     @Autowired
     lateinit var prisonManagerRepository: PrisonManagerRepository
 
+    @Autowired
+    lateinit var contactRepository: ContactRepository
+
     @Order(1)
     @Test
     fun `allocate first POM successfully`() {
@@ -69,6 +75,9 @@ internal class AllocationMessagingIntegrationTest {
         assertThat(prisonManager?.allocationReason?.code, equalTo("AUT"))
         assertThat(prisonManager?.staff?.forename, equalTo("John"))
         assertThat(prisonManager?.staff?.surname, equalTo("Smith"))
+
+        val contacts = contactRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
+        assertThat(contacts.map { it.type.code }, hasItems(ContactType.Code.POM_AUTO_ALLOCATION.value))
 
         verify(telemetryService).trackEvent(
             "POM Allocated",
@@ -113,6 +122,15 @@ internal class AllocationMessagingIntegrationTest {
         val previousPom = prisonManagerRepository.findById(existingPom.id).getOrNull()
         assertNotNull(previousPom?.endDate)
         assertNotNull(previousPom?.responsibleOfficer?.endDate)
+
+        val contacts = contactRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
+        assertThat(
+            contacts.map { it.type.code },
+            hasItems(
+                ContactType.Code.POM_INTERNAL_ALLOCATION.value,
+                ContactType.Code.RESPONSIBLE_OFFICER_CHANGE.value
+            )
+        )
 
         verify(telemetryService).trackEvent(
             "POM Allocated",
