@@ -10,5 +10,5 @@ object PersonGenerator {
         Person(crn, noms, softDeleted, id)
 
     fun generatePersonManager(person: Person) =
-        PersonManager(IdGenerator.getAndIncrement(), person.id, 1, 1, 1, 1)
+        PersonManager(IdGenerator.getAndIncrement(), person.id, 1, 1, 1)
 }
