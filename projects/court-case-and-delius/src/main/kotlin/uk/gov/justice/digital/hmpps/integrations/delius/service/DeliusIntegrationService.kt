@@ -85,7 +85,6 @@ class DeliusIntegrationService(
             probationAreaId = comDetails.probationAreaId,
             teamId = comDetails.teamId,
             staffId = comDetails.staffId,
-            staffEmployeeId = comDetails.staffEmployeeId,
             externalReference = reference
         )
     }

@@ -17,7 +17,7 @@ class PersonManager(
     @Column(name = "offender_id")
     val personId: Long,
 
-    @Column(name = "provider_team_id")
+    @Column(name = "team_id")
     val teamId: Long,
 
     @Column(name = "allocation_staff_id")

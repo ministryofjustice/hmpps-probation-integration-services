@@ -53,9 +53,6 @@ class CaseNote(
     val staffId: Long,
 
     @Column(updatable = false)
-    val staffEmployeeId: Long,
-
-    @Column(updatable = false)
     val teamId: Long,
 
     @Column(updatable = false)

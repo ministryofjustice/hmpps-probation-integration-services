@@ -13,5 +13,5 @@ object PersonGenerator {
         Person(crn, softDeleted, id)
 
     fun generatePersonManager(person: Person) =
-        PersonManager(IdGenerator.getAndIncrement(), person.id, 1, StaffGenerator.ALLOCATED.id, StaffGenerator.ALLOCATED.id, 1)
+        PersonManager(IdGenerator.getAndIncrement(), person.id, 1, StaffGenerator.ALLOCATED.id, 1)
 }

@@ -33,6 +33,8 @@ class DataLoader(
             ContactTypeGenerator.EACA_CONTACT_TYPE,
             ContactTypeGenerator.EACO_CONTACT_TYPE,
             ContactTypeGenerator.EABP_CONTACT_TYPE,
+            ContactTypeGenerator.EAAR_CONTACT_TYPE,
+            ContactTypeGenerator.EADP_CONTACT_TYPE,
             PersonGenerator.PERSON_CRN,
             PersonGenerator.generatePersonManager(PersonGenerator.PERSON_CRN)
         )
