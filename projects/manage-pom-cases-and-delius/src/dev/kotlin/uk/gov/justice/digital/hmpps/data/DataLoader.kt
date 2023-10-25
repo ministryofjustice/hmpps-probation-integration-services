@@ -79,12 +79,14 @@ class DataLoader(
                 RegistrationGenerator.TYPE_DASO
             )
         )
-        contactTypeRepository.saveAll(ContactType.Code.entries.map {
-            ContactType(
-                it.value,
-                IdGenerator.getAndIncrement()
-            )
-        })
+        contactTypeRepository.saveAll(
+            ContactType.Code.entries.map {
+                ContactType(
+                    it.value,
+                    IdGenerator.getAndIncrement()
+                )
+            }
+        )
 
         districtRepository.save(ProviderGenerator.DEFAULT_DISTRICT)
         teamRepository.saveAll(PersonManagerGenerator.ALL.map { it.team } + ProviderGenerator.POM_TEAM)
