@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.CaseAllocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
+import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
@@ -19,7 +20,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.KeyDateRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegistrationRepository
@@ -54,8 +57,8 @@ class DataLoader(
     private val custodyRepository: CustodyRepository,
     private val caseAllocationRepository: CaseAllocationRepository,
     private val registrationRepository: RegistrationRepository,
-    private val keyDateRepository: KeyDateRepository
-
+    private val keyDateRepository: KeyDateRepository,
+    private val contactTypeRepository: ContactTypeRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
@@ -76,6 +79,13 @@ class DataLoader(
                 RegistrationGenerator.TYPE_DASO
             )
         )
+        contactTypeRepository.saveAll(ContactType.Code.entries.map {
+            ContactType(
+                it.value,
+                IdGenerator.getAndIncrement()
+            )
+        })
+
         districtRepository.save(ProviderGenerator.DEFAULT_DISTRICT)
         teamRepository.saveAll(PersonManagerGenerator.ALL.map { it.team } + ProviderGenerator.POM_TEAM)
         val staffMap = staffRepository.saveAll(PersonManagerGenerator.ALL.map { it.staff }).associateBy { it.code }
@@ -98,9 +108,11 @@ class DataLoader(
         personManagerRepository.saveAll(
             PersonManagerGenerator.ALL.map {
                 PersonManagerGenerator.generate(
-                    it.team,
-                    staffMap[it.staff.code]!!,
-                    it.person
+                    team = it.team,
+                    staff = staffMap[it.staff.code]!!,
+                    person = it.person,
+                    active = it.active,
+                    softDeleted = it.softDeleted
                 )
             }
         )
@@ -168,7 +180,6 @@ class DataLoader(
 interface ReferenceDataSetRepository : JpaRepository<ReferenceDataSet, Long>
 interface StaffUserRepository : JpaRepository<StaffUser, Long>
 interface DistrictRepository : JpaRepository<District, Long>
-interface PersonManagerRepository : JpaRepository<PersonManager, Long>
 interface EventRepository : JpaRepository<Event, Long>
 interface DisposalRepository : JpaRepository<Disposal, Long>
 interface RegisterTypeRepository : JpaRepository<RegisterType, Long>

@@ -21,6 +21,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
 import java.time.ZonedDateTime
 
@@ -96,6 +97,12 @@ class PrisonManager(
     @LastModifiedDate
     @Column(nullable = false)
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
+
+    enum class AllocationReasonCode(val value: String, val ctc: ContactType.Code) {
+        AUTO("AUT", ContactType.Code.POM_AUTO_ALLOCATION),
+        INTERNAL("INA", ContactType.Code.POM_INTERNAL_ALLOCATION),
+        EXTERNAL("EXT", ContactType.Code.POM_EXTERNAL_ALLOCATION)
+    }
 }
 
 @Entity

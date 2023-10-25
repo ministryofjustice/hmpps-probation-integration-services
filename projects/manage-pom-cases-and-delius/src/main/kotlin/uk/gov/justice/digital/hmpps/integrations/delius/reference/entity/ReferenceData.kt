@@ -41,7 +41,8 @@ class ReferenceDataSet(
     val id: Long
 ) {
     enum class Code(val value: String) {
-        KEY_DATE_TYPE("THROUGHCARE DATE TYPE"), POM_ALLOCATION_REASON("POM ALLOCATION REASON")
+        KEY_DATE_TYPE("THROUGHCARE DATE TYPE"),
+        POM_ALLOCATION_REASON("POM ALLOCATION REASON")
     }
 }
 

@@ -30,25 +30,32 @@ object PersonGenerator {
 
 object PersonManagerGenerator {
     val PREVIOUS = generate(
-        ProviderGenerator.generateTeam("N03PRE"),
-        ProviderGenerator.generateStaff("N03PRE1", "Previous", "Manager"),
+        person = PersonGenerator.DEFAULT,
+        team = ProviderGenerator.generateTeam("N03PRE"),
+        staff = ProviderGenerator.generateStaff("N03PRE1", "Previous", "Manager"),
         active = false
     )
     val DELETED = generate(
-        ProviderGenerator.generateTeam("N03DEL"),
-        ProviderGenerator.generateStaff("N03DEL1", "Deleted", "Manager"),
+        person = PersonGenerator.DEFAULT,
+        team = ProviderGenerator.generateTeam("N03DEL"),
+        staff = ProviderGenerator.generateStaff("N03DEL1", "Deleted", "Manager"),
         softDeleted = true
     )
-    val DEFAULT = generate(ProviderGenerator.DEFAULT_TEAM, ProviderGenerator.DEFAULT_STAFF)
+    val DEFAULT = generate(
+        person = PersonGenerator.DEFAULT,
+        team = ProviderGenerator.DEFAULT_TEAM,
+        staff = ProviderGenerator.DEFAULT_STAFF
+    )
 
     val ALL = listOf(DEFAULT, PREVIOUS, DELETED)
 
     fun generate(
+        person: Person,
+        providerId: Long = ProviderGenerator.DEFAULT_PROVIDER.id,
         team: Team = ProviderGenerator.DEFAULT_TEAM,
         staff: Staff = ProviderGenerator.DEFAULT_STAFF,
-        person: Person = PersonGenerator.DEFAULT,
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = PersonManager(person, team, staff, active, softDeleted, id)
+    ) = PersonManager(person, team, staff, providerId, active, softDeleted, id)
 }

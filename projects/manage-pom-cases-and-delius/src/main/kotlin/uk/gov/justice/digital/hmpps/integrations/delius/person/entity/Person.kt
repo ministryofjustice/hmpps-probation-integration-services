@@ -66,6 +66,9 @@ class PersonManager(
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
 
+    @Column(name = "probation_area_id")
+    val providerId: Long,
+
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
@@ -93,3 +96,10 @@ fun PersonRepository.getByNomsId(nomsId: String) =
 
 fun PersonRepository.getByCrn(crn: String) =
     findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
+
+interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
+    fun findByPersonIdAndActiveTrue(personId: Long): PersonManager?
+}
+
+fun PersonManagerRepository.getCurrentCom(personId: Long) =
+    findByPersonIdAndActiveTrue(personId) ?: throw NotFoundException("PersonManager", "personId", personId)
