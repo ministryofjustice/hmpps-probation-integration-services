@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactType.Companion.BOOKING_CANCELLED
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactType.Companion.BOOKING_CONFIRMED
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactType.Companion.BOOKING_PROVISIONAL
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactType.Companion.REFERRAL_SUBMITTED
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
@@ -72,6 +73,19 @@ class ContactService(
             crn,
             "${details.expectedArrivedAt} ${details.notes} ${details.bookingUrl}",
             BOOKING_CONFIRMED,
+            externalReference
+        )
+    }
+
+    fun createBookingProvisionallyMade(event: HmppsDomainEvent) {
+        val crn = event.crn()
+        val details = cas3ApiClient.getBookingProvisionallyMade(event.url()).eventDetails
+        val externalReference = details.bookingId
+        createContact(
+            event.occurredAt,
+            crn,
+            "${details.expectedArrivedAt} ${details.notes} ${details.bookingUrl}",
+            BOOKING_PROVISIONAL,
             externalReference
         )
     }
