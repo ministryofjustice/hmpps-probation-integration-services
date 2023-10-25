@@ -36,10 +36,10 @@ class Contact(
     val type: ContactType,
 
     @Column(name = "contact_date")
-    var date: LocalDate,
+    val date: LocalDate,
 
     @Column(name = "contact_start_time")
-    var startTime: ZonedDateTime,
+    val startTime: ZonedDateTime,
 
     @Column(name = "probation_area_id")
     val providerId: Long,
