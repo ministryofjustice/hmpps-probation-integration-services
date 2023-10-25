@@ -84,7 +84,6 @@ components:
           type: string
     Document:
       required:
-      - createdAt
       - id
       - name
       - type
