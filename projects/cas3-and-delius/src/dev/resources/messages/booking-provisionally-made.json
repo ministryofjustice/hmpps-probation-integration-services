@@ -1,0 +1,18 @@
+{
+  "eventType": "accommodation.cas3.booking.provisionally-made",
+  "version": 1,
+  "description": "A cas3 booking has been provisionally made",
+  "detailUrl": "http://localhost:{wiremock.port}/cas3-api/events/booking-provisionally-made/1234",
+  "occurredAt": "2022-12-04T10:42:43+00:00",
+  "additionalInformation": {
+    "applicationId": "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080"
+  },
+  "personReference": {
+    "identifiers": [
+      {
+        "type": "CRN",
+        "value": "A000001"
+      }
+    ]
+  }
+}

@@ -14,7 +14,7 @@ data class ApplicationSubmitted(
 )
 
 data class BookingCancelled(
-    val applicationId: String,
+    val applicationId: String?,
     val applicationUrl: String?,
     val bookingId: String,
     val bookingUrl: String,
@@ -22,8 +22,8 @@ data class BookingCancelled(
     val cancellationContext: String?
 )
 
-data class BookingConfirmed(
-    val applicationId: String,
+data class BookingProvisionalOrConfirmed(
+    val applicationId: String?,
     val applicationUrl: String?,
     val bookingId: String,
     val bookingUrl: String,
