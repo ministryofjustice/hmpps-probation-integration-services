@@ -34,7 +34,7 @@ data class BookingProvisional(
     val expectedArrivedAt: ZonedDateTime,
     val notes: String
 ) {
-    val urn = "urn:hmpps:cas3:booking-provisional:$bookingId"
+    val urn = "urn:hmpps:cas3:booking-provisionally-made:$bookingId"
 }
 
 data class BookingConfirmed(

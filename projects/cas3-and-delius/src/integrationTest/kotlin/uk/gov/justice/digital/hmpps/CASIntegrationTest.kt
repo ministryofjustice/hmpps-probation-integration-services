@@ -48,7 +48,7 @@ internal class CASIntegrationTest {
         Mockito.verify(telemetryService).notificationReceived(event)
 
         val contact =
-            contactRepository.getByExternalReference(event.message.additionalInformation["applicationId"] as String)
+            contactRepository.getByExternalReference("urn:hmpps:cas3:application-submitted:${event.message.additionalInformation["applicationId"] as String}")
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EARS"))
     }
@@ -64,7 +64,7 @@ internal class CASIntegrationTest {
         Mockito.verify(telemetryService).notificationReceived(event)
 
         val contact =
-            contactRepository.getByExternalReference("14c80733-4b6d-4f35-b724-66955aac320c")
+            contactRepository.getByExternalReference("urn:hmpps:cas3:booking-cancelled:14c80733-4b6d-4f35-b724-66955aac320c")
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EACA"))
     }
@@ -80,7 +80,7 @@ internal class CASIntegrationTest {
         Mockito.verify(telemetryService).notificationReceived(event)
 
         val contact =
-            contactRepository.getByExternalReference("14c80733-4b6d-4f35-b724-66955aac320d")
+            contactRepository.getByExternalReference("urn:hmpps:cas3:booking-confirmed:14c80733-4b6d-4f35-b724-66955aac320d")
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EACO"))
     }
@@ -96,7 +96,7 @@ internal class CASIntegrationTest {
         Mockito.verify(telemetryService).notificationReceived(event)
 
         val contact =
-            contactRepository.getByExternalReference("14c80733-4b6d-4f35-b724-66955aac320e")
+            contactRepository.getByExternalReference("urn:hmpps:cas3:booking-provisionally-made:14c80733-4b6d-4f35-b724-66955aac320e")
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EABP"))
     }
