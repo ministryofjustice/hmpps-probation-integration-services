@@ -14,7 +14,6 @@ object CourtCaseNoteGenerator {
         LocalDate.now(),
         ZonedDateTime.now(),
         StaffGenerator.ALLOCATED.id,
-        StaffGenerator.ALLOCATED.id,
         1,
         1,
         lastModifiedDateTime = ZonedDateTime.now().minusMinutes(1)

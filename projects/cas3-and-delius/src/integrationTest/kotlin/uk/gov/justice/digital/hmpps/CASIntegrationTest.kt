@@ -100,4 +100,36 @@ internal class CASIntegrationTest {
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EABP"))
     }
+
+    @Test
+    fun `person arrived message is processed correctly`() {
+        val event = prepEvent("person-arrived", wireMockServer.port())
+
+        // When it is received
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        // Then it is logged to telemetry
+        Mockito.verify(telemetryService).notificationReceived(event)
+
+        val contact =
+            contactRepository.getByExternalReference("urn:hmpps:cas3:person-arrived:14c80733-4b6d-4f35-b724-66955aac320e")
+
+        MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EAAR"))
+    }
+
+    @Test
+    fun `person departed message is processed correctly`() {
+        val event = prepEvent("person-departed", wireMockServer.port())
+
+        // When it is received
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        // Then it is logged to telemetry
+        Mockito.verify(telemetryService).notificationReceived(event)
+
+        val contact =
+            contactRepository.getByExternalReference("urn:hmpps:cas3:person-departed:14c80733-4b6d-4f35-b724-66955aac320e")
+
+        MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EADP"))
+    }
 }

@@ -113,6 +113,8 @@ class ContactType(
         const val BOOKING_CANCELLED = "EACA"
         const val BOOKING_CONFIRMED = "EACO"
         const val BOOKING_PROVISIONAL = "EABP"
+        const val PERSON_ARRIVED = "EAAR"
+        const val PERSON_DEPARTED = "EADP"
     }
 }
 

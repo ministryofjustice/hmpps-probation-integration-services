@@ -23,4 +23,14 @@ object ContactTypeGenerator {
         "EABP",
         false
     )
+    val EADP_CONTACT_TYPE = ContactType(
+        IdGenerator.getAndIncrement(),
+        "EADP",
+        false
+    )
+    val EAAR_CONTACT_TYPE = ContactType(
+        IdGenerator.getAndIncrement(),
+        "EAAR",
+        false
+    )
 }

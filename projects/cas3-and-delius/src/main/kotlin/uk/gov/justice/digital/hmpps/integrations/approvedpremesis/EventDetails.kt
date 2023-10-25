@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps.integrations.approvedpremesis
 
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactType
 import java.time.ZonedDateTime
 
-data class EventDetails<T>(
+data class EventDetails<out T : Cas3Event>(
     val id: String,
     val timestamp: ZonedDateTime,
     val eventType: String,
@@ -11,8 +13,16 @@ data class EventDetails<T>(
 
 data class ApplicationSubmitted(
     val applicationId: String
-) {
-    val urn = "urn:hmpps:cas3:application-submitted:$applicationId"
+) : Cas3Event {
+    override val urn = "urn:hmpps:cas3:application-submitted:$applicationId"
+    override val contactTypeCode = ContactType.REFERRAL_SUBMITTED
+    override val noteText = ""
+}
+
+interface Cas3Event {
+    val urn: String
+    val noteText: String
+    val contactTypeCode: String
 }
 
 data class BookingCancelled(
@@ -22,8 +32,10 @@ data class BookingCancelled(
     val bookingUrl: String,
     val cancellationReason: String,
     val cancellationContext: String?
-) {
-    val urn = "urn:hmpps:cas3:booking-cancelled:$bookingId"
+) : Cas3Event {
+    override val urn = "urn:hmpps:cas3:booking-cancelled:$bookingId"
+    override val noteText = "$cancellationReason $cancellationContext $bookingUrl"
+    override val contactTypeCode = ContactType.BOOKING_CANCELLED
 }
 
 data class BookingProvisional(
@@ -33,8 +45,10 @@ data class BookingProvisional(
     val bookingUrl: String,
     val expectedArrivedAt: ZonedDateTime,
     val notes: String
-) {
-    val urn = "urn:hmpps:cas3:booking-provisionally-made:$bookingId"
+) : Cas3Event {
+    override val urn = "urn:hmpps:cas3:booking-provisionally-made:$bookingId"
+    override val noteText = "${DeliusDateFormatter.format(expectedArrivedAt)} $notes $bookingUrl"
+    override val contactTypeCode = ContactType.BOOKING_PROVISIONAL
 }
 
 data class BookingConfirmed(
@@ -44,6 +58,34 @@ data class BookingConfirmed(
     val bookingUrl: String,
     val expectedArrivedAt: ZonedDateTime,
     val notes: String
-) {
-    val urn = "urn:hmpps:cas3:booking-confirmed:$bookingId"
+) : Cas3Event {
+    override val urn = "urn:hmpps:cas3:booking-confirmed:$bookingId"
+    override val noteText = "${DeliusDateFormatter.format(expectedArrivedAt)} $notes $bookingUrl"
+    override val contactTypeCode = ContactType.BOOKING_CONFIRMED
+}
+
+data class PersonArrived(
+    val applicationId: String?,
+    val applicationUrl: String?,
+    val bookingId: String,
+    val bookingUrl: String,
+    val arrivedAt: ZonedDateTime,
+    val notes: String
+) : Cas3Event {
+    override val urn = "urn:hmpps:cas3:person-arrived:$bookingId"
+    override val noteText = "${DeliusDateFormatter.format(arrivedAt)} $notes $bookingUrl"
+    override val contactTypeCode = ContactType.PERSON_ARRIVED
+}
+
+data class PersonDeparted(
+    val applicationId: String?,
+    val applicationUrl: String?,
+    val bookingId: String,
+    val bookingUrl: String,
+    val departedAt: ZonedDateTime,
+    val notes: String
+) : Cas3Event {
+    override val urn = "urn:hmpps:cas3:person-departed:$bookingId"
+    override val noteText = "${DeliusDateFormatter.format(departedAt)} $notes $bookingUrl"
+    override val contactTypeCode = ContactType.PERSON_DEPARTED
 }

@@ -22,4 +22,10 @@ interface Cas3ApiClient {
 
     @GetMapping
     fun getBookingProvisionallyMade(uri: URI): EventDetails<BookingProvisional>
+
+    @GetMapping
+    fun getPersonArrived(uri: URI): EventDetails<PersonArrived>
+
+    @GetMapping
+    fun getPersonDeparted(uri: URI): EventDetails<PersonDeparted>
 }

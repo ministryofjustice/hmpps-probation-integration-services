@@ -38,8 +38,7 @@
         "status": 200,
         "bodyFileName": "cas3-booking-confirmed.json"
       }
-    }
-  ,
+    },
     {
       "request": {
         "method": "GET",
@@ -51,6 +50,32 @@
         },
         "status": 200,
         "bodyFileName": "cas3-booking-provisionally-made.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/cas3-api/events/person-arrived/1234"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "cas3-person-arrived.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/cas3-api/events/person-departed/1234"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "cas3-person-departed.json"
       }
     }
   ]
