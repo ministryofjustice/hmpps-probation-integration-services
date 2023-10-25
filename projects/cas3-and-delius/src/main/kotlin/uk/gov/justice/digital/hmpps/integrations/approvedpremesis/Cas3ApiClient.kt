@@ -18,8 +18,8 @@ interface Cas3ApiClient {
     fun getBookingCancelledDetails(uri: URI): EventDetails<BookingCancelled>
 
     @GetMapping
-    fun getBookingConfirmedDetails(uri: URI): EventDetails<BookingProvisionalOrConfirmed>
+    fun getBookingConfirmedDetails(uri: URI): EventDetails<BookingConfirmed>
 
     @GetMapping
-    fun getBookingProvisionallyMade(uri: URI): EventDetails<BookingProvisionalOrConfirmed>
+    fun getBookingProvisionallyMade(uri: URI): EventDetails<BookingProvisional>
 }
