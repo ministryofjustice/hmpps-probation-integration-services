@@ -1,0 +1,63 @@
+name: Read-only
+# Prepare for Delius down-time by entering "read-only" mode.
+# Disables message consumers, blocks any write APIs, and re-points everything else at the snapshot standby database.
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment
+        default: prod
+        required: true
+        type: choice
+        options:
+          - test
+          - preprod
+          - prod
+      action:
+        description: Enable or disable read-only mode?
+        default: enable
+        required: true
+        type: choice
+        options:
+          - enable
+          - disable
+
+jobs:
+  stop:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/cloud-platform-auth
+        with:
+          api: ${{ secrets.KUBE_ENV_API }}
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
+
+      - name: Patch ingresses
+        env:
+          configuration_snippet: ${{ inputs.action == 'enable' && 'limit_except OPTIONS GET HEAD { deny all; }' || '' }}
+        run: |
+          ingresses=$(kubectl get ingresses -o jsonpath='{.items[*].metadata.name}')
+          for ingress in $ingresses; do
+            kubectl annotate ingress "$ingress" "nginx.ingress.kubernetes.io/configuration-snippet=$configuration_snippet" --overwrite
+          done
+
+      - name: Patch deployments
+        env:
+          MESSAGING_CONSUMER_ENABLED: ${{ inputs.action == 'enable' && 'false' || 'true' }}
+          SPRING_DATASOURCE_URL: ${{ inputs.action == 'enable' && 'DB_STANDBY_URL' || 'DB_URL' }}
+        run: |
+          deployments=$(kubectl get deployments -o jsonpath='{.items[*].metadata.name}')
+          for deployment in $deployments; do
+            kubectl get deployment "$deployment" -o json \
+            | jq --arg name MESSAGING_CONSUMER_ENABLED --arg value "$MESSAGING_CONSUMER_ENABLED" \
+              '.spec.template.spec.containers[0].env |= if any(.[]; .name == $name) then map(if .name == $name then . + {"value":$value} else . end) else . + [{"name":$name,"value":$value}] end' \
+            | jq --arg name SPRING_DATASOURCE_URL --arg value "$SPRING_DATASOURCE_URL" \
+              '.spec.template.spec.containers[0].env |= map(if .name == $name then .valueFrom.secretKeyRef.key = $value else . end)' \
+            | kubectl apply -f -
+          done
