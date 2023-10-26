@@ -169,6 +169,6 @@ internal class CASIntegrationTest {
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EADP"))
-        MatcherAssert.assertThat(contact.notes, Matchers.equalTo(oldEventDetails.eventDetails.noteText + "\n" + eventDetails.eventDetails.noteText))
+        MatcherAssert.assertThat(contact.notes, Matchers.equalTo(oldEventDetails.eventDetails.noteText + System.lineSeparator() + eventDetails.eventDetails.noteText))
     }
 }

@@ -35,7 +35,7 @@ class ContactService(
         val existing = contactRepository.getByExternalReference(event.eventDetails.urn)
         if (existing != null) {
             if (existing.startTime < event.timestamp) {
-                existing.notes += "\n${event.eventDetails.noteText}"
+                existing.notes += "${System.lineSeparator()}${event.eventDetails.noteText}"
                 existing.date = event.timestamp.toLocalDate()
                 existing.startTime = event.timestamp
                 contactRepository.save(existing)
