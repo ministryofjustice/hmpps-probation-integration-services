@@ -42,13 +42,13 @@ class Contact(
     val type: ContactType,
 
     @Lob
-    val notes: String,
+    var notes: String,
 
     @Column(name = "contact_date")
-    val date: LocalDate,
+    var date: LocalDate,
 
     @Column(name = "contact_start_time")
-    val startTime: ZonedDateTime,
+    var startTime: ZonedDateTime,
 
     @Column(updatable = false)
     val staffId: Long,

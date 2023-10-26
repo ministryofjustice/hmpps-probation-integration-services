@@ -77,6 +77,19 @@
         "status": 200,
         "bodyFileName": "cas3-person-departed.json"
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/cas3-api/events/person-departed/12345"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "cas3-person-departed-update.json"
+      }
     }
   ]
 }
