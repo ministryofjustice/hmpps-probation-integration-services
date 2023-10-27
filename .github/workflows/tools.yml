@@ -54,8 +54,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: 16
       - run: npm install -g auth0-deploy-cli
       - name: Import Auth0 configuration
         working-directory: tools/feature-flags/deploy/auth0
