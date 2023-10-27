@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
@@ -40,6 +41,9 @@ class Contact(
 
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime,
+
+    @Lob
+    val notes: String?,
 
     @Column(name = "probation_area_id")
     val providerId: Long,

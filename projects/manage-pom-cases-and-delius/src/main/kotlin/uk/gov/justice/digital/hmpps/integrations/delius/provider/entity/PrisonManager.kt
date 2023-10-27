@@ -55,19 +55,19 @@ class PrisonManager(
 
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id", nullable = false)
-    val staff: Staff,
+    override val staff: Staff,
 
     @ManyToOne
     @JoinColumn(name = "allocation_team_id", nullable = false)
-    val team: Team,
+    override val team: Team,
 
     @ManyToOne
     @JoinColumn(name = "probation_area_id", nullable = false)
-    val probationArea: ProbationArea,
+    override val probationArea: ProbationArea,
 
     @Column(columnDefinition = "number", nullable = false)
     val softDeleted: Boolean = false
-) {
+) : Manager {
     @Column
     var endDate: ZonedDateTime? = null
         set(value) {

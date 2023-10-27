@@ -54,7 +54,7 @@ internal class ProbationRecordMappingKtTest {
             PersonGenerator.DEFAULT,
             ProviderGenerator.DEFAULT_TEAM,
             unallocated,
-            ProviderGenerator.DEFAULT_PROVIDER.id,
+            ProviderGenerator.DEFAULT_PROVIDER,
             id = 99
         )
         assertNull(om.manager().code)

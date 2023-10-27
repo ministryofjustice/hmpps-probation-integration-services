@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.services
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.api.model.Name
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManagerRepository
@@ -58,6 +60,28 @@ class PrisonManagerService(
     private fun PrisonManager.hasChanged(probationArea: ProbationArea, team: Team, staff: Staff) =
         this.probationArea.id != probationArea.id || this.team.id != team.id || this.staff.id != staff.id
 
+    fun PrisonManager.allocationNotes() =
+        """
+        |Transfer Reason: ${allocationReason.description}
+        |Transfer Date: ${DeliusDateFormatter.format(date)}
+        """.trimMargin()
+
+    fun PrisonManager.transferNotes() =
+        """
+        |
+        |From Establishment Provider: ${probationArea.description}
+        |From Team: ${team.description}
+        |From Officer: ${staff.surname}, ${staff.forename}
+        """.trimMargin()
+
+    fun PrisonManager.responsibleOfficerDetails() = listOfNotNull(
+        "Responsible Officer Type: Prison Offender Manager",
+        "Responsible Officer: ${staff.surname}, ${staff.forename} (${team.description}, ${probationArea.description})",
+        "Start Date: ${DeliusDateTimeFormatter.format(date)}",
+        endDate?.let { "End Date: " + DeliusDateTimeFormatter.format(it) },
+        "Allocation Reason: ${allocationReason.description}"
+    ).joinToString(System.lineSeparator())
+
     private fun PrisonManager?.changeTo(
         personId: Long,
         dateTime: ZonedDateTime,
@@ -79,13 +103,26 @@ class PrisonManagerService(
             staff = staff,
             team = team
         )
-        contactService.createContact(personId, allocationReasonCode.ctc, dateTime)
+        val notes = newPom.allocationNotes() + (this?.transferNotes() ?: "")
+        contactService.createContact(personId, allocationReasonCode.ctc, dateTime, newPom, notes)
         this?.apply {
             endDate = dateTime
             responsibleOfficer?.also {
                 it.endDate = dateTime
                 newPom.responsibleOfficer = ResponsibleOfficer(personId, newPom, dateTime)
-                contactService.createContact(personId, ContactType.Code.RESPONSIBLE_OFFICER_CHANGE, dateTime)
+                contactService.createContact(
+                    personId,
+                    ContactType.Code.RESPONSIBLE_OFFICER_CHANGE,
+                    dateTime,
+                    newPom,
+                    """
+                    |New Details:
+                    |${newPom.responsibleOfficerDetails()}
+                    |
+                    |Previous Details:
+                    |${this.responsibleOfficerDetails()}
+                    """.trimMargin()
+                )
             }
         }
         newPom

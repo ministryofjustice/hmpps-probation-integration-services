@@ -65,6 +65,8 @@ class ProbationArea(
     @Column(name = "code", columnDefinition = "char(3)")
     val code: String,
 
+    val description: String,
+
     @OneToOne
     @JoinColumn(
         name = "institution_id",

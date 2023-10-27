@@ -18,7 +18,12 @@ object ProviderGenerator {
     val DEFAULT_STAFF = generateStaff("N03DEF0", "Default", "Staff", user = UserGenerator.DEFAULT_STAFF_USER)
 
     fun generateProvider(providerCode: String, prisonCode: String?, id: Long = IdGenerator.getAndIncrement()) =
-        ProbationArea(id, providerCode, prisonCode?.let { Institution(IdGenerator.getAndIncrement(), it) })
+        ProbationArea(
+            id,
+            providerCode,
+            "Description of $providerCode",
+            prisonCode?.let { Institution(IdGenerator.getAndIncrement(), it) }
+        )
 
     fun generateDistrict(code: String, description: String = "LDU $code", id: Long = IdGenerator.getAndIncrement()) =
         District(code, description, id)
