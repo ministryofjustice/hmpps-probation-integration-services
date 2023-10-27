@@ -53,7 +53,7 @@ jobs:
     if: ${{ github.event_name != 'schedule' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch') }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 16
       - run: npm install -g auth0-deploy-cli
