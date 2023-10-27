@@ -47,14 +47,6 @@ jobs:
             --path 'tech-docs' \
             --path 'tech-docs-drafts' \
             --path 'schema-spy-report' \
-            --path "playwright-report/test/main/$(date -d '-7 days' '+%Y-%m-%d')" \
-            --path "playwright-report/test/main/$(date -d '-6 days' '+%Y-%m-%d')" \
-            --path "playwright-report/test/main/$(date -d '-5 days' '+%Y-%m-%d')" \
-            --path "playwright-report/test/main/$(date -d '-4 days' '+%Y-%m-%d')" \
-            --path "playwright-report/test/main/$(date -d '-3 days' '+%Y-%m-%d')" \
-            --path "playwright-report/test/main/$(date -d '-2 days' '+%Y-%m-%d')" \
-            --path "playwright-report/test/main/$(date -d '-1 days' '+%Y-%m-%d')" \
-            --path "playwright-report/test/main/$(date '+%Y-%m-%d')" \
             --refs gh-pages \
             --force
           git gc --prune=now

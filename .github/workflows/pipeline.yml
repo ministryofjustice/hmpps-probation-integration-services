@@ -67,14 +67,15 @@ jobs:
 
   end-to-end-tests:
     name: Run end-to-end tests
-    uses: ./.github/workflows/end-to-end-tests.yml
+    uses: ministryofjustice/hmpps-probation-integration-e2e-tests/.github/workflows/test-remote.yml@main
     needs:
       - post-build
       - deploy-to-test
       - deploy-to-preprod
     with:
       projects: ${{ needs.post-build.outputs.changes }}
-    secrets: inherit
+    secrets:
+      token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
   report-test-failures:
     name: Failed testing

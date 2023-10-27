@@ -97,11 +97,33 @@ jobs:
           passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
+      - uses: actions/checkout@v4
+        with:
+          path: hmpps-probation-integration-e2e-tests
+          repository: ministryofjustice/hmpps-probation-integration-e2e-tests
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+      - name: Update e2e test repo
+        run: sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' hmpps-probation-integration-e2e-tests/.github/workflows/end-to-end-tests.yml
+
+      - name: Create pull request
+        id: e2e-pr
+        uses: ./.github/actions/create-signed-pull-request
+        with:
+          path: hmpps-probation-integration-e2e-tests
+          add-paths: .github/workflows
+          branch: ${{ inputs.issue_number }}-create-${{ inputs.project_name }}-project
+          commit-message: ${{ inputs.issue_number }} Add option to run tests for ${{ inputs.project_name }}
+          private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
       - name: Create issue for manual steps
         run: |
           gh issue create \
             --title "${{ inputs.issue_number }} Complete project setup for ${{ inputs.project_name }}" \
-            --body "- [ ] Merge pull request: ${{ steps.pr.outputs.pull-request-url }}" \
+            --body "- [ ] Merge project pull request: ${{ steps.pr.outputs.pull-request-url }}" \
+            --body "- [ ] Merge e2e tests pull request: ${{ steps.e2e-pr.outputs.pull-request-url }}" \
             --label bootstrap
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -219,19 +241,19 @@ jobs:
         with:
           path: cloud-platform-environments-dev
           repository: ministryofjustice/cloud-platform-environments
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
 
       - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-preprod
           repository: ministryofjustice/cloud-platform-environments
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
 
       - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-prod
           repository: ministryofjustice/cloud-platform-environments
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
 
       - name: Render Terraform queue template
         run: |
@@ -258,7 +280,7 @@ jobs:
           commit-message: ${{ inputs.issue_number }} Create SQS queues for ${{ inputs.project_name }} (dev)
           private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
 
       - name: Create preprod pull request
         id: preprod-pr
@@ -270,7 +292,7 @@ jobs:
           commit-message: ${{ inputs.issue_number }} Create SQS queues for ${{ inputs.project_name }} (preprod)
           private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
 
       - name: Create prod pull request
         id: prod-pr
@@ -282,7 +304,7 @@ jobs:
           commit-message: ${{ inputs.issue_number }} Create SQS queues for ${{ inputs.project_name }} (prod)
           private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
 
       - name: Create issue for manual steps
         run: |
@@ -316,19 +338,19 @@ jobs:
         with:
           path: cloud-platform-environments-dev
           repository: ministryofjustice/cloud-platform-environments
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
 
       - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-preprod
           repository: ministryofjustice/cloud-platform-environments
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
 
       - uses: actions/checkout@v4
         with:
           path: cloud-platform-environments-prod
           repository: ministryofjustice/cloud-platform-environments
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
 
       - name: Add Pingdom check
         run: sed -i '/add new projects here/i \    "${{ inputs.project_name }}",' 'cloud-platform-environments-prod/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/pingdom.tf'
@@ -349,7 +371,7 @@ jobs:
           commit-message: ${{ inputs.issue_number }} Create certificate for ${{ inputs.project_name }} (dev)
           private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
 
       - name: Create preprod pull request
         id: preprod-pr
@@ -361,7 +383,7 @@ jobs:
           commit-message: ${{ inputs.issue_number }} Create certificate for ${{ inputs.project_name }} (preprod)
           private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
 
       - name: Create prod pull request
         id: prod-pr
@@ -373,7 +395,7 @@ jobs:
           commit-message: ${{ inputs.issue_number }} Create Pingdom check and certificate for ${{ inputs.project_name }} (prod)
           private-key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.BOT_GPG_PASSPHRASE }}
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
 
       - name: Create issue for manual steps
         run: |

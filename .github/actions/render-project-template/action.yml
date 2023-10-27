@@ -31,7 +31,6 @@ runs:
         sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' .github/workflows/access.yml
         sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' .github/workflows/deploy.yml
         sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' .github/workflows/docs.yml
-        sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' .github/workflows/end-to-end-tests.yml
         sed -i '/add new projects here/i \          - ${{ inputs.project_name }}' .github/workflows/suppress-trivy.yml
         sed -i '/add new projects here/i \          - ${{ inputs.project_name }}' .github/workflows/build.yml
         sed -i '/add new projects here/i \* [${{ steps.project_name.outputs.title_case }}](https://ministryofjustice.github.io/hmpps-probation-integration-services/tech-docs/projects/${{ inputs.project_name }})' doc/tech-docs/source/index.html.md.erb
