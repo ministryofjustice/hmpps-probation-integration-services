@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
@@ -51,11 +52,11 @@ object PersonManagerGenerator {
 
     fun generate(
         person: Person,
-        providerId: Long = ProviderGenerator.DEFAULT_PROVIDER.id,
+        provider: ProbationArea = ProviderGenerator.DEFAULT_PROVIDER,
         team: Team = ProviderGenerator.DEFAULT_TEAM,
         staff: Staff = ProviderGenerator.DEFAULT_STAFF,
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = PersonManager(person, team, staff, providerId, active, softDeleted, id)
+    ) = PersonManager(person, team, staff, provider, active, softDeleted, id)
 }

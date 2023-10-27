@@ -13,6 +13,8 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Manager
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.ReferenceData
@@ -60,14 +62,15 @@ class PersonManager(
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    val team: Team,
+    override val team: Team,
 
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
-    val staff: Staff,
+    override val staff: Staff,
 
-    @Column(name = "probation_area_id")
-    val providerId: Long,
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    override val probationArea: ProbationArea,
 
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
@@ -78,13 +81,13 @@ class PersonManager(
     @Id
     @Column(name = "offender_manager_id")
     val id: Long
-)
+) : Manager
 
 interface PersonRepository : JpaRepository<Person, Long> {
-    @EntityGraph(attributePaths = ["currentTier", "managers.team.district", "managers.staff.user"])
+    @EntityGraph(attributePaths = ["currentTier", "managers.team.district", "managers.staff.user", "managers.probationArea"])
     fun findByNomsId(nomsId: String): Person?
 
-    @EntityGraph(attributePaths = ["currentTier", "managers.team.district", "managers.staff.user"])
+    @EntityGraph(attributePaths = ["currentTier", "managers.team.district", "managers.staff.user", "managers.probationArea"])
     fun findByCrn(crn: String): Person?
 
     @Query("select p.id from Person p where p.nomsId = :nomsId and p.softDeleted = false")
@@ -96,10 +99,3 @@ fun PersonRepository.getByNomsId(nomsId: String) =
 
 fun PersonRepository.getByCrn(crn: String) =
     findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
-
-interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
-    fun findByPersonIdAndActiveTrue(personId: Long): PersonManager?
-}
-
-fun PersonManagerRepository.getCurrentCom(personId: Long) =
-    findByPersonIdAndActiveTrue(personId) ?: throw NotFoundException("PersonManager", "personId", personId)

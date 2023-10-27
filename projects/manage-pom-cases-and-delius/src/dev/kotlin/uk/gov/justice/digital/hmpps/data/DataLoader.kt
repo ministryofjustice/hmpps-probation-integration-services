@@ -22,7 +22,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.
 import uk.gov.justice.digital.hmpps.integrations.delius.allocation.entity.event.keydate.KeyDateRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.registration.entity.RegistrationRepository
@@ -186,3 +186,4 @@ interface EventRepository : JpaRepository<Event, Long>
 interface DisposalRepository : JpaRepository<Disposal, Long>
 interface RegisterTypeRepository : JpaRepository<RegisterType, Long>
 interface InstitutionRepository : JpaRepository<Institution, Long>
+interface PersonManagerRepository : JpaRepository<PersonManager, Long>
