@@ -61,3 +61,10 @@ jobs:
               '.spec.template.spec.containers[0].env |= map(if .name == $name then .valueFrom.secretKeyRef.key = $value else . end)' \
             | kubectl apply -f -
           done
+
+      - name: Stop/start event publishers
+        env:
+          replicas: ${{ inputs.action == 'enable' && '0' || '1' }}
+        run: |
+          kubectl scale deploy domain-events-and-delius --replicas "$replicas"
+          kubectl scale deploy offender-events-and-delius --replicas "$replicas"
