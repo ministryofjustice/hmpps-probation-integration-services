@@ -35,7 +35,11 @@ class Institution(
 
     @Column(name = "immigration_removal_centre")
     @Convert(converter = YesNoConverter::class)
-    val irc: Boolean? = null
+    val irc: Boolean? = null,
+
+    @Column(name = "secure_hospital")
+    @Convert(converter = YesNoConverter::class)
+    val secureHospital: Boolean? = null
 )
 
 @Embeddable
@@ -50,19 +54,11 @@ data class InstitutionId(
 
 interface InstitutionRepository : JpaRepository<Institution, InstitutionId> {
     fun findByNomisCdeCode(code: String): Institution?
-    fun findByNomisCdeCodeAndIdEstablishment(code: String, selectable: Boolean = true): Institution?
     fun findByCode(code: String): Institution?
 }
 
 fun InstitutionRepository.getByNomisCdeCode(code: String): Institution =
     findByNomisCdeCode(code) ?: throw NotFoundException("Institution", "nomisCdeCode", code)
-
-fun InstitutionRepository.getByNomisCdeCodeAndIdEstablishment(code: String, selectable: Boolean = true): Institution =
-    findByNomisCdeCodeAndIdEstablishment(code, selectable) ?: throw NotFoundException(
-        "Institution",
-        "nomisCdeCode",
-        code
-    )
 
 fun InstitutionRepository.getByCode(code: String): Institution =
     findByCode(code) ?: throw NotFoundException("Institution", "code", code)
