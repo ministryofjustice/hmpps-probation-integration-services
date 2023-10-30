@@ -148,7 +148,7 @@ internal class CASIntegrationTest {
         val person = personRepository.findByCrnAndSoftDeletedIsFalse(event.message.crn())
         val address = addressRepository.findMainAddress(person!!.id)
 
-        MatcherAssert.assertThat(address!!.type.code, Matchers.equalTo("CAS3"))
+        MatcherAssert.assertThat(address!!.type.code, Matchers.equalTo("A17"))
         MatcherAssert.assertThat(address.town, Matchers.equalTo(eventDetails.eventDetails.premises.town))
         MatcherAssert.assertThat(address.streetName, Matchers.equalTo(eventDetails.eventDetails.premises.addressLine1))
         MatcherAssert.assertThat(address.county, Matchers.equalTo(eventDetails.eventDetails.premises.region))

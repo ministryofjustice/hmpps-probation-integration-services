@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 
 object AddressRDGenerator {
-    val CAS3_ADDRESS_TYPE = generate("CAS3", DatasetGenerator.ADDRESS_TYPE.id, "Approved Premises")
+    val CAS3_ADDRESS_TYPE = generate("A17", DatasetGenerator.ADDRESS_TYPE.id, "Approved Premises")
     val MAIN_ADDRESS_STATUS = generate("M", DatasetGenerator.ADDRESS_STATUS.id, "Main Address")
     val PREV_ADDRESS_STATUS = generate("P", DatasetGenerator.ADDRESS_STATUS.id, "Previous Address")
 

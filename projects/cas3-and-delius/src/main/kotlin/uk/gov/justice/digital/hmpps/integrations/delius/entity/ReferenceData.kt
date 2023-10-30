@@ -52,7 +52,7 @@ enum class DatasetCode(val value: String) {
 }
 
 enum class AddressTypeCode(val code: String) {
-    CAS3("CAS3")
+    CAS3("A17")
 }
 
 @Converter
