@@ -1,18 +1,17 @@
 name: Tools
-# Rebuild shared Docker images
+# Deploy shared tools - currently just flipt and auth0
 
 on:
   push:
+    branches:
+      - main
     paths:
       - tools/**
-  schedule:
-    - cron: "30 5 * * MON-FRI" # Every weekday at 05:30 UTC
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'schedule' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch') }}
     strategy:
       fail-fast: false
       matrix:
@@ -50,12 +49,9 @@ jobs:
 
   deploy-auth:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'schedule' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch') }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+      - uses: actions/setup-node@v4
       - run: npm install -g auth0-deploy-cli
       - name: Import Auth0 configuration
         working-directory: tools/feature-flags/deploy/auth0
