@@ -10,7 +10,7 @@ trap delete_pod SIGTERM SIGINT
 # Start pod
 kubectl run "$pod_name" \
   --image=schemaspy/schemaspy:6.2.4 \
-  --restart=Never --stdin=true --tty=true --rm \
+  --restart=Never --stdin=true --tty=true \
   --overrides='{
     "spec": {
       "containers": [
@@ -38,3 +38,6 @@ kubectl exec "$pod_name" -- /usr/local/bin/schemaspy -db "${DB}" -host "${HOST}"
 
 # Download report
 kubectl cp "$pod_name:/output" schema-spy-report
+
+# Clean up
+delete_pod
