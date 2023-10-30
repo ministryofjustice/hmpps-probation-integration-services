@@ -5,7 +5,7 @@ pod_name=schemaspy
 
 # Delete pod on script exit
 function delete_pod() { kubectl delete pod "$pod_name"; }
-trap delete_pod SIGTERM SIGINT
+trap delete_pod ERR SIGTERM SIGINT
 
 # Start pod
 kubectl run "$pod_name" \
