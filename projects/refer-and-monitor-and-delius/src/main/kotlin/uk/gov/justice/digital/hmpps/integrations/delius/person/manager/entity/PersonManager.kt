@@ -123,15 +123,4 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
 interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
     @EntityGraph(attributePaths = ["responsibleOfficer", "staff", "team.district.borough"])
     fun findByPersonId(personId: Long): PrisonManager?
-
-    @Query(
-        """
-        select p.crn 
-        from PrisonManager pm
-        join Person p on p.id = pm.personId
-        join pm.staff.user u
-        where u.username = :username
-    """
-    )
-    fun findCasesManagedBy(username: String): List<String>
 }
