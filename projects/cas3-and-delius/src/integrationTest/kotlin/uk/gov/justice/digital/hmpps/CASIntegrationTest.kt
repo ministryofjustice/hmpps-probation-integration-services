@@ -23,7 +23,10 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.EventDetails
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.PersonDeparted
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonAddressRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
+import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
@@ -43,6 +46,12 @@ internal class CASIntegrationTest {
 
     @Autowired
     lateinit var contactRepository: ContactRepository
+
+    @Autowired
+    lateinit var addressRepository: PersonAddressRepository
+
+    @Autowired
+    lateinit var personRepository: PersonRepository
 
     @MockBean
     lateinit var telemetryService: TelemetryService
@@ -135,6 +144,16 @@ internal class CASIntegrationTest {
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EAAR"))
+
+        val person = personRepository.findByCrnAndSoftDeletedIsFalse(event.message.crn())
+        val address = addressRepository.findMainAddress(person!!.id)
+
+        MatcherAssert.assertThat(address!!.type.code, Matchers.equalTo("CAS3"))
+        MatcherAssert.assertThat(address.town, Matchers.equalTo(eventDetails.eventDetails.premises.town))
+        MatcherAssert.assertThat(address.streetName, Matchers.equalTo(eventDetails.eventDetails.premises.addressLine1))
+        MatcherAssert.assertThat(address.county, Matchers.equalTo(eventDetails.eventDetails.premises.region))
+        MatcherAssert.assertThat(address.postcode, Matchers.equalTo(eventDetails.eventDetails.premises.postcode))
+
     }
 
     @Test
@@ -164,7 +183,6 @@ internal class CASIntegrationTest {
 
         // Then it is logged to telemetry
         Mockito.verify(telemetryService).notificationReceived(event)
-        val oldEventDetails = ResourceLoader.file<EventDetails<PersonDeparted>>("cas3-person-departed")
         val eventDetails = ResourceLoader.file<EventDetails<PersonDeparted>>("cas3-$eventName")
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 

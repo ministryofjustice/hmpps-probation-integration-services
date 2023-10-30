@@ -70,12 +70,21 @@ data class PersonArrived(
     val bookingId: String,
     val bookingUrl: String,
     val arrivedAt: ZonedDateTime,
-    val notes: String
+    val notes: String,
+    val premises: Address
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:person-arrived:$bookingId"
     override val noteText = "${DeliusDateFormatter.format(arrivedAt)} $notes $bookingUrl"
     override val contactTypeCode = ContactType.PERSON_ARRIVED
 }
+
+data class Address(
+    val addressLine1: String,
+    val addressLine2: String?,
+    val postcode: String,
+    val town: String?,
+    val region: String
+)
 
 data class PersonDeparted(
     val applicationId: String?,
