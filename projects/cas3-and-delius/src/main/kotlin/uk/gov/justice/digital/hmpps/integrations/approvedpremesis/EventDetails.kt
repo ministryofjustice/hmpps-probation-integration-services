@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.integrations.approvedpremesis
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactType
 import java.time.ZonedDateTime
+import java.util.LinkedList
 
 data class EventDetails<out T : Cas3Event>(
     val id: String,
@@ -84,6 +85,22 @@ data class Address(
     val postcode: String,
     val town: String?,
     val region: String
+) {
+    val addressLines: AddressLines
+        get() {
+            val lines = LinkedList(addressLine1.chunked(35) + (addressLine2?.chunked(35) ?: listOf()))
+            return if (lines.size < 3) {
+                AddressLines(null, lines.pop(), lines.firstOrNull())
+            } else {
+                AddressLines(lines.pop(), lines.pop(), lines.pop())
+            }
+        }
+}
+
+data class AddressLines(
+    val buildingName: String?,
+    val streetName: String,
+    val district: String?
 )
 
 data class PersonDeparted(

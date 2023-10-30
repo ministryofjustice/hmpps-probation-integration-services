@@ -153,7 +153,6 @@ internal class CASIntegrationTest {
         MatcherAssert.assertThat(address.streetName, Matchers.equalTo(eventDetails.eventDetails.premises.addressLine1))
         MatcherAssert.assertThat(address.county, Matchers.equalTo(eventDetails.eventDetails.premises.region))
         MatcherAssert.assertThat(address.postcode, Matchers.equalTo(eventDetails.eventDetails.premises.postcode))
-
     }
 
     @Test

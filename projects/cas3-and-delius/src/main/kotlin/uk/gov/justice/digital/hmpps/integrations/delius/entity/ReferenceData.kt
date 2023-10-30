@@ -55,7 +55,6 @@ enum class AddressTypeCode(val code: String) {
     CAS3("CAS3")
 }
 
-
 @Converter
 class DatasetCodeConverter : AttributeConverter<DatasetCode, String> {
     override fun convertToDatabaseColumn(attribute: DatasetCode): String = attribute.value

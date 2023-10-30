@@ -30,15 +30,20 @@ class AddressService(
         }
     }
 
-    private fun toPersonAddress(person: Person, details: PersonArrived) = PersonAddress(
-        0,
-        person.id,
-        referenceDataRepository.cas3AddressType(),
-        referenceDataRepository.mainAddressStatus(),
-        details.premises.addressLine1,
-        details.premises.town,
-        details.premises.region,
-        details.premises.postcode,
-        startDate = details.arrivedAt.toLocalDate()
-    )
+    private fun toPersonAddress(person: Person, details: PersonArrived): PersonAddress {
+        val addressLines = details.premises.addressLines
+        return PersonAddress(
+            0,
+            person.id,
+            referenceDataRepository.cas3AddressType(),
+            referenceDataRepository.mainAddressStatus(),
+            buildingName = addressLines.buildingName,
+            streetName = addressLines.streetName,
+            district = addressLines.district,
+            town = details.premises.town,
+            county = details.premises.region,
+            postcode = details.premises.postcode,
+            startDate = details.arrivedAt.toLocalDate()
+        )
+    }
 }

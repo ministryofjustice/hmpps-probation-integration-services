@@ -46,7 +46,7 @@ class PersonAddress(
     val postcode: String?,
     val telephoneNumber: String? = null,
     val buildingName: String? = null,
-    val district: String?  = null,
+    val district: String? = null,
     val addressNumber: String? = null,
     @Convert(converter = YesNoConverter::class)
     val noFixedAbode: Boolean? = false,

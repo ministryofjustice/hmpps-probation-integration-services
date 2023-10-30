@@ -20,7 +20,7 @@ class Handler(
     private val contactService: ContactService,
     private val addressService: AddressService,
     private val cas3ApiClient: Cas3ApiClient,
-    private val personRepository: PersonRepository,
+    private val personRepository: PersonRepository
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
@@ -56,11 +56,10 @@ class Handler(
 
             "accommodation.cas3.person.arrived" -> {
                 val person = personRepository.getByCrn(event.crn())
-                contactService.createContact(event.crn(),person) {
-                    cas3ApiClient.getPersonArrived(event.url())
-                }
-
                 val detail = cas3ApiClient.getPersonArrived(event.url())
+                contactService.createContact(event.crn(), person) {
+                    detail
+                }
                 addressService.updateMainAddress(person, detail.eventDetails)
                 telemetryService.trackEvent("PersonArrived", event.telemetryProperties())
             }
