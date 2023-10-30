@@ -22,7 +22,7 @@ kubectl run "$pod_name" \
           "tty": true,
           "securityContext": { "runAsNonRoot": true, "runAsUser": 1000 },
           "resources": { "limits": { "cpu": "2000m", "memory": "4000Mi" } },
-          "env": [ { "name": "JAVA_TOOL_OPTIONS", "value": "-Xss4096k -XX:MaxRAMPercentage=75" } ]
+          "env": [ { "name": "JAVA_TOOL_OPTIONS", "value": "-Xss64m -XX:MaxRAMPercentage=75" } ]
         }
       ]
     }
