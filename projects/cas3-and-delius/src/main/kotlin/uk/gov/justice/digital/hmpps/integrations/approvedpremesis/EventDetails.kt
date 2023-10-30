@@ -109,9 +109,17 @@ data class PersonDeparted(
     val bookingId: String,
     val bookingUrl: String,
     val departedAt: ZonedDateTime,
-    val notes: String
+    val notes: String,
+    val reason: String,
+    val reasonDetail: String,
+    val moveOnCategory: Category
+
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:person-departed:$bookingId"
-    override val noteText = "${DeliusDateFormatter.format(departedAt)} $notes $bookingUrl"
+    override val noteText = "${DeliusDateFormatter.format(departedAt)} $notes $reason $reasonDetail ${moveOnCategory.description}"
     override val contactTypeCode = ContactType.PERSON_DEPARTED
 }
+
+data class Category(
+    val description: String
+)
