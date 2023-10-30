@@ -4,7 +4,6 @@ dependencies {
     implementation(project(":libs:commons"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation(libs.bundles.telemetry)
     compileOnly(libs.openfeign)
     compileOnly("org.springframework.boot:spring-boot-starter-data-jpa")
 
