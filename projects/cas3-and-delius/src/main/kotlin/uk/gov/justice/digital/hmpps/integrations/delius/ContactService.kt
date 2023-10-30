@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractio
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCrn
@@ -28,10 +29,11 @@ class ContactService(
 
     fun <T : Cas3Event> createContact(
         crn: String,
+        person: Person? = null,
         getEvent: () -> EventDetails<T>
     ) = audit(BusinessInteractionCode.UPDATE_CONTACT) {
         val event = getEvent()
-        val person = personRepository.getByCrn(crn)
+        val personId = person?.id ?: personRepository.getByCrn(crn).id
         val existing = contactRepository.getByExternalReference(event.eventDetails.urn)
         if (existing != null) {
             if (existing.startTime < event.timestamp) {
@@ -49,7 +51,7 @@ class ContactService(
             contactRepository.save(
                 newContact(
                     event.timestamp,
-                    person.id,
+                    personId,
                     event.eventDetails.contactTypeCode,
                     event.eventDetails.urn,
                     event.eventDetails.noteText

@@ -11,6 +11,13 @@
     },
     "bookingId": "14c80733-4b6d-4f35-b724-66955aac320e",
     "bookingUrl": "https://approved-premises-dev.hmpps.service.justice.gov.uk/someURLtoTheBooking",
+    "premises": {
+      "addressLine1": "12 Church Street",
+      "addressLine2": "",
+      "postcode": "BB1 1BB",
+      "town": "Bimbly Town",
+      "region": "Bibbinghammcshireshire"
+    },
     "arrivedAt": "2022-11-30T12:00:00",
     "notes": "person arrived"
   }

@@ -7,8 +7,10 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.data.generator.AddressRDGenerator
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
+import uk.gov.justice.digital.hmpps.data.generator.DatasetGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
@@ -28,6 +30,11 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         em.saveAll(
+            DatasetGenerator.ADDRESS_STATUS,
+            DatasetGenerator.ADDRESS_TYPE,
+            AddressRDGenerator.CAS3_ADDRESS_TYPE,
+            AddressRDGenerator.MAIN_ADDRESS_STATUS,
+            AddressRDGenerator.PREV_ADDRESS_STATUS,
             BusinessInteractionGenerator.UPDATE_CONTACT,
             ContactTypeGenerator.EARS_CONTACT_TYPE,
             ContactTypeGenerator.EACA_CONTACT_TYPE,

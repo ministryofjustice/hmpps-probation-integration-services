@@ -5,6 +5,7 @@ database:
     tables:
       - audited_interaction
       - contact
+      - offender_address
 
   audit:
     username: Cas3AndDelius
