@@ -65,9 +65,12 @@ class Handler(
             }
 
             "accommodation.cas3.person.departed" -> {
-                contactService.createContact(event.crn()) {
-                    cas3ApiClient.getPersonDeparted(event.url())
+                val person = personRepository.getByCrn(event.crn())
+                val detail = cas3ApiClient.getPersonDeparted(event.url())
+                contactService.createContact(event.crn(), person) {
+                    detail
                 }
+                addressService.endMainCAS3Address(person, detail.eventDetails.departedAt)
                 telemetryService.trackEvent("PersonDeparted", event.telemetryProperties())
             }
 

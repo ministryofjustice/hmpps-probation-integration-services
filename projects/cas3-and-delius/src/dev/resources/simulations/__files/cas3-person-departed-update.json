@@ -12,6 +12,12 @@
     "bookingId": "14c80733-4b6d-4f35-b724-66955aac320e",
     "bookingUrl": "https://approved-premises-dev.hmpps.service.justice.gov.uk/someURLtoTheBooking",
     "departedAt": "2022-11-30T12:00:00",
-    "notes": "Person departed."
+    "notes": "Person departed.",
+    "reason": "Left of own accord | Other",
+    "reasonDetail": "",
+    "moveOnCategory": {
+      "description": "Friends and family",
+      "label": ""
+    }
   }
 }

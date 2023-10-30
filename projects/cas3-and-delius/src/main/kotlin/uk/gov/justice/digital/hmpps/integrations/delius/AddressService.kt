@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.PersonArrived
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.AddressTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonAddressRepository
@@ -10,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.cas3AddressType
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.mainAddressStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.previousAddressStatus
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 @Service
 class AddressService(
@@ -27,6 +29,18 @@ class AddressService(
             val previousStatus = referenceDataRepository.previousAddressStatus()
             currentMain.status = previousStatus
             currentMain.endDate = endDate
+        }
+    }
+
+    fun endMainCAS3Address(person: Person, endDate: ZonedDateTime) {
+        val currentMain = personAddressRepository.findMainAddress(person.id)
+        currentMain?.apply {
+            if (currentMain.type.code == AddressTypeCode.CAS3.code) {
+                val previousStatus = referenceDataRepository.previousAddressStatus()
+                currentMain.status = previousStatus
+                currentMain.endDate = endDate.toLocalDate()
+                personAddressRepository.save(currentMain)
+            }
         }
     }
 
