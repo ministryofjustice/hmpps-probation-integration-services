@@ -41,7 +41,6 @@ class AddressService(
                 val previousStatus = referenceDataRepository.previousAddressStatus()
                 currentMain.status = previousStatus
                 currentMain.endDate = endDate.toLocalDate()
-                personAddressRepository.save(currentMain)
             }
         }
     }
