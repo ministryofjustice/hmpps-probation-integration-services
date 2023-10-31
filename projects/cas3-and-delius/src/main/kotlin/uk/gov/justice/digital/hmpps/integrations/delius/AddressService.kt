@@ -26,7 +26,7 @@ class AddressService(
     }
 
     fun endMainAddress(person: Person, endDate: LocalDate) {
-        val currentMain = personAddressRepository.findMainAddress(person.id)
+        val currentMain = personAddressRepository.findMainAddressForUpdate(person.id)
         currentMain?.apply {
             val previousStatus = referenceDataRepository.previousAddressStatus()
             currentMain.status = previousStatus
@@ -35,7 +35,7 @@ class AddressService(
     }
 
     fun endMainCAS3Address(person: Person, endDate: ZonedDateTime) {
-        val currentMain = personAddressRepository.findMainAddress(person.id)
+        val currentMain = personAddressRepository.findMainAddressForUpdate(person.id)
         currentMain?.apply {
             if (currentMain.type.code == AddressTypeCode.CAS3.code) {
                 val previousStatus = referenceDataRepository.previousAddressStatus()
