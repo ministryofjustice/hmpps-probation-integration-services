@@ -34,7 +34,8 @@ fun LdapTemplate.findEmailByUsername(@SpanAttribute username: String) = search(
     AttributesMapper { it["mail"]?.get()?.toString() }
 ).singleOrNull()
 
-fun LdapTemplate.addRole(username: String, role: DeliusRole) {
+@WithSpan
+fun LdapTemplate.addRole(@SpanAttribute username: String, @SpanAttribute role: DeliusRole) {
     val roleContext = lookupContext(role.context())
         ?: throw NotFoundException("NDeliusRole of ${role.name} not found")
     val attributes: Attributes = BasicAttributes(true).apply {
@@ -46,7 +47,8 @@ fun LdapTemplate.addRole(username: String, role: DeliusRole) {
     rebind(userRole, null, attributes)
 }
 
-fun LdapTemplate.removeRole(username: String, role: DeliusRole) =
+@WithSpan
+fun LdapTemplate.removeRole(@SpanAttribute username: String, @SpanAttribute role: DeliusRole) =
     unbind(role.context(username))
 
 private fun DeliusRole.context(username: String? = null) =
@@ -55,6 +57,6 @@ private fun DeliusRole.context(username: String? = null) =
         .add("cn", name)
         .build()
 
-fun Any.asAttribute(key: String) = BasicAttribute(key, this.toString())
-fun List<Any>.asAttribute(key: String): BasicAttribute =
+private fun Any.asAttribute(key: String) = BasicAttribute(key, this.toString())
+private fun List<Any>.asAttribute(key: String): BasicAttribute =
     BasicAttribute(key).apply { forEach(this::add) }
