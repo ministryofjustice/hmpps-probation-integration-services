@@ -18,7 +18,7 @@ data class AllocationDemandStaffResponse(
 
 data class Requirement(
     val mainCategory: String,
-    val subCategory: String,
+    val subCategory: String?,
     val length: String,
     val id: Long
 )

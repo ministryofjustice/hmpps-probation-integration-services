@@ -189,7 +189,7 @@ class AllocationDemandService(
 
     private fun CaseViewRequirement.toRequirement() = Requirement(
         mainCategory.description,
-        subCategory.description,
+        subCategory?.description,
         length?.let { "$length ${mainCategory.units?.description ?: ""}" } ?: "",
         id
     )
