@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Scan image
-        uses: aquasecurity/trivy-action@b77b85c0254bba6789e787844f0585cde1e56320 # v0.13.0
+        uses: aquasecurity/trivy-action@f78e9ecf42a1271402d4f484518b9313235990e1 # v0.13.1
         with:
           image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
           ignore-unfixed: true
@@ -51,7 +51,7 @@ jobs:
 
       - name: Get Trivy results
         if: always()
-        uses: aquasecurity/trivy-action@b77b85c0254bba6789e787844f0585cde1e56320 # v0.13.0
+        uses: aquasecurity/trivy-action@f78e9ecf42a1271402d4f484518b9313235990e1 # v0.13.1
         with:
           image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
           ignore-unfixed: true
