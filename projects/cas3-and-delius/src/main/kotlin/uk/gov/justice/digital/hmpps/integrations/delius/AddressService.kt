@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.PersonArrived
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.AddressTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
@@ -14,6 +15,7 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Service
+@Transactional
 class AddressService(
     private val personAddressRepository: PersonAddressRepository,
     private val referenceDataRepository: ReferenceDataRepository
@@ -29,7 +31,6 @@ class AddressService(
             val previousStatus = referenceDataRepository.previousAddressStatus()
             currentMain.status = previousStatus
             currentMain.endDate = endDate
-            personAddressRepository.save(currentMain)
         }
     }
 
