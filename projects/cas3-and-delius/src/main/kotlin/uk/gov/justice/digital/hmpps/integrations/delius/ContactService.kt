@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.ContactTypeReposi
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCrnForUpdate
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCrn
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
@@ -33,7 +33,7 @@ class ContactService(
         getEvent: () -> EventDetails<T>
     ) = audit(BusinessInteractionCode.UPDATE_CONTACT) {
         val event = getEvent()
-        val personId = person?.id ?: personRepository.getByCrnForUpdate(crn).id
+        val personId = person?.id ?: personRepository.getByCrn(crn).id
         val existing = contactRepository.getByExternalReference(event.eventDetails.urn)
         if (existing != null) {
             if (existing.startTime < event.timestamp) {

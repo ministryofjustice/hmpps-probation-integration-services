@@ -6,13 +6,16 @@ import jakarta.persistence.Id
 import jakarta.persistence.LockModeType
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Lock
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import java.util.Optional
 
 @Immutable
 @Entity
 @Table(name = "offender")
+@Where(clause = "soft_deleted = 0")
 class Person(
 
     @Column(columnDefinition = "char(7)")
@@ -31,9 +34,14 @@ class Person(
 
 interface PersonRepository : JpaRepository<Person, Long> {
 
+    fun findByCrn(crn: String): Person?
+
     @Lock(LockModeType.PESSIMISTIC_READ)
-    fun findByCrnAndSoftDeletedIsFalse(crn: String): Person?
+    override fun findById(personId: Long): Optional<Person>
 }
 
-fun PersonRepository.getByCrnForUpdate(crn: String) =
-    findByCrnAndSoftDeletedIsFalse(crn) ?: throw NotFoundException("Person", "crn", crn)
+fun PersonRepository.getByCrn(crn: String) =
+    findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
+
+fun PersonRepository.getByIdForUpdate(personId: Long) =
+    findById(personId).orElseThrow { NotFoundException("Person", "id", personId) }
