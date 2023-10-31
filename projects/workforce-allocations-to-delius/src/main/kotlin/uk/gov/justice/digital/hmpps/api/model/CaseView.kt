@@ -44,7 +44,7 @@ data class CvSentence(
 
 data class CvRequirement(
     val mainCategory: String,
-    val subCategory: String,
+    val subCategory: String?,
     val length: String
 )
 

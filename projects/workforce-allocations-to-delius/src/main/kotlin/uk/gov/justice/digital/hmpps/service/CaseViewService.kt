@@ -77,7 +77,7 @@ class CaseViewService(
 
     private fun CaseViewRequirement.toCvRequirement() = CvRequirement(
         mainCategory.description,
-        subCategory.description,
+        subCategory?.description,
         length?.let { "$length ${mainCategory.units?.description ?: ""}" } ?: ""
     )
 

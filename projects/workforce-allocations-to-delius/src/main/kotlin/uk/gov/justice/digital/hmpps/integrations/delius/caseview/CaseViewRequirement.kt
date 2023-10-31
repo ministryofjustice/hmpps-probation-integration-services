@@ -34,7 +34,7 @@ class CaseViewRequirement(
 
     @ManyToOne
     @JoinColumn(name = "rqmnt_type_sub_category_id")
-    val subCategory: ReferenceData,
+    val subCategory: ReferenceData?,
 
     val length: Long?,
 
