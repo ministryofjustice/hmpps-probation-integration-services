@@ -145,7 +145,7 @@ internal class CASIntegrationTest {
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EAAR"))
 
-        val person = personRepository.findByCrnAndSoftDeletedIsFalse(event.message.crn())
+        val person = personRepository.findByCrn(event.message.crn())
         val address = addressRepository.findMainAddress(person!!.id)
 
         MatcherAssert.assertThat(address!!.type.code, Matchers.equalTo("A17"))
@@ -170,7 +170,7 @@ internal class CASIntegrationTest {
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EADP"))
-        val person = personRepository.findByCrnAndSoftDeletedIsFalse(event.message.crn())
+        val person = personRepository.findByCrn(event.message.crn())
         val address = addressRepository.findAll().filter { it.personId == person?.id }[0]
         MatcherAssert.assertThat(address!!.status.code, Matchers.equalTo("P"))
     }
