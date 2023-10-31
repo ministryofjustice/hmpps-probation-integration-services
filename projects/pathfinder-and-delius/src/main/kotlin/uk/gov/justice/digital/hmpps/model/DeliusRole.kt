@@ -1,6 +1,9 @@
 package uk.gov.justice.digital.hmpps.model
 
-enum class DeliusRole(val description: String, val role: String) {
+enum class DeliusRole(
+    override val description: String,
+    override val mappedRole: String
+) : uk.gov.justice.digital.hmpps.ldap.DeliusRole {
     CTRBT001("Pathfinder CT Probation", "PF_STD_PROBATION"),
     CTRBT002("Pathfinder CT Approval", "PF_APPROVAL"),
     CTRBT003("Pathfinder National Reader", "PF_NATIONAL_READER"),
@@ -9,6 +12,6 @@ enum class DeliusRole(val description: String, val role: String) {
     CTRBT006("Pathfinder Admin", "PF_ADMIN");
 
     companion object {
-        fun from(role: String): DeliusRole? = entries.firstOrNull { it.role == role.uppercase() }
+        fun from(role: String): DeliusRole? = entries.firstOrNull { it.mappedRole == role.uppercase() }
     }
 }
