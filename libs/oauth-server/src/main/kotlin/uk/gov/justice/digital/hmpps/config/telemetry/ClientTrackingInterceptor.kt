@@ -22,10 +22,9 @@ class ClientTrackingConfiguration(private val clientTrackingInterceptor: ClientT
 class ClientTrackingInterceptor : HandlerInterceptor {
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        val token = request.getHeader(HttpHeaders.AUTHORIZATION)
-        if (token.startsWith(BEARER)) {
+        request.getHeader(HttpHeaders.AUTHORIZATION)?.let {
             try {
-                val jwtBody = SignedJWT.parse(token.replace(BEARER, "")).jwtClaimsSet
+                val jwtBody = SignedJWT.parse(it.replace(BEARER, "")).jwtClaimsSet
                 Span.current().setAttribute("clientId", jwtBody.getClaim("client_id").toString())
             } catch (ignored: Exception) {
                 // Do nothing - don't create client id span
