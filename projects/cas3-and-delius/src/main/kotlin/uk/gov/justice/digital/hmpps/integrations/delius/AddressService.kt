@@ -29,6 +29,7 @@ class AddressService(
             val previousStatus = referenceDataRepository.previousAddressStatus()
             currentMain.status = previousStatus
             currentMain.endDate = endDate
+            personAddressRepository.save(currentMain)
         }
     }
 
