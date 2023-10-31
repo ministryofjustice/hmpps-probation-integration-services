@@ -21,3 +21,21 @@ objectclass: inetOrgPerson
 cn: bob-smith
 sn: Staff
 mail: bob.smith@moj.gov.uk
+
+dn: cn=ndRoleCatalogue,ou=Users,dc=moj,dc=com
+description: Role Catalogue
+objectclass: top
+cn: ndRoleCatalogue
+
+dn: cn=LHDCBT002,cn=ndRoleCatalogue,ou=Users,dc=moj,dc=com
+description: Digital Licence Create
+Level1: TRUE
+Level2: FALSE
+Level3: FALSE
+UIBusinessInteractionCollection: SEBI200
+UIBusinessInteractionCollection: SEBI203
+UIBusinessInteractionCollection: SEBI201
+UIBusinessInteractionCollection: SEBI202
+objectClass: NDRole
+objectClass: top
+cn: LHDCBT002
