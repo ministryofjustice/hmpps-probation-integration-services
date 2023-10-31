@@ -8,7 +8,6 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
-import jakarta.persistence.LockModeType
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
@@ -19,7 +18,6 @@ import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -91,6 +89,5 @@ interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
         and pa.status.code = 'M'
     """
     )
-    @Lock(LockModeType.PESSIMISTIC_READ)
-    fun findMainAddressForUpdate(personId: Long): PersonAddress?
+    fun findMainAddress(personId: Long): PersonAddress?
 }

@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Cas3ApiClient
 import uk.gov.justice.digital.hmpps.integrations.delius.AddressService
 import uk.gov.justice.digital.hmpps.integrations.delius.ContactService
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCrn
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByCrnForUpdate
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -55,7 +55,7 @@ class Handler(
             }
 
             "accommodation.cas3.person.arrived" -> {
-                val person = personRepository.getByCrn(event.crn())
+                val person = personRepository.getByCrnForUpdate(event.crn())
                 val detail = cas3ApiClient.getPersonArrived(event.url())
                 contactService.createContact(event.crn(), person) {
                     detail
@@ -65,7 +65,7 @@ class Handler(
             }
 
             "accommodation.cas3.person.departed" -> {
-                val person = personRepository.getByCrn(event.crn())
+                val person = personRepository.getByCrnForUpdate(event.crn())
                 val detail = cas3ApiClient.getPersonDeparted(event.url())
                 contactService.createContact(event.crn(), person) {
                     detail

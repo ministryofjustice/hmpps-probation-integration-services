@@ -3,9 +3,11 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
+import jakarta.persistence.LockModeType
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Lock
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Immutable
@@ -29,12 +31,9 @@ class Person(
 
 interface PersonRepository : JpaRepository<Person, Long> {
 
+    @Lock(LockModeType.PESSIMISTIC_READ)
     fun findByCrnAndSoftDeletedIsFalse(crn: String): Person?
-    fun findByNomsNumberAndSoftDeletedIsFalse(nomsNumber: String): Person?
 }
 
-fun PersonRepository.getByCrn(crn: String) =
+fun PersonRepository.getByCrnForUpdate(crn: String) =
     findByCrnAndSoftDeletedIsFalse(crn) ?: throw NotFoundException("Person", "crn", crn)
-
-fun PersonRepository.getByNoms(noms: String) =
-    findByNomsNumberAndSoftDeletedIsFalse(noms) ?: throw NotFoundException("Person", "noms", noms)
