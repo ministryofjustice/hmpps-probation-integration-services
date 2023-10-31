@@ -7,8 +7,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.AddressTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonAddress
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonAddressRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.cas3AddressType
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.getByIdForUpdate
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.mainAddressStatus
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.previousAddressStatus
 import java.time.LocalDate
@@ -18,7 +20,8 @@ import java.time.ZonedDateTime
 @Transactional
 class AddressService(
     private val personAddressRepository: PersonAddressRepository,
-    private val referenceDataRepository: ReferenceDataRepository
+    private val referenceDataRepository: ReferenceDataRepository,
+    private val personRepository: PersonRepository
 ) {
     fun updateMainAddress(person: Person, details: PersonArrived) {
         endMainAddress(person, details.arrivedAt.toLocalDate())
@@ -26,7 +29,8 @@ class AddressService(
     }
 
     fun endMainAddress(person: Person, endDate: LocalDate) {
-        val currentMain = personAddressRepository.findMainAddress(person.id)
+        val personForUpdate = personRepository.getByIdForUpdate(person.id)
+        val currentMain = personAddressRepository.findMainAddress(personForUpdate.id)
         currentMain?.apply {
             val previousStatus = referenceDataRepository.previousAddressStatus()
             currentMain.status = previousStatus
@@ -35,7 +39,8 @@ class AddressService(
     }
 
     fun endMainCAS3Address(person: Person, endDate: ZonedDateTime) {
-        val currentMain = personAddressRepository.findMainAddress(person.id)
+        val personForUpdate = personRepository.getByIdForUpdate(person.id)
+        val currentMain = personAddressRepository.findMainAddress(personForUpdate.id)
         currentMain?.apply {
             if (currentMain.type.code == AddressTypeCode.CAS3.code) {
                 val previousStatus = referenceDataRepository.previousAddressStatus()
