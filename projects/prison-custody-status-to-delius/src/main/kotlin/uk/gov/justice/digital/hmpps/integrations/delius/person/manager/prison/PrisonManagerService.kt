@@ -61,6 +61,7 @@ class PrisonManagerService(
         // end-date the previous prison manager
         val activePrisonManager = prisonManagerRepository.findActiveManagerAtDate(person.id, allocationDate)
         val activePrisonManagerEndDate = activePrisonManager?.endDate
+            ?: prisonManagerRepository.findFirstManagerAfterDate(person.id, allocationDate).singleOrNull()?.date
         if (activePrisonManager != null) {
             activePrisonManager.active = false
             activePrisonManager.endDate = allocationDate
