@@ -1,0 +1,38 @@
+
+style {
+  fill: "#ffffff"
+}
+
+context-approved-premises: Approved Premises Context {
+  link: https://github.com/ministryofjustice/hmpps-approved-premises-api
+
+  entities: Entities {
+    grid-columns: 1
+    referral: Approved Premises Referral
+  }
+}
+
+context-oasys: OASys Context {
+  style.stroke-width: 8
+
+  entities: Entities {
+    grid-columns: 3
+    rosh: Risk of Serious Harm
+    rosh_summary: Risk of Serious Harm Summary
+    risk_individual: Risk to the Individual
+    risk_assessment: Risk Assessment
+    offence: Offence Details
+    needs: Needs Details
+    health: Health Details
+    latest_assessment: Latest Assessment
+  }
+  interface: Approved Premises and OASys {
+    type: Anti-Corruption Layer
+  }
+}
+
+context-approved-premises--context-oasys.interface: Upstream\n\n\nDownstream
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2
