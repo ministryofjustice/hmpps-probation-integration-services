@@ -27,17 +27,22 @@ class ContactService(
     private val telemetryService: TelemetryService
 ) : AuditableService(auditedInteractionService) {
 
-    fun <T : Cas3Event> createContact(
+    fun <T : Cas3Event> createOrUpdateContact(
         crn: String,
         person: Person? = null,
+        replaceNotes: Boolean = true,
         getEvent: () -> EventDetails<T>
     ) = audit(BusinessInteractionCode.UPDATE_CONTACT) {
         val event = getEvent()
         val personId = person?.id ?: personRepository.getByCrn(crn).id
         val existing = contactRepository.getByExternalReference(event.eventDetails.urn)
         if (existing != null) {
-            if (existing.startTime < event.timestamp) {
-                existing.notes = event.eventDetails.noteText
+            if (existing.lastModifiedDateTime < event.timestamp) {
+                if (replaceNotes) {
+                    existing.notes = event.eventDetails.noteText
+                } else {
+                    existing.notes = "${existing.notes}${System.lineSeparator()}${event.eventDetails.noteText}"
+                }
                 existing.date = event.timestamp.toLocalDate()
                 existing.startTime = event.timestamp
                 contactRepository.save(existing)
