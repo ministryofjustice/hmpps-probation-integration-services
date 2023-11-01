@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.MethodOrderer
+import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
 import org.mockito.Mockito
@@ -63,6 +64,7 @@ internal class CASIntegrationTest {
     lateinit var objectMapper: ObjectMapper
 
     @Test
+    @Order(1)
     fun `referral submitted message is processed correctly`() {
         val eventName = "referral-submitted"
         val event = prepEvent(eventName, wireMockServer.port())
@@ -79,6 +81,7 @@ internal class CASIntegrationTest {
     }
 
     @Test
+    @Order(2)
     fun `booking cancelled message is processed correctly`() {
         val eventName = "booking-cancelled"
         val event = prepEvent(eventName, wireMockServer.port())
@@ -96,6 +99,7 @@ internal class CASIntegrationTest {
     }
 
     @Test
+    @Order(3)
     fun `booking confirmed message is processed correctly`() {
         val eventName = "booking-confirmed"
         val event = prepEvent(eventName, wireMockServer.port())
@@ -113,6 +117,7 @@ internal class CASIntegrationTest {
     }
 
     @Test
+    @Order(4)
     fun `booking provisionally made message is processed correctly`() {
         val eventName = "booking-provisionally-made"
         val event = prepEvent(eventName, wireMockServer.port())
@@ -130,6 +135,7 @@ internal class CASIntegrationTest {
     }
 
     @Test
+    @Order(5)
     fun `person arrived message is processed correctly`() {
         val eventName = "person-arrived"
         val event = prepEvent(eventName, wireMockServer.port())
@@ -156,6 +162,7 @@ internal class CASIntegrationTest {
     }
 
     @Test
+    @Order(6)
     fun `person departed message is processed correctly`() {
         val eventName = "person-departed"
         val event = prepEvent(eventName, wireMockServer.port())
@@ -176,10 +183,13 @@ internal class CASIntegrationTest {
     }
 
     @Test
+    @Order(7)
     fun `person departed message update is processed correctly`() {
         val eventName = "person-departed-update"
         val event = prepEvent(eventName, wireMockServer.port())
-
+        val existingEventDetails = ResourceLoader.file<EventDetails<PersonDeparted>>("cas3-person-departed")
+        val existingContact = contactRepository.getByExternalReference(existingEventDetails.eventDetails.urn)
+        val existingNotes = existingContact!!.notes
         // When it is received
         channelManager.getChannel(queueName).publishAndWait(event)
 
@@ -188,7 +198,57 @@ internal class CASIntegrationTest {
         val eventDetails = ResourceLoader.file<EventDetails<PersonDeparted>>("cas3-$eventName")
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
-        MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EADP"))
-        MatcherAssert.assertThat(contact.notes, Matchers.equalTo(eventDetails.eventDetails.noteText))
+        MatcherAssert.assertThat(
+            contact!!.notes,
+            Matchers.equalTo(eventDetails.eventDetails.noteText + System.lineSeparator() + existingNotes)
+        )
+    }
+
+    @Test
+    @Order(8)
+    fun `person arrived updated message is processed correctly`() {
+        val eventName = "person-arrived-update"
+        val event = prepEvent(eventName, wireMockServer.port())
+        val existingEventDetails = ResourceLoader.file<EventDetails<PersonArrived>>("cas3-person-arrived-update")
+        val existingContact = contactRepository.getByExternalReference(existingEventDetails.eventDetails.urn)
+        val existingNotes = existingContact!!.notes
+
+        // When it is received
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        // Then it is logged to telemetry
+        Mockito.verify(telemetryService).notificationReceived(event)
+
+        val eventDetails = ResourceLoader.file<EventDetails<PersonArrived>>("cas3-$eventName")
+        val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
+
+        MatcherAssert.assertThat(
+            contact!!.notes,
+            Matchers.equalTo(eventDetails.eventDetails.noteText + System.lineSeparator() + existingNotes)
+        )
+    }
+
+    @Test
+    @Order(9)
+    fun `booking cancelled updated message is processed correctly`() {
+        val eventName = "booking-cancelled-update"
+        val event = prepEvent(eventName, wireMockServer.port())
+        val existingEventDetails = ResourceLoader.file<EventDetails<BookingCancelled>>("cas3-booking-cancelled-update")
+        val existingContact = contactRepository.getByExternalReference(existingEventDetails.eventDetails.urn)
+        val existingNotes = existingContact!!.notes
+
+        // When it is received
+        channelManager.getChannel(queueName).publishAndWait(event)
+
+        // Then it is logged to telemetry
+        Mockito.verify(telemetryService).notificationReceived(event)
+
+        val eventDetails = ResourceLoader.file<EventDetails<BookingCancelled>>("cas3-$eventName")
+        val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
+
+        MatcherAssert.assertThat(
+            contact!!.notes,
+            Matchers.equalTo(eventDetails.eventDetails.noteText + System.lineSeparator() + existingNotes)
+        )
     }
 }

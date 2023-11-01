@@ -1,8 +1,8 @@
 {
-  "eventType": "accommodation.cas3.person.departed.updated",
+  "eventType": "accommodation.cas3.person.arrived.updated",
   "version": 1,
-  "description": "A cas3 person departed",
-  "detailUrl": "http://localhost:{wiremock.port}/cas3-api/events/person-departed/12345",
+  "description": "A cas3 person has arrived",
+  "detailUrl": "http://localhost:{wiremock.port}/cas3-api/events/person-arrived/12345",
   "occurredAt": "2022-12-04T10:42:43+00:00",
   "additionalInformation": {
     "applicationId": "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080"

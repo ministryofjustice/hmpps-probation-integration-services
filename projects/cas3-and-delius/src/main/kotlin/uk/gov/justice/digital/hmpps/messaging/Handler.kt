@@ -27,37 +27,37 @@ class Handler(
         val event = notification.message
         when (event.eventType) {
             "accommodation.cas3.referral.submitted" -> {
-                contactService.createContact(event.crn()) {
+                contactService.createOrUpdateContact(event.crn()) {
                     cas3ApiClient.getApplicationSubmittedDetails(event.url())
                 }
                 telemetryService.trackEvent("ApplicationSubmitted", event.telemetryProperties())
             }
 
             "accommodation.cas3.booking.cancelled" -> {
-                contactService.createContact(event.crn()) {
+                contactService.createOrUpdateContact(event.crn()) {
                     cas3ApiClient.getBookingCancelledDetails(event.url())
                 }
-                telemetryService.trackEvent("ApplicationSubmitted", event.telemetryProperties())
+                telemetryService.trackEvent("BookingCancelled", event.telemetryProperties())
             }
 
             "accommodation.cas3.booking.confirmed" -> {
-                contactService.createContact(event.crn()) {
+                contactService.createOrUpdateContact(event.crn()) {
                     cas3ApiClient.getBookingConfirmedDetails(event.url())
                 }
-                telemetryService.trackEvent("ApplicationSubmitted", event.telemetryProperties())
+                telemetryService.trackEvent("BookingConfirmed", event.telemetryProperties())
             }
 
             "accommodation.cas3.booking.provisionally-made" -> {
-                contactService.createContact(event.crn()) {
+                contactService.createOrUpdateContact(event.crn()) {
                     cas3ApiClient.getBookingProvisionallyMade(event.url())
                 }
-                telemetryService.trackEvent("ApplicationSubmitted", event.telemetryProperties())
+                telemetryService.trackEvent("bookingProvisionallyMade", event.telemetryProperties())
             }
 
             "accommodation.cas3.person.arrived" -> {
                 val person = personRepository.getByCrn(event.crn())
                 val detail = cas3ApiClient.getPersonArrived(event.url())
-                contactService.createContact(event.crn(), person) {
+                contactService.createOrUpdateContact(event.crn(), person) {
                     detail
                 }
                 addressService.updateMainAddress(person, detail.eventDetails)
@@ -67,11 +67,32 @@ class Handler(
             "accommodation.cas3.person.departed" -> {
                 val person = personRepository.getByCrn(event.crn())
                 val detail = cas3ApiClient.getPersonDeparted(event.url())
-                contactService.createContact(event.crn(), person) {
+                contactService.createOrUpdateContact(event.crn(), person) {
                     detail
                 }
                 addressService.endMainCAS3Address(person, detail.eventDetails.departedAt)
                 telemetryService.trackEvent("PersonDeparted", event.telemetryProperties())
+            }
+
+            "accommodation.cas3.person.arrived.updated" -> {
+                contactService.createOrUpdateContact(event.crn(), replaceNotes = false) {
+                    cas3ApiClient.getPersonArrived(event.url())
+                }
+                telemetryService.trackEvent("PersonArrivedUpdated", event.telemetryProperties())
+            }
+
+            "accommodation.cas3.person.departed.updated" -> {
+                contactService.createOrUpdateContact(event.crn(), replaceNotes = false) {
+                    cas3ApiClient.getPersonDeparted(event.url())
+                }
+                telemetryService.trackEvent("PersonDepartedUpdated", event.telemetryProperties())
+            }
+
+            "accommodation.cas3.booking.cancelled.updated" -> {
+                contactService.createOrUpdateContact(event.crn(), replaceNotes = false) {
+                    cas3ApiClient.getBookingCancelledDetails(event.url())
+                }
+                telemetryService.trackEvent("BookingCancelledUpdated", event.telemetryProperties())
             }
 
             else -> throw IllegalArgumentException("Unexpected event type ${event.eventType}")
