@@ -809,12 +809,19 @@ components:
           type: string
         casesDueToEndInNext4Weeks:
           type: integer
+          description: The number of sentenced events with an end date in the next
+            four weeks on cases managed by the officer.
           format: int64
         releasesWithinNext4Weeks:
           type: integer
+          description: The number of sentenced custodial events with an "Expected
+            Release Date" key date in the next four weeks on cases managed by the
+            officer.
           format: int64
         paroleReportsToCompleteInNext4Weeks:
           type: integer
+          description: The number of parole reports required in the next four weeks
+            on cases managed by the officer.
           format: int64
     Person:
       required:
