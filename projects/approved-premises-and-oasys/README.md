@@ -2,7 +2,7 @@
 
 ## Business Need
 
-Read-only integration service meditating access to the OASys ORDS endpoints that provide a wide range of OASys data for the Approved Premises (CAS1) service. The integration service is a thin proxy over the OASys endpoints, providing access to the ORDS APIs using the OASys OAuth credentials and enabling per-endpoint access control via HMPPS Auth authorities. Accessing OASys APIs via the integration services also ensures that we include the OASys API calls in the Digital Studio observability tools such as Application Insights and Sentry.
+Read-only integration service mediating access to the OASys ORDS endpoints that provide a wide range of OASys data for the Approved Premises (CAS1) service. The integration service is a thin proxy over the OASys endpoints, providing access to the ORDS APIs using the OASys OAuth credentials and enabling per-endpoint access control via HMPPS Auth authorities. Accessing OASys APIs via the integration services also ensures that we include the OASys API calls in the Digital Studio observability tools such as Application Insights and Sentry.
 
 ## Context Map
 
