@@ -1,0 +1,13 @@
+{
+  "Type": "Notification",
+  "MessageId": "63ba0b4b-340e-4853-b343-6429965a3961",
+  "TopicArn": "arn:aws:sns:eu-west-2:000000000000:domain-event",
+  "Message": "{\"eventType\":\"offender-management.handover.changed\",\"detailUrl\":\"http://localhost:{wiremock.port}/api/handovers/A0003AA\",\"occurredAt\":\"2023-05-09T13:25:19.102Z\",\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"A0003AA\"}]}}",
+  "Timestamp": "2023-05-09T13:25:20.000Z",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "offender-management.handover.changed"
+    }
+  }
+}

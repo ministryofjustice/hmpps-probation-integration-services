@@ -42,6 +42,15 @@
     {
       "request": {
         "method": "GET",
+        "url": "/api/handovers/A0003AA"
+      },
+      "response": {
+        "status": 404
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/api/pom-allocation/A0123BY/1"
       },
       "response": {

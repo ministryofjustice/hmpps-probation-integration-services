@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import java.net.URI
 import java.time.LocalDate
 
-@FeignClient(name = "manage-pom-cases", url = "https://dummy-url/to/be/overridden")
+@FeignClient(name = "manage-pom-cases", url = "https://dummy-url/to/be/overridden", dismiss404 = true)
 interface ManagePomCasesClient {
     @GetMapping
     fun getDetails(url: URI): Handover?

@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -89,5 +90,22 @@ internal class HandoverMessagingIntegrationTest {
         assertThat(handoverDates.size, equalTo(2))
         assertThat(handoverDates[KeyDate.TypeCode.HANDOVER_DATE.value]?.date, equalTo(LocalDate.of(2023, 5, 10)))
         assertThat(handoverDates[KeyDate.TypeCode.HANDOVER_START_DATE.value]?.date, equalTo(LocalDate.of(2023, 5, 6)))
+    }
+
+    @Test
+    fun `ignores 404 not found from MPC`() {
+        val notification = prepNotification(
+            notification("handover-not-found"),
+            wireMockServer.port()
+        )
+
+        assertDoesNotThrow {
+            channelManager.getChannel(queueName).publishAndWait(notification)
+        }
+
+        verify(telemetryService).trackEvent(
+            "No handover data available",
+            mapOf("nomsId" to "A0003AA", "detailUrl" to "http://localhost:${wireMockServer.port()}/api/handovers/A0003AA")
+        )
     }
 }
