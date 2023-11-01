@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 
@@ -26,8 +27,12 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         em.saveAll(
-            PersonGenerator.DEFAULT_PERSON
+            PersonGenerator.PERSON_OPD_NEW,
+            PersonGenerator.PERSON_MANAGER,
+            PersonGenerator.generateEvent(PersonGenerator.PERSON_OPD_NEW)
         )
+        ReferenceDataGenerator.all().forEach { em.persist(it) }
     }
+
     fun EntityManager.saveAll(vararg any: Any) = any.forEach { persist(it) }
 }

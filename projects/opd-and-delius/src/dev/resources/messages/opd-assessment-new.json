@@ -1,0 +1,12 @@
+{
+  "Type": "Notification",
+  "MessageId": "f39059e7-a62d-4157-929a-fb049015c993",
+  "Message": "{\"eventType\":\"opd.produced\",\"version\":\"2\",\"description\":\"OPD Assessment\",\"occurredAt\":\"2023-10-30T16:42:25+00:00\",\"detailUrl\":null,\"additionalInformation\":{\"dateCompleted\":\"2023-10-30T16:42:25+00:00\", \"opdResult\":\"SCREENED IN\", \"opdScreenOutOverride\": \"\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"A000001\"}]}}",
+  "Timestamp": "2023-10-30T16:42:25+00:00",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "opd.produced"
+    }
+  }
+}
