@@ -1,0 +1,71 @@
+---
+title: Probation System Concepts
+source_url: 'https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/doc/tech-docs/source/concepts.html.md.erb'
+weight: 40
+---
+
+# System Concepts
+
+Probation integration services support interactions between new HMPPS digital services and older probation systems involved in managing a probation case, namely Delius and OASys. To access case information managed in one of the older systems we provide read-only APIs over the Delius and OASys data. APIs are intended for use by one client, are tailored to the needs of that client and built in collaboration with the client team. Where possible the API is shaped and data named in terms of the client needs, which helps build a shared understanding of the data provided and indicates the limits of how it should be used. The data models and concepts of the Delius and OASys services do, however, have a significant influence on what can be provided and how it is presented.
+
+## Common Concepts
+
+### Person
+
+A person who is engaged with the probation service due to being accused or convicted of a crime.
+
+## Delius Concepts
+
+Probation concepts modelled in the Delius application
+
+### Event
+
+The representation of the specific engagement between the probation service and a person. The Delius event associates a person with specific offences and any court appearances, disposals, requirements, licence conditions, NSIs and contacts associated with that offence. The event is also used to link other information such as risk assessments to the case.
+
+### Disposal
+
+The outcome of a court case which includes and any community orders and custodial sentences. The disposal is linked to any licence conditions, requirements and unpaid work supervised by the probation service.
+
+### Contact
+
+A structure capturing an important action or activity related to the supervision. Contacts are used to log many different things and grouped together they provide a full history of a persons engagement with the probation service. Contacts are of a specific type, which indicates the activity being logged, and can have associated outcome and notes to help probation practitioners understand the context.
+
+Contacts can be marked with an alert flag, which indicates that the responsible probation practitioner should be informed immediately that the contact has been created.
+
+The Delius 'Contact List' gives a consolidated view of all contacts. Examples of activities logged as contacts are probation processes, transfers of responsibility, risk assessments, details of interventions, appointments, custody information and case administration. Contacts cover many other areas in addition to these and are a primary method of recording information in Delius.
+
+### Documents
+
+Documents related to the probation case, such as court reports and case management documents.
+
+### Addresses
+
+Important addresses related to a person, such as where they are currently living.
+
+### Non-Statutory Intervention (NSI)
+
+A Delius-specific concept that allows the system to model a component of the probation supervision. An NSI may have a status, time span, outcome and can be linked to contacts which enables grouping of related information in Delius. NSIs are used extensively in the Delius application to model probation processes.
+
+### Community Offender Manager (COM)
+
+The practitioner currently responsible for managing a particular case when the person is in the community.
+
+### Prison Offender Manager (POM)
+
+The practitioner currently responsible for managing a particular case whilst the person is in custody.
+
+### Responsible Officer
+
+The practitioner, one of either the Prison Offender Manager or Community Offender Manager, who is currently responsible for managing the case.
+
+### Key Dates
+
+Important dates related to a person, such as date of release from prison and the end of supervision.
+
+## OASys Concepts
+
+Probation concepts as modelled in the OASys application
+
+### Assessment
+
+An assessment of a person's risk to themselves and others.
