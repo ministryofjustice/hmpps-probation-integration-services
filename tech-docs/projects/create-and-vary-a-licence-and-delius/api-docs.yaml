@@ -14,6 +14,33 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
+  /users/{username}/roles:
+    put:
+      tags:
+      - user-resource
+      operationId: addRole
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+      - user-resource
+      operationId: removeRole
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
   /staff:
     post:
       tags:

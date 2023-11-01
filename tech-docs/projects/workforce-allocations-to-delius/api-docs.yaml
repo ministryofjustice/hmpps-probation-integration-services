@@ -1072,7 +1072,6 @@ components:
       required:
       - length
       - mainCategory
-      - subCategory
       type: object
       properties:
         mainCategory:
@@ -1181,7 +1180,6 @@ components:
       - id
       - length
       - mainCategory
-      - subCategory
       type: object
       properties:
         mainCategory:
