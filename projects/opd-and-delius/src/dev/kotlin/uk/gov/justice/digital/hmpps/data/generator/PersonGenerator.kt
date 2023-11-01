@@ -1,11 +1,32 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.integrations.delius.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.PersonManager
 
 object PersonGenerator {
-    val DEFAULT_PERSON = generatePerson("A000001")
+    val PERSON_OPD_NEW = generatePerson("A000001")
+    val PERSON_MANAGER = generatePersonManager(PERSON_OPD_NEW)
     fun generatePerson(
         crn: String,
+        softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Person(id, crn)
+    ) = Person(crn, softDeleted, id)
+
+    fun generatePersonManager(
+        person: Person,
+        providerId: Long = IdGenerator.getAndIncrement(),
+        teamId: Long = IdGenerator.getAndIncrement(),
+        staffId: Long = IdGenerator.getAndIncrement(),
+        active: Boolean = true,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = PersonManager(person, providerId, teamId, staffId, active, softDeleted, id)
+
+    fun generateEvent(
+        person: Person,
+        active: Boolean = true,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Event(person, active, softDeleted, id)
 }

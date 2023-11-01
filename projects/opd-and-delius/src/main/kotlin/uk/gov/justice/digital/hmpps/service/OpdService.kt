@@ -1,0 +1,37 @@
+package uk.gov.justice.digital.hmpps.service
+
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.integrations.delius.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.getByCrn
+import uk.gov.justice.digital.hmpps.messaging.OpdAssessment
+import java.time.ZonedDateTime
+
+@Service
+class OpdService(
+    private val personManagerRepository: PersonManagerRepository,
+    private val eventRepository: EventRepository,
+    private val nsiService: NsiService
+) {
+    @Transactional
+    fun processAssessment(opdAssessment: OpdAssessment) {
+        val com = personManagerRepository.getByCrn(opdAssessment.crn)
+        val activeEvent = eventRepository.existsByPersonId(com.person.id)
+        val nsi = nsiService.findOpdNsi(com.person.id)
+
+        when {
+            activeEvent && nsi == null -> {
+                nsiService.createNsi(opdAssessment, com)
+            }
+
+            activeEvent && nsi != null -> {
+                nsi.appendNotes(System.lineSeparator() + opdAssessment.notes)
+            }
+
+            nsi != null -> {
+                nsi.actualEndDate = ZonedDateTime.now()
+            }
+        }
+    }
+}
