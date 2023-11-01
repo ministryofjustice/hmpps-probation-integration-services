@@ -37,7 +37,7 @@ class ContactService(
         val personId = person?.id ?: personRepository.getByCrn(crn).id
         val existing = contactRepository.getByExternalReference(event.eventDetails.urn)
         if (existing != null) {
-            if (existing.startTime < event.timestamp) {
+            if (existing.lastModifiedDateTime < event.timestamp) {
                 if (replaceNotes) {
                     existing.notes = event.eventDetails.noteText
                 } else {

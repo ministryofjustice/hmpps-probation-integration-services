@@ -2,6 +2,9 @@ package uk.gov.justice.digital.hmpps
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.get
+import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.MethodOrderer
@@ -31,6 +34,7 @@ import uk.gov.justice.digital.hmpps.messaging.crn
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
+import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -85,6 +89,16 @@ internal class CASIntegrationTest {
     fun `booking cancelled message is processed correctly`() {
         val eventName = "booking-cancelled"
         val event = prepEvent(eventName, wireMockServer.port())
+        val eventDetails = ResourceLoader.file<EventDetails<BookingCancelled>>("cas3-$eventName")
+        val eventDetailsCopy = eventDetails.copy(timestamp = ZonedDateTime.now().minusSeconds(3))
+        wireMockServer.stubFor(
+            get(urlEqualTo("/cas3-api/events/booking-cancelled/1234"))
+                .willReturn(
+                    aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(objectMapper.writeValueAsString(eventDetailsCopy))
+                )
+        )
 
         // When it is received
         channelManager.getChannel(queueName).publishAndWait(event)
@@ -92,7 +106,6 @@ internal class CASIntegrationTest {
         // Then it is logged to telemetry
         Mockito.verify(telemetryService).notificationReceived(event)
 
-        val eventDetails = ResourceLoader.file<EventDetails<BookingCancelled>>("cas3-$eventName")
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EACA"))
@@ -139,6 +152,16 @@ internal class CASIntegrationTest {
     fun `person arrived message is processed correctly`() {
         val eventName = "person-arrived"
         val event = prepEvent(eventName, wireMockServer.port())
+        val eventDetails = ResourceLoader.file<EventDetails<PersonArrived>>("cas3-$eventName")
+        val eventDetailsCopy = eventDetails.copy(timestamp = ZonedDateTime.now().minusSeconds(3))
+        wireMockServer.stubFor(
+            get(urlEqualTo("/cas3-api/events/person-arrived/1234"))
+                .willReturn(
+                    aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(objectMapper.writeValueAsString(eventDetailsCopy))
+                )
+        )
 
         // When it is received
         channelManager.getChannel(queueName).publishAndWait(event)
@@ -146,7 +169,6 @@ internal class CASIntegrationTest {
         // Then it is logged to telemetry
         Mockito.verify(telemetryService).notificationReceived(event)
 
-        val eventDetails = ResourceLoader.file<EventDetails<PersonArrived>>("cas3-$eventName")
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EAAR"))
@@ -166,6 +188,16 @@ internal class CASIntegrationTest {
     fun `person departed message is processed correctly`() {
         val eventName = "person-departed"
         val event = prepEvent(eventName, wireMockServer.port())
+        val eventDetails = ResourceLoader.file<EventDetails<PersonDeparted>>("cas3-$eventName")
+        val eventDetailsCopy = eventDetails.copy(timestamp = ZonedDateTime.now().minusSeconds(3))
+        wireMockServer.stubFor(
+            get(urlEqualTo("/cas3-api/events/person-departed/1234"))
+                .willReturn(
+                    aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(objectMapper.writeValueAsString(eventDetailsCopy))
+                )
+        )
 
         // When it is received
         channelManager.getChannel(queueName).publishAndWait(event)
@@ -173,7 +205,6 @@ internal class CASIntegrationTest {
         // Then it is logged to telemetry
         Mockito.verify(telemetryService).notificationReceived(event)
 
-        val eventDetails = ResourceLoader.file<EventDetails<PersonDeparted>>("cas3-$eventName")
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
         MatcherAssert.assertThat(contact!!.type.code, Matchers.equalTo("EADP"))
@@ -190,12 +221,22 @@ internal class CASIntegrationTest {
         val existingEventDetails = ResourceLoader.file<EventDetails<PersonDeparted>>("cas3-person-departed")
         val existingContact = contactRepository.getByExternalReference(existingEventDetails.eventDetails.urn)
         val existingNotes = existingContact!!.notes
+        val eventDetails = ResourceLoader.file<EventDetails<PersonDeparted>>("cas3-$eventName")
+        val eventDetailsCopy = eventDetails.copy(timestamp = ZonedDateTime.now())
+        wireMockServer.stubFor(
+            get(urlEqualTo("/cas3-api/events/person-departed/12345"))
+                .willReturn(
+                    aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(objectMapper.writeValueAsString(eventDetailsCopy))
+                )
+        )
+
         // When it is received
         channelManager.getChannel(queueName).publishAndWait(event)
 
         // Then it is logged to telemetry
         Mockito.verify(telemetryService).notificationReceived(event)
-        val eventDetails = ResourceLoader.file<EventDetails<PersonDeparted>>("cas3-$eventName")
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
         MatcherAssert.assertThat(
@@ -212,6 +253,16 @@ internal class CASIntegrationTest {
         val existingEventDetails = ResourceLoader.file<EventDetails<PersonArrived>>("cas3-person-arrived-update")
         val existingContact = contactRepository.getByExternalReference(existingEventDetails.eventDetails.urn)
         val existingNotes = existingContact!!.notes
+        val eventDetails = ResourceLoader.file<EventDetails<PersonArrived>>("cas3-$eventName")
+        val eventDetailsCopy = eventDetails.copy(timestamp = ZonedDateTime.now())
+        wireMockServer.stubFor(
+            get(urlEqualTo("/cas3-api/events/person-arrived/12345"))
+                .willReturn(
+                    aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(objectMapper.writeValueAsString(eventDetailsCopy))
+                )
+        )
 
         // When it is received
         channelManager.getChannel(queueName).publishAndWait(event)
@@ -219,7 +270,6 @@ internal class CASIntegrationTest {
         // Then it is logged to telemetry
         Mockito.verify(telemetryService).notificationReceived(event)
 
-        val eventDetails = ResourceLoader.file<EventDetails<PersonArrived>>("cas3-$eventName")
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
         MatcherAssert.assertThat(
@@ -236,6 +286,16 @@ internal class CASIntegrationTest {
         val existingEventDetails = ResourceLoader.file<EventDetails<BookingCancelled>>("cas3-booking-cancelled-update")
         val existingContact = contactRepository.getByExternalReference(existingEventDetails.eventDetails.urn)
         val existingNotes = existingContact!!.notes
+        val eventDetails = ResourceLoader.file<EventDetails<BookingCancelled>>("cas3-$eventName")
+        val eventDetailsCopy = eventDetails.copy(timestamp = ZonedDateTime.now())
+        wireMockServer.stubFor(
+            get(urlEqualTo("/cas3-api/events/booking-cancelled/12345"))
+                .willReturn(
+                    aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(objectMapper.writeValueAsString(eventDetailsCopy))
+                )
+        )
 
         // When it is received
         channelManager.getChannel(queueName).publishAndWait(event)
@@ -243,7 +303,6 @@ internal class CASIntegrationTest {
         // Then it is logged to telemetry
         Mockito.verify(telemetryService).notificationReceived(event)
 
-        val eventDetails = ResourceLoader.file<EventDetails<BookingCancelled>>("cas3-$eventName")
         val contact = contactRepository.getByExternalReference(eventDetails.eventDetails.urn)
 
         MatcherAssert.assertThat(
