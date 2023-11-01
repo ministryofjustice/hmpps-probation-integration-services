@@ -19,6 +19,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.check
 import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -142,7 +143,6 @@ internal class PrisonManagerServiceTest {
         whenever(referenceDataRepository.findByCodeAndSetName("AUT", "POM ALLOCATION REASON")).thenReturn(
             ReferenceDataGenerator.generate("TEST", ReferenceDataSetGenerator.generate("POM ALLOCATION REASON"))
         )
-        doAnswer<PrisonManager> { it.getArgument(0) }.whenever(prisonManagerRepository).save(any())
 
         prisonManagerService.allocateToProbationArea(
             event.disposal!!,
@@ -155,24 +155,9 @@ internal class PrisonManagerServiceTest {
 
     @Test
     fun oldPrisonManagerIsEndDated() {
+        mockReferenceData()
         val allocationDate = ZonedDateTime.now()
         val event = EventGenerator.custodialEvent(PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT)
-        whenever(teamRepository.findByCodeAndProbationAreaId("N02ALL", ProbationAreaGenerator.DEFAULT.id)).thenReturn(
-            TeamGenerator.DEFAULT
-        )
-        whenever(
-            staffRepository.findByCodeAndTeamsId(
-                "N02UATU",
-                TeamGenerator.DEFAULT.id
-            )
-        ).thenReturn(StaffGenerator.UNALLOCATED)
-        whenever(referenceDataRepository.findByCodeAndSetName("AUT", "POM ALLOCATION REASON")).thenReturn(
-            ReferenceDataGenerator.generate("TEST", ReferenceDataSetGenerator.generate("POM ALLOCATION REASON"))
-        )
-        doAnswer<PrisonManager> { it.getArgument(0) }.whenever(prisonManagerRepository).save(any())
-        whenever(contactTypeRepository.findByCode(ContactType.Code.PRISON_MANAGER_AUTOMATIC_TRANSFER.value)).thenReturn(
-            ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.PRISON_MANAGER_AUTOMATIC_TRANSFER]
-        )
         whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.RECALLABLE.id, allocationDate))
             .thenReturn(PrisonManagerGenerator.generate(PersonGenerator.RECALLABLE))
 
@@ -196,24 +181,9 @@ internal class PrisonManagerServiceTest {
 
     @Test
     fun historicalPrisonManagerIsInsertedWithEndDate() {
+        mockReferenceData()
         val allocationDate = ZonedDateTime.now().minusDays(1)
         val event = EventGenerator.custodialEvent(PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT)
-        whenever(teamRepository.findByCodeAndProbationAreaId("N02ALL", ProbationAreaGenerator.DEFAULT.id)).thenReturn(
-            TeamGenerator.DEFAULT
-        )
-        whenever(
-            staffRepository.findByCodeAndTeamsId(
-                "N02UATU",
-                TeamGenerator.DEFAULT.id
-            )
-        ).thenReturn(StaffGenerator.UNALLOCATED)
-        whenever(referenceDataRepository.findByCodeAndSetName("AUT", "POM ALLOCATION REASON")).thenReturn(
-            ReferenceDataGenerator.generate("TEST", ReferenceDataSetGenerator.generate("POM ALLOCATION REASON"))
-        )
-        doAnswer<PrisonManager> { it.getArgument(0) }.whenever(prisonManagerRepository).save(any())
-        whenever(contactTypeRepository.findByCode(ContactType.Code.PRISON_MANAGER_AUTOMATIC_TRANSFER.value)).thenReturn(
-            ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.PRISON_MANAGER_AUTOMATIC_TRANSFER]
-        )
         whenever(
             prisonManagerRepository.findActiveManagerAtDate(
                 PersonGenerator.RECALLABLE.id,
@@ -240,5 +210,45 @@ internal class PrisonManagerServiceTest {
         assertThat(newPrisonManager.firstValue.date, equalTo(allocationDate))
         assertThat(newPrisonManager.firstValue.endDate!!, isCloseTo(ZonedDateTime.now()))
         assertFalse(oldPrisonManager.firstValue.active)
+    }
+
+    @Test
+    fun historicalPrisonManagerIsInsertedWhenThereIsAGapInHistory() {
+        mockReferenceData()
+        val allocationDate = ZonedDateTime.now().minusDays(2)
+        val event = EventGenerator.custodialEvent(PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT)
+
+        // Given no manager at the time of allocation
+        whenever(prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.RECALLABLE.id, allocationDate))
+            .thenReturn(null)
+        // But there is a future-dated manager
+        val futureStartDate = ZonedDateTime.now().minusDays(1)
+        whenever(prisonManagerRepository.findFirstManagerAfterDate(PersonGenerator.RECALLABLE.id, allocationDate))
+            .thenReturn(listOf(PrisonManagerGenerator.generate(PersonGenerator.RECALLABLE, startDate = futureStartDate)))
+
+        prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
+
+        // Then the future-dated manager is not updated
+        verify(prisonManagerRepository, never()).saveAndFlush(any())
+
+        // And we insert an end-dated historical manager
+        verify(prisonManagerRepository).save(
+            check { newPrisonManager ->
+                assertThat(newPrisonManager.date, equalTo(allocationDate))
+                assertThat(newPrisonManager.endDate, equalTo(futureStartDate))
+                assertFalse(newPrisonManager.active)
+            }
+        )
+    }
+
+    private fun mockReferenceData() {
+        whenever(teamRepository.findByCodeAndProbationAreaId("N02ALL", ProbationAreaGenerator.DEFAULT.id))
+            .thenReturn(TeamGenerator.DEFAULT)
+        whenever(staffRepository.findByCodeAndTeamsId("N02UATU", TeamGenerator.DEFAULT.id))
+            .thenReturn(StaffGenerator.UNALLOCATED)
+        whenever(referenceDataRepository.findByCodeAndSetName("AUT", "POM ALLOCATION REASON"))
+            .thenReturn(ReferenceDataGenerator.generate("TEST", ReferenceDataSetGenerator.generate("POM ALLOCATION REASON")))
+        whenever(contactTypeRepository.findByCode(ContactType.Code.PRISON_MANAGER_AUTOMATIC_TRANSFER.value))
+            .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.PRISON_MANAGER_AUTOMATIC_TRANSFER])
     }
 }
