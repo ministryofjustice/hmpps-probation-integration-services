@@ -43,6 +43,7 @@ class CaseService(
 fun ProbationCase.summary() = CaseSummary(
     crn,
     nomsId,
+    pnc,
     name(),
     dateOfBirth,
     gender?.description,

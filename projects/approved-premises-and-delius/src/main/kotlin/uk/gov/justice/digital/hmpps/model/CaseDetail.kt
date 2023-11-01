@@ -8,6 +8,7 @@ data class CaseSummaries(val cases: List<CaseSummary>)
 data class CaseSummary(
     val crn: String,
     val nomsId: String?,
+    val pnc: String?,
     val name: Name,
     val dateOfBirth: LocalDate,
     val gender: String?,

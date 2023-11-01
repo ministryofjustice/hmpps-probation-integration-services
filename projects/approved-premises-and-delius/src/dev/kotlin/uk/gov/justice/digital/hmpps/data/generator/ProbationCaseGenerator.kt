@@ -24,6 +24,7 @@ object ProbationCaseGenerator {
         "John",
         "Jack",
         "A5671YZ",
+        null,
         ReferenceDataGenerator.GENDER_MALE,
         ReferenceDataGenerator.ETHNICITY_WHITE,
         ReferenceDataGenerator.NATIONALITY_BRITISH,
@@ -42,6 +43,7 @@ object ProbationCaseGenerator {
         secondName: String? = null,
         thirdName: String? = null,
         nomsId: String? = null,
+        pnc: String? = null,
         gender: ReferenceData? = null,
         ethnicity: ReferenceData? = null,
         nationality: ReferenceData? = null,
@@ -54,6 +56,7 @@ object ProbationCaseGenerator {
     ) = ProbationCase(
         crn,
         nomsId,
+        pnc,
         forename,
         secondName,
         thirdName,

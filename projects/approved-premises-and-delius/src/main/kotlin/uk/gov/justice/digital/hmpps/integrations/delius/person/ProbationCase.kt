@@ -26,6 +26,9 @@ class ProbationCase(
     @Column(name = "noms_number", columnDefinition = "char(7)")
     val nomsId: String?,
 
+    @Column(name = "pnc_number", columnDefinition = "char(13)")
+    val pnc: String?,
+
     @Column(name = "first_name")
     val forename: String,
 
