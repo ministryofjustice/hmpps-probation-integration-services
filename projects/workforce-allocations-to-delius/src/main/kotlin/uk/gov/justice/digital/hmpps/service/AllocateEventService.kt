@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.datasource.OptimisationContext
+import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -33,7 +33,8 @@ class AllocateEventService(
     private val allocationValidator: AllocationValidator,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
-    private val transferReasonRepository: TransferReasonRepository
+    private val transferReasonRepository: TransferReasonRepository,
+    private val optimisationTables: OptimisationTables
 ) : ManagerService<OrderManager>(auditedInteractionService, orderManagerRepository) {
 
     @Transactional
@@ -43,7 +44,7 @@ class AllocateEventService(
 
             it["offenderId"] = event.person.id
             it["eventId"] = event.id
-            OptimisationContext.offenderId.set(event.person.id)
+            optimisationTables.rebuild(event.person.id)
 
             if (!event.active) throw NotActiveException("Event", "number", allocationDetail.eventNumber)
 

@@ -16,6 +16,7 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -64,6 +65,9 @@ internal class AllocatePersonServiceTest {
 
     @Mock
     private lateinit var responsibleOfficerRepository: ResponsibleOfficerRepository
+
+    @Mock
+    private lateinit var optimisationTables: OptimisationTables
 
     @InjectMocks
     private lateinit var allocatePersonService: AllocatePersonService

@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.tier
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.datasource.OptimisationContext
+import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
@@ -35,14 +35,15 @@ class TierService(
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
     private val contactTypeRepository: ContactTypeRepository,
-    private val telemetryService: TelemetryService
+    private val telemetryService: TelemetryService,
+    private val optimisationTables: OptimisationTables
 ) {
     @Transactional
     fun updateTier(crn: String, tierCalculation: TierCalculation) {
         val person = personRepository.findByCrnAndSoftDeletedIsFalse(crn) ?: return let {
             telemetryService.trackEvent("PersonNotFound", tierCalculation.telemetryProperties(crn))
         }
-        OptimisationContext.offenderId.set(person.id)
+        optimisationTables.rebuild(person.id)
         val tier = referenceDataRepository.getByCodeAndSetName("U${tierCalculation.tierScore}", "TIER")
         val changeReason = referenceDataRepository.getByCodeAndSetName("ATS", "TIER CHANGE REASON")
         val latestTierChangeDate = managementTierRepository.findFirstByIdPersonIdOrderByIdDateChangedDesc(person.id)?.id?.dateChanged

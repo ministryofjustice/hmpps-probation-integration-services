@@ -4,7 +4,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.datasource.OptimisationContext
+import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -32,7 +32,8 @@ class AllocateRequirementService(
     private val allocationValidator: AllocationValidator,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
-    private val transferReasonRepository: TransferReasonRepository
+    private val transferReasonRepository: TransferReasonRepository,
+    private val optimisationTables: OptimisationTables
 ) : ManagerService<RequirementManager>(auditedInteractionService, requirementManagerRepository) {
 
     @Transactional
@@ -44,7 +45,7 @@ class AllocateRequirementService(
             it["offenderId"] = requirement.person.id
             it["eventId"] = requirement.disposal.event.id
             it["requirementId"] = requirement.id
-            OptimisationContext.offenderId.set(requirement.person.id)
+            optimisationTables.rebuild(requirement.person.id)
 
             if (requirement.person.crn != crn) {
                 throw ConflictException("Requirement ${allocationDetail.requirementId} not for $crn")

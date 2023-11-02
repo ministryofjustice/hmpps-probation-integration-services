@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.datasource.OptimisationContext
+import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -31,7 +31,8 @@ class AllocatePersonService(
     private val allocationValidator: AllocationValidator,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
-    private val responsibleOfficerRepository: ResponsibleOfficerRepository
+    private val responsibleOfficerRepository: ResponsibleOfficerRepository,
+    private val optimisationTables: OptimisationTables
 ) : ManagerService<PersonManager>(auditedInteractionService, personManagerRepository) {
 
     @Transactional
@@ -41,7 +42,7 @@ class AllocatePersonService(
                 ?: throw NotFoundException("Person", "crn", allocationDetail.crn)
 
             it["offenderId"] = personId
-            OptimisationContext.offenderId.set(personId)
+            optimisationTables.rebuild(personId)
 
             val activeOffenderManager = personManagerRepository.findActiveManager(
                 personId,

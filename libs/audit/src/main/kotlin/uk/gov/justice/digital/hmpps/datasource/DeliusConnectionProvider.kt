@@ -17,16 +17,7 @@ open class DeliusConnectionProvider : DatasourceConnectionProviderImpl() {
     }
 
     override fun closeConnection(connection: Connection) {
-        if (OptimisationContext.offenderId.get() != null) {
-            connection.prepareStatement("call PKG_TRIGGERSUPPORT.PROCREBUILDOPTTABLES(${OptimisationContext.offenderId.get()})")
-                .use {
-                    it.execute()
-                }
-            OptimisationContext.offenderId.set(null)
-        }
-        connection.prepareStatement("call PKG_VPD_CTX.CLEAR_CLIENT_IDENTIFIER()").use {
-            it.execute()
-        }
+        connection.prepareStatement("call PKG_VPD_CTX.CLEAR_CLIENT_IDENTIFIER()").use { it.execute() }
         super.closeConnection(connection)
     }
 }

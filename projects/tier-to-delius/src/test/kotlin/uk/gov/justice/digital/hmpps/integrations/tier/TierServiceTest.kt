@@ -15,6 +15,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
@@ -56,6 +57,8 @@ internal class TierServiceTest {
     @Mock lateinit var contactTypeRepository: ContactTypeRepository
 
     @Mock lateinit var telemetryService: TelemetryService
+
+    @Mock lateinit var optimisationTables: OptimisationTables
 
     @InjectMocks lateinit var tierService: TierService
 
