@@ -21,7 +21,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.getByCode
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.getNsiTransferReason
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.referralCompleted
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
@@ -36,7 +35,6 @@ class NsiService(
     private val nsiTypeRepository: NsiTypeRepository,
     private val nsiStatusRepository: NsiStatusRepository,
     private val nsiManagerRepository: NsiManagerRepository,
-    private val personRepository: PersonRepository,
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
     private val transferReasonRepository: TransferReasonRepository,
@@ -53,56 +51,53 @@ class NsiService(
     ) {
         val externalReference = Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
         nsiRepository.findByPersonIdAndExternalReference(person.id, externalReference) ?: run {
-            personRepository.findForUpdate(person.id)
-            nsiRepository.findByPersonIdAndExternalReference(person.id, externalReference) ?: run {
-                val staff = staffRepository.getByCode(details.keyWorker.staffCode)
-                val nsi = nsiRepository.save(
-                    Nsi(
-                        person = person,
-                        type = nsiTypeRepository.getByCode(NsiTypeCode.APPROVED_PREMISES_RESIDENCE.code),
-                        status = nsiStatusRepository.getByCode(NsiStatusCode.IN_RESIDENCE.code),
-                        referralDate = details.applicationSubmittedOn,
-                        expectedStartDate = details.arrivedAt.toLocalDate(),
-                        actualStartDate = details.arrivedAt,
-                        expectedEndDate = details.expectedDepartureOn,
-                        notes = listOfNotNull(
-                            details.notes,
-                            "For more details, click here: ${details.applicationUrl}"
-                        ).joinToString(System.lineSeparator() + System.lineSeparator()),
-                        externalReference = externalReference
-                    )
-                )
-                val team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode)
-                nsiManagerRepository.save(
-                    NsiManager(
-                        nsi = nsi,
-                        staff = staff,
-                        team = team,
-                        probationArea = team.probationArea,
-                        startDate = details.arrivedAt,
-                        transferReason = transferReasonRepository.getNsiTransferReason()
-                    )
-                )
-                addressService.updateMainAddress(person, details, ap)
-                contactService.createContact(
-                    ContactDetails(
-                        date = details.arrivedAt,
-                        type = ContactTypeCode.ARRIVED,
-                        locationCode = ap.locationCode(),
-                        description = "Arrived at ${details.premises.name}",
-                        notes = listOfNotNull(
-                            details.notes,
-                            "For more details, click here: ${details.applicationUrl}"
-                        ).joinToString(System.lineSeparator() + System.lineSeparator())
-                    ),
+            val staff = staffRepository.getByCode(details.keyWorker.staffCode)
+            val nsi = nsiRepository.save(
+                Nsi(
                     person = person,
-                    eventId = eventRepository.getByEventNumber(person.id, details.eventNumber).id,
+                    type = nsiTypeRepository.getByCode(NsiTypeCode.APPROVED_PREMISES_RESIDENCE.code),
+                    status = nsiStatusRepository.getByCode(NsiStatusCode.IN_RESIDENCE.code),
+                    referralDate = details.applicationSubmittedOn,
+                    expectedStartDate = details.arrivedAt.toLocalDate(),
+                    actualStartDate = details.arrivedAt,
+                    expectedEndDate = details.expectedDepartureOn,
+                    notes = listOfNotNull(
+                        details.notes,
+                        "For more details, click here: ${details.applicationUrl}"
+                    ).joinToString(System.lineSeparator() + System.lineSeparator()),
+                    externalReference = externalReference
+                )
+            )
+            val team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode)
+            nsiManagerRepository.save(
+                NsiManager(
+                    nsi = nsi,
                     staff = staff,
                     team = team,
-                    probationAreaCode = ap.probationArea.code
+                    probationArea = team.probationArea,
+                    startDate = details.arrivedAt,
+                    transferReason = transferReasonRepository.getNsiTransferReason()
                 )
-                referralService.personArrived(person, ap, details)
-            }
+            )
+            addressService.updateMainAddress(person, details, ap)
+            contactService.createContact(
+                ContactDetails(
+                    date = details.arrivedAt,
+                    type = ContactTypeCode.ARRIVED,
+                    locationCode = ap.locationCode(),
+                    description = "Arrived at ${details.premises.name}",
+                    notes = listOfNotNull(
+                        details.notes,
+                        "For more details, click here: ${details.applicationUrl}"
+                    ).joinToString(System.lineSeparator() + System.lineSeparator())
+                ),
+                person = person,
+                eventId = eventRepository.getByEventNumber(person.id, details.eventNumber).id,
+                staff = staff,
+                team = team,
+                probationAreaCode = ap.probationArea.code
+            )
+            referralService.personArrived(person, ap, details)
         }
     }
 
