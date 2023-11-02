@@ -281,23 +281,23 @@ components:
             seconds:
               type: integer
               format: int64
+            zero:
+              type: boolean
             nano:
               type: integer
               format: int32
             negative:
-              type: boolean
-            zero:
               type: boolean
             units:
               type: array
               items:
                 type: object
                 properties:
-                  dateBased:
+                  durationEstimated:
                     type: boolean
                   timeBased:
                     type: boolean
-                  durationEstimated:
+                  dateBased:
                     type: boolean
         staff:
           $ref: '#/components/schemas/Staff'
