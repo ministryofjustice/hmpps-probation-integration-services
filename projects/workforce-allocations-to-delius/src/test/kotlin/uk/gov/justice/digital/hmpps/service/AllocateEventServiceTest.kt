@@ -14,6 +14,7 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -53,6 +54,9 @@ internal class AllocateEventServiceTest {
 
     @Mock
     private lateinit var transferReasonRepository: TransferReasonRepository
+
+    @Mock
+    private lateinit var optimisationTables: OptimisationTables
 
     @InjectMocks
     private lateinit var allocateEventService: AllocateEventService

@@ -70,12 +70,4 @@ class DeliusConnectionProviderTest {
         verify(preparedStatement).execute()
         verify(preparedStatement).close()
     }
-
-    @Test
-    fun `when offender id in optimisation context sp called`() {
-        OptimisationContext.offenderId.set(765)
-        whenever(connection.prepareStatement(anyString())).thenReturn(preparedStatement)
-        deliusConnectionProvider.closeConnection(connection)
-        verify(connection, times(2)).prepareStatement(anyString())
-    }
 }
