@@ -13,9 +13,9 @@ to make an Approved Premises application and ensuring the Probation
 Practitioner has an up-to-date view of activity in the Approved Premises
 service when interacting with the probation case via Delius.
 
-## Context Maps
+## Context Map
 
-![Context Maps](./tech-docs/source/img/approved-premises-and-delius-context-maps.png)
+![Context Map](./tech-docs/source/img/approved-premises-and-delius-context-map.svg)
 
 ## Interfaces
 
