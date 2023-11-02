@@ -20,9 +20,29 @@ channels:
     subscribe:
       operationId: approved-premises.application.submitted
       message:
-        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/approved_premises/application_submitted.yml
+        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/approved-premises/application-submitted.yml
   hmpps-domain-events/approved-premises-and-delius/application-assessed:
     subscribe:
       operationId: approved-premises.application.assessed
       message:
-        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/approved_premises/application_assessed.yml
+        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/approved-premises/application-assessed.yml
+  hmpps-domain-events/approved-premises-and-delius/application-withdrawn:
+    subscribe:
+      operationId: approved-premises.application.withdrawn
+      message:
+        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/approved-premises/application-withdrawn.yml
+  hmpps-domain-events/approved-premises-and-delius/booking-made:
+    subscribe:
+      operationId: approved-premises.booking.made
+      message:
+        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/approved-premises/booking-made.yml
+  hmpps-domain-events/approved-premises-and-delius/booking-not-made:
+    subscribe:
+      operationId: approved-premises.booking.not-made
+      message:
+        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/approved-premises/booking-not-made.yml
+  hmpps-domain-events/approved-premises-and-delius/booking-cancelled:
+    subscribe:
+      operationId: approved-premises.booking.cancelled
+      message:
+        $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/approved-premises/booking-cancelled.yml
