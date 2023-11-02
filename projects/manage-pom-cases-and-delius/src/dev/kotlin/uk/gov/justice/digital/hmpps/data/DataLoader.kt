@@ -89,8 +89,8 @@ class DataLoader(
         )
 
         districtRepository.save(ProviderGenerator.DEFAULT_DISTRICT)
-        teamRepository.saveAll(PersonManagerGenerator.ALL.map { it.team } + ProviderGenerator.POM_TEAM)
-        val staffMap = staffRepository.saveAll(PersonManagerGenerator.ALL.map { it.staff }).associateBy { it.code }
+        teamRepository.saveAll(PersonManagerGenerator.ALL.map { it.team } + ProviderGenerator.POM_TEAM + ProviderGenerator.UNALLOCATED_TEAM)
+        val staffMap = staffRepository.saveAll(PersonManagerGenerator.ALL.map { it.staff } + ProviderGenerator.UNALLOCATED_STAFF).associateBy { it.code }
         UserGenerator.DEFAULT_STAFF_USER = staffUserRepository.save(
             StaffUser(
                 UserGenerator.DEFAULT_STAFF_USER.username,

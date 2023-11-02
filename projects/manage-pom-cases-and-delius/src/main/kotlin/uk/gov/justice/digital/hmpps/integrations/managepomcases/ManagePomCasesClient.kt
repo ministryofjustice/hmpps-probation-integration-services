@@ -22,10 +22,16 @@ data class Handover(
     @JsonAlias("handoverStartDate") val startDate: LocalDate?
 )
 
+sealed interface AllocationResponse
+
 data class PomAllocation(
     val manager: Name,
     val prison: Prison
-)
+) : AllocationResponse
+
+data object PomDeallocated : AllocationResponse
+
+data object PomNotAllocated : AllocationResponse
 
 data class Prison(
     val code: String

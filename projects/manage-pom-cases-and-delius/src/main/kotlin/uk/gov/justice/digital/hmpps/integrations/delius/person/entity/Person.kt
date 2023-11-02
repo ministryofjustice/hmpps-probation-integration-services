@@ -4,6 +4,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.LockModeType
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
@@ -11,6 +12,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Manager
@@ -92,6 +94,10 @@ interface PersonRepository : JpaRepository<Person, Long> {
 
     @Query("select p.id from Person p where p.nomsId = :nomsId and p.softDeleted = false")
     fun findIdFromNomsId(nomsId: String): Long?
+
+    @Lock(LockModeType.PESSIMISTIC_READ)
+    @Query("select p.id from Person p where p.id = :personId")
+    fun findForUpdate(personId: Long): Long
 }
 
 fun PersonRepository.getByNomsId(nomsId: String) =

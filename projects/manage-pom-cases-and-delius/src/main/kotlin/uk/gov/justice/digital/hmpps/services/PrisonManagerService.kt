@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationArea
@@ -24,12 +25,13 @@ import java.time.ZonedDateTime
 
 @Service
 class PrisonManagerService(
-    private val staffService: StaffService,
     private val probationAreaRepository: ProbationAreaRepository,
     private val teamRepository: TeamRepository,
+    private val staffService: StaffService,
     private val prisonManagerRepository: PrisonManagerRepository,
     private val referenceDataRepository: ReferenceDataRepository,
-    private val contactService: ContactService
+    private val contactService: ContactService,
+    private val personRepository: PersonRepository
 ) {
 
     @Transactional
@@ -37,11 +39,28 @@ class PrisonManagerService(
         val probationArea = probationAreaRepository.getByNomisCdeCode(allocation.prison.code)
         val team = teamRepository.getByCode(probationArea.code + Team.POM_SUFFIX)
         val staff = getStaff(probationArea, team, allocation.manager, allocationDate)
+        personRepository.findForUpdate(personId)
         val currentPom = prisonManagerRepository.findActiveManagerAtDate(personId, allocationDate)
+        val newEndDate = currentPom?.endDate
+            ?: prisonManagerRepository.findFirstManagerAfterDate(personId, allocationDate).firstOrNull()?.date
         val newPom = currentPom.changeTo(personId, allocationDate, probationArea, team, staff)
         newPom?.let { new ->
             currentPom?.let { old -> prisonManagerRepository.saveAndFlush(old) }
+            new.endDate = newEndDate
             prisonManagerRepository.save(new)
+        }
+    }
+
+    @Transactional
+    fun deallocatePrisonManager(personId: Long, deallocationDate: ZonedDateTime) {
+        val currentPom = prisonManagerRepository.findActiveManagerAtDate(personId, deallocationDate)
+        if (currentPom?.isUnallocated() == false) {
+            val probationArea = currentPom.probationArea
+            val team = teamRepository.getByCode(probationArea.code + Team.UNALLOCATED_SUFFIX)
+            val staff = staffService.getStaffByCode(team.code + "U")
+            val newPom = currentPom.changeTo(personId, deallocationDate, probationArea, team, staff)
+            prisonManagerRepository.saveAndFlush(currentPom)
+            prisonManagerRepository.save(newPom!!)
         }
     }
 
@@ -91,7 +110,7 @@ class PrisonManagerService(
     ) = if (this?.hasChanged(probationArea, team, staff) != false) {
         val allocationReasonCode =
             when {
-                this == null -> PrisonManager.AllocationReasonCode.AUTO
+                this == null || staff.isUnallocated() -> PrisonManager.AllocationReasonCode.AUTO
                 this.probationArea.id == probationArea.id -> PrisonManager.AllocationReasonCode.INTERNAL
                 else -> PrisonManager.AllocationReasonCode.EXTERNAL
             }

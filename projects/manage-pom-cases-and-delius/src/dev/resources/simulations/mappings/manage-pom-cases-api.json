@@ -42,6 +42,19 @@
     {
       "request": {
         "method": "GET",
+        "url": "/api/pom-allocation/A0123BY/0"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 404,
+        "bodyFileName": "not-yet-allocation.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/api/pom-allocation/A0123BY/1"
       },
       "response": {
@@ -63,6 +76,19 @@
         },
         "status": 200,
         "bodyFileName": "pom-reallocated.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/api/pom-allocation/A0123BY/3"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 404,
+        "bodyFileName": "deallocation.json"
       }
     }
   ]

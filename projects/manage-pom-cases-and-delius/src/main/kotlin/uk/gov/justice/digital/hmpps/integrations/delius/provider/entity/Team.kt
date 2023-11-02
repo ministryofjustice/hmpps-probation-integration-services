@@ -32,6 +32,7 @@ class Team(
 ) {
     companion object {
         val POM_SUFFIX = "POM"
+        val UNALLOCATED_SUFFIX = "ALL"
     }
 }
 

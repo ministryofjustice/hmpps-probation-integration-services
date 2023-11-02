@@ -10,7 +10,9 @@ import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
+import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -18,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManagerRepository
@@ -27,7 +30,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRep
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import java.time.Duration
 import java.time.ZonedDateTime
 import kotlin.jvm.optionals.getOrNull
 
@@ -49,13 +51,33 @@ internal class AllocationMessagingIntegrationTest {
     @SpyBean
     lateinit var staffRepository: StaffRepository
 
-    @Autowired
+    @SpyBean
     lateinit var prisonManagerRepository: PrisonManagerRepository
 
     @Autowired
     lateinit var contactRepository: ContactRepository
 
     @Order(1)
+    @Test
+    fun `no change if not yet ready to allocate`() {
+        val notification = prepNotification(
+            notification("not-yet-allocation"),
+            wireMockServer.port()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(prisonManagerRepository, never()).save(any())
+        verify(telemetryService).trackEvent(
+            "NotReadyToAllocate",
+            mapOf(
+                "nomsId" to "A0123BY",
+                "allocationDate" to "09/05/2023 14:25:19"
+            )
+        )
+    }
+
+    @Order(2)
     @Test
     fun `allocate first POM successfully`() {
         val notification = prepNotification(
@@ -80,16 +102,16 @@ internal class AllocationMessagingIntegrationTest {
         assertThat(contacts.map { it.type.code }, hasItems(ContactType.Code.POM_AUTO_ALLOCATION.value))
 
         verify(telemetryService).trackEvent(
-            "POM Allocated",
+            "PomAllocated",
             mapOf(
                 "prisonId" to "SWI",
                 "nomsId" to "A0123BY",
-                "allocationDate" to "2023-05-09"
+                "allocationDate" to "09/05/2023 14:25:19"
             )
         )
     }
 
-    @Order(2)
+    @Order(3)
     @Test
     fun `reallocate POM successfully`() {
         // add RO to existing pom to test RO behaviour
@@ -104,7 +126,7 @@ internal class AllocationMessagingIntegrationTest {
             wireMockServer.port()
         )
 
-        channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofSeconds(180))
+        channelManager.getChannel(queueName).publishAndWait(notification)
 
         val captor = argumentCaptor<Staff>()
         verify(staffRepository).save(captor.capture())
@@ -133,11 +155,53 @@ internal class AllocationMessagingIntegrationTest {
         )
 
         verify(telemetryService).trackEvent(
-            "POM Allocated",
+            "PomAllocated",
             mapOf(
                 "prisonId" to "SWI",
                 "nomsId" to "A0123BY",
-                "allocationDate" to "2023-10-09"
+                "allocationDate" to "09/10/2023 14:25:19"
+            )
+        )
+    }
+
+    @Order(4)
+    @Test
+    fun `deallocate POM successfully`() {
+        val existingPom = prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.DEFAULT.id, ZonedDateTime.now())!!
+
+        val notification = prepNotification(
+            notification("deallocation"),
+            wireMockServer.port()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        verify(staffRepository, never()).save(any())
+
+        val prisonManager = prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.DEFAULT.id, ZonedDateTime.now())
+        assertThat(prisonManager?.allocationReason?.code, equalTo("AUT"))
+        assertThat(prisonManager?.staff?.code, equalTo(ProviderGenerator.UNALLOCATED_STAFF.code))
+        assertThat(prisonManager?.staff?.forename, equalTo(ProviderGenerator.UNALLOCATED_STAFF.forename))
+        assertThat(prisonManager?.staff?.surname, equalTo(ProviderGenerator.UNALLOCATED_STAFF.surname))
+
+        val previousPom = prisonManagerRepository.findById(existingPom.id).getOrNull()
+        assertNotNull(previousPom?.endDate)
+        assertNotNull(previousPom?.responsibleOfficer?.endDate)
+
+        val contacts = contactRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
+        assertThat(
+            contacts.map { it.type.code },
+            hasItems(
+                ContactType.Code.POM_AUTO_ALLOCATION.value,
+                ContactType.Code.RESPONSIBLE_OFFICER_CHANGE.value
+            )
+        )
+
+        verify(telemetryService).trackEvent(
+            "PomDeallocated",
+            mapOf(
+                "nomsId" to "A0123BY",
+                "allocationDate" to "10/10/2023 15:25:19"
             )
         )
     }
