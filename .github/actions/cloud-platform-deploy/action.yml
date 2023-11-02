@@ -26,6 +26,9 @@ inputs:
   token:
     description: The KUBE_TOKEN
     required: true
+  github_token:
+    description: A GitHub token, to pull the IP allow list groups
+    required: true
 
 runs:
   using: composite
@@ -64,7 +67,10 @@ runs:
           --set 'generic-service.image.tag=${{ inputs.version }}' \
           --set 'version=${{ inputs.version }}' \
           --timeout 10m \
+          --values <(curl "$(gh api '/repos/ministryofjustice/hmpps-ip-allowlists/contents/ip-allowlist-groups.yaml' | jq -r '.download_url')") \
           --values templates/helm-defaults.yml \
           --values 'projects/${{ inputs.project }}/deploy/values.yaml' \
           --values 'projects/${{ inputs.project }}/deploy/${{ steps.env.outputs.values-file }}' \
           --wait
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
