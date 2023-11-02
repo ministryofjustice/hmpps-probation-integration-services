@@ -45,6 +45,19 @@ class PrisonManagerService(
         }
     }
 
+    @Transactional
+    fun deallocatePrisonManager(personId: Long, deallocationDate: ZonedDateTime) {
+        val currentPom = prisonManagerRepository.findActiveManagerAtDate(personId, deallocationDate)
+        if (currentPom?.isUnallocated() == false) {
+            val probationArea = currentPom.probationArea
+            val team = teamRepository.getByCode(probationArea.code + Team.UNALLOCATED_SUFFIX)
+            val staff = staffService.getStaffByCode(team.code + "U")
+            val newPom = currentPom.changeTo(personId, deallocationDate, probationArea, team, staff)
+            prisonManagerRepository.saveAndFlush(currentPom)
+            newPom?.let { prisonManagerRepository.save(it) }
+        }
+    }
+
     private fun getStaff(
         probationArea: ProbationArea,
         team: Team,
@@ -91,7 +104,7 @@ class PrisonManagerService(
     ) = if (this?.hasChanged(probationArea, team, staff) != false) {
         val allocationReasonCode =
             when {
-                this == null -> PrisonManager.AllocationReasonCode.AUTO
+                this == null || staff.isUnallocated() -> PrisonManager.AllocationReasonCode.AUTO
                 this.probationArea.id == probationArea.id -> PrisonManager.AllocationReasonCode.INTERNAL
                 else -> PrisonManager.AllocationReasonCode.EXTERNAL
             }

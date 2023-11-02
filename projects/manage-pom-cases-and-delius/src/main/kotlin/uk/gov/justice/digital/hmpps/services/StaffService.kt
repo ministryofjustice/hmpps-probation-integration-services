@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRep
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffTeam
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffTeamRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.getByCode
 import java.time.ZonedDateTime
 
 @Service
@@ -48,4 +49,6 @@ class StaffService(
             staffName.forename,
             staffName.surname
         )
+
+    fun getStaffByCode(code: String) = staffRepository.getByCode(code)
 }

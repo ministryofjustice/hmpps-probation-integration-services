@@ -98,6 +98,8 @@ class PrisonManager(
     @Column(nullable = false)
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
 
+    fun isUnallocated() = staff.code.endsWith("U")
+
     enum class AllocationReasonCode(val value: String, val ctc: ContactType.Code) {
         AUTO("AUT", ContactType.Code.POM_AUTO_ALLOCATION),
         INTERNAL("INA", ContactType.Code.POM_INTERNAL_ALLOCATION),
