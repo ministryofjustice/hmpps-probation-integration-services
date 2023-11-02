@@ -208,7 +208,6 @@ internal class ApprovedPremisesServiceTest {
             nsiTypeRepository,
             nsiStatusRepository,
             nsiManagerRepository,
-            personRepository,
             teamRepository,
             staffRepository,
             transferReasonRepository,
