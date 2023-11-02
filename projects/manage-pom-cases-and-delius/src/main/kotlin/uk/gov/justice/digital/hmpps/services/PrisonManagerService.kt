@@ -39,8 +39,14 @@ class PrisonManagerService(
         val staff = getStaff(probationArea, team, allocation.manager, allocationDate)
         val currentPom = prisonManagerRepository.findActiveManagerAtDate(personId, allocationDate)
         val newPom = currentPom.changeTo(personId, allocationDate, probationArea, team, staff)
+        val newEndDate = if (currentPom == null) {
+            prisonManagerRepository.findFirstManagerAfterDate(personId, allocationDate).firstOrNull()?.date
+        } else {
+            null
+        }
         newPom?.let { new ->
             currentPom?.let { old -> prisonManagerRepository.saveAndFlush(old) }
+            new.endDate = newEndDate
             prisonManagerRepository.save(new)
         }
     }

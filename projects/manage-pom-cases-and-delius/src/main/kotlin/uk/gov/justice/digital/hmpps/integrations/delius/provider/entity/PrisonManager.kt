@@ -18,6 +18,8 @@ import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -164,4 +166,19 @@ interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
         """
     )
     fun findActiveManagerAtDate(personId: Long, date: ZonedDateTime): PrisonManager?
+
+    @Query(
+        """
+            select pm from PrisonManager pm
+            where pm.personId = :personId
+            and pm.softDeleted = false
+            and pm.date > :date
+            order by pm.date asc
+        """
+    )
+    fun findFirstManagerAfterDate(
+        personId: Long,
+        date: ZonedDateTime,
+        pageable: Pageable = PageRequest.of(0, 1)
+    ): List<PrisonManager>
 }
