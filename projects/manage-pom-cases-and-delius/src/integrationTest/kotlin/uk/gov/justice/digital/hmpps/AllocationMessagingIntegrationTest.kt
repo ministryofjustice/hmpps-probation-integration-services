@@ -19,12 +19,12 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.data.repository.findByIdOrNull
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
@@ -117,8 +117,7 @@ internal class AllocationMessagingIntegrationTest {
         // add RO to existing pom to test RO behaviour
         val existingPom =
             prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.DEFAULT.id, ZonedDateTime.now())!!
-        existingPom.responsibleOfficer =
-            ResponsibleOfficer(existingPom.personId, existingPom, existingPom.date)
+        existingPom.makeResponsibleOfficer()
         prisonManagerRepository.save(existingPom)
 
         val notification = prepNotification(
@@ -138,12 +137,13 @@ internal class AllocationMessagingIntegrationTest {
         assertThat(prisonManager?.allocationReason?.code, equalTo("INA"))
         assertThat(prisonManager?.staff?.forename, equalTo("James"))
         assertThat(prisonManager?.staff?.surname, equalTo("Brown"))
-        assertNotNull(prisonManager?.responsibleOfficer)
-        assertNull(prisonManager?.responsibleOfficer?.endDate)
+        assertNotNull(prisonManager?.responsibleOfficer())
+        assertNull(prisonManager?.responsibleOfficer()?.endDate)
 
-        val previousPom = prisonManagerRepository.findById(existingPom.id).getOrNull()
+        val previousPom = prisonManagerRepository.findByIdOrNull(existingPom.id)
         assertNotNull(previousPom?.endDate)
-        assertNotNull(previousPom?.responsibleOfficer?.endDate)
+        previousPom?.responsibleOfficers?.forEach { assertNotNull(it.endDate) }
+        assertNull(previousPom?.responsibleOfficer())
 
         val contacts = contactRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
         assertThat(
@@ -167,7 +167,8 @@ internal class AllocationMessagingIntegrationTest {
     @Order(4)
     @Test
     fun `deallocate POM successfully`() {
-        val existingPom = prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.DEFAULT.id, ZonedDateTime.now())!!
+        val existingPom =
+            prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.DEFAULT.id, ZonedDateTime.now())!!
 
         val notification = prepNotification(
             notification("deallocation"),
@@ -178,7 +179,8 @@ internal class AllocationMessagingIntegrationTest {
 
         verify(staffRepository, never()).save(any())
 
-        val prisonManager = prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.DEFAULT.id, ZonedDateTime.now())
+        val prisonManager =
+            prisonManagerRepository.findActiveManagerAtDate(PersonGenerator.DEFAULT.id, ZonedDateTime.now())
         assertThat(prisonManager?.allocationReason?.code, equalTo("AUT"))
         assertThat(prisonManager?.staff?.code, equalTo(ProviderGenerator.UNALLOCATED_STAFF.code))
         assertThat(prisonManager?.staff?.forename, equalTo(ProviderGenerator.UNALLOCATED_STAFF.forename))
@@ -186,7 +188,8 @@ internal class AllocationMessagingIntegrationTest {
 
         val previousPom = prisonManagerRepository.findById(existingPom.id).getOrNull()
         assertNotNull(previousPom?.endDate)
-        assertNotNull(previousPom?.responsibleOfficer?.endDate)
+        previousPom?.responsibleOfficers?.forEach { assertNotNull(it.endDate) }
+        assertNull(previousPom?.responsibleOfficer())
 
         val contacts = contactRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
         assertThat(
