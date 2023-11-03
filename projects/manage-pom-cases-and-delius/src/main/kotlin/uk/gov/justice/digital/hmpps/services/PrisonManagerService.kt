@@ -11,7 +11,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonMa
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.PrisonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationArea
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ProbationAreaRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.TeamRepository
@@ -123,15 +122,14 @@ class PrisonManagerService(
             allocationReason = referenceDataRepository.pomAllocationReason(allocationReasonCode.value),
             date = dateTime,
             staff = staff,
-            team = team
+            team = team,
+            responsibleOfficers = mutableListOf()
         )
         val notes = newPom.allocationNotes() + (this?.transferNotes() ?: "")
         contactService.createContact(personId, allocationReasonCode.ctc, dateTime, newPom, notes)
         this?.apply {
-            endDate = dateTime
-            responsibleOfficer?.also {
-                it.endDate = dateTime
-                newPom.responsibleOfficer = ResponsibleOfficer(personId, newPom, dateTime)
+            responsibleOfficer()?.also {
+                newPom.makeResponsibleOfficer()
                 contactService.createContact(
                     personId,
                     ContactType.Code.RESPONSIBLE_OFFICER_CHANGE,
@@ -146,6 +144,7 @@ class PrisonManagerService(
                     """.trimMargin()
                 )
             }
+            endDate = dateTime
         }
         newPom
     } else {

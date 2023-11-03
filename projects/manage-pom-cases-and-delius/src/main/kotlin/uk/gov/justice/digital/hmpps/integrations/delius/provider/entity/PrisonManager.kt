@@ -4,16 +4,16 @@ import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
+import jakarta.persistence.OneToMany
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.persistence.Version
-import org.hibernate.annotations.Where
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -67,6 +67,9 @@ class PrisonManager(
     @JoinColumn(name = "probation_area_id", nullable = false)
     override val probationArea: ProbationArea,
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "prisonManager", cascade = [CascadeType.PERSIST, CascadeType.MERGE])
+    val responsibleOfficers: MutableList<ResponsibleOfficer> = mutableListOf(),
+
     @Column(columnDefinition = "number", nullable = false)
     val softDeleted: Boolean = false
 ) : Manager {
@@ -75,14 +78,11 @@ class PrisonManager(
         set(value) {
             field = value
             active = value == null
+            responsibleOfficer()?.endDate = value
         }
 
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     var active: Boolean = true
-
-    @OneToOne(mappedBy = "prisonManager", cascade = [CascadeType.PERSIST, CascadeType.MERGE])
-    @Where(clause = "end_date is null")
-    var responsibleOfficer: ResponsibleOfficer? = null
 
     @CreatedBy
     @Column(nullable = false, updatable = false)
@@ -101,6 +101,12 @@ class PrisonManager(
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
 
     fun isUnallocated() = staff.code.endsWith("U")
+
+    fun responsibleOfficer(): ResponsibleOfficer? = responsibleOfficers.firstOrNull { it.endDate == null }
+
+    fun makeResponsibleOfficer() {
+        responsibleOfficers.add(ResponsibleOfficer(personId, this, date))
+    }
 
     enum class AllocationReasonCode(val value: String, val ctc: ContactType.Code) {
         AUTO("AUT", ContactType.Code.POM_AUTO_ALLOCATION),
@@ -122,7 +128,7 @@ class ResponsibleOfficer(
     @Column(name = "offender_id")
     val personId: Long,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "PRISON_OFFENDER_MANAGER_ID")
     var prisonManager: PrisonManager?,
 
@@ -157,12 +163,11 @@ interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
     @Query(
         """
             select pm from PrisonManager pm
-            left join fetch pm.responsibleOfficer ro
+            left join fetch pm.responsibleOfficers ro
             where pm.personId = :personId
             and pm.softDeleted = false
             and pm.date <= :date
             and (pm.endDate is null or pm.endDate > :date)
-            and (ro is null or ro.endDate is null) 
         """
     )
     fun findActiveManagerAtDate(personId: Long, date: ZonedDateTime): PrisonManager?
