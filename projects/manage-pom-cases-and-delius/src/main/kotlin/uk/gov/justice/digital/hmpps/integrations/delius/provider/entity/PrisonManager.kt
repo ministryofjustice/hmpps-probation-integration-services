@@ -157,12 +157,11 @@ interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
     @Query(
         """
             select pm from PrisonManager pm
-            left join fetch pm.responsibleOfficer ro
+            left join fetch pm.responsibleOfficer ro on ro.endDate is null
             where pm.personId = :personId
             and pm.softDeleted = false
             and pm.date <= :date
             and (pm.endDate is null or pm.endDate > :date)
-            and (ro is null or ro.endDate is null) 
         """
     )
     fun findActiveManagerAtDate(personId: Long, date: ZonedDateTime): PrisonManager?
