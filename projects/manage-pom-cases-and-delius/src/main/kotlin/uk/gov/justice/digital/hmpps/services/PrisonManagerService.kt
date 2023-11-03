@@ -58,9 +58,12 @@ class PrisonManagerService(
             val probationArea = currentPom.probationArea
             val team = teamRepository.getByCode(probationArea.code + Team.UNALLOCATED_SUFFIX)
             val staff = staffService.getStaffByCode(team.code + "U")
-            val newPom = currentPom.changeTo(personId, deallocationDate, probationArea, team, staff)
+            val newEndDate = currentPom.endDate
+                ?: prisonManagerRepository.findFirstManagerAfterDate(personId, deallocationDate).firstOrNull()?.date
+            val newPom = currentPom.changeTo(personId, deallocationDate, probationArea, team, staff)!!
             prisonManagerRepository.saveAndFlush(currentPom)
-            prisonManagerRepository.save(newPom!!)
+            newPom.endDate = newEndDate
+            prisonManagerRepository.save(newPom)
         }
     }
 
