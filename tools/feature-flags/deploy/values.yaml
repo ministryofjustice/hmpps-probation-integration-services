@@ -46,25 +46,9 @@ generic-service:
     tlsSecretName: feature-flags-cert
 
   allowlist:
-    office: "217.33.148.210/32"
-    health-kick: "35.177.252.195/32"
-    mojvpn: "81.134.202.29/32"
-    global-protect: "35.176.93.186/32"
-    cloudplatform-live1-1: "35.178.209.113/32"
-    cloudplatform-live1-2: "3.8.51.207/32"
-    cloudplatform-live1-3: "35.177.252.54/32"
-    unilink-aovpn1: "194.75.210.216/29"
-    unilink-aovpn2: "83.98.63.176/29"
-    unilink-aovpn3: "78.33.10.50/31"
-    unilink-aovpn4: "78.33.10.52/30"
-    unilink-aovpn5: "78.33.10.56/30"
-    unilink-aovpn6: "78.33.10.60/32"
-    unilink-aovpn7: "78.33.32.99/32"
-    unilink-aovpn8: "78.33.32.100/30"
-    unilink-aovpn9: "78.33.32.104/30"
-    unilink-aovpn10: "78.33.32.108/32"
-    unilink-aovpn11: "217.138.45.109/32"
-    unilink-aovpn12: "217.138.45.110/32"
+    groups:
+      - internal
+      - unilink_staff
 
 generic-prometheus-alerts:
   targetApplication: feature-flags
