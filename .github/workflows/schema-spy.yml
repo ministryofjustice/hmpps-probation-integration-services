@@ -9,15 +9,22 @@ on:
 jobs:
   schema-spy:
     name: Schema Spy report generation
-    runs-on: moj-cloud-platform
+    runs-on: ubuntu-latest
     timeout-minutes: 240
+    environment: test
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/cloud-platform-auth
         with:
-          distribution: temurin
-          java-version: 8
-      - name: Run SchemaSpy
+          api: ${{ secrets.KUBE_ENV_API }}
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
+
+      - name: Generate report
+        run: tools/schema-spy/run.sh
         env:
           DB: ${{ secrets.SCHEMA_SPY_DB }}
           HOST: ${{ secrets.SCHEMA_SPY_HOST }}
@@ -25,22 +32,9 @@ jobs:
           SCHEMA: ${{ secrets.SCHEMA_SPY_SCHEMA }}
           USERNAME: ${{ secrets.SCHEMA_SPY_USERNAME }}
           PASSWORD: ${{ secrets.SCHEMA_SPY_PASSWORD }}
-        run: |
-          java -Xss4096k -Xmx2G -Xms2G -jar ./tools/schema-spy/schemaspy-6.1.0.jar -t orathin-service \
-                    -dp ./tools/schema-spy/ojdbc8.jar \
-                    -db "${DB}" \
-                    -host "${HOST}" \
-                    -port "${PORT}" \
-                    -s "${SCHEMA}" \
-                    -u "${USERNAME}" \
-                    -p "${PASSWORD}" \
-                    -cat "${SCHEMA}" \
-                    -I "^(^Z.*$|^.*[0-9]$|^PRF_.*$|^PERF_.*$|^MIS_.*$|^.*_MV$|^.*\\$.*$|^.*TRAINING.*$|^PDT_THREAD$|^CHANGE_CAPTURE$)$" \
-                    -vizjs \
-                    -o ./schema-spy-report
 
       - name: Publish HTML report
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: JamesIves/github-pages-deploy-action@a1ea191d508feb8485aceba848389d49f80ca2dc # v4.4.3
         with:
           folder: schema-spy-report
           target-folder: schema-spy-report
