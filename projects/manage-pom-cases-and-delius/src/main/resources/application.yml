@@ -16,7 +16,6 @@ spring:
           global_temporary:
             create_tables: false
             drop_tables: false
-    show-sql: true
   ldap:
     base: dc=moj,dc=com
     base-environment:
