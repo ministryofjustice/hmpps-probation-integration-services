@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.ReferralRepository
 import uk.gov.justice.digital.hmpps.model.ExistingReferrals
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 
@@ -28,9 +27,6 @@ class ReferralControllerIntegrationTest {
 
     @Autowired
     lateinit var objectMapper: ObjectMapper
-
-    @Autowired
-    lateinit var referralRepository: ReferralRepository
 
     @Test
     fun `existing referrals for a crn are returned successfully`() {

@@ -71,7 +71,7 @@ fun CommunityManager.team() = Team(team.code, team.description, Ldu(team.ldu.cod
 
 fun CaseOffence.asOffence() = Offence(description, date, main, eventNumber)
 
-fun Registration.asRegistration() = uk.gov.justice.digital.hmpps.model.Registration(type.description, date)
+fun Registration.asRegistration() = uk.gov.justice.digital.hmpps.model.Registration(type.code, type.description, date)
 fun Registration.asMappa() = MappaDetail(
     level?.code?.toMappaLevel(),
     level?.description,
