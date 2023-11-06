@@ -1,0 +1,9 @@
+database:
+  access:
+    username_key: /hdc-licences-and-delius/db-username
+    password_key: /hdc-licences-and-delius/db-password
+
+  audit:
+    username: HdcLicencesAndDelius
+    forename: Probation Integration # TODO change this to something meaningful for your service
+    surname: Service

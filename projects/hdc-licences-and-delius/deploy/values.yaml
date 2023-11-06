@@ -1,0 +1,22 @@
+# Common values
+generic-service:
+  nameOverride: hdc-licences-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/hdc-licences-and-delius
+
+  ingress:
+    tlsSecretName: hdc-licences-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    hdc-licences-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    hdc-licences-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+
+generic-prometheus-alerts:
+  targetApplication: hdc-licences-and-delius
+
