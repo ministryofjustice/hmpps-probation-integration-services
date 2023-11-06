@@ -27,6 +27,7 @@ class ProbationAreaEntity(
     @Column(columnDefinition = "char(3)")
     val code: String,
 
+    @Column(columnDefinition = "char(1)")
     val establishment: String?,
 
     @Id
