@@ -41,6 +41,7 @@ jobs:
             --install \
             --reset-values \
             --timeout 10m \
+            --values <(curl "$(gh api '/repos/ministryofjustice/hmpps-ip-allowlists/contents/ip-allowlist-groups.yaml' | jq -r '.download_url')") \
             --values values.yaml \
             --wait
         working-directory: tools/${{ matrix.project }}/deploy
