@@ -9,6 +9,7 @@ object ProbationAreaGenerator {
         true,
         "NPS North East",
         "N02",
+        null,
         IdGenerator.getAndIncrement()
     )
     val DEFAULT_BOROUGH = Borough(
@@ -35,6 +36,7 @@ object ProbationAreaGenerator {
         false,
         "NPS North West",
         "N03",
+        null,
         IdGenerator.getAndIncrement()
     )
     val NON_SELECTABLE_BOROUGH = Borough(
