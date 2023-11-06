@@ -27,6 +27,8 @@ class ProbationAreaEntity(
     @Column(columnDefinition = "char(3)")
     val code: String,
 
+    val establishment: String?,
+
     @Id
     @Column(name = "probation_area_id")
     val id: Long,
@@ -95,6 +97,7 @@ interface ProbationAreaRepository : JpaRepository<ProbationAreaEntity, Long> {
         and pa.selectable = true
         and d.selectable = true
         and b.selectable = true
+        and pa.establishment is null
     """
     )
     fun probationAreaDistricts(): List<ProbationAreaDistrict>
