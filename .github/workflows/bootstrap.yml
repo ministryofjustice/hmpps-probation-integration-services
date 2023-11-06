@@ -104,7 +104,7 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: Update e2e test repo
-        run: sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' hmpps-probation-integration-e2e-tests/.github/workflows/end-to-end-tests.yml
+        run: sed -i '/add new projects here/i \          - '"'"'["${{ inputs.project_name }}"]'"'"'' hmpps-probation-integration-e2e-tests/.github/workflows/test-single-project.yml
 
       - name: Create pull request
         id: e2e-pr
