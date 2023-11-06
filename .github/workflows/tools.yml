@@ -47,6 +47,7 @@ jobs:
         working-directory: tools/${{ matrix.project }}/deploy
         env:
           PROJECT: ${{ matrix.project }}
+          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_EXTERNAL_REPOS_TOKEN }}
 
   deploy-auth:
     runs-on: ubuntu-latest
