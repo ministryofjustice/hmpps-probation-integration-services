@@ -25,7 +25,7 @@ class AllocationCompletedService(
     private val staffRepository: StaffRepository,
     private val ldapService: LdapService,
     private val contactRepository: ContactRepository,
-    val personManagerRepository: PersonManagerRepository
+    private val personManagerRepository: PersonManagerRepository
 ) {
     fun getDetails(
         crn: String,
