@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
+import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 
 @AutoConfigureMockMvc
@@ -44,5 +45,18 @@ class AllocationCompletedIntegrationTest {
             .andExpect(jsonPath("$.type").value("CUSTODY"))
             .andExpect(jsonPath("$.staff.code").value(staff.code))
             .andExpect(jsonPath("$.staff.email").doesNotExist())
+    }
+
+    @Test
+    fun `allocation team successful response`() {
+        val person = PersonGenerator.DEFAULT
+        val team = TeamGenerator.DEFAULT
+        mockMvc.perform(
+            get("/allocation-completed/team").withOAuth2Token(wireMockserver)
+                .param("crn", person.crn)
+        )
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("$.code").value(team.code))
+            .andExpect(jsonPath("$.description").value(team.description))
     }
 }

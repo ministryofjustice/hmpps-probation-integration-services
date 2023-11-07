@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.api.model
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRecord
+import uk.gov.justice.digital.hmpps.integrations.delius.provider.Team
 import java.time.LocalDate
 
 data class Name(
@@ -24,6 +25,8 @@ data class StaffMember(
 data class Manager(val code: String, val name: Name, val teamCode: String, val grade: String? = null)
 
 data class InitialAppointment(val date: LocalDate)
+
+data class Team(val code: String, val description: String)
 
 data class ProbationStatus(
     val status: ManagementStatus
@@ -53,6 +56,7 @@ fun StaffRecord.grade() = grade?.code?.let { Mappings.toAllocationsGradeCode[it]
 fun StaffRecord.toManager(teamCode: String) = Manager(code, name(), teamCode, grade())
 fun StaffRecord.toStaffMember(email: String? = null) = StaffMember(code, name(), email, grade())
 fun PersonManager.toManager() = staff.toManager(team.code)
+fun Team.toTeam() = uk.gov.justice.digital.hmpps.api.model.Team(code, description)
 
 object Mappings {
     val toAllocationsGradeCode: Map<String, String> = mapOf(
