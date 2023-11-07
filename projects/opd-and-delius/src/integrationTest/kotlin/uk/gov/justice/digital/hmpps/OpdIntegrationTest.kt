@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.getByCrn
+import uk.gov.justice.digital.hmpps.messaging.FeatureFlag
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -62,7 +63,7 @@ internal class OpdIntegrationTest {
     @Order(1)
     @Test
     fun `process opd assessment`() {
-        whenever(featureFlags.enabled("opd.assessment.processing")).thenReturn(true)
+        whenever(featureFlags.enabled(FeatureFlag)).thenReturn(true)
         val message = prepMessage("opd-assessment-new", wireMockServer.port())
 
         channelManager.getChannel(queueName).publishAndWait(message)
@@ -106,7 +107,7 @@ internal class OpdIntegrationTest {
     @Order(2)
     @Test
     fun `process update to opd assessment`() {
-        whenever(featureFlags.enabled("opd.assessment.processing")).thenReturn(true)
+        whenever(featureFlags.enabled(FeatureFlag)).thenReturn(true)
         val message = prepMessage("opd-assessment-update", wireMockServer.port())
 
         channelManager.getChannel(queueName).publishAndWait(message)
@@ -132,7 +133,7 @@ internal class OpdIntegrationTest {
 
     @Test
     fun `does not process opd assessment when feature flagged`() {
-        whenever(featureFlags.enabled("opd.assessment.processing")).thenReturn(false)
+        whenever(featureFlags.enabled(FeatureFlag)).thenReturn(false)
 
         val message = prepMessage("opd-assessment-new", wireMockServer.port())
 
