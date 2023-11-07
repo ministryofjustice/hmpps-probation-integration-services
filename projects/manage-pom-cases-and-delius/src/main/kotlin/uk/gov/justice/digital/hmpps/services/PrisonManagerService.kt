@@ -34,7 +34,7 @@ class PrisonManagerService(
 ) {
 
     @Transactional
-    fun allocatePrisonManager(personId: Long, allocationDate: ZonedDateTime, allocation: PomAllocation) {
+    fun allocatePrisonManager(personId: Long, allocationDate: ZonedDateTime, allocation: PomAllocation): PomAllocationResult {
         val probationArea = probationAreaRepository.getByNomisCdeCode(allocation.prison.code)
         val team = teamRepository.getByCode(probationArea.code + Team.POM_SUFFIX)
         val staff = getStaff(probationArea, team, allocation.manager, allocationDate)
@@ -43,17 +43,18 @@ class PrisonManagerService(
         val newEndDate = currentPom?.endDate
             ?: prisonManagerRepository.findFirstManagerAfterDate(personId, allocationDate).firstOrNull()?.date
         val newPom = currentPom.changeTo(personId, allocationDate, probationArea, team, staff)
-        newPom?.let { new ->
+        return newPom?.let { new ->
             currentPom?.let { old -> prisonManagerRepository.saveAndFlush(old) }
             new.endDate = newEndDate
             prisonManagerRepository.save(new)
-        }
+            PomAllocationResult.PomAllocated
+        } ?: PomAllocationResult.NoPomChange
     }
 
     @Transactional
-    fun deallocatePrisonManager(personId: Long, deallocationDate: ZonedDateTime) {
+    fun deallocatePrisonManager(personId: Long, deallocationDate: ZonedDateTime): PomAllocationResult {
         val currentPom = prisonManagerRepository.findActiveManagerAtDate(personId, deallocationDate)
-        if (currentPom?.isUnallocated() == false) {
+        return if (currentPom?.isUnallocated() == false) {
             val probationArea = currentPom.probationArea
             val team = teamRepository.getByCode(probationArea.code + Team.UNALLOCATED_SUFFIX)
             val staff = staffService.getStaffByCode(team.code + "U")
@@ -63,6 +64,9 @@ class PrisonManagerService(
             prisonManagerRepository.saveAndFlush(currentPom)
             newPom.endDate = newEndDate
             prisonManagerRepository.save(newPom)
+            PomAllocationResult.PomDeallocated
+        } else {
+            PomAllocationResult.NoPomChange
         }
     }
 
@@ -150,4 +154,8 @@ class PrisonManagerService(
     } else {
         null
     }
+}
+
+enum class PomAllocationResult {
+    PomAllocated, PomDeallocated, NoPomChange
 }

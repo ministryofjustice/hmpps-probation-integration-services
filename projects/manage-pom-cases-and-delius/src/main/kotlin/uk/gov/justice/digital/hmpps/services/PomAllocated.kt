@@ -44,13 +44,13 @@ class PomAllocated(
 
         when (pomAllocation) {
             is PomAllocation -> {
-                prisonManagerService.allocatePrisonManager(personId, event.occurredAt, pomAllocation)
-                telemetryService.trackEvent("PomAllocated", pomAllocation.properties(nomsId, event.occurredAt))
+                val res = prisonManagerService.allocatePrisonManager(personId, event.occurredAt, pomAllocation)
+                telemetryService.trackEvent(res.name, pomAllocation.properties(nomsId, event.occurredAt))
             }
 
             is PomDeallocated -> {
-                prisonManagerService.deallocatePrisonManager(personId, event.occurredAt)
-                telemetryService.trackEvent("PomDeallocated", event.properties())
+                val res = prisonManagerService.deallocatePrisonManager(personId, event.occurredAt)
+                telemetryService.trackEvent(res.name, event.properties())
             }
 
             else -> {
