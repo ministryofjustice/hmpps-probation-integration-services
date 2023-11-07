@@ -20,7 +20,7 @@ class OpdService(
         val nsi = nsiService.findOpdNsi(com.person.id)
 
         when {
-            activeEvent && nsi == null -> {
+            activeEvent && nsi?.active != true -> {
                 nsiService.createNsi(opdAssessment, com)
             }
 
