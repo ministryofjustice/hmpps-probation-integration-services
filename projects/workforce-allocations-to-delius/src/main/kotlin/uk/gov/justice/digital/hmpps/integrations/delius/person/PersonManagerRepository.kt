@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.person
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.ZonedDateTime
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
@@ -16,3 +17,4 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     )
     fun findActiveManager(personId: Long, dateTime: ZonedDateTime = ZonedDateTime.now()): PersonManager?
 }
+fun PersonManagerRepository.getActiveManager(personId: Long) = findActiveManager(personId) ?: throw NotFoundException("PersonManager", "personId", personId)

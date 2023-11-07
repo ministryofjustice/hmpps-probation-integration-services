@@ -29,4 +29,15 @@ class AllocationCompletedResource(private val service: AllocationCompletedServic
         @RequestParam eventNumber: String,
         @RequestParam staffCode: String
     ) = service.getDetails(crn, eventNumber, staffCode)
+
+    @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
+    @Operation(
+        summary = "Team allocation code for Persons PO",
+        description = """
+        """
+    )
+    @GetMapping("/manager")
+    fun getAllocatedManager(
+        @RequestParam crn: String
+    ) = service.getAllocationManager(crn)
 }

@@ -10,18 +10,22 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.api.model.Mappings
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
+import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class AllocationCompletedIntegrationTest {
-    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    @Autowired lateinit var wireMockserver: WireMockServer
+    @Autowired
+    lateinit var wireMockserver: WireMockServer
 
     @Test
     fun `successful response`() {
@@ -44,5 +48,22 @@ class AllocationCompletedIntegrationTest {
             .andExpect(jsonPath("$.type").value("CUSTODY"))
             .andExpect(jsonPath("$.staff.code").value(staff.code))
             .andExpect(jsonPath("$.staff.email").doesNotExist())
+    }
+
+    @Test
+    fun `allocation manager successful response`() {
+        val person = PersonGenerator.DEFAULT
+        val team = TeamGenerator.DEFAULT
+        val staff = StaffGenerator.DEFAULT
+        mockMvc.perform(
+            get("/allocation-completed/manager").withOAuth2Token(wireMockserver)
+                .param("crn", person.crn)
+        )
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(jsonPath("$.code").value(staff.code))
+            .andExpect(jsonPath("$.name.forename").value(staff.forename))
+            .andExpect(jsonPath("$.name.surname").value(staff.surname))
+            .andExpect(jsonPath("$.grade").value(staff.grade?.code?.let { Mappings.toAllocationsGradeCode[it] }))
+            .andExpect(jsonPath("$.teamCode").value(team.code))
     }
 }
