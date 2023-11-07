@@ -36,8 +36,8 @@ class AllocationCompletedResource(private val service: AllocationCompletedServic
         description = """
         """
     )
-    @GetMapping("/team")
-    fun getAllocatedTeam(
+    @GetMapping("/manager")
+    fun getAllocatedManager(
         @RequestParam crn: String
-    ) = service.getAllocationTeam(crn)
+    ) = service.getAllocationManager(crn)
 }

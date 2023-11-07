@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.api.model.Mappings
 import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -20,9 +21,11 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class AllocationCompletedIntegrationTest {
-    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    @Autowired lateinit var wireMockserver: WireMockServer
+    @Autowired
+    lateinit var wireMockserver: WireMockServer
 
     @Test
     fun `successful response`() {
@@ -48,15 +51,19 @@ class AllocationCompletedIntegrationTest {
     }
 
     @Test
-    fun `allocation team successful response`() {
+    fun `allocation manager successful response`() {
         val person = PersonGenerator.DEFAULT
         val team = TeamGenerator.DEFAULT
+        val staff = StaffGenerator.DEFAULT
         mockMvc.perform(
-            get("/allocation-completed/team").withOAuth2Token(wireMockserver)
+            get("/allocation-completed/manager").withOAuth2Token(wireMockserver)
                 .param("crn", person.crn)
         )
             .andExpect(status().is2xxSuccessful)
-            .andExpect(jsonPath("$.code").value(team.code))
-            .andExpect(jsonPath("$.description").value(team.description))
+            .andExpect(jsonPath("$.code").value(staff.code))
+            .andExpect(jsonPath("$.name.forename").value(staff.forename))
+            .andExpect(jsonPath("$.name.surname").value(staff.surname))
+            .andExpect(jsonPath("$.grade").value(staff.grade?.code?.let { Mappings.toAllocationsGradeCode[it] }))
+            .andExpect(jsonPath("$.teamCode").value(team.code))
     }
 }

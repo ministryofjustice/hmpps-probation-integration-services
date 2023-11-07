@@ -4,10 +4,10 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.AllocationCompletedResponse
 import uk.gov.justice.digital.hmpps.api.model.Event
 import uk.gov.justice.digital.hmpps.api.model.InitialAppointment
-import uk.gov.justice.digital.hmpps.api.model.Team
+import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.name
+import uk.gov.justice.digital.hmpps.api.model.toManager
 import uk.gov.justice.digital.hmpps.api.model.toStaffMember
-import uk.gov.justice.digital.hmpps.api.model.toTeam
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.getByPersonCrnAndNumber
@@ -47,11 +47,11 @@ class AllocationCompletedService(
         )
     }
 
-    fun getAllocationTeam(
+    fun getAllocationManager(
         crn: String
-    ): Team {
+    ): Manager {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val manager = personManagerRepository.getActiveManager(person.id)
-        return manager.team.toTeam()
+        return manager.toManager()
     }
 }
