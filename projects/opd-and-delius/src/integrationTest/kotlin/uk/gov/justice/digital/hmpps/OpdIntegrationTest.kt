@@ -10,11 +10,13 @@ import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.NsiManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.NsiStatus
@@ -54,9 +56,13 @@ internal class OpdIntegrationTest {
     @Autowired
     lateinit var contactRepository: ContactRepository
 
+    @MockBean
+    lateinit var featureFlags: FeatureFlags
+
     @Order(1)
     @Test
     fun `process opd assessment`() {
+        whenever(featureFlags.enabled("opd.assessment.processing")).thenReturn(true)
         val message = prepMessage("opd-assessment-new", wireMockServer.port())
 
         channelManager.getChannel(queueName).publishAndWait(message)
@@ -100,6 +106,7 @@ internal class OpdIntegrationTest {
     @Order(2)
     @Test
     fun `process update to opd assessment`() {
+        whenever(featureFlags.enabled("opd.assessment.processing")).thenReturn(true)
         val message = prepMessage("opd-assessment-update", wireMockServer.port())
 
         channelManager.getChannel(queueName).publishAndWait(message)
@@ -121,5 +128,23 @@ internal class OpdIntegrationTest {
         val opdContact = contactRepository.findAll()
             .firstOrNull { it.personId == com.person.id && it.type.code == ContactType.Code.READY_FOR_SERVICES.value }
         assertNotNull(opdContact!!)
+    }
+
+    @Test
+    fun `does not process opd assessment when feature flagged`() {
+        whenever(featureFlags.enabled("opd.assessment.processing")).thenReturn(false)
+
+        val message = prepMessage("opd-assessment-new", wireMockServer.port())
+
+        channelManager.getChannel(queueName).publishAndWait(message)
+
+        verify(telemetryService).trackEvent(
+            "OpdAssessmentIgnored",
+            mapOf(
+                "crn" to PersonGenerator.PERSON_OPD_NEW.crn,
+                "date" to "30/10/2023 16:42:25",
+                "result" to "Screened In"
+            )
+        )
     }
 }
