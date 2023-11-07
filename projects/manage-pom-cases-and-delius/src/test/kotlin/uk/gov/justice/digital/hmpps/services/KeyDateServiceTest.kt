@@ -90,7 +90,7 @@ class KeyDateServiceTest {
             .thenReturn(listOf(custody))
 
         val res = keyDateService.mergeHandoverDates(personId, null, null)
-        assertThat(res, equalTo(KeyDateMergeResult.NoChange))
+        assertThat(res, equalTo(KeyDateMergeResult.NoKeyDateChange))
     }
 
     private fun withKeyDateTypes() {
