@@ -49,7 +49,7 @@ class KeyDateService(
                 keyDateRepository.save(keyDate?.apply { this.date = date } ?: keyDate(custodyId, typeCode, it))
                 return if (keyDate == null) KeyDateMergeResult.KeyDateCreated else KeyDateMergeResult.KeyDateUpdated
             }
-            KeyDateMergeResult.NoChange
+            KeyDateMergeResult.NoKeyDateChange
         }
 
     private fun keyDate(custodyId: Long, typeCode: KeyDate.TypeCode, date: LocalDate): KeyDate =
@@ -57,5 +57,5 @@ class KeyDateService(
 }
 
 enum class KeyDateMergeResult {
-    NoChange, KeyDateDeleted, KeyDateUpdated, KeyDateCreated
+    NoKeyDateChange, KeyDateDeleted, KeyDateUpdated, KeyDateCreated
 }
