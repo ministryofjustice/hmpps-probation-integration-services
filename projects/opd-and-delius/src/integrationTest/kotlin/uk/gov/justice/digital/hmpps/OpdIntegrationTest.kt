@@ -10,12 +10,13 @@ import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.integrations.delius.EventRepository
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.NsiManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.NsiStatus
@@ -25,10 +26,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.getByCrn
+import uk.gov.justice.digital.hmpps.messaging.FeatureFlag
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
-import java.time.ZonedDateTime
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
@@ -57,12 +57,13 @@ internal class OpdIntegrationTest {
     @Autowired
     lateinit var contactRepository: ContactRepository
 
-    @Autowired
-    lateinit var eventRepository: EventRepository
+    @MockBean
+    lateinit var featureFlags: FeatureFlags
 
     @Order(1)
     @Test
     fun `process opd assessment`() {
+        whenever(featureFlags.enabled(FeatureFlag)).thenReturn(true)
         val message = prepMessage("opd-assessment-new", wireMockServer.port())
 
         channelManager.getChannel(queueName).publishAndWait(message)
@@ -73,6 +74,16 @@ internal class OpdIntegrationTest {
         assertThat(nsi.type.code, equalTo(NsiType.Code.OPD_COMMUNITY_PATHWAY.value))
         assertThat(nsi.subType?.code, equalTo(NsiSubType.Code.COMMUNITY_PATHWAY.value))
         assertThat(nsi.status.code, equalTo(NsiStatus.Code.READY_FOR_SERVICE.value))
+        assertThat(
+            nsi.notes,
+            containsString(
+                """
+            |OPD Assessment Date: 30/10/2023 16:42:25
+            |OPD Result: Screened In
+            |This notes entry was automatically created by the system
+                """.trimMargin()
+            )
+        )
 
         val nsiManager = nsiManagerRepository.findAll().firstOrNull { it.nsi.id == nsi.id }
         assertNotNull(nsiManager!!)
@@ -96,6 +107,7 @@ internal class OpdIntegrationTest {
     @Order(2)
     @Test
     fun `process update to opd assessment`() {
+        whenever(featureFlags.enabled(FeatureFlag)).thenReturn(true)
         val message = prepMessage("opd-assessment-update", wireMockServer.port())
 
         channelManager.getChannel(queueName).publishAndWait(message)
@@ -109,7 +121,7 @@ internal class OpdIntegrationTest {
                 """
             |OPD Assessment Date: 31/10/2023 13:42:25
             |OPD Result: Screened In - with override
-            |This note was automatically created by the system
+            |This notes entry was automatically created by the system
                 """.trimMargin()
             )
         )
@@ -119,25 +131,21 @@ internal class OpdIntegrationTest {
         assertNotNull(opdContact!!)
     }
 
-    @Order(3)
     @Test
-    fun `end opd assessment if event terminated`() {
-        val com = personManagerRepository.getByCrn(PersonGenerator.PERSON_OPD_NEW.crn)
+    fun `does not process opd assessment when feature flagged`() {
+        whenever(featureFlags.enabled(FeatureFlag)).thenReturn(false)
 
-        // create terminated event for this test and remove existing active one
-        val event = eventRepository.findAll().firstOrNull { it.person.id == com.person.id }!!
-        eventRepository.deleteById(event.id)
-        eventRepository.save(PersonGenerator.generateEvent(com.person, active = false))
-
-        val message = prepMessage("opd-assessment-update", wireMockServer.port())
+        val message = prepMessage("opd-assessment-new", wireMockServer.port())
 
         channelManager.getChannel(queueName).publishAndWait(message)
 
-        val nsi = nsiRepository.findNsiByPersonIdAndTypeCode(com.person.id, NsiType.Code.OPD_COMMUNITY_PATHWAY.value)
-        assertNotNull(nsi!!)
-        assertThat(
-            nsi.actualEndDate!!,
-            isCloseTo(ZonedDateTime.now())
+        verify(telemetryService).trackEvent(
+            "OpdAssessmentIgnored",
+            mapOf(
+                "crn" to PersonGenerator.PERSON_OPD_NEW.crn,
+                "date" to "30/10/2023 16:42:25",
+                "result" to "Screened In"
+            )
         )
     }
 }

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.messaging
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.NsiSubType
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
@@ -10,14 +11,21 @@ import uk.gov.justice.digital.hmpps.service.OpdService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
+const val FeatureFlag = "opd-assessment-processing"
+
 @Component
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
-    private val opdService: OpdService
+    private val opdService: OpdService,
+    private val featureFlags: FeatureFlags
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         val opdAssessment = notification.message.opdAssessment()
+        if (!featureFlags.enabled(FeatureFlag)) {
+            telemetryService.trackEvent("OpdAssessmentIgnored", opdAssessment.telemetryProperties())
+            return
+        }
         when (opdAssessment.result) {
             OpdAssessment.Result.SCREENED_IN, OpdAssessment.Result.SCREENED_IN_OVERRIDE -> {
                 opdService.processAssessment(notification.message.opdAssessment())
@@ -48,13 +56,10 @@ data class OpdAssessment(
         SCREENED_OUT("Screened Out", null);
 
         companion object {
-            fun of(value: String, override: Override) = if ("SCREENED IN".equals(value, true)) {
-                when (override) {
-                    Override.YES -> SCREENED_IN_OVERRIDE
-                    else -> SCREENED_IN
-                }
-            } else {
-                SCREENED_OUT
+            fun of(value: String, override: Override) = when {
+                override == Override.YES -> SCREENED_IN_OVERRIDE
+                "SCREEN IN".equals(value, true) -> SCREENED_IN
+                else -> SCREENED_OUT
             }
         }
     }
@@ -70,7 +75,7 @@ data class OpdAssessment(
     val notes = """
         |OPD Assessment Date: ${DeliusDateTimeFormatter.format(date)}
         |OPD Result: ${result.description}
-        |This note was automatically created by the system - ${DeliusDateTimeFormatter.format(ZonedDateTime.now())}
+        |This notes entry was automatically created by the system - ${DeliusDateTimeFormatter.format(ZonedDateTime.now())}
     """.trimMargin()
 }
 
