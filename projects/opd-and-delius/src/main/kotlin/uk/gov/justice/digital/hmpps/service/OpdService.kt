@@ -6,7 +6,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.getByCrn
 import uk.gov.justice.digital.hmpps.messaging.OpdAssessment
-import java.time.ZonedDateTime
 
 @Service
 class OpdService(
@@ -25,12 +24,8 @@ class OpdService(
                 nsiService.createNsi(opdAssessment, com)
             }
 
-            activeEvent && nsi != null -> {
+            nsi?.active == true -> {
                 nsi.appendNotes(System.lineSeparator() + opdAssessment.notes)
-            }
-
-            nsi != null -> {
-                nsi.actualEndDate = ZonedDateTime.now()
             }
         }
     }

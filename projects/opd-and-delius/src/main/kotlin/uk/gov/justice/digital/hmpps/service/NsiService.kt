@@ -45,6 +45,7 @@ class NsiService(
                 com.providerId
             )
         )
+        nsi.appendNotes(opdAssessment.notes)
         nsiManagerRepository.save(
             NsiManager(
                 nsi,

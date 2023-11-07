@@ -48,13 +48,10 @@ data class OpdAssessment(
         SCREENED_OUT("Screened Out", null);
 
         companion object {
-            fun of(value: String, override: Override) = if ("SCREENED IN".equals(value, true)) {
-                when (override) {
-                    Override.YES -> SCREENED_IN_OVERRIDE
-                    else -> SCREENED_IN
-                }
-            } else {
-                SCREENED_OUT
+            fun of(value: String, override: Override) = when {
+                override == Override.YES -> SCREENED_IN_OVERRIDE
+                "SCREEN IN".equals(value, true) -> SCREENED_IN
+                else -> SCREENED_OUT
             }
         }
     }
@@ -70,7 +67,7 @@ data class OpdAssessment(
     val notes = """
         |OPD Assessment Date: ${DeliusDateTimeFormatter.format(date)}
         |OPD Result: ${result.description}
-        |This note was automatically created by the system - ${DeliusDateTimeFormatter.format(ZonedDateTime.now())}
+        |This notes entry was automatically created by the system - ${DeliusDateTimeFormatter.format(ZonedDateTime.now())}
     """.trimMargin()
 }
 
