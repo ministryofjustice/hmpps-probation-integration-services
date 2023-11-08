@@ -6,7 +6,7 @@
   "MessageAttributes": {
     "eventType": {
       "Type": "String",
-      "Value": "opd.produced"
+      "Value": "risk-assessment.scores.determined"
     }
   }
 }
