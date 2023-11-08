@@ -500,6 +500,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChoosePractitionerResponse'
+  /allocation-completed/manager:
+    get:
+      tags:
+      - allocation-completed-resource
+      summary: Team allocation code for Persons PO
+      operationId: getAllocatedManager
+      parameters:
+      - name: crn
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manager'
   /allocation-completed/details:
     get:
       tags:

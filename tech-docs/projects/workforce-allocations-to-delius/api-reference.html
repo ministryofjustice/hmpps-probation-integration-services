@@ -160,6 +160,9 @@
         <a href="./api-reference.html#allocation-demand-choose-practitioner"><span>/allocation-demand/choose-practitioner</span></a>
       </li>
       <li>
+        <a href="./api-reference.html#allocation-completed-manager"><span>/allocation-completed/manager</span></a>
+      </li>
+      <li>
         <a href="./api-reference.html#allocation-completed-details"><span>/allocation-completed/details</span></a>
       </li>
       <li>
@@ -1730,6 +1733,75 @@
 </td>
 <td>
 <a href='#schema-choosepractitionerresponse'>ChoosePractitionerResponse</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="allocation-completed-manager">/allocation-completed/manager</h2>
+
+<h3 id="allocation-completed-manager-get">get</h3>
+
+  <p><em>Team allocation code for Persons PO</em></p>
+
+
+
+
+<h4 id="allocation-completed-manager-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>crn</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="allocation-completed-manager-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "code": "string",
+  "name": {
+    "forename": "string",
+    "middleName": "string",
+    "surname": "string"
+  },
+  "teamCode": "string",
+  "grade": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-manager'>Manager</a>
 </td>
 </tr>
 
