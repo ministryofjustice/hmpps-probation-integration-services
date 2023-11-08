@@ -40,9 +40,11 @@ spring:
 
 delius.db.username: PrisonCustodyStatusService # See deploy/database/access.yml
 
-management.endpoints.web:
-  base-path: /
-  exposure.include: [ "health", "info" ]
+management:
+  endpoints.web:
+    base-path: /
+    exposure.include: [ "health", "info" ]
+  endpoint.health.show-details: always
 
 ---
 # Shared dev/test config

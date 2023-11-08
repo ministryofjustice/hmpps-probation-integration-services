@@ -37,9 +37,11 @@ spring:
 
 delius.db.username: PrisonCaseNotesToProbation
 
-management.endpoints.web:
-  base-path: /
-  exposure.include: [ "health", "info" ]
+management:
+  endpoints.web:
+    base-path: /
+    exposure.include: [ "health", "info" ]
+  endpoint.health.show-details: always
 
 logging.level:
   org.hibernate.engine.jdbc.spi.SqlExceptionHelper: OFF

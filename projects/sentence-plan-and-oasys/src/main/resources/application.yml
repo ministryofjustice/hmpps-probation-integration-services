@@ -22,9 +22,11 @@ spring:
         Content-Type: application/json
 springdoc.default-produces-media-type: application/json
 
-management.endpoints.web:
-  base-path: /
-  exposure.include: [ "health", "info" ]
+management:
+  endpoints.web:
+    base-path: /
+    exposure.include: [ "health", "info" ]
+  endpoint.health.show-details: always
 
 
 ---

@@ -30,9 +30,11 @@ springdoc.default-produces-media-type: application/json
 
 delius.db.username: $SERVICE_NAME_CAMELCASE # Should match value in [deploy/database/access.yml].
 
-management.endpoints.web:
-  base-path: /
-  exposure.include: [ "health", "info" ]
+management:
+  endpoints.web:
+    base-path: /
+    exposure.include: [ "health", "info" ]
+  endpoint.health.show-details: always
 
 ---
 # Shared dev/test config

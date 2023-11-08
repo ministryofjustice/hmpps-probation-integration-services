@@ -42,9 +42,11 @@ springdoc.default-produces-media-type: application/json
 
 delius.db.username: HMPPSAllocations
 
-management.endpoints.web:
-  base-path: /
-  exposure.include: [ "health", "info" ]
+management:
+  endpoints.web:
+    base-path: /
+    exposure.include: [ "health", "info" ]
+  endpoint.health.show-details: always
 
 
 ---
