@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
 const val FeatureFlag = "opd-assessment-processing"
+const val OpdProduced = "opd.produced"
 
 @Component
 class Handler(
@@ -21,6 +22,7 @@ class Handler(
     private val featureFlags: FeatureFlags
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
+        if (notification.message.eventType != OpdProduced) return
         val opdAssessment = notification.message.opdAssessment()
         if (!featureFlags.enabled(FeatureFlag)) {
             telemetryService.trackEvent("OpdAssessmentIgnored", opdAssessment.telemetryProperties())
