@@ -32,6 +32,10 @@ class DetailRelease(
     @OneToOne(mappedBy = "release")
     val recall: Recall? = null,
 
+    @ManyToOne
+    @JoinColumn(name = "release_type_id")
+    val releaseType: ReferenceData,
+
     @Column(name = "actual_release_date")
     val date: LocalDate,
 
@@ -67,8 +71,27 @@ class Recall(
     @Column(name = "recall_date")
     val date: LocalDate,
 
+    @ManyToOne
+    @JoinColumn(name = "recall_reason_id")
+    val reason: RecallReason,
+
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false
+)
+
+@Immutable
+@Entity
+@Table(name = "r_recall_reason")
+class RecallReason(
+    @Id
+    @Column(name = "recall_reason_id")
+    val id: Long,
+
+    @Column(nullable = false)
+    val code: String,
+
+    @Column(nullable = false)
+    val description: String
 )
 
 interface DetailReleaseRepository : JpaRepository<DetailRelease, Long> {

@@ -34,6 +34,8 @@ class DetailService(
         var releaseLocation: String? = null
         var releaseDate: LocalDate? = null
         var recallDate: LocalDate? = null
+        var releaseReason: String? = null
+        var recallReason: String? = null
         var keyDates = listOf<KeyDate>()
         if (c != null) {
             mainOffence = c.mainOffence!!.offence.description
@@ -42,8 +44,10 @@ class DetailService(
                 if (custody != null) {
                     val release = detailReleaseRepository.findFirstByCustodyIdOrderByDateDesc(custody.id)
                     releaseLocation = release?.institution?.name
+                    releaseReason = release?.releaseType?.description
                     releaseDate = release?.date
                     recallDate = release?.recall?.date
+                    recallReason = release?.recall?.reason?.description
                     keyDates = custody.keyDates.map { KeyDate(it.type.code, it.type.description, it.date) }
                 }
             }
@@ -65,8 +69,10 @@ class DetailService(
             p.religion?.description,
             keyDates,
             releaseDate,
+            releaseReason,
             releaseLocation,
             recallDate,
+            recallReason,
             nsiDates.firstOrNull { it.name == "recall" }?.referralDate,
             nsiDates.firstOrNull { it.name == "breach" }?.referralDate
         )

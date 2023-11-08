@@ -73,8 +73,10 @@ internal class DetailsIntegrationTest {
         DetailsGenerator.PERSON.religion?.description,
         listOf(KeyDate(KeyDateGenerator.SED_KEYDATE.code, KeyDateGenerator.SED_KEYDATE.description, KeyDateGenerator.KEYDATE.date)),
         DetailsGenerator.RELEASE.date,
+        DetailsGenerator.RELEASE.releaseType.description,
         DetailsGenerator.INSTITUTION.name,
         DetailsGenerator.RECALL.date,
+        DetailsGenerator.RECALL.reason.description,
         NSIGenerator.RECALL_NSI.referralDate,
         NSIGenerator.BREACH_NSI.referralDate
     )
