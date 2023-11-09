@@ -16,8 +16,10 @@ data class Detail(
     val religion: String? = null,
     val keyDates: List<KeyDate> = listOf(),
     val releaseDate: LocalDate? = null,
+    val releaseReason: String? = null,
     val releaseLocation: String? = null,
     val lastRecallDate: LocalDate? = null,
+    val recallReason: String? = null,
     val nsiRecallDate: LocalDate? = null,
     val nsiBreachDate: LocalDate? = null
 )

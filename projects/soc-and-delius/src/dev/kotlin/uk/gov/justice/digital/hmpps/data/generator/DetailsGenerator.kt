@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.entity.DetailStaff
 import uk.gov.justice.digital.hmpps.entity.Institution
 import uk.gov.justice.digital.hmpps.entity.PersonManager
 import uk.gov.justice.digital.hmpps.entity.Recall
+import uk.gov.justice.digital.hmpps.entity.RecallReason
 import uk.gov.justice.digital.hmpps.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.entity.Team
 import java.time.LocalDate
@@ -34,18 +35,24 @@ object DetailsGenerator {
 
     val INSTITUTION = Institution(IdGenerator.getAndIncrement(), "HMP-LDN")
 
+    val RELEASE_TYPE = ReferenceData(IdGenerator.getAndIncrement(), "RSN1", "Release reason")
+
     val RELEASE = DetailRelease(
         IdGenerator.getAndIncrement(),
         KeyDateGenerator.CUSTODY.id,
         INSTITUTION,
         null,
+        releaseType = RELEASE_TYPE,
         LocalDate.now()
     )
+
+    val RECALL_REASON = RecallReason(IdGenerator.getAndIncrement(), "REC1", "Recall reason")
 
     val RECALL = Recall(
         IdGenerator.getAndIncrement(),
         RELEASE,
-        LocalDate.now()
+        LocalDate.now(),
+        RECALL_REASON
     )
 
     val DEFAULT_PA = DetailProbationArea(true, "London", "LDN", IdGenerator.getAndIncrement())
