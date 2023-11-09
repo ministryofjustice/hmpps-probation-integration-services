@@ -197,11 +197,15 @@ components:
         releaseDate:
           type: string
           format: date
+        releaseReason:
+          type: string
         releaseLocation:
           type: string
         lastRecallDate:
           type: string
           format: date
+        recallReason:
+          type: string
         nsiRecallDate:
           type: string
           format: date
