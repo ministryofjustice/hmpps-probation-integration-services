@@ -14,13 +14,13 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
+  /probation-cases/{nomsId}/community-manager:
     get:
       tags:
-      - api-controller
-      operationId: handle
+      - manager-resource
+      operationId: findCommunityManager
       parameters:
-      - name: inputId
+      - name: nomsId
         in: path
         required: true
         schema:
@@ -28,7 +28,48 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manager'
 components:
+  schemas:
+    Manager:
+      required:
+      - code
+      - name
+      - team
+      - unallocated
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          $ref: '#/components/schemas/Name'
+        team:
+          $ref: '#/components/schemas/Team'
+        unallocated:
+          type: boolean
+    Name:
+      required:
+      - forename
+      - surname
+      type: object
+      properties:
+        forename:
+          type: string
+        surname:
+          type: string
+    Team:
+      required:
+      - code
+      - description
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
   securitySchemes:
     hmpps-auth-token:
       type: http
