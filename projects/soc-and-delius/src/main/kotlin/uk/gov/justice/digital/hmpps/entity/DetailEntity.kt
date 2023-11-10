@@ -13,6 +13,7 @@ import org.hibernate.annotations.Where
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 
@@ -187,6 +188,19 @@ interface DetailRepository : JpaRepository<DetailPerson, Long> {
         ]
     )
     fun getByNomsNumber(nomsNumber: String): DetailPerson?
+
+    @Query(
+        """
+        SELECT json_object(
+           'crn' value o.CRN
+        )
+        FROM OFFENDER o 
+        WHERE
+            o.crn = :crn
+        """,
+        nativeQuery = true
+    )
+    fun getProbationRecord(crn: String): String
 }
 
 fun DetailRepository.findByNomsNumber(nomsNumber: String): DetailPerson =
