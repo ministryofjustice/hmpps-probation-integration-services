@@ -12,11 +12,11 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepositor
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.getByPersonCrnAndNumber
+import uk.gov.justice.digital.hmpps.integrations.delius.event.getOrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrnAndSoftDeletedFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getCaseType
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
-import java.time.ZonedDateTime
 
 @Service
 class AllocationCompletedService(
@@ -52,7 +52,6 @@ class AllocationCompletedService(
         eventNumber: String
     ): Manager {
         val event = eventRepository.getByPersonCrnAndNumber(crn, eventNumber)
-        val orderManager = orderManagerRepository.findActiveManagerAtDate(event.id, ZonedDateTime.now())
-        return orderManager!!.toManager()
+        return orderManagerRepository.getOrderManager(event.id).toManager()
     }
 }
