@@ -10,10 +10,10 @@ import uk.gov.justice.digital.hmpps.api.model.toManager
 import uk.gov.justice.digital.hmpps.api.model.toStaffMember
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.getByPersonCrnAndNumber
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.getOrderManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.getActiveManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrnAndSoftDeletedFalse
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getCaseType
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
@@ -25,7 +25,7 @@ class AllocationCompletedService(
     private val staffRepository: StaffRepository,
     private val ldapService: LdapService,
     private val contactRepository: ContactRepository,
-    private val personManagerRepository: PersonManagerRepository
+    private val orderManagerRepository: OrderManagerRepository
 ) {
     fun getDetails(
         crn: String,
@@ -48,10 +48,10 @@ class AllocationCompletedService(
     }
 
     fun getAllocationManager(
-        crn: String
+        crn: String,
+        eventNumber: String
     ): Manager {
-        val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
-        val manager = personManagerRepository.getActiveManager(person.id)
-        return manager.toManager()
+        val event = eventRepository.getByPersonCrnAndNumber(crn, eventNumber)
+        return orderManagerRepository.getOrderManager(event.id).toManager()
     }
 }

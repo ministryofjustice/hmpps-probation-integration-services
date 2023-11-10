@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.event
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.ZonedDateTime
 
 interface OrderManagerRepository : JpaRepository<OrderManager, Long> {
@@ -16,3 +17,5 @@ interface OrderManagerRepository : JpaRepository<OrderManager, Long> {
     )
     fun findActiveManagerAtDate(eventId: Long, dateTime: ZonedDateTime): OrderManager?
 }
+
+fun OrderManagerRepository.getOrderManager(eventId: Long) = findActiveManagerAtDate(eventId, ZonedDateTime.now()) ?: throw NotFoundException("OrderManager", "eventId", eventId)

@@ -1,0 +1,18 @@
+dn: dc=moj,dc=com
+objectclass: top
+objectclass: domain
+dc: moj
+
+dn: ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: Users
+
+dn: cn=james-brown,ou=Users,dc=moj,dc=com
+objectclass: top
+objectclass: inetOrgPerson
+cn: james-brown
+sn: Brown
+givenname: James
+mail: james.brown@moj.gov.uk
+telephoneNumber: 07321165373
