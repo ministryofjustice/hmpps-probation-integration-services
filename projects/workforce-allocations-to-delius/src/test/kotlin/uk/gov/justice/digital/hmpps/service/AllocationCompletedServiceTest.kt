@@ -18,7 +18,7 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
 import java.time.LocalDate
@@ -35,7 +35,7 @@ class AllocationCompletedServiceTest {
 
     @Mock lateinit var contactRepository: ContactRepository
 
-    @Mock lateinit var personManagerRepository: PersonManagerRepository
+    @Mock lateinit var orderManagerRepository: OrderManagerRepository
 
     @InjectMocks lateinit var allocationCompletedService: AllocationCompletedService
 
