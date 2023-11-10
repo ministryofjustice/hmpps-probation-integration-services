@@ -66,10 +66,25 @@ internal class CommunityManagerIntTest {
     companion object {
         @JvmStatic
         fun communityManagers() = listOf(
-            Arguments.of(ALLOCATED_PERSON.nomsId, Manager(STAFF.code, STAFF.name(), Team(TEAM.code, TEAM.description))),
+            Arguments.of(
+                ALLOCATED_PERSON.nomsId,
+                Manager(
+                    STAFF.code,
+                    STAFF.name(),
+                    Team(TEAM.code, TEAM.description, TEAM.email, TEAM.telephone),
+                    "james.brown@moj.gov.uk",
+                    "07321165373"
+                )
+            ),
             Arguments.of(
                 UNALLOCATED_PERSON.nomsId,
-                Manager(UNALLOCATED_STAFF.code, UNALLOCATED_STAFF.name(), Team(TEAM.code, TEAM.description))
+                Manager(
+                    UNALLOCATED_STAFF.code,
+                    UNALLOCATED_STAFF.name(),
+                    Team(TEAM.code, TEAM.description, TEAM.email, TEAM.telephone),
+                    null,
+                    null
+                )
             )
         )
     }

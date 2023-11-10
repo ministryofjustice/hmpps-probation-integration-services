@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.CommunityManagerGenerator.ALLOCATED_PERSON
+import uk.gov.justice.digital.hmpps.data.generator.CommunityManagerGenerator.JAMES_BROWN
 import uk.gov.justice.digital.hmpps.data.generator.CommunityManagerGenerator.STAFF
 import uk.gov.justice.digital.hmpps.data.generator.CommunityManagerGenerator.TEAM
 import uk.gov.justice.digital.hmpps.data.generator.CommunityManagerGenerator.UNALLOCATED_PERSON
@@ -34,6 +35,7 @@ class DataLoader(
             TEAM,
             UNALLOCATED_STAFF,
             STAFF,
+            JAMES_BROWN,
             UNALLOCATED_PERSON,
             ALLOCATED_PERSON,
             generateCommunityManager(
