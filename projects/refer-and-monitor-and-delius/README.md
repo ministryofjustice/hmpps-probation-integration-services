@@ -10,7 +10,7 @@ _Refer and Monitor an Intervention_ depends on _Delius_ data for background on t
 
 ### Context Map
 
-![Context Map](./img/randm-and-delius-dependencies-context-map.svg)
+![Context Map](./tech-docs/source/img/randm-and-delius-dependencies-context-map.svg)
 
 ## Workflows
 
