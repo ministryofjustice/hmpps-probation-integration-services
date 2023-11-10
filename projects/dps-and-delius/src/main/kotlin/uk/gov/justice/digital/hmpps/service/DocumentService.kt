@@ -61,7 +61,7 @@ class DocumentService(
                     author = document.author,
                     createdAt = document.createdAt?.atZone(EuropeLondon)
                 )
-            }.sortedBy { it.createdAt },
+            }.sortedByDescending { it.createdAt },
             convictions = person.events.map { event ->
                 Conviction(
                     title = event.disposal?.description ?: event.courtAppearances.latestOutcome()?.description,
@@ -78,9 +78,9 @@ class DocumentService(
                             author = document.author,
                             createdAt = document.createdAt?.atZone(EuropeLondon)
                         )
-                    }?.sortedBy { it.createdAt } ?: emptyList()
+                    }?.sortedByDescending { it.createdAt } ?: emptyList()
                 )
-            }.sortedBy { it.date }
+            }.sortedByDescending { it.date }
         )
     } ?: throw NotFoundException("Person", "nomisId", nomisId)
 
