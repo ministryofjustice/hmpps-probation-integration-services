@@ -20,7 +20,7 @@ CRS referrals are tracked in _Delius_ using an NSI. The request to create the _D
 
 #### Context Map - Referrals
 
-![Context Map](./img/randm-and-delius-referral-context-map.svg)
+![Context Map](./tech-docs/source/img/randm-and-delius-referral-context-map.svg)
 
 #### Workflow: Create CRS Referral
 
@@ -30,7 +30,7 @@ Creation of the CRS referral is a synchronous integration between _Refer and Mon
 |-----------------------|-------------------------------------|
 | Create a CRS referral | PUT /probation-case/{crn}/referrals |
 
-![Workflow Map](./img/randm-and-delius-workflow-create-crs-referral.svg)
+![Workflow Map](./tech-docs/source/img/randm-and-delius-workflow-create-crs-referral.svg)
 
 #### Workflow: End CRS Referral
 
@@ -40,7 +40,7 @@ Ending a CRS referral in _Refer and Monitor an Intervention_ triggers activity i
 |--------------------|-----------------------------|
 | End a CRS referral | intervention.referral.ended |
 
-![Workflow Map](./img/randm-and-delius-workflow-end-crs-referral.svg)
+![Workflow Map](./tech-docs/source/img/randm-and-delius-workflow-end-crs-referral.svg)
 
 #### Workflow: Action Plan Interactions
 
@@ -51,7 +51,7 @@ An action plan must be submitted by the CRS supplier in _Refer and Monitor an In
 | Submit a CRS referral action plan  | intervention.action-plan.submitted |
 | Approve a CRS referral action plan | intervention.action-plan.approved  |
 
-![Workflow Map](./img/randm-and-delius-workflow-action-plan.svg)
+![Workflow Map](./tech-docs/source/img/randm-and-delius-workflow-action-plan.svg)
 
 ### CRS Appointment Workflows
 
@@ -59,7 +59,7 @@ Creating CRS session appointments is a core function of _Refer and Monitor an In
 
 #### Context Map - Appointments
 
-![Context Map](./img/randm-and-delius-appointment-context-map.svg)
+![Context Map](./tech-docs/source/img/randm-and-delius-appointment-context-map.svg)
 
 ### Workflow: Create CRS Appointment
 
@@ -78,7 +78,7 @@ Rescheduling a CRS appointment in _Refer and Monitor an Intervention_ involves u
 |---------------------------|---------------------------------------------------------------|
 | Reschedule an appointment | PUT /probation-case/{crn}/referrals/{referralId}/appointments |
 
-![Workflow Map](./img/randm-and-delius-workflow-appointment-reschedule.svg)
+![Workflow Map](./tech-docs/source/img/randm-and-delius-workflow-appointment-reschedule.svg)
 
 ### Workflow: CRS Appointment Outcome and Feedback
 
@@ -89,7 +89,7 @@ Session outcomes and feedback for CRS appointments are recorded in _Refer and Mo
 | Submit initial appointment session outcome and feedback | intervention.initial-assessment-appointment.session-feedback-submitted |
 | Submit delivery session outcome and feedback            | intervention.session-appointment.session-feedback-submitted            |
 
-![Workflow Map](./img/randm-and-delius-workflow-appointment-feedback.svg)
+![Workflow Map](./tech-docs/source/img/randm-and-delius-workflow-appointment-feedback.svg)
 
 ## Interfaces
 
