@@ -51,13 +51,15 @@ class AllocationCompletedIntegrationTest {
     }
 
     @Test
-    fun `allocation manager successful response`() {
+    fun `allocation order manager successful response`() {
         val person = PersonGenerator.DEFAULT
+        val event = EventGenerator.DEFAULT
         val team = TeamGenerator.DEFAULT
         val staff = StaffGenerator.DEFAULT
         mockMvc.perform(
-            get("/allocation-completed/manager").withOAuth2Token(wireMockserver)
+            get("/allocation-completed/order-manager").withOAuth2Token(wireMockserver)
                 .param("crn", person.crn)
+                .param("eventNumber", event.number)
         )
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.code").value(staff.code))

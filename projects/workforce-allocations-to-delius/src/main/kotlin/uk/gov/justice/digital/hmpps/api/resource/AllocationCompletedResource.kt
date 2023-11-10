@@ -36,8 +36,9 @@ class AllocationCompletedResource(private val service: AllocationCompletedServic
         description = """
         """
     )
-    @GetMapping("/manager")
+    @GetMapping("/order-manager")
     fun getAllocatedManager(
-        @RequestParam crn: String
-    ) = service.getAllocationManager(crn)
+        @RequestParam crn: String,
+        @RequestParam eventNumber: String
+    ) = service.getAllocationManager(crn, eventNumber)
 }
