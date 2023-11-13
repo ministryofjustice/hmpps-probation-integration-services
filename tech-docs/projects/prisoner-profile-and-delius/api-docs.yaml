@@ -48,6 +48,10 @@ components:
           $ref: '#/components/schemas/Name'
         team:
           $ref: '#/components/schemas/Team'
+        email:
+          type: string
+        telephone:
+          type: string
         unallocated:
           type: boolean
     Name:
@@ -69,6 +73,10 @@ components:
         code:
           type: string
         description:
+          type: string
+        email:
+          type: string
+        telephone:
           type: string
   securitySchemes:
     hmpps-auth-token:

@@ -500,7 +500,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChoosePractitionerResponse'
-  /allocation-completed/manager:
+  /allocation-completed/order-manager:
     get:
       tags:
       - allocation-completed-resource
@@ -508,6 +508,11 @@ paths:
       operationId: getAllocatedManager
       parameters:
       - name: crn
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: eventNumber
         in: query
         required: true
         schema:
