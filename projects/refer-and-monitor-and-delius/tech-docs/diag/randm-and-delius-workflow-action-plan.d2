@@ -1,0 +1,34 @@
+# Refer and Monitor Workflow: Delius Action Plan Changes
+
+direction: right
+
+style {
+  fill: "#ffffff"
+}
+
+# What triggers the workflow?
+refer_and_monitor: Refer and Monitor  {
+     style.font-size: 15
+     crs_action_plan_submit: Submit\nAction Plan {
+         shape: oval
+     }
+     crs_action_plan_approve: Approve\nAction Plan {
+         shape: oval
+     }
+}
+
+# What happens in Delius?
+delius: Delius {
+    style {
+        font-size: 20
+    }
+
+    d_create_contact: Create\nAction Plan Contact
+}
+
+refer_and_monitor -> delius
+
+*.style.border-radius: 10
+*.*.style.border-radius: 10
+*.*.style.stroke-width: 2
+*.*.style.font-size: 12
