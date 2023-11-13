@@ -92,7 +92,21 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>refer-and-monitor-and-delius</span></a>
+    <a href="./index.html"><span>Refer and Monitor and Delius</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#business-need"><span>Business Need</span></a>
+      </li>
+      <li>
+        <a href="./index.html#data-dependencies"><span>Data Dependencies</span></a>
+      </li>
+      <li>
+        <a href="./index.html#workflows"><span>Workflows</span></a>
+      </li>
+      <li>
+        <a href="./index.html#interfaces"><span>Interfaces</span></a>
+      </li>
+    </ul>
   </li>
   <li>
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
@@ -150,9 +164,128 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="refer-and-monitor-and-delius">refer-and-monitor-and-delius</h1>
-<p>// TODO Describe the service</p>
-
+            <h1 id="refer-and-monitor-and-delius">Refer and Monitor and Delius</h1>
+<h2 id="business-need">Business Need</h2>
+<p><em>Refer and Monitor an Intervention</em> has a tightly coupled relationship with <em>Delius</em> due to activity managed in both systems being important for workflows in the other. <em>Refer and Monitor an Intervention</em> depends on information managed in <em>Delius</em> for it&rsquo;s primary function of creating and managing CRS referrals. There is also a requirement to write information back to <em>Delius</em> when various activities are recorded in <em>Refer and Monitor an Intervention</em>. Where possible the interaction between the two services is managed asynchronously via domain events but there are workflows in <em>Refer and Monitor an Intervention</em> that have runtime dependency on successful creation of entities in <em>Delius</em>. In these cases the cross-service interaction is via synchronous API calls.</p>
+<h2 id="data-dependencies">Data Dependencies</h2>
+<p><em>Refer and Monitor an Intervention</em> depends on <em>Delius</em> data for background on the relevant <strong>Person on Probation</strong> and the specific <strong>Probation Case</strong> when making CRS referral. There is also a dependency on <strong>Probation Practitioner</strong> information and <strong>Probation Estate</strong> information when making CRS session appointments</p>
+<h3 id="context-map">Context Map</h3>
+<p><a href="././img/randm-and-delius-dependencies-context-map.svg" rel="noopener noreferrer"><img src="img/randm-and-delius-dependencies-context-map.svg" alt="Context Map" /></a></p>
+<h2 id="workflows">Workflows</h2>
+<h3 id="crs-referral-workflows">CRS Referral Workflows</h3>
+<p>CRS referrals are tracked in <em>Delius</em> using an NSI. The request to create the <em>Delius</em> NSI is made as part of the referral creation process in <em>Refer and Monitor an Intervention</em>, and the NSI is linked to the referral by adding the <em>Refer and Monitor an Intervention</em> <code>REFERRAL.ID</code> to the <code>NSI.EXTERNAL_REFERENCE</code> field of the <em>Delius</em> database. The status of the NSI is updated as the CRS referral is progressed in <em>Refer and Monitor an Intervention</em>.</p>
+<h4 id="context-map-referrals">Context Map - Referrals</h4>
+<p><a href="././img/randm-and-delius-referral-context-map.svg" rel="noopener noreferrer"><img src="img/randm-and-delius-referral-context-map.svg" alt="Context Map" /></a></p>
+<h4 id="workflow-create-crs-referral">Workflow: Create CRS Referral</h4>
+<p>Creation of the CRS referral is a synchronous integration between <em>Refer and Monitor an Intervention</em> and <em>Delius</em>. A CRS referral is created in <em>Refer and Monitor an Intervention</em>, which makes an API call to &lsquo;Refer and Monitor and Delius&rsquo; to create the referral NSI in <em>Delius</em>. If the process fails to create the Delius NSI the creation of the CRS referral in <em>Refer and Monitor an Intervention</em> is aborted.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>API Endpoint</th>
+</tr><tr>
+<td>Create a CRS referral</td>
+<td>PUT /probation-case/{crn}/referrals</td>
+</tr>
+        </table>
+      </div><p><a href="././img/randm-and-delius-workflow-create-crs-referral.svg" rel="noopener noreferrer"><img src="img/randm-and-delius-workflow-create-crs-referral.svg" alt="Workflow Map" /></a></p>
+<h4 id="workflow-end-crs-referral">Workflow: End CRS Referral</h4>
+<p>Ending a CRS referral in <em>Refer and Monitor an Intervention</em> triggers activity in <em>Delius</em> to update the linked NSI and add contacts. The information added to the probation case in <em>Delius</em> inform the probation practitioner that the referral has been ended in <em>Refer and Monitor an Intervention</em>.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>HMPPS Domain Event Type</th>
+</tr><tr>
+<td>End a CRS referral</td>
+<td>intervention.referral.ended</td>
+</tr>
+        </table>
+      </div><p><a href="././img/randm-and-delius-workflow-end-crs-referral.svg" rel="noopener noreferrer"><img src="img/randm-and-delius-workflow-end-crs-referral.svg" alt="Workflow Map" /></a></p>
+<h4 id="workflow-action-plan-interactions">Workflow: Action Plan Interactions</h4>
+<p>An action plan must be submitted by the CRS supplier in <em>Refer and Monitor an Intervention</em> for approval by the probation practitioner managing the case. On both submission and approval in <em>Refer and Monitor an Intervention</em> a domain event is raised and a <em>Delius</em> contact is added to communicate the action plan status to probation practitioners.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>HMPPS Domain Event Type</th>
+</tr><tr>
+<td>Submit a CRS referral action plan</td>
+<td>intervention.action-plan.submitted</td>
+</tr><tr>
+<td>Approve a CRS referral action plan</td>
+<td>intervention.action-plan.approved</td>
+</tr>
+        </table>
+      </div><p><a href="././img/randm-and-delius-workflow-action-plan.svg" rel="noopener noreferrer"><img src="img/randm-and-delius-workflow-action-plan.svg" alt="Workflow Map" /></a></p>
+<h3 id="crs-appointment-workflows">CRS Appointment Workflows</h3>
+<p>Creating CRS session appointments is a core function of <em>Refer and Monitor an Intervention</em>, however, the primary service for managing probation appointments is <em>Delius</em>. Appointments are therefore created in both systems and the <em>Delius</em> appointment contact is linked to the <em>Refer and Monitor an Intervention</em> session by adding the <code>APPOINTMENT.ID</code> to the <code>CONTACT.EXTERNAL_REFERENCE</code> table of the <em>Delius</em> database. The status of the CRS appointments is updated in <em>Delius</em> as the appointment sessions are delivered and recorded in <em>Refer and Monitor an Intervention</em>.</p>
+<h4 id="context-map-appointments">Context Map - Appointments</h4>
+<p><a href="././img/randm-and-delius-appointment-context-map.svg" rel="noopener noreferrer"><img src="img/randm-and-delius-appointment-context-map.svg" alt="Context Map" /></a></p>
+<h3 id="workflow-create-crs-appointment">Workflow: Create CRS Appointment</h3>
+<p>Creating session appointments in <em>Refer and Monitor an Intervention</em> involves a synchronous API call to create the corresponding <em>Delius</em> appointment contact, with an appointment type, date, time and location. A successful API call will result in an appointment contact being created in <em>Delius</em>. Booking a session appointment relies on the date and time being available for the person on probation. Failure to create an appointment in <em>Delius</em> is a runtime exception in <em>Refer and Monitor an Intervention</em> and the appointment creation is aborted.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>API Endpoint</th>
+</tr><tr>
+<td>Create a initial assessment appointment</td>
+<td>PUT /probation-case/{crn}/referrals/{referralId}/appointments</td>
+</tr><tr>
+<td>Create a delivery session appointment</td>
+<td>PUT /probation-case/{crn}/referrals/{referralId}/appointments</td>
+</tr>
+        </table>
+      </div><h3 id="workflow-crs-appointment-reschedule">Workflow: CRS Appointment Reschedule</h3>
+<p>Rescheduling a CRS appointment in <em>Refer and Monitor an Intervention</em> involves updating the linked appointment in <em>Delius</em> with an outcome and creating a new appointment for the new date and time. This is necessary to ensure source appointment data for downstream processes in <em>Delius</em> are maintained and the case recording is standardised. As this process involves multiple changes to <em>Delius</em> database structures and it is possible for the process to fail if the date and time are not available it is achieved using a single synchronous API call to the same endpoint for appointment creation. The inclusion of the details of the appointment being replaced identifies the API calls as a reschedule rather than an initial creation.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>API Endpoint</th>
+</tr><tr>
+<td>Reschedule an appointment</td>
+<td>PUT /probation-case/{crn}/referrals/{referralId}/appointments</td>
+</tr>
+        </table>
+      </div><p><a href="././img/randm-and-delius-workflow-appointment-reschedule.svg" rel="noopener noreferrer"><img src="img/randm-and-delius-workflow-appointment-reschedule.svg" alt="Workflow Map" /></a></p>
+<h3 id="workflow-crs-appointment-outcome-and-feedback">Workflow: CRS Appointment Outcome and Feedback</h3>
+<p>Session outcomes and feedback for CRS appointments are recorded in <em>Refer and Monitor an Intervention</em> by the CRS supplier. The session outcomes are recorded against the relevant <em>Delius</em> appointment contact, with the appropriate alerts to probation practitioners when activity should be brought to their attention.</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>HMPPS Domain Event Type</th>
+</tr><tr>
+<td>Submit initial appointment session outcome and feedback</td>
+<td>intervention.initial-assessment-appointment.session-feedback-submitted</td>
+</tr><tr>
+<td>Submit delivery session outcome and feedback</td>
+<td>intervention.session-appointment.session-feedback-submitted</td>
+</tr>
+        </table>
+      </div><p><a href="././img/randm-and-delius-workflow-appointment-feedback.svg" rel="noopener noreferrer"><img src="img/randm-and-delius-workflow-appointment-feedback.svg" alt="Workflow Map" /></a></p>
+<h2 id="interfaces">Interfaces</h2>
+<h3 id="message-formats">Message Formats</h3>
+<p>The service responds to various HMPPS Domain Event message via the
+<a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/refer-and-monitor-and-delius-queue.tf">Refer and Monitor and Delius Queue</a>.
+The events are raised by the <a href="https://github.com/ministryofjustice/hmpps-interventions-service">HMPPS Refer and Monitor Service</a> to communicate important events in the CRS referrals process.</p>
+<p>Example <a href="./src/dev/resources/messages/">messages</a> are in the development source tree.</p>
+<p>Incoming messages are filtered on <code>eventType</code> by the <a href="https://github.com/ministryofjustice/cloud-platform-environments/blob/114fda2e35b6a6c8ee08c3a54317154dcde2c336/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-probation-integration-services-prod/resources/refer-and-monitor-and-delius-queue.tf#L6-L12">SQS queue policy</a></p>
+<h3 id="api-access-control">API Access Control</h3>
+<p>API endpoints are secured by roles supplied by the <em>HMPPS Auth</em> client used in the requests</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>All</td>
+<td>ROLE_CRS_REFERRAL</td>
+</tr>
+        </table>
+      </div>
             
           </main>
 
