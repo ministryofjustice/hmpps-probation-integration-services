@@ -188,19 +188,6 @@ interface DetailRepository : JpaRepository<DetailPerson, Long> {
         ]
     )
     fun getByNomsNumber(nomsNumber: String): DetailPerson?
-
-    @Query(
-        """
-        SELECT json_object(
-           'crn' value o.CRN
-        )
-        FROM OFFENDER o 
-        WHERE
-            o.crn = :crn
-        """,
-        nativeQuery = true
-    )
-    fun getProbationRecord(crn: String): String
 }
 
 fun DetailRepository.findByNomsNumber(nomsNumber: String): DetailPerson =

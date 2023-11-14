@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.model.probationrecord
+package uk.gov.justice.digital.hmpps.api.model
 
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -7,7 +7,6 @@ data class ProbationRecord(
     val crn: String,
     val offenderManagers: List<OffenderManager>,
     val convictions: List<Conviction>,
-    val assessment: Assessment?
 )
 
 data class OffenderManager(
@@ -32,27 +31,19 @@ data class Team(
     val district: String
 )
 
-data class Assessment(
-    val type: String,
-    val completed: LocalDateTime,
-    val status: String,
-)
-
 data class Conviction(
-    val active: Boolean,
-    val inBreach: Boolean,
-    val awaitingPsr: Boolean,
-    val convictionDate: LocalDate,
-    val offences: List<Offence>,
-    val sentence: Sentence,
-    val endDate: LocalDate,
-    val custodialType: KeyValue,
-    val psrReports: List<CourtReport>,
-    val documents: List<OffenderDocumentDetail>,
-    val breaches: List<Breach>,
-    val requirements: List<Requirement>,
-    val pssRequirements: List<PssRequirement>,
-    val licenceConditions: List<LicenceCondition>
+    val active: Boolean = false,
+    val inBreach: Boolean = false,
+    val awaitingPsr: Boolean = false,
+    val convictionDate: LocalDate?,
+    val offences: List<Offence> = listOf(),
+    val sentence: Sentence?,
+    val custodialType: KeyValue?,
+    val documents: List<OffenderDocumentDetail> = listOf(),
+    val breaches: List<Breach> = listOf(),
+    val requirements: List<Requirement> = listOf(),
+    val pssRequirements: List<PssRequirement> = listOf(),
+    val licenceConditions: List<LicenceCondition> = listOf(),
 )
 
 data class Sentence(
