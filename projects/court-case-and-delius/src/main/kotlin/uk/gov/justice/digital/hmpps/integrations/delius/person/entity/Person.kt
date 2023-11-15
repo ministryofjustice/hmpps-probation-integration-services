@@ -74,12 +74,11 @@ interface PersonRepository : JpaRepository<Person, Long> {
                                                                    'telephone' VALUE team.TELEPHONE,
                                                                    'localDeliveryUnit' VALUE ldu.CODE,
                                                                    'district' VALUE district.DESCRIPTION
-                                                                   ABSENT ON NULL RETURNING CLOB),
+                                                                   ABSENT ON NULL ),
                                                            'provider' VALUE pa.DESCRIPTION
-                                                           ABSENT ON NULL RETURNING CLOB) RETURNING CLOB),
+                                                           ABSENT ON NULL ) ),
                'convictions' VALUE (SELECT json_arrayagg(
-                                                   json_object('eventId' VALUE e.event_id,
-                                                               'active' VALUE
+                                                   json_object('active' VALUE
                                                                CASE
                                                                    WHEN e.ACTIVE_FLAG = 1 THEN 'true'
                                                                    ELSE 'false' END,
@@ -123,8 +122,8 @@ interface PersonRepository : JpaRepository<Person, Long> {
                                                                                               WHEN d.UPW = 1 THEN 'true'
                                                                                               ELSE 'false' END
                                                                    )
-                                                               ABSENT ON NULL RETURNING CLOB)
-                                                   ABSENT ON NULL RETURNING CLOB)
+                                                               ABSENT ON NULL )
+                                                   ABSENT ON NULL )
                                     FROM event e
                                              LEFT OUTER JOIN disposal d on e.EVENT_ID = d.EVENT_ID
                                              LEFT OUTER JOIN CUSTODY c on c.DISPOSAL_ID = d.disposal_id
@@ -141,14 +140,12 @@ interface PersonRepository : JpaRepository<Person, Long> {
                                       AND c.SOFT_DELETED = 0)
            )
 FROM offender o
-         JOIN PARTITION_AREA pa ON pa.PARTITION_AREA_ID = o.PARTITION_AREA_ID
          JOIN OFFENDER_MANAGER om ON om.OFFENDER_ID = o.OFFENDER_ID AND om.ACTIVE_FLAG = 1
          LEFT OUTER JOIN PROBATION_AREA pa ON pa.PROBATION_AREA_ID = om.PROBATION_AREA_ID
          LEFT OUTER JOIN STAFF staff ON staff.STAFF_ID = om.ALLOCATION_STAFF_ID
          LEFT OUTER JOIN TEAM team ON team.TEAM_ID = om.TEAM_ID
          LEFT OUTER JOIN LOCAL_DELIVERY_UNIT ldu ON ldu.LOCAL_DELIVERY_UNIT_ID = team.LOCAL_DELIVERY_UNIT_ID
          LEFT OUTER JOIN DISTRICT district ON district.DISTRICT_ID = team.DISTRICT_ID
-         LEFT OUTER JOIN BOROUGH boro ON boro.BOROUGH_ID = district.BOROUGH_ID
 WHERE o.SOFT_DELETED = 0
   AND om.SOFT_DELETED = 0
   and o.crn = :crn
