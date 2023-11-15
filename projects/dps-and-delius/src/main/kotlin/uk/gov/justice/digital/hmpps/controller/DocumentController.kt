@@ -1,12 +1,10 @@
 package uk.gov.justice.digital.hmpps.controller
 
 import io.swagger.v3.oas.annotations.Operation
-import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.service.DocumentService
 
 @RestController
@@ -25,9 +23,5 @@ class DocumentController(private val documentService: DocumentService) {
 
     @GetMapping(value = ["/document/{id}"])
     @Operation(summary = "Download document content")
-    fun downloadDocument(@PathVariable id: String) = try {
-        documentService.downloadDocument(id)
-    } catch (e: NotFoundException) {
-        ResponseEntity.notFound()
-    }
+    fun downloadDocument(@PathVariable id: String) = documentService.downloadDocument(id)
 }

@@ -8,10 +8,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.request
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -65,6 +67,8 @@ internal class IntegrationTest {
     @Test
     fun `document can be downloaded`() {
         mockMvc.perform(get("/document/uuid1").accept("application/octet-stream").withOAuth2Token(wireMockServer))
+            .andExpect(request().asyncStarted())
+            .andDo(MvcResult::getAsyncResult)
             .andExpect(status().is2xxSuccessful)
             .andExpect(header().string("Content-Type", "application/octet-stream"))
             .andExpect(header().string("Content-Disposition", "attachment; filename=\"=?UTF-8?Q?OFFENDER-related_document?=\"; filename*=UTF-8''OFFENDER-related%20document"))
