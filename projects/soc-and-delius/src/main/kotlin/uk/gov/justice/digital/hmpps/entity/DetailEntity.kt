@@ -13,7 +13,6 @@ import org.hibernate.annotations.Where
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import java.time.LocalDate
 

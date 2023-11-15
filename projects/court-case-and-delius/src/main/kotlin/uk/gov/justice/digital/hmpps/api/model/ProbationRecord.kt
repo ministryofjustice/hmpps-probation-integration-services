@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 data class ProbationRecord(
     val crn: String,
     val offenderManagers: List<OffenderManager>,
-    val convictions: List<Conviction>,
+    val convictions: List<Conviction>
 )
 
 data class OffenderManager(
@@ -43,7 +43,7 @@ data class Conviction(
     val breaches: List<Breach> = listOf(),
     val requirements: List<Requirement> = listOf(),
     val pssRequirements: List<PssRequirement> = listOf(),
-    val licenceConditions: List<LicenceCondition> = listOf(),
+    val licenceConditions: List<LicenceCondition> = listOf()
 )
 
 data class Sentence(
@@ -55,7 +55,7 @@ data class Sentence(
     val startDate: LocalDate?,
     val endDate: LocalDate?,
     val terminationReason: String?,
-    val unpaidWork: UnpaidWork?,
+    val unpaidWork: UnpaidWork?
 )
 
 data class Offence(
@@ -134,7 +134,7 @@ enum class DocumentType(val description: String) {
 data class ReportDocumentDates(
     val requestedDate: LocalDate?,
     val requiredDate: LocalDate?,
-    val completedDate: LocalDateTime?,
+    val completedDate: LocalDateTime?
 )
 
 class Breach(
@@ -172,5 +172,3 @@ data class LicenceCondition(
     val notes: String?,
     val active: Boolean
 )
-
-

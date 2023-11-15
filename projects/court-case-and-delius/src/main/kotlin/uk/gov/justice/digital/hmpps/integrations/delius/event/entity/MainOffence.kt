@@ -15,23 +15,23 @@ import java.time.LocalDate
 @Entity
 @Where(clause = "soft_deleted = 0")
 class MainOffence(
-@Id
-@Column(name = "main_offence_id")
-val id: Long,
+    @Id
+    @Column(name = "main_offence_id")
+    val id: Long,
 
-@OneToOne
-@JoinColumn(name = "event_id")
-val event: Event,
+    @OneToOne
+    @JoinColumn(name = "event_id")
+    val event: Event,
 
-@ManyToOne
-@JoinColumn(name = "offence_id")
-val offence: Offence,
+    @ManyToOne
+    @JoinColumn(name = "offence_id")
+    val offence: Offence,
 
-@Column(name = "offence_date")
-val date: LocalDate,
+    @Column(name = "offence_date")
+    val date: LocalDate,
 
-@Column(updatable = false, columnDefinition = "NUMBER")
-val softDeleted: Boolean = false
+    @Column(updatable = false, columnDefinition = "NUMBER")
+    val softDeleted: Boolean = false
 )
 
 @Immutable
@@ -58,7 +58,6 @@ class AdditionalOffence(
     @Column(name = "additional_offence_id")
     val id: Long
 )
-
 
 @Immutable
 @Entity
