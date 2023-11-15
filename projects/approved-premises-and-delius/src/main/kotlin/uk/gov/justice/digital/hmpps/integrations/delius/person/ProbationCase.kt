@@ -64,6 +64,8 @@ class ProbationCase(
     @JoinColumn(name = "gender_identity_id")
     val genderIdentity: ReferenceData?,
 
+    val genderIdentityDescription: String?,
+
     @Column(columnDefinition = "number")
     val currentExclusion: Boolean?,
 
