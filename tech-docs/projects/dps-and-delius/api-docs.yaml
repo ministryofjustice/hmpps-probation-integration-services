@@ -32,7 +32,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/StreamingResponseBody'
   /case/{nomisId}/documents:
     get:
       tags:
@@ -59,6 +59,8 @@ paths:
                 $ref: '#/components/schemas/ProbationDocumentsResponse'
 components:
   schemas:
+    StreamingResponseBody:
+      type: object
     Conviction:
       required:
       - active
