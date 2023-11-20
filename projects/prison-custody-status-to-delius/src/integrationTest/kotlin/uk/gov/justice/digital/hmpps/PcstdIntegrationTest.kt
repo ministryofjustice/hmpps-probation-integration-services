@@ -517,4 +517,54 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             )
         }
     }
+
+    @Test
+    fun `prisoner absconded - unlawfully at large`() {
+        whenever(featureFlags.enabled("messages_released_absconded")).thenReturn(true)
+        val notification = NotificationGenerator.PRISONER_ABSCONDED
+        val nomsNumber = notification.nomsId()
+        assertFalse(getCustody(nomsNumber).isInCustody())
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val ual = InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNLAWFULLY_AT_LARGE]!!
+        val custody = getCustody(nomsNumber)
+        assertTrue(custody.isInCustody())
+        assertThat(custody.institution?.code, equalTo(ual.code))
+        assertThat(custody.status.code, equalTo(CustodialStatusCode.IN_CUSTODY.code))
+        assertThat(custody.statusChangeDate, isCloseTo(notification.message.occurredAt))
+
+        verifyRecall(custody, notification.message.occurredAt, RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT)
+
+        verifyCustodyHistory(
+            custody,
+            CustodyEventTester(CustodyEventTypeCode.STATUS_CHANGE, "Recall added unlawfully at large "),
+            CustodyEventTester(CustodyEventTypeCode.LOCATION_CHANGE, ual.description)
+        )
+
+        verifyContacts(
+            custody,
+            2,
+            ContactType.Code.BREACH_PRISON_RECALL,
+            ContactType.Code.CHANGE_OF_INSTITUTION
+        )
+
+        licenceConditionRepository.findAll().filter {
+            it.disposal.id == custody.disposal.id
+        }.forEach {
+            assertNotNull(it.terminationDate)
+            assertThat(it.terminationReason?.code, equalTo("TEST"))
+        }
+
+        verifyTelemetry("Recalled", "LocationUpdated", "StatusUpdated") {
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to nomsNumber,
+                "institution" to "WSI",
+                "reason" to "RELEASED",
+                "movementReason" to "UAL",
+                "movementType" to "Released"
+            )
+        }
+    }
 }

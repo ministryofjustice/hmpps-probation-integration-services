@@ -44,4 +44,14 @@ class TierDetailsTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.convictions[0].sentenceTypeCode").value(DisposalTypeGenerator.DEFAULT.sentenceType))
             .andExpect(MockMvcResultMatchers.jsonPath("$.convictions[0].requirements[0].mainCategoryTypeCode").value("MAIN"))
     }
+
+    @Test
+    fun `can retrieve all crns`() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/probation-cases")
+                .withOAuth2Token(wireMockserver)
+                .contentType(MediaType.APPLICATION_JSON)
+
+        ).andExpect { status().is2xxSuccessful }
+    }
 }

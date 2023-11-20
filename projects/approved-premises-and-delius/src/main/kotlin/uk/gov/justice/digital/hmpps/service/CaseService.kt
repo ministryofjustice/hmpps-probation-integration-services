@@ -60,7 +60,7 @@ fun CaseSummary.withDetail(offences: List<CaseOffence>, registrations: List<Regi
 
 fun ProbationCase.name() = Name(forename, surname, listOfNotNull(secondName, thirdName))
 fun ProbationCase.profile() =
-    Profile(ethnicity?.description, genderIdentity?.description, nationality?.description, religion?.description)
+    Profile(ethnicity?.description, genderIdentityDescription ?: genderIdentity?.description, nationality?.description, religion?.description)
 
 fun ProbationCase.manager(): Manager =
     with(currentManager()) {
@@ -69,7 +69,7 @@ fun ProbationCase.manager(): Manager =
 
 fun CommunityManager.team() = Team(team.code, team.description, Ldu(team.ldu.code, team.ldu.description))
 
-fun CaseOffence.asOffence() = Offence(description, date, main, eventNumber)
+fun CaseOffence.asOffence() = Offence(code, description, date, main, eventNumber)
 
 fun Registration.asRegistration() = uk.gov.justice.digital.hmpps.model.Registration(type.code, type.description, date)
 fun Registration.asMappa() = MappaDetail(

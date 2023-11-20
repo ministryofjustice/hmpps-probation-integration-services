@@ -56,6 +56,7 @@ class UpdateStatusAction(
     private fun outboundStatusChange(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
         val statusCode = when {
+            prisonerMovement.isAbsconded() -> CustodialStatusCode.IN_CUSTODY
             prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease() -> custody.nextStatus()
             else -> if (custody.canBeReleased()) {
                 CustodialStatusCode.RELEASED_ON_LICENCE
@@ -70,6 +71,7 @@ class UpdateStatusAction(
             when {
                 prisonerMovement.isHospitalRelease() -> "Transfer to/from Hospital"
                 prisonerMovement.isIrcRelease() -> "Transfer to Immigration Removal Centre"
+                prisonerMovement.isAbsconded() -> if (custody.canBeRecalled()) "Recall added unlawfully at large " else "Absconded unlawfully at large "
                 else -> "Released on Licence"
             }
         )

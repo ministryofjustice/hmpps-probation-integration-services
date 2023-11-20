@@ -10,10 +10,12 @@ import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.context.request.RequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @EnableAsync
 @Configuration
-class ThreadConfig {
+class ThreadConfig : WebMvcConfigurer {
     @Value("\${async-task-executor.threads.core:8}")
     private val coreThreads = 0
 
@@ -28,7 +30,12 @@ class ThreadConfig {
         executor.maxPoolSize = maxThreads
         executor.setThreadNamePrefix("AsyncTask: ")
         executor.setTaskDecorator { ContextRunnable(it) }
+        executor.initialize()
         return executor
+    }
+
+    override fun configureAsyncSupport(configurer: AsyncSupportConfigurer) {
+        configurer.setTaskExecutor(asyncTaskExecutor())
     }
 }
 

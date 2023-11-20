@@ -1,11 +1,13 @@
 package uk.gov.justice.digital.hmpps.service
 
-import org.springframework.core.io.Resource
+import feign.Response
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpHeaders.CONTENT_DISPOSITION
+import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.client.AlfrescoClient
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.CourtAppearance
@@ -27,18 +29,21 @@ class DocumentService(
     private val documentRepository: DocumentRepository,
     private val alfrescoClient: AlfrescoClient
 ) {
-    fun downloadDocument(id: String): ResponseEntity<Resource> {
+    fun downloadDocument(id: String): ResponseEntity<StreamingResponseBody> {
         val filename = documentRepository.findNameByAlfrescoId(id) ?: throw NotFoundException("Document", "alfrescoId", id)
         val response = alfrescoClient.getDocument(id)
-        return when {
-            response.statusCode.is2xxSuccessful -> ResponseEntity.ok()
-                .headers { it.putAll(response.sanitisedHeaders()) }
-                .header(CONTENT_DISPOSITION, ContentDisposition.attachment().filename(filename, UTF_8).build().toString())
-                .body(response.body)
+        return response.body().asInputStream().use { stream ->
+            when (response.status()) {
+                200 -> ResponseEntity.ok()
+                    .headers { it.putAll(response.sanitisedHeaders()) }
+                    .header(CONTENT_DISPOSITION, ContentDisposition.attachment().filename(filename, UTF_8).build().toString())
+                    .contentType(APPLICATION_OCTET_STREAM)
+                    .body(StreamingResponseBody { stream.copyTo(it) })
 
-            response.statusCode.is4xxClientError -> throw NotFoundException("Document content", "alfrescoId", id)
+                404 -> throw NotFoundException("Document content", "alfrescoId", id)
 
-            else -> throw RuntimeException("Failed to download document. Alfresco responded with ${response.statusCode}.")
+                else -> throw RuntimeException("Failed to download document. Alfresco responded with ${response.status()}.")
+            }
         }
     }
 
@@ -61,7 +66,7 @@ class DocumentService(
                     author = document.author,
                     createdAt = document.createdAt?.atZone(EuropeLondon)
                 )
-            }.sortedBy { it.createdAt },
+            }.sortedByDescending { it.createdAt },
             convictions = person.events.map { event ->
                 Conviction(
                     title = event.disposal?.description ?: event.courtAppearances.latestOutcome()?.description,
@@ -78,21 +83,20 @@ class DocumentService(
                             author = document.author,
                             createdAt = document.createdAt?.atZone(EuropeLondon)
                         )
-                    }?.sortedBy { it.createdAt } ?: emptyList()
+                    }?.sortedByDescending { it.createdAt } ?: emptyList()
                 )
-            }.sortedBy { it.date }
+            }.sortedByDescending { it.date }
         )
     } ?: throw NotFoundException("Person", "nomisId", nomisId)
 
     private val Disposal.description get() = "${type.description}${lengthString?.let { " ($it)" } ?: ""}"
     private val Disposal.lengthString get() = length?.let { "$length ${lengthUnits!!.description}" }
     private fun List<CourtAppearance>.latestOutcome() = filter { it.outcome != null }.maxByOrNull { it.date }?.outcome
-    private fun <T> ResponseEntity<T>.sanitisedHeaders() = headers.filterKeys {
+    private fun Response.sanitisedHeaders(): Map<String, List<String>> = headers().filterKeys {
         it in listOf(
             HttpHeaders.CONTENT_LENGTH,
-            HttpHeaders.CONTENT_TYPE,
             HttpHeaders.ETAG,
             HttpHeaders.LAST_MODIFIED
         )
-    }
+    }.mapValues { it.value.toList() }
 }

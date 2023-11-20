@@ -44,6 +44,8 @@ management:
     exposure.include: [ "health", "info" ]
   endpoint.health.show-details: always
 
+crn-streaming.timeout: 300000
+
 ---
 # Shared dev/test config
 spring.config.activate.on-profile: [ "dev", "integration-test" ]

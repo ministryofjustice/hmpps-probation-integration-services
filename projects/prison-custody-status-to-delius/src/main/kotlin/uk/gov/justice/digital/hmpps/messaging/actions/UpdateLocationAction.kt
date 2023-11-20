@@ -86,12 +86,14 @@ class UpdateLocationAction(
                 institutionRepository.getByCode(InstitutionCode.OTHER_IRC.code)
             }
 
+            isAbsconded() -> institutionRepository.getByCode(InstitutionCode.UNLAWFULLY_AT_LARGE.code)
+
             else -> institutionRepository.getByCode(InstitutionCode.IN_COMMUNITY.code)
         }
 
     private fun createLocationChangeContact(prisonerMovement: PrisonerMovement, custody: Custody) {
         if (prisonerMovement is PrisonerMovement.Received ||
-            prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease()
+            prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease() || prisonerMovement.isAbsconded()
         ) {
             val notes = """
             |Custodial Status: ${custody.status.description}

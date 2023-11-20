@@ -30,10 +30,11 @@ spring:
     default:
       logger-level: full
       connect-timeout: 5000
-      read-timeout: 5000
+      read-timeout: 30000
       default-request-headers:
         Accept: application/json
         Content-Type: application/json
+  mvc.async.request-timeout: 30s
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: DpsAndDelius # Should match value in [deploy/database/access.yml].
