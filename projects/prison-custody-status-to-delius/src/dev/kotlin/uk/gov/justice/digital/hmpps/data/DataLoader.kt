@@ -96,6 +96,7 @@ class DataLoader(
         createIrcInCustody()
         createReleasablePerson(PersonGenerator.RELEASABLE_ECSL_ACTIVE)
         createReleasablePerson(PersonGenerator.RELEASABLE_ECSL_INACTIVE)
+        createAbsconded()
     }
 
     private fun createReferenceData() {
@@ -267,6 +268,16 @@ class DataLoader(
         }
         release?.also { releaseRepository.save(it) }
         recall?.also { recallRepository.save(it) }
+    }
+
+    private fun createAbsconded() {
+        createPerson(PersonGenerator.ABSCONDED)
+        createEvent(
+            EventGenerator.previouslyReleasedEvent(
+                PersonGenerator.ABSCONDED,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]
+            )
+        )
     }
 }
 

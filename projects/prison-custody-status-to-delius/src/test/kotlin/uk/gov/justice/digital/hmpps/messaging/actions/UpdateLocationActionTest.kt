@@ -67,6 +67,9 @@ internal class UpdateLocationActionTest {
         if (prisonerMovement.type == RELEASED && prisonerMovement.reason.isBlank()) {
             whenever(institutionRepository.findByCode(InstitutionCode.IN_COMMUNITY.code))
                 .thenReturn(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY])
+        } else if (prisonerMovement.isAbsconded()) {
+            whenever(institutionRepository.findByCode(InstitutionCode.UNLAWFULLY_AT_LARGE.code))
+                .thenReturn(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNLAWFULLY_AT_LARGE])
         }
 
         val res = action.accept(PrisonerMovementContext(prisonerMovement, custody))
@@ -114,7 +117,9 @@ internal class UpdateLocationActionTest {
             Arguments.of(custody, received),
             Arguments.of(custody, released.copy(type = RELEASED_TO_HOSPITAL, reason = "HP")),
             Arguments.of(custody, released.copy(reason = "HO")),
-            Arguments.of(released(), released)
+            Arguments.of(released(), released),
+            Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL")),
+            Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL_ECL"))
         )
 
         private fun custody(): Custody {
@@ -129,6 +134,16 @@ internal class UpdateLocationActionTest {
                 person,
                 InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY],
                 CustodialStatusCode.RELEASED_ON_LICENCE
+            )
+            return requireNotNull(event.disposal?.custody)
+        }
+
+        private fun absconded(): Custody {
+            val person = PersonGenerator.generate("A1234CD")
+            val event = custodialEvent(
+                person,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNLAWFULLY_AT_LARGE],
+                CustodialStatusCode.IN_CUSTODY
             )
             return requireNotNull(event.disposal?.custody)
         }

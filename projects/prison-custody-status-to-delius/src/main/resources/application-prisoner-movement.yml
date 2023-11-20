@@ -52,6 +52,16 @@ prisoner.movement.configs:
     featureFlag: messages_released_ecsl
   - types:
       - RELEASED
+    reasons:
+      - UAL
+      - UAL_ECL
+    actionNames:
+      - Recall
+      - UpdateStatus
+      - UpdateLocation
+    featureFlag: messages_released_absconded
+  - types:
+      - RELEASED
     actionNames:
       - Release
       - UpdateStatus
