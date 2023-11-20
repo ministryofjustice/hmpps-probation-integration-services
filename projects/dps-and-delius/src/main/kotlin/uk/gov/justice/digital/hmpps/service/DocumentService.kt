@@ -32,16 +32,18 @@ class DocumentService(
     fun downloadDocument(id: String): ResponseEntity<StreamingResponseBody> {
         val filename = documentRepository.findNameByAlfrescoId(id) ?: throw NotFoundException("Document", "alfrescoId", id)
         val response = alfrescoClient.getDocument(id)
-        return when (response.status()) {
-            200 -> ResponseEntity.ok()
-                .headers { it.putAll(response.sanitisedHeaders()) }
-                .header(CONTENT_DISPOSITION, ContentDisposition.attachment().filename(filename, UTF_8).build().toString())
-                .contentType(APPLICATION_OCTET_STREAM)
-                .body(StreamingResponseBody { response.body().asInputStream().copyTo(it) })
+        return response.body().asInputStream().use { stream ->
+            when (response.status()) {
+                200 -> ResponseEntity.ok()
+                    .headers { it.putAll(response.sanitisedHeaders()) }
+                    .header(CONTENT_DISPOSITION, ContentDisposition.attachment().filename(filename, UTF_8).build().toString())
+                    .contentType(APPLICATION_OCTET_STREAM)
+                    .body(StreamingResponseBody { stream.copyTo(it) })
 
-            404 -> throw NotFoundException("Document content", "alfrescoId", id)
+                404 -> throw NotFoundException("Document content", "alfrescoId", id)
 
-            else -> throw RuntimeException("Failed to download document. Alfresco responded with ${response.status()}.")
+                else -> throw RuntimeException("Failed to download document. Alfresco responded with ${response.status()}.")
+            }
         }
     }
 
