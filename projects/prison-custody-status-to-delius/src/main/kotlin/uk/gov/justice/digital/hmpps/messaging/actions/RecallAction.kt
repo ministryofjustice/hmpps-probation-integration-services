@@ -116,12 +116,11 @@ class RecallAction(
             }
         }
 
-        PrisonerMovement.Type.RELEASED -> if (prisonerMovement.isHospitalRelease()) {
-            RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL
-        } else if (prisonerMovement.isIrcRelease()) {
-            RecallReason.Code.TRANSFER_TO_IRC
-        } else {
-            throw IgnorableMessageException("RecallNotSupported", prisonerMovement.telemetryProperties())
+        PrisonerMovement.Type.RELEASED -> when {
+            prisonerMovement.isAbsconded() -> RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT
+            prisonerMovement.isHospitalRelease() -> RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL
+            prisonerMovement.isIrcRelease() -> RecallReason.Code.TRANSFER_TO_IRC
+            else -> throw IgnorableMessageException("RecallNotSupported", prisonerMovement.telemetryProperties())
         }
 
         else -> throw IgnorableMessageException("RecallNotSupported", prisonerMovement.telemetryProperties())
