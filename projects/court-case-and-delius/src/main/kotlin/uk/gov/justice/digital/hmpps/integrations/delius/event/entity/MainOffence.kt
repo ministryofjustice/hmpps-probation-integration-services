@@ -9,10 +9,12 @@ import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
+import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 @Immutable
 @Entity
+@Table(name = "main_offence")
 @Where(clause = "soft_deleted = 0")
 class MainOffence(
     @Id
@@ -33,6 +35,10 @@ class MainOffence(
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false
 )
+
+interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
+    fun findByEvent(event: Event): MainOffence
+}
 
 @Immutable
 @Table(name = "additional_offence")
@@ -58,6 +64,10 @@ class AdditionalOffence(
     @Column(name = "additional_offence_id")
     val id: Long
 )
+
+interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long> {
+    fun findByEvent(event: Event): List<AdditionalOffence>
+}
 
 @Immutable
 @Entity

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.api.model
 
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -16,6 +17,10 @@ data class OffenderManager(
     val provider: String,
     val active: Boolean
 )
+
+fun PersonManager.toOffenderManager() = OffenderManager(staff.toStaff(), date.toLocalDate(), team.toTeam(), provider.description, true)
+fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.toStaff() = Staff(forename + forename2.let { " $forename2" }, surname, "TODO", "TODO")
+fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team.toTeam() = Team(description, telephone, ldu.description, district.description)
 
 data class Staff(
     val forenames: String,
@@ -48,9 +53,9 @@ data class Conviction(
 
 data class Sentence(
     val description: String,
-    val length: Int,
-    val lengthUnits: String,
-    val lengthInDays: Int,
+    val length: Long?,
+    val lengthUnits: String?,
+    val lengthInDays: Long?,
     val terminationDate: LocalDate?,
     val startDate: LocalDate?,
     val endDate: LocalDate?,
@@ -61,8 +66,8 @@ data class Sentence(
 data class Offence(
     val description: String,
     val main: Boolean = false,
-    val offenceDate: LocalDate,
-    val plea: Plea
+    val offenceDate: LocalDate?,
+    val plea: Plea?
 )
 
 data class Plea(

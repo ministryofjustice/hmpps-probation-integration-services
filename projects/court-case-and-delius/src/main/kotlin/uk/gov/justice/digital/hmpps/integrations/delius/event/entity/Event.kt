@@ -10,6 +10,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
+import java.time.LocalDate
 
 @Immutable
 @Entity
@@ -23,6 +24,9 @@ class Event(
 
     @Column(name = "in_breach", columnDefinition = "number")
     val inBreach: Boolean,
+
+    @Column(name = "conviction_date")
+    val convictionDate: LocalDate,
 
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     val active: Boolean,

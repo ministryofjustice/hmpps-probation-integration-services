@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -32,13 +33,13 @@ internal class OffenderIntegrationTest {
     lateinit var objectMapper: ObjectMapper
 
     @Test
-    fun `API call retuns a success response using CRN`() {
+    fun `API call retuns probation record`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
         val result = mockMvc
             .perform(get("/probation-case/$crn").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, ProbationRecord::class.java)
-        // Assertions.assertThat(detailResponse).isEqualTo(getConvictions())
+        Assertions.assertThat(detailResponse.crn).isEqualTo(crn + "1")
     }
 }

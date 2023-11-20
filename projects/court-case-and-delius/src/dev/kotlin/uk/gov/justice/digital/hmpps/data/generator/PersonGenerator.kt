@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
+import java.time.ZonedDateTime
 
 object PersonGenerator {
     val NEW_TO_PROBATION = generate("N123456")
@@ -13,5 +14,5 @@ object PersonGenerator {
         Person(crn, softDeleted, id)
 
     fun generatePersonManager(person: Person) =
-        PersonManager(IdGenerator.getAndIncrement(), person.id, 1, StaffGenerator.ALLOCATED.id, 1)
+        PersonManager(IdGenerator.getAndIncrement(), person, TeamGenerator.DEFAULT, StaffGenerator.ALLOCATED, ProviderGenerator.DEFAULT, ZonedDateTime.now())
 }
