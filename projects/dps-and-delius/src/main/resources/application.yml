@@ -34,6 +34,7 @@ spring:
       default-request-headers:
         Accept: application/json
         Content-Type: application/json
+  mvc.async.request-timeout: 30s
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: DpsAndDelius # Should match value in [deploy/database/access.yml].
