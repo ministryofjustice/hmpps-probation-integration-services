@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import feign.Response
+import jakarta.transaction.Transactional
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpHeaders.CONTENT_DISPOSITION
@@ -46,6 +47,7 @@ class DocumentService(
         }
     }
 
+    @Transactional
     fun getDocumentsForCase(nomisId: String) = personRepository.findByNomisId(nomisId)?.let { person ->
         val documents = documentRepository.getPersonAndEventDocuments(person.id)
         val eventDocuments = documents.filter { it.relatesToEvent() }.groupBy { it.eventId }
@@ -91,8 +93,7 @@ class DocumentService(
     private val Disposal.description get() = "${type.description}${lengthString?.let { " ($it)" } ?: ""}"
     private val Disposal.lengthString get() = length?.let { "$length ${lengthUnits!!.description}" }
     private fun List<CourtAppearance>.latestOutcome() = filter { it.outcome != null }.maxByOrNull { it.date }?.outcome
-    private fun Response.sanitisedHeaders(): Map<String, List<String>> = headers().filterKeys {
-            key ->
+    private fun Response.sanitisedHeaders(): Map<String, List<String>> = headers().filterKeys { key ->
         key in listOf(
             HttpHeaders.CONTENT_LENGTH,
             HttpHeaders.ETAG,

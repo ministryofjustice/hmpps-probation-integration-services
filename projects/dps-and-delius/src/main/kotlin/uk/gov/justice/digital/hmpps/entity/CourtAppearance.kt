@@ -29,7 +29,7 @@ class CourtAppearance(
 
     @ManyToOne
     @JoinColumn(name = "outcome_id")
-    val outcome: ReferenceData?,
+    val outcome: ReferenceData? = null,
 
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false
