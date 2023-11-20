@@ -117,7 +117,7 @@ class RecallAction(
         }
 
         PrisonerMovement.Type.RELEASED -> when {
-            prisonerMovement.isAbsconded() -> RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT
+            prisonerMovement.isAbsconded() -> if (statusCode == CustodialStatusCode.CUSTODY_ROTL) RecallReason.Code.END_OF_TEMPORARY_LICENCE else RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT
             prisonerMovement.isHospitalRelease() -> RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL
             prisonerMovement.isIrcRelease() -> RecallReason.Code.TRANSFER_TO_IRC
             else -> throw IgnorableMessageException("RecallNotSupported", prisonerMovement.telemetryProperties())

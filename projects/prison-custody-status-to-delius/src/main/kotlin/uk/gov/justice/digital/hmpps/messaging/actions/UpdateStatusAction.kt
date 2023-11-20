@@ -71,7 +71,7 @@ class UpdateStatusAction(
             when {
                 prisonerMovement.isHospitalRelease() -> "Transfer to/from Hospital"
                 prisonerMovement.isIrcRelease() -> "Transfer to Immigration Removal Centre"
-                prisonerMovement.isAbsconded() -> "Recall added unlawfully at large "
+                prisonerMovement.isAbsconded() -> if (custody.canBeRecalled()) "Recall added unlawfully at large " else "Absconded unlawfully at large "
                 else -> "Released on Licence"
             }
         )
