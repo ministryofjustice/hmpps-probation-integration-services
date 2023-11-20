@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referra
 import java.time.LocalDate
 
 interface CaseOffence {
+    val code: String
     val description: String
     val date: LocalDate?
     val main: Boolean
@@ -90,11 +91,11 @@ class Offence(
 interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
     @Query(
         """
-        select mo.offence.description as description, mo.date as date, true as main, mo.event.number as eventNumber
+        select mo.offence.code as code, mo.offence.description as description, mo.date as date, true as main, mo.event.number as eventNumber
         from MainOffence mo
         where mo.event.personId = :personId
         union all
-        select ao.offence.description, ao.date, false, ao.event.number
+        select ao.offence.code, ao.offence.description, ao.date, false, ao.event.number
         from AdditionalOffence ao
         where ao.event.personId = :personId
     """

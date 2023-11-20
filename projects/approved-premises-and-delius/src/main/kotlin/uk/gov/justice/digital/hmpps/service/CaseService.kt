@@ -69,7 +69,7 @@ fun ProbationCase.manager(): Manager =
 
 fun CommunityManager.team() = Team(team.code, team.description, Ldu(team.ldu.code, team.ldu.description))
 
-fun CaseOffence.asOffence() = Offence(description, date, main, eventNumber)
+fun CaseOffence.asOffence() = Offence(code, description, date, main, eventNumber)
 
 fun Registration.asRegistration() = uk.gov.justice.digital.hmpps.model.Registration(type.code, type.description, date)
 fun Registration.asMappa() = MappaDetail(
