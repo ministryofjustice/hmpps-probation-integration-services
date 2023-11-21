@@ -2,12 +2,12 @@ package uk.gov.justice.digital.hmpps.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
@@ -37,7 +37,7 @@ class Person(
     @Column(name = "noms_number", columnDefinition = "char(7)")
     val nomisId: String?,
 
-    @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "person")
     val events: List<Event>,
 
     @Column(columnDefinition = "number")
@@ -45,5 +45,6 @@ class Person(
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {
+    @EntityGraph(attributePaths = ["events.disposal", "events.mainOffence"])
     fun findByNomisId(nomisId: String): Person?
 }

@@ -34,7 +34,7 @@ class Event(
     val mainOffence: MainOffence,
 
     @OneToMany(mappedBy = "event")
-    val courtAppearances: List<CourtAppearance>,
+    val courtAppearances: List<CourtAppearance> = listOf(),
 
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
