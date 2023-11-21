@@ -30,7 +30,6 @@ fun ReferenceData.keyValueOf() = KeyValue(code, description)
 fun RequirementMainCategory.keyValueOf() = KeyValue(code, description)
 fun AdRequirementMainCategory.keyValueOf() = KeyValue(code, description)
 
-
 data class Staff(
     val forenames: String,
     val surname: String,
