@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import feign.Response
+import jakarta.transaction.Transactional
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpHeaders.CONTENT_DISPOSITION
@@ -32,21 +33,21 @@ class DocumentService(
     fun downloadDocument(id: String): ResponseEntity<StreamingResponseBody> {
         val filename = documentRepository.findNameByAlfrescoId(id) ?: throw NotFoundException("Document", "alfrescoId", id)
         val response = alfrescoClient.getDocument(id)
-        return response.body().asInputStream().use { stream ->
-            when (response.status()) {
-                200 -> ResponseEntity.ok()
-                    .headers { it.putAll(response.sanitisedHeaders()) }
-                    .header(CONTENT_DISPOSITION, ContentDisposition.attachment().filename(filename, UTF_8).build().toString())
-                    .contentType(APPLICATION_OCTET_STREAM)
-                    .body(StreamingResponseBody { stream.copyTo(it) })
+        val input = response.body().asInputStream()
+        return when (response.status()) {
+            200 -> ResponseEntity.ok()
+                .headers { it.putAll(response.sanitisedHeaders()) }
+                .header(CONTENT_DISPOSITION, ContentDisposition.attachment().filename(filename, UTF_8).build().toString())
+                .contentType(APPLICATION_OCTET_STREAM)
+                .body(StreamingResponseBody { output -> input.use { it.copyTo(output) } })
 
-                404 -> throw NotFoundException("Document content", "alfrescoId", id)
+            404 -> throw NotFoundException("Document content", "alfrescoId", id)
 
-                else -> throw RuntimeException("Failed to download document. Alfresco responded with ${response.status()}.")
-            }
+            else -> throw RuntimeException("Failed to download document. Alfresco responded with ${response.status()}.")
         }
     }
 
+    @Transactional
     fun getDocumentsForCase(nomisId: String) = personRepository.findByNomisId(nomisId)?.let { person ->
         val documents = documentRepository.getPersonAndEventDocuments(person.id)
         val eventDocuments = documents.filter { it.relatesToEvent() }.groupBy { it.eventId }
@@ -92,11 +93,11 @@ class DocumentService(
     private val Disposal.description get() = "${type.description}${lengthString?.let { " ($it)" } ?: ""}"
     private val Disposal.lengthString get() = length?.let { "$length ${lengthUnits!!.description}" }
     private fun List<CourtAppearance>.latestOutcome() = filter { it.outcome != null }.maxByOrNull { it.date }?.outcome
-    private fun Response.sanitisedHeaders(): Map<String, List<String>> = headers().filterKeys {
-        it in listOf(
+    private fun Response.sanitisedHeaders(): Map<String, List<String>> = headers().filterKeys { key ->
+        key in listOf(
             HttpHeaders.CONTENT_LENGTH,
             HttpHeaders.ETAG,
             HttpHeaders.LAST_MODIFIED
-        )
+        ).map { it.lowercase() }
     }.mapValues { it.value.toList() }
 }

@@ -32,9 +32,22 @@ object EventGenerator {
                 id = IdGenerator.getAndIncrement(),
                 subCategoryDescription = "Burglary"
             )
-        ),
-        courtAppearances = listOf()
+        )
     ).also { it.mainOffence.set("event", it) }
+
+    val UNSENTENCED_EVENT = Event(
+        id = IdGenerator.getAndIncrement(),
+        person = PersonGenerator.DEFAULT,
+        referralDate = LocalDate.now(),
+        mainOffence = MainOffence(
+            id = IdGenerator.getAndIncrement(),
+            offence = Offence(
+                id = IdGenerator.getAndIncrement(),
+                subCategoryDescription = "Daylight Robbery"
+            )
+        )
+    ).also { it.mainOffence.set("event", it) }
+
     val DISPOSAL = Disposal(
         id = IdGenerator.getAndIncrement(),
         event = EVENT,
@@ -45,11 +58,13 @@ object EventGenerator {
         length = 6,
         lengthUnits = ReferenceData(IdGenerator.getAndIncrement(), "M", "Months")
     )
+
     val INSTITUTION = Institution(
         id = IdGenerator.getAndIncrement(),
         name = "test institution",
         establishment = true
     )
+
     val CUSTODY = Custody(
         id = IdGenerator.getAndIncrement(),
         disposal = DISPOSAL,
@@ -57,14 +72,23 @@ object EventGenerator {
     )
 
     val COURT = Court(courtId = IdGenerator.getAndIncrement(), courtName = "test court")
-    val COURT_REPORT_TYPE = CourtReportType(courtReportTypeId = IdGenerator.getAndIncrement(), description = "court report type")
+
     val COURT_APPEARANCE = CourtAppearance(
         id = IdGenerator.getAndIncrement(),
         date = ZonedDateTime.now(),
         courtId = COURT.courtId,
-        event = EVENT,
+        event = EVENT
+    ).also { EVENT.set(Event::courtAppearances, listOf(this)) }
+
+    val UNSENTENCED_COURT_APPEARANCE = CourtAppearance(
+        id = IdGenerator.getAndIncrement(),
+        date = ZonedDateTime.now(),
+        courtId = COURT.courtId,
+        event = UNSENTENCED_EVENT,
         outcome = ReferenceData(IdGenerator.getAndIncrement(), "TEST", "Community Order")
-    )
+    ).also { UNSENTENCED_EVENT.set(Event::courtAppearances, listOf(this)) }
+
+    val COURT_REPORT_TYPE = CourtReportType(courtReportTypeId = IdGenerator.getAndIncrement(), description = "court report type")
     val COURT_REPORT = CourtReport(
         courtReportId = IdGenerator.getAndIncrement(),
         courtReportTypeId = COURT_REPORT_TYPE.courtReportTypeId,

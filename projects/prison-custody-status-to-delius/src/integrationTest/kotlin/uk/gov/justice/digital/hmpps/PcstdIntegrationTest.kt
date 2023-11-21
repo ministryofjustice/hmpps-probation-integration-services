@@ -531,7 +531,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         val custody = getCustody(nomsNumber)
         assertTrue(custody.isInCustody())
         assertThat(custody.institution?.code, equalTo(ual.code))
-        assertThat(custody.status.code, equalTo(CustodialStatusCode.IN_CUSTODY.code))
+        assertThat(custody.status.code, equalTo(CustodialStatusCode.RECALLED.code))
         assertThat(custody.statusChangeDate, isCloseTo(notification.message.occurredAt))
 
         verifyRecall(custody, notification.message.occurredAt, RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT)

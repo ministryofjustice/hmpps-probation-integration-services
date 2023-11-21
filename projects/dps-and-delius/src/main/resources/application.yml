@@ -16,6 +16,7 @@ spring:
           global_temporary:
             create_tables: false
             drop_tables: false
+    open-in-view: false # this prevents aborted streaming requests from leaving a DB connection in-use
   security.oauth2.client:
     registration:
       dps-and-delius:
@@ -34,7 +35,6 @@ spring:
       default-request-headers:
         Accept: application/json
         Content-Type: application/json
-  mvc.async.request-timeout: 30s
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: DpsAndDelius # Should match value in [deploy/database/access.yml].
