@@ -89,6 +89,9 @@ class CaseNote(
     @Column(updatable = false)
     val partitionAreaId: Long = 0L,
 
+    @Column(name = "event_id")
+    val eventId: Long? = null,
+
     @Column(updatable = false, columnDefinition = "NUMBER")
     var softDeleted: Boolean = false
 )
@@ -102,6 +105,8 @@ class CaseNoteType(
     val id: Long,
 
     val code: String,
+
+    val description: String,
 
     @Column(name = "sensitive_contact")
     @Convert(converter = YesNoConverter::class)

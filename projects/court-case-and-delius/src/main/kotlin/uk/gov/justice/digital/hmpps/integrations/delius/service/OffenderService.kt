@@ -2,16 +2,29 @@ package uk.gov.justice.digital.hmpps.integrations.delius.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.Conviction
+import uk.gov.justice.digital.hmpps.api.model.DocumentType
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
+import uk.gov.justice.digital.hmpps.api.model.LicenceCondition
 import uk.gov.justice.digital.hmpps.api.model.Offence
+import uk.gov.justice.digital.hmpps.api.model.OffenderDocumentDetail
 import uk.gov.justice.digital.hmpps.api.model.ProbationRecord
+import uk.gov.justice.digital.hmpps.api.model.Requirement
 import uk.gov.justice.digital.hmpps.api.model.Sentence
+import uk.gov.justice.digital.hmpps.api.model.keyValueOf
 import uk.gov.justice.digital.hmpps.api.model.toOffenderManager
+import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Document
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.DocumentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.typeDescription
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdditionalOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.LicenseConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.MainOffenceRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.DisposalRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.PersonManagerRepository
 
 @Service
@@ -19,30 +32,36 @@ class OffenderService(
     private val personManagerRepository: PersonManagerRepository,
     private val disposalRepository: DisposalRepository,
     private val mainOffenceRepository: MainOffenceRepository,
-    private val additionalOffenceRepository: AdditionalOffenceRepository
+    private val additionalOffenceRepository: AdditionalOffenceRepository,
+    private val licenseConditionRepository: LicenseConditionRepository,
+    private val requirementRepository: RequirementRepository,
+    private val documentRepository: DocumentRepository,
+    private val personRepository: PersonRepository
 
 ) {
     fun getProbationRecord(crn: String): ProbationRecord {
-        val personManager = personManagerRepository.findActiveManager(crn)
-        // TODO get email and telephone for staff
-        val convictions = getConvictions(crn)
+        val person =
+            personRepository.findByCrnAndSoftDeletedIsFalse(crn) ?: throw NotFoundException("Person", "crn", crn)
+        val personManager =
+            personManagerRepository.findActiveManager(person.id) ?: throw NotFoundException("PersonManager", "crn", crn)
+        val documents = documentRepository.getPersonAndEventDocuments(person.id)
+        val convictions = getConvictions(crn, documents)
         return ProbationRecord(crn, listOf(personManager.toOffenderManager()), convictions)
     }
 
     private fun getOffences(event: Event): List<Offence> {
-        val offences: ArrayList<Offence> = arrayListOf()
-        mainOffenceRepository.findByEvent(event).let { offences += Offence(it.offence.description, true, it.date, null) } // TODO populate plea
-        additionalOffenceRepository.findByEvent(event).forEach {
-            offences += Offence(it.offence.description, false, it.date, null) // TODO populate plea
+        val mainOffence =
+            listOf(mainOffenceRepository.findByEvent(event).let { Offence(it.offence.description, true, it.date) })
+        val additionalOffences = additionalOffenceRepository.findByEvent(event).map {
+            Offence(it.offence.description, false, it.date)
         }
-        return offences
+        return mainOffence + additionalOffences
     }
 
-    fun getConvictions(crn: String): List<Conviction> {
+    fun getConvictions(crn: String, documents: List<Document>): List<Conviction> {
         val disposals = disposalRepository.getByCrn(crn)
-        val convictions = arrayListOf<Conviction>()
-        disposals.forEach { disposal ->
-            convictions += Conviction(
+        return disposals.map { disposal ->
+            Conviction(
                 disposal.event.active,
                 disposal.event.inBreach,
                 false,
@@ -50,15 +69,58 @@ class OffenderService(
                 getOffences(disposal.event),
                 disposal.sentenceOf(),
                 custodialType = disposal.custody?.let { c -> KeyValue(c.status.code, c.status.description) },
-                documents = listOf(),
+                documents = getConvictionDocuments(disposal, documents),
                 breaches = listOf(),
-                requirements = listOf(),
-                pssRequirements = listOf(),
-                licenceConditions = listOf()
+                requirements = getRequirements(disposal),
+                licenceConditions = getLicenseConditions(disposal)
             )
         }
+    }
 
-        return convictions
+    private fun getConvictionDocuments(disposal: Disposal, documents: List<Document>): List<OffenderDocumentDetail> {
+        return documents.filter { it.eventId == disposal.event.id }.map {
+            OffenderDocumentDetail(
+                it.name,
+                it.author,
+                DocumentType.valueOf(it.type),
+                it.description,
+                it.createdAt?.atZone(EuropeLondon),
+                false,
+                KeyValue(it.tableName, it.typeDescription())
+            )
+        }
+    }
+
+    private fun getRequirements(disposal: Disposal): List<Requirement> {
+        val requirements = requirementRepository.getAllByDisposal(disposal)
+        return requirements.map {
+            Requirement(
+                it.commencementDate,
+                it.terminationDate,
+                it.expectedStartDate,
+                it.expectedEndDate,
+                it.active,
+                it.mainCategory?.keyValueOf(),
+                it.subCategory?.keyValueOf(),
+                it.adMainCategory?.keyValueOf(),
+                it.adSubCategory?.keyValueOf(),
+                it.terminationReason?.keyValueOf(),
+                it.length
+            )
+        }
+    }
+
+    private fun getLicenseConditions(disposal: Disposal): List<LicenceCondition> {
+        val licenseConditions = licenseConditionRepository.getAllByDisposal(disposal)
+        return licenseConditions.map {
+            LicenceCondition(
+                it.mainCategory.description,
+                it.subCategory?.description,
+                it.startDate,
+                it.notes,
+                it.active
+            )
+        }
     }
 }
 
@@ -70,6 +132,5 @@ fun Disposal.sentenceOf() = Sentence(
     terminationDate?.toLocalDate(),
     startDate.toLocalDate(),
     endDate?.toLocalDate(),
-    terminationReason?.description,
-    null // TODO fill this in.
+    terminationReason?.description
 )

@@ -1,8 +1,12 @@
 package uk.gov.justice.digital.hmpps.api.model
 
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdRequirementMainCategory
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 data class ProbationRecord(
     val crn: String,
@@ -21,6 +25,11 @@ data class OffenderManager(
 fun PersonManager.toOffenderManager() = OffenderManager(staff.toStaff(), date.toLocalDate(), team.toTeam(), provider.description, true)
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.toStaff() = Staff(forename + forename2.let { " $forename2" }, surname, "TODO", "TODO")
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team.toTeam() = Team(description, telephone, ldu.description, district.description)
+
+fun ReferenceData.keyValueOf() = KeyValue(code, description)
+fun RequirementMainCategory.keyValueOf() = KeyValue(code, description)
+fun AdRequirementMainCategory.keyValueOf() = KeyValue(code, description)
+
 
 data class Staff(
     val forenames: String,
@@ -47,7 +56,6 @@ data class Conviction(
     val documents: List<OffenderDocumentDetail> = listOf(),
     val breaches: List<Breach> = listOf(),
     val requirements: List<Requirement> = listOf(),
-    val pssRequirements: List<PssRequirement> = listOf(),
     val licenceConditions: List<LicenceCondition> = listOf()
 )
 
@@ -59,32 +67,19 @@ data class Sentence(
     val terminationDate: LocalDate?,
     val startDate: LocalDate?,
     val endDate: LocalDate?,
-    val terminationReason: String?,
-    val unpaidWork: UnpaidWork?
+    val terminationReason: String?
 )
 
 data class Offence(
     val description: String,
     val main: Boolean = false,
-    val offenceDate: LocalDate?,
-    val plea: Plea?
+    val offenceDate: LocalDate?
 )
 
 data class Plea(
     val pleaValue: String,
     val pleaDate: LocalDate
 )
-
-data class UnpaidWork(
-    val minutesOffered: Int,
-    val minutesCompleted: Int?,
-    val appointmentsToDate: Int?,
-    val attended: Int?,
-    val acceptableAbsences: Int?,
-    val unacceptableAbsences: Int?,
-    val status: String?
-)
-
 data class KeyValue(
     val code: String,
     val description: String
@@ -108,13 +103,12 @@ data class ReportAuthor(
 data class OffenderDocumentDetail(
 
     val documentName: String,
-    val author: String,
+    val author: String?,
     val type: DocumentType,
     val extendedDescription: String?,
-    val createdAt: LocalDateTime,
+    val createdAt: ZonedDateTime?,
     val psr: Boolean = false,
-    val subType: KeyValue?,
-    val reportDocumentDates: ReportDocumentDates?
+    val subType: KeyValue?
 )
 
 enum class DocumentType(val description: String) {
@@ -155,13 +149,12 @@ data class Requirement(
     val expectedStartDate: LocalDate?,
     val expectedEndDate: LocalDate?,
     val active: Boolean = false,
-    val requirementTypeSubCategory: KeyValue?,
     val requirementTypeMainCategory: KeyValue?,
+    val requirementTypeSubCategory: KeyValue?,
     val adRequirementTypeMainCategory: KeyValue?,
     val adRequirementTypeSubCategory: KeyValue?,
     val terminationReason: KeyValue?,
-    val length: Long?,
-    val lengthUnit: String?
+    val length: Long?
 )
 
 data class PssRequirement(

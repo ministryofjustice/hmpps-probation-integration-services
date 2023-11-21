@@ -1,0 +1,43 @@
+package uk.gov.justice.digital.hmpps.data.generator
+
+import uk.gov.justice.digital.hmpps.data.entity.Court
+import uk.gov.justice.digital.hmpps.data.entity.CourtReport
+import uk.gov.justice.digital.hmpps.data.entity.CourtReportType
+import uk.gov.justice.digital.hmpps.data.entity.Institution
+import uk.gov.justice.digital.hmpps.data.entity.InstitutionalReport
+import uk.gov.justice.digital.hmpps.data.entity.Nsi
+import uk.gov.justice.digital.hmpps.data.entity.NsiType
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
+import java.time.LocalDate
+
+object DocumentEntityGenerator {
+    val COURT = Court(courtId = IdGenerator.getAndIncrement(), courtName = "test court")
+    val COURT_REPORT_TYPE =
+        CourtReportType(courtReportTypeId = IdGenerator.getAndIncrement(), description = "court report type")
+    val COURT_REPORT = CourtReport(
+        courtReportId = IdGenerator.getAndIncrement(),
+        courtReportTypeId = COURT_REPORT_TYPE.courtReportTypeId,
+        courtAppearanceId = 1,
+        dateRequested = LocalDate.of(2000, 1, 1)
+    )
+
+    val INSTITUTIONAL_REPORT_TYPE = ReferenceData("IR", "institutional report type", IdGenerator.getAndIncrement())
+    val INSTITUTIONAL_REPORT = InstitutionalReport(
+        institutionalReportId = IdGenerator.getAndIncrement(),
+        institutionId = 1,
+        institutionReportTypeId = INSTITUTIONAL_REPORT_TYPE.id,
+        custodyId = 1,
+        establishment = true,
+        dateRequested = LocalDate.of(2000, 1, 2)
+    )
+
+    val NSI_TYPE = NsiType(nsiTypeId = IdGenerator.getAndIncrement(), description = "nsi type")
+    val NSI = Nsi(
+        nsiId = IdGenerator.getAndIncrement(),
+        nsiTypeId = NSI_TYPE.nsiTypeId,
+        eventId = 1,
+        referralDate = LocalDate.of(2000, 1, 4)
+    )
+
+    val R_INSTITUTION = Institution(IdGenerator.getAndIncrement(), "test", false)
+}

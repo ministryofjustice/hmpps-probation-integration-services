@@ -69,7 +69,7 @@ object SentenceGenerator {
         outcome: Outcome,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = CourtAppearance(event, outcome, softDeleted, id)
+    ) = CourtAppearance(event, outcome, DocumentEntityGenerator.COURT.courtId, softDeleted, id)
 
     fun generateCustody(
         disposal: Disposal,

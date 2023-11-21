@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
 import uk.gov.justice.digital.hmpps.data.generator.CourtCaseNoteGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DistrictGenerator
+import uk.gov.justice.digital.hmpps.data.generator.DocumentEntityGenerator
 import uk.gov.justice.digital.hmpps.data.generator.IdGenerator
 import uk.gov.justice.digital.hmpps.data.generator.LDUGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -41,6 +42,16 @@ class DataLoader(
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
         em.saveAll(
+
+            DocumentEntityGenerator.COURT,
+            DocumentEntityGenerator.COURT_REPORT_TYPE,
+            DocumentEntityGenerator.COURT_REPORT,
+            DocumentEntityGenerator.INSTITUTIONAL_REPORT_TYPE,
+            DocumentEntityGenerator.INSTITUTIONAL_REPORT,
+            DocumentEntityGenerator.NSI_TYPE,
+            DocumentEntityGenerator.NSI,
+            DocumentEntityGenerator.R_INSTITUTION,
+
             ProviderGenerator.DEFAULT,
             LDUGenerator.DEFAULT,
             BoroughGenerator.DEFAULT,

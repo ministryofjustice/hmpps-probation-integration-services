@@ -40,6 +40,6 @@ internal class OffenderIntegrationTest {
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, ProbationRecord::class.java)
-        Assertions.assertThat(detailResponse.crn).isEqualTo(crn + "1")
+        Assertions.assertThat(detailResponse.crn).isEqualTo(crn)
     }
 }

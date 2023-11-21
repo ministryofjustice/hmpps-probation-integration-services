@@ -23,6 +23,9 @@ class CourtAppearance(
     @JoinColumn(name = "outcome_id")
     val outcome: Outcome,
 
+    @Column(name = "court_id")
+    val courtId: Long,
+
     @Column(name = "soft_deleted", columnDefinition = "number")
     var softDeleted: Boolean,
 
