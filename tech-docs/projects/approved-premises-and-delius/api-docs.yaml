@@ -497,11 +497,14 @@ components:
           format: date-time
     Offence:
       required:
+      - code
       - description
       - eventNumber
       - main
       type: object
       properties:
+        code:
+          type: string
         description:
           type: string
         date:
