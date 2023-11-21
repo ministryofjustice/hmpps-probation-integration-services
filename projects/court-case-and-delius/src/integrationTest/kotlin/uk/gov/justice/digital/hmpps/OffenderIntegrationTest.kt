@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.ProbationRecord
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
+import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 
@@ -41,5 +43,8 @@ internal class OffenderIntegrationTest {
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, ProbationRecord::class.java)
         Assertions.assertThat(detailResponse.crn).isEqualTo(crn)
+        Assertions.assertThat(detailResponse.offenderManagers[0].staff.forenames).isEqualTo(StaffGenerator.ALLOCATED.forename + " " + StaffGenerator.ALLOCATED.forename2)
+        Assertions.assertThat(detailResponse.offenderManagers[0].staff.surname).isEqualTo(StaffGenerator.ALLOCATED.surname)
+        Assertions.assertThat(detailResponse.offenderManagers[0].team.description).isEqualTo(TeamGenerator.DEFAULT.description)
     }
 }

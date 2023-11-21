@@ -7,6 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.api.model.DocumentType
 import uk.gov.justice.digital.hmpps.data.generator.BoroughGenerator
 import uk.gov.justice.digital.hmpps.data.generator.BusinessInteractionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ContactTypeGenerator
@@ -123,6 +124,15 @@ class DataLoader(
         em.saveAll(preEvent, preSentence, preManager)
 
         em.merge(CourtCaseNoteGenerator.CASE_NOTE)
+
+        em.saveAll(
+            DocumentEntityGenerator.generateDocument(
+                PersonGenerator.CURRENTLY_MANAGED.id,
+                currentEvent.id,
+                DocumentType.CONVICTION_DOCUMENT.name,
+                "EVENT"
+            )
+        )
     }
 }
 

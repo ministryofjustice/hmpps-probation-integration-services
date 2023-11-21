@@ -7,8 +7,10 @@ import uk.gov.justice.digital.hmpps.data.entity.Institution
 import uk.gov.justice.digital.hmpps.data.entity.InstitutionalReport
 import uk.gov.justice.digital.hmpps.data.entity.Nsi
 import uk.gov.justice.digital.hmpps.data.entity.NsiType
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 object DocumentEntityGenerator {
     val COURT = Court(courtId = IdGenerator.getAndIncrement(), courtName = "test court")
@@ -40,4 +42,16 @@ object DocumentEntityGenerator {
     )
 
     val R_INSTITUTION = Institution(IdGenerator.getAndIncrement(), "test", false)
+
+    fun generateDocument(personId: Long, primaryKeyId: Long, type: String, tableName: String) =
+        DocumentEntity(
+            IdGenerator.getAndIncrement(),
+            personId,
+            "alfrescoId",
+            primaryKeyId,
+            "filename.txt",
+            type,
+            tableName,
+            ZonedDateTime.now()
+        )
 }

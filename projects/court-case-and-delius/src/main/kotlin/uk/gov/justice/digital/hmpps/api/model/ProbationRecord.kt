@@ -5,7 +5,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdRequireme
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 data class ProbationRecord(
@@ -75,30 +74,10 @@ data class Offence(
     val offenceDate: LocalDate?
 )
 
-data class Plea(
-    val pleaValue: String,
-    val pleaDate: LocalDate
-)
 data class KeyValue(
     val code: String,
     val description: String
 )
-
-data class CourtReport(
-    val requestedDate: LocalDate,
-    val requiredDate: LocalDate,
-    val completedDate: LocalDate,
-    val courtReportType: KeyValue,
-    val deliveredCourtReportType: KeyValue,
-    val author: ReportAuthor
-)
-
-data class ReportAuthor(
-    val unallocated: Boolean,
-    val forenames: String?,
-    val surname: String?
-)
-
 data class OffenderDocumentDetail(
 
     val documentName: String,
@@ -129,12 +108,6 @@ enum class DocumentType(val description: String) {
     CONTACT_DOCUMENT("Contact related document")
 }
 
-data class ReportDocumentDates(
-    val requestedDate: LocalDate?,
-    val requiredDate: LocalDate?,
-    val completedDate: LocalDateTime?
-)
-
 class Breach(
     val description: String?,
     val status: String?,
@@ -154,12 +127,6 @@ data class Requirement(
     val adRequirementTypeSubCategory: KeyValue?,
     val terminationReason: KeyValue?,
     val length: Long?
-)
-
-data class PssRequirement(
-    val description: String?,
-    val subTypeDescription: String?,
-    val active: Boolean
 )
 
 data class LicenceCondition(
