@@ -48,13 +48,6 @@ class InstitutionalReport(
 )
 
 @Entity
-class Nsi(@Id val nsiId: Long, val nsiTypeId: Long, val eventId: Long?, val referralDate: LocalDate)
-
-@Entity
-@Table(name = "r_nsi_type")
-class NsiType(@Id val nsiTypeId: Long, val description: String)
-
-@Entity
 class PersonalCircumstance(@Id val personalCircumstanceId: Long, val circumstanceTypeId: Long, val startDate: LocalDate)
 
 @Entity

@@ -49,8 +49,6 @@ class DataLoader(
             DocumentEntityGenerator.COURT_REPORT,
             DocumentEntityGenerator.INSTITUTIONAL_REPORT_TYPE,
             DocumentEntityGenerator.INSTITUTIONAL_REPORT,
-            DocumentEntityGenerator.NSI_TYPE,
-            DocumentEntityGenerator.NSI,
             DocumentEntityGenerator.R_INSTITUTION,
 
             ProviderGenerator.DEFAULT,
@@ -69,7 +67,15 @@ class DataLoader(
             ReferenceDataGenerator.DISPOSAL_TYPE,
             ReferenceDataGenerator.LENGTH_UNITS,
             ReferenceDataGenerator.TERMINATION_REASON,
-            ReferenceDataGenerator.CUSTODIAL_STATUS
+            ReferenceDataGenerator.CUSTODIAL_STATUS,
+            ReferenceDataGenerator.REQUIREMENT_MAIN_CAT,
+            ReferenceDataGenerator.REQUIREMENT_SUB_CAT,
+            ReferenceDataGenerator.AD_REQUIREMENT_MAIN_CAT,
+            ReferenceDataGenerator.AD_REQUIREMENT_SUB_CAT,
+            ReferenceDataGenerator.LIC_COND_MAIN_CAT,
+            ReferenceDataGenerator.LIC_COND_SUB_CAT,
+            ReferenceDataGenerator.NSI_TYPE,
+            ReferenceDataGenerator.NSI_BREACH_OUTCOME
         )
 
         em.saveAll(StaffGenerator.ALLOCATED, StaffGenerator.UNALLOCATED)
@@ -110,7 +116,20 @@ class DataLoader(
             SentenceGenerator.ADDITIONAL_OFFENCE,
             LocalDate.now()
         )
-        em.saveAll(currentEvent, currentSentence, currentManager, custody, mainOffence, additionalOffence)
+        val requirement = SentenceGenerator.generateRequirement(disposal = currentSentence)
+        val licenceCondition = SentenceGenerator.generateLicenseCondition(disposal = currentSentence)
+        val breachNsi = SentenceGenerator.generateBreachNsi(disposal = currentSentence)
+        em.saveAll(
+            currentEvent,
+            currentSentence,
+            currentManager,
+            custody,
+            mainOffence,
+            additionalOffence,
+            requirement,
+            licenceCondition,
+            breachNsi
+        )
 
         val preEvent = SentenceGenerator.generateEvent(PersonGenerator.PREVIOUSLY_MANAGED, active = false)
         val preSentence = SentenceGenerator.generateSentence(

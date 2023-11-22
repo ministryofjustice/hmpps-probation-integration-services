@@ -5,9 +5,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.en
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.Outcome
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdditionalOffence
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.LicenceCondition
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.MainOffence
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Offence
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.OrderManager
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Requirement
+import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
@@ -100,4 +103,40 @@ object SentenceGenerator {
         id: Long = IdGenerator.getAndIncrement(),
         softDeleted: Boolean = false
     ) = AdditionalOffence(event, offence, date, softDeleted, id)
+
+    fun generateRequirement(
+        id: Long = IdGenerator.getAndIncrement(),
+        disposal: Disposal
+    ) = Requirement(
+        disposal,
+        ReferenceDataGenerator.REQUIREMENT_MAIN_CAT,
+        ReferenceDataGenerator.REQUIREMENT_SUB_CAT,
+        ReferenceDataGenerator.AD_REQUIREMENT_MAIN_CAT,
+        ReferenceDataGenerator.AD_REQUIREMENT_SUB_CAT,
+        LocalDate.now(),
+        id = id
+    )
+
+    fun generateLicenseCondition(
+        id: Long = IdGenerator.getAndIncrement(),
+        disposal: Disposal
+    ) = LicenceCondition(
+        disposal,
+        LocalDate.now(),
+        ReferenceDataGenerator.LIC_COND_MAIN_CAT,
+        ReferenceDataGenerator.LIC_COND_SUB_CAT,
+        "Licence Condition notes",
+        id
+    )
+
+    fun generateBreachNsi(disposal: Disposal) = Nsi(
+        disposal.event.person.id,
+        disposal.event.id,
+        ReferenceDataGenerator.NSI_TYPE,
+        null,
+        ReferenceDataGenerator.NSI_BREACH_OUTCOME,
+        LocalDate.now(),
+        LocalDate.now(),
+        LocalDate.now()
+    )
 }

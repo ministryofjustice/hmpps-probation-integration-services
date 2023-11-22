@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.Breach
 import uk.gov.justice.digital.hmpps.api.model.Conviction
 import uk.gov.justice.digital.hmpps.api.model.DocumentType
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
@@ -19,9 +20,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.DocumentRepositor
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.typeDescription
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdditionalOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.LicenseConditionRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
@@ -33,10 +35,11 @@ class OffenderService(
     private val disposalRepository: DisposalRepository,
     private val mainOffenceRepository: MainOffenceRepository,
     private val additionalOffenceRepository: AdditionalOffenceRepository,
-    private val licenseConditionRepository: LicenseConditionRepository,
+    private val licenseConditionRepository: LicenceConditionRepository,
     private val requirementRepository: RequirementRepository,
     private val documentRepository: DocumentRepository,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
+    private val nsiRepository: NsiRepository
 
 ) {
     fun getProbationRecord(crn: String): ProbationRecord {
@@ -70,10 +73,17 @@ class OffenderService(
                 disposal.sentenceOf(),
                 custodialType = disposal.custody?.let { c -> KeyValue(c.status.code, c.status.description) },
                 documents = getConvictionDocuments(disposal, documents),
-                breaches = listOf(),
+                breaches = getBreaches(disposal),
                 requirements = getRequirements(disposal),
                 licenceConditions = getLicenseConditions(disposal)
             )
+        }
+    }
+
+    private fun getBreaches(disposal: Disposal): List<Breach> {
+        return nsiRepository.findAllBreachNSIByEventId(disposal.event.id).map {
+            val description = if (it.subType?.description == null) it.type.description else it.subType.description
+            Breach(description, it.outcome?.description, it.actualStartDate, it.statusDate)
         }
     }
 

@@ -33,7 +33,7 @@ class Requirement(
 
     @ManyToOne
     @JoinColumn(name = "ad_rqmnt_type_main_category_id")
-    val adMainCategory: RequirementMainCategory?,
+    val adMainCategory: AdRequirementMainCategory?,
 
     @ManyToOne
     @JoinColumn(name = "ad_rqmnt_type_sub_category_id")

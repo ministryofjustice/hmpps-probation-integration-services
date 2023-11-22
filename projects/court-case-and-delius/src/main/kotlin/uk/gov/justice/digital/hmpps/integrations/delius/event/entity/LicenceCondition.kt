@@ -16,13 +16,9 @@ import java.time.LocalDate
 
 @Immutable
 @Table(name = "lic_condition")
-@Entity(name = "CaseSummaryLicenceCondition")
+@Entity
 @Where(clause = "soft_deleted = 0 and active_flag = 1")
 class LicenceCondition(
-    @Id
-    @Column(name = "lic_condition_id")
-    val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal,
@@ -42,6 +38,10 @@ class LicenceCondition(
     @Column(name = "lic_condition_notes")
     val notes: String?,
 
+    @Id
+    @Column(name = "lic_condition_id")
+    val id: Long,
+
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
 
@@ -51,7 +51,7 @@ class LicenceCondition(
 
 @Immutable
 @Table(name = "r_lic_cond_type_main_cat")
-@Entity(name = "CaseSummaryLicenceConditionMainCategory")
+@Entity
 class LicenceConditionMainCategory(
     @Id
     @Column(name = "lic_cond_type_main_cat_id")
@@ -64,6 +64,6 @@ class LicenceConditionMainCategory(
     val description: String
 )
 
-interface LicenseConditionRepository : JpaRepository<LicenceCondition, Long> {
+interface LicenceConditionRepository : JpaRepository<LicenceCondition, Long> {
     fun getAllByDisposal(disposal: Disposal): List<LicenceCondition>
 }

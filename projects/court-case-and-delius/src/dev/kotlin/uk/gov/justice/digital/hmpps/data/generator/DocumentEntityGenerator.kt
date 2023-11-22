@@ -5,8 +5,6 @@ import uk.gov.justice.digital.hmpps.data.entity.CourtReport
 import uk.gov.justice.digital.hmpps.data.entity.CourtReportType
 import uk.gov.justice.digital.hmpps.data.entity.Institution
 import uk.gov.justice.digital.hmpps.data.entity.InstitutionalReport
-import uk.gov.justice.digital.hmpps.data.entity.Nsi
-import uk.gov.justice.digital.hmpps.data.entity.NsiType
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.DocumentEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import java.time.LocalDate
@@ -31,14 +29,6 @@ object DocumentEntityGenerator {
         custodyId = 1,
         establishment = true,
         dateRequested = LocalDate.of(2000, 1, 2)
-    )
-
-    val NSI_TYPE = NsiType(nsiTypeId = IdGenerator.getAndIncrement(), description = "nsi type")
-    val NSI = Nsi(
-        nsiId = IdGenerator.getAndIncrement(),
-        nsiTypeId = NSI_TYPE.nsiTypeId,
-        eventId = 1,
-        referralDate = LocalDate.of(2000, 1, 4)
     )
 
     val R_INSTITUTION = Institution(IdGenerator.getAndIncrement(), "test", false)
