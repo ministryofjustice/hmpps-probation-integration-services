@@ -31,7 +31,7 @@ internal class StaffIntegrationTest {
             .andExpect(jsonPath("username", equalTo("test.user")))
             .andExpect(jsonPath("name.forenames", equalTo("Test")))
             .andExpect(jsonPath("name.surname", equalTo("Staff")))
-            .andExpect(jsonPath("teams[*].code", equalTo(listOf("TEAM1", "TEAM2"))))
+            .andExpect(jsonPath("teams[*].code", equalTo(listOf("TEAM01", "TEAM02"))))
     }
 
     @Test
@@ -81,7 +81,7 @@ internal class StaffIntegrationTest {
             .andExpect(jsonPath("code", equalTo("STAFF01")))
             .andExpect(jsonPath("name.forenames", equalTo("Test")))
             .andExpect(jsonPath("name.surname", equalTo("Staff")))
-            .andExpect(jsonPath("team.code", equalTo("TEAM2")))
+            .andExpect(jsonPath("team.code", equalTo("TEAM02")))
             .andExpect(jsonPath("localAdminUnit.code", equalTo("LAU")))
             .andExpect(jsonPath("provider.code", equalTo("TST")))
             .andExpect(jsonPath("isUnallocated", equalTo(false)))

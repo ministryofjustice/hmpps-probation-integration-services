@@ -39,8 +39,8 @@ class DataLoader(
             .also { probationArea.set(ProbationArea::boroughs, setOf(it)) }
         val district = District(id = id(), code = "LAU", description = "Local Admin Unit", borough = borough)
             .also { borough.set(Borough::districts, setOf(it)) }
-        val team1 = Team(id = id(), code = "TEAM1", description = "Team 1", district = district, probationArea = probationArea)
-        val team2 = Team(id = id(), code = "TEAM2", description = "Team 2", district = district, probationArea = probationArea)
+        val team1 = Team(id = id(), code = "TEAM01", description = "Team 1", district = district, probationArea = probationArea)
+        val team2 = Team(id = id(), code = "TEAM02", description = "Team 2", district = district, probationArea = probationArea)
         val staff = StaffEntity(id = id(), code = "STAFF01", forename = "Test", surname = "Staff", teams = listOf(team1, team2))
         val user = User(id = id(), username = "test.user", staff = staff)
             .also { staff.set(StaffEntity::user, it) }

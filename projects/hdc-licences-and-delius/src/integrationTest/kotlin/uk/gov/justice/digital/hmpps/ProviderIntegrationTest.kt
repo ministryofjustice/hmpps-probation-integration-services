@@ -59,9 +59,9 @@ internal class ProviderIntegrationTest {
             .andExpect(jsonPath("code", equalTo("LAU")))
             .andExpect(jsonPath("description", equalTo("Local Admin Unit")))
             .andExpect(jsonPath("teams.length()", equalTo(2)))
-            .andExpect(jsonPath("teams[0].code", equalTo("TEAM1")))
+            .andExpect(jsonPath("teams[0].code", equalTo("TEAM01")))
             .andExpect(jsonPath("teams[0].description", equalTo("Team 1")))
-            .andExpect(jsonPath("teams[1].code", equalTo("TEAM2")))
+            .andExpect(jsonPath("teams[1].code", equalTo("TEAM02")))
             .andExpect(jsonPath("teams[1].description", equalTo("Team 2")))
     }
 

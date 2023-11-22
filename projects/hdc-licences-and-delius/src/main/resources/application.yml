@@ -3,7 +3,6 @@ spring:
   jackson:
     default-property-inclusion: non_null
   jpa:
-    show-sql: true
     database-platform: org.hibernate.dialect.OracleDialect
     hibernate.ddl-auto: validate
     properties:

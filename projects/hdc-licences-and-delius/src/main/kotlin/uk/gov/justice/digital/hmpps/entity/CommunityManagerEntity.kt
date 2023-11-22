@@ -25,7 +25,7 @@ class CommunityManagerEntity(
     val staff: StaffEntity,
 
     @ManyToOne
-    @JoinColumn(name = "allocation_team_id")
+    @JoinColumn(name = "team_id")
     val team: Team,
 
     @Column(columnDefinition = "number", nullable = false)
