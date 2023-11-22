@@ -39,7 +39,6 @@ prisoner.movement.configs:
       - Recall
       - UpdateStatus
       - UpdateLocation
-    featureFlag: messages_released_irc
   - types:
       - RELEASED
     reasons:
@@ -49,7 +48,6 @@ prisoner.movement.configs:
       - Release
       - UpdateStatus
       - UpdateLocation
-    featureFlag: messages_released_ecsl
   - types:
       - RELEASED
     reasons:
