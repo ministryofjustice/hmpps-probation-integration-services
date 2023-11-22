@@ -98,7 +98,34 @@
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
     <ul>
       <li>
-        <a href="./api-reference.html#example-inputid"><span>/example/{inputId}</span></a>
+        <a href="./api-reference.html#users-username-roles-role"><span>/users/{username}/roles/{role}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#users-username-details"><span>/users/{username}/details</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#staff"><span>/staff</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#staff-code"><span>/staff/{code}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#staff-code-managedprisonerids"><span>/staff/{code}/managedPrisonerIds</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#providers"><span>/providers</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#providers-providercode-localadminunits-laucode"><span>/providers/{providerCode}/localAdminUnits/{lauCode}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#providers-code"><span>/providers/{code}</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#managedprisonerids"><span>/managedPrisonerIds</span></a>
+      </li>
+      <li>
+        <a href="./api-reference.html#case-nomsnumber-communitymanager"><span>/case/{nomsNumber}/communityManager</span></a>
       </li>
       <li>
         <a href="./api-reference.html#schemas"><span>Schemas</span></a>
@@ -134,14 +161,14 @@
 
 
 
-<h2 id="example-inputid">/example/{inputId}</h2>
+<h2 id="users-username-roles-role">/users/{username}/roles/{role}</h2>
 
-<h3 id="example-inputid-get">get</h3>
-
-
+<h3 id="users-username-roles-role-put">put</h3>
 
 
-<h4 id="example-inputid-get-parameters">Parameters</h4>
+
+
+<h4 id="users-username-roles-role-put-parameters">Parameters</h4>
 <table>
 <thead>
 <tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
@@ -149,11 +176,30 @@
 <tbody>
 
 <tr>
-<td>inputId</td>
+<td>username</td>
 <td>path</td>
 <td>string</td>
 <td>true</td>
 <td>
+
+</td>
+</tr>
+
+<tr>
+<td>role</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+<p>Available items:</p>
+<ul>
+
+<li>LHDCBT002</li>
+
+<li>LHDCBT003</li>
+
+</ul>
 
 </td>
 </tr>
@@ -164,7 +210,78 @@
 
 
 
-<h4 id="example-inputid-get-responses">Responses</h4>
+<h4 id="users-username-roles-role-put-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+<h3 id="users-username-roles-role-delete">delete</h3>
+
+
+
+
+<h4 id="users-username-roles-role-delete-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>role</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+<p>Available items:</p>
+<ul>
+
+<li>LHDCBT002</li>
+
+<li>LHDCBT003</li>
+
+</ul>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="users-username-roles-role-delete-responses">Responses</h4>
 <table>
 <thead>
 <tr><th>Status</th><th>Description</th><th>Schema</th></tr>
@@ -190,8 +307,1140 @@
 
 
 
+<h2 id="users-username-details">/users/{username}/details</h2>
+
+<h3 id="users-username-details-get">get</h3>
+
+
+
+
+<h4 id="users-username-details-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="users-username-details-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "username": "string",
+  "enabled": "boolean",
+  "roles": [
+    {
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-userdetails'>UserDetails</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="staff">/staff</h2>
+
+<h3 id="staff-get">get</h3>
+
+
+
+
+<h4 id="staff-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>query</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>id</td>
+<td>query</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="staff-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "code": "string",
+  "staffId": "integer",
+  "name": {
+    "forenames": "string",
+    "surname": "string"
+  },
+  "teams": [
+    {
+      "code": "string",
+      "description": "string",
+      "telephone": "string",
+      "emailAddress": "string",
+      "probationDeliveryUnit": {
+        "code": "string",
+        "description": "string"
+      },
+      "localAdminUnit": {
+        "code": "string",
+        "description": "string"
+      }
+    }
+  ],
+  "username": "string",
+  "email": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-staff'>Staff</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="staff-code">/staff/{code}</h2>
+
+<h3 id="staff-code-get">get</h3>
+
+
+
+
+<h4 id="staff-code-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="staff-code-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "code": "string",
+  "staffId": "integer",
+  "name": {
+    "forenames": "string",
+    "surname": "string"
+  },
+  "teams": [
+    {
+      "code": "string",
+      "description": "string",
+      "telephone": "string",
+      "emailAddress": "string",
+      "probationDeliveryUnit": {
+        "code": "string",
+        "description": "string"
+      },
+      "localAdminUnit": {
+        "code": "string",
+        "description": "string"
+      }
+    }
+  ],
+  "username": "string",
+  "email": "string"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-staff'>Staff</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="staff-code-managedprisonerids">/staff/{code}/managedPrisonerIds</h2>
+
+<h3 id="staff-code-managedprisonerids-get">get</h3>
+
+
+
+
+<h4 id="staff-code-managedprisonerids-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="staff-code-managedprisonerids-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="providers">/providers</h2>
+
+<h3 id="providers-get">get</h3>
+
+
+
+
+
+
+
+<h4 id="providers-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="providers-providercode-localadminunits-laucode">/providers/{providerCode}/localAdminUnits/{lauCode}</h2>
+
+<h3 id="providers-providercode-localadminunits-laucode-get">get</h3>
+
+
+
+
+<h4 id="providers-providercode-localadminunits-laucode-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>providerCode</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>lauCode</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="providers-providercode-localadminunits-laucode-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "code": "string",
+  "description": "string",
+  "teams": [
+    {
+      "code": "string",
+      "description": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-localadminunitwithteams'>LocalAdminUnitWithTeams</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="providers-code">/providers/{code}</h2>
+
+<h3 id="providers-code-get">get</h3>
+
+
+
+
+<h4 id="providers-code-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="providers-code-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "code": "string",
+  "description": "string",
+  "localAdminUnits": [
+    {
+      "code": "string",
+      "description": "string"
+    }
+  ]
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-providerwithlaus'>ProviderWithLaus</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="managedprisonerids">/managedPrisonerIds</h2>
+
+<h3 id="managedprisonerids-get">get</h3>
+
+
+
+
+<h4 id="managedprisonerids-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>staffId</td>
+<td>query</td>
+<td>integer</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="managedprisonerids-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+}</code></pre>
+
+</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h2 id="case-nomsnumber-communitymanager">/case/{nomsNumber}/communityManager</h2>
+
+<h3 id="case-nomsnumber-communitymanager-get">get</h3>
+
+
+
+
+<h4 id="case-nomsnumber-communitymanager-get-parameters">Parameters</h4>
+<table>
+<thead>
+<tr><th>Parameter</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>nomsNumber</td>
+<td>path</td>
+<td>string</td>
+<td>true</td>
+<td>
+
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+<h4 id="case-nomsnumber-communitymanager-get-responses">Responses</h4>
+<table>
+<thead>
+<tr><th>Status</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>200</td>
+<td>
+<p>OK</p>
+
+
+
+<pre><code>{
+  "code": "string",
+  "staffId": "integer",
+  "name": {
+    "forenames": "string",
+    "surname": "string"
+  },
+  "team": {
+    "code": "string",
+    "description": "string"
+  },
+  "localAdminUnit": {
+    "code": "string",
+    "description": "string"
+  },
+  "provider": {
+    "code": "string",
+    "description": "string"
+  },
+  "isUnallocated": "boolean"
+}</code></pre>
+
+</td>
+<td>
+<a href='#schema-communitymanager'>CommunityManager</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
 
 <h2 id="schemas">Schemas</h2>
+<h3 id="schema-userdetails">UserDetails</h3>
+
+
+<table class='schema-userdetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>username</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>enabled</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>roles</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-localadminunit">LocalAdminUnit</h3>
+
+
+<table class='schema-localadminunit'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-name">Name</h3>
+
+
+<table class='schema-name'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>forenames</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>surname</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-probationdeliveryunit">ProbationDeliveryUnit</h3>
+
+
+<table class='schema-probationdeliveryunit'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-staff">Staff</h3>
+
+
+<table class='schema-staff'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>staffId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>teams</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-teamdetails'>TeamDetails</a>
+</td>
+</tr>
+
+<tr>
+<td>username</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>email</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-teamdetails">TeamDetails</h3>
+
+
+<table class='schema-teamdetails'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>telephone</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>emailAddress</td>
+<td>string</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>probationDeliveryUnit</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-probationdeliveryunit'>ProbationDeliveryUnit</a>
+</td>
+</tr>
+
+<tr>
+<td>localAdminUnit</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-localadminunit'>LocalAdminUnit</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-provider">Provider</h3>
+
+
+<table class='schema-provider'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-localadminunitwithteams">LocalAdminUnitWithTeams</h3>
+
+
+<table class='schema-localadminunitwithteams'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>teams</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-team">Team</h3>
+
+
+<table class='schema-team'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-providerwithlaus">ProviderWithLaus</h3>
+
+
+<table class='schema-providerwithlaus'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>localAdminUnits</td>
+<td>array</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-localadminunit'>LocalAdminUnit</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h3 id="schema-communitymanager">CommunityManager</h3>
+
+
+<table class='schema-communitymanager'>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>code</td>
+<td>string</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>staffId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>name</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-name'>Name</a>
+</td>
+</tr>
+
+<tr>
+<td>team</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-team'>Team</a>
+</td>
+</tr>
+
+<tr>
+<td>localAdminUnit</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-localadminunit'>LocalAdminUnit</a>
+</td>
+</tr>
+
+<tr>
+<td>provider</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-provider'>Provider</a>
+</td>
+</tr>
+
+<tr>
+<td>isUnallocated</td>
+<td>boolean</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+</tbody>
+</table>
+
 
 
             
