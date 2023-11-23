@@ -128,7 +128,6 @@ class OffenderService(
                 DocumentType.valueOf(it.type),
                 it.description,
                 it.createdAt?.atZone(EuropeLondon),
-                false,
                 KeyValue(it.tableName, it.typeDescription())
             )
         }

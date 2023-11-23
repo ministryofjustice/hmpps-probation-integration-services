@@ -108,7 +108,6 @@ data class OffenderDocumentDetail(
     val type: DocumentType,
     val extendedDescription: String?,
     val createdAt: ZonedDateTime?,
-    val psr: Boolean = false,
     val subType: KeyValue?
 )
 
