@@ -6,6 +6,12 @@ import org.springframework.data.jpa.repository.Query
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrnAndSoftDeletedIsFalse(crn: String): Person?
 
-    @Query("select p.crn from Person p where p.softDeleted = false")
+    @Query(
+        """
+        select p.crn from EventEntity e join e.person p 
+        where e.softDeleted = false and e.active = true
+        and p.softDeleted = false
+        """
+    )
     fun findAllCrns(): List<String>
 }

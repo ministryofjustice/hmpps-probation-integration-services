@@ -62,6 +62,6 @@ class TierDetailsTest {
             .andReturn().response.contentAsString
 
         val crns = objectMapper.readValue<List<String>>(res)
-        assertThat(crns, containsInAnyOrder("A000001", "F001022"))
+        assertThat(crns, containsInAnyOrder("F001022"))
     }
 }
