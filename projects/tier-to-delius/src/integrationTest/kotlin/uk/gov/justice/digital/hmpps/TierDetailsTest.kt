@@ -1,6 +1,10 @@
 package uk.gov.justice.digital.hmpps
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.WireMockServer
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -23,6 +27,8 @@ class TierDetailsTest {
     @Autowired lateinit var mockMvc: MockMvc
 
     @Autowired lateinit var wireMockserver: WireMockServer
+
+    @Autowired lateinit var objectMapper: ObjectMapper
 
     @Test
     fun `successful response`() {
@@ -47,11 +53,15 @@ class TierDetailsTest {
 
     @Test
     fun `can retrieve all crns`() {
-        mockMvc.perform(
+        val res = mockMvc.perform(
             MockMvcRequestBuilders.get("/probation-cases")
                 .withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
 
-        ).andExpect { status().is2xxSuccessful }
+        ).andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsString
+
+        val crns = objectMapper.readValue<List<String>>(res)
+        assertThat(crns, containsInAnyOrder("F001022"))
     }
 }
