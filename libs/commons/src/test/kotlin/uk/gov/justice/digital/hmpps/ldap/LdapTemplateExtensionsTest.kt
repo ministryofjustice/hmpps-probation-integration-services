@@ -52,8 +52,8 @@ class LdapTemplateExtensionsTest {
     fun `add role successfully`() {
         whenever(ldapTemplate.lookupContext(any<LdapName>()))
             .thenReturn(dirContextOperations)
-        whenever(dirContextOperations.toString())
-            .thenReturn("cn=ROLE1,cn=ndRoleCatalogue,ou=Users,dc=moj,dc=com")
+        whenever(dirContextOperations.getDn())
+            .thenReturn(LdapName("cn=ROLE1,cn=ndRoleCatalogue,ou=Users,dc=moj,dc=com"))
 
         ldapTemplate.addRole(
             "john-smith",
@@ -70,7 +70,7 @@ class LdapTemplateExtensionsTest {
 
         assertThat(nameCapture.firstValue.toString(), equalTo("cn=ROLE1,cn=john-smith,ou=Users"))
         assertThat(attributeCapture.firstValue["cn"].toString(), equalTo("cn: ROLE1"))
-        assertThat(attributeCapture.firstValue["objectclass"].toString(), equalTo("objectclass: NDRoleAssociation, Alias, top"))
+        assertThat(attributeCapture.firstValue["objectclass"].toString(), equalTo("objectclass: NDRoleAssociation, alias, top"))
     }
 
     @Test
