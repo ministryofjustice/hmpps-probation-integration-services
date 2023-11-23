@@ -83,6 +83,4 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
         """
     )
     fun findAllBreachNSIByEventId(eventId: Long): List<Nsi>
-
-    fun findAllByEventId(eventId: Long): List<Nsi>
 }

@@ -1,10 +1,13 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtReportType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdRequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.LicenceConditionMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiType
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirementMainCat
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirementSubCat
 
 object ReferenceDataGenerator {
     val DISPOSAL_TYPE = ReferenceData(
@@ -68,6 +71,24 @@ object ReferenceDataGenerator {
     val NSI_BREACH_OUTCOME = ReferenceData(
         "BRE01",
         "this NSI is in breach",
+        IdGenerator.getAndIncrement()
+    )
+
+    val PSS_MAIN_CAT = PssRequirementMainCat(
+        "PssMain",
+        "pss main",
+        IdGenerator.getAndIncrement()
+    )
+
+    val PSS_SUB_CAT = PssRequirementSubCat(
+        "PssSub",
+        "pss sub",
+        IdGenerator.getAndIncrement()
+    )
+
+    val COURT_REPORT_TYPE = CourtReportType(
+        "CR1",
+        "court report",
         IdGenerator.getAndIncrement()
     )
 }

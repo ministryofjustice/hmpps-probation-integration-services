@@ -6,7 +6,9 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
+import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
@@ -15,6 +17,7 @@ import java.time.ZonedDateTime
 
 @Entity
 @Immutable
+@Where(clause = "soft_deleted = 0 and active_flag = 1")
 class Disposal(
     @OneToOne
     @JoinColumn(name = "event_id")
@@ -77,6 +80,7 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
 
 @Entity
 @Immutable
+@Where(clause = "soft_deleted = 0 and active_flag = 1")
 class Custody(
     @OneToOne
     @JoinColumn(name = "disposal_id")
@@ -86,12 +90,68 @@ class Custody(
     @JoinColumn(name = "custodial_status_id")
     val status: ReferenceData,
 
+    @Column(name = "active_flag", columnDefinition = "number")
+    val active: Boolean = true,
+
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean,
+    val softDeleted: Boolean = false,
 
     @Id
     @Column(name = "custody_id")
     val id: Long
 )
 
+@Entity
+@Immutable
+@Table(name = "pss_rqmnt")
+@Where(clause = "soft_deleted = 0 and active_flag = 1")
+class PssRequirement(
+
+    @Column(name = "custody_id")
+    val custodyId: Long,
+
+    @ManyToOne
+    @JoinColumn(name = "pss_rqmnt_type_main_cat_id")
+    val mainCategory: PssRequirementMainCat?,
+
+    @ManyToOne
+    @JoinColumn(name = "pss_rqmnt_type_sub_cat_id")
+    val subCategory: PssRequirementSubCat?,
+
+    @Column(name = "active_flag", columnDefinition = "number")
+    val active: Boolean = true,
+
+    @Column(columnDefinition = "number")
+    val softDeleted: Boolean = false,
+
+    @Id
+    @Column(name = "pss_rqmnt_id")
+    val id: Long
+)
+
+@Immutable
+@Entity
+@Table(name = "r_pss_rqmnt_type_main_category")
+class PssRequirementMainCat(
+    val code: String,
+    val description: String,
+    @Id
+    @Column(name = "pss_rqmnt_type_main_category_id")
+    val id: Long
+)
+
+@Immutable
+@Entity
+@Table(name = "r_pss_rqmnt_type_sub_category")
+class PssRequirementSubCat(
+    val code: String,
+    val description: String,
+    @Id
+    @Column(name = "pss_rqmnt_type_sub_category_id")
+    val id: Long
+)
+
 interface CustodyRepository : JpaRepository<Custody, Long>
+interface PssRequirementRepository : JpaRepository<PssRequirement, Long> {
+    fun findAllByCustodyId(custodyId: Long): List<PssRequirement>
+}

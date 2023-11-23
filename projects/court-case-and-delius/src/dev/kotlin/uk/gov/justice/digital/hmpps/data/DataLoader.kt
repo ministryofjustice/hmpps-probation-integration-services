@@ -45,8 +45,6 @@ class DataLoader(
         em.saveAll(
 
             DocumentEntityGenerator.COURT,
-            DocumentEntityGenerator.COURT_REPORT_TYPE,
-            DocumentEntityGenerator.COURT_REPORT,
             DocumentEntityGenerator.INSTITUTIONAL_REPORT_TYPE,
             DocumentEntityGenerator.INSTITUTIONAL_REPORT,
             DocumentEntityGenerator.R_INSTITUTION,
@@ -75,7 +73,10 @@ class DataLoader(
             ReferenceDataGenerator.LIC_COND_MAIN_CAT,
             ReferenceDataGenerator.LIC_COND_SUB_CAT,
             ReferenceDataGenerator.NSI_TYPE,
-            ReferenceDataGenerator.NSI_BREACH_OUTCOME
+            ReferenceDataGenerator.NSI_BREACH_OUTCOME,
+            ReferenceDataGenerator.PSS_MAIN_CAT,
+            ReferenceDataGenerator.PSS_SUB_CAT,
+            ReferenceDataGenerator.COURT_REPORT_TYPE
         )
 
         em.saveAll(StaffGenerator.ALLOCATED, StaffGenerator.UNALLOCATED)
@@ -119,6 +120,11 @@ class DataLoader(
         val requirement = SentenceGenerator.generateRequirement(disposal = currentSentence)
         val licenceCondition = SentenceGenerator.generateLicenseCondition(disposal = currentSentence)
         val breachNsi = SentenceGenerator.generateBreachNsi(disposal = currentSentence)
+        val pssRequirement = SentenceGenerator.generatePssRequirement(custody.id)
+        val currentCourtAppearance = SentenceGenerator.generateCourtAppearance(currentEvent, outcome)
+        val currentCourtReport = SentenceGenerator.generateCourtReport(currentCourtAppearance)
+        val reportManager = SentenceGenerator.generateCourtReportManager(currentCourtReport)
+
         em.saveAll(
             currentEvent,
             currentSentence,
@@ -128,7 +134,11 @@ class DataLoader(
             additionalOffence,
             requirement,
             licenceCondition,
-            breachNsi
+            breachNsi,
+            pssRequirement,
+            currentCourtAppearance,
+            currentCourtReport,
+            reportManager
         )
 
         val preEvent = SentenceGenerator.generateEvent(PersonGenerator.PREVIOUSLY_MANAGED, active = false)

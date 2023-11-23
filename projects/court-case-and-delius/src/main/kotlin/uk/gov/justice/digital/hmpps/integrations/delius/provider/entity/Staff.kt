@@ -28,7 +28,11 @@ class Staff(
     @Id
     @Column(name = "staff_id")
     val id: Long
-)
+) {
+    fun isUnallocated(): Boolean {
+        return code.endsWith("U")
+    }
+}
 
 @Immutable
 @Table(name = "team")

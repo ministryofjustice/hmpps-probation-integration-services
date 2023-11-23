@@ -3,12 +3,15 @@ package uk.gov.justice.digital.hmpps.integrations.delius.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.api.model.Breach
 import uk.gov.justice.digital.hmpps.api.model.Conviction
+import uk.gov.justice.digital.hmpps.api.model.CourtReport
 import uk.gov.justice.digital.hmpps.api.model.DocumentType
 import uk.gov.justice.digital.hmpps.api.model.KeyValue
 import uk.gov.justice.digital.hmpps.api.model.LicenceCondition
 import uk.gov.justice.digital.hmpps.api.model.Offence
 import uk.gov.justice.digital.hmpps.api.model.OffenderDocumentDetail
 import uk.gov.justice.digital.hmpps.api.model.ProbationRecord
+import uk.gov.justice.digital.hmpps.api.model.PssRequirement
+import uk.gov.justice.digital.hmpps.api.model.ReportAuthor
 import uk.gov.justice.digital.hmpps.api.model.Requirement
 import uk.gov.justice.digital.hmpps.api.model.Sentence
 import uk.gov.justice.digital.hmpps.api.model.keyValueOf
@@ -18,6 +21,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Document
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.typeDescription
+import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtReportRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdditionalOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.LicenceConditionRepository
@@ -26,6 +30,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.DisposalRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.PersonManagerRepository
 
@@ -39,8 +44,9 @@ class OffenderService(
     private val requirementRepository: RequirementRepository,
     private val documentRepository: DocumentRepository,
     private val personRepository: PersonRepository,
-    private val nsiRepository: NsiRepository
-
+    private val nsiRepository: NsiRepository,
+    private val pssRequirementRepository: PssRequirementRepository,
+    private val courtReportRepository: CourtReportRepository
 ) {
     fun getProbationRecord(crn: String): ProbationRecord {
         val person =
@@ -75,20 +81,41 @@ class OffenderService(
                 documents = getConvictionDocuments(disposal, documents),
                 breaches = getBreaches(disposal),
                 requirements = getRequirements(disposal),
-                licenceConditions = getLicenseConditions(disposal)
+                licenceConditions = getLicenseConditions(disposal),
+                pssRequirements = getPssRequirements(disposal.custody?.id),
+                courtReports = getCourtReports(disposal)
             )
         }
     }
 
-    private fun getBreaches(disposal: Disposal): List<Breach> {
-        return nsiRepository.findAllBreachNSIByEventId(disposal.event.id).map {
-            val description = if (it.subType?.description == null) it.type.description else it.subType.description
-            Breach(description, it.outcome?.description, it.actualStartDate, it.statusDate)
+    private fun getCourtReports(disposal: Disposal) = courtReportRepository.getAllByEvent(disposal.event).map {
+        CourtReport(
+            it.dateRequested,
+            it.dateRequired,
+            it.dateCompleted,
+            it.courtReportType?.keyValueOf(),
+            it.deliveredCourtReportType?.keyValueOf(),
+            author = it.reportManagers.lastOrNull()?.let { m ->
+                ReportAuthor(m.staff.isUnallocated(), m.staff.forename, m.staff.surname)
+            }
+        )
+    }
+
+    private fun getPssRequirements(custodyId: Long?) = if (custodyId == null) {
+        listOf()
+    } else {
+        pssRequirementRepository.findAllByCustodyId(custodyId).map {
+            PssRequirement(it.mainCategory?.description, it.subCategory?.description)
         }
     }
 
-    private fun getConvictionDocuments(disposal: Disposal, documents: List<Document>): List<OffenderDocumentDetail> {
-        return documents.filter { it.eventId == disposal.event.id }.map {
+    private fun getBreaches(disposal: Disposal) = nsiRepository.findAllBreachNSIByEventId(disposal.event.id).map {
+        val description = if (it.subType?.description == null) it.type.description else it.subType.description
+        Breach(description, it.outcome?.description, it.actualStartDate, it.statusDate)
+    }
+
+    private fun getConvictionDocuments(disposal: Disposal, documents: List<Document>) =
+        documents.filter { it.eventId == disposal.event.id }.map {
             OffenderDocumentDetail(
                 it.name,
                 it.author,
@@ -99,11 +126,9 @@ class OffenderService(
                 KeyValue(it.tableName, it.typeDescription())
             )
         }
-    }
 
-    private fun getRequirements(disposal: Disposal): List<Requirement> {
-        val requirements = requirementRepository.getAllByDisposal(disposal)
-        return requirements.map {
+    private fun getRequirements(disposal: Disposal) =
+        requirementRepository.getAllByDisposal(disposal).map {
             Requirement(
                 it.commencementDate,
                 it.terminationDate,
@@ -118,11 +143,9 @@ class OffenderService(
                 it.length
             )
         }
-    }
 
-    private fun getLicenseConditions(disposal: Disposal): List<LicenceCondition> {
-        val licenseConditions = licenseConditionRepository.getAllByDisposal(disposal)
-        return licenseConditions.map {
+    private fun getLicenseConditions(disposal: Disposal) = licenseConditionRepository.getAllByDisposal(disposal)
+        .map {
             LicenceCondition(
                 it.mainCategory.description,
                 it.subCategory?.description,
@@ -131,7 +154,6 @@ class OffenderService(
                 it.active
             )
         }
-    }
 }
 
 fun Disposal.sentenceOf() = Sentence(

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.api.model
 
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtReportType
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdRequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementMainCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
@@ -21,19 +22,23 @@ data class OffenderManager(
     val active: Boolean
 )
 
-fun PersonManager.toOffenderManager() = OffenderManager(staff.toStaff(), date.toLocalDate(), team.toTeam(), provider.description, true)
-fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.toStaff() = Staff(forename + forename2.let { " $forename2" }, surname, "TODO", "TODO")
-fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team.toTeam() = Team(description, telephone, ldu.description, district.description)
+fun PersonManager.toOffenderManager() =
+    OffenderManager(staff.toStaff(), date.toLocalDate(), team.toTeam(), provider.description, true)
+
+fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.toStaff() =
+    Staff(forename + forename2.let { " $forename2" }, surname)
+
+fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team.toTeam() =
+    Team(description, telephone, ldu.description, district.description)
 
 fun ReferenceData.keyValueOf() = KeyValue(code, description)
 fun RequirementMainCategory.keyValueOf() = KeyValue(code, description)
 fun AdRequirementMainCategory.keyValueOf() = KeyValue(code, description)
+fun CourtReportType.keyValueOf() = KeyValue(code, description)
 
 data class Staff(
     val forenames: String,
-    val surname: String,
-    val telephone: String?,
-    val email: String?
+    val surname: String
 )
 
 data class Team(
@@ -54,7 +59,24 @@ data class Conviction(
     val documents: List<OffenderDocumentDetail> = listOf(),
     val breaches: List<Breach> = listOf(),
     val requirements: List<Requirement> = listOf(),
-    val licenceConditions: List<LicenceCondition> = listOf()
+    val pssRequirements: List<PssRequirement> = listOf(),
+    val licenceConditions: List<LicenceCondition> = listOf(),
+    val courtReports: List<CourtReport> = listOf()
+)
+
+data class CourtReport(
+    val requestedDate: LocalDate,
+    val requiredDate: LocalDate,
+    val completedDate: LocalDate?,
+    val courtReportType: KeyValue?,
+    val deliveredCourtReportType: KeyValue?,
+    val author: ReportAuthor?
+)
+
+data class ReportAuthor(
+    val unallocated: Boolean,
+    val forenames: String?,
+    val surname: String?
 )
 
 data class Sentence(
@@ -78,6 +100,7 @@ data class KeyValue(
     val code: String,
     val description: String
 )
+
 data class OffenderDocumentDetail(
 
     val documentName: String,
@@ -113,6 +136,11 @@ class Breach(
     val status: String?,
     val started: LocalDate?,
     val statusDate: LocalDate?
+)
+
+class PssRequirement(
+    val description: String?,
+    val subTypeDescription: String?
 )
 
 data class Requirement(

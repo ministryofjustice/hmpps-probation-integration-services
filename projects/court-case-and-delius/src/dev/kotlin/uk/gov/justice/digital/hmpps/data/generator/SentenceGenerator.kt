@@ -2,7 +2,9 @@ package uk.gov.justice.digital.hmpps.data.generator
 
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtAppearance
+import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtReport
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.Outcome
+import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.ReportManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdditionalOffence
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.LicenceCondition
@@ -13,6 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.Nsi
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirement
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import java.time.LocalDate
@@ -77,9 +80,8 @@ object SentenceGenerator {
     fun generateCustody(
         disposal: Disposal,
         custodialStatus: ReferenceData,
-        softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Custody(disposal, custodialStatus, softDeleted, id)
+    ) = Custody(disposal, custodialStatus, id = id)
 
     val MAIN_OFFENCE = SentenceGenerator.generateOffence("Main Offence")
     val ADDITIONAL_OFFENCE = SentenceGenerator.generateOffence("Additional Offence")
@@ -139,4 +141,32 @@ object SentenceGenerator {
         LocalDate.now(),
         LocalDate.now()
     )
+
+    fun generatePssRequirement(custodyId: Long, id: Long = IdGenerator.getAndIncrement()) = PssRequirement(
+        custodyId,
+        ReferenceDataGenerator.PSS_MAIN_CAT,
+        ReferenceDataGenerator.PSS_SUB_CAT,
+        id = id
+    )
+
+    fun generateCourtReport(courtAppearance: CourtAppearance, id: Long = IdGenerator.getAndIncrement()) =
+        CourtReport(
+            LocalDate.now(),
+            LocalDate.now().plusDays(5),
+            null,
+            ReferenceDataGenerator.COURT_REPORT_TYPE,
+            null,
+            courtAppearance,
+            softDeleted = false,
+            id = id
+        )
+
+    fun generateCourtReportManager(courtReport: CourtReport, id: Long = IdGenerator.getAndIncrement()) =
+        ReportManager(
+            courtReport,
+            StaffGenerator.ALLOCATED,
+            active = true,
+            softDeleted = false,
+            id = id
+        )
 }

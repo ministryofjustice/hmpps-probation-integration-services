@@ -29,13 +29,6 @@ class CaseAllocation(@Id val caseAllocationId: Long, val eventId: Long)
 class Court(@Id val courtId: Long, val courtName: String)
 
 @Entity
-@Table(name = "r_court_report_type")
-class CourtReportType(@Id val courtReportTypeId: Long, val description: String)
-
-@Entity
-class CourtReport(@Id val courtReportId: Long, val courtReportTypeId: Long, val courtAppearanceId: Long, val dateRequested: LocalDate)
-
-@Entity
 class InstitutionalReport(
     @Id
     val institutionalReportId: Long,
