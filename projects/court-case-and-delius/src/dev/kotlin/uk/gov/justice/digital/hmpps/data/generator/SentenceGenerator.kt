@@ -60,7 +60,7 @@ object SentenceGenerator {
         active: Boolean = true,
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Event(person, inBreach, LocalDate.now(), active, softDeleted, id)
+    ) = Event(person, inBreach, LocalDate.now(), null, active, softDeleted, id)
 
     fun generateOrderManager(
         event: Event,

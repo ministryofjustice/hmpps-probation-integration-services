@@ -24,20 +24,21 @@ import uk.gov.justice.digital.hmpps.integrations.delius.entity.typeDescription
 import uk.gov.justice.digital.hmpps.integrations.delius.event.courtappearance.entity.CourtReportRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.AdditionalOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
+import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.LicenceConditionRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.MainOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.nsi.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.DisposalRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.PssRequirementRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.PersonManagerRepository
 
 @Service
 class OffenderService(
     private val personManagerRepository: PersonManagerRepository,
-    private val disposalRepository: DisposalRepository,
+    private val eventRepository: EventRepository,
     private val mainOffenceRepository: MainOffenceRepository,
     private val additionalOffenceRepository: AdditionalOffenceRepository,
     private val licenseConditionRepository: LicenceConditionRepository,
@@ -54,7 +55,7 @@ class OffenderService(
         val personManager =
             personManagerRepository.findActiveManager(person.id) ?: throw NotFoundException("PersonManager", "crn", crn)
         val documents = documentRepository.getPersonAndEventDocuments(person.id)
-        val convictions = getConvictions(crn, documents)
+        val convictions = getConvictions(person, documents)
         return ProbationRecord(crn, listOf(personManager.toOffenderManager()), convictions)
     }
 
@@ -67,28 +68,29 @@ class OffenderService(
         return mainOffence + additionalOffences
     }
 
-    fun getConvictions(crn: String, documents: List<Document>): List<Conviction> {
-        val disposals = disposalRepository.getByCrn(crn)
-        return disposals.map { disposal ->
+    fun getConvictions(person: Person, documents: List<Document>): List<Conviction> {
+        val events = eventRepository.findAllByPerson(person)
+
+        return events.map { event ->
             Conviction(
-                disposal.event.active,
-                disposal.event.inBreach,
-                false,
-                disposal.event.convictionDate,
-                getOffences(disposal.event),
-                disposal.sentenceOf(),
-                custodialType = disposal.custody?.let { c -> KeyValue(c.status.code, c.status.description) },
-                documents = getConvictionDocuments(disposal, documents),
-                breaches = getBreaches(disposal),
-                requirements = getRequirements(disposal),
-                licenceConditions = getLicenseConditions(disposal),
-                pssRequirements = getPssRequirements(disposal.custody?.id),
-                courtReports = getCourtReports(disposal)
+                event.active,
+                event.inBreach,
+                eventRepository.awaitingPSR(event.id) == 1,
+                event.convictionDate,
+                getOffences(event),
+                event.disposal?.sentenceOf(),
+                custodialType = event.disposal?.custody?.let { c -> KeyValue(c.status.code, c.status.description) },
+                documents = getConvictionDocuments(event, documents),
+                breaches = getBreaches(event),
+                requirements = getRequirements(event.disposal),
+                licenceConditions = getLicenseConditions(event.disposal),
+                pssRequirements = getPssRequirements(event.disposal?.custody?.id),
+                courtReports = getCourtReports(event)
             )
         }
     }
 
-    private fun getCourtReports(disposal: Disposal) = courtReportRepository.getAllByEvent(disposal.event).map {
+    private fun getCourtReports(event: Event) = courtReportRepository.getAllByEvent(event).map {
         CourtReport(
             it.dateRequested,
             it.dateRequired,
@@ -96,7 +98,11 @@ class OffenderService(
             it.courtReportType?.keyValueOf(),
             it.deliveredCourtReportType?.keyValueOf(),
             author = it.reportManagers.lastOrNull()?.let { m ->
-                ReportAuthor(m.staff.isUnallocated(), m.staff.forename, m.staff.surname)
+                ReportAuthor(
+                    m.staff.isUnallocated(),
+                    m.staff.forename + m.staff.forename2.let { " ${m.staff.forename2}" },
+                    m.staff.surname
+                )
             }
         )
     }
@@ -109,13 +115,13 @@ class OffenderService(
         }
     }
 
-    private fun getBreaches(disposal: Disposal) = nsiRepository.findAllBreachNSIByEventId(disposal.event.id).map {
+    private fun getBreaches(event: Event) = nsiRepository.findAllBreachNSIByEventId(event.id).map {
         val description = if (it.subType?.description == null) it.type.description else it.subType.description
         Breach(description, it.outcome?.description, it.actualStartDate, it.statusDate)
     }
 
-    private fun getConvictionDocuments(disposal: Disposal, documents: List<Document>) =
-        documents.filter { it.eventId == disposal.event.id }.map {
+    private fun getConvictionDocuments(event: Event, documents: List<Document>) =
+        documents.filter { it.eventId == event.id }.map {
             OffenderDocumentDetail(
                 it.name,
                 it.author,
@@ -127,32 +133,41 @@ class OffenderService(
             )
         }
 
-    private fun getRequirements(disposal: Disposal) =
-        requirementRepository.getAllByDisposal(disposal).map {
-            Requirement(
-                it.commencementDate,
-                it.terminationDate,
-                it.expectedStartDate,
-                it.expectedEndDate,
-                it.active,
-                it.mainCategory?.keyValueOf(),
-                it.subCategory?.keyValueOf(),
-                it.adMainCategory?.keyValueOf(),
-                it.adSubCategory?.keyValueOf(),
-                it.terminationReason?.keyValueOf(),
-                it.length
-            )
+    private fun getRequirements(disposal: Disposal?) =
+        if (disposal != null) {
+            requirementRepository.getAllByDisposal(disposal).map {
+                Requirement(
+                    it.commencementDate,
+                    it.terminationDate,
+                    it.expectedStartDate,
+                    it.expectedEndDate,
+                    it.active,
+                    it.mainCategory?.keyValueOf(),
+                    it.subCategory?.keyValueOf(),
+                    it.adMainCategory?.keyValueOf(),
+                    it.adSubCategory?.keyValueOf(),
+                    it.terminationReason?.keyValueOf(),
+                    it.length
+                )
+            }
+        } else {
+            listOf()
         }
 
-    private fun getLicenseConditions(disposal: Disposal) = licenseConditionRepository.getAllByDisposal(disposal)
-        .map {
-            LicenceCondition(
-                it.mainCategory.description,
-                it.subCategory?.description,
-                it.startDate,
-                it.notes,
-                it.active
-            )
+    private fun getLicenseConditions(disposal: Disposal?) =
+        if (disposal != null) {
+            licenseConditionRepository.getAllByDisposal(disposal)
+                .map {
+                    LicenceCondition(
+                        it.mainCategory.description,
+                        it.subCategory?.description,
+                        it.startDate,
+                        it.notes,
+                        it.active
+                    )
+                }
+        } else {
+            listOf()
         }
 }
 

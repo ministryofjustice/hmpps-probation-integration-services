@@ -5,9 +5,13 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.Where
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff
 import java.time.LocalDate
@@ -28,6 +32,9 @@ class Event(
     @Column(name = "conviction_date")
     val convictionDate: LocalDate,
 
+    @OneToOne(mappedBy = "event")
+    val disposal: Disposal? = null,
+
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     val active: Boolean,
 
@@ -38,6 +45,27 @@ class Event(
     @Column(name = "event_id", nullable = false)
     val id: Long
 )
+
+interface EventRepository : JpaRepository<Event, Long> {
+
+    fun findAllByPerson(person: Person): List<Event>
+
+    @Query(
+        """
+        select
+        case when d.disposal_id is null and ca.outcome_code = '101' then 1 else 0 end as awaitingPsr
+         from event e
+         left join disposal d on d.event_id = e.event_id and d.soft_deleted = 0
+         left join (select ca.event_id, oc.code_value as outcome_code
+            from court_appearance ca
+            join r_standard_reference_list oc on ca.outcome_id = oc.standard_reference_list_id) ca
+            on ca.event_id = e.event_id
+        where e.event_id = :eventId
+    """,
+        nativeQuery = true
+    )
+    fun awaitingPSR(eventId: Long): Int
+}
 
 @Entity
 @Immutable

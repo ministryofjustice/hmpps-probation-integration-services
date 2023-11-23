@@ -46,5 +46,9 @@ internal class OffenderIntegrationTest {
         Assertions.assertThat(detailResponse.offenderManagers[0].staff.forenames).isEqualTo(StaffGenerator.ALLOCATED.forename + " " + StaffGenerator.ALLOCATED.forename2)
         Assertions.assertThat(detailResponse.offenderManagers[0].staff.surname).isEqualTo(StaffGenerator.ALLOCATED.surname)
         Assertions.assertThat(detailResponse.offenderManagers[0].team.description).isEqualTo(TeamGenerator.DEFAULT.description)
+
+        Assertions.assertThat(detailResponse.convictions[0].inBreach).isEqualTo(true)
+        Assertions.assertThat(detailResponse.convictions[0].active).isEqualTo(true)
+        Assertions.assertThat(detailResponse.convictions[0].awaitingPsr).isEqualTo(false)
     }
 }
