@@ -94,10 +94,8 @@ interface ProbationAreaRepository : JpaRepository<ProbationAreaEntity, Long> {
         join d.borough b
         join b.probationArea pa
         where pa.description not like 'ZZ%'
-        and d.code <> '-1'
+        and (d.selectable = true or d.code like '%UAT' or d.code like '%UNA' or d.code like '%IAV')
         and pa.selectable = true
-        and d.selectable = true
-        and b.selectable = true
         and (pa.establishment is null or pa.establishment <> 'Y')
     """
     )
@@ -110,7 +108,7 @@ interface ProbationAreaRepository : JpaRepository<ProbationAreaEntity, Long> {
         join d.borough b
         join b.probationArea pa
         where pa.description not like 'ZZ%'
-        and d.code <> '-1'
+        and (d.selectable = true or d.code like '%UAT' or d.code like '%UNA' or d.code like '%IAV')
         and (pa.establishment is null or pa.establishment <> 'Y')
     """
     )
