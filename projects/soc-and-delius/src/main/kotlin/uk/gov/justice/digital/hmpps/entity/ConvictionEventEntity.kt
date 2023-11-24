@@ -174,7 +174,6 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
     )
     fun getAllByConvictionEventPersonIdOrderByConvictionDateDesc(personId: Long): List<ConvictionEventEntity>
 
-
     @EntityGraph(
         attributePaths = [
             "mainOffence.offence",
@@ -183,7 +182,6 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         ]
     )
     fun getAllByConvictionEventPersonCrn(crn: String): List<ConvictionEventEntity>
-
 
     @EntityGraph(
         attributePaths = [
@@ -202,7 +200,6 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         ]
     )
     fun getAllByConvictionEventPersonCrnAndActiveIsTrue(crn: String): List<ConvictionEventEntity>
-
 
     @EntityGraph(
         attributePaths = [

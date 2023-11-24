@@ -21,15 +21,21 @@ class ConvictionService(
 ) {
     fun getConvictions(value: String, type: IdentifierType, activeOnly: Boolean): ConvictionsContainer {
         val convictions = when (type) {
-            IdentifierType.CRN -> if (activeOnly) convictionEventRepository.getAllByConvictionEventPersonCrnAndActiveIsTrue(
-                value
-            )
-            else convictionEventRepository.getAllByConvictionEventPersonCrn(value)
+            IdentifierType.CRN -> if (activeOnly) {
+                convictionEventRepository.getAllByConvictionEventPersonCrnAndActiveIsTrue(
+                    value
+                )
+            } else {
+                convictionEventRepository.getAllByConvictionEventPersonCrn(value)
+            }
 
-            IdentifierType.NOMS -> if (activeOnly) convictionEventRepository.getAllByConvictionEventPersonNomsNumberAndActiveIsTrue(
-                value
-            )
-            else convictionEventRepository.getAllByConvictionEventPersonNomsNumber(value)
+            IdentifierType.NOMS -> if (activeOnly) {
+                convictionEventRepository.getAllByConvictionEventPersonNomsNumberAndActiveIsTrue(
+                    value
+                )
+            } else {
+                convictionEventRepository.getAllByConvictionEventPersonNomsNumber(value)
+            }
         }
         val convictionModels = mutableListOf<Conviction>()
         convictions.map { convictionEventEntity ->
