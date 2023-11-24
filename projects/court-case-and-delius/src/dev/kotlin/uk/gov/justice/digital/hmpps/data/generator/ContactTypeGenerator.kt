@@ -6,6 +6,7 @@ object ContactTypeGenerator {
     val CONTACT_TYPE = CaseNoteType(
         IdGenerator.getAndIncrement(),
         "C294",
+        "case note type",
         false
     )
 }

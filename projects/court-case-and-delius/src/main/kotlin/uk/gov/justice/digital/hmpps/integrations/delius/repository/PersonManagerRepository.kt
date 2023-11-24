@@ -8,10 +8,20 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     @Query(
         """
         select pm from PersonManager pm 
-        where pm.personId = :personId
+        where pm.person.id = :personId
         and pm.active = true
         and pm.softDeleted = false
         """
     )
     fun findActiveManager(personId: Long): PersonManager?
+
+    @Query(
+        """
+        select pm from PersonManager pm 
+        where pm.person.crn = :crn
+        and pm.active = true
+        and pm.softDeleted = false
+        """
+    )
+    fun findActiveManager(crn: String): PersonManager
 }
