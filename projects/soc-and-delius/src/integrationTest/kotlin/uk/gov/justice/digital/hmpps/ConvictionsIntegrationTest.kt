@@ -64,13 +64,15 @@ internal class ConvictionsIntegrationTest {
     private fun getConvictions(): ConvictionsContainer = ConvictionsContainer(
         listOf(
             Conviction(
+                ConvictionEventGenerator.DEFAULT_EVENT.id,
                 ConvictionEventGenerator.DEFAULT_EVENT.convictionDate,
                 ConvictionEventGenerator.DISPOSAL_TYPE.description,
                 listOf(
-                    Offence(ConvictionEventGenerator.OFFENCE_MAIN.description, true),
-                    Offence(ConvictionEventGenerator.OFFENCE_OTHER.description, false)
+                    Offence(ConvictionEventGenerator.MAIN_OFFENCE.id, ConvictionEventGenerator.OFFENCE_MAIN_TYPE.description, true),
+                    Offence(ConvictionEventGenerator.OTHER_OFFENCE.id, ConvictionEventGenerator.ADDITIONAL_OFFENCE_TYPE.description, false)
                 ),
                 Sentence(
+                    ConvictionEventGenerator.DISPOSAL.id,
                     ConvictionEventGenerator.DISPOSAL.startDate,
                     null,
                     Custody(

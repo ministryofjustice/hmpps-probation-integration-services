@@ -69,7 +69,7 @@ internal class DetailsIntegrationTest {
         DetailsGenerator.DISTRICT.description,
         DetailsGenerator.DEFAULT_PA.description,
         Name(DetailsGenerator.STAFF.forename, DetailsGenerator.STAFF.middleName, DetailsGenerator.STAFF.surname),
-        ConvictionEventGenerator.OFFENCE_MAIN.description,
+        ConvictionEventGenerator.OFFENCE_MAIN_TYPE.description,
         DetailsGenerator.PERSON.religion?.description,
         listOf(KeyDate(KeyDateGenerator.SED_KEYDATE.code, KeyDateGenerator.SED_KEYDATE.description, KeyDateGenerator.KEYDATE.date)),
         DetailsGenerator.RELEASE.date,

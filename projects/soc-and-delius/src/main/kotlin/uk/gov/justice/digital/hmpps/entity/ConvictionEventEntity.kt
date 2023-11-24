@@ -172,7 +172,8 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
             "disposal.type"
         ]
     )
-    fun getAllByConvictionEventPersonCrn(crn: String): List<ConvictionEventEntity>
+    fun getAllByConvictionEventPersonIdOrderByConvictionDateDesc(personId: Long): List<ConvictionEventEntity>
+
 
     @EntityGraph(
         attributePaths = [
@@ -181,7 +182,8 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
             "disposal.type"
         ]
     )
-    fun getAllByConvictionEventPersonIdOrderByConvictionDateDesc(personId: Long): List<ConvictionEventEntity>
+    fun getAllByConvictionEventPersonCrn(crn: String): List<ConvictionEventEntity>
+
 
     @EntityGraph(
         attributePaths = [
@@ -191,6 +193,25 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         ]
     )
     fun getAllByConvictionEventPersonNomsNumber(nomsNumber: String): List<ConvictionEventEntity>
+
+    @EntityGraph(
+        attributePaths = [
+            "mainOffence.offence",
+            "additionalOffences.offence",
+            "disposal.type"
+        ]
+    )
+    fun getAllByConvictionEventPersonCrnAndActiveIsTrue(crn: String): List<ConvictionEventEntity>
+
+
+    @EntityGraph(
+        attributePaths = [
+            "mainOffence.offence",
+            "additionalOffences.offence",
+            "disposal.type"
+        ]
+    )
+    fun getAllByConvictionEventPersonNomsNumberAndActiveIsTrue(nomsNumber: String): List<ConvictionEventEntity>
 }
 
 fun ConvictionEventRepository.getLatestConviction(personId: Long) =
