@@ -1,11 +1,10 @@
 package uk.gov.justice.digital.hmpps.service
 
+import feign.Response
 import jakarta.transaction.Transactional
 import org.springframework.http.ContentDisposition
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpHeaders.CONTENT_DISPOSITION
-import org.springframework.http.HttpHeaders.CONTENT_LENGTH
-import org.springframework.http.HttpHeaders.ETAG
-import org.springframework.http.HttpHeaders.LAST_MODIFIED
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -37,11 +36,9 @@ class DocumentService(
         val input = response.body().asInputStream()
         return when (response.status()) {
             200 -> ResponseEntity.ok()
-                .contentType(APPLICATION_OCTET_STREAM)
+                .headers { it.putAll(response.sanitisedHeaders()) }
                 .header(CONTENT_DISPOSITION, ContentDisposition.attachment().filename(filename, UTF_8).build().toString())
-                .header(CONTENT_LENGTH, response.headers()[CONTENT_LENGTH]?.first())
-                .header(LAST_MODIFIED, response.headers()[LAST_MODIFIED]?.first())
-                .header(ETAG, response.headers()[ETAG]?.first())
+                .contentType(APPLICATION_OCTET_STREAM)
                 .body(StreamingResponseBody { output -> input.use { it.copyTo(output) } })
 
             404 -> throw NotFoundException("Document content", "alfrescoId", id)
@@ -96,4 +93,11 @@ class DocumentService(
     private val Disposal.description get() = "${type.description}${lengthString?.let { " ($it)" } ?: ""}"
     private val Disposal.lengthString get() = length?.let { "$length ${lengthUnits!!.description}" }
     private fun List<CourtAppearance>.latestOutcome() = filter { it.outcome != null }.maxByOrNull { it.date }?.outcome
+    private fun Response.sanitisedHeaders(): Map<String, List<String>> = headers().filterKeys { key ->
+        key in listOf(
+            HttpHeaders.CONTENT_LENGTH,
+            HttpHeaders.ETAG,
+            HttpHeaders.LAST_MODIFIED
+        ).map { it.lowercase() }
+    }.mapValues { it.value.toList() }
 }
