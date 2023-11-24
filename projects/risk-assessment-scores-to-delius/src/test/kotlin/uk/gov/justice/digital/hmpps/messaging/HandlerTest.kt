@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.messaging
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -120,11 +121,11 @@ internal class HandlerTest {
     }
 
     @Test
-    fun `unknown messages are thrown`() {
-        assertThrows<IllegalArgumentException> {
+    fun `unknown messages are ignored`() {
+        assertDoesNotThrow {
             handler.handle(
                 Notification(
-                    message = MessageGenerator.RSR_SCORES_DETERMINED.copy(eventType = "unknown"),
+                    message = MessageGenerator.RSR_SCORES_DETERMINED.copy(eventType = "opd.produced"),
                     attributes = MessageAttributes("risk-assessment.scores.determined")
                 )
             )
