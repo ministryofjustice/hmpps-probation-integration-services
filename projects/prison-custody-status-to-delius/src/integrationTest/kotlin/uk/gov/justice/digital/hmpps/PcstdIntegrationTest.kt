@@ -371,7 +371,6 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
     @Test
     fun `IRC release when released on licence in delius`() {
-        whenever(featureFlags.enabled("messages_released_irc")).thenReturn(true)
         val notification = NotificationGenerator.PRISONER_IRC_RELEASED
         val nomsNumber = notification.nomsId()
         assertFalse(getCustody(nomsNumber).isInCustody())
@@ -410,7 +409,6 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
     @Test
     fun `irc release when in custody in delius`() {
-        whenever(featureFlags.enabled("messages_released_irc")).thenReturn(true)
         val notification = NotificationGenerator.PRISONER_IRC_IN_CUSTODY
         val nomsNumber = notification.nomsId()
         assertTrue(getCustody(nomsNumber).isInCustody())
@@ -446,7 +444,6 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
 
     @Test
     fun `release a ecsl prisoner with feature active`() {
-        whenever(featureFlags.enabled("messages_released_ecsl")).thenReturn(true)
         val notification = NotificationGenerator.PRISONER_RELEASED_ECSL_ACTIVE
         val nomsNumber = notification.nomsId()
         assertTrue(getCustody(nomsNumber).isInCustody())
@@ -473,43 +470,6 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0013AA",
-                "institution" to "WSI",
-                "reason" to "RELEASED",
-                "movementReason" to "ECSL",
-                "movementType" to "Released"
-            )
-        }
-    }
-
-    @Test
-    fun `release a ecsl prisoner with feature inactive`() {
-        whenever(featureFlags.enabled("messages_released_ecsl")).thenReturn(false)
-        val notification = NotificationGenerator.PRISONER_RELEASED_ECSL_INACTIVE
-        val nomsNumber = notification.nomsId()
-        assertTrue(getCustody(nomsNumber).isInCustody())
-
-        channelManager.getChannel(queueName).publishAndWait(notification)
-
-        val custody = getCustody(nomsNumber)
-        assertFalse(custody.isInCustody())
-
-        verifyRelease(custody, notification.message.occurredAt, ReleaseTypeCode.ADULT_LICENCE)
-
-        verifyCustodyHistory(
-            custody,
-            CustodyEventTester(CustodyEventTypeCode.STATUS_CHANGE, releaseOnLicence),
-            CustodyEventTester(
-                CustodyEventTypeCode.LOCATION_CHANGE,
-                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]?.description
-            )
-        )
-
-        verifyContact(custody, ContactType.Code.RELEASE_FROM_CUSTODY)
-
-        verifyTelemetry("Released", "LocationUpdated", "StatusUpdated") {
-            mapOf(
-                "occurredAt" to notification.message.occurredAt.toString(),
-                "nomsNumber" to "A0015AA",
                 "institution" to "WSI",
                 "reason" to "RELEASED",
                 "movementReason" to "ECSL",
