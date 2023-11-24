@@ -26,7 +26,7 @@ fun PersonManager.toOffenderManager() =
     OffenderManager(staff.toStaff(), date.toLocalDate(), team.toTeam(), provider.description, true)
 
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.toStaff() =
-    Staff(forename + forename2.let { " $forename2" }, surname)
+    Staff(listOfNotNull(forename, forename2).joinToString(" "), surname)
 
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team.toTeam() =
     Team(description, telephone, ldu.description, district.description)

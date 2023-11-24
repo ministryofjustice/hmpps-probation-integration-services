@@ -100,7 +100,7 @@ class OffenderService(
             author = it.reportManagers.lastOrNull()?.let { m ->
                 ReportAuthor(
                     m.staff.isUnallocated(),
-                    m.staff.forename + m.staff.forename2.let { " ${m.staff.forename2}" },
+                    listOfNotNull(m.staff.forename, m.staff.forename).joinToString(" "),
                     m.staff.surname
                 )
             }
