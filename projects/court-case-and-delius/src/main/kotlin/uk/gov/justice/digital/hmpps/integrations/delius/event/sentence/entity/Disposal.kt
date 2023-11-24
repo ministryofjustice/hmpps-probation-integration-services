@@ -80,7 +80,7 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
 
 @Entity
 @Immutable
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@Where(clause = "soft_deleted = 0")
 class Custody(
     @OneToOne
     @JoinColumn(name = "disposal_id")
@@ -89,9 +89,6 @@ class Custody(
     @ManyToOne
     @JoinColumn(name = "custodial_status_id")
     val status: ReferenceData,
-
-    @Column(name = "active_flag", columnDefinition = "number")
-    val active: Boolean = true,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
@@ -136,7 +133,7 @@ class PssRequirementMainCat(
     val code: String,
     val description: String,
     @Id
-    @Column(name = "pss_rqmnt_type_main_category_id")
+    @Column(name = "pss_rqmnt_type_main_cat_id")
     val id: Long
 )
 
@@ -147,7 +144,7 @@ class PssRequirementSubCat(
     val code: String,
     val description: String,
     @Id
-    @Column(name = "pss_rqmnt_type_sub_category_id")
+    @Column(name = "pss_rqmnt_type_sub_cat_id")
     val id: Long
 )
 
