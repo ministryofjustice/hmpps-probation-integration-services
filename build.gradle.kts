@@ -7,8 +7,8 @@ import uk.gov.justice.digital.hmpps.plugins.JibConfigPlugin
 
 plugins {
     kotlin("jvm") version "1.9.20"
-    kotlin("plugin.spring") version "1.9.20" apply false
-    kotlin("plugin.jpa") version "1.9.20" apply false
+    kotlin("plugin.spring") version "1.9.21" apply false
+    kotlin("plugin.jpa") version "1.9.21" apply false
     kotlin("kapt") version "1.9.20" apply false
     id("org.springframework.boot") version "3.1.5" apply false
     id("io.spring.dependency-management") version "1.1.4" apply false

@@ -77,8 +77,6 @@ class Handler(
                     if (!dve.ignored()) throw dve
                 }
             }
-
-            else -> throw IllegalArgumentException("Unexpected event type ${message.eventType}")
         }
     }
 }

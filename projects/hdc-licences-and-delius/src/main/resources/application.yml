@@ -16,6 +16,10 @@ spring:
           global_temporary:
             create_tables: false
             drop_tables: false
+  ldap:
+    base: dc=moj,dc=com
+    base-environment:
+      java.naming.ldap.derefAliases: never
   security.oauth2.client:
     registration:
       hdc-licences-and-delius:
@@ -43,6 +47,9 @@ spring.config.activate.on-profile: [ "dev", "integration-test" ]
 spring:
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
+  ldap.embedded:
+    validation.enabled: false
+    base-dn: ${spring.ldap.base}
   security.oauth2.resourceserver.jwt.public-key-location: classpath:local-public-key.pub
 
 seed.database: true
