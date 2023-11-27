@@ -241,7 +241,7 @@ internal class CASIntegrationTest {
 
         MatcherAssert.assertThat(
             contact!!.notes,
-            Matchers.equalTo(eventDetails.eventDetails.noteText + System.lineSeparator() + existingNotes)
+            Matchers.equalTo(eventDetails.eventDetails.noteText)
         )
     }
 
@@ -274,7 +274,7 @@ internal class CASIntegrationTest {
 
         MatcherAssert.assertThat(
             contact!!.notes,
-            Matchers.equalTo(eventDetails.eventDetails.noteText + System.lineSeparator() + existingNotes)
+            Matchers.equalTo(eventDetails.eventDetails.noteText)
         )
     }
 
@@ -307,7 +307,7 @@ internal class CASIntegrationTest {
 
         MatcherAssert.assertThat(
             contact!!.notes,
-            Matchers.equalTo(eventDetails.eventDetails.noteText + System.lineSeparator() + existingNotes)
+            Matchers.equalTo(eventDetails.eventDetails.noteText)
         )
     }
 }

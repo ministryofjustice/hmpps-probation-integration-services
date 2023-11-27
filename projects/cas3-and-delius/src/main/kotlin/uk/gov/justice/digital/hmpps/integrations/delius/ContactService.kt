@@ -40,8 +40,6 @@ class ContactService(
             if (existing.lastModifiedDateTime < event.timestamp) {
                 if (replaceNotes) {
                     existing.notes = event.eventDetails.noteText
-                } else {
-                    existing.notes = "${existing.notes}${System.lineSeparator()}${event.eventDetails.noteText}"
                 }
                 existing.date = event.timestamp.toLocalDate()
                 existing.startTime = event.timestamp
