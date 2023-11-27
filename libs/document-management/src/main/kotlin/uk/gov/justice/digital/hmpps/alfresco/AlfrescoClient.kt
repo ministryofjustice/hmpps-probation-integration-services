@@ -53,7 +53,7 @@ class AlfrescoClient(
         }, false)
 
     private fun HttpHeaders.copy(key: String, res: ConvertibleClientHttpResponse) {
-        this[key] = res.headers[key]
+        res.headers[key]?.also { this[key] = it }
     }
 }
 
