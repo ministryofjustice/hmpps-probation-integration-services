@@ -50,13 +50,15 @@ class ConvictionService(
                     )
                 )
             }
-            offences.addAll(convictionEventEntity.additionalOffences.map {
-                Offence(
-                    it.id,
-                    it.offence.description,
-                    false
-                )
-            })
+            offences.addAll(
+                convictionEventEntity.additionalOffences.map {
+                    Offence(
+                        it.id,
+                        it.offence.description,
+                        false
+                    )
+                }
+            )
             convictionModels.add(
                 Conviction(
                     convictionEventEntity.id,

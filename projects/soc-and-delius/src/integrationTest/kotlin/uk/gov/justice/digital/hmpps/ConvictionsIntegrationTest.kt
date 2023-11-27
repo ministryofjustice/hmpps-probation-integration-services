@@ -84,56 +84,54 @@ internal class ConvictionsIntegrationTest {
     }
 
     private fun getConvictions(withInActive: Boolean = false): ConvictionsContainer {
-            val activeConviction =
-                Conviction(
-                    ConvictionEventGenerator.DEFAULT_EVENT.id,
-                    ConvictionEventGenerator.DEFAULT_EVENT.convictionDate,
-                    ConvictionEventGenerator.DISPOSAL_TYPE.description,
-                    listOf(
-                        Offence(
-                            ConvictionEventGenerator.MAIN_OFFENCE.id,
-                            ConvictionEventGenerator.OFFENCE_MAIN_TYPE.description,
-                            true
-                        ),
-                        Offence(
-                            ConvictionEventGenerator.OTHER_OFFENCE.id,
-                            ConvictionEventGenerator.ADDITIONAL_OFFENCE_TYPE.description,
-                            false
-                        )
+        val activeConviction =
+            Conviction(
+                ConvictionEventGenerator.DEFAULT_EVENT.id,
+                ConvictionEventGenerator.DEFAULT_EVENT.convictionDate,
+                ConvictionEventGenerator.DISPOSAL_TYPE.description,
+                listOf(
+                    Offence(
+                        ConvictionEventGenerator.MAIN_OFFENCE.id,
+                        ConvictionEventGenerator.OFFENCE_MAIN_TYPE.description,
+                        true
                     ),
-                    Sentence(
-                        ConvictionEventGenerator.DISPOSAL.id,
-                        ConvictionEventGenerator.DISPOSAL.startDate,
-                        null,
-                        Custody(
-                            CustodyStatus(
-                                KeyDateGenerator.CUSTODY.status.code,
-                                KeyDateGenerator.CUSTODY.status.description
-                            ),
-                            listOf(
-                                KeyDate(
-                                    KeyDateGenerator.KEYDATE.type.code,
-                                    KeyDateGenerator.KEYDATE.type.description,
-                                    KeyDateGenerator.KEYDATE.date
-                                )
+                    Offence(
+                        ConvictionEventGenerator.OTHER_OFFENCE.id,
+                        ConvictionEventGenerator.ADDITIONAL_OFFENCE_TYPE.description,
+                        false
+                    )
+                ),
+                Sentence(
+                    ConvictionEventGenerator.DISPOSAL.id,
+                    ConvictionEventGenerator.DISPOSAL.startDate,
+                    null,
+                    Custody(
+                        CustodyStatus(
+                            KeyDateGenerator.CUSTODY.status.code,
+                            KeyDateGenerator.CUSTODY.status.description
+                        ),
+                        listOf(
+                            KeyDate(
+                                KeyDateGenerator.KEYDATE.type.code,
+                                KeyDateGenerator.KEYDATE.type.description,
+                                KeyDateGenerator.KEYDATE.date
                             )
                         )
                     )
                 )
+            )
 
-        val inactiveConviction =  Conviction(
+        val inactiveConviction = Conviction(
             ConvictionEventGenerator.INACTIVE_EVENT.id,
             ConvictionEventGenerator.INACTIVE_EVENT.convictionDate,
             "unknown",
             listOf(),
             null
         )
-        return if(withInActive) {
+        return if (withInActive) {
             ConvictionsContainer(listOf(activeConviction, inactiveConviction))
-        } else{
+        } else {
             ConvictionsContainer(listOf(activeConviction))
         }
-
-
     }
 }
