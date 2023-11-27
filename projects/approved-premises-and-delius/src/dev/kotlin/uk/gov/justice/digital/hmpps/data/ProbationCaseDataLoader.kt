@@ -44,11 +44,13 @@ class ProbationCaseDataLoader(
         staffRepository.save(ProbationCaseGenerator.COM_UNALLOCATED)
         probationCaseRepository.save(ProbationCaseGenerator.CASE_COMPLEX)
         probationCaseRepository.save(ProbationCaseGenerator.CASE_SIMPLE)
+        probationCaseRepository.save(ProbationCaseGenerator.CASE_X320741)
 
         personManagerRepository.saveAll(
             listOf(
                 ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_COMPLEX).asPersonManager(),
-                ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_SIMPLE).asPersonManager()
+                ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_SIMPLE).asPersonManager(),
+                ProbationCaseGenerator.generateManager(ProbationCaseGenerator.CASE_X320741).asPersonManager()
             )
         )
 
