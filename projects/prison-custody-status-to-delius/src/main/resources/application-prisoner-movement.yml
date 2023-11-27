@@ -35,6 +35,7 @@ prisoner.movement.configs:
       - DD
       - DE
       - DL
+      - ETR
     actionNames:
       - Recall
       - UpdateStatus
