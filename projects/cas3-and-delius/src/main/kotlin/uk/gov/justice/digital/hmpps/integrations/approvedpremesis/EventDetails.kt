@@ -35,7 +35,7 @@ data class BookingCancelled(
     val cancellationContext: String?
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:booking-cancelled:$bookingId"
-    override val noteText = listOfNotNull(cancellationReason, cancellationReason, bookingUrl).joinToString(" ")
+    override val noteText = listOfNotNull(cancellationReason, cancellationContext, bookingUrl).joinToString(" ")
     override val contactTypeCode = ContactType.BOOKING_CANCELLED
 }
 
