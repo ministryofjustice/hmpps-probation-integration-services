@@ -17,7 +17,7 @@ import java.time.LocalDate
 @Immutable
 @Table(name = "event")
 @Entity
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@Where(clause = "soft_deleted = 0")
 class ConvictionEventEntity(
     @Id
     @Column(name = "event_id")
@@ -172,15 +172,6 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
             "disposal.type"
         ]
     )
-    fun getAllByConvictionEventPersonCrn(crn: String): List<ConvictionEventEntity>
-
-    @EntityGraph(
-        attributePaths = [
-            "mainOffence.offence",
-            "additionalOffences.offence",
-            "disposal.type"
-        ]
-    )
     fun getAllByConvictionEventPersonIdOrderByConvictionDateDesc(personId: Long): List<ConvictionEventEntity>
 
     @EntityGraph(
@@ -190,7 +181,34 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
             "disposal.type"
         ]
     )
+    fun getAllByConvictionEventPersonCrn(crn: String): List<ConvictionEventEntity>
+
+    @EntityGraph(
+        attributePaths = [
+            "mainOffence.offence",
+            "additionalOffences.offence",
+            "disposal.type"
+        ]
+    )
     fun getAllByConvictionEventPersonNomsNumber(nomsNumber: String): List<ConvictionEventEntity>
+
+    @EntityGraph(
+        attributePaths = [
+            "mainOffence.offence",
+            "additionalOffences.offence",
+            "disposal.type"
+        ]
+    )
+    fun getAllByConvictionEventPersonCrnAndActiveIsTrue(crn: String): List<ConvictionEventEntity>
+
+    @EntityGraph(
+        attributePaths = [
+            "mainOffence.offence",
+            "additionalOffences.offence",
+            "disposal.type"
+        ]
+    )
+    fun getAllByConvictionEventPersonNomsNumberAndActiveIsTrue(nomsNumber: String): List<ConvictionEventEntity>
 }
 
 fun ConvictionEventRepository.getLatestConviction(personId: Long) =

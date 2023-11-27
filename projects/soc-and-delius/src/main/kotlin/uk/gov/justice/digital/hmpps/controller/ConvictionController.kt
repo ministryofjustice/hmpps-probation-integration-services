@@ -14,6 +14,7 @@ class ConvictionController(private val convictionService: ConvictionService) {
     @GetMapping(value = ["/convictions/{value}"])
     fun convictions(
         @PathVariable value: String,
-        @RequestParam(required = false, defaultValue = "CRN") type: IdentifierType
-    ) = convictionService.getConvictions(value, type)
+        @RequestParam(required = false, defaultValue = "CRN") type: IdentifierType,
+        @RequestParam(required = false, defaultValue = "false") activeOnly: Boolean
+    ) = convictionService.getConvictions(value, type, activeOnly)
 }

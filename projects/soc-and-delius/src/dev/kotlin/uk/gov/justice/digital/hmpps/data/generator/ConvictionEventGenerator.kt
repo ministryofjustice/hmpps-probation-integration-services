@@ -15,12 +15,12 @@ object ConvictionEventGenerator {
         "X012772",
         "1231234"
     )
-    val OFFENCE_MAIN = Offence(
+    val OFFENCE_MAIN_TYPE = Offence(
         IdGenerator.getAndIncrement(),
         "C01",
         "Murder"
     )
-    val OFFENCE_OTHER = Offence(
+    val ADDITIONAL_OFFENCE_TYPE = Offence(
         IdGenerator.getAndIncrement(),
         "C02",
         "Stealing a kitten"
@@ -30,15 +30,21 @@ object ConvictionEventGenerator {
         LocalDate.now(),
         PERSON
     )
+    val INACTIVE_EVENT = ConvictionEventEntity(
+        IdGenerator.getAndIncrement(),
+        LocalDate.now(),
+        PERSON,
+        active = false
+    )
     val MAIN_OFFENCE = MainOffence(
         IdGenerator.getAndIncrement(),
         DEFAULT_EVENT,
-        OFFENCE_MAIN
+        OFFENCE_MAIN_TYPE
     )
     val OTHER_OFFENCE = AdditionalOffence(
         IdGenerator.getAndIncrement(),
         DEFAULT_EVENT,
-        OFFENCE_OTHER
+        ADDITIONAL_OFFENCE_TYPE
     )
     val DISPOSAL_TYPE = DisposalType(
         IdGenerator.getAndIncrement(),
@@ -64,12 +70,12 @@ object ConvictionEventGenerator {
     val MAIN_OFFENCE_2 = MainOffence(
         IdGenerator.getAndIncrement(),
         EVENT_2,
-        OFFENCE_MAIN
+        OFFENCE_MAIN_TYPE
     )
     val OTHER_OFFENCE_2 = AdditionalOffence(
         IdGenerator.getAndIncrement(),
         EVENT_2,
-        OFFENCE_OTHER
+        ADDITIONAL_OFFENCE_TYPE
     )
     val DISPOSAL_2 = Disposal(
         IdGenerator.getAndIncrement(),
