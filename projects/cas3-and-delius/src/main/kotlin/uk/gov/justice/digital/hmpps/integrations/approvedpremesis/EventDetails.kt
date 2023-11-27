@@ -35,7 +35,8 @@ data class BookingCancelled(
     val cancellationContext: String?
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:booking-cancelled:$bookingId"
-    override val noteText = listOfNotNull(cancellationReason, cancellationContext, bookingUrl).joinToString(" ")
+    override val noteText =
+        listOfNotNull(cancellationReason, cancellationContext).joinToString(" ") + System.lineSeparator() + bookingUrl
     override val contactTypeCode = ContactType.BOOKING_CANCELLED
 }
 
@@ -52,9 +53,8 @@ data class BookingProvisional(
         listOfNotNull(
             "Expected arrival date:",
             DeliusDateFormatter.format(expectedArrivedAt),
-            notes,
-            bookingUrl
-        ).joinToString(" ")
+            notes
+        ).joinToString(" ") + System.lineSeparator() + bookingUrl
     override val contactTypeCode = ContactType.BOOKING_PROVISIONAL
 }
 
@@ -71,9 +71,8 @@ data class BookingConfirmed(
         listOfNotNull(
             "Expected arrival date:",
             DeliusDateFormatter.format(expectedArrivedAt),
-            notes,
-            bookingUrl
-        ).joinToString(" ")
+            notes
+        ).joinToString(" ") + System.lineSeparator() + bookingUrl
     override val contactTypeCode = ContactType.BOOKING_CONFIRMED
 }
 
@@ -88,7 +87,11 @@ data class PersonArrived(
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:person-arrived:$bookingId"
     override val noteText =
-        listOfNotNull("Arrival date:", DeliusDateFormatter.format(arrivedAt), notes, bookingUrl).joinToString(" ")
+        listOfNotNull(
+            "Arrival date:",
+            DeliusDateFormatter.format(arrivedAt),
+            notes
+        ).joinToString(" ") + System.lineSeparator() + bookingUrl
     override val contactTypeCode = ContactType.PERSON_ARRIVED
 }
 
