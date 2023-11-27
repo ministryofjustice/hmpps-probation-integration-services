@@ -1,8 +1,5 @@
 package uk.gov.justice.digital.hmpps.service
 
-import feign.FeignException.NotFound
-import feign.Request
-import feign.RequestTemplate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -15,6 +12,8 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.springframework.http.HttpStatus
+import org.springframework.web.client.HttpClientErrorException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.oasys.client.OasysClient
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.Inputs
@@ -93,8 +92,12 @@ internal class OasysAssessmentServiceTest {
     fun `should not attempt to retrieve offence details where CRN does not exist`() {
         // Given
         val crn = "D123456"
-        val request = createRequest()
-        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(
+            HttpClientErrorException(
+                HttpStatus.NOT_FOUND,
+                "CRN Not found for $crn"
+            )
+        )
 
         // When
         val exception = assertThrows<NotFoundException> {
@@ -102,7 +105,7 @@ internal class OasysAssessmentServiceTest {
         }
 
         // Then
-        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        assertThat(exception.message).isEqualTo("404 CRN Not found for $crn")
         verify(never()) { oasysClient.getOffenceDetails(any(), any(), any()) }
     }
 
@@ -151,8 +154,12 @@ internal class OasysAssessmentServiceTest {
     fun `should not attempt to retrieve needs details where CRN does not exist`() {
         // Given
         val crn = "D123456"
-        val request = createRequest()
-        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(
+            HttpClientErrorException(
+                HttpStatus.NOT_FOUND,
+                "CRN Not found for $crn"
+            )
+        )
 
         // When
         val exception = assertThrows<NotFoundException> {
@@ -160,7 +167,7 @@ internal class OasysAssessmentServiceTest {
         }
 
         // Then
-        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        assertThat(exception.message).isEqualTo("404 CRN Not found for $crn")
         verify(never()) { oasysClient.getNeedsDetails(any(), any(), any()) }
     }
 
@@ -283,8 +290,12 @@ internal class OasysAssessmentServiceTest {
     fun `should not attempt to retrieve risk management plan details where CRN does not exist`() {
         // Given
         val crn = "D123456"
-        val request = createRequest()
-        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(
+            HttpClientErrorException(
+                HttpStatus.NOT_FOUND,
+                "CRN Not found for $crn"
+            )
+        )
 
         // When
         val exception = assertThrows<NotFoundException> {
@@ -292,7 +303,7 @@ internal class OasysAssessmentServiceTest {
         }
 
         // Then
-        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        assertThat(exception.message).isEqualTo("404 CRN Not found for $crn")
         verify(never()) { oasysClient.getRiskManagementPlanDetails(any(), any(), any()) }
     }
 
@@ -312,7 +323,9 @@ internal class OasysAssessmentServiceTest {
                 )
             )
         )
-        whenever(oasysClient.getRiskManagementPlanDetails(crn, assessmentPk, status)).thenReturn(oasysRiskManagementPlanDetails)
+        whenever(oasysClient.getRiskManagementPlanDetails(crn, assessmentPk, status)).thenReturn(
+            oasysRiskManagementPlanDetails
+        )
 
         // When
         val riskManagementPlanDetails = oasysAssessmentService.getRiskManagementPlanDetails(crn)
@@ -336,8 +349,12 @@ internal class OasysAssessmentServiceTest {
     fun `should not attempt to retrieve rosh summary details where CRN does not exist`() {
         // Given
         val crn = "D123456"
-        val request = createRequest()
-        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(
+            HttpClientErrorException(
+                HttpStatus.NOT_FOUND,
+                "CRN Not found for $crn"
+            )
+        )
 
         // When
         val exception = assertThrows<NotFoundException> {
@@ -345,7 +362,7 @@ internal class OasysAssessmentServiceTest {
         }
 
         // Then
-        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        assertThat(exception.message).isEqualTo("404 CRN Not found for $crn")
         verify(never()) { oasysClient.getRoshSummary(any(), any(), any()) }
     }
 
@@ -389,8 +406,12 @@ internal class OasysAssessmentServiceTest {
     fun `should not attempt to retrieve risk to the individual details where CRN does not exist`() {
         // Given
         val crn = "D123456"
-        val request = createRequest()
-        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(
+            HttpClientErrorException(
+                HttpStatus.NOT_FOUND,
+                "CRN Not found for $crn"
+            )
+        )
 
         // When
         val exception = assertThrows<NotFoundException> {
@@ -398,7 +419,7 @@ internal class OasysAssessmentServiceTest {
         }
 
         // Then
-        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        assertThat(exception.message).isEqualTo("404 CRN Not found for $crn")
         verify(never()) { oasysClient.getRiskToTheIndividual(any(), any(), any()) }
     }
 
@@ -422,7 +443,9 @@ internal class OasysAssessmentServiceTest {
                 )
             )
         )
-        whenever(oasysClient.getRiskToTheIndividual(crn, assessmentPk, status)).thenReturn(oasysRiskToTheIndividualAssessmentDetails)
+        whenever(oasysClient.getRiskToTheIndividual(crn, assessmentPk, status)).thenReturn(
+            oasysRiskToTheIndividualAssessmentDetails
+        )
 
         // When
         val riskToTheIndividualDetails = oasysAssessmentService.getRiskToIndividual(crn)
@@ -450,8 +473,12 @@ internal class OasysAssessmentServiceTest {
     fun `should not attempt to retrieve risk assessment details where CRN does not exist`() {
         // Given
         val crn = "D123456"
-        val request = createRequest()
-        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(
+            HttpClientErrorException(
+                HttpStatus.NOT_FOUND,
+                "CRN Not found for $crn"
+            )
+        )
 
         // When
         val exception = assertThrows<NotFoundException> {
@@ -459,7 +486,7 @@ internal class OasysAssessmentServiceTest {
         }
 
         // Then
-        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        assertThat(exception.message).isEqualTo("404 CRN Not found for $crn")
         verify(never()) { oasysClient.getRiskAssessment(any(), any(), any()) }
     }
 
@@ -513,8 +540,12 @@ internal class OasysAssessmentServiceTest {
     fun `should not attempt to retrieve ROSH details where CRN does not exist`() {
         // Given
         val crn = "D123456"
-        val request = createRequest()
-        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(
+            HttpClientErrorException(
+                HttpStatus.NOT_FOUND,
+                "CRN Not found for $crn"
+            )
+        )
 
         // When
         val exception = assertThrows<NotFoundException> {
@@ -522,7 +553,7 @@ internal class OasysAssessmentServiceTest {
         }
 
         // Then
-        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        assertThat(exception.message).isEqualTo("404 CRN Not found for $crn")
         verify(never()) { oasysClient.getRiskOfSeriousHarm(any(), any(), any()) }
     }
 
@@ -580,8 +611,12 @@ internal class OasysAssessmentServiceTest {
     fun `should not attempt to retrieve Health details where CRN does not exist`() {
         // Given
         val crn = "D123456"
-        val request = createRequest()
-        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(NotFound("CRN Not found for $crn", request, null, null))
+        whenever(oasysClient.getAssessmentTimeline(crn)).thenThrow(
+            HttpClientErrorException(
+                HttpStatus.NOT_FOUND,
+                "CRN Not found for $crn"
+            )
+        )
 
         // When
         val exception = assertThrows<NotFoundException> {
@@ -589,7 +624,7 @@ internal class OasysAssessmentServiceTest {
         }
 
         // Then
-        assertThat(exception.message).isEqualTo("CRN Not found for $crn")
+        assertThat(exception.message).isEqualTo("404 CRN Not found for $crn")
         verify(never()) { oasysClient.getHealthDetails(any(), any(), any()) }
     }
 
@@ -651,15 +686,5 @@ internal class OasysAssessmentServiceTest {
             )
         )
         assertThat(healthDetails).isEqualTo(expectedHealthDetails)
-    }
-
-    private fun createRequest(): Request? {
-        return Request.create(
-            Request.HttpMethod.GET,
-            "url",
-            HashMap(),
-            null,
-            RequestTemplate()
-        )
     }
 }

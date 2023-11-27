@@ -1,18 +1,16 @@
 package uk.gov.justice.digital.hmpps.integrations.managepomcases
 
 import com.fasterxml.jackson.annotation.JsonAlias
-import org.springframework.cloud.openfeign.FeignClient
-import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.service.annotation.GetExchange
 import uk.gov.justice.digital.hmpps.api.model.Name
 import java.net.URI
 import java.time.LocalDate
 
-@FeignClient(name = "manage-pom-cases", url = "https://dummy-url/to/be/overridden")
 interface ManagePomCasesClient {
-    @GetMapping
+    @GetExchange
     fun getDetails(url: URI): Handover?
 
-    @GetMapping
+    @GetExchange
     fun getPomAllocation(url: URI): PomAllocation?
 }
 

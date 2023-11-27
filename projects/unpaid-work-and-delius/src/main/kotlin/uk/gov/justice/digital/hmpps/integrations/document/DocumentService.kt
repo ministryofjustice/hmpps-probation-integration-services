@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.MultiValueMap
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
+import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoUploadClient
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.common.entity.contact.type.ContactTypeCode
@@ -23,7 +23,7 @@ import java.time.ZonedDateTime
 class DocumentService(
     auditedInteractionService: AuditedInteractionService,
     private val documentRepository: DocumentRepository,
-    private val alfrescoClient: AlfrescoClient,
+    private val alfrescoUploadClient: AlfrescoUploadClient,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository
 
@@ -34,7 +34,7 @@ class DocumentService(
             val externalReference = "urn:hmpps:unpaid-work-assessment:$episodeId"
             val contactId = createContact(person, eventId, contactDate, externalReference)
 
-            val alfrescoDocument = alfrescoClient.addDocument(populateBodyValues(hmppsEvent, file, filename, contactId))
+            val alfrescoDocument = alfrescoUploadClient.addDocument(populateBodyValues(hmppsEvent, file, filename, contactId))
             documentRepository.save(
                 Document(
                     contactId = contactId,

@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
-import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
+import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoUploadClient
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -38,7 +38,7 @@ class PsrCompletedIntegrationTest {
     private lateinit var documentRepository: DocumentRepository
 
     @SpyBean
-    private lateinit var alfrescoClient: AlfrescoClient
+    private lateinit var alfrescoUploadClient: AlfrescoUploadClient
 
     @Test
     fun `completed pre sentence report`() {
@@ -51,8 +51,8 @@ class PsrCompletedIntegrationTest {
 
         verify(telemetryService).notificationReceived(message)
 
-        verify(alfrescoClient).releaseDocument(DocumentGenerator.DEFAULT.alfrescoId)
-        verify(alfrescoClient).updateDocument(eq(DocumentGenerator.DEFAULT.alfrescoId), any())
+        verify(alfrescoUploadClient).releaseDocument(DocumentGenerator.DEFAULT.alfrescoId)
+        verify(alfrescoUploadClient).updateDocument(eq(DocumentGenerator.DEFAULT.alfrescoId), any())
 
         val updated = documentRepository.findByExternalReference(reportId)
         assertThat(updated?.lastSaved, greaterThanOrEqualTo(document?.lastSaved))

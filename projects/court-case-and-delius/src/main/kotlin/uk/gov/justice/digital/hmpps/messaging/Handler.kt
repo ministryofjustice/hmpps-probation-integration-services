@@ -1,9 +1,10 @@
 package uk.gov.justice.digital.hmpps.messaging
 
-import feign.FeignException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import org.springframework.web.client.HttpStatusCodeException
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.courtcase.CourtCaseClient
@@ -34,9 +35,15 @@ class Handler(
 
         val courtCaseNote = try {
             courtCaseClient.getCourtCaseNote(URI.create(event.detailUrl!!))
-        } catch (notFound: FeignException.NotFound) {
-            telemetryService.trackEvent("CourtCaseNoteNotFound", mapOf("detailUrl" to event.detailUrl!!))
-            return
+        } catch (ex: HttpStatusCodeException) {
+            when (ex.statusCode) {
+                HttpStatus.NOT_FOUND -> {
+                    telemetryService.trackEvent("CourtCaseNoteNotFound", mapOf("detailUrl" to event.detailUrl!!))
+                    return
+                }
+
+                else -> throw ex
+            }
         }
 
         log.debug(

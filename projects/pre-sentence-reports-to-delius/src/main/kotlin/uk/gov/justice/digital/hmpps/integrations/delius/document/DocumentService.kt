@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
+import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoUploadClient
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.entity.User
 import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportRepository
@@ -24,7 +24,7 @@ class DocumentService(
     auditedInteractionService: AuditedInteractionService,
     private val documentRepository: DocumentRepository,
     private val courtReportRepository: CourtReportRepository,
-    private val alfrescoClient: AlfrescoClient
+    private val alfrescoUploadClient: AlfrescoUploadClient
 ) : AuditableService(auditedInteractionService) {
     fun AdditionalInformation.reportId() = this["reportId"] as String
 
@@ -51,8 +51,8 @@ class DocumentService(
             document.lastSaved = ZonedDateTime.now()
             document.lastUpdatedUserId = ServiceContext.servicePrincipal()!!.userId
 
-            alfrescoClient.releaseDocument(document.alfrescoId)
-            alfrescoClient.updateDocument(
+            alfrescoUploadClient.releaseDocument(document.alfrescoId)
+            alfrescoUploadClient.updateDocument(
                 document.alfrescoId,
                 populateBodyValues(hmppsEvent, document, file)
             )

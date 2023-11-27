@@ -1,18 +1,11 @@
 package uk.gov.justice.digital.hmpps.client
 
-import org.springframework.cloud.openfeign.FeignClient
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import uk.gov.justice.digital.hmpps.config.FeignOAuth2Config
+import org.springframework.web.service.annotation.GetExchange
 import java.time.LocalDate
 
-@FeignClient(
-    name = "manage-offences",
-    url = "\${integrations.manage-offences.url}",
-    configuration = [FeignOAuth2Config::class]
-)
 interface ManageOffencesClient {
-    @GetMapping(value = ["/offences/code/unique/{code}"])
+    @GetExchange(value = "/offences/code/unique/{code}")
     fun getOffence(@PathVariable code: String): Offence
 }
 

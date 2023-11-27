@@ -20,7 +20,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation(libs.springdoc)
     implementation(libs.opentelemetry.annotations)
-    implementation(libs.openfeign)
 
     dev(project(":libs:dev-tools"))
     dev("com.unboundid:unboundid-ldapsdk")

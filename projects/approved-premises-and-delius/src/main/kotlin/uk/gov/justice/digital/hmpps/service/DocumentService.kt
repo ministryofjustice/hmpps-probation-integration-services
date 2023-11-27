@@ -34,8 +34,7 @@ class DocumentService(
                 .header(
                     CONTENT_DISPOSITION,
                     ContentDisposition.attachment().filename(filename, UTF_8).build().toString()
-                )
-                .body(response.body)
+                ).body(response.body)
 
             response.statusCode.is4xxClientError -> throw NotFoundException("Document content with id of $id not found for CRN $crn")
 
@@ -64,7 +63,7 @@ class DocumentService(
         return documents
     }
 
-    private fun <T> ResponseEntity<T>.sanitisedHeaders() = headers.filterKeys {
+    private fun ResponseEntity<Resource>.sanitisedHeaders() = headers.filterKeys {
         it in listOf(
             CONTENT_LENGTH,
             CONTENT_TYPE,

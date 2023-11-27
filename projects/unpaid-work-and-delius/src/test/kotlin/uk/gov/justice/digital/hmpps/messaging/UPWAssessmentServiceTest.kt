@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.messaging
 
-import feign.Request
-import feign.Response
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -9,10 +7,12 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.EventRepository
 import uk.gov.justice.digital.hmpps.data.generator.CaseGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
@@ -104,17 +104,19 @@ internal class UPWAssessmentServiceTest {
         val notification = prepEvent("upw-assessment-complete", 1234)
 
         whenever(arnClient.getUPWAssessment(URI(notification.message.detailUrl!!))).thenReturn(
-            Response.builder()
-                .body("Ceci n'est pas une PDF".toByteArray())
-                .headers(mapOf("Content-Disposition" to listOf("filename=upw-assessment.pdf")))
-                .request(mock(Request::class.java))
-                .status(200)
-                .build()
+            ResponseEntity.status(HttpStatus.OK)
+                .headers { it[HttpHeaders.CONTENT_DISPOSITION] = listOf("filename=upw-assessment.pdf") }
+                .body(
+                    "Ceci n'est pas une PDF".toByteArray()
+                )
         )
 
         val exception = assertThrows<IllegalStateException> {
             upwAssessmentService.processMessage(notification)
         }
-        assertThat(exception.message, equalTo("Invalid PDF returned for episode: http://localhost:1234/api/upw/download/12345"))
+        assertThat(
+            exception.message,
+            equalTo("Invalid PDF returned for episode: http://localhost:1234/api/upw/download/12345")
+        )
     }
 }

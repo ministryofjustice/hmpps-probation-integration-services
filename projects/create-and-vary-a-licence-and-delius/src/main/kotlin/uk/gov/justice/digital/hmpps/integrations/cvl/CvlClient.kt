@@ -1,13 +1,11 @@
 package uk.gov.justice.digital.hmpps.integrations.cvl
 
-import org.springframework.cloud.openfeign.FeignClient
-import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.service.annotation.GetExchange
 import java.net.URI
 import java.time.LocalDate
 
-@FeignClient(name = "create-and-vary-a-licence", url = "https://dummy-url/to/be/overridden")
 interface CvlClient {
-    @GetMapping
+    @GetExchange
     fun getActivatedLicence(uri: URI): ActivatedLicence?
 }
 

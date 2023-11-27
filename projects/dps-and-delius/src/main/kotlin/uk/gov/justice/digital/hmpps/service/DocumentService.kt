@@ -1,15 +1,10 @@
 package uk.gov.justice.digital.hmpps.service
 
-import feign.Response
 import jakarta.transaction.Transactional
-import org.springframework.http.ContentDisposition
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpHeaders.CONTENT_DISPOSITION
-import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
-import uk.gov.justice.digital.hmpps.client.AlfrescoClient
+import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.entity.CourtAppearance
 import uk.gov.justice.digital.hmpps.entity.Disposal
@@ -22,7 +17,6 @@ import uk.gov.justice.digital.hmpps.model.Conviction
 import uk.gov.justice.digital.hmpps.model.Document
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.model.ProbationDocumentsResponse
-import kotlin.text.Charsets.UTF_8
 
 @Service
 class DocumentService(
@@ -31,20 +25,9 @@ class DocumentService(
     private val alfrescoClient: AlfrescoClient
 ) {
     fun downloadDocument(id: String): ResponseEntity<StreamingResponseBody> {
-        val filename = documentRepository.findNameByAlfrescoId(id) ?: throw NotFoundException("Document", "alfrescoId", id)
-        val response = alfrescoClient.getDocument(id)
-        val input = response.body().asInputStream()
-        return when (response.status()) {
-            200 -> ResponseEntity.ok()
-                .headers { it.putAll(response.sanitisedHeaders()) }
-                .header(CONTENT_DISPOSITION, ContentDisposition.attachment().filename(filename, UTF_8).build().toString())
-                .contentType(APPLICATION_OCTET_STREAM)
-                .body(StreamingResponseBody { output -> input.use { it.copyTo(output) } })
-
-            404 -> throw NotFoundException("Document content", "alfrescoId", id)
-
-            else -> throw RuntimeException("Failed to download document. Alfresco responded with ${response.status()}.")
-        }
+        val filename =
+            documentRepository.findNameByAlfrescoId(id) ?: throw NotFoundException("Document", "alfrescoId", id)
+        return alfrescoClient.streamDocument(id, filename)
     }
 
     @Transactional
@@ -93,11 +76,4 @@ class DocumentService(
     private val Disposal.description get() = "${type.description}${lengthString?.let { " ($it)" } ?: ""}"
     private val Disposal.lengthString get() = length?.let { "$length ${lengthUnits!!.description}" }
     private fun List<CourtAppearance>.latestOutcome() = filter { it.outcome != null }.maxByOrNull { it.date }?.outcome
-    private fun Response.sanitisedHeaders(): Map<String, List<String>> = headers().filterKeys { key ->
-        key in listOf(
-            HttpHeaders.CONTENT_LENGTH,
-            HttpHeaders.ETAG,
-            HttpHeaders.LAST_MODIFIED
-        ).map { it.lowercase() }
-    }.mapValues { it.value.toList() }
 }
