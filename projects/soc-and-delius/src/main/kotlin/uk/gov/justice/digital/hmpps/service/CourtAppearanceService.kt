@@ -25,7 +25,9 @@ class CourtAppearanceService(private val courtAppearanceRepository: CourtAppeara
                     Type(it.appearanceType.code, it.appearanceType.description),
                     it.court.code,
                     it.court.name,
-                    it.courtAppearanceEventEntity.courtAppearancePerson.crn
+                    it.courtAppearanceEventEntity.courtAppearancePerson.crn,
+                    it.id,
+                    it.courtAppearanceEventEntity.courtAppearancePerson.id
                 )
             )
         }

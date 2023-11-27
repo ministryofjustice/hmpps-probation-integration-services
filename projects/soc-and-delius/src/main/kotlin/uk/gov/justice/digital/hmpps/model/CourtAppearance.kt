@@ -7,7 +7,9 @@ data class CourtAppearance(
     val type: Type,
     val courtCode: String,
     val courtName: String,
-    val crn: String
+    val crn: String,
+    val courtAppearanceId: Long,
+    val offenderId: Long
 )
 
 data class Type(
