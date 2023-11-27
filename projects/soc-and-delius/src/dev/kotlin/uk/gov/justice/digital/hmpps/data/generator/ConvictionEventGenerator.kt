@@ -30,6 +30,12 @@ object ConvictionEventGenerator {
         LocalDate.now(),
         PERSON
     )
+    val INACTIVE_EVENT = ConvictionEventEntity(
+        IdGenerator.getAndIncrement(),
+        LocalDate.now(),
+        PERSON,
+        active = false
+    )
     val MAIN_OFFENCE = MainOffence(
         IdGenerator.getAndIncrement(),
         DEFAULT_EVENT,

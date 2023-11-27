@@ -41,22 +41,22 @@ class ConvictionService(
         convictions.map { convictionEventEntity ->
             val custody = convictionEventEntity.disposal?.let { custodyRepository.getCustodyByDisposalId(it.id) }
             val offences = mutableListOf<Offence>()
-            offences.add(
-                Offence(
-                    convictionEventEntity.mainOffence!!.id,
-                    convictionEventEntity.mainOffence.offence.description,
-                    true
-                )
-            )
-            convictionEventEntity.additionalOffences.forEach {
+            convictionEventEntity.mainOffence?.let {
                 offences.add(
                     Offence(
-                        it.id,
-                        it.offence.description,
-                        false
+                        convictionEventEntity.mainOffence.id,
+                        convictionEventEntity.mainOffence.offence.description,
+                        true
                     )
                 )
             }
+            offences.addAll(convictionEventEntity.additionalOffences.map {
+                Offence(
+                    it.id,
+                    it.offence.description,
+                    false
+                )
+            })
             convictionModels.add(
                 Conviction(
                     convictionEventEntity.id,

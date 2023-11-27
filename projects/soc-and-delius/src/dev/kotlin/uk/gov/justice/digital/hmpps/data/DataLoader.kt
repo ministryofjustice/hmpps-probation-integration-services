@@ -47,6 +47,7 @@ class DataLoader(
             ConvictionEventGenerator.ADDITIONAL_OFFENCE_TYPE,
             ConvictionEventGenerator.OFFENCE_MAIN_TYPE,
             ConvictionEventGenerator.DEFAULT_EVENT,
+            ConvictionEventGenerator.INACTIVE_EVENT,
             ConvictionEventGenerator.MAIN_OFFENCE,
             ConvictionEventGenerator.OTHER_OFFENCE,
             ConvictionEventGenerator.DISPOSAL_TYPE,

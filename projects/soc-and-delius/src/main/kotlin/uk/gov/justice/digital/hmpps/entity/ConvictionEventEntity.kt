@@ -17,7 +17,7 @@ import java.time.LocalDate
 @Immutable
 @Table(name = "event")
 @Entity
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@Where(clause = "soft_deleted = 0")
 class ConvictionEventEntity(
     @Id
     @Column(name = "event_id")
