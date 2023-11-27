@@ -35,7 +35,7 @@ data class BookingCancelled(
     val cancellationContext: String?
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:booking-cancelled:$bookingId"
-    override val noteText = "$cancellationReason $cancellationContext $bookingUrl"
+    override val noteText = listOfNotNull(cancellationReason, cancellationReason, bookingUrl).joinToString(" ")
     override val contactTypeCode = ContactType.BOOKING_CANCELLED
 }
 
@@ -48,7 +48,13 @@ data class BookingProvisional(
     val notes: String
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:booking-provisionally-made:$bookingId"
-    override val noteText = "${DeliusDateFormatter.format(expectedArrivedAt)} $notes $bookingUrl"
+    override val noteText =
+        listOfNotNull(
+            "Expected arrival date:",
+            DeliusDateFormatter.format(expectedArrivedAt),
+            notes,
+            bookingUrl
+        ).joinToString(" ")
     override val contactTypeCode = ContactType.BOOKING_PROVISIONAL
 }
 
@@ -61,7 +67,13 @@ data class BookingConfirmed(
     val notes: String
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:booking-confirmed:$bookingId"
-    override val noteText = "${DeliusDateFormatter.format(expectedArrivedAt)} $notes $bookingUrl"
+    override val noteText =
+        listOfNotNull(
+            "Expected arrival date:",
+            DeliusDateFormatter.format(expectedArrivedAt),
+            notes,
+            bookingUrl
+        ).joinToString(" ")
     override val contactTypeCode = ContactType.BOOKING_CONFIRMED
 }
 
@@ -75,7 +87,8 @@ data class PersonArrived(
     val premises: Address
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:person-arrived:$bookingId"
-    override val noteText = "${DeliusDateFormatter.format(arrivedAt)} $notes $bookingUrl"
+    override val noteText =
+        listOfNotNull("Arrival date:", DeliusDateFormatter.format(arrivedAt), notes, bookingUrl).joinToString(" ")
     override val contactTypeCode = ContactType.PERSON_ARRIVED
 }
 
@@ -116,7 +129,13 @@ data class PersonDeparted(
 
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:person-departed:$bookingId"
-    override val noteText = listOfNotNull(DeliusDateFormatter.format(departedAt), notes, reason, reasonDetail, moveOnCategory.description).joinToString(" ")
+    override val noteText = listOfNotNull(
+        DeliusDateFormatter.format(departedAt),
+        notes,
+        reason,
+        reasonDetail,
+        moveOnCategory.description
+    ).joinToString(" ")
     override val contactTypeCode = ContactType.PERSON_DEPARTED
 }
 
