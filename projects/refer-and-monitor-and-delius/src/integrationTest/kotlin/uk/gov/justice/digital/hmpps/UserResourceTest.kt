@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.api.model.ManagedCases
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.UserDetail
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.service.CaseAccess
@@ -189,9 +190,30 @@ class UserResourceTest {
     }
 
     @Test
+    fun `user details not found returns 404 from id`() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/users/829185656291/details")
+                .withOAuth2Token(wireMockServer)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isNotFound)
+    }
+
+    @Test
     fun `user details are correctly returned`() {
         val res = mockMvc.perform(
             MockMvcRequestBuilders.get("/users/john-smith/details")
+                .withOAuth2Token(wireMockServer)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andReturn().response.contentAsString
+
+        val userDetail = objectMapper.readValue<UserDetail>(res)
+        assertThat(userDetail, equalTo(UserDetail("john-smith", Name("John", "Smith"), "john.smith@moj.gov.uk")))
+    }
+
+    @Test
+    fun `user details are correctly returned from id`() {
+        val res = mockMvc.perform(
+            MockMvcRequestBuilders.get("/users/${ProviderGenerator.JOHN_SMITH_USER.id}/details")
                 .withOAuth2Token(wireMockServer)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andReturn().response.contentAsString
