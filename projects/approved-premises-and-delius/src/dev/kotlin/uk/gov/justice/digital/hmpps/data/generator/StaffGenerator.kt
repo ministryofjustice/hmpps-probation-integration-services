@@ -11,8 +11,12 @@ import java.util.concurrent.atomic.AtomicLong
 object StaffGenerator {
     private val staffCodeGenerator = AtomicLong(1)
     val DEFAULT_STAFF = generate()
+    val JIM_SNOW = generate(
+        name = "Jim Snow"
+    )
 
     val DEFAULT_STAFF_USER = generateStaffUser("john-smith", DEFAULT_STAFF)
+    val JIM_SNOW_USER = generateStaffUser("JIMSNOWLDAP", JIM_SNOW)
 
     fun generate(
         name: String = "TEST",
