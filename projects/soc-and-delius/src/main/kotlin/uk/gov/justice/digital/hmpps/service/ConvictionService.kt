@@ -19,19 +19,49 @@ class ConvictionService(
     private val convictionEventRepository: ConvictionEventRepository,
     private val custodyRepository: CustodyRepository
 ) {
-    fun getConvictions(value: String, type: IdentifierType): ConvictionsContainer {
+    fun getConvictions(value: String, type: IdentifierType, activeOnly: Boolean): ConvictionsContainer {
         val convictions = when (type) {
-            IdentifierType.CRN -> convictionEventRepository.getAllByConvictionEventPersonCrn(value)
-            IdentifierType.NOMS -> convictionEventRepository.getAllByConvictionEventPersonNomsNumber(value)
+            IdentifierType.CRN -> if (activeOnly) {
+                convictionEventRepository.getAllByConvictionEventPersonCrnAndActiveIsTrue(
+                    value
+                )
+            } else {
+                convictionEventRepository.getAllByConvictionEventPersonCrn(value)
+            }
+
+            IdentifierType.NOMS -> if (activeOnly) {
+                convictionEventRepository.getAllByConvictionEventPersonNomsNumberAndActiveIsTrue(
+                    value
+                )
+            } else {
+                convictionEventRepository.getAllByConvictionEventPersonNomsNumber(value)
+            }
         }
         val convictionModels = mutableListOf<Conviction>()
         convictions.map { convictionEventEntity ->
             val custody = convictionEventEntity.disposal?.let { custodyRepository.getCustodyByDisposalId(it.id) }
             val offences = mutableListOf<Offence>()
-            offences.add(Offence(convictionEventEntity.mainOffence!!.offence.description, true))
-            convictionEventEntity.additionalOffences.forEach { offences.add(Offence(it.offence.description, false)) }
+            convictionEventEntity.mainOffence?.let {
+                offences.add(
+                    Offence(
+                        convictionEventEntity.mainOffence.id,
+                        convictionEventEntity.mainOffence.offence.description,
+                        true
+                    )
+                )
+            }
+            offences.addAll(
+                convictionEventEntity.additionalOffences.map {
+                    Offence(
+                        it.id,
+                        it.offence.description,
+                        false
+                    )
+                }
+            )
             convictionModels.add(
                 Conviction(
+                    convictionEventEntity.id,
                     convictionEventEntity.convictionDate,
                     convictionEventEntity.disposal?.type?.description ?: "unknown",
                     offences,
@@ -45,7 +75,7 @@ class ConvictionService(
 }
 
 private fun Disposal.asModel(custody: uk.gov.justice.digital.hmpps.entity.Custody?) =
-    Sentence(startDate, expectedEndDate, custody?.custodyModel())
+    Sentence(id, startDate, expectedEndDate, custody?.custodyModel())
 
 private fun ReferenceData.custodialStatus() = CustodyStatus(code, description)
 private fun uk.gov.justice.digital.hmpps.entity.Custody.custodyModel() =

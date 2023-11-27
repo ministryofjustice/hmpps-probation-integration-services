@@ -34,6 +34,13 @@ object ProbationCaseGenerator {
         currentRestriction = true
     )
     val CASE_SIMPLE = generate("S517283", "Teresa", "Green", LocalDate.of(1987, 8, 2))
+    val CASE_X320741 = generate(
+        crn = "X320741",
+        forename = "Aadland",
+        surname = "Bertrand",
+        dateOfBirth = LocalDate.of(1987, 8, 2),
+        nomsId = "A1234AI"
+    )
 
     fun generate(
         crn: String,

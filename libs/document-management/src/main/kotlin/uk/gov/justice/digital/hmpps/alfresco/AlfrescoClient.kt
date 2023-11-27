@@ -12,6 +12,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
+import org.springframework.web.client.RestClient.RequestHeadersSpec.ConvertibleClientHttpResponse
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.security.ServiceContext
@@ -33,7 +34,11 @@ class AlfrescoClient(
         getDocumentById(id).exchange({ _, res ->
             when (res.statusCode) {
                 HttpStatus.OK -> ResponseEntity.ok()
-                    .headers { it.putAll(res.sanitisedHeaders()) }
+                    .headers {
+                        it.copy(HttpHeaders.CONTENT_LENGTH, res)
+                        it.copy(HttpHeaders.ETAG, res)
+                        it.copy(HttpHeaders.LAST_MODIFIED, res)
+                    }
                     .header(
                         HttpHeaders.CONTENT_DISPOSITION,
                         ContentDisposition.attachment().filename(filename, Charsets.UTF_8).build().toString()
@@ -46,6 +51,10 @@ class AlfrescoClient(
                 else -> throw RuntimeException("Failed to download document. Alfresco responded with ${res.statusCode}.")
             }
         }, false)
+
+    private fun HttpHeaders.copy(key: String, res: ConvertibleClientHttpResponse) {
+        this[key] = res.headers[key]
+    }
 }
 
 @Configuration

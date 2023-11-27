@@ -63,7 +63,9 @@ internal class CourtAppearancesIntegrationTest {
                 Type(CourtAppearanceGenerator.DEFAULT_CA_TYPE.code, CourtAppearanceGenerator.DEFAULT_CA_TYPE.description),
                 CourtAppearanceGenerator.DEFAULT_COURT.code,
                 CourtAppearanceGenerator.DEFAULT_COURT.name,
-                CourtAppearanceGenerator.DEFAULT_PERSON.crn
+                CourtAppearanceGenerator.DEFAULT_PERSON.crn,
+                CourtAppearanceGenerator.DEFAULT_CA.id,
+                CourtAppearanceGenerator.DEFAULT_PERSON.id
             )
         )
     )

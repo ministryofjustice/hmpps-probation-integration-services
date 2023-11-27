@@ -47,7 +47,7 @@ internal class ConvictionsIntegrationTest {
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, ConvictionsContainer::class.java)
-        Assertions.assertThat(detailResponse).isEqualTo(getConvictions())
+        Assertions.assertThat(detailResponse).isEqualTo(getConvictions(true))
     }
 
     @Test
@@ -58,19 +58,51 @@ internal class ConvictionsIntegrationTest {
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, ConvictionsContainer::class.java)
+        Assertions.assertThat(detailResponse).isEqualTo(getConvictions(true))
+    }
+
+    @Test
+    fun `API call retuns only active convictions success response using CRN`() {
+        val crn = ConvictionEventGenerator.PERSON.crn
+        val result = mockMvc
+            .perform(get("/convictions/$crn?type=CRN&activeOnly=true").withOAuth2Token(wireMockServer))
+            .andExpect(status().is2xxSuccessful).andReturn()
+
+        val detailResponse = objectMapper.readValue(result.response.contentAsString, ConvictionsContainer::class.java)
         Assertions.assertThat(detailResponse).isEqualTo(getConvictions())
     }
 
-    private fun getConvictions(): ConvictionsContainer = ConvictionsContainer(
-        listOf(
+    @Test
+    fun `API call retuns only active convictions success response using NOMS`() {
+        val noms = ConvictionEventGenerator.PERSON.nomsNumber
+        val result = mockMvc
+            .perform(get("/convictions/$noms?type=NOMS&activeOnly=true").withOAuth2Token(wireMockServer))
+            .andExpect(status().is2xxSuccessful).andReturn()
+
+        val detailResponse = objectMapper.readValue(result.response.contentAsString, ConvictionsContainer::class.java)
+        Assertions.assertThat(detailResponse).isEqualTo(getConvictions())
+    }
+
+    private fun getConvictions(withInActive: Boolean = false): ConvictionsContainer {
+        val activeConviction =
             Conviction(
+                ConvictionEventGenerator.DEFAULT_EVENT.id,
                 ConvictionEventGenerator.DEFAULT_EVENT.convictionDate,
                 ConvictionEventGenerator.DISPOSAL_TYPE.description,
                 listOf(
-                    Offence(ConvictionEventGenerator.OFFENCE_MAIN.description, true),
-                    Offence(ConvictionEventGenerator.OFFENCE_OTHER.description, false)
+                    Offence(
+                        ConvictionEventGenerator.MAIN_OFFENCE.id,
+                        ConvictionEventGenerator.OFFENCE_MAIN_TYPE.description,
+                        true
+                    ),
+                    Offence(
+                        ConvictionEventGenerator.OTHER_OFFENCE.id,
+                        ConvictionEventGenerator.ADDITIONAL_OFFENCE_TYPE.description,
+                        false
+                    )
                 ),
                 Sentence(
+                    ConvictionEventGenerator.DISPOSAL.id,
                     ConvictionEventGenerator.DISPOSAL.startDate,
                     null,
                     Custody(
@@ -88,6 +120,18 @@ internal class ConvictionsIntegrationTest {
                     )
                 )
             )
+
+        val inactiveConviction = Conviction(
+            ConvictionEventGenerator.INACTIVE_EVENT.id,
+            ConvictionEventGenerator.INACTIVE_EVENT.convictionDate,
+            "unknown",
+            listOf(),
+            null
         )
-    )
+        return if (withInActive) {
+            ConvictionsContainer(listOf(activeConviction, inactiveConviction))
+        } else {
+            ConvictionsContainer(listOf(activeConviction))
+        }
+    }
 }

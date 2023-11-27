@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.model
 import java.time.LocalDate
 
 data class Conviction(
+    val convictionId: Long,
     val convictionDate: LocalDate?,
     val outcome: String,
     val offences: List<Offence>,
@@ -10,6 +11,7 @@ data class Conviction(
 )
 
 data class Offence(
+    val offenceId: Long,
     val description: String,
     val mainOffence: Boolean = false
 )
@@ -19,6 +21,7 @@ data class ConvictionsContainer(
 )
 
 data class Sentence(
+    val sentenceId: Long,
     val startDate: LocalDate,
     val expectedEndDate: LocalDate?,
     val custody: Custody?
