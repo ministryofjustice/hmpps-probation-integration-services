@@ -109,10 +109,10 @@ data class PersonDeparted(
     override val urn = "urn:hmpps:cas3:person-departed:$bookingId"
     override val noteText = listOfNotNull(
         "Departure date: ${DeliusDateFormatter.format(departedAt)}",
-        notes,
         reason,
         reasonDetail,
-        moveOnCategory.description
+        moveOnCategory.description,
+        notes
     ).joinToString(System.lineSeparator())
     override val contactTypeCode = ContactType.PERSON_DEPARTED
 }
