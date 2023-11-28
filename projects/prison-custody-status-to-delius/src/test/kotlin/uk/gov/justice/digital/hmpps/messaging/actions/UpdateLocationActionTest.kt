@@ -14,7 +14,6 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.custodialEvent
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.previouslyReleasedEvent
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
@@ -32,7 +31,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.messaging.ActionResult
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement.Type.RELEASED
-import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement.Type.RELEASED_TO_HOSPITAL
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement.Type.TRANSFERRED
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementContext
 import java.time.ZonedDateTime
@@ -115,9 +113,6 @@ internal class UpdateLocationActionTest {
         @JvmStatic
         fun noChangeMovements() = listOf(
             Arguments.of(custody, received),
-            Arguments.of(custody, released.copy(type = RELEASED_TO_HOSPITAL, reason = "HP")),
-            Arguments.of(custody, released.copy(reason = "HO")),
-            Arguments.of(released(), released),
             Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL")),
             Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL_ECL"))
         )
@@ -126,16 +121,6 @@ internal class UpdateLocationActionTest {
             val person = PersonGenerator.generate("T1234ST")
             return custodialEvent(person, InstitutionGenerator.DEFAULT, CustodialStatusCode.IN_CUSTODY)
                 .withManager().disposal!!.custody!!
-        }
-
-        private fun released(): Custody {
-            val person = PersonGenerator.generate("R1234SD")
-            val event = previouslyReleasedEvent(
-                person,
-                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY],
-                CustodialStatusCode.RELEASED_ON_LICENCE
-            )
-            return requireNotNull(event.disposal?.custody)
         }
 
         private fun absconded(): Custody {
