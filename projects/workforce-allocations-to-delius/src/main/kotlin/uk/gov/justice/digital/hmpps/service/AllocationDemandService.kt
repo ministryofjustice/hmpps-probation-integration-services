@@ -172,13 +172,19 @@ class AllocationDemandService(
         val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId)
             .filter { it.mainCategory.code !in listOf("W", "W2") }
             .map { it.toRequirement() }
-        val emails = ldapService.findEmailsForStaffIn(listOf(staff, allocatingStaff))
+        val initialAppointment = contactRepository.getInitialAppointmentData(person.id, eventId)
+        val emails = ldapService.findEmailsForStaffIn(listOfNotNull(staff, allocatingStaff, initialAppointment?.staff))
         return AllocationDemandStaffResponse(
             person.crn,
             person.name(),
-            staff.toStaffMember(emails[staff.user?.username]),
-            allocatingStaff.toStaffMember(emails[allocatingStaff.user?.username]),
-            contactRepository.getInitialAppointmentDate(person.id, eventId)?.let { InitialAppointment(it) },
+            staff.toStaffMember(staff.user?.username?.let { emails[it] }),
+            allocatingStaff.toStaffMember(allocatingStaff.user?.username?.let { emails[it] }),
+            initialAppointment?.let { ia ->
+                InitialAppointment(
+                    ia.date,
+                    ia.staff.toStaffMember(ia.staff.user?.username?.let { emails[it] })
+                )
+            },
             allocationRiskService.getRiskOgrs(person),
             disposalRepository.findSentenceForEventNumberAndPersonId(person.id, eventNumber),
             courtAppearanceRepository.findOriginalCourt(eventId),

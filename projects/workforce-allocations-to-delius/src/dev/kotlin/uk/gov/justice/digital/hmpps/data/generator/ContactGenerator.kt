@@ -37,7 +37,7 @@ object ContactGenerator {
         type = type,
         personId = personId,
         eventId = eventId,
-        date = date,
+        date = date.toLocalDate(),
         startTime = date,
         teamId = teamId,
         staffId = staffId,
