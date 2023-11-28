@@ -14,6 +14,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.custodialEvent
+import uk.gov.justice.digital.hmpps.data.generator.EventGenerator.previouslyReleasedEvent
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
@@ -113,6 +114,7 @@ internal class UpdateLocationActionTest {
         @JvmStatic
         fun noChangeMovements() = listOf(
             Arguments.of(custody, received),
+            Arguments.of(released(), released),
             Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL")),
             Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL_ECL"))
         )
@@ -121,6 +123,16 @@ internal class UpdateLocationActionTest {
             val person = PersonGenerator.generate("T1234ST")
             return custodialEvent(person, InstitutionGenerator.DEFAULT, CustodialStatusCode.IN_CUSTODY)
                 .withManager().disposal!!.custody!!
+        }
+
+        private fun released(): Custody {
+            val person = PersonGenerator.generate("R1234SD")
+            val event = previouslyReleasedEvent(
+                person,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY],
+                CustodialStatusCode.RELEASED_ON_LICENCE
+            )
+            return requireNotNull(event.disposal?.custody)
         }
 
         private fun absconded(): Custody {
