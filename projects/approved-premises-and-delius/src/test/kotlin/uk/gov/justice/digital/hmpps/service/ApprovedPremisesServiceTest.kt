@@ -71,6 +71,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAdd
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegistrationRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ApprovedPremisesCategoryCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
@@ -582,7 +583,7 @@ internal class ApprovedPremisesServiceTest {
             ZonedDateTime.now(),
             Nsi.EXT_REF_BOOKING_PREFIX + bookingId,
             ReferenceDataGenerator.REFERRAL_DATE_TYPE.id,
-            ReferenceDataGenerator.OTHER_REFERRAL_CATEGORY.id,
+            ReferenceDataGenerator.REFERRAL_CATEGORIES[ApprovedPremisesCategoryCode.OTHER.value]!!.id,
             1, 1,
             "Reason",
             ReferenceDataGenerator.OTHER_REFERRAL_SOURCE.id,
