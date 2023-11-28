@@ -20,6 +20,6 @@ class EventDetailsTest {
             reasonDetail = null,
             moveOnCategory = Category(description = "E")
         )
-        assertThat(event.noteText, equalTo("01/01/2020 C D E"))
+        assertThat(event.noteText, equalTo("Departure date: 01/01/2020${System.lineSeparator()}C${System.lineSeparator()}D${System.lineSeparator()}E"))
     }
 }
