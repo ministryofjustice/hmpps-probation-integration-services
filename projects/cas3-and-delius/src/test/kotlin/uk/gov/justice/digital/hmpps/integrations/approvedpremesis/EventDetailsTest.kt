@@ -13,13 +13,13 @@ class EventDetailsTest {
             applicationId = null,
             applicationUrl = null,
             bookingId = "A",
-            bookingUrl = "B",
+            bookingUrl = "BookingURL",
             departedAt = ZonedDateTime.of(2020, 1, 1, 0, 0, 0, 0, EuropeLondon),
-            notes = "C",
-            reason = "D",
-            reasonDetail = null,
-            moveOnCategory = Category(description = "E")
+            notes = "Notes",
+            reason = "Reason",
+            reasonDetail = "ReasonDetail",
+            moveOnCategory = Category(description = "MoveOnCat")
         )
-        assertThat(event.noteText, equalTo("Departure date: 01/01/2020${System.lineSeparator()}C${System.lineSeparator()}D${System.lineSeparator()}E"))
+        assertThat(event.noteText, equalTo("Departure date: 01/01/2020${System.lineSeparator()}Reason${System.lineSeparator()}ReasonDetail${System.lineSeparator()}MoveOnCat${System.lineSeparator()}Notes"))
     }
 }
