@@ -100,7 +100,7 @@ data class BookingMade(
     val premises: Premises,
     val arrivalOn: LocalDate,
     val departureOn: LocalDate,
-    val submittedAt: ZonedDateTime
+    val submittedAt: ZonedDateTime?
 ) {
     val bookingMadeAt: ZonedDateTime = createdAt.truncatedTo(ChronoUnit.SECONDS)
 }
