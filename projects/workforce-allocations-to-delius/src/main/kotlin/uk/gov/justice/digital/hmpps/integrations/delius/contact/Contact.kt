@@ -16,6 +16,7 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.BaseEntity
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @EntityListeners(AuditingEntityListener::class)
@@ -45,7 +46,7 @@ class Contact(
     val notes: String?,
 
     @Column(name = "contact_date")
-    val date: ZonedDateTime,
+    val date: LocalDate,
 
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime,

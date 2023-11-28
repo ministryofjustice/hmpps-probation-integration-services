@@ -101,7 +101,7 @@ class AllocateEventService(
                 type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_ALLOCATION_DECISION_EVIDENCE.value),
                 personId = event.person.id,
                 eventId = event.id,
-                date = orderManager.startDate,
+                date = orderManager.startDate.toLocalDate(),
                 startTime = orderManager.startDate,
                 teamId = orderManager.team.id,
                 staffId = orderManager.staff.id,
