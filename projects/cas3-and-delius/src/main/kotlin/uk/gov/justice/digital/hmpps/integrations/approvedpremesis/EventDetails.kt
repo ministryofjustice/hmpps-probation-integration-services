@@ -32,11 +32,12 @@ data class BookingCancelled(
     val bookingId: String,
     val bookingUrl: String,
     val cancellationReason: String,
-    val cancellationContext: String?
+    val cancellationContext: String?,
+    val notes: String?
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:booking-cancelled:$bookingId"
     override val noteText =
-        listOfNotNull(cancellationReason, cancellationContext).joinToString(" ") + System.lineSeparator() + bookingUrl
+        listOfNotNull(cancellationReason, cancellationContext, notes).joinToString(System.lineSeparator())
     override val contactTypeCode = ContactType.BOOKING_CANCELLED
 }
 
@@ -51,10 +52,9 @@ data class BookingProvisional(
     override val urn = "urn:hmpps:cas3:booking-provisionally-made:$bookingId"
     override val noteText =
         listOfNotNull(
-            "Expected arrival date:",
-            DeliusDateFormatter.format(expectedArrivedAt),
+            "Expected arrival date: ${DeliusDateFormatter.format(expectedArrivedAt)}",
             notes
-        ).joinToString(" ") + System.lineSeparator() + bookingUrl
+        ).joinToString(System.lineSeparator())
     override val contactTypeCode = ContactType.BOOKING_PROVISIONAL
 }
 
@@ -69,10 +69,9 @@ data class BookingConfirmed(
     override val urn = "urn:hmpps:cas3:booking-confirmed:$bookingId"
     override val noteText =
         listOfNotNull(
-            "Expected arrival date:",
-            DeliusDateFormatter.format(expectedArrivedAt),
+            "Expected arrival date: ${DeliusDateFormatter.format(expectedArrivedAt)}",
             notes
-        ).joinToString(" ") + System.lineSeparator() + bookingUrl
+        ).joinToString(System.lineSeparator())
     override val contactTypeCode = ContactType.BOOKING_CONFIRMED
 }
 
@@ -88,11 +87,34 @@ data class PersonArrived(
     override val urn = "urn:hmpps:cas3:person-arrived:$bookingId"
     override val noteText =
         listOfNotNull(
-            "Arrival date:",
-            DeliusDateFormatter.format(arrivedAt),
-            notes
-        ).joinToString(" ") + System.lineSeparator() + bookingUrl
+            "Arrival date: ${DeliusDateFormatter.format(arrivedAt)}",
+            notes,
+            "Arrival address: ${premises.inNotes()}"
+        ).joinToString(System.lineSeparator())
     override val contactTypeCode = ContactType.PERSON_ARRIVED
+}
+
+data class PersonDeparted(
+    val applicationId: String?,
+    val applicationUrl: String?,
+    val bookingId: String,
+    val bookingUrl: String,
+    val departedAt: ZonedDateTime,
+    val notes: String,
+    val reason: String,
+    val reasonDetail: String?,
+    val moveOnCategory: Category
+
+) : Cas3Event {
+    override val urn = "urn:hmpps:cas3:person-departed:$bookingId"
+    override val noteText = listOfNotNull(
+        "Departure date: ${DeliusDateFormatter.format(departedAt)}",
+        notes,
+        reason,
+        reasonDetail,
+        moveOnCategory.description
+    ).joinToString(System.lineSeparator())
+    override val contactTypeCode = ContactType.PERSON_DEPARTED
 }
 
 data class Address(
@@ -111,6 +133,9 @@ data class Address(
                 AddressLines(lines.pop(), lines.pop(), lines.pop())
             }
         }
+    fun inNotes(): String {
+        return listOfNotNull(addressLine1, addressLine2, postcode, town, region).joinToString(" ")
+    }
 }
 
 data class AddressLines(
@@ -118,29 +143,6 @@ data class AddressLines(
     val streetName: String,
     val district: String?
 )
-
-data class PersonDeparted(
-    val applicationId: String?,
-    val applicationUrl: String?,
-    val bookingId: String,
-    val bookingUrl: String,
-    val departedAt: ZonedDateTime,
-    val notes: String,
-    val reason: String,
-    val reasonDetail: String?,
-    val moveOnCategory: Category
-
-) : Cas3Event {
-    override val urn = "urn:hmpps:cas3:person-departed:$bookingId"
-    override val noteText = listOfNotNull(
-        DeliusDateFormatter.format(departedAt),
-        notes,
-        reason,
-        reasonDetail,
-        moveOnCategory.description
-    ).joinToString(" ")
-    override val contactTypeCode = ContactType.PERSON_DEPARTED
-}
 
 data class Category(
     val description: String
