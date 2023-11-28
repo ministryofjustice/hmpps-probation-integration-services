@@ -88,8 +88,8 @@ data class PersonArrived(
     override val noteText =
         listOfNotNull(
             "Arrival date: ${DeliusDateFormatter.format(arrivedAt)}",
-            notes,
-            "Arrival address: ${premises.inNotes()}"
+            "Arrival address: ${premises.inNotes()}",
+            notes
         ).joinToString(System.lineSeparator())
     override val contactTypeCode = ContactType.PERSON_ARRIVED
 }
