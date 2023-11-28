@@ -60,7 +60,8 @@ object EventDetailsGenerator {
             bookedBy = bookedBy,
             eventNumber = "23",
             arrivalOn = LocalDate.now(),
-            departureOn = LocalDate.now()
+            departureOn = LocalDate.now(),
+            submittedAt = ZonedDateTime.now().minusDays(2)
         )
     )
 
