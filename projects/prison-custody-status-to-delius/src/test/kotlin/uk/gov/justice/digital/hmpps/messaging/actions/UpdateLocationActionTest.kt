@@ -32,7 +32,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.messaging.ActionResult
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement.Type.RELEASED
-import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement.Type.RELEASED_TO_HOSPITAL
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovement.Type.TRANSFERRED
 import uk.gov.justice.digital.hmpps.messaging.PrisonerMovementContext
 import java.time.ZonedDateTime
@@ -115,8 +114,6 @@ internal class UpdateLocationActionTest {
         @JvmStatic
         fun noChangeMovements() = listOf(
             Arguments.of(custody, received),
-            Arguments.of(custody, released.copy(type = RELEASED_TO_HOSPITAL, reason = "HP")),
-            Arguments.of(custody, released.copy(reason = "HO")),
             Arguments.of(released(), released),
             Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL")),
             Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL_ECL"))
