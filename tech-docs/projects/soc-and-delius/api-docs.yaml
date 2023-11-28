@@ -115,6 +115,12 @@ paths:
           enum:
           - CRN
           - NOMS
+      - name: activeOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
       responses:
         "200":
           description: OK
@@ -241,9 +247,11 @@ components:
     CourtAppearance:
       required:
       - appearanceDate
+      - courtAppearanceId
       - courtCode
       - courtName
       - crn
+      - offenderId
       - type
       type: object
       properties:
@@ -258,6 +266,12 @@ components:
           type: string
         crn:
           type: string
+        courtAppearanceId:
+          type: integer
+          format: int64
+        offenderId:
+          type: integer
+          format: int64
     CourtAppearancesContainer:
       required:
       - courtAppearances
@@ -279,10 +293,14 @@ components:
           type: string
     Conviction:
       required:
+      - convictionId
       - offences
       - outcome
       type: object
       properties:
+        convictionId:
+          type: integer
+          format: int64
         convictionDate:
           type: string
           format: date
@@ -329,17 +347,25 @@ components:
       required:
       - description
       - mainOffence
+      - offenceId
       type: object
       properties:
+        offenceId:
+          type: integer
+          format: int64
         description:
           type: string
         mainOffence:
           type: boolean
     Sentence:
       required:
+      - sentenceId
       - startDate
       type: object
       properties:
+        sentenceId:
+          type: integer
+          format: int64
         startDate:
           type: string
           format: date

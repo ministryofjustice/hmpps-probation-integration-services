@@ -408,7 +408,9 @@
       },
       "courtCode": "string",
       "courtName": "string",
-      "crn": "string"
+      "crn": "string",
+      "courtAppearanceId": "integer",
+      "offenderId": "integer"
     }
   ]
 }</code></pre>
@@ -468,6 +470,16 @@
 </td>
 </tr>
 
+<tr>
+<td>activeOnly</td>
+<td>query</td>
+<td>boolean</td>
+<td>false</td>
+<td>
+
+</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -491,15 +503,18 @@
 <pre><code>{
   "convictions": [
     {
+      "convictionId": "integer",
       "convictionDate": "string",
       "outcome": "string",
       "offences": [
         {
+          "offenceId": "integer",
           "description": "string",
           "mainOffence": "boolean"
         }
       ],
       "sentence": {
+        "sentenceId": "integer",
         "startDate": "string",
         "expectedEndDate": "string",
         "custody": {
@@ -965,6 +980,26 @@
 </td>
 </tr>
 
+<tr>
+<td>courtAppearanceId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>offenderId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -1030,6 +1065,16 @@
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
+
+<tr>
+<td>convictionId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
 
 <tr>
 <td>convictionDate</td>
@@ -1170,6 +1215,16 @@
 <tbody>
 
 <tr>
+<td>offenceId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
 <td>description</td>
 <td>string</td>
 <td>true</td>
@@ -1200,6 +1255,16 @@
 <tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th><th>Schema</th></tr>
 </thead>
 <tbody>
+
+<tr>
+<td>sentenceId</td>
+<td>integer</td>
+<td>true</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
 
 <tr>
 <td>startDate</td>
