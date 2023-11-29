@@ -5,7 +5,7 @@ enum class ApprovedPremisesCategoryCode(
     val categoryMappings: CategoryMappings
 ) {
     BAIL_ASSESSMENT("A", CategoryMappings(SentenceType.BailPlacement to ReleaseType.BailAssessment)),
-    BAIL_PLACEMENT("B", CategoryMappings(SentenceType.BailPlacement to ReleaseType.BailPlacement)),
+    BAIL_PLACEMENT("B", CategoryMappings(SentenceType.BailPlacement to ReleaseType.BailSentence)),
     COMMUNITY_ORDER(
         "C",
         CategoryMappings(
@@ -36,8 +36,8 @@ enum class ApprovedPremisesCategoryCode(
     RESIDENCY_REQUIREMENT(
         "X",
         CategoryMappings(
-            SentenceType.CommunityOrder to ReleaseType.ResidencyRequirement,
-            SentenceType.SuspendedSentence to ReleaseType.ResidencyRequirement
+            SentenceType.CommunityOrder to ReleaseType.ResidencyManagement,
+            SentenceType.SuspendedSentence to ReleaseType.ResidencyManagement
         )
     ),
     EXTENDED_DETERMINATE("Y", CategoryMappings(SentenceType.ExtendedDeterminate to ReleaseType.Licence));
@@ -67,17 +67,17 @@ enum class SentenceType(val value: String) {
 
 enum class ReleaseType(val value: String) {
     BailAssessment("bailAssessment"),
-    BailPlacement("bailPlacement"),
+    BailSentence("bailSentence"),
     HomeDetentionCurfew("hdc"),
     Licence("licence"),
     PostSentenceSupervision("pss"),
-    ResidencyRequirement("residencyRequirement"),
+    ResidencyManagement("residencyManagement"),
     RiskManagement("riskManagement"),
     TemporaryLicence("rotl"),
-    Unknown("unknown");
+    NotApplicable("not_applicable");
 
     companion object {
-        fun from(value: String?) = entries.firstOrNull { it.value == value } ?: Unknown
+        fun from(value: String?) = entries.firstOrNull { it.value == value } ?: NotApplicable
     }
 }
 

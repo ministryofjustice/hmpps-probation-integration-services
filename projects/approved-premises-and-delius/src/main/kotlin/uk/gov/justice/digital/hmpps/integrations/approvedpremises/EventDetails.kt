@@ -106,11 +106,13 @@ data class BookingMade(
     @JsonAlias("sentenceType")
     private val sentenceTypeString: String?,
     @JsonAlias("releaseType")
-    private val releaseTypeString: String?
+    private val releaseTypeString: String?,
+    @JsonAlias("situation")
+    private val situationString: String?
 ) {
     val bookingMadeAt: ZonedDateTime = createdAt.truncatedTo(ChronoUnit.SECONDS)
     val sentenceType: SentenceType = SentenceType.from(sentenceTypeString)
-    val releaseType: ReleaseType = ReleaseType.from(releaseTypeString)
+    val releaseType: ReleaseType = ReleaseType.from(situationString ?: releaseTypeString)
 }
 
 data class BookingChanged(
