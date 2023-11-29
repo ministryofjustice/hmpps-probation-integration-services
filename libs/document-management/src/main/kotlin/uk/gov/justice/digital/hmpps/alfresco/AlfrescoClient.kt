@@ -7,9 +7,13 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.http.client.ClientHttpRequestExecution
+import org.springframework.http.client.ClientHttpRequestInterceptor
+import org.springframework.http.client.ClientHttpResponse
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClient.RequestHeadersSpec.ConvertibleClientHttpResponse
@@ -25,10 +29,6 @@ class AlfrescoClient(
 
     fun getDocumentById(id: String): RestClient.RequestHeadersSpec<*> = restClient.get().uri("/fetch/$id")
         .accept(MediaType.MULTIPART_FORM_DATA)
-        .headers {
-            it["X-DocRepository-Remote-User"] = "N00"
-            it["X-DocRepository-Real-Remote-User"] = ServiceContext.servicePrincipal()?.username
-        }
 
     fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> =
         getDocumentById(id).exchange({ _, res ->
@@ -61,6 +61,19 @@ class AlfrescoClient(
 class AlfrescoClientConfig(@Value("\${integrations.alfresco.url}") private val alfrescoBaseUrl: String) {
     @Bean
     fun alfrescoRestClient() = RestClient.builder()
+        .requestInterceptor(AlfrescoInterceptor())
         .baseUrl(alfrescoBaseUrl)
         .build()
+}
+
+class AlfrescoInterceptor : ClientHttpRequestInterceptor {
+    override fun intercept(
+        request: HttpRequest,
+        body: ByteArray,
+        execution: ClientHttpRequestExecution
+    ): ClientHttpResponse {
+        request.headers["X-DocRepository-Remote-User"] = "N00"
+        request.headers["X-DocRepository-Real-Remote-User"] = ServiceContext.servicePrincipal()?.username
+        return execution.execute(request, body)
+    }
 }
