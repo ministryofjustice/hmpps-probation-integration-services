@@ -63,7 +63,7 @@ object EventDetailsGenerator {
             eventNumber = "23",
             arrivalOn = LocalDate.now(),
             departureOn = LocalDate.now(),
-            submittedAt = ZonedDateTime.now().minusDays(2),
+            applicationSubmittedOn = ZonedDateTime.now().minusDays(2),
             sentenceTypeString = SentenceType.StandardDeterminate.value,
             releaseTypeString = ReleaseType.Licence.value,
             situationString = null
