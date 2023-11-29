@@ -28,11 +28,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrn
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegistrationRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ApprovedPremisesCategoryCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.acceptedDeferredAdmission
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.apReferralSource
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.otherReferralCategory
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.referralCategory
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.unknownRisk
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ynUnknown
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
@@ -240,7 +241,12 @@ class ReferralService(
             expectedArrivalDate = arrivalOn,
             expectedDepartureDate = departureOn,
             decisionDate = bookingMadeAt,
-            categoryId = referenceDataRepository.otherReferralCategory().id,
+            categoryId = referenceDataRepository.referralCategory(
+                ApprovedPremisesCategoryCode.from(
+                    sentenceType,
+                    releaseType
+                ).value
+            ).id,
             decisionId = referenceDataRepository.acceptedDeferredAdmission().id,
             referralNotes = Nsi.EXT_REF_BOOKING_PREFIX + bookingId + System.lineSeparator() + notes,
             decisionNotes = notes,

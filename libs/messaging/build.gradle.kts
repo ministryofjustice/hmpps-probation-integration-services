@@ -4,14 +4,12 @@ dependencies {
     implementation(project(":libs:commons"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    compileOnly(libs.openfeign)
     compileOnly("org.springframework.boot:spring-boot-starter-data-jpa")
 
     api(libs.bundles.aws.messaging)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.bundles.mockito)
-    testImplementation(libs.openfeign)
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa")
 }
 

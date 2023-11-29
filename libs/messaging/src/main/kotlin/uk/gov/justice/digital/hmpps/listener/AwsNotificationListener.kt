@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.listener
 
-import feign.FeignException
 import io.awspring.cloud.sqs.annotation.SqsListener
 import io.awspring.cloud.sqs.listener.AsyncAdapterBlockingExecutionFailedException
 import io.awspring.cloud.sqs.listener.ListenerExecutionFailedException
@@ -16,6 +15,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.stereotype.Component
 import org.springframework.transaction.CannotCreateTransactionException
 import org.springframework.transaction.UnexpectedRollbackException
+import org.springframework.web.client.HttpStatusCodeException
 import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
 import uk.gov.justice.digital.hmpps.retry.retry
@@ -35,7 +35,7 @@ class AwsNotificationListener(
             retry(
                 3,
                 listOf(
-                    FeignException.NotFound::class,
+                    HttpStatusCodeException::class,
                     CannotAcquireLockException::class,
                     ObjectOptimisticLockingFailureException::class,
                     CannotCreateTransactionException::class,
@@ -52,9 +52,15 @@ class AwsNotificationListener(
     fun unwrapSqsExceptions(e: Throwable): Throwable {
         fun unwrap(e: Throwable) = e.cause ?: e
         var cause = e
-        if (cause is CompletionException) { cause = unwrap(cause) }
-        if (cause is AsyncAdapterBlockingExecutionFailedException) { cause = unwrap(cause) }
-        if (cause is ListenerExecutionFailedException) { cause = unwrap(cause) }
+        if (cause is CompletionException) {
+            cause = unwrap(cause)
+        }
+        if (cause is AsyncAdapterBlockingExecutionFailedException) {
+            cause = unwrap(cause)
+        }
+        if (cause is ListenerExecutionFailedException) {
+            cause = unwrap(cause)
+        }
         return cause
     }
 }

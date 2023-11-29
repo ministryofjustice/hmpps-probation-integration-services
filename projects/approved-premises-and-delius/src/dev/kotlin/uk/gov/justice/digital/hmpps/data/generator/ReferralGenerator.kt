@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Referral
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ApprovedPremisesCategoryCode
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -26,7 +27,7 @@ object ReferralGenerator {
         expectedArrivalDate = expectedArrivalDate,
         expectedDepartureDate = expectedDepartureDate,
         decisionDate = decisionDate,
-        categoryId = ReferenceDataGenerator.OTHER_REFERRAL_CATEGORY.id,
+        categoryId = ReferenceDataGenerator.REFERRAL_CATEGORIES[ApprovedPremisesCategoryCode.OTHER.value]!!.id,
         decisionId = ReferenceDataGenerator.ACCEPTED_DEFERRED_ADMISSION.id,
         referralNotes = null,
         decisionNotes = null,

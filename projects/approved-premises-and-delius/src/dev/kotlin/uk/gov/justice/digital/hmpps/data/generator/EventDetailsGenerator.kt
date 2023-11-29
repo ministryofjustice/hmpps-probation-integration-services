@@ -12,6 +12,8 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArriv
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Premises
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.StaffMember
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.SubmittedBy
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReleaseType
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.SentenceType
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -61,7 +63,10 @@ object EventDetailsGenerator {
             eventNumber = "23",
             arrivalOn = LocalDate.now(),
             departureOn = LocalDate.now(),
-            submittedAt = ZonedDateTime.now().minusDays(2)
+            submittedAt = ZonedDateTime.now().minusDays(2),
+            sentenceTypeString = SentenceType.StandardDeterminate.value,
+            releaseTypeString = ReleaseType.Licence.value,
+            situationString = null
         )
     )
 

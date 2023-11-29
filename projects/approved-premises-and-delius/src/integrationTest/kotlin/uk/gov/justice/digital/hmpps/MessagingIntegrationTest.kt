@@ -38,6 +38,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.nonstatutoryintervention.entity.NsiTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.person.address.PersonAddressRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ApprovedPremisesCategoryCode
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.getByCode
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
@@ -164,6 +165,10 @@ internal class MessagingIntegrationTest {
             .filter { it.personId == contact.person.id && it.createdByUserId == UserGenerator.AUDIT_USER.id && it.eventId == contact.eventId }
         assertThat(referrals.size, equalTo(1))
         val referral = referrals.first()
+        assertThat(
+            referral.categoryId,
+            equalTo(ReferenceDataGenerator.REFERRAL_CATEGORIES[ApprovedPremisesCategoryCode.VOLUNTARY_MAPPA.value]?.id)
+        )
         assertThat(referral.referralDate, equalTo(LocalDate.parse("2022-11-28")))
         assertThat(referral.activeArsonRiskId, equalTo(ReferenceDataGenerator.YN_UNKNOWN.id))
         assertThat(referral.disabilityIssuesId, equalTo(ReferenceDataGenerator.YN_UNKNOWN.id))
