@@ -64,12 +64,3 @@ class AlfrescoClientConfig(@Value("\${integrations.alfresco.url}") private val a
         .baseUrl(alfrescoBaseUrl)
         .build()
 }
-
-private fun RestClient.RequestHeadersSpec.ConvertibleClientHttpResponse.sanitisedHeaders(): Map<String, List<String>> =
-    headers.filterKeys { key ->
-        key in listOf(
-            HttpHeaders.CONTENT_LENGTH,
-            HttpHeaders.ETAG,
-            HttpHeaders.LAST_MODIFIED
-        ).map { it.lowercase() }
-    }.mapValues { it.value.toList() }
