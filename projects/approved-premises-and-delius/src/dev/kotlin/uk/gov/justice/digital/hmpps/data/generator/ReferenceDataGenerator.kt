@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referra
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.Category
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.Level
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegisterType
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ApprovedPremisesCategoryCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.DatasetCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
@@ -31,7 +32,13 @@ object ReferenceDataGenerator {
     val STAFF_GRADE = generate("TEST", DatasetGenerator.STAFF_GRADE.id, "Test staff grade")
 
     val REFERRAL_DATE_TYPE = generate("CRC", ALL_DATASETS[DatasetCode.AP_REFERRAL_DATE_TYPE]!!.id)
-    val OTHER_REFERRAL_CATEGORY = generate("O", ALL_DATASETS[DatasetCode.AP_REFERRAL_CATEGORY]!!.id)
+    val REFERRAL_CATEGORIES =
+        ApprovedPremisesCategoryCode.entries.map {
+            generate(
+                it.value,
+                ALL_DATASETS[DatasetCode.AP_REFERRAL_CATEGORY]!!.id
+            )
+        }.associateBy { it.code }
     val ACCEPTED_DEFERRED_ADMISSION = generate("AD", ALL_DATASETS[DatasetCode.REFERRAL_DECISION]!!.id)
     val AP_REFERRAL_SOURCE = generate("AP", ALL_DATASETS[DatasetCode.SOURCE_TYPE]!!.id)
     val YN_UNKNOWN = generate("D", ALL_DATASETS[DatasetCode.YES_NO]!!.id)
@@ -76,7 +83,6 @@ object ReferenceDataGenerator {
         NHC_Q002,
         STAFF_GRADE,
         REFERRAL_DATE_TYPE,
-        OTHER_REFERRAL_CATEGORY,
         ACCEPTED_DEFERRED_ADMISSION,
         AP_REFERRAL_SOURCE,
         YN_UNKNOWN,
@@ -89,7 +95,7 @@ object ReferenceDataGenerator {
         GENDER_IDENTITY_PNS,
         NATIONALITY_BRITISH,
         RELIGION_OTHER
-    ) + REGISTER_CATEGORIES.values + REGISTER_LEVELS.values
+    ) + REGISTER_CATEGORIES.values + REGISTER_LEVELS.values + REFERRAL_CATEGORIES.values
 
     fun generateReferralSource(code: String, id: Long = IdGenerator.getAndIncrement()) = ReferralSource(id, code)
     fun generateMoveOnCategory(code: String, id: Long = IdGenerator.getAndIncrement()) = MoveOnCategory(id, code)

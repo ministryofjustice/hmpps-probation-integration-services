@@ -30,8 +30,9 @@ fun ReferenceDataRepository.approvedPremisesAddressType() =
     findByCodeAndDatasetCode(APPROVED_PREMISES.code, DatasetCode.ADDRESS_TYPE)
         ?: throw NotFoundException("Address Type", "code", APPROVED_PREMISES.code)
 
-fun ReferenceDataRepository.otherReferralCategory() = findByCodeAndDatasetCode("O", DatasetCode.AP_REFERRAL_CATEGORY)
-    ?: throw NotFoundException("ReferralCategory", "code", "O")
+fun ReferenceDataRepository.referralCategory(code: String) =
+    findByCodeAndDatasetCode(code, DatasetCode.AP_REFERRAL_CATEGORY)
+        ?: throw NotFoundException("ReferralCategory", "code", code)
 
 fun ReferenceDataRepository.acceptedDeferredAdmission() = findByCodeAndDatasetCode("AD", DatasetCode.REFERRAL_DECISION)
     ?: throw NotFoundException("ReferralDecision", "code", "AD")

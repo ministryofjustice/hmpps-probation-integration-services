@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.integrations.approvedpremises
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReleaseType
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.SentenceType
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -100,9 +102,17 @@ data class BookingMade(
     val premises: Premises,
     val arrivalOn: LocalDate,
     val departureOn: LocalDate,
-    val submittedAt: ZonedDateTime?
+    val submittedAt: ZonedDateTime?,
+    @JsonAlias("sentenceType")
+    private val sentenceTypeString: String?,
+    @JsonAlias("releaseType")
+    private val releaseTypeString: String?,
+    @JsonAlias("situation")
+    private val situationString: String?
 ) {
     val bookingMadeAt: ZonedDateTime = createdAt.truncatedTo(ChronoUnit.SECONDS)
+    val sentenceType: SentenceType = SentenceType.from(sentenceTypeString)
+    val releaseType: ReleaseType = ReleaseType.from(situationString ?: releaseTypeString)
 }
 
 data class BookingChanged(
