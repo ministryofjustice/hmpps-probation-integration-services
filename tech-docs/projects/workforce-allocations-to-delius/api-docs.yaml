@@ -758,11 +758,14 @@ components:
     InitialAppointment:
       required:
       - date
+      - staff
       type: object
       properties:
         date:
           type: string
           format: date
+        staff:
+          $ref: '#/components/schemas/StaffMember'
     Manager:
       required:
       - code

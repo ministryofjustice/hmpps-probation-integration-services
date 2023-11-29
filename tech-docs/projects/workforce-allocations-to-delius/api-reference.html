@@ -582,7 +582,17 @@
         "length": "string"
       },
       "initialAppointment": {
-        "date": "string"
+        "date": "string",
+        "staff": {
+          "code": "string",
+          "name": {
+            "forename": "string",
+            "middleName": "string",
+            "surname": "string"
+          },
+          "email": "string",
+          "grade": "string"
+        }
       },
       "court": {
         "name": "string"
@@ -1331,7 +1341,17 @@
     "grade": "string"
   },
   "initialAppointment": {
-    "date": "string"
+    "date": "string",
+    "staff": {
+      "code": "string",
+      "name": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "email": "string",
+      "grade": "string"
+    }
   },
   "ogrs": {
     "lastUpdatedDate": "string",
@@ -1916,7 +1936,17 @@
   },
   "type": "string",
   "initialAppointment": {
-    "date": "string"
+    "date": "string",
+    "staff": {
+      "code": "string",
+      "name": {
+        "forename": "string",
+        "middleName": "string",
+        "surname": "string"
+      },
+      "email": "string",
+      "grade": "string"
+    }
   },
   "staff": {
     "code": "string",
@@ -2570,6 +2600,16 @@
 <td></td>
 <td>
   
+</td>
+</tr>
+
+<tr>
+<td>staff</td>
+<td>object</td>
+<td>true</td>
+<td></td>
+<td>
+  <a href='#schema-staffmember'>StaffMember</a>
 </td>
 </tr>
 
