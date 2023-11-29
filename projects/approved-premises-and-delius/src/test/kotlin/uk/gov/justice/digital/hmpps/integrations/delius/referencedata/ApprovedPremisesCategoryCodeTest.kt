@@ -16,8 +16,8 @@ class ApprovedPremisesCategoryCodeTest {
     @ParameterizedTest
     @MethodSource("bookingsMade")
     fun `the correct category is selected based on the booking made`(
-        sentenceTypeString: String,
-        releaseTypeString: String,
+        sentenceTypeString: String?,
+        releaseTypeString: String?,
         situationString: String?,
         approvedPremisesCategoryCode: String
     ) {
@@ -28,7 +28,7 @@ class ApprovedPremisesCategoryCodeTest {
         )
     }
 
-    private fun bookingMade(sentenceTypeString: String, releaseTypeString: String, situationString: String?) =
+    private fun bookingMade(sentenceTypeString: String?, releaseTypeString: String?, situationString: String?) =
         BookingMade(
             UUID.randomUUID().toString(),
             UUID.randomUUID().toString(),
@@ -63,7 +63,8 @@ class ApprovedPremisesCategoryCodeTest {
             Arguments.of("communityOrder", "in_community", "residencyManagement", "X"),
             Arguments.of("bailPlacement", "in_community", "bailAssessment", "A"),
             Arguments.of("bailPlacement", "in_community", "bailSentence", "B"),
-            Arguments.of("nonStatutory", "not_applicable", null, "MAP")
+            Arguments.of("nonStatutory", "not_applicable", null, "MAP"),
+            Arguments.of(null, null, null, "O")
         )
     }
 }
