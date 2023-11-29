@@ -16,11 +16,11 @@ class RestClientConfig(private val clientManager: OAuth2AuthorizedClientManager)
     @Bean
     fun prisonApiClient(
         restClientBuilder: RestClient.Builder,
-        @Value("\${integrations.prison-api.url}") prisonApiBaseUrl: String
+        @Value("\${integrations.example.url}") apiBaseUrl: String
     ): ExampleClient {
         val exchange = RestClientAdapter.create(
             restClientBuilder
-                .baseUrl("$prisonApiBaseUrl/api/bookings")
+                .baseUrl(apiBaseUrl)
                 .requestInterceptor(HmppsAuthInterceptor(clientManager, "prison-identifier-and-delius"))
                 .build()
         )
