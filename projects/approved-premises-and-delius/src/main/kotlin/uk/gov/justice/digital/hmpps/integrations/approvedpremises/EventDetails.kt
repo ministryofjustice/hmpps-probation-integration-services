@@ -102,7 +102,7 @@ data class BookingMade(
     val premises: Premises,
     val arrivalOn: LocalDate,
     val departureOn: LocalDate,
-    val submittedAt: ZonedDateTime?,
+    val applicationSubmittedOn: ZonedDateTime?,
     @JsonAlias("sentenceType")
     private val sentenceTypeString: String?,
     @JsonAlias("releaseType")
