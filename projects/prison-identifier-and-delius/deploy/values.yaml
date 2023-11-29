@@ -1,0 +1,28 @@
+# Common values
+generic-service:
+  nameOverride: prison-identifier-and-delius
+  serviceAccountName: prison-identifier-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/prison-identifier-and-delius
+
+  ingress:
+    tlsSecretName: prison-identifier-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    prison-identifier-and-delius-client-credentials:
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
+    prison-identifier-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    prison-identifier-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    prison-identifier-and-delius-queue:
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+
+generic-prometheus-alerts:
+  targetApplication: prison-identifier-and-delius
+
