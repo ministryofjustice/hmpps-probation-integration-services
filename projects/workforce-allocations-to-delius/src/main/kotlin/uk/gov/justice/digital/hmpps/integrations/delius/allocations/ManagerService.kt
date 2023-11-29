@@ -41,7 +41,7 @@ abstract class ManagerService<T : ManagerBaseEntity>(
             personId = cci.offenderId,
             eventId = cci.eventId,
             requirementId = cci.requirementId,
-            date = newManager.startDate,
+            date = newManager.startDate.toLocalDate(),
             startTime = newManager.startDate,
             teamId = newManager.team.id,
             staffId = newManager.staff.id,

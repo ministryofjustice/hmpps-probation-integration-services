@@ -29,6 +29,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.NamedCourt
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.model.Sentence
+import uk.gov.justice.digital.hmpps.api.model.StaffMember
 import uk.gov.justice.digital.hmpps.data.generator.CourtGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -113,7 +114,7 @@ class AllocationDemandIntegrationTest {
                 Name("Fred", null, "Flinstone"),
                 Event("2", Manager("ST001", Name("John", null, "Smith"), "T001")),
                 Sentence("test", LocalDate.now(), "12 Months"),
-                InitialAppointment(LocalDate.now()),
+                InitialAppointment(LocalDate.now(), StaffMember("N01UATU", Name("Unallocated", null, "Staff"))),
                 NamedCourt("Court One"),
                 CaseType.CUSTODY,
                 ProbationStatus(ManagementStatus.CURRENTLY_MANAGED),
@@ -124,7 +125,7 @@ class AllocationDemandIntegrationTest {
                 Name("wilma", null, "Flinstone"),
                 Event("1", Manager("ST001", Name("John", null, "Smith"), "T001")),
                 Sentence("test", LocalDate.now(), "12 Months"),
-                InitialAppointment(LocalDate.now()),
+                InitialAppointment(LocalDate.now(), StaffMember("N01UATU", Name("Unallocated", null, "Staff"))),
                 NamedCourt("Court Two"),
                 CaseType.CUSTODY,
                 ProbationStatus(ManagementStatus.CURRENTLY_MANAGED),
@@ -184,7 +185,11 @@ class AllocationDemandIntegrationTest {
             .andExpect(jsonPath("$.allocatingStaff.name.surname").value(loggedInStaff.surname))
             .andExpect(jsonPath("$.allocatingStaff.grade").value("PSO"))
             .andExpect(jsonPath("$.allocatingStaff.code").value(loggedInStaff.code))
-            .andExpect(jsonPath("$.initialAppointment.date").value(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)))
+            .andExpect(
+                jsonPath("$.initialAppointment.date").value(
+                    LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
+                )
+            )
             .andExpect(jsonPath("$.sentence.description").value("Case View Sentence Type"))
             .andExpect(jsonPath("$.sentence.code").value("CV"))
             .andExpect(jsonPath("$.offences[0].mainOffence").value(true))

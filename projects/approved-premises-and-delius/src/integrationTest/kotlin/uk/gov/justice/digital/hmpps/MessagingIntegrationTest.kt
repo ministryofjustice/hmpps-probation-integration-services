@@ -161,9 +161,10 @@ internal class MessagingIntegrationTest {
         assertThat(contact.eventId, equalTo(PersonGenerator.EVENT.id))
 
         val referrals = referralRepository.findAll()
-            .filter { it.personId == contact.person.id && it.createdByUserId == UserGenerator.AUDIT_USER.id && it.referralDate == contact.date }
+            .filter { it.personId == contact.person.id && it.createdByUserId == UserGenerator.AUDIT_USER.id && it.eventId == contact.eventId }
         assertThat(referrals.size, equalTo(1))
         val referral = referrals.first()
+        assertThat(referral.referralDate, equalTo(LocalDate.parse("2022-11-28")))
         assertThat(referral.activeArsonRiskId, equalTo(ReferenceDataGenerator.YN_UNKNOWN.id))
         assertThat(referral.disabilityIssuesId, equalTo(ReferenceDataGenerator.YN_UNKNOWN.id))
         assertThat(referral.singleRoomId, equalTo(ReferenceDataGenerator.YN_UNKNOWN.id))

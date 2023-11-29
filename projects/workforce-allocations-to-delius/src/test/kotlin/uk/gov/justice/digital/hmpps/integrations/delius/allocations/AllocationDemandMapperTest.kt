@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.NamedCourt
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.model.Sentence
+import uk.gov.justice.digital.hmpps.api.model.StaffMember
 import java.sql.Date
 import java.sql.ResultSet
 import java.time.LocalDate
@@ -43,7 +44,10 @@ class AllocationDemandMapperTest {
                 )
             ),
             Sentence("Community Service", LocalDate.now().minusDays(10), "3 Months"),
-            InitialAppointment(LocalDate.now().plusDays(10)),
+            InitialAppointment(
+                LocalDate.now().plusDays(10),
+                StaffMember("N01UATU", Name("Unallocated", null, "Staff"), grade = "Grade 1")
+            ),
             NamedCourt("Darlington Crown Court"),
             CaseType.COMMUNITY,
             ProbationStatus(ManagementStatus.PREVIOUSLY_MANAGED),
@@ -79,6 +83,11 @@ class AllocationDemandMapperTest {
         whenever(resultSet.getString("management_status")).thenReturn("PREVIOUSLY_MANAGED")
         whenever(resultSet.getString("community_manager_grade")).thenReturn("PSQ")
         whenever(resultSet.getString("court_name")).thenReturn("Darlington Crown Court")
+        whenever(resultSet.getString("ias_code")).thenReturn(expected.initialAppointment?.staff?.code)
+        whenever(resultSet.getString("ias_forename")).thenReturn(expected.initialAppointment?.staff?.name?.forename)
+        whenever(resultSet.getString("ias_middle_name")).thenReturn(expected.initialAppointment?.staff?.name?.middleName)
+        whenever(resultSet.getString("ias_surname")).thenReturn(expected.initialAppointment?.staff?.name?.surname)
+        whenever(resultSet.getString("ias_grade")).thenReturn(expected.initialAppointment?.staff?.grade)
     }
 
     @Test

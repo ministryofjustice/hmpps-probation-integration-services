@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.api.model.CaseType.COMMUNITY
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
@@ -17,6 +18,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.InitialAppointmentData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
@@ -25,19 +27,26 @@ import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 class AllocationCompletedServiceTest {
-    @Mock lateinit var personRepository: PersonRepository
+    @Mock
+    lateinit var personRepository: PersonRepository
 
-    @Mock lateinit var eventRepository: EventRepository
+    @Mock
+    lateinit var eventRepository: EventRepository
 
-    @Mock lateinit var staffRepository: StaffRepository
+    @Mock
+    lateinit var staffRepository: StaffRepository
 
-    @Mock lateinit var ldapService: LdapService
+    @Mock
+    lateinit var ldapService: LdapService
 
-    @Mock lateinit var contactRepository: ContactRepository
+    @Mock
+    lateinit var contactRepository: ContactRepository
 
-    @Mock lateinit var orderManagerRepository: OrderManagerRepository
+    @Mock
+    lateinit var orderManagerRepository: OrderManagerRepository
 
-    @InjectMocks lateinit var allocationCompletedService: AllocationCompletedService
+    @InjectMocks
+    lateinit var allocationCompletedService: AllocationCompletedService
 
     @Test
     fun `missing crn is thrown`() {
@@ -97,8 +106,12 @@ class AllocationCompletedServiceTest {
         whenever(personRepository.findCaseType(person.crn)).thenReturn(COMMUNITY)
         whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
         whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
-        whenever(ldapService.findEmailForStaff(staff)).thenReturn(user.email)
-        whenever(contactRepository.getInitialAppointmentDate(person.id, event.id)).thenReturn(initialAppointmentDate)
+        whenever(ldapService.findEmailsForStaffIn(any())).thenReturn(mapOf(user.username to user.email))
+        whenever(contactRepository.getInitialAppointmentData(person.id, event.id)).thenReturn(object :
+                InitialAppointmentData {
+                override val date = initialAppointmentDate
+                override val staff = staff
+            })
 
         val response = allocationCompletedService.getDetails(person.crn, event.number, staff.code)
 

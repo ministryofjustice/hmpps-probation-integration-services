@@ -119,7 +119,7 @@ class AllocatePersonService(
         val sc = Contact(
             type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE.value),
             personId = newResponsibleOfficer.personId,
-            date = newResponsibleOfficer.startDate,
+            date = newResponsibleOfficer.startDate.toLocalDate(),
             startTime = newResponsibleOfficer.startDate,
             providerId = newCommunityOffenderManager.provider.id,
             teamId = newCommunityOffenderManager.team.id,

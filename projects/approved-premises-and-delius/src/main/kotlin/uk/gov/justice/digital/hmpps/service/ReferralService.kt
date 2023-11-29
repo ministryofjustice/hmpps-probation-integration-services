@@ -230,7 +230,7 @@ class ReferralService(
             personId = person.id,
             eventId = event.id,
             approvedPremisesId = ap.id,
-            referralDate = bookingMadeAt.toLocalDate(),
+            referralDate = submittedAt?.toLocalDate() ?: bookingMadeAt.toLocalDate(),
             referralDateTypeId = checkNotNull(
                 referenceDataRepository.findByCodeAndDatasetCode(
                     "CRC",

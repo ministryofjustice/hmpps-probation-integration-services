@@ -41,11 +41,7 @@ class UpdateLocationAction(
 
     override fun accept(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
-        if ((
-            prisonerMovement is PrisonerMovement.Received ||
-                prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease()
-            ) && prisonerMovement.prisonId != null && custody.institution?.nomisCdeCode == prisonerMovement.prisonId
-        ) {
+        if (prisonerMovement is PrisonerMovement.Received && custody.institution?.nomisCdeCode == prisonerMovement.prisonId) {
             return ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
         }
 

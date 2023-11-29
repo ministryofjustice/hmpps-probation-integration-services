@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.api.model.NamedCourt
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.model.Sentence
+import uk.gov.justice.digital.hmpps.api.model.StaffMember
 import uk.gov.justice.digital.hmpps.security.ServiceContext
 import java.sql.Date
 
@@ -65,7 +66,22 @@ class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
                         "${rs.getString("sentence_length_value")} ${rs.getString("sentence_length_unit")}"
                     )
                 },
-                if (iad == null) null else InitialAppointment(iad.toLocalDate()),
+                if (iad == null) {
+                    null
+                } else {
+                    InitialAppointment(
+                        iad.toLocalDate(),
+                        StaffMember(
+                            rs.getString("ias_code"),
+                            Name(
+                                rs.getString("ias_forename"),
+                                rs.getString("ias_middle_name"),
+                                rs.getString("ias_surname")
+                            ),
+                            grade = rs.getString("ias_grade")
+                        )
+                    )
+                },
                 NamedCourt(rs.getString("court_name")),
                 CaseType.valueOf(rs.getString("case_type")),
                 ProbationStatus(managementStatus),
@@ -93,7 +109,8 @@ WITH ORIGIN_COURT AS (SELECT e.EVENT_ID,
                              c.COURT_NAME,
                              ROW_NUMBER() OVER (partition by e.EVENT_ID order by ca.APPEARANCE_DATE) row_num
                       FROM COURT_APPEARANCE ca
-                               JOIN R_STANDARD_REFERENCE_LIST at ON at.STANDARD_REFERENCE_LIST_ID = ca.APPEARANCE_TYPE_ID 
+                               JOIN R_STANDARD_REFERENCE_LIST at
+                                    ON at.STANDARD_REFERENCE_LIST_ID = ca.APPEARANCE_TYPE_ID
                                JOIN COURT c ON ca.COURT_ID = c.COURT_ID
                                JOIN EVENT e ON e.EVENT_ID = ca.EVENT_ID AND e.ACTIVE_FLAG = 1
                                JOIN OFFENDER o ON o.OFFENDER_ID = ca.OFFENDER_ID
@@ -102,7 +119,25 @@ WITH ORIGIN_COURT AS (SELECT e.EVENT_ID,
                         AND ca.APPEARANCE_DATE < current_date
                         AND ca.OUTCOME_ID is not null
                         AND e.SOFT_DELETED = 0
-                        AND ca.SOFT_DELETED = 0)
+                        AND ca.SOFT_DELETED = 0),
+     INITIAL_APPOINTMENT as (
+         (SELECT ia.CONTACT_ID,
+                 ia.EVENT_ID,
+                 ia.STAFF_ID,
+                 to_date(to_char(ia.CONTACT_DATE, 'yyyy-mm-dd') || ' ' || to_char(ia.CONTACT_START_TIME, 'hh24:mi:ss'),
+                         'yyyy-mm-dd hh24:mi:ss') as                                                      datetime,
+                 row_number() over (partition by ia.EVENT_ID order by to_date(
+                             to_char(ia.CONTACT_DATE, 'yyyy-mm-dd') || ' ' ||
+                             to_char(ia.CONTACT_START_TIME, 'hh24:mi:ss'), 'yyyy-mm-dd hh24:mi:ss') desc) ROW_NUM
+          FROM CONTACT ia
+                   JOIN OFFENDER iao ON iao.OFFENDER_ID = ia.OFFENDER_ID
+                   JOIN EVENT iae ON iae.EVENT_ID = ia.EVENT_ID
+                   JOIN R_CONTACT_TYPE ct ON ct.CONTACT_TYPE_ID = ia.CONTACT_TYPE_ID
+          WHERE (iao.CRN, iae.EVENT_NUMBER) IN (:values)
+            AND ct.CODE IN ('COAI', 'COVI', 'CODI', 'COHV')
+            AND ia.SOFT_DELETED = 0
+            AND iao.SOFT_DELETED = 0
+            AND iae.SOFT_DELETED = 0))
 SELECT o.CRN                                                            crn,
        o.FIRST_NAME                                                     forename,
        o.SECOND_NAME                                                    middle_name,
@@ -118,14 +153,6 @@ SELECT o.CRN                                                            crn,
        d.ENTRY_LENGTH                                                   sentence_length_value,
        du.CODE_DESCRIPTION                                              sentence_length_unit,
        court.COURT_NAME                                                 court_name,
-       (SELECT max(to_date(to_char(c.CONTACT_DATE, 'yyyy-mm-dd')  || ' ' || to_char(c.CONTACT_START_TIME, 'hh24:mi:ss'),
-                           'yyyy-mm-dd hh24:mi:ss'))
-        FROM CONTACT c
-                 JOIN R_CONTACT_TYPE ct ON ct.CONTACT_TYPE_ID = c.CONTACT_TYPE_ID
-        WHERE c.EVENT_ID = e.EVENT_ID
-          AND ct.CODE IN ('COAI', 'COVI', 'CODI', 'COHV')
-          AND c.SOFT_DELETED = 0
-          AND e.SOFT_DELETED = 0)                                       initial_appointment_date,
        CASE
            WHEN EXISTS(SELECT 1
                        FROM DISPOSAL od
@@ -201,7 +228,13 @@ SELECT o.CRN                                                            crn,
        cms.FORENAME2                                                    community_manager_middle_name,
        cms.SURNAME                                                      community_manager_surname,
        cmt.CODE                                                         community_manager_team_code,
-       cmsg.CODE_VALUE                                                  community_manager_grade
+       cmsg.CODE_VALUE                                                  community_manager_grade,
+       ia.datetime                                                      initial_appointment_date,
+       ias.OFFICER_CODE                                                 ias_code,
+       ias.FORENAME                                                     ias_forename,
+       ias.FORENAME2                                                    ias_middle_name,
+       ias.SURNAME                                                      ias_surname,
+       iasg.CODE_DESCRIPTION                                            ias_grade
 FROM OFFENDER o
          JOIN EVENT e ON e.OFFENDER_ID = o.OFFENDER_ID AND e.ACTIVE_FLAG = 1
          JOIN OFFENDER_MANAGER cm ON cm.OFFENDER_ID = o.OFFENDER_ID AND cm.ACTIVE_FLAG = 1
@@ -217,7 +250,11 @@ FROM OFFENDER o
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST du ON du.STANDARD_REFERENCE_LIST_ID = d.ENTRY_LENGTH_UNITS_ID
          LEFT OUTER JOIN CUSTODY c ON c.DISPOSAL_ID = d.DISPOSAL_ID AND c.SOFT_DELETED = 0
          LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST cs ON cs.STANDARD_REFERENCE_LIST_ID = c.CUSTODIAL_STATUS_ID
+         LEFT OUTER JOIN INITIAL_APPOINTMENT ia ON e.EVENT_ID = ia.EVENT_ID AND ia.ROW_NUM = 1
+         LEFT OUTER JOIN STAFF ias ON ias.STAFF_ID = ia.STAFF_ID
+         LEFT OUTER JOIN R_STANDARD_REFERENCE_LIST iasg ON ias.STAFF_GRADE_ID = iasg.STANDARD_REFERENCE_LIST_ID
 WHERE (o.CRN, e.EVENT_NUMBER) IN (:values)
+  AND o.SOFT_DELETED = 0
   AND e.SOFT_DELETED = 0
   AND d.SOFT_DELETED = 0
   AND om.SOFT_DELETED = 0
