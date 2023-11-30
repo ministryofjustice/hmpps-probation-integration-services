@@ -7,7 +7,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import jakarta.persistence.Version
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -36,7 +36,7 @@ class Person(
     val softDeleted: Boolean = false,
 
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
-    @Where(clause = "active_flag = 1")
+    @SQLRestriction("active_flag = 1")
     val managers: MutableList<PersonManager> = mutableListOf(),
 
     @Column(nullable = false, updatable = false)

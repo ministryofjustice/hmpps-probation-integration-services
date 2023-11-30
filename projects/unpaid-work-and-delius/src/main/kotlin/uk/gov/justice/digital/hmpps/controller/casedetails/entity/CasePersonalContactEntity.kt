@@ -5,7 +5,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import uk.gov.justice.digital.hmpps.integrations.common.entity.AddressEntity
 import uk.gov.justice.digital.hmpps.integrations.common.entity.PersonalContactBase
 import uk.gov.justice.digital.hmpps.integrations.common.entity.ReferenceData
@@ -14,7 +14,7 @@ import java.time.LocalDate
 @Entity
 @Immutable
 @Table(name = "personal_contact")
-@Where(clause = "soft_deleted = 0 and (end_date is null or end_date > current_date)")
+@SQLRestriction("soft_deleted = 0 and (end_date is null or end_date > current_date)")
 class CasePersonalContactEntity(
     id: Long = 0,
     @ManyToOne

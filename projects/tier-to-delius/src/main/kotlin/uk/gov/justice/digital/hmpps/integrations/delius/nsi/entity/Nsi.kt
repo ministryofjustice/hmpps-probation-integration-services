@@ -7,7 +7,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.nsi.EnforcementActivityCode
@@ -17,7 +17,7 @@ import java.time.LocalDate
 @Entity
 @Immutable
 @Table(name = "nsi")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Nsi(
 
     @Id
@@ -44,7 +44,7 @@ class Nsi(
 @Immutable
 @Entity
 @Table(name = "event")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class NsiEvent(
     @Id
     @Column(name = "event_id")

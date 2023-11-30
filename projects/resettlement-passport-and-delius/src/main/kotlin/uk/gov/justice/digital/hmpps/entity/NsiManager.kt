@@ -6,13 +6,13 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
 @Entity
 @Immutable
-@Where(clause = "active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("active_flag = 1 and soft_deleted = 0")
 class NsiManager(
     @Id
     @Column(name = "nsi_manager_id")

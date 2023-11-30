@@ -1,34 +1,34 @@
 rootProject.name = "probation-integration-services"
 include(
     // ⌄ add new projects here
-    "prison-identifier-and-delius",
-    "prisoner-profile-and-delius",
-    "hdc-licences-and-delius",
-    "cas3-and-delius",
-    "arns-and-delius",
-    "dps-and-delius",
-    "hmpps-auth-and-delius",
-    "opd-and-delius",
-    "prison-education-and-delius",
-    "resettlement-passport-and-delius",
-    "manage-offences-and-delius",
     "approved-premises-and-delius",
     "approved-premises-and-oasys",
+    "arns-and-delius",
+    "cas3-and-delius",
     "court-case-and-delius",
     "create-and-vary-a-licence-and-delius",
     "custody-key-dates-and-delius",
     "domain-events-and-delius",
+    "dps-and-delius",
     "effective-proposal-framework-and-delius",
     "external-api-and-delius",
+    "hdc-licences-and-delius",
+    "hmpps-auth-and-delius",
     "make-recall-decisions-and-delius",
+    "manage-offences-and-delius",
     "manage-pom-cases-and-delius",
     "offender-events-and-delius",
+    "opd-and-delius",
     "pathfinder-and-delius",
     "person-search-index-from-delius",
     "pre-sentence-reports-to-delius",
     "prison-case-notes-to-probation",
     "prison-custody-status-to-delius",
+    "prison-identifier-and-delius",
+    "prison-education-and-delius",
+    "prisoner-profile-and-delius",
     "refer-and-monitor-and-delius",
+    "resettlement-passport-and-delius",
     "risk-assessment-scores-to-delius",
     "sentence-plan-and-delius",
     "sentence-plan-and-oasys",
@@ -39,6 +39,7 @@ include(
     "libs:audit",
     "libs:commons",
     "libs:dev-tools",
+    "libs:document-management",
     "libs:messaging",
     "libs:oauth-client",
     "libs:oauth-server",
@@ -68,7 +69,6 @@ dependencyResolutionManagement {
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:6.34.0")
             library("opentelemetry-annotations", "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.32.0")
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
-            library("openfeign", "org.springframework.cloud:spring-cloud-starter-openfeign:4.0.4")
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
             library("wiremock", "com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
             library("mapstruct", "org.mapstruct:mapstruct:1.5.5.Final")

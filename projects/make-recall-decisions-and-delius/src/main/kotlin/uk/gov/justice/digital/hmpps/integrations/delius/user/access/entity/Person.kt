@@ -8,13 +8,13 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import java.time.ZonedDateTime
 
 @Immutable
 @Table(name = "offender")
 @Entity(name = "UserAccessPerson")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Person(
     @Id
     @Column(name = "offender_id")
@@ -41,7 +41,7 @@ class Person(
 
 @Immutable
 @Entity
-@Where(clause = "exclusion_end_time is null or exclusion_end_time > current_date")
+@SQLRestriction("exclusion_end_time is null or exclusion_end_time > current_date")
 class Exclusion(
     @Id
     @Column(name = "exclusion_id")
@@ -61,7 +61,7 @@ class Exclusion(
 
 @Immutable
 @Entity
-@Where(clause = "restriction_end_time is null or restriction_end_time > current_date")
+@SQLRestriction("restriction_end_time is null or restriction_end_time > current_date")
 class Restriction(
     @Id
     @Column(name = "restriction_id")

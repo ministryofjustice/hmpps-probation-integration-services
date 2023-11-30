@@ -9,7 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.SequenceGenerator
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.BaseEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
@@ -17,7 +17,7 @@ import java.time.LocalDate
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 @SequenceGenerator(name = "key_date_id_seq", sequenceName = "key_date_id_seq", allocationSize = 1)
 class KeyDate(
 

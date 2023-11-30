@@ -17,24 +17,7 @@ spring:
             create_tables: false
             drop_tables: false
     open-in-view: false # this prevents aborted streaming requests from leaving a DB connection in-use
-  security.oauth2.client:
-    registration:
-      dps-and-delius:
-        provider: hmpps-auth
-        authorization-grant-type: client_credentials
-        client-id: dps-and-delius
-        client-secret: dps-and-delius
-    provider:
-      hmpps-auth:
-        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
-  cloud.openfeign.client.config:
-    default:
-      logger-level: full
-      connect-timeout: 5000
-      read-timeout: 30000
-      default-request-headers:
-        Accept: application/json
-        Content-Type: application/json
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: DpsAndDelius # Should match value in [deploy/database/access.yml].

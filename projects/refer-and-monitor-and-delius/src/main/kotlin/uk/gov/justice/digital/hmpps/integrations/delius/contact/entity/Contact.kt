@@ -14,7 +14,7 @@ import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.persistence.Version
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
@@ -32,7 +32,7 @@ import java.time.ZonedDateTime
 @EntityListeners(AuditingEntityListener::class)
 @Entity
 @Table(name = "contact")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 @SequenceGenerator(name = "contact_id_generator", sequenceName = "contact_id_seq", allocationSize = 1)
 class Contact(
 
@@ -242,7 +242,7 @@ class ContactOutcome(
 @EntityListeners(AuditingEntityListener::class)
 @Entity
 @Table(name = "enforcement")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Enforcement(
 
     @ManyToOne

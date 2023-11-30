@@ -6,11 +6,11 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 
 @Immutable
 @Entity
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class Disposal(
     @Id
     @Column(name = "disposal_id")

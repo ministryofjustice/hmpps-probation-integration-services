@@ -7,12 +7,12 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 
 @Immutable
 @Entity
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class CourtReport(
 
     @Id
@@ -33,7 +33,7 @@ class CourtReport(
 
 @Immutable
 @Entity
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class CourtAppearance(
     @Id
     @Column(name = "court_appearance_id", nullable = false)
@@ -49,7 +49,7 @@ class CourtAppearance(
 
 @Immutable
 @Entity
-@Where(clause = "active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("active_flag = 1 and soft_deleted = 0")
 class Event(
     @Id
     @Column(name = "event_id", nullable = false)

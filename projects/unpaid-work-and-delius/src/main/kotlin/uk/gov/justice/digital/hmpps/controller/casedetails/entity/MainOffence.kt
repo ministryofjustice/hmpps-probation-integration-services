@@ -8,13 +8,13 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import java.time.LocalDate
 
 @Immutable
 @Entity
 @Table(name = "event")
-@Where(clause = "active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("active_flag = 1 and soft_deleted = 0")
 class Event(
     @Id
     @Column(name = "event_id", nullable = false)
@@ -42,7 +42,7 @@ class Event(
 @Immutable
 @Entity
 @Table(name = "disposal")
-@Where(clause = "active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("active_flag = 1 and soft_deleted = 0")
 class Disposal(
     @Id
     @Column(name = "disposal_id")
@@ -64,7 +64,7 @@ class Disposal(
 @Immutable
 @Entity
 @Table(name = "main_offence")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class MainOffence(
     @Id
     @Column(name = "main_offence_id")

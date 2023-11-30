@@ -14,7 +14,7 @@ import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.persistence.Version
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -27,7 +27,7 @@ import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "nsi")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 @EntityListeners(AuditingEntityListener::class)
 @SequenceGenerator(name = "nsi_id_generator", sequenceName = "nsi_id_seq", allocationSize = 1)
 class Nsi(
@@ -64,7 +64,7 @@ class Nsi(
     val intendedProviderId: Long? = null,
 
     @OneToMany(mappedBy = "nsi")
-    @Where(clause = "active_flag = 1")
+    @SQLRestriction("active_flag = 1")
     private val managers: MutableList<NsiManager> = mutableListOf(),
 
     val eventId: Long? = null,
@@ -123,7 +123,7 @@ class Nsi(
 @Entity
 @EntityListeners(AuditingEntityListener::class)
 @Table(name = "nsi_manager")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 @SequenceGenerator(name = "nsi_manager_id_generator", sequenceName = "nsi_manager_id_seq", allocationSize = 1)
 class NsiManager(
     @ManyToOne
@@ -206,7 +206,7 @@ class NsiStatus(
 @EntityListeners(AuditingEntityListener::class)
 @Entity
 @Table(name = "nsi_status_history")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class NsiStatusHistory(
     val nsiId: Long,
 

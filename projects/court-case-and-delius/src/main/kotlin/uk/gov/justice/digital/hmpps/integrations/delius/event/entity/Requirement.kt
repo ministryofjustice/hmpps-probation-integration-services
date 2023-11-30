@@ -7,7 +7,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.entity.Disposal
@@ -16,7 +16,7 @@ import java.time.LocalDate
 @Immutable
 @Entity
 @Table(name = "rqmnt")
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class Requirement(
 
     @ManyToOne

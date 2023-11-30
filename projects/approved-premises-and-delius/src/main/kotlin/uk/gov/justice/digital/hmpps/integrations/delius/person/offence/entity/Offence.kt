@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.referral.entity.Event
@@ -25,7 +25,7 @@ interface CaseOffence {
 @Immutable
 @Table(name = "main_offence")
 @Entity
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class MainOffence(
 
     @OneToOne
@@ -50,7 +50,7 @@ class MainOffence(
 @Immutable
 @Table(name = "additional_offence")
 @Entity
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class AdditionalOffence(
 
     @ManyToOne

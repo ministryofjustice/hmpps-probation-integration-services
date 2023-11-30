@@ -9,13 +9,13 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import java.time.LocalDate
 
 @Immutable
 @Entity
 @Table(name = "custody")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Custody(
     @Id
     @Column(name = "custody_id")
@@ -33,7 +33,7 @@ class Custody(
 )
 
 @Entity
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class KeyDate(
 
     @Id

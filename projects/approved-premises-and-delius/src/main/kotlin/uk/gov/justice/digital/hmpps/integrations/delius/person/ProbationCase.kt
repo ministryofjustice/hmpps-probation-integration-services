@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
@@ -17,7 +17,7 @@ import java.time.LocalDate
 @Immutable
 @Entity
 @Table(name = "offender")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class ProbationCase(
 
     @Column(columnDefinition = "char(7)")
@@ -88,7 +88,7 @@ class ProbationCase(
 @Entity
 @Immutable
 @Table(name = "offender_manager")
-@Where(clause = "active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("active_flag = 1 and soft_deleted = 0")
 class CommunityManager(
 
     @ManyToOne

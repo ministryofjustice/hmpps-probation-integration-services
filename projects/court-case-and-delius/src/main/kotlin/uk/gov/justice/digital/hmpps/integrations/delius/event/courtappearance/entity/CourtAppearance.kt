@@ -9,7 +9,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.event.entity.Event
@@ -19,7 +19,7 @@ import java.time.LocalDate
 @Entity
 @Immutable
 @Table(name = "court_appearance")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class CourtAppearance(
     @JoinColumn(name = "event_id")
     @ManyToOne
@@ -70,7 +70,7 @@ class Outcome(
 
 @Entity
 @Table(name = "court_report")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class CourtReport(
     @Column(name = "date_requested")
     val dateRequested: LocalDate,
@@ -104,7 +104,7 @@ class CourtReport(
 
 @Entity
 @Table(name = "report_manager")
-@Where(clause = "active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("active_flag = 1 and soft_deleted = 0")
 class ReportManager(
 
     @JoinColumn(name = "court_report_id")

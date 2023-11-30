@@ -69,7 +69,11 @@ internal class IntegrationTest {
 
     @Test
     fun `document can be downloaded`() {
-        mockMvc.perform(get("/document/uuid1").accept("application/octet-stream").withOAuth2Token(wireMockServer))
+        mockMvc.perform(
+            get("/document/uuid1")
+                .accept("application/octet-stream")
+                .withOAuth2Token(wireMockServer)
+        )
             .andExpect(request().asyncStarted())
             .andDo(MvcResult::getAsyncResult)
             .andExpect(status().is2xxSuccessful)

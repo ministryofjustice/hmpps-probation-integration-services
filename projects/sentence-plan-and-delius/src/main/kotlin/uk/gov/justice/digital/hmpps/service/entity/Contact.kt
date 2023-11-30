@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDateTime
@@ -16,7 +16,7 @@ import java.time.ZonedDateTime
 
 @Entity
 @Immutable
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Contact(
     @Id
     @Column(name = "contact_id", updatable = false)

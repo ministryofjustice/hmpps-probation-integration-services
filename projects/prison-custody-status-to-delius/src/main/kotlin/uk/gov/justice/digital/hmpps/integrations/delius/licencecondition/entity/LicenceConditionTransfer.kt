@@ -9,7 +9,7 @@ import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import jakarta.persistence.Version
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -24,7 +24,7 @@ import java.time.ZonedDateTime
 @Entity
 @EntityListeners(AuditingEntityListener::class)
 @Table(name = "lic_condition_transfer")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class LicenceConditionTransfer(
     @Id
     @Column(name = "lic_condition_transfer_id", nullable = false)

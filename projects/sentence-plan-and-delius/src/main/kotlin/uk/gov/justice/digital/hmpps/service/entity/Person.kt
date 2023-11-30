@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.model.Name
@@ -17,11 +17,11 @@ import java.time.LocalDate
 @Immutable
 @Table(name = "offender")
 @Entity
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Person(
 
     @OneToMany(mappedBy = "person")
-    @Where(clause = "active_flag = 1")
+    @SQLRestriction("active_flag = 1")
     val managers: List<PersonManager> = listOf(),
 
     @Column(name = "surname", length = 35)
@@ -70,7 +70,7 @@ fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToSt
 
 @Immutable
 @Entity
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 @Table(name = "offender_manager")
 class PersonManager(
 

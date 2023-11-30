@@ -6,12 +6,12 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 
 @Entity
 @Immutable
-@Where(clause = "selectable = 'Y' and (establishment is null or establishment <> 'Y')")
+@SQLRestriction("selectable = 'Y' and (establishment is null or establishment <> 'Y')")
 class ProbationArea(
     @Id
     @Column(name = "probation_area_id")

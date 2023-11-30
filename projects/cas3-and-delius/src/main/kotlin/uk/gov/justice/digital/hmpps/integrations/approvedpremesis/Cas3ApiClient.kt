@@ -1,31 +1,24 @@
 package uk.gov.justice.digital.hmpps.integrations.approvedpremesis
 
-import org.springframework.cloud.openfeign.FeignClient
-import org.springframework.web.bind.annotation.GetMapping
-import uk.gov.justice.digital.hmpps.config.FeignOAuth2Config
+import org.springframework.web.service.annotation.GetExchange
 import java.net.URI
 
-@FeignClient(
-    name = "cas3-api",
-    url = "https://dummy-url/to/be/overridden",
-    configuration = [FeignOAuth2Config::class]
-)
 interface Cas3ApiClient {
-    @GetMapping
+    @GetExchange
     fun getApplicationSubmittedDetails(uri: URI): EventDetails<ApplicationSubmitted>
 
-    @GetMapping
+    @GetExchange
     fun getBookingCancelledDetails(uri: URI): EventDetails<BookingCancelled>
 
-    @GetMapping
+    @GetExchange
     fun getBookingConfirmedDetails(uri: URI): EventDetails<BookingConfirmed>
 
-    @GetMapping
+    @GetExchange
     fun getBookingProvisionallyMade(uri: URI): EventDetails<BookingProvisional>
 
-    @GetMapping
+    @GetExchange
     fun getPersonArrived(uri: URI): EventDetails<PersonArrived>
 
-    @GetMapping
+    @GetExchange
     fun getPersonDeparted(uri: URI): EventDetails<PersonDeparted>
 }

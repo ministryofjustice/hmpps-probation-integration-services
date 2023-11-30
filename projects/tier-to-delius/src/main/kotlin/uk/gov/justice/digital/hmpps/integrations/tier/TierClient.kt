@@ -1,16 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.tier
 
-import org.springframework.cloud.openfeign.FeignClient
-import org.springframework.web.bind.annotation.GetMapping
-import uk.gov.justice.digital.hmpps.config.FeignOAuth2Config
+import org.springframework.web.service.annotation.GetExchange
 import java.net.URI
 
-@FeignClient(
-    name = "Tier",
-    url = "https://dummy-url/to/be/overridden",
-    configuration = [FeignOAuth2Config::class]
-)
 interface TierClient {
-    @GetMapping
+    @GetExchange
     fun getTierCalculation(baseUrl: URI): TierCalculation
 }

@@ -7,12 +7,12 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 
 @Table
 @Entity
 @Immutable
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Document(
     @Id
     @Column(name = "document_id")
@@ -35,7 +35,7 @@ class Document(
 @Immutable
 @Table(name = "offender")
 @Entity(name = "DocumentPerson")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Person(
     @Id
     @Column(name = "offender_id")

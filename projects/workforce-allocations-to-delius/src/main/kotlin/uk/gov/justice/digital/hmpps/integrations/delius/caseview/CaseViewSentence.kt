@@ -7,13 +7,13 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import java.time.LocalDate
 
 @Entity
 @Immutable
 @Table(name = "disposal")
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class CaseViewDisposal(
     @Id
     @Column(name = "disposal_id")
@@ -33,7 +33,7 @@ class CaseViewDisposal(
 @Immutable
 @Entity
 @Table(name = "event")
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class CaseViewEvent(
     @Id
     @Column(name = "event_id", nullable = false)

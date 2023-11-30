@@ -1,15 +1,12 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.document
 
-import org.springframework.core.io.Resource
-import org.springframework.http.ContentDisposition
-import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
+import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.entityNotFound
-import java.nio.charset.StandardCharsets
 
 @Service
 class DocumentService(
@@ -36,7 +33,7 @@ class DocumentService(
         return documents.filter { it.relatedTo.name != entityNotFound }
     }
 
-    fun getDocument(crn: String, id: String): ResponseEntity<Resource> {
+    fun getDocument(crn: String, id: String): ResponseEntity<StreamingResponseBody> {
         val person = docPersonRepository.findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
         val documentMetaData = documentRepository.findByAlfrescoIdAndSoftDeletedIsFalse(id) ?: throw NotFoundException(
             "Document",
@@ -46,27 +43,6 @@ class DocumentService(
         if (person.id != documentMetaData.personId) {
             throw ConflictException("Document and CRN do not match")
         }
-        val resource = alfrescoClient.getDocument(id)
-        val headers = resource.headers.copyHeaders(
-            HttpHeaders.ACCEPT_RANGES,
-            HttpHeaders.CONTENT_LENGTH,
-            HttpHeaders.CONTENT_TYPE,
-            HttpHeaders.ETAG,
-            HttpHeaders.LAST_MODIFIED
-        )
-        headers.add(
-            HttpHeaders.CONTENT_DISPOSITION,
-            ContentDisposition.attachment()
-                .filename(documentMetaData.name, StandardCharsets.UTF_8).build().toString()
-        )
-        return ResponseEntity(resource.body, headers, resource.statusCode)
-    }
-
-    private fun HttpHeaders.copyHeaders(vararg headerKeys: String): HttpHeaders {
-        val newHeaders = HttpHeaders()
-        for (key in headerKeys) {
-            newHeaders[key] = getFirst(key)
-        }
-        return newHeaders
+        return alfrescoClient.streamDocument(id, documentMetaData.name)
     }
 }

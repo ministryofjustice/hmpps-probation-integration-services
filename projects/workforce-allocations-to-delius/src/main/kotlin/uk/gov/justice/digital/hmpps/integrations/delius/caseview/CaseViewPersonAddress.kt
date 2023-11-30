@@ -8,7 +8,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import java.time.LocalDate
@@ -16,7 +16,7 @@ import java.time.LocalDate
 @Immutable
 @Entity
 @Table(name = "offender_address")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class CaseViewPersonAddress(
     @Id
     @Column(name = "offender_address_id")

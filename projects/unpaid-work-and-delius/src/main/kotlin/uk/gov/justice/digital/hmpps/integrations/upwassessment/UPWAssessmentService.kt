@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.upwassessment
 
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.controller.casedetails.entity.EventRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -40,14 +41,14 @@ class UPWAssessmentService(
         val response = arnClient.getUPWAssessment(URI(notification.message.detailUrl!!))
         val reg = Regex("[^A-Za-z0-9-. ]")
         val filename = "${person.forename}-${person.surname}-${person.crn}-UPW.pdf".replace(reg, "")
-        val fileData = response.body().asInputStream().readAllBytes()
-        check(response.status() == 200 && fileData.isPdf()) { "Invalid PDF returned for episode: ${notification.message.detailUrl}" }
+        val fileData = response.body
+        check(response.statusCode == HttpStatus.OK && fileData?.isPdf() == true) { "Invalid PDF returned for episode: ${notification.message.detailUrl}" }
         // Then upload the document content to Alfresco AND create a delius document that links to the alfresco id
         // and contact id.
         try {
             documentService.createDeliusDocument(
                 notification.message,
-                fileData,
+                fileData!!,
                 filename,
                 episodeId,
                 person,

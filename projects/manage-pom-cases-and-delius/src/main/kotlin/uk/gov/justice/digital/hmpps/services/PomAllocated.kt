@@ -1,8 +1,9 @@
 package uk.gov.justice.digital.hmpps.services
 
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpStatusCodeException
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
-import uk.gov.justice.digital.hmpps.exception.NotAllocatedException
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.ManagePomCasesClient
 import uk.gov.justice.digital.hmpps.integrations.managepomcases.PomAllocation
@@ -28,12 +29,16 @@ class PomAllocated(
                     "No POM Allocation data available",
                     mapOf("detailUrl" to event.detailUrl.orNotProvided())
                 )
-        } catch (e: Exception) {
-            when (val nae = e.cause) {
-                is NotAllocatedException -> when (nae.reason) {
-                    NotAllocatedException.Reason.DEALLOCATED -> PomDeallocated
-                    else -> PomNotAllocated
+        } catch (e: HttpStatusCodeException) {
+            when (e.statusCode) {
+                HttpStatus.NOT_FOUND -> {
+                    val error = e.getResponseBodyAs(ErrorResponse::class.java)
+                    when (error?.message) {
+                        "Not allocated" -> PomDeallocated
+                        else -> PomNotAllocated
+                    }
                 }
+
                 else -> throw e
             }
         }
@@ -77,3 +82,5 @@ class PomAllocated(
         "allocationDate" to DeliusDateTimeFormatter.format(occurredAt)
     )
 }
+
+data class ErrorResponse(val message: String?)

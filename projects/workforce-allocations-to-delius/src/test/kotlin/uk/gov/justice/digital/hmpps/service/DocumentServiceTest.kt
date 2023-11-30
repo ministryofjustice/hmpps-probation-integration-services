@@ -8,13 +8,13 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.whenever
-import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
+import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocPersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentService
@@ -98,11 +98,11 @@ class DocumentServiceTest {
         val document = OffenderDocument()
         document.personId = 1L
         document.name = "filename.pdf"
-        val expectedResponse = ResponseEntity<Resource>(HttpStatus.OK)
+        val expectedResponse = ResponseEntity<StreamingResponseBody>(HttpStatus.OK)
 
         whenever(docPersonRepository.findByCrn(crn)).thenReturn(DocPerson(1L, crn, false))
         whenever(documentRepository.findByAlfrescoIdAndSoftDeletedIsFalse(id)).thenReturn(document)
-        whenever(alfrescoClient.getDocument(id)).thenReturn(expectedResponse)
+        whenever(alfrescoClient.streamDocument(id, document.name)).thenReturn(expectedResponse)
         val response = service.getDocument(crn, id)
         assertEquals(expectedResponse.statusCode, response.statusCode)
     }

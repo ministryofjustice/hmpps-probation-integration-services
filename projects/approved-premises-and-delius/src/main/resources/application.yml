@@ -19,7 +19,7 @@ spring:
             drop_tables: false
   security.oauth2.client:
     registration:
-      approved-premises-and-delius:
+      default:
         provider: hmpps-auth
         authorization-grant-type: client_credentials
         client-id: ${oauth2.client-id}
@@ -27,14 +27,7 @@ spring:
     provider:
       hmpps-auth:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
-  cloud.openfeign.client.config:
-    default:
-      logger-level: full
-      connect-timeout: 5000
-      read-timeout: 5000
-      default-request-headers:
-        Accept: application/json
-        Content-Type: application/json
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: ApprovedPremisesAndDelius # Should match value in [deploy/database/access.yml].
@@ -46,7 +39,6 @@ management:
     base-path: /
     exposure.include: [ "health", "info" ]
   endpoint.health.show-details: always
-
 
 ---
 # Shared dev/test config

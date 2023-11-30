@@ -6,12 +6,12 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import java.time.ZonedDateTime
 
 @Entity
 @Immutable
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 data class CourtAppearance(
     @Id
     @Column(name = "court_appearance_id")

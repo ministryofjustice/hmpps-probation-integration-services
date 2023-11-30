@@ -7,13 +7,13 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import uk.gov.justice.digital.hmpps.integrations.common.entity.ReferenceData
 
 @Immutable
 @Entity
 @Table(name = "offender_address")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class CaseAddress(
     @Id
     @Column(name = "offender_address_id")

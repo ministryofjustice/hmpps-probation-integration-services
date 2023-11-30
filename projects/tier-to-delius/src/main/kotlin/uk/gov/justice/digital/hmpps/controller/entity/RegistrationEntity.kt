@@ -7,7 +7,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import java.time.LocalDate
@@ -15,7 +15,7 @@ import java.time.LocalDate
 @Immutable
 @Table(name = "registration")
 @Entity
-@Where(clause = "soft_deleted = 0 and deregistered = 0")
+@SQLRestriction("soft_deleted = 0 and deregistered = 0")
 class RegistrationEntity(
     @Id
     @Column(name = "registration_id")

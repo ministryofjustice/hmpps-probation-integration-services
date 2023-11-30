@@ -5,12 +5,12 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 
 @Entity
 @Immutable
 @Table(name = "offender")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 data class Person(
     @Id
     @Column(name = "offender_id")

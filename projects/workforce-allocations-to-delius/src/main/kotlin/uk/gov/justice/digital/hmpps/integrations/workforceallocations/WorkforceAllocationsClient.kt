@@ -1,11 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.workforceallocations
 
-import org.springframework.cloud.openfeign.FeignClient
-import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.service.annotation.GetExchange
 import java.net.URI
 
-@FeignClient(name = "workforce-allocations", url = "https://dummy-url/to/be/overridden")
 interface WorkforceAllocationsClient {
-    @GetMapping
+    @GetExchange
     fun getAllocationDetail(baseUrl: URI): AllocationDetail
 }

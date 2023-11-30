@@ -9,14 +9,14 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Version
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.Disposal
 import java.time.LocalDate
 
 @Entity
 @Immutable
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Custody(
     @Id
     @Column(name = "custody_id")
@@ -43,7 +43,7 @@ class Custody(
 
 @Entity
 @Immutable
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class KeyDate(
     @Id
     @Column(name = "key_date_id")

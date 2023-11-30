@@ -18,7 +18,7 @@ spring:
             drop_tables: false
   security.oauth2.client:
     registration:
-      prison-custody-status-to-delius:
+      default:
         provider: hmpps-auth
         authorization-grant-type: client_credentials
         client-id: ${oauth2.client-id}
@@ -26,14 +26,6 @@ spring:
     provider:
       hmpps-auth:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
-  cloud.openfeign.client.config:
-    default:
-      logger-level: full
-      connect-timeout: 5000
-      read-timeout: 5000
-      default-request-headers:
-        Accept: application/json
-        Content-Type: application/json
   profiles:
     include:
       - prisoner-movement

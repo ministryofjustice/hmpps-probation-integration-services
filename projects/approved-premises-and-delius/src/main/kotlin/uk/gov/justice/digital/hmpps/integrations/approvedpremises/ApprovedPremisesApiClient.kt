@@ -1,31 +1,24 @@
 package uk.gov.justice.digital.hmpps.integrations.approvedpremises
 
-import org.springframework.cloud.openfeign.FeignClient
-import org.springframework.web.bind.annotation.GetMapping
-import uk.gov.justice.digital.hmpps.config.FeignOAuth2Config
+import org.springframework.web.service.annotation.GetExchange
 import java.net.URI
 
-@FeignClient(
-    name = "approved-premises-api",
-    url = "https://dummy-url/to/be/overridden",
-    configuration = [FeignOAuth2Config::class]
-)
 interface ApprovedPremisesApiClient {
-    @GetMapping fun getApplicationSubmittedDetails(uri: URI): EventDetails<ApplicationSubmitted>
+    @GetExchange fun getApplicationSubmittedDetails(uri: URI): EventDetails<ApplicationSubmitted>
 
-    @GetMapping fun getApplicationAssessedDetails(uri: URI): EventDetails<ApplicationAssessed>
+    @GetExchange fun getApplicationAssessedDetails(uri: URI): EventDetails<ApplicationAssessed>
 
-    @GetMapping fun getApplicationWithdrawnDetails(uri: URI): EventDetails<ApplicationWithdrawn>
+    @GetExchange fun getApplicationWithdrawnDetails(uri: URI): EventDetails<ApplicationWithdrawn>
 
-    @GetMapping fun getBookingMadeDetails(uri: URI): EventDetails<BookingMade>
+    @GetExchange fun getBookingMadeDetails(uri: URI): EventDetails<BookingMade>
 
-    @GetMapping fun getBookingChangedDetails(uri: URI): EventDetails<BookingChanged>
+    @GetExchange fun getBookingChangedDetails(uri: URI): EventDetails<BookingChanged>
 
-    @GetMapping fun getBookingCancelledDetails(uri: URI): EventDetails<BookingCancelled>
+    @GetExchange fun getBookingCancelledDetails(uri: URI): EventDetails<BookingCancelled>
 
-    @GetMapping fun getPersonNotArrivedDetails(uri: URI): EventDetails<PersonNotArrived>
+    @GetExchange fun getPersonNotArrivedDetails(uri: URI): EventDetails<PersonNotArrived>
 
-    @GetMapping fun getPersonArrivedDetails(uri: URI): EventDetails<PersonArrived>
+    @GetExchange fun getPersonArrivedDetails(uri: URI): EventDetails<PersonArrived>
 
-    @GetMapping fun getPersonDepartedDetails(uri: URI): EventDetails<PersonDeparted>
+    @GetExchange fun getPersonDepartedDetails(uri: URI): EventDetails<PersonDeparted>
 }

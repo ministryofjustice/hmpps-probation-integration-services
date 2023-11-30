@@ -7,7 +7,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -16,7 +16,7 @@ import java.time.LocalDate
 @Immutable
 @Table(name = "offender")
 @Entity
-@Where(clause = "soft_deleted = 0 and current_exclusion = 0 and current_restriction = 0")
+@SQLRestriction("soft_deleted = 0 and current_exclusion = 0 and current_restriction = 0")
 class Person(
     @Id
     @Column(name = "offender_id")

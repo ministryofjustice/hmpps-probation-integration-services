@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PsrMessageGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoClient
+import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoUploadClient
 import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import java.util.Optional
@@ -31,7 +31,7 @@ class DocumentServiceTest {
     private lateinit var courtReportRepository: CourtReportRepository
 
     @Mock
-    private lateinit var alfrescoClient: AlfrescoClient
+    private lateinit var alfrescoUploadClient: AlfrescoUploadClient
 
     @InjectMocks
     private lateinit var documentService: DocumentService

@@ -6,7 +6,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 
 @Immutable
 @Entity
@@ -30,7 +30,7 @@ class PersonWithManager(
     val softDeleted: Boolean = false,
 
     @OneToMany(mappedBy = "person")
-    @Where(clause = "active_flag = 1")
+    @SQLRestriction("active_flag = 1")
     val managers: List<PersonManager> = listOf()
 
 )

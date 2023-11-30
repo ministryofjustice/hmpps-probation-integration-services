@@ -7,13 +7,13 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import uk.gov.justice.digital.hmpps.integrations.common.entity.ReferenceData
 import java.time.LocalDate
 
 @Entity
 @Immutable
-@Where(clause = "soft_deleted = 0 and (finish_date is null or finish_date > current_date)")
+@SQLRestriction("soft_deleted = 0 and (finish_date is null or finish_date > current_date)")
 @Table(name = "disability")
 class DisabilityEntity(
     @Id

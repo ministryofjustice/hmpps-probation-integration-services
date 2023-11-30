@@ -9,13 +9,13 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import java.time.LocalDate
 
 @Entity
 @Immutable
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 data class MainOffence(
     @Id
     @Column(name = "main_offence_id")
@@ -41,7 +41,7 @@ data class MainOffence(
 
 @Entity
 @Immutable
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 data class AdditionalOffence(
     @Id
     @Column(name = "additional_offence_id")

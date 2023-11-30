@@ -9,7 +9,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 
@@ -84,7 +84,7 @@ class Custody(
 
 @Immutable
 @Entity
-@Where(clause = "active_flag = 1")
+@SQLRestriction("active_flag = 1")
 @Table(name = "order_manager")
 class OrderManager(
     @Id

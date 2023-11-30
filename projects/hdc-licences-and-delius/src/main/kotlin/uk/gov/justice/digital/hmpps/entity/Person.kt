@@ -6,7 +6,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 
 @Entity
 @Immutable
@@ -20,10 +20,10 @@ class Person(
     val nomsNumber: String,
 
     @OneToMany(mappedBy = "person")
-    @Where(clause = "active_flag = 1 and soft_deleted = 0")
+    @SQLRestriction("active_flag = 1 and soft_deleted = 0")
     val communityManagers: List<CommunityManagerEntity> = listOf(),
 
     @OneToMany(mappedBy = "person")
-    @Where(clause = "active_flag = 1 and soft_deleted = 0")
+    @SQLRestriction("active_flag = 1 and soft_deleted = 0")
     val prisonManagers: List<PrisonManager> = listOf()
 )

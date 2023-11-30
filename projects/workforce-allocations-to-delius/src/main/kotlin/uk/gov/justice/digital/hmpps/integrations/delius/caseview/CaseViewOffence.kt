@@ -7,14 +7,14 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Immutable
 @Entity
 @Table(name = "main_offence")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class CaseViewMainOffence(
     @Id
     @Column(name = "main_offence_id")
@@ -34,7 +34,7 @@ class CaseViewMainOffence(
 @Immutable
 @Entity
 @Table(name = "additional_offence")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class CaseViewAdditionalOffence(
     @Id
     @Column(name = "additional_offence_id")

@@ -9,7 +9,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -18,7 +18,7 @@ import java.time.LocalDate
 @Immutable
 @Table(name = "event")
 @Entity
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class ConvictionEventEntity(
     @Id
     @Column(name = "event_id")
@@ -49,7 +49,7 @@ class ConvictionEventEntity(
 @Immutable
 @Table(name = "offender")
 @Entity
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class ConvictionEventPerson(
     @Id
     @Column(name = "offender_id")
@@ -69,7 +69,7 @@ class ConvictionEventPerson(
 @Immutable
 @Table(name = "disposal")
 @Entity
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class Disposal(
     @Id
     @Column(name = "disposal_id")
@@ -108,7 +108,7 @@ class DisposalType(
 @Immutable
 @Table(name = "main_offence")
 @Entity
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class MainOffence(
     @Id
     @Column(name = "main_offence_id")
@@ -129,7 +129,7 @@ class MainOffence(
 @Immutable
 @Table(name = "additional_offence")
 @Entity
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class AdditionalOffence(
     @Id
     @Column(name = "additional_offence_id")

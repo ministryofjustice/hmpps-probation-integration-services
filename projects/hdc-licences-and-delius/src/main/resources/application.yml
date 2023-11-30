@@ -20,16 +20,7 @@ spring:
     base: dc=moj,dc=com
     base-environment:
       java.naming.ldap.derefAliases: never
-  security.oauth2.client:
-    registration:
-      hdc-licences-and-delius:
-        provider: hmpps-auth
-        authorization-grant-type: client_credentials
-        client-id: hdc-licences-and-delius
-        client-secret: hdc-licences-and-delius
-    provider:
-      hmpps-auth:
-        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: HdcLicencesAndDelius # Should match value in [deploy/database/access.yml].
