@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 class RestClientConfig(private val hmppsAuthClient: RestClient) {
 
     @Bean
-    fun courtCaseClient(@Value("\${integrations.prison-api.url}") prisonApiBaseUrl: String) =
+    fun prisonApiClient(@Value("\${integrations.prison-api.url}") prisonApiBaseUrl: String) =
         createClient<PrisonApiClient>(
             hmppsAuthClient.mutate()
                 .baseUrl("$prisonApiBaseUrl/api/bookings")
