@@ -11,7 +11,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
@@ -20,7 +20,7 @@ import java.time.LocalDate
 @Immutable
 @Table(name = "event")
 @Entity(name = "CaseSummaryEvent")
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class Event(
     @Id
     @Column(name = "event_id")
@@ -51,7 +51,7 @@ class Event(
 @Immutable
 @Table(name = "disposal")
 @Entity(name = "CaseSummaryDisposal")
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class Disposal(
     @Id
     @Column(name = "disposal_id")
@@ -110,7 +110,7 @@ class DisposalType(
 @Immutable
 @Table(name = "custody")
 @Entity(name = "CaseSummaryCustody")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Custody(
     @Id
     @Column(name = "custody_id")
@@ -125,11 +125,11 @@ class Custody(
     val status: ReferenceData,
 
     @OneToMany(mappedBy = "custody")
-    @Where(clause = "key_date_type_id = (select sed.standard_reference_list_id from r_standard_reference_list sed where sed.code_value = 'SED')")
+    @SQLRestriction("key_date_type_id = (select sed.standard_reference_list_id from r_standard_reference_list sed where sed.code_value = 'SED')")
     val sentenceExpiryDate: Set<KeyDate> = emptySet(),
 
     @OneToMany(mappedBy = "custody")
-    @Where(clause = "key_date_type_id = (select led.standard_reference_list_id from r_standard_reference_list led where led.code_value = 'LED')")
+    @SQLRestriction("key_date_type_id = (select led.standard_reference_list_id from r_standard_reference_list led where led.code_value = 'LED')")
     val licenceExpiryDate: Set<KeyDate> = emptySet(),
 
     @Column(columnDefinition = "number")
@@ -139,7 +139,7 @@ class Custody(
 @Immutable
 @Table(name = "key_date")
 @Entity(name = "CaseSummaryKeyDate")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class KeyDate(
     @Id
     @Column(name = "key_date_id")
@@ -163,7 +163,7 @@ class KeyDate(
 @Immutable
 @Table(name = "main_offence")
 @Entity(name = "CaseSummaryMainOffence")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class MainOffence(
     @Id
     @Column(name = "main_offence_id")
@@ -187,7 +187,7 @@ class MainOffence(
 @Immutable
 @Table(name = "additional_offence")
 @Entity(name = "CaseSummaryAdditionalOffence")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class AdditionalOffence(
     @Id
     @Column(name = "additional_offence_id")
@@ -226,7 +226,7 @@ class Offence(
 @Immutable
 @Table(name = "lic_condition")
 @Entity(name = "CaseSummaryLicenceCondition")
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class LicenceCondition(
     @Id
     @Column(name = "lic_condition_id")

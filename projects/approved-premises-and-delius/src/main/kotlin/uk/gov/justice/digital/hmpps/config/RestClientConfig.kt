@@ -2,24 +2,12 @@ package uk.gov.justice.digital.hmpps.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.web.client.RestClient
-import org.springframework.web.client.support.RestClientAdapter
-import org.springframework.web.service.invoker.HttpServiceProxyFactory
-import uk.gov.justice.digital.hmpps.config.security.HmppsAuthInterceptor
+import uk.gov.justice.digital.hmpps.config.security.createClient
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremisesApiClient
 
 @Configuration
-class RestClientConfig(private val clientManager: OAuth2AuthorizedClientManager) {
-
+class RestClientConfig(private val hmppsAuthClient: RestClient) {
     @Bean
-    fun approvedPremisesApiClient(restClientBuilder: RestClient.Builder): ApprovedPremisesApiClient {
-        val exchange = RestClientAdapter.create(
-            restClientBuilder
-                .requestInterceptor(HmppsAuthInterceptor(clientManager, "approved-premises-and-delius"))
-                .build()
-        )
-        return HttpServiceProxyFactory.builderFor(exchange).build()
-            .createClient(ApprovedPremisesApiClient::class.java)
-    }
+    fun approvedPremisesApiClient() = createClient<ApprovedPremisesApiClient>(hmppsAuthClient)
 }

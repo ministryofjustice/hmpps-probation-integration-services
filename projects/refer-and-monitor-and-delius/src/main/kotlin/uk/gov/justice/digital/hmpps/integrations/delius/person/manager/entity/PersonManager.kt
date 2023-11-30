@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -20,7 +20,7 @@ import java.time.ZonedDateTime
 @Immutable
 @Entity
 @Table(name = "offender_manager")
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class PersonManager(
 
     @ManyToOne
@@ -52,7 +52,7 @@ class PersonManager(
 @Immutable
 @Entity
 @Table(name = "prison_offender_manager")
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class PrisonManager(
 
     @Column(name = "offender_id")
@@ -87,7 +87,7 @@ class PrisonManager(
 @Immutable
 @Entity
 @Table(name = "responsible_officer")
-@Where(clause = "end_date is null")
+@SQLRestriction("end_date is null")
 class ResponsibleOfficer(
     @OneToOne
     @JoinColumn(name = "offender_manager_id")

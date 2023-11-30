@@ -2,24 +2,7 @@
 spring:
   jackson:
     default-property-inclusion: non_empty
-  security.oauth2.client:
-    registration:
-      ords-oasys:
-        provider: ords-oasys-auth
-        authorization-grant-type: client_credentials
-        client-id: ${ords.client-id}
-        client-secret: ${ords.client-secret}
-    provider:
-      ords-oasys-auth:
-        token-uri: http://localhost:${wiremock.port}/eor/oasys/oauth/token
-  cloud.openfeign.client.config:
-    default:
-      logger-level: full
-      connect-timeout: 10000
-      read-timeout: 10000
-      default-request-headers:
-        Accept: application/json
-        Content-Type: application/json
+
 springdoc.default-produces-media-type: application/json
 
 management:

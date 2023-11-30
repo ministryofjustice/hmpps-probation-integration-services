@@ -22,7 +22,7 @@ spring:
       java.naming.ldap.derefAliases: never
   security.oauth2.client:
     registration:
-      make-recall-decisions-and-delius:
+      default:
         provider: hmpps-auth
         authorization-grant-type: client_credentials
         client-id: ${oauth2.client-id}

@@ -18,7 +18,7 @@ spring:
             drop_tables: false
   security.oauth2.client:
     registration:
-      prison-case-notes:
+      default:
         provider: hmpps-auth
         authorization-grant-type: client_credentials
         client-id: ${integrations.prison-case-notes.client-id}

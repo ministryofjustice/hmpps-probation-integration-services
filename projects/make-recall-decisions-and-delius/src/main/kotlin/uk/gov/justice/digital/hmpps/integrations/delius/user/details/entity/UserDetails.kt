@@ -7,7 +7,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import java.time.LocalDate
 
 @Entity
@@ -38,7 +38,7 @@ class UserDetails(
 @Entity
 @Immutable
 @Table(name = "staff")
-@Where(clause = "end_date is null or end_date > current_date")
+@SQLRestriction("end_date is null or end_date > current_date")
 class UserDetailsStaff(
     @Id
     @Column(name = "staff_id")

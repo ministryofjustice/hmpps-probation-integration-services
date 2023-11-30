@@ -9,7 +9,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
@@ -19,7 +18,7 @@ import java.time.LocalDate
 @Immutable
 @Table(name = "offender")
 @Entity
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class DetailPerson(
     @Id
     @Column(name = "offender_id")
@@ -63,7 +62,7 @@ class DetailPerson(
 
 @Immutable
 @Entity
-@Where(clause = "active_flag = 1")
+@SQLRestriction("active_flag = 1")
 @Table(name = "offender_manager")
 class PersonManager(
     @Id

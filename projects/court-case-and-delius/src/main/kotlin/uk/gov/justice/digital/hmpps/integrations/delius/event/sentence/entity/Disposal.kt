@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.ReferenceData
@@ -17,7 +17,7 @@ import java.time.ZonedDateTime
 
 @Entity
 @Immutable
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class Disposal(
     @OneToOne
     @JoinColumn(name = "event_id")
@@ -80,7 +80,7 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
 
 @Entity
 @Immutable
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Custody(
     @OneToOne
     @JoinColumn(name = "disposal_id")
@@ -101,7 +101,7 @@ class Custody(
 @Entity
 @Immutable
 @Table(name = "pss_rqmnt")
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class PssRequirement(
 
     @Column(name = "custody_id")

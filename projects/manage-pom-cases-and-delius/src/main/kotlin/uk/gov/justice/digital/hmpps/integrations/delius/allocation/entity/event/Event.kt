@@ -7,13 +7,12 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Immutable
 @Entity
 @Table(name = "event")
-@Where(clause = "active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("active_flag = 1 and soft_deleted = 0")
 class Event(
 
     @Column(name = "offender_id")
@@ -36,7 +35,7 @@ class Event(
 @Immutable
 @Entity
 @Table(name = "disposal")
-@Where(clause = "active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("active_flag = 1 and soft_deleted = 0")
 class Disposal(
 
     @OneToOne
@@ -56,7 +55,7 @@ class Disposal(
 
 @Entity
 @Immutable
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Custody(
 
     @OneToOne

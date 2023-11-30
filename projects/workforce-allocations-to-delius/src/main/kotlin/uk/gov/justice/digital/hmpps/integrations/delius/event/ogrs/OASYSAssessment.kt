@@ -5,14 +5,14 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
 @Immutable
 @Table(name = "oasys_assessment")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class OASYSAssessment(
     @Id
     @Column(name = "oasys_assessment_id")

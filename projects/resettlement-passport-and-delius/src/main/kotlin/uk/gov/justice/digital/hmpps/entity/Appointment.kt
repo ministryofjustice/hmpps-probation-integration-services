@@ -8,7 +8,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -22,7 +22,7 @@ import java.time.ZonedDateTime
 @Immutable
 @Entity
 @Table(name = "contact")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Appointment(
 
     @ManyToOne

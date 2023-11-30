@@ -19,7 +19,7 @@ spring:
   security.oauth2:
     client:
       registration:
-        pre-sentence-reports:
+        default:
           provider: hmpps-auth
           authorization-grant-type: client_credentials
           client-id: ${integrations.pre-sentence-reports.client-id}

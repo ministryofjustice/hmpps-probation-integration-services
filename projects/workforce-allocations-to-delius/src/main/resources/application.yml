@@ -22,7 +22,7 @@ spring:
       java.naming.ldap.derefAliases: never
   security.oauth2.client:
     registration:
-      workforce-allocations:
+      default:
         provider: hmpps-auth
         authorization-grant-type: client_credentials
         client-id: ${integrations.workforce-allocations.client-id}

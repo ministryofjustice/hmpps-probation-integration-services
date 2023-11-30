@@ -9,7 +9,6 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
@@ -17,7 +16,7 @@ import java.time.LocalDate
 @Immutable
 @Entity
 @Table(name = "event")
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class EventEntity(
     @Id
     @Column(name = "event_id", nullable = false)
@@ -45,7 +44,7 @@ class EventEntity(
 
 @Immutable
 @Entity
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class Disposal(
     @Id
     @Column(name = "disposal_id")

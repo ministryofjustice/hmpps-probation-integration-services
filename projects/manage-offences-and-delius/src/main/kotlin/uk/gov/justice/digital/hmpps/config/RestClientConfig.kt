@@ -3,28 +3,14 @@ package uk.gov.justice.digital.hmpps.config
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.web.client.RestClient
-import org.springframework.web.client.support.RestClientAdapter
-import org.springframework.web.service.invoker.HttpServiceProxyFactory
 import uk.gov.justice.digital.hmpps.client.ManageOffencesClient
-import uk.gov.justice.digital.hmpps.config.security.HmppsAuthInterceptor
+import uk.gov.justice.digital.hmpps.config.security.createClient
 
 @Configuration
-class RestClientConfig(private val clientManager: OAuth2AuthorizedClientManager) {
+class RestClientConfig(private val hmppsAuthClient: RestClient) {
 
     @Bean
-    fun makeRecallDecisionClient(
-        restClientBuilder: RestClient.Builder,
-        @Value("\${integrations.manage-offences.url}") moBaseUrl: String
-    ): ManageOffencesClient {
-        val exchange = RestClientAdapter.create(
-            restClientBuilder
-                .baseUrl(moBaseUrl)
-                .requestInterceptor(HmppsAuthInterceptor(clientManager, "manage-offences-and-delius"))
-                .build()
-        )
-        return HttpServiceProxyFactory.builderFor(exchange).build()
-            .createClient(ManageOffencesClient::class.java)
-    }
+    fun manageOffencesClient(@Value("\${integrations.manage-offences.url}") moBaseUrl: String) =
+        createClient<ManageOffencesClient>(hmppsAuthClient.mutate().baseUrl(moBaseUrl).build())
 }

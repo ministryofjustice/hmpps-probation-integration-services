@@ -7,7 +7,6 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
 
 @Immutable
 @Entity
@@ -25,10 +24,10 @@ class Person(
     val softDeleted: Boolean = false,
 
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
-    @Where(clause = "soft_deleted = 0")
+    @SQLRestriction("soft_deleted = 0")
     val personalCircumstances: List<PersonalCircumstanceEntity>,
 
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
-    @Where(clause = "soft_deleted = 0")
+    @SQLRestriction("soft_deleted = 0")
     val personalContacts: List<PersonalContactEntity>
 )

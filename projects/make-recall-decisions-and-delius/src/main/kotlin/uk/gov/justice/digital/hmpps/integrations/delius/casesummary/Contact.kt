@@ -10,7 +10,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -21,7 +21,7 @@ import java.time.ZonedDateTime
 @Immutable
 @Table(name = "contact")
 @Entity(name = "CaseSummaryContact")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Contact(
     @Id
     @Column(name = "contact_id")
@@ -95,7 +95,7 @@ class ContactOutcome(
 @Immutable
 @Table(name = "document")
 @Entity(name = "CaseSummaryContactDocument")
-@Where(clause = "table_name = 'CONTACT' and soft_deleted = 0")
+@SQLRestriction("table_name = 'CONTACT' and soft_deleted = 0")
 class ContactDocument(
     @Id
     @Column(name = "document_id")

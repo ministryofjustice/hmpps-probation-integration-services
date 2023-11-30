@@ -7,14 +7,13 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Immutable
 @Entity
 @Table(name = "offender")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Person(
 
     @Column(columnDefinition = "char(7)")
@@ -31,7 +30,7 @@ class Person(
 @Immutable
 @Table(name = "offender_manager")
 @Entity
-@Where(clause = "soft_deleted = 0 and active_flag = 1")
+@SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class PersonManager(
 
     @ManyToOne

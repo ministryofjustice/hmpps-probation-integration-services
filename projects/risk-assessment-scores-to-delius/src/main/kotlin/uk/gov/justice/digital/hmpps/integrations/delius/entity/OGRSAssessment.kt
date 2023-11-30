@@ -11,7 +11,7 @@ import jakarta.persistence.OneToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.persistence.Version
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -24,7 +24,7 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "ogrs_assessment")
 @EntityListeners(AuditingEntityListener::class)
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class OGRSAssessment(
     @Id
     @Column(name = "ogrs_assessment_id", updatable = false)

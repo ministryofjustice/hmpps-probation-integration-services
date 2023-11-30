@@ -7,13 +7,12 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
 import java.time.LocalDate
 
 @Immutable
 @Entity
 @Table(name = "alias")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class AliasEntity(
     @Id
     @Column(name = "alias_id")

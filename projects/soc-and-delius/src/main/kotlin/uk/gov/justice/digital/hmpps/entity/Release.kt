@@ -8,7 +8,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
@@ -16,7 +15,7 @@ import java.time.LocalDate
 @Immutable
 @Table(name = "release")
 @Entity
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class DetailRelease(
     @Id
     @Column(name = "release_id")
@@ -58,7 +57,7 @@ class Institution(
 @Immutable
 @Table(name = "recall")
 @Entity
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Recall(
     @Id
     @Column(name = "recall_id")

@@ -7,7 +7,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 
 @Immutable
 @Entity
@@ -30,7 +30,7 @@ class Person(
 
 @Immutable
 @Entity
-@Where(clause = "active_flag = 1")
+@SQLRestriction("active_flag = 1")
 @Table(name = "offender_manager")
 class PersonManager(
     @Id

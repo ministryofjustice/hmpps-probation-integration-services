@@ -12,7 +12,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import jakarta.persistence.Version
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -25,7 +25,7 @@ import java.time.ZonedDateTime
 @Entity
 @EntityListeners(AuditingEntityListener::class)
 @Table(name = "lic_condition")
-@Where(clause = "active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("active_flag = 1 and soft_deleted = 0")
 @SequenceGenerator(name = "lic_condition_id_seq", sequenceName = "lic_condition_id_seq", allocationSize = 1)
 class LicenceCondition(
 
@@ -84,7 +84,7 @@ class LicenceCondition(
 @Entity
 @EntityListeners(AuditingEntityListener::class)
 @Table(name = "lic_condition_manager")
-@Where(clause = "active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("active_flag = 1 and soft_deleted = 0")
 @SequenceGenerator(name = "lic_condition_manager_id_seq", sequenceName = "lic_condition_manager_id_seq", allocationSize = 1)
 class LicenceConditionManager(
 

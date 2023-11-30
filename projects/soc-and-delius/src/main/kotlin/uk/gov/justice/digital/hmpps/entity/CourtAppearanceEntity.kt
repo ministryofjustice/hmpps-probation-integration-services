@@ -7,7 +7,6 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
@@ -31,7 +30,7 @@ class Court(
 @Entity
 @Immutable
 @Table(name = "court_appearance")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class CourtAppearanceEntity(
 
     @Column(name = "appearance_date")
@@ -60,7 +59,7 @@ class CourtAppearanceEntity(
 @Immutable
 @Entity
 @Table(name = "event")
-@Where(clause = "active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("active_flag = 1 and soft_deleted = 0")
 class CourtAppearanceEventEntity(
     @Id
     @Column(name = "event_id", nullable = false)
@@ -80,7 +79,7 @@ class CourtAppearanceEventEntity(
 @Immutable
 @Table(name = "offender")
 @Entity
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class CourtAppearancePerson(
     @Id
     @Column(name = "offender_id")

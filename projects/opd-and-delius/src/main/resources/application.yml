@@ -16,16 +16,6 @@ spring:
           global_temporary:
             create_tables: false
             drop_tables: false
-  security.oauth2.client:
-    registration:
-      opd-and-delius:
-        provider: hmpps-auth
-        authorization-grant-type: client_credentials
-        client-id: ${oauth2.client-id}
-        client-secret: ${oauth2.client-secret}
-    provider:
-      hmpps-auth:
-        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
 
 delius.db.username: OpdAndDelius # Should match value in [deploy/database/access.yml].
 

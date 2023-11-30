@@ -10,7 +10,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Version
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -25,7 +25,7 @@ import java.time.ZonedDateTime
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 @SequenceGenerator(name = "key_date_id_seq", sequenceName = "key_date_id_seq", allocationSize = 1)
 class KeyDate(
 

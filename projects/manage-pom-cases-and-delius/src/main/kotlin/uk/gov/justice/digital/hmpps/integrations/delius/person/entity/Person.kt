@@ -9,7 +9,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Lock
@@ -24,7 +23,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.reference.entity.Referen
 @Immutable
 @Entity
 @Table(name = "offender")
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 class Person(
 
     @Column(columnDefinition = "char(7)")
@@ -41,7 +40,7 @@ class Person(
     val softDeleted: Boolean = false,
 
     @OneToMany(mappedBy = "person")
-    @Where(clause = "active_flag = 1")
+    @SQLRestriction("active_flag = 1")
     val managers: List<PersonManager> = listOf(),
 
     @Id
@@ -54,7 +53,7 @@ class Person(
 
 @Immutable
 @Entity
-@Where(clause = "soft_deleted = 0")
+@SQLRestriction("soft_deleted = 0")
 @Table(name = "offender_manager")
 class PersonManager(
 

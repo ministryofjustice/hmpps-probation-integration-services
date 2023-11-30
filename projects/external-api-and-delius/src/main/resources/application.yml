@@ -16,16 +16,7 @@ spring:
           global_temporary:
             create_tables: false
             drop_tables: false
-  security.oauth2.client:
-    registration:
-      external-api-and-delius:
-        provider: hmpps-auth
-        authorization-grant-type: client_credentials
-        client-id: external-api-and-delius
-        client-secret: external-api-and-delius
-    provider:
-      hmpps-auth:
-        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: ExternalApiAndDelius # Should match value in [deploy/database/access.yml].

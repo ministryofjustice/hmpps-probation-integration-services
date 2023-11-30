@@ -8,7 +8,7 @@ import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import org.hibernate.annotations.Where
+import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.JpaRepository
@@ -19,7 +19,7 @@ import java.time.ZonedDateTime
 @Entity
 @Immutable
 @Table(name = "nsi")
-@Where(clause = "active_flag = 1 and soft_deleted = 0")
+@SQLRestriction("active_flag = 1 and soft_deleted = 0")
 class Nsi(
     @Id
     @Column(name = "nsi_id", nullable = false)
