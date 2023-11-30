@@ -9,6 +9,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import uk.gov.justice.digital.hmpps.integrations.common.entity.ReferenceData
 import java.time.LocalDate
@@ -52,8 +53,8 @@ class CaseEntity(
     @Column(name = "mobileNumber")
     val mobileNumber: String? = null,
     @OneToMany(mappedBy = "person")
-    @Where(
-        clause = """
+    @SQLRestriction(
+        """
         address_status_id = (
         select at.standard_reference_list_id from r_standard_reference_list at 
         join r_reference_data_master rm on rm.reference_data_master_id = at.reference_data_master_id

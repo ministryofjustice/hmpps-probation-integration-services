@@ -6,6 +6,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import org.hibernate.annotations.Immutable
+import org.hibernate.annotations.SQLRestriction
 import java.time.ZonedDateTime
 
 @Entity
