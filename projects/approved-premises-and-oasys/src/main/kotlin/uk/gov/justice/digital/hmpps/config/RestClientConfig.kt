@@ -1,3 +1,5 @@
+package uk.gov.justice.digital.hmpps.config
+
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
