@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.config.security.createClient
 import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApprovedPremisesApiClient
 
 @Configuration
-class RestClientConfig(private val hmppsAuthClient: RestClient) {
+class RestClientConfig(private val oauth2Client: RestClient) {
     @Bean
-    fun approvedPremisesApiClient() = createClient<ApprovedPremisesApiClient>(hmppsAuthClient)
+    fun approvedPremisesApiClient() = createClient<ApprovedPremisesApiClient>(oauth2Client)
 }

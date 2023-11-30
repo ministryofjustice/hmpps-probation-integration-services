@@ -14,12 +14,15 @@ import org.springframework.http.ResponseEntity
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
+import org.springframework.http.client.JdkClientHttpRequestFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClient.RequestHeadersSpec.ConvertibleClientHttpResponse
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.security.ServiceContext
+import java.net.http.HttpClient
+import java.time.Duration
 
 @Component
 @ConditionalOnProperty("integrations.alfresco.url")
@@ -61,10 +64,15 @@ class AlfrescoClient(
 class AlfrescoClientConfig(@Value("\${integrations.alfresco.url}") private val alfrescoBaseUrl: String) {
     @Bean
     fun alfrescoRestClient() = RestClient.builder()
+        .requestFactory(withTimeouts(Duration.ofSeconds(1), Duration.ofSeconds(30)))
         .requestInterceptor(AlfrescoInterceptor())
         .baseUrl(alfrescoBaseUrl)
         .build()
 }
+
+fun withTimeouts(connection: Duration, read: Duration) =
+    JdkClientHttpRequestFactory(HttpClient.newBuilder().connectTimeout(connection).build())
+        .also { it.setReadTimeout(read) }
 
 class AlfrescoInterceptor : ClientHttpRequestInterceptor {
     override fun intercept(

@@ -7,8 +7,8 @@ import uk.gov.justice.digital.hmpps.config.security.createClient
 import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Cas3ApiClient
 
 @Configuration
-class RestClientConfig(private val hmppsAuthClient: RestClient) {
+class RestClientConfig(private val oauth2Client: RestClient) {
 
     @Bean
-    fun cas3ApiClient() = createClient<Cas3ApiClient>(hmppsAuthClient)
+    fun cas3ApiClient() = createClient<Cas3ApiClient>(oauth2Client)
 }

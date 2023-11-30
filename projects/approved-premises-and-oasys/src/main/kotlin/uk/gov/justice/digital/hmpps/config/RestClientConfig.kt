@@ -8,8 +8,8 @@ import uk.gov.justice.digital.hmpps.config.security.createClient
 import uk.gov.justice.digital.hmpps.integrations.oasys.client.OasysClient
 
 @Configuration
-class RestClientConfig(private val hmppsAuthClient: RestClient) {
+class RestClientConfig(private val oauth2Client: RestClient) {
     @Bean
     fun oasysClient(@Value("\${integrations.ords-oasys.url}") oasysBaseUrl: String) =
-        createClient<OasysClient>(hmppsAuthClient.mutate().baseUrl(oasysBaseUrl).build())
+        createClient<OasysClient>(oauth2Client.mutate().baseUrl(oasysBaseUrl).build())
 }

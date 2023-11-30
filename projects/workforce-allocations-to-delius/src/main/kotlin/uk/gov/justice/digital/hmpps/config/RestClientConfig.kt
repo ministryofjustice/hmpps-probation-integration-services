@@ -7,8 +7,8 @@ import uk.gov.justice.digital.hmpps.config.security.createClient
 import uk.gov.justice.digital.hmpps.integrations.workforceallocations.WorkforceAllocationsClient
 
 @Configuration
-class RestClientConfig(private val hmppsAuthClient: RestClient) {
+class RestClientConfig(private val oauth2Client: RestClient) {
 
     @Bean
-    fun workforceAllocationsClient() = createClient<WorkforceAllocationsClient>(hmppsAuthClient)
+    fun workforceAllocationsClient() = createClient<WorkforceAllocationsClient>(oauth2Client)
 }

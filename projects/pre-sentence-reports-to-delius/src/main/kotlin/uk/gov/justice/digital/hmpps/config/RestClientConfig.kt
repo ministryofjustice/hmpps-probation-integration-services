@@ -8,10 +8,10 @@ import uk.gov.justice.digital.hmpps.integrations.alfresco.AlfrescoUploadClient
 import uk.gov.justice.digital.hmpps.integrations.psr.PsrClient
 
 @Configuration
-class RestClientConfig(private val hmppsAuthClient: RestClient) {
+class RestClientConfig(private val oauth2Client: RestClient) {
 
     @Bean
-    fun psrClient() = createClient<PsrClient>(hmppsAuthClient)
+    fun psrClient() = createClient<PsrClient>(oauth2Client)
 
     @Bean
     fun alfrescoUploadClient(alfrescoRestClient: RestClient) = createClient<AlfrescoUploadClient>(alfrescoRestClient)

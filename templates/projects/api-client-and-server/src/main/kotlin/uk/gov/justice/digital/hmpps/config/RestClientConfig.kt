@@ -8,12 +8,12 @@ import uk.gov.justice.digital.hmpps.config.security.createClient
 import uk.gov.justice.digital.hmpps.integrations.example.ExampleClient
 
 @Configuration
-class RestClientConfig(private val hmppsAuthClient: RestClient) {
+class RestClientConfig(private val oauth2Client: RestClient) {
 
     @Bean
     fun exampleClient(@Value("\${integrations.example.url}") apiBaseUrl: String): ExampleClient {
         return createClient(
-            hmppsAuthClient.mutate()
+            oauth2Client.mutate()
                 .baseUrl(apiBaseUrl)
                 .build()
         )
