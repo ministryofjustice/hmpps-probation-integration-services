@@ -8,4 +8,3 @@ generic-service:
     INTEGRATIONS_TIER_URL: https://hmpps-tier.hmpps.service.justice.gov.uk
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/.well-known/jwks.json
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://sign-in.hmpps.service.justice.gov.uk/auth/issuer
-    CRN-STREAMING_TIMEOUT: "21600000"

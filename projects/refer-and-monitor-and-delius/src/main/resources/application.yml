@@ -31,6 +31,8 @@ spring:
       hmpps-auth:
         token-uri: http://localhost:${wiremock.port}/auth/oauth/token
 
+springdoc.default-produces-media-type: application/json
+
 delius.db.username: ReferAndMonitorAndDelius # Should match value in [deploy/database/access.yml].
 
 management:
