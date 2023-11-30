@@ -7,8 +7,8 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
-import java.time.LocalDate
 import org.hibernate.annotations.SQLRestriction
+import java.time.LocalDate
 
 @Immutable
 @Entity
