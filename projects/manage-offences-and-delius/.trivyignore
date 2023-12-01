@@ -1,3 +1,1 @@
-# Suppressed as we do not process any untrusted YML content
-# Note: this will be resolved in Spring Boot 3.2: https://github.com/spring-projects/spring-boot/issues/35982
-CVE-2022-1471 exp:2023-12-01
+
