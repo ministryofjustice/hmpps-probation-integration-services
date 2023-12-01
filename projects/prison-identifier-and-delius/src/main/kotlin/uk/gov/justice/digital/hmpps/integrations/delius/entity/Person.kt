@@ -115,6 +115,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
     """
     )
     fun findByCrn(crn: String): List<SentencedPerson>
+    fun findByNomsNumberAndSoftDeletedIsFalse(nomsNumber: String): Person?
 }
 
 interface SentencedPerson {

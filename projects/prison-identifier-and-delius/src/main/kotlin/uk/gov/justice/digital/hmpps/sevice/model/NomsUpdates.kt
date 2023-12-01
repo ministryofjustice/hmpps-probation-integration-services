@@ -1,12 +1,12 @@
 package uk.gov.justice.digital.hmpps.sevice.model
 
 class NomsUpdates(
-    var personMatches: List<PersonMatch>
+    val personMatches: List<PersonMatch>
 )
 
-class PersonMatch(
+data class PersonMatch(
     val crn: String,
-    val nomsNumber: String?,
+    val matchedNomsNumber: String?,
     val matchDetail: MatchDetail?
 )
 

@@ -21,10 +21,23 @@ class PersonService(
         crns.forEach { crn ->
             val sentences = personRepository.findByCrn(crn)
             val person = sentences.firstOrNull()?.person
-            val personMatch = getPersonMatch(crn, person, sentences.map { it.sentenceDate })
+            var personMatch = getPersonMatch(crn, person, sentences.map { it.sentenceDate })
+
+            // an extra check to see if the matched noms number is already used on another person. Update the match details if this is the case
+            personMatch.matchedNomsNumber?.let { nomsNumber ->
+                val nomsPerson = personRepository.findByNomsNumberAndSoftDeletedIsFalse(nomsNumber)
+                nomsPerson?.let {
+                    personMatch = personMatch.copy(
+                        matchedNomsNumber = null,
+                        matchDetail = MatchDetail(
+                            "Person was matched to noms number but another person exists in delius with this noms number",
+                            listOf(nomsNumber)
+                        )
+                    )
+                }
+            }
 
             if (!trialOnly) {
-                // TODO Add a check in here to see if another offender has this nomsnumber if so update the personMatch to say so and do not update the offender
                 updateNomsNumber(person, personMatch)
             }
             personMatches.add(personMatch)
@@ -37,7 +50,7 @@ class PersonService(
         personMatch: PersonMatch
     ) {
         person?.let { p ->
-            personMatch.nomsNumber?.let { nomsNo ->
+            personMatch.matchedNomsNumber?.let { nomsNo ->
                 p.nomsNumber = nomsNo
                 personRepository.save(p)
             }
@@ -107,7 +120,7 @@ class PersonService(
             }
 
             person.nomsNumber != null -> {
-                PersonMatch(crn, person.nomsNumber, MatchDetail("Noms number already in Delius", listOf()))
+                PersonMatch(crn, null, MatchDetail("Noms number already in Delius", listOf(person.nomsNumber!!)))
             }
 
             else -> {
