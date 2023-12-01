@@ -120,8 +120,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                format: binary
+                $ref: '#/components/schemas/StreamingResponseBody'
   /case-summary/{crn}/recommendation-model:
     get:
       tags:
@@ -343,6 +342,8 @@ components:
           type: boolean
         userRestricted:
           type: boolean
+    StreamingResponseBody:
+      type: object
     Address:
       type: object
       properties:

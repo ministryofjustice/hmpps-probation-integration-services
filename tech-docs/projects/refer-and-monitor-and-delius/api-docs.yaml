@@ -40,7 +40,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/UserAccess'
     post:
@@ -69,7 +69,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/UserAccess'
   /probation-case/{crn}/referrals:
@@ -119,7 +119,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 type: object
                 additionalProperties:
@@ -140,7 +140,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ManagedCases'
   /users/{username}/details:
@@ -158,7 +158,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/UserDetail'
   /probation-delivery-units:
@@ -170,7 +170,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 type: array
                 items:
@@ -190,7 +190,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ResponsibleOfficer'
   /probation-case/{crn}/identifiers:
@@ -208,7 +208,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/CaseIdentifier'
   /probation-case/{crn}/details:
@@ -226,7 +226,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/CaseDetail'
   /probation-case/{crn}/convictions:
@@ -244,7 +244,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/CaseConvictions'
   /probation-case/{crn}/convictions/{id}:
@@ -268,7 +268,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/CaseConviction'
   /office-locations:
@@ -280,7 +280,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 type: array
                 items:

@@ -238,9 +238,21 @@
 
 
 
+<pre><code>{
+  "access": [
+    {
+      "crn": "string",
+      "userExcluded": "boolean",
+      "userRestricted": "boolean",
+      "exclusionMessage": "string",
+      "restrictionMessage": "string"
+    }
+  ]
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-useraccess'>UserAccess</a>
 </td>
 </tr>
 
@@ -290,9 +302,21 @@
 
 
 
+<pre><code>{
+  "access": [
+    {
+      "crn": "string",
+      "userExcluded": "boolean",
+      "userRestricted": "boolean",
+      "exclusionMessage": "string",
+      "restrictionMessage": "string"
+    }
+  ]
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-useraccess'>UserAccess</a>
 </td>
 </tr>
 
@@ -412,6 +436,9 @@
 
 
 
+<pre><code>{
+}</code></pre>
+
 </td>
 <td>
 
@@ -468,9 +495,18 @@
 
 
 
+<pre><code>{
+  "managedCases": [
+    {
+      "crn": "string",
+      "nomsId": "string"
+    }
+  ]
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-managedcases'>ManagedCases</a>
 </td>
 </tr>
 
@@ -524,9 +560,18 @@
 
 
 
+<pre><code>{
+  "username": "string",
+  "name": {
+    "forename": "string",
+    "surname": "string"
+  },
+  "email": "string"
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-userdetail'>UserDetail</a>
 </td>
 </tr>
 
@@ -559,6 +604,9 @@
 <p>OK</p>
 
 
+
+<pre><code>{
+}</code></pre>
 
 </td>
 <td>
@@ -616,9 +664,56 @@
 
 
 
+<pre><code>{
+  "communityManager": {
+    "code": "string",
+    "name": {
+      "forename": "string",
+      "surname": "string"
+    },
+    "username": "string",
+    "email": "string",
+    "telephoneNumber": "string",
+    "responsibleOfficer": "boolean",
+    "pdu": {
+      "code": "string",
+      "description": "string"
+    },
+    "team": {
+      "code": "string",
+      "description": "string",
+      "email": "string",
+      "telephoneNumber": "string"
+    },
+    "unallocated": "boolean"
+  },
+  "prisonManager": {
+    "code": "string",
+    "name": {
+      "forename": "string",
+      "surname": "string"
+    },
+    "username": "string",
+    "email": "string",
+    "telephoneNumber": "string",
+    "responsibleOfficer": "boolean",
+    "pdu": {
+      "code": "string",
+      "description": "string"
+    },
+    "team": {
+      "code": "string",
+      "description": "string",
+      "email": "string",
+      "telephoneNumber": "string"
+    },
+    "unallocated": "boolean"
+  }
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-responsibleofficer'>ResponsibleOfficer</a>
 </td>
 </tr>
 
@@ -672,9 +767,14 @@
 
 
 
+<pre><code>{
+  "crn": "string",
+  "nomsId": "string"
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-caseidentifier'>CaseIdentifier</a>
 </td>
 </tr>
 
@@ -728,9 +828,46 @@
 
 
 
+<pre><code>{
+  "crn": "string",
+  "name": {
+    "forename": "string",
+    "surname": "string"
+  },
+  "dateOfBirth": "string",
+  "gender": "string",
+  "profile": {
+    "primaryLanguage": "string",
+    "ethnicity": "string",
+    "religion": "string",
+    "disabilities": [
+      {
+        "type": "string",
+        "startDate": "string",
+        "notes": "string"
+      }
+    ]
+  },
+  "contactDetails": {
+    "noFixedAbode": "boolean",
+    "mainAddress": {
+      "buildingName": "string",
+      "buildingNumber": "string",
+      "streetName": "string",
+      "district": "string",
+      "town": "string",
+      "county": "string",
+      "postcode": "string"
+    },
+    "emailAddress": "string",
+    "telephoneNumber": "string",
+    "mobileNumber": "string"
+  }
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-casedetail'>CaseDetail</a>
 </td>
 </tr>
 
@@ -784,9 +921,63 @@
 
 
 
+<pre><code>{
+  "caseDetail": {
+    "crn": "string",
+    "name": {
+      "forename": "string",
+      "surname": "string"
+    },
+    "dateOfBirth": "string",
+    "gender": "string",
+    "profile": {
+      "primaryLanguage": "string",
+      "ethnicity": "string",
+      "religion": "string",
+      "disabilities": [
+        {
+          "type": "string",
+          "startDate": "string",
+          "notes": "string"
+        }
+      ]
+    },
+    "contactDetails": {
+      "noFixedAbode": "boolean",
+      "mainAddress": {
+        "buildingName": "string",
+        "buildingNumber": "string",
+        "streetName": "string",
+        "district": "string",
+        "town": "string",
+        "county": "string",
+        "postcode": "string"
+      },
+      "emailAddress": "string",
+      "telephoneNumber": "string",
+      "mobileNumber": "string"
+    }
+  },
+  "convictions": [
+    {
+      "id": "integer",
+      "date": "string",
+      "sentence": {
+        "description": "string",
+        "expectedEndDate": "string"
+      },
+      "mainOffence": {
+        "category": "string",
+        "subCategory": "string"
+      },
+      "active": "boolean"
+    }
+  ]
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-caseconvictions'>CaseConvictions</a>
 </td>
 </tr>
 
@@ -850,9 +1041,61 @@
 
 
 
+<pre><code>{
+  "caseDetail": {
+    "crn": "string",
+    "name": {
+      "forename": "string",
+      "surname": "string"
+    },
+    "dateOfBirth": "string",
+    "gender": "string",
+    "profile": {
+      "primaryLanguage": "string",
+      "ethnicity": "string",
+      "religion": "string",
+      "disabilities": [
+        {
+          "type": "string",
+          "startDate": "string",
+          "notes": "string"
+        }
+      ]
+    },
+    "contactDetails": {
+      "noFixedAbode": "boolean",
+      "mainAddress": {
+        "buildingName": "string",
+        "buildingNumber": "string",
+        "streetName": "string",
+        "district": "string",
+        "town": "string",
+        "county": "string",
+        "postcode": "string"
+      },
+      "emailAddress": "string",
+      "telephoneNumber": "string",
+      "mobileNumber": "string"
+    }
+  },
+  "conviction": {
+    "id": "integer",
+    "date": "string",
+    "sentence": {
+      "description": "string",
+      "expectedEndDate": "string"
+    },
+    "mainOffence": {
+      "category": "string",
+      "subCategory": "string"
+    },
+    "active": "boolean"
+  }
+}</code></pre>
+
 </td>
 <td>
-
+<a href='#schema-caseconviction'>CaseConviction</a>
 </td>
 </tr>
 
@@ -885,6 +1128,9 @@
 <p>OK</p>
 
 
+
+<pre><code>{
+}</code></pre>
 
 </td>
 <td>
