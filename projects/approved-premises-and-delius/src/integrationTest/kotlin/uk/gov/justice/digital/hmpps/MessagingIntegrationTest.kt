@@ -169,6 +169,7 @@ internal class MessagingIntegrationTest {
             referral.categoryId,
             equalTo(ReferenceDataGenerator.REFERRAL_CATEGORIES[ApprovedPremisesCategoryCode.VOLUNTARY_MAPPA.value]?.id)
         )
+        assertThat(referral.referralGroupId, equalTo(ReferenceDataGenerator.REFERRAL_GROUP.id))
         assertThat(referral.referralDate, equalTo(LocalDate.parse("2022-11-28")))
         assertThat(referral.activeArsonRiskId, equalTo(ReferenceDataGenerator.YN_UNKNOWN.id))
         assertThat(referral.disabilityIssuesId, equalTo(ReferenceDataGenerator.YN_UNKNOWN.id))

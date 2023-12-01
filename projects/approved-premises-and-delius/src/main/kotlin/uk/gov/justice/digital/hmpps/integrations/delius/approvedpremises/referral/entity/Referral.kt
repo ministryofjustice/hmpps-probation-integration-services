@@ -51,6 +51,7 @@ class Referral(
     val referralDateTypeId: Long?,
     @Column(name = "referral_category_id")
     val categoryId: Long,
+    val referralGroupId: Long?,
 
     val referringTeamId: Long,
     val referringStaffId: Long,

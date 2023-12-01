@@ -4,10 +4,13 @@ import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Converter
+import jakarta.persistence.Embeddable
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
+import org.hibernate.type.YesNoConverter
+import java.io.Serializable
 
 @Immutable
 @Entity
@@ -24,7 +27,10 @@ class ReferenceData(
     val description: String,
 
     @Column(name = "reference_data_master_id", nullable = false)
-    val datasetId: Long
+    val datasetId: Long,
+
+    @Convert(converter = YesNoConverter::class)
+    val selectable: Boolean
 )
 
 @Immutable
@@ -47,6 +53,7 @@ enum class DatasetCode(val value: String) {
     AP_NON_ARRIVAL_REASON("AP NON ARRIVAL REASON"),
     AP_REFERRAL_CATEGORY("AP REFERRAL CATEGORY"),
     AP_REFERRAL_DATE_TYPE("AP REFERRAL DATE TYPE"),
+    AP_REFERRAL_GROUPING("AP REFERRAL GROUPING"),
     ETHNICITY("ETHNICITY"),
     GENDER("GENDER"),
     GENDER_IDENTITY("GENDER IDENTITY"),
@@ -75,3 +82,14 @@ class DatasetCodeConverter : AttributeConverter<DatasetCode, String> {
 
     override fun convertToEntityAttribute(dbData: String): DatasetCode = DatasetCode.fromString(dbData)
 }
+
+@Embeddable
+class ApGroupLinkId(val approvedPremisesId: Long, @Column(name = "standard_reference_list_id") val apGroupId: Long) : Serializable
+
+@Immutable
+@Entity
+@Table(name = "r_approved_premises_group")
+class ApGroupLink(
+    @Id
+    val id: ApGroupLinkId
+)

@@ -584,6 +584,7 @@ internal class ApprovedPremisesServiceTest {
             Nsi.EXT_REF_BOOKING_PREFIX + bookingId,
             ReferenceDataGenerator.REFERRAL_DATE_TYPE.id,
             ReferenceDataGenerator.REFERRAL_CATEGORIES[ApprovedPremisesCategoryCode.OTHER.value]!!.id,
+            ReferenceDataGenerator.REFERRAL_GROUP.id,
             1, 1,
             "Reason",
             ReferenceDataGenerator.OTHER_REFERRAL_SOURCE.id,

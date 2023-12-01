@@ -247,6 +247,7 @@ class ReferralService(
                     releaseType
                 ).value
             ).id,
+            referralGroupId = referenceDataRepository.findApprovedPremisesGroup(ap.id)?.id,
             decisionId = referenceDataRepository.acceptedDeferredAdmission().id,
             referralNotes = Nsi.EXT_REF_BOOKING_PREFIX + bookingId + System.lineSeparator() + notes,
             decisionNotes = notes,

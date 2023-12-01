@@ -15,6 +15,16 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
     """
     )
     fun findByCodeAndDatasetCode(code: String, datasetCode: DatasetCode): ReferenceData?
+
+    @Query(
+        """
+        select rd from ReferenceData rd
+        join ApGroupLink apg on rd.id = apg.id.apGroupId
+        where apg.id.approvedPremisesId = :apId
+        and rd.selectable = true
+    """
+    )
+    fun findApprovedPremisesGroup(apId: Long): ReferenceData?
 }
 
 fun ReferenceDataRepository.findAddressStatusByCode(code: String) =
