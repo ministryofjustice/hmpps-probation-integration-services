@@ -88,7 +88,7 @@ class ApGroupLinkId(val approvedPremisesId: Long, @Column(name = "standard_refer
 
 @Immutable
 @Entity
-@Table(name = "r_approved_premises_group")
+@Table(name = "r_ap_referral_group")
 class ApGroupLink(
     @Id
     val id: ApGroupLinkId
