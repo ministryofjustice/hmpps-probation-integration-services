@@ -12,6 +12,7 @@ object PersonGenerator {
     val PERSON_WITH_NOMS = generate("A000001", "1234567")
     val PERSON_WITH_NO_NOMS = generate("A000002", pncNumber = "07/220004Q")
     val PERSON_WITH_MULTI_MATCH = generate("A000003", forename = "Jack", surname = "Jones")
+    val PERSON_WITH_NO_MATCH = generate("A000004", forename = "Fred", surname = "Jones", dobString = "12/12/2001")
 
     fun generate(
         crn: String,
@@ -21,12 +22,13 @@ object PersonGenerator {
         forename: String = "bob",
         surname: String = "smith",
         softDeleted: Boolean = false,
+        dobString: String = "12/12/2000",
         id: Long = IdGenerator.getAndIncrement()
     ) =
         Person(
             id,
             crn,
-            LocalDate.parse("12/12/2000", DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+            LocalDate.parse(dobString, DateTimeFormatter.ofPattern("MM/dd/yyyy")),
             forename,
             null,
             null,

@@ -30,18 +30,22 @@ class DataLoader(
         val personWithNomsEvent = PersonGenerator.generateEvent(PersonGenerator.PERSON_WITH_NOMS)
         val personWithNoNomsNumberEvent = PersonGenerator.generateEvent(PersonGenerator.PERSON_WITH_NO_NOMS)
         val personWithMultiMatchEvent = PersonGenerator.generateEvent(PersonGenerator.PERSON_WITH_MULTI_MATCH)
+        val personWithNoMatchEvent = PersonGenerator.generateEvent(PersonGenerator.PERSON_WITH_NO_MATCH)
 
         em.saveAll(
             PersonGenerator.MALE,
             PersonGenerator.PERSON_WITH_NOMS,
             PersonGenerator.PERSON_WITH_NO_NOMS,
             PersonGenerator.PERSON_WITH_MULTI_MATCH,
+            PersonGenerator.PERSON_WITH_NO_MATCH,
             personWithNomsEvent,
             PersonGenerator.generateDisposal(LocalDate.now(), personWithNomsEvent),
             personWithNoNomsNumberEvent,
             PersonGenerator.generateDisposal(LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")), personWithNoNomsNumberEvent),
             personWithMultiMatchEvent,
-            PersonGenerator.generateDisposal(LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")), personWithMultiMatchEvent)
+            PersonGenerator.generateDisposal(LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")), personWithMultiMatchEvent),
+            personWithNoMatchEvent,
+            PersonGenerator.generateDisposal(LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")), personWithNoMatchEvent),
         )
     }
 

@@ -89,5 +89,23 @@ internal class NomsNumberIntegrationTest {
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, NomsUpdates::class.java)
         Assertions.assertThat(detailResponse.personMatches.first().matchDetail!!.message).isEqualTo("Found a single match in prison search api and matching criteria.")
+
+    }
+
+
+    @Test
+    fun `API call cant determine a match from multiple matches found in prison search api`() {
+        val crn = PersonGenerator.PERSON_WITH_NO_MATCH.crn
+
+        val result = mockMvc
+            .perform(
+                post("/person/populate-noms-number").withOAuth2Token(wireMockServer)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(listOf(crn)))
+            )
+            .andExpect(status().is2xxSuccessful).andReturn()
+
+        val detailResponse = objectMapper.readValue(result.response.contentAsString, NomsUpdates::class.java)
+        Assertions.assertThat(detailResponse.personMatches.first().matchDetail!!.message).isEqualTo("Unable to find a unique match using matching criteria.")
     }
 }

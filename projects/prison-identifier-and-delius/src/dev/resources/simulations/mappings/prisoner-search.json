@@ -31,6 +31,22 @@
         "status": 200,
         "bodyFileName": "search-results-body2.json"
       }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/global-search",
+        "bodyPatterns" : [ {
+          "contains" : "\"firstName\":\"Fred\""
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "search-results-body3.json"
+      }
     }
   ]
 }
