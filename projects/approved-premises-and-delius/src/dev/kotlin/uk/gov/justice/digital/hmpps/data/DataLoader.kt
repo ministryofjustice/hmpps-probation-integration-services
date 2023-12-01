@@ -49,6 +49,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.manager.probation
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.registration.entity.RegistrationRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ApGroupLink
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ApGroupLinkId
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.Dataset
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
@@ -68,6 +70,7 @@ class DataLoader(
     private val registerTypeRepository: RegisterTypeRepository,
     private val addressRepository: AddressRepository,
     private val approvedPremisesRepository: ApprovedPremisesRepository,
+    private val apGroupLinkRepository: ApGroupLinkRepository,
     private val probationAreaRepository: ProbationAreaRepository,
     private val officeLocationRepository: OfficeLocationRepository,
     private val staffRepository: StaffRepository,
@@ -116,6 +119,7 @@ class DataLoader(
         )
         approvedPremisesRepository.save(ApprovedPremisesGenerator.NO_STAFF)
         officeLocationRepository.save(OfficeLocationGenerator.DEFAULT)
+        apGroupLinkRepository.saveAll(ApprovedPremisesGenerator.AP_GROUP_LINKS)
 
         lduRepository.save(TeamGenerator.AP_TEAM_LDU)
         teamRepository.save(TeamGenerator.APPROVED_PREMISES_TEAM)
@@ -207,7 +211,7 @@ class DataLoader(
 
 interface DatasetRepository : JpaRepository<Dataset, Long>
 interface ProbationAreaRepository : JpaRepository<ProbationArea, Long>
+interface ApGroupLinkRepository : JpaRepository<ApGroupLink, ApGroupLinkId>
 interface AddressRepository : JpaRepository<Address, Long>
 interface RegisterTypeRepository : JpaRepository<RegisterType, Long>
-
 interface StaffUserRepository : JpaRepository<StaffUser, Long>

@@ -39,6 +39,7 @@ object ReferenceDataGenerator {
                 ALL_DATASETS[DatasetCode.AP_REFERRAL_CATEGORY]!!.id
             )
         }.associateBy { it.code }
+    val REFERRAL_GROUP = generate("NE", ALL_DATASETS[DatasetCode.AP_REFERRAL_GROUPING]!!.id, "North East")
     val ACCEPTED_DEFERRED_ADMISSION = generate("AD", ALL_DATASETS[DatasetCode.REFERRAL_DECISION]!!.id)
     val AP_REFERRAL_SOURCE = generate("AP", ALL_DATASETS[DatasetCode.SOURCE_TYPE]!!.id)
     val YN_UNKNOWN = generate("D", ALL_DATASETS[DatasetCode.YES_NO]!!.id)
@@ -71,8 +72,9 @@ object ReferenceDataGenerator {
         code: String,
         datasetId: Long,
         description: String = "Description of $code",
+        selectable: Boolean = true,
         id: Long = IdGenerator.getAndIncrement()
-    ) = ReferenceData(id, code, description, datasetId)
+    ) = ReferenceData(id, code, description, datasetId, selectable)
 
     fun all(): List<ReferenceData> = listOf(
         OWNER_ADDRESS_TYPE,
@@ -83,6 +85,7 @@ object ReferenceDataGenerator {
         NHC_Q002,
         STAFF_GRADE,
         REFERRAL_DATE_TYPE,
+        REFERRAL_GROUP,
         ACCEPTED_DEFERRED_ADMISSION,
         AP_REFERRAL_SOURCE,
         YN_UNKNOWN,

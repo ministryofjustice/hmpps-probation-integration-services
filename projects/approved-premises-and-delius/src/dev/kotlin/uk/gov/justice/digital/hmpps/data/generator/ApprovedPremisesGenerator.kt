@@ -4,11 +4,14 @@ import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.
 import uk.gov.justice.digital.hmpps.integrations.delius.approvedpremises.entity.ApprovedPremises
 import uk.gov.justice.digital.hmpps.integrations.delius.location.OfficeLocation
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.ProbationArea
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ApGroupLink
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ApGroupLinkId
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 
 object ApprovedPremisesGenerator {
     val DEFAULT = generate(ReferenceDataGenerator.NHC_Q001, AddressGenerator.Q001)
     val NO_STAFF = generate(ReferenceDataGenerator.NHC_Q002, AddressGenerator.Q002)
+    val AP_GROUP_LINKS = listOf(generateGroupLink(DEFAULT), generateGroupLink(NO_STAFF))
 
     fun generate(
         code: ReferenceData,
@@ -17,6 +20,11 @@ object ApprovedPremisesGenerator {
         selectable: Boolean = true,
         id: Long = IdGenerator.getAndIncrement()
     ) = ApprovedPremises(id, code, address, pa, selectable)
+
+    fun generateGroupLink(
+        approvedPremises: ApprovedPremises,
+        apGroup: ReferenceData = ReferenceDataGenerator.REFERRAL_GROUP
+    ): ApGroupLink = ApGroupLink(ApGroupLinkId(approvedPremises.id, apGroup.id))
 }
 
 object OfficeLocationGenerator {

@@ -28,6 +28,7 @@ object ReferralGenerator {
         expectedDepartureDate = expectedDepartureDate,
         decisionDate = decisionDate,
         categoryId = ReferenceDataGenerator.REFERRAL_CATEGORIES[ApprovedPremisesCategoryCode.OTHER.value]!!.id,
+        referralGroupId = ReferenceDataGenerator.REFERRAL_GROUP.id,
         decisionId = ReferenceDataGenerator.ACCEPTED_DEFERRED_ADMISSION.id,
         referralNotes = null,
         decisionNotes = null,
