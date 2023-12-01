@@ -34,11 +34,7 @@ class PrisonManagerService(
 ) {
 
     @Transactional
-    fun allocatePrisonManager(
-        personId: Long,
-        allocationDate: ZonedDateTime,
-        allocation: PomAllocation
-    ): PomAllocationResult {
+    fun allocatePrisonManager(personId: Long, allocationDate: ZonedDateTime, allocation: PomAllocation): PomAllocationResult {
         val probationArea = probationAreaRepository.getByNomisCdeCode(allocation.prison.code)
         val team = teamRepository.getByCode(probationArea.code + Team.POM_SUFFIX)
         val staff = getStaff(probationArea, team, allocation.manager.name, allocationDate)
