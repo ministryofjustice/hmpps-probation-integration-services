@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.controller
 
 import jakarta.validation.constraints.Size
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -12,7 +13,7 @@ import uk.gov.justice.digital.hmpps.sevice.PersonService
 @RequestMapping("person")
 class PersonUpdateController(private val personService: PersonService) {
 
-    // @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_STAFF')")
+    @PreAuthorize("hasRole('ROLE_UPDATE_NOMS_NUMBER')")
     @RequestMapping(value = ["/populate-noms-number"], method = [RequestMethod.GET, RequestMethod.POST])
     fun populateNomsNumbers(
         @RequestParam(defaultValue = "false") trialOnly: Boolean,

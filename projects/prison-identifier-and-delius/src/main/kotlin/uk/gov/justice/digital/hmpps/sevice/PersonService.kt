@@ -50,14 +50,14 @@ class PersonService(
 
         // attempt to find the person in nomis
         val searchResults = prisonSearchAPI.matchPerson(person!!.asSearchRequest()).content
-        when {
+        return when {
             // not found
             searchResults.isEmpty() -> {
-                return PersonMatch(crn, null, MatchDetail("Person not found via prison search api", listOf()))
+                PersonMatch(crn, null, MatchDetail("Person not found via prison search api", listOf()))
             }
             // found one exact match
             searchResults.size == 1 && searchResults.first().matches(person, sentenceDates) -> {
-                return PersonMatch(
+                PersonMatch(
                     crn,
                     searchResults.first().prisonerNumber,
                     MatchDetail("Found a single match in prison search api", listOf())
@@ -65,7 +65,7 @@ class PersonService(
             }
             // found multiple matches attempt to find an exact match
             else -> {
-                return findPersonMatch(person, sentenceDates, searchResults, crn)
+                findPersonMatch(person, sentenceDates, searchResults, crn)
             }
         }
     }
