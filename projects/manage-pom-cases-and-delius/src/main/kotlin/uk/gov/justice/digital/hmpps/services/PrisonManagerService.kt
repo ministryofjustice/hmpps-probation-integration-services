@@ -34,10 +34,14 @@ class PrisonManagerService(
 ) {
 
     @Transactional
-    fun allocatePrisonManager(personId: Long, allocationDate: ZonedDateTime, allocation: PomAllocation): PomAllocationResult {
+    fun allocatePrisonManager(
+        personId: Long,
+        allocationDate: ZonedDateTime,
+        allocation: PomAllocation
+    ): PomAllocationResult {
         val probationArea = probationAreaRepository.getByNomisCdeCode(allocation.prison.code)
         val team = teamRepository.getByCode(probationArea.code + Team.POM_SUFFIX)
-        val staff = getStaff(probationArea, team, allocation.manager, allocationDate)
+        val staff = getStaff(probationArea, team, allocation.manager.name, allocationDate)
         personRepository.findForUpdate(personId)
         val currentPom = prisonManagerRepository.findActiveManagerAtDate(personId, allocationDate)
         val newEndDate = currentPom?.endDate
@@ -46,6 +50,7 @@ class PrisonManagerService(
         return newPom?.let { new ->
             currentPom?.let { old -> prisonManagerRepository.saveAndFlush(old) }
             new.endDate = newEndDate
+            new.emailAddress = allocation.manager.email
             prisonManagerRepository.save(new)
             PomAllocationResult.PomAllocated
         } ?: PomAllocationResult.NoPomChange

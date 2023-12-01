@@ -1,7 +1,8 @@
 {
   "manager": {
     "forename": "James",
-    "surname": "Brown"
+    "surname": "Brown",
+    "email": "james.brown@justice.gov.uk"
   },
   "prison": {
     "code": "SWI"
