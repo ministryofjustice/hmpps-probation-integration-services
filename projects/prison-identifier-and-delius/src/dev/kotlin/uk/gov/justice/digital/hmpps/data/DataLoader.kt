@@ -45,7 +45,7 @@ class DataLoader(
             personWithMultiMatchEvent,
             PersonGenerator.generateDisposal(LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")), personWithMultiMatchEvent),
             personWithNoMatchEvent,
-            PersonGenerator.generateDisposal(LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")), personWithNoMatchEvent),
+            PersonGenerator.generateDisposal(LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")), personWithNoMatchEvent)
         )
     }
 

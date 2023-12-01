@@ -89,9 +89,7 @@ internal class NomsNumberIntegrationTest {
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, NomsUpdates::class.java)
         Assertions.assertThat(detailResponse.personMatches.first().matchDetail!!.message).isEqualTo("Found a single match in prison search api and matching criteria.")
-
     }
-
 
     @Test
     fun `API call cant determine a match from multiple matches found in prison search api`() {
