@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="prison-identifier-and-delius" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="probation-integration-services.prison-identifier-and-delius.dev" />
+    <option name="ACTIVE_PROFILES" value="dev" />
     <option name="SHORTEN_COMMAND_LINE" value="ARGS_FILE" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="uk.gov.justice.digital.hmpps.App" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/projects/prison-identifier-and-delius" />
