@@ -18,12 +18,13 @@ class PersonService(
 ) {
     fun populateNomsNumber(crns: List<String>, trialOnly: Boolean): NomsUpdates {
         val personMatches = arrayListOf<PersonMatch>()
-        crns.forEach {
-            val sentences = personRepository.findByCrn(it)
+        crns.forEach { crn ->
+            val sentences = personRepository.findByCrn(crn)
             val person = sentences.firstOrNull()?.person
-            val personMatch = getPersonMatch(it, person, sentences.map { it.sentenceDate })
+            val personMatch = getPersonMatch(crn, person, sentences.map { it.sentenceDate })
 
             if (!trialOnly) {
+                // TODO Add a check in here to see if another offender has this nomsnumber if so update the personMatch to say so and do not update the offender
                 updateNomsNumber(person, personMatch)
             }
             personMatches.add(personMatch)

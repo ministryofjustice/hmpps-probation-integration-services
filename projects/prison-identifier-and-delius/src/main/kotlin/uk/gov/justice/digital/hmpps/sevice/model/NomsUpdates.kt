@@ -12,5 +12,5 @@ class PersonMatch(
 
 class MatchDetail(
     val message: String,
-    val potentialMatches: List<String>
+    val potentialMatches: List<String>?
 )
