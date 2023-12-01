@@ -1,7 +1,7 @@
 # Default config
 spring:
   jackson:
-    default-property-inclusion: non_null
+    default-property-inclusion: non_empty
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect
     hibernate.ddl-auto: validate
@@ -51,11 +51,9 @@ seed.database: true
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
-messaging.consumer.queue: message-queue
-
 integrations:
-  example:
-    url: http://localhost:${wiremock.port}/example
+  prisoner-search:
+    url: http://localhost:${wiremock.port}
 
 oauth2:
   client-id: prison-identifier-and-delius

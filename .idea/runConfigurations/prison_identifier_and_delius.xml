@@ -1,6 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="prison-identifier-and-delius" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <option name="ACTIVE_PROFILES" value="dev" />
+    <option name="ACTIVE_PROFILES" value="dev, delius-db" />
+    <envs>
+      <env name="OAUTH2_CLIENT-ID" value="stephen-mcallister" />
+      <env name="OAUTH2_CLIENT-SECRET" value="RDqZ7LCCRQ;xNs&gt;vmG6*WAEa):jtxk2rPESfC&amp;ct&gt;+zd5%$Em11bB,&gt;eKS1M" />
+      <env name="SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI" value="https://sign-in-dev.hmpps.service.justice.gov.uk/auth/oauth/token" />
+    </envs>
     <module name="probation-integration-services.prison-identifier-and-delius.dev" />
     <option name="SHORTEN_COMMAND_LINE" value="ARGS_FILE" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="uk.gov.justice.digital.hmpps.App" />
