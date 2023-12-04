@@ -288,6 +288,8 @@ components:
               format: int32
             negative:
               type: boolean
+            positive:
+              type: boolean
             units:
               type: array
               items:
