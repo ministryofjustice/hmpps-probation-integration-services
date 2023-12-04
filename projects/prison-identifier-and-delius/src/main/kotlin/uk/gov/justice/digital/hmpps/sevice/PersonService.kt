@@ -17,32 +17,32 @@ class PersonService(
     val prisonSearchAPI: PrisonSearchAPI
 ) {
     fun populateNomsNumber(crns: List<String>, trialOnly: Boolean): NomsUpdates {
-        val personMatches = arrayListOf<PersonMatch>()
-        crns.forEach { crn ->
-            val sentences = personRepository.findByCrn(crn)
-            val person = sentences.firstOrNull()?.person
-            var personMatch = getPersonMatch(crn, person, sentences.map { it.sentenceDate })
+        return NomsUpdates(
+            crns.map { crn ->
+                val sentences = personRepository.findByCrn(crn)
+                val person = sentences.firstOrNull()?.person
+                var personMatch = getPersonMatch(crn, person, sentences.map { it.sentenceDate })
 
-            // an extra check to see if the matched noms number is already used on another person. Update the match details if this is the case
-            personMatch.matchedNomsNumber?.let { nomsNumber ->
-                val nomsPerson = personRepository.findByNomsNumberAndSoftDeletedIsFalse(nomsNumber)
-                nomsPerson?.let {
-                    personMatch = personMatch.copy(
-                        matchedNomsNumber = null,
-                        matchDetail = MatchDetail(
-                            "Person was matched to noms number but another person exists in delius with this noms number",
-                            listOf(nomsNumber)
+                // an extra check to see if the matched noms number is already used on another person. Update the match details if this is the case
+                personMatch.matchedNomsNumber?.let { nomsNumber ->
+                    val nomsPerson = personRepository.findByNomsNumberAndSoftDeletedIsFalse(nomsNumber)
+                    nomsPerson?.let {
+                        personMatch = personMatch.copy(
+                            matchedNomsNumber = null,
+                            matchDetail = MatchDetail(
+                                "Person was matched to noms number but another person exists in delius with this noms number",
+                                listOf(nomsNumber)
+                            )
                         )
-                    )
+                    }
                 }
-            }
 
-            if (!trialOnly) {
-                updateNomsNumber(person, personMatch)
+                if (!trialOnly) {
+                    updateNomsNumber(person, personMatch)
+                }
+                personMatch
             }
-            personMatches.add(personMatch)
-        }
-        return NomsUpdates(personMatches)
+        )
     }
 
     private fun updateNomsNumber(
