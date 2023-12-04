@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import org.mockito.Mockito.timeout
 import org.mockito.kotlin.after
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
@@ -49,7 +50,7 @@ internal class IntegrationTest {
 
         if (expected.isNotEmpty()) {
             expected.forEach {
-                verify(telemetryService).trackEvent(
+                verify(telemetryService, timeout(30000)).trackEvent(
                     eq("OffenderEventPublished"),
                     eq(it + ("occurredAt" to ISO_ZONED_DATE_TIME.format(delta.dateChanged.truncatedTo(ChronoUnit.SECONDS)))),
                     any()

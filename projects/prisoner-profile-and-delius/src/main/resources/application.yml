@@ -20,6 +20,8 @@ spring:
     base: dc=moj,dc=com
     base-environment:
       java.naming.ldap.derefAliases: never
+  threads.virtual.enabled: true
+
 springdoc.default-produces-media-type: application/json
 
 delius.db.username: PrisonerProfileAndDelius # Should match value in [deploy/database/access.yml].
