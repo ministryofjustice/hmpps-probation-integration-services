@@ -114,7 +114,7 @@ jobs:
       - name: Check if OpenAPI is configured
         id: check_config
         run: echo "api_path=$(yq '.api_path' 'projects/${{ matrix.project }}/tech-docs/config/tech-docs.yml')" | tee -a "$GITHUB_OUTPUT"
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         if: startsWith(steps.check_config.outputs.api_path, 'http')
         with:
           java-version: '21'
