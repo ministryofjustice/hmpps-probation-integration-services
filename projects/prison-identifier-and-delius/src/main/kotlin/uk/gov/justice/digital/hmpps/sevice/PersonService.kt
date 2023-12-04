@@ -143,11 +143,17 @@ class PersonService(
 }
 
 private fun PrisonSearchResult.matches(person: Person, sentenceDates: List<LocalDate>): Boolean {
-    return if (pncNumber?.equals(person.pncNumber) == true || croNumber?.equals(person.croNumber) == true) {
-        true
-    } else {
-        sentenceDates.contains(sentenceStartDate)
+    var idMatch = true
+    if (person.croNumber != null || person.pncNumber != null) {
+        idMatch = pncNumber?.equals(person.pncNumber) == true || croNumber?.equals(person.croNumber) == true
     }
+    return (
+        idMatch &&
+            sentenceDates.contains(sentenceStartDate) &&
+            dateOfBirth == person.dateOfBirth &&
+            firstName.equals(person.forename, true) &&
+            lastName.equals(person.surname, true)
+        )
 }
 
 fun Person.asSearchRequest() =

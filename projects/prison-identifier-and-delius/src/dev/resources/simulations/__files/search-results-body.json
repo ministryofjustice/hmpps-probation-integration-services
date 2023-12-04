@@ -2,13 +2,13 @@
   "content": [
     {
       "prisonerNumber": "G5541UN",
-      "pncNumber": "07/220004Q",
-      "pncNumberCanonicalShort": "07/220004Q",
-      "pncNumberCanonicalLong": "2007/220004Q",
+      "pncNumber": "07/220000004Q",
+      "pncNumberCanonicalShort": "07/220000004Q",
+      "pncNumberCanonicalLong": "2007/220000004Q",
       "croNumber": "222823/07U",
       "bookingId": "1163007",
       "bookNumber": "13831A",
-      "firstName": "John",
+      "firstName": "Bob",
       "middleNames": "SHEMARIAH",
       "lastName": "Smith",
       "dateOfBirth": "2000-12-12",

@@ -16,8 +16,11 @@ data class SearchRequest(
 )
 
 data class PrisonSearchResult(
+    val firstName: String,
+    val lastName: String,
     val prisonerNumber: String,
     val pncNumber: String?,
     val croNumber: String?,
-    val sentenceStartDate: LocalDate?
+    val sentenceStartDate: LocalDate?,
+    val dateOfBirth: LocalDate
 )

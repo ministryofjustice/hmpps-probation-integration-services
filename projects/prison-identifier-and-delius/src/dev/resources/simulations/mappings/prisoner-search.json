@@ -5,7 +5,7 @@
         "method": "POST",
         "url": "/global-search",
         "bodyPatterns" : [ {
-          "contains" : "\"prisonerIdentifier\":\"07/220004Q\""
+          "contains" : "\"prisonerIdentifier\":\"07/220000004Q\""
         } ]
       },
       "response": {
