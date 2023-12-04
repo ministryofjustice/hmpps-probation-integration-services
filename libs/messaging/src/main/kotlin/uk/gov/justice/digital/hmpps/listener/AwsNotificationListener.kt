@@ -15,7 +15,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.stereotype.Component
 import org.springframework.transaction.CannotCreateTransactionException
 import org.springframework.transaction.UnexpectedRollbackException
-import org.springframework.web.client.HttpStatusCodeException
+import org.springframework.web.client.RestClientException
 import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
 import uk.gov.justice.digital.hmpps.retry.retry
@@ -35,7 +35,7 @@ class AwsNotificationListener(
             retry(
                 3,
                 listOf(
-                    HttpStatusCodeException::class,
+                    RestClientException::class,
                     CannotAcquireLockException::class,
                     ObjectOptimisticLockingFailureException::class,
                     CannotCreateTransactionException::class,
