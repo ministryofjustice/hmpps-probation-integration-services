@@ -20,6 +20,7 @@ class HmppsAuthClientConfig(
     fun oauth2Client() = restClientBuilder
         .requestFactory(withTimeouts(Duration.ofSeconds(1), Duration.ofSeconds(5)))
         .requestInterceptor(HmppsAuthInterceptor(clientManager, "default"))
+        .requestInterceptor(RetryInterceptor())
         .build()
 }
 
