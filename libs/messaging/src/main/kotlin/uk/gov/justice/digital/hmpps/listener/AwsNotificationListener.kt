@@ -15,8 +15,6 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.stereotype.Component
 import org.springframework.transaction.CannotCreateTransactionException
 import org.springframework.transaction.UnexpectedRollbackException
-import org.springframework.web.client.HttpStatusCodeException
-import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.client.RestClientException
 import uk.gov.justice.digital.hmpps.config.AwsCondition
 import uk.gov.justice.digital.hmpps.messaging.NotificationHandler
