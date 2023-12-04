@@ -16,6 +16,7 @@ spring:
           global_temporary:
             create_tables: false
             drop_tables: false
+  threads.virtual.enabled: true
 
 springdoc.default-produces-media-type: application/json
 

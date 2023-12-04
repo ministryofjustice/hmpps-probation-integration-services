@@ -16,6 +16,7 @@ spring:
           global_temporary:
             create_tables: false
             drop_tables: false
+  threads.virtual.enabled: true
 
 delius.db.username: $SERVICE_NAME_CAMELCASE # Should match value in [deploy/database/access.yml].
 

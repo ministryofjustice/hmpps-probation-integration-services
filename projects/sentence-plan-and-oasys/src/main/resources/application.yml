@@ -2,6 +2,7 @@
 spring:
   jackson:
     default-property-inclusion: non_empty
+  threads.virtual.enabled: true
 
 springdoc.default-produces-media-type: application/json
 

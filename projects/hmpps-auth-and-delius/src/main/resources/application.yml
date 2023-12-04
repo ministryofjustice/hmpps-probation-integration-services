@@ -20,6 +20,7 @@ spring:
     base: dc=moj,dc=com
     base-environment:
       java.naming.ldap.derefAliases: never
+  threads.virtual.enabled: true
 
 springdoc.default-produces-media-type: application/json
 

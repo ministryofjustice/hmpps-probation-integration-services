@@ -40,13 +40,13 @@ allprojects {
 
     tasks {
         withType<JavaCompile> {
-            sourceCompatibility = "17"
+            sourceCompatibility = "21"
         }
 
         withType<KotlinCompile> {
             kotlinOptions {
                 freeCompilerArgs = listOf("-Xjsr305=strict")
-                jvmTarget = "17"
+                jvmTarget = "21"
             }
         }
 

@@ -17,6 +17,7 @@ spring:
             create_tables: false
             drop_tables: false
     open-in-view: false # this prevents aborted streaming requests from leaving a DB connection in-use
+  threads.virtual.enabled: true
 
 springdoc.default-produces-media-type: application/json
 

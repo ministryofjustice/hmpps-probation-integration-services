@@ -22,7 +22,7 @@ class JibConfigPlugin : Plugin<Project> {
                     user = "2000:2000"
                 }
                 from {
-                    image = System.getenv("JIB_FROM_IMAGE") ?: "eclipse-temurin:17-jre-alpine"
+                    image = System.getenv("JIB_FROM_IMAGE") ?: "eclipse-temurin:21-jre-alpine"
                 }
                 to {
                     image = "ghcr.io/ministryofjustice/hmpps-probation-integration-services/${project.name}"
