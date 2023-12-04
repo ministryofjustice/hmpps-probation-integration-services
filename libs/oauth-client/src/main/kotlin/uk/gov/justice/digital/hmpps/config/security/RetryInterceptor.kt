@@ -4,6 +4,7 @@ import org.springframework.http.HttpRequest
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
+import org.springframework.web.client.RestClientException
 import uk.gov.justice.digital.hmpps.retry.retry
 
 class RetryInterceptor : ClientHttpRequestInterceptor {
@@ -11,7 +12,7 @@ class RetryInterceptor : ClientHttpRequestInterceptor {
         request: HttpRequest,
         body: ByteArray,
         execution: ClientHttpRequestExecution
-    ): ClientHttpResponse = retry(3) {
+    ): ClientHttpResponse = retry(3, listOf(RestClientException::class)) {
         execution.execute(request, body)
     }
 }
