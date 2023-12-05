@@ -12,7 +12,7 @@ interface CustodyRepository : JpaRepository<Custody, Long> {
 
     @Query(
         """
-        select c.id from Custody c
+        select distinct c.id from Custody c
         join c.disposal d
         join d.event e
         where e.person.id = :personId
