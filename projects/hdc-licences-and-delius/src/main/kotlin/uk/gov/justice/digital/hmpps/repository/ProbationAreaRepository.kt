@@ -22,7 +22,7 @@ interface ProbationAreaRepository : JpaRepository<ProbationArea, Long> {
         left join fetch pa.boroughs b
         left join fetch b.districts d
         where pa.code = :code
-        and (d is null or d.selectable)
+        and (d is null or d.selectable or d.code like '%UAT' or d.code like '%UNA' or d.code like '%IVA')
         """
     )
     fun findByCodeWithSelectableDistricts(code: String): ProbationArea?
