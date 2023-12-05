@@ -16,7 +16,7 @@ class PersonUpdateController(private val personService: PersonService) {
     @PreAuthorize("hasRole('ROLE_UPDATE_NOMS_NUMBER')")
     @RequestMapping(value = ["/populate-noms-number"], method = [RequestMethod.GET, RequestMethod.POST])
     fun populateNomsNumbers(
-        @RequestParam(defaultValue = "false") trialOnly: Boolean,
+        @RequestParam(defaultValue = "true") trialOnly: Boolean,
         @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>
     ) = personService.populateNomsNumber(crns, trialOnly)
 }

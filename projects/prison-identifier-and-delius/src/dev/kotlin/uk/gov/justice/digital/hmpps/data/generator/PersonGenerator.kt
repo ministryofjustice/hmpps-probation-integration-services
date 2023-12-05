@@ -11,6 +11,7 @@ object PersonGenerator {
     val MALE = generateGender("M")
     val PERSON_WITH_NOMS = generate("A000001", "1234567")
     val PERSON_WITH_NO_NOMS = generate("A000002", pncNumber = "07/220000004Q")
+    val PERSON_WITH_NOMS_IN_DELIUS = generate("A000005", pncNumber = "07/220000004Q")
     val PERSON_WITH_MULTI_MATCH = generate("A000003", forename = "Jack", surname = "Jones")
     val PERSON_WITH_NO_MATCH = generate("A000004", forename = "Fred", surname = "Jones", dobString = "12/12/2001")
 
