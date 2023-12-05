@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
 import org.mockito.kotlin.check
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -27,6 +28,7 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
+import java.util.concurrent.CompletableFuture
 
 @SpringBootTest
 internal class IntegrationTest {
@@ -49,14 +51,19 @@ internal class IntegrationTest {
     fun `Custody Key Dates updated as expected`() {
         val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED)
 
-        channelManager.getChannel(queueName).publishAndWait(notification)
+        val first = CompletableFuture.runAsync {
+            channelManager.getChannel(queueName).publishAndWait(notification)
+        }
+        val second = CompletableFuture.runAsync {
+            channelManager.getChannel(queueName).publishAndWait(notification)
+        }
 
-        verify(telemetryService).notificationReceived(notification)
+        CompletableFuture.allOf(first, second).join()
 
-        val custody = custodyRepository.findCustody(
-            PersonGenerator.DEFAULT.id,
-            DEFAULT_CUSTODY.bookingRef
-        ).first()
+        verify(telemetryService, times(2)).notificationReceived(notification)
+
+        val custodyId = custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, DEFAULT_CUSTODY.bookingRef).first()
+        val custody = custodyRepository.findCustodyById(custodyId)
         verifyUpdatedKeyDates(custody)
         verifyDeletedKeyDate(custody)
         verifyContactCreated()
@@ -67,6 +74,12 @@ internal class IntegrationTest {
                 assertThat(it[CustodyDateType.SENTENCE_EXPIRY_DATE.code], equalTo("2025-09-10"))
                 assertThat(it[CustodyDateType.PAROLE_ELIGIBILITY_DATE.code], equalTo("deleted"))
             },
+            anyMap()
+        )
+
+        verify(telemetryService).trackEvent(
+            eq("KeyDatesUnchanged"),
+            anyMap(),
             anyMap()
         )
     }

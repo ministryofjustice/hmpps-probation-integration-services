@@ -37,21 +37,31 @@ class CustodyDateUpdateService(
         val sentenceDetail = prisonApi.getSentenceDetail(booking.id)
         val person = personRepository.findByNomsIdAndSoftDeletedIsFalse(booking.offenderNo)
             ?: return telemetryService.trackEvent("MissingNomsNumber", booking.telemetry())
-        val custody = custodyRepository.findCustody(person.id, booking.bookingNo).run {
+        val custodyId = custodyRepository.findCustodyId(person.id, booking.bookingNo).run {
             if (size > 1) return telemetryService.trackEvent("DuplicateBookingRef", booking.telemetry())
             singleOrNull() ?: return telemetryService.trackEvent("MissingBookingRef", booking.telemetry())
         }
+        val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
         val (deleted, updated) = calculateKeyDateChanges(sentenceDetail, custody).partition { it.softDeleted }
-        keyDateRepository.deleteAll(deleted)
-        keyDateRepository.saveAll(updated)
-        contactService.createForKeyDateChanges(custody, updated, deleted)
-        telemetryService.trackEvent(
-            "KeyDatesUpdated",
-            booking.telemetry() +
-                updated.associateBy({ it.type.code }, { it.date.toString() }) +
-                deleted.associateBy({ it.type.code }, { "deleted" })
-        )
+        if (deleted.isEmpty() && updated.isEmpty()) {
+            telemetryService.trackEvent(
+                "KeyDatesUnchanged",
+                booking.telemetry()
+            )
+        } else {
+            deleted.ifNotEmpty(keyDateRepository::deleteAll)
+            updated.ifNotEmpty(keyDateRepository::saveAll)
+            contactService.createForKeyDateChanges(custody, updated, deleted)
+            telemetryService.trackEvent(
+                "KeyDatesUpdated",
+                booking.telemetry() +
+                    updated.associateBy({ it.type.code }, { it.date.toString() }) +
+                    deleted.associateBy({ it.type.code }, { "deleted" })
+            )
+        }
     }
+
+    private fun List<KeyDate>.ifNotEmpty(code: (List<KeyDate>) -> Unit) = code(this)
 
     private fun calculateKeyDateChanges(
         sentenceDetail: SentenceDetail,
@@ -61,8 +71,12 @@ class CustodyDateUpdateService(
         if (date != null) {
             val existing = custody.keyDates.find(cdt.code)
             if (existing != null) {
-                existing.date = date
-                existing
+                if (existing.date != date) {
+                    existing.date = date
+                    existing
+                } else {
+                    null
+                }
             } else {
                 val kdt = referenceDataRepository.findKeyDateType(cdt.code)
                 KeyDate(null, custody, kdt, date)

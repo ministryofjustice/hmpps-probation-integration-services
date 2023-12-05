@@ -84,19 +84,8 @@ internal class CustodyDateUpdateServiceTest {
         whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
         whenever(personRepository.findByNomsIdAndSoftDeletedIsFalse(booking.offenderNo))
             .thenReturn(PersonGenerator.DEFAULT)
-        whenever(custodyRepository.findCustody(PersonGenerator.DEFAULT.id, booking.bookingNo))
-            .thenReturn(
-                listOf(
-                    SentenceGenerator.generateCustodialSentence(
-                        disposal = SentenceGenerator.generateDisposal(SentenceGenerator.generateEvent()),
-                        bookingRef = booking.bookingNo
-                    ),
-                    SentenceGenerator.generateCustodialSentence(
-                        disposal = SentenceGenerator.generateDisposal(SentenceGenerator.generateEvent()),
-                        bookingRef = booking.bookingNo
-                    )
-                )
-            )
+        whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo))
+            .thenReturn(listOf(42342562452L, 34345249134L))
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
@@ -114,7 +103,7 @@ internal class CustodyDateUpdateServiceTest {
         whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
         whenever(personRepository.findByNomsIdAndSoftDeletedIsFalse(booking.offenderNo))
             .thenReturn(PersonGenerator.DEFAULT)
-        whenever(custodyRepository.findCustody(PersonGenerator.DEFAULT.id, booking.bookingNo)).thenReturn(listOf())
+        whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo)).thenReturn(listOf())
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
@@ -127,24 +116,23 @@ internal class CustodyDateUpdateServiceTest {
     @Test
     fun `key date save and delete not called without appropriate key dates`() {
         val booking = Booking(127, "FG37K", true, PersonGenerator.DEFAULT.nomsId)
+        val custody = SentenceGenerator.generateCustodialSentence(
+            disposal = SentenceGenerator.generateDisposal(SentenceGenerator.generateEvent()),
+            bookingRef = booking.bookingNo
+        )
 
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail())
         whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
         whenever(personRepository.findByNomsIdAndSoftDeletedIsFalse(booking.offenderNo))
             .thenReturn(PersonGenerator.DEFAULT)
-        whenever(custodyRepository.findCustody(PersonGenerator.DEFAULT.id, booking.bookingNo))
-            .thenReturn(
-                listOf(
-                    SentenceGenerator.generateCustodialSentence(
-                        disposal = SentenceGenerator.generateDisposal(SentenceGenerator.generateEvent()),
-                        bookingRef = booking.bookingNo
-                    )
-                )
-            )
+        whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo))
+            .thenReturn(listOf(custody.id))
+        whenever(custodyRepository.findForUpdate(custody.id)).thenReturn(custody.id)
+        whenever(custodyRepository.findCustodyById(custody.id)).thenReturn(custody)
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
-        verify(keyDateRepository).saveAll(emptyList())
-        verify(keyDateRepository).deleteAll(emptyList())
+        verify(keyDateRepository, never()).saveAll(anyList())
+        verify(keyDateRepository, never()).deleteAll(anyList())
     }
 }
