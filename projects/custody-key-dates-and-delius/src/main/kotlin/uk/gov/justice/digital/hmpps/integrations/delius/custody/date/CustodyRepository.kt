@@ -24,6 +24,6 @@ interface CustodyRepository : JpaRepository<Custody, Long> {
     fun findCustodyId(personId: Long, bookingRef: String): List<Long>
 
     @Lock(LockModeType.PESSIMISTIC_READ)
-    @Query("select c.id from Custody c")
+    @Query("select c.id from Custody c where c.id = :id")
     fun findForUpdate(id: Long): Long
 }
