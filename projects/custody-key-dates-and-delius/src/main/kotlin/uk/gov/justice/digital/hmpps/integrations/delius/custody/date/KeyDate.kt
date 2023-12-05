@@ -35,6 +35,14 @@ class KeyDate(
     val type: ReferenceData,
 
     @Column(name = "key_date")
-    var date: LocalDate
+    private var date: LocalDate
 
-) : BaseEntity()
+) : BaseEntity() {
+    fun date(): LocalDate = date
+    fun changeDate(date: LocalDate): KeyDate? = if (this.date == date) {
+        null
+    } else {
+        this.date = date
+        this
+    }
+}

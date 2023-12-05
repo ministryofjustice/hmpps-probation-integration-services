@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyMap
 import org.mockito.kotlin.check
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -24,9 +25,11 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
+import java.util.concurrent.CompletableFuture
 
 @SpringBootTest
 internal class IntegrationTest {
@@ -49,14 +52,19 @@ internal class IntegrationTest {
     fun `Custody Key Dates updated as expected`() {
         val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED)
 
-        channelManager.getChannel(queueName).publishAndWait(notification)
+        val first = CompletableFuture.runAsync {
+            channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(3))
+        }
+        val second = CompletableFuture.runAsync {
+            channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(3))
+        }
 
-        verify(telemetryService).notificationReceived(notification)
+        CompletableFuture.allOf(first, second).join()
 
-        val custody = custodyRepository.findCustody(
-            PersonGenerator.DEFAULT.id,
-            DEFAULT_CUSTODY.bookingRef
-        ).first()
+        verify(telemetryService, times(2)).notificationReceived(notification)
+
+        val custodyId = custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, DEFAULT_CUSTODY.bookingRef).first()
+        val custody = custodyRepository.findCustodyById(custodyId)
         verifyUpdatedKeyDates(custody)
         verifyDeletedKeyDate(custody)
         verifyContactCreated()
@@ -69,6 +77,12 @@ internal class IntegrationTest {
             },
             anyMap()
         )
+
+        verify(telemetryService).trackEvent(
+            eq("KeyDatesUnchanged"),
+            anyMap(),
+            anyMap()
+        )
     }
 
     private fun verifyUpdatedKeyDates(custody: Custody) {
@@ -78,11 +92,11 @@ internal class IntegrationTest {
         val erd = custody.keyDate(CustodyDateType.EXPECTED_RELEASE_DATE.code)
         val hde = custody.keyDate(CustodyDateType.HDC_EXPECTED_DATE.code)
 
-        assertThat(sed?.date, equalTo(LocalDate.parse("2025-09-10")))
-        assertThat(crd?.date, equalTo(LocalDate.parse("2022-11-26")))
-        assertThat(led?.date, equalTo(LocalDate.parse("2025-09-11")))
-        assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
-        assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
+        assertThat(sed?.date(), equalTo(LocalDate.parse("2025-09-10")))
+        assertThat(crd?.date(), equalTo(LocalDate.parse("2022-11-26")))
+        assertThat(led?.date(), equalTo(LocalDate.parse("2025-09-11")))
+        assertThat(erd?.date(), equalTo(LocalDate.parse("2022-11-27")))
+        assertThat(hde?.date(), equalTo(LocalDate.parse("2022-10-28")))
     }
 
     private fun verifyDeletedKeyDate(custody: Custody) {

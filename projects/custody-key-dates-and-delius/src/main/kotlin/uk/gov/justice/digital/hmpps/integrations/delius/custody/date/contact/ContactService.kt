@@ -15,10 +15,10 @@ class ContactService(
         if (updates.isEmpty() && deleted.isEmpty()) return
         fun notes(): String {
             val updateNotes = updates.joinToString(lineSeparator()) {
-                "${it.type.description} ${DeliusDateFormatter.format(it.date)}"
+                "${it.type.description} ${DeliusDateFormatter.format(it.date())}"
             }
             val deletedNotes = deleted.joinToString(lineSeparator()) {
-                "Removed ${it.type.description} ${DeliusDateFormatter.format(it.date)}"
+                "Removed ${it.type.description} ${DeliusDateFormatter.format(it.date())}"
             }
             return updateNotes + lineSeparator() + deletedNotes
         }
