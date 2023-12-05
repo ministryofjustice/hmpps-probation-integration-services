@@ -97,6 +97,7 @@ internal class AllocationMessagingIntegrationTest {
         assertThat(prisonManager?.allocationReason?.code, equalTo("AUT"))
         assertThat(prisonManager?.staff?.forename, equalTo("John"))
         assertThat(prisonManager?.staff?.surname, equalTo("Smith"))
+        assertThat(prisonManager?.emailAddress, equalTo("john.smith@justice.gov.uk"))
 
         val contacts = contactRepository.findAll().filter { it.personId == PersonGenerator.DEFAULT.id }
         assertThat(contacts.map { it.type.code }, hasItems(ContactType.Code.POM_AUTO_ALLOCATION.value))
@@ -137,6 +138,7 @@ internal class AllocationMessagingIntegrationTest {
         assertThat(prisonManager?.allocationReason?.code, equalTo("INA"))
         assertThat(prisonManager?.staff?.forename, equalTo("James"))
         assertThat(prisonManager?.staff?.surname, equalTo("Brown"))
+        assertThat(prisonManager?.emailAddress, equalTo("james.brown@justice.gov.uk"))
         assertNotNull(prisonManager?.responsibleOfficer())
         assertNull(prisonManager?.responsibleOfficer()?.endDate)
 

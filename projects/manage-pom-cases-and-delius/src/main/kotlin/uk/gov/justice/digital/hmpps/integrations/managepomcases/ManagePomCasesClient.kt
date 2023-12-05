@@ -23,13 +23,21 @@ data class Handover(
 sealed interface AllocationResponse
 
 data class PomAllocation(
-    val manager: Name,
+    val manager: PomDetail,
     val prison: Prison
 ) : AllocationResponse
 
 data object PomDeallocated : AllocationResponse
 
 data object PomNotAllocated : AllocationResponse
+
+data class PomDetail(
+    val forename: String,
+    val surname: String,
+    val email: String?
+) {
+    val name = Name(forename, surname)
+}
 
 data class Prison(
     val code: String

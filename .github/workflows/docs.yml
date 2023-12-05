@@ -117,7 +117,7 @@ jobs:
       - uses: actions/setup-java@v3
         if: startsWith(steps.check_config.outputs.api_path, 'http')
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
       - uses: gradle/gradle-build-action@v2 # enables caching
         if: startsWith(steps.check_config.outputs.api_path, 'http')

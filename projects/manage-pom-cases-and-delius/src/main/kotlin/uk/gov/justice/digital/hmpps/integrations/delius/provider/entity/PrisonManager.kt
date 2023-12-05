@@ -100,6 +100,8 @@ class PrisonManager(
     @Column(nullable = false)
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
 
+    var emailAddress: String? = null
+
     fun isUnallocated() = staff.code.endsWith("U")
 
     fun responsibleOfficer(): ResponsibleOfficer? = responsibleOfficers.firstOrNull { it.endDate == null }
