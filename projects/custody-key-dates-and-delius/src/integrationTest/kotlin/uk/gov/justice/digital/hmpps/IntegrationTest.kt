@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -52,10 +53,10 @@ internal class IntegrationTest {
         val notification = Notification(message = MessageGenerator.SENTENCE_DATE_CHANGED)
 
         val first = CompletableFuture.runAsync {
-            channelManager.getChannel(queueName).publishAndWait(notification)
+            channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(3))
         }
         val second = CompletableFuture.runAsync {
-            channelManager.getChannel(queueName).publishAndWait(notification)
+            channelManager.getChannel(queueName).publishAndWait(notification, Duration.ofMinutes(3))
         }
 
         CompletableFuture.allOf(first, second).join()
@@ -91,11 +92,11 @@ internal class IntegrationTest {
         val erd = custody.keyDate(CustodyDateType.EXPECTED_RELEASE_DATE.code)
         val hde = custody.keyDate(CustodyDateType.HDC_EXPECTED_DATE.code)
 
-        assertThat(sed?.date, equalTo(LocalDate.parse("2025-09-10")))
-        assertThat(crd?.date, equalTo(LocalDate.parse("2022-11-26")))
-        assertThat(led?.date, equalTo(LocalDate.parse("2025-09-11")))
-        assertThat(erd?.date, equalTo(LocalDate.parse("2022-11-27")))
-        assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
+        assertThat(sed?.date(), equalTo(LocalDate.parse("2025-09-10")))
+        assertThat(crd?.date(), equalTo(LocalDate.parse("2022-11-26")))
+        assertThat(led?.date(), equalTo(LocalDate.parse("2025-09-11")))
+        assertThat(erd?.date(), equalTo(LocalDate.parse("2022-11-27")))
+        assertThat(hde?.date(), equalTo(LocalDate.parse("2022-10-28")))
     }
 
     private fun verifyDeletedKeyDate(custody: Custody) {

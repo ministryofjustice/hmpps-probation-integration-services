@@ -55,7 +55,7 @@ class CustodyDateUpdateService(
             telemetryService.trackEvent(
                 "KeyDatesUpdated",
                 booking.telemetry() +
-                    updated.associateBy({ it.type.code }, { it.date.toString() }) +
+                    updated.associateBy({ it.type.code }, { it.date().toString() }) +
                     deleted.associateBy({ it.type.code }, { "deleted" })
             )
         }
@@ -68,21 +68,16 @@ class CustodyDateUpdateService(
         custody: Custody
     ): List<KeyDate> = CustodyDateType.entries.mapNotNull { cdt ->
         val date = cdt.field.getter.call(sentenceDetail)
-        if (date != null) {
+        if (date == null) {
+            custody.keyDates.find(cdt.code)?.let { it.softDeleted = true; it }
+        } else {
             val existing = custody.keyDates.find(cdt.code)
             if (existing != null) {
-                if (existing.date != date) {
-                    existing.date = date
-                    existing
-                } else {
-                    null
-                }
+                existing.changeDate(date)
             } else {
                 val kdt = referenceDataRepository.findKeyDateType(cdt.code)
                 KeyDate(null, custody, kdt, date)
             }
-        } else {
-            custody.keyDates.find(cdt.code)?.let { it.softDeleted = true; it }
         }
     }
 
