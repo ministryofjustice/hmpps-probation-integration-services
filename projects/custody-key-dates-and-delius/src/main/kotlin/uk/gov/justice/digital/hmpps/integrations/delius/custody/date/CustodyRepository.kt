@@ -12,13 +12,13 @@ interface CustodyRepository : JpaRepository<Custody, Long> {
 
     @Query(
         """
-        select c.id from Custody c
+        select distinct c.id from Custody c
         join c.disposal d
         join d.event e
         where e.person.id = :personId
         and c.softDeleted = false and c.status.code <> 'P' and c.bookingRef = :bookingRef
         and d.active = true and d.softDeleted = false
-        and e.active = true and e.softDeleted = false 
+        and e.active = true and e.softDeleted = false
     """
     )
     fun findCustodyId(personId: Long, bookingRef: String): List<Long>

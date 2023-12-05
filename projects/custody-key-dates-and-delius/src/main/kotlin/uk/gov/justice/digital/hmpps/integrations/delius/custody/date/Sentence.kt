@@ -33,6 +33,7 @@ class Event(
     val disposal: Disposal? = null,
 
     @OneToOne(mappedBy = "event")
+    @SQLRestriction("active_flag = 1 and soft_deleted = 0")
     val manager: OrderManager? = null,
 
     @Column(updatable = false, columnDefinition = "NUMBER")
