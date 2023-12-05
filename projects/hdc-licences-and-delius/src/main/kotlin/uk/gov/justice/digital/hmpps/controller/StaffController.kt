@@ -64,14 +64,8 @@ class StaffController(
                 description = team.description,
                 telephone = team.telephone,
                 emailAddress = team.emailAddress,
-                probationDeliveryUnit = ProbationDeliveryUnit(
-                    code = team.district.borough.code,
-                    description = team.district.borough.description
-                ),
-                localAdminUnit = LocalAdminUnit(
-                    code = team.district.code,
-                    description = team.district.description
-                )
+                probationDeliveryUnit = ProbationDeliveryUnit(team.district.borough.code, team.district.borough.description),
+                localAdminUnit = LocalAdminUnit(team.district.code, team.district.description)
             )
         },
         username = user?.username,
