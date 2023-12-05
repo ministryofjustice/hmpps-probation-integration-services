@@ -1,0 +1,52 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "POST",
+        "url": "/global-search",
+        "bodyPatterns" : [ {
+          "contains" : "\"prisonerIdentifier\":\"07/220000004Q\""
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "search-results-body.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/global-search",
+        "bodyPatterns" : [ {
+          "contains" : "\"firstName\":\"Jack\""
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "search-results-body2.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/global-search",
+        "bodyPatterns" : [ {
+          "contains" : "\"firstName\":\"Fred\""
+        } ]
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "search-results-body3.json"
+      }
+    }
+  ]
+}

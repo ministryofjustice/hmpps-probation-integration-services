@@ -18,7 +18,7 @@ interface CustodyRepository : JpaRepository<Custody, Long> {
         where e.person.id = :personId
         and c.softDeleted = false and c.status.code <> 'P' and c.bookingRef = :bookingRef
         and d.active = true and d.softDeleted = false
-        and e.active = true and e.softDeleted = false 
+        and e.active = true and e.softDeleted = false
     """
     )
     fun findCustodyId(personId: Long, bookingRef: String): List<Long>
