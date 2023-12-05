@@ -527,4 +527,37 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             )
         }
     }
+
+    @Test
+    fun `etr release when in custody in delius`() {
+        val notification = NotificationGenerator.PRISONER_ETR_IN_CUSTODY
+        val nomsNumber = notification.nomsId()
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val custody = getCustody(nomsNumber)
+        assertTrue(custody.isInCustody())
+        assertThat(custody.status.code, equalTo(CustodialStatusCode.IN_CUSTODY.code))
+        assertThat(custody.institution?.code, equalTo(InstitutionCode.OTHER_IRC.code))
+
+        verifyContact(custody, ContactType.Code.CHANGE_OF_INSTITUTION)
+        verifyCustodyHistory(
+            custody,
+            CustodyEventTester(
+                CustodyEventTypeCode.LOCATION_CHANGE,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.OTHER_IRC]?.description
+            )
+        )
+
+        verifyTelemetry("RecallNotRequired", "PrisonerStatusCorrect", "LocationUpdated") {
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to "A0019AA",
+                "institution" to "SWI",
+                "reason" to "RELEASED",
+                "movementReason" to "ETR",
+                "movementType" to "Released"
+            )
+        }
+    }
 }
