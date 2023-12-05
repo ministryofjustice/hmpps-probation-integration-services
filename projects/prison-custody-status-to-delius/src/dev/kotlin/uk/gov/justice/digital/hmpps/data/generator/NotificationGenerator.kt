@@ -18,4 +18,5 @@ object NotificationGenerator {
     val PRISONER_RELEASED_ECSL_ACTIVE = ResourceLoader.notification<HmppsDomainEvent>("prisoner-released-ecsl-active")
     val PRISONER_RELEASED_ECSL_INACTIVE = ResourceLoader.notification<HmppsDomainEvent>("prisoner-released-ecsl-inactive")
     val PRISONER_ABSCONDED = ResourceLoader.notification<HmppsDomainEvent>("prisoner-absconded")
+    val PRISONER_ETR_IN_CUSTODY = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-etr-custody")
 }
