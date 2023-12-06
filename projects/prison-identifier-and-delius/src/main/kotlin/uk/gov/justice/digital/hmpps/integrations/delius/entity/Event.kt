@@ -80,12 +80,13 @@ class Custody(
     @OneToOne
     @JoinColumn(name = "disposal_id", updatable = false)
     val disposal: Disposal? = null,
-    @Version
-    @Column(name = "row_version", nullable = false)
-    val version: Long = 0,
 
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
+
+    @Version
+    @Column(name = "row_version", nullable = false)
+    val version: Long = 0,
 
     @Column(nullable = false, updatable = false)
     @CreatedBy
