@@ -6,13 +6,15 @@ import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.web.client.RestClientException
 import uk.gov.justice.digital.hmpps.retry.retry
+import java.time.Duration
 
-class RetryInterceptor : ClientHttpRequestInterceptor {
+class RetryInterceptor(private val retries: Int = 3, private val delay: Duration = Duration.ofMillis(200)) :
+    ClientHttpRequestInterceptor {
     override fun intercept(
         request: HttpRequest,
         body: ByteArray,
         execution: ClientHttpRequestExecution
-    ): ClientHttpResponse = retry(3, listOf(RestClientException::class)) {
+    ): ClientHttpResponse = retry(retries, listOf(RestClientException::class), delay) {
         execution.execute(request, body)
     }
 }
