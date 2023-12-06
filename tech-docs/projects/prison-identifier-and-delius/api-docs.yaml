@@ -14,21 +14,99 @@ servers:
 security:
 - hmpps-auth-token: []
 paths:
-  /example/{inputId}:
+  /person/populate-noms-number:
     get:
       tags:
-      - api-controller
-      operationId: handle
+      - person-update-controller
+      operationId: populateNomsNumbers
       parameters:
-      - name: inputId
-        in: path
+      - name: trialOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+      - name: crns
+        in: query
         required: true
         schema:
-          type: string
+          maxItems: 500
+          minItems: 1
+          type: array
+          items:
+            maxLength: 500
+            minLength: 1
+            type: string
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NomsUpdates'
+    post:
+      tags:
+      - person-update-controller
+      operationId: populateNomsNumbers_1
+      parameters:
+      - name: trialOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              maxItems: 500
+              minItems: 1
+              type: array
+              items:
+                maxLength: 500
+                minLength: 1
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NomsUpdates'
 components:
+  schemas:
+    MatchDetail:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+        potentialMatches:
+          type: array
+          items:
+            type: string
+    NomsUpdates:
+      required:
+      - personMatches
+      type: object
+      properties:
+        personMatches:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonMatch'
+    PersonMatch:
+      required:
+      - crn
+      type: object
+      properties:
+        crn:
+          type: string
+        matchedNomsNumber:
+          type: string
+        matchDetail:
+          $ref: '#/components/schemas/MatchDetail'
   securitySchemes:
     hmpps-auth-token:
       type: http
