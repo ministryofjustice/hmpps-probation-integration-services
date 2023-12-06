@@ -4,6 +4,7 @@ database:
     password_key: /prison-identifier-and-delius/db-password
   tables:
     - offender
+    - custody
 
   audit:
     username: PrisonIdentifierAndDelius
