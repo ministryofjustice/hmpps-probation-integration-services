@@ -21,11 +21,11 @@ spring:
       assessment-summary-and-delius:
         provider: hmpps-auth
         authorization-grant-type: client_credentials
-        client-id: ${oauth2.client-id}
-        client-secret: ${oauth2.client-secret}
+        client-id: ${integrations.ords.client-id}
+        client-secret: ${integrations.ords.client-secret}
     provider:
       hmpps-auth:
-        token-uri: http://localhost:${wiremock.port}/auth/oauth/token
+        token-uri: ${integrations.ords.url}/oauth/token
   threads.virtual.enabled: true
 
 delius.db.username: AssessmentSummaryAndDelius # Should match value in [deploy/database/access.yml].
@@ -46,18 +46,15 @@ spring:
   jpa.hibernate.ddl-auto: create-drop
 
 seed.database: true
-wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
 
 messaging.consumer.queue: message-queue
 
 integrations:
-  example:
-    url: http://localhost:${wiremock.port}/example
-
-oauth2:
-  client-id: assessment-summary-and-delius
-  client-secret: assessment-summary-and-delius
+  ords:
+    url: http://localhost:${wiremock.port}/eor/oasys
+    client-id: assessment-summary-and-delius
+    client-secret: assessment-summary-and-delius
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

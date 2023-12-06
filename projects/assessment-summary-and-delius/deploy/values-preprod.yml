@@ -9,7 +9,7 @@ generic-service:
 
   env:
     SENTRY_ENVIRONMENT: preprod
-    SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_HMPPS-AUTH_TOKEN-URI: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth/oauth/token
+    INTEGRATIONS_ORDS_URL: https://bridge-pp-oasys.az.justice.gov.uk/eor/oasys
 
 generic-prometheus-alerts:
   businessHoursOnly: true
