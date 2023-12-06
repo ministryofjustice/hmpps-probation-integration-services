@@ -1,0 +1,28 @@
+# Common values
+generic-service:
+  nameOverride: assessment-summary-and-delius
+  serviceAccountName: assessment-summary-and-delius
+
+  image:
+    repository: ghcr.io/ministryofjustice/hmpps-probation-integration-services/assessment-summary-and-delius
+
+  ingress:
+    tlsSecretName: assessment-summary-and-delius-cert
+
+  namespace_secrets:
+    common:
+      SPRING_DATASOURCE_URL: DB_URL
+    assessment-summary-and-delius-client-credentials:
+      OAUTH2_CLIENT-ID: CLIENT_ID
+      OAUTH2_CLIENT-SECRET: CLIENT_SECRET
+    assessment-summary-and-delius-database:
+      SPRING_DATASOURCE_USERNAME: DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: DB_PASSWORD
+    assessment-summary-and-delius-sentry:
+      SENTRY_DSN: SENTRY_DSN
+    assessment-summary-and-delius-queue:
+      MESSAGING_CONSUMER_QUEUE: QUEUE_NAME
+
+generic-prometheus-alerts:
+  targetApplication: assessment-summary-and-delius
+
