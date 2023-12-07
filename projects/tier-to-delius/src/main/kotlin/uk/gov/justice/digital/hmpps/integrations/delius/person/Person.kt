@@ -25,6 +25,18 @@ class Person(
     @Column(columnDefinition = "char(7)")
     val crn: String,
 
+    @Column(name = "first_name", length = 35)
+    val forename: String,
+
+    @Column(name = "second_name", length = 35)
+    val secondName: String? = null,
+
+    @Column(name = "third_name", length = 35)
+    val thirdName: String? = null,
+
+    @Column(name = "surname", length = 35)
+    val surname: String,
+
     @Column(name = "current_tier")
     var currentTier: Long? = null,
 
