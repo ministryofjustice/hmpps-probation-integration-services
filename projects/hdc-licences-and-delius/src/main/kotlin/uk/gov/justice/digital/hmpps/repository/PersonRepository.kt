@@ -7,31 +7,37 @@ import uk.gov.justice.digital.hmpps.entity.Person
 interface PersonRepository : JpaRepository<Person, Long> {
     @Query(
         """
-            select distinct p.nomsNumber 
-            from Person p
-            left join p.communityManagers cm
-            left join cm.staff cmStaff
-            left join p.prisonManagers pm
-            left join pm.staff pmStaff
-            where ((cmStaff is not null and cmStaff.id = :staffId)
-                or (pmStaff is not null and pmStaff.id = :staffId))
-            and p.nomsNumber is not null
-        """
+            select distinct noms_number 
+            from offender
+            where offender_id in (
+                select offender_id from offender_manager 
+                where allocation_staff_id = :staffId and active_flag = 1 and soft_deleted = 0
+                union
+                select offender_id from prison_offender_manager 
+                where allocation_staff_id = :staffId and active_flag = 1 and soft_deleted = 0
+            )
+            and noms_number is not null
+        """,
+        nativeQuery = true
     )
     fun findManagedPrisonerIdentifiersByStaffId(staffId: Long): List<String>
 
     @Query(
         """
-            select distinct p.nomsNumber 
-            from Person p
-            left join p.communityManagers cm
-            left join cm.staff cmStaff
-            left join p.prisonManagers pm
-            left join pm.staff pmStaff
-            where ((cmStaff is not null and cmStaff.code = :code)
-                or (pmStaff is not null and pmStaff.code = :code))
-            and p.nomsNumber is not null
-        """
+            select distinct noms_number 
+            from offender
+            where offender_id in (
+                select offender_id from offender_manager om
+                join staff s on s.staff_id = om.allocation_staff_id
+                where s.officer_code = :code and om.active_flag = 1 and om.soft_deleted = 0
+                union
+                select offender_id from prison_offender_manager pom
+                join staff s on s.staff_id = pom.allocation_staff_id
+                where s.officer_code = :code and pom.active_flag = 1 and pom.soft_deleted = 0
+            )
+            and noms_number is not null
+        """,
+        nativeQuery = true
     )
     fun findManagedPrisonerIdentifiersByStaffCode(code: String): List<String>
 }
