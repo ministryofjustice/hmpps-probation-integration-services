@@ -18,6 +18,6 @@ data class MatchReason(
 )
 data class MatchDetail(
     val nomsNumber: String,
-    val bookingRef: String,
+    val bookingRef: String?,
     val sentenceDate: LocalDate
 )

@@ -21,7 +21,7 @@ data class PrisonSearchResult(
     val lastName: String,
     val prisonerNumber: String,
     @JsonAlias("bookNumber")
-    val bookingNumber: String,
+    val bookingNumber: String?,
     val pncNumber: String?,
     val croNumber: String?,
     val sentenceStartDate: LocalDate?,
