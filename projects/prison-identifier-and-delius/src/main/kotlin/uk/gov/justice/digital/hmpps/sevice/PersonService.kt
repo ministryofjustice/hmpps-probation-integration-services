@@ -34,7 +34,7 @@ class PersonService(
                 if (!trialOnly && personMatch.matchDetail != null) {
                     sentences.matching(personMatch.matchDetail.sentenceDate).first().also {
                         updateNomsNumber(person!!, personMatch)
-                        updateBookingRef(it.custody, personMatch.matchDetail.bookingRef)
+                        updateBookingRef(it.custody, personMatch.matchDetail.bookingRef!!)
                     }
                 }
                 personMatch
@@ -48,7 +48,8 @@ class PersonService(
         if (personMatch != null) return personMatch
 
         // attempt to find the person in nomis
-        val searchResults = prisonSearchAPI.matchPerson(person!!.asSearchRequest()).content
+        val searchResults =
+            prisonSearchAPI.matchPerson(person!!.asSearchRequest()).content.filter { it.bookingNumber != null }
         return when {
             // not found
             searchResults.isEmpty() -> {
