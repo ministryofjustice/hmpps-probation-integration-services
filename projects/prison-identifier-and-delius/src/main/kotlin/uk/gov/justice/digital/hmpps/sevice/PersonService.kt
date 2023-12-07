@@ -60,7 +60,10 @@ class PersonService(
                 val match = searchResults.first().matches(person, sentenceDates)
                 val reason = when (match) {
                     is MatchResult.Match -> MatchReason("Found a single match in prison search api")
-                    else -> MatchReason("Found a single match in prison search api but this did not match the Delius person")
+                    else -> MatchReason(
+                        "Found a single match in prison search api but this did not match the Delius person",
+                        listOf(searchResults.first().matchDetail())
+                    )
                 }
                 PersonMatch(
                     crn,
@@ -123,8 +126,8 @@ class PersonService(
         searchResults: List<PrisonSearchResult>,
         crn: String
     ): PersonMatch {
-        val criteriaMatch = applyMatchingCriteria(person, sentenceDates, searchResults)
-        val matchedNomsData = criteriaMatch.filterIsInstance<MatchResult.Match>()
+        val matchedNomsData =
+            applyMatchingCriteria(person, sentenceDates, searchResults).filterIsInstance<MatchResult.Match>()
 
         return if (matchedNomsData.size == 1) {
             PersonMatch(
@@ -140,7 +143,7 @@ class PersonService(
                 null,
                 MatchReason(
                     "Unable to find a unique match using matching criteria.",
-                    criteriaMatch.mapNotNull { it.matchDetail() }
+                    searchResults.map { it.matchDetail() }
                 )
             )
         }
@@ -180,14 +183,16 @@ private fun List<SentencedPerson>.matching(sentenceDate: LocalDate): List<Senten
 
 private fun LocalDate.closeTo(date: LocalDate, days: Int = 7): Boolean = abs(DAYS.between(this, date)) <= days
 private fun MatchResult.matchDetail() = when (this) {
-    is MatchResult.Match -> MatchDetail(
-        prisonSearchResult.prisonerNumber,
-        prisonSearchResult.bookingNumber,
-        prisonSearchResult.sentenceStartDate!!
-    )
+    is MatchResult.Match -> prisonSearchResult.matchDetail()
 
     else -> null
 }
+
+private fun PrisonSearchResult.matchDetail() = MatchDetail(
+    prisonerNumber,
+    bookingNumber,
+    sentenceStartDate!!
+)
 
 private fun PrisonSearchResult.matches(person: Person, sentenceDates: List<LocalDate>): MatchResult =
     if ((sentenceStartDate != null && sentenceDates.any { it.closeTo(sentenceStartDate) }) &&
