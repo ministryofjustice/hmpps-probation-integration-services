@@ -49,7 +49,7 @@ class PersonService(
 
         // attempt to find the person in nomis
         val searchResults =
-            prisonSearchAPI.matchPerson(person!!.asSearchRequest()).content.filter { it.bookingNumber != null }
+            prisonSearchAPI.matchPerson(person!!.asSearchRequest()).content.filter { it.bookingNumber != null && it.sentenceStartDate != null }
         return when {
             // not found
             searchResults.isEmpty() -> {
@@ -198,10 +198,10 @@ private fun PrisonSearchResult.matches(person: Person, sentenceDates: List<Local
     if ((sentenceStartDate != null && sentenceDates.any { it.closeTo(sentenceStartDate) }) &&
         (
             pncNumber?.equals(person.pncNumber) == true || croNumber?.equals(person.croNumber) == true || person.matches(
-                    firstName,
-                    lastName,
-                    dateOfBirth
-                )
+                firstName,
+                lastName,
+                dateOfBirth
+            )
             )
     ) {
         MatchResult.Match(this)
