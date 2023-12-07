@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.integrations.delius.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
@@ -12,6 +13,7 @@ import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
@@ -19,6 +21,7 @@ import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "offender")
+@EntityListeners(AuditingEntityListener::class)
 class Person(
 
     @Id
@@ -102,7 +105,9 @@ class ReferenceData(
 interface PersonRepository : JpaRepository<Person, Long> {
     @Query(
         """
-        select p as person, d.startDate as sentenceDate from Disposal d 
+        select p as person, d.startDate as sentenceDate, c as custody 
+        from Custody c
+        join c.disposal d 
         join d.event e
         join e.person p
         join fetch p.gender
@@ -112,6 +117,8 @@ interface PersonRepository : JpaRepository<Person, Long> {
         and d.active = true
         and e.softDeleted = false
         and e.active = true
+        and c.softDeleted = false
+        and c.bookingRef is null
     """
     )
     fun findByCrn(crn: String): List<SentencedPerson>
@@ -121,4 +128,5 @@ interface PersonRepository : JpaRepository<Person, Long> {
 interface SentencedPerson {
     val person: Person
     val sentenceDate: LocalDate
+    val custody: Custody
 }
