@@ -52,7 +52,7 @@ internal class NomsNumberIntegrationTest {
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, NomsUpdates::class.java)
-        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message).isEqualTo("CRN not found in Delius")
+        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message).isEqualTo("Custody record not found in Delius without a booking reference")
     }
 
     @Test

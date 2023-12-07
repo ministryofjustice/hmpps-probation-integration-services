@@ -152,7 +152,7 @@ class PersonService(
     private fun checkDelius(person: Person?, crn: String) =
         when {
             person == null -> {
-                PersonMatch(crn, null, MatchReason("CRN not found in Delius"))
+                PersonMatch(crn, null, MatchReason("Custody record not found in Delius without a booking reference"))
             }
 
             person.nomsNumber != null -> {
