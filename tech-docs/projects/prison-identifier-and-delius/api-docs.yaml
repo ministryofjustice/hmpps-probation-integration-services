@@ -78,7 +78,21 @@ components:
   schemas:
     MatchDetail:
       required:
+      - nomsNumber
+      - sentenceDate
+      type: object
+      properties:
+        nomsNumber:
+          type: string
+        bookingRef:
+          type: string
+        sentenceDate:
+          type: string
+          format: date
+    MatchReason:
+      required:
       - message
+      - potentialMatches
       type: object
       properties:
         message:
@@ -86,7 +100,7 @@ components:
         potentialMatches:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/MatchDetail'
     NomsUpdates:
       required:
       - personMatches
@@ -99,14 +113,15 @@ components:
     PersonMatch:
       required:
       - crn
+      - matchReason
       type: object
       properties:
         crn:
           type: string
-        matchedNomsNumber:
-          type: string
         matchDetail:
           $ref: '#/components/schemas/MatchDetail'
+        matchReason:
+          $ref: '#/components/schemas/MatchReason'
   securitySchemes:
     hmpps-auth-token:
       type: http
