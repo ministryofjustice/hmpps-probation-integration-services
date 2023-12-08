@@ -46,6 +46,24 @@ paths:
                 type: array
                 items:
                   type: string
+  /person/{crn}:
+    get:
+      tags:
+      - person-controller
+      operationId: personDetails
+      parameters:
+      - name: crn
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonDetails'
 components:
   schemas:
     Conviction:
@@ -127,6 +145,26 @@ components:
         rsrscore:
           type: number
           format: double
+    Name:
+      required:
+      - forenames
+      - surname
+      type: object
+      properties:
+        forenames:
+          type: string
+        surname:
+          type: string
+    PersonDetails:
+      required:
+      - crn
+      - name
+      type: object
+      properties:
+        crn:
+          type: string
+        name:
+          $ref: '#/components/schemas/Name'
   securitySchemes:
     hmpps-auth-token:
       type: http
