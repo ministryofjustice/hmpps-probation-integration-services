@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Delete untagged images older than 1 week
-        uses: snok/container-retention-policy@3d27e6a0361deed0b7dc5099a82eadd07924b177 # v2.1.3
+        uses: snok/container-retention-policy@9505983b99b31a9aa5600345d03fa64832ab54be # v2.2.0
         with:
           account-type: org
           org-name: ministryofjustice
@@ -23,7 +23,7 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_PACKAGES_TOKEN }}
 
       - name: Delete all images older than a month that aren't currently deployed
-        uses: snok/container-retention-policy@3d27e6a0361deed0b7dc5099a82eadd07924b177 # v2.1.3
+        uses: snok/container-retention-policy@9505983b99b31a9aa5600345d03fa64832ab54be # v2.2.0
         with:
           account-type: org
           org-name: ministryofjustice
