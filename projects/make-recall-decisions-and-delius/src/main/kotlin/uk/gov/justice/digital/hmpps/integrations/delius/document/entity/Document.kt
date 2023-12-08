@@ -17,19 +17,15 @@ class Document(
     @Id
     @Column(name = "document_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
-
     @Column(name = "alfresco_document_id")
     val alfrescoId: String,
-
     @Column(name = "document_name")
     val name: String,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -40,10 +36,8 @@ class Person(
     @Id
     @Column(name = "offender_id")
     val id: Long,
-
     @Column(columnDefinition = "char(7)")
     val crn: String,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )

@@ -21,5 +21,5 @@ class Address(
     val postcode: String?,
     val telephoneNumber: String?,
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )

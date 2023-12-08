@@ -31,19 +31,25 @@ internal class StaffServiceTest {
     fun `throws not found when approved premises does not exist`() {
         whenever(approvedPremisesRepository.existsByCodeCode("TEST")).thenReturn(false)
 
-        val exception = assertThrows<NotFoundException> {
-            staffService.getStaffInApprovedPremises("TEST", false, Pageable.unpaged())
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                staffService.getStaffInApprovedPremises("TEST", false, Pageable.unpaged())
+            }
         assertThat(exception.message, equalTo("Approved Premises with code of TEST not found"))
     }
 
     @Test
     fun `maps and returns results`() {
         val approvedPremises = ApprovedPremisesGenerator.DEFAULT
-        val staffEntities = listOf(
-            StaffGenerator.generate("Staff 1", teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM), approvedPremises = emptyList()),
-            StaffGenerator.generate("Staff 2", teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM), approvedPremises = listOf(approvedPremises))
-        )
+        val staffEntities =
+            listOf(
+                StaffGenerator.generate("Staff 1", teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM), approvedPremises = emptyList()),
+                StaffGenerator.generate(
+                    "Staff 2",
+                    teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM),
+                    approvedPremises = listOf(approvedPremises),
+                ),
+            )
         whenever(approvedPremisesRepository.existsByCodeCode(approvedPremises.code.code)).thenReturn(true)
         whenever(staffRepository.findAllStaffLinkedToApprovedPremisesTeam(approvedPremises.code.code, Pageable.unpaged()))
             .thenReturn(PageImpl(staffEntities))

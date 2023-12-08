@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.api.model
 import java.time.LocalDate
 
 data class CaseIdentifiers(
-    val crn: String
+    val crn: String,
 )
 
 data class MappaDetail(
@@ -12,10 +12,10 @@ data class MappaDetail(
     val category: Int?,
     val categoryDescription: String?,
     val startDate: LocalDate,
-    val reviewDate: LocalDate?
+    val reviewDate: LocalDate?,
 )
 
 data class Manager(
     val name: Name?,
-    val unallocated: Boolean
+    val unallocated: Boolean,
 )

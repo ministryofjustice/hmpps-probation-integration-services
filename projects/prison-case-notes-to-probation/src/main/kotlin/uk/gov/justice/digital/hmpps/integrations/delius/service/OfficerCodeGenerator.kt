@@ -8,7 +8,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffReposito
 class OfficerCodeGenerator(private val staffRepository: StaffRepository) {
     private val alphabet = ('A'..'Z').toList()
 
-    fun generateFor(probationAreaCode: String, index: Int = 0): String {
+    fun generateFor(
+        probationAreaCode: String,
+        index: Int = 0,
+    ): String {
         if (index == alphabet.size) {
             throw StaffCodeExhaustedException(probationAreaCode)
         }

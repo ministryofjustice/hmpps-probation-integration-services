@@ -16,15 +16,12 @@ class ReferenceData(
     @Id
     @Column(name = "standard_reference_list_id", nullable = false)
     val id: Long,
-
     @Column(name = "code_value", length = 100, nullable = false)
     val code: String,
-
     @Column(name = "code_description", length = 500, nullable = false)
     val description: String,
-
     @Column(name = "reference_data_master_id", nullable = false)
-    val datasetId: Long
+    val datasetId: Long,
 )
 
 @Immutable
@@ -34,25 +31,25 @@ class Dataset(
     @Id
     @Column(name = "reference_data_master_id")
     val id: Long,
-
     @Convert(converter = DatasetCodeConverter::class)
     @Column(name = "code_set_name", nullable = false)
-    val code: DatasetCode
+    val code: DatasetCode,
 )
 
 enum class DatasetCode(val value: String) {
     ADDRESS_STATUS("ADDRESS STATUS"),
-    ADDRESS_TYPE("ADDRESS TYPE");
+    ADDRESS_TYPE("ADDRESS TYPE"),
+    ;
 
     companion object {
         private val index = DatasetCode.entries.associateBy { it.value }
-        fun fromString(value: String): DatasetCode =
-            index[value] ?: throw IllegalArgumentException("Invalid DatasetCode")
+
+        fun fromString(value: String): DatasetCode = index[value] ?: throw IllegalArgumentException("Invalid DatasetCode")
     }
 }
 
 enum class AddressTypeCode(val code: String) {
-    CAS3("A17")
+    CAS3("A17"),
 }
 
 @Converter

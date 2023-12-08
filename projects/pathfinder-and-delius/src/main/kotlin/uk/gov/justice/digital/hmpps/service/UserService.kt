@@ -8,8 +8,13 @@ import uk.gov.justice.digital.hmpps.model.DeliusRole
 
 @Service
 class UserService(private val ldapTemplate: LdapTemplate) {
+    fun addRole(
+        username: String,
+        role: DeliusRole,
+    ) = ldapTemplate.addRole(username, role)
 
-    fun addRole(username: String, role: DeliusRole) = ldapTemplate.addRole(username, role)
-
-    fun removeRole(username: String, role: DeliusRole) = ldapTemplate.removeRole(username, role)
+    fun removeRole(
+        username: String,
+        role: DeliusRole,
+    ) = ldapTemplate.removeRole(username, role)
 }

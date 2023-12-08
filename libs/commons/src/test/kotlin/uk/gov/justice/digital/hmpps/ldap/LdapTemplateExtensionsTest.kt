@@ -61,7 +61,7 @@ class LdapTemplateExtensionsTest {
                 override val description = "Role One Description"
                 override val mappedRole = "MAPPED_ROLE_ONE"
                 override val name = "ROLE1"
-            }
+            },
         )
 
         val nameCapture = argumentCaptor<LdapName>()
@@ -78,16 +78,17 @@ class LdapTemplateExtensionsTest {
         whenever(ldapTemplate.lookupContext(any<LdapName>()))
             .thenReturn(null)
 
-        val res = assertThrows<NotFoundException> {
-            ldapTemplate.addRole(
-                "john-smith",
-                object : DeliusRole {
-                    override val description = "Unknown Description"
-                    override val mappedRole = "MAPPED_ROLE_UKN"
-                    override val name = "UNKNOWN"
-                }
-            )
-        }
+        val res =
+            assertThrows<NotFoundException> {
+                ldapTemplate.addRole(
+                    "john-smith",
+                    object : DeliusRole {
+                        override val description = "Unknown Description"
+                        override val mappedRole = "MAPPED_ROLE_UKN"
+                        override val name = "UNKNOWN"
+                    },
+                )
+            }
 
         assertThat(res.message, equalTo("NDeliusRole of UNKNOWN not found"))
     }
@@ -100,7 +101,7 @@ class LdapTemplateExtensionsTest {
                 override val description = "Role One Description"
                 override val mappedRole = "MAPPED_ROLE_ONE"
                 override val name = "ROLE1"
-            }
+            },
         )
 
         val nameCapture = argumentCaptor<LdapName>()

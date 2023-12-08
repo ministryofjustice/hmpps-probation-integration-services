@@ -12,7 +12,7 @@ data class EventDetails<T>(
     val id: String,
     val timestamp: ZonedDateTime,
     val eventType: String,
-    val eventDetails: T
+    val eventDetails: T,
 )
 
 data class ApplicationSubmitted(
@@ -22,21 +22,24 @@ data class ApplicationSubmitted(
     val submittedAt: ZonedDateTime,
     val submittedBy: SubmittedBy,
     @JsonAlias("deliusEventNumber")
-    val eventNumber: String
+    val eventNumber: String,
 ) {
-    val notes = """
+    val notes =
+        """
         |An application for a placement in an Approved Premises has been made. The application will be assessed for suitability.
         |Details of the application can be found here: $applicationUrl
-    """.trimMargin()
+        """.trimMargin()
 }
 
 data class SubmittedBy(
     val staffMember: StaffMember,
-    val probationArea: ProbationArea
+    val probationArea: ProbationArea,
 )
 
 enum class Decision {
-    ACCEPTED, REJECTED;
+    ACCEPTED,
+    REJECTED,
+    ;
 
     override fun toString(): String {
         return when (this) {
@@ -54,26 +57,29 @@ data class ApplicationAssessed(
     val decision: Decision,
     val decisionRationale: String?,
     @JsonAlias("deliusEventNumber")
-    val eventNumber: String
+    val eventNumber: String,
 ) {
     val notes: String
-        get() = when (decision) {
-            Decision.ACCEPTED -> """
+        get() =
+            when (decision) {
+                Decision.ACCEPTED ->
+                    """
                 |Application for a placement in an Approved Premises has been assessed as suitable. The application will now be matched to a suitable Approved Premises.
                 |Details of the application can be found here: $applicationUrl
-            """.trimMargin()
+                    """.trimMargin()
 
-            Decision.REJECTED -> """
+                Decision.REJECTED ->
+                    """
                 |The application for a placement in an Approved Premises has been assessed for suitability and has been rejected.
                 |$decisionRationale
                 |Details of the application can be found here: $applicationUrl
-            """.trimMargin()
-        }
+                    """.trimMargin()
+            }
 }
 
 data class AssessedBy(
     val staffMember: StaffMember,
-    val probationArea: ProbationArea
+    val probationArea: ProbationArea,
 )
 
 data class ApplicationWithdrawn(
@@ -83,12 +89,12 @@ data class ApplicationWithdrawn(
     val eventNumber: String,
     val withdrawnAt: ZonedDateTime,
     val withdrawnBy: WithdrawnBy,
-    val withdrawalReason: String
+    val withdrawalReason: String,
 )
 
 data class WithdrawnBy(
     val staffMember: StaffMember,
-    val probationArea: ProbationArea
+    val probationArea: ProbationArea,
 )
 
 data class BookingMade(
@@ -108,7 +114,7 @@ data class BookingMade(
     @JsonAlias("releaseType")
     private val releaseTypeString: String?,
     @JsonAlias("situation")
-    private val situationString: String?
+    private val situationString: String?,
 ) {
     val bookingMadeAt: ZonedDateTime = createdAt.truncatedTo(ChronoUnit.SECONDS)
     val sentenceType: SentenceType = SentenceType.from(sentenceTypeString)
@@ -125,7 +131,7 @@ data class BookingChanged(
     val changedBy: StaffMember,
     val changedAt: ZonedDateTime,
     val arrivalOn: LocalDate,
-    val departureOn: LocalDate
+    val departureOn: LocalDate,
 )
 
 data class BookingCancelled(
@@ -137,11 +143,11 @@ data class BookingCancelled(
     val premises: Premises,
     val cancelledBy: StaffMember,
     val cancelledAt: ZonedDateTime,
-    val cancellationReason: String
+    val cancellationReason: String,
 )
 
 data class BookedBy(
-    val staffMember: StaffMember
+    val staffMember: StaffMember,
 )
 
 data class PersonNotArrived(
@@ -155,7 +161,7 @@ data class PersonNotArrived(
     @JsonAlias("legacyReasonCode")
     val reasonCode: String,
     @JsonAlias("deliusEventNumber")
-    val eventNumber: String
+    val eventNumber: String,
 )
 
 data class PersonArrived(
@@ -169,7 +175,7 @@ data class PersonArrived(
     val expectedDepartureOn: LocalDate?,
     val notes: String?,
     @JsonAlias("deliusEventNumber")
-    val eventNumber: String
+    val eventNumber: String,
 )
 
 data class PersonDeparted(
@@ -182,8 +188,11 @@ data class PersonDeparted(
     val legacyReasonCode: String,
     val destination: Destination,
     @JsonAlias("deliusEventNumber")
-    val eventNumber: String
+    val eventNumber: String,
 )
 
 data class Destination(val moveOnCategory: MoveOnCategory)
-data class MoveOnCategory(@JsonAlias("legacyMoveOnCategoryCode") val legacyCode: String)
+
+data class MoveOnCategory(
+    @JsonAlias("legacyMoveOnCategoryCode") val legacyCode: String,
+)

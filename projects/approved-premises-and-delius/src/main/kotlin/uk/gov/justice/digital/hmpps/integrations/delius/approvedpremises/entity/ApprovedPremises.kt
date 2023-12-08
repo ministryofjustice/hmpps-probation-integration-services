@@ -19,21 +19,17 @@ class ApprovedPremises(
     @Id
     @Column(name = "approved_premises_id")
     val id: Long = 0,
-
     @ManyToOne
     @JoinColumn(name = "national_hostel_code")
     val code: ReferenceData,
-
     @ManyToOne
     @JoinColumn(name = "address_id")
     val address: Address,
-
     @ManyToOne
     @JoinColumn(name = "probation_area_id", nullable = false)
     val probationArea: ProbationArea,
-
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean = true
+    val selectable: Boolean = true,
 ) {
     fun locationCode(): String = probationArea.code + code.code
 }

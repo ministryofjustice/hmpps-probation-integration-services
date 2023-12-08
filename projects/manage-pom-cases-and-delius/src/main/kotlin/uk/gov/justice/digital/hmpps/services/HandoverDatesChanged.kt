@@ -14,31 +14,35 @@ class HandoverDatesChanged(
     private val pomCasesClient: ManagePomCasesClient,
     private val personRepository: PersonRepository,
     private val keyDateService: KeyDateService,
-    private val telemetryService: TelemetryService
+    private val telemetryService: TelemetryService,
 ) {
-    fun process(event: HmppsDomainEvent) = try {
-        val handOver = event.detailUrl?.let { pomCasesClient.getDetails(URI.create(it)) }
-            ?: throw IgnorableMessageException(
-                "No handover data available",
-                mapOf("detailUrl" to event.detailUrl.orNotProvided())
-            )
-        val personId = personRepository.findIdFromNomsId(handOver.nomsId)
-            ?: throw IgnorableMessageException("PersonNotFound", handOver.properties())
+    fun process(event: HmppsDomainEvent) =
+        try {
+            val handOver =
+                event.detailUrl?.let { pomCasesClient.getDetails(URI.create(it)) }
+                    ?: throw IgnorableMessageException(
+                        "No handover data available",
+                        mapOf("detailUrl" to event.detailUrl.orNotProvided()),
+                    )
+            val personId =
+                personRepository.findIdFromNomsId(handOver.nomsId)
+                    ?: throw IgnorableMessageException("PersonNotFound", handOver.properties())
 
-        val result = keyDateService.mergeHandoverDates(personId, handOver.date, handOver.startDate)
-        telemetryService.trackEvent(result.name, handOver.properties())
-    } catch (ime: IgnorableMessageException) {
-        telemetryService.trackEvent(
-            ime.message,
-            mapOf("nomsId" to event.personReference.findNomsNumber().orNotProvided()) + ime.additionalInformation
-        )
-    }
+            val result = keyDateService.mergeHandoverDates(personId, handOver.date, handOver.startDate)
+            telemetryService.trackEvent(result.name, handOver.properties())
+        } catch (ime: IgnorableMessageException) {
+            telemetryService.trackEvent(
+                ime.message,
+                mapOf("nomsId" to event.personReference.findNomsNumber().orNotProvided()) + ime.additionalInformation,
+            )
+        }
 
     fun String?.orNotProvided() = this ?: "Not Provided"
 
-    fun Handover.properties() = listOfNotNull(
-        "nomsId" to nomsId,
-        "handoverDate" to date.toString(),
-        "handoverStartDate" to startDate.toString()
-    ).toMap()
+    fun Handover.properties() =
+        listOfNotNull(
+            "nomsId" to nomsId,
+            "handoverDate" to date.toString(),
+            "handoverStartDate" to startDate.toString(),
+        ).toMap()
 }

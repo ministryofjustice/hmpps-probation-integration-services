@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.service.StaffService
 @RestController
 @RequestMapping("/staff")
 class StaffResource(private val service: StaffService) {
-
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @Operation(
         summary = """Personal and and summary caseload information for
@@ -25,11 +24,11 @@ class StaffResource(private val service: StaffService) {
             to support the 'Officer View' capability of the HMPPS
             Workload service which shows statistics on the staff members
             caseload
-            """
+            """,
     )
     @GetMapping("{code}/officer-view")
     fun officerView(
-        @PathVariable code: String
+        @PathVariable code: String,
     ) = service.getOfficerView(code)
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
@@ -41,12 +40,11 @@ class StaffResource(private val service: StaffService) {
             Used to support the 'Case Details' capability of the HMPPS
             Workload service, which show details of the current case load
             of the staff member for capacity planning
-            """
-
+            """,
     )
     @PostMapping("{code}/active-cases")
     fun activeCases(
         @PathVariable code: String,
-        @RequestBody crns: List<String>
+        @RequestBody crns: List<String>,
     ) = service.getActiveCases(code, crns)
 }

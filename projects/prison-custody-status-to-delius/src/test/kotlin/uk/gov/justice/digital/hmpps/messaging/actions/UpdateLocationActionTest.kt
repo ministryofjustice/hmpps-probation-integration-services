@@ -38,7 +38,6 @@ import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class UpdateLocationActionTest {
-
     @Mock
     internal lateinit var institutionRepository: InstitutionRepository
 
@@ -62,7 +61,10 @@ internal class UpdateLocationActionTest {
 
     @ParameterizedTest
     @MethodSource("noChangeMovements")
-    fun `no changes made when location is correct`(custody: Custody, prisonerMovement: PrisonerMovement) {
+    fun `no changes made when location is correct`(
+        custody: Custody,
+        prisonerMovement: PrisonerMovement,
+    ) {
         if (prisonerMovement.type == RELEASED && prisonerMovement.reason.isBlank()) {
             whenever(institutionRepository.findByCode(InstitutionCode.IN_COMMUNITY.code))
                 .thenReturn(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY])
@@ -84,8 +86,8 @@ internal class UpdateLocationActionTest {
         whenever(
             referenceDataRepository.findByCodeAndSetName(
                 CustodyEventTypeCode.LOCATION_CHANGE.code,
-                "CUSTODY EVENT TYPE"
-            )
+                "CUSTODY EVENT TYPE",
+            ),
         ).thenReturn(ReferenceDataGenerator.CUSTODY_EVENT_TYPE[CustodyEventTypeCode.LOCATION_CHANGE])
 
         val res = action.accept(PrisonerMovementContext(received.copy(prisonId = "SWI"), custody))
@@ -96,28 +98,31 @@ internal class UpdateLocationActionTest {
 
     companion object {
         private val custody = custody()
-        private val received = PrisonerMovement.Received(
-            custody.disposal.event.person.nomsNumber,
-            "WSI",
-            TRANSFERRED,
-            "INT",
-            ZonedDateTime.now()
-        )
-        private val released = PrisonerMovement.Released(
-            custody.disposal.event.person.nomsNumber,
-            "WSI",
-            RELEASED,
-            "",
-            ZonedDateTime.now()
-        )
+        private val received =
+            PrisonerMovement.Received(
+                custody.disposal.event.person.nomsNumber,
+                "WSI",
+                TRANSFERRED,
+                "INT",
+                ZonedDateTime.now(),
+            )
+        private val released =
+            PrisonerMovement.Released(
+                custody.disposal.event.person.nomsNumber,
+                "WSI",
+                RELEASED,
+                "",
+                ZonedDateTime.now(),
+            )
 
         @JvmStatic
-        fun noChangeMovements() = listOf(
-            Arguments.of(custody, received),
-            Arguments.of(released(), released),
-            Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL")),
-            Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL_ECL"))
-        )
+        fun noChangeMovements() =
+            listOf(
+                Arguments.of(custody, received),
+                Arguments.of(released(), released),
+                Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL")),
+                Arguments.of(absconded(), released.copy(type = RELEASED, reason = "UAL_ECL")),
+            )
 
         private fun custody(): Custody {
             val person = PersonGenerator.generate("T1234ST")
@@ -127,21 +132,23 @@ internal class UpdateLocationActionTest {
 
         private fun released(): Custody {
             val person = PersonGenerator.generate("R1234SD")
-            val event = previouslyReleasedEvent(
-                person,
-                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY],
-                CustodialStatusCode.RELEASED_ON_LICENCE
-            )
+            val event =
+                previouslyReleasedEvent(
+                    person,
+                    InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY],
+                    CustodialStatusCode.RELEASED_ON_LICENCE,
+                )
             return requireNotNull(event.disposal?.custody)
         }
 
         private fun absconded(): Custody {
             val person = PersonGenerator.generate("A1234CD")
-            val event = custodialEvent(
-                person,
-                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNLAWFULLY_AT_LARGE],
-                CustodialStatusCode.IN_CUSTODY
-            )
+            val event =
+                custodialEvent(
+                    person,
+                    InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNLAWFULLY_AT_LARGE],
+                    CustodialStatusCode.IN_CUSTODY,
+                )
             return requireNotNull(event.disposal?.custody)
         }
     }

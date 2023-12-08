@@ -43,33 +43,36 @@ internal class CvlHandlerTest {
 
     @Test
     fun `unexpected event types are ignored`() {
-        val notification = Notification(
-            HmppsDomainEvent("unknown.type.event-type", 1),
-            MessageAttributes("unknown.type.event-type")
-        )
+        val notification =
+            Notification(
+                HmppsDomainEvent("unknown.type.event-type", 1),
+                MessageAttributes("unknown.type.event-type"),
+            )
 
         handler.handle(notification)
 
         verify(telemetryService).trackEvent(
             "UnexpectedEventType",
             mapOf("eventType" to "unknown.type.event-type"),
-            mapOf()
+            mapOf(),
         )
     }
 
     @Test
     fun `action results with failure throw exception`() {
-        val notification = Notification(
-            HmppsDomainEvent(DomainEventType.LicenceActivated.name, 1),
-            MessageAttributes(DomainEventType.LicenceActivated.name)
-        )
+        val notification =
+            Notification(
+                HmppsDomainEvent(DomainEventType.LicenceActivated.name, 1),
+                MessageAttributes(DomainEventType.LicenceActivated.name),
+            )
 
         whenever(licenceActivatedHandler.licenceActivated(any()))
             .thenReturn(listOf(ActionResult.Failure(RuntimeException("Unknown Exception Happened"))))
 
-        val ex = assertThrows<RuntimeException> {
-            handler.handle(notification)
-        }
+        val ex =
+            assertThrows<RuntimeException> {
+                handler.handle(notification)
+            }
         assertThat(ex.message, equalTo("Unknown Exception Happened"))
     }
 }

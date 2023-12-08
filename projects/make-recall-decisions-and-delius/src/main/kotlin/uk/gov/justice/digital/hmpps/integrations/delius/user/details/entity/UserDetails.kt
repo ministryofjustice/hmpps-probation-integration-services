@@ -17,22 +17,17 @@ class UserDetails(
     @Id
     @Column(name = "user_id")
     val id: Long,
-
     @Column(name = "distinguished_name")
     val username: String,
-
     @Column
     val forename: String,
-
     @Column(name = "forename2")
     val middleName: String?,
-
     @Column(name = "surname")
     val surname: String,
-
     @OneToOne
     @JoinColumn(name = "staff_id")
-    val staff: UserDetailsStaff?
+    val staff: UserDetailsStaff?,
 )
 
 @Entity
@@ -43,13 +38,10 @@ class UserDetailsStaff(
     @Id
     @Column(name = "staff_id")
     val id: Long,
-
     @Column(name = "officer_code", columnDefinition = "char(7)")
     val code: String,
-
     @OneToOne(mappedBy = "staff")
     val user: UserDetails?,
-
     @Column
-    val endDate: LocalDate? = null
+    val endDate: LocalDate? = null,
 )

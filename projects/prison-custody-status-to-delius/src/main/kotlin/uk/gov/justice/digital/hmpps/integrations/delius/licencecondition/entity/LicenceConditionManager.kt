@@ -18,23 +18,17 @@ class LicenceConditionManager(
     @Id
     @Column(name = "lic_condition_manager_id", nullable = false)
     val id: Long = 0,
-
     @OneToOne
     @JoinColumn(name = "lic_condition_id", nullable = false)
     val licenceCondition: LicenceCondition,
-
     @Column(nullable = false)
     override val staffId: Long,
-
     @Column(nullable = false)
     override val teamId: Long,
-
     @Column(nullable = false)
     override val probationAreaId: Long,
-
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     val active: Boolean = true,
-
     @Column(columnDefinition = "number", nullable = false)
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 ) : Manager()

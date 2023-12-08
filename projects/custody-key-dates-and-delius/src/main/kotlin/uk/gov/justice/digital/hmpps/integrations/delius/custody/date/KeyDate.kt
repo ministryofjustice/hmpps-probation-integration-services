@@ -20,21 +20,16 @@ import java.time.LocalDate
 @SQLRestriction("soft_deleted = 0")
 @SequenceGenerator(name = "key_date_id_seq", sequenceName = "key_date_id_seq", allocationSize = 1)
 class KeyDate(
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "key_date_id_seq")
     @Column(name = "key_date_id")
     val id: Long?,
-
     @ManyToOne
     @JoinColumn(name = "custody_id")
     val custody: Custody? = null,
-
     @ManyToOne
     @JoinColumn(name = "key_date_type_id")
     val type: ReferenceData,
-
     @Column(name = "key_date")
-    var date: LocalDate
-
+    var date: LocalDate,
 ) : BaseEntity()

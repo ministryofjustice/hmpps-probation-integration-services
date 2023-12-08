@@ -8,21 +8,21 @@ data class CaseDetail(
     val dateOfBirth: LocalDate,
     val gender: String?,
     val profile: Profile?,
-    val contactDetails: ContactDetails
+    val contactDetails: ContactDetails,
 )
 
 data class Profile(
     val primaryLanguage: String?,
     val ethnicity: String?,
     val religion: String?,
-    val disabilities: List<Disability>
+    val disabilities: List<Disability>,
 ) {
     companion object {
         fun from(
             primaryLanguage: String?,
             ethnicity: String?,
             religion: String?,
-            disabilities: List<Disability>
+            disabilities: List<Disability>,
         ): Profile? =
             if (primaryLanguage.isNullOrBlank() && ethnicity.isNullOrBlank() && religion.isNullOrBlank() && disabilities.isEmpty()) {
                 null
@@ -35,7 +35,7 @@ data class Profile(
 data class Disability(
     val type: String,
     val startDate: LocalDate,
-    val notes: String?
+    val notes: String?,
 )
 
 data class ContactDetails(
@@ -43,5 +43,5 @@ data class ContactDetails(
     val mainAddress: Address?,
     val emailAddress: String?,
     val telephoneNumber: String?,
-    val mobileNumber: String?
+    val mobileNumber: String?,
 )

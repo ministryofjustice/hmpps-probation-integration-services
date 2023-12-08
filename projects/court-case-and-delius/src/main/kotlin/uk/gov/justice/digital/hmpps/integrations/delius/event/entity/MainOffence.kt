@@ -20,20 +20,16 @@ class MainOffence(
     @Id
     @Column(name = "main_offence_id")
     val id: Long,
-
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
     @ManyToOne
     @JoinColumn(name = "offence_id")
     val offence: Offence,
-
     @Column(name = "offence_date")
     val date: LocalDate,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
@@ -45,24 +41,19 @@ interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
 @Entity
 @SQLRestriction("soft_deleted = 0")
 class AdditionalOffence(
-
     @ManyToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
     @JoinColumn(name = "offence_id")
     @ManyToOne
     val offence: Offence,
-
     @Column(name = "offence_date")
     val date: LocalDate?,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
-
     @Id
     @Column(name = "additional_offence_id")
-    val id: Long
+    val id: Long,
 )
 
 interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long> {
@@ -76,5 +67,5 @@ class Offence(
     @Id
     @Column(name = "offence_id")
     val id: Long,
-    val description: String
+    val description: String,
 )

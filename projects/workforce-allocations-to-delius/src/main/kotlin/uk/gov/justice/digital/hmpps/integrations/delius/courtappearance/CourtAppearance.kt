@@ -20,48 +20,38 @@ import java.time.LocalDate
 @Table(name = "court_appearance")
 @SQLRestriction("soft_deleted = 0")
 class CourtAppearance(
-
     @Id
     @Column(name = "court_appearance_id")
     val id: Long,
-
     @Column(name = "appearance_date")
     val date: LocalDate,
-
     @ManyToOne
     @JoinColumn(name = "appearance_type_id")
     val type: ReferenceData,
-
     @JoinColumn(name = "event_id")
     @ManyToOne
     val event: Event,
-
     @JoinColumn(name = "court_id")
     @ManyToOne
     val court: Court,
-
     val outcomeId: Long,
-
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
-    var softDeleted: Boolean = false
+    var softDeleted: Boolean = false,
 )
 
 @Entity
 @Immutable
 class Court(
-
     @Id
     @Column(name = "court_id")
     val id: Long,
-
     @Column(name = "court_name")
-    val name: String
-
+    val name: String,
 )
 
 interface CourtRepository : JpaRepository<Court, Long>
-interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
 
+interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
     @Query(
         """
         select ca.court.name as name, ca.date as appearanceDate from CourtAppearance ca
@@ -69,10 +59,10 @@ interface CourtAppearanceRepository : JpaRepository<CourtAppearance, Long> {
         and ca.type.code = 'S'
         and ca.outcomeId is not null
         order by ca.date
-    """
+    """,
     )
     fun findOriginalCourt(
         eventId: Long,
-        page: PageRequest = PageRequest.of(0, 1)
+        page: PageRequest = PageRequest.of(0, 1),
     ): uk.gov.justice.digital.hmpps.api.model.Court?
 }

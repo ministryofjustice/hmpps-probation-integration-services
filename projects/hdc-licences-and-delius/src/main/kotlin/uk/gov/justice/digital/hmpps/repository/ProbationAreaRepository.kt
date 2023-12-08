@@ -11,7 +11,7 @@ interface ProbationAreaRepository : JpaRepository<ProbationArea, Long> {
         from ProbationArea pa 
         where pa.selectable = true
         and (pa.establishment is null or pa.establishment)
-        """
+        """,
     )
     fun findSelectableProbationAreas(): List<ProbationArea>
 
@@ -23,7 +23,7 @@ interface ProbationAreaRepository : JpaRepository<ProbationArea, Long> {
         left join fetch b.districts d
         where pa.code = :code
         and (d is null or d.selectable)
-        """
+        """,
     )
     fun findByCodeWithSelectableDistricts(code: String): ProbationArea?
 }

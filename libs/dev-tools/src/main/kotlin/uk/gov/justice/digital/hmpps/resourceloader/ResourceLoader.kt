@@ -15,12 +15,13 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import java.time.ZonedDateTime
 
 object ResourceLoader {
-    val MAPPER: ObjectMapper = ObjectMapper()
-        .registerModule(JavaTimeModule())
-        .registerKotlinModule()
-        .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        .registerModule(SimpleModule().addDeserializer(ZonedDateTime::class.java, ZonedDateTimeDeserializer()))
+    val MAPPER: ObjectMapper =
+        ObjectMapper()
+            .registerModule(JavaTimeModule())
+            .registerKotlinModule()
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .registerModule(SimpleModule().addDeserializer(ZonedDateTime::class.java, ZonedDateTimeDeserializer()))
 
     fun event(filename: String): HmppsDomainEvent =
         MAPPER.readValue(ResourceUtils.getFile("classpath:messages/$filename.json"))
@@ -28,8 +29,8 @@ object ResourceLoader {
     inline fun <reified T> message(filename: String): T =
         MAPPER.readValue(
             MAPPER.readValue<Notification<String>>(
-                ResourceUtils.getFile("classpath:messages/$filename.json")
-            ).message
+                ResourceUtils.getFile("classpath:messages/$filename.json"),
+            ).message,
         )
 
     inline fun <reified T> notification(filename: String): Notification<T> {
@@ -37,12 +38,12 @@ object ResourceLoader {
         val stringMessage = MAPPER.readValue(file, jacksonTypeRef<Notification<String>>())
         return Notification(
             message = MAPPER.readValue(stringMessage.message, T::class.java),
-            attributes = stringMessage.attributes
+            attributes = stringMessage.attributes,
         )
     }
 
     inline fun <reified T> file(filename: String): T =
         MAPPER.readValue(
-            ResourceUtils.getFile("classpath:simulations/__files/$filename.json")
+            ResourceUtils.getFile("classpath:simulations/__files/$filename.json"),
         )
 }

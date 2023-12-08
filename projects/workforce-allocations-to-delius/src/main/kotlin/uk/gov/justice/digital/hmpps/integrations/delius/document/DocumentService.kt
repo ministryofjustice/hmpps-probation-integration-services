@@ -6,40 +6,44 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import uk.gov.justice.digital.hmpps.alfresco.AlfrescoClient
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
-import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.entityNotFound
+import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.ENTITY_NOT_FOUND
 
 @Service
 class DocumentService(
     private val documentRepository: DocumentRepository,
     private val docPersonRepository: DocPersonRepository,
-    private val alfrescoClient: AlfrescoClient
+    private val alfrescoClient: AlfrescoClient,
 ) {
-
     fun getDocumentsByCrn(crn: String): List<PersonDocument> {
         val person = docPersonRepository.findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
         val documents = ArrayList<PersonDocument>()
-        documents += documentRepository.findAllByPersonIdAndSoftDeletedIsFalse(person.id)
-            .map {
-                PersonDocument(
-                    it.alfrescoId,
-                    it.name,
-                    it.findRelatedTo(),
-                    it.lastSaved,
-                    it.createdDate,
-                    it.sensitive
-                )
-            }
+        documents +=
+            documentRepository.findAllByPersonIdAndSoftDeletedIsFalse(person.id)
+                .map {
+                    PersonDocument(
+                        it.alfrescoId,
+                        it.name,
+                        it.findRelatedTo(),
+                        it.lastSaved,
+                        it.createdDate,
+                        it.sensitive,
+                    )
+                }
 
-        return documents.filter { it.relatedTo.name != entityNotFound }
+        return documents.filter { it.relatedTo.name != ENTITY_NOT_FOUND }
     }
 
-    fun getDocument(crn: String, id: String): ResponseEntity<StreamingResponseBody> {
+    fun getDocument(
+        crn: String,
+        id: String,
+    ): ResponseEntity<StreamingResponseBody> {
         val person = docPersonRepository.findByCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
-        val documentMetaData = documentRepository.findByAlfrescoIdAndSoftDeletedIsFalse(id) ?: throw NotFoundException(
-            "Document",
-            "id",
-            id
-        )
+        val documentMetaData =
+            documentRepository.findByAlfrescoIdAndSoftDeletedIsFalse(id) ?: throw NotFoundException(
+                "Document",
+                "id",
+                id,
+            )
         if (person.id != documentMetaData.personId) {
             throw ConflictException("Document and CRN do not match")
         }

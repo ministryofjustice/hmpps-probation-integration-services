@@ -22,31 +22,24 @@ class LicenceCondition(
     @ManyToOne
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal,
-
     @Column
     val startDate: LocalDate,
-
     @ManyToOne
     @JoinColumn(name = "lic_cond_type_main_cat_id")
     val mainCategory: LicenceConditionMainCategory,
-
     @ManyToOne
     @JoinColumn(name = "lic_cond_type_sub_cat_id")
     val subCategory: ReferenceData?,
-
     @Lob
     @Column(name = "lic_condition_notes")
     val notes: String?,
-
     @Id
     @Column(name = "lic_condition_id")
     val id: Long,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -56,12 +49,10 @@ class LicenceConditionMainCategory(
     @Id
     @Column(name = "lic_cond_type_main_cat_id")
     val id: Long,
-
     @Column
     val code: String,
-
     @Column
-    val description: String
+    val description: String,
 )
 
 interface LicenceConditionRepository : JpaRepository<LicenceCondition, Long> {

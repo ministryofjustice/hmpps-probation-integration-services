@@ -16,7 +16,7 @@ class StaffService(
     private val ldapTemplate: LdapTemplate,
     private val staffRepository: StaffRepository,
     private val boroughRepository: BoroughRepository,
-    private val teamRepository: TeamRepository
+    private val teamRepository: TeamRepository,
 ) {
     fun findStaff(username: String): Staff =
         staffRepository.findByUserUsername(username)?.let { staff ->
@@ -42,21 +42,24 @@ class StaffService(
         }
 }
 
-fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asStaff() = Staff(
-    code,
-    name(),
-    teams?.map { it.asTeam() } ?: listOf(),
-    user?.username,
-    user?.email,
-    isUnallocated()
-)
+fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asStaff() =
+    Staff(
+        code,
+        name(),
+        teams?.map { it.asTeam() } ?: listOf(),
+        user?.username,
+        user?.email,
+        isUnallocated(),
+    )
 
-fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asPDUHead() = PDUHead(
-    name(),
-    user?.email
-)
+fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asPDUHead() =
+    PDUHead(
+        name(),
+        user?.email,
+    )
 
-fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asStaffName() = StaffName(
-    name(),
-    code
-)
+fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asStaffName() =
+    StaffName(
+        name(),
+        code,
+    )

@@ -5,7 +5,7 @@ data class Manager(
     val name: Name,
     val team: Team,
     val email: String?,
-    val telephone: String?
+    val telephone: String?,
 ) {
     val unallocated = code.endsWith("U")
 }

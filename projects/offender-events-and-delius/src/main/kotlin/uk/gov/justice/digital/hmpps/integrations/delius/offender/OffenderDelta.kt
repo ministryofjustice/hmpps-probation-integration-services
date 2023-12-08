@@ -13,21 +13,19 @@ import java.time.ZonedDateTime
 
 @NamedEntityGraph(
     name = "OffenderDelta.withOffender",
-    attributeNodes = [NamedAttributeNode("offender")]
+    attributeNodes = [NamedAttributeNode("offender")],
 )
 @Entity
 class OffenderDelta(
     @Id
     @Column(name = "offender_delta_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     @NotFound(action = NotFoundAction.IGNORE)
     val offender: Offender?,
-
     val dateChanged: ZonedDateTime,
     val action: String,
     val sourceTable: String,
-    val sourceRecordId: Long
+    val sourceRecordId: Long,
 )

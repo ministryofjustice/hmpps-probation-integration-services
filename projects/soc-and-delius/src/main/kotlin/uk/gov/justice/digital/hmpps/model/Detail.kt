@@ -21,19 +21,19 @@ data class Detail(
     val lastRecallDate: LocalDate? = null,
     val recallReason: String? = null,
     val nsiRecallDate: LocalDate? = null,
-    val nsiBreachDate: LocalDate? = null
+    val nsiBreachDate: LocalDate? = null,
 )
 
 data class Name(
     val forename: String,
     val middleName: String?,
-    val surname: String
+    val surname: String,
 )
 
 data class KeyDate(
     val code: String,
     val description: String,
-    val data: LocalDate
+    val data: LocalDate,
 )
 
 fun DetailPerson.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)

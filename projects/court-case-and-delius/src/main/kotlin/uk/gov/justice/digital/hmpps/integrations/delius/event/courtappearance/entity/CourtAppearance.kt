@@ -24,29 +24,24 @@ class CourtAppearance(
     @JoinColumn(name = "event_id")
     @ManyToOne
     val event: Event,
-
     @ManyToOne
     @JoinColumn(name = "outcome_id")
     val outcome: Outcome,
-
     @Column(name = "court_id")
     val courtId: Long,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
     var softDeleted: Boolean,
-
     @Id
     @Column(name = "court_appearance_id")
-    val id: Long
+    val id: Long,
 )
 
 interface CourtReportRepository : JpaRepository<CourtReport, Long> {
-
     @Query(
         """
        select c from CourtReport c
        where c.courtAppearance.event = :event
-    """
+    """,
     )
     fun getAllByEvent(event: Event): List<CourtReport>
 }
@@ -55,16 +50,14 @@ interface CourtReportRepository : JpaRepository<CourtReport, Long> {
 @Entity
 @Table(name = "r_standard_reference_list")
 class Outcome(
-
     @Column(name = "code_value")
     val code: String,
-
     @Id
     @Column(name = "standard_reference_list_id")
-    val id: Long
+    val id: Long,
 ) {
     enum class Code(val value: String) {
-        AWAITING_PSR("101")
+        AWAITING_PSR("101"),
     }
 }
 
@@ -78,52 +71,41 @@ class CourtReport(
     val dateRequired: LocalDate,
     @Column(name = "completed_Date")
     val dateCompleted: LocalDate?,
-
     @ManyToOne
     @JoinColumn(name = "court_report_type_id")
     val courtReportType: CourtReportType?,
-
     @ManyToOne
     @JoinColumn(name = "delivered_court_report_type_id")
     val deliveredCourtReportType: CourtReportType?,
-
     @ManyToOne
     @JoinColumn(name = "court_appearance_id")
     val courtAppearance: CourtAppearance,
-
     @OneToMany(mappedBy = "courtReport")
     val reportManagers: List<ReportManager> = listOf(),
-
     @Column(name = "soft_deleted", columnDefinition = "number")
     var softDeleted: Boolean = false,
-
     @Id
     @Column(name = "court_report_id")
-    val id: Long
+    val id: Long,
 )
 
 @Entity
 @Table(name = "report_manager")
 @SQLRestriction("active_flag = 1 and soft_deleted = 0")
 class ReportManager(
-
     @JoinColumn(name = "court_report_id")
     @ManyToOne
     val courtReport: CourtReport,
-
     @JoinColumn(name = "staff_id")
     @OneToOne
     val staff: Staff,
-
     @Column(name = "active_flag", columnDefinition = "number")
     var active: Boolean,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
     var softDeleted: Boolean,
-
     @Id
     @Column(name = "report_manager_id")
-    val id: Long
+    val id: Long,
 )
 
 @Entity
@@ -131,11 +113,9 @@ class ReportManager(
 class CourtReportType(
     @Column(name = "code")
     val code: String,
-
     @Column(name = "description")
     val description: String,
-
     @Id
     @Column(name = "court_report_type_id")
-    val id: Long
+    val id: Long,
 )

@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.message.Notification
 
 interface Enhancement {
     val eventType: EnhancedEventType
+
     fun enhance(notification: Notification<HmppsDomainEvent>): Notification<HmppsDomainEvent>
 }
 
@@ -18,9 +19,10 @@ sealed interface EnhancedEventType {
     private data class NoEnhancement(override val value: String) : EnhancedEventType
 
     companion object {
-        private val types = listOf(
-            ProbationCaseEngagementCreated
-        ).associateBy { it.value }
+        private val types =
+            listOf(
+                ProbationCaseEngagementCreated,
+            ).associateBy { it.value }
 
         fun of(value: String): EnhancedEventType = types[value] ?: NoEnhancement(value)
     }

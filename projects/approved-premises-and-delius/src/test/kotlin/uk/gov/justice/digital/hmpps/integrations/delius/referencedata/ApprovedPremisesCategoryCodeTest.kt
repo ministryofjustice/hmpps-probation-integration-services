@@ -12,59 +12,61 @@ import java.time.ZonedDateTime
 import java.util.UUID
 
 class ApprovedPremisesCategoryCodeTest {
-
     @ParameterizedTest
     @MethodSource("bookingsMade")
     fun `the correct category is selected based on the booking made`(
         sentenceTypeString: String?,
         releaseTypeString: String?,
         situationString: String?,
-        approvedPremisesCategoryCode: String
+        approvedPremisesCategoryCode: String,
     ) {
         val bookingMade = bookingMade(sentenceTypeString, releaseTypeString, situationString)
         assertThat(
             ApprovedPremisesCategoryCode.from(bookingMade.sentenceType, bookingMade.releaseType).value,
-            equalTo(approvedPremisesCategoryCode)
+            equalTo(approvedPremisesCategoryCode),
         )
     }
 
-    private fun bookingMade(sentenceTypeString: String?, releaseTypeString: String?, situationString: String?) =
-        BookingMade(
-            UUID.randomUUID().toString(),
-            UUID.randomUUID().toString(),
-            UUID.randomUUID().toString(),
-            ZonedDateTime.now(),
-            "1",
-            mock(),
-            mock(),
-            LocalDate.now().plusDays(2),
-            LocalDate.now().plusDays(7),
-            ZonedDateTime.now().minusDays(5),
-            sentenceTypeString,
-            releaseTypeString,
-            situationString
-        )
+    private fun bookingMade(
+        sentenceTypeString: String?,
+        releaseTypeString: String?,
+        situationString: String?,
+    ) = BookingMade(
+        UUID.randomUUID().toString(),
+        UUID.randomUUID().toString(),
+        UUID.randomUUID().toString(),
+        ZonedDateTime.now(),
+        "1",
+        mock(),
+        mock(),
+        LocalDate.now().plusDays(2),
+        LocalDate.now().plusDays(7),
+        ZonedDateTime.now().minusDays(5),
+        sentenceTypeString,
+        releaseTypeString,
+        situationString,
+    )
 
     companion object {
-
         @JvmStatic
-        fun bookingsMade() = listOf(
-            Arguments.of("standardDeterminate", "licence", null, "L"),
-            Arguments.of("standardDeterminate", "rotl", null, "N"),
-            Arguments.of("standardDeterminate", "hdc", null, "H"),
-            Arguments.of("standardDeterminate", "pss", null, "U"),
-            Arguments.of("life", "rotl", null, "N"),
-            Arguments.of("life", "licence", null, "J"),
-            Arguments.of("ipp", "rotl", null, "N"),
-            Arguments.of("ipp", "licence", null, "K"),
-            Arguments.of("extendedDeterminate", "rotl", null, "N"),
-            Arguments.of("extendedDeterminate", "licence", null, "Y"),
-            Arguments.of("communityOrder", "in_community", "riskManagement", "C"),
-            Arguments.of("communityOrder", "in_community", "residencyManagement", "X"),
-            Arguments.of("bailPlacement", "in_community", "bailAssessment", "A"),
-            Arguments.of("bailPlacement", "in_community", "bailSentence", "B"),
-            Arguments.of("nonStatutory", "not_applicable", null, "MAP"),
-            Arguments.of(null, null, null, "O")
-        )
+        fun bookingsMade() =
+            listOf(
+                Arguments.of("standardDeterminate", "licence", null, "L"),
+                Arguments.of("standardDeterminate", "rotl", null, "N"),
+                Arguments.of("standardDeterminate", "hdc", null, "H"),
+                Arguments.of("standardDeterminate", "pss", null, "U"),
+                Arguments.of("life", "rotl", null, "N"),
+                Arguments.of("life", "licence", null, "J"),
+                Arguments.of("ipp", "rotl", null, "N"),
+                Arguments.of("ipp", "licence", null, "K"),
+                Arguments.of("extendedDeterminate", "rotl", null, "N"),
+                Arguments.of("extendedDeterminate", "licence", null, "Y"),
+                Arguments.of("communityOrder", "in_community", "riskManagement", "C"),
+                Arguments.of("communityOrder", "in_community", "residencyManagement", "X"),
+                Arguments.of("bailPlacement", "in_community", "bailAssessment", "A"),
+                Arguments.of("bailPlacement", "in_community", "bailSentence", "B"),
+                Arguments.of("nonStatutory", "not_applicable", null, "MAP"),
+                Arguments.of(null, null, null, "O"),
+            )
     }
 }

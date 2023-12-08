@@ -26,41 +26,51 @@ import uk.gov.justice.digital.hmpps.model.Team
 class CaseService(
     private val probationCaseRepository: ProbationCaseRepository,
     private val registrationRepository: RegistrationRepository,
-    private val offenceRepository: MainOffenceRepository
+    private val offenceRepository: MainOffenceRepository,
 ) {
-    fun getCaseSummaries(crns: List<String>): CaseSummaries =
-        CaseSummaries(probationCaseRepository.findByCrnIn(crns).map { it.summary() })
+    fun getCaseSummaries(crns: List<String>): CaseSummaries = CaseSummaries(probationCaseRepository.findByCrnIn(crns).map { it.summary() })
 
     fun getCaseDetail(crn: String): CaseDetail {
-        val person = probationCaseRepository.findByCrn(crn)
-            ?: throw uk.gov.justice.digital.hmpps.exception.NotFoundException("ProbationCase", "crn", crn)
+        val person =
+            probationCaseRepository.findByCrn(crn)
+                ?: throw uk.gov.justice.digital.hmpps.exception.NotFoundException("ProbationCase", "crn", crn)
         val registrations = registrationRepository.findByPersonId(person.id)
         val offences = offenceRepository.findOffencesFor(person.id)
         return person.summary().withDetail(offences, registrations)
     }
 }
 
-fun ProbationCase.summary() = CaseSummary(
-    crn,
-    nomsId,
-    pnc,
-    name(),
-    dateOfBirth,
-    gender?.description,
-    profile(),
-    manager(),
-    currentExclusion ?: false,
-    currentRestriction ?: false
-)
+fun ProbationCase.summary() =
+    CaseSummary(
+        crn,
+        nomsId,
+        pnc,
+        name(),
+        dateOfBirth,
+        gender?.description,
+        profile(),
+        manager(),
+        currentExclusion ?: false,
+        currentRestriction ?: false,
+    )
 
-fun CaseSummary.withDetail(offences: List<CaseOffence>, registrations: List<Registration>): CaseDetail {
+fun CaseSummary.withDetail(
+    offences: List<CaseOffence>,
+    registrations: List<Registration>,
+): CaseDetail {
     val regMap = registrations.groupBy { it.type.code == RegisterType.Code.MAPPA.value }
     return CaseDetail(this, offences.map { it.asOffence() }, regMap.flags(), regMap.mappa())
 }
 
 fun ProbationCase.name() = Name(forename, surname, listOfNotNull(secondName, thirdName))
+
 fun ProbationCase.profile() =
-    Profile(ethnicity?.description, genderIdentityDescription ?: genderIdentity?.description, nationality?.description, religion?.description)
+    Profile(
+        ethnicity?.description,
+        genderIdentityDescription ?: genderIdentity?.description,
+        nationality?.description,
+        religion?.description,
+    )
 
 fun ProbationCase.manager(): Manager =
     with(currentManager()) {
@@ -72,20 +82,25 @@ fun CommunityManager.team() = Team(team.code, team.description, Ldu(team.ldu.cod
 fun CaseOffence.asOffence() = Offence(code, description, date, main, eventNumber)
 
 fun Registration.asRegistration() = uk.gov.justice.digital.hmpps.model.Registration(type.code, type.description, date)
-fun Registration.asMappa() = MappaDetail(
-    level?.code?.toMappaLevel(),
-    level?.description,
-    category?.code?.toMappaCategory(),
-    category?.description,
-    date,
-    lastUpdatedDatetime
-)
 
-fun String.toMappaLevel() = Level.entries.find { it.name == this }?.number
-    ?: throw IllegalStateException("Unexpected MAPPA level: $this")
+fun Registration.asMappa() =
+    MappaDetail(
+        level?.code?.toMappaLevel(),
+        level?.description,
+        category?.code?.toMappaCategory(),
+        category?.description,
+        date,
+        lastUpdatedDatetime,
+    )
 
-fun String.toMappaCategory() = Category.entries.find { it.name == this }?.number
-    ?: throw IllegalStateException("Unexpected MAPPA category: $this")
+fun String.toMappaLevel() =
+    Level.entries.find { it.name == this }?.number
+        ?: throw IllegalStateException("Unexpected MAPPA level: $this")
+
+fun String.toMappaCategory() =
+    Category.entries.find { it.name == this }?.number
+        ?: throw IllegalStateException("Unexpected MAPPA category: $this")
 
 fun Map<Boolean, List<Registration>>.mappa() = get(true)?.firstOrNull()?.asMappa()
+
 fun Map<Boolean, List<Registration>>.flags() = get(false)?.map { it.asRegistration() } ?: listOf()

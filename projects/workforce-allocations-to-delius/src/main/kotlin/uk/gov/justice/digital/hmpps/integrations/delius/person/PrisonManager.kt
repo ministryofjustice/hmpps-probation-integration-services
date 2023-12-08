@@ -18,19 +18,15 @@ class PrisonManager(
     @Id
     @Column(name = "prison_offender_manager_id", nullable = false)
     val id: Long = 0,
-
     @Column(name = "offender_id", nullable = false)
     val personId: Long,
-
     @ManyToOne
     @JoinColumn(name = "probation_area_id", nullable = false)
     val provider: Provider,
-
     @ManyToOne
     @JoinColumn(name = "allocation_team_id", nullable = false)
     val team: Team,
-
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id", nullable = false)
-    val staff: Staff
+    val staff: Staff,
 )

@@ -36,13 +36,17 @@ class TierService(
     private val teamRepository: TeamRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val telemetryService: TelemetryService,
-    private val optimisationTables: OptimisationTables
+    private val optimisationTables: OptimisationTables,
 ) {
     @Transactional
-    fun updateTier(crn: String, tierCalculation: TierCalculation) {
-        val person = personRepository.findByCrnAndSoftDeletedIsFalse(crn) ?: return let {
-            telemetryService.trackEvent("PersonNotFound", tierCalculation.telemetryProperties(crn))
-        }
+    fun updateTier(
+        crn: String,
+        tierCalculation: TierCalculation,
+    ) {
+        val person =
+            personRepository.findByCrnAndSoftDeletedIsFalse(crn) ?: return let {
+                telemetryService.trackEvent("PersonNotFound", tierCalculation.telemetryProperties(crn))
+            }
         optimisationTables.rebuild(person.id)
         val tier = referenceDataRepository.getByCodeAndSetName("U${tierCalculation.tierScore}", "TIER")
         val changeReason = referenceDataRepository.getByCodeAndSetName("ATS", "TIER CHANGE REASON")
@@ -63,17 +67,18 @@ class TierService(
         person: Person,
         tier: ReferenceData,
         calculationDate: ZonedDateTime,
-        changeReason: ReferenceData
+        changeReason: ReferenceData,
     ) {
         managementTierRepository.save(
             ManagementTier(
-                id = ManagementTierId(
-                    personId = person.id,
-                    tierId = tier.id,
-                    dateChanged = calculationDate
-                ),
-                tierChangeReasonId = changeReason.id
-            )
+                id =
+                    ManagementTierId(
+                        personId = person.id,
+                        tierId = tier.id,
+                        dateChanged = calculationDate,
+                    ),
+                tierChangeReasonId = changeReason.id,
+            ),
         )
     }
 
@@ -81,10 +86,11 @@ class TierService(
         person: Person,
         tier: ReferenceData,
         calculationDate: ZonedDateTime,
-        changeReason: ReferenceData
+        changeReason: ReferenceData,
     ) {
-        val areaCode = person.managers.firstOrNull()?.probationArea?.code
-            ?: throw NotFoundException("PersonManager", "crn", person.crn)
+        val areaCode =
+            person.managers.firstOrNull()?.probationArea?.code
+                ?: throw NotFoundException("PersonManager", "crn", person.crn)
 
         val formattedDate = DeliusDateTimeFormatter.format(calculationDate)
         contactRepository.save(
@@ -92,21 +98,22 @@ class TierService(
                 date = calculationDate,
                 person = person,
                 startTime = calculationDate,
-                notes = """
-                        Tier Change Date: $formattedDate
-                        Tier: ${tier.description}
-                        Tier Change Reason: ${changeReason.description}
-                """.trimIndent(),
+                notes =
+                    """
+                    Tier Change Date: $formattedDate
+                    Tier: ${tier.description}
+                    Tier Change Reason: ${changeReason.description}
+                    """.trimIndent(),
                 staffId = staffRepository.getByCode("${areaCode}UTSO").id,
                 teamId = teamRepository.getByCode("${areaCode}UTS").id,
-                type = contactTypeRepository.getByCode(ContactTypeCode.TIER_UPDATE.code)
-            )
+                type = contactTypeRepository.getByCode(ContactTypeCode.TIER_UPDATE.code),
+            ),
         )
     }
 
     private fun updatePerson(
         person: Person,
-        tier: ReferenceData
+        tier: ReferenceData,
     ) {
         person.currentTier = tier.id
         personRepository.save(person)

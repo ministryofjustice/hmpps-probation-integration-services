@@ -11,7 +11,10 @@ interface CaseloadRepository : JpaRepository<Caseload, Long> {
         left join c.team.staff s
         where c.person.crn = :crn
         and (:staffCode is null or :staffCode = s.code)
-        """
+        """,
     )
-    fun findTeamsManagingCase(crn: String, staffCode: String?): List<String>
+    fun findTeamsManagingCase(
+        crn: String,
+        staffCode: String?,
+    ): List<String>
 }

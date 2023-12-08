@@ -13,13 +13,10 @@ class OrderTransfer(
     @Id
     @Column(name = "order_transfer_id")
     val id: Long,
-
     @Column(name = "event_id")
     val eventId: Long,
-
     @Column(name = "transfer_status_id")
     val statusId: Long,
-
     @Column(columnDefinition = "NUMBER", nullable = false)
-    val softDeleted: Boolean
+    val softDeleted: Boolean,
 )

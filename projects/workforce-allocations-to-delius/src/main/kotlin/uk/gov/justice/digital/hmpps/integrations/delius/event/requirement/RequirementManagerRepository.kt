@@ -12,7 +12,10 @@ interface RequirementManagerRepository : JpaRepository<RequirementManager, Long>
     and rm.startDate <= :dateTime 
     and (rm.endDate is null or rm.endDate > :dateTime)  
     and rm.softDeleted = false
-    """
+    """,
     )
-    fun findActiveManagerAtDate(requirementId: Long, dateTime: ZonedDateTime): RequirementManager?
+    fun findActiveManagerAtDate(
+        requirementId: Long,
+        dateTime: ZonedDateTime,
+    ): RequirementManager?
 }

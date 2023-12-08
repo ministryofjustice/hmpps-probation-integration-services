@@ -48,68 +48,75 @@ class AppointmentService(
     private val enforcementRepository: EnforcementRepository,
     private val eventRepository: EventRepository,
     private val nsiRepository: NsiRepository,
-    private val telemetryService: TelemetryService // temporarily added here for determining fuzzy matches
+    // temporarily added here for determining fuzzy matches
+    private val telemetryService: TelemetryService,
 ) : AuditableService(auditedInteractionService) {
-
     @Transactional
-    fun mergeAppointment(crn: String, mergeAppointment: MergeAppointment): Long = audit(ADD_CONTACT) { audit ->
-        val nsi = nsiRepository.findByPersonCrnAndExternalReference(crn, mergeAppointment.referralUrn)
-            ?: throw NotFoundException(
-                "Unable to match Referral ${mergeAppointment.referralUrn} => CRN $crn"
-            )
-        audit["offenderId"] = nsi.person.id
-
-        if (now().isAfter(mergeAppointment.start) && mergeAppointment.outcome == null) {
-            throw ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Appointment started in the past and no outcome was provided"
-            )
-        }
-        checkForConflicts(nsi.person.id, mergeAppointment)
-
-        val assignation = providerService.findCrsAssignationDetails(mergeAppointment.officeLocationCode)
-        val find = {
-            contactRepository.findByPersonCrnAndExternalReference(
-                crn,
-                mergeAppointment.previousUrn ?: mergeAppointment.urn
-            )
-        }
-        val appointment = find() ?: mergeAppointment.deliusId?.let {
-            val app = contactRepository.findByIdOrNull(it)
-            if (app != null) {
-                telemetryService.trackEvent(
-                    "Appointment Found By Delius Id - Merge Appointment",
-                    mapOf(
-                        "crn" to crn,
-                        "urn" to mergeAppointment.urn,
-                        "deliusId" to mergeAppointment.deliusId.toString(),
-                        "referralReference" to mergeAppointment.referralReference,
-                        "referralUrn" to mergeAppointment.referralUrn
+    fun mergeAppointment(
+        crn: String,
+        mergeAppointment: MergeAppointment,
+    ): Long =
+        audit(ADD_CONTACT) { audit ->
+            val nsi =
+                nsiRepository.findByPersonCrnAndExternalReference(crn, mergeAppointment.referralUrn)
+                    ?: throw NotFoundException(
+                        "Unable to match Referral ${mergeAppointment.referralUrn} => CRN $crn",
                     )
+            audit["offenderId"] = nsi.person.id
+
+            if (now().isAfter(mergeAppointment.start) && mergeAppointment.outcome == null) {
+                throw ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Appointment started in the past and no outcome was provided",
                 )
             }
-            app
-        } ?: createContact(mergeAppointment, assignation, nsi)
+            checkForConflicts(nsi.person.id, mergeAppointment)
 
-        audit["contactId"] = appointment.id
-        appointment.locationId = assignation.location?.id
+            val assignation = providerService.findCrsAssignationDetails(mergeAppointment.officeLocationCode)
+            val find = {
+                contactRepository.findByPersonCrnAndExternalReference(
+                    crn,
+                    mergeAppointment.previousUrn ?: mergeAppointment.urn,
+                )
+            }
+            val appointment =
+                find() ?: mergeAppointment.deliusId?.let {
+                    val app = contactRepository.findByIdOrNull(it)
+                    if (app != null) {
+                        telemetryService.trackEvent(
+                            "Appointment Found By Delius Id - Merge Appointment",
+                            mapOf(
+                                "crn" to crn,
+                                "urn" to mergeAppointment.urn,
+                                "deliusId" to mergeAppointment.deliusId.toString(),
+                                "referralReference" to mergeAppointment.referralReference,
+                                "referralUrn" to mergeAppointment.referralUrn,
+                            ),
+                        )
+                    }
+                    app
+                } ?: createContact(mergeAppointment, assignation, nsi)
 
-        mergeAppointment.notes?.also {
-            if (appointment.notes?.contains(it) != true) appointment.addNotes(mergeAppointment.notes)
+            audit["contactId"] = appointment.id
+            appointment.locationId = assignation.location?.id
+
+            mergeAppointment.notes?.also {
+                if (appointment.notes?.contains(it) != true) appointment.addNotes(mergeAppointment.notes)
+            }
+
+            val replacement =
+                appointment.replaceIfRescheduled(
+                    mergeAppointment.urn,
+                    mergeAppointment.start,
+                    mergeAppointment.end,
+                )?.addNotes(mergeAppointment.notes)
+            replacement?.also {
+                appointment.outcome = outcomeRepository.getByCode(Code.RESCHEDULED_SERVICE_REQUEST.value)
+                contactRepository.save(it)
+            }
+
+            mergeAppointment.outcome?.applyTo(replacement ?: appointment) ?: replacement?.id ?: appointment.id
         }
-
-        val replacement = appointment.replaceIfRescheduled(
-            mergeAppointment.urn,
-            mergeAppointment.start,
-            mergeAppointment.end
-        )?.addNotes(mergeAppointment.notes)
-        replacement?.also {
-            appointment.outcome = outcomeRepository.getByCode(Code.RESCHEDULED_SERVICE_REQUEST.value)
-            contactRepository.save(it)
-        }
-
-        mergeAppointment.outcome?.applyTo(replacement ?: appointment) ?: replacement?.id ?: appointment.id
-    }
 
     fun Outcome.applyTo(appointment: Contact): Long {
         val outcome = outcomeRepository.getByCode(attendanceOutcome(this).value)
@@ -124,7 +131,11 @@ class AppointmentService(
         return appointment.id
     }
 
-    private fun createContact(mergeAppointment: MergeAppointment, assignation: CrsAssignation, nsi: Nsi): Contact =
+    private fun createContact(
+        mergeAppointment: MergeAppointment,
+        assignation: CrsAssignation,
+        nsi: Nsi,
+    ): Contact =
         contactRepository.save(
             Contact(
                 nsi.person,
@@ -139,21 +150,22 @@ class AppointmentService(
                 externalReference = mergeAppointment.urn,
                 date = mergeAppointment.start.toLocalDate(),
                 startTime = mergeAppointment.start,
-                endTime = mergeAppointment.end
-            )
+                endTime = mergeAppointment.end,
+            ),
         )
 
     private fun checkForConflicts(
         personId: Long,
-        mergeAppointment: MergeAppointment
+        mergeAppointment: MergeAppointment,
     ) {
-        if (mergeAppointment.start.isAfter(now()) && contactRepository.appointmentClashes(
+        if (mergeAppointment.start.isAfter(now()) &&
+            contactRepository.appointmentClashes(
                 personId,
                 mergeAppointment.urn,
                 mergeAppointment.start.toLocalDate(),
                 mergeAppointment.start,
                 mergeAppointment.end,
-                mergeAppointment.previousUrn
+                mergeAppointment.previousUrn,
             )
         ) {
             throw ConflictException("Appointment conflicts with an existing future appointment")
@@ -161,55 +173,58 @@ class AppointmentService(
     }
 
     @Transactional
-    fun updateOutcome(uao: UpdateAppointmentOutcome): Unit = audit(UPDATE_CONTACT) { audit ->
-        audit["contactId"] = uao.id
+    fun updateOutcome(uao: UpdateAppointmentOutcome): Unit =
+        audit(UPDATE_CONTACT) { audit ->
+            audit["contactId"] = uao.id
 
-        val appointment = contactRepository.findByPersonCrnAndExternalReference(uao.crn, uao.urn)
-            ?: uao.deliusId?.let {
-                val app = contactRepository.findByIdOrNull(it)
-                if (app != null) {
-                    telemetryService.trackEvent(
-                        "Appointment Found By Delius Id - Feedback Submitted",
-                        mapOf(
-                            "crn" to uao.crn,
-                            "urn" to uao.urn,
-                            "deliusId" to uao.deliusId.toString(),
-                            "referralReference" to uao.referralReference,
-                            "referralUrn" to uao.referral.urn
-                        )
+            val appointment =
+                contactRepository.findByPersonCrnAndExternalReference(uao.crn, uao.urn)
+                    ?: uao.deliusId?.let {
+                        val app = contactRepository.findByIdOrNull(it)
+                        if (app != null) {
+                            telemetryService.trackEvent(
+                                "Appointment Found By Delius Id - Feedback Submitted",
+                                mapOf(
+                                    "crn" to uao.crn,
+                                    "urn" to uao.urn,
+                                    "deliusId" to uao.deliusId.toString(),
+                                    "referralReference" to uao.referralReference,
+                                    "referralUrn" to uao.referral.urn,
+                                ),
+                            )
+                        }
+                        app
+                    }
+                    ?: throw AppointmentNotFoundException(
+                        appointmentId = uao.id,
+                        deliusId = uao.deliusId,
+                        referralReference = uao.referralReference,
+                        outcome = uao.outcome,
+                        reason =
+                            contactRepository.getNotFoundReason(uao.crn, uao.referral.urn, uao.urn, uao.deliusId ?: -1)
+                                .asReason(),
                     )
-                }
-                app
+
+            val outcome = outcomeRepository.getByCode(attendanceOutcome(uao.outcome).value)
+            appointment.outcome = outcome
+            if (appointment.notes?.contains(uao.notes) != true) {
+                appointment.addNotes(uao.notes)
             }
-            ?: throw AppointmentNotFoundException(
-                appointmentId = uao.id,
-                deliusId = uao.deliusId,
-                referralReference = uao.referralReference,
-                outcome = uao.outcome,
-                reason = contactRepository.getNotFoundReason(uao.crn, uao.referral.urn, uao.urn, uao.deliusId ?: -1)
-                    .asReason()
-            )
 
-        val outcome = outcomeRepository.getByCode(attendanceOutcome(uao.outcome).value)
-        appointment.outcome = outcome
-        if (appointment.notes?.contains(uao.notes) != true) {
-            appointment.addNotes(uao.notes)
+            if (outcome.compliantAcceptable == false) {
+                handleNonCompliance(appointment)
+            }
+
+            contactRepository.saveAndFlush(appointment)
+            nsiRepository.findByIdIfRar(appointment.nsiId!!)?.rarCount = contactRepository.countNsiRar(appointment.nsiId)
         }
-
-        if (outcome.compliantAcceptable == false) {
-            handleNonCompliance(appointment)
-        }
-
-        contactRepository.saveAndFlush(appointment)
-        nsiRepository.findByIdIfRar(appointment.nsiId!!)?.rarCount = contactRepository.countNsiRar(appointment.nsiId)
-    }
 
     private fun handleNonCompliance(appointment: Contact) {
         val action = enforcementActionRepository.getByCode(EnforcementAction.Code.REFER_TO_PERSON_MANAGER.value)
         enforcementRepository.findByContactId(appointment.id) ?: Enforcement(
             appointment,
             action,
-            action.responseByPeriod?.let { now().plusDays(it) }
+            action.responseByPeriod?.let { now().plusDays(it) },
         ).apply {
             enforcementRepository.save(this)
             val eac = appointment.createEnforcementActionContact(action)
@@ -220,10 +235,11 @@ class AppointmentService(
 
         appointment.eventId?.let {
             val event = eventRepository.findById(it).orElseThrow { NotFoundException("Event", "id", it) }
-            val currentCount = contactRepository.countFailureToComply(
-                it,
-                listOfNotNull(event.breachEnd, event.disposal?.date).maxOrNull()
-            )
+            val currentCount =
+                contactRepository.countFailureToComply(
+                    it,
+                    listOfNotNull(event.breachEnd, event.disposal?.date).maxOrNull(),
+                )
             event.ftcCount = currentCount
             if (event.disposal?.type?.overLimit(currentCount) == true && !event.enforcementUnderReview()) {
                 contactRepository.save(appointment.reviewEnforcement())
@@ -231,40 +247,43 @@ class AppointmentService(
         }
     }
 
-    private fun Contact.createEnforcementActionContact(action: EnforcementAction) = Contact(
-        person = person,
-        type = action.contactType,
-        date = LocalDate.now(),
-        startTime = now(),
-        eventId = eventId,
-        nsiId = nsiId,
-        providerId = providerId,
-        teamId = teamId,
-        staffId = staffId,
-        locationId = locationId,
-        linkedContactId = id
-    ).addNotes("${notes}\n${LocalDateTime.now()}\nEnforcement Action: ${action.description}")
+    private fun Contact.createEnforcementActionContact(action: EnforcementAction) =
+        Contact(
+            person = person,
+            type = action.contactType,
+            date = LocalDate.now(),
+            startTime = now(),
+            eventId = eventId,
+            nsiId = nsiId,
+            providerId = providerId,
+            teamId = teamId,
+            staffId = staffId,
+            locationId = locationId,
+            linkedContactId = id,
+        ).addNotes("${notes}\n${LocalDateTime.now()}\nEnforcement Action: ${action.description}")
 
-    private fun Event.enforcementUnderReview() = contactRepository.countEnforcementUnderReview(
-        id,
-        ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value,
-        breachEnd
-    ) > 0
+    private fun Event.enforcementUnderReview() =
+        contactRepository.countEnforcementUnderReview(
+            id,
+            ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value,
+            breachEnd,
+        ) > 0
 
-    private fun Contact.reviewEnforcement() = Contact(
-        person,
-        contactTypeRepository.getByCode(ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value),
-        date,
-        startTime,
-        endTime,
-        eventId = eventId,
-        nsiId = nsiId,
-        providerId = providerId,
-        teamId = teamId,
-        staffId = staffId,
-        locationId = locationId,
-        linkedContactId = id
-    )
+    private fun Contact.reviewEnforcement() =
+        Contact(
+            person,
+            contactTypeRepository.getByCode(ContactType.Code.REVIEW_ENFORCEMENT_STATUS.value),
+            date,
+            startTime,
+            endTime,
+            eventId = eventId,
+            nsiId = nsiId,
+            providerId = providerId,
+            teamId = teamId,
+            staffId = staffId,
+            locationId = locationId,
+            linkedContactId = id,
+        )
 
     companion object {
         private fun attendanceOutcome(outcome: Outcome): Code =
@@ -282,7 +301,7 @@ data class UpdateAppointmentOutcome(
     val referralReference: String,
     val referral: Referral,
     val outcome: Outcome,
-    val url: String
+    val url: String,
 ) {
     val notes =
         "Session Feedback Recorded for ${referral.contractType} Referral $referralReference with Prime Provider ${referral.provider.name}${System.lineSeparator()}$url"
@@ -291,7 +310,10 @@ data class UpdateAppointmentOutcome(
 }
 
 enum class Attended {
-    YES, LATE, NO;
+    YES,
+    LATE,
+    NO,
+    ;
 
     companion object {
         fun of(value: String): Attended = entries.first { it.name.lowercase() == value.lowercase() }
@@ -300,5 +322,5 @@ enum class Attended {
 
 data class Outcome(
     val attended: Attended,
-    val notify: Boolean = false
+    val notify: Boolean = false,
 )

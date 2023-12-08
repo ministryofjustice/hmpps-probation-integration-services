@@ -26,7 +26,6 @@ import java.util.UUID
 
 @ExtendWith(MockitoExtension::class)
 internal class ReferAndMonitorHandlerTest {
-
     @Mock
     lateinit var converter: NotificationConverter<HmppsDomainEvent>
 
@@ -46,13 +45,14 @@ internal class ReferAndMonitorHandlerTest {
     @Test
     fun `no detail url throws illegal argument exception`() {
         val unknownEventType = "unknown.event.type"
-        val notification = Notification(
-            HmppsDomainEvent(
-                unknownEventType,
-                1,
-                occurredAt = ZonedDateTime.now()
+        val notification =
+            Notification(
+                HmppsDomainEvent(
+                    unknownEventType,
+                    1,
+                    occurredAt = ZonedDateTime.now(),
+                ),
             )
-        )
 
         val ex = assertThrows<IllegalArgumentException> { handler.handle(notification) }
         assertThat(ex.message, equalTo("Detail Url Missing"))
@@ -61,9 +61,10 @@ internal class ReferAndMonitorHandlerTest {
     @Test
     fun `unhandled event type is recorded in telemetry`() {
         val unknownEventType = "unknown.event.type"
-        val notification = testNotification().let {
-            it.copy(it.message.copy(unknownEventType), MessageAttributes(unknownEventType))
-        }
+        val notification =
+            testNotification().let {
+                it.copy(it.message.copy(unknownEventType), MessageAttributes(unknownEventType))
+            }
 
         handler.handle(notification)
 
@@ -73,10 +74,10 @@ internal class ReferAndMonitorHandlerTest {
                 mapOf(
                     "crn" to notification.message.personReference.findCrn()!!,
                     "referralId" to notification.message.additionalInformation["referralId"] as String,
-                    "eventType" to unknownEventType
-                )
+                    "eventType" to unknownEventType,
+                ),
             ),
-            any()
+            any(),
         )
     }
 
@@ -88,8 +89,8 @@ internal class ReferAndMonitorHandlerTest {
             mapOf(
                 SessionAppointmentSubmitted to {
                     EventProcessingResult.Success(SessionAppointmentSubmitted, mapOf("property" to "value"))
-                }
-            )
+                },
+            ),
         )
         handler = ReferAndMonitorHandler(converter, telemetryService, listOf(eventHandler))
 
@@ -101,10 +102,10 @@ internal class ReferAndMonitorHandlerTest {
                 mapOf(
                     "crn" to "T123456",
                     "referralId" to notification.message.additionalInformation["referralId"] as String,
-                    "property" to "value"
-                )
+                    "property" to "value",
+                ),
             ),
-            any()
+            any(),
         )
     }
 
@@ -116,8 +117,8 @@ internal class ReferAndMonitorHandlerTest {
             mapOf(
                 SessionAppointmentSubmitted to {
                     EventProcessingResult.Failure(IllegalStateException("Unable to process event '${SessionAppointmentSubmitted.name}'"))
-                }
-            )
+                },
+            ),
         )
         handler = ReferAndMonitorHandler(converter, telemetryService, listOf(eventHandler))
 
@@ -131,22 +132,23 @@ internal class ReferAndMonitorHandlerTest {
                 mapOf(
                     "crn" to "T123456",
                     "referralId" to notification.message.additionalInformation["referralId"] as String,
-                    "message" to expectedMessage
-                )
+                    "message" to expectedMessage,
+                ),
             ),
-            any()
+            any(),
         )
     }
 
-    private fun testNotification() = Notification(
-        HmppsDomainEvent(
-            SessionAppointmentSubmitted.name,
-            1,
-            occurredAt = ZonedDateTime.now(),
-            detailUrl = "DetailUrl",
-            nullableAdditionalInformation = AdditionalInformation(mutableMapOf("referralId" to UUID.randomUUID().toString())),
-            personReference = PersonReference(listOf(PersonIdentifier("CRN", "T123456")))
-        ),
-        MessageAttributes(SessionAppointmentSubmitted.name)
-    )
+    private fun testNotification() =
+        Notification(
+            HmppsDomainEvent(
+                SessionAppointmentSubmitted.name,
+                1,
+                occurredAt = ZonedDateTime.now(),
+                detailUrl = "DetailUrl",
+                nullableAdditionalInformation = AdditionalInformation(mutableMapOf("referralId" to UUID.randomUUID().toString())),
+                personReference = PersonReference(listOf(PersonIdentifier("CRN", "T123456"))),
+            ),
+            MessageAttributes(SessionAppointmentSubmitted.name),
+        )
 }

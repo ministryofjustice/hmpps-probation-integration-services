@@ -14,14 +14,12 @@ class Referral(
     @Id
     @Column(name = "referral_id")
     val id: Long,
-
     @JoinColumn(name = "event_id", insertable = false, updatable = false)
     @ManyToOne
     val event: DocEvent,
-
     @JoinColumn(name = "REFERRAL_TYPE_ID")
     @ManyToOne
-    val type: ReferralType
+    val type: ReferralType,
 )
 
 @Entity
@@ -30,14 +28,12 @@ class Assessment(
     @Id
     @Column(name = "assessment_id")
     val id: Long,
-
     @JoinColumn(name = "referral_id", insertable = false, updatable = false)
     @ManyToOne
     val referral: Referral? = null,
-
     @JoinColumn(name = "ASSESSMENT_TYPE_ID")
     @ManyToOne
-    val type: AssessmentType
+    val type: AssessmentType,
 )
 
 @Entity
@@ -47,7 +43,7 @@ class AssessmentType(
     @Id
     @Column(name = "assessment_type_id")
     val id: Long,
-    val description: String
+    val description: String,
 )
 
 @Entity
@@ -57,5 +53,5 @@ class ReferralType(
     @Id
     @Column(name = "referral_type_id")
     val id: Long,
-    val description: String
+    val description: String,
 )

@@ -21,22 +21,17 @@ class Release(
     @Id
     @Column(name = "release_id")
     val id: Long,
-
     @Column
     val custodyId: Long,
-
     @Column(name = "actual_release_date")
     val date: LocalDate,
-
     @OneToOne(mappedBy = "release")
     val recall: Recall? = null,
-
     @ManyToOne
     @JoinColumn(name = "institution_id")
     val institution: Institution? = null,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -47,16 +42,13 @@ class Recall(
     @Id
     @Column(name = "recall_id")
     val id: Long,
-
     @Column(name = "recall_date")
     val date: LocalDate,
-
     @OneToOne
     @JoinColumn(name = "release_id")
     val release: Release,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -66,12 +58,10 @@ class Institution(
     @Id
     @Column(name = "institution_id")
     val id: Long,
-
     @Column(name = "institution_name")
     val name: String?,
-
     @Column
-    val description: String
+    val description: String,
 )
 
 interface CaseSummaryReleaseRepository : JpaRepository<Release, Long> {

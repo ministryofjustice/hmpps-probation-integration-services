@@ -16,19 +16,15 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 @Entity
 @Table(name = "team")
 class Team(
-
     @Column(name = "code", columnDefinition = "char(6)")
     val code: String,
-
     val description: String,
-
     @ManyToOne
     @JoinColumn(name = "district_id")
     val district: District?,
-
     @Id
     @Column(name = "team_id")
-    val id: Long
+    val id: Long,
 ) {
     companion object {
         val POM_SUFFIX = "POM"
@@ -40,20 +36,18 @@ interface TeamRepository : JpaRepository<Team, Long> {
     @EntityGraph(attributePaths = ["district"])
     fun findByCode(code: String): Team?
 }
+
 fun TeamRepository.getByCode(code: String) = findByCode(code) ?: throw NotFoundException("Team", "code", code)
 
 @Immutable
 @Entity
 class District(
-
     @Column(name = "code")
     val code: String,
-
     val description: String,
-
     @Id
     @Column(name = "district_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
@@ -62,27 +56,23 @@ class ProbationArea(
     @Id
     @Column(name = "probation_area_id")
     val id: Long,
-
     @Column(name = "code", columnDefinition = "char(3)")
     val code: String,
-
     val description: String,
-
     @OneToOne
     @JoinColumn(
         name = "institution_id",
         referencedColumnName = "institution_id",
-        updatable = false
+        updatable = false,
     )
-    val institution: Institution? = null
+    val institution: Institution? = null,
 )
 
 interface ProbationAreaRepository : JpaRepository<ProbationArea, Long> {
     fun findByInstitutionNomisCode(code: String): ProbationArea?
 }
 
-fun ProbationAreaRepository.getByNomisCdeCode(code: String) =
-    findByInstitutionNomisCode(code) ?: throw NotFoundException("ProbationArea", "nomisCdeCode", code)
+fun ProbationAreaRepository.getByNomisCdeCode(code: String) = findByInstitutionNomisCode(code) ?: throw NotFoundException("ProbationArea", "nomisCdeCode", code)
 
 @Immutable
 @Entity
@@ -91,8 +81,6 @@ class Institution(
     @Id
     @Column(name = "institution_id")
     val id: Long,
-
     @Column(name = "nomis_cde_code")
-    val nomisCode: String
-
+    val nomisCode: String,
 )

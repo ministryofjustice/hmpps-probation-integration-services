@@ -8,10 +8,12 @@ import org.springframework.web.service.annotation.PostExchange
 
 interface AlfrescoUploadClient {
     @PostExchange(value = "/uploadnew")
-    fun addDocument(@RequestBody body: MultiValueMap<String, HttpEntity<*>>): AlfrescoDocument
+    fun addDocument(
+        @RequestBody body: MultiValueMap<String, HttpEntity<*>>,
+    ): AlfrescoDocument
 }
 
 data class AlfrescoDocument(
     @JsonAlias("ID")
-    val id: String
+    val id: String,
 )

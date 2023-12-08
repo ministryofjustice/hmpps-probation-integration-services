@@ -18,17 +18,13 @@ import java.time.LocalDate
 @Entity
 @Table(name = "offender")
 class CaseEntity(
-
     @Id
     @Column(name = "offender_id")
     val id: Long,
-
     @Column(columnDefinition = "char(7)")
     val crn: String,
-
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Column(name = "first_name", length = 35)
     val forename: String,
     @Column(name = "second_name", length = 35)
@@ -60,7 +56,7 @@ class CaseEntity(
         join r_reference_data_master rm on rm.reference_data_master_id = at.reference_data_master_id
         where rm.code_set_name = 'ADDRESS STATUS' and at.code_value = 'M'
         )
-    """
+    """,
     )
     val addresses: List<CaseAddress> = listOf(),
     @ManyToOne
@@ -69,31 +65,22 @@ class CaseEntity(
     @ManyToOne
     @JoinColumn(name = "ethnicity_id")
     val ethnicity: ReferenceData? = null,
-
     @OneToMany(mappedBy = "case")
     val personalCircumstances: List<CasePersonalCircumstanceEntity>,
-
     @OneToMany(mappedBy = "case")
     val personalContacts: List<CasePersonalContactEntity>,
-
     @OneToMany(mappedBy = "case")
     val aliases: List<AliasEntity>,
-
     @OneToMany(mappedBy = "case")
     val disabilities: List<DisabilityEntity>,
-
     @OneToMany(mappedBy = "case")
     val provisions: List<ProvisionEntity>,
-
     @ManyToOne
     @JoinColumn(name = "language_id")
     val primaryLanguage: ReferenceData? = null,
-
     @Column(name = "Interpreter_required")
     @Convert(converter = YesNoConverter::class)
     val requiresInterpreter: Boolean? = false,
-
     @OneToMany(mappedBy = "case")
-    val registrations: List<RegistrationEntity>
-
+    val registrations: List<RegistrationEntity>,
 )

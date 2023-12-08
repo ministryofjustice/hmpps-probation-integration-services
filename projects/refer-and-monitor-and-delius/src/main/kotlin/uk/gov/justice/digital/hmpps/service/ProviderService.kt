@@ -23,9 +23,8 @@ class ProviderService(
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
     private val locationRepository: LocationRepository,
-    private val pduRepository: PduRepository
+    private val pduRepository: PduRepository,
 ) {
-
     fun findActiveOfficeLocations() =
         locationRepository.findAllLocationsForProvider(providerRepository.getCrsProvider().id).map {
             OfficeLocation(it.code, it.description, it.address(), it.telephoneNumber)
@@ -39,9 +38,10 @@ class ProviderService(
         return CrsAssignation(provider, team, staff, location)
     }
 
-    fun findSelectableDeliveryUnits() = pduRepository.findAllSelectable().map {
-        DeliveryUnit(it.code, it.description, Region(it.region.code, it.region.description))
-    }
+    fun findSelectableDeliveryUnits() =
+        pduRepository.findAllSelectable().map {
+            DeliveryUnit(it.code, it.description, Region(it.region.code, it.region.description))
+        }
 }
 
 data class CrsAssignation(val provider: Provider, val team: Team, val staff: Staff, val location: Location?)

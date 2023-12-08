@@ -14,27 +14,29 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException
 
 class HmppsAuthInterceptor(
     private val clientManager: OAuth2AuthorizedClientManager,
-    private val registrationId: String
+    private val registrationId: String,
 ) : ClientHttpRequestInterceptor {
     override fun intercept(
         request: HttpRequest,
         body: ByteArray,
-        execution: ClientHttpRequestExecution
+        execution: ClientHttpRequestExecution,
     ): ClientHttpResponse {
         request.headers[HttpHeaders.AUTHORIZATION] = "Bearer ${getToken()}"
         return execution.execute(request, body)
     }
 
     private fun getToken(): String {
-        val authentication = SecurityContextHolder.getContext().authentication ?: AnonymousAuthenticationToken(
-            "hmpps-auth",
-            "anonymous",
-            AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS")
-        )
-        val request = OAuth2AuthorizeRequest
-            .withClientRegistrationId(registrationId)
-            .principal(authentication)
-            .build()
+        val authentication =
+            SecurityContextHolder.getContext().authentication ?: AnonymousAuthenticationToken(
+                "hmpps-auth",
+                "anonymous",
+                AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS"),
+            )
+        val request =
+            OAuth2AuthorizeRequest
+                .withClientRegistrationId(registrationId)
+                .principal(authentication)
+                .build()
         return clientManager.authorize(request)?.accessToken?.tokenValue
             ?: throw OAuth2AuthenticationException("Unable to retrieve access token")
     }

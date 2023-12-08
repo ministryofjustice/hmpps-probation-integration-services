@@ -16,12 +16,16 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Service
 class ResettlementPassportService(val addressRepository: PersonAddressRepository, val nsiRepository: NsiRepository, val nsiManagerRepository: NsiManagerRepository) {
-    fun getDutyToReferNSI(value: String, type: IdentifierType): DutyToReferNSI {
+    fun getDutyToReferNSI(
+        value: String,
+        type: IdentifierType,
+    ): DutyToReferNSI {
         // get the main address for this person and also the most recent NSI type of DTR associated with this person
-        val dutyToRefer = when (type) {
-            CRN -> nsiRepository.findDutyToReferByCrn(value) ?: throw NotFoundException("DTR NSI", "crn", value)
-            NOMS -> nsiRepository.findDutyToReferByNoms(value) ?: throw NotFoundException("DTR NSI", "noms", value)
-        }
+        val dutyToRefer =
+            when (type) {
+                CRN -> nsiRepository.findDutyToReferByCrn(value) ?: throw NotFoundException("DTR NSI", "crn", value)
+                NOMS -> nsiRepository.findDutyToReferByNoms(value) ?: throw NotFoundException("DTR NSI", "noms", value)
+            }
         val nsiManager = nsiManagerRepository.getNSIManagerByNsi(dutyToRefer.id)
         val mainAddress = addressRepository.getMainAddressByPersonId(dutyToRefer.person.id)?.toModel()
         return DutyToReferNSI(
@@ -33,9 +37,11 @@ class ResettlementPassportService(val addressRepository: PersonAddressRepository
             dutyToRefer.status.description,
             dutyToRefer.actualStartDate,
             dutyToRefer.notes,
-            mainAddress
+            mainAddress,
         )
     }
 }
+
 fun PersonAddress.toModel() = MainAddress(buildingName, addressNumber, streetName, district, town, county, postcode, noFixedAbode)
+
 fun Staff.officer() = Officer(forename, surname, middleName)

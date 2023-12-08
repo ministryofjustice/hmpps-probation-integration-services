@@ -11,20 +11,20 @@ import uk.gov.justice.digital.hmpps.service.OpdService
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
-const val FeatureFlag = "opd-assessment-processing"
-const val OpdProduced = "opd.produced"
+const val FEATURE_FLAG = "opd-assessment-processing"
+const val OPD_PRODUCED = "opd.produced"
 
 @Component
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
     private val opdService: OpdService,
-    private val featureFlags: FeatureFlags
+    private val featureFlags: FeatureFlags,
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
-        if (notification.message.eventType != OpdProduced) return
+        if (notification.message.eventType != OPD_PRODUCED) return
         val opdAssessment = notification.message.opdAssessment()
-        if (!featureFlags.enabled(FeatureFlag)) {
+        if (!featureFlags.enabled(FEATURE_FLAG)) {
             telemetryService.trackEvent("OpdAssessmentIgnored", opdAssessment.telemetryProperties())
             return
         }
@@ -42,23 +42,27 @@ class Handler(
 fun HmppsDomainEvent.assessmentDate() = ZonedDateTime.parse(additionalInformation["dateCompleted"] as String)
 
 fun HmppsDomainEvent.override() = OpdAssessment.Override.of(additionalInformation["opdScreenOutOverride"] as String)
-fun HmppsDomainEvent.assessmentResult() =
-    OpdAssessment.Result.of(additionalInformation["opdResult"] as String, override())
+
+fun HmppsDomainEvent.assessmentResult() = OpdAssessment.Result.of(additionalInformation["opdResult"] as String, override())
 
 fun HmppsDomainEvent.opdAssessment() = OpdAssessment(personReference.findCrn()!!, assessmentDate(), assessmentResult())
 
 data class OpdAssessment(
     val crn: String,
     val date: ZonedDateTime,
-    val result: Result
+    val result: Result,
 ) {
     enum class Result(val description: String, val subTypeCode: NsiSubType.Code?) {
         SCREENED_IN("Screened In", NsiSubType.Code.COMMUNITY_PATHWAY),
         SCREENED_IN_OVERRIDE("Screened In - with override", NsiSubType.Code.COMMUNITY_PATHWAY_OVERRIDE),
-        SCREENED_OUT("Screened Out", null);
+        SCREENED_OUT("Screened Out", null),
+        ;
 
         companion object {
-            fun of(value: String, override: Override) = when {
+            fun of(
+                value: String,
+                override: Override,
+            ) = when {
                 override == Override.YES -> SCREENED_IN_OVERRIDE
                 "SCREEN IN".equals(value, true) -> SCREENED_IN
                 else -> SCREENED_OUT
@@ -67,22 +71,26 @@ data class OpdAssessment(
     }
 
     enum class Override {
-        YES, NO;
+        YES,
+        NO,
+        ;
 
         companion object {
             fun of(value: String) = entries.firstOrNull { it.name.equals(value, true) } ?: NO
         }
     }
 
-    val notes = """
+    val notes =
+        """
         |OPD Assessment Date: ${DeliusDateTimeFormatter.format(date)}
         |OPD Result: ${result.description}
         |This notes entry was automatically created by the system - ${DeliusDateTimeFormatter.format(ZonedDateTime.now())}
-    """.trimMargin()
+        """.trimMargin()
 }
 
-fun OpdAssessment.telemetryProperties() = mapOf(
-    "crn" to crn,
-    "date" to DeliusDateTimeFormatter.format(date),
-    "result" to result.description
-)
+fun OpdAssessment.telemetryProperties() =
+    mapOf(
+        "crn" to crn,
+        "date" to DeliusDateTimeFormatter.format(date),
+        "result" to result.description,
+    )

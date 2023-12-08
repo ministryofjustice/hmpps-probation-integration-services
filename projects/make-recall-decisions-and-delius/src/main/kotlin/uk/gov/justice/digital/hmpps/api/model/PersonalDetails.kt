@@ -11,43 +11,45 @@ data class PersonalDetailsOverview(
     val dateOfBirth: LocalDate,
     val gender: String,
     val ethnicity: String?,
-    val primaryLanguage: String?
+    val primaryLanguage: String?,
 ) {
     data class Identifiers(
         val pncNumber: String?,
         val croNumber: String?,
         val nomsNumber: String?,
-        val bookingNumber: String?
+        val bookingNumber: String?,
     )
 }
 
 data class PersonalDetails(
     val personalDetails: PersonalDetailsOverview,
     val mainAddress: Address?,
-    val communityManager: Manager?
+    val communityManager: Manager?,
 ) {
     data class Manager(
         val staffCode: String,
         val name: Name,
         val provider: Provider,
-        val team: Team
+        val team: Team,
     ) {
         data class Team(
             val code: String,
             val name: String,
             val localAdminUnit: String,
             val telephone: String?,
-            val email: String?
+            val email: String?,
         )
     }
 }
 
 fun Team.toTeam() = PersonalDetails.Manager.Team(code, description, localAdminUnit = district.description, telephone, emailAddress)
-fun PersonManager.toManager() = PersonalDetails.Manager(
-    staffCode = staff.code,
-    name = staff.name(),
-    team = team.toTeam(),
-    provider = provider.toProvider()
-)
+
+fun PersonManager.toManager() =
+    PersonalDetails.Manager(
+        staffCode = staff.code,
+        name = staff.name(),
+        team = team.toTeam(),
+        provider = provider.toProvider(),
+    )
 
 fun Person.identifiers() = PersonalDetailsOverview.Identifiers(pncNumber, croNumber, nomsNumber, bookingNumber = mostRecentPrisonerNumber)

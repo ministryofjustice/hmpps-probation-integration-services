@@ -26,52 +26,37 @@ class Contact(
     @Column(name = "contact_id", updatable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
     val id: Long = 0,
-
     @Column(name = "offender_id", updatable = false)
     val personId: Long,
-
     @Column(name = "event_id", updatable = false)
     val eventId: Long? = null,
-
     @ManyToOne
     @JoinColumn(name = "contact_type_id", updatable = false)
     val type: ContactType,
-
     @Lob
     val notes: String,
-
     @Column(name = "contact_date")
     val date: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(updatable = false)
     val staffId: Long,
-
     @Column(updatable = false)
     val staffEmployeeId: Long = staffId,
-
     @Column(updatable = false)
     val teamId: Long,
-
     @Column(name = "probation_area_id", updatable = false)
     val providerId: Long,
-
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)
     val isSensitive: Boolean = type.isSensitive,
-
     @Column(updatable = false)
     val trustProviderTeamId: Long = teamId,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
     val trustProviderFlag: Boolean = false,
-
     @Convert(converter = YesNoConverter::class)
     @Column(name = "alert_active")
-    val alert: Boolean? = false
-
+    val alert: Boolean? = false,
 ) : BaseEntity()
 
 @Immutable
@@ -81,14 +66,11 @@ class ContactType(
     @Id
     @Column(name = "contact_type_id")
     val id: Long,
-
     val code: String,
-
     @Column(name = "sensitive_contact")
     @Convert(converter = YesNoConverter::class)
     val isSensitive: Boolean = false,
-
     @Convert(converter = YesNoConverter::class)
     @Column(name = "contact_alert_flag")
-    val alert: Boolean? = false
+    val alert: Boolean? = false,
 )

@@ -17,24 +17,19 @@ class Team(
     @Id
     @Column(name = "team_id")
     val id: Long,
-
     @Column(name = "code", columnDefinition = "char(6)")
     val code: String,
-
     val description: String,
-
     @ManyToOne
     @JoinColumn(name = "probation_area_id", nullable = false)
     val probationArea: ProbationArea,
-
     @OneToOne
     @JoinTable(
         name = "r_approved_premises_team",
         joinColumns = [JoinColumn(name = "team_id")],
-        inverseJoinColumns = [JoinColumn(name = "approved_premises_id")]
+        inverseJoinColumns = [JoinColumn(name = "approved_premises_id")],
     )
     val approvedPremises: ApprovedPremises?,
-
     @Column(name = "district_id")
-    val districtId: Long
+    val districtId: Long,
 )

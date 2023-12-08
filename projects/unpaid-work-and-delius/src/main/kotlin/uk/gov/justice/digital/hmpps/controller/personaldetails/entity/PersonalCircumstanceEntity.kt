@@ -26,5 +26,5 @@ class PersonalCircumstanceEntity(
     start: LocalDate? = null,
     endDate: LocalDate? = null,
     softDeleted: Boolean = false,
-    evidenced: Boolean = false
+    evidenced: Boolean = false,
 ) : PersonalCircumstanceBase(id, type, subType, notes, start, endDate, softDeleted, evidenced)

@@ -19,35 +19,27 @@ class Event(
     @Id
     @Column(name = "event_id", nullable = false)
     val id: Long,
-
     @Version
     @Column(name = "row_version", nullable = false)
     val version: Long = 0,
-
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
-
     @OneToOne(mappedBy = "event")
     var disposal: Disposal? = null,
-
     @Column(name = "active_flag", updatable = false, columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Column
     var firstReleaseDate: ZonedDateTime? = null,
-
     @OneToMany(mappedBy = "event")
-    val managers: List<OrderManager> = listOf()
+    val managers: List<OrderManager> = listOf(),
 ) {
     fun manager() = managers.first()
 }
 
 interface EventRepository : JpaRepository<Event, Long> {
-
     @Query(
         """
         select e from Event e
@@ -57,7 +49,7 @@ interface EventRepository : JpaRepository<Event, Long> {
         and e.disposal.active = true and e.active = true
         and e.disposal.softDeleted = false and e.softDeleted = false
         and e.disposal.custody.status.code not in ('AT', 'T')
-        """
+        """,
     )
     fun findActiveCustodialEvents(personId: Long): List<Event>
 
@@ -68,7 +60,10 @@ interface EventRepository : JpaRepository<Event, Long> {
         when matched then update set iaps_flag = ?2 
         when not matched then insert(event_id, iaps_flag) values(?1, ?2)
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
-    fun updateIaps(eventId: Long, iapsFlagValue: Long = 1)
+    fun updateIaps(
+        eventId: Long,
+        iapsFlagValue: Long = 1,
+    )
 }

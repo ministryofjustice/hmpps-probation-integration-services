@@ -10,16 +10,17 @@ data class Address(
     val town: String?,
     val county: String?,
     val postcode: String?,
-    val noFixedAbode: Boolean?
+    val noFixedAbode: Boolean?,
 )
 
-fun AddressEntity.toAddress() = Address(
-    buildingName = buildingName,
-    addressNumber = addressNumber,
-    streetName = streetName,
-    town = town,
-    district = district,
-    county = county,
-    postcode = postcode,
-    noFixedAbode = noFixedAbode
-)
+fun AddressEntity.toAddress() =
+    Address(
+        buildingName = buildingName,
+        addressNumber = addressNumber,
+        streetName = streetName,
+        town = town,
+        district = district,
+        county = county,
+        postcode = postcode,
+        noFixedAbode = noFixedAbode,
+    )

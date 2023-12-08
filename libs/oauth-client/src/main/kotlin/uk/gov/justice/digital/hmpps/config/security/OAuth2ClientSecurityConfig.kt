@@ -15,15 +15,16 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 class OAuth2ClientSecurityConfig {
     @Bean
     fun authorizedClientManager(
-        clientRegistration: ClientRegistrationRepository
+        clientRegistration: ClientRegistrationRepository,
     ): OAuth2AuthorizedClientManager {
         val service = InMemoryOAuth2AuthorizedClientService(clientRegistration)
         val authorizedClientManager = AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistration, service)
 
-        val authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder
-            .builder()
-            .clientCredentials()
-            .build()
+        val authorizedClientProvider =
+            OAuth2AuthorizedClientProviderBuilder
+                .builder()
+                .clientCredentials()
+                .build()
         authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider)
         return authorizedClientManager
     }

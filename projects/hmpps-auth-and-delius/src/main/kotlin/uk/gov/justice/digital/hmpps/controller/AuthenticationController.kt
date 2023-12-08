@@ -33,12 +33,12 @@ class AuthenticationController(private val ldapTemplate: LdapTemplate) {
         value = [
             ApiResponse(responseCode = "200", description = "User authenticated", content = [Content(mediaType = "text/plain")]),
             ApiResponse(responseCode = "401", description = "Authentication failure", content = [Content(mediaType = "text/plain")]),
-            ApiResponse(responseCode = "403", description = "Client role required: `ROLE_DELIUS_USER_AUTH`", content = [Content(mediaType = "text/plain")])
-        ]
+            ApiResponse(responseCode = "403", description = "Client role required: `ROLE_DELIUS_USER_AUTH`", content = [Content(mediaType = "text/plain")]),
+        ],
     )
     fun authenticate(
         @Valid @RequestBody
-        request: AuthenticationRequest
+        request: AuthenticationRequest,
     ) = try {
         ldapTemplate.authenticate(query().byUsername(request.username), request.password)
         ResponseEntity.ok().build()

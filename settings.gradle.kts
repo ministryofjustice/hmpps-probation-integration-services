@@ -43,7 +43,7 @@ include(
     "libs:messaging",
     "libs:oauth-client",
     "libs:oauth-server",
-    "libs:limited-access"
+    "libs:limited-access",
 )
 
 // load children from the "projects" directory (and drop the prefix)

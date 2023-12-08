@@ -182,52 +182,56 @@ internal class ApprovedPremisesServiceTest {
     @BeforeEach
     fun setup() {
         addressService = AddressService(personAddressRepository, referenceDataRepository)
-        contactService = ContactService(
-            contactRepository,
-            contactTypeRepository,
-            contactOutcomeRepository,
-            contactAlertRepository,
-            officeLocationRepository,
-            teamRepository,
-            personManagerRepository
-        )
-        referralService = ReferralService(
-            referenceDataRepository,
-            referralSourceRepository,
-            moveOnCategoryRepository,
-            teamRepository,
-            staffRepository,
-            referralRepository,
-            residenceRepository,
-            personRepository,
-            eventRepository,
-            registrationRepository,
-            contactService
-        )
-        nsiService = NsiService(
-            nsiRepository,
-            nsiTypeRepository,
-            nsiStatusRepository,
-            nsiManagerRepository,
-            teamRepository,
-            staffRepository,
-            transferReasonRepository,
-            addressService,
-            contactService,
-            referralService,
-            referenceDataRepository,
-            eventRepository
-        )
-        approvedPremisesService = ApprovedPremisesService(
-            approvedPremisesApiClient,
-            approvedPremisesRepository,
-            staffRepository,
-            personRepository,
-            eventRepository,
-            contactService,
-            nsiService,
-            referralService
-        )
+        contactService =
+            ContactService(
+                contactRepository,
+                contactTypeRepository,
+                contactOutcomeRepository,
+                contactAlertRepository,
+                officeLocationRepository,
+                teamRepository,
+                personManagerRepository,
+            )
+        referralService =
+            ReferralService(
+                referenceDataRepository,
+                referralSourceRepository,
+                moveOnCategoryRepository,
+                teamRepository,
+                staffRepository,
+                referralRepository,
+                residenceRepository,
+                personRepository,
+                eventRepository,
+                registrationRepository,
+                contactService,
+            )
+        nsiService =
+            NsiService(
+                nsiRepository,
+                nsiTypeRepository,
+                nsiStatusRepository,
+                nsiManagerRepository,
+                teamRepository,
+                staffRepository,
+                transferReasonRepository,
+                addressService,
+                contactService,
+                referralService,
+                referenceDataRepository,
+                eventRepository,
+            )
+        approvedPremisesService =
+            ApprovedPremisesService(
+                approvedPremisesApiClient,
+                approvedPremisesRepository,
+                staffRepository,
+                personRepository,
+                eventRepository,
+                contactService,
+                nsiService,
+                referralService,
+            )
     }
 
     @Test
@@ -236,9 +240,10 @@ internal class ApprovedPremisesServiceTest {
         val manager = givenAPersonManager(person)
         givenAnEvent(person, "3")
         val submitter = givenStaff()
-        val submittedBy = SubmittedByGenerator.generate(
-            staffMember = StaffMemberGenerator.generate(staffCode = submitter.code)
-        )
+        val submittedBy =
+            SubmittedByGenerator.generate(
+                staffMember = StaffMemberGenerator.generate(staffCode = submitter.code),
+            )
         val unallocatedTeam = givenUnallocatedTeam()
         val details = givenApplicationSubmittedDetails(submittedBy = submittedBy)
         givenContactTypes(listOf(ContactTypeCode.APPLICATION_SUBMITTED))
@@ -253,7 +258,7 @@ internal class ApprovedPremisesServiceTest {
             team = unallocatedTeam,
             alertManager = manager,
             notes = details.eventDetails.notes,
-            description = "Approved Premises Application Submitted"
+            description = "Approved Premises Application Submitted",
         )
     }
 
@@ -279,7 +284,7 @@ internal class ApprovedPremisesServiceTest {
             team = unallocatedTeam,
             alertManager = manager,
             description = "Approved Premises Application Accepted",
-            notes = details.eventDetails.notes
+            notes = details.eventDetails.notes,
         )
     }
 
@@ -314,12 +319,13 @@ internal class ApprovedPremisesServiceTest {
             staff = staff,
             team = unallocatedTeam,
             alertManager = manager,
-            notes = """
+            notes =
+                """
                 TEST
                 
                 For more details, click here: https://example.com
-            """.trimIndent(),
-            description = "The reason they didn't attend"
+                """.trimIndent(),
+            description = "The reason they didn't attend",
         )
     }
 
@@ -349,12 +355,13 @@ internal class ApprovedPremisesServiceTest {
             staff = staff,
             team = approvedPremisesTeam,
             alertManager = manager,
-            notes = """
+            notes =
+                """
                 Arrived on time
                 
                 For more details, click here: https://example.com
-            """.trimIndent(),
-            description = "Arrived at Test Premises"
+                """.trimIndent(),
+            description = "Arrived at Test Premises",
         )
         verifyNsiIsCreated(
             type = NsiTypeCode.APPROVED_PREMISES_RESIDENCE,
@@ -366,11 +373,12 @@ internal class ApprovedPremisesServiceTest {
             person = person,
             staff = staff,
             team = approvedPremisesTeam,
-            notes = """
+            notes =
+                """
                 Arrived on time
                 
                 For more details, click here: https://example.com
-            """.trimIndent()
+                """.trimIndent(),
         )
     }
 
@@ -382,7 +390,7 @@ internal class ApprovedPremisesServiceTest {
         team: Team,
         alertManager: PersonManager,
         description: String? = null,
-        notes: String? = null
+        notes: String? = null,
     ) {
         verify(contactRepository).save(
             check { contact ->
@@ -403,9 +411,9 @@ internal class ApprovedPremisesServiceTest {
                         assertThat(alert.personManagerId, equalTo(alertManager.id))
                         assertThat(alert.staffId, equalTo(alertManager.staff.id))
                         assertThat(alert.teamId, equalTo(alertManager.team.id))
-                    }
+                    },
                 )
-            }
+            },
         )
     }
 
@@ -419,7 +427,7 @@ internal class ApprovedPremisesServiceTest {
         person: Person,
         staff: Staff,
         team: Team,
-        notes: String? = null
+        notes: String? = null,
     ) {
         verify(nsiRepository).save(
             check { nsi ->
@@ -437,9 +445,9 @@ internal class ApprovedPremisesServiceTest {
                         assertThat(manager.nsi, equalTo(nsi))
                         assertThat(manager.staff, equalTo(staff))
                         assertThat(manager.team, equalTo(team))
-                    }
+                    },
                 )
-            }
+            },
         )
     }
 
@@ -452,12 +460,15 @@ internal class ApprovedPremisesServiceTest {
     private fun givenAPersonManager(person: Person): PersonManager {
         val manager = PersonManagerGenerator.generate(person)
         whenever(personManagerRepository.findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id)).thenReturn(
-            manager
+            manager,
         )
         return manager
     }
 
-    private fun givenAnEvent(person: Person, eventNumber: String): Event {
+    private fun givenAnEvent(
+        person: Person,
+        eventNumber: String,
+    ): Event {
         val event = PersonGenerator.generateEvent(eventNumber, person.id)
         whenever(eventRepository.findByPersonIdAndNumber(person.id, eventNumber))
             .thenReturn(event)
@@ -469,9 +480,7 @@ internal class ApprovedPremisesServiceTest {
         return staff
     }
 
-    private fun givenUnallocatedTeam(
-        probationAreaCode: String = ProbationAreaGenerator.DEFAULT.code
-    ): Team {
+    private fun givenUnallocatedTeam(probationAreaCode: String = ProbationAreaGenerator.DEFAULT.code): Team {
         val team = TeamGenerator.generate(code = "${probationAreaCode}UAT")
         whenever(teamRepository.findByCodeAndProbationAreaCode("${probationAreaCode}UAT", probationAreaCode))
             .thenReturn(team)
@@ -483,45 +492,35 @@ internal class ApprovedPremisesServiceTest {
         return team
     }
 
-    private fun givenApplicationSubmittedDetails(
-        submittedBy: SubmittedBy = SubmittedByGenerator.generate()
-    ): EventDetails<ApplicationSubmitted> {
+    private fun givenApplicationSubmittedDetails(submittedBy: SubmittedBy = SubmittedByGenerator.generate()): EventDetails<ApplicationSubmitted> {
         val details = EventDetailsGenerator.applicationSubmitted(submittedBy = submittedBy)
         whenever(approvedPremisesApiClient.getApplicationSubmittedDetails(applicationSubmittedEvent.url())).thenReturn(
-            details
+            details,
         )
         return details
     }
 
-    private fun givenApplicationAssessedDetails(
-        assessedBy: AssessedBy = AssessedByGenerator.generate()
-    ): EventDetails<ApplicationAssessed> {
+    private fun givenApplicationAssessedDetails(assessedBy: AssessedBy = AssessedByGenerator.generate()): EventDetails<ApplicationAssessed> {
         val details = EventDetailsGenerator.applicationAssessed(assessedBy = assessedBy)
         whenever(approvedPremisesApiClient.getApplicationAssessedDetails(applicationAssessedEvent.url())).thenReturn(
-            details
+            details,
         )
         return details
     }
 
-    private fun givenBookingMadeDetails(
-        bookedBy: BookedBy = BookedByGenerator.generate()
-    ): EventDetails<BookingMade> {
+    private fun givenBookingMadeDetails(bookedBy: BookedBy = BookedByGenerator.generate()): EventDetails<BookingMade> {
         val details = EventDetailsGenerator.bookingMade(bookedBy = bookedBy)
         whenever(approvedPremisesApiClient.getBookingMadeDetails(bookingMadeEvent.url())).thenReturn(details)
         return details
     }
 
-    private fun givenPersonNotArrivedDetails(
-        recordedBy: Staff = StaffGenerator.generate()
-    ): EventDetails<PersonNotArrived> {
+    private fun givenPersonNotArrivedDetails(recordedBy: Staff = StaffGenerator.generate()): EventDetails<PersonNotArrived> {
         val details = EventDetailsGenerator.personNotArrived(recordedBy = recordedBy)
         whenever(approvedPremisesApiClient.getPersonNotArrivedDetails(personNotArrivedEvent.url())).thenReturn(details)
         return details
     }
 
-    private fun givenPersonArrivedDetails(
-        keyWorker: Staff = StaffGenerator.generate()
-    ): EventDetails<PersonArrived> {
+    private fun givenPersonArrivedDetails(keyWorker: Staff = StaffGenerator.generate()): EventDetails<PersonArrived> {
         val details = EventDetailsGenerator.personArrived(keyWorker = keyWorker)
         whenever(approvedPremisesApiClient.getPersonArrivedDetails(personArrivedEvent.url())).thenReturn(details)
         return details
@@ -552,13 +551,18 @@ internal class ApprovedPremisesServiceTest {
         }
     }
 
-    private fun givenNsiTypes(types: List<NsiTypeCode> = listOf(), statuses: List<NsiStatusCode> = listOf()) {
+    private fun givenNsiTypes(
+        types: List<NsiTypeCode> = listOf(),
+        statuses: List<NsiStatusCode> = listOf(),
+    ) {
         whenever(nsiRepository.save(any())).thenAnswer { it.arguments[0] }
         whenever(nsiManagerRepository.save(any())).thenAnswer { it.arguments[0] }
         whenever(transferReasonRepository.findByCode("NSI"))
             .thenReturn(TransferReason(IdGenerator.getAndIncrement(), "NSI"))
         types.forEach {
-            whenever(nsiTypeRepository.findByCode(it.code)).thenReturn(NsiType(IdGenerator.getAndIncrement(), it.code, "description of ${it.code}"))
+            whenever(
+                nsiTypeRepository.findByCode(it.code),
+            ).thenReturn(NsiType(IdGenerator.getAndIncrement(), it.code, "description of ${it.code}"))
         }
         statuses.forEach {
             whenever(nsiStatusRepository.findByCode(it.code))
@@ -572,44 +576,48 @@ internal class ApprovedPremisesServiceTest {
         ServiceContext(user.username, auditUserService).onApplicationEvent(applicationStartedEvent)
     }
 
-    private fun givenReferral(person: Person, bookingId: String): Referral {
-        val ref = Referral(
-            person.id,
-            564,
-            ApprovedPremisesGenerator.DEFAULT.id,
-            LocalDate.now(),
-            LocalDate.now(),
-            LocalDate.now(),
-            ZonedDateTime.now(),
-            Nsi.EXT_REF_BOOKING_PREFIX + bookingId,
-            ReferenceDataGenerator.REFERRAL_DATE_TYPE.id,
-            ReferenceDataGenerator.REFERRAL_CATEGORIES[ApprovedPremisesCategoryCode.OTHER.value]!!.id,
-            ReferenceDataGenerator.REFERRAL_GROUP.id,
-            1, 1,
-            "Reason",
-            ReferenceDataGenerator.OTHER_REFERRAL_SOURCE.id,
-            ReferenceDataGenerator.AP_REFERRAL_SOURCE.id,
-            ReferenceDataGenerator.ACCEPTED_DEFERRED_ADMISSION.id,
-            1, 1, null,
-            ReferenceDataGenerator.YN_UNKNOWN.id, null,
-            ReferenceDataGenerator.YN_UNKNOWN.id, null,
-            ReferenceDataGenerator.YN_UNKNOWN.id, null,
-            true, true,
-            ReferenceDataGenerator.RISK_UNKNOWN.id,
-            ReferenceDataGenerator.RISK_UNKNOWN.id,
-            ReferenceDataGenerator.RISK_UNKNOWN.id,
-            ReferenceDataGenerator.RISK_UNKNOWN.id,
-            ReferenceDataGenerator.RISK_UNKNOWN.id,
-            ReferenceDataGenerator.RISK_UNKNOWN.id,
-            ReferenceDataGenerator.RISK_UNKNOWN.id,
-            null
-        )
+    private fun givenReferral(
+        person: Person,
+        bookingId: String,
+    ): Referral {
+        val ref =
+            Referral(
+                person.id,
+                564,
+                ApprovedPremisesGenerator.DEFAULT.id,
+                LocalDate.now(),
+                LocalDate.now(),
+                LocalDate.now(),
+                ZonedDateTime.now(),
+                Nsi.EXT_REF_BOOKING_PREFIX + bookingId,
+                ReferenceDataGenerator.REFERRAL_DATE_TYPE.id,
+                ReferenceDataGenerator.REFERRAL_CATEGORIES[ApprovedPremisesCategoryCode.OTHER.value]!!.id,
+                ReferenceDataGenerator.REFERRAL_GROUP.id,
+                1, 1,
+                "Reason",
+                ReferenceDataGenerator.OTHER_REFERRAL_SOURCE.id,
+                ReferenceDataGenerator.AP_REFERRAL_SOURCE.id,
+                ReferenceDataGenerator.ACCEPTED_DEFERRED_ADMISSION.id,
+                1, 1, null,
+                ReferenceDataGenerator.YN_UNKNOWN.id, null,
+                ReferenceDataGenerator.YN_UNKNOWN.id, null,
+                ReferenceDataGenerator.YN_UNKNOWN.id, null,
+                true, true,
+                ReferenceDataGenerator.RISK_UNKNOWN.id,
+                ReferenceDataGenerator.RISK_UNKNOWN.id,
+                ReferenceDataGenerator.RISK_UNKNOWN.id,
+                ReferenceDataGenerator.RISK_UNKNOWN.id,
+                ReferenceDataGenerator.RISK_UNKNOWN.id,
+                ReferenceDataGenerator.RISK_UNKNOWN.id,
+                ReferenceDataGenerator.RISK_UNKNOWN.id,
+                null,
+            )
         whenever(
             referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
                 person.id,
                 UserGenerator.AUDIT_USER.id,
-                Nsi.EXT_REF_BOOKING_PREFIX + bookingId
-            )
+                Nsi.EXT_REF_BOOKING_PREFIX + bookingId,
+            ),
         ).thenReturn(ref)
         return ref
     }

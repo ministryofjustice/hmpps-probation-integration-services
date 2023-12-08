@@ -20,8 +20,11 @@ class ClientTrackingConfiguration(private val clientTrackingInterceptor: ClientT
 
 @Component
 class ClientTrackingInterceptor : HandlerInterceptor {
-
-    override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+    override fun preHandle(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        handler: Any,
+    ): Boolean {
         request.getHeader(HttpHeaders.AUTHORIZATION)?.let {
             try {
                 val jwtBody = SignedJWT.parse(it.replace(BEARER, "")).jwtClaimsSet

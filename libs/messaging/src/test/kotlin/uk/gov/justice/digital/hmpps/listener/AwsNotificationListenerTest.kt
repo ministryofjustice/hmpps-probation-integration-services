@@ -40,7 +40,7 @@ class AwsNotificationListenerTest {
                 assertThrows<RuntimeException> {
                     listener.receive("message")
                 },
-                equalTo(exception)
+                equalTo(exception),
             )
 
             it.verify { Sentry.captureException(exception) }
@@ -51,19 +51,20 @@ class AwsNotificationListenerTest {
     fun `common SQS exceptions are unwrapped`() {
         mockStatic(Sentry::class.java).use {
             val meaningfulException = RuntimeException("error")
-            val wrappedException = CompletionException(
-                AsyncAdapterBlockingExecutionFailedException(
-                    "async error",
-                    ListenerExecutionFailedException("listener failure", meaningfulException, GenericMessage("test"))
+            val wrappedException =
+                CompletionException(
+                    AsyncAdapterBlockingExecutionFailedException(
+                        "async error",
+                        ListenerExecutionFailedException("listener failure", meaningfulException, GenericMessage("test")),
+                    ),
                 )
-            )
             whenever(handler.handle("message")).thenThrow(wrappedException)
 
             assertThat(
                 assertThrows<CompletionException> {
                     listener.receive("message")
                 },
-                equalTo(wrappedException)
+                equalTo(wrappedException),
             )
 
             it.verify { Sentry.captureException(meaningfulException) }

@@ -26,40 +26,30 @@ class Contact(
     @Id
     @Column(name = "contact_id")
     val id: Long,
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @Column
     val description: String?,
-
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
     val type: ContactType,
-
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")
     val outcome: ContactOutcome? = null,
-
     @OneToMany(mappedBy = "contact")
     val documents: List<ContactDocument>,
-
     @Lob
     @Column
     val notes: String? = null,
-
     @Column(name = "contact_date")
     val date: LocalDate,
-
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime?,
-
     @Column
     @Convert(converter = YesNoConverter::class)
     val sensitive: Boolean?,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -69,15 +59,12 @@ class ContactType(
     @Id
     @Column(name = "contact_type_id")
     val id: Long,
-
     @Column
     val code: String,
-
     @Column
     val description: String,
-
     @Column(name = "sgc_flag", columnDefinition = "number")
-    val systemGenerated: Boolean
+    val systemGenerated: Boolean,
 )
 
 @Immutable
@@ -87,9 +74,8 @@ class ContactOutcome(
     @Id
     @Column(name = "contact_outcome_type_id")
     val id: Long,
-
     @Column
-    val description: String
+    val description: String,
 )
 
 @Immutable
@@ -100,28 +86,21 @@ class ContactDocument(
     @Id
     @Column(name = "document_id")
     val id: Long,
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @ManyToOne
     @JoinColumn(name = "primary_key_id", referencedColumnName = "contact_id")
     val contact: Contact,
-
     @Column(name = "alfresco_document_id")
     val alfrescoId: String,
-
     @Column(name = "document_name")
     val name: String,
-
     @Column(name = "last_saved")
     val lastUpdated: ZonedDateTime,
-
     @Column
     val tableName: String = "CONTACT",
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 interface CaseSummaryContactRepository : JpaRepository<Contact, Long> {
@@ -137,7 +116,7 @@ interface CaseSummaryContactRepository : JpaRepository<Contact, Long> {
         and (:typesCount = 0 or c.type.code in :types)
         and (:includeSystemGenerated = true or c.type.systemGenerated = false)
         order by c.date desc, c.startTime desc
-        """
+        """,
     )
     fun findContacts(
         personId: Long,
@@ -145,7 +124,7 @@ interface CaseSummaryContactRepository : JpaRepository<Contact, Long> {
         toDate: LocalDate,
         includeSystemGenerated: Boolean,
         types: List<String>,
-        typesCount: Int = types.count()
+        typesCount: Int = types.count(),
     ): List<Contact>
 
     @Query(
@@ -158,7 +137,7 @@ interface CaseSummaryContactRepository : JpaRepository<Contact, Long> {
         and c.date <= current_date
         group by c.type.code, c.type.description
         order by c.type.code
-        """
+        """,
     )
     fun summarizeContactTypes(personId: Long): List<ContactTypeSummary>
 }
@@ -169,7 +148,7 @@ fun CaseSummaryContactRepository.searchContacts(
     fromDate: LocalDate?,
     toDate: LocalDate,
     types: List<String>,
-    includeSystemGenerated: Boolean
+    includeSystemGenerated: Boolean,
 ): List<Contact> {
     val contacts = findContacts(personId, fromDate, toDate, includeSystemGenerated, types)
     // Oracle doesn't allow query comparisons on CLOBs, so we have to filter the notes ourselves:

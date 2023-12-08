@@ -14,7 +14,7 @@ data class RiskToTheIndividualDetails(
     override val laterWIPAssessmentExists: Boolean? = null,
     override val limitedAccessOffender: Boolean,
     override val lastUpdatedDate: ZonedDateTime? = null,
-    val riskToTheIndividual: RiskToTheIndividual
+    val riskToTheIndividual: RiskToTheIndividual,
 ) : Assessment() {
     companion object {
         fun from(oasysRiskToTheIndividual: OasysRiskToTheIndividualDetails): RiskToTheIndividualDetails {
@@ -44,8 +44,8 @@ data class RiskToTheIndividualDetails(
                         stringToBoolean(currentConcernsRiskOfSelfHarm),
                         stringToBoolean(currentConcernsRiskOfSuicide),
                         stringToBoolean(concernsBreachOfTrust),
-                        stringToBoolean(concernsRiskOfSelfHarm)
-                    )
+                        stringToBoolean(concernsRiskOfSelfHarm),
+                    ),
                 )
             }
         }
@@ -66,5 +66,5 @@ data class RiskToTheIndividual(
     val currentConcernsRiskOfSelfHarm: Boolean? = null,
     val currentConcernsRiskOfSuicide: Boolean? = null,
     val concernsBreachOfTrust: Boolean? = null,
-    val concernsRiskOfSelfHarm: Boolean? = null
+    val concernsRiskOfSelfHarm: Boolean? = null,
 )

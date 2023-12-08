@@ -14,17 +14,13 @@ class Borough(
     @Id
     @Column(name = "borough_id")
     val id: Long,
-
     @Column
     val code: String,
-
     @Column
     val description: String,
-
     @ManyToOne
     @JoinColumn(name = "probation_area_id")
     val probationArea: ProbationArea,
-
     @OneToMany(mappedBy = "borough")
-    val districts: Set<District> = setOf()
+    val districts: Set<District> = setOf(),
 )

@@ -11,7 +11,7 @@ data class Address(
     val county: String?,
     val postcode: String?,
     val from: LocalDate,
-    val to: LocalDate?
+    val to: LocalDate?,
 ) {
     companion object {
         fun from(
@@ -23,7 +23,7 @@ data class Address(
             county: String? = null,
             postcode: String? = null,
             from: LocalDate,
-            to: LocalDate? = null
+            to: LocalDate? = null,
         ): Address? =
             if (
                 buildingName == null && buildingNumber == null && streetName == null &&

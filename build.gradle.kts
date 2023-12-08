@@ -24,11 +24,12 @@ dependencies {
     agentDeps("com.microsoft.azure:applicationinsights-agent:3.4.18")
 }
 
-val copyAgentTask = project.tasks.register<Copy>("copyAgent") {
-    from(agentDeps)
-    into("${project.layout.buildDirectory.dir("agent").get().asFile}")
-    rename("applicationinsights-agent(.+).jar", "agent.jar")
-}
+val copyAgentTask =
+    project.tasks.register<Copy>("copyAgent") {
+        from(agentDeps)
+        into("${project.layout.buildDirectory.dir("agent").get().asFile}")
+        rename("applicationinsights-agent(.+).jar", "agent.jar")
+    }
 
 allprojects {
     group = "uk.gov.justice.digital"
@@ -90,7 +91,10 @@ subprojects {
 
     if (!path.startsWith(":libs")) {
         tasks.named("check") {
-            dependsOn(rootProject.subprojects.filter { it.path.startsWith(":libs") }.map { it.tasks.getByName("check") })
+            dependsOn(
+                rootProject.subprojects.filter { it.path.startsWith(":libs") }
+                    .map { it.tasks.getByName("check") },
+            )
         }
     }
 }

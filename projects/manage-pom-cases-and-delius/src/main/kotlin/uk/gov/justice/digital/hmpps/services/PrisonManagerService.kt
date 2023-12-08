@@ -30,18 +30,22 @@ class PrisonManagerService(
     private val prisonManagerRepository: PrisonManagerRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val contactService: ContactService,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
 ) {
-
     @Transactional
-    fun allocatePrisonManager(personId: Long, allocationDate: ZonedDateTime, allocation: PomAllocation): PomAllocationResult {
+    fun allocatePrisonManager(
+        personId: Long,
+        allocationDate: ZonedDateTime,
+        allocation: PomAllocation,
+    ): PomAllocationResult {
         val probationArea = probationAreaRepository.getByNomisCdeCode(allocation.prison.code)
         val team = teamRepository.getByCode(probationArea.code + Team.POM_SUFFIX)
         val staff = getStaff(probationArea, team, allocation.manager.name, allocationDate)
         personRepository.findForUpdate(personId)
         val currentPom = prisonManagerRepository.findActiveManagerAtDate(personId, allocationDate)
-        val newEndDate = currentPom?.endDate
-            ?: prisonManagerRepository.findFirstManagerAfterDate(personId, allocationDate).firstOrNull()?.date
+        val newEndDate =
+            currentPom?.endDate
+                ?: prisonManagerRepository.findFirstManagerAfterDate(personId, allocationDate).firstOrNull()?.date
         val newPom = currentPom.changeTo(personId, allocationDate, probationArea, team, staff)
         return newPom?.let { new ->
             currentPom?.let { old -> prisonManagerRepository.saveAndFlush(old) }
@@ -53,14 +57,18 @@ class PrisonManagerService(
     }
 
     @Transactional
-    fun deallocatePrisonManager(personId: Long, deallocationDate: ZonedDateTime): PomAllocationResult {
+    fun deallocatePrisonManager(
+        personId: Long,
+        deallocationDate: ZonedDateTime,
+    ): PomAllocationResult {
         val currentPom = prisonManagerRepository.findActiveManagerAtDate(personId, deallocationDate)
         return if (currentPom?.isUnallocated() == false) {
             val probationArea = currentPom.probationArea
             val team = teamRepository.getByCode(probationArea.code + Team.UNALLOCATED_SUFFIX)
             val staff = staffService.getStaffByCode(team.code + "U")
-            val newEndDate = currentPom.endDate
-                ?: prisonManagerRepository.findFirstManagerAfterDate(personId, deallocationDate).firstOrNull()?.date
+            val newEndDate =
+                currentPom.endDate
+                    ?: prisonManagerRepository.findFirstManagerAfterDate(personId, deallocationDate).firstOrNull()?.date
             val newPom = currentPom.changeTo(personId, deallocationDate, probationArea, team, staff)!!
             prisonManagerRepository.saveAndFlush(currentPom)
             newPom.endDate = newEndDate
@@ -75,7 +83,7 @@ class PrisonManagerService(
         probationArea: ProbationArea,
         team: Team,
         staffName: Name,
-        allocationDate: ZonedDateTime
+        allocationDate: ZonedDateTime,
     ): Staff {
         val findStaff = { staffService.findStaff(probationArea.id, staffName) }
         return retry(3) {
@@ -83,8 +91,11 @@ class PrisonManagerService(
         }
     }
 
-    private fun PrisonManager.hasChanged(probationArea: ProbationArea, team: Team, staff: Staff) =
-        this.probationArea.id != probationArea.id || this.team.id != team.id || this.staff.id != staff.id
+    private fun PrisonManager.hasChanged(
+        probationArea: ProbationArea,
+        team: Team,
+        staff: Staff,
+    ) = this.probationArea.id != probationArea.id || this.team.id != team.id || this.staff.id != staff.id
 
     fun PrisonManager.allocationNotes() =
         """
@@ -100,20 +111,21 @@ class PrisonManagerService(
         |From Officer: ${staff.surname}, ${staff.forename}
         """.trimMargin()
 
-    fun PrisonManager.responsibleOfficerDetails() = listOfNotNull(
-        "Responsible Officer Type: Prison Offender Manager",
-        "Responsible Officer: ${staff.surname}, ${staff.forename} (${team.description}, ${probationArea.description})",
-        "Start Date: ${DeliusDateTimeFormatter.format(date)}",
-        endDate?.let { "End Date: " + DeliusDateTimeFormatter.format(it) },
-        "Allocation Reason: ${allocationReason.description}"
-    ).joinToString(System.lineSeparator())
+    fun PrisonManager.responsibleOfficerDetails() =
+        listOfNotNull(
+            "Responsible Officer Type: Prison Offender Manager",
+            "Responsible Officer: ${staff.surname}, ${staff.forename} (${team.description}, ${probationArea.description})",
+            "Start Date: ${DeliusDateTimeFormatter.format(date)}",
+            endDate?.let { "End Date: " + DeliusDateTimeFormatter.format(it) },
+            "Allocation Reason: ${allocationReason.description}",
+        ).joinToString(System.lineSeparator())
 
     private fun PrisonManager?.changeTo(
         personId: Long,
         dateTime: ZonedDateTime,
         probationArea: ProbationArea,
         team: Team,
-        staff: Staff
+        staff: Staff,
     ) = if (this?.hasChanged(probationArea, team, staff) != false) {
         val allocationReasonCode =
             when {
@@ -121,15 +133,16 @@ class PrisonManagerService(
                 this.probationArea.id == probationArea.id -> PrisonManager.AllocationReasonCode.INTERNAL
                 else -> PrisonManager.AllocationReasonCode.EXTERNAL
             }
-        val newPom = PrisonManager(
-            personId = personId,
-            probationArea = probationArea,
-            allocationReason = referenceDataRepository.pomAllocationReason(allocationReasonCode.value),
-            date = dateTime,
-            staff = staff,
-            team = team,
-            responsibleOfficers = mutableListOf()
-        )
+        val newPom =
+            PrisonManager(
+                personId = personId,
+                probationArea = probationArea,
+                allocationReason = referenceDataRepository.pomAllocationReason(allocationReasonCode.value),
+                date = dateTime,
+                staff = staff,
+                team = team,
+                responsibleOfficers = mutableListOf(),
+            )
         val notes = newPom.allocationNotes() + (this?.transferNotes() ?: "")
         contactService.createContact(personId, allocationReasonCode.ctc, dateTime, newPom, notes)
         this?.apply {
@@ -146,7 +159,7 @@ class PrisonManagerService(
                     |
                     |Previous Details:
                     |${this.responsibleOfficerDetails()}
-                    """.trimMargin()
+                    """.trimMargin(),
                 )
             }
             endDate = dateTime
@@ -158,5 +171,7 @@ class PrisonManagerService(
 }
 
 enum class PomAllocationResult {
-    PomAllocated, PomDeallocated, NoPomChange
+    PomAllocated,
+    PomDeallocated,
+    NoPomChange,
 }

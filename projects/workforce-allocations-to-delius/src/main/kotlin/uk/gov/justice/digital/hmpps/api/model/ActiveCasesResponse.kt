@@ -5,11 +5,11 @@ data class ActiveCasesResponse(
     val name: Name,
     val grade: String?,
     val email: String?,
-    val cases: List<Case>
+    val cases: List<Case>,
 )
 
 data class Case(
     val crn: String,
     val name: Name,
-    val type: String
+    val type: String,
 )

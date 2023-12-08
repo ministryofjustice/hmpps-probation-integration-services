@@ -23,7 +23,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.TeamRepositor
 
 @ExtendWith(MockitoExtension::class)
 class AssignmentServiceTest {
-
     @Mock
     lateinit var probationAreaRepository: ProbationAreaRepository
 
@@ -48,14 +47,15 @@ class AssignmentServiceTest {
     @Test
     fun `unable to find probation area`() {
         whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId)).thenReturn(
-            null
+            null,
         )
-        val ex = assertThrows<NotFoundException> {
-            assignmentService.findAssignment(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId, staffName)
-        }
+        val ex =
+            assertThrows<NotFoundException> {
+                assignmentService.findAssignment(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId, staffName)
+            }
         assertThat(
             ex.message,
-            equalTo("Probation Area not found for NOMIS institution: ${PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId}")
+            equalTo("Probation Area not found for NOMIS institution: ${PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId}"),
         )
     }
 
@@ -64,12 +64,13 @@ class AssignmentServiceTest {
         whenever(probationAreaRepository.findByInstitutionNomisCode(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId))
             .thenReturn(ProbationAreaGenerator.DEFAULT)
         whenever(teamRepository.findByCode(TeamGenerator.DEFAULT.code)).thenReturn(null)
-        val ex = assertThrows<NotFoundException> {
-            assignmentService.findAssignment(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId, staffName)
-        }
+        val ex =
+            assertThrows<NotFoundException> {
+                assignmentService.findAssignment(PrisonCaseNoteGenerator.EXISTING_IN_BOTH.locationId, staffName)
+            }
         assertThat(
             ex.message,
-            equalTo("Team with code of ${TeamGenerator.DEFAULT.code} not found")
+            equalTo("Team with code of ${TeamGenerator.DEFAULT.code} not found"),
         )
     }
 
@@ -155,7 +156,7 @@ class AssignmentServiceTest {
         assertThrows<NotFoundException> {
             assignmentService.findAssignment(
                 PrisonCaseNoteGenerator.NEW_TO_DELIUS.locationId,
-                staffName
+                staffName,
             )
         }
     }

@@ -15,14 +15,12 @@ class DocContact(
     @Id
     @Column(name = "contact_id", updatable = false)
     val id: Long = 0,
-
     @JoinColumn(name = "event_id", insertable = false, updatable = false)
     @ManyToOne
     val event: DocEvent?,
-
     @ManyToOne
     @JoinColumn(name = "contact_type_id", updatable = false)
-    val type: DocContactType
+    val type: DocContactType,
 )
 
 @Immutable
@@ -32,6 +30,5 @@ class DocContactType(
     @Id
     @Column(name = "contact_type_id")
     val id: Long,
-
-    val description: String
+    val description: String,
 )

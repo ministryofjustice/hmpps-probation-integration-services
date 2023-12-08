@@ -21,26 +21,20 @@ class Registration(
     @Id
     @Column(name = "registration_id", nullable = false)
     val id: Long,
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
-
     @Column(name = "registration_date")
     val startDate: LocalDate,
-
     @Column(name = "registration_notes", columnDefinition = "clob")
     val notes: String?,
-
     @ManyToOne
     @JoinColumn(name = "register_type_id")
     val registerType: RegisterType,
-
     @OneToMany(mappedBy = "registration")
     val deRegistrations: List<DeRegistration>,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean
+    val softDeleted: Boolean,
 ) {
     val endDate: LocalDate?
         get() = if (deRegistrations.isEmpty()) null else deRegistrations.maxOf { it.deRegistrationDate }
@@ -53,7 +47,7 @@ class RegisterType(
     @Id
     @Column(name = "register_type_id")
     val id: Long,
-    val description: String
+    val description: String,
 )
 
 @Immutable
@@ -64,14 +58,11 @@ class DeRegistration(
     @Id
     @Column(name = "deregistration_id", nullable = false)
     val id: Long,
-
     @Column(name = "deregistration_date")
     val deRegistrationDate: LocalDate,
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "registration_id", nullable = false)
     val registration: Registration,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean
+    val softDeleted: Boolean,
 )

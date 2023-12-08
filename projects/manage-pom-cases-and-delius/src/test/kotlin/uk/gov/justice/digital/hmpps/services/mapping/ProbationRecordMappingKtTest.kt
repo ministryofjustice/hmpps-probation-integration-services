@@ -20,7 +20,6 @@ import uk.gov.justice.digital.hmpps.set
 import java.time.LocalDate
 
 internal class ProbationRecordMappingKtTest {
-
     @Test
     fun `record mapping`() {
         val person = PersonGenerator.generate("J123456", "J00243U")
@@ -34,7 +33,10 @@ internal class ProbationRecordMappingKtTest {
 
     @ParameterizedTest
     @MethodSource("resourceMapping")
-    fun `resourcing mapping`(code: String?, result: Resourcing?) {
+    fun `resourcing mapping`(
+        code: String?,
+        result: Resourcing?,
+    ) {
         val decision = code?.let { ReferenceDataGenerator.generate(it) }
         assertThat(decision.resourcing(), equalTo(result))
     }
@@ -43,20 +45,21 @@ internal class ProbationRecordMappingKtTest {
     fun `team mapping handles null district`() {
         assertThat(
             ProviderGenerator.generateTeam("TEST", district = null).forManager(),
-            equalTo(Team("TEST", "Team TEST", null))
+            equalTo(Team("TEST", "Team TEST", null)),
         )
     }
 
     @Test
     fun `unallocated om provides null staff details`() {
         val unallocated = Staff("N07UATU", "Unallocated", "Staff", probationAreaId = 1, id = 99)
-        val om = PersonManager(
-            PersonGenerator.DEFAULT,
-            ProviderGenerator.DEFAULT_TEAM,
-            unallocated,
-            ProviderGenerator.DEFAULT_PROVIDER,
-            id = 99
-        )
+        val om =
+            PersonManager(
+                PersonGenerator.DEFAULT,
+                ProviderGenerator.DEFAULT_TEAM,
+                unallocated,
+                ProviderGenerator.DEFAULT_PROVIDER,
+                id = 99,
+            )
         assertNull(om.manager().code)
         assertNull(om.manager().name)
         assertNull(om.manager().email)
@@ -64,31 +67,37 @@ internal class ProbationRecordMappingKtTest {
 
     @ParameterizedTest
     @MethodSource("levelMapping")
-    fun `level mapping`(code: String?, level: Int) {
-        val registration = code?.let {
-            val rLevel = ReferenceDataGenerator.generate(it)
-            RegistrationGenerator.generate(RegistrationGenerator.TYPE_MAPPA, rLevel, LocalDate.now())
-        }
+    fun `level mapping`(
+        code: String?,
+        level: Int,
+    ) {
+        val registration =
+            code?.let {
+                val rLevel = ReferenceDataGenerator.generate(it)
+                RegistrationGenerator.generate(RegistrationGenerator.TYPE_MAPPA, rLevel, LocalDate.now())
+            }
         assertThat(registration.level(), equalTo(level))
     }
 
     companion object {
         @JvmStatic
-        fun resourceMapping() = listOf(
-            Arguments.of(null, null),
-            Arguments.of("R", Resourcing.ENHANCED),
-            Arguments.of("A", Resourcing.NORMAL),
-            Arguments.of("N", null)
-        )
+        fun resourceMapping() =
+            listOf(
+                Arguments.of(null, null),
+                Arguments.of("R", Resourcing.ENHANCED),
+                Arguments.of("A", Resourcing.NORMAL),
+                Arguments.of("N", null),
+            )
 
         @JvmStatic
-        fun levelMapping() = listOf(
-            Arguments.of(null, 0),
-            Arguments.of("M0", 0),
-            Arguments.of("M1", 1),
-            Arguments.of("M2", 2),
-            Arguments.of("M3", 3),
-            Arguments.of("T3", 0)
-        )
+        fun levelMapping() =
+            listOf(
+                Arguments.of(null, 0),
+                Arguments.of("M0", 0),
+                Arguments.of("M1", 1),
+                Arguments.of("M2", 2),
+                Arguments.of("M3", 3),
+                Arguments.of("T3", 0),
+            )
     }
 }

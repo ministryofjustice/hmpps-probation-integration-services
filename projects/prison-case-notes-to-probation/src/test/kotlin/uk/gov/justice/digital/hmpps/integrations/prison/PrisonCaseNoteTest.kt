@@ -9,18 +9,19 @@ import java.time.ZonedDateTime
 class PrisonCaseNoteTest {
     @Test
     fun `get staff name test`() {
-        val caseNote = PrisonCaseNote(
-            "1",
-            1L,
-            "1",
-            "type",
-            "subType",
-            creationDateTime = ZonedDateTime.now(),
-            occurrenceDateTime = ZonedDateTime.now(),
-            authorName = "Smith,Bob",
-            text = "",
-            amendments = listOf()
-        )
+        val caseNote =
+            PrisonCaseNote(
+                "1",
+                1L,
+                "1",
+                "type",
+                "subType",
+                creationDateTime = ZonedDateTime.now(),
+                occurrenceDateTime = ZonedDateTime.now(),
+                authorName = "Smith,Bob",
+                text = "",
+                amendments = listOf(),
+            )
 
         val staffName = StaffName("Bob", "Smith")
         assertThat(caseNote.getStaffName(), equalTo(staffName))

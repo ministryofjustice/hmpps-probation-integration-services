@@ -33,7 +33,6 @@ import java.net.URI
 
 @ExtendWith(MockitoExtension::class)
 internal class UPWAssessmentServiceTest {
-
     @Mock
     private lateinit var telemetryService: TelemetryService
 
@@ -78,7 +77,7 @@ internal class UPWAssessmentServiceTest {
 
         verify(telemetryService).trackEvent(
             "PersonNotFound",
-            mapOf("crn" to notification.message.personReference.findCrn()!!)
+            mapOf("crn" to notification.message.personReference.findCrn()!!),
         )
     }
 
@@ -88,9 +87,10 @@ internal class UPWAssessmentServiceTest {
         whenever(eventRepository.existsById(EventGenerator.DEFAULT.id)).thenReturn(false)
         val notification = prepEvent("upw-assessment-complete")
 
-        val exception = assertThrows<NotFoundException> {
-            upwAssessmentService.processMessage(notification)
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                upwAssessmentService.processMessage(notification)
+            }
         assertThat(exception.message, equalTo("Event with id of ${EventGenerator.DEFAULT.id} not found"))
     }
 
@@ -107,16 +107,17 @@ internal class UPWAssessmentServiceTest {
             ResponseEntity.status(HttpStatus.OK)
                 .headers { it[HttpHeaders.CONTENT_DISPOSITION] = listOf("filename=upw-assessment.pdf") }
                 .body(
-                    "Ceci n'est pas une PDF".toByteArray()
-                )
+                    "Ceci n'est pas une PDF".toByteArray(),
+                ),
         )
 
-        val exception = assertThrows<IllegalStateException> {
-            upwAssessmentService.processMessage(notification)
-        }
+        val exception =
+            assertThrows<IllegalStateException> {
+                upwAssessmentService.processMessage(notification)
+            }
         assertThat(
             exception.message,
-            equalTo("Invalid PDF returned for episode: http://localhost:1234/api/upw/download/12345")
+            equalTo("Invalid PDF returned for episode: http://localhost:1234/api/upw/download/12345"),
         )
     }
 }

@@ -22,13 +22,17 @@ class DetailService(
     private val convictionEventRepository: ConvictionEventRepository,
     private val custodyRepository: CustodyRepository,
     private val detailReleaseRepository: DetailReleaseRepository,
-    private val nsiRepository: NsiRepository
+    private val nsiRepository: NsiRepository,
 ) {
-    fun getDetails(value: String, type: IdentifierType): Detail {
-        val p = when (type) {
-            IdentifierType.CRN -> detailRepository.findByCrn(value)
-            IdentifierType.NOMS -> detailRepository.findByNomsNumber(value)
-        }
+    fun getDetails(
+        value: String,
+        type: IdentifierType,
+    ): Detail {
+        val p =
+            when (type) {
+                IdentifierType.CRN -> detailRepository.findByCrn(value)
+                IdentifierType.NOMS -> detailRepository.findByNomsNumber(value)
+            }
         val c = convictionEventRepository.getLatestConviction(p.id)
         var mainOffence = ""
         var releaseLocation: String? = null
@@ -74,7 +78,7 @@ class DetailService(
             recallDate,
             recallReason,
             nsiDates.firstOrNull { it.name == "recall" }?.referralDate,
-            nsiDates.firstOrNull { it.name == "breach" }?.referralDate
+            nsiDates.firstOrNull { it.name == "breach" }?.referralDate,
         )
     }
 }

@@ -55,7 +55,11 @@ abstract class ManagerBaseEntity : BaseEntity() {
     @ManyToOne
     lateinit var allocationReason: ReferenceData
 
-    fun populate(requestDate: ZonedDateTime, ts: TeamStaffContainer, activeManager: ManagerBaseEntity) {
+    fun populate(
+        requestDate: ZonedDateTime,
+        ts: TeamStaffContainer,
+        activeManager: ManagerBaseEntity,
+    ) {
         team = ts.team
         startDate = requestDate
         allocationReason = ts.reason

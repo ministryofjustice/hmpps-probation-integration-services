@@ -68,41 +68,44 @@ internal class AppointmentServiceTest {
     fun `using deliusId to find contact registers the same with app insights`() {
         val crn = "U123876"
         val referralId = UUID.randomUUID()
-        val mergeAppointment = MergeAppointment(
-            UUID.randomUUID(),
-            referralId,
-            "R1234EF",
-            ZonedDateTime.now().plusMinutes(30),
-            60,
-            "some notes for the appointment",
-            "DEFAULT",
-            false,
-            null,
-            53L,
-            null,
-            9562746271
-        )
-        val nsi = NsiGenerator.generate(
-            NsiGenerator.TYPES.values.first(),
-            eventId = mergeAppointment.sentenceId,
-            notes = "urn:hmpps:interventions-referral:$referralId"
-        )
-        val contact = Contact(
-            nsi.person,
-            ContactGenerator.TYPES[ContactType.Code.CRSSAA.value]!!,
-            providerId = ProviderGenerator.INTENDED_PROVIDER.id,
-            teamId = ProviderGenerator.INTENDED_TEAM.id,
-            staffId = ProviderGenerator.INTENDED_STAFF.id,
-            locationId = ProviderGenerator.DEFAULT_LOCATION.id,
-            eventId = nsi.eventId,
-            nsiId = nsi.id,
-            rarActivity = false,
-            externalReference = mergeAppointment.urn,
-            date = mergeAppointment.start.toLocalDate(),
-            startTime = mergeAppointment.start,
-            endTime = mergeAppointment.end,
-            id = 9562746271
-        )
+        val mergeAppointment =
+            MergeAppointment(
+                UUID.randomUUID(),
+                referralId,
+                "R1234EF",
+                ZonedDateTime.now().plusMinutes(30),
+                60,
+                "some notes for the appointment",
+                "DEFAULT",
+                false,
+                null,
+                53L,
+                null,
+                9562746271,
+            )
+        val nsi =
+            NsiGenerator.generate(
+                NsiGenerator.TYPES.values.first(),
+                eventId = mergeAppointment.sentenceId,
+                notes = "urn:hmpps:interventions-referral:$referralId",
+            )
+        val contact =
+            Contact(
+                nsi.person,
+                ContactGenerator.TYPES[ContactType.Code.CRSSAA.value]!!,
+                providerId = ProviderGenerator.INTENDED_PROVIDER.id,
+                teamId = ProviderGenerator.INTENDED_TEAM.id,
+                staffId = ProviderGenerator.INTENDED_STAFF.id,
+                locationId = ProviderGenerator.DEFAULT_LOCATION.id,
+                eventId = nsi.eventId,
+                nsiId = nsi.id,
+                rarActivity = false,
+                externalReference = mergeAppointment.urn,
+                date = mergeAppointment.start.toLocalDate(),
+                startTime = mergeAppointment.start,
+                endTime = mergeAppointment.end,
+                id = 9562746271,
+            )
 
         whenever(nsiRepository.findByPersonCrnAndExternalReference(crn, mergeAppointment.referralUrn))
             .thenReturn(nsi)
@@ -111,8 +114,8 @@ internal class AppointmentServiceTest {
                 ProviderGenerator.INTENDED_PROVIDER,
                 ProviderGenerator.INTENDED_TEAM,
                 ProviderGenerator.INTENDED_STAFF,
-                ProviderGenerator.DEFAULT_LOCATION
-            )
+                ProviderGenerator.DEFAULT_LOCATION,
+            ),
         )
         whenever(contactRepository.findByPersonCrnAndExternalReference(crn, mergeAppointment.urn)).thenReturn(null)
         whenever(contactRepository.findById(contact.id)).thenReturn(Optional.of(contact))
@@ -127,8 +130,8 @@ internal class AppointmentServiceTest {
                 "urn" to mergeAppointment.urn,
                 "deliusId" to mergeAppointment.deliusId.toString(),
                 "referralReference" to mergeAppointment.referralReference,
-                "referralUrn" to mergeAppointment.referralUrn
-            )
+                "referralUrn" to mergeAppointment.referralUrn,
+            ),
         )
     }
 }

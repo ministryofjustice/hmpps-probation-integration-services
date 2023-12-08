@@ -4,5 +4,5 @@ data class Premises(
     val id: String,
     val name: String,
     val apCode: String,
-    val legacyApCode: String
+    val legacyApCode: String,
 )

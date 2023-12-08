@@ -17,7 +17,7 @@ import uk.gov.justice.digital.hmpps.ldap.findEmailByUsername
 @Service
 class ManagerService(
     private val ldapTemplate: LdapTemplate,
-    private val personManagerRepository: PersonManagerRepository
+    private val personManagerRepository: PersonManagerRepository,
 ) {
     fun findCommunityManager(crn: String): Manager =
         personManagerRepository.findByPersonCrn(crn)?.let { ro ->
@@ -28,18 +28,23 @@ class ManagerService(
         } ?: throw NotFoundException("CommunityManager", "crn", crn)
 }
 
-fun PersonManager.asManager() = Manager(
-    staff.code,
-    staff.name(),
-    provider.asProvider(),
-    team.asTeam(),
-    staff.user?.username,
-    staff.user?.email,
-    staff.isUnallocated()
-)
+fun PersonManager.asManager() =
+    Manager(
+        staff.code,
+        staff.name(),
+        provider.asProvider(),
+        team.asTeam(),
+        staff.user?.username,
+        staff.user?.email,
+        staff.isUnallocated(),
+    )
 
 fun Staff.name() = Name(forename, middleName, surname)
+
 fun Provider.asProvider() = uk.gov.justice.digital.hmpps.api.model.Provider(code, description)
+
 fun Team.asTeam() = uk.gov.justice.digital.hmpps.api.model.Team(code, description, district.asDistrict())
+
 fun District.asDistrict() = uk.gov.justice.digital.hmpps.api.model.District(code, description, borough.asBorough())
+
 fun Borough.asBorough() = uk.gov.justice.digital.hmpps.api.model.Borough(code, description)

@@ -4,7 +4,7 @@ data class OfficeLocation(
     val code: String,
     val description: String,
     val address: Address?,
-    val telephoneNumber: String?
+    val telephoneNumber: String?,
 )
 
 data class Address(
@@ -14,7 +14,7 @@ data class Address(
     val district: String?,
     val town: String?,
     val county: String?,
-    val postcode: String?
+    val postcode: String?,
 ) {
     companion object {
         fun from(
@@ -24,7 +24,7 @@ data class Address(
             district: String? = null,
             town: String? = null,
             county: String? = null,
-            postcode: String? = null
+            postcode: String? = null,
         ): Address? =
             if (
                 buildingName == null && buildingNumber == null && streetName == null &&

@@ -18,22 +18,17 @@ class Host(
     @Id
     @Column(name = "host_id")
     val id: Long,
-
     @Column
     val institutionId: Long,
-
     @Column(nullable = false)
     val probationAreaId: Long,
-
     @Column
     @Convert(converter = YesNoConverter::class)
     val leadHost: Boolean? = false,
-
     @Column(nullable = false)
     val startDate: ZonedDateTime,
-
     @Column
-    val endDate: ZonedDateTime? = null
+    val endDate: ZonedDateTime? = null,
 )
 
 interface HostRepository : JpaRepository<Host, Long> {
@@ -44,7 +39,10 @@ interface HostRepository : JpaRepository<Host, Long> {
         and host.institutionId = :institutionId
         and host.startDate <= :date
         and (host.endDate is null or host.endDate >= :date)
-        """
+        """,
     )
-    fun findLeadHostProviderIdByInstitutionId(institutionId: Long, date: ZonedDateTime): Long?
+    fun findLeadHostProviderIdByInstitutionId(
+        institutionId: Long,
+        date: ZonedDateTime,
+    ): Long?
 }

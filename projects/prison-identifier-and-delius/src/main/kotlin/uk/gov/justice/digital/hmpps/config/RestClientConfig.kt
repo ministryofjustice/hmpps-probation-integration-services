@@ -9,13 +9,14 @@ import uk.gov.justice.digital.hmpps.integrations.example.ExampleClient
 
 @Configuration
 class RestClientConfig(private val oauth2Client: RestClient) {
-
     @Bean
-    fun exampleClient(@Value("\${integrations.example.url}") apiBaseUrl: String): ExampleClient {
+    fun exampleClient(
+        @Value("\${integrations.example.url}") apiBaseUrl: String,
+    ): ExampleClient {
         return createClient(
             oauth2Client.mutate()
                 .baseUrl(apiBaseUrl)
-                .build()
+                .build(),
         )
     }
 }

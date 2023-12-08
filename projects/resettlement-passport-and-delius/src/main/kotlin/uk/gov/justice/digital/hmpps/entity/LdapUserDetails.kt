@@ -8,10 +8,8 @@ import org.springframework.ldap.odm.annotations.Id
 class LdapUserDetails(
     @Id
     val dn: javax.naming.Name,
-
     @Attribute(name = "mail")
     val email: String?,
-
     @Attribute(name = "telephoneNumber")
-    val telephone: String?
+    val telephone: String?,
 )

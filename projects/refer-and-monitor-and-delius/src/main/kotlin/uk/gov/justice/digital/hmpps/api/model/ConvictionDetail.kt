@@ -4,12 +4,12 @@ import java.time.LocalDate
 
 data class CaseConvictions(
     val caseDetail: CaseDetail,
-    val convictions: List<Conviction>
+    val convictions: List<Conviction>,
 )
 
 data class CaseConviction(
     val caseDetail: CaseDetail,
-    val conviction: Conviction
+    val conviction: Conviction,
 )
 
 data class Conviction(
@@ -17,8 +17,9 @@ data class Conviction(
     val date: LocalDate?,
     val sentence: Sentence,
     val mainOffence: Offence,
-    val active: Boolean
+    val active: Boolean,
 )
 
 data class Sentence(val description: String, val expectedEndDate: LocalDate?)
+
 data class Offence(val category: String, val subCategory: String)

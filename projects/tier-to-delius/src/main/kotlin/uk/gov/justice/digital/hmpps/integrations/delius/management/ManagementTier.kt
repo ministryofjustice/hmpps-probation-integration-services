@@ -17,26 +17,20 @@ import java.time.ZonedDateTime
 data class ManagementTier(
     @EmbeddedId
     val id: ManagementTierId,
-
     @Column
     val tierChangeReasonId: Long,
-
     @Column
     val partitionAreaId: Long = 0L,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Column
     val rowVersion: Long = 0L,
-
     @Column(nullable = false, updatable = false)
     @CreatedBy
     var createdByUserId: Long = 0,
-
     @Column(nullable = false)
     @LastModifiedBy
-    var lastUpdatedUserId: Long = 0
+    var lastUpdatedUserId: Long = 0,
 )
 
 @Immutable
@@ -44,10 +38,8 @@ data class ManagementTier(
 data class ManagementTierId(
     @Column(name = "offender_id")
     val personId: Long,
-
     @Column
     val tierId: Long,
-
     @Column
-    val dateChanged: ZonedDateTime
+    val dateChanged: ZonedDateTime,
 ) : Serializable

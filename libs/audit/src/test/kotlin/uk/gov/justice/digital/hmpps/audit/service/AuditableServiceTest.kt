@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 
 @ExtendWith(MockitoExtension::class)
 class AuditableServiceTest {
-
     @Mock
     private lateinit var auditedInteractionService: AuditedInteractionService
 
@@ -30,7 +29,7 @@ class AuditableServiceTest {
         verify(auditedInteractionService).createAuditedInteraction(
             eq(BusinessInteractionCode.TEST_BI_CODE),
             eq(AuditedInteraction.Parameters(mutableMapOf("field" to "value"))),
-            eq(AuditedInteraction.Outcome.SUCCESS)
+            eq(AuditedInteraction.Outcome.SUCCESS),
         )
     }
 
@@ -43,22 +42,27 @@ class AuditableServiceTest {
         verify(auditedInteractionService).createAuditedInteraction(
             eq(BusinessInteractionCode.TEST_BI_CODE),
             eq(AuditedInteraction.Parameters(mutableMapOf("field" to "value"))),
-            eq(AuditedInteraction.Outcome.FAIL)
+            eq(AuditedInteraction.Outcome.FAIL),
         )
     }
 
     class AuditedService(auditedInteractionService: AuditedInteractionService) :
         AuditableService(auditedInteractionService) {
-        fun success(left: Int, right: Int) = audit(BusinessInteractionCode.TEST_BI_CODE) {
-            it["field"] = "value"
-            left + right
-        }
+        fun success(
+            left: Int,
+            right: Int,
+        ) =
+            audit(BusinessInteractionCode.TEST_BI_CODE) {
+                it["field"] = "value"
+                left + right
+            }
 
-        fun fail(): Nothing = audit(
-            BusinessInteractionCode.TEST_BI_CODE,
-            AuditedInteraction.Parameters(mutableMapOf("field" to "value"))
-        ) {
-            throw IllegalArgumentException("Something went wrong")
-        }
+        fun fail(): Nothing =
+            audit(
+                BusinessInteractionCode.TEST_BI_CODE,
+                AuditedInteraction.Parameters(mutableMapOf("field" to "value")),
+            ) {
+                throw IllegalArgumentException("Something went wrong")
+            }
     }
 }

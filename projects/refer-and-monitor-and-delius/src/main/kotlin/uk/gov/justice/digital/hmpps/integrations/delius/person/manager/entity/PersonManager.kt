@@ -22,31 +22,24 @@ import java.time.ZonedDateTime
 @Table(name = "offender_manager")
 @SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class PersonManager(
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
-
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
-
     @ManyToOne
     @JoinColumn(name = "team_id")
     val team: Team,
-
     @OneToOne(mappedBy = "communityManager")
     val responsibleOfficer: ResponsibleOfficer?,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Id
     @Column(name = "offender_manager_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
@@ -54,34 +47,25 @@ class PersonManager(
 @Table(name = "prison_offender_manager")
 @SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class PrisonManager(
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
-
     @ManyToOne
     @JoinColumn(name = "allocation_team_id")
     val team: Team,
-
     @OneToOne(mappedBy = "prisonManager")
     val responsibleOfficer: ResponsibleOfficer?,
-
     val emailAddress: String?,
-
     val telephoneNumber: String?,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Id
     @Column(name = "prison_offender_manager_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
@@ -92,16 +76,13 @@ class ResponsibleOfficer(
     @OneToOne
     @JoinColumn(name = "offender_manager_id")
     val communityManager: PersonManager?,
-
     @OneToOne
     @JoinColumn(name = "prison_offender_manager_id")
     val prisonManager: PrisonManager? = null,
-
     val endDate: ZonedDateTime? = null,
-
     @Id
     @Column(name = "responsible_officer_id")
-    val id: Long
+    val id: Long,
 )
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
@@ -115,7 +96,7 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
         join pm.person p
         join pm.staff.user u
         where upper(u.username) = upper(:username)
-    """
+    """,
     )
     fun findCasesManagedBy(username: String): List<String>
 }

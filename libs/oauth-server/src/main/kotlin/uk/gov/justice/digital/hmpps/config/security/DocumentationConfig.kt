@@ -13,21 +13,25 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
 
 @OpenAPIDefinition(
-    info = Info(
-        title = "API Reference",
-        contact = Contact(
-            name = "Probation Integration Team",
-            email = "probation-integration-team@digital.justice.gov.uk",
-            url = "https://mojdt.slack.com/archives/C02HQ4M2YQN" // #probation-integration-tech Slack channel
+    info =
+        Info(
+            title = "API Reference",
+            contact =
+                Contact(
+                    name = "Probation Integration Team",
+                    email = "probation-integration-team@digital.justice.gov.uk",
+                    // #probation-integration-tech Slack channel
+                    url = "https://mojdt.slack.com/archives/C02HQ4M2YQN",
+                ),
+            license =
+                License(
+                    name = "MIT",
+                    url = "https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/LICENSE",
+                ),
+            version = "1.0",
         ),
-        license = License(
-            name = "MIT",
-            url = "https://github.com/ministryofjustice/hmpps-probation-integration-services/blob/main/LICENSE"
-        ),
-        version = "1.0"
-    ),
     servers = [Server(url = "/")],
-    security = [SecurityRequirement(name = "hmpps-auth-token")]
+    security = [SecurityRequirement(name = "hmpps-auth-token")],
 )
 @SecurityScheme(
     name = "hmpps-auth-token",
@@ -35,7 +39,7 @@ import org.springframework.http.HttpHeaders
     bearerFormat = "JWT",
     type = SecuritySchemeType.HTTP,
     `in` = SecuritySchemeIn.HEADER,
-    paramName = HttpHeaders.AUTHORIZATION
+    paramName = HttpHeaders.AUTHORIZATION,
 )
 @Configuration
 class DocumentationConfig

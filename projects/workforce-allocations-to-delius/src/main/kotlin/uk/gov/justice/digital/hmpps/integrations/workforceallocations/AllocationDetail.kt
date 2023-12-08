@@ -23,7 +23,7 @@ sealed interface AllocationDetail {
         override val createdDate: ZonedDateTime,
         val crn: String,
         override val datasetCode: DatasetCode = DatasetCode.OM_ALLOCATION_REASON,
-        override val code: String = "IN1"
+        override val code: String = "IN1",
     ) : AllocationDetail
 
     @JsonDeserialize(using = JsonDeserializer.None::class)
@@ -38,7 +38,7 @@ sealed interface AllocationDetail {
         @JsonAlias("allocationJustificationNotes")
         val notes: String?,
         @JsonAlias("sensitiveNotes")
-        val sensitive: Boolean = false
+        val sensitive: Boolean = false,
     ) : AllocationDetail
 
     @JsonDeserialize(using = JsonDeserializer.None::class)
@@ -50,6 +50,6 @@ sealed interface AllocationDetail {
         val eventNumber: Long,
         val requirementId: Long,
         override val datasetCode: DatasetCode = DatasetCode.RM_ALLOCATION_REASON,
-        override val code: String = "IN1"
+        override val code: String = "IN1",
     ) : AllocationDetail
 }

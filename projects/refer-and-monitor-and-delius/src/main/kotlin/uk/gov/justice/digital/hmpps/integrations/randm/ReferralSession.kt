@@ -12,7 +12,7 @@ data class ReferralSession(
     @JsonAlias("deliusAppointmentId")
     val deliusId: Long?,
     val appointmentFeedback: AppointmentFeedback,
-    val oldAppointments: List<Appointment>
+    val oldAppointments: List<Appointment>,
 ) {
     val latestFeedback: Appointment? =
         if (appointmentFeedback.attendanceFeedback.attended != null) {
@@ -25,7 +25,7 @@ data class ReferralSession(
 data class SupplierAssessment(
     val id: UUID,
     val appointments: List<Appointment>,
-    val referralId: UUID
+    val referralId: UUID,
 ) {
     val latestFeedback = appointments.latestAttendanceRecorded()
 }

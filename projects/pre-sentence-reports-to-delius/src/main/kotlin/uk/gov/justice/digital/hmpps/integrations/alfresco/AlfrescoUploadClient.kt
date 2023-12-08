@@ -9,8 +9,13 @@ import org.springframework.web.service.annotation.PutExchange
 
 interface AlfrescoUploadClient {
     @PutExchange(value = "/release/{id}")
-    fun releaseDocument(@PathVariable id: String)
+    fun releaseDocument(
+        @PathVariable id: String,
+    )
 
     @PostExchange(value = "/uploadandrelease/{id}")
-    fun updateDocument(@PathVariable id: String, @RequestBody body: MultiValueMap<String, HttpEntity<*>>)
+    fun updateDocument(
+        @PathVariable id: String,
+        @RequestBody body: MultiValueMap<String, HttpEntity<*>>,
+    )
 }

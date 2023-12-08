@@ -25,12 +25,12 @@ class CaseDetailsController(private val caseDetailsService: CaseDetailsService) 
                 responseCode = "404",
                 description = """A case with the provided CRN does not exist in Delius.
                     Note: this could be the result of a merge or a deletion.
-            """
-            )
-        ]
+            """,
+            ),
+        ],
     )
     fun handle(
         @PathVariable("crn") crn: String,
-        @PathVariable("eventNumber") eventNumber: Int
+        @PathVariable("eventNumber") eventNumber: Int,
     ) = caseDetailsService.caseDetails(crn, eventNumber)
 }

@@ -17,14 +17,14 @@ import uk.gov.justice.digital.hmpps.message.Notification
 @ConditionalOnProperty("messaging.producer.topic")
 class AwsNotificationPublisher(
     private val notificationTemplate: SnsTemplate,
-    @Value("\${messaging.producer.topic}") private val topic: String
+    @Value("\${messaging.producer.topic}") private val topic: String,
 ) : NotificationPublisher {
     override fun publish(notification: Notification<*>) {
         notification.message?.let { message ->
             notificationTemplate.convertAndSend(topic, message) { msg ->
                 MessageBuilder.createMessage(
                     msg.payload,
-                    MessageHeaders(notification.attributes.map { it.key to it.value.value }.toMap())
+                    MessageHeaders(notification.attributes.map { it.key to it.value.value }.toMap()),
                 )
             }
         }

@@ -30,7 +30,6 @@ import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class RepositoryExtensionMethodTests {
-
     @Mock
     lateinit var auditedInteractionService: AuditedInteractionService
 
@@ -68,17 +67,18 @@ internal class RepositoryExtensionMethodTests {
     fun `nsi not found causes failure`() {
         whenever(nsiRepository.findByPersonCrnAndExternalReference(any(), any())).thenReturn(null)
 
-        val termination = NsiTermination(
-            "D123456",
-            "urn:fake:test:string",
-            1,
-            ZonedDateTime.now().minusDays(1),
-            ZonedDateTime.now(),
-            ReferralEndType.CANCELLED,
-            "Notes",
-            ZonedDateTime.now(),
-            "End Of Service Report Submitted"
-        )
+        val termination =
+            NsiTermination(
+                "D123456",
+                "urn:fake:test:string",
+                1,
+                ZonedDateTime.now().minusDays(1),
+                ZonedDateTime.now(),
+                ReferralEndType.CANCELLED,
+                "Notes",
+                ZonedDateTime.now(),
+                "End Of Service Report Submitted",
+            )
         assertThrows<ReferralNotFoundException> { nsiService.terminateNsi(termination) }
     }
 
@@ -88,21 +88,22 @@ internal class RepositoryExtensionMethodTests {
         val nsi = NsiGenerator.END_PREMATURELY
         whenever(nsiRepository.findByPersonCrnAndExternalReference(person.crn, nsi.externalReference!!)).thenReturn(nsi)
 
-        val ex = assertThrows<NotFoundException> {
-            nsiService.terminateNsi(
-                NsiTermination(
-                    person.crn,
-                    nsi.externalReference!!,
-                    1,
-                    ZonedDateTime.now().minusDays(1),
-                    ZonedDateTime.now(),
-                    ReferralEndType.COMPLETED,
-                    "Notes",
-                    ZonedDateTime.now(),
-                    "End Of Service Report Submitted"
+        val ex =
+            assertThrows<NotFoundException> {
+                nsiService.terminateNsi(
+                    NsiTermination(
+                        person.crn,
+                        nsi.externalReference!!,
+                        1,
+                        ZonedDateTime.now().minusDays(1),
+                        ZonedDateTime.now(),
+                        ReferralEndType.COMPLETED,
+                        "Notes",
+                        ZonedDateTime.now(),
+                        "End Of Service Report Submitted",
+                    ),
                 )
-            )
-        }
+            }
 
         assertThat(ex.message, equalTo("NsiStatus with code of COMP not found"))
     }
@@ -114,21 +115,22 @@ internal class RepositoryExtensionMethodTests {
         whenever(nsiRepository.findByPersonCrnAndExternalReference(person.crn, nsi.externalReference!!)).thenReturn(nsi)
         whenever(nsiStatusRepository.findByCode(NsiStatus.Code.END.value)).thenReturn(NsiGenerator.COMP_STATUS)
 
-        val ex = assertThrows<NotFoundException> {
-            nsiService.terminateNsi(
-                NsiTermination(
-                    person.crn,
-                    nsi.externalReference!!,
-                    1,
-                    ZonedDateTime.now().minusDays(1),
-                    ZonedDateTime.now(),
-                    ReferralEndType.COMPLETED,
-                    "Notes",
-                    ZonedDateTime.now(),
-                    "End Of Service Report Submitted"
+        val ex =
+            assertThrows<NotFoundException> {
+                nsiService.terminateNsi(
+                    NsiTermination(
+                        person.crn,
+                        nsi.externalReference!!,
+                        1,
+                        ZonedDateTime.now().minusDays(1),
+                        ZonedDateTime.now(),
+                        ReferralEndType.COMPLETED,
+                        "Notes",
+                        ZonedDateTime.now(),
+                        "End Of Service Report Submitted",
+                    ),
                 )
-            )
-        }
+            }
 
         assertThat(ex.message, equalTo("NsiOutcome with code of CRS03 not found"))
     }

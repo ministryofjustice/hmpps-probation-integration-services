@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import java.util.UUID
 
 class NotificationTest {
-
     @Test
     fun `attributes can be added and retrieved`() {
         val uuid = UUID.randomUUID().toString()

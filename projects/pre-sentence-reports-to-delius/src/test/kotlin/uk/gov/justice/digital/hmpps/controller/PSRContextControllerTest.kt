@@ -53,7 +53,7 @@ class PSRContextControllerTest {
             Address(false, "building name", "123", "StreetName", "Town", "District", "County", "NE1 2SW"),
             Offence("MainOffence"),
             listOf(Offence("other offence")),
-            Court("CourtName", LocalJusticeArea("Local justice area"))
+            Court("CourtName", LocalJusticeArea("Local justice area")),
         )
     }
 }

@@ -38,7 +38,7 @@ class PersonAddress(
     @Convert(converter = YesNoConverter::class)
     val noFixedAbode: Boolean? = false,
     var endDate: LocalDate? = null,
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Entity
@@ -49,18 +49,14 @@ class Person(
     @Id
     @Column(name = "offender_id")
     val id: Long,
-
     @Column(columnDefinition = "char(7)")
     val crn: String,
-
     @Column(name = "noms_number", columnDefinition = "char(7)")
     val noms: String?,
-
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
-
     @Query(
         """
         select pa from PersonAddress pa
@@ -69,7 +65,7 @@ interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
         and pa.softDeleted = false  
         and pa.endDate is null 
         and pa.status.code = 'M'
-    """
+    """,
     )
     fun getMainAddressByPersonId(personId: Long): PersonAddress?
 }

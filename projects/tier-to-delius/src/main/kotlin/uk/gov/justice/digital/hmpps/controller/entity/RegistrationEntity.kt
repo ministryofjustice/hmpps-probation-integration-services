@@ -20,26 +20,20 @@ class RegistrationEntity(
     @Id
     @Column(name = "registration_id")
     val id: Long,
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @ManyToOne
     @JoinColumn(name = "register_type_id")
     val type: RegisterType,
-
     @ManyToOne
     @JoinColumn(name = "register_level_id")
     val level: ReferenceData?,
-
     @Column(name = "registration_date")
     val date: LocalDate,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Column(columnDefinition = "number")
-    val deregistered: Boolean = false
+    val deregistered: Boolean = false,
 )
 
 @Immutable
@@ -48,17 +42,14 @@ class RegistrationEntity(
 class RegisterType(
     @Column
     val code: String,
-
     @Column
     val description: String,
-
     @ManyToOne
     @JoinColumn(name = "register_type_flag_id")
     val flag: ReferenceData,
-
     @Id
     @Column(name = "register_type_id")
-    val id: Long
+    val id: Long,
 )
 
 interface RegistrationRepository : JpaRepository<RegistrationEntity, Long> {

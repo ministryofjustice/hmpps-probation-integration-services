@@ -18,57 +18,43 @@ import java.util.Optional
 @Entity
 @Table(name = "event")
 class Event(
-
     @Column(name = "offender_id")
     val personId: Long,
-
     val convictionDate: LocalDate?,
-
     @OneToOne(mappedBy = "event")
     val disposal: Disposal?,
-
     @Column(name = "ftc_count")
     var ftcCount: Long,
-
     @Column(name = "in_breach", columnDefinition = "number")
     val inBreach: Boolean,
-
     @Column(name = "breach_end")
     val breachEnd: LocalDate?,
-
     @OneToOne(mappedBy = "event")
     val mainOffence: MainOffence?,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean,
-
     @Id
     @Column(name = "event_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
 @Entity
 @Table(name = "main_offence")
 class MainOffence(
-
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
     @ManyToOne
     @JoinColumn(name = "offence_id")
     val offence: Offence,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean,
-
     @Id
     @Column(name = "main_offence_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
@@ -79,7 +65,7 @@ class Offence(
     val subCategoryDescription: String,
     @Id
     @Column(name = "offence_id")
-    val id: Long
+    val id: Long,
 )
 
 interface EventRepository : JpaRepository<Event, Long> {
@@ -98,7 +84,7 @@ interface EventRepository : JpaRepository<Event, Long> {
         and e.active = true and e.softDeleted = false
         and d.active = true and d.softDeleted = false
         and mo.softDeleted = false
-    """
+    """,
     )
     fun findAllByCrn(crn: String): List<Event>
 
@@ -111,10 +97,16 @@ interface EventRepository : JpaRepository<Event, Long> {
         join fetch mo.offence
         join Person p on p.id = e.personId
         where p.crn = :crn and e.id = :id
-    """
+    """,
     )
-    fun findByCrnAndId(crn: String, id: Long): Event?
+    fun findByCrnAndId(
+        crn: String,
+        id: Long,
+    ): Event?
 }
 
-fun EventRepository.getByCrnAndId(crn: String, id: Long) =
+fun EventRepository.getByCrnAndId(
+    crn: String,
+    id: Long,
+) =
     findByCrnAndId(crn, id) ?: throw NotFoundException("Event $id not found for $crn")

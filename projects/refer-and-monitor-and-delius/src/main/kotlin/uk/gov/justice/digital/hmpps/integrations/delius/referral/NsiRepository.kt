@@ -13,7 +13,10 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiType
 
 interface NsiRepository : JpaRepository<Nsi, Long> {
     @EntityGraph(attributePaths = ["person", "type", "status", "managers"])
-    fun findByPersonCrnAndExternalReference(crn: String, ref: String): Nsi?
+    fun findByPersonCrnAndExternalReference(
+        crn: String,
+        ref: String,
+    ): Nsi?
 
     @Query(
         """
@@ -21,7 +24,7 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
         join Requirement r on r.id = nsi.requirementId
         join r.mainCategory rt
         where nsi.id = :id and rt.code = 'F'
-    """
+    """,
     )
     fun findByIdIfRar(id: Long): Nsi?
 
@@ -32,7 +35,7 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
         left join Requirement r on r.id = nsi.requirementId
         left join r.mainCategory rt
         where nsi.id = :id
-        """
+        """,
     )
     fun isRar(id: Long): Boolean?
 
@@ -47,11 +50,11 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
             left join user_ last_updated_by on last_updated_by.user_id = nsi.last_updated_user_id
             where nsi_offender.crn = :crn and nsi.external_reference = :nsiExternalReference
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun getNotFoundReason(
         crn: String,
-        nsiExternalReference: String
+        nsiExternalReference: String,
     ): NsiNotFoundReason?
 }
 

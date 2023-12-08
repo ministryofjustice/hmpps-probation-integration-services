@@ -17,73 +17,56 @@ import org.springframework.data.jpa.repository.Query
 @Immutable
 @Table(name = "probation_area")
 class ProbationAreaEntity(
-
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean,
-
     val description: String,
-
     @Column(columnDefinition = "char(3)")
     val code: String,
-
     @Column(columnDefinition = "char(1)")
     val establishment: String?,
-
     @Id
     @Column(name = "probation_area_id")
     val id: Long,
-
     @OneToMany(mappedBy = "probationArea")
-    val boroughs: List<Borough> = listOf()
+    val boroughs: List<Borough> = listOf(),
 )
 
 @Immutable
 @Entity
 @Table(name = "district")
 class District(
-
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean,
-
     @Column(name = "code")
     val code: String,
-
     val description: String,
-
     @ManyToOne
     @JoinColumn(name = "borough_id")
     val borough: Borough,
-
     @Id
     @Column(name = "district_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
 @Entity
 @Table(name = "borough")
 class Borough(
-
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean,
-
     @Id
     @Column(name = "borough_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "probation_area_id")
     val probationArea: ProbationAreaEntity,
-
     @Column(name = "code")
     val code: String,
-
     @OneToMany(mappedBy = "borough")
-    val districts: List<District> = listOf()
-
+    val districts: List<District> = listOf(),
 )
 
 interface ProbationAreaRepository : JpaRepository<ProbationAreaEntity, Long> {
@@ -97,7 +80,7 @@ interface ProbationAreaRepository : JpaRepository<ProbationAreaEntity, Long> {
         and (d.selectable = true or d.code like '%UAT' or d.code like '%UNA' or d.code like '%IAV')
         and pa.selectable = true
         and (pa.establishment is null or pa.establishment <> 'Y')
-    """
+    """,
     )
     fun probationAreaDistricts(): List<ProbationAreaDistrict>
 
@@ -110,7 +93,7 @@ interface ProbationAreaRepository : JpaRepository<ProbationAreaEntity, Long> {
         where pa.description not like 'ZZ%'
         and (d.selectable = true or d.code like '%UAT' or d.code like '%UNA' or d.code like '%IAV')
         and (pa.establishment is null or pa.establishment <> 'Y')
-    """
+    """,
     )
     fun probationAreaDistrictsNonSelectable(): List<ProbationAreaDistrict>
 }

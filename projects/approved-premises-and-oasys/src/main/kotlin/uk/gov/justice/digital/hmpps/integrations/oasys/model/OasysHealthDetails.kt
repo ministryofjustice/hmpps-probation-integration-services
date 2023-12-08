@@ -4,7 +4,7 @@ import java.time.ZonedDateTime
 
 data class OasysHealthDetails(
     val limitedAccessOffender: Boolean,
-    val assessments: List<OasysHealthAssessment>
+    val assessments: List<OasysHealthAssessment>,
 )
 
 data class OasysHealthAssessment(
@@ -69,5 +69,5 @@ data class OasysHealthAssessment(
     val elecMonSpecify: String? = null,
     val elecMonElectricity: String? = null,
     val elecMon: String? = null,
-    val generalHeathSpecify: String? = null
+    val generalHeathSpecify: String? = null,
 ) : OasysAssessment()

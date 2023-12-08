@@ -17,26 +17,20 @@ import org.springframework.data.jpa.repository.Query
 @Entity
 @Table(name = "borough")
 class DeliveryUnit(
-
     @Column(name = "code")
     val code: String,
-
     val description: String,
-
     @ManyToOne
     @JoinColumn(name = "probation_area_id")
     val region: Provider,
-
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean,
-
     @Id
     @Column(name = "borough_id")
-    val id: Long
+    val id: Long,
 )
 
 interface PduRepository : JpaRepository<DeliveryUnit, Long> {
-
     @EntityGraph(attributePaths = ["region"])
     @Query("select du from DeliveryUnit du where du.selectable = true")
     fun findAllSelectable(): List<DeliveryUnit>

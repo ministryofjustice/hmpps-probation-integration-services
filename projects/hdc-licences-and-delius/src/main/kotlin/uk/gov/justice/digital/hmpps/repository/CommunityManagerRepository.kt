@@ -12,7 +12,7 @@ interface CommunityManagerRepository : JpaRepository<CommunityManagerEntity, Lon
             join fetch cm.staff 
             where cm.person.nomsNumber = :nomsNumber
             and cm.active = true and cm.softDeleted = false
-        """
+        """,
     )
     fun findCommunityManager(nomsNumber: String): CommunityManagerEntity?
 }

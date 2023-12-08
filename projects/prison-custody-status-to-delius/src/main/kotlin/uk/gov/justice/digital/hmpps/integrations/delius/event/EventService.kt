@@ -10,7 +10,7 @@ import java.time.ZonedDateTime
 @Service
 class EventService(
     private val personRepository: PersonRepository,
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
 ) {
     fun getActiveCustodialEvents(nomsNumber: String): List<Event> {
         val persons = personRepository.findByNomsNumberAndSoftDeletedIsFalse(nomsNumber)
@@ -22,7 +22,10 @@ class EventService(
         return events
     }
 
-    fun updateReleaseDateAndIapsFlag(event: Event, releaseDate: ZonedDateTime) {
+    fun updateReleaseDateAndIapsFlag(
+        event: Event,
+        releaseDate: ZonedDateTime,
+    ) {
         if (event.firstReleaseDate == null) {
             event.firstReleaseDate = releaseDate
             eventRepository.save(event)

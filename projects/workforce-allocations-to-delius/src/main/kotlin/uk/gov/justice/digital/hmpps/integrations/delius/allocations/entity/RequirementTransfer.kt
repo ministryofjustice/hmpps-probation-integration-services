@@ -13,13 +13,10 @@ class RequirementTransfer(
     @Id
     @Column(name = "rqmnt_transfer_id")
     val id: Long,
-
     @Column(name = "rqmnt_id")
     val requirementId: Long,
-
     @Column(name = "transfer_status_id")
     val statusId: Long,
-
     @Column(columnDefinition = "NUMBER", nullable = false)
-    val softDeleted: Boolean
+    val softDeleted: Boolean,
 )

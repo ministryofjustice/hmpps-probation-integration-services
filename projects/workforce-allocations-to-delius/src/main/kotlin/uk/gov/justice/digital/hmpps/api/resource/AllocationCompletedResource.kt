@@ -21,24 +21,24 @@ class AllocationCompletedResource(private val service: AllocationCompletedServic
             information on the probation practitioner identified by the staff code
             in the request. Used to support the post-allocation information page of
             the HMPPS Workforce service
-        """
+        """,
     )
     @GetMapping("/details")
     fun details(
         @RequestParam crn: String,
         @RequestParam eventNumber: String,
-        @RequestParam staffCode: String
+        @RequestParam staffCode: String,
     ) = service.getDetails(crn, eventNumber, staffCode)
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @Operation(
         summary = "Team allocation code for Persons PO",
         description = """
-        """
+        """,
     )
     @GetMapping("/order-manager")
     fun getAllocatedManager(
         @RequestParam crn: String,
-        @RequestParam eventNumber: String
+        @RequestParam eventNumber: String,
     ) = service.getAllocationManager(crn, eventNumber)
 }

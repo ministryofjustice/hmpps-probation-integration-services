@@ -19,24 +19,18 @@ class Person(
     @Id
     @Column(name = "offender_id")
     val id: Long,
-
     @Column(columnDefinition = "char(7)")
     val crn: String,
-
     @OneToMany(mappedBy = "person")
     val exclusions: List<Exclusion>,
-
     @OneToMany(mappedBy = "person")
     val restrictions: List<Restriction>,
-
     @Column
     val exclusionMessage: String? = null,
-
     @Column
     val restrictionMessage: String? = null,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -46,17 +40,14 @@ class Exclusion(
     @Id
     @Column(name = "exclusion_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     val user: User,
-
     @Column(name = "exclusion_end_time")
-    val endDate: ZonedDateTime? = null
+    val endDate: ZonedDateTime? = null,
 )
 
 @Immutable
@@ -66,15 +57,12 @@ class Restriction(
     @Id
     @Column(name = "restriction_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     val user: User,
-
     @Column(name = "restriction_end_time")
-    val endDate: ZonedDateTime? = null
+    val endDate: ZonedDateTime? = null,
 )

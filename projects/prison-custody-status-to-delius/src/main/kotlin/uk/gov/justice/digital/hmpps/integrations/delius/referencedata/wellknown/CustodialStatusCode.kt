@@ -9,7 +9,8 @@ enum class CustodialStatusCode(val code: String) {
     POST_SENTENCE_SUPERVISION("P"),
     CUSTODY_ROTL("R"),
     TERMINATED("T"),
-    AUTO_TERMINATED("AT");
+    AUTO_TERMINATED("AT"),
+    ;
 
     companion object {
         fun withCode(code: String) =
@@ -18,18 +19,21 @@ enum class CustodialStatusCode(val code: String) {
 }
 
 val TERMINATED_STATUSES = listOf(CustodialStatusCode.TERMINATED, CustodialStatusCode.AUTO_TERMINATED)
-val NO_CHANGE_STATUSES = listOf(
-    CustodialStatusCode.IN_CUSTODY,
-    CustodialStatusCode.IN_CUSTODY_IRC,
-    CustodialStatusCode.POST_SENTENCE_SUPERVISION
-) + TERMINATED_STATUSES
-val CAN_RECALL_STATUSES = listOf(
-    CustodialStatusCode.RELEASED_ON_LICENCE,
-    CustodialStatusCode.CUSTODY_ROTL
-)
+val NO_CHANGE_STATUSES =
+    listOf(
+        CustodialStatusCode.IN_CUSTODY,
+        CustodialStatusCode.IN_CUSTODY_IRC,
+        CustodialStatusCode.POST_SENTENCE_SUPERVISION,
+    ) + TERMINATED_STATUSES
+val CAN_RECALL_STATUSES =
+    listOf(
+        CustodialStatusCode.RELEASED_ON_LICENCE,
+        CustodialStatusCode.CUSTODY_ROTL,
+    )
 
-val CAN_RELEASE_STATUSES = listOf(
-    CustodialStatusCode.IN_CUSTODY,
-    CustodialStatusCode.SENTENCED_IN_CUSTODY,
-    CustodialStatusCode.RECALLED
-)
+val CAN_RELEASE_STATUSES =
+    listOf(
+        CustodialStatusCode.IN_CUSTODY,
+        CustodialStatusCode.SENTENCED_IN_CUSTODY,
+        CustodialStatusCode.RECALLED,
+    )

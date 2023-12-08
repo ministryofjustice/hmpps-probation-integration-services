@@ -7,5 +7,5 @@ data class OffenderEvent(
     val crn: String,
     val nomsNumber: String?,
     val sourceId: Long,
-    val eventDatetime: ZonedDateTime
+    val eventDatetime: ZonedDateTime,
 )

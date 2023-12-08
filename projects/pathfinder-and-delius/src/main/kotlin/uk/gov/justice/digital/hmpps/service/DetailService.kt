@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.model.Name
 
 @Service
 class DetailService(
-    private val detailRepository: DetailRepository
+    private val detailRepository: DetailRepository,
 ) {
     fun getBatchDetails(batchRequest: BatchRequest) =
         detailRepository.getByCrns(batchRequest.crns).groupBy { it.crn }
@@ -29,14 +29,16 @@ class DetailService(
                     detail.religion,
                     pd.value.keyDates(),
                     detail.releaseDate,
-                    detail.releaseLocation
+                    detail.releaseLocation,
                 )
             }
 
-    fun List<PersonDetail>.keyDates() = map {
-        KeyDate(it.keyDateCode, it.keyDateDesc, it.keydate)
-    }
+    fun List<PersonDetail>.keyDates() =
+        map {
+            KeyDate(it.keyDateCode, it.keyDateDesc, it.keydate)
+        }
 
     fun PersonDetail.name() = Name(forename, listOfNotNull(middleNameOne, middleNameTwo).joinToString(" "), surname)
+
     fun PersonDetail.offenderManagerName() = Name(omForename, omMiddleName, omSurname)
 }

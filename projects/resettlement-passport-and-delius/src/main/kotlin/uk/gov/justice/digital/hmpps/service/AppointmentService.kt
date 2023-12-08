@@ -18,13 +18,13 @@ import java.time.ZonedDateTime
 @Service
 class AppointmentService(
     private val appointmentRepository: AppointmentRepository,
-    private val ldap: LdapTemplate
+    private val ldap: LdapTemplate,
 ) {
     fun findAppointmentsFor(
         crn: String,
         startDate: LocalDate,
         endDate: LocalDate,
-        pageable: Pageable
+        pageable: Pageable,
     ) = appointmentRepository.findAppointmentsFor(crn, startDate, endDate, pageable).map { it.asAppointment() }
 
     private fun uk.gov.justice.digital.hmpps.entity.Appointment.asAppointment(): Appointment =
@@ -35,7 +35,7 @@ class AppointmentService(
             staff.asStaff(),
             location?.asLocation(),
             description ?: type.description,
-            outcome?.let { Appointment.Outcome(it.code, it.description) }
+            outcome?.let { Appointment.Outcome(it.code, it.description) },
         )
 
     private fun uk.gov.justice.digital.hmpps.entity.Staff.asStaff(): Staff {
@@ -48,6 +48,6 @@ class AppointmentService(
             code,
             description,
             Address.from(buildingName, buildingNumber, streetName, district, townCity, county, postcode),
-            telephoneNumber
+            telephoneNumber,
         )
 }

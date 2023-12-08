@@ -15,17 +15,14 @@ class ProbationArea(
     @Id
     @Column(name = "probation_area_id")
     val id: Long,
-
     @Column(columnDefinition = "char(3)")
     val code: String,
-
     @Column
     val description: String,
-
     @OneToOne
     @JoinColumns(
         JoinColumn(name = "institution_id", referencedColumnName = "institution_id"),
-        JoinColumn(name = "establishment", referencedColumnName = "establishment")
+        JoinColumn(name = "establishment", referencedColumnName = "establishment"),
     )
-    var institution: Institution? = null
+    var institution: Institution? = null,
 )

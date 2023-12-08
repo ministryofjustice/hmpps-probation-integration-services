@@ -15,14 +15,15 @@ import uk.gov.justice.digital.hmpps.service.CaseService
 @RestController
 @RequestMapping("probation-cases")
 class CaseController(private val caseService: CaseService) {
-
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_STAFF')")
     @RequestMapping(value = ["/summaries"], method = [RequestMethod.GET, RequestMethod.POST])
     fun getCaseSummaries(
-        @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>
+        @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>,
     ): CaseSummaries = caseService.getCaseSummaries(crns)
 
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_STAFF')")
     @GetMapping("/{crn}/details")
-    fun getCaseDetail(@PathVariable crn: String): CaseDetail = caseService.getCaseDetail(crn)
+    fun getCaseDetail(
+        @PathVariable crn: String,
+    ): CaseDetail = caseService.getCaseDetail(crn)
 }

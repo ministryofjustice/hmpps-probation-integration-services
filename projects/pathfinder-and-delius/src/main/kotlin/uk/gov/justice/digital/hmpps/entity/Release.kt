@@ -19,22 +19,17 @@ class DetailRelease(
     @Id
     @Column(name = "release_id")
     val id: Long,
-
     @Column
     val custodyId: Long,
-
     @ManyToOne
     @JoinColumn(name = "institution_id")
     val institution: Institution? = null,
-
     @OneToOne(mappedBy = "release")
     val recall: Recall? = null,
-
     @Column(name = "actual_release_date")
     val date: LocalDate,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -44,9 +39,8 @@ class Institution(
     @Id
     @Column(name = "institution_id")
     val id: Long,
-
     @Column(name = "description")
-    val name: String
+    val name: String,
 )
 
 @Immutable
@@ -57,14 +51,11 @@ class Recall(
     @Id
     @Column(name = "recall_id")
     val id: Long,
-
     @OneToOne
     @JoinColumn(name = "release_id")
     val release: DetailRelease,
-
     @Column(name = "recall_date")
     val date: LocalDate,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )

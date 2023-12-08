@@ -21,26 +21,20 @@ class DetailRelease(
     @Id
     @Column(name = "release_id")
     val id: Long,
-
     @Column
     val custodyId: Long,
-
     @ManyToOne
     @JoinColumn(name = "institution_id")
     val institution: Institution? = null,
-
     @OneToOne(mappedBy = "release")
     val recall: Recall? = null,
-
     @ManyToOne
     @JoinColumn(name = "release_type_id")
     val releaseType: ReferenceData,
-
     @Column(name = "actual_release_date")
     val date: LocalDate,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -50,9 +44,8 @@ class Institution(
     @Id
     @Column(name = "institution_id")
     val id: Long,
-
     @Column(name = "institution_name")
-    val name: String
+    val name: String,
 )
 
 @Immutable
@@ -63,20 +56,16 @@ class Recall(
     @Id
     @Column(name = "recall_id")
     val id: Long,
-
     @OneToOne
     @JoinColumn(name = "release_id")
     val release: DetailRelease,
-
     @Column(name = "recall_date")
     val date: LocalDate,
-
     @ManyToOne
     @JoinColumn(name = "recall_reason_id")
     val reason: RecallReason,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -86,12 +75,10 @@ class RecallReason(
     @Id
     @Column(name = "recall_reason_id")
     val id: Long,
-
     @Column(nullable = false)
     val code: String,
-
     @Column(nullable = false)
-    val description: String
+    val description: String,
 )
 
 interface DetailReleaseRepository : JpaRepository<DetailRelease, Long> {

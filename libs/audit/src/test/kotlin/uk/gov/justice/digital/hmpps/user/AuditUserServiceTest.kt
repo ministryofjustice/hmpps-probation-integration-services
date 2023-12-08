@@ -9,7 +9,6 @@ import org.mockito.kotlin.verify
 
 @ExtendWith(MockitoExtension::class)
 class AuditUserServiceTest {
-
     @Mock
     private lateinit var auditUserRepository: AuditUserRepository
 

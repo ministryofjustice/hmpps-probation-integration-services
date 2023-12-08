@@ -29,17 +29,19 @@ class StaffServiceTest {
 
     @Test
     fun `officer view staff not found`() {
-        val exception = assertThrows<NotFoundException> {
-            staffService.getOfficerView("UNK")
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                staffService.getOfficerView("UNK")
+            }
         assertThat(exception.message, equalTo("Staff with code of UNK not found"))
     }
 
     @Test
     fun `active cases staff not found`() {
-        val exception = assertThrows<NotFoundException> {
-            staffService.getActiveCases("UNK", listOf(PersonGenerator.DEFAULT.crn))
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                staffService.getActiveCases("UNK", listOf(PersonGenerator.DEFAULT.crn))
+            }
         assertThat(exception.message, equalTo("Staff with code of UNK not found"))
     }
 

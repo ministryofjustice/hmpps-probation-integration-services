@@ -12,5 +12,5 @@ data class OfficerView(
     @field:Schema(description = "The number of sentenced custodial events with an \"Expected Release Date\" key date in the next four weeks on cases managed by the officer.")
     val releasesWithinNext4Weeks: Long,
     @field:Schema(description = "The number of parole reports required in the next four weeks on cases managed by the officer.")
-    val paroleReportsToCompleteInNext4Weeks: Long
+    val paroleReportsToCompleteInNext4Weeks: Long,
 )

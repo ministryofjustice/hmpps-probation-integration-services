@@ -8,40 +8,44 @@ import java.time.LocalDate
 
 data class LicenceConditions(
     val personalDetails: PersonalDetailsOverview,
-    val activeConvictions: List<ConvictionWithLicenceConditions>
+    val activeConvictions: List<ConvictionWithLicenceConditions>,
 ) {
     data class ConvictionWithLicenceConditions(
         val number: String,
         val sentence: Sentence?,
         val mainOffence: Offence,
         val additionalOffences: List<Offence>,
-        val licenceConditions: List<LicenceCondition>
+        val licenceConditions: List<LicenceCondition>,
     )
+
     data class LicenceCondition(
         val startDate: LocalDate,
         val mainCategory: LicenceConditionCategory,
         val subCategory: LicenceConditionCategory?,
-        val notes: String?
+        val notes: String?,
     )
+
     data class LicenceConditionCategory(
         val code: String,
-        val description: String
+        val description: String,
     )
 }
 
-fun Event.toConvictionWithLicenceConditions() = toConviction().let {
-    ConvictionWithLicenceConditions(
-        number = it.number,
-        mainOffence = it.mainOffence,
-        additionalOffences = it.additionalOffences,
-        sentence = it.sentence,
-        licenceConditions = disposal?.licenceConditions?.map { lc ->
-            LicenceCondition(
-                startDate = lc.startDate,
-                mainCategory = LicenceConditionCategory(lc.mainCategory.code, lc.mainCategory.description),
-                subCategory = lc.subCategory?.let { subCategory -> LicenceConditionCategory(subCategory.code, subCategory.description) },
-                notes = lc.notes
-            )
-        } ?: emptyList()
-    )
-}
+fun Event.toConvictionWithLicenceConditions() =
+    toConviction().let {
+        ConvictionWithLicenceConditions(
+            number = it.number,
+            mainOffence = it.mainOffence,
+            additionalOffences = it.additionalOffences,
+            sentence = it.sentence,
+            licenceConditions =
+                disposal?.licenceConditions?.map { lc ->
+                    LicenceCondition(
+                        startDate = lc.startDate,
+                        mainCategory = LicenceConditionCategory(lc.mainCategory.code, lc.mainCategory.description),
+                        subCategory = lc.subCategory?.let { subCategory -> LicenceConditionCategory(subCategory.code, subCategory.description) },
+                        notes = lc.notes,
+                    )
+                } ?: emptyList(),
+        )
+    }

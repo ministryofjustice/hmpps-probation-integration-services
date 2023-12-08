@@ -10,20 +10,22 @@ data class Appointment(
     val staff: Staff,
     val location: Location?,
     val description: String,
-    val outcome: Outcome?
+    val outcome: Outcome?,
 ) {
     data class Type(val code: String, val description: String)
+
     data class Outcome(val code: String, val description: String)
 }
 
 data class Name(val forename: String, val surname: String)
+
 data class Staff(val code: String, val name: Name, val email: String?, val telephone: String?)
 
 data class Location(
     val code: String,
     val description: String,
     val address: Address?,
-    val telephoneNumber: String?
+    val telephoneNumber: String?,
 )
 
 data class Address(
@@ -33,7 +35,7 @@ data class Address(
     val district: String?,
     val town: String?,
     val county: String?,
-    val postcode: String?
+    val postcode: String?,
 ) {
     companion object {
         fun from(
@@ -43,7 +45,7 @@ data class Address(
             district: String? = null,
             town: String? = null,
             county: String? = null,
-            postcode: String? = null
+            postcode: String? = null,
         ): Address? =
             if (
                 buildingName == null && buildingNumber == null && streetName == null &&

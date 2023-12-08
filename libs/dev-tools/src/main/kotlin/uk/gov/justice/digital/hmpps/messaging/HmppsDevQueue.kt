@@ -20,11 +20,12 @@ import java.util.concurrent.TimeoutException
 import java.util.concurrent.locks.ReentrantLock
 
 abstract class NotificationChannel(
-    val name: String
+    val name: String,
 ) {
     private val lock = ReentrantLock()
     private val messages: Queue<Notification<*>> = LinkedList()
     private val processing: MutableMap<UUID, Notification<*>> = HashMap()
+
     fun publish(notification: Notification<*>) {
         lock.lock()
         try {
@@ -36,18 +37,20 @@ abstract class NotificationChannel(
 
     fun receive(): Notification<*>? {
         lock.lock()
-        val notification = try {
-            val peek = messages.peek()
-            val notification = peek?.let {
-                processing[it.id] = it
-                messages.poll()
+        val notification =
+            try {
+                val peek = messages.peek()
+                val notification =
+                    peek?.let {
+                        processing[it.id] = it
+                        messages.poll()
+                    }
+                notification
+            } catch (ignore: InterruptedException) {
+                null
+            } finally {
+                lock.unlock()
             }
-            notification
-        } catch (ignore: InterruptedException) {
-            null
-        } finally {
-            lock.unlock()
-        }
         return notification
     }
 
@@ -60,7 +63,10 @@ abstract class NotificationChannel(
         }
     }
 
-    fun publishAndWait(notification: Notification<*>, timeout: Duration = Duration.ofSeconds(20)) {
+    fun publishAndWait(
+        notification: Notification<*>,
+        timeout: Duration = Duration.ofSeconds(20),
+    ) {
         publish(notification)
         val start = LocalDateTime.now()
         val end = start.plus(timeout)
@@ -73,7 +79,7 @@ abstract class NotificationChannel(
     fun pollFor(
         numberOfMessages: Int,
         duration: Duration = Duration.ofSeconds(30),
-        interval: Duration = Duration.ofMillis(500)
+        interval: Duration = Duration.ofMillis(500),
     ): List<Notification<*>> {
         val maxTime = LocalTime.now().plus(duration)
         val notifications: MutableList<Notification<*>> = mutableListOf()
@@ -93,21 +99,22 @@ abstract class NotificationChannel(
 @ConditionalOnProperty("messaging.consumer.queue")
 class HmppsNotificationQueue(
     @Value("\${messaging.consumer.queue}")
-    private val queueName: String
+    private val queueName: String,
 ) : NotificationChannel(queueName)
 
 @Component
 @ConditionalOnProperty("messaging.producer.topic")
 class HmppsNotificationTopic(
     @Value("\${messaging.producer.topic}")
-    private val queueName: String
+    private val queueName: String,
 ) : NotificationChannel(queueName)
 
 @Component
 class HmppsChannelManager(
-    queues: List<NotificationChannel>
+    queues: List<NotificationChannel>,
 ) {
     private val queues = queues.associateBy { it.name }
+
     fun getChannel(name: String): NotificationChannel =
         queues[name] ?: throw IllegalArgumentException("No queue registered with name $name")
 }
@@ -119,9 +126,8 @@ class HmppsNotificationListener(
     private val queueName: String,
     private val channelManager: HmppsChannelManager,
     private val objectMapper: ObjectMapper,
-    private val handler: NotificationHandler<*>
+    private val handler: NotificationHandler<*>,
 ) {
-
     @Scheduled(fixedDelay = 100)
     fun receive() {
         val queue = channelManager.getChannel(queueName)
@@ -141,7 +147,7 @@ class HmppsNotificationListener(
 @ConditionalOnProperty("messaging.producer.topic")
 class HmppsNotificationPublisher(
     @Value("\${messaging.producer.topic}") private val topicName: String,
-    private val channelManager: HmppsChannelManager
+    private val channelManager: HmppsChannelManager,
 ) : NotificationPublisher {
     override fun publish(notification: Notification<*>) {
         channelManager.getChannel(topicName).publish(notification)

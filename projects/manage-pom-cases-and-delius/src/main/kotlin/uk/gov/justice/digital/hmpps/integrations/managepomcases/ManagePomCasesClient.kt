@@ -17,14 +17,14 @@ interface ManagePomCasesClient {
 data class Handover(
     @JsonAlias("nomsNumber") val nomsId: String,
     @JsonAlias("handoverDate") val date: LocalDate?,
-    @JsonAlias("handoverStartDate") val startDate: LocalDate?
+    @JsonAlias("handoverStartDate") val startDate: LocalDate?,
 )
 
 sealed interface AllocationResponse
 
 data class PomAllocation(
     val manager: PomDetail,
-    val prison: Prison
+    val prison: Prison,
 ) : AllocationResponse
 
 data object PomDeallocated : AllocationResponse
@@ -34,11 +34,11 @@ data object PomNotAllocated : AllocationResponse
 data class PomDetail(
     val forename: String,
     val surname: String,
-    val email: String?
+    val email: String?,
 ) {
     val name = Name(forename, surname)
 }
 
 data class Prison(
-    val code: String
+    val code: String,
 )

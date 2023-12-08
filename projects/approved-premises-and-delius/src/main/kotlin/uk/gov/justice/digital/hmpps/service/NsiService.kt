@@ -42,32 +42,34 @@ class NsiService(
     private val contactService: ContactService,
     private val referralService: ReferralService,
     private val referenceDataRepository: ReferenceDataRepository,
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
 ) {
     fun personArrived(
         person: Person,
         details: PersonArrived,
-        ap: ApprovedPremises
+        ap: ApprovedPremises,
     ) {
         val externalReference = Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
         nsiRepository.findByPersonIdAndExternalReference(person.id, externalReference) ?: run {
             val staff = staffRepository.getByCode(details.keyWorker.staffCode)
-            val nsi = nsiRepository.save(
-                Nsi(
-                    person = person,
-                    type = nsiTypeRepository.getByCode(NsiTypeCode.APPROVED_PREMISES_RESIDENCE.code),
-                    status = nsiStatusRepository.getByCode(NsiStatusCode.IN_RESIDENCE.code),
-                    referralDate = details.applicationSubmittedOn,
-                    expectedStartDate = details.arrivedAt.toLocalDate(),
-                    actualStartDate = details.arrivedAt,
-                    expectedEndDate = details.expectedDepartureOn,
-                    notes = listOfNotNull(
-                        details.notes,
-                        "For more details, click here: ${details.applicationUrl}"
-                    ).joinToString(System.lineSeparator() + System.lineSeparator()),
-                    externalReference = externalReference
+            val nsi =
+                nsiRepository.save(
+                    Nsi(
+                        person = person,
+                        type = nsiTypeRepository.getByCode(NsiTypeCode.APPROVED_PREMISES_RESIDENCE.code),
+                        status = nsiStatusRepository.getByCode(NsiStatusCode.IN_RESIDENCE.code),
+                        referralDate = details.applicationSubmittedOn,
+                        expectedStartDate = details.arrivedAt.toLocalDate(),
+                        actualStartDate = details.arrivedAt,
+                        expectedEndDate = details.expectedDepartureOn,
+                        notes =
+                            listOfNotNull(
+                                details.notes,
+                                "For more details, click here: ${details.applicationUrl}",
+                            ).joinToString(System.lineSeparator() + System.lineSeparator()),
+                        externalReference = externalReference,
+                    ),
                 )
-            )
             val team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode)
             nsiManagerRepository.save(
                 NsiManager(
@@ -76,8 +78,8 @@ class NsiService(
                     team = team,
                     probationArea = team.probationArea,
                     startDate = details.arrivedAt,
-                    transferReason = transferReasonRepository.getNsiTransferReason()
-                )
+                    transferReason = transferReasonRepository.getNsiTransferReason(),
+                ),
             )
             addressService.updateMainAddress(person, details, ap)
             contactService.createContact(
@@ -86,22 +88,27 @@ class NsiService(
                     type = ContactTypeCode.ARRIVED,
                     locationCode = ap.locationCode(),
                     description = "Arrived at ${details.premises.name}",
-                    notes = listOfNotNull(
-                        details.notes,
-                        "For more details, click here: ${details.applicationUrl}"
-                    ).joinToString(System.lineSeparator() + System.lineSeparator())
+                    notes =
+                        listOfNotNull(
+                            details.notes,
+                            "For more details, click here: ${details.applicationUrl}",
+                        ).joinToString(System.lineSeparator() + System.lineSeparator()),
                 ),
                 person = person,
                 eventId = eventRepository.getByEventNumber(person.id, details.eventNumber).id,
                 staff = staff,
                 team = team,
-                probationAreaCode = ap.probationArea.code
+                probationAreaCode = ap.probationArea.code,
             )
             referralService.personArrived(person, ap, details)
         }
     }
 
-    fun personDeparted(person: Person, details: PersonDeparted, ap: ApprovedPremises) {
+    fun personDeparted(
+        person: Person,
+        details: PersonDeparted,
+        ap: ApprovedPremises,
+    ) {
         val nsi =
             nsiRepository.findByPersonIdAndExternalReference(person.id, Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId)
         nsi?.actualEndDate = details.departedAt
@@ -115,13 +122,13 @@ class NsiService(
                 outcomeCode = ContactOutcome.AP_DEPARTED_PREFIX + details.legacyReasonCode,
                 locationCode = ap.locationCode(),
                 notes = "For details, see the referral on the AP Service: ${details.applicationUrl}",
-                createAlert = false
+                createAlert = false,
             ),
             person = person,
             eventId = eventRepository.getByEventNumber(person.id, details.eventNumber).id,
             team = teamRepository.getApprovedPremisesTeam(details.premises.legacyApCode),
             staff = staffRepository.getByCode(details.keyWorker.staffCode),
-            probationAreaCode = ap.probationArea.code
+            probationAreaCode = ap.probationArea.code,
         )
         referralService.personDeparted(person, details)
     }

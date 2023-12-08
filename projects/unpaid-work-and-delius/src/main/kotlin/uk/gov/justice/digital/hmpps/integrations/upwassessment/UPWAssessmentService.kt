@@ -21,21 +21,26 @@ class UPWAssessmentService(
     private val documentService: DocumentService,
     private val personWithManagerRepository: PersonWithManagerRepository,
     private val eventRepository: EventRepository,
-    private val arnClient: ArnClient
+    private val arnClient: ArnClient,
 ) {
     fun AdditionalInformation.episodeId() = this["episodeId"] as String
 
     fun processMessage(notification: Notification<HmppsDomainEvent>) {
         val crn = notification.message.personReference.findCrn()!!
-        val person = personWithManagerRepository.findByCrnAndSoftDeletedIsFalse(crn)
-            ?: return let { telemetryService.trackEvent("PersonNotFound", mapOf("crn" to crn)) }
+        val person =
+            personWithManagerRepository.findByCrnAndSoftDeletedIsFalse(crn)
+                ?: return let { telemetryService.trackEvent("PersonNotFound", mapOf("crn" to crn)) }
         val eventId = (notification.message.additionalInformation["eventId"] as String).toLong()
         if (!eventRepository.existsById(eventId)) throw NotFoundException("Event", "id", eventId)
 
         uploadDocument(notification, person, eventId)
     }
 
-    private fun uploadDocument(notification: Notification<HmppsDomainEvent>, person: PersonWithManager, eventId: Long) {
+    private fun uploadDocument(
+        notification: Notification<HmppsDomainEvent>,
+        person: PersonWithManager,
+        eventId: Long,
+    ) {
         // get the episode id from the message then get the document content from the UPW/ARN Service
         val episodeId = notification.message.additionalInformation.episodeId()
         val response = arnClient.getUPWAssessment(URI(notification.message.detailUrl!!))
@@ -53,7 +58,7 @@ class UPWAssessmentService(
                 episodeId,
                 person,
                 eventId,
-                notification.message.occurredAt
+                notification.message.occurredAt,
             )
         } catch (e: DataIntegrityViolationException) {
             if (e.isUniqueConstraintViolation()) {
@@ -61,8 +66,8 @@ class UPWAssessmentService(
                     "DuplicateMessageReceived",
                     mapOf(
                         "episodeId" to notification.message.additionalInformation.episodeId(),
-                        "crn" to notification.message.personReference.findCrn()!!
-                    )
+                        "crn" to notification.message.personReference.findCrn()!!,
+                    ),
                 )
             }
             throw e

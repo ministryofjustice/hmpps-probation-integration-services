@@ -10,12 +10,10 @@ class DomainEvent(
     @Id
     @Column(name = "domain_event_id")
     val id: Long,
-
     @Column(columnDefinition = "varchar2(4000)")
     val messageBody: String,
-
     @Column(columnDefinition = "varchar2(4000)")
-    val messageAttributes: String
+    val messageAttributes: String,
 )
 
 interface DomainEventRepository : JpaRepository<DomainEvent, Long>

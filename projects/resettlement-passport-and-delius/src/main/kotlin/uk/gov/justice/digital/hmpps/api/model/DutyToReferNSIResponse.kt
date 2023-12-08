@@ -12,7 +12,7 @@ data class DutyToReferNSI(
     val status: String,
     val startDateTime: ZonedDateTime?,
     val notes: String? = null,
-    val mainAddress: MainAddress? = null
+    val mainAddress: MainAddress? = null,
 )
 
 data class MainAddress(
@@ -23,11 +23,11 @@ data class MainAddress(
     val town: String?,
     val county: String?,
     val postcode: String?,
-    val noFixedAbode: Boolean?
+    val noFixedAbode: Boolean?,
 )
 
 data class Officer(
     val forename: String,
     val surname: String,
-    val middleName: String? = null
+    val middleName: String? = null,
 )

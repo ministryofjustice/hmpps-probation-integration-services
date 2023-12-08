@@ -60,7 +60,7 @@ internal class LicenceConditionServiceTest {
         licenceConditionService.terminateLicenceConditionsForDisposal(
             1L,
             ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
-            ZonedDateTime.now()
+            ZonedDateTime.now(),
         )
         verify(licenceConditionRepository, never()).save(any())
         verify(referenceDataRepository, never()).findByCodeAndSetName(any(), any())
@@ -71,13 +71,14 @@ internal class LicenceConditionServiceTest {
         val lc = LicenceConditionGenerator.DEFAULT.withManager()
         withLicenceConditions(licenceConditions = listOf(lc))
         withLicenceConditionTransfers(lc)
-        val exception = assertThrows<NotFoundException> {
-            licenceConditionService.terminateLicenceConditionsForDisposal(
-                1L,
-                ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
-                ZonedDateTime.now()
-            )
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                licenceConditionService.terminateLicenceConditionsForDisposal(
+                    1L,
+                    ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
+                    ZonedDateTime.now(),
+                )
+            }
         assertEquals("TRANSFER STATUS with code of TR not found", exception.message)
     }
 
@@ -87,16 +88,17 @@ internal class LicenceConditionServiceTest {
         withLicenceConditions(licenceConditions = listOf(lc))
         withLicenceConditionTransfers(lc)
         withReferenceData(
-            ReferenceDataGenerator.TRANSFER_STATUS[TransferStatusCode.REJECTED]
+            ReferenceDataGenerator.TRANSFER_STATUS[TransferStatusCode.REJECTED],
         )
 
-        val exception = assertThrows<NotFoundException> {
-            licenceConditionService.terminateLicenceConditionsForDisposal(
-                1L,
-                ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
-                ZonedDateTime.now()
-            )
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                licenceConditionService.terminateLicenceConditionsForDisposal(
+                    1L,
+                    ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
+                    ZonedDateTime.now(),
+                )
+            }
         assertEquals("ACCEPTED DECISION with code of R not found", exception.message)
     }
 
@@ -107,16 +109,17 @@ internal class LicenceConditionServiceTest {
         withLicenceConditionTransfers(lc)
         withReferenceData(
             ReferenceDataGenerator.TRANSFER_STATUS[TransferStatusCode.REJECTED],
-            ReferenceDataGenerator.generate("R", ReferenceDataSetGenerator.generate("ACCEPTED DECISION"))
+            ReferenceDataGenerator.generate("R", ReferenceDataSetGenerator.generate("ACCEPTED DECISION")),
         )
 
-        val exception = assertThrows<NotFoundException> {
-            licenceConditionService.terminateLicenceConditionsForDisposal(
-                1L,
-                ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
-                ZonedDateTime.now()
-            )
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                licenceConditionService.terminateLicenceConditionsForDisposal(
+                    1L,
+                    ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
+                    ZonedDateTime.now(),
+                )
+            }
         assertEquals("LICENCE AREA TRANSFER REJECTION REASON with code of TWR not found", exception.message)
     }
 
@@ -131,7 +134,7 @@ internal class LicenceConditionServiceTest {
             event.disposal!!.id,
             ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
             now,
-            true
+            true,
         )
 
         licenceConditions.forEach {
@@ -144,12 +147,12 @@ internal class LicenceConditionServiceTest {
                 ContactDetail(
                     ContactType.Code.COMPONENT_TERMINATED,
                     it.terminationDate!!,
-                    "Termination reason: ${it.terminationReason!!.description}${LicenceConditionService.EOTL_TERMINATE_LICENCE_CONTACT_NOTES}"
+                    "Termination reason: ${it.terminationReason!!.description}${LicenceConditionService.EOTL_TERMINATE_LICENCE_CONTACT_NOTES}",
                 ),
                 it.disposal.event.person,
                 it.disposal.event,
                 it.manager,
-                it.id
+                it.id,
             )
         }
     }
@@ -168,14 +171,14 @@ internal class LicenceConditionServiceTest {
             ReferenceDataGenerator.generate("R", ReferenceDataSetGenerator.generate("ACCEPTED DECISION")),
             ReferenceDataGenerator.generate(
                 "TWR",
-                ReferenceDataSetGenerator.generate("LICENCE AREA TRANSFER REJECTION REASON")
-            )
+                ReferenceDataSetGenerator.generate("LICENCE AREA TRANSFER REJECTION REASON"),
+            ),
         )
 
         licenceConditionService.terminateLicenceConditionsForDisposal(
             event.disposal!!.id,
             ReferenceDataGenerator.LICENCE_CONDITION_TERMINATION_REASON,
-            now
+            now,
         )
 
         licenceConditionTransfers.forEach {
@@ -187,35 +190,36 @@ internal class LicenceConditionServiceTest {
 
     private fun withLicenceConditionTransfers(
         licenceCondition: LicenceCondition,
-        transfers: List<LicenceConditionTransfer> = List(3) {
-            LicenceConditionTransferGenerator.generate(
-                licenceCondition
-            )
-        }
+        transfers: List<LicenceConditionTransfer> =
+            List(3) {
+                LicenceConditionTransferGenerator.generate(
+                    licenceCondition,
+                )
+            },
     ) {
         whenever(
             licenceConditionTransferRepository.findAllByLicenceConditionIdAndStatusCode(
                 licenceCondition.id,
-                TransferStatusCode.PENDING.code
-            )
+                TransferStatusCode.PENDING.code,
+            ),
         ).thenReturn(transfers)
     }
 
     private fun withLicenceConditions(
         event: Event,
-        licenceConditions: List<LicenceCondition> = List(3) { LicenceConditionGenerator.generate(event.withManager()) }
+        licenceConditions: List<LicenceCondition> = List(3) { LicenceConditionGenerator.generate(event.withManager()) },
     ) {
         withLicenceConditions(event.disposal!!.id, licenceConditions)
     }
 
     private fun withLicenceConditions(
         disposalId: Long = 1L,
-        licenceConditions: List<LicenceCondition> = listOf(LicenceConditionGenerator.DEFAULT.withManager())
+        licenceConditions: List<LicenceCondition> = listOf(LicenceConditionGenerator.DEFAULT.withManager()),
     ) {
         whenever(
             licenceConditionRepository.findAllByDisposalIdAndMainCategoryCodeNotAndTerminationReasonIsNull(
-                disposalId
-            )
+                disposalId,
+            ),
         ).thenReturn(licenceConditions)
     }
 

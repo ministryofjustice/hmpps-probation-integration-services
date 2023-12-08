@@ -14,10 +14,9 @@ data class HealthDetails(
     override val laterWIPAssessmentExists: Boolean? = null,
     override val limitedAccessOffender: Boolean,
     override val lastUpdatedDate: ZonedDateTime? = null,
-    val health: Health
+    val health: Health,
 ) : Assessment() {
     companion object {
-
         fun from(oasysHealthDetails: OasysHealthDetails): HealthDetails {
             with(oasysHealthDetails.assessments[0]) {
                 return HealthDetails(
@@ -53,8 +52,8 @@ data class HealthDetails(
                         HealthDetail.from(literacyCommunity, literacyEM, literacyProgramme),
                         HealthDetail.from(communicationCommunity, communicationEM, communicationProgramme),
                         HealthDetail.from(interpreterCommunity, interpreterEM, interpreterProgramme),
-                        HealthDetail.from(alcoholCommunity, alcoholEM, alcoholProgramme)
-                    )
+                        HealthDetail.from(alcoholCommunity, alcoholEM, alcoholProgramme),
+                    ),
                 )
             }
         }
@@ -83,16 +82,20 @@ data class Health(
     val literacyProblems: HealthDetail? = null,
     val poorCommunicationSkills: HealthDetail? = null,
     val needForInterpreter: HealthDetail? = null,
-    val alcoholMisuse: HealthDetail? = null
+    val alcoholMisuse: HealthDetail? = null,
 )
 
 data class HealthDetail(
     val community: String? = null,
     val electronicMonitoring: String? = null,
-    val programme: String? = null
+    val programme: String? = null,
 ) {
     companion object {
-        fun from(community: String?, electronicMonitoring: String?, programme: String?): HealthDetail? {
+        fun from(
+            community: String?,
+            electronicMonitoring: String?,
+            programme: String?,
+        ): HealthDetail? {
             return if (community.isNullOrBlank() && electronicMonitoring.isNullOrBlank() && programme.isNullOrBlank()) {
                 null
             } else {

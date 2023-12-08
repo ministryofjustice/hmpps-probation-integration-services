@@ -10,11 +10,9 @@ import javax.naming.Name
 class LdapUser(
     @Id
     val dn: Name,
-
     @Attribute(name = "cn")
     @DnAttribute(value = "cn", index = 1)
     val username: String,
-
     @Attribute(name = "mail")
-    val email: String?
+    val email: String?,
 )

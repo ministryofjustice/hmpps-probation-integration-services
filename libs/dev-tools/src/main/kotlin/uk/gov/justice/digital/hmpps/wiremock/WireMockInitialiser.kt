@@ -11,24 +11,25 @@ import org.springframework.context.event.ContextClosedEvent
 import org.springframework.core.env.get
 
 class WireMockInitialiser : ApplicationContextInitializer<ConfigurableApplicationContext> {
-
     companion object {
         private val log: Logger = LoggerFactory.getLogger(WireMockInitialiser::class.java)
     }
 
     override fun initialize(ctx: ConfigurableApplicationContext) {
-        val wmPort = if (ctx.environment.activeProfiles.contains("integration-test")) {
-            0
-        } else {
-            ctx.environment["wiremock.port"]?.toInt() ?: 0
-        }
+        val wmPort =
+            if (ctx.environment.activeProfiles.contains("integration-test")) {
+                0
+            } else {
+                ctx.environment["wiremock.port"]?.toInt() ?: 0
+            }
 
-        val wireMockServer = WireMockServer(
-            WireMockConfiguration()
-                .port(wmPort)
-                .usingFilesUnderClasspath("simulations")
-                .maxLoggedResponseSize(100_000)
-        )
+        val wireMockServer =
+            WireMockServer(
+                WireMockConfiguration()
+                    .port(wmPort)
+                    .usingFilesUnderClasspath("simulations")
+                    .maxLoggedResponseSize(100_000),
+            )
         wireMockServer.start()
 
         log.info("WireMock server started on port ${wireMockServer.port()}")

@@ -9,9 +9,13 @@ import uk.gov.justice.digital.hmpps.messaging.OpdAssessment
 
 @Service
 class ContactService(
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
 ) {
-    fun createContact(com: PersonManager, type: ContactType?, opdAssessment: OpdAssessment) {
+    fun createContact(
+        com: PersonManager,
+        type: ContactType?,
+        opdAssessment: OpdAssessment,
+    ) {
         type?.also {
             contactRepository.save(
                 Contact(
@@ -21,8 +25,8 @@ class ContactService(
                     opdAssessment.date,
                     opdAssessment.notes,
                     com.teamId,
-                    com.staffId
-                )
+                    com.staffId,
+                ),
             )
         }
     }

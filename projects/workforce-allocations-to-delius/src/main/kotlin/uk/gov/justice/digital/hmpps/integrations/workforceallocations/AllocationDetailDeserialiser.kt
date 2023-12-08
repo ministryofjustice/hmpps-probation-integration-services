@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
 
 class AllocationDetailDeserialiser : JsonDeserializer<AllocationDetail>() {
-    override fun deserialize(jp: JsonParser, dc: DeserializationContext): AllocationDetail {
+    override fun deserialize(
+        jp: JsonParser,
+        dc: DeserializationContext,
+    ): AllocationDetail {
         val om = jp.codec
         val node: JsonNode = om.readTree(jp)
         return when {

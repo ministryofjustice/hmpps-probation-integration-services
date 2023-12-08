@@ -33,47 +33,35 @@ import java.time.ZonedDateTime
 @EntityListeners(AuditingEntityListener::class)
 @SequenceGenerator(name = "nsi_id_generator", sequenceName = "nsi_id_seq", allocationSize = 1)
 class Nsi(
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
-
     val referralDate: LocalDate,
-
     @ManyToOne
     @JoinColumn(name = "nsi_type_id")
     val type: NsiType,
-
     @ManyToOne
     @JoinColumn(name = "nsi_sub_type_id")
     val subType: NsiSubType?,
-
     @ManyToOne
     @JoinColumn(name = "nsi_status_id")
     val status: NsiStatus,
-
     @Column(name = "nsi_status_date")
     val statusDate: ZonedDateTime,
-
     val actualStartDate: ZonedDateTime?,
-
     @Column(name = "intended_provider_id")
     val intendedProviderId: Long? = null,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Column(columnDefinition = "number")
     val pendingTransfer: Boolean = false,
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nsi_id_generator")
     @Column(name = "nsi_id")
     val id: Long = 0,
-
     @Version
     @Column(name = "row_version")
-    val version: Long = 0
+    val version: Long = 0,
 ) {
     @CreatedDate
     var createdDatetime: ZonedDateTime = ZonedDateTime.now()
@@ -115,36 +103,27 @@ class NsiManager(
     @ManyToOne
     @JoinColumn(name = "nsi_id")
     val nsi: Nsi,
-
     @Column(name = "probation_area_id")
     val providerId: Long,
-
     @Column(name = "team_id")
     val teamId: Long,
-
     @Column(name = "staff_id")
     val staffId: Long,
-
     @Column
     val startDate: ZonedDateTime,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Column
     val partitionAreaId: Long = 0,
-
     @Version
     @Column(name = "row_version")
     val version: Long = 0,
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nsi_manager_id_generator")
     @Column(name = "nsi_manager_id")
-    val id: Long = 0
+    val id: Long = 0,
 ) {
     @CreatedDate
     var createdDatetime: ZonedDateTime = ZonedDateTime.now()
@@ -166,10 +145,10 @@ class NsiType(
     val code: String,
     @Id
     @Column(name = "nsi_type_id")
-    val id: Long
+    val id: Long,
 ) {
     enum class Code(val value: String) {
-        OPD_COMMUNITY_PATHWAY("OPD1")
+        OPD_COMMUNITY_PATHWAY("OPD1"),
     }
 }
 
@@ -178,17 +157,15 @@ class NsiType(
 @Table(name = "r_nsi_status")
 class NsiStatus(
     val code: String,
-
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
     val contactType: ContactType?,
-
     @Id
     @Column(name = "nsi_status_id")
-    val id: Long
+    val id: Long,
 ) {
     enum class Code(val value: String, val contactTypeCode: ContactType.Code?) {
-        READY_FOR_SERVICE("OPD01", ContactType.Code.READY_FOR_SERVICES)
+        READY_FOR_SERVICE("OPD01", ContactType.Code.READY_FOR_SERVICES),
     }
 }
 
@@ -202,11 +179,11 @@ class NsiSubType(
     val datasetId: Long,
     @Id
     @Column(name = "standard_reference_list_id")
-    val id: Long
+    val id: Long,
 ) {
     enum class Code(val value: String) {
         COMMUNITY_PATHWAY("OPD01"),
-        COMMUNITY_PATHWAY_OVERRIDE("OPD02")
+        COMMUNITY_PATHWAY_OVERRIDE("OPD02"),
     }
 }
 
@@ -216,10 +193,9 @@ class NsiSubType(
 class Dataset(
     @Column(name = "code_set_name")
     val code: String,
-
     @Id
     @Column(name = "reference_data_master_id")
-    val id: Long
+    val id: Long,
 ) {
     companion object {
         val NSI_SUB_TYPE = "NSI SUB TYPE"
@@ -227,15 +203,17 @@ class Dataset(
 }
 
 interface NsiRepository : JpaRepository<Nsi, Long> {
-    fun findNsiByPersonIdAndTypeCode(personId: Long, code: String): Nsi?
+    fun findNsiByPersonIdAndTypeCode(
+        personId: Long,
+        code: String,
+    ): Nsi?
 }
 
 interface NsiTypeRepository : JpaRepository<NsiType, Long> {
     fun findByCode(code: String): NsiType?
 }
 
-fun NsiTypeRepository.getByCode(code: String) =
-    findByCode(code) ?: throw NotFoundException("NsiType", "code", code)
+fun NsiTypeRepository.getByCode(code: String) = findByCode(code) ?: throw NotFoundException("NsiType", "code", code)
 
 interface NsiSubTypeRepository : JpaRepository<NsiSubType, Long> {
     @Query(
@@ -243,20 +221,21 @@ interface NsiSubTypeRepository : JpaRepository<NsiSubType, Long> {
         select nst from NsiSubType nst
         join Dataset ds on nst.datasetId = ds.id
         where nst.code = :code and ds.code = :datasetCode
-        """
+        """,
     )
-    fun findByCodeDataSet(code: String, datasetCode: String): NsiSubType?
+    fun findByCodeDataSet(
+        code: String,
+        datasetCode: String,
+    ): NsiSubType?
 }
 
-fun NsiSubTypeRepository.nsiSubType(code: String) =
-    findByCodeDataSet(code, Dataset.NSI_SUB_TYPE) ?: throw NotFoundException("NsiSubType", "code", code)
+fun NsiSubTypeRepository.nsiSubType(code: String) = findByCodeDataSet(code, Dataset.NSI_SUB_TYPE) ?: throw NotFoundException("NsiSubType", "code", code)
 
 interface NsiStatusRepository : JpaRepository<NsiStatus, Long> {
     @EntityGraph(attributePaths = ["contactType"])
     fun findByCode(code: String): NsiStatus?
 }
 
-fun NsiStatusRepository.getByCode(code: String) =
-    findByCode(code) ?: throw NotFoundException("NsiStatus", "code", code)
+fun NsiStatusRepository.getByCode(code: String) = findByCode(code) ?: throw NotFoundException("NsiStatus", "code", code)
 
 interface NsiManagerRepository : JpaRepository<NsiManager, Long>

@@ -10,20 +10,15 @@ import javax.naming.Name
 class LdapUserDetails(
     @Id
     val dn: Name,
-
     @Attribute(name = "cn")
     @DnAttribute(value = "cn", index = 1)
     val username: String,
-
     @Attribute(name = "sn")
     val surname: String,
-
     @Attribute(name = "givenname")
     val forename: String,
-
     @Attribute(name = "mail")
     val email: String?,
-
     @Attribute(name = "telephoneNumber")
-    val telephone: String?
+    val telephone: String?,
 )

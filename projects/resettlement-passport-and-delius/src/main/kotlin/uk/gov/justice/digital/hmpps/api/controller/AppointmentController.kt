@@ -21,7 +21,7 @@ class AppointmentController(private val appointmentService: AppointmentService) 
         @RequestParam startDate: LocalDate,
         @RequestParam endDate: LocalDate,
         @RequestParam page: Int,
-        @RequestParam size: Int
+        @RequestParam size: Int,
     ): ResultSet<Appointment> =
         appointmentService.findAppointmentsFor(crn, startDate, endDate, PageRequest.of(page, size)).let {
             ResultSet(it.content, it.totalElements, it.totalPages, page, size)
@@ -33,5 +33,5 @@ data class ResultSet<T>(
     val totalElements: Long,
     val totalPages: Int,
     val page: Int,
-    val size: Int
+    val size: Int,
 )

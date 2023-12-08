@@ -19,21 +19,15 @@ class OGRSAssessment(
     @Id
     @Column(name = "ogrs_assessment_id")
     val id: Long,
-
     @Column(name = "assessment_date")
     override val assessmentDate: LocalDate,
-
     @JoinColumn(name = "event_id", referencedColumnName = "event_id")
     @OneToOne
     val event: EventEntity,
-
     @Column(name = "ogrs3_score_2")
     override val score: Long?,
-
     @Column(name = "last_updated_datetime", nullable = false)
     override val lastModifiedDateTime: ZonedDateTime,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean
-
+    val softDeleted: Boolean,
 ) : Assessment

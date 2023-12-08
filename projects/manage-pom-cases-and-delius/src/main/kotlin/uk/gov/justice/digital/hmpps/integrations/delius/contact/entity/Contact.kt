@@ -28,35 +28,27 @@ import java.time.ZonedDateTime
 @Table(name = "contact")
 @SequenceGenerator(name = "contact_id_seq", sequenceName = "contact_id_seq", allocationSize = 1)
 class Contact(
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
     val type: ContactType,
-
     @Column(name = "contact_date")
     val date: LocalDate,
-
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime,
-
     @Lob
     val notes: String?,
-
     @Column(name = "probation_area_id")
     val providerId: Long,
     val teamId: Long,
     val staffId: Long,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Id
     @Column(name = "contact_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
-    val id: Long = 0
+    val id: Long = 0,
 ) {
     @Version
     @Column(name = "row_version")
@@ -84,13 +76,13 @@ class ContactType(
     val code: String,
     @Id
     @Column(name = "contact_type_id")
-    val id: Long
+    val id: Long,
 ) {
     enum class Code(val value: String) {
         POM_AUTO_ALLOCATION("EPOMAT"),
         POM_INTERNAL_ALLOCATION("EPOMIN"),
         POM_EXTERNAL_ALLOCATION("EPOMEX"),
-        RESPONSIBLE_OFFICER_CHANGE("ROC")
+        RESPONSIBLE_OFFICER_CHANGE("ROC"),
     }
 }
 
@@ -100,5 +92,4 @@ interface ContactTypeRepository : JpaRepository<ContactType, Long> {
     fun findByCode(code: String): ContactType?
 }
 
-fun ContactTypeRepository.getByCode(code: String) =
-    findByCode(code) ?: throw NotFoundException("ContactType", "code", code)
+fun ContactTypeRepository.getByCode(code: String) = findByCode(code) ?: throw NotFoundException("ContactType", "code", code)

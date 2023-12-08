@@ -34,11 +34,13 @@ class AllocateEventService(
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val transferReasonRepository: TransferReasonRepository,
-    private val optimisationTables: OptimisationTables
+    private val optimisationTables: OptimisationTables,
 ) : ManagerService<OrderManager>(auditedInteractionService, orderManagerRepository) {
-
     @Transactional
-    fun createEventAllocation(crn: String, allocationDetail: EventAllocationDetail) =
+    fun createEventAllocation(
+        crn: String,
+        allocationDetail: EventAllocationDetail,
+    ) =
         audit(BusinessInteractionCode.ADD_EVENT_ALLOCATION) {
             val event = eventRepository.getByPersonCrnAndNumber(crn, allocationDetail.eventNumber.toString())
 
@@ -48,12 +50,13 @@ class AllocateEventService(
 
             if (!event.active) throw NotActiveException("Event", "number", allocationDetail.eventNumber)
 
-            val activeOrderManager = orderManagerRepository.findActiveManagerAtDate(
-                event.id,
-                allocationDetail.createdDate
-            ) ?: throw NotFoundException(
-                "Order Manager for event ${allocationDetail.eventNumber} at ${allocationDetail.createdDate} not found"
-            )
+            val activeOrderManager =
+                orderManagerRepository.findActiveManagerAtDate(
+                    event.id,
+                    allocationDetail.createdDate,
+                ) ?: throw NotFoundException(
+                    "Order Manager for event ${allocationDetail.eventNumber} at ${allocationDetail.createdDate} not found",
+                )
 
             if (allocationDetail.isDuplicate(activeOrderManager)) {
                 return@audit
@@ -62,17 +65,20 @@ class AllocateEventService(
             if (eventRepository.countPendingTransfers(event.id) > 0) {
                 throw ConflictException("Pending transfer exists for this event: ${event.id}")
             }
-            val ts = allocationValidator.initialValidations(
-                activeOrderManager.provider.id,
-                allocationDetail
-            )
+            val ts =
+                allocationValidator.initialValidations(
+                    activeOrderManager.provider.id,
+                    allocationDetail,
+                )
 
-            val transferReason = transferReasonRepository.findByCode(CASE_ORDER.value)
-                ?: throw NotFoundException("Transfer Reason", "code", CASE_ORDER.value)
+            val transferReason =
+                transferReasonRepository.findByCode(CASE_ORDER.value)
+                    ?: throw NotFoundException("Transfer Reason", "code", CASE_ORDER.value)
 
-            val newOrderManager = OrderManager(eventId = event.id, transferReasonId = transferReason.id).apply {
-                populate(allocationDetail.createdDate, ts, activeOrderManager)
-            }
+            val newOrderManager =
+                OrderManager(eventId = event.id, transferReasonId = transferReason.id).apply {
+                    populate(allocationDetail.createdDate, ts, activeOrderManager)
+                }
 
             val (activeOM, newOM) = updateDateTimes(activeOrderManager, newOrderManager)
 
@@ -83,9 +89,9 @@ class AllocateEventService(
                     ContactContext(
                         contactTypeRepository.findByCodeOrThrow(ContactTypeCode.ORDER_SUPERVISOR_TRANSFER.value),
                         event.person.id,
-                        event.id
-                    )
-                )
+                        event.id,
+                    ),
+                ),
             )
 
             createCadeContact(allocationDetail, event, newOrderManager)
@@ -95,7 +101,11 @@ class AllocateEventService(
             }
         }
 
-    fun createCadeContact(allocationDetail: EventAllocationDetail, event: Event, orderManager: OrderManager) {
+    fun createCadeContact(
+        allocationDetail: EventAllocationDetail,
+        event: Event,
+        orderManager: OrderManager,
+    ) {
         contactRepository.save(
             Contact(
                 type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_ALLOCATION_DECISION_EVIDENCE.value),
@@ -107,8 +117,8 @@ class AllocateEventService(
                 staffId = orderManager.staff.id,
                 providerId = orderManager.provider.id,
                 notes = allocationDetail.notes,
-                isSensitive = allocationDetail.sensitive
-            )
+                isSensitive = allocationDetail.sensitive,
+            ),
         )
     }
 

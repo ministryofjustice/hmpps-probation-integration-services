@@ -30,69 +30,51 @@ class Contact(
     @Column(name = "contact_id", updatable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
     val id: Long,
-
     @Column(name = "offender_id", updatable = false)
     val personId: Long,
-
     @Column(name = "contact_date")
     val date: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime = ZonedDateTime.now(),
-
     @ManyToOne
     @JoinColumn(name = "contact_type_id", updatable = false)
     val type: ContactType,
-
     @Lob
     val notes: String,
-
     @Column(name = "probation_area_id", updatable = false)
     val providerId: Long,
-
     @Column(updatable = false)
     val teamId: Long,
-
     @Column(updatable = false)
     val staffId: Long,
-
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id", updatable = false)
     val outcome: ContactOutcome? = null,
-
     @Column(name = "sensitive")
     @Convert(converter = YesNoConverter::class)
     val isSensitive: Boolean = false,
-
     @Convert(converter = YesNoConverter::class)
     @Column(name = "alert_active")
     val alert: Boolean? = false,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
     var softDeleted: Boolean = false,
-
     @Column(name = "row_version")
     @Version
     var version: Long = 0,
-
     @Column
     val partitionAreaId: Long = 0,
-
     @Column(name = "created_datetime")
     @CreatedDate
     var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(name = "created_by_user_id")
     @CreatedBy
     var createdUserId: Long = 0,
-
     @Column(name = "last_updated_user_id")
     @LastModifiedBy
     var lastModifiedUserId: Long = 0,
-
     @Column(name = "last_updated_datetime")
     @LastModifiedDate
-    var lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now()
+    var lastModifiedDateTime: ZonedDateTime = ZonedDateTime.now(),
 )
 
 @Immutable
@@ -102,8 +84,7 @@ class ContactType(
     @Id
     @Column(name = "contact_type_id")
     val id: Long,
-
-    val code: String
+    val code: String,
 ) {
     companion object {
         const val MANAGEMENT_OVERSIGHT_RECALL = "MO5"
@@ -117,8 +98,7 @@ class ContactOutcome(
     @Id
     @Column(name = "contact_outcome_type_id")
     val id: Long,
-
-    val code: String
+    val code: String,
 ) {
     companion object {
         const val DECISION_TO_RECALL = "MO10"

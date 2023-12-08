@@ -62,9 +62,13 @@ class ReferralService(
     private val personRepository: PersonRepository,
     private val eventRepository: EventRepository,
     private val registrationRepository: RegistrationRepository,
-    private val contactService: ContactService
+    private val contactService: ContactService,
 ) {
-    fun bookingMade(crn: String, details: BookingMade, ap: ApprovedPremises) {
+    fun bookingMade(
+        crn: String,
+        details: BookingMade,
+        ap: ApprovedPremises,
+    ) {
         val person = personRepository.getByCrn(crn)
         val event = eventRepository.getByEventNumber(person.id, details.eventNumber)
         val apTeam = teamRepository.getApprovedPremisesTeam(ap.code.code)
@@ -75,7 +79,7 @@ class ReferralService(
             referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
                 person.id,
                 ServiceContext.servicePrincipal()!!.userId,
-                Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
+                Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId,
             )
         }
         findReferral() ?: run {
@@ -88,65 +92,81 @@ class ReferralService(
                         type = ContactTypeCode.BOOKING_MADE,
                         notes = "To view details of the Approved Premises booking, click here: ${details.applicationUrl}",
                         description = "Approved Premises Booking for ${details.premises.name}",
-                        locationCode = ap.locationCode()
+                        locationCode = ap.locationCode(),
                     ),
                     person = person,
                     eventId = event.id,
                     staff = rStaff,
                     team = rTeam,
-                    probationAreaCode = ap.probationArea.code
+                    probationAreaCode = ap.probationArea.code,
                 )
             }
         }
     }
 
-    fun bookingChanged(crn: String, details: BookingChanged, ap: ApprovedPremises) {
+    fun bookingChanged(
+        crn: String,
+        details: BookingChanged,
+        ap: ApprovedPremises,
+    ) {
         val person = personRepository.getByCrn(crn)
         referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
             person.id,
             ServiceContext.servicePrincipal()!!.userId,
-            Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
+            Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId,
         )?.apply {
             expectedArrivalDate = details.arrivalOn
             expectedDepartureDate = details.departureOn
         } ?: throw IllegalStateException("Unable to find referral for ${person.crn} => ${details.bookingId}")
     }
 
-    fun bookingCancelled(crn: String, details: BookingCancelled, ap: ApprovedPremises) {
+    fun bookingCancelled(
+        crn: String,
+        details: BookingCancelled,
+        ap: ApprovedPremises,
+    ) {
         val person = personRepository.getByCrn(crn)
-        val referral = checkNotNull(
-            referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
-                person.id,
-                ServiceContext.servicePrincipal()!!.userId,
-                Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
-            )
-        ) { "Unable to find referral for ${person.crn} => ${details.bookingId}" }.apply { softDeleted = true }
+        val referral =
+            checkNotNull(
+                referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
+                    person.id,
+                    ServiceContext.servicePrincipal()!!.userId,
+                    Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId,
+                ),
+            ) { "Unable to find referral for ${person.crn} => ${details.bookingId}" }.apply { softDeleted = true }
         contactService.createContact(
             ContactDetails(
                 date = details.cancelledAt,
                 type = ContactTypeCode.BOOKING_CANCELLED,
                 locationCode = ap.locationCode(),
                 description = "Booking cancelled for ${details.premises.name}",
-                notes = listOfNotNull(
-                    details.cancellationReason,
-                    "For more details, click here: ${details.applicationUrl}"
-                ).joinToString(System.lineSeparator() + System.lineSeparator())
+                notes =
+                    listOfNotNull(
+                        details.cancellationReason,
+                        "For more details, click here: ${details.applicationUrl}",
+                    ).joinToString(System.lineSeparator() + System.lineSeparator()),
             ),
             person = person,
             eventId = referral.eventId,
             staff = staffRepository.getByCode(details.cancelledBy.staffCode),
-            probationAreaCode = ap.probationArea.code
+            probationAreaCode = ap.probationArea.code,
         )
     }
 
-    fun personNotArrived(person: Person, ap: ApprovedPremises, dateTime: ZonedDateTime, details: PersonNotArrived) {
-        val referral = checkNotNull(
-            referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
-                person.id,
-                ServiceContext.servicePrincipal()!!.userId,
-                Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
-            )
-        ) { "Unable to find referral for ${person.crn} => ${details.bookingId}" }
+    fun personNotArrived(
+        person: Person,
+        ap: ApprovedPremises,
+        dateTime: ZonedDateTime,
+        details: PersonNotArrived,
+    ) {
+        val referral =
+            checkNotNull(
+                referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
+                    person.id,
+                    ServiceContext.servicePrincipal()!!.userId,
+                    Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId,
+                ),
+            ) { "Unable to find referral for ${person.crn} => ${details.bookingId}" }
         referral.nonArrivalDate = dateTime.toLocalDate()
         referral.nonArrivalNotes = details.notes
         referral.nonArrivalReasonId =
@@ -158,50 +178,62 @@ class ReferralService(
                 locationCode = ap.locationCode(),
                 description = details.reason,
                 outcomeCode = ContactOutcome.AP_NON_ARRIVAL_PREFIX + details.reasonCode,
-                notes = listOfNotNull(
-                    details.notes,
-                    "For more details, click here: ${details.applicationUrl}"
-                ).joinToString(System.lineSeparator() + System.lineSeparator())
+                notes =
+                    listOfNotNull(
+                        details.notes,
+                        "For more details, click here: ${details.applicationUrl}",
+                    ).joinToString(System.lineSeparator() + System.lineSeparator()),
             ),
             person = person,
             eventId = referral.eventId,
             staff = staffRepository.getByCode(details.recordedBy.staffCode),
-            probationAreaCode = ap.probationArea.code
+            probationAreaCode = ap.probationArea.code,
         )
     }
 
-    fun personArrived(person: Person, ap: ApprovedPremises, details: PersonArrived) {
-        val referral = checkNotNull(
-            referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
-                person.id,
-                ServiceContext.servicePrincipal()!!.userId,
-                Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
-            )
-        ) { "Unable to find referral for ${person.crn} => ${details.bookingId}" }
+    fun personArrived(
+        person: Person,
+        ap: ApprovedPremises,
+        details: PersonArrived,
+    ) {
+        val referral =
+            checkNotNull(
+                referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
+                    person.id,
+                    ServiceContext.servicePrincipal()!!.userId,
+                    Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId,
+                ),
+            ) { "Unable to find referral for ${person.crn} => ${details.bookingId}" }
         referral.admissionDate = details.arrivedAt.toLocalDate()
         val kw = staffRepository.getByCode(details.keyWorker.staffCode)
         residenceRepository.save(details.residence(person, ap, referral, kw))
     }
 
-    fun personDeparted(person: Person, details: PersonDeparted) {
+    fun personDeparted(
+        person: Person,
+        details: PersonDeparted,
+    ) {
         val serviceUserId = ServiceContext.servicePrincipal()!!.userId
-        val referral = checkNotNull(
-            referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
-                person.id,
-                serviceUserId,
-                Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId
-            )
-        ) { "Unable to find referral for ${person.crn} => ${details.bookingId}" }
-        val residence = checkNotNull(
-            residenceRepository.findByReferralIdAndCreatedByUserId(referral.id, serviceUserId)
-        ) {
-            "Unable to find residence for ${person.crn} => ${details.bookingId}"
-        }
+        val referral =
+            checkNotNull(
+                referralRepository.findByPersonIdAndCreatedByUserIdAndReferralNotesContains(
+                    person.id,
+                    serviceUserId,
+                    Nsi.EXT_REF_BOOKING_PREFIX + details.bookingId,
+                ),
+            ) { "Unable to find referral for ${person.crn} => ${details.bookingId}" }
+        val residence =
+            checkNotNull(
+                residenceRepository.findByReferralIdAndCreatedByUserId(referral.id, serviceUserId),
+            ) {
+                "Unable to find residence for ${person.crn} => ${details.bookingId}"
+            }
         residence.departureDate = details.departedAt
-        residence.departureReasonId = referenceDataRepository.findByCodeAndDatasetCode(
-            details.legacyReasonCode,
-            DatasetCode.AP_DEPARTURE_REASON
-        )?.id
+        residence.departureReasonId =
+            referenceDataRepository.findByCodeAndDatasetCode(
+                details.legacyReasonCode,
+                DatasetCode.AP_DEPARTURE_REASON,
+            )?.id
         residence.moveOnCategoryId =
             moveOnCategoryRepository.findByCode(details.destination.moveOnCategory.legacyCode)?.id
     }
@@ -219,12 +251,13 @@ class ReferralService(
         apTeam: Team,
         apStaff: Staff,
         referringTeam: Team,
-        referringStaff: Staff
+        referringStaff: Staff,
     ): Referral {
-        val notes = """
+        val notes =
+            """
             |This referral was made in the new AP Referral System. 
             |Please follow this link to see the original referral: $applicationUrl
-        """.trimMargin()
+            """.trimMargin()
         val ynUnknown = referenceDataRepository.ynUnknown()
         val riskUnknown = referenceDataRepository.unknownRisk()
         return Referral(
@@ -232,21 +265,23 @@ class ReferralService(
             eventId = event.id,
             approvedPremisesId = ap.id,
             referralDate = applicationSubmittedOn?.toLocalDate() ?: bookingMadeAt.toLocalDate(),
-            referralDateTypeId = checkNotNull(
-                referenceDataRepository.findByCodeAndDatasetCode(
-                    "CRC",
-                    DatasetCode.AP_REFERRAL_DATE_TYPE
-                )
-            ).id,
+            referralDateTypeId =
+                checkNotNull(
+                    referenceDataRepository.findByCodeAndDatasetCode(
+                        "CRC",
+                        DatasetCode.AP_REFERRAL_DATE_TYPE,
+                    ),
+                ).id,
             expectedArrivalDate = arrivalOn,
             expectedDepartureDate = departureOn,
             decisionDate = bookingMadeAt,
-            categoryId = referenceDataRepository.referralCategory(
-                ApprovedPremisesCategoryCode.from(
-                    sentenceType,
-                    releaseType
-                ).value
-            ).id,
+            categoryId =
+                referenceDataRepository.referralCategory(
+                    ApprovedPremisesCategoryCode.from(
+                        sentenceType,
+                        releaseType,
+                    ).value,
+                ).id,
             referralGroupId = referenceDataRepository.findApprovedPremisesGroup(ap.id)?.id,
             decisionId = referenceDataRepository.acceptedDeferredAdmission().id,
             referralNotes = Nsi.EXT_REF_BOOKING_PREFIX + bookingId + System.lineSeparator() + notes,
@@ -260,14 +295,16 @@ class ReferralService(
             disabilityDetails = notes,
             singleRoomId = ynUnknown.id,
             singleRoomDetails = notes,
-            sexOffender = registrationRepository.existsByPersonIdAndTypeCode(
-                person.id,
-                RegisterType.Code.SEX_OFFENCE.value
-            ),
-            gangAffiliated = registrationRepository.existsByPersonIdAndTypeCode(
-                person.id,
-                RegisterType.Code.GANG_AFFILIATION.value
-            ),
+            sexOffender =
+                registrationRepository.existsByPersonIdAndTypeCode(
+                    person.id,
+                    RegisterType.Code.SEX_OFFENCE.value,
+                ),
+            gangAffiliated =
+                registrationRepository.existsByPersonIdAndTypeCode(
+                    person.id,
+                    RegisterType.Code.GANG_AFFILIATION.value,
+                ),
             rohChildrenId = riskUnknown.id,
             rohKnownPersonId = riskUnknown.id,
             rohOthersId = riskUnknown.id,
@@ -279,25 +316,30 @@ class ReferralService(
             decisionTeamId = apTeam.id,
             decisionStaffId = apStaff.id,
             referringTeamId = referringTeam.id,
-            referringStaffId = referringStaff.id
+            referringStaffId = referringStaff.id,
         )
     }
 
-    private fun PersonArrived.residence(person: Person, ap: ApprovedPremises, referral: Referral, keyWorker: Staff) =
-        Residence(
-            person.id,
-            referral.id,
-            ap.id,
-            arrivedAt,
-            "This residence is being managed in the AP Referral Service. Please Do NOT make any updates to the record using Delius. Thank you.",
-            keyWorker.id
-        )
-
-    private fun ReferralWithAp.apReferral() = ApReferral(
-        referral.referralDate,
-        referral.expectedArrivalDate,
-        referral.expectedDepartureDate,
-        referral.decisionDate,
-        uk.gov.justice.digital.hmpps.model.ApprovedPremises(approvedPremises)
+    private fun PersonArrived.residence(
+        person: Person,
+        ap: ApprovedPremises,
+        referral: Referral,
+        keyWorker: Staff,
+    ) = Residence(
+        person.id,
+        referral.id,
+        ap.id,
+        arrivedAt,
+        "This residence is being managed in the AP Referral Service. Please Do NOT make any updates to the record using Delius. Thank you.",
+        keyWorker.id,
     )
+
+    private fun ReferralWithAp.apReferral() =
+        ApReferral(
+            referral.referralDate,
+            referral.expectedArrivalDate,
+            referral.expectedDepartureDate,
+            referral.decisionDate,
+            uk.gov.justice.digital.hmpps.model.ApprovedPremises(approvedPremises),
+        )
 }

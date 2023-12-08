@@ -18,7 +18,6 @@ import javax.sql.DataSource
 
 @ExtendWith(MockitoExtension::class)
 class DeliusConnectionProviderTest {
-
     @Mock
     private lateinit var connection: Connection
 

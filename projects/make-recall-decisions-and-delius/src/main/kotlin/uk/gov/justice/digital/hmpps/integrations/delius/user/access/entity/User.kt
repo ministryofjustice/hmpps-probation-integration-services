@@ -13,7 +13,6 @@ class User(
     @Id
     @Column(name = "user_id")
     val id: Long,
-
     @Column(name = "distinguished_name")
-    val username: String
+    val username: String,
 )

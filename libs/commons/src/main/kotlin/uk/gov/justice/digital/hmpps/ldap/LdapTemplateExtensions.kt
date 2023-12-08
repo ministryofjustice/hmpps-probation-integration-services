@@ -14,63 +14,80 @@ import javax.naming.directory.Attributes
 import javax.naming.directory.BasicAttribute
 import javax.naming.directory.BasicAttributes
 
-private const val ldapBase = "ou=Users"
+private const val LDAP_BASE = "ou=Users"
+
 fun LdapQueryBuilder.byUsername(username: String): LdapQuery =
-    base(ldapBase).searchScope(SearchScope.ONELEVEL).where("cn").`is`(username)
+    base(LDAP_BASE).searchScope(SearchScope.ONELEVEL).where("cn").`is`(username)
 
 @WithSpan
-inline fun <reified T> LdapTemplate.findByUsername(@SpanAttribute username: String) =
-    find(query().byUsername(username), T::class.java).singleOrNull()
+inline fun <reified T> LdapTemplate.findByUsername(
+    @SpanAttribute username: String,
+) = find(query().byUsername(username), T::class.java).singleOrNull()
 
 @WithSpan
-fun LdapTemplate.findEmailByUsername(@SpanAttribute username: String) = findAttributeByUsername(username, "mail")
+fun LdapTemplate.findEmailByUsername(
+    @SpanAttribute username: String,
+) = findAttributeByUsername(username, "mail")
 
 @WithSpan
-fun LdapTemplate.findAttributeByUsername(@SpanAttribute username: String, @SpanAttribute attribute: String) = search(
+fun LdapTemplate.findAttributeByUsername(
+    @SpanAttribute username: String,
+    @SpanAttribute attribute: String,
+) = search(
     query()
         .attributes(attribute)
-        .base(ldapBase)
+        .base(LDAP_BASE)
         .searchScope(SearchScope.ONELEVEL)
         .where("objectclass").`is`("inetOrgPerson")
         .and("objectclass").`is`("top")
         .and("cn").`is`(username),
-    AttributesMapper { it[attribute]?.get()?.toString() }
+    AttributesMapper { it[attribute]?.get()?.toString() },
 ).singleOrNull()
 
 @WithSpan
-fun LdapTemplate.getRoles(@SpanAttribute username: String) = search(
+fun LdapTemplate.getRoles(
+    @SpanAttribute username: String,
+) = search(
     query()
         .attributes("cn")
-        .base(LdapNameBuilder.newInstance(ldapBase).add("cn", username).build())
+        .base(LdapNameBuilder.newInstance(LDAP_BASE).add("cn", username).build())
         .searchScope(SearchScope.ONELEVEL)
         .where("objectclass").`is`("NDRole")
         .or("objectclass").`is`("NDRoleAssociation"),
-    AttributesMapper { it["cn"]?.get()?.toString() }
+    AttributesMapper { it["cn"]?.get()?.toString() },
 ).filterNotNull()
 
 @WithSpan
-fun LdapTemplate.addRole(@SpanAttribute username: String, @SpanAttribute role: DeliusRole) {
-    val roleContext = lookupContext(role.context())
-        ?: throw NotFoundException("NDeliusRole of ${role.name} not found")
-    val attributes: Attributes = BasicAttributes(true).apply {
-        put(roleContext.dn.asAttribute("aliasedObjectName"))
-        put(role.name.asAttribute("cn"))
-        put(listOf("NDRoleAssociation", "alias", "top").asAttribute("objectclass"))
-    }
+fun LdapTemplate.addRole(
+    @SpanAttribute username: String,
+    @SpanAttribute role: DeliusRole,
+) {
+    val roleContext =
+        lookupContext(role.context())
+            ?: throw NotFoundException("NDeliusRole of ${role.name} not found")
+    val attributes: Attributes =
+        BasicAttributes(true).apply {
+            put(roleContext.dn.asAttribute("aliasedObjectName"))
+            put(role.name.asAttribute("cn"))
+            put(listOf("NDRoleAssociation", "alias", "top").asAttribute("objectclass"))
+        }
     val userRole = role.context(username)
     rebind(userRole, null, attributes)
 }
 
 @WithSpan
-fun LdapTemplate.removeRole(@SpanAttribute username: String, @SpanAttribute role: DeliusRole) =
-    unbind(role.context(username))
+fun LdapTemplate.removeRole(
+    @SpanAttribute username: String,
+    @SpanAttribute role: DeliusRole,
+) = unbind(role.context(username))
 
 private fun DeliusRole.context(username: String? = null) =
-    LdapNameBuilder.newInstance(ldapBase)
+    LdapNameBuilder.newInstance(LDAP_BASE)
         .add("cn", username ?: "ndRoleCatalogue")
         .add("cn", name)
         .build()
 
 private fun Any.asAttribute(key: String) = BasicAttribute(key, this.toString())
+
 private fun List<Any>.asAttribute(key: String): BasicAttribute =
     BasicAttribute(key).apply { forEach(this::add) }

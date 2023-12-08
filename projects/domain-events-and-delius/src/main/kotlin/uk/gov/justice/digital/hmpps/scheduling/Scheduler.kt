@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 @Service
 class Scheduler(
     private val domainEventService: DomainEventService,
-    private val telemetryService: TelemetryService
+    private val telemetryService: TelemetryService,
 ) {
     @Scheduled(fixedDelayString = "\${poller.fixed-delay:100}")
     fun poll() {

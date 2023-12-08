@@ -7,5 +7,5 @@ data class CommunityManager(
     val team: Team,
     val localAdminUnit: LocalAdminUnit,
     val provider: Provider,
-    val isUnallocated: Boolean
+    val isUnallocated: Boolean,
 )

@@ -16,10 +16,9 @@ class Dataset(
     @Id
     @Column(name = "reference_data_master_id")
     val id: Long,
-
     @Convert(converter = DatasetCodeConverter::class)
     @Column(name = "code_set_name", nullable = false)
-    val code: DatasetCode
+    val code: DatasetCode,
 )
 
 enum class DatasetCode(val value: String) {
@@ -35,10 +34,12 @@ enum class DatasetCode(val value: String) {
     DISABILITY_PROVISION_CATEGORY("DISABILITY PROVISION CATEGORY"),
     RELATIONSHIP("RELATIONSHIP"),
     GENDER_IDENTITY("GENDER IDENTITY"),
-    PERSONAL_CONTACT_RELATIONSHIP_TYPE("PERSONAL CONTACT - RELATIONSHIP TYPE");
+    PERSONAL_CONTACT_RELATIONSHIP_TYPE("PERSONAL CONTACT - RELATIONSHIP TYPE"),
+    ;
 
     companion object {
         private val index = DatasetCode.values().associateBy { it.value }
+
         fun fromString(value: String): DatasetCode =
             index[value] ?: throw IllegalArgumentException("Invalid DatasetCode: $value")
     }

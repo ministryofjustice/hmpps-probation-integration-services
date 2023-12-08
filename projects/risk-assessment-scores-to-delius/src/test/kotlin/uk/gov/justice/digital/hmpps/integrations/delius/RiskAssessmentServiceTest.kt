@@ -66,7 +66,7 @@ class RiskAssessmentServiceTest {
                 crn,
                 1,
                 ZonedDateTime.now(),
-                OgrsScore(1, 1)
+                OgrsScore(1, 1),
             )
         }
     }
@@ -85,7 +85,7 @@ class RiskAssessmentServiceTest {
                 crn,
                 1,
                 ZonedDateTime.now(),
-                OgrsScore(1, 1)
+                OgrsScore(1, 1),
             )
         }
     }
@@ -104,7 +104,7 @@ class RiskAssessmentServiceTest {
                 crn,
                 1,
                 ZonedDateTime.now(),
-                OgrsScore(1, 1)
+                OgrsScore(1, 1),
             )
         }
     }
@@ -126,7 +126,7 @@ class RiskAssessmentServiceTest {
             crn,
             1,
             ZonedDateTime.now().minusYears(2),
-            OgrsScore(1, 1)
+            OgrsScore(1, 1),
         )
         verify(ogrsAssessmentRepository, Mockito.times(0)).save(any())
     }

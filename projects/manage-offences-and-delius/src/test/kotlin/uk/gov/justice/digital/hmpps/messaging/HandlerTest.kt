@@ -71,7 +71,7 @@ internal class HandlerTest {
                 assertThat(it.id, equalTo(0))
                 assertThat(it.code, equalTo(offenceCode))
                 assertThat(it.category, equalTo(COURT_CATEGORY))
-            }
+            },
         )
         verify(telemetryService).trackEvent("OffenceCodeCreated", mapOf("offenceCode" to offenceCode), mapOf())
     }
@@ -92,15 +92,16 @@ internal class HandlerTest {
                 assertThat(it.id, equalTo(EXISTING_OFFENCE.id))
                 assertThat(it.code, equalTo(offenceCode))
                 assertThat(it.category, equalTo(COURT_CATEGORY))
-            }
+            },
         )
         verify(telemetryService).trackEvent("OffenceCodeUpdated", mapOf("offenceCode" to offenceCode), mapOf())
     }
 
-    private fun offence(code: String) = Offence(
-        code = code,
-        description = "some offence",
-        offenceType = COURT_CATEGORY.code,
-        startDate = LocalDate.now()
-    )
+    private fun offence(code: String) =
+        Offence(
+            code = code,
+            description = "some offence",
+            offenceType = COURT_CATEGORY.code,
+            startDate = LocalDate.now(),
+        )
 }

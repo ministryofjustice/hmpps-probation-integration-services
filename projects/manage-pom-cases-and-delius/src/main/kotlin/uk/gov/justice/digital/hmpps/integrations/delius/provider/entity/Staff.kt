@@ -23,30 +23,23 @@ import java.time.ZonedDateTime
 @Table(name = "staff")
 @EntityListeners(AuditingEntityListener::class)
 class Staff(
-
     @Column(name = "officer_code", columnDefinition = "char(7)")
     val code: String,
-
     val forename: String,
     val surname: String,
-
     @Column(name = "forename2")
     val middleName: String? = null,
-
     @OneToOne(mappedBy = "staff")
     val user: StaffUser? = null,
-
     @Column(name = "probation_area_id")
     val probationAreaId: Long,
-
     @Column(name = "start_date", updatable = false)
     val startDate: ZonedDateTime = ZonedDateTime.now(),
-
     @Id
     @Column(name = "staff_id")
     @SequenceGenerator(name = "staff_id_seq", sequenceName = "staff_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "staff_id_seq")
-    val id: Long = 0
+    val id: Long = 0,
 ) {
     fun isUnallocated() = code.endsWith("U")
 
@@ -78,17 +71,14 @@ class Staff(
 @Immutable
 @Table(name = "user_")
 class StaffUser(
-
     @Column(name = "distinguished_name")
     val username: String,
-
     @OneToOne
     @JoinColumn(name = "staff_id")
     val staff: Staff? = null,
-
     @Id
     @Column(name = "user_id")
-    val id: Long
+    val id: Long,
 ) {
     @Transient
     var email: String? = null

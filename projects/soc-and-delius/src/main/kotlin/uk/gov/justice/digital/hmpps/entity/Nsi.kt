@@ -15,29 +15,22 @@ import java.time.LocalDate
 @Table(name = "nsi")
 @SQLRestriction("soft_deleted = 0 and active_flag = 1")
 class Nsi(
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @JoinColumn(name = "nsi_outcome_id")
     @ManyToOne
     var outcome: ReferenceData? = null,
-
     val referralDate: LocalDate,
-
     @Id
     @Column(name = "nsi_id")
     val id: Long = 0,
-
     @Column(name = "active_flag", columnDefinition = "number")
     var active: Boolean = true,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 interface NsiRepository : JpaRepository<Nsi, Long> {
-
     @Query(
         """
            with latest_breach as (select nsi.referral_date as breachdate
@@ -69,7 +62,7 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
             union all
             select recalldate as referralDate, 'recall' as name from latest_recall  
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun findBreachAndRecallDates(personId: Long): List<NsiDate>
 }

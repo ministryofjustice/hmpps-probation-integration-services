@@ -13,9 +13,12 @@ interface OrderManagerRepository : JpaRepository<OrderManager, Long> {
     and om.startDate <= :dateTime 
     and (om.endDate is null or om.endDate > :dateTime)  
     and om.softDeleted = false
-    """
+    """,
     )
-    fun findActiveManagerAtDate(eventId: Long, dateTime: ZonedDateTime): OrderManager?
+    fun findActiveManagerAtDate(
+        eventId: Long,
+        dateTime: ZonedDateTime,
+    ): OrderManager?
 }
 
 fun OrderManagerRepository.getOrderManager(eventId: Long) = findActiveManagerAtDate(eventId, ZonedDateTime.now()) ?: throw NotFoundException("OrderManager", "eventId", eventId)

@@ -10,7 +10,7 @@ class ApiController {
     @PreAuthorize("hasRole('ROLE_SENTENCE_PLAN_RW')")
     @GetMapping(value = ["/needs/{crn}"])
     fun getNeeds(
-        @PathVariable("crn") crn: String
+        @PathVariable("crn") crn: String,
     ) = genericNeeds(crn)
 
     private fun genericNeeds(crn: String): Needs {
@@ -23,8 +23,8 @@ class ApiController {
                 Need("employability", "Education, training and employment"),
                 Need("lifestyle", "Lifestyle"),
                 Need("relationships", "Relationships"),
-                Need("behaviour", "Thinking and behaviour")
-            )
+                Need("behaviour", "Thinking and behaviour"),
+            ),
         )
     }
 }

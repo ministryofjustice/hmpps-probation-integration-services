@@ -48,7 +48,7 @@ class AllocationValidatorTest {
             assertThrows<NotFoundException> {
                 allocationValidator.initialValidations(
                     ProviderGenerator.DEFAULT.id,
-                    allocationDetail
+                    allocationDetail,
                 )
             }
         assert(exception.message!!.contains("Team with code of ${allocationDetail.teamCode} not found"))
@@ -63,7 +63,7 @@ class AllocationValidatorTest {
             assertThrows<ConflictException> {
                 allocationValidator.initialValidations(
                     -99L,
-                    allocationDetail
+                    allocationDetail,
                 )
             }
         assert(exception.message!!.contains("Cannot transfer from provider -99 to ${TeamGenerator.DEFAULT.providerId}"))
@@ -78,7 +78,7 @@ class AllocationValidatorTest {
             assertThrows<NotActiveException> {
                 allocationValidator.initialValidations(
                     ProviderGenerator.DEFAULT.id,
-                    allocationDetail
+                    allocationDetail,
                 )
             }
         assert(exception.message!!.contains("Team with code of ${team.code} not active"))
@@ -93,8 +93,8 @@ class AllocationValidatorTest {
         whenever(
             referenceDataRepository.findByDatasetAndCode(
                 allocationDetail.datasetCode,
-                allocationDetail.code
-            )
+                allocationDetail.code,
+            ),
         )
             .thenReturn(INITIAL_OM_ALLOCATION)
         whenever(staffRepository.countTeamMembership(staff.id, team.id)).thenReturn(1)
@@ -102,7 +102,7 @@ class AllocationValidatorTest {
         assertDoesNotThrow {
             allocationValidator.initialValidations(
                 ProviderGenerator.DEFAULT.id,
-                allocationDetail
+                allocationDetail,
             )
         }
     }
@@ -115,14 +115,14 @@ class AllocationValidatorTest {
         whenever(
             referenceDataRepository.findByDatasetAndCode(
                 allocationDetail.datasetCode,
-                allocationDetail.code
-            )
+                allocationDetail.code,
+            ),
         ).thenReturn(null)
         val exception =
             assertThrows<NotFoundException> {
                 allocationValidator.initialValidations(
                     ProviderGenerator.DEFAULT.id,
-                    allocationDetail
+                    allocationDetail,
                 )
             }
         assert(exception.message!!.contains("$allocationDetail.datasetCode.value with code ${allocationDetail.code} not found"))
@@ -136,8 +136,8 @@ class AllocationValidatorTest {
         whenever(
             referenceDataRepository.findByDatasetAndCode(
                 allocationDetail.datasetCode,
-                allocationDetail.code
-            )
+                allocationDetail.code,
+            ),
         )
             .thenReturn(INITIAL_OM_ALLOCATION)
         whenever(staffRepository.findByCode(allocationDetail.staffCode)).thenReturn(null)
@@ -145,7 +145,7 @@ class AllocationValidatorTest {
             assertThrows<NotFoundException> {
                 allocationValidator.initialValidations(
                     ProviderGenerator.DEFAULT.id,
-                    allocationDetail
+                    allocationDetail,
                 )
             }
         assert(exception.message!!.contains("Staff with code of ${allocationDetail.staffCode} not found"))
@@ -159,8 +159,8 @@ class AllocationValidatorTest {
         whenever(
             referenceDataRepository.findByDatasetAndCode(
                 allocationDetail.datasetCode,
-                allocationDetail.code
-            )
+                allocationDetail.code,
+            ),
         )
             .thenReturn(INITIAL_OM_ALLOCATION)
         val oldStaff = Staff(1L, "code", "old", "staff", "", ZonedDateTime.now().minusYears(5))
@@ -169,7 +169,7 @@ class AllocationValidatorTest {
             assertThrows<NotActiveException> {
                 allocationValidator.initialValidations(
                     ProviderGenerator.DEFAULT.id,
-                    allocationDetail
+                    allocationDetail,
                 )
             }
         assert(exception.message!!.contains("Staff with code of ${oldStaff.code} not active"))
@@ -183,8 +183,8 @@ class AllocationValidatorTest {
         whenever(
             referenceDataRepository.findByDatasetAndCode(
                 allocationDetail.datasetCode,
-                allocationDetail.code
-            )
+                allocationDetail.code,
+            ),
         )
             .thenReturn(INITIAL_OM_ALLOCATION)
         val futureEndDatedStaff = Staff(1L, "code", "old", "staff", "", ZonedDateTime.now().plusYears(5))
@@ -193,7 +193,7 @@ class AllocationValidatorTest {
         assertDoesNotThrow {
             allocationValidator.initialValidations(
                 ProviderGenerator.DEFAULT.id,
-                allocationDetail
+                allocationDetail,
             )
         }
     }
@@ -207,8 +207,8 @@ class AllocationValidatorTest {
         whenever(
             referenceDataRepository.findByDatasetAndCode(
                 allocationDetail.datasetCode,
-                allocationDetail.code
-            )
+                allocationDetail.code,
+            ),
         )
             .thenReturn(INITIAL_OM_ALLOCATION)
         whenever(staffRepository.findByCode(allocationDetail.staffCode)).thenReturn(staff)
@@ -217,7 +217,7 @@ class AllocationValidatorTest {
             assertThrows<StaffNotInTeamException> {
                 allocationValidator.initialValidations(
                     ProviderGenerator.DEFAULT.id,
-                    allocationDetail
+                    allocationDetail,
                 )
             }
         assert(exception.message!!.contains("Staff ${staff.code} not in Team ${team.code}"))

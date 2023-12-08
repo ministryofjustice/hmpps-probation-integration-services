@@ -4,6 +4,6 @@ open class NotFoundException(message: String) : RuntimeException(message) {
     constructor(
         entity: String,
         field: String,
-        value: Any
+        value: Any,
     ) : this("$entity with $field of $value not found")
 }

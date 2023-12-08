@@ -14,34 +14,35 @@ import java.time.LocalDate
 @Service
 class LicenceConditionService(
     private val licenceConditionRepository: LicenceConditionRepository,
-    private val licenceConditionManagerRepository: LicenceConditionManagerRepository
+    private val licenceConditionManagerRepository: LicenceConditionManagerRepository,
 ) {
-
     fun findByDisposalId(id: Long) = licenceConditionRepository.findByDisposalId(id)
+
     fun createLicenceCondition(
         disposal: Disposal,
         releaseDate: LocalDate,
         category: LicenceConditionCategory,
         subCategory: ReferenceData,
         notes: String,
-        com: PersonManager
+        com: PersonManager,
     ): LicenceCondition {
-        val lc = licenceConditionRepository.save(
-            LicenceCondition(
-                disposal.id,
-                releaseDate,
-                category,
-                subCategory,
-                notes
+        val lc =
+            licenceConditionRepository.save(
+                LicenceCondition(
+                    disposal.id,
+                    releaseDate,
+                    category,
+                    subCategory,
+                    notes,
+                ),
             )
-        )
         licenceConditionManagerRepository.save(
             LicenceConditionManager(
                 lc.id,
                 com.provider.id,
                 com.team.id,
-                com.staff.id
-            )
+                com.staff.id,
+            ),
         )
         return lc
     }

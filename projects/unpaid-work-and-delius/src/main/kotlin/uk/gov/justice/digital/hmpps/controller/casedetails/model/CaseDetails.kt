@@ -30,59 +30,60 @@ data class CaseDetails(
     val personalContacts: List<PersonalContact>? = listOf(),
     val mappaRegistration: MappaRegistration?,
     val registerFlags: List<RegisterFlag>? = listOf(),
-    val sentence: Sentence?
-
+    val sentence: Sentence?,
 )
 
 data class Alias(
     val name: Name,
-    val dateOfBirth: LocalDate
+    val dateOfBirth: LocalDate,
 )
 
 data class PhoneNumber(
     val type: String,
-    val number: String
+    val number: String,
 )
 
 data class Disability(
     val type: Type,
     val condition: Type?,
-    val notes: String?
+    val notes: String?,
 )
 
 data class Provision(
     val type: Type,
     val category: Type?,
-    val notes: String?
+    val notes: String?,
 )
 
 data class Language(
     val requiresInterpreter: Boolean = false,
-    val primaryLanguage: String = ""
+    val primaryLanguage: String = "",
 )
 
 data class MappaRegistration(
     val startDate: LocalDate,
     val level: Type,
-    val category: Type
+    val category: Type,
 )
 
 data class RegisterFlag(
     val code: String,
     val description: String,
-    val riskColour: String?
+    val riskColour: String?,
 )
 
 data class Sentence(
     val startDate: LocalDate,
-    val mainOffence: MainOffence
+    val mainOffence: MainOffence,
 )
 
 data class MainOffence(
     val category: Type,
-    val subCategory: Type
+    val subCategory: Type,
 )
 
 fun CaseEntity.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
+
 fun AliasEntity.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
+
 fun CasePersonalContactEntity.name() = Name(forename, middleName, surname)

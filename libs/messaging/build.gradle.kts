@@ -14,9 +14,10 @@ dependencies {
 }
 
 configure<ClassPathExtension> {
-    jacocoExclusions = listOf(
-        "**/exception/**",
-        "**/config/**",
-        "**/NotificationHandler.DefaultImpls"
-    )
+    jacocoExclusions =
+        listOf(
+            "**/exception/**",
+            "**/config/**",
+            "**/NotificationHandler.DefaultImpls",
+        )
 }

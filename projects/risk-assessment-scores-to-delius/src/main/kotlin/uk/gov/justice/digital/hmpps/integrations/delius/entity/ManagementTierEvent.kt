@@ -23,51 +23,40 @@ interface ManagementTierEventRepository : JpaRepository<ManagementTierEvent, Lon
 @Entity
 @EntityListeners(AuditingEntityListener::class)
 class ManagementTierEvent(
-
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
-
     @ManyToOne
     @JoinColumn(name = "contact_type_id", nullable = false)
     val contactType: ContactType,
-
     @ManyToOne
     @JoinColumn(name = "tier_change_reason_id")
     val changeReason: ReferenceData,
-
     @ManyToOne
     @JoinColumn(name = "tier_id")
     val tier: ReferenceData,
-
     @Id
     @SequenceGenerator(
         name = "management_tier_event_id_generator",
         sequenceName = "management_tier_event_id_seq",
-        allocationSize = 1
+        allocationSize = 1,
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "management_tier_event_id_generator")
     @Column(name = "management_tier_event_id", nullable = false)
     val id: Long = 0,
-
     @Column(nullable = false)
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(nullable = false)
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
-
     @CreatedDate
     @Column(nullable = false)
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(nullable = false)
     @CreatedBy
     var createdByUserId: Long = 0,
-
     @Version
     @Column(name = "row_version", nullable = false)
-    val version: Long = 0
-
+    val version: Long = 0,
 )

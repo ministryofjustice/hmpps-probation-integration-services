@@ -12,7 +12,7 @@ class SentenceDetail(
     val paroleEligibilityDate: LocalDate? = null,
     @JsonAlias("topupSupervisionExpiryDate")
     val postSentenceSupervisionEndDate: LocalDate? = null,
-    val homeDetentionCurfewEligibilityDate: LocalDate? = null
+    val homeDetentionCurfewEligibilityDate: LocalDate? = null,
 ) {
     val conditionalReleaseDate = conditionalReleaseOverrideDate ?: conditionalReleaseDate
 }

@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.integrations.managepomcases.ManagePomCasesCl
 
 @Configuration
 class RestClientConfig(private val oauth2Client: RestClient) {
-
     @Bean
     fun managePomCasesClient() = createClient<ManagePomCasesClient>(oauth2Client)
 }

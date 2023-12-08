@@ -8,7 +8,7 @@ interface StaffRepository : JpaRepository<Staff, Long> {
     fun findTopByProbationAreaIdAndForenameIgnoreCaseAndSurnameIgnoreCase(
         probationAreaId: Long,
         forename: String,
-        surname: String
+        surname: String,
     ): Staff?
 
     @Query(
@@ -18,7 +18,7 @@ interface StaffRepository : JpaRepository<Staff, Long> {
         order by officer_code desc
         fetch next 1 rows only
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun getLatestStaffReference(regex: String): String?
 }

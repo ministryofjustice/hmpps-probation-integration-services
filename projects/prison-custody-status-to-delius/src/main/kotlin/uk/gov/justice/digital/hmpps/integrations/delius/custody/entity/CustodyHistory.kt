@@ -23,31 +23,24 @@ class CustodyHistory(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custody_history_id_generator")
     @Column(name = "custody_history_id")
     val id: Long = 0,
-
     @Version
     @Column(name = "row_version", nullable = false)
     val version: Long = 0,
-
     @Column(name = "historical_date", nullable = false)
     val date: ZonedDateTime,
-
     @ManyToOne
     @JoinColumn(name = "custody_event_type_id", nullable = false)
     val type: ReferenceData,
-
     @Column
     val detail: String?,
-
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
-
     @ManyToOne
     @JoinColumn(name = "custody_id", nullable = false)
     val custody: Custody,
-
     @Column(nullable = false)
-    val partitionAreaId: Long = 0
+    val partitionAreaId: Long = 0,
 )
 
 interface CustodyHistoryRepository : JpaRepository<CustodyHistory, Long>

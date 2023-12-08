@@ -5,24 +5,25 @@ import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
-
     @Query(
         """
         select rd from ReferenceData rd
         join Dataset ds on rd.datasetId = ds.id
         where ds.code = :datasetCode and rd.code = :code
-    """
+    """,
     )
-    fun findByCodeAndDatasetCode(code: String, datasetCode: DatasetCode): ReferenceData?
+    fun findByCodeAndDatasetCode(
+        code: String,
+        datasetCode: DatasetCode,
+    ): ReferenceData?
 }
 
-fun ReferenceDataRepository.findAddressStatusByCode(code: String) =
-    findByCodeAndDatasetCode(code, DatasetCode.ADDRESS_STATUS)
+fun ReferenceDataRepository.findAddressStatusByCode(code: String) = findByCodeAndDatasetCode(code, DatasetCode.ADDRESS_STATUS)
 
-fun ReferenceDataRepository.getAddressStatus(code: String): ReferenceData =
-    findAddressStatusByCode(code) ?: throw NotFoundException("Address Status", "code", code)
+fun ReferenceDataRepository.getAddressStatus(code: String): ReferenceData = findAddressStatusByCode(code) ?: throw NotFoundException("Address Status", "code", code)
 
 fun ReferenceDataRepository.mainAddressStatus() = getAddressStatus("M")
+
 fun ReferenceDataRepository.previousAddressStatus() = getAddressStatus("P")
 
 fun ReferenceDataRepository.cas3AddressType() =

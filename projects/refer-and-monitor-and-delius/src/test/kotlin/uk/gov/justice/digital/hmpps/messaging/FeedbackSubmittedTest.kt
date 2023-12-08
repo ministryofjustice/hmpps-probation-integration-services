@@ -45,23 +45,25 @@ internal class FeedbackSubmittedTest {
     private val contractTypeName = "Contract Type"
     private val primeProviderName = "Prime Provider"
     private val deliusAppointmentId = 8791827L
-    private val domainEvent = HmppsDomainEvent(
-        DomainEventType.InitialAppointmentSubmitted.name,
-        1,
-        "https://interventions-service/referral/$referralId/supplier-assessment",
-        nullableAdditionalInformation = AdditionalInformation(
-            mutableMapOf(
-                "serviceUserCRN" to crn,
-                "referralId" to referralId.toString(),
-                "referralReference" to referralReference,
-                "contractTypeName" to contractTypeName,
-                "primeProviderName" to primeProviderName,
-                "deliusAppointmentId" to deliusAppointmentId.toString(),
-                "referralProbationUserURL" to "http://url/pp/$referralId/supplier-assessment"
-            )
-        ),
-        personReference = PersonReference(listOf(PersonIdentifier("CRN", crn)))
-    )
+    private val domainEvent =
+        HmppsDomainEvent(
+            DomainEventType.InitialAppointmentSubmitted.name,
+            1,
+            "https://interventions-service/referral/$referralId/supplier-assessment",
+            nullableAdditionalInformation =
+                AdditionalInformation(
+                    mutableMapOf(
+                        "serviceUserCRN" to crn,
+                        "referralId" to referralId.toString(),
+                        "referralReference" to referralReference,
+                        "contractTypeName" to contractTypeName,
+                        "primeProviderName" to primeProviderName,
+                        "deliusAppointmentId" to deliusAppointmentId.toString(),
+                        "referralProbationUserURL" to "http://url/pp/$referralId/supplier-assessment",
+                    ),
+                ),
+            personReference = PersonReference(listOf(PersonIdentifier("CRN", crn))),
+        )
 
     @Test
     fun `Failed result if supplier assessment not found`() {
@@ -83,7 +85,7 @@ internal class FeedbackSubmittedTest {
         assertThat(ex, instanceOf(IllegalStateException::class.java))
         assertThat(
             ex.message,
-            equalTo("No feedback information available for referral $referralId: supplier assessment ${supplierAssessment.id}")
+            equalTo("No feedback information available for referral $referralId: supplier assessment ${supplierAssessment.id}"),
         )
     }
 
@@ -92,22 +94,22 @@ internal class FeedbackSubmittedTest {
         val appointment =
             Appointment(
                 UUID.randomUUID(),
-                AppointmentFeedback(AttendanceFeedback(Attended.YES.name, ZonedDateTime.now()), SessionFeedback(false))
+                AppointmentFeedback(AttendanceFeedback(Attended.YES.name, ZonedDateTime.now()), SessionFeedback(false)),
             )
         whenever(ramClient.getSupplierAssessment(URI(domainEvent.detailUrl!!)))
             .thenReturn(
                 SupplierAssessment(
                     UUID.randomUUID(),
                     listOf(appointment),
-                    referralId
-                )
+                    referralId,
+                ),
             )
 
         val result = feedbackSubmitted.initialAppointmentSubmitted(domainEvent)
         assertThat(result, instanceOf(EventProcessingResult.Success::class.java))
         assertThat(
             (result as EventProcessingResult.Success).eventType,
-            equalTo(DomainEventType.InitialAppointmentSubmitted)
+            equalTo(DomainEventType.InitialAppointmentSubmitted),
         )
         val maCapture = argumentCaptor<UpdateAppointmentOutcome>()
         verify(appointmentService).updateOutcome(maCapture.capture())

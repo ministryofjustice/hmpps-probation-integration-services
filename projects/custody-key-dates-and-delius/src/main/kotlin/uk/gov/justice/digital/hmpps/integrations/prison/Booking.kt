@@ -8,5 +8,5 @@ data class Booking(
     val bookingNo: String,
     @JsonAlias("activeFlag")
     val active: Boolean,
-    val offenderNo: String
+    val offenderNo: String,
 )

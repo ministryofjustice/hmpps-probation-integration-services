@@ -5,5 +5,5 @@ import java.time.ZonedDateTime
 data class TierCalculation(
     val tierScore: String,
     val calculationId: String,
-    val calculationDate: ZonedDateTime
+    val calculationDate: ZonedDateTime,
 )

@@ -34,7 +34,7 @@ class ReleaseAction(
     private val hostRepository: HostRepository,
     private val releaseRepository: ReleaseRepository,
     private val contactService: ContactService,
-    private val eventService: EventService
+    private val eventService: EventService,
 ) : PrisonerMovementAction {
     override val name: String
         get() = "Release"
@@ -43,12 +43,16 @@ class ReleaseAction(
         val (prisonerMovement, custody) = context
         checkPreConditions(prisonerMovement, custody)
         val releaseType = referenceDataRepository.getReleaseType(prisonerMovement.releaseType().code)
-        val releasedFrom = prisonerMovement.prisonId?.let { institutionRepository.findByNomisCdeCode(it) }
-            ?: custody.institution ?: institutionRepository.getByCode(InstitutionCode.UNKNOWN.code)
+        val releasedFrom =
+            prisonerMovement.prisonId?.let { institutionRepository.findByNomisCdeCode(it) }
+                ?: custody.institution ?: institutionRepository.getByCode(InstitutionCode.UNKNOWN.code)
         return release(prisonerMovement, releaseType, custody, releasedFrom)
     }
 
-    private fun checkPreConditions(prisonerMovement: PrisonerMovement, custody: Custody) {
+    private fun checkPreConditions(
+        prisonerMovement: PrisonerMovement,
+        custody: Custody,
+    ) {
         if (prisonerMovement.occurredBefore(custody.disposal.date, custody.mostRecentRelease()?.recall?.date)) {
             throw IgnorableMessageException("InvalidReleaseDate", prisonerMovement.telemetryProperties())
         }
@@ -58,7 +62,7 @@ class ReleaseAction(
         prisonerMovement: PrisonerMovement,
         type: ReferenceData,
         custody: Custody,
-        institution: Institution
+        institution: Institution,
     ): ActionResult {
         if (custody.canBeReleased()) {
             val releaseDate = prisonerMovement.occurredAt.truncatedTo(ChronoUnit.DAYS)
@@ -69,34 +73,38 @@ class ReleaseAction(
                     person = custody.disposal.event.person,
                     custody = custody,
                     institutionId = institution.id,
-                    probationAreaId = hostRepository.findLeadHostProviderIdByInstitutionId(
-                        institution.id.institutionId,
-                        prisonerMovement.occurredAt
-                    )
-                )
+                    probationAreaId =
+                        hostRepository.findLeadHostProviderIdByInstitutionId(
+                            institution.id.institutionId,
+                            prisonerMovement.occurredAt,
+                        ),
+                ),
             )
             val event = custody.disposal.event
             contactService.createContact(
                 ContactDetail(
                     ContactType.Code.RELEASE_FROM_CUSTODY,
                     prisonerMovement.occurredAt,
-                    "Release Type: ${type.description}"
+                    "Release Type: ${type.description}",
                 ),
                 event.person,
                 event,
-                event.manager()
+                event.manager(),
             )
             eventService.updateReleaseDateAndIapsFlag(event, releaseDate)
             return ActionResult.Success(ActionResult.Type.Released, prisonerMovement.telemetryProperties())
         }
         return ActionResult.Ignored(
             "UnableToRelease",
-            prisonerMovement.telemetryProperties() + ("currentStatus" to custody.status.code)
+            prisonerMovement.telemetryProperties() + ("currentStatus" to custody.status.code),
         )
     }
 }
 
-private fun PrisonerMovement.occurredBefore(sentenceDate: ZonedDateTime, recalledDateTime: ZonedDateTime?): Boolean {
+private fun PrisonerMovement.occurredBefore(
+    sentenceDate: ZonedDateTime,
+    recalledDateTime: ZonedDateTime?,
+): Boolean {
     return occurredAt.isBefore(sentenceDate) || recalledDateTime?.let { occurredAt.isBefore(it) } ?: false
 }
 

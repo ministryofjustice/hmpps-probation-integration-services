@@ -10,11 +10,15 @@ import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentReposit
 @Service
 class DocumentService(
     private val documentRepository: DocumentRepository,
-    private val alfrescoClient: AlfrescoClient
+    private val alfrescoClient: AlfrescoClient,
 ) {
-    fun downloadDocument(crn: String, id: String): ResponseEntity<StreamingResponseBody> {
-        val filename = documentRepository.findNameByPersonCrnAndAlfrescoId(crn, id)
-            ?: throw NotFoundException("Document with id of $id not found for CRN $crn")
+    fun downloadDocument(
+        crn: String,
+        id: String,
+    ): ResponseEntity<StreamingResponseBody> {
+        val filename =
+            documentRepository.findNameByPersonCrnAndAlfrescoId(crn, id)
+                ?: throw NotFoundException("Document with id of $id not found for CRN $crn")
         return alfrescoClient.streamDocument(id, filename)
     }
 }

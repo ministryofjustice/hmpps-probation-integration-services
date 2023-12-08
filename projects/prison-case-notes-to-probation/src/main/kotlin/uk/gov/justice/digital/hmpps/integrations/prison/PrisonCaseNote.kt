@@ -22,7 +22,7 @@ data class PrisonCaseNote(
     val authorName: String,
     val text: String?,
     val locationId: String = UNKNOWN_LOCATION,
-    val amendments: List<CaseNoteAmendment>
+    val amendments: List<CaseNoteAmendment>,
 ) {
     fun getStaffName(): StaffName =
         if (authorName.contains(',')) {
@@ -35,7 +35,7 @@ data class PrisonCaseNote(
 data class CaseNoteAmendment(
     val creationDateTime: ZonedDateTime?,
     val authorName: String,
-    val additionalNoteText: String
+    val additionalNoteText: String,
 )
 
 fun PrisonCaseNote.toDeliusCaseNote(): DeliusCaseNote {
@@ -45,14 +45,15 @@ fun PrisonCaseNote.toDeliusCaseNote(): DeliusCaseNote {
 
     return DeliusCaseNote(
         header = CaseNoteHeader(offenderIdentifier, eventId),
-        body = CaseNoteBody(
-            type = type,
-            subType = subType,
-            content = text + amendments.joinToString(separator = "", transform = amendments()),
-            contactTimeStamp = occurrenceDateTime,
-            systemTimestamp = amendments.mapNotNull { it.creationDateTime }.maxOrNull() ?: creationDateTime,
-            staffName = getStaffName(),
-            establishmentCode = locationId
-        )
+        body =
+            CaseNoteBody(
+                type = type,
+                subType = subType,
+                content = text + amendments.joinToString(separator = "", transform = amendments()),
+                contactTimeStamp = occurrenceDateTime,
+                systemTimestamp = amendments.mapNotNull { it.creationDateTime }.maxOrNull() ?: creationDateTime,
+                staffName = getStaffName(),
+                establishmentCode = locationId,
+            ),
     )
 }

@@ -21,33 +21,25 @@ import java.time.LocalDate
 @SQLRestriction("soft_deleted = 0")
 @Table(name = "event")
 class Event(
-
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
-
     @Column(name = "in_breach", columnDefinition = "number")
     val inBreach: Boolean,
-
     @Column(name = "conviction_date")
     val convictionDate: LocalDate,
-
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
-
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     val active: Boolean,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean,
-
     @Id
     @Column(name = "event_id", nullable = false)
-    val id: Long
+    val id: Long,
 )
 
 interface EventRepository : JpaRepository<Event, Long> {
-
     fun findAllByPerson(person: Person): List<Event>
 
     @Query(
@@ -62,7 +54,7 @@ interface EventRepository : JpaRepository<Event, Long> {
             on ca.event_id = e.event_id
         where e.event_id = :eventId
     """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun awaitingPSR(eventId: Long): Int
 }
@@ -72,22 +64,17 @@ interface EventRepository : JpaRepository<Event, Long> {
 @SQLRestriction("soft_deleted = 0 and active_flag = 1")
 @Table(name = "order_manager")
 class OrderManager(
-
     @ManyToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
-
     @Id
     @Column(name = "order_manager_id")
-    val id: Long
+    val id: Long,
 )

@@ -12,7 +12,8 @@ dependencies {
     testImplementation(libs.bundles.mockito)
 }
 configure<ClassPathExtension> {
-    jacocoExclusions = listOf(
-        "**/**"
-    )
+    jacocoExclusions =
+        listOf(
+            "**/**",
+        )
 }

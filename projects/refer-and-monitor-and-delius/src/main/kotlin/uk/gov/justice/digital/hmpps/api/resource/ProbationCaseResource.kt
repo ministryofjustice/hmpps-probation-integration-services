@@ -19,27 +19,38 @@ import uk.gov.justice.digital.hmpps.service.PersonService
 class ProbationCaseResource(
     private val managerService: ManagerService,
     private val personService: PersonService,
-    private val convictionService: ConvictionService
+    private val convictionService: ConvictionService,
 ) {
     @PreAuthorize("hasRole('CRS_REFERRAL')")
     @GetMapping("responsible-officer")
-    fun findResponsibleOfficer(@PathVariable crn: String): ResponsibleOfficer =
+    fun findResponsibleOfficer(
+        @PathVariable crn: String,
+    ): ResponsibleOfficer =
         managerService.findResponsibleCommunityManager(crn)
 
     @PreAuthorize("hasRole('CRS_REFERRAL')")
     @GetMapping("identifiers")
-    fun findIdentifiers(@PathVariable crn: String): CaseIdentifier = personService.findIdentifiers(crn)
+    fun findIdentifiers(
+        @PathVariable crn: String,
+    ): CaseIdentifier = personService.findIdentifiers(crn)
 
     @PreAuthorize("hasRole('CRS_REFERRAL')")
     @GetMapping("details")
-    fun findDetails(@PathVariable crn: String): ResponseEntity<CaseDetail> =
+    fun findDetails(
+        @PathVariable crn: String,
+    ): ResponseEntity<CaseDetail> =
         personService.findDetailsFor(crn)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
 
     @PreAuthorize("hasRole('CRS_REFERRAL')")
     @GetMapping("convictions")
-    fun findConvictions(@PathVariable crn: String): CaseConvictions = convictionService.findConvictions(crn)
+    fun findConvictions(
+        @PathVariable crn: String,
+    ): CaseConvictions = convictionService.findConvictions(crn)
 
     @PreAuthorize("hasRole('CRS_REFERRAL')")
     @GetMapping("convictions/{id}")
-    fun findConviction(@PathVariable crn: String, @PathVariable id: Long) = convictionService.findConviction(crn, id)
+    fun findConviction(
+        @PathVariable crn: String,
+        @PathVariable id: Long,
+    ) = convictionService.findConviction(crn, id)
 }

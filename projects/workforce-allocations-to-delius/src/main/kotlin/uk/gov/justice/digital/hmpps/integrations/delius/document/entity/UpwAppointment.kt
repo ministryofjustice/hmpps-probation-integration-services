@@ -10,7 +10,6 @@ import org.hibernate.annotations.Immutable
 @Entity
 @Immutable
 class UpwAppointment {
-
     @Id
     @Column(name = "upw_appointment_id", insertable = false, updatable = false)
     val id: Long = 0
@@ -23,7 +22,6 @@ class UpwAppointment {
 @Entity
 @Immutable
 class UpwDetails {
-
     @Id
     @Column(name = "upw_details_id", updatable = false)
     val id: Long = 0

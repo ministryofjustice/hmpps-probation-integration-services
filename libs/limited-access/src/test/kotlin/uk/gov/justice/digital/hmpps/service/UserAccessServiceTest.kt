@@ -78,7 +78,7 @@ internal class UserAccessServiceTest {
                 override val crn = "N123456"
                 override val exclusionMessage = null
                 override val restrictionMessage = null
-            }
+            },
         )
 
     private fun userAccess(): UserAccess =
@@ -89,16 +89,16 @@ internal class UserAccessServiceTest {
                     "R123456",
                     userExcluded = false,
                     userRestricted = true,
-                    restrictionMessage = "This person has a restriction"
+                    restrictionMessage = "This person has a restriction",
                 ),
                 CaseAccess(
                     "B123456",
                     userExcluded = true,
                     userRestricted = true,
                     "This person has an exclusion",
-                    "This person has a restriction"
+                    "This person has a restriction",
                 ),
-                CaseAccess("N123456", userExcluded = false, userRestricted = false)
-            )
+                CaseAccess("N123456", userExcluded = false, userRestricted = false),
+            ),
         )
 }

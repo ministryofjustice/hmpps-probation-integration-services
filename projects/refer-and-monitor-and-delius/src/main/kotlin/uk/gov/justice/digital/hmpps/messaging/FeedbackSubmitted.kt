@@ -15,38 +15,46 @@ import java.net.URI
 @Component
 class FeedbackSubmitted(
     private val ramClient: ReferAndMonitorClient,
-    private val appointmentService: AppointmentService
+    private val appointmentService: AppointmentService,
 ) : DomainEventHandler {
-    override val handledEvents = mapOf(
-        DomainEventType.InitialAppointmentSubmitted to ::initialAppointmentSubmitted,
-        DomainEventType.SessionAppointmentSubmitted to ::sessionAppointmentSubmitted
-    )
-
-    fun initialAppointmentSubmitted(event: HmppsDomainEvent): EventProcessingResult = handle(event) {
-        val appointment = ramClient.getSupplierAssessment(URI(event.detailUrl!!))?.appointmentOutcome(
-            event.personReference.findCrn()!!,
-            event.referralReference(),
-            event.contractType(),
-            event.providerName(),
-            event.url(),
-            event.deliusId()
+    override val handledEvents =
+        mapOf(
+            DomainEventType.InitialAppointmentSubmitted to ::initialAppointmentSubmitted,
+            DomainEventType.SessionAppointmentSubmitted to ::sessionAppointmentSubmitted,
         )
-        updateAppointment(appointment, event)
-    }
 
-    fun sessionAppointmentSubmitted(event: HmppsDomainEvent): EventProcessingResult = handle(event) {
-        val appointment = ramClient.getSession(URI(event.detailUrl!!))?.appointmentOutcome(
-            event.personReference.findCrn()!!,
-            event.referralId(),
-            event.referralReference(),
-            event.contractType(),
-            event.providerName(),
-            event.url()
-        )
-        updateAppointment(appointment, event)
-    }
+    fun initialAppointmentSubmitted(event: HmppsDomainEvent): EventProcessingResult =
+        handle(event) {
+            val appointment =
+                ramClient.getSupplierAssessment(URI(event.detailUrl!!))?.appointmentOutcome(
+                    event.personReference.findCrn()!!,
+                    event.referralReference(),
+                    event.contractType(),
+                    event.providerName(),
+                    event.url(),
+                    event.deliusId(),
+                )
+            updateAppointment(appointment, event)
+        }
 
-    private fun updateAppointment(appointment: UpdateAppointmentOutcome?, event: HmppsDomainEvent) =
+    fun sessionAppointmentSubmitted(event: HmppsDomainEvent): EventProcessingResult =
+        handle(event) {
+            val appointment =
+                ramClient.getSession(URI(event.detailUrl!!))?.appointmentOutcome(
+                    event.personReference.findCrn()!!,
+                    event.referralId(),
+                    event.referralReference(),
+                    event.contractType(),
+                    event.providerName(),
+                    event.url(),
+                )
+            updateAppointment(appointment, event)
+        }
+
+    private fun updateAppointment(
+        appointment: UpdateAppointmentOutcome?,
+        event: HmppsDomainEvent,
+    ) =
         if (appointment == null) {
             Failure(IllegalArgumentException("Unable to retrieve appointment: ${event.detailUrl}"))
         } else {
@@ -56,17 +64,22 @@ class FeedbackSubmitted(
                 mapOf(
                     "appointmentId" to appointment.id.toString(),
                     "crn" to appointment.crn,
-                    "referralReference" to appointment.referralReference
-                )
+                    "referralReference" to appointment.referralReference,
+                ),
             )
         }
 }
 
 private fun HmppsDomainEvent.contractType() = additionalInformation["contractTypeName"] as String
+
 private fun HmppsDomainEvent.referralId() = additionalInformation["referralId"] as String
+
 private fun HmppsDomainEvent.referralReference() = additionalInformation["referralReference"] as String
+
 private fun HmppsDomainEvent.providerName() = additionalInformation["primeProviderName"] as String
+
 private fun HmppsDomainEvent.url() = additionalInformation["referralProbationUserURL"] as String
+
 private fun HmppsDomainEvent.deliusId() = (additionalInformation["deliusAppointmentId"] as String?)?.toLong()
 
 private fun ReferralSession.appointmentOutcome(
@@ -75,11 +88,12 @@ private fun ReferralSession.appointmentOutcome(
     referralReference: String,
     contractType: String,
     providerName: String,
-    url: String
+    url: String,
 ): UpdateAppointmentOutcome {
-    val feedback = checkNotNull(latestFeedback?.appointmentFeedback) {
-        "No feedback information available for referral $referralId : session $id"
-    }
+    val feedback =
+        checkNotNull(latestFeedback?.appointmentFeedback) {
+            "No feedback information available for referral $referralId : session $id"
+        }
     return UpdateAppointmentOutcome(
         latestFeedback!!.id,
         deliusId,
@@ -88,9 +102,9 @@ private fun ReferralSession.appointmentOutcome(
         Referral(referralId, Provider(providerName), contractType),
         Outcome(
             Attended.of(feedback.attendanceFeedback.attended!!),
-            feedback.sessionFeedback.notifyProbationPractitioner ?: true
+            feedback.sessionFeedback.notifyProbationPractitioner ?: true,
         ),
-        url
+        url,
     )
 }
 
@@ -100,11 +114,12 @@ private fun SupplierAssessment.appointmentOutcome(
     contractType: String,
     providerName: String,
     url: String,
-    deliusId: Long?
+    deliusId: Long?,
 ): UpdateAppointmentOutcome {
-    val feedback = checkNotNull(latestFeedback?.appointmentFeedback) {
-        "No feedback information available for referral $referralId: supplier assessment $id"
-    }
+    val feedback =
+        checkNotNull(latestFeedback?.appointmentFeedback) {
+            "No feedback information available for referral $referralId: supplier assessment $id"
+        }
     return UpdateAppointmentOutcome(
         latestFeedback!!.id,
         deliusId,
@@ -113,8 +128,8 @@ private fun SupplierAssessment.appointmentOutcome(
         Referral(referralId.toString(), Provider(providerName), contractType),
         Outcome(
             Attended.of(feedback.attendanceFeedback.attended!!),
-            feedback.sessionFeedback.notifyProbationPractitioner ?: true
+            feedback.sessionFeedback.notifyProbationPractitioner ?: true,
         ),
-        url
+        url,
     )
 }

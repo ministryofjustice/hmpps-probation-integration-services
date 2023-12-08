@@ -17,22 +17,17 @@ class PersonManager(
     @Id
     @Column(name = "offender_manager_id", nullable = false)
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: PersonWithManager,
-
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id", nullable = false)
     val staff: Staff,
-
     @ManyToOne
     @JoinColumn(name = "team_id", nullable = false)
     val team: Team,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(columnDefinition = "number", nullable = false)
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )

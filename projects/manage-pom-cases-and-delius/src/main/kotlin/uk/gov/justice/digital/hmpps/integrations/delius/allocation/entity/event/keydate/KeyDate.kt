@@ -28,21 +28,17 @@ import java.time.ZonedDateTime
 @SQLRestriction("soft_deleted = 0")
 @SequenceGenerator(name = "key_date_id_seq", sequenceName = "key_date_id_seq", allocationSize = 1)
 class KeyDate(
-
     @Column(name = "custody_id")
     val custodyId: Long,
-
     @ManyToOne
     @JoinColumn(name = "key_date_type_id")
     val type: ReferenceData,
-
     @Column(name = "key_date")
     var date: LocalDate,
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "key_date_id_seq")
     @Column(name = "key_date_id")
-    val id: Long?
+    val id: Long?,
 ) {
     val partitionAreaId = 0
 
@@ -71,13 +67,15 @@ class KeyDate(
 
     enum class TypeCode(val value: String) {
         HANDOVER_START_DATE("POM1"),
-        HANDOVER_DATE("POM2")
+        HANDOVER_DATE("POM2"),
     }
 }
 
 interface KeyDateRepository : JpaRepository<KeyDate, Long> {
-    fun findAllByCustodyIdAndTypeCodeIn(custodyId: Long, types: List<String>): List<KeyDate>
+    fun findAllByCustodyIdAndTypeCodeIn(
+        custodyId: Long,
+        types: List<String>,
+    ): List<KeyDate>
 }
 
-fun KeyDateRepository.findHandoverDates(custodyId: Long) =
-    findAllByCustodyIdAndTypeCodeIn(custodyId, listOf(HANDOVER_START_DATE.value, HANDOVER_DATE.value))
+fun KeyDateRepository.findHandoverDates(custodyId: Long) = findAllByCustodyIdAndTypeCodeIn(custodyId, listOf(HANDOVER_START_DATE.value, HANDOVER_DATE.value))

@@ -16,11 +16,9 @@ class StaffUser(
     @Id
     @Column(name = "user_id")
     val id: Long = 0,
-
     @Column(name = "distinguished_name")
     val username: String,
-
     @OneToOne
     @JoinColumn(name = "staff_id")
-    val staff: StaffWithUser? = null
+    val staff: StaffWithUser? = null,
 )

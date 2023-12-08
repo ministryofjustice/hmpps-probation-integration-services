@@ -20,43 +20,34 @@ import java.time.LocalDate
 @SQLRestriction("soft_deleted = 0 and deregistered = 0")
 @Table(name = "registration")
 class Registration(
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
-
     @ManyToOne
     @JoinColumn(name = "register_type_id")
     val type: RegisterType,
-
     @ManyToOne
     @JoinColumn(name = "register_level_id")
     val level: ReferenceData?,
-
     @Column(name = "registration_date")
     val date: LocalDate,
-
     @Column(name = "deregistered", columnDefinition = "number")
     val deRegistered: Boolean,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean,
-
     @Id
     @Column(name = "registration_id")
-    val id: Long
+    val id: Long,
 )
 
 @Entity
 @Immutable
 @Table(name = "r_register_type")
 class RegisterType(
-
     val code: String,
-
     @Id
     @Column(name = "register_type_id")
-    val id: Long
+    val id: Long,
 ) {
     companion object {
         const val MAPPA_CODE = "MAPP"
@@ -64,7 +55,6 @@ class RegisterType(
 }
 
 interface RegistrationRepository : JpaRepository<Registration, Long> {
-
     @Query(
         """
         select r from Registration r
@@ -72,12 +62,12 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
         join fetch r.level
         where r.person.id = :personId and r.type.code = :code
         order by r.date desc
-    """
+    """,
     )
     fun findRegistrationsByTypeCode(
         personId: Long,
         code: String,
-        pageRequest: PageRequest = PageRequest.of(0, 1)
+        pageRequest: PageRequest = PageRequest.of(0, 1),
     ): List<Registration>
 
     @Query(
@@ -85,10 +75,9 @@ interface RegistrationRepository : JpaRepository<Registration, Long> {
             select count(r) > 0 from Registration r
             where r.person.id = :personId
             and r.type.code in ('DASO', 'INVI')
-        """
+        """,
     )
     fun hasVloAssigned(personId: Long): Boolean
 }
 
-fun RegistrationRepository.findMappaRegistration(personId: Long) =
-    findRegistrationsByTypeCode(personId, RegisterType.MAPPA_CODE).firstOrNull()
+fun RegistrationRepository.findMappaRegistration(personId: Long) = findRegistrationsByTypeCode(personId, RegisterType.MAPPA_CODE).firstOrNull()

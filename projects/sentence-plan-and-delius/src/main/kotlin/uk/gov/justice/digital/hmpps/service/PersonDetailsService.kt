@@ -27,9 +27,9 @@ class PersonDetailsService(val personRepository: PersonRepository, val eventRepo
             manager.team.probationArea.description,
             Manager(
                 Name(manager.staff.forename, manager.staff.middleName, manager.staff.surname),
-                manager.staff.isUnallocated()
+                manager.staff.isUnallocated(),
             ),
-            eventRepository.isInCustody(crn)
+            eventRepository.isInCustody(crn),
         )
     }
 

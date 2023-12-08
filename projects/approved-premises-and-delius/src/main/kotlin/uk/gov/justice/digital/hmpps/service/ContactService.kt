@@ -28,7 +28,7 @@ class ContactService(
     private val contactAlertRepository: ContactAlertRepository,
     private val officeLocationRepository: OfficeLocationRepository,
     private val teamRepository: TeamRepository,
-    private val personManagerRepository: PersonManagerRepository
+    private val personManagerRepository: PersonManagerRepository,
 ) {
     @Transactional
     fun createContact(
@@ -37,27 +37,28 @@ class ContactService(
         staff: Staff,
         probationAreaCode: String,
         team: Team? = null,
-        eventId: Long? = null
+        eventId: Long? = null,
     ): Contact {
         return contactRepository.findByPersonIdAndTypeCodeAndStartTime(person.id, details.type.code, details.date)
             ?: run {
                 val contactTeam = team ?: teamRepository.getUnallocatedTeam(probationAreaCode)
-                val contact = contactRepository.save(
-                    Contact(
-                        date = details.date.toLocalDate(),
-                        startTime = details.date,
-                        type = contactTypeRepository.getByCode(details.type.code),
-                        outcome = details.outcomeCode?.let { contactOutcomeRepository.findByCode(it) },
-                        locationId = details.locationCode?.let { officeLocationRepository.findByCode(it) }?.id,
-                        description = details.description,
-                        person = person,
-                        staff = staff,
-                        team = contactTeam,
-                        notes = details.notes,
-                        alert = details.createAlert,
-                        eventId = eventId
+                val contact =
+                    contactRepository.save(
+                        Contact(
+                            date = details.date.toLocalDate(),
+                            startTime = details.date,
+                            type = contactTypeRepository.getByCode(details.type.code),
+                            outcome = details.outcomeCode?.let { contactOutcomeRepository.findByCode(it) },
+                            locationId = details.locationCode?.let { officeLocationRepository.findByCode(it) }?.id,
+                            description = details.description,
+                            person = person,
+                            staff = staff,
+                            team = contactTeam,
+                            notes = details.notes,
+                            alert = details.createAlert,
+                            eventId = eventId,
+                        ),
                     )
-                )
                 if (details.createAlert) {
                     val personManager = personManagerRepository.getActiveManager(person.id)
                     contactAlertRepository.save(
@@ -67,8 +68,8 @@ class ContactService(
                             personId = person.id,
                             personManagerId = personManager.id,
                             staffId = personManager.staff.id,
-                            teamId = personManager.team.id
-                        )
+                            teamId = personManager.team.id,
+                        ),
                     )
                 }
                 return contact
@@ -83,5 +84,5 @@ data class ContactDetails(
     val locationCode: String? = null,
     val notes: String? = null,
     val description: String? = null,
-    val createAlert: Boolean = true
+    val createAlert: Boolean = true,
 )

@@ -12,10 +12,8 @@ class BusinessInteraction(
     @Id
     @Column(name = "business_interaction_id", nullable = false)
     val id: Long,
-
     @Column(name = "business_interaction_code", nullable = false)
     val code: String,
-
     @Column(name = "enabled_date")
-    val enabledDate: ZonedDateTime
+    val enabledDate: ZonedDateTime,
 )

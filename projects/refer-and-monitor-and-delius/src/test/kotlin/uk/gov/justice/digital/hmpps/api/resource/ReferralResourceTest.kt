@@ -40,31 +40,33 @@ internal class ReferralResourceTest {
         whenever(
             appointmentService.mergeAppointment(
                 any(),
-                any()
-            )
+                any(),
+            ),
         ).thenThrow(ResponseStatusException(HttpStatus.BAD_REQUEST))
 
-        val mergeAppointment = MergeAppointment(
-            UUID.randomUUID(),
-            UUID.randomUUID(),
-            "R1234EF",
-            ZonedDateTime.now().minusDays(1),
-            20,
-            "Some notes",
-            "DEFAULT",
-            false,
-            null,
-            null,
-            null,
-            null
-        )
-        val ex = assertThrows<ResponseStatusException> {
-            referralResource.mergeAppointment(
-                "C356471",
-                mergeAppointment.referralId,
-                mergeAppointment
+        val mergeAppointment =
+            MergeAppointment(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                "R1234EF",
+                ZonedDateTime.now().minusDays(1),
+                20,
+                "Some notes",
+                "DEFAULT",
+                false,
+                null,
+                null,
+                null,
+                null,
             )
-        }
+        val ex =
+            assertThrows<ResponseStatusException> {
+                referralResource.mergeAppointment(
+                    "C356471",
+                    mergeAppointment.referralId,
+                    mergeAppointment,
+                )
+            }
         assertThat(ex.message, equalTo("400 BAD_REQUEST"))
         verify(telemetryService).trackEvent(
             "PastAppointmentWithoutOutcome",
@@ -74,8 +76,8 @@ internal class ReferralResourceTest {
                 "referralReference" to mergeAppointment.referralReference,
                 "appointmentId" to mergeAppointment.id.toString(),
                 "startTime" to mergeAppointment.start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-                "outcome" to "null"
-            )
+                "outcome" to "null",
+            ),
         )
     }
 }

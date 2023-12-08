@@ -58,39 +58,44 @@ internal class RecallActionTest {
     @ParameterizedTest
     @MethodSource("nonRecallableCustodies")
     fun `ignored when recall not possible`(custody: Custody) {
-        val prisonerMovement = PrisonerMovement.Received(
-            custody.disposal.event.person.nomsNumber,
-            InstitutionGenerator.DEFAULT.nomisCdeCode!!,
-            PrisonerMovement.Type.ADMISSION,
-            "",
-            ZonedDateTime.now()
-        )
-        val ex = assertThrows<IgnorableMessageException> {
-            action.accept(PrisonerMovementContext(prisonerMovement, custody))
-        }
+        val prisonerMovement =
+            PrisonerMovement.Received(
+                custody.disposal.event.person.nomsNumber,
+                InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+                PrisonerMovement.Type.ADMISSION,
+                "",
+                ZonedDateTime.now(),
+            )
+        val ex =
+            assertThrows<IgnorableMessageException> {
+                action.accept(PrisonerMovementContext(prisonerMovement, custody))
+            }
         assertThat(ex.message, equalTo("RecallNotRequired"))
     }
 
     @ParameterizedTest
     @MethodSource("invalidRecallDates")
     fun `ignored when recall date not valid`(date: ZonedDateTime) {
-        val prisonerMovement = PrisonerMovement.Received(
-            nomsId,
-            InstitutionGenerator.DEFAULT.nomisCdeCode!!,
-            PrisonerMovement.Type.ADMISSION,
-            "",
-            date
-        )
-        val custody = EventGenerator.previouslyReleasedEvent(
-            PersonGenerator.generate(nomsId),
-            InstitutionGenerator.DEFAULT,
-            CustodialStatusCode.RELEASED_ON_LICENCE,
-            releaseDate = ZonedDateTime.now().minusDays(7)
-        ).disposal!!.custody!!
+        val prisonerMovement =
+            PrisonerMovement.Received(
+                nomsId,
+                InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+                PrisonerMovement.Type.ADMISSION,
+                "",
+                date,
+            )
+        val custody =
+            EventGenerator.previouslyReleasedEvent(
+                PersonGenerator.generate(nomsId),
+                InstitutionGenerator.DEFAULT,
+                CustodialStatusCode.RELEASED_ON_LICENCE,
+                releaseDate = ZonedDateTime.now().minusDays(7),
+            ).disposal!!.custody!!
 
-        val ex = assertThrows<IgnorableMessageException> {
-            action.accept(PrisonerMovementContext(prisonerMovement, custody))
-        }
+        val ex =
+            assertThrows<IgnorableMessageException> {
+                action.accept(PrisonerMovementContext(prisonerMovement, custody))
+            }
         assertThat(ex.message, equalTo("InvalidRecallDate"))
     }
 
@@ -99,7 +104,7 @@ internal class RecallActionTest {
     fun `recall created correctly for transfers`(
         prisonerMovement: PrisonerMovement,
         custody: Custody,
-        rrc: RecallReason.Code
+        rrc: RecallReason.Code,
     ) {
         doAnswer { RecallReasonGenerator.generate(it.getArgument(0)) }
             .whenever(recallReasonRepository).findByCode(any())
@@ -120,66 +125,70 @@ internal class RecallActionTest {
     }
 
     companion object {
-
         private val nomsId = "R1234AC"
 
         @JvmStatic
-        fun nonRecallableCustodies() = listOf(
-            EventGenerator.previouslyRecalledEvent(
-                PersonGenerator.RELEASABLE,
-                InstitutionGenerator.DEFAULT
-            ).disposal!!.custody,
-            EventGenerator.custodialEvent(
-                PersonGenerator.generate(nomsId),
-                InstitutionGenerator.DEFAULT
-            ).disposal!!.custody
-        ) + CustodialStatusCode.entries.filter {
-            it !in listOf(
-                CustodialStatusCode.RELEASED_ON_LICENCE,
-                CustodialStatusCode.CUSTODY_ROTL
-            )
-        }.map {
-            EventGenerator.previouslyReleasedEvent(
-                PersonGenerator.generate(nomsId),
-                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY],
-                it
-            ).disposal!!.custody
-        }
+        fun nonRecallableCustodies() =
+            listOf(
+                EventGenerator.previouslyRecalledEvent(
+                    PersonGenerator.RELEASABLE,
+                    InstitutionGenerator.DEFAULT,
+                ).disposal!!.custody,
+                EventGenerator.custodialEvent(
+                    PersonGenerator.generate(nomsId),
+                    InstitutionGenerator.DEFAULT,
+                ).disposal!!.custody,
+            ) +
+                CustodialStatusCode.entries.filter {
+                    it !in
+                        listOf(
+                            CustodialStatusCode.RELEASED_ON_LICENCE,
+                            CustodialStatusCode.CUSTODY_ROTL,
+                        )
+                }.map {
+                    EventGenerator.previouslyReleasedEvent(
+                        PersonGenerator.generate(nomsId),
+                        InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY],
+                        it,
+                    ).disposal!!.custody
+                }
 
         @JvmStatic
-        fun invalidRecallDates() = listOf(
-            ZonedDateTime.now().plusDays(1),
-            ZonedDateTime.now().minusDays(14)
-        )
+        fun invalidRecallDates() =
+            listOf(
+                ZonedDateTime.now().plusDays(1),
+                ZonedDateTime.now().minusDays(14),
+            )
 
         @JvmStatic
         fun transferredCases(): List<Arguments> {
-            val movement = PrisonerMovement.Received(
-                nomsId,
-                InstitutionGenerator.DEFAULT.nomisCdeCode!!,
-                PrisonerMovement.Type.TRANSFERRED,
-                "INT",
-                ZonedDateTime.now()
-            )
+            val movement =
+                PrisonerMovement.Received(
+                    nomsId,
+                    InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+                    PrisonerMovement.Type.TRANSFERRED,
+                    "INT",
+                    ZonedDateTime.now(),
+                )
             return listOf(
                 Arguments.of(
                     movement,
                     EventGenerator.previouslyReleasedEvent(
                         PersonGenerator.RECALLABLE,
                         InstitutionGenerator.DEFAULT,
-                        CustodialStatusCode.CUSTODY_ROTL
+                        CustodialStatusCode.CUSTODY_ROTL,
                     ).withManager().disposal!!.custody,
-                    RecallReason.Code.END_OF_TEMPORARY_LICENCE
+                    RecallReason.Code.END_OF_TEMPORARY_LICENCE,
                 ),
                 Arguments.of(
                     movement,
                     EventGenerator.previouslyReleasedEvent(
                         PersonGenerator.RECALLABLE,
                         InstitutionGenerator.DEFAULT,
-                        CustodialStatusCode.RELEASED_ON_LICENCE
+                        CustodialStatusCode.RELEASED_ON_LICENCE,
                     ).withManager().disposal!!.custody,
-                    RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT
-                )
+                    RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT,
+                ),
             )
         }
     }

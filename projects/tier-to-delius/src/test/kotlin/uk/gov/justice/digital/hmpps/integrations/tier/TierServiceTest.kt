@@ -80,9 +80,10 @@ internal class TierServiceTest {
     fun `should throw exception when reference data not found`() {
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(person.crn)).thenReturn(person)
 
-        val exception = assertThrows<NotFoundException> {
-            tierService.updateTier(person.crn, tierCalculation)
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                tierService.updateTier(person.crn, tierCalculation)
+            }
 
         assertEquals("TIER with code of UsomeTierCode not found", exception.message)
     }
@@ -93,9 +94,10 @@ internal class TierServiceTest {
         whenever(referenceDataRepository.findByCodeAndSetName("U${tierScore.code}", ReferenceDataSetGenerator.TIER.name))
             .thenReturn(tierScore)
 
-        val exception = assertThrows<NotFoundException> {
-            tierService.updateTier(person.crn, tierCalculation)
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                tierService.updateTier(person.crn, tierCalculation)
+            }
 
         assertEquals("TIER CHANGE REASON with code of ATS not found", exception.message)
     }
@@ -149,8 +151,8 @@ internal class TierServiceTest {
             person.crn,
             tierCalculation.copy(
                 tierScore = updatedTierScore.code,
-                calculationDate = currentTierDate.minusDays(1)
-            )
+                calculationDate = currentTierDate.minusDays(1),
+            ),
         )
         verify(managementTierRepository).save(any())
         verify(contactRepository).save(any())
@@ -177,8 +179,8 @@ internal class TierServiceTest {
             person.crn,
             tierCalculation.copy(
                 calculationDate = tierCalculationDate,
-                tierScore = updatedTierScore.code
-            )
+                tierScore = updatedTierScore.code,
+            ),
         )
 
         val managementTierArgumentCaptor = ArgumentCaptor.forClass(ManagementTier::class.java)
@@ -201,11 +203,11 @@ internal class TierServiceTest {
             contact.notes,
             equalTo(
                 """
-            Tier Change Date: 11/10/2022 12:00:00
-            Tier: description of someOtherTierCode
-            Tier Change Reason: description of ATS
-                """.trimIndent()
-            )
+                Tier Change Date: 11/10/2022 12:00:00
+                Tier: description of someOtherTierCode
+                Tier Change Reason: description of ATS
+                """.trimIndent(),
+            ),
         )
         assertThat(contact.type.id, equalTo(ContactTypeGenerator.TIER_UPDATE.id))
         assertThat(contact.type.code, equalTo(ContactTypeGenerator.TIER_UPDATE.code))

@@ -14,7 +14,7 @@ data class CaseView(
     val requirements: List<CvRequirement>,
     val cpsPack: CvDocument? = null,
     val preConvictionDocument: CvDocument? = null,
-    val courtReport: CvDocument? = null
+    val courtReport: CvDocument? = null,
 ) {
     val age: Int
         get() = Period.between(dateOfBirth, LocalDate.now()).years
@@ -30,7 +30,7 @@ data class CvAddress(
     val noFixedAbode: Boolean,
     val typeVerified: Boolean,
     val typeDescription: String?,
-    val startDate: LocalDate
+    val startDate: LocalDate,
 )
 
 data class CvOffence(val mainCategory: String, val subCategory: String, val mainOffence: Boolean)
@@ -39,18 +39,18 @@ data class CvSentence(
     val description: String,
     val startDate: LocalDate,
     val length: String,
-    val endDate: LocalDate
+    val endDate: LocalDate,
 )
 
 data class CvRequirement(
     val mainCategory: String,
     val subCategory: String?,
-    val length: String
+    val length: String,
 )
 
 data class CvDocument(
     val documentId: String,
     val documentName: String,
     val dateCreated: LocalDate,
-    val description: String? = null
+    val description: String? = null,
 )

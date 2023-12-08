@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.service.UserAccessService
 @RestController
 @RequestMapping("/users")
 class UserResource(private val userAccessService: UserAccessService) {
-
     @PreAuthorize("hasAnyRole('ROLE_ALLOCATION_CONTEXT', 'ROLE_WORKFORCE_DOCUMENT')")
     @Operation(
         summary = """Data access restriction information for the combination of the Delius
@@ -25,11 +24,11 @@ class UserResource(private val userAccessService: UserAccessService) {
             for a number of reasons related to the case supervision and clients should use
             the restriction information to mask data access from any identified user that
             has a restriction in place
-        """
+        """,
     )
     @RequestMapping("/limited-access", method = [RequestMethod.GET, RequestMethod.POST])
     fun limitedAccessCheck(
         @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>,
-        @RequestParam(required = false) username: String?
+        @RequestParam(required = false) username: String?,
     ) = username?.let { userAccessService.userAccessFor(it, crns) } ?: userAccessService.checkLimitedAccessFor(crns)
 }

@@ -20,29 +20,22 @@ class CaseViewRequirement(
     @Id
     @Column(name = "rqmnt_id", nullable = false)
     val id: Long,
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @ManyToOne
     @JoinColumn(name = "disposal_id")
     val disposal: CaseViewDisposal? = null,
-
     @ManyToOne
     @JoinColumn(name = "rqmnt_type_main_category_id")
     val mainCategory: CaseViewRequirementMainCategory,
-
     @ManyToOne
     @JoinColumn(name = "rqmnt_type_sub_category_id")
     val subCategory: ReferenceData?,
-
     val length: Long?,
-
     @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
     val active: Boolean = true,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -56,7 +49,7 @@ class CaseViewRequirementMainCategory(
     val description: String,
     @ManyToOne
     @JoinColumn(name = "units_id")
-    val units: ReferenceData? = null
+    val units: ReferenceData? = null,
 )
 
 interface CaseViewRequirementRepository : JpaRepository<CaseViewRequirement, Long> {

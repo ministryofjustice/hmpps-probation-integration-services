@@ -16,28 +16,22 @@ data class CourtAppearance(
     @Id
     @Column(name = "court_appearance_id")
     val id: Long,
-
     @Column(name = "appearance_date")
     val date: ZonedDateTime,
-
     @ManyToOne
     @JoinColumn(name = "event_id")
     val event: Event? = null,
-
     @ManyToOne
     @JoinColumn(name = "court_id")
     val court: Court,
-
     @ManyToOne
     @JoinColumn(name = "appearance_type_id")
     val type: ReferenceData,
-
     @ManyToOne
     @JoinColumn(name = "plea_id")
     val plea: ReferenceData?,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Entity
@@ -46,7 +40,6 @@ data class Court(
     @Id
     @Column(name = "court_id")
     val id: Long,
-
     @Column(name = "court_name")
-    val name: String
+    val name: String,
 )

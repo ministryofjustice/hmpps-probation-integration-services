@@ -27,20 +27,23 @@ class DeliusService(
     private val caseNoteTypeRepository: CaseNoteTypeRepository,
     private val offenderRepository: OffenderRepository,
     private val assignmentService: AssignmentService,
-    private val relatedService: CaseNoteRelatedService
+    private val relatedService: CaseNoteRelatedService,
 ) : AuditableService(auditedInteractionService) {
     @Transactional
-    fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) = audit(CASE_NOTES_MERGE) {
-        it["nomisId"] = caseNote.header.noteId
+    fun mergeCaseNote(
+        @Valid caseNote: DeliusCaseNote,
+    ) =
+        audit(CASE_NOTES_MERGE) {
+            it["nomisId"] = caseNote.header.noteId
 
-        val existing = caseNoteRepository.findByNomisId(caseNote.header.noteId)
+            val existing = caseNoteRepository.findByNomisId(caseNote.header.noteId)
 
-        val entity = if (existing == null) caseNote.newEntity() else existing.updateFrom(caseNote)
-        if (entity != null) {
-            caseNoteRepository.save(entity)
-            it["contactId"] = entity.id
+            val entity = if (existing == null) caseNote.newEntity() else existing.updateFrom(caseNote)
+            if (entity != null) {
+                caseNoteRepository.save(entity)
+                it["contactId"] = entity.id
+            }
         }
-    }
 
     private fun CaseNote.updateFrom(caseNote: DeliusCaseNote): CaseNote? {
         val last = lastModifiedDateTime.truncatedTo(ChronoUnit.SECONDS)
@@ -50,7 +53,7 @@ class DeliusService(
                 notes = caseNote.body.notes(notes.length),
                 date = caseNote.body.contactTimeStamp,
                 startTime = caseNote.body.contactTimeStamp,
-                lastModifiedDateTime = caseNote.body.systemTimestamp
+                lastModifiedDateTime = caseNote.body.systemTimestamp,
             )
         } else {
             log.warn("Case Note update ignored because it was out of sequence ${caseNote.header}")
@@ -59,15 +62,17 @@ class DeliusService(
     }
 
     private fun DeliusCaseNote.newEntity(): CaseNote {
-        val caseNoteType = nomisTypeRepository.findById(body.typeLookup())
-            .map { it.type }
-            .orElseGet {
-                caseNoteTypeRepository.findByCode(CaseNoteType.DEFAULT_CODE)
-                    ?: throw NotFoundException("Case note type ${body.typeLookup()} not found and no default type is set")
-            }
+        val caseNoteType =
+            nomisTypeRepository.findById(body.typeLookup())
+                .map { it.type }
+                .orElseGet {
+                    caseNoteTypeRepository.findByCode(CaseNoteType.DEFAULT_CODE)
+                        ?: throw NotFoundException("Case note type ${body.typeLookup()} not found and no default type is set")
+                }
 
-        val offender = offenderRepository.findByNomsIdAndSoftDeletedIsFalse(header.nomisId)
-            ?: throw OffenderNotFoundException(header.nomisId)
+        val offender =
+            offenderRepository.findByNomsIdAndSoftDeletedIsFalse(header.nomisId)
+                ?: throw OffenderNotFoundException(header.nomisId)
 
         val relatedIds = relatedService.findRelatedCaseNoteIds(offender.id, body.typeLookup())
 
@@ -86,7 +91,7 @@ class DeliusService(
             probationAreaId = assignment.first,
             teamId = assignment.second,
             staffId = assignment.third,
-            staffEmployeeId = assignment.third
+            staffEmployeeId = assignment.third,
         )
     }
 

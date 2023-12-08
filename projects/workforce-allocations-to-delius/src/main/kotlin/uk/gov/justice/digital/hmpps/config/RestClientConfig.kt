@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.integrations.workforceallocations.WorkforceA
 
 @Configuration
 class RestClientConfig(private val oauth2Client: RestClient) {
-
     @Bean
     fun workforceAllocationsClient() = createClient<WorkforceAllocationsClient>(oauth2Client)
 }

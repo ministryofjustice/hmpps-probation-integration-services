@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.document.PersonDocument
 @RestController
 @RequestMapping("/offenders/{crn}/documents")
 class DocumentResource(private val service: DocumentService) {
-
     @PreAuthorize("hasRole('ROLE_WORKFORCE_DOCUMENT')")
     @Operation(
         summary = "List of documents held in Delius for the probation case",
@@ -22,10 +21,12 @@ class DocumentResource(private val service: DocumentService) {
             Used to support the 'Document List' view of the HMPPS Workforce service
             which is used to give detailed information on the case when allocating
             to a probation practitioner
-        """
+        """,
     )
     @GetMapping
-    fun findDocuments(@PathVariable crn: String): List<PersonDocument> =
+    fun findDocuments(
+        @PathVariable crn: String,
+    ): List<PersonDocument> =
         service.getDocumentsByCrn(crn)
 
     @PreAuthorize("hasRole('ROLE_WORKFORCE_DOCUMENT')")
@@ -35,8 +36,11 @@ class DocumentResource(private val service: DocumentService) {
             document id provided in the request. Document is returned in the
             format stored in Alfresco. Used to support downloading documents
             from the document list in the HMPPS Workload service
-        """
+        """,
     )
     @GetMapping(value = ["/{id}"])
-    fun getDocument(@PathVariable crn: String, @PathVariable id: String) = service.getDocument(crn, id)
+    fun getDocument(
+        @PathVariable crn: String,
+        @PathVariable id: String,
+    ) = service.getDocument(crn, id)
 }

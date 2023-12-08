@@ -16,17 +16,13 @@ data class Event(
     @Id
     @Column(name = "event_id")
     val id: Long,
-
     val offenderId: Long,
-
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
-
     @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
     val active: Boolean = true,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
-    var softDeleted: Boolean = false
+    var softDeleted: Boolean = false,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -50,20 +46,16 @@ class Disposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long,
-
     @OneToOne
     @JoinColumn(name = "event_id", updatable = false)
     val event: Event,
-
     @ManyToOne
     @JoinColumn(name = "disposal_type_id", updatable = false)
     val disposalType: DisposalType,
-
     @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
     val active: Boolean = true,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -73,9 +65,8 @@ class DisposalType(
     @Id
     @Column(name = "disposal_type_id")
     val id: Long,
-
     @Column(name = "sentence_type")
-    val sentenceType: String
+    val sentenceType: String,
 ) {
     companion object {
         val CUSTODIAL_CODES = listOf("NC", "SC")

@@ -8,14 +8,11 @@ import org.hibernate.annotations.Immutable
 @Immutable
 @Entity
 class Offender(
-
     @Id
     @Column(name = "offender_id")
     val id: Long,
-
     @Column(name = "noms_number", columnDefinition = "char(7)")
     val nomsId: String,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )

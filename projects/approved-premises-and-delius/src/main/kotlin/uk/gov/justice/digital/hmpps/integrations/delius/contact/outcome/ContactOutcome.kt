@@ -14,8 +14,7 @@ class ContactOutcome(
     @Id
     @Column(name = "contact_outcome_type_id")
     val id: Long,
-
-    val code: String
+    val code: String,
 ) {
     companion object {
         val AP_DEPARTED_PREFIX = "AP_"

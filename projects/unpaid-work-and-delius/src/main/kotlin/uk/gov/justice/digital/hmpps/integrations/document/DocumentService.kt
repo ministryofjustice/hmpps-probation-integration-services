@@ -25,11 +25,18 @@ class DocumentService(
     private val documentRepository: DocumentRepository,
     private val alfrescoUploadClient: AlfrescoUploadClient,
     private val contactRepository: ContactRepository,
-    private val contactTypeRepository: ContactTypeRepository
-
+    private val contactTypeRepository: ContactTypeRepository,
 ) : AuditableService(auditedInteractionService) {
     @Transactional
-    fun createDeliusDocument(hmppsEvent: HmppsDomainEvent, file: ByteArray, filename: String, episodeId: String, person: PersonWithManager, eventId: Long, contactDate: ZonedDateTime) =
+    fun createDeliusDocument(
+        hmppsEvent: HmppsDomainEvent,
+        file: ByteArray,
+        filename: String,
+        episodeId: String,
+        person: PersonWithManager,
+        eventId: Long,
+        contactDate: ZonedDateTime,
+    ) =
         audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
             val externalReference = "urn:hmpps:unpaid-work-assessment:$episodeId"
             val contactId = createContact(person, eventId, contactDate, externalReference)
@@ -42,8 +49,8 @@ class DocumentService(
                     alfrescoId = alfrescoDocument.id,
                     name = filename,
                     externalReference = externalReference,
-                    tableName = "CONTACT"
-                )
+                    tableName = "CONTACT",
+                ),
             )
         }
 
@@ -51,26 +58,27 @@ class DocumentService(
         person: PersonWithManager,
         eventId: Long,
         date: ZonedDateTime,
-        externalReference: String
+        externalReference: String,
     ): Long {
         val manager = person.managers.first()
         val staffId = manager.staff.id
         val teamId = manager.team.id
 
-        val contact = contactRepository.save(
-            Contact(
-                notes = "CP/UPW Assessment",
-                date = date,
-                person = person,
-                eventId = eventId,
-                startTime = date,
-                staffId = staffId,
-                teamId = teamId,
-                type = contactTypeRepository.getByCode(ContactTypeCode.UPW_ASSESSMENT.code),
-                documentLinked = true,
-                externalReference = externalReference
+        val contact =
+            contactRepository.save(
+                Contact(
+                    notes = "CP/UPW Assessment",
+                    date = date,
+                    person = person,
+                    eventId = eventId,
+                    startTime = date,
+                    staffId = staffId,
+                    teamId = teamId,
+                    type = contactTypeRepository.getByCode(ContactTypeCode.UPW_ASSESSMENT.code),
+                    documentLinked = true,
+                    externalReference = externalReference,
+                ),
             )
-        )
         return contact.id
     }
 
@@ -78,7 +86,7 @@ class DocumentService(
         hmppsEvent: HmppsDomainEvent,
         file: ByteArray,
         filename: String,
-        contactId: Long
+        contactId: Long,
     ): MultiValueMap<String, HttpEntity<*>> {
         val crn = hmppsEvent.personReference.findCrn()!!
         val bodyBuilder = MultipartBodyBuilder()

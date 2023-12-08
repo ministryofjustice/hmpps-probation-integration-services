@@ -15,10 +15,9 @@ class DocRegistration(
     @Id
     @Column(name = "registration_id")
     var id: Long,
-
     @ManyToOne
     @JoinColumn(name = "register_type_id", updatable = false)
-    val type: DocRegistrationType
+    val type: DocRegistrationType,
 )
 
 @Entity
@@ -28,7 +27,6 @@ class DocRegistrationType(
     @Id
     @Column(name = "REGISTER_TYPE_ID")
     var id: Long,
-
     @Column
-    val description: String
+    val description: String,
 )

@@ -4,11 +4,10 @@ import java.time.ZonedDateTime
 
 data class OasysRiskManagementPlanDetails(
     val limitedAccessOffender: Boolean,
-    val assessments: List<OasysRiskManagementPlanAssessment>
+    val assessments: List<OasysRiskManagementPlanAssessment>,
 )
 
 data class OasysRiskManagementPlanAssessment(
-
     override val assessmentPk: Long,
     override val assessmentType: String,
     override val dateCompleted: ZonedDateTime? = null,
@@ -25,6 +24,5 @@ data class OasysRiskManagementPlanAssessment(
     val interventionsAndTreatment: String? = null,
     val monitoringAndControl: String? = null,
     val supervision: String? = null,
-    val keyInformationAboutCurrentSituation: String? = null
-
+    val keyInformationAboutCurrentSituation: String? = null,
 ) : OasysAssessment()

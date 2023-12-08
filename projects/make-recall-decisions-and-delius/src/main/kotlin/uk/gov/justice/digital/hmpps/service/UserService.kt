@@ -17,24 +17,29 @@ class UserService(
     private val userDetailsRepository: UserDetailsRepository,
     private val userAccessRepository: UserAccessRepository,
     private val providerRepository: ProviderRepository,
-    private val ldapTemplate: LdapTemplate
+    private val ldapTemplate: LdapTemplate,
 ) {
-    fun checkUserAccess(username: String, crn: String) = if (userAccessRepository.existsByCrn(crn)) {
+    fun checkUserAccess(
+        username: String,
+        crn: String,
+    ) = if (userAccessRepository.existsByCrn(crn)) {
         userAccessRepository.findByUsernameAndCrn(username, crn)
     } else {
         throw NotFoundException("Person", "crn", crn)
     }
 
-    fun getUserDetails(username: String) = userDetailsRepository.findByUsername(username)?.let { user ->
-        val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
-        UserDetails(
-            name = Name(user.forename, user.middleName, user.surname),
-            username = user.username,
-            staffCode = user.staff?.code,
-            email = ldapUser?.email,
-            homeArea = ldapUser?.homeArea
-                ?.let(providerRepository::findByCode)
-                ?.let { Provider(it.code, it.description) }
-        )
-    }
+    fun getUserDetails(username: String) =
+        userDetailsRepository.findByUsername(username)?.let { user ->
+            val ldapUser = ldapTemplate.findByUsername<LdapUser>(username)
+            UserDetails(
+                name = Name(user.forename, user.middleName, user.surname),
+                username = user.username,
+                staffCode = user.staff?.code,
+                email = ldapUser?.email,
+                homeArea =
+                    ldapUser?.homeArea
+                        ?.let(providerRepository::findByCode)
+                        ?.let { Provider(it.code, it.description) },
+            )
+        }
 }

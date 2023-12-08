@@ -32,64 +32,48 @@ class Contact(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
     @Column(name = "contact_id", nullable = false)
     val id: Long = 0,
-
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime? = null,
-
     @ManyToOne
     @JoinColumn(name = "contact_type_id", nullable = false)
     val type: ContactType,
-
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
-
     @ManyToOne
     @JoinColumn(name = "event_id")
     val event: Event? = null,
-
     @Lob
     @Column
     val notes: String? = null,
-
     @Column
     val staffId: Long,
-
     @Column
     val teamId: Long,
-
     @Convert(converter = YesNoConverter::class)
     @Column(name = "alert_active")
     val alert: Boolean? = false,
-
     @Column(nullable = false)
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(nullable = false)
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
-
     @CreatedDate
     @Column(nullable = false)
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(nullable = false)
     @CreatedBy
     var createdByUserId: Long = 0,
-
     @Column(nullable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Column(nullable = false)
     val partitionAreaId: Long = 0,
-
     @Version
     @Column(name = "row_version", nullable = false)
     val version: Long = 0,
-
     @Column(name = "contact_date", nullable = false)
-    val date: ZonedDateTime
+    val date: ZonedDateTime,
 )
 
 const val OGRS_ASSESSMENT_CT = "EOGR"
@@ -101,9 +85,8 @@ class ContactType(
     @Id
     @Column(name = "contact_type_id", nullable = false)
     val id: Long,
-
     @Column(nullable = false)
-    val code: String
+    val code: String,
 )
 
 interface ContactRepository : JpaRepository<Contact, Long>

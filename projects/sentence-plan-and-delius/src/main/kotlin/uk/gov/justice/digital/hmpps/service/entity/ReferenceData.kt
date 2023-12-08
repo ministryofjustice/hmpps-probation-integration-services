@@ -11,16 +11,13 @@ import org.springframework.data.jpa.repository.JpaRepository
 @Entity
 @Table(name = "r_standard_reference_list")
 class ReferenceData(
-
     @Column(name = "code_value")
     val code: String,
-
     @Id
     @Column(name = "standard_reference_list_id")
     val id: Long,
-
     @Column(name = "code_description")
-    val description: String
+    val description: String,
 )
 
 interface ReferenceDataRepository : JpaRepository<ReferenceData, Long>

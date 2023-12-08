@@ -21,7 +21,6 @@ interface PersonalCircumstanceMapper {
 
 @Mapper(componentModel = "spring")
 interface PersonalContactMapper {
-
     @Mapping(source = "surname", target = "name.surname")
     @Mapping(source = "forename", target = "name.forename")
     @Mapping(source = "middleName", target = "name.middleName")

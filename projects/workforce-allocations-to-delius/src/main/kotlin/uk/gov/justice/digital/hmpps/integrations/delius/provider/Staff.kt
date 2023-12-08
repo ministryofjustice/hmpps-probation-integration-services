@@ -20,30 +20,24 @@ abstract class StaffRecord(
     @Id
     @Column(name = "staff_id")
     val id: Long = 0,
-
     @Column(name = "officer_code", columnDefinition = "char(7)")
     val code: String,
-
     val forename: String,
     val surname: String,
-
     @Column(name = "FORENAME2", length = 35)
     val middleName: String? = null,
-
     @Column(name = "end_date")
     val endDate: ZonedDateTime? = null,
-
     @ManyToOne
     @JoinColumn(name = "staff_grade_id")
     val grade: ReferenceData? = null,
-
     @ManyToMany
     @JoinTable(
         name = "staff_team",
         joinColumns = [JoinColumn(name = "staff_id")],
-        inverseJoinColumns = [JoinColumn(name = "team_id")]
+        inverseJoinColumns = [JoinColumn(name = "team_id")],
     )
-    val teams: List<Team> = mutableListOf()
+    val teams: List<Team> = mutableListOf(),
 ) {
     @Transient
     val displayName = listOfNotNull(forename, middleName, surname).joinToString(" ")
@@ -60,7 +54,7 @@ class Staff(
     middleName: String? = null,
     endDate: ZonedDateTime? = null,
     grade: ReferenceData? = null,
-    teams: List<Team> = mutableListOf()
+    teams: List<Team> = mutableListOf(),
 ) : StaffRecord(id, code, forename, surname, middleName, endDate, grade, teams)
 
 @Immutable
@@ -76,5 +70,5 @@ class StaffWithUser(
     grade: ReferenceData? = null,
     @OneToOne(mappedBy = "staff")
     val user: StaffUser? = null,
-    teams: List<Team> = mutableListOf()
+    teams: List<Team> = mutableListOf(),
 ) : StaffRecord(id, code, forename, surname, middleName, endDate, grade, teams)

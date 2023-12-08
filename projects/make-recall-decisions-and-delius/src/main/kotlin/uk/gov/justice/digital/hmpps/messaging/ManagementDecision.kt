@@ -4,5 +4,5 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recommendation.contact.e
 
 enum class ManagementDecision(val code: String) {
     DECISION_TO_RECALL(ContactOutcome.DECISION_TO_RECALL),
-    DECISION_NOT_TO_RECALL(ContactOutcome.DECISION_NOT_TO_RECALL)
+    DECISION_NOT_TO_RECALL(ContactOutcome.DECISION_NOT_TO_RECALL),
 }

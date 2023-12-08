@@ -24,23 +24,27 @@ import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 class UserResource(
     private val managerService: ManagerService,
     private val userService: UserService,
-    private val auditUserRepository: AuditUserRepository
+    private val auditUserRepository: AuditUserRepository,
 ) {
     @PreAuthorize("hasRole('CRS_REFERRAL')")
     @GetMapping("managed-cases")
-    fun managedCases(@PathVariable username: String): ManagedCases =
+    fun managedCases(
+        @PathVariable username: String,
+    ): ManagedCases =
         managerService.findCasesManagedBy(userNameFrom(username))
 
     @PreAuthorize("hasRole('CRS_REFERRAL')")
     @RequestMapping("access", method = [RequestMethod.GET, RequestMethod.POST])
     fun userAccessCheck(
         @PathVariable username: String,
-        @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>
+        @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>,
     ): UserAccess = userService.userAccessFor(userNameFrom(username), crns)
 
     @PreAuthorize("hasRole('CRS_REFERRAL')")
     @GetMapping("details")
-    fun userDetails(@PathVariable username: String): ResponseEntity<UserDetail> =
+    fun userDetails(
+        @PathVariable username: String,
+    ): ResponseEntity<UserDetail> =
         userService.userDetails(userNameFrom(username))?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound()
             .build()
 

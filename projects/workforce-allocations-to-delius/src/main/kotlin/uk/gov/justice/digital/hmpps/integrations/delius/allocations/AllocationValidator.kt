@@ -16,15 +16,15 @@ import uk.gov.justice.digital.hmpps.integrations.workforceallocations.Allocation
 class AllocationValidator(
     private val staffRepository: StaffRepository,
     private val teamRepository: TeamRepository,
-    private val referenceDataRepository: ReferenceDataRepository
+    private val referenceDataRepository: ReferenceDataRepository,
 ) {
-
     fun initialValidations(
         providerId: Long,
-        allocationDetail: AllocationDetail
+        allocationDetail: AllocationDetail,
     ): TeamStaffContainer {
-        val team = teamRepository.findByCode(allocationDetail.teamCode)
-            ?: throw NotFoundException("Team", "code", allocationDetail.teamCode)
+        val team =
+            teamRepository.findByCode(allocationDetail.teamCode)
+                ?: throw NotFoundException("Team", "code", allocationDetail.teamCode)
 
         if (team.providerId != providerId) {
             throw ConflictException("Cannot transfer from provider $providerId to ${team.providerId}")
@@ -34,13 +34,15 @@ class AllocationValidator(
             throw NotActiveException("Team", "code", team.code)
         }
 
-        val allocationReason = referenceDataRepository.findByDatasetAndCode(
-            allocationDetail.datasetCode,
-            allocationDetail.code
-        ) ?: throw NotFoundException("$allocationDetail.datasetCode.value with code ${allocationDetail.code} not found")
+        val allocationReason =
+            referenceDataRepository.findByDatasetAndCode(
+                allocationDetail.datasetCode,
+                allocationDetail.code,
+            ) ?: throw NotFoundException("$allocationDetail.datasetCode.value with code ${allocationDetail.code} not found")
 
-        val staff = staffRepository.findByCode(allocationDetail.staffCode)
-            ?: throw NotFoundException("Staff", "code", allocationDetail.staffCode)
+        val staff =
+            staffRepository.findByCode(allocationDetail.staffCode)
+                ?: throw NotFoundException("Staff", "code", allocationDetail.staffCode)
 
         if (staff.endDate != null && staff.endDate.isBefore(allocationDetail.createdDate)) {
             throw NotActiveException("Staff", "code", staff.code)

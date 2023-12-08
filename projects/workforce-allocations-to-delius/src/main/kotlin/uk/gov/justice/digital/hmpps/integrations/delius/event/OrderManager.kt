@@ -20,8 +20,6 @@ class OrderManager(
     @Column(name = "order_manager_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_manager_id_seq")
     var id: Long = 0,
-
     var eventId: Long = 0,
-
-    var transferReasonId: Long = 0
+    var transferReasonId: Long = 0,
 ) : ManagerBaseEntity()

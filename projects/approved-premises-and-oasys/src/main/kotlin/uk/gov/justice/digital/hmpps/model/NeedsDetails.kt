@@ -16,8 +16,7 @@ data class NeedsDetails(
     override val lastUpdatedDate: ZonedDateTime? = null,
     val needs: Needs? = null,
     val linksToHarm: LinksToHarm? = null,
-    val linksToReOffending: LinksToReOffending? = null
-
+    val linksToReOffending: LinksToReOffending? = null,
 ) : Assessment() {
     companion object {
         fun from(oasysNeeds: OasysNeedsDetails): NeedsDetails {
@@ -44,7 +43,7 @@ data class NeedsDetails(
                         eTEIssuesDetails,
                         accIssuesDetails,
                         attIssuesDetails,
-                        thingIssuesDetails
+                        thingIssuesDetails,
                     ),
                     LinksToHarm.from(
                         LinksToHarm(
@@ -57,8 +56,8 @@ data class NeedsDetails(
                             alcoholLinkedToHarm = stringToBoolean(alcoholLinkedToHarm),
                             emotionalLinkedToHarm = stringToBoolean(emoLinkedToHarm),
                             thinkingBehaviouralLinkedToHarm = stringToBoolean(thinkLinkedToHarm),
-                            attitudeLinkedToHarm = stringToBoolean(attLinkedToHarm)
-                        )
+                            attitudeLinkedToHarm = stringToBoolean(attLinkedToHarm),
+                        ),
                     ),
                     LinksToReOffending.from(
                         LinksToReOffending(
@@ -71,9 +70,9 @@ data class NeedsDetails(
                             alcoholLinkedToReOffending = stringToBoolean(alcoholLinkedToReoffending),
                             emotionalLinkedToReOffending = stringToBoolean(emoLinkedToReoffending),
                             thinkingBehaviouralLinkedToReOffending = stringToBoolean(thinkLinkedToReoffending),
-                            attitudeLinkedToReOffending = stringToBoolean(attLinkedToReoffending)
-                        )
-                    )
+                            attitudeLinkedToReOffending = stringToBoolean(attLinkedToReoffending),
+                        ),
+                    ),
                 )
             }
         }
@@ -90,7 +89,7 @@ data class LinksToReOffending(
     val alcoholLinkedToReOffending: Boolean? = null,
     val emotionalLinkedToReOffending: Boolean? = null,
     val thinkingBehaviouralLinkedToReOffending: Boolean? = null,
-    val attitudeLinkedToReOffending: Boolean? = null
+    val attitudeLinkedToReOffending: Boolean? = null,
 ) {
     companion object {
         fun from(linksToReOffending: LinksToReOffending?): LinksToReOffending? {
@@ -125,7 +124,7 @@ data class LinksToHarm(
     val alcoholLinkedToHarm: Boolean? = null,
     val emotionalLinkedToHarm: Boolean? = null,
     val thinkingBehaviouralLinkedToHarm: Boolean? = null,
-    val attitudeLinkedToHarm: Boolean? = null
+    val attitudeLinkedToHarm: Boolean? = null,
 ) {
     companion object {
         fun from(linksToHarm: LinksToHarm?): LinksToHarm? {
@@ -161,5 +160,5 @@ data class Needs(
     val educationTrainingEmploymentIssuesDetails: String? = null,
     val accommodationIssuesDetails: String? = null,
     val attitudeIssuesDetails: String? = null,
-    val thinkingBehaviouralIssuesDetails: String? = null
+    val thinkingBehaviouralIssuesDetails: String? = null,
 )

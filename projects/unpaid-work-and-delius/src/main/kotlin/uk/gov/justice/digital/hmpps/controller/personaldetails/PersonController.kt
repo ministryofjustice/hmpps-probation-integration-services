@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class PersonController(val service: PersonalDetailsService) {
-
     @PreAuthorize("hasRole('UPW_DETAILS')")
     @Operation(
         summary = """Details of all active personal contacts and personal
@@ -19,10 +18,10 @@ class PersonController(val service: PersonalDetailsService) {
             and personal circumstances that are active on the date of the
             request. Used to access any additional information held in Delius
             when cloning an existing assessment
-        """
+        """,
     )
     @GetMapping(value = ["/case-data/{crn}/personal-details"])
     fun personDetails(
-        @PathVariable crn: String
+        @PathVariable crn: String,
     ) = service.getPersonalDetails(crn)
 }

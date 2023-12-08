@@ -20,30 +20,31 @@ class ContactService(
     private val contactTypeRepository: ContactTypeRepository,
     private val personManagerRepository: PersonManagerRepository,
     private val contactRepository: ContactRepository,
-    private val contactAlertRepository: ContactAlertRepository
+    private val contactAlertRepository: ContactAlertRepository,
 ) {
     fun createContact(
         detail: ContactDetail,
         person: Person,
         event: Event? = null,
         manager: Manager? = null,
-        licenceConditionId: Long? = null
+        licenceConditionId: Long? = null,
     ) {
         val cm = lazy { personManagerRepository.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(person.id) }
-        val contact = contactRepository.save(
-            Contact(
-                type = contactTypeRepository.getByCode(detail.typeCode.value),
-                date = detail.date,
-                person = person,
-                event = event,
-                licenceConditionId = licenceConditionId,
-                notes = detail.notes,
-                staffId = manager?.staffId ?: cm.value.staff.id,
-                teamId = manager?.teamId ?: cm.value.team.id,
-                createdDatetime = detail.createdDateTimeOverride ?: ZonedDateTime.now(),
-                alert = detail.alert
+        val contact =
+            contactRepository.save(
+                Contact(
+                    type = contactTypeRepository.getByCode(detail.typeCode.value),
+                    date = detail.date,
+                    person = person,
+                    event = event,
+                    licenceConditionId = licenceConditionId,
+                    notes = detail.notes,
+                    staffId = manager?.staffId ?: cm.value.staff.id,
+                    teamId = manager?.teamId ?: cm.value.team.id,
+                    createdDatetime = detail.createdDateTimeOverride ?: ZonedDateTime.now(),
+                    alert = detail.alert,
+                ),
             )
-        )
         if (detail.alert) {
             contactAlertRepository.save(
                 ContactAlert(
@@ -52,13 +53,16 @@ class ContactService(
                     personId = person.id,
                     personManagerId = cm.value.id,
                     staffId = cm.value.staff.id,
-                    teamId = cm.value.team.id
-                )
+                    teamId = cm.value.team.id,
+                ),
             )
         }
     }
 
-    fun deleteFutureDatedLicenceConditionContacts(id: Long, terminationDate: ZonedDateTime) =
+    fun deleteFutureDatedLicenceConditionContacts(
+        id: Long,
+        terminationDate: ZonedDateTime,
+    ) =
         contactRepository.deleteAllByLicenceConditionIdAndDateAfterAndOutcomeIdIsNull(id, terminationDate)
 }
 
@@ -67,5 +71,5 @@ data class ContactDetail(
     val date: ZonedDateTime,
     val notes: String,
     val alert: Boolean = false,
-    val createdDateTimeOverride: ZonedDateTime? = null
+    val createdDateTimeOverride: ZonedDateTime? = null,
 )

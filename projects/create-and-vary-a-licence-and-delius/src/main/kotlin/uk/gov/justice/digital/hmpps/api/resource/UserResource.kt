@@ -16,11 +16,13 @@ import uk.gov.justice.digital.hmpps.ldap.removeRole
 class UserResource(private val ldapTemplate: LdapTemplate) {
     @PreAuthorize("hasRole('PROBATION_API__CVL__USER_ROLES')")
     @PutMapping(value = ["/{username}/roles"])
-    fun addRole(@PathVariable username: String) =
-        ldapTemplate.addRole(username, DeliusRole.LHDCBT002)
+    fun addRole(
+        @PathVariable username: String,
+    ) = ldapTemplate.addRole(username, DeliusRole.LHDCBT002)
 
     @PreAuthorize("hasRole('PROBATION_API__CVL__USER_ROLES')")
     @DeleteMapping(value = ["/{username}/roles"])
-    fun removeRole(@PathVariable username: String) =
-        ldapTemplate.removeRole(username, DeliusRole.LHDCBT002)
+    fun removeRole(
+        @PathVariable username: String,
+    ) = ldapTemplate.removeRole(username, DeliusRole.LHDCBT002)
 }

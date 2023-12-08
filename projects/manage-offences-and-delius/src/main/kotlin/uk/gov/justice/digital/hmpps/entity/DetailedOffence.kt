@@ -30,60 +30,47 @@ data class DetailedOffence(
     @Column(name = "detailed_offence_id")
     @GeneratedValue(strategy = SEQUENCE, generator = "detailed_offence_id_seq")
     val id: Long = 0,
-
     @Version
     @Column(name = "row_version")
     val version: Long = 0,
-
+    // Criminal Justice System code
     @Column(name = "cja_code", columnDefinition = "varchar2(10)")
-    val code: String, // Criminal Justice System code
-
+    val code: String,
+    // Criminal Justice System title
     @Column(name = "offence_description")
-    val description: String?, // Criminal Justice System title
-
+    val description: String?,
     @Column
     val startDate: LocalDate,
-
     @Column
     val endDate: LocalDate?,
-
     @Column(name = "ho_code", columnDefinition = "varchar2(6)")
     val homeOfficeCode: String?,
-
     @Column(name = "ho_description")
     val homeOfficeDescription: String?,
-
+    // Police National Legal Database code
     @Column(columnDefinition = "varchar2(8)")
-    val pnldCode: String? = null, // Police National Legal Database code
-
+    val pnldCode: String? = null,
     @Column
     val legislation: String?,
-
     @ManyToOne
     @JoinColumn(name = "court_category_id")
     val category: ReferenceData,
-
     @Convert(converter = YesNoConverter::class)
     @Column(name = "schedule15_sexual_offence")
     val schedule15SexualOffence: Boolean? = null,
-
     @Convert(converter = YesNoConverter::class)
     @Column(name = "schedule15_violent_offence")
     val schedule15ViolentOffence: Boolean? = null,
-
-    @Convert(converter = YesNoConverter::class)
+    // Offences listed in CJA 2003 section 327, subsection 4A.
     @Column(name = "cja_2003_s327_4a")
-    val cjaSection327Subsection4A: Boolean? = null, // Offences listed in CJA 2003 section 327, subsection 4A.
-
+    @Convert(converter = YesNoConverter::class)
+    val cjaSection327Subsection4A: Boolean? = null,
     @CreatedBy
     var createdByUserId: Long = 0,
-
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
-
     @CreatedDate
     var createdDatetime: ZonedDateTime? = null,
-
     @LastModifiedDate
-    var lastUpdatedDatetime: ZonedDateTime? = null
+    var lastUpdatedDatetime: ZonedDateTime? = null,
 )

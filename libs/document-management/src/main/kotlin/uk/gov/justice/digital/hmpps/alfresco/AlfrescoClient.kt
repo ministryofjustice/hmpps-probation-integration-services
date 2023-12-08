@@ -27,27 +27,31 @@ import java.time.Duration
 @Component
 @ConditionalOnProperty("integrations.alfresco.url")
 class AlfrescoClient(
-    @Qualifier("alfrescoRestClient") private val restClient: RestClient
+    @Qualifier("alfrescoRestClient") private val restClient: RestClient,
 ) {
+    fun getDocumentById(id: String): RestClient.RequestHeadersSpec<*> =
+        restClient.get().uri("/fetch/$id")
+            .accept(MediaType.MULTIPART_FORM_DATA)
 
-    fun getDocumentById(id: String): RestClient.RequestHeadersSpec<*> = restClient.get().uri("/fetch/$id")
-        .accept(MediaType.MULTIPART_FORM_DATA)
-
-    fun streamDocument(id: String, filename: String): ResponseEntity<StreamingResponseBody> =
+    fun streamDocument(
+        id: String,
+        filename: String,
+    ): ResponseEntity<StreamingResponseBody> =
         getDocumentById(id).exchange({ _, res ->
             when (res.statusCode) {
-                HttpStatus.OK -> ResponseEntity.ok()
-                    .headers {
-                        it.copy(HttpHeaders.CONTENT_LENGTH, res)
-                        it.copy(HttpHeaders.ETAG, res)
-                        it.copy(HttpHeaders.LAST_MODIFIED, res)
-                    }
-                    .header(
-                        HttpHeaders.CONTENT_DISPOSITION,
-                        ContentDisposition.attachment().filename(filename, Charsets.UTF_8).build().toString()
-                    )
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .body(StreamingResponseBody { output -> res.body.use { it.copyTo(output) } })
+                HttpStatus.OK ->
+                    ResponseEntity.ok()
+                        .headers {
+                            it.copy(HttpHeaders.CONTENT_LENGTH, res)
+                            it.copy(HttpHeaders.ETAG, res)
+                            it.copy(HttpHeaders.LAST_MODIFIED, res)
+                        }
+                        .header(
+                            HttpHeaders.CONTENT_DISPOSITION,
+                            ContentDisposition.attachment().filename(filename, Charsets.UTF_8).build().toString(),
+                        )
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                        .body(StreamingResponseBody { output -> res.body.use { it.copyTo(output) } })
 
                 HttpStatus.NOT_FOUND -> throw NotFoundException("Document content", "alfrescoId", id)
 
@@ -55,22 +59,31 @@ class AlfrescoClient(
             }
         }, false)
 
-    private fun HttpHeaders.copy(key: String, res: ConvertibleClientHttpResponse) {
+    private fun HttpHeaders.copy(
+        key: String,
+        res: ConvertibleClientHttpResponse,
+    ) {
         res.headers[key]?.also { this[key] = it }
     }
 }
 
 @Configuration
-class AlfrescoClientConfig(@Value("\${integrations.alfresco.url}") private val alfrescoBaseUrl: String) {
+class AlfrescoClientConfig(
+    @Value("\${integrations.alfresco.url}") private val alfrescoBaseUrl: String,
+) {
     @Bean
-    fun alfrescoRestClient() = RestClient.builder()
-        .requestFactory(withTimeouts(Duration.ofSeconds(1), Duration.ofSeconds(30)))
-        .requestInterceptor(AlfrescoInterceptor())
-        .baseUrl(alfrescoBaseUrl)
-        .build()
+    fun alfrescoRestClient() =
+        RestClient.builder()
+            .requestFactory(withTimeouts(Duration.ofSeconds(1), Duration.ofSeconds(30)))
+            .requestInterceptor(AlfrescoInterceptor())
+            .baseUrl(alfrescoBaseUrl)
+            .build()
 }
 
-fun withTimeouts(connection: Duration, read: Duration) =
+fun withTimeouts(
+    connection: Duration,
+    read: Duration,
+) =
     JdkClientHttpRequestFactory(HttpClient.newBuilder().connectTimeout(connection).build())
         .also { it.setReadTimeout(read) }
 
@@ -78,7 +91,7 @@ class AlfrescoInterceptor : ClientHttpRequestInterceptor {
     override fun intercept(
         request: HttpRequest,
         body: ByteArray,
-        execution: ClientHttpRequestExecution
+        execution: ClientHttpRequestExecution,
     ): ClientHttpResponse {
         request.headers["X-DocRepository-Remote-User"] = "N00"
         request.headers["X-DocRepository-Real-Remote-User"] = ServiceContext.servicePrincipal()?.username

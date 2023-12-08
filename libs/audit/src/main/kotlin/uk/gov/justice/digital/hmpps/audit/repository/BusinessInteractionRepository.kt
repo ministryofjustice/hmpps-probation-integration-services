@@ -11,10 +11,10 @@ interface BusinessInteractionRepository : JpaRepository<BusinessInteraction, Lon
         select bi from BusinessInteraction bi 
         where bi.code = :code 
         and (bi.enabledDate is null or bi.enabledDate <= :enabledDate)
-    """
+    """,
     )
     fun findByCode(
         code: String,
-        enabledDate: ZonedDateTime = ZonedDateTime.now()
+        enabledDate: ZonedDateTime = ZonedDateTime.now(),
     ): BusinessInteraction?
 }

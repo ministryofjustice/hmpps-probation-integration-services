@@ -15,9 +15,8 @@ class Handler(
     private val telemetryService: TelemetryService,
     private val psrClient: PsrClient,
     private val documentService: DocumentService,
-    override val converter: NotificationConverter<HmppsDomainEvent>
+    override val converter: NotificationConverter<HmppsDomainEvent>,
 ) : NotificationHandler<HmppsDomainEvent> {
-
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         val hmppsEvent = notification.message

@@ -21,7 +21,6 @@ import uk.gov.justice.digital.hmpps.set
 
 @ExtendWith(MockitoExtension::class)
 internal class ProbationRecordServiceTest {
-
     @Mock
     private lateinit var personRepository: PersonRepository
 
@@ -42,7 +41,7 @@ internal class ProbationRecordServiceTest {
         val person = PersonGenerator.generate("N123456", "N1234SR")
         PersonManagerGenerator.generate(
             staff = ProviderGenerator.generateStaff("NoUser", "No", "User"),
-            person = person
+            person = person,
         ).also { person.set("managers", listOf(it)) }
 
         whenever(personRepository.findByNomsId(person.nomsId!!)).thenReturn(person)

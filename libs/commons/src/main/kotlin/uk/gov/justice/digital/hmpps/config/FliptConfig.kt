@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration
 @ConditionalOnProperty("flipt.url")
 class FliptConfig(
     @Value("\${flipt.url}") private val url: String,
-    @Value("\${flipt.token}") private val token: String
+    @Value("\${flipt.token}") private val token: String,
 ) {
     @Bean
     fun fliptApiClient() = FliptApiClient(Environment.custom(url), BearerAuth.of(token))

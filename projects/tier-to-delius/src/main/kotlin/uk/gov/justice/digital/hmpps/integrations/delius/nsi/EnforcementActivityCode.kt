@@ -14,7 +14,7 @@ enum class EnforcementActivityCode(val value: String) {
     BRE14("BRE14"),
     BRE16("BRE16"),
     REC01("REC01"),
-    REC02("REC02")
+    REC02("REC02"),
     ;
 
     companion object {

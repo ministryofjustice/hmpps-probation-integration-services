@@ -10,7 +10,8 @@ dependencies {
 }
 
 configure<uk.gov.justice.digital.hmpps.extensions.ClassPathExtension> {
-    jacocoExclusions = listOf(
-        "**/config/**"
-    )
+    jacocoExclusions =
+        listOf(
+            "**/config/**",
+        )
 }

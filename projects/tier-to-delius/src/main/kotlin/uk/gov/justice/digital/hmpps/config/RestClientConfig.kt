@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.integrations.tier.TierClient
 
 @Configuration
 class RestClientConfig(private val oauth2Client: RestClient) {
-
     @Bean
     fun tierClient() = createClient<TierClient>(oauth2Client)
 }

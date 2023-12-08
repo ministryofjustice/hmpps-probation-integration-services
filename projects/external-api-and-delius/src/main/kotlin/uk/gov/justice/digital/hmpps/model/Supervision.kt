@@ -9,5 +9,5 @@ data class Supervision(
     val sentence: Sentence?,
     val mainOffence: Offence?,
     val additionalOffences: List<Offence>?,
-    val courtAppearances: List<CourtAppearance>?
+    val courtAppearances: List<CourtAppearance>?,
 )

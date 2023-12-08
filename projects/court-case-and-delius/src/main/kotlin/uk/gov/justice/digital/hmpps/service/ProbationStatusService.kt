@@ -8,21 +8,22 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.SentenceCo
 
 @Service
 class ProbationStatusService(private val personRepository: PersonRepository) {
-    fun getProbationStatus(crn: String): ProbationStatusDetail =
-        personRepository.statusOf(crn)?.detail() ?: ProbationStatusDetail.NO_RECORD
+    fun getProbationStatus(crn: String): ProbationStatusDetail = personRepository.statusOf(crn)?.detail() ?: ProbationStatusDetail.NO_RECORD
 }
 
-fun SentenceCounts.detail() = ProbationStatusDetail(
-    status,
-    terminationDate,
-    breachCount > 0,
-    preSentenceCount > 0,
-    awaitingPsrCount > 0
-)
+fun SentenceCounts.detail() =
+    ProbationStatusDetail(
+        status,
+        terminationDate,
+        breachCount > 0,
+        preSentenceCount > 0,
+        awaitingPsrCount > 0,
+    )
 
 val SentenceCounts.status: ProbationStatus
-    get() = when {
-        currentCount > 0 -> ProbationStatus.CURRENT
-        previousCount > 0 -> ProbationStatus.PREVIOUSLY_KNOWN
-        else -> ProbationStatus.NOT_SENTENCED
-    }
+    get() =
+        when {
+            currentCount > 0 -> ProbationStatus.CURRENT
+            previousCount > 0 -> ProbationStatus.PREVIOUSLY_KNOWN
+            else -> ProbationStatus.NOT_SENTENCED
+        }

@@ -32,12 +32,12 @@ class ProbationRecordResource(val prService: ProbationRecordService) {
                     For a prison identifier this could mean the Prison and Probation cases
                     have not been linked yet.""",
                 content = [
-                    Content(schema = Schema(implementation = ErrorResponse::class))
-                ]
-            )
-        ]
+                    Content(schema = Schema(implementation = ErrorResponse::class)),
+                ],
+            ),
+        ],
     )
     fun handle(
-        @PathVariable("identifier") identifier: String
+        @PathVariable("identifier") identifier: String,
     ) = prService.findByIdentifier(Identifier(identifier))
 }

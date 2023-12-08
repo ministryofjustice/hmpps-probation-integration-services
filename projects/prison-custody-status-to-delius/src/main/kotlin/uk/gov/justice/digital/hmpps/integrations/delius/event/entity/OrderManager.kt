@@ -18,25 +18,19 @@ class OrderManager(
     @Id
     @Column(name = "order_manager_id", nullable = false)
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
     @Column(name = "allocation_staff_id")
     override val staffId: Long,
-
     @Column(name = "allocation_team_id")
     override val teamId: Long,
-
     @Column
     override val probationAreaId: Long,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(columnDefinition = "number", nullable = false)
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 ) : Manager()
 
 interface OrderManagerRepository : JpaRepository<OrderManager, Long> {

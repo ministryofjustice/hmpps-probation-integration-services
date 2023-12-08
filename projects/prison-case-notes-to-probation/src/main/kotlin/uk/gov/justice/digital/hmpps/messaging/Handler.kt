@@ -24,9 +24,8 @@ class Handler(
     val prisonCaseNotesClient: PrisonCaseNotesClient,
     val deliusService: DeliusService,
     val telemetryService: TelemetryService,
-    override val converter: NotificationConverter<HmppsDomainEvent>
+    override val converter: NotificationConverter<HmppsDomainEvent>,
 ) : NotificationHandler<HmppsDomainEvent> {
-
     companion object {
         val log: Logger = LoggerFactory.getLogger(this::class.java)
     }
@@ -41,39 +40,42 @@ class Handler(
                 "MissingCaseNoteId",
                 mapOf(
                     "eventType" to event.eventType,
-                    "nomsNumber" to event.personReference.findNomsNumber()!!
-                )
+                    "nomsNumber" to event.personReference.findNomsNumber()!!,
+                ),
             )
             return
         }
 
-        val prisonCaseNote = try {
-            prisonCaseNotesClient.getCaseNote(URI.create(event.detailUrl!!))
-        } catch (ex: HttpStatusCodeException) {
-            when (ex.statusCode) {
-                HttpStatus.NOT_FOUND -> {
-                    telemetryService.trackEvent("CaseNoteNotFound", mapOf("detailUrl" to event.detailUrl!!))
-                    return
+        val prisonCaseNote =
+            try {
+                prisonCaseNotesClient.getCaseNote(URI.create(event.detailUrl!!))
+            } catch (ex: HttpStatusCodeException) {
+                when (ex.statusCode) {
+                    HttpStatus.NOT_FOUND -> {
+                        telemetryService.trackEvent("CaseNoteNotFound", mapOf("detailUrl" to event.detailUrl!!))
+                        return
+                    }
+
+                    else -> throw ex
                 }
-
-                else -> throw ex
             }
-        }
 
-        val reasonToIgnore: Lazy<String?> = lazy {
-            PrisonCaseNoteFilters.filters.firstOrNull { it.predicate.invoke(prisonCaseNote!!) }?.reason
-        }
+        val reasonToIgnore: Lazy<String?> =
+            lazy {
+                PrisonCaseNoteFilters.filters.firstOrNull { it.predicate.invoke(prisonCaseNote!!) }?.reason
+            }
 
         if (prisonCaseNote == null || reasonToIgnore.value != null) {
-            val reason = if (prisonCaseNote == null) {
-                "case note was not found"
-            } else {
-                telemetryService.trackEvent(
-                    "CaseNoteIgnored",
-                    prisonCaseNote.properties() + ("reason" to (reasonToIgnore.value!!))
-                )
-                reasonToIgnore.value
-            }
+            val reason =
+                if (prisonCaseNote == null) {
+                    "case note was not found"
+                } else {
+                    telemetryService.trackEvent(
+                        "CaseNoteIgnored",
+                        prisonCaseNote.properties() + ("reason" to (reasonToIgnore.value!!)),
+                    )
+                    reasonToIgnore.value
+                }
             log.warn("Ignoring case note id {} and type {} because $reason", caseNoteId, notification.eventType)
             return
         }
@@ -83,7 +85,7 @@ class Handler(
             caseNoteId,
             prisonCaseNote.type,
             prisonCaseNote.subType,
-            prisonCaseNote.eventId
+            prisonCaseNote.eventId,
         )
 
         try {
@@ -92,19 +94,20 @@ class Handler(
         } catch (e: Exception) {
             telemetryService.trackEvent(
                 "CaseNoteMergeFailed",
-                prisonCaseNote.properties() + ("exception" to (e.message ?: ""))
+                prisonCaseNote.properties() + ("exception" to (e.message ?: "")),
             )
             if (e !is OffenderNotFoundException) throw e
         }
     }
 
-    private fun PrisonCaseNote.properties() = mapOf(
-        "caseNoteId" to id,
-        "type" to type,
-        "subType" to subType,
-        "eventId" to eventId.toString(),
-        "created" to DeliusDateTimeFormatter.format(creationDateTime),
-        "occurrence" to DeliusDateTimeFormatter.format(occurrenceDateTime),
-        "location" to locationId
-    )
+    private fun PrisonCaseNote.properties() =
+        mapOf(
+            "caseNoteId" to id,
+            "type" to type,
+            "subType" to subType,
+            "eventId" to eventId.toString(),
+            "created" to DeliusDateTimeFormatter.format(creationDateTime),
+            "occurrence" to DeliusDateTimeFormatter.format(occurrenceDateTime),
+            "location" to locationId,
+        )
 }

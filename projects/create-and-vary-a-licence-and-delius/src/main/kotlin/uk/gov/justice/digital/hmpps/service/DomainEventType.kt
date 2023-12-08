@@ -10,8 +10,9 @@ sealed interface DomainEventType {
     data class Other(override val name: String) : DomainEventType
 
     companion object {
-        private val types = listOf(LicenceActivated)
-            .associateBy { it.name }
+        private val types =
+            listOf(LicenceActivated)
+                .associateBy { it.name }
 
         fun of(name: String): DomainEventType = types[name] ?: Other(name)
     }

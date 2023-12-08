@@ -9,11 +9,11 @@ data class EventDetails<out T : Cas3Event>(
     val id: String,
     val timestamp: ZonedDateTime,
     val eventType: String,
-    val eventDetails: T
+    val eventDetails: T,
 )
 
 data class ApplicationSubmitted(
-    val applicationId: String
+    val applicationId: String,
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:application-submitted:$applicationId"
     override val contactTypeCode = ContactType.REFERRAL_SUBMITTED
@@ -33,7 +33,7 @@ data class BookingCancelled(
     val bookingUrl: String,
     val cancellationReason: String,
     val cancellationContext: String?,
-    val notes: String?
+    val notes: String?,
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:booking-cancelled:$bookingId"
     override val noteText =
@@ -47,13 +47,13 @@ data class BookingProvisional(
     val bookingId: String,
     val bookingUrl: String,
     val expectedArrivedAt: ZonedDateTime,
-    val notes: String
+    val notes: String,
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:booking-provisionally-made:$bookingId"
     override val noteText =
         listOfNotNull(
             "Expected arrival date: ${DeliusDateFormatter.format(expectedArrivedAt)}",
-            notes
+            notes,
         ).joinToString(System.lineSeparator())
     override val contactTypeCode = ContactType.BOOKING_PROVISIONAL
 }
@@ -64,13 +64,13 @@ data class BookingConfirmed(
     val bookingId: String,
     val bookingUrl: String,
     val expectedArrivedAt: ZonedDateTime,
-    val notes: String
+    val notes: String,
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:booking-confirmed:$bookingId"
     override val noteText =
         listOfNotNull(
             "Expected arrival date: ${DeliusDateFormatter.format(expectedArrivedAt)}",
-            notes
+            notes,
         ).joinToString(System.lineSeparator())
     override val contactTypeCode = ContactType.BOOKING_CONFIRMED
 }
@@ -82,14 +82,14 @@ data class PersonArrived(
     val bookingUrl: String,
     val arrivedAt: ZonedDateTime,
     val notes: String,
-    val premises: Address
+    val premises: Address,
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:person-arrived:$bookingId"
     override val noteText =
         listOfNotNull(
             "Arrival date: ${DeliusDateFormatter.format(arrivedAt)}",
             "Arrival address: ${premises.inNotes()}",
-            notes
+            notes,
         ).joinToString(System.lineSeparator())
     override val contactTypeCode = ContactType.PERSON_ARRIVED
 }
@@ -103,17 +103,17 @@ data class PersonDeparted(
     val notes: String,
     val reason: String,
     val reasonDetail: String?,
-    val moveOnCategory: Category
-
+    val moveOnCategory: Category,
 ) : Cas3Event {
     override val urn = "urn:hmpps:cas3:person-departed:$bookingId"
-    override val noteText = listOfNotNull(
-        "Departure date: ${DeliusDateFormatter.format(departedAt)}",
-        reason,
-        reasonDetail,
-        moveOnCategory.description,
-        notes
-    ).joinToString(System.lineSeparator())
+    override val noteText =
+        listOfNotNull(
+            "Departure date: ${DeliusDateFormatter.format(departedAt)}",
+            reason,
+            reasonDetail,
+            moveOnCategory.description,
+            notes,
+        ).joinToString(System.lineSeparator())
     override val contactTypeCode = ContactType.PERSON_DEPARTED
 }
 
@@ -122,7 +122,7 @@ data class Address(
     val addressLine2: String?,
     val postcode: String,
     val town: String?,
-    val region: String
+    val region: String,
 ) {
     val addressLines: AddressLines
         get() {
@@ -133,6 +133,7 @@ data class Address(
                 AddressLines(lines.pop(), lines.pop(), lines.pop())
             }
         }
+
     fun inNotes(): String {
         return listOfNotNull(addressLine1, addressLine2, postcode, town, region).joinToString(" ")
     }
@@ -141,9 +142,9 @@ data class Address(
 data class AddressLines(
     val buildingName: String?,
     val streetName: String,
-    val district: String?
+    val district: String?,
 )
 
 data class Category(
-    val description: String
+    val description: String,
 )

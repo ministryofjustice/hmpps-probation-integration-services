@@ -13,7 +13,6 @@ class ContactType(
     @Id
     @Column(name = "contact_type_id", nullable = false)
     val id: Long,
-
     @Column(nullable = false)
-    val code: String
+    val code: String,
 )

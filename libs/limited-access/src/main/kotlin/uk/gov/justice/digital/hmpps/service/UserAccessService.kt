@@ -8,7 +8,10 @@ import uk.gov.justice.digital.hmpps.entity.isRestricted
 
 @Service
 class UserAccessService(private val uar: UserAccessRepository) {
-    fun userAccessFor(username: String, crns: List<String>): UserAccess {
+    fun userAccessFor(
+        username: String,
+        crns: List<String>,
+    ): UserAccess {
         val user = uar.findByUsername(username)
 
         val limitations: List<PersonAccess> =
@@ -30,7 +33,7 @@ class UserAccessService(private val uar: UserAccessRepository) {
                 any { it.isExcluded() },
                 any { it.isRestricted() },
                 firstOrNull { it.isExcluded() }?.exclusionMessage,
-                firstOrNull { it.isRestricted() }?.restrictionMessage
+                firstOrNull { it.isRestricted() }?.restrictionMessage,
             )
         }
     }
@@ -41,7 +44,7 @@ data class CaseAccess(
     val userExcluded: Boolean,
     val userRestricted: Boolean,
     val exclusionMessage: String? = null,
-    val restrictionMessage: String? = null
+    val restrictionMessage: String? = null,
 )
 
 data class UserAccess(val access: List<CaseAccess>)

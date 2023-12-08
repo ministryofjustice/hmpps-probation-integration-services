@@ -13,9 +13,13 @@ import java.time.ZonedDateTime
 @Service
 class ContactService(
     private val contactTypeRepository: ContactTypeRepository,
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
 ) {
-    fun createContact(disposal: Disposal, com: PersonManager, startDateTime: ZonedDateTime): Contact {
+    fun createContact(
+        disposal: Disposal,
+        com: PersonManager,
+        startDateTime: ZonedDateTime,
+    ): Contact {
         return contactRepository.save(
             Contact(
                 disposal.event.person.id,
@@ -28,8 +32,8 @@ class ContactService(
                 """
             |Delius has been updated with licence conditions entered in the Create and Vary a licence service.
             |Select the following link to navigate to Create and Vary a licence service and view the licence.
-                """.trimMargin()
-            )
+                """.trimMargin(),
+            ),
         )
     }
 }

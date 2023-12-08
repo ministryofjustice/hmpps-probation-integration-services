@@ -15,14 +15,21 @@ import java.time.LocalDate
 @Service
 class AddressService(
     private val personAddressRepository: PersonAddressRepository,
-    private val referenceDataRepository: ReferenceDataRepository
+    private val referenceDataRepository: ReferenceDataRepository,
 ) {
-    fun updateMainAddress(person: Person, details: PersonArrived, ap: ApprovedPremises) {
+    fun updateMainAddress(
+        person: Person,
+        details: PersonArrived,
+        ap: ApprovedPremises,
+    ) {
         endMainAddress(person, details.arrivedAt.toLocalDate())
         ap.arrival(person, details).apply(personAddressRepository::save)
     }
 
-    fun endMainAddress(person: Person, endDate: LocalDate) {
+    fun endMainAddress(
+        person: Person,
+        endDate: LocalDate,
+    ) {
         val currentMain = personAddressRepository.findMainAddress(person.id)
         currentMain?.apply {
             val previousStatus = referenceDataRepository.previousAddressStatus()
@@ -31,7 +38,10 @@ class AddressService(
         }
     }
 
-    private fun ApprovedPremises.arrival(person: Person, details: PersonArrived) = PersonAddress(
+    private fun ApprovedPremises.arrival(
+        person: Person,
+        details: PersonArrived,
+    ) = PersonAddress(
         0,
         person.id,
         referenceDataRepository.approvedPremisesAddressType(),
@@ -44,6 +54,6 @@ class AddressService(
         address.county,
         address.postcode,
         address.telephoneNumber,
-        startDate = details.arrivedAt.toLocalDate()
+        startDate = details.arrivedAt.toLocalDate(),
     )
 }

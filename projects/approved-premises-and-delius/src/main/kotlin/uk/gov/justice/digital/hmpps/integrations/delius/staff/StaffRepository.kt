@@ -14,11 +14,11 @@ interface StaffRepository : JpaRepository<Staff, Long> {
         join s.teams t
         join t.approvedPremises ap
         where ap.code.code = :approvedPremisesCode
-        """
+        """,
     )
     fun findAllStaffLinkedToApprovedPremisesTeam(
         approvedPremisesCode: String,
-        pageable: Pageable
+        pageable: Pageable,
     ): Page<Staff>
 
     @Query(
@@ -26,11 +26,11 @@ interface StaffRepository : JpaRepository<Staff, Long> {
         select distinct s from Staff s
         join s.approvedPremises ap
         where ap.code.code = :approvedPremisesCode
-        """
+        """,
     )
     fun findKeyWorkersLinkedToApprovedPremises(
         approvedPremisesCode: String,
-        pageable: Pageable
+        pageable: Pageable,
     ): Page<Staff>
 
     fun findByCode(code: String): Staff?
@@ -39,8 +39,6 @@ interface StaffRepository : JpaRepository<Staff, Long> {
     fun findByUserUsername(username: String): Staff?
 }
 
-fun StaffRepository.getByCode(code: String): Staff =
-    findByCode(code) ?: throw NotFoundException("Staff", "code", code)
+fun StaffRepository.getByCode(code: String): Staff = findByCode(code) ?: throw NotFoundException("Staff", "code", code)
 
-fun StaffRepository.getUnallocated(teamCode: String): Staff =
-    findByCode(teamCode + "U") ?: throw NotFoundException("Unable to find unallocated staff for $teamCode")
+fun StaffRepository.getUnallocated(teamCode: String): Staff = findByCode(teamCode + "U") ?: throw NotFoundException("Unable to find unallocated staff for $teamCode")

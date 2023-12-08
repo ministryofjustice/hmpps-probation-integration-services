@@ -8,14 +8,14 @@ class ReferralNotFoundException(
     crn: String,
     eventId: Long?,
     date: LocalDate,
-    reason: String
+    reason: String,
 ) : UnprocessableException(
-    "ReferralNotFound",
-    listOfNotNull(
-        "referralUrn" to referralUrn,
-        "crn" to crn,
-        eventId?.let { "eventId" to it.toString() },
-        "date" to date.format(DateTimeFormatter.ISO_LOCAL_DATE),
-        "reason" to reason
-    ).toMap()
-)
+        "ReferralNotFound",
+        listOfNotNull(
+            "referralUrn" to referralUrn,
+            "crn" to crn,
+            eventId?.let { "eventId" to it.toString() },
+            "date" to date.format(DateTimeFormatter.ISO_LOCAL_DATE),
+            "reason" to reason,
+        ).toMap(),
+    )

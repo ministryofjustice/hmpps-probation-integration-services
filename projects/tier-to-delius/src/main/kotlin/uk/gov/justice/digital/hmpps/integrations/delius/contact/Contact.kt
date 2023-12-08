@@ -28,54 +28,40 @@ class Contact(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
     @Column(name = "contact_id", nullable = false)
     val id: Long = 0,
-
     @Version
     @Column(name = "row_version", nullable = false)
     val version: Long = 0,
-
     @Column(name = "contact_date", nullable = false)
     val date: ZonedDateTime,
-
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime? = null,
-
     @ManyToOne
     @JoinColumn(name = "contact_type_id", nullable = false)
     val type: ContactType,
-
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
-
     @Lob
     @Column
     val notes: String? = null,
-
     @Column
     val staffId: Long,
-
     @Column
     val teamId: Long,
-
     @Column(nullable = false)
     @CreatedDate
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(nullable = false)
     @CreatedBy
     var createdByUserId: Long = 0,
-
     @Column(nullable = false)
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(nullable = false)
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
-
     @Column(nullable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Column(nullable = false)
-    val partitionAreaId: Long = 0
+    val partitionAreaId: Long = 0,
 )

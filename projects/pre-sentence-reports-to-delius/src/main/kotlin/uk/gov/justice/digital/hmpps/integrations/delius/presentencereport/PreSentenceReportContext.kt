@@ -12,14 +12,14 @@ data class PreSentenceReportContext(
     val address: Address?,
     val mainOffence: Offence,
     val otherOffences: List<Offence>?,
-    val court: Court
+    val court: Court,
 )
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class Name(
     val forename: String,
     val surname: String,
-    val middleName: String?
+    val middleName: String?,
 )
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -31,18 +31,18 @@ data class Address(
     val town: String?,
     val district: String?,
     val county: String?,
-    val postcode: String?
+    val postcode: String?,
 )
 
 data class Offence(
-    val description: String
+    val description: String,
 )
 
 data class Court(
     val name: String,
-    val localJusticeArea: LocalJusticeArea
+    val localJusticeArea: LocalJusticeArea,
 )
 
 data class LocalJusticeArea(
-    val name: String
+    val name: String,
 )

@@ -24,13 +24,13 @@ class LicenceConditionService(
     private val contactService: ContactService,
     private val licenceConditionTransferRepository: LicenceConditionTransferRepository,
     private val referenceDataRepository: ReferenceDataRepository,
-    private val rejectedTransferDiaryRepository: RejectedTransferDiaryRepository
+    private val rejectedTransferDiaryRepository: RejectedTransferDiaryRepository,
 ) {
     fun terminateLicenceConditionsForDisposal(
         disposalId: Long,
         terminationReason: ReferenceData,
         terminationDate: ZonedDateTime,
-        endOfTemporaryLicence: Boolean = false
+        endOfTemporaryLicence: Boolean = false,
     ) {
         licenceConditionRepository
             .findAllByDisposalIdAndMainCategoryCodeNotAndTerminationReasonIsNull(disposalId)
@@ -43,7 +43,7 @@ class LicenceConditionService(
         licenceCondition: LicenceCondition,
         terminationReason: ReferenceData,
         terminationDate: ZonedDateTime,
-        endOfTemporaryLicence: Boolean
+        endOfTemporaryLicence: Boolean,
     ) {
         // terminate the licence condition
         licenceCondition.terminationDate = terminationDate
@@ -57,32 +57,37 @@ class LicenceConditionService(
         // delete any future-dated contacts
         contactService.deleteFutureDatedLicenceConditionContacts(
             licenceCondition.id,
-            terminationDate
+            terminationDate,
         )
 
         // create "component terminated" contact
         val event = licenceCondition.disposal.event
         val manager = licenceCondition.manager ?: event.manager()
-        val notes = "Termination reason: ${terminationReason.description}" +
-            if (endOfTemporaryLicence) EOTL_TERMINATE_LICENCE_CONTACT_NOTES else ""
+        val notes =
+            "Termination reason: ${terminationReason.description}" +
+                if (endOfTemporaryLicence) EOTL_TERMINATE_LICENCE_CONTACT_NOTES else ""
         contactService.createContact(
             ContactDetail(
                 ContactType.Code.COMPONENT_TERMINATED,
                 terminationDate,
-                notes
+                notes,
             ),
             event.person,
             event,
             manager,
-            licenceCondition.id
+            licenceCondition.id,
         )
     }
 
-    private fun terminatePendingTransfers(licenceCondition: LicenceCondition, terminationDate: ZonedDateTime) {
-        val pendingTransfers = licenceConditionTransferRepository.findAllByLicenceConditionIdAndStatusCode(
-            licenceCondition.id,
-            TransferStatusCode.PENDING.code
-        )
+    private fun terminatePendingTransfers(
+        licenceCondition: LicenceCondition,
+        terminationDate: ZonedDateTime,
+    ) {
+        val pendingTransfers =
+            licenceConditionTransferRepository.findAllByLicenceConditionIdAndStatusCode(
+                licenceCondition.id,
+                TransferStatusCode.PENDING.code,
+            )
         if (pendingTransfers.isNotEmpty()) {
             val rejectedStatus = referenceDataRepository.getTransferStatus(TransferStatusCode.REJECTED.code)
             val rejectedDecision = referenceDataRepository.getByCodeAndSetName("R", "ACCEPTED DECISION")
@@ -95,10 +100,11 @@ class LicenceConditionService(
                 transfer.decision = rejectedDecision
                 transfer.rejectionReason = rejectionReason
                 transfer.statusDate = terminationDate
-                transfer.notes = listOfNotNull(
-                    transfer.notes,
-                    "Transfer automatically rejected due to termination of licence condition."
-                ).joinToString("\n")
+                transfer.notes =
+                    listOfNotNull(
+                        transfer.notes,
+                        "Transfer automatically rejected due to termination of licence condition.",
+                    ).joinToString("\n")
 
                 // created an entry in the 'rejected transfer diary'
                 updateRejectedTransferDiary(transfer)
@@ -112,21 +118,22 @@ class LicenceConditionService(
 
     private fun createRejectedTransferContact(
         transfer: LicenceConditionTransfer,
-        terminationDate: ZonedDateTime
+        terminationDate: ZonedDateTime,
     ) {
-        val notes = """
+        val notes =
+            """
             Transfer Status: ${transfer.status.description}
             Transfer Reason: ${transfer.reason?.description}
             Rejection Reason: ${transfer.rejectionReason?.description}
             Owning Provider: ${transfer.originTeam.probationArea.description}
             Receiving Provider: ${transfer.receivingTeam.probationArea.description}
             Notes: \n${transfer.notes}\n\n
-        """.trimIndent()
+            """.trimIndent()
         contactService.createContact(
             ContactDetail(
                 ContactType.Code.COMPONENT_PROVIDER_TRANSFER_REJECTED,
                 terminationDate,
-                notes
+                notes,
             ),
             transfer.licenceCondition.disposal.event.person,
             transfer.licenceCondition.disposal.event,
@@ -135,7 +142,7 @@ class LicenceConditionService(
                 override val teamId = transfer.receivingTeam.id
                 override val probationAreaId = transfer.receivingTeam.probationArea.id
             },
-            licenceConditionId = transfer.licenceCondition.id
+            licenceConditionId = transfer.licenceCondition.id,
         )
     }
 
@@ -155,15 +162,16 @@ class LicenceConditionService(
                 originProviderId = transfer.originTeam.probationArea.id,
                 originTeamId = transfer.originTeam.id,
                 originStaffId = transfer.originStaff.id,
-                rejectionReasonId = transfer.rejectionReason!!.id
-            )
+                rejectionReasonId = transfer.rejectionReason!!.id,
+            ),
         )
     }
 
     companion object {
-        val EOTL_TERMINATE_LICENCE_CONTACT_NOTES = """${System.lineSeparator()}
+        val EOTL_TERMINATE_LICENCE_CONTACT_NOTES =
+            """${System.lineSeparator()}
     |The date of the termination of licence condition has been identified from the case being updated following a Temporary Absence Return in NOMIS.
     |The date may reflect an update after the date the actual Recall/Return to Custody occurred.
-        """.trimMargin()
+            """.trimMargin()
     }
 }

@@ -12,11 +12,9 @@ import org.hibernate.annotations.Immutable
 class ReferenceData(
     @Column(name = "code_value", length = 100, nullable = false)
     val code: String,
-
     @Column(name = "code_description")
     val description: String,
-
     @Id
     @Column(name = "standard_reference_list_id", nullable = false)
-    val id: Long
+    val id: Long,
 )

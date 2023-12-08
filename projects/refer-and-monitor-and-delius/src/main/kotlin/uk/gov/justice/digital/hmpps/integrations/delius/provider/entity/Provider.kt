@@ -20,12 +20,10 @@ import java.time.LocalDate
 class Provider(
     @Column(columnDefinition = "char(3)")
     val code: String,
-
     val description: String,
-
     @Id
     @Column(name = "probation_area_id")
-    val id: Long
+    val id: Long,
 ) {
     companion object {
         const val INTENDED_PROVIDER_CODE = "CRS"
@@ -36,23 +34,18 @@ class Provider(
 @Entity
 @Table(name = "team")
 class Team(
-
     @Column(name = "code", columnDefinition = "char(6)")
     val code: String,
-
     val description: String,
-
     @ManyToOne
     @JoinColumn(name = "district_id")
     val district: District,
-
     @Column(name = "email_address")
     val email: String?,
     val telephone: String?,
-
     @Id
     @Column(name = "team_id")
-    val id: Long
+    val id: Long,
 ) {
     companion object {
         const val INTENDED_TEAM_CODE = INTENDED_PROVIDER_CODE + "UAT"
@@ -65,7 +58,6 @@ class Team(
 class Location(
     @Column(name = "code", columnDefinition = "char(7)")
     val code: String,
-
     val description: String,
     val buildingName: String?,
     val buildingNumber: String?,
@@ -77,47 +69,38 @@ class Location(
     val telephoneNumber: String?,
     val startDate: LocalDate,
     val endDate: LocalDate?,
-
     @Column(name = "probation_area_id")
     val providerId: Long,
-
     @Id
     @Column(name = "office_location_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
 @Entity
 @Table(name = "district")
 class District(
-
     @Column(name = "code")
     val code: String,
-
     val description: String,
-
     @ManyToOne
     @JoinColumn(name = "borough_id")
     val borough: Borough,
-
     @Id
     @Column(name = "district_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
 @Entity
 @Table(name = "borough")
 class Borough(
-
     @Column(name = "code")
     val code: String,
-
     val description: String,
-
     @Id
     @Column(name = "borough_id")
-    val id: Long
+    val id: Long,
 )
 
 interface ProviderRepository : JpaRepository<Provider, Long> {
@@ -142,7 +125,7 @@ interface LocationRepository : JpaRepository<Location, Long> {
         select l from Location l
         where l.providerId = :providerId
         and l.endDate is null
-    """
+    """,
     )
     fun findAllLocationsForProvider(providerId: Long): List<Location>
 }

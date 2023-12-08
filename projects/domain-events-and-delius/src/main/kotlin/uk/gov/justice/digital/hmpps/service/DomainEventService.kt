@@ -20,7 +20,7 @@ class DomainEventService(
     private val objectMapper: ObjectMapper,
     private val domainEventRepository: DomainEventRepository,
     private val notificationPublisher: NotificationPublisher,
-    private val notificationEnhancer: NotificationEnhancer
+    private val notificationEnhancer: NotificationEnhancer,
 ) {
     @Transactional
     fun publishBatch(): Int {
@@ -31,8 +31,9 @@ class DomainEventService(
         return deltas.size
     }
 
-    fun DomainEvent.asNotification() = Notification<HmppsDomainEvent>(
-        message = objectMapper.readValue(messageBody),
-        attributes = objectMapper.readValue(messageAttributes)
-    )
+    fun DomainEvent.asNotification() =
+        Notification<HmppsDomainEvent>(
+            message = objectMapper.readValue(messageBody),
+            attributes = objectMapper.readValue(messageAttributes),
+        )
 }

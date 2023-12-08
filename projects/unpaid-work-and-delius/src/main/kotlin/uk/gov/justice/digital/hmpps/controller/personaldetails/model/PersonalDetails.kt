@@ -9,8 +9,9 @@ import uk.gov.justice.digital.hmpps.integrations.common.model.PersonalContact
 data class PersonalDetails(
     val crn: String,
     val personalCircumstances: List<PersonalCircumstance>,
-    val personalContacts: List<PersonalContact>
+    val personalContacts: List<PersonalContact>,
 )
 
 fun PersonalContactEntity.name() = Name(forename, middleName, surname)
+
 fun CasePersonalContactEntity.name() = Name(forename, middleName, surname)

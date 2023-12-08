@@ -14,9 +14,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.PreSen
 @RestController
 @RequestMapping(value = ["context"])
 class PSRContextController(
-    private val service: PreSentenceReportService
+    private val service: PreSentenceReportService,
 ) {
-
     @PreAuthorize("hasRole('ROLE_PSR_CONTEXT')")
     @Operation(
         summary = "Probation case information related to the pre-sentence report",
@@ -26,15 +25,15 @@ class PSRContextController(
             these details as a single context API enables the pre-sentence service to
             remove the need to access the case record and key the information into the
             Pre-Sentence service manually
-        """
+        """,
     )
     @GetMapping(
         value = ["{reportId}"],
-        produces = [MediaType.APPLICATION_JSON_VALUE]
+        produces = [MediaType.APPLICATION_JSON_VALUE],
     )
     fun getPreSentenceReportContext(
         @NotNull @PathVariable
-        reportId: String
+        reportId: String,
     ): PreSentenceReportContext {
         return service.getPreSentenceReportContext(reportId)
     }

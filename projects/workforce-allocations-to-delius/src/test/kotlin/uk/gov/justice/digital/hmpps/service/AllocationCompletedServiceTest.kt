@@ -50,9 +50,10 @@ class AllocationCompletedServiceTest {
 
     @Test
     fun `missing crn is thrown`() {
-        val exception = assertThrows<NotFoundException> {
-            allocationCompletedService.getDetails("X", "Y", "Z")
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                allocationCompletedService.getDetails("X", "Y", "Z")
+            }
         assertThat(exception.message, equalTo("Person with crn of X not found"))
     }
 
@@ -60,9 +61,10 @@ class AllocationCompletedServiceTest {
     fun `missing event number is thrown`() {
         whenever(personRepository.findByCrnAndSoftDeletedFalse("X")).thenReturn(PersonGenerator.DEFAULT)
 
-        val exception = assertThrows<NotFoundException> {
-            allocationCompletedService.getDetails("X", "Y", "Z")
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                allocationCompletedService.getDetails("X", "Y", "Z")
+            }
         assertThat(exception.message, equalTo("Event Y not found for crn X"))
     }
 
@@ -107,11 +109,13 @@ class AllocationCompletedServiceTest {
         whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
         whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
         whenever(ldapService.findEmailsForStaffIn(any())).thenReturn(mapOf(user.username to user.email))
-        whenever(contactRepository.getInitialAppointmentData(person.id, event.id)).thenReturn(object :
+        whenever(contactRepository.getInitialAppointmentData(person.id, event.id)).thenReturn(
+            object :
                 InitialAppointmentData {
                 override val date = initialAppointmentDate
                 override val staff = staff
-            })
+            },
+        )
 
         val response = allocationCompletedService.getDetails(person.crn, event.number, staff.code)
 

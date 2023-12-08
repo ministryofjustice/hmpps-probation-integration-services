@@ -6,5 +6,5 @@ data class CourtAppearance(
     val type: String,
     val date: ZonedDateTime,
     val court: String,
-    val plea: String?
+    val plea: String?,
 )

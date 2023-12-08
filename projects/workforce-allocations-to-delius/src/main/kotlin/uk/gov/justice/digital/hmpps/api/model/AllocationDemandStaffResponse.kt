@@ -13,14 +13,14 @@ data class AllocationDemandStaffResponse(
     val sentence: AllocationDemandSentence?,
     val court: Court?,
     val offences: List<Offence>,
-    val activeRequirements: List<Requirement>
+    val activeRequirements: List<Requirement>,
 )
 
 data class Requirement(
     val mainCategory: String,
     val subCategory: String?,
     val length: String,
-    val id: Long
+    val id: Long,
 )
 
 interface Court {
@@ -33,7 +33,7 @@ data class AllocationDemandSentence(
     val code: String,
     val date: ZonedDateTime,
     private val lengthValue: Long,
-    private val lengthDescription: String
+    private val lengthDescription: String,
 ) {
     val length: String = "$lengthValue $lengthDescription"
 }

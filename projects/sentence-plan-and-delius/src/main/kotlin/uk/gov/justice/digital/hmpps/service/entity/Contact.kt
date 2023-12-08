@@ -21,28 +21,21 @@ class Contact(
     @Id
     @Column(name = "contact_id", updatable = false)
     val id: Long = 0,
-
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
-
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
     @ManyToOne
     @JoinColumn(name = "contact_type_id", updatable = false)
     val type: ContactType,
-
     @Column(name = "contact_date")
     val date: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
-    var softDeleted: Boolean = false
-
+    var softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -52,11 +45,10 @@ class ContactType(
     @Id
     @Column(name = "contact_type_id")
     val id: Long,
-    val code: String
+    val code: String,
 )
 
 interface ContactRepository : JpaRepository<Contact, Long> {
-
     @Query(
         """
         select max(to_date(to_char(c.contact_date, 'yyyy-mm-dd') || ' ' || to_char(c.contact_start_time, 'hh24:mi:ss'), 'yyyy-mm-dd hh24:mi:ss'))
@@ -70,7 +62,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         and c.SOFT_DELETED = 0
         and ct.code in ('COAI', 'COVI', 'CODI', 'COHV')
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun getFirstAppointmentDate(crn: String): LocalDateTime?
 }

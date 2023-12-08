@@ -24,14 +24,13 @@ class ContactService(
     private val personManagerRepository: PersonManagerRepository,
     private val contactRepository: ContactRepository,
     private val contactTypeRepository: ContactTypeRepository,
-    private val telemetryService: TelemetryService
+    private val telemetryService: TelemetryService,
 ) : AuditableService(auditedInteractionService) {
-
     fun <T : Cas3Event> createOrUpdateContact(
         crn: String,
         person: Person? = null,
         replaceNotes: Boolean = true,
-        getEvent: () -> EventDetails<T>
+        getEvent: () -> EventDetails<T>,
     ) = audit(BusinessInteractionCode.UPDATE_CONTACT) {
         val event = getEvent()
         val personId = person?.id ?: personRepository.getByCrn(crn).id
@@ -49,7 +48,7 @@ class ContactService(
             } else {
                 telemetryService.trackEvent(
                     "Ignoring out of sequence older message.",
-                    mapOf("crn" to crn, "urn" to event.eventDetails.urn)
+                    mapOf("crn" to crn, "urn" to event.eventDetails.urn),
                 )
             }
         } else {
@@ -59,8 +58,8 @@ class ContactService(
                     personId,
                     event.eventDetails.contactTypeCode,
                     event.eventDetails.urn,
-                    event.eventDetails.noteText
-                )
+                    event.eventDetails.noteText,
+                ),
             )
         }
     }
@@ -70,18 +69,20 @@ class ContactService(
         personId: Long,
         typeCode: String,
         reference: String,
-        notes: String
+        notes: String,
     ): Contact {
-        val contactType = contactTypeRepository.findByCode(typeCode) ?: throw NotFoundException(
-            "ContactType",
-            "code",
-            typeCode
-        )
-        val comDetails = personManagerRepository.findActiveManager(personId) ?: throw NotFoundException(
-            "PersonManager",
-            "personId",
-            personId
-        )
+        val contactType =
+            contactTypeRepository.findByCode(typeCode) ?: throw NotFoundException(
+                "ContactType",
+                "code",
+                typeCode,
+            )
+        val comDetails =
+            personManagerRepository.findActiveManager(personId) ?: throw NotFoundException(
+                "PersonManager",
+                "personId",
+                personId,
+            )
 
         return Contact(
             offenderId = personId,
@@ -93,7 +94,7 @@ class ContactService(
             probationAreaId = comDetails.probationAreaId,
             teamId = comDetails.teamId,
             staffId = comDetails.staffId,
-            externalReference = reference
+            externalReference = reference,
         )
     }
 }

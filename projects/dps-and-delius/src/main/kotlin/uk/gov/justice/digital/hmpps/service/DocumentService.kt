@@ -22,7 +22,7 @@ import uk.gov.justice.digital.hmpps.model.ProbationDocumentsResponse
 class DocumentService(
     private val personRepository: PersonRepository,
     private val documentRepository: DocumentRepository,
-    private val alfrescoClient: AlfrescoClient
+    private val alfrescoClient: AlfrescoClient,
 ) {
     fun downloadDocument(id: String): ResponseEntity<StreamingResponseBody> {
         val filename =
@@ -31,49 +31,55 @@ class DocumentService(
     }
 
     @Transactional
-    fun getDocumentsForCase(nomisId: String) = personRepository.findByNomisId(nomisId)?.let { person ->
-        val documents = documentRepository.getPersonAndEventDocuments(person.id)
-        val eventDocuments = documents.filter { it.relatesToEvent() }.groupBy { it.eventId }
-        ProbationDocumentsResponse(
-            crn = person.crn,
-            name = Name(
-                person.forename,
-                listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
-                person.surname
-            ),
-            documents = documents.filter { !it.relatesToEvent() }.map { document ->
-                Document(
-                    id = document.alfrescoId,
-                    name = document.name,
-                    description = document.description,
-                    type = document.typeDescription(),
-                    author = document.author,
-                    createdAt = document.createdAt?.atZone(EuropeLondon)
-                )
-            }.sortedByDescending { it.createdAt },
-            convictions = person.events.map { event ->
-                Conviction(
-                    title = event.disposal?.description ?: event.courtAppearances.latestOutcome()?.description,
-                    offence = event.mainOffence.offence.subCategoryDescription,
-                    date = event.referralDate,
-                    active = event.active,
-                    institutionName = event.disposal?.custody?.institution?.name,
-                    documents = eventDocuments[event.id]?.map { document ->
+    fun getDocumentsForCase(nomisId: String) =
+        personRepository.findByNomisId(nomisId)?.let { person ->
+            val documents = documentRepository.getPersonAndEventDocuments(person.id)
+            val eventDocuments = documents.filter { it.relatesToEvent() }.groupBy { it.eventId }
+            ProbationDocumentsResponse(
+                crn = person.crn,
+                name =
+                    Name(
+                        person.forename,
+                        listOfNotNull(person.secondName, person.thirdName).joinToString(" "),
+                        person.surname,
+                    ),
+                documents =
+                    documents.filter { !it.relatesToEvent() }.map { document ->
                         Document(
                             id = document.alfrescoId,
                             name = document.name,
                             description = document.description,
                             type = document.typeDescription(),
                             author = document.author,
-                            createdAt = document.createdAt?.atZone(EuropeLondon)
+                            createdAt = document.createdAt?.atZone(EuropeLondon),
                         )
-                    }?.sortedByDescending { it.createdAt } ?: emptyList()
-                )
-            }.sortedByDescending { it.date }
-        )
-    } ?: throw NotFoundException("Person", "nomisId", nomisId)
+                    }.sortedByDescending { it.createdAt },
+                convictions =
+                    person.events.map { event ->
+                        Conviction(
+                            title = event.disposal?.description ?: event.courtAppearances.latestOutcome()?.description,
+                            offence = event.mainOffence.offence.subCategoryDescription,
+                            date = event.referralDate,
+                            active = event.active,
+                            institutionName = event.disposal?.custody?.institution?.name,
+                            documents =
+                                eventDocuments[event.id]?.map { document ->
+                                    Document(
+                                        id = document.alfrescoId,
+                                        name = document.name,
+                                        description = document.description,
+                                        type = document.typeDescription(),
+                                        author = document.author,
+                                        createdAt = document.createdAt?.atZone(EuropeLondon),
+                                    )
+                                }?.sortedByDescending { it.createdAt } ?: emptyList(),
+                        )
+                    }.sortedByDescending { it.date },
+            )
+        } ?: throw NotFoundException("Person", "nomisId", nomisId)
 
     private val Disposal.description get() = "${type.description}${lengthString?.let { " ($it)" } ?: ""}"
     private val Disposal.lengthString get() = length?.let { "$length ${lengthUnits!!.description}" }
+
     private fun List<CourtAppearance>.latestOutcome() = filter { it.outcome != null }.maxByOrNull { it.date }?.outcome
 }

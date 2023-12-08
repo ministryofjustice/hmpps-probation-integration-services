@@ -12,18 +12,18 @@ import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 
 @Component
 class DiedAction(
-    private val contactService: ContactService
+    private val contactService: ContactService,
 ) : PrisonerMovementAction {
     override val name = "Died"
 
     override fun accept(context: PrisonerMovementContext): ActionResult {
         val person = context.custody.disposal.event.person
         val notes = "This information has been provided via a movement reason recorded at ${
-        DeliusDateTimeFormatter.format(context.prisonerMovement.occurredAt)
+            DeliusDateTimeFormatter.format(context.prisonerMovement.occurredAt)
         } in NOMIS"
         contactService.createContact(
             ContactDetail(ContactType.Code.DIED_IN_CUSTODY, context.prisonerMovement.occurredAt, notes, alert = true),
-            person
+            person,
         )
         return ActionResult.Success(ActionResult.Type.Died, context.prisonerMovement.telemetryProperties())
     }

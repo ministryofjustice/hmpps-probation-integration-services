@@ -15,14 +15,12 @@ class CourtReportDoc(
     @Id
     @Column(name = "court_report_id")
     val id: Long,
-
     @JoinColumn(name = "court_appearance_id", insertable = false, updatable = false)
     @ManyToOne
     val documentCourtAppearance: DocumentCourtAppearance? = null,
-
     @ManyToOne
     @JoinColumn(name = "court_report_type_id", updatable = false)
-    val type: CourtReportType
+    val type: CourtReportType,
 )
 
 @Immutable
@@ -32,20 +30,17 @@ class CourtReportType(
     @Id
     @Column(name = "court_report_type_id")
     val id: Long,
-
-    val description: String
+    val description: String,
 )
 
 @Entity
 @Immutable
 @Table(name = "court_appearance")
 class DocumentCourtAppearance(
-
     @Id
     @Column(name = "court_appearance_id")
     val id: Long,
-
     @JoinColumn(name = "event_id", insertable = false, updatable = false)
     @ManyToOne
-    val event: DocEvent
+    val event: DocEvent,
 )

@@ -15,9 +15,8 @@ class CvlHandler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val telemetryService: TelemetryService,
     private val licenceActivatedHandler: LicenceActivatedHandler,
-    private val featureFlags: FeatureFlags
+    private val featureFlags: FeatureFlags,
 ) : NotificationHandler<HmppsDomainEvent> {
-
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         if (!featureFlags.enabled("cvl-licence-activated")) {
             return
@@ -25,12 +24,13 @@ class CvlHandler(
         val results =
             when (val eventType = (notification.eventType ?: notification.message.eventType).let { DomainEventType.of(it) }) {
                 is DomainEventType.LicenceActivated -> licenceActivatedHandler.licenceActivated(notification.message)
-                else -> listOf(
-                    ActionResult.Ignored(
-                        "UnexpectedEventType",
-                        mapOf("eventType" to eventType.name)
+                else ->
+                    listOf(
+                        ActionResult.Ignored(
+                            "UnexpectedEventType",
+                            mapOf("eventType" to eventType.name),
+                        ),
                     )
-                )
             }
 
         val failure = results.firstOrNull { it is ActionResult.Failure } as ActionResult.Failure?

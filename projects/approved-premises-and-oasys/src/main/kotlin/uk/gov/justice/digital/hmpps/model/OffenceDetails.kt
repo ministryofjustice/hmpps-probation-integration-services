@@ -14,7 +14,7 @@ data class OffenceDetails(
     override val laterWIPAssessmentExists: Boolean? = null,
     override val limitedAccessOffender: Boolean,
     override val lastUpdatedDate: ZonedDateTime? = null,
-    val offence: Offence? = null
+    val offence: Offence? = null,
 ) : Assessment() {
     companion object {
         fun from(oasysOffenceDetails: OasysOffenceDetails): OffenceDetails {
@@ -39,8 +39,8 @@ data class OffenceDetails(
                         victimPerpetratorRel,
                         victimInfo,
                         patternOffending,
-                        acceptsResponsibility
-                    )
+                        acceptsResponsibility,
+                    ),
                 )
             }
         }
@@ -56,5 +56,5 @@ data class Offence(
     val victimPerpetratorRel: String? = null,
     val victimInfo: String? = null,
     val patternOffending: String? = null,
-    val acceptsResponsibility: String? = null
+    val acceptsResponsibility: String? = null,
 )

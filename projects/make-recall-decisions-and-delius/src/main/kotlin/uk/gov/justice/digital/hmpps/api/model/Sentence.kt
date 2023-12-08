@@ -9,5 +9,5 @@ data class Sentence(
     val isCustodial: Boolean,
     val custodialStatusCode: String?,
     val licenceExpiryDate: LocalDate?,
-    val sentenceExpiryDate: LocalDate?
+    val sentenceExpiryDate: LocalDate?,
 )

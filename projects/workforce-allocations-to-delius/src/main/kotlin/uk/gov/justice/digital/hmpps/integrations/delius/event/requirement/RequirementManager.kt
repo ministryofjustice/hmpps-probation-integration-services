@@ -24,9 +24,7 @@ class RequirementManager(
     @Column(name = "rqmnt_manager_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rqmnt_manager_id_seq")
     var id: Long = 0,
-
     @Column(name = "rqmnt_id")
     var requirementId: Long = 0,
-
-    var transferReasonId: Long = 0
+    var transferReasonId: Long = 0,
 ) : ManagerBaseEntity()

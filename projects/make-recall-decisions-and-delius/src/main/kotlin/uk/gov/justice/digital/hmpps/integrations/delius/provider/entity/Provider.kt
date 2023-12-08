@@ -18,18 +18,14 @@ class Provider(
     @Id
     @Column(name = "probation_area_id")
     val id: Long,
-
     @Column(name = "code", columnDefinition = "char(3)")
     val code: String,
-
     @Column
     val description: String,
-
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean = true,
-
     @Column
-    val endDate: LocalDate? = null
+    val endDate: LocalDate? = null,
 )
 
 interface ProviderRepository : JpaRepository<Provider, Long> {

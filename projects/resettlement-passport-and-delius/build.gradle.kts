@@ -30,10 +30,11 @@ dependencies {
 }
 
 configure<ClassPathExtension> {
-    jacocoExclusions = listOf(
-        "**/config/**",
-        "**/model/**",
-        "**/entity/**",
-        "**/AppKt.class"
-    )
+    jacocoExclusions =
+        listOf(
+            "**/config/**",
+            "**/model/**",
+            "**/entity/**",
+            "**/AppKt.class",
+        )
 }

@@ -71,10 +71,11 @@ class LdapServiceTest {
 
     companion object {
         @JvmStatic
-        fun noEmail(): List<StaffWithUser?> = listOf(
-            null,
-            StaffGenerator.generateStaffWithUser("NoUser", user = null),
-            StaffGenerator.generateStaffWithUser("NoLdapUser", user = StaffUserGenerator.generate("NoLdapUser"))
-        )
+        fun noEmail(): List<StaffWithUser?> =
+            listOf(
+                null,
+                StaffGenerator.generateStaffWithUser("NoUser", user = null),
+                StaffGenerator.generateStaffWithUser("NoLdapUser", user = StaffUserGenerator.generate("NoLdapUser")),
+            )
     }
 }

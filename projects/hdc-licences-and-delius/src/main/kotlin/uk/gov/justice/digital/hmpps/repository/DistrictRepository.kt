@@ -15,7 +15,10 @@ interface DistrictRepository : JpaRepository<District, Long> {
         where pa.code = :probationAreaCode
         and d.code = :code
         and d.selectable
-        """
+        """,
     )
-    fun findByProbationAreaAndCode(probationAreaCode: String, code: String): District?
+    fun findByProbationAreaAndCode(
+        probationAreaCode: String,
+        code: String,
+    ): District?
 }

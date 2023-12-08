@@ -14,7 +14,7 @@ class CommonSecurityConfigurer : SecurityConfigurer {
                 AntPathRequestMatcher("/info/**"),
                 AntPathRequestMatcher("/swagger-ui/**"),
                 AntPathRequestMatcher("/v3/api-docs.yaml"),
-                AntPathRequestMatcher("/v3/api-docs/**")
+                AntPathRequestMatcher("/v3/api-docs/**"),
             ).permitAll().anyRequest().authenticated()
         }
             .csrf { it.disable() }

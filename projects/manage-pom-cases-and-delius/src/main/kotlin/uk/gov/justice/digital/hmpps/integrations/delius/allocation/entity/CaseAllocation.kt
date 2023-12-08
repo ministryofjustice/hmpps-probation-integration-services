@@ -19,29 +19,23 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "case_allocation")
 class CaseAllocation(
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
-
     @ManyToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
     @ManyToOne
     @JoinColumn(name = "allocation_decision_id")
     val decision: ReferenceData? = null,
-
     @Column(name = "allocation_decision_date")
     val decisionDate: ZonedDateTime? = null,
-
     @Id
     @Column(name = "case_allocation_id")
-    val id: Long
+    val id: Long,
 )
 
 interface CaseAllocationRepository : JpaRepository<CaseAllocation, Long> {
-
     @Query(
         """
        select ca.decision from CaseAllocation ca
@@ -52,10 +46,10 @@ interface CaseAllocationRepository : JpaRepository<CaseAllocation, Long> {
        and e.active = true and e.softDeleted = false
        and d.active = true and d.softDeleted = false
        order by ca.decisionDate desc
-    """
+    """,
     )
     fun findLatestActiveDecision(
         personId: Long,
-        pageRequest: PageRequest = PageRequest.of(0, 1)
+        pageRequest: PageRequest = PageRequest.of(0, 1),
     ): ReferenceData?
 }

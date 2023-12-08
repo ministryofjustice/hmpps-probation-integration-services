@@ -27,9 +27,12 @@ interface StaffRepository : JpaRepository<StaffRecord, Long> {
         from staff_team
         where staff_id = :staffId and team_id = :teamId
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
-    fun countTeamMembership(staffId: Long, teamId: Long): Int
+    fun countTeamMembership(
+        staffId: Long,
+        teamId: Long,
+    ): Int
 
     @Query("select s from StaffWithUser s join s.teams t where t.code = :teamCode and (s.endDate is null or s.endDate > current_date)")
     fun findActiveStaffInTeam(teamCode: String): List<StaffWithUser>
@@ -52,9 +55,13 @@ interface StaffRepository : JpaRepository<StaffRecord, Long> {
         and d.soft_deleted = 0 and d.active_flag = 1
         and c.soft_deleted = 0
     """,
-        nativeQuery = true
+        nativeQuery = true,
     )
-    fun getKeyDateCountByCodeAndStaffId(staffId: Long, keyDateCode: String, toDate: LocalDate): Long
+    fun getKeyDateCountByCodeAndStaffId(
+        staffId: Long,
+        keyDateCode: String,
+        toDate: LocalDate,
+    ): Long
 
     @Query(
         """
@@ -74,9 +81,12 @@ interface StaffRepository : JpaRepository<StaffRecord, Long> {
             and om.allocation_staff_id = :staffId 
             and om.active_flag = 1
     """,
-        nativeQuery = true
+        nativeQuery = true,
     )
-    fun getSentencesDueCountByStaffId(staffId: Long, toDate: LocalDate): Long
+    fun getSentencesDueCountByStaffId(
+        staffId: Long,
+        toDate: LocalDate,
+    ): Long
 
     @Query(
         """
@@ -99,9 +109,12 @@ interface StaffRepository : JpaRepository<StaffRecord, Long> {
                 and d.soft_deleted = 0 and d.active_flag = 1
                 and c.soft_deleted = 0
     """,
-        nativeQuery = true
+        nativeQuery = true,
     )
-    fun getParoleReportsDueCountByStaffId(staffId: Long, toDate: LocalDate): Long
+    fun getParoleReportsDueCountByStaffId(
+        staffId: Long,
+        toDate: LocalDate,
+    ): Long
 }
 
 fun StaffRepository.getWithUserByCode(code: String): StaffWithUser =
@@ -110,4 +123,7 @@ fun StaffRepository.getWithUserByCode(code: String): StaffWithUser =
 fun StaffRepository.getByCode(code: String): Staff =
     findByCode(code) ?: throw NotFoundException("Staff", "code", code)
 
-fun StaffRepository.verifyTeamMembership(staffId: Long, teamId: Long) = countTeamMembership(staffId, teamId) > 0
+fun StaffRepository.verifyTeamMembership(
+    staffId: Long,
+    teamId: Long,
+) = countTeamMembership(staffId, teamId) > 0

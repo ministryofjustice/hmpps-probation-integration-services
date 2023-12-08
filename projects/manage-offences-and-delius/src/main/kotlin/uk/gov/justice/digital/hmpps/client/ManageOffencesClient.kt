@@ -6,7 +6,9 @@ import java.time.LocalDate
 
 interface ManageOffencesClient {
     @GetExchange(value = "/offences/code/unique/{code}")
-    fun getOffence(@PathVariable code: String): Offence
+    fun getOffence(
+        @PathVariable code: String,
+    ): Offence
 }
 
 data class Offence(
@@ -17,5 +19,5 @@ data class Offence(
     val endDate: LocalDate? = null,
     val homeOfficeStatsCode: String? = null,
     val homeOfficeDescription: String? = null,
-    val legislation: String? = null
+    val legislation: String? = null,
 )

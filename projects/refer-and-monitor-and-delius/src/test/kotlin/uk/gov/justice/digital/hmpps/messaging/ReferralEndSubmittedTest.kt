@@ -26,7 +26,6 @@ import java.util.UUID
 
 @ExtendWith(MockitoExtension::class)
 internal class ReferralEndSubmittedTest {
-
     @Mock
     lateinit var ramClient: ReferAndMonitorClient
 
@@ -38,13 +37,14 @@ internal class ReferralEndSubmittedTest {
 
     @Test
     fun `unable to retrieve sent referral throws Not Found Exception`() {
-        val event = HmppsDomainEvent(
-            DomainEventType.ReferralEnded.name,
-            1,
-            "https://fake.org/url",
-            nullableAdditionalInformation = AdditionalInformation(mutableMapOf("referralId" to UUID.randomUUID().toString())),
-            personReference = PersonReference(listOf(PersonIdentifier("CRN", "T123456")))
-        )
+        val event =
+            HmppsDomainEvent(
+                DomainEventType.ReferralEnded.name,
+                1,
+                "https://fake.org/url",
+                nullableAdditionalInformation = AdditionalInformation(mutableMapOf("referralId" to UUID.randomUUID().toString())),
+                personReference = PersonReference(listOf(PersonIdentifier("CRN", "T123456"))),
+            )
 
         val res = referralEnd.referralEnded(event)
         assertThat(res, IsInstanceOf(EventProcessingResult.Failure::class.java))
@@ -54,33 +54,38 @@ internal class ReferralEndSubmittedTest {
                 mapOf(
                     "crn" to event.personReference.findCrn()!!,
                     "referralId" to event.additionalInformation["referralId"] as String,
-                    "message" to "Unable to retrieve session: ${event.detailUrl}"
-                )
-            )
+                    "message" to "Unable to retrieve session: ${event.detailUrl}",
+                ),
+            ),
         )
     }
 
     @ParameterizedTest
     @MethodSource("sentReferralDates")
-    fun `Sent Referral End Date Correctly Identified`(sr: SentReferral, expectedEndDate: ZonedDateTime) {
+    fun `Sent Referral End Date Correctly Identified`(
+        sr: SentReferral,
+        expectedEndDate: ZonedDateTime,
+    ) {
         assertThat(sr.endDate, equalTo(expectedEndDate))
     }
 
     @Test
     fun `no end date throws IllegalStateException`() {
-        val event = HmppsDomainEvent(
-            DomainEventType.ReferralEnded.name,
-            1,
-            "https://fake.org/url",
-            personReference = PersonReference(listOf(PersonIdentifier("CRN", "T123456"))),
-            nullableAdditionalInformation = AdditionalInformation(
-                mutableMapOf(
-                    "referralURN" to UUID.randomUUID().toString(),
-                    "deliveryState" to "CANCELLED",
-                    "referralProbationUserURL" to "https://fake.ui/index.html"
-                )
+        val event =
+            HmppsDomainEvent(
+                DomainEventType.ReferralEnded.name,
+                1,
+                "https://fake.org/url",
+                personReference = PersonReference(listOf(PersonIdentifier("CRN", "T123456"))),
+                nullableAdditionalInformation =
+                    AdditionalInformation(
+                        mutableMapOf(
+                            "referralURN" to UUID.randomUUID().toString(),
+                            "deliveryState" to "CANCELLED",
+                            "referralProbationUserURL" to "https://fake.ui/index.html",
+                        ),
+                    ),
             )
-        )
         val referral = sentReferral.copy(endRequestedAt = null, concludedAt = null)
         whenever(ramClient.getReferral(any())).thenReturn(referral)
 
@@ -94,24 +99,26 @@ internal class ReferralEndSubmittedTest {
     companion object {
         private val endRequestedAt = ZonedDateTime.now().minusDays(1)
         private val concludedAt = ZonedDateTime.now()
-        private val sentReferral = SentReferral(
-            "Ref123",
-            1,
-            Referral(
-                UUID.randomUUID().toString(),
-                Provider("Special Provider"),
-                "Contract Type"
-            ),
-            ZonedDateTime.now().minusDays(1),
-            endRequestedAt,
-            null,
-            null
-        )
+        private val sentReferral =
+            SentReferral(
+                "Ref123",
+                1,
+                Referral(
+                    UUID.randomUUID().toString(),
+                    Provider("Special Provider"),
+                    "Contract Type",
+                ),
+                ZonedDateTime.now().minusDays(1),
+                endRequestedAt,
+                null,
+                null,
+            )
 
         @JvmStatic
-        fun sentReferralDates() = listOf(
-            Arguments.of(sentReferral, endRequestedAt),
-            Arguments.of(sentReferral.copy(concludedAt = concludedAt), concludedAt)
-        )
+        fun sentReferralDates() =
+            listOf(
+                Arguments.of(sentReferral, endRequestedAt),
+                Arguments.of(sentReferral.copy(concludedAt = concludedAt), concludedAt),
+            )
     }
 }

@@ -16,14 +16,11 @@ class DocPersonalContact(
     @Id
     @Column(name = "personal_contact_id")
     val id: Long,
-
     @Column(name = "first_name")
     val forename: String,
-
     @Column(name = "surname")
     val surname: String,
-
     @ManyToOne
     @JoinColumn(name = "title_id", insertable = false, updatable = false)
-    val title: ReferenceData?
+    val title: ReferenceData?,
 )

@@ -13,20 +13,16 @@ import org.springframework.data.jpa.repository.JpaRepository
 @Entity
 @Table(name = "r_cvl_lic_cond_mapping")
 class CvlMapping(
-
     val cvlCode: String,
-
     @ManyToOne
     @JoinColumn(name = "lic_cond_type_main_cat_id")
     val mainCategory: LicenceConditionCategory,
-
     @ManyToOne
     @JoinColumn(name = "lic_cond_type_sub_cat_id")
     val subCategory: ReferenceData,
-
     @Id
     @Column(name = "cvl_lic_cond_mapping_id")
-    val id: Long
+    val id: Long,
 ) {
     companion object {
         val STANDARD_CATEGORY_CODE = "SL1"
@@ -40,5 +36,4 @@ interface CvlMappingRepository : JpaRepository<CvlMapping, Long> {
     fun findByCvlCode(code: String): CvlMapping?
 }
 
-fun CvlMappingRepository.getByCvlCode(code: String) =
-    findByCvlCode(code) ?: throw uk.gov.justice.digital.hmpps.exception.NotFoundException("CvlMapping", "cvlCode", code)
+fun CvlMappingRepository.getByCvlCode(code: String) = findByCvlCode(code) ?: throw uk.gov.justice.digital.hmpps.exception.NotFoundException("CvlMapping", "cvlCode", code)

@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.integrations.arn.ArnClient
 
 @Configuration
 class RestClientConfig(private val oauth2Client: RestClient) {
-
     @Bean
     fun arnClient() = createClient<ArnClient>(oauth2Client)
 

@@ -16,8 +16,10 @@ const val DISPOSAL_SQL = """
     join disposal d on d.event_id = e.event_id and d.soft_deleted = 0
     where crn = :crn
 """
+
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrnAndSoftDeletedFalse(crn: String): Person?
+
     fun findByNomsIdAndSoftDeletedFalse(nomsId: String): Person?
 
     @Query("select p from Person p where p.crn in :crns and p.softDeleted = false")
@@ -33,7 +35,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
         WHERE pt.personId = :personId 
         AND status.code = 'PN'
         AND pt.softDeleted = false
-    """
+    """,
     )
     fun countPendingTransfers(personId: Long): Int
 
@@ -44,9 +46,12 @@ interface PersonRepository : JpaRepository<Person, Long> {
     when matched then update set iaps_flag=?2 
     when not matched then insert(offender_id, iaps_flag) values(?1,?2)
     """,
-        nativeQuery = true
+        nativeQuery = true,
     )
-    fun updateIaps(personId: Long, iapsFlagValue: Long = 1)
+    fun updateIaps(
+        personId: Long,
+        iapsFlagValue: Long = 1,
+    )
 
     @Query(
         """
@@ -66,7 +71,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
              previous_disposals,
              unallocated_disposals
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun getProbationStatus(crn: String): ManagementStatus
 
@@ -95,12 +100,12 @@ interface PersonRepository : JpaRepository<Person, Long> {
               where crn = :crn
               order by end_date desc, start_date desc fetch next 1 rows only)
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun findCaseType(
         crn: String,
         sentenceEndDateKeyDateTypeCode: String = "SED",
-        custodialStatusCodes: List<String> = listOf("A", "C", "D", "R", "I", "AT")
+        custodialStatusCodes: List<String> = listOf("A", "C", "D", "R", "I", "AT"),
     ): CaseType?
 
     @Query(
@@ -112,15 +117,17 @@ interface PersonRepository : JpaRepository<Person, Long> {
             or (r.mainCategory.code = '7' and (r.subCategory.code is null or r.subCategory.code <> 'RS66'))
             or (r.additionalMainCategory.code in ('RM38', '7'))
         )
-    """
+    """,
     )
     fun countAccreditedProgrammeRequirements(personId: Long): Int
 }
 
 fun PersonRepository.getCaseType(crn: String) = findCaseType(crn) ?: CaseType.UNKNOWN
 
-fun PersonRepository.getByCrnAndSoftDeletedFalse(crn: String) = findByCrnAndSoftDeletedFalse(crn)
-    ?: throw NotFoundException("Person", "crn", crn)
+fun PersonRepository.getByCrnAndSoftDeletedFalse(crn: String) =
+    findByCrnAndSoftDeletedFalse(crn)
+        ?: throw NotFoundException("Person", "crn", crn)
 
-fun PersonRepository.getByNomsIdAndSoftDeletedFalse(nomsId: String) = findByNomsIdAndSoftDeletedFalse(nomsId)
-    ?: throw NotFoundException("Person", "nomsId", nomsId)
+fun PersonRepository.getByNomsIdAndSoftDeletedFalse(nomsId: String) =
+    findByNomsIdAndSoftDeletedFalse(nomsId)
+        ?: throw NotFoundException("Person", "nomsId", nomsId)

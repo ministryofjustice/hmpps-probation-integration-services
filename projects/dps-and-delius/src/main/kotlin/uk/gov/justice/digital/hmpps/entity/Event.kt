@@ -22,28 +22,21 @@ class Event(
     @Id
     @Column(name = "event_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
-
     @Column
     val referralDate: LocalDate,
-
     @OneToOne(mappedBy = "event")
     val mainOffence: MainOffence,
-
     @OneToMany(mappedBy = "event")
     val courtAppearances: List<CourtAppearance> = listOf(),
-
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Entity
@@ -53,30 +46,23 @@ class Disposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long,
-
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
     @ManyToOne
     @JoinColumn(name = "disposal_type_id")
     val type: DisposalType,
-
     @Column(name = "entry_length")
     val length: Long?,
-
     @ManyToOne
     @JoinColumn(name = "entry_length_units_id")
     val lengthUnits: ReferenceData?,
-
     @OneToOne(mappedBy = "disposal")
     val custody: Custody? = null,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Entity
@@ -86,9 +72,8 @@ class DisposalType(
     @Id
     @Column(name = "disposal_type_id")
     val id: Long,
-
     @Column
-    val description: String
+    val description: String,
 )
 
 @Entity
@@ -97,17 +82,15 @@ class Custody(
     @Id
     @Column(name = "custody_id")
     val id: Long,
-
     @OneToOne
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal,
-
     @ManyToOne
     @JoinColumns(
         JoinColumn(name = "institution_id", referencedColumnName = "institution_id"),
-        JoinColumn(name = "establishment", referencedColumnName = "establishment")
+        JoinColumn(name = "establishment", referencedColumnName = "establishment"),
     )
-    val institution: Institution
+    val institution: Institution,
 )
 
 @Entity
@@ -117,11 +100,9 @@ class Institution(
     @Id
     @Column(name = "institution_id")
     val id: Long,
-
     @Column(name = "institution_name")
     val name: String,
-
     @Column
     @Convert(converter = YesNoConverter::class)
-    val establishment: Boolean
+    val establishment: Boolean,
 )

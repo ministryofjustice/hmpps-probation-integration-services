@@ -9,19 +9,19 @@ class AppointmentNotFoundException(
     val deliusId: Long?,
     val referralReference: String,
     val outcome: Outcome,
-    val reason: AppointmentNotFoundReason
+    val reason: AppointmentNotFoundReason,
 ) : UnprocessableException(
-    "AppointmentNotFound",
-    mapOf(
-        "appointmentId" to appointmentId.toString(),
-        "deliusId" to deliusId.toString(),
-        "referralReference" to referralReference,
-        "outcomeAttended" to outcome.attended.toString(),
-        "outcomeNotify" to outcome.notify.toString(),
-        "reason" to reason.reason,
-        "reasonDetail" to reason.additionalInformation
+        "AppointmentNotFound",
+        mapOf(
+            "appointmentId" to appointmentId.toString(),
+            "deliusId" to deliusId.toString(),
+            "referralReference" to referralReference,
+            "outcomeAttended" to outcome.attended.toString(),
+            "outcomeNotify" to outcome.notify.toString(),
+            "reason" to reason.reason,
+            "reasonDetail" to reason.additionalInformation,
+        ),
     )
-)
 
 fun ContactNotFoundReason?.asReason(): AppointmentNotFoundReason =
     AppointmentNotFoundReason(
@@ -35,10 +35,10 @@ fun ContactNotFoundReason?.asReason(): AppointmentNotFoundReason =
             nsiActive == null -> "NSI cannot be determined"
             else -> "Unknown"
         },
-        "NSI last updated by ${this?.nsiLastUpdatedBy}"
+        "NSI last updated by ${this?.nsiLastUpdatedBy}",
     )
 
 data class AppointmentNotFoundReason(
     val reason: String,
-    val additionalInformation: String
+    val additionalInformation: String,
 )

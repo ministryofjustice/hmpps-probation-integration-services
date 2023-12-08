@@ -15,19 +15,15 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 @Entity
 @Table(name = "staff")
 class Staff(
-
     @Column(name = "officer_code", columnDefinition = "char(7)")
     val code: String,
-
     val forename: String,
     val surname: String,
-
     @OneToOne(mappedBy = "staff")
     val user: StaffUser? = null,
-
     @Id
     @Column(name = "staff_id")
-    val id: Long
+    val id: Long,
 ) {
     companion object {
         const val INTENDED_STAFF_CODE = Team.INTENDED_TEAM_CODE + "U"
@@ -38,17 +34,14 @@ class Staff(
 @Immutable
 @Table(name = "user_")
 class StaffUser(
-
     @Column(name = "distinguished_name")
     val username: String,
-
     @OneToOne
     @JoinColumn(name = "staff_id")
     val staff: Staff? = null,
-
     @Id
     @Column(name = "user_id")
-    val id: Long
+    val id: Long,
 ) {
     @Transient
     var email: String? = null
@@ -58,7 +51,6 @@ class StaffUser(
 }
 
 interface StaffRepository : JpaRepository<Staff, Long> {
-
     @EntityGraph(attributePaths = ["user"])
     fun findByCode(code: String): Staff?
 }

@@ -12,5 +12,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.manager.ManagerService
 class ManagerResource(private val managerService: ManagerService) {
     @PreAuthorize("hasRole('PROBATION_API__PRISONER_PROFILE__CASE_DETAIL')")
     @RequestMapping("community-manager", method = [RequestMethod.GET])
-    fun findCommunityManager(@PathVariable nomsId: String): Manager = managerService.findCommunityManager(nomsId)
+    fun findCommunityManager(
+        @PathVariable nomsId: String,
+    ): Manager = managerService.findCommunityManager(nomsId)
 }

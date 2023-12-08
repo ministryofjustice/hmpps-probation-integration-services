@@ -29,7 +29,6 @@ import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 class AuditedInteractionServiceTest {
-
     @Mock
     lateinit var businessInteractionRepository: BusinessInteractionRepository
 
@@ -60,13 +59,14 @@ class AuditedInteractionServiceTest {
         whenever(businessInteractionRepository.findByCode(eq(BusinessInteractionCode.TEST_BI_CODE.code), any()))
             .thenReturn(bi)
 
-        val parameters = AuditedInteraction.Parameters(
-            Pair("key", "value")
-        )
+        val parameters =
+            AuditedInteraction.Parameters(
+                Pair("key", "value"),
+            )
         auditedInteractionService.createAuditedInteraction(
             BusinessInteractionCode.TEST_BI_CODE,
             parameters,
-            AuditedInteraction.Outcome.SUCCESS
+            AuditedInteraction.Outcome.SUCCESS,
         )
         val aiCaptor = ArgumentCaptor.forClass(AuditedInteraction::class.java)
         verify(auditedInteractionRepository, Mockito.times(1)).save(aiCaptor.capture())
@@ -83,14 +83,15 @@ class AuditedInteractionServiceTest {
         setupUser()
         whenever(businessInteractionRepository.findByCode(any(), any())).thenReturn(null)
 
-        val parameters = AuditedInteraction.Parameters(
-            Pair("key", "value")
-        )
+        val parameters =
+            AuditedInteraction.Parameters(
+                Pair("key", "value"),
+            )
         assertThrows<BusinessInteractionNotFoundException> {
             auditedInteractionService.createAuditedInteraction(
                 BusinessInteractionCode.TEST_BI_CODE,
                 parameters,
-                AuditedInteraction.Outcome.SUCCESS
+                AuditedInteraction.Outcome.SUCCESS,
             )
         }
     }
@@ -98,38 +99,40 @@ class AuditedInteractionServiceTest {
     @Test
     fun `test audit interaction class`() {
         val dateTime = ZonedDateTime.now()
-        val auditedInteraction = AuditedInteraction(
-            111,
-            222,
-            dateTime,
-            AuditedInteraction.Outcome.SUCCESS,
-            AuditedInteraction.Parameters(
-                Pair("key", "value")
+        val auditedInteraction =
+            AuditedInteraction(
+                111,
+                222,
+                dateTime,
+                AuditedInteraction.Outcome.SUCCESS,
+                AuditedInteraction.Parameters(
+                    Pair("key", "value"),
+                ),
             )
-        )
         assertThat(auditedInteraction.businessInteractionId, Matchers.equalTo(111))
         assertThat(auditedInteraction.userId, Matchers.equalTo(222))
         assertThat(auditedInteraction.dateTime, Matchers.equalTo(dateTime))
         assertThat(auditedInteraction.outcome, Matchers.equalTo(AuditedInteraction.Outcome.SUCCESS))
         assertThat(
             auditedInteraction.parameters,
-            Matchers.equalTo(AuditedInteraction.Parameters(Pair("key", "value")))
+            Matchers.equalTo(AuditedInteraction.Parameters(Pair("key", "value"))),
         )
     }
 
     @Test
     fun `test audit interaction class defaults`() {
-        val auditedInteraction = AuditedInteraction(
-            111,
-            222
-        )
+        val auditedInteraction =
+            AuditedInteraction(
+                111,
+                222,
+            )
         assertThat(auditedInteraction.businessInteractionId, Matchers.equalTo(111))
         assertThat(auditedInteraction.userId, Matchers.equalTo(222))
         assertThat(auditedInteraction.dateTime, Matchers.equalTo(auditedInteraction.dateTime))
         assertThat(auditedInteraction.outcome, Matchers.equalTo(AuditedInteraction.Outcome.SUCCESS))
         assertThat(
             auditedInteraction.parameters,
-            Matchers.equalTo(AuditedInteraction.Parameters())
+            Matchers.equalTo(AuditedInteraction.Parameters()),
         )
     }
 

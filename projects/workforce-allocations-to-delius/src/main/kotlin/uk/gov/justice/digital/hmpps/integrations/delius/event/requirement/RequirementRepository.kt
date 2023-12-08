@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 
 interface RequirementRepository : JpaRepository<Requirement, Long> {
-
     @Query(
         """
         SELECT COUNT(rt) FROM RequirementTransfer rt
@@ -13,7 +12,7 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
         WHERE rt.requirementId = :requirementId 
         AND status.code = 'PN'
         AND rt.softDeleted = false
-    """
+    """,
     )
     fun countPendingTransfers(requirementId: Long): Int
 
@@ -24,7 +23,10 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
     when matched then update set iaps_flag=?2 
     when not matched then insert(rqmnt_id, iaps_flag) values(?1,?2)
     """,
-        nativeQuery = true
+        nativeQuery = true,
     )
-    fun updateIaps(requirementId: Long, iapsFlagValue: Long = 1)
+    fun updateIaps(
+        requirementId: Long,
+        iapsFlagValue: Long = 1,
+    )
 }

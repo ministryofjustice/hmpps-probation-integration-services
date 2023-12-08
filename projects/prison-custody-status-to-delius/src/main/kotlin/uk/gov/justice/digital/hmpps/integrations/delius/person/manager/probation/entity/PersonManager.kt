@@ -21,31 +21,24 @@ class PersonManager(
     @Id
     @Column(name = "offender_manager_id", nullable = false)
     val id: Long,
-
     @Column(name = "offender_id", nullable = false)
     val personId: Long,
-
     @ManyToOne
     @JoinColumn(name = "allocation_reason_id", nullable = false)
     val allocationReason: ReferenceData,
-
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id", nullable = false)
     val staff: Staff,
-
     @ManyToOne
     @JoinColumn(name = "team_id", nullable = false)
     val team: Team,
-
     @ManyToOne
     @JoinColumn(name = "probation_area_id", nullable = false)
     val probationArea: ProbationArea,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(columnDefinition = "number", nullable = false)
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
@@ -56,5 +49,5 @@ fun PersonManagerRepository.getByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(pe
     findByPersonIdAndActiveIsTrueAndSoftDeletedIsFalse(personId) ?: throw NotFoundException(
         "PersonManager",
         "personId",
-        personId
+        personId,
     )

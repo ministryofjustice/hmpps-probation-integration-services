@@ -24,9 +24,10 @@ import uk.gov.justice.digital.hmpps.messaging.telemetryProperties
 class UpdateStatusAction(
     private val referenceDataRepository: ReferenceDataRepository,
     private val custodyRepository: CustodyRepository,
-    private val custodyHistoryRepository: CustodyHistoryRepository
+    private val custodyHistoryRepository: CustodyHistoryRepository,
 ) : PrisonerMovementAction {
     override val name: String = "UpdateStatus"
+
     override fun accept(context: PrisonerMovementContext): ActionResult =
         when (context.prisonerMovement) {
             is PrisonerMovement.Received -> {
@@ -46,7 +47,7 @@ class UpdateStatusAction(
                 custody,
                 CustodialStatusCode.IN_CUSTODY,
                 prisonerMovement,
-                detail
+                detail,
             )
         } else {
             ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
@@ -55,14 +56,16 @@ class UpdateStatusAction(
 
     private fun outboundStatusChange(context: PrisonerMovementContext): ActionResult {
         val (prisonerMovement, custody) = context
-        val statusCode = when {
-            prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease() || prisonerMovement.isAbsconded() -> custody.nextStatus()
-            else -> if (custody.canBeReleased()) {
-                CustodialStatusCode.RELEASED_ON_LICENCE
-            } else {
-                throw IgnorableMessageException("PrisonerStatusCorrect")
+        val statusCode =
+            when {
+                prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease() || prisonerMovement.isAbsconded() -> custody.nextStatus()
+                else ->
+                    if (custody.canBeReleased()) {
+                        CustodialStatusCode.RELEASED_ON_LICENCE
+                    } else {
+                        throw IgnorableMessageException("PrisonerStatusCorrect")
+                    }
             }
-        }
         return updateStatus(
             custody,
             statusCode,
@@ -72,7 +75,7 @@ class UpdateStatusAction(
                 prisonerMovement.isIrcRelease() -> "Transfer to Immigration Removal Centre"
                 prisonerMovement.isAbsconded() -> "Recall added unlawfully at large "
                 else -> "Released on Licence"
-            }
+            },
         )
     }
 
@@ -87,18 +90,19 @@ class UpdateStatusAction(
         custody: Custody,
         status: CustodialStatusCode,
         prisonerMovement: PrisonerMovement,
-        detail: String
-    ): ActionResult = custody.updateStatusAt(
-        referenceDataRepository.getCustodialStatus(status.code),
-        prisonerMovement.occurredAt,
-        detail
-    ) {
-        referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.STATUS_CHANGE.code)
-    }?.let { history ->
-        custodyRepository.save(custody)
-        custodyHistoryRepository.save(history)
-        return ActionResult.Success(ActionResult.Type.StatusUpdated, prisonerMovement.telemetryProperties())
-    } ?: ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
+        detail: String,
+    ): ActionResult =
+        custody.updateStatusAt(
+            referenceDataRepository.getCustodialStatus(status.code),
+            prisonerMovement.occurredAt,
+            detail,
+        ) {
+            referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.STATUS_CHANGE.code)
+        }?.let { history ->
+            custodyRepository.save(custody)
+            custodyHistoryRepository.save(history)
+            return ActionResult.Success(ActionResult.Type.StatusUpdated, prisonerMovement.telemetryProperties())
+        } ?: ActionResult.Ignored("PrisonerStatusCorrect", prisonerMovement.telemetryProperties())
 }
 
 private fun ReferenceData.canChange() = !NO_CHANGE_STATUSES.map { it.code }.contains(code)

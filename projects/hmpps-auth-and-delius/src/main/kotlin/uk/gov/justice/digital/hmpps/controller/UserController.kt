@@ -25,13 +25,17 @@ class UserController(private val userService: UserService) {
     @GetMapping(value = ["/user/{username}"])
     @PreAuthorize("hasAnyRole('ROLE_DELIUS_USER_AUTH', 'ROLE_DELIUS_USER_DETAILS')")
     @Operation(description = "Get user details. Requires `ROLE_DELIUS_USER_AUTH` or `ROLE_DELIUS_USER_DETAILS`.")
-    fun getUserDetails(@PathVariable username: String) = userService.getUserDetails(username)
+    fun getUserDetails(
+        @PathVariable username: String,
+    ) = userService.getUserDetails(username)
         ?: throw NotFoundException("User", "username", username)
 
     @GetMapping(value = ["/user"])
     @PreAuthorize("hasAnyRole('ROLE_DELIUS_USER_AUTH')")
     @Operation(description = "Get users by email. Requires `ROLE_DELIUS_USER_AUTH`.")
-    fun getUsersByEmail(@RequestParam email: String) = userService.getUsersByEmail(email)
+    fun getUsersByEmail(
+        @RequestParam email: String,
+    ) = userService.getUsersByEmail(email)
 
     @PostMapping("/user/{username}/password")
     @PreAuthorize("hasRole('ROLE_DELIUS_USER_AUTH')")
@@ -39,12 +43,12 @@ class UserController(private val userService: UserService) {
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "200", description = "Password changed successfully"),
-            ApiResponse(responseCode = "404", description = "User not found")
-        ]
+            ApiResponse(responseCode = "404", description = "User not found"),
+        ],
     )
     fun changePassword(
         @PathVariable("username") @NotBlank username: String,
         @Valid @RequestBody
-        request: PasswordChangeRequest
+        request: PasswordChangeRequest,
     ) = userService.changePassword(username, request.password)
 }

@@ -42,7 +42,6 @@ import java.util.Random
 
 @ExtendWith(MockitoExtension::class)
 class DeliusServiceTest {
-
     @Mock
     lateinit var caseNoteRepository: CaseNoteRepository
 
@@ -88,7 +87,7 @@ class DeliusServiceTest {
         val saved = caseNoteCaptor.value
         assertThat(
             saved.notes,
-            stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content)
+            stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content),
         )
     }
 
@@ -98,10 +97,11 @@ class DeliusServiceTest {
 
         deliusService.mergeCaseNote(
             deliusCaseNote.copy(
-                body = deliusCaseNote.body.copy(
-                    systemTimestamp = caseNote.lastModifiedDateTime
-                )
-            )
+                body =
+                    deliusCaseNote.body.copy(
+                        systemTimestamp = caseNote.lastModifiedDateTime,
+                    ),
+            ),
         )
 
         verify(caseNoteRepository, never()).save(any())
@@ -113,11 +113,11 @@ class DeliusServiceTest {
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(
             Optional.of(
-                caseNoteNomisType
-            )
+                caseNoteNomisType,
+            ),
         )
         whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId)).thenReturn(
-            offender
+            offender,
         )
         whenever(assignmentService.findAssignment(deliusCaseNote.body.establishmentCode, deliusCaseNote.body.staffName))
             .thenReturn(Triple(probationArea.id, team.id, staff.id))
@@ -134,7 +134,7 @@ class DeliusServiceTest {
         assertThat(saved.notes, startsWith("${deliusCaseNote.body.type} ${deliusCaseNote.body.subType}"))
         assertThat(
             saved.notes,
-            stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content)
+            stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content),
         )
 
         assertThat(saved.eventId, equalTo(EventGenerator.CUSTODIAL_EVENT.id))
@@ -148,11 +148,11 @@ class DeliusServiceTest {
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(
             Optional.of(
-                caseNoteNomisType
-            )
+                caseNoteNomisType,
+            ),
         )
         whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId)).thenReturn(
-            offender
+            offender,
         )
         whenever(assignmentService.findAssignment(deliusCaseNote.body.establishmentCode, deliusCaseNote.body.staffName))
             .thenReturn(Triple(probationArea.id, team.id, staff.id))
@@ -169,7 +169,7 @@ class DeliusServiceTest {
         assertThat(saved.notes, startsWith("${deliusCaseNote.body.type} ${deliusCaseNote.body.subType}"))
         assertThat(
             saved.notes,
-            stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content)
+            stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content),
         )
 
         assertThat(saved.nsiId, equalTo(nsiId))
@@ -181,8 +181,8 @@ class DeliusServiceTest {
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(
             Optional.of(
-                caseNoteNomisType
-            )
+                caseNoteNomisType,
+            ),
         )
         whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId)).thenReturn(null)
 
@@ -208,15 +208,15 @@ class DeliusServiceTest {
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(Optional.empty())
         whenever(caseNoteTypeRepository.findByCode(CaseNoteType.DEFAULT_CODE)).thenReturn(CaseNoteTypeGenerator.DEFAULT)
         whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId)).thenReturn(
-            offender
+            offender,
         )
         whenever(assignmentService.findAssignment(deliusCaseNote.body.establishmentCode, deliusCaseNote.body.staffName))
             .thenReturn(Triple(probationArea.id, team.id, staff.id))
         whenever(
             caseNoteRelatedService.findRelatedCaseNoteIds(
                 offender.id,
-                deliusCaseNote.body.typeLookup()
-            )
+                deliusCaseNote.body.typeLookup(),
+            ),
         ).thenReturn(CaseNoteRelatedIds())
 
         deliusService.mergeCaseNote(deliusCaseNote)
@@ -229,7 +229,7 @@ class DeliusServiceTest {
         assertThat(saved.notes, startsWith("${deliusCaseNote.body.type} ${deliusCaseNote.body.subType}"))
         assertThat(
             saved.notes,
-            stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content)
+            stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, deliusCaseNote.body.content),
         )
         assertThat(saved.type.code, equalTo(CaseNoteTypeGenerator.DEFAULT.code))
         assertNull(saved.eventId)
@@ -241,7 +241,7 @@ class DeliusServiceTest {
 
         val newContent = "Shorter case note text"
         deliusService.mergeCaseNote(
-            nomisCaseNote.copy(text = newContent).toDeliusCaseNote()
+            nomisCaseNote.copy(text = newContent).toDeliusCaseNote(),
         )
 
         val caseNoteCaptor = ArgumentCaptor.forClass(CaseNote::class.java)
@@ -251,7 +251,7 @@ class DeliusServiceTest {
         val saved = caseNoteCaptor.value
         assertThat(
             saved.notes,
-            stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, newContent)
+            stringContainsInOrder(deliusCaseNote.body.type, deliusCaseNote.body.subType, newContent),
         )
 
         assertThat(caseNote.notes.length, equalTo(saved.notes.length))

@@ -7,17 +7,17 @@ data class RiskRecord(
     val name: Name,
     val activeRegistrations: List<RiskRegistration>,
     val inactiveRegistrations: List<RiskRegistration>,
-    val ogrs: RiskOGRS? = null
+    val ogrs: RiskOGRS? = null,
 )
 
 data class RiskRegistration(
     val description: String,
     val startDate: LocalDate,
     val endDate: LocalDate? = null,
-    val notes: String? = null
+    val notes: String? = null,
 )
 
 data class RiskOGRS(
     val lastUpdatedDate: LocalDate,
-    val score: Long
+    val score: Long,
 )

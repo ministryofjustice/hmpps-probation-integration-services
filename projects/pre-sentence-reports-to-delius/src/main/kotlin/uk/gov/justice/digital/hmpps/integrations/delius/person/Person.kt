@@ -10,11 +10,9 @@ import org.hibernate.annotations.Immutable
 @Entity
 @Table(name = "offender")
 class Person(
-
     @Id
     @Column(name = "offender_id")
     val id: Long,
-
     @Column(columnDefinition = "CHAR(7)")
-    val crn: String
+    val crn: String,
 )

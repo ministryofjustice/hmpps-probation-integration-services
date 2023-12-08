@@ -7,5 +7,5 @@ data class UserDetails(
     val surname: String,
     val email: String?,
     val enabled: Boolean,
-    val roles: List<String>
+    val roles: List<String>,
 )

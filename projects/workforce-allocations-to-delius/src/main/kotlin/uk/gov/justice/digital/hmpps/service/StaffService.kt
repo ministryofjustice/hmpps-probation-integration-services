@@ -16,7 +16,7 @@ import java.time.LocalDate
 class StaffService(
     private val staffRepository: StaffRepository,
     private val ldapService: LdapService,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
 ) {
     fun getOfficerView(code: String): OfficerView {
         val staff = staffRepository.getWithUserByCode(code)
@@ -27,25 +27,29 @@ class StaffService(
             ldapService.findEmailForStaff(staff),
             staffRepository.getSentencesDueCountByStaffId(staff.id, LocalDate.now().plusWeeks(4)),
             staffRepository.getKeyDateCountByCodeAndStaffId(staff.id, "EXP", LocalDate.now().plusWeeks(4)),
-            staffRepository.getParoleReportsDueCountByStaffId(staff.id, LocalDate.now().plusWeeks(4))
+            staffRepository.getParoleReportsDueCountByStaffId(staff.id, LocalDate.now().plusWeeks(4)),
         )
     }
 
-    fun getActiveCases(code: String, crns: List<String>): ActiveCasesResponse {
+    fun getActiveCases(
+        code: String,
+        crns: List<String>,
+    ): ActiveCasesResponse {
         val staff = staffRepository.getWithUserByCode(code)
-        val cases = personRepository.findAllByCrnAndSoftDeletedFalse(crns).map {
-            Case(
-                it.crn,
-                it.name(),
-                personRepository.getCaseType(it.crn).name
-            )
-        }
+        val cases =
+            personRepository.findAllByCrnAndSoftDeletedFalse(crns).map {
+                Case(
+                    it.crn,
+                    it.name(),
+                    personRepository.getCaseType(it.crn).name,
+                )
+            }
         return ActiveCasesResponse(
             code,
             staff.name(),
             staff.grade(),
             ldapService.findEmailForStaff(staff),
-            cases
+            cases,
         )
     }
 }

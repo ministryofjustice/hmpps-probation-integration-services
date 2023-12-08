@@ -5,7 +5,6 @@ import uk.gov.justice.digital.hmpps.messaging.SentReferral
 import java.net.URI
 
 interface ReferAndMonitorClient {
-
     @GetExchange
     fun getReferral(uri: URI): SentReferral?
 

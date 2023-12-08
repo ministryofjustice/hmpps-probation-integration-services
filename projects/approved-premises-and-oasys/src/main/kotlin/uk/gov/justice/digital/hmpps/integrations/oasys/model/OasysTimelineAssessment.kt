@@ -7,5 +7,5 @@ data class OasysTimelineAssessment(
     val assessmentType: String,
     val initiationDate: ZonedDateTime,
     val status: String,
-    val completedDate: ZonedDateTime?
+    val completedDate: ZonedDateTime?,
 )

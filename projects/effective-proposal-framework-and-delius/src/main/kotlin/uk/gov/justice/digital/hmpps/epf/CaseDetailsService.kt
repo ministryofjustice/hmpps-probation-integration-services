@@ -16,9 +16,12 @@ class CaseDetailsService(
     private val responsibleOfficerRepository: ResponsibleOfficerRepository,
     private val courtAppearanceRepository: CourtAppearanceRepository,
     private val eventRepository: EventRepository,
-    private val ogrsAssessmentRepository: OgrsAssessmentRepository
+    private val ogrsAssessmentRepository: OgrsAssessmentRepository,
 ) {
-    fun caseDetails(crn: String, eventNumber: Int): CaseDetails {
+    fun caseDetails(
+        crn: String,
+        eventNumber: Int,
+    ): CaseDetails {
         val person = personRepository.getPerson(crn)
         val responsibleOfficer = responsibleOfficerRepository.findByPersonIdAndEndDateIsNull(person.id)
         val event = eventRepository.getEvent(person.crn, eventNumber.toString())
@@ -33,7 +36,7 @@ class CaseDetailsService(
                 Sentence(it, Court(courtName), event.firstReleaseDate)
             },
             responsibleOfficer?.provider(),
-            ogrsScore
+            ogrsScore,
         )
     }
 

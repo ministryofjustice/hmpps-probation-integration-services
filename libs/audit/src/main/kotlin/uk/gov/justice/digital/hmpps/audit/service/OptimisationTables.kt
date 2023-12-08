@@ -18,10 +18,12 @@ class OptimisationTables(private val optimisationTablesRebuild: OptimisationTabl
 @Conditional(OracleCondition::class)
 class OptimisationTablesRebuild(private val jdbcTemplate: JdbcTemplate) {
     fun rebuild(personId: Long) {
-        TransactionSynchronizationManager.registerSynchronization(object : TransactionSynchronization {
-            override fun afterCommit() {
-                jdbcTemplate.execute("call PKG_TRIGGERSUPPORT.PROCREBUILDOPTTABLES($personId)")
-            }
-        })
+        TransactionSynchronizationManager.registerSynchronization(
+            object : TransactionSynchronization {
+                override fun afterCommit() {
+                    jdbcTemplate.execute("call PKG_TRIGGERSUPPORT.PROCREBUILDOPTTABLES($personId)")
+                }
+            },
+        )
     }
 }

@@ -9,7 +9,7 @@ interface DocumentRepository : JpaRepository<Document, Long> {
       SELECT d FROM Document d 
       WHERE lower(substring(d.externalReference, -36, 36)) = lower(:uuid)
       AND d.softDeleted = false
-  """
+  """,
     )
     fun findByExternalReference(uuid: String): Document?
 }

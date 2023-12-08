@@ -16,7 +16,7 @@ data class ActivatedLicence(
     val endDate: LocalDate?,
     val standardLicenceConditions: List<StandardLicenceCondition>,
     val additionalLicenceConditions: List<AdditionalLicenceCondition>,
-    val bespokeLicenceConditions: List<BespokeLicenceCondition>
+    val bespokeLicenceConditions: List<BespokeLicenceCondition>,
 )
 
 interface Describable {
@@ -26,24 +26,25 @@ interface Describable {
 data class StandardLicenceCondition(
     val code: String,
     override val description: String,
-    val pssCondition: Boolean
+    val pssCondition: Boolean,
 ) : Describable
 
 data class AdditionalLicenceCondition(
     val code: String,
     override val description: String,
-    val pssCondition: Boolean
+    val pssCondition: Boolean,
 ) : Describable
 
 data class BespokeLicenceCondition(
-    override val description: String
+    override val description: String,
 ) : Describable
 
-fun ActivatedLicence.telemetryProperties(eventNumber: String): Map<String, String> = mapOf(
-    "crn" to crn,
-    "eventNumber" to eventNumber,
-    "releaseDate" to releaseDate.toString(),
-    "standardConditions" to standardLicenceConditions.size.toString(),
-    "additionalConditions" to additionalLicenceConditions.size.toString(),
-    "bespokeConditions" to bespokeLicenceConditions.size.toString()
-)
+fun ActivatedLicence.telemetryProperties(eventNumber: String): Map<String, String> =
+    mapOf(
+        "crn" to crn,
+        "eventNumber" to eventNumber,
+        "releaseDate" to releaseDate.toString(),
+        "standardConditions" to standardLicenceConditions.size.toString(),
+        "additionalConditions" to additionalLicenceConditions.size.toString(),
+        "bespokeConditions" to bespokeLicenceConditions.size.toString(),
+    )

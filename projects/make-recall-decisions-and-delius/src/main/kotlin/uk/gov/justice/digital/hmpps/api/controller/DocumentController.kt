@@ -14,11 +14,10 @@ import uk.gov.justice.digital.hmpps.service.DocumentService
 @RequestMapping("/document/{crn}")
 @PreAuthorize("hasRole('ROLE_MAKE_RECALL_DECISIONS_API')")
 class DocumentController(private val documentService: DocumentService) {
-
     @GetMapping(value = ["/{id}"])
     @Operation(summary = "Download document content")
     fun downloadDocument(
         @PathVariable crn: String,
-        @PathVariable id: String
+        @PathVariable id: String,
     ) = documentService.downloadDocument(crn, id)
 }

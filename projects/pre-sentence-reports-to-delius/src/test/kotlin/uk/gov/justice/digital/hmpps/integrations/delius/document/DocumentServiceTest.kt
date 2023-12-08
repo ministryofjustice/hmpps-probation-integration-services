@@ -20,7 +20,6 @@ import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
 class DocumentServiceTest {
-
     @Mock
     private lateinit var auditedInteractionService: AuditedInteractionService
 
@@ -46,7 +45,7 @@ class DocumentServiceTest {
         assertThrows<NotFoundException> {
             documentService.updateCourtReportDocument(
                 simpleHmppsEvent,
-                "test".toByteArray()
+                "test".toByteArray(),
             )
         }
     }
@@ -54,17 +53,17 @@ class DocumentServiceTest {
     @Test
     fun `when court report not found exception thrown`() {
         whenever(documentRepository.findByExternalReference(simpleHmppsEvent.additionalInformation["reportId"].toString())).thenReturn(
-            DocumentGenerator.DEFAULT
+            DocumentGenerator.DEFAULT,
         )
 
         whenever(courtReportRepository.findById(DocumentGenerator.DEFAULT.courtReportId)).thenReturn(
-            Optional.ofNullable(null)
+            Optional.ofNullable(null),
         )
 
         assertThrows<NotFoundException> {
             documentService.updateCourtReportDocument(
                 simpleHmppsEvent,
-                "test".toByteArray()
+                "test".toByteArray(),
             )
         }
     }
@@ -72,22 +71,22 @@ class DocumentServiceTest {
     @Test
     fun `when court report for wrong crn conflict exception thrown`() {
         whenever(documentRepository.findByExternalReference(simpleHmppsEvent.additionalInformation["reportId"].toString())).thenReturn(
-            DocumentGenerator.DEFAULT
+            DocumentGenerator.DEFAULT,
         )
 
         whenever(courtReportRepository.findById(DocumentGenerator.DEFAULT.courtReportId)).thenReturn(
             Optional.of(
                 CourtReportGenerator.generate(
                     Person(crn = "X111111B", id = 123L),
-                    CourtReportGenerator.generateAppearance(CourtReportGenerator.generateEvent("1"))
-                )
-            )
+                    CourtReportGenerator.generateAppearance(CourtReportGenerator.generateEvent("1")),
+                ),
+            ),
         )
 
         assertThrows<ConflictException> {
             documentService.updateCourtReportDocument(
                 simpleHmppsEvent,
-                "test".toByteArray()
+                "test".toByteArray(),
             )
         }
     }

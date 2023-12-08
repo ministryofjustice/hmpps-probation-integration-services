@@ -15,12 +15,11 @@ import uk.gov.justice.digital.hmpps.service.DocumentService
 @RequestMapping("/documents/{crn}")
 @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_STAFF')")
 class DocumentController(private val documentService: DocumentService) {
-
     @GetMapping(value = ["/{id}"])
     @Operation(summary = "Download document content")
     fun downloadDocument(
         @PathVariable crn: String,
-        @PathVariable id: String
+        @PathVariable id: String,
     ) = documentService.downloadDocument(crn, id)
 
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_STAFF')")
@@ -29,9 +28,10 @@ class DocumentController(private val documentService: DocumentService) {
         description = """List of documents available in Delius for the probation
             case identified by the CRN provided in the request. Document list
             includes summary information on the type and purpose of document held.
-        """
+        """,
     )
     @GetMapping(value = ["/all"])
-    fun findDocuments(@PathVariable crn: String): List<APDocument> =
-        documentService.getDocumentsByCrn(crn)
+    fun findDocuments(
+        @PathVariable crn: String,
+    ): List<APDocument> = documentService.getDocumentsByCrn(crn)
 }

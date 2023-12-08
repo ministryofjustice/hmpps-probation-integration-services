@@ -81,8 +81,8 @@ internal class NsiServiceTest {
                 nsi.referralDate.atTime(OffsetTime.now()).toZonedDateTime(),
                 "E2E",
                 197L,
-                "some notes about this referral"
-            )
+                "some notes about this referral",
+            ),
         )
 
         verify(statusHistoryRepository).save(any())
@@ -109,8 +109,8 @@ internal class NsiServiceTest {
                 nsi.referralDate.atTime(OffsetTime.now()).toZonedDateTime(),
                 "E2E",
                 197L,
-                "some notes about this referral"
-            )
+                "some notes about this referral",
+            ),
         )
 
         verify(nsiRepository, times(2)).findByPersonCrnAndExternalReference(crn, ref)

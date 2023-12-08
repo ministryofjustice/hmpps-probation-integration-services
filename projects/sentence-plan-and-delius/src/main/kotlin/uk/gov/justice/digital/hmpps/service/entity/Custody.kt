@@ -16,15 +16,12 @@ class Custody(
     @Id
     @Column(name = "custody_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "custodial_status_id")
     var status: ReferenceData,
-
     @OneToOne
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )

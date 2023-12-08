@@ -13,8 +13,7 @@ class CaseAllocation(
     @Id
     @Column(name = "case_allocation_id")
     val id: Long,
-
     @JoinColumn(name = "event_id", insertable = false, updatable = false)
     @ManyToOne
-    val event: DocEvent
+    val event: DocEvent,
 )

@@ -11,7 +11,6 @@ import java.time.ZonedDateTime
 
 @MappedSuperclass
 abstract class BaseEntity {
-
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
     var softDeleted: Boolean = false
 

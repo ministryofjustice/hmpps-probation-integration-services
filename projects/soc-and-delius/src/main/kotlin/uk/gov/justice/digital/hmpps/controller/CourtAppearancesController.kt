@@ -15,6 +15,6 @@ class CourtAppearancesController(private val courtAppearanceService: CourtAppear
     fun courtAppearances(
         @PathVariable value: String,
         @RequestParam(required = false, defaultValue = "CRN") type: IdentifierType,
-        @RequestParam(required = false) fromDate: LocalDate?
+        @RequestParam(required = false) fromDate: LocalDate?,
     ) = courtAppearanceService.getCourtAppearances(value, type, fromDate)
 }

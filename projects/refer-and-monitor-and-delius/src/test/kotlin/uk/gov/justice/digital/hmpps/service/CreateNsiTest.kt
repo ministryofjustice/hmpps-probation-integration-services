@@ -61,14 +61,14 @@ internal class CreateNsiTest {
             requirementRepository.findForPersonAndEvent(
                 person.id,
                 sentence.id,
-                RequirementMainCategory.Code.REHAB_ACTIVITY_TYPE.value
-            )
+                RequirementMainCategory.Code.REHAB_ACTIVITY_TYPE.value,
+            ),
         ).thenReturn(listOf())
 
         assertThrows<IllegalArgumentException> {
             createNsi.new(
                 person.crn,
-                ReferralStarted(referralId, ZonedDateTime.now(), "unknown", sentence.event.id, "Notes")
+                ReferralStarted(referralId, ZonedDateTime.now(), "unknown", sentence.event.id, "Notes"),
             ) {}
         }
     }

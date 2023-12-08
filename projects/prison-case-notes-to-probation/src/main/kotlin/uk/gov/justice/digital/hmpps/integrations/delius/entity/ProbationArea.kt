@@ -14,17 +14,15 @@ class ProbationArea(
     @Id
     @Column(name = "probation_area_id")
     val id: Long,
-
     @Column(name = "code", columnDefinition = "char(3)")
     val code: String,
-
     @OneToOne
     @JoinColumn(
         name = "institution_id",
         referencedColumnName = "institution_id",
-        updatable = false
+        updatable = false,
     )
-    val institution: Institution? = null
+    val institution: Institution? = null,
 )
 
 @Immutable
@@ -34,8 +32,6 @@ class Institution(
     @Id
     @Column(name = "institution_id")
     val id: Long,
-
     @Column(name = "nomis_cde_code")
-    val nomisCode: String
-
+    val nomisCode: String,
 )

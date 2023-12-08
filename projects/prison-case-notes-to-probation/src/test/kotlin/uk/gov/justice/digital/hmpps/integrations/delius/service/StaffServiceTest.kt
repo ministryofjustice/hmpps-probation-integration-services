@@ -21,7 +21,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.StaffTeamRepo
 
 @ExtendWith(MockitoExtension::class)
 class StaffServiceTest {
-
     @Mock
     lateinit var staffRepository: StaffRepository
 

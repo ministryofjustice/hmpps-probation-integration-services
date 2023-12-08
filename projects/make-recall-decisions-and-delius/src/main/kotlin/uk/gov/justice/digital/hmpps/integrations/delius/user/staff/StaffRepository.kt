@@ -10,5 +10,6 @@ interface StaffRepository : JpaRepository<Staff, Long> {
     fun findStaffByUsername(username: String): Staff?
 }
 
-fun StaffRepository.getStaff(username: String) = findStaffByUsername(username)
-    ?: throw NotFoundException("Staff", "username", username)
+fun StaffRepository.getStaff(username: String) =
+    findStaffByUsername(username)
+        ?: throw NotFoundException("Staff", "username", username)

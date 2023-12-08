@@ -17,6 +17,6 @@ class UserResource(private val uas: UserAccessService) {
     @RequestMapping("access", method = [RequestMethod.GET, RequestMethod.POST])
     fun userAccessCheck(
         @RequestParam(required = false) username: String?,
-        @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>
+        @Size(min = 1, max = 500, message = "Please provide between 1 and 500 crns") @RequestBody crns: List<String>,
     ): UserAccess = username?.let { uas.userAccessFor(it, crns) } ?: uas.checkLimitedAccessFor(crns)
 }

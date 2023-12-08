@@ -16,14 +16,17 @@ import uk.gov.justice.digital.hmpps.service.UserService
 class UserController(private val userService: UserService) {
     @PreAuthorize("hasRole('PROBATION_API__PATHFINDER__USER_ROLES')")
     @PutMapping(value = ["/{username}/roles/{roleName}"])
-    fun addRole(@PathVariable username: String, @PathVariable roleName: String) =
-        userService.addRole(username, roleName.deliusRole())
+    fun addRole(
+        @PathVariable username: String,
+        @PathVariable roleName: String,
+    ) = userService.addRole(username, roleName.deliusRole())
 
     @PreAuthorize("hasRole('PROBATION_API__PATHFINDER__USER_ROLES')")
     @DeleteMapping(value = ["/{username}/roles/{roleName}"])
-    fun removeRole(@PathVariable username: String, @PathVariable roleName: String) =
-        userService.removeRole(username, roleName.deliusRole())
+    fun removeRole(
+        @PathVariable username: String,
+        @PathVariable roleName: String,
+    ) = userService.removeRole(username, roleName.deliusRole())
 }
 
-private fun String.deliusRole() =
-    DeliusRole.from(this) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Role Not Acceptable")
+private fun String.deliusRole() = DeliusRole.from(this) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Role Not Acceptable")

@@ -14,17 +14,21 @@ import java.time.Duration
 @Configuration
 class HmppsAuthClientConfig(
     private val restClientBuilder: Builder,
-    private val clientManager: OAuth2AuthorizedClientManager
+    private val clientManager: OAuth2AuthorizedClientManager,
 ) {
     @Bean
-    fun oauth2Client() = restClientBuilder
-        .requestFactory(withTimeouts(Duration.ofSeconds(1), Duration.ofSeconds(5)))
-        .requestInterceptor(HmppsAuthInterceptor(clientManager, "default"))
-        .requestInterceptor(RetryInterceptor())
-        .build()
+    fun oauth2Client() =
+        restClientBuilder
+            .requestFactory(withTimeouts(Duration.ofSeconds(1), Duration.ofSeconds(5)))
+            .requestInterceptor(HmppsAuthInterceptor(clientManager, "default"))
+            .requestInterceptor(RetryInterceptor())
+            .build()
 }
 
-fun withTimeouts(connection: Duration, read: Duration) =
+fun withTimeouts(
+    connection: Duration,
+    read: Duration,
+) =
     JdkClientHttpRequestFactory(HttpClient.newBuilder().connectTimeout(connection).build())
         .also { it.setReadTimeout(read) }
 

@@ -7,14 +7,14 @@ data class Address(
     val district: String?,
     val town: String?,
     val county: String?,
-    val postcode: String?
+    val postcode: String?,
 )
 
 data class PersonalCircumstance(
     val type: Type,
     val subType: Type?,
     val notes: String?,
-    val evidenced: Boolean
+    val evidenced: Boolean,
 )
 
 data class PersonalContact(
@@ -23,16 +23,16 @@ data class PersonalContact(
     val name: Name,
     val telephoneNumber: String?,
     val mobileNumber: String?,
-    val address: Address?
+    val address: Address?,
 )
 
 data class Type(
     val code: String,
-    val description: String
+    val description: String,
 )
 
 data class Name(
     val forename: String,
     val middleName: String?,
-    val surname: String
+    val surname: String,
 )

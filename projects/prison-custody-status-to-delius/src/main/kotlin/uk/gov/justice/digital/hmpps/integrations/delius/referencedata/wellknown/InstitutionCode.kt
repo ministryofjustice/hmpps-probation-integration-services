@@ -5,5 +5,5 @@ enum class InstitutionCode(val code: String) {
     UNLAWFULLY_AT_LARGE("UATLRG"),
     UNKNOWN("UNKNOW"),
     OTHER_SECURE_UNIT("XXX056"),
-    OTHER_IRC("XXX054")
+    OTHER_IRC("XXX054"),
 }

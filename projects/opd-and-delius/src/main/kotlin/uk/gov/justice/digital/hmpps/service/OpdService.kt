@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.messaging.OpdAssessment
 class OpdService(
     private val personManagerRepository: PersonManagerRepository,
     private val eventRepository: EventRepository,
-    private val nsiService: NsiService
+    private val nsiService: NsiService,
 ) {
     @Transactional
     fun processAssessment(opdAssessment: OpdAssessment) {

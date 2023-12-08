@@ -15,18 +15,21 @@ import uk.gov.justice.digital.hmpps.ldap.findByUsername
 @Service
 class ManagerService(
     private val communityManagerRepository: CommunityManagerRepository,
-    private val ldapTemplate: LdapTemplate
+    private val ldapTemplate: LdapTemplate,
 ) {
-    fun findCommunityManager(nomsId: String) = communityManagerRepository.getByNomsId(nomsId).apply {
-        staff.user?.let {
-            ldapTemplate.findByUsername<LdapUserDetails>(it.username)?.apply {
-                it.email = email
-                it.telephone = telephone
+    fun findCommunityManager(nomsId: String) =
+        communityManagerRepository.getByNomsId(nomsId).apply {
+            staff.user?.let {
+                ldapTemplate.findByUsername<LdapUserDetails>(it.username)?.apply {
+                    it.email = email
+                    it.telephone = telephone
+                }
             }
-        }
-    }.asManager()
+        }.asManager()
 }
 
 fun CommunityManager.asManager() = Manager(staff.code, staff.name(), team(), staff.user?.email, staff.user?.telephone)
+
 fun Staff.name() = Name(forename, surname)
+
 fun CommunityManager.team() = Team(team.code, team.description, team.email, team.telephone)

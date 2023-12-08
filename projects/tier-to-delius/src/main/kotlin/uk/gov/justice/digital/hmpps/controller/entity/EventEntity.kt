@@ -22,25 +22,19 @@ class EventEntity(
     @Id
     @Column(name = "event_id", nullable = false)
     val id: Long,
-
     @Column(name = "event_number", nullable = false)
     val number: String,
-
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: CaseEntity,
-
     @OneToOne(mappedBy = "eventEntity")
     val disposal: Disposal? = null,
-
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     val active: Boolean = true,
-
     @Column(name = "in_breach")
     val inBreach: Boolean = false,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -50,25 +44,19 @@ class Disposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long,
-
     @OneToOne
     @JoinColumn(name = "event_id", updatable = false)
     val eventEntity: EventEntity,
-
     @ManyToOne
     @JoinColumn(name = "disposal_type_id", updatable = false)
     val disposalType: DisposalType,
-
     @OneToMany(mappedBy = "disposal")
     val requirements: List<RequirementEntity>,
-
     val terminationDate: LocalDate? = null,
-
     @Column(name = "active_flag", updatable = false, columnDefinition = "NUMBER")
     val active: Boolean = true,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -78,18 +66,16 @@ class DisposalType(
     @Id
     @Column(name = "disposal_type_id")
     val id: Long,
-
     @Column(name = "sentence_type")
-    val sentenceType: String
+    val sentenceType: String,
 )
 
 interface EventRepository : JpaRepository<EventEntity, Long> {
-
     @Query(
         """
         select e from EventEntity e 
         where e.person.crn = :crn
-    """
+    """,
     )
     fun findByCrn(crn: String): List<EventEntity>
 }

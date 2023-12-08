@@ -16,12 +16,10 @@ class DocNsi(
     @Id
     @Column(name = "nsi_id", updatable = false)
     val id: Long = 0,
-
     @JoinColumn(name = "event_id", insertable = false, updatable = false)
     @ManyToOne
     val event: DocEvent?,
-
     @ManyToOne
     @JoinColumn(name = "nsi_type_id", updatable = false)
-    val type: NsiType
+    val type: NsiType,
 )

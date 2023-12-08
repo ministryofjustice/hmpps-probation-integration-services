@@ -11,7 +11,7 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
         where pm.person.id = :personId
         and pm.active = true
         and pm.softDeleted = false
-        """
+        """,
     )
     fun findActiveManager(personId: Long): PersonManager?
 
@@ -21,7 +21,7 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
         where pm.person.crn = :crn
         and pm.active = true
         and pm.softDeleted = false
-        """
+        """,
     )
     fun findActiveManager(crn: String): PersonManager
 }

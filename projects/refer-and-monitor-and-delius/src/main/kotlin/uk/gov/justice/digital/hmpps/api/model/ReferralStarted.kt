@@ -8,7 +8,7 @@ class ReferralStarted(
     val startedAt: ZonedDateTime,
     val contractType: String,
     val sentenceId: Long,
-    val notes: String
+    val notes: String,
 ) {
     val urn = "urn:hmpps:interventions-referral:$referralId"
 }

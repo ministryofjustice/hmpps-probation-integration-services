@@ -29,12 +29,12 @@ class PrisonManagerService(
     private val referenceDataRepository: ReferenceDataRepository,
     private val prisonManagerRepository: PrisonManagerRepository,
     private val contactRepository: ContactRepository,
-    private val contactTypeRepository: ContactTypeRepository
+    private val contactTypeRepository: ContactTypeRepository,
 ) {
     fun allocateToProbationArea(
         disposal: Disposal,
         probationArea: ProbationArea,
-        allocationDate: ZonedDateTime
+        allocationDate: ZonedDateTime,
     ) {
         val allStaffTeam = teamRepository.getByCodeAndProbationAreaId("${probationArea.code}ALL", probationArea.id)
         val unallocatedStaff = staffRepository.getByCodeAndTeamsId("${allStaffTeam.code}U", allStaffTeam.id)
@@ -44,7 +44,7 @@ class PrisonManagerService(
             team = allStaffTeam,
             probationArea = probationArea,
             allocationReason = referenceDataRepository.getByCodeAndSetName("AUT", "POM ALLOCATION REASON"),
-            allocationDate = allocationDate
+            allocationDate = allocationDate,
         )
     }
 
@@ -54,14 +54,15 @@ class PrisonManagerService(
         team: Team,
         probationArea: ProbationArea,
         allocationReason: ReferenceData,
-        allocationDate: ZonedDateTime
+        allocationDate: ZonedDateTime,
     ) {
         val person = disposal.event.person
 
         // end-date the previous prison manager
         val activePrisonManager = prisonManagerRepository.findActiveManagerAtDate(person.id, allocationDate)
-        val activePrisonManagerEndDate = activePrisonManager?.endDate
-            ?: prisonManagerRepository.findFirstManagerAfterDate(person.id, allocationDate).singleOrNull()?.date
+        val activePrisonManagerEndDate =
+            activePrisonManager?.endDate
+                ?: prisonManagerRepository.findFirstManagerAfterDate(person.id, allocationDate).singleOrNull()?.date
         if (activePrisonManager != null) {
             activePrisonManager.active = false
             activePrisonManager.endDate = allocationDate
@@ -73,14 +74,15 @@ class PrisonManagerService(
                     person = person,
                     teamId = team.id,
                     staffId = staff.id,
-                    notes = """
-                    Transfer Reason: ${allocationReason.description}
-                    Transfer Date: ${activePrisonManager.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}
-                    From Establishment: ${activePrisonManager.probationArea.description}
-                    From Team: ${activePrisonManager.team.description}
-                    From Officer: ${activePrisonManager.staff.displayName()}
-                    """.trimIndent()
-                )
+                    notes =
+                        """
+                        Transfer Reason: ${allocationReason.description}
+                        Transfer Date: ${activePrisonManager.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}
+                        From Establishment: ${activePrisonManager.probationArea.description}
+                        From Team: ${activePrisonManager.team.description}
+                        From Officer: ${activePrisonManager.staff.displayName()}
+                        """.trimIndent(),
+                ),
             )
         }
 
@@ -93,8 +95,8 @@ class PrisonManagerService(
                 personId = person.id,
                 staff = staff,
                 team = team,
-                probationArea = probationArea
-            )
+                probationArea = probationArea,
+            ),
         )
     }
 }

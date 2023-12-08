@@ -17,9 +17,9 @@ class ProbationAreaService(private val probationAreaRepository: ProbationAreaRep
                     ProbationArea(
                         pa.key.first,
                         pa.key.second,
-                        pa.value.map { LocalDeliveryUnit(it.dCode, it.dDesc) }
+                        pa.value.map { LocalDeliveryUnit(it.dCode, it.dDesc) },
                     )
-                }
+                },
         )
     }
 }

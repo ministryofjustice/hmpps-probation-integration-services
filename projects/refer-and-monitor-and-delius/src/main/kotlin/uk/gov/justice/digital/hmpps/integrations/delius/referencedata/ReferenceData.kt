@@ -21,7 +21,7 @@ class ReferenceData(
     @Column(name = "standard_reference_list_id")
     val id: Long,
     @Column(name = "reference_data_master_id")
-    val datasetId: Long
+    val datasetId: Long,
 )
 
 @Immutable
@@ -32,7 +32,7 @@ class Dataset(
     val name: String,
     @Id
     @Column(name = "reference_data_master_id")
-    val id: Long
+    val id: Long,
 ) {
     enum class Code(val value: String) {
         ADDRESS_STATUS("ADDRESS STATUS"),
@@ -41,7 +41,7 @@ class Dataset(
         GENDER("GENDER"),
         LANGUAGE("LANGUAGE"),
         NSI_OUTCOME("NSI OUTCOME"),
-        RELIGION("RELIGION/FAITH")
+        RELIGION("RELIGION/FAITH"),
     }
 }
 
@@ -52,9 +52,12 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
         join Dataset ds on oc.datasetId = ds.id
         where oc.code = :code
         and ds.name = :datasetName
-    """
+    """,
     )
-    fun findByCode(code: String, datasetName: String): ReferenceData?
+    fun findByCode(
+        code: String,
+        datasetName: String,
+    ): ReferenceData?
 }
 
 fun ReferenceDataRepository.nsiOutcome(code: String) =

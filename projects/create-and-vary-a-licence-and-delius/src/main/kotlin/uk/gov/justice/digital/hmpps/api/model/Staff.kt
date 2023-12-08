@@ -6,15 +6,15 @@ data class Staff(
     val teams: List<Team>,
     val username: String?,
     val email: String?,
-    val unallocated: Boolean
+    val unallocated: Boolean,
 )
 
 data class PDUHead(
     val name: Name,
-    val email: String?
+    val email: String?,
 )
 
 data class StaffName(
     val name: Name,
-    val code: String
+    val code: String,
 )

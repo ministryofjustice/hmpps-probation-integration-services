@@ -17,30 +17,22 @@ class PersonManager(
     @Id
     @Column(name = "offender_manager_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
-
     @ManyToOne
     @JoinColumn(name = "team_id")
     val team: Team,
-
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
-
     @ManyToOne
     @JoinColumn(name = "probation_area_id", nullable = false)
     val provider: ProbationAreaEntity,
-
     @Column(name = "allocation_date")
     val date: ZonedDateTime,
-
     @Column(name = "active_flag", columnDefinition = "NUMBER")
     val active: Boolean = true,
-
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
-    var softDeleted: Boolean = false
-
+    var softDeleted: Boolean = false,
 )

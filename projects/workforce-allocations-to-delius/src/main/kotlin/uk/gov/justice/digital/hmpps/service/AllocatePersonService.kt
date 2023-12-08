@@ -32,24 +32,25 @@ class AllocatePersonService(
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val responsibleOfficerRepository: ResponsibleOfficerRepository,
-    private val optimisationTables: OptimisationTables
+    private val optimisationTables: OptimisationTables,
 ) : ManagerService<PersonManager>(auditedInteractionService, personManagerRepository) {
-
     @Transactional
     fun createPersonAllocation(allocationDetail: PersonAllocationDetail) =
         audit(BusinessInteractionCode.ADD_PERSON_ALLOCATION) {
-            val personId = personRepository.findIdByCrn(allocationDetail.crn)
-                ?: throw NotFoundException("Person", "crn", allocationDetail.crn)
+            val personId =
+                personRepository.findIdByCrn(allocationDetail.crn)
+                    ?: throw NotFoundException("Person", "crn", allocationDetail.crn)
 
             it["offenderId"] = personId
             optimisationTables.rebuild(personId)
 
-            val activeOffenderManager = personManagerRepository.findActiveManager(
-                personId,
-                allocationDetail.createdDate
-            ) ?: throw NotFoundException(
-                "Person Manager for ${allocationDetail.crn} at ${allocationDetail.createdDate} not found"
-            )
+            val activeOffenderManager =
+                personManagerRepository.findActiveManager(
+                    personId,
+                    allocationDetail.createdDate,
+                ) ?: throw NotFoundException(
+                    "Person Manager for ${allocationDetail.crn} at ${allocationDetail.createdDate} not found",
+                )
 
             if (allocationDetail.isDuplicate(activeOffenderManager)) {
                 return@audit
@@ -58,14 +59,16 @@ class AllocatePersonService(
             if (personRepository.countPendingTransfers(personId) > 0) {
                 throw ConflictException("Pending transfer exists for this person: ${allocationDetail.crn}")
             }
-            val ts = allocationValidator.initialValidations(
-                activeOffenderManager.provider.id,
-                allocationDetail
-            )
+            val ts =
+                allocationValidator.initialValidations(
+                    activeOffenderManager.provider.id,
+                    allocationDetail,
+                )
 
-            val newOffenderManager = PersonManager(personId = personId).apply {
-                populate(allocationDetail.createdDate, ts, activeOffenderManager)
-            }
+            val newOffenderManager =
+                PersonManager(personId = personId).apply {
+                    populate(allocationDetail.createdDate, ts, activeOffenderManager)
+                }
 
             val (activeOm, newOm) = updateDateTimes(activeOffenderManager, newOffenderManager)
 
@@ -76,9 +79,9 @@ class AllocatePersonService(
                     newOm,
                     ContactContext(
                         contactTypeRepository.findByCodeOrThrow(ContactTypeCode.OFFENDER_MANAGER_TRANSFER.value),
-                        personId
-                    )
-                )
+                        personId,
+                    ),
+                ),
             )
 
             if (personRepository.countAccreditedProgrammeRequirements(personId) > 0) {
@@ -87,17 +90,18 @@ class AllocatePersonService(
         }
 
     private fun updateResponsibleOfficer(
-        newPersonManager: PersonManager
+        newPersonManager: PersonManager,
     ) {
         val activeResponsibleOfficer =
             responsibleOfficerRepository.findActiveManagerAtDate(newPersonManager.personId, newPersonManager.startDate)
 
-        val newResponsibleOfficer = ResponsibleOfficer(
-            personId = newPersonManager.personId,
-            startDate = newPersonManager.startDate,
-            endDate = newPersonManager.endDate,
-            communityManager = newPersonManager
-        )
+        val newResponsibleOfficer =
+            ResponsibleOfficer(
+                personId = newPersonManager.personId,
+                startDate = newPersonManager.startDate,
+                endDate = newPersonManager.endDate,
+                communityManager = newPersonManager,
+            )
         activeResponsibleOfficer?.endDate = newPersonManager.startDate
 
         // Need to flush changes here to ensure single active RO constraint isn't violated when new RO is added.
@@ -106,32 +110,33 @@ class AllocatePersonService(
         if (newResponsibleOfficer.communityManager != null) {
             createResponsibleOfficerInternalTransferContact(
                 newResponsibleOfficer,
-                activeResponsibleOfficer
+                activeResponsibleOfficer,
             )
         }
     }
 
     private fun createResponsibleOfficerInternalTransferContact(
         newResponsibleOfficer: ResponsibleOfficer,
-        oldResponsibleOfficer: ResponsibleOfficer?
+        oldResponsibleOfficer: ResponsibleOfficer?,
     ) {
         val newCommunityOffenderManager = newResponsibleOfficer.communityManager!!
-        val sc = Contact(
-            type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE.value),
-            personId = newResponsibleOfficer.personId,
-            date = newResponsibleOfficer.startDate.toLocalDate(),
-            startTime = newResponsibleOfficer.startDate,
-            providerId = newCommunityOffenderManager.provider.id,
-            teamId = newCommunityOffenderManager.team.id,
-            staffId = newCommunityOffenderManager.staff.id,
-            notes = generateRoContactNotes(oldResponsibleOfficer, newResponsibleOfficer)
-        )
+        val sc =
+            Contact(
+                type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE.value),
+                personId = newResponsibleOfficer.personId,
+                date = newResponsibleOfficer.startDate.toLocalDate(),
+                startTime = newResponsibleOfficer.startDate,
+                providerId = newCommunityOffenderManager.provider.id,
+                teamId = newCommunityOffenderManager.team.id,
+                staffId = newCommunityOffenderManager.staff.id,
+                notes = generateRoContactNotes(oldResponsibleOfficer, newResponsibleOfficer),
+            )
         contactRepository.save(sc)
     }
 
     private fun generateRoContactNotes(
         oldResponsibleOfficer: ResponsibleOfficer?,
-        newResponsibleOfficer: ResponsibleOfficer
+        newResponsibleOfficer: ResponsibleOfficer,
     ): String {
         return """
       |New Details:
@@ -139,7 +144,7 @@ class AllocatePersonService(
       |Previous Details:
       |${oldResponsibleOfficer?.stringDetails()}
       |Allocation Reason: ${newResponsibleOfficer.communityManager!!.allocationReason.description}
-        """.trimMargin()
+            """.trimMargin()
     }
 
     private fun ResponsibleOfficer.stringDetails(): String {
@@ -147,27 +152,31 @@ class AllocatePersonService(
         val prisonManager = prisonManager
         var string = ""
         if (communityManager != null) {
-            string += """
+            string +=
+                """
         |Responsible Officer Type: Offender Manager
         |Responsible Officer: ${communityManager.staff.displayName}(${communityManager.team.description},${communityManager.provider.description})
-            """.trimMargin()
+                """.trimMargin()
         }
         if (prisonManager != null) {
-            string += """
+            string +=
+                """
         |Responsible Officer Type: Prison Offender Manager
         |Responsible Officer: ${prisonManager.staff.displayName}(${prisonManager.team.description},${prisonManager.provider.description})
-            """.trimMargin()
+                """.trimMargin()
         }
-        string += """
+        string +=
+            """
       |
       |Start Date: ${DeliusDateTimeFormatter.format(startDate)}
-        """.trimMargin()
+            """.trimMargin()
 
         if (endDate != null) {
-            string += """
+            string +=
+                """
         |
         |End Date: ${DeliusDateTimeFormatter.format(endDate)}
-            """.trimMargin()
+                """.trimMargin()
         }
 
         return string

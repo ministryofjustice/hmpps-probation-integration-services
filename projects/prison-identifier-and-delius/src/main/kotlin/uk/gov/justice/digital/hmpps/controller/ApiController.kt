@@ -10,7 +10,7 @@ class ApiController {
     @PreAuthorize("hasRole('ROLE_EXAMPLE')")
     @GetMapping(value = ["/example/{inputId}"])
     fun handle(
-        @PathVariable("inputId") inputId: String
+        @PathVariable("inputId") inputId: String,
     ) {
         // TODO Not yet implemented
     }

@@ -80,26 +80,27 @@ internal class RiskScoreServiceTest {
             ZonedDateTime.of(2022, 12, 15, 9, 0, 0, 0, EuropeLondon),
             RiskAssessment(1.00, "A"),
             RiskAssessment(2.00, "B"),
-            RiskAssessment(3.00, "C")
+            RiskAssessment(3.00, "C"),
         )
     }
 
     private fun thenProcedureIsCalled() {
-        val expectedValues = mapOf(
-            "p_crn" to "A000001",
-            "p_event_number" to 123,
-            "p_rsr_assessor_date" to ZonedDateTime.of(2022, 12, 15, 9, 0, 0, 0, EuropeLondon),
-            "p_rsr_score" to 1.00,
-            "p_rsr_level_code" to "A",
-            "p_osp_score_i" to 2.00,
-            "p_osp_score_c" to 3.00,
-            "p_osp_level_i_code" to "B",
-            "p_osp_level_c_code" to "C"
-        )
+        val expectedValues =
+            mapOf(
+                "p_crn" to "A000001",
+                "p_event_number" to 123,
+                "p_rsr_assessor_date" to ZonedDateTime.of(2022, 12, 15, 9, 0, 0, 0, EuropeLondon),
+                "p_rsr_score" to 1.00,
+                "p_rsr_level_code" to "A",
+                "p_osp_score_i" to 2.00,
+                "p_osp_score_c" to 3.00,
+                "p_osp_level_i_code" to "B",
+                "p_osp_level_c_code" to "C",
+            )
         verify(simpleJdbcCall).execute(
             check<MapSqlParameterSource> { params ->
                 assertThat(params.values, equalTo(expectedValues))
-            }
+            },
         )
     }
 
@@ -116,6 +117,9 @@ internal class RiskScoreServiceTest {
         return mockedConstruction
     }
 
-    private fun sqlException(message: String? = null, code: Int = 20000) =
+    private fun sqlException(
+        message: String? = null,
+        code: Int = 20000,
+    ) =
         UncategorizedSQLException("error", "sql", SQLException(message, "", code))
 }

@@ -51,12 +51,13 @@ internal class UserServiceTest {
     @Test
     fun `get user details`() {
         val username = "test"
-        val ldapUser = LdapUser(
-            dn = LdapName("uid=test,ou=users,dc=example,dc=com"),
-            username = "test",
-            email = "test@example.com",
-            homeArea = "N01"
-        )
+        val ldapUser =
+            LdapUser(
+                dn = LdapName("uid=test,ou=users,dc=example,dc=com"),
+                username = "test",
+                email = "test@example.com",
+                homeArea = "N01",
+            )
         whenever(userDetailsRepository.findByUsername(username))
             .thenReturn(UserDetails(1, username, "forename", "forename2", "surname", null))
         whenever(providerRepository.findByCode("N01"))

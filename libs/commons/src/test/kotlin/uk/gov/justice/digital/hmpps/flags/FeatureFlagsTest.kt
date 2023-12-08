@@ -53,16 +53,23 @@ class FeatureFlagsTest {
         assertThrows<FeatureFlagException> { featureFlags.enabled("feature-flag-3") }
     }
 
-    private fun withFlag(key: String, enabled: Boolean) {
+    private fun withFlag(
+        key: String,
+        enabled: Boolean,
+    ) {
         whenever(flagsClient.get(Get.Request.builder().key(key).build())).thenReturn(flag(key, enabled))
     }
 
-    private fun flag(key: String, enabled: Boolean) = Flag.builder()
-        .key(key)
-        .name("Name")
-        .description("Description")
-        .enabled(enabled)
-        .createdAt(ZonedDateTime.now().toString())
-        .updatedAt(ZonedDateTime.now().toString())
-        .build()
+    private fun flag(
+        key: String,
+        enabled: Boolean,
+    ) =
+        Flag.builder()
+            .key(key)
+            .name("Name")
+            .description("Description")
+            .enabled(enabled)
+            .createdAt(ZonedDateTime.now().toString())
+            .updatedAt(ZonedDateTime.now().toString())
+            .build()
 }

@@ -16,13 +16,13 @@ import uk.gov.justice.digital.hmpps.model.StaffResponse
 @Service
 class StaffService(
     private val approvedPremisesRepository: ApprovedPremisesRepository,
-    private val staffRepository: StaffRepository
+    private val staffRepository: StaffRepository,
 ) {
     @Transactional
     fun getStaffInApprovedPremises(
         approvedPremisesCode: String,
         keyWorkersOnly: Boolean,
-        pageable: Pageable
+        pageable: Pageable,
     ): Page<StaffResponse> {
         if (!approvedPremisesRepository.existsByCodeCode(approvedPremisesCode)) {
             throw NotFoundException("Approved Premises", "code", approvedPremisesCode)
@@ -43,19 +43,21 @@ class StaffService(
         staffRepository.findByUserUsername(username)?.toStaffDetail() ?: throw NotFoundException(
             "Staff",
             "username",
-            username
+            username,
         )
 
-    fun Staff.toResponse(approvedPremisesCode: String) = StaffResponse(
-        code = code,
-        name = PersonName(forename, surname, middleName),
-        grade = grade?.let { grade -> StaffGrade(grade.code, grade.description) },
-        keyWorker = approvedPremises.map { ap -> ap.code.code }.contains(approvedPremisesCode)
-    )
+    fun Staff.toResponse(approvedPremisesCode: String) =
+        StaffResponse(
+            code = code,
+            name = PersonName(forename, surname, middleName),
+            grade = grade?.let { grade -> StaffGrade(grade.code, grade.description) },
+            keyWorker = approvedPremises.map { ap -> ap.code.code }.contains(approvedPremisesCode),
+        )
 
-    fun Staff.toStaffDetail() = StaffDetail(
-        user!!.username,
-        PersonName(forename, surname, middleName),
-        code
-    )
+    fun Staff.toStaffDetail() =
+        StaffDetail(
+            user!!.username,
+            PersonName(forename, surname, middleName),
+            code,
+        )
 }

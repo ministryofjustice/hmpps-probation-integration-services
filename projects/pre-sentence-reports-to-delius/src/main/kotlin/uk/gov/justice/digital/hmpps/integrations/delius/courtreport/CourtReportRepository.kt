@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
 interface CourtReportRepository : JpaRepository<CourtReport, Long> {
-
     @Query(
         """
     SELECT json_object(
@@ -57,7 +56,7 @@ WHERE
   AND o.SOFT_DELETED = 0
   AND mo.SOFT_DELETED = 0
  """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun getCourtReportContextJson(reportId: String): String?
 }

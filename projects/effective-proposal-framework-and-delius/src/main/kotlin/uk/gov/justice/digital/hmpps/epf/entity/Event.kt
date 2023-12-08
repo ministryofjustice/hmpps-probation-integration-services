@@ -20,25 +20,19 @@ class Event(
     @Id
     @Column(name = "event_id", nullable = false)
     val id: Long,
-
     @Column(name = "event_number", nullable = false)
     val number: String,
-
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
-
     @Column
     val firstReleaseDate: LocalDate? = null,
-
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
-
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     val active: Boolean = true,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -48,32 +42,32 @@ class Disposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long,
-
     @Column(name = "disposal_date", nullable = false)
     val date: LocalDate,
-
     @OneToOne
     @JoinColumn(name = "event_id", updatable = false)
     val event: Event,
-
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     val active: Boolean = true,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 interface EventRepository : JpaRepository<Event, Long> {
-
     @Query(
         """
         select e from Event e 
         where e.number = :number
         and e.person.crn = :crn
-    """
+    """,
     )
-    fun findEventByCrnAndEventNumber(crn: String, number: String): Event?
+    fun findEventByCrnAndEventNumber(
+        crn: String,
+        number: String,
+    ): Event?
 }
 
-fun EventRepository.getEvent(crn: String, number: String) =
-    findEventByCrnAndEventNumber(crn, number) ?: throw NotFoundException("Event", "crn", crn)
+fun EventRepository.getEvent(
+    crn: String,
+    number: String,
+) = findEventByCrnAndEventNumber(crn, number) ?: throw NotFoundException("Event", "crn", crn)

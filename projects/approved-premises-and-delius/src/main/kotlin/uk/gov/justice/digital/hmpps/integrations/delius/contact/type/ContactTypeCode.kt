@@ -8,5 +8,5 @@ enum class ContactTypeCode(val code: String) {
     BOOKING_CANCELLED("EABC"),
     ARRIVED("EAPA"),
     NOT_ARRIVED("EAPX"),
-    DEPARTED("EAPD")
+    DEPARTED("EAPD"),
 }

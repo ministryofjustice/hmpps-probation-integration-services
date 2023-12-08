@@ -11,11 +11,12 @@ import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportR
 class PreSentenceReportService(
     auditedInteractionService: AuditedInteractionService,
     private val courtReportRepository: CourtReportRepository,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
 ) : AuditableService(auditedInteractionService) {
     fun getPreSentenceReportContext(reportId: String): PreSentenceReportContext {
-        val json = courtReportRepository.getCourtReportContextJson(reportId)
-            ?: throw NotFoundException("CourtReport", "id", reportId)
+        val json =
+            courtReportRepository.getCourtReportContextJson(reportId)
+                ?: throw NotFoundException("CourtReport", "id", reportId)
         return objectMapper.readValue(json, PreSentenceReportContext::class.java)
     }
 }

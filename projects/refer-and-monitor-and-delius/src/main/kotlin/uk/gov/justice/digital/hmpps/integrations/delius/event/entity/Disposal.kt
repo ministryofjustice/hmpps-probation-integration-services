@@ -17,33 +17,25 @@ import java.time.LocalDate
 @Immutable
 @Table(name = "disposal")
 class Disposal(
-
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
     @Column(name = "disposal_date")
     val date: LocalDate,
-
     @ManyToOne
     @JoinColumn(name = "disposal_type_id")
     val type: DisposalType,
-
     @Column(name = "entered_notional_end_date")
     val enteredEndDate: LocalDate? = null,
-
     @Column(name = "notional_end_date")
     val notionalEndDate: LocalDate? = null,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean,
-
     @Id
     @Column(name = "disposal_id")
-    val id: Long
+    val id: Long,
 ) {
     fun expectedEndDate() = enteredEndDate ?: notionalEndDate
 }
@@ -52,26 +44,28 @@ class Disposal(
 @Immutable
 @Table(name = "r_disposal_type")
 class DisposalType(
-
     val description: String,
-
     @Column(name = "sentence_type")
     val sentenceType: String? = null,
-
     @Column(name = "ftc_limit")
     val ftcLimit: Long? = null,
-
     @Id
     @Column(name = "disposal_type_id")
-    val id: Long
+    val id: Long,
 ) {
     fun overLimit(count: Long): Boolean = sentenceType != null && ftcLimit != null && count > ftcLimit
 }
 
 interface DisposalRepository : JpaRepository<Disposal, Long> {
     @EntityGraph(attributePaths = ["type", "event"])
-    fun findByEventPersonIdAndEventId(personId: Long, eventId: Long): Disposal?
+    fun findByEventPersonIdAndEventId(
+        personId: Long,
+        eventId: Long,
+    ): Disposal?
 }
 
-fun DisposalRepository.getByPersonIdAndEventId(personId: Long, eventId: Long) =
+fun DisposalRepository.getByPersonIdAndEventId(
+    personId: Long,
+    eventId: Long,
+) =
     findByEventPersonIdAndEventId(personId, eventId) ?: throw NotFoundException("Event", "id", eventId)

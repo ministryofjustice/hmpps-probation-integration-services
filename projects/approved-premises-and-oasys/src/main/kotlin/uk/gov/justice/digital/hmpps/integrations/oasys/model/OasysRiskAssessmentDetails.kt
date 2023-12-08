@@ -4,8 +4,7 @@ import java.time.ZonedDateTime
 
 data class OasysRiskAssessmentDetails(
     val limitedAccessOffender: Boolean,
-    val assessments: List<OasysRiskAssessment>
-
+    val assessments: List<OasysRiskAssessment>,
 )
 
 data class OasysRiskAssessment(
@@ -31,5 +30,5 @@ data class OasysRiskAssessment(
     val previousWhoVictims: String? = null,
     val previousHowDone: String? = null,
     val previousWhereAndWhen: String? = null,
-    val previousWhatDone: String? = null
+    val previousWhatDone: String? = null,
 ) : OasysAssessment()

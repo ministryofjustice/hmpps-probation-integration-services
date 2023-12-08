@@ -17,26 +17,33 @@ import uk.gov.justice.digital.hmpps.model.Sentence
 @Service
 class ConvictionService(
     private val convictionEventRepository: ConvictionEventRepository,
-    private val custodyRepository: CustodyRepository
+    private val custodyRepository: CustodyRepository,
 ) {
-    fun getConvictions(value: String, type: IdentifierType, activeOnly: Boolean): ConvictionsContainer {
-        val convictions = when (type) {
-            IdentifierType.CRN -> if (activeOnly) {
-                convictionEventRepository.getAllByConvictionEventPersonCrnAndActiveIsTrue(
-                    value
-                )
-            } else {
-                convictionEventRepository.getAllByConvictionEventPersonCrn(value)
-            }
+    fun getConvictions(
+        value: String,
+        type: IdentifierType,
+        activeOnly: Boolean,
+    ): ConvictionsContainer {
+        val convictions =
+            when (type) {
+                IdentifierType.CRN ->
+                    if (activeOnly) {
+                        convictionEventRepository.getAllByConvictionEventPersonCrnAndActiveIsTrue(
+                            value,
+                        )
+                    } else {
+                        convictionEventRepository.getAllByConvictionEventPersonCrn(value)
+                    }
 
-            IdentifierType.NOMS -> if (activeOnly) {
-                convictionEventRepository.getAllByConvictionEventPersonNomsNumberAndActiveIsTrue(
-                    value
-                )
-            } else {
-                convictionEventRepository.getAllByConvictionEventPersonNomsNumber(value)
+                IdentifierType.NOMS ->
+                    if (activeOnly) {
+                        convictionEventRepository.getAllByConvictionEventPersonNomsNumberAndActiveIsTrue(
+                            value,
+                        )
+                    } else {
+                        convictionEventRepository.getAllByConvictionEventPersonNomsNumber(value)
+                    }
             }
-        }
         val convictionModels = mutableListOf<Conviction>()
         convictions.map { convictionEventEntity ->
             val custody = convictionEventEntity.disposal?.let { custodyRepository.getCustodyByDisposalId(it.id) }
@@ -46,8 +53,8 @@ class ConvictionService(
                     Offence(
                         convictionEventEntity.mainOffence.id,
                         convictionEventEntity.mainOffence.offence.description,
-                        true
-                    )
+                        true,
+                    ),
                 )
             }
             offences.addAll(
@@ -55,9 +62,9 @@ class ConvictionService(
                     Offence(
                         it.id,
                         it.offence.description,
-                        false
+                        false,
                     )
-                }
+                },
             )
             convictionModels.add(
                 Conviction(
@@ -65,8 +72,8 @@ class ConvictionService(
                     convictionEventEntity.convictionDate,
                     convictionEventEntity.disposal?.type?.description ?: "unknown",
                     offences,
-                    convictionEventEntity.disposal?.asModel(custody)
-                )
+                    convictionEventEntity.disposal?.asModel(custody),
+                ),
             )
         }
 
@@ -78,6 +85,7 @@ private fun Disposal.asModel(custody: uk.gov.justice.digital.hmpps.entity.Custod
     Sentence(id, startDate, expectedEndDate, custody?.custodyModel())
 
 private fun ReferenceData.custodialStatus() = CustodyStatus(code, description)
+
 private fun uk.gov.justice.digital.hmpps.entity.Custody.custodyModel() =
     Custody(status.custodialStatus(), keyDates.map { it.toModel() })
 

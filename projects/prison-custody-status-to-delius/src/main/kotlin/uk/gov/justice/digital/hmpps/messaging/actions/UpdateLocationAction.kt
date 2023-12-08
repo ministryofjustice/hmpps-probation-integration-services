@@ -29,13 +29,13 @@ class UpdateLocationAction(
     private val custodyRepository: CustodyRepository,
     private val custodyHistoryRepository: CustodyHistoryRepository,
     private val prisonManagerService: PrisonManagerService,
-    private val contactService: ContactService
+    private val contactService: ContactService,
 ) : PrisonerMovementAction {
-
-    private val eotlLocationChangeContactNotes = """${System.lineSeparator()}
+    private val eotlLocationChangeContactNotes =
+        """${System.lineSeparator()}
     |The date of the change to the custody location has been identified from the case being updated following a Temporary Absence Return in NOMIS.
     |The date may reflect an update after the date the actual change to location occurred.
-    """.trimMargin()
+        """.trimMargin()
 
     override val name: String = "UpdateLocation"
 
@@ -45,10 +45,11 @@ class UpdateLocationAction(
             return ActionResult.Ignored("PrisonerLocationCorrect", prisonerMovement.telemetryProperties())
         }
 
-        val institution = when (prisonerMovement) {
-            is PrisonerMovement.Received -> institutionRepository.getByNomisCdeCode(prisonerMovement.prisonId)
-            is PrisonerMovement.Released -> prisonerMovement.releaseLocation(custody)
-        }
+        val institution =
+            when (prisonerMovement) {
+                is PrisonerMovement.Received -> institutionRepository.getByNomisCdeCode(prisonerMovement.prisonId)
+                is PrisonerMovement.Released -> prisonerMovement.releaseLocation(custody)
+            }
 
         return custody.updateLocationAt(institution, prisonerMovement.occurredAt) {
             referenceDataRepository.getCustodyEventType(CustodyEventTypeCode.LOCATION_CHANGE.code)
@@ -59,7 +60,7 @@ class UpdateLocationAction(
                 prisonManagerService.allocateToProbationArea(
                     custody.disposal,
                     it,
-                    prisonerMovement.occurredAt
+                    prisonerMovement.occurredAt,
                 )
             }
             createLocationChangeContact(prisonerMovement, custody)
@@ -70,39 +71,45 @@ class UpdateLocationAction(
 
     private fun PrisonerMovement.releaseLocation(custody: Custody) =
         when {
-            isHospitalRelease() -> if (custody.institution?.secureHospital == true) {
-                custody.institution!!
-            } else {
-                institutionRepository.getByCode(InstitutionCode.OTHER_SECURE_UNIT.code)
-            }
+            isHospitalRelease() ->
+                if (custody.institution?.secureHospital == true) {
+                    custody.institution!!
+                } else {
+                    institutionRepository.getByCode(InstitutionCode.OTHER_SECURE_UNIT.code)
+                }
 
-            isIrcRelease() -> if (custody.institution?.irc == true) {
-                custody.institution!!
-            } else {
-                institutionRepository.getByCode(InstitutionCode.OTHER_IRC.code)
-            }
+            isIrcRelease() ->
+                if (custody.institution?.irc == true) {
+                    custody.institution!!
+                } else {
+                    institutionRepository.getByCode(InstitutionCode.OTHER_IRC.code)
+                }
 
             isAbsconded() -> institutionRepository.getByCode(InstitutionCode.UNLAWFULLY_AT_LARGE.code)
 
             else -> institutionRepository.getByCode(InstitutionCode.IN_COMMUNITY.code)
         }
 
-    private fun createLocationChangeContact(prisonerMovement: PrisonerMovement, custody: Custody) {
+    private fun createLocationChangeContact(
+        prisonerMovement: PrisonerMovement,
+        custody: Custody,
+    ) {
         if (prisonerMovement is PrisonerMovement.Received ||
             prisonerMovement.isHospitalRelease() || prisonerMovement.isIrcRelease() || prisonerMovement.isAbsconded()
         ) {
-            val notes = """
+            val notes =
+                """
             |Custodial Status: ${custody.status.description}
             |Custodial Establishment: ${custody.institution!!.description}
             |Location Change Date: ${DeliusDateTimeFormatter.format(custody.locationChangeDate!!)}
             |-------------------------------
-            """.trimMargin() +
-                if (prisonerMovement.type == PrisonerMovement.Type.TEMPORARY_ABSENCE_RETURN) eotlLocationChangeContactNotes else ""
+                """.trimMargin() +
+                    if (prisonerMovement.type == PrisonerMovement.Type.TEMPORARY_ABSENCE_RETURN) eotlLocationChangeContactNotes else ""
             contactService.createContact(
                 ContactDetail(ContactType.Code.CHANGE_OF_INSTITUTION, custody.locationChangeDate!!, notes),
                 custody.disposal.event.person,
                 event = custody.disposal.event,
-                manager = custody.disposal.event.manager()
+                manager = custody.disposal.event.manager(),
             )
         }
     }

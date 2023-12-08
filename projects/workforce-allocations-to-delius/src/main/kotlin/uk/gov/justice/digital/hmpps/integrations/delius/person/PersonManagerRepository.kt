@@ -13,8 +13,12 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
         and pm.startDate <= :dateTime 
         and (pm.endDate is null or pm.endDate > :dateTime)  
         and pm.softDeleted = false
-        """
+        """,
     )
-    fun findActiveManager(personId: Long, dateTime: ZonedDateTime = ZonedDateTime.now()): PersonManager?
+    fun findActiveManager(
+        personId: Long,
+        dateTime: ZonedDateTime = ZonedDateTime.now(),
+    ): PersonManager?
 }
+
 fun PersonManagerRepository.getActiveManager(personId: Long) = findActiveManager(personId) ?: throw NotFoundException("PersonManager", "personId", personId)

@@ -7,5 +7,5 @@ data class CaseAccess(
     val userExcluded: Boolean,
     val userRestricted: Boolean,
     val exclusionMessage: String? = null,
-    val restrictionMessage: String? = null
+    val restrictionMessage: String? = null,
 )

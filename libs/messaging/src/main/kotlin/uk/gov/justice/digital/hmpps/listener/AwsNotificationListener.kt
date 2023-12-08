@@ -25,7 +25,7 @@ import java.util.concurrent.CompletionException
 @Conditional(AwsCondition::class)
 @ConditionalOnExpression("\${messaging.consumer.enabled:true} and '\${messaging.consumer.queue:}' != ''")
 class AwsNotificationListener(
-    private val handler: NotificationHandler<*>
+    private val handler: NotificationHandler<*>,
 ) {
     @SqsListener("\${messaging.consumer.queue}")
     @SentryTransaction(operation = "messaging")
@@ -40,8 +40,8 @@ class AwsNotificationListener(
                     ObjectOptimisticLockingFailureException::class,
                     CannotCreateTransactionException::class,
                     CannotGetJdbcConnectionException::class,
-                    UnexpectedRollbackException::class
-                )
+                    UnexpectedRollbackException::class,
+                ),
             ) { handler.handle(message) }
         } catch (e: Throwable) {
             Sentry.captureException(unwrapSqsExceptions(e))

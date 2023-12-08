@@ -21,9 +21,8 @@ import uk.gov.justice.digital.hmpps.service.AllocationRiskService
 @RequestMapping("/allocation-demand")
 class AllocationDemandResource(
     private val allocationDemand: AllocationDemandService,
-    private val allocationRisk: AllocationRiskService
+    private val allocationRisk: AllocationRiskService,
 ) {
-
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @Operation(
         summary = "List of summary probation case details for cases that require allocation",
@@ -31,18 +30,18 @@ class AllocationDemandResource(
             Used to support the list of 'Unallocated Community Cases' in the HMPPS Workforce
             service which shows the list of cases that require allocation to a probation
             practitioner
-        """
+        """,
     )
     @PostMapping
     fun findUnallocatedForTeam(
         @Valid @RequestBody
-        request: AllocationDemandRequest
+        request: AllocationDemandRequest,
     ): AllocationDemandResponse =
         if (request.cases.isEmpty()) {
             AllocationDemandResponse(listOf())
         } else {
             allocationDemand.findAllocationDemand(
-                request
+                request,
             )
         }
 
@@ -53,12 +52,12 @@ class AllocationDemandResource(
             with a list of probation practitioners associated with the teams provided in the
             request. Used to support the 'Choose Practitioner' screen of the HMPPS Workforce
             service which is part of the case allocation workflow
-        """
+        """,
     )
     @GetMapping("/choose-practitioner")
     fun choosePractitioner(
         @RequestParam crn: String,
-        @RequestParam("teamCode", defaultValue = "") teamCodes: List<String> = listOf()
+        @RequestParam("teamCode", defaultValue = "") teamCodes: List<String> = listOf(),
     ) = allocationDemand.getChoosePractitionerResponse(crn, teamCodes)
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
@@ -68,10 +67,13 @@ class AllocationDemandResource(
             and management by probation practitioners for the person identified by the CRN and event
             provided in the request. Supports the 'Probation Record' screen of case allocation in
             the HMPPS Workforce service which is part of the case allocation workflow
-        """
+        """,
     )
     @GetMapping("/{crn}/{eventNumber}/probation-record")
-    fun getProbationRecord(@PathVariable crn: String, @PathVariable eventNumber: String) =
+    fun getProbationRecord(
+        @PathVariable crn: String,
+        @PathVariable eventNumber: String,
+    ) =
         allocationDemand.getProbationRecord(crn, eventNumber)
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
@@ -80,10 +82,13 @@ class AllocationDemandResource(
         description = """Summary information on the person on probation and probation practitioner
             identified by the CRN and staff code provided in the request. Used to support the
             post-allocation 'Impact' screen of the HMPPS Workforce service
-        """
+        """,
     )
     @GetMapping("/impact")
-    fun getImpact(@RequestParam crn: String, @RequestParam staff: String) = allocationDemand.getImpact(crn, staff)
+    fun getImpact(
+        @RequestParam crn: String,
+        @RequestParam staff: String,
+    ) = allocationDemand.getImpact(crn, staff)
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @Operation(
@@ -92,10 +97,12 @@ class AllocationDemandResource(
             person on probation identified by the CRN provided in the request. Supports the 'Risk'
             section of the 'Case View' within the HMPPS Workload service which is part of the case
             allocation workflow
-        """
+        """,
     )
     @GetMapping("/{crn}/risk")
-    fun getRisk(@PathVariable crn: String) = allocationRisk.getRiskRecord(crn)
+    fun getRisk(
+        @PathVariable crn: String,
+    ) = allocationRisk.getRiskRecord(crn)
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @Operation(
@@ -105,10 +112,12 @@ class AllocationDemandResource(
             in the request with a list of all active Delius events for that person that do not currently
             have a case allocation. Used to support choosing the event to allocate in the case allocation
             workflow of the HMPPS Workforce service
-        """
+        """,
     )
     @GetMapping("/{crn}/unallocated-events")
-    fun getUnallocatedEvents(@PathVariable crn: String) = allocationDemand.getUnallocatedEvents(crn)
+    fun getUnallocatedEvents(
+        @PathVariable crn: String,
+    ) = allocationDemand.getUnallocatedEvents(crn)
 
     @PreAuthorize("hasRole('ROLE_ALLOCATION_CONTEXT')")
     @Operation(
@@ -116,13 +125,13 @@ class AllocationDemandResource(
         description = """Detailed information on the probation case, event and probation practitioners
             identified in the request. Used to display a summary page after case allocation has been
             completed in the HMPPS Workforce service
-        """
+        """,
     )
     @GetMapping("/{crn}/{eventNumber}/allocation")
     fun getAllocationDemandStaff(
         @PathVariable crn: String,
         @PathVariable eventNumber: String,
         @RequestParam staff: String,
-        @RequestParam allocatingStaffUsername: String
+        @RequestParam allocatingStaffUsername: String,
     ) = allocationDemand.getAllocationDemandStaff(crn, eventNumber, staff, allocatingStaffUsername)
 }

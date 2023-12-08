@@ -50,7 +50,10 @@ internal class UpdateStatusActionTest {
 
     @ParameterizedTest
     @MethodSource("noChangeStatuses")
-    fun `no change when status is correct`(prisonerMovement: PrisonerMovement, custody: Custody) {
+    fun `no change when status is correct`(
+        prisonerMovement: PrisonerMovement,
+        custody: Custody,
+    ) {
         val res = action.accept(PrisonerMovementContext(prisonerMovement, custody))
         assertThat(res, instanceOf(ActionResult.Ignored::class.java))
         val ignored = res as ActionResult.Ignored
@@ -60,42 +63,47 @@ internal class UpdateStatusActionTest {
     @Test
     fun `unexpected status for hospital release is recorded`() {
         val person = PersonGenerator.generate("T1234ST")
-        val custody = CustodyGenerator.generate(
-            person,
-            InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN],
-            CustodialStatusCode.POST_SENTENCE_SUPERVISION
-        )
-        val prisonerMovement = PrisonerMovement.Released(
-            custody.disposal.event.person.nomsNumber,
-            "UNK",
-            PrisonerMovement.Type.RELEASED_TO_HOSPITAL,
-            "",
-            ZonedDateTime.now()
-        )
+        val custody =
+            CustodyGenerator.generate(
+                person,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN],
+                CustodialStatusCode.POST_SENTENCE_SUPERVISION,
+            )
+        val prisonerMovement =
+            PrisonerMovement.Released(
+                custody.disposal.event.person.nomsNumber,
+                "UNK",
+                PrisonerMovement.Type.RELEASED_TO_HOSPITAL,
+                "",
+                ZonedDateTime.now(),
+            )
 
-        val ex = assertThrows<IgnorableMessageException> {
-            action.accept(PrisonerMovementContext(prisonerMovement, custody))
-        }
+        val ex =
+            assertThrows<IgnorableMessageException> {
+                action.accept(PrisonerMovementContext(prisonerMovement, custody))
+            }
         assertThat(ex.message, equalTo("PrisonerStatusCorrect"))
     }
 
     @Test
     fun `hospital release when released in delius results in recall status`() {
         val person = PersonGenerator.generate("R1234CL")
-        val custody = EventGenerator.previouslyReleasedEvent(
-            person,
-            InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY]
-        ).disposal!!.custody!!
-        val prisonerMovement = PrisonerMovement.Released(
-            custody.disposal.event.person.nomsNumber,
-            InstitutionGenerator.DEFAULT.nomisCdeCode,
-            PrisonerMovement.Type.RELEASED_TO_HOSPITAL,
-            "HP",
-            ZonedDateTime.now()
-        )
+        val custody =
+            EventGenerator.previouslyReleasedEvent(
+                person,
+                InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.IN_COMMUNITY],
+            ).disposal!!.custody!!
+        val prisonerMovement =
+            PrisonerMovement.Released(
+                custody.disposal.event.person.nomsNumber,
+                InstitutionGenerator.DEFAULT.nomisCdeCode,
+                PrisonerMovement.Type.RELEASED_TO_HOSPITAL,
+                "HP",
+                ZonedDateTime.now(),
+            )
         withReferenceData(
             ReferenceDataGenerator.CUSTODIAL_STATUS[CustodialStatusCode.RECALLED]!!,
-            ReferenceDataGenerator.CUSTODY_EVENT_TYPE[CustodyEventTypeCode.STATUS_CHANGE]!!
+            ReferenceDataGenerator.CUSTODY_EVENT_TYPE[CustodyEventTypeCode.STATUS_CHANGE]!!,
         )
 
         val res = action.accept(PrisonerMovementContext(prisonerMovement, custody))
@@ -107,39 +115,44 @@ internal class UpdateStatusActionTest {
     }
 
     companion object {
-
         private const val NOMS_ID = "T1234ST"
-        private fun custody(csc: CustodialStatusCode) = CustodyGenerator.generate(
-            PersonGenerator.generate(NOMS_ID),
-            InstitutionGenerator.DEFAULT,
-            csc
-        )
 
-        private fun prisonerReceived(type: PrisonerMovement.Type) = PrisonerMovement.Received(
-            NOMS_ID,
-            InstitutionGenerator.DEFAULT.nomisCdeCode!!,
-            type,
-            "",
-            ZonedDateTime.now()
-        )
+        private fun custody(csc: CustodialStatusCode) =
+            CustodyGenerator.generate(
+                PersonGenerator.generate(NOMS_ID),
+                InstitutionGenerator.DEFAULT,
+                csc,
+            )
 
-        private val noChangeTypes = listOf(
-            CustodialStatusCode.POST_SENTENCE_SUPERVISION,
-            CustodialStatusCode.IN_CUSTODY,
-            CustodialStatusCode.IN_CUSTODY_IRC
-        )
+        private fun prisonerReceived(type: PrisonerMovement.Type) =
+            PrisonerMovement.Received(
+                NOMS_ID,
+                InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+                type,
+                "",
+                ZonedDateTime.now(),
+            )
 
-        private val receivedTypes = listOf(
-            PrisonerMovement.Type.ADMISSION,
-            PrisonerMovement.Type.TRANSFERRED,
-            PrisonerMovement.Type.RETURN_FROM_COURT,
-            PrisonerMovement.Type.TEMPORARY_ABSENCE_RETURN
-        )
+        private val noChangeTypes =
+            listOf(
+                CustodialStatusCode.POST_SENTENCE_SUPERVISION,
+                CustodialStatusCode.IN_CUSTODY,
+                CustodialStatusCode.IN_CUSTODY_IRC,
+            )
+
+        private val receivedTypes =
+            listOf(
+                PrisonerMovement.Type.ADMISSION,
+                PrisonerMovement.Type.TRANSFERRED,
+                PrisonerMovement.Type.RETURN_FROM_COURT,
+                PrisonerMovement.Type.TEMPORARY_ABSENCE_RETURN,
+            )
 
         @JvmStatic
-        fun noChangeStatuses() = noChangeTypes.flatMap { csc ->
-            receivedTypes.map { Arguments.of(prisonerReceived(it), custody(csc)) }
-        }
+        fun noChangeStatuses() =
+            noChangeTypes.flatMap { csc ->
+                receivedTypes.map { Arguments.of(prisonerReceived(it), custody(csc)) }
+            }
     }
 
     private fun withReferenceData(vararg referenceData: ReferenceData) {

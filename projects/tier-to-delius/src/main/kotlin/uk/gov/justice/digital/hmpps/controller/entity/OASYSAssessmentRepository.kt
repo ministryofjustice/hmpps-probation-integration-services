@@ -11,9 +11,12 @@ interface OASYSAssessmentRepository : JpaRepository<OASYSAssessment, Long> {
         select a from OASYSAssessment a
         where a.personId = :personId
         order by a.assessmentDate desc, a.lastModifiedDateTime desc
-    """
+    """,
     )
-    fun findLatestAssessment(personId: Long, pageable: Pageable = PageRequest.of(0, 1)): List<OASYSAssessment>
+    fun findLatestAssessment(
+        personId: Long,
+        pageable: Pageable = PageRequest.of(0, 1),
+    ): List<OASYSAssessment>
 }
 
 fun OASYSAssessmentRepository.findLatest(personId: Long) =

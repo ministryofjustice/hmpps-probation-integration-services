@@ -14,11 +14,11 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
         AND nom.caseNoteType = :cnTypeCode
         AND nsi.active = true AND nsi.softDeleted = false
         ORDER BY nsi.referralDate DESC
-    """
+    """,
     )
     fun findCaseNoteRelatedNsis(
         offenderId: Long,
         cnTypeCode: String,
-        pageRequest: PageRequest = PageRequest.of(0, 1)
+        pageRequest: PageRequest = PageRequest.of(0, 1),
     ): List<Nsi>
 }

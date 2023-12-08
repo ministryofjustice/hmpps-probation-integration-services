@@ -89,9 +89,10 @@ class AllocationDemandServiceTest {
 
     @Test
     fun `missing crn for choose practitioner is thrown`() {
-        val exception = assertThrows<NotFoundException> {
-            allocationDemandService.getChoosePractitionerResponse("ABC", listOf())
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                allocationDemandService.getChoosePractitionerResponse("ABC", listOf())
+            }
         assertThat(exception.message, equalTo("Person with crn of ABC not found"))
     }
 
@@ -136,7 +137,7 @@ class AllocationDemandServiceTest {
     fun `get probation record correctly sorts active and non-active events`(
         sentences: List<SentenceWithManager>,
         activeCount: Int,
-        inactiveCount: Int
+        inactiveCount: Int,
     ) {
         val person = PersonGenerator.DEFAULT
         val eventNumber = "2"
@@ -162,30 +163,31 @@ class AllocationDemandServiceTest {
 
     companion object {
         @JvmStatic
-        fun sentencesWithManagers() = listOf(
-            Arguments.of(listOf<SentenceWithManager>(), 0, 0),
-            Arguments.of(
-                listOf(
-                    SentenceWithManager(
-                        DisposalGenerator.DEFAULT,
-                        OffenceGenerator.generateMainOffence(),
-                        OrderManagerGenerator.DEFAULT.staff
-                    )
+        fun sentencesWithManagers() =
+            listOf(
+                Arguments.of(listOf<SentenceWithManager>(), 0, 0),
+                Arguments.of(
+                    listOf(
+                        SentenceWithManager(
+                            DisposalGenerator.DEFAULT,
+                            OffenceGenerator.generateMainOffence(),
+                            OrderManagerGenerator.DEFAULT.staff,
+                        ),
+                    ),
+                    1,
+                    0,
                 ),
-                1,
-                0
-            ),
-            Arguments.of(
-                listOf(
-                    SentenceWithManager(
-                        DisposalGenerator.INACTIVE,
-                        OffenceGenerator.generateMainOffence(),
-                        OrderManagerGenerator.DEFAULT.staff
-                    )
+                Arguments.of(
+                    listOf(
+                        SentenceWithManager(
+                            DisposalGenerator.INACTIVE,
+                            OffenceGenerator.generateMainOffence(),
+                            OrderManagerGenerator.DEFAULT.staff,
+                        ),
+                    ),
+                    0,
+                    1,
                 ),
-                0,
-                1
             )
-        )
     }
 }

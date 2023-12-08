@@ -16,7 +16,7 @@ sealed interface PrisonerMovement {
         override val type: Type,
         override val reason: String,
         override val occurredAt: ZonedDateTime,
-        override var reasonOverride: String? = null
+        override var reasonOverride: String? = null,
     ) : PrisonerMovement
 
     data class Released(
@@ -25,7 +25,7 @@ sealed interface PrisonerMovement {
         override val type: Type,
         override val reason: String,
         override val occurredAt: ZonedDateTime,
-        override var reasonOverride: String? = null
+        override var reasonOverride: String? = null,
     ) : PrisonerMovement
 
     enum class Type {
@@ -36,25 +36,31 @@ sealed interface PrisonerMovement {
         SENT_TO_COURT,
         TEMPORARY_ABSENCE_RELEASE,
         TEMPORARY_ABSENCE_RETURN,
-        TRANSFERRED
+        TRANSFERRED,
     }
 
-    fun isHospitalRelease() = this is Released && (
-        type == Type.RELEASED_TO_HOSPITAL || reason in listOf(
-            MovementReasonCodes.DETAINED_MENTAL_HEALTH,
-            MovementReasonCodes.RELEASE_MENTAL_HEALTH,
-            MovementReasonCodes.FINAL_DISCHARGE_PSYCHIATRIC
-        )
+    fun isHospitalRelease() =
+        this is Released && (
+            type == Type.RELEASED_TO_HOSPITAL || reason in
+                listOf(
+                    MovementReasonCodes.DETAINED_MENTAL_HEALTH,
+                    MovementReasonCodes.RELEASE_MENTAL_HEALTH,
+                    MovementReasonCodes.FINAL_DISCHARGE_PSYCHIATRIC,
+                )
         )
 
-    fun isIrcRelease() = this is Released && reason in listOf(
-        MovementReasonCodes.DISCHARGED_OR_DEPORTED,
-        MovementReasonCodes.DEPORTED_NO_SENTENCE,
-        MovementReasonCodes.DEPORTED_LICENCE
-    )
+    fun isIrcRelease() =
+        this is Released && reason in
+            listOf(
+                MovementReasonCodes.DISCHARGED_OR_DEPORTED,
+                MovementReasonCodes.DEPORTED_NO_SENTENCE,
+                MovementReasonCodes.DEPORTED_LICENCE,
+            )
 
-    fun isAbsconded() = this is Released && reason in listOf(
-        MovementReasonCodes.ABSCONDED,
-        MovementReasonCodes.ABSCONDED_ECL
-    )
+    fun isAbsconded() =
+        this is Released && reason in
+            listOf(
+                MovementReasonCodes.ABSCONDED,
+                MovementReasonCodes.ABSCONDED_ECL,
+            )
 }

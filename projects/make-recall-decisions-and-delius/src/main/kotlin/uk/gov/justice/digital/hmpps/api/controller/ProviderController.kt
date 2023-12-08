@@ -14,7 +14,9 @@ import uk.gov.justice.digital.hmpps.service.ProviderService
 class ProviderController(private val providerService: ProviderService) {
     @GetMapping("/provider/{code}")
     @Operation(summary = "Provider details by code")
-    fun getProvider(@PathVariable code: String) = providerService.getProviderByCode(code)
+    fun getProvider(
+        @PathVariable code: String,
+    ) = providerService.getProviderByCode(code)
 
     @GetMapping("/provider")
     @Operation(summary = "List active providers")

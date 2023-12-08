@@ -23,7 +23,6 @@ import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 class TelemetryServiceTest {
-
     @Mock
     private lateinit var telemetryClient: TelemetryClient
 
@@ -46,9 +45,9 @@ class TelemetryServiceTest {
                     1,
                     detailUrl,
                     ZonedDateTime.parse("2022-08-09T12:23:43.000+01:00[Europe/London]"),
-                    personReference = PersonReference(listOf(PersonIdentifier("CRN", "X12345")))
-                )
-            )
+                    personReference = PersonReference(listOf(PersonIdentifier("CRN", "X12345"))),
+                ),
+            ),
         )
 
         verify(telemetryClient).trackEvent(
@@ -58,7 +57,7 @@ class TelemetryServiceTest {
                 assertThat(it["detailUrl"], equalTo(detailUrl))
                 assertThat(it["CRN"], equalTo("X12345"))
             },
-            anyMap()
+            anyMap(),
         )
     }
 
@@ -68,14 +67,14 @@ class TelemetryServiceTest {
             HmppsDomainEvent(
                 eventType = "some.special.event",
                 version = 1,
-                occurredAt = ZonedDateTime.now()
-            )
+                occurredAt = ZonedDateTime.now(),
+            ),
         )
 
         verify(telemetryClient).trackEvent(
             eq("SOME_SPECIAL_EVENT_RECEIVED"),
             check { assertThat(it, not(hasProperty("detailUrl"))) },
-            anyMap()
+            anyMap(),
         )
     }
 
@@ -84,8 +83,8 @@ class TelemetryServiceTest {
         telemetryService.notificationReceived(
             Notification(
                 message = "this is a string",
-                attributes = MessageAttributes("test.event")
-            )
+                attributes = MessageAttributes("test.event"),
+            ),
         )
 
         verify(telemetryClient).trackEvent(eq("TEST_EVENT_RECEIVED"), anyMap(), anyMap())

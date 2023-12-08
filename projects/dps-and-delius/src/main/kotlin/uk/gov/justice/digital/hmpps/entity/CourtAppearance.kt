@@ -16,21 +16,16 @@ class CourtAppearance(
     @Id
     @Column(name = "court_appearance_id")
     val id: Long,
-
     @Column(name = "appearance_date")
     val date: ZonedDateTime,
-
     @Column
     val courtId: Long,
-
     @ManyToOne
     @JoinColumn(name = "event_id")
     val event: Event? = null,
-
     @ManyToOne
     @JoinColumn(name = "outcome_id")
     val outcome: ReferenceData? = null,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )

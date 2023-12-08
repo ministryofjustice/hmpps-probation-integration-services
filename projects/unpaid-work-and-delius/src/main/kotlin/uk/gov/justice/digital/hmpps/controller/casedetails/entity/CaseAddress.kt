@@ -37,5 +37,5 @@ class CaseAddress(
     val softDeleted: Boolean = false,
     @ManyToOne
     @JoinColumn(name = "address_status_id")
-    val status: ReferenceData
+    val status: ReferenceData,
 )

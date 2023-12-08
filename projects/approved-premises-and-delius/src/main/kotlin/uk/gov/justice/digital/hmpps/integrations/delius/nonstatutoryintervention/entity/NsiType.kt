@@ -15,15 +15,13 @@ class NsiType(
     @Id
     @Column(name = "nsi_type_id")
     val id: Long = 0,
-
     @Column(name = "code")
     val code: String,
-
-    val description: String
+    val description: String,
 )
 
 enum class NsiTypeCode(val code: String) {
-    APPROVED_PREMISES_RESIDENCE("APR01")
+    APPROVED_PREMISES_RESIDENCE("APR01"),
 }
 
 interface NsiTypeRepository : JpaRepository<NsiType, Long> {

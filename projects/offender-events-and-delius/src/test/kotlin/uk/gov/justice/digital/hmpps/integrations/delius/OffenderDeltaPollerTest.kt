@@ -19,7 +19,6 @@ import java.time.format.DateTimeFormatter
 
 @ExtendWith(MockitoExtension::class)
 class OffenderDeltaPollerTest {
-
     @Mock
     private lateinit var service: OffenderDeltaService
 
@@ -41,7 +40,7 @@ class OffenderDeltaPollerTest {
         verify(telemetryService).trackEvent(
             "OffenderEventsProcessingFailed",
             mapOf("Exception" to "event not processed"),
-            mapOf()
+            mapOf(),
         )
     }
 
@@ -59,21 +58,21 @@ class OffenderDeltaPollerTest {
             listOf(
                 Notification(
                     OffenderEvent(123456, "X123456", null, 67891, dateTime),
-                    MessageAttributes("OFFENDER_CHANGED")
+                    MessageAttributes("OFFENDER_CHANGED"),
                 ),
                 Notification(
                     OffenderEvent(123456, "X123456", null, 67891, dateTime),
-                    MessageAttributes("OFFENDER_MANAGER_CHANGED")
+                    MessageAttributes("OFFENDER_MANAGER_CHANGED"),
                 ),
                 Notification(
                     OffenderEvent(223456, "X223456", null, 67890, dateTime),
-                    MessageAttributes("ORDER_MANAGER_CHANGED")
+                    MessageAttributes("ORDER_MANAGER_CHANGED"),
                 ),
                 Notification(
                     OffenderEvent(223456, "X223456", null, 67890, dateTime),
-                    MessageAttributes("CONVICTION_CHANGED")
-                )
-            )
+                    MessageAttributes("CONVICTION_CHANGED"),
+                ),
+            ),
         )
 
         poller.checkAndSendEvents()
@@ -82,36 +81,36 @@ class OffenderDeltaPollerTest {
             mapOf(
                 "crn" to "X123456",
                 "eventType" to "OFFENDER_CHANGED",
-                "occurredAt" to DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime)
+                "occurredAt" to DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime),
             ),
-            mapOf()
+            mapOf(),
         )
         verify(telemetryService).trackEvent(
             "OffenderEventPublished",
             mapOf(
                 "crn" to "X123456",
                 "eventType" to "OFFENDER_MANAGER_CHANGED",
-                "occurredAt" to DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime)
+                "occurredAt" to DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime),
             ),
-            mapOf()
+            mapOf(),
         )
         verify(telemetryService).trackEvent(
             "OffenderEventPublished",
             mapOf(
                 "crn" to "X223456",
                 "eventType" to "ORDER_MANAGER_CHANGED",
-                "occurredAt" to DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime)
+                "occurredAt" to DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime),
             ),
-            mapOf()
+            mapOf(),
         )
         verify(telemetryService).trackEvent(
             "OffenderEventPublished",
             mapOf(
                 "crn" to "X223456",
                 "eventType" to "CONVICTION_CHANGED",
-                "occurredAt" to DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime)
+                "occurredAt" to DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime),
             ),
-            mapOf()
+            mapOf(),
         )
     }
 }

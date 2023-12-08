@@ -27,24 +27,19 @@ interface CaseOffence {
 @Entity
 @SQLRestriction("soft_deleted = 0")
 class MainOffence(
-
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
     @JoinColumn(name = "offence_id")
     @ManyToOne
     val offence: Offence,
-
     @Column(name = "offence_date")
     val date: LocalDate,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
-
     @Id
     @Column(name = "main_offence_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
@@ -52,40 +47,32 @@ class MainOffence(
 @Entity
 @SQLRestriction("soft_deleted = 0")
 class AdditionalOffence(
-
     @ManyToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
     @JoinColumn(name = "offence_id")
     @ManyToOne
     val offence: Offence,
-
     @Column(name = "offence_date")
     val date: LocalDate?,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
-
     @Id
     @Column(name = "additional_offence_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
 @Table(name = "r_offence")
 @Entity
 class Offence(
-
     @Column(columnDefinition = "char(5)")
     val code: String,
-
     @Column
     val description: String,
-
     @Id
     @Column(name = "offence_id")
-    val id: Long
+    val id: Long,
 )
 
 interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
@@ -98,7 +85,7 @@ interface MainOffenceRepository : JpaRepository<MainOffence, Long> {
         select ao.offence.code, ao.offence.description, ao.date, false, ao.event.number
         from AdditionalOffence ao
         where ao.event.personId = :personId
-    """
+    """,
     )
     fun findOffencesFor(personId: Long): List<CaseOffence>
 }

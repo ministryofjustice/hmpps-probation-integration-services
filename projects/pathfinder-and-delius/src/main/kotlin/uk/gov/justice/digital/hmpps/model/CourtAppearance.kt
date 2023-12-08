@@ -7,14 +7,14 @@ data class CourtAppearance(
     val type: Type,
     val courtCode: String,
     val courtName: String,
-    val crn: String
+    val crn: String,
 )
 
 data class Type(
     val code: String,
-    val description: String
+    val description: String,
 )
 
 data class CourtAppearancesContainer(
-    val courtAppearances: List<CourtAppearance> = listOf()
+    val courtAppearances: List<CourtAppearance> = listOf(),
 )

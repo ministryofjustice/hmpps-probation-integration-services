@@ -21,22 +21,17 @@ import java.time.LocalDate
 @Table(name = "offender")
 @SQLRestriction("soft_deleted = 0")
 class Person(
-
     @Column(columnDefinition = "char(7)")
     val crn: String,
-
     @Column(name = "noms_number", columnDefinition = "char(7)")
     val nomsId: String? = null,
-
     val exclusionMessage: String? = null,
     val restrictionMessage: String? = null,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Id
     @Column(name = "offender_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
@@ -44,53 +39,39 @@ class Person(
 @Table(name = "offender")
 @SQLRestriction("soft_deleted = 0")
 class PersonDetail(
-
     @Column(columnDefinition = "char(7)")
     val crn: String,
-
     @Column(name = "first_name")
     val forename: String,
-
     @Column(name = "surname")
     val surname: String,
-
     @Column(name = "date_of_birth_date")
     val dob: LocalDate,
-
     @Column(name = "telephone_number")
     val telephoneNumber: String?,
-
     @Column(name = "mobile_number")
     val mobileNumber: String?,
-
     @Column(name = "e_mail_address")
     val emailAddress: String?,
-
     @ManyToOne
     @JoinColumn(name = "gender_id")
     val gender: ReferenceData?,
-
     @ManyToOne
     @JoinColumn(name = "ethnicity_id")
     val ethnicity: ReferenceData?,
-
     @ManyToOne
     @JoinColumn(name = "language_id")
     val language: ReferenceData?,
-
     @ManyToOne
     @JoinColumn(name = "religion_id")
     val religion: ReferenceData?,
-
     @OneToMany(mappedBy = "person")
     val disabilities: List<Disability>,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
-
     @Id
     @Column(name = "offender_id")
-    val id: Long
+    val id: Long,
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {

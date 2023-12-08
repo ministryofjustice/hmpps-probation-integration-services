@@ -19,24 +19,18 @@ class Event(
     @Id
     @Column(name = "event_id", nullable = false)
     val id: Long,
-
     @Column(name = "offender_id", nullable = false)
     val offenderId: Long,
-
     @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
     val active: Boolean,
-
     @Column(name = "event_number", nullable = false)
     val eventNumber: String,
-
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
-
     @OneToOne(mappedBy = "event")
     val mainOffence: MainOffence? = null,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -47,18 +41,14 @@ class Disposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long,
-
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
     val disposalDate: LocalDate,
-
     @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
     val active: Boolean = true,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -69,17 +59,14 @@ class MainOffence(
     @Id
     @Column(name = "main_offence_id")
     val id: Long,
-
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
     @ManyToOne
     @JoinColumn(name = "offence_id")
     val offence: Offence,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -94,5 +81,5 @@ class Offence(
     val mainCategoryDescription: String,
     @Column(name = "sub_category_code", columnDefinition = "char(2)")
     val subCategoryCode: String,
-    val subCategoryDescription: String
+    val subCategoryDescription: String,
 )

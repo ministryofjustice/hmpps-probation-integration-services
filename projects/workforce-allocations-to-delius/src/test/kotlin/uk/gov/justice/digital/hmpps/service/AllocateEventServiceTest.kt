@@ -33,7 +33,6 @@ import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 
 @ExtendWith(MockitoExtension::class)
 internal class AllocateEventServiceTest {
-
     @Mock
     private lateinit var auditedInteractionService: AuditedInteractionService
 
@@ -67,12 +66,13 @@ internal class AllocateEventServiceTest {
     fun `when event not found exception thrown`() {
         whenever(eventRepository.findByPersonCrnAndNumber(any(), any())).thenReturn(null)
 
-        val ex = assertThrows<NotFoundException> {
-            allocateEventService.createEventAllocation(
-                PersonGenerator.DEFAULT.crn,
-                allocationDetail
-            )
-        }
+        val ex =
+            assertThrows<NotFoundException> {
+                allocateEventService.createEventAllocation(
+                    PersonGenerator.DEFAULT.crn,
+                    allocationDetail,
+                )
+            }
         assertThat(ex.message, equalTo("Event 1 not found for crn X123456"))
     }
 
@@ -81,15 +81,15 @@ internal class AllocateEventServiceTest {
         whenever(
             eventRepository.findByPersonCrnAndNumber(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail.eventNumber.toString()
-            )
+                allocationDetail.eventNumber.toString(),
+            ),
         )
             .thenReturn(EventGenerator.generate(active = false))
 
         assertThrows<NotActiveException> {
             allocateEventService.createEventAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail
+                allocationDetail,
             )
         }
     }
@@ -100,8 +100,8 @@ internal class AllocateEventServiceTest {
         whenever(
             eventRepository.findByPersonCrnAndNumber(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail.eventNumber.toString()
-            )
+                allocationDetail.eventNumber.toString(),
+            ),
         ).thenReturn(event)
 
         whenever(orderManagerRepository.findActiveManagerAtDate(event.id, allocationDetail.createdDate))
@@ -110,23 +110,24 @@ internal class AllocateEventServiceTest {
         assertThrows<NotFoundException> {
             allocateEventService.createEventAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail
+                allocationDetail,
             )
         }
     }
 
     @Test
     fun `when duplicate allocation noop`() {
-        val allocationDetail = allocationDetail.copy(
-            staffCode = OrderManagerGenerator.DEFAULT.staff.code,
-            teamCode = OrderManagerGenerator.DEFAULT.team.code
-        )
+        val allocationDetail =
+            allocationDetail.copy(
+                staffCode = OrderManagerGenerator.DEFAULT.staff.code,
+                teamCode = OrderManagerGenerator.DEFAULT.team.code,
+            )
         val event = EventGenerator.generate()
         whenever(
             eventRepository.findByPersonCrnAndNumber(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail.eventNumber.toString()
-            )
+                allocationDetail.eventNumber.toString(),
+            ),
         ).thenReturn(event)
 
         whenever(orderManagerRepository.findActiveManagerAtDate(event.id, allocationDetail.createdDate))
@@ -135,7 +136,7 @@ internal class AllocateEventServiceTest {
         assertDoesNotThrow {
             allocateEventService.createEventAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail
+                allocationDetail,
             )
         }
         verify(eventRepository, never()).countPendingTransfers(any())
@@ -147,8 +148,8 @@ internal class AllocateEventServiceTest {
         whenever(
             eventRepository.findByPersonCrnAndNumber(
                 PersonGenerator.DEFAULT.crn,
-                "1"
-            )
+                "1",
+            ),
         ).thenReturn(event)
 
         whenever(orderManagerRepository.findActiveManagerAtDate(event.id, allocationDetail.createdDate))
@@ -159,7 +160,7 @@ internal class AllocateEventServiceTest {
         assertThrows<ConflictException> {
             allocateEventService.createEventAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail
+                allocationDetail,
             )
         }
     }
@@ -170,8 +171,8 @@ internal class AllocateEventServiceTest {
         whenever(
             eventRepository.findByPersonCrnAndNumber(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail.eventNumber.toString()
-            )
+                allocationDetail.eventNumber.toString(),
+            ),
         ).thenReturn(event)
         whenever(orderManagerRepository.findActiveManagerAtDate(event.id, allocationDetail.createdDate))
             .thenReturn(OrderManagerGenerator.DEFAULT)
@@ -181,7 +182,7 @@ internal class AllocateEventServiceTest {
         assertThrows<NotFoundException> {
             allocateEventService.createEventAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail
+                allocationDetail,
             )
         }
     }

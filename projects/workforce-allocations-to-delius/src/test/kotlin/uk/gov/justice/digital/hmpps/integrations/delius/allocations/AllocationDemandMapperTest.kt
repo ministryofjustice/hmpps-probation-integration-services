@@ -24,7 +24,6 @@ import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 class AllocationDemandMapperTest {
-
     @Mock
     lateinit var resultSet: ResultSet
 
@@ -32,32 +31,33 @@ class AllocationDemandMapperTest {
 
     @BeforeEach
     fun setUp() {
-        expected = AllocationResponse(
-            "X123456",
-            Name("John", "William", "Smith"),
-            Event(
-                "1",
+        expected =
+            AllocationResponse(
+                "X123456",
+                Name("John", "William", "Smith"),
+                Event(
+                    "1",
+                    Manager(
+                        "EM123",
+                        Name("Emma", "Jane", "Butane"),
+                        "T123",
+                    ),
+                ),
+                Sentence("Community Service", LocalDate.now().minusDays(10), "3 Months"),
+                InitialAppointment(
+                    LocalDate.now().plusDays(10),
+                    StaffMember("N01UATU", Name("Unallocated", null, "Staff"), grade = "Grade 1"),
+                ),
+                NamedCourt("Darlington Crown Court"),
+                CaseType.COMMUNITY,
+                ProbationStatus(ManagementStatus.PREVIOUSLY_MANAGED),
                 Manager(
-                    "EM123",
-                    Name("Emma", "Jane", "Butane"),
-                    "T123"
-                )
-            ),
-            Sentence("Community Service", LocalDate.now().minusDays(10), "3 Months"),
-            InitialAppointment(
-                LocalDate.now().plusDays(10),
-                StaffMember("N01UATU", Name("Unallocated", null, "Staff"), grade = "Grade 1")
-            ),
-            NamedCourt("Darlington Crown Court"),
-            CaseType.COMMUNITY,
-            ProbationStatus(ManagementStatus.PREVIOUSLY_MANAGED),
-            Manager(
-                "MAN1",
-                Name("Bob", null, "Smith"),
-                "Team1",
-                "PSO"
+                    "MAN1",
+                    Name("Bob", null, "Smith"),
+                    "Team1",
+                    "PSO",
+                ),
             )
-        )
 
         whenever(resultSet.getString("crn")).thenReturn(expected.crn)
         whenever(resultSet.getString("forename")).thenReturn(expected.name.forename)

@@ -10,7 +10,10 @@ class ActionProcessor(actionsList: List<PrisonerMovementAction>, private val eve
     private val actions = actionsList.associateBy { it.name }
 
     @Transactional(noRollbackFor = [IgnorableMessageException::class])
-    fun processActions(prisonerMovement: PrisonerMovement, actionNames: List<String>): List<ActionResult> =
+    fun processActions(
+        prisonerMovement: PrisonerMovement,
+        actionNames: List<String>,
+    ): List<ActionResult> =
         try {
             eventService.getActiveCustodialEvents(prisonerMovement.nomsId)
                 .flatMap { event ->
@@ -21,7 +24,7 @@ class ActionProcessor(actionsList: List<PrisonerMovementAction>, private val eve
                         } catch (ie: IgnorableMessageException) {
                             ActionResult.Ignored(
                                 ie.message,
-                                prisonerMovement.telemetryProperties() + ie.additionalProperties
+                                prisonerMovement.telemetryProperties() + ie.additionalProperties,
                             )
                         }
                     }

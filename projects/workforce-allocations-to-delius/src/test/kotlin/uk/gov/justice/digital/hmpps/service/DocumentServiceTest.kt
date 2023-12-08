@@ -25,7 +25,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.document.entity.Offender
 
 @ExtendWith(MockitoExtension::class)
 class DocumentServiceTest {
-
     @Mock
     private lateinit var docPersonRepository: DocPersonRepository
 
@@ -42,9 +41,10 @@ class DocumentServiceTest {
     fun `get documents person not found`() {
         val crn = "D111111"
         whenever(docPersonRepository.findByCrn(crn)).thenReturn(null)
-        val ex = assertThrows<NotFoundException> {
-            service.getDocumentsByCrn(crn)
-        }
+        val ex =
+            assertThrows<NotFoundException> {
+                service.getDocumentsByCrn(crn)
+            }
         val expected = NotFoundException("Person", "crn", crn)
         assertEquals(expected.message, ex.message)
     }
@@ -63,28 +63,29 @@ class DocumentServiceTest {
         val crn = "D111111"
         whenever(docPersonRepository.findByCrn(crn)).thenReturn(DocPerson(1L, crn, false))
 
-        val eventDocuments = listOf(
-            EventDocument(
-                DocEvent(
-                    1L,
-                    PersonGenerator.DEFAULT,
-                    true,
-                    "1",
-                    null,
-                    null
-                )
-            ),
-            EventDocument(
-                DocEvent(
-                    1L,
-                    PersonGenerator.DEFAULT,
-                    false,
-                    "1",
-                    null,
-                    null
-                )
+        val eventDocuments =
+            listOf(
+                EventDocument(
+                    DocEvent(
+                        1L,
+                        PersonGenerator.DEFAULT,
+                        true,
+                        "1",
+                        null,
+                        null,
+                    ),
+                ),
+                EventDocument(
+                    DocEvent(
+                        1L,
+                        PersonGenerator.DEFAULT,
+                        false,
+                        "1",
+                        null,
+                        null,
+                    ),
+                ),
             )
-        )
 
         whenever(documentRepository.findAllByPersonIdAndSoftDeletedIsFalse(1L)).thenReturn(eventDocuments)
         val documents = service.getDocumentsByCrn(crn)
@@ -112,9 +113,10 @@ class DocumentServiceTest {
         val crn = "D111111"
         val id = "123-123"
         whenever(docPersonRepository.findByCrn(crn)).thenReturn(null)
-        val ex = assertThrows<NotFoundException> {
-            service.getDocument(crn, id)
-        }
+        val ex =
+            assertThrows<NotFoundException> {
+                service.getDocument(crn, id)
+            }
         val expected = NotFoundException("Person", "crn", crn)
         assertEquals(expected.message, ex.message)
     }
@@ -127,9 +129,10 @@ class DocumentServiceTest {
         document.personId = 10L
         whenever(docPersonRepository.findByCrn(crn)).thenReturn(DocPerson(1L, crn, false))
         whenever(documentRepository.findByAlfrescoIdAndSoftDeletedIsFalse(id)).thenReturn(document)
-        val ex = assertThrows<ConflictException> {
-            service.getDocument(crn, id)
-        }
+        val ex =
+            assertThrows<ConflictException> {
+                service.getDocument(crn, id)
+            }
         assertEquals("Document and CRN do not match", ex.message)
     }
 }

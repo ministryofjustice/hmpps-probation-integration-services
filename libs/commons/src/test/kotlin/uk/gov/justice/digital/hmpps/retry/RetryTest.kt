@@ -11,7 +11,6 @@ import java.sql.SQLException
 import java.util.concurrent.atomic.AtomicInteger
 
 internal class RetryTest {
-
     @Test
     fun `when exception thrown retry until max retries`() {
         val counter = AtomicInteger(0)
@@ -27,9 +26,10 @@ internal class RetryTest {
     @Test
     fun `when successful no retries`() {
         val counter = AtomicInteger(0)
-        val result = retry(3) {
-            counter.incrementAndGet()
-        }
+        val result =
+            retry(3) {
+                counter.incrementAndGet()
+            }
         assertThat(result, equalTo(1))
     }
 

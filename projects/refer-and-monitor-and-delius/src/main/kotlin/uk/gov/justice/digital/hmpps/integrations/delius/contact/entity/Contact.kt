@@ -35,82 +35,58 @@ import java.time.ZonedDateTime
 @SQLRestriction("soft_deleted = 0")
 @SequenceGenerator(name = "contact_id_generator", sequenceName = "contact_id_seq", allocationSize = 1)
 class Contact(
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
-
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
     val type: ContactType,
-
     @Column(name = "contact_date")
     var date: LocalDate = LocalDate.now(),
-
     @Column(name = "contact_start_time")
     var startTime: ZonedDateTime,
-
     @Column(name = "contact_end_time")
     var endTime: ZonedDateTime? = null,
-
     @Column(name = "attended")
     @Convert(converter = YesNoConverter::class)
     var attended: Boolean? = null,
-
     @Column(name = "complied")
     @Convert(converter = YesNoConverter::class)
     var complied: Boolean? = null,
-
     @Column(name = "latest_enforcement_action_id")
     var enforcementActionId: Long? = null,
-
     var enforcement: Boolean? = null,
-
     val eventId: Long? = null,
-
     val nsiId: Long? = null,
-
     @Column(name = "probation_area_id")
     val providerId: Long,
     val teamId: Long,
     val staffId: Long,
-
     @Column(name = "office_location_id")
     var locationId: Long? = null,
-
     @Column(name = "rar_activity", length = 1)
     @Convert(converter = YesNoConverter::class)
     var rarActivity: Boolean? = null,
-
     val linkedContactId: Long? = null,
-
     var externalReference: String? = null,
-
     @Id
     @Column(name = "contact_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_generator")
     val id: Long = 0,
-
     @Version
     @Column(name = "row_version")
     val version: Long = 0,
-
     @CreatedDate
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
-
     @CreatedBy
     var createdByUserId: Long = 0,
-
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
-
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
-
     @Column(nullable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
-
-    val partitionAreaId: Long = 0
+    val partitionAreaId: Long = 0,
 ) {
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")
@@ -140,26 +116,28 @@ class Contact(
         private set
 
     fun addNotes(notes: String?): Contact {
-        this.notes = (this.notes ?: "") + """${System.lineSeparator()}
+        this.notes = (this.notes ?: "") +
+            """${System.lineSeparator()}
             |$notes
-        """.trimMargin()
+            """.trimMargin()
         return this
     }
 
     private fun creditHours() {
-        hoursCredited = if (outcome?.code == ContactOutcome.Code.COMPLIED.value && duration > Duration.ZERO) {
-            BigDecimal.valueOf(duration.toMinutes())
-                .divide(BigDecimal(60), 2, RoundingMode.HALF_UP)
-                .toDouble()
-        } else {
-            null
-        }
+        hoursCredited =
+            if (outcome?.code == ContactOutcome.Code.COMPLIED.value && duration > Duration.ZERO) {
+                BigDecimal.valueOf(duration.toMinutes())
+                    .divide(BigDecimal(60), 2, RoundingMode.HALF_UP)
+                    .toDouble()
+            } else {
+                null
+            }
     }
 
     fun replaceIfRescheduled(
         externalReference: String,
         startTime: ZonedDateTime,
-        endTime: ZonedDateTime
+        endTime: ZonedDateTime,
     ): Contact? =
         if (startTime.hasChanged(this.startTime) || endTime.hasChanged(this.endTime)) {
             Contact(
@@ -175,7 +153,7 @@ class Contact(
                 staffId = staffId,
                 locationId = locationId,
                 rarActivity = rarActivity,
-                externalReference = externalReference
+                externalReference = externalReference,
             )
         } else {
             this.externalReference = externalReference
@@ -196,7 +174,7 @@ class ContactType(
     val attendanceContact: Boolean,
     @Id
     @Column(name = "contact_type_id")
-    val id: Long
+    val id: Long,
 ) {
     enum class Code(val value: String, val rar: Boolean = false) {
         REFER_TO_PERSON_MANAGER("AROM"),
@@ -208,7 +186,7 @@ class ContactType(
         NSI_COMMENCED("NCOM"),
         NSI_TERMINATED("NTER"),
         IN_PROGRESS("C091"),
-        COMPLETED("C092")
+        COMPLETED("C092"),
     }
 }
 
@@ -217,25 +195,22 @@ class ContactType(
 @Table(name = "r_contact_outcome_type")
 class ContactOutcome(
     val code: String,
-
     @Column(name = "outcome_attendance", length = 1)
     @Convert(converter = YesNoConverter::class)
     var attendance: Boolean?,
-
     @Column(name = "outcome_compliant_acceptable", length = 1)
     @Convert(converter = YesNoConverter::class)
     var compliantAcceptable: Boolean?,
-
     @Id
     @Column(name = "contact_outcome_type_id")
-    val id: Long
+    val id: Long,
 ) {
     enum class Code(val value: String) {
         COMPLIED("ATTC"),
         FAILED_TO_COMPLY("AFTC"),
         FAILED_TO_ATTEND("AFTA"),
         RESCHEDULED_SERVICE_REQUEST("RSSR"),
-        WITHDRAWN("APPW")
+        WITHDRAWN("APPW"),
     }
 }
 
@@ -244,53 +219,40 @@ class ContactOutcome(
 @Table(name = "enforcement")
 @SQLRestriction("soft_deleted = 0")
 class Enforcement(
-
     @ManyToOne
     @JoinColumn(name = "contact_id")
     val contact: Contact,
-
     @ManyToOne
     @JoinColumn(name = "enforcement_action_id")
     val action: EnforcementAction? = null,
-
     @Column(name = "response_date")
     val responseDate: ZonedDateTime? = null,
-
     @Column(name = "action_taken_date")
     val actionTakenDate: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(name = "action_taken_time")
     val actionTakenTime: ZonedDateTime = ZonedDateTime.now(),
-
     @Id
     @SequenceGenerator(name = "enforcement_id_seq", sequenceName = "enforcement_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "enforcement_id_seq")
     @Column(name = "enforcement_id")
     val id: Long = 0,
-
     @Column(name = "partition_area_id")
     val partitionAreaId: Long = 0,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Column(name = "row_version")
     @Version
     val version: Long = 0,
-
     @CreatedDate
     @Column(name = "created_datetime")
     var createdDateTime: ZonedDateTime = ZonedDateTime.now(),
-
     @LastModifiedDate
     @Column(name = "last_updated_datetime")
     var lastUpdatedDateTime: ZonedDateTime = ZonedDateTime.now(),
-
     @CreatedBy
     var createdByUserId: Long = 0,
-
     @LastModifiedBy
-    var lastUpdatedUserId: Long = 0
+    var lastUpdatedUserId: Long = 0,
 )
 
 @Immutable
@@ -300,16 +262,14 @@ class EnforcementAction(
     val code: String,
     val description: String,
     val responseByPeriod: Long?,
-
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
     val contactType: ContactType,
-
     @Id
     @Column(name = "enforcement_action_id")
-    val id: Long = 0
+    val id: Long = 0,
 ) {
     enum class Code(val value: String) {
-        REFER_TO_PERSON_MANAGER("ROM")
+        REFER_TO_PERSON_MANAGER("ROM"),
     }
 }

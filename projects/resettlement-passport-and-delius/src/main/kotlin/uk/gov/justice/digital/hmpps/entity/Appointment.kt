@@ -24,45 +24,34 @@ import java.time.ZonedDateTime
 @Table(name = "contact")
 @SQLRestriction("soft_deleted = 0")
 class Appointment(
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
-
     @ManyToOne
     @JoinColumn(name = "contact_type_id")
     val type: AppointmentType,
-
     @Column(name = "contact_date")
     val date: LocalDate,
-
     @Column(name = "contact_start_time")
     val startTime: ZonedDateTime,
-
     @Column(name = "contact_end_time")
     val endTime: ZonedDateTime?,
-
     @ManyToOne
     @JoinColumn(name = "office_location_id")
     val location: Location?,
-
     @ManyToOne
     @JoinColumn(name = "staff_id")
     val staff: Staff,
-
     @Column(name = "description")
     val description: String?,
-
     @ManyToOne
     @JoinColumn(name = "contact_outcome_type_id")
     val outcome: AppointmentOutcome?,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
-
     @Id
     @Column(name = "contact_id")
-    val id: Long
+    val id: Long,
 ) {
     val duration: Duration
         get() =
@@ -92,7 +81,7 @@ class AppointmentType(
     val attendanceContact: Boolean,
     @Id
     @Column(name = "contact_type_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
@@ -103,7 +92,7 @@ class AppointmentOutcome(
     val description: String,
     @Id
     @Column(name = "contact_outcome_type_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
@@ -112,7 +101,6 @@ class AppointmentOutcome(
 class Location(
     @Column(name = "code", columnDefinition = "char(7)")
     val code: String,
-
     val description: String,
     val buildingName: String?,
     val buildingNumber: String?,
@@ -122,10 +110,9 @@ class Location(
     val county: String?,
     val postcode: String?,
     val telephoneNumber: String?,
-
     @Id
     @Column(name = "office_location_id")
-    val id: Long
+    val id: Long,
 )
 
 interface AppointmentRepository : JpaRepository<Appointment, Long> {
@@ -141,7 +128,12 @@ interface AppointmentRepository : JpaRepository<Appointment, Long> {
         and t.attendanceContact = true
         and a.date >= :start and a.date <= :end
         order by a.date desc, a.startTime desc
-    """
+    """,
     )
-    fun findAppointmentsFor(crn: String, start: LocalDate, end: LocalDate, pageable: Pageable): Page<Appointment>
+    fun findAppointmentsFor(
+        crn: String,
+        start: LocalDate,
+        end: LocalDate,
+        pageable: Pageable,
+    ): Page<Appointment>
 }

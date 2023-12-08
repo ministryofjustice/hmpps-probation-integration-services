@@ -20,40 +20,34 @@ import java.io.Serializable
 class Institution(
     @EmbeddedId
     val id: InstitutionId,
-
     @Column(nullable = false, columnDefinition = "char(6)")
     val code: String,
-
     @Column
     val nomisCdeCode: String?,
-
     @Column(nullable = false)
     val description: String,
-
     @OneToOne(mappedBy = "institution")
     val probationArea: ProbationArea? = null,
-
     @Column(name = "immigration_removal_centre")
     @Convert(converter = YesNoConverter::class)
     val irc: Boolean? = null,
-
     @Column(name = "secure_hospital")
     @Convert(converter = YesNoConverter::class)
-    val secureHospital: Boolean? = null
+    val secureHospital: Boolean? = null,
 )
 
 @Embeddable
 data class InstitutionId(
     @Column(name = "institution_id")
     val institutionId: Long,
-
     @Column(name = "establishment")
     @Convert(converter = YesNoConverter::class)
-    val establishment: Boolean
+    val establishment: Boolean,
 ) : Serializable
 
 interface InstitutionRepository : JpaRepository<Institution, InstitutionId> {
     fun findByNomisCdeCode(code: String): Institution?
+
     fun findByCode(code: String): Institution?
 }
 

@@ -4,7 +4,7 @@ import java.time.ZonedDateTime
 
 data class OasysRoshAssessment(
     val limitedAccessOffender: Boolean,
-    val assessments: List<OasysRoshDetails>
+    val assessments: List<OasysRoshDetails>,
 )
 
 data class OasysRoshDetails(
@@ -25,5 +25,5 @@ data class OasysRoshDetails(
     val riskKnownAdultCommunity: String? = null,
     val riskPublicCustody: String? = null,
     val riskPublicCommunity: String? = null,
-    val riskChildrenCustody: String? = null
+    val riskChildrenCustody: String? = null,
 ) : OasysAssessment()

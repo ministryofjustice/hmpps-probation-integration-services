@@ -11,8 +11,9 @@ class RetryInterceptor : ClientHttpRequestInterceptor {
     override fun intercept(
         request: HttpRequest,
         body: ByteArray,
-        execution: ClientHttpRequestExecution
-    ): ClientHttpResponse = retry(3, listOf(RestClientException::class)) {
-        execution.execute(request, body)
-    }
+        execution: ClientHttpRequestExecution,
+    ): ClientHttpResponse =
+        retry(3, listOf(RestClientException::class)) {
+            execution.execute(request, body)
+        }
 }

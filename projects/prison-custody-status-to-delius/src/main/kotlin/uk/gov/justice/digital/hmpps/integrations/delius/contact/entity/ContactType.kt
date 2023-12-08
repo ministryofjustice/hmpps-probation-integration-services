@@ -15,9 +15,8 @@ class ContactType(
     @Id
     @Column(name = "contact_type_id", nullable = false)
     val id: Long,
-
     @Column(nullable = false)
-    val code: String
+    val code: String,
 ) {
     enum class Code(val value: String) {
         RELEASE_FROM_CUSTODY("EREL"),
@@ -26,7 +25,7 @@ class ContactType(
         PRISON_MANAGER_AUTOMATIC_TRANSFER("EPOMAT"),
         COMPONENT_PROVIDER_TRANSFER_REJECTED("ETCX"),
         CHANGE_OF_INSTITUTION("ETCP"),
-        DIED_IN_CUSTODY("DUS3")
+        DIED_IN_CUSTODY("DUS3"),
     }
 }
 

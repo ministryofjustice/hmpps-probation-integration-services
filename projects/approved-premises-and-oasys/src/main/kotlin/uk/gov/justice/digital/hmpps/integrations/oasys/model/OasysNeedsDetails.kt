@@ -4,7 +4,7 @@ import java.time.ZonedDateTime
 
 data class OasysNeedsDetails(
     val limitedAccessOffender: Boolean,
-    val assessments: List<OasysNeedsAssessment>
+    val assessments: List<OasysNeedsAssessment>,
 )
 
 data class OasysNeedsAssessment(
@@ -48,5 +48,5 @@ data class OasysNeedsAssessment(
     val attIssuesDetails: String? = null,
     val thinkLinkedToReoffending: String? = null,
     val thinkLinkedToHarm: String? = null,
-    val thingIssuesDetails: String? = null
+    val thingIssuesDetails: String? = null,
 ) : OasysAssessment()

@@ -7,5 +7,5 @@ data class Staff(
     val name: Name,
     val teams: List<TeamDetails>,
     val username: String?,
-    val email: String?
+    val email: String?,
 )

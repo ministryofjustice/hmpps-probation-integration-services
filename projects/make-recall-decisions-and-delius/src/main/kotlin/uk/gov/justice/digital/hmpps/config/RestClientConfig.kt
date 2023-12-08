@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.integrations.makerecalldecisions.MakeRecallD
 
 @Configuration
 class RestClientConfig(private val oauth2Client: RestClient) {
-
     @Bean
     fun makeRecallDecisionClient() = createClient<MakeRecallDecisionsClient>(oauth2Client)
 }

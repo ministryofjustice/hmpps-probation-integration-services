@@ -8,20 +8,22 @@ import java.time.LocalDate
 
 @Service
 class PersonService(private val personRepository: PersonRepository) {
-    fun findEngagement(crn: String): Engagement = personRepository.findByCrn(crn)?.asEngagement()
-        ?: throw NotFoundException("Engagement", "crn", crn)
+    fun findEngagement(crn: String): Engagement =
+        personRepository.findByCrn(crn)?.asEngagement()
+            ?: throw NotFoundException("Engagement", "crn", crn)
 }
 
-private fun Person.asEngagement() = Engagement(
-    Identifiers(crn, pnc),
-    Name(forename, surname, listOfNotNull(secondName, thirdName)),
-    dateOfBirth
-)
+private fun Person.asEngagement() =
+    Engagement(
+        Identifiers(crn, pnc),
+        Name(forename, surname, listOfNotNull(secondName, thirdName)),
+        dateOfBirth,
+    )
 
 data class Engagement(
     val identifiers: Identifiers,
     val name: Name,
-    val dateOfBirth: LocalDate
+    val dateOfBirth: LocalDate,
 )
 
 data class Identifiers(val crn: String, val pnc: String?)
@@ -29,5 +31,5 @@ data class Identifiers(val crn: String, val pnc: String?)
 data class Name(
     val forename: String,
     val surname: String,
-    val otherNames: List<String>
+    val otherNames: List<String>,
 )

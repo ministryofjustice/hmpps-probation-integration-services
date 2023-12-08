@@ -32,8 +32,8 @@ import uk.gov.justice.digital.hmpps.integrations.common.model.Type
         CasePersonalContactMapper::class,
         AddressMapper::class,
         CaseAddressMapper::class,
-        DisabilityMapper::class
-    ]
+        DisabilityMapper::class,
+    ],
 )
 interface CaseMapper {
     @Mapping(source = "surname", target = "name.surname")
@@ -52,51 +52,60 @@ interface CaseMapper {
     fun convertToModel(case: CaseEntity): CaseDetails
 }
 
-fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetails {
+fun CaseMapper.withAdditionalMappings(
+    case: CaseEntity,
+    event: Event,
+): CaseDetails {
     fun String.language(requiresInterpreter: Boolean) = Language(requiresInterpreter, this)
 
-    val phoneNumbers = listOfNotNull(
-        case.mobileNumber?.let { PhoneNumber("MOBILE", it) },
-        case.telephoneNumber?.let { PhoneNumber("TELEPHONE", it) }
-    )
-
-    val aliases = case.aliases.map {
-        Alias(it.name(), it.dateOfBirth)
-    }
-
-    val sentence = if (event.mainOffence != null && event.disposal != null) {
-        Sentence(
-            event.disposal.disposalDate,
-            MainOffence(
-                Type(event.mainOffence.offence.mainCategoryCode, event.mainOffence.offence.mainCategoryDescription),
-                Type(event.mainOffence.offence.subCategoryCode, event.mainOffence.offence.subCategoryDescription)
-            )
+    val phoneNumbers =
+        listOfNotNull(
+            case.mobileNumber?.let { PhoneNumber("MOBILE", it) },
+            case.telephoneNumber?.let { PhoneNumber("TELEPHONE", it) },
         )
-    } else {
-        null
-    }
+
+    val aliases =
+        case.aliases.map {
+            Alias(it.name(), it.dateOfBirth)
+        }
+
+    val sentence =
+        if (event.mainOffence != null && event.disposal != null) {
+            Sentence(
+                event.disposal.disposalDate,
+                MainOffence(
+                    Type(event.mainOffence.offence.mainCategoryCode, event.mainOffence.offence.mainCategoryDescription),
+                    Type(event.mainOffence.offence.subCategoryCode, event.mainOffence.offence.subCategoryDescription),
+                ),
+            )
+        } else {
+            null
+        }
 
     val model = convertToModel(case)
 
-    val disabilities = case.disabilities.map { d ->
-        Disability(
-            Type(d.type.code, d.type.description),
-            d.condition?.let { con -> Type(con.code, con.description) },
-            d.notes
-        )
-    }
+    val disabilities =
+        case.disabilities.map { d ->
+            Disability(
+                Type(d.type.code, d.type.description),
+                d.condition?.let { con -> Type(con.code, con.description) },
+                d.notes,
+            )
+        }
 
-    val provisions = case.provisions.map { p ->
-        Provision(
-            Type(p.type.code, p.type.description),
-            p.category?.let { cat -> Type(cat.code, cat.description) },
-            p.notes
-        )
-    }
+    val provisions =
+        case.provisions.map { p ->
+            Provision(
+                Type(p.type.code, p.type.description),
+                p.category?.let { cat -> Type(cat.code, cat.description) },
+                p.notes,
+            )
+        }
 
-    val mainAddress = case.addresses.firstOrNull()?.let {
-        Address(it.buildingName, it.addressNumber, it.streetName, it.district, it.town, it.county, it.postcode)
-    }
+    val mainAddress =
+        case.addresses.firstOrNull()?.let {
+            Address(it.buildingName, it.addressNumber, it.streetName, it.district, it.town, it.county, it.postcode)
+        }
 
     return model.copy(
         aliases = aliases,
@@ -107,7 +116,7 @@ fun CaseMapper.withAdditionalMappings(case: CaseEntity, event: Event): CaseDetai
         sentence = sentence,
         disabilities = disabilities,
         provisions = provisions,
-        mainAddress = mainAddress
+        mainAddress = mainAddress,
     )
 }
 
@@ -116,7 +125,7 @@ fun populateRegisterFlags(case: CaseEntity): List<RegisterFlag> {
         RegisterFlag(
             it.type.code,
             it.type.description,
-            it.type.riskColour
+            it.type.riskColour,
         )
     }
 }
@@ -131,7 +140,7 @@ fun populateMappaRegistration(case: CaseEntity): MappaRegistration? {
         MappaRegistration(
             it.startDate,
             Type(it.level.code, it.level.description),
-            Type(it.category.code, it.category.description)
+            Type(it.category.code, it.category.description),
         )
     }.orElse(null)
 }
@@ -149,7 +158,6 @@ interface CaseAddressMapper {
 
 @Mapper(componentModel = "spring")
 interface CasePersonalContactMapper {
-
     @Mapping(source = "surname", target = "name.surname")
     @Mapping(source = "forename", target = "name.forename")
     @Mapping(source = "middleName", target = "name.middleName")

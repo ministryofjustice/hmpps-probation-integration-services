@@ -29,7 +29,6 @@ import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class HandlerTest {
-
     @Mock
     lateinit var featureFlags: FeatureFlags
 
@@ -45,19 +44,20 @@ internal class HandlerTest {
     @Mock
     lateinit var actionProcessor: ActionProcessor
 
-    private val configs = PrisonerMovementConfigs(
-        listOf(
-            PrisonerMovementConfig(
-                listOf(PrisonerMovement.Type.ADMISSION),
-                actionNames = listOf("Recall", "UpdateStatus", "UpdateLocation")
+    private val configs =
+        PrisonerMovementConfigs(
+            listOf(
+                PrisonerMovementConfig(
+                    listOf(PrisonerMovement.Type.ADMISSION),
+                    actionNames = listOf("Recall", "UpdateStatus", "UpdateLocation"),
+                ),
+                PrisonerMovementConfig(
+                    listOf(PrisonerMovement.Type.RELEASED_TO_HOSPITAL),
+                    actionNames = listOf("Recall", "UpdateStatus", "UpdateLocation"),
+                    featureFlag = "messages_released_hospital",
+                ),
             ),
-            PrisonerMovementConfig(
-                listOf(PrisonerMovement.Type.RELEASED_TO_HOSPITAL),
-                actionNames = listOf("Recall", "UpdateStatus", "UpdateLocation"),
-                featureFlag = "messages_released_hospital"
-            )
         )
-    )
 
     lateinit var handler: Handler
 
@@ -66,45 +66,51 @@ internal class HandlerTest {
         handler = Handler(configs, featureFlags, telemetryService, prisonApiClient, actionProcessor, converter)
     }
 
-    private val notification = Notification(
-        message = HmppsDomainEvent(
-            "prison-offender-events.prisoner.released",
-            1,
-            "https//detail/url",
-            ZonedDateTime.now(),
-            nullableAdditionalInformation = AdditionalInformation(
-                mutableMapOf(
-                    "nomsNumber" to "Z0001ZZ",
-                    "prisonId" to "ZZZ",
-                    "reason" to "RETURN_FROM_COURT",
-                    "nomisMovementReasonCode" to "OPA",
-                    "details" to "CRT-OPA"
-                )
-            ),
-            personReference = PersonReference(listOf(PersonIdentifier("NOMS", "Z0001ZZ")))
-        ),
-        attributes = MessageAttributes("prison-offender-events.prisoner.released")
-    )
+    private val notification =
+        Notification(
+            message =
+                HmppsDomainEvent(
+                    "prison-offender-events.prisoner.released",
+                    1,
+                    "https//detail/url",
+                    ZonedDateTime.now(),
+                    nullableAdditionalInformation =
+                        AdditionalInformation(
+                            mutableMapOf(
+                                "nomsNumber" to "Z0001ZZ",
+                                "prisonId" to "ZZZ",
+                                "reason" to "RETURN_FROM_COURT",
+                                "nomisMovementReasonCode" to "OPA",
+                                "details" to "CRT-OPA",
+                            ),
+                        ),
+                    personReference = PersonReference(listOf(PersonIdentifier("NOMS", "Z0001ZZ"))),
+                ),
+            attributes = MessageAttributes("prison-offender-events.prisoner.released"),
+        )
 
-    private val booking = Booking(
-        1208804,
-        "45680A",
-        true,
-        "A5295DZ",
-        "SWI",
-        "ADM",
-        "INT",
-        Booking.InOutStatus.IN
-    )
+    private val booking =
+        Booking(
+            1208804,
+            "45680A",
+            true,
+            "A5295DZ",
+            "SWI",
+            "ADM",
+            "INT",
+            Booking.InOutStatus.IN,
+        )
 
-    private val identifierAddedNotification = notification.copy(
-        message = HmppsDomainEvent(
-            eventType = "probation-case.prison-identifier.added",
-            version = 1,
-            personReference = PersonReference(listOf(PersonIdentifier("NOMS", booking.personReference)))
-        ),
-        attributes = MessageAttributes("probation-case.prison-identifier.added")
-    )
+    private val identifierAddedNotification =
+        notification.copy(
+            message =
+                HmppsDomainEvent(
+                    eventType = "probation-case.prison-identifier.added",
+                    version = 1,
+                    personReference = PersonReference(listOf(PersonIdentifier("NOMS", booking.personReference))),
+                ),
+            attributes = MessageAttributes("probation-case.prison-identifier.added"),
+        )
 
     @Test
     fun unknownMessagesAreThrown() {
@@ -112,8 +118,8 @@ internal class HandlerTest {
             handler.handle(
                 notification.copy(
                     message = notification.message.copy(eventType = "unknown"),
-                    attributes = MessageAttributes("unknown")
-                )
+                    attributes = MessageAttributes("unknown"),
+                ),
             )
         }
     }
@@ -127,8 +133,8 @@ internal class HandlerTest {
             "BookingInactive",
             mapOf(
                 "occurredAt" to identifierAddedNotification.message.occurredAt.toString(),
-                "nomsNumber" to booking.personReference
-            )
+                "nomsNumber" to booking.personReference,
+            ),
         )
     }
 
@@ -144,8 +150,8 @@ internal class HandlerTest {
                 "occurredAt" to identifierAddedNotification.message.occurredAt.toString(),
                 "nomsNumber" to booking.personReference,
                 "movementType" to "UNKNOWN",
-                "movementReason" to ""
-            )
+                "movementReason" to "",
+            ),
         )
     }
 
@@ -160,8 +166,8 @@ internal class HandlerTest {
                 "institution" to "ZZZ",
                 "details" to "CRT-OPA",
                 "movementType" to "RETURN_FROM_COURT",
-                "movementReason" to "OPA"
-            )
+                "movementReason" to "OPA",
+            ),
         )
     }
 
@@ -175,16 +181,16 @@ internal class HandlerTest {
                 listOf(
                     ActionResult.Success(
                         ActionResult.Type.Recalled,
-                        booking.prisonerMovement(ZonedDateTime.now()).telemetryProperties()
-                    )
-                )
+                        booking.prisonerMovement(ZonedDateTime.now()).telemetryProperties(),
+                    ),
+                ),
             )
 
         handler.handle(identifierAddedNotification)
         val received = argumentCaptor<PrisonerMovement.Received>()
         verify(actionProcessor).processActions(
             received.capture(),
-            eq(listOf("Recall", "UpdateStatus", "UpdateLocation"))
+            eq(listOf("Recall", "UpdateStatus", "UpdateLocation")),
         )
         assertThat(received.firstValue.nomsId, equalTo("A5295DZ"))
         assertThat(received.firstValue.reason, equalTo("N"))
@@ -195,11 +201,12 @@ internal class HandlerTest {
     @Test
     fun `if booking is released when identifier added - telemetry is tracked`() {
         whenever(featureFlags.enabled("messages_released_hospital")).thenReturn(true)
-        val releaseBooking = booking.copy(
-            movementType = "REL",
-            movementReason = "HQ",
-            inOutStatus = Booking.InOutStatus.OUT
-        )
+        val releaseBooking =
+            booking.copy(
+                movementType = "REL",
+                movementReason = "HQ",
+                inOutStatus = Booking.InOutStatus.OUT,
+            )
         val prisonerMovement = releaseBooking.prisonerMovement(identifierAddedNotification.message.occurredAt)
         whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
         whenever(prisonApiClient.getBooking(booking.id)).thenReturn(releaseBooking)
@@ -208,58 +215,61 @@ internal class HandlerTest {
                 listOf(
                     ActionResult.Success(
                         ActionResult.Type.Recalled,
-                        prisonerMovement.telemetryProperties()
+                        prisonerMovement.telemetryProperties(),
                     ),
                     ActionResult.Success(
                         ActionResult.Type.LocationUpdated,
-                        prisonerMovement.telemetryProperties()
+                        prisonerMovement.telemetryProperties(),
                     ),
                     ActionResult.Success(
                         ActionResult.Type.StatusUpdated,
-                        prisonerMovement.telemetryProperties()
-                    )
-                )
+                        prisonerMovement.telemetryProperties(),
+                    ),
+                ),
             )
 
         handler.handle(identifierAddedNotification)
         val released = argumentCaptor<PrisonerMovement.Released>()
         verify(actionProcessor).processActions(
             released.capture(),
-            eq(listOf("Recall", "UpdateStatus", "UpdateLocation"))
+            eq(listOf("Recall", "UpdateStatus", "UpdateLocation")),
         )
         verify(telemetryService).trackEvent(
             "Recalled",
             prisonerMovement.telemetryProperties(),
-            mapOf()
+            mapOf(),
         )
         verify(telemetryService).trackEvent(
             "LocationUpdated",
             prisonerMovement.telemetryProperties(),
-            mapOf()
+            mapOf(),
         )
         verify(telemetryService).trackEvent(
             "StatusUpdated",
             prisonerMovement.telemetryProperties(),
-            mapOf()
+            mapOf(),
         )
     }
 
     @Test
     fun `noop whenever feature flagged and not active`() {
         whenever(featureFlags.enabled("messages_released_hospital")).thenReturn(false)
-        val hospitalNotification = notification.copy(
-            message = notification.message.copy(
-                nullableAdditionalInformation = AdditionalInformation(
-                    mutableMapOf(
-                        "nomsNumber" to "Z0001ZZ",
-                        "prisonId" to "OUT",
-                        "reason" to "RELEASED_TO_HOSPITAL",
-                        "nomisMovementReasonCode" to "HP",
-                        "details" to "REL-HQ"
-                    )
-                )
+        val hospitalNotification =
+            notification.copy(
+                message =
+                    notification.message.copy(
+                        nullableAdditionalInformation =
+                            AdditionalInformation(
+                                mutableMapOf(
+                                    "nomsNumber" to "Z0001ZZ",
+                                    "prisonId" to "OUT",
+                                    "reason" to "RELEASED_TO_HOSPITAL",
+                                    "nomisMovementReasonCode" to "HP",
+                                    "details" to "REL-HQ",
+                                ),
+                            ),
+                    ),
             )
-        )
         handler.handle(hospitalNotification)
         verify(telemetryService).trackEvent(
             "FeatureFlagNotActive",
@@ -270,8 +280,8 @@ internal class HandlerTest {
                 "institution" to "OUT",
                 "reason" to "RELEASED_TO_HOSPITAL",
                 "movementReason" to "HP",
-                "movementType" to "Released"
-            )
+                "movementType" to "Released",
+            ),
         )
     }
 }

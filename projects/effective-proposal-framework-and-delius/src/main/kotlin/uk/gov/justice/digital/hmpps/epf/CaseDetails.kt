@@ -11,7 +11,7 @@ data class CaseDetails(
     val gender: String,
     val sentence: Sentence?,
     val responsibleProvider: Provider?,
-    val ogrsScore: Long?
+    val ogrsScore: Long?,
 ) {
     val age
         get() = YEARS.between(dateOfBirth, LocalDate.now())
@@ -21,8 +21,11 @@ data class CaseDetails(
 }
 
 data class Name(val forename: String, val middleName: String?, val surname: String)
+
 data class Sentence(val date: LocalDate, val sentencingCourt: Court, val releaseDate: LocalDate?)
+
 data class Court(val name: String)
+
 data class Provider(val code: String, val name: String)
 
 fun Person.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)

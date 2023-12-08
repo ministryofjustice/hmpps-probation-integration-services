@@ -23,7 +23,6 @@ class PersonManager(
     @Column(name = "offender_manager_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offender_manager_id_seq")
     var id: Long = 0,
-
     @Column(name = "offender_id")
-    var personId: Long = 0
+    var personId: Long = 0,
 ) : ManagerBaseEntity()

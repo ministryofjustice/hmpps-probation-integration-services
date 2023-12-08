@@ -30,7 +30,6 @@ import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class HandlerTest {
-
     @Mock
     private lateinit var prisonCaseNotesClient: PrisonCaseNotesClient
 
@@ -59,18 +58,19 @@ internal class HandlerTest {
 
     @Test
     fun `get case note from NOMIS has blank text`() {
-        val prisonCaseNote = PrisonCaseNote(
-            "1",
-            1L,
-            "1",
-            "type",
-            "subType",
-            creationDateTime = ZonedDateTime.now(),
-            occurrenceDateTime = ZonedDateTime.now(),
-            authorName = "bob",
-            text = "",
-            amendments = listOf()
-        )
+        val prisonCaseNote =
+            PrisonCaseNote(
+                "1",
+                1L,
+                "1",
+                "type",
+                "subType",
+                creationDateTime = ZonedDateTime.now(),
+                occurrenceDateTime = ZonedDateTime.now(),
+                authorName = "bob",
+                text = "",
+                amendments = listOf(),
+            )
         val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(message.detailUrl!!))).thenReturn(prisonCaseNote)
         handler.handle(Notification(message = message))
@@ -79,19 +79,20 @@ internal class HandlerTest {
 
     @Test
     fun `when prisoner being transferred noop`() {
-        val prisonCaseNote = PrisonCaseNote(
-            "1",
-            1L,
-            "1",
-            "type",
-            "subType",
-            creationDateTime = ZonedDateTime.now(),
-            occurrenceDateTime = ZonedDateTime.now(),
-            locationId = "TRN",
-            authorName = "bob",
-            text = "Prisoner being transferred",
-            amendments = listOf()
-        )
+        val prisonCaseNote =
+            PrisonCaseNote(
+                "1",
+                1L,
+                "1",
+                "type",
+                "subType",
+                creationDateTime = ZonedDateTime.now(),
+                occurrenceDateTime = ZonedDateTime.now(),
+                locationId = "TRN",
+                authorName = "bob",
+                text = "Prisoner being transferred",
+                amendments = listOf(),
+            )
         val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(message.detailUrl!!))).thenReturn(prisonCaseNote)
 
@@ -111,19 +112,20 @@ internal class HandlerTest {
 
     @Test
     fun `offender not found sends alert to telemetry without throwing exception`() {
-        val prisonCaseNote = PrisonCaseNote(
-            "1",
-            1L,
-            "1",
-            "type",
-            "subType",
-            creationDateTime = ZonedDateTime.now(),
-            occurrenceDateTime = ZonedDateTime.now(),
-            locationId = "EXI",
-            authorName = "bob",
-            text = "Notes for an offender without noms number in delius",
-            amendments = listOf()
-        )
+        val prisonCaseNote =
+            PrisonCaseNote(
+                "1",
+                1L,
+                "1",
+                "type",
+                "subType",
+                creationDateTime = ZonedDateTime.now(),
+                occurrenceDateTime = ZonedDateTime.now(),
+                locationId = "EXI",
+                authorName = "bob",
+                text = "Notes for an offender without noms number in delius",
+                amendments = listOf(),
+            )
         val poe = Notification(prepMessage(CaseNoteMessageGenerator.NEW_TO_DELIUS).message)
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(poe.message.detailUrl!!))).thenReturn(prisonCaseNote)
         whenever(deliusService.mergeCaseNote(any())).thenThrow(OffenderNotFoundException("A001"))
@@ -135,19 +137,20 @@ internal class HandlerTest {
 
     @Test
     fun `non offender not found exceptions are thrown`() {
-        val prisonCaseNote = PrisonCaseNote(
-            "1",
-            1L,
-            "1",
-            "type",
-            "subType",
-            creationDateTime = ZonedDateTime.now(),
-            occurrenceDateTime = ZonedDateTime.now(),
-            locationId = "EXI",
-            authorName = "bob",
-            text = "Notes for an exceptional case note",
-            amendments = listOf()
-        )
+        val prisonCaseNote =
+            PrisonCaseNote(
+                "1",
+                1L,
+                "1",
+                "type",
+                "subType",
+                creationDateTime = ZonedDateTime.now(),
+                occurrenceDateTime = ZonedDateTime.now(),
+                locationId = "EXI",
+                authorName = "bob",
+                text = "Notes for an exceptional case note",
+                amendments = listOf(),
+            )
         val poe = Notification(prepMessage(CaseNoteMessageGenerator.NEW_TO_DELIUS).message)
         whenever(prisonCaseNotesClient.getCaseNote(URI.create(poe.message.detailUrl!!))).thenReturn(prisonCaseNote)
         whenever(deliusService.mergeCaseNote(any())).thenThrow(StaffCodeExhaustedException("A999"))

@@ -17,20 +17,14 @@ class OASYSAssessment(
     @Id
     @Column(name = "oasys_assessment_id")
     val id: Long,
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @Column(name = "assessment_date")
     override val assessmentDate: LocalDate,
-
     @Column(name = "ogrs_score_2")
     override val score: Long?,
-
     @Column(name = "last_updated_datetime", nullable = false)
     override val lastModifiedDateTime: ZonedDateTime,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean
-
+    val softDeleted: Boolean,
 ) : Assessment

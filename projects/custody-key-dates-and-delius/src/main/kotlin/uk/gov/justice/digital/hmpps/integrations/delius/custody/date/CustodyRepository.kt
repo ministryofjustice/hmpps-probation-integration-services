@@ -15,7 +15,10 @@ interface CustodyRepository : JpaRepository<Custody, Long> {
         AND c.softDeleted = false AND c.status.code <> 'P' AND c.bookingRef = :bookingRef
         AND e.active = true AND e.softDeleted = false 
         AND d.active = true and d.softDeleted = false
-    """
+    """,
     )
-    fun findCustody(personId: Long, bookingRef: String): List<Custody>
+    fun findCustody(
+        personId: Long,
+        bookingRef: String,
+    ): List<Custody>
 }

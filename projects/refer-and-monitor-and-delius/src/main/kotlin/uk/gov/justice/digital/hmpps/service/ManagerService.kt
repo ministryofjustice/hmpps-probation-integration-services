@@ -22,7 +22,7 @@ import uk.gov.justice.digital.hmpps.ldap.findByUsername
 class ManagerService(
     private val personManagerRepository: PersonManagerRepository,
     private val prisonManagerRepository: PrisonManagerRepository,
-    private val ldapTemplate: LdapTemplate
+    private val ldapTemplate: LdapTemplate,
 ) {
     fun findResponsibleCommunityManager(crn: String): ResponsibleOfficer {
         val com = personManagerRepository.findByPersonCrn(crn) ?: throw NotFoundException("Person", "crn", crn)
@@ -36,25 +36,27 @@ class ManagerService(
         return com.toResponsibleOfficer(pom)
     }
 
-    fun findCasesManagedBy(username: String) = ManagedCases(
-        (personManagerRepository.findCasesManagedBy(username) + personManagerRepository.findCasesManagedBy(username)).toSet()
-            .map { CaseIdentifier(it) }
-    )
+    fun findCasesManagedBy(username: String) =
+        ManagedCases(
+            (personManagerRepository.findCasesManagedBy(username) + personManagerRepository.findCasesManagedBy(username)).toSet()
+                .map { CaseIdentifier(it) },
+        )
 }
 
-fun PersonManager.toResponsibleOfficer(pom: PrisonManager?) = ResponsibleOfficer(
-    Manager(
-        staff.code,
-        staff.name(),
-        staff.user?.username,
-        staff.user?.email,
-        staff.user?.telephone,
-        responsibleOfficer != null,
-        team.pdu(),
-        team.team()
-    ),
-    pom?.toManager()
-)
+fun PersonManager.toResponsibleOfficer(pom: PrisonManager?) =
+    ResponsibleOfficer(
+        Manager(
+            staff.code,
+            staff.name(),
+            staff.user?.username,
+            staff.user?.email,
+            staff.user?.telephone,
+            responsibleOfficer != null,
+            team.pdu(),
+            team.team(),
+        ),
+        pom?.toManager(),
+    )
 
 fun PrisonManager.toManager() =
     Manager(
@@ -65,10 +67,11 @@ fun PrisonManager.toManager() =
         telephoneNumber,
         responsibleOfficer != null,
         team.pdu(),
-        team.team()
+        team.team(),
     )
 
 fun Staff.name() = Name(forename, surname)
 
 fun Team.team() = uk.gov.justice.digital.hmpps.api.model.Team(code, description, email, telephone)
+
 fun Team.pdu() = Pdu(district.borough.code, district.borough.description)

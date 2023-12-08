@@ -17,17 +17,13 @@ data class CommunityManager(
     @Id
     @Column(name = "offender_manager_id")
     val id: Long,
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
     val staff: Staff,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Column(name = "active_flag", columnDefinition = "number")
-    val active: Boolean = true
+    val active: Boolean = true,
 )

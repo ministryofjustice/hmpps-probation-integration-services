@@ -16,7 +16,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
             where ((cmStaff is not null and cmStaff.id = :staffId)
                 or (pmStaff is not null and pmStaff.id = :staffId))
             and p.nomsNumber is not null
-        """
+        """,
     )
     fun findManagedPrisonerIdentifiersByStaffId(staffId: Long): List<String>
 
@@ -31,7 +31,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
             where ((cmStaff is not null and cmStaff.code = :code)
                 or (pmStaff is not null and pmStaff.code = :code))
             and p.nomsNumber is not null
-        """
+        """,
     )
     fun findManagedPrisonerIdentifiersByStaffCode(code: String): List<String>
 }

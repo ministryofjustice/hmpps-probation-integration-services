@@ -6,5 +6,5 @@ data class AllocationCompletedResponse(
     val event: Event,
     val type: CaseType,
     val initialAppointment: InitialAppointment?,
-    val staff: StaffMember?
+    val staff: StaffMember?,
 )

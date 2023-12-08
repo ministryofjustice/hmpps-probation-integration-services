@@ -20,7 +20,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_ASSESSMENTS')")
     @GetMapping(value = ["/latest-assessment/{crn}"])
     fun getAssessmentTimeline(
-        @PathVariable("crn") crn: String
+        @PathVariable("crn") crn: String,
     ): OasysTimelineAssessment {
         return oasysAssessmentService.getLatestAssessment(crn)
     }
@@ -28,7 +28,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_ASSESSMENTS')")
     @GetMapping(value = ["/offence-details/{crn}"])
     fun getOffenceDetails(
-        @PathVariable("crn") crn: String
+        @PathVariable("crn") crn: String,
     ): OffenceDetails {
         return oasysAssessmentService.getOffenceDetails(crn)
     }
@@ -36,7 +36,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_ASSESSMENTS')")
     @GetMapping(value = ["/needs-details/{crn}"])
     fun getNeeds(
-        @PathVariable("crn") crn: String
+        @PathVariable("crn") crn: String,
     ): NeedsDetails {
         return oasysAssessmentService.getNeedsDetails(crn)
     }
@@ -44,7 +44,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_ASSESSMENTS')")
     @GetMapping(value = ["/risk-management-plan/{crn}"])
     fun getRiskManagementPlan(
-        @PathVariable("crn") crn: String
+        @PathVariable("crn") crn: String,
     ): RiskManagementPlanDetails {
         return oasysAssessmentService.getRiskManagementPlanDetails(crn)
     }
@@ -52,7 +52,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_ASSESSMENTS')")
     @GetMapping(value = ["/rosh-summary/{crn}"])
     fun getRoshSummary(
-        @PathVariable("crn") crn: String
+        @PathVariable("crn") crn: String,
     ): RoshSummaryDetails {
         return oasysAssessmentService.getRoshSummary(crn)
     }
@@ -60,7 +60,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_ASSESSMENTS')")
     @GetMapping(value = ["/risk-to-the-individual/{crn}"])
     fun getRiskToTheIndividual(
-        @PathVariable("crn") crn: String
+        @PathVariable("crn") crn: String,
     ): RiskToTheIndividualDetails {
         return oasysAssessmentService.getRiskToIndividual(crn)
     }
@@ -68,7 +68,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_ASSESSMENTS')")
     @GetMapping(value = ["/risk-assessment/{crn}"])
     fun getRiskAssessment(
-        @PathVariable("crn") crn: String
+        @PathVariable("crn") crn: String,
     ): RiskAssessmentDetails {
         return oasysAssessmentService.getRiskAssessment(crn)
     }
@@ -76,7 +76,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_ASSESSMENTS')")
     @GetMapping(value = ["/rosh/{crn}"])
     fun getRosh(
-        @PathVariable("crn") crn: String
+        @PathVariable("crn") crn: String,
     ): RoshDetails {
         return oasysAssessmentService.getRosh(crn)
     }
@@ -84,7 +84,7 @@ class AssessmentController(private var oasysAssessmentService: OasysAssessmentSe
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_ASSESSMENTS')")
     @GetMapping(value = ["/health-details/{crn}"])
     fun getHealthDetails(
-        @PathVariable("crn") crn: String
+        @PathVariable("crn") crn: String,
     ): HealthDetails {
         return oasysAssessmentService.getHealthDetails(crn)
     }

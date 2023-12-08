@@ -10,7 +10,7 @@ data class ApReferral(
     val expectedArrivalDate: LocalDate?,
     val expectedDepartureDate: LocalDate?,
     val decisionDate: ZonedDateTime?,
-    val approvedPremises: ApprovedPremises
+    val approvedPremises: ApprovedPremises,
 )
 
 data class ApprovedPremises(val description: String)

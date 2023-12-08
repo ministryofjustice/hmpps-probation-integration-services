@@ -36,10 +36,11 @@ internal class HandlerTest {
     @Test
     fun `message is logged to telemetry`() {
         // Given a message
-        val message = Notification(
-            message = MessageGenerator.RSR_SCORES_DETERMINED,
-            attributes = MessageAttributes("risk-assessment.scores.rsr.determined")
-        )
+        val message =
+            Notification(
+                message = MessageGenerator.RSR_SCORES_DETERMINED,
+                attributes = MessageAttributes("risk-assessment.scores.rsr.determined"),
+            )
 
         // When it is received
         handler.handle(message)
@@ -51,10 +52,11 @@ internal class HandlerTest {
     @Test
     fun `RSR messages are processed`() {
         // Given an RSR message
-        val message = Notification(
-            message = MessageGenerator.RSR_SCORES_DETERMINED,
-            attributes = MessageAttributes("risk-assessment.scores.determined")
-        )
+        val message =
+            Notification(
+                message = MessageGenerator.RSR_SCORES_DETERMINED,
+                attributes = MessageAttributes("risk-assessment.scores.determined"),
+            )
 
         // When it is received
         handler.handle(message)
@@ -66,7 +68,7 @@ internal class HandlerTest {
             message.message.assessmentDate(),
             message.message.rsr(),
             message.message.ospIndecent(),
-            message.message.ospContact()
+            message.message.ospContact(),
         )
         verify(telemetryService).trackEvent("RsrScoresUpdated", message.message.telemetryProperties())
     }
@@ -74,10 +76,11 @@ internal class HandlerTest {
     @Test
     fun `OGRS messages are processed`() {
         // Given an OGRS message
-        val message = Notification(
-            message = MessageGenerator.OGRS_SCORES_DETERMINED,
-            attributes = MessageAttributes("risk-assessment.scores.determined")
-        )
+        val message =
+            Notification(
+                message = MessageGenerator.OGRS_SCORES_DETERMINED,
+                attributes = MessageAttributes("risk-assessment.scores.determined"),
+            )
 
         // When it is received
         handler.handle(message)
@@ -87,7 +90,7 @@ internal class HandlerTest {
             message.message.personReference.findCrn()!!,
             message.message.additionalInformation["EventNumber"] as Int,
             message.message.assessmentDate(),
-            message.message.ogrsScore()
+            message.message.ogrsScore(),
         )
         verify(telemetryService).trackEvent("AddOrUpdateRiskAssessment", message.message.telemetryProperties())
     }
@@ -95,10 +98,11 @@ internal class HandlerTest {
     @Test
     fun `ignorable Delius errors are logged to Telemetry but not thrown`() {
         // Given a message that causes an ignorable Delius error
-        val message = Notification(
-            message = MessageGenerator.RSR_SCORES_DETERMINED,
-            attributes = MessageAttributes("risk-assessment.scores.determined")
-        )
+        val message =
+            Notification(
+                message = MessageGenerator.RSR_SCORES_DETERMINED,
+                attributes = MessageAttributes("risk-assessment.scores.determined"),
+            )
         whenever(
             riskScoreService.updateRsrScores(
                 message.message.personReference.findCrn()!!,
@@ -106,8 +110,8 @@ internal class HandlerTest {
                 message.message.assessmentDate(),
                 message.message.rsr(),
                 message.message.ospIndecent(),
-                message.message.ospContact()
-            )
+                message.message.ospContact(),
+            ),
         ).thenThrow(DeliusValidationError("No Event number provided"))
 
         // When it is received
@@ -116,7 +120,7 @@ internal class HandlerTest {
         // Then an exception is not thrown, but an event is logged to telemetry
         verify(telemetryService).trackEvent(
             "RsrUpdateRejected",
-            mapOf("reason" to "No Event number provided") + message.message.telemetryProperties()
+            mapOf("reason" to "No Event number provided") + message.message.telemetryProperties(),
         )
     }
 
@@ -126,8 +130,8 @@ internal class HandlerTest {
             handler.handle(
                 Notification(
                     message = MessageGenerator.RSR_SCORES_DETERMINED.copy(eventType = "opd.produced"),
-                    attributes = MessageAttributes("risk-assessment.scores.determined")
-                )
+                    attributes = MessageAttributes("risk-assessment.scores.determined"),
+                ),
             )
         }
     }
@@ -138,8 +142,8 @@ internal class HandlerTest {
             handler.handle(
                 Notification(
                     message = MessageGenerator.RSR_SCORES_DETERMINED.copy(personReference = PersonReference()),
-                    attributes = MessageAttributes("risk-assessment.scores.determined")
-                )
+                    attributes = MessageAttributes("risk-assessment.scores.determined"),
+                ),
             )
         }
     }

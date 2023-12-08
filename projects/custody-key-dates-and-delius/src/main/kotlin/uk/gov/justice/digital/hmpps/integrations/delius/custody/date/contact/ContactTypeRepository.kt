@@ -9,5 +9,4 @@ interface ContactTypeRepository : JpaRepository<ContactType, Long> {
     fun findByCode(code: String): ContactType?
 }
 
-fun ContactTypeRepository.edssType(): ContactType =
-    findByCode(EDSS) ?: throw NotFoundException("ContactType", "code", EDSS)
+fun ContactTypeRepository.edssType(): ContactType = findByCode(EDSS) ?: throw NotFoundException("ContactType", "code", EDSS)

@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.user.AuditUserService
 
 @ExtendWith(MockitoExtension::class)
 internal class AuditorAwareTest {
-
     @Mock
     private lateinit var auditUserService: AuditUserService
 

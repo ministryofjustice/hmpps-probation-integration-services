@@ -25,9 +25,12 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
         and e.number <> :eventNumber
         and e.softDeleted = false and d.softDeleted = false
         and om.active = true
-    """
+    """,
     )
-    fun findAllSentencesExcludingEventNumber(personId: Long, eventNumber: String): List<SentenceWithManager>
+    fun findAllSentencesExcludingEventNumber(
+        personId: Long,
+        eventNumber: String,
+    ): List<SentenceWithManager>
 
     @Query(
         """
@@ -42,7 +45,7 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
         and e.active = true and d.active = true
         and om.active = true
         and s.code like '%U'
-    """
+    """,
     )
     fun findAllUnallocatedActiveEvents(personId: Long): List<ActiveEvent>
 
@@ -57,7 +60,10 @@ interface DisposalRepository : JpaRepository<Disposal, Long> {
         where e.person.id = :personId
         and e.number = :eventNumber
         and e.softDeleted = false and d.softDeleted = false
-    """
+    """,
     )
-    fun findSentenceForEventNumberAndPersonId(personId: Long, eventNumber: String): AllocationDemandSentence
+    fun findSentenceForEventNumberAndPersonId(
+        personId: Long,
+        eventNumber: String,
+    ): AllocationDemandSentence
 }

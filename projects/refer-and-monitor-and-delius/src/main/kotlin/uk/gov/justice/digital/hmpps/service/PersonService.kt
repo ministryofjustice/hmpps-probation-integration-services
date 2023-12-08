@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.mainAddres
 class PersonService(
     private val personRepository: PersonRepository,
     private val personDetailRepository: PersonDetailRepository,
-    private val personAddressRepository: PersonAddressRepository
+    private val personAddressRepository: PersonAddressRepository,
 ) {
     fun findIdentifiers(crn: String) = CaseIdentifier(crn, personRepository.findNomsId(crn))
 
@@ -36,25 +36,26 @@ class PersonService(
                 language?.description,
                 ethnicity?.description,
                 religion?.description,
-                disabilities.forProfile()
+                disabilities.forProfile(),
             ),
             ContactDetails(
                 mainAddress?.noFixedAbode ?: false,
                 mainAddress?.forContactDetails(),
                 emailAddress,
                 telephoneNumber,
-                mobileNumber
-            )
+                mobileNumber,
+            ),
         )
     }
 
-    fun List<Disability>.forProfile() = map {
-        uk.gov.justice.digital.hmpps.api.model.Disability(
-            it.type.description,
-            it.startDate,
-            it.notes
-        )
-    }
+    fun List<Disability>.forProfile() =
+        map {
+            uk.gov.justice.digital.hmpps.api.model.Disability(
+                it.type.description,
+                it.startDate,
+                it.notes,
+            )
+        }
 
     fun PersonAddress.forContactDetails() =
         Address.from(buildingName, addressNumber, streetName, district, town, county, postcode)

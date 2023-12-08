@@ -9,5 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 class TierContextController(private val tierDetailsService: TierDetailsService) {
     @GetMapping(value = ["/tier-details/{crn}"])
     @PreAuthorize("hasRole('TIER_DETAILS')")
-    fun tierContext(@PathVariable crn: String) = tierDetailsService.tierDetails(crn)
+    fun tierContext(
+        @PathVariable crn: String,
+    ) = tierDetailsService.tierDetails(crn)
 }

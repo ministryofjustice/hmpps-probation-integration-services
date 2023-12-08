@@ -14,20 +14,21 @@ import java.time.format.DateTimeFormatterBuilder
 @JsonComponent
 class ZonedDateTimeDeserializer : JsonDeserializer<ZonedDateTime>() {
     companion object {
-        val formatter: DateTimeFormatter = DateTimeFormatterBuilder().parseCaseInsensitive()
-            .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-            .parseLenient()
-            .optionalStart()
-            .appendOffsetId()
-            .parseStrict()
-            .optionalStart()
-            .appendLiteral('[')
-            .parseCaseSensitive()
-            .appendZoneRegionId()
-            .appendLiteral(']')
-            .optionalEnd()
-            .optionalEnd()
-            .toFormatter()
+        val formatter: DateTimeFormatter =
+            DateTimeFormatterBuilder().parseCaseInsensitive()
+                .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                .parseLenient()
+                .optionalStart()
+                .appendOffsetId()
+                .parseStrict()
+                .optionalStart()
+                .appendLiteral('[')
+                .parseCaseSensitive()
+                .appendZoneRegionId()
+                .appendLiteral(']')
+                .optionalEnd()
+                .optionalEnd()
+                .toFormatter()
 
         fun deserialize(text: String): ZonedDateTime {
             val datetime = formatter.parseBest(text, ZonedDateTime::from, LocalDateTime::from)
@@ -40,5 +41,8 @@ class ZonedDateTimeDeserializer : JsonDeserializer<ZonedDateTime>() {
     }
 
     @Throws(IOException::class, JsonProcessingException::class)
-    override fun deserialize(parser: JsonParser, context: DeserializationContext?) = deserialize(parser.text)
+    override fun deserialize(
+        parser: JsonParser,
+        context: DeserializationContext?,
+    ) = deserialize(parser.text)
 }

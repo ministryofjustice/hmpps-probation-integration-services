@@ -19,28 +19,21 @@ class DisabilityEntity(
     @Id
     @Column(name = "disability_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val case: CaseEntity,
-
     @ManyToOne
     @JoinColumn(name = "disability_type_id", updatable = false)
     val type: ReferenceData,
-
     @ManyToOne
     @JoinColumn(name = "disability_condition_id", updatable = false)
     val condition: ReferenceData? = null,
-
     @Column(name = "notes", columnDefinition = "clob")
     val notes: String? = null,
-
     @Column(name = "start_date")
     val start: LocalDate? = null,
-
     @Column(name = "finish_date")
     val endDate: LocalDate? = null,
-
     @Column(updatable = false, columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )

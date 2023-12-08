@@ -19,29 +19,33 @@ import uk.gov.justice.digital.hmpps.repository.ProbationAreaRepository
 @PreAuthorize("hasRole('PROBATION_API__HDC__STAFF')")
 class ProviderController(
     private val probationAreaRepository: ProbationAreaRepository,
-    private val districtRepository: DistrictRepository
+    private val districtRepository: DistrictRepository,
 ) {
-
     @GetMapping
     fun getProviders() = probationAreaRepository.findSelectableProbationAreas().map { Provider(it.code, it.description) }
 
     @GetMapping("/{code}")
-    fun getProvider(@PathVariable code: String) = probationAreaRepository.findByCodeWithSelectableDistricts(code)
+    fun getProvider(
+        @PathVariable code: String,
+    ) = probationAreaRepository.findByCodeWithSelectableDistricts(code)
         ?.let { probationArea ->
             ProviderWithLaus(
                 code = probationArea.code,
                 description = probationArea.description,
-                localAdminUnits = probationArea.boroughs.flatMap { it.districts }.map { LocalAdminUnit(it.code, it.description) }
+                localAdminUnits = probationArea.boroughs.flatMap { it.districts }.map { LocalAdminUnit(it.code, it.description) },
             )
         } ?: throw NotFoundException("Provider", "code", code)
 
     @GetMapping("/{providerCode}/localAdminUnits/{lauCode}")
-    fun getLocalAdminUnit(@PathVariable providerCode: String, @PathVariable lauCode: String) = districtRepository.findByProbationAreaAndCode(providerCode, lauCode)
+    fun getLocalAdminUnit(
+        @PathVariable providerCode: String,
+        @PathVariable lauCode: String,
+    ) = districtRepository.findByProbationAreaAndCode(providerCode, lauCode)
         ?.let { district ->
             LocalAdminUnitWithTeams(
                 code = district.code,
                 description = district.description,
-                teams = district.teams.map { Team(it.code, it.description) }
+                teams = district.teams.map { Team(it.code, it.description) },
             )
         } ?: throw NotFoundException("Local Admin Unit not found for provider '$providerCode' and code '$lauCode'")
 }

@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.integrations.randm.ReferAndMonitorClient
 
 @Configuration
 class RestClientConfig(private val oauth2Client: RestClient) {
-
     @Bean
     fun referAndMonitorClient() = createClient<ReferAndMonitorClient>(oauth2Client)
 }

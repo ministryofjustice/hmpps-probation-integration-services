@@ -21,41 +21,29 @@ class Person(
     @Id
     @Column(name = "offender_id")
     val id: Long,
-
     @Column(columnDefinition = "char(7)")
     val crn: String,
-
     @Column(name = "noms_number", columnDefinition = "char(7)")
     val nomsId: String?,
-
     @ManyToOne
     @JoinColumn(name = "gender_id")
     val gender: ReferenceData,
-
     @Column(name = "date_of_birth_date")
     val dateOfBirth: LocalDate,
-
     @Column(name = "first_name", length = 35)
     val forename: String,
-
     @Column(name = "second_name", length = 35)
     val secondName: String? = null,
-
     @Column(name = "third_name", length = 35)
     val thirdName: String? = null,
-
     @Column(name = "surname", length = 35)
     val surname: String,
-
     @Column(columnDefinition = "number")
     val currentExclusion: Boolean,
-
     @Column(columnDefinition = "number")
     val currentRestriction: Boolean,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
-
+    val softDeleted: Boolean = false,
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {

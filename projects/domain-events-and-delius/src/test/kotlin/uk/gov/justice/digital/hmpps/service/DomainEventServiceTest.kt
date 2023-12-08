@@ -25,7 +25,6 @@ import uk.gov.justice.digital.hmpps.service.enhancement.NotificationEnhancer
 
 @ExtendWith(MockitoExtension::class)
 class DomainEventServiceTest {
-
     @Mock
     private lateinit var domainEventRepository: DomainEventRepository
 
@@ -39,13 +38,14 @@ class DomainEventServiceTest {
 
     @BeforeEach
     fun setup() {
-        service = DomainEventService(
-            batchSize = 50,
-            objectMapper = jacksonObjectMapper().findAndRegisterModules(),
-            domainEventRepository = domainEventRepository,
-            notificationPublisher = notificationPublisher,
-            notificationEnhancer = notificationEnhancer
-        )
+        service =
+            DomainEventService(
+                batchSize = 50,
+                objectMapper = jacksonObjectMapper().findAndRegisterModules(),
+                domainEventRepository = domainEventRepository,
+                notificationPublisher = notificationPublisher,
+                notificationEnhancer = notificationEnhancer,
+            )
         whenever(notificationEnhancer.enhance(any())).thenAnswer { it.getArgument(0) }
     }
 
@@ -62,10 +62,11 @@ class DomainEventServiceTest {
 
     @Test
     fun `multiple messages can be published`() {
-        val entities = listOf(
-            DomainEventGenerator.generate("manual-ogrs"),
-            DomainEventGenerator.generate("registration-added")
-        )
+        val entities =
+            listOf(
+                DomainEventGenerator.generate("manual-ogrs"),
+                DomainEventGenerator.generate("registration-added"),
+            )
         whenever(domainEventRepository.findAll(any<Pageable>())).thenReturn(PageImpl(entities))
 
         val count = service.publishBatch()
@@ -76,11 +77,12 @@ class DomainEventServiceTest {
 
     @Test
     fun `nothing is published if any entity is invalid`() {
-        val entities = listOf(
-            DomainEventGenerator.generate("manual-ogrs"),
-            DomainEventGenerator.generate("registration-added"),
-            DomainEventGenerator.generate("{\"invalid-json\"}", "{\"invalid-json\"}")
-        )
+        val entities =
+            listOf(
+                DomainEventGenerator.generate("manual-ogrs"),
+                DomainEventGenerator.generate("registration-added"),
+                DomainEventGenerator.generate("{\"invalid-json\"}", "{\"invalid-json\"}"),
+            )
         whenever(domainEventRepository.findAll(any<Pageable>())).thenReturn(PageImpl(entities))
 
         assertThrows<JsonProcessingException> { service.publishBatch() }

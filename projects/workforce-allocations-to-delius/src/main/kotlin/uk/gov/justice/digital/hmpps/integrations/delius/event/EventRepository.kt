@@ -7,7 +7,6 @@ import uk.gov.justice.digital.hmpps.api.model.Offence
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 interface EventRepository : JpaRepository<Event, Long> {
-
     @Query(
         """
         SELECT COUNT(ot) FROM OrderTransfer ot
@@ -15,7 +14,7 @@ interface EventRepository : JpaRepository<Event, Long> {
         WHERE ot.eventId = :eventId 
         AND status.code = 'PN'
         AND ot.softDeleted = false
-    """
+    """,
     )
     fun countPendingTransfers(eventId: Long): Int
 
@@ -26,11 +25,17 @@ interface EventRepository : JpaRepository<Event, Long> {
     when matched then update set iaps_flag=?2 
     when not matched then insert(event_id, iaps_flag) values(?1,?2)
     """,
-        nativeQuery = true
+        nativeQuery = true,
     )
-    fun updateIaps(eventId: Long, iapsFlagValue: Long = 1)
+    fun updateIaps(
+        eventId: Long,
+        iapsFlagValue: Long = 1,
+    )
 
-    fun findByPersonCrnAndNumber(crn: String, number: String): Event?
+    fun findByPersonCrnAndNumber(
+        crn: String,
+        number: String,
+    ): Event?
 
     @Query(
         """
@@ -39,7 +44,7 @@ interface EventRepository : JpaRepository<Event, Long> {
             union all
             select ao.offence.description as mainCategory, false as mainOffence from AdditionalOffence ao
             where ao.event.id = :eventId
-        """
+        """,
     )
     fun findAllOffencesByEventId(eventId: Long): List<Offence>
 
@@ -52,10 +57,14 @@ interface EventRepository : JpaRepository<Event, Long> {
             or (r.mainCategory.code = '7' and (r.subCategory.code is null or r.subCategory.code <> 'RS66'))
             or (r.additionalMainCategory.code in ('RM38', '7'))
         )
-    """
+    """,
     )
     fun countAccreditedProgrammeRequirements(eventId: Long): Int
 }
 
-fun EventRepository.getByPersonCrnAndNumber(crn: String, number: String) = findByPersonCrnAndNumber(crn, number)
-    ?: throw NotFoundException("Event $number not found for crn $crn")
+fun EventRepository.getByPersonCrnAndNumber(
+    crn: String,
+    number: String,
+) =
+    findByPersonCrnAndNumber(crn, number)
+        ?: throw NotFoundException("Event $number not found for crn $crn")

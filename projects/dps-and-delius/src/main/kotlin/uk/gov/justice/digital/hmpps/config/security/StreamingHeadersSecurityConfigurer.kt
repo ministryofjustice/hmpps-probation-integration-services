@@ -14,11 +14,14 @@ import org.springframework.security.web.header.HeaderWriterFilter
 class StreamingHeadersSecurityConfigurer : SecurityConfigurer {
     override fun configure(http: HttpSecurity): HttpSecurity {
         http.headers {
-            it.withObjectPostProcessor(object : ObjectPostProcessor<HeaderWriterFilter> {
-                override fun <T : HeaderWriterFilter> postProcess(filter: T) = filter.also {
-                    filter.setShouldWriteHeadersEagerly(true)
-                }
-            })
+            it.withObjectPostProcessor(
+                object : ObjectPostProcessor<HeaderWriterFilter> {
+                    override fun <T : HeaderWriterFilter> postProcess(filter: T) =
+                        filter.also {
+                            filter.setShouldWriteHeadersEagerly(true)
+                        }
+                },
+            )
         }
         return http
     }

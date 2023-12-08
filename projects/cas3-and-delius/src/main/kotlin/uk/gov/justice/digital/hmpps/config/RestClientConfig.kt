@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.integrations.approvedpremesis.Cas3ApiClient
 
 @Configuration
 class RestClientConfig(private val oauth2Client: RestClient) {
-
     @Bean
     fun cas3ApiClient() = createClient<Cas3ApiClient>(oauth2Client)
 }

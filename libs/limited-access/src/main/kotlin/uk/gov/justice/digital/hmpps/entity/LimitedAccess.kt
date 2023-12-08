@@ -14,70 +14,57 @@ import java.time.LocalDateTime
 @Immutable
 @Entity
 class Exclusion(
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: LimitedAccessPerson,
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     val user: LimitedAccessUser,
-
     @Column(name = "exclusion_end_time")
     val end: LocalDateTime?,
-
     @Id
     @Column(name = "exclusion_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
 @Entity
 class Restriction(
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: LimitedAccessPerson,
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     val user: LimitedAccessUser,
-
     @Column(name = "restriction_end_time")
     val end: LocalDateTime?,
-
     @Id
     @Column(name = "restriction_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
 @Entity
 @Table(name = "offender")
 class LimitedAccessPerson(
-
     @Column(columnDefinition = "char(7)")
     val crn: String,
-
     val exclusionMessage: String?,
     val restrictionMessage: String?,
-
     @Id
     @Column(name = "offender_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
 @Entity
 @Table(name = "user_")
 class LimitedAccessUser(
-
     @Column(name = "distinguished_name")
     val username: String,
-
     @Id
     @Column(name = "user_id")
-    val id: Long
+    val id: Long,
 )
 
 interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
@@ -94,9 +81,12 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
         select p.crn as crn, p.exclusionMessage as exclusionMessage, '' as restrictionMessage
         from LimitedAccessPerson p where p.crn in :crns
         and exists (select e from Exclusion e where upper(e.user.username) = upper(:username) and e.person.id = p.id and (e.end is null or e.end > current_date ))
-    """
+    """,
     )
-    fun getAccessFor(username: String, crns: List<String>): List<PersonAccess>
+    fun getAccessFor(
+        username: String,
+        crns: List<String>,
+    ): List<PersonAccess>
 
     @Query(
         """
@@ -107,7 +97,7 @@ interface UserAccessRepository : JpaRepository<LimitedAccessUser, Long> {
         select p.crn as crn, p.exclusionMessage as exclusionMessage, '' as restrictionMessage
         from LimitedAccessPerson p where p.crn in :crns
         and exists (select e from Exclusion e where e.person.id = p.id and (e.end is null or e.end > current_date ))
-    """
+    """,
     )
     fun checkLimitedAccessFor(crns: List<String>): List<PersonAccess>
 }
@@ -119,4 +109,5 @@ interface PersonAccess {
 }
 
 fun PersonAccess.isExcluded() = !exclusionMessage.isNullOrBlank()
+
 fun PersonAccess.isRestricted() = !restrictionMessage.isNullOrBlank()

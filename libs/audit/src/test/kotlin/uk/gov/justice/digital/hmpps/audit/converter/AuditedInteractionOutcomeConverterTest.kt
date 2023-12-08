@@ -10,19 +10,24 @@ import org.junit.jupiter.params.provider.MethodSource
 import uk.gov.justice.digital.hmpps.audit.entity.AuditedInteraction
 
 internal class AuditedInteractionOutcomeConverterTest {
-
     private val converter = AuditedInteractionOutcomeConverter()
 
     @ParameterizedTest
     @MethodSource("outcomeToDb")
-    fun convertToDatabaseColumn(outcome: AuditedInteraction.Outcome, column: Char) {
+    fun convertToDatabaseColumn(
+        outcome: AuditedInteraction.Outcome,
+        column: Char,
+    ) {
         val res = converter.convertToDatabaseColumn(outcome)
         assertThat(res, equalTo(column))
     }
 
     @ParameterizedTest
     @MethodSource("outcomeToDb")
-    fun convertToEntityAttribute(outcome: AuditedInteraction.Outcome, column: Char) {
+    fun convertToEntityAttribute(
+        outcome: AuditedInteraction.Outcome,
+        column: Char,
+    ) {
         val res = converter.convertToEntityAttribute(column)
         assertThat(res, equalTo(outcome))
     }
@@ -34,9 +39,10 @@ internal class AuditedInteractionOutcomeConverterTest {
 
     companion object {
         @JvmStatic
-        fun outcomeToDb(): List<Arguments> = listOf(
-            Arguments.of(AuditedInteraction.Outcome.FAIL, 'F'),
-            Arguments.of(AuditedInteraction.Outcome.SUCCESS, 'P')
-        )
+        fun outcomeToDb(): List<Arguments> =
+            listOf(
+                Arguments.of(AuditedInteraction.Outcome.FAIL, 'F'),
+                Arguments.of(AuditedInteraction.Outcome.SUCCESS, 'P'),
+            )
     }
 }

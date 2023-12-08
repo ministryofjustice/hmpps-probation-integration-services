@@ -154,9 +154,10 @@ internal class CaseSummaryServiceTest {
         givenPersonalDetails()
         givenMappa(RegistrationGenerator.generate(person.id, RegisterType.MAPPA_TYPE, "MAPPA", category = "XX"))
 
-        val exception = assertThrows<IllegalStateException> {
-            caseSummaryService.getMappaAndRoshHistory(person.crn)
-        }
+        val exception =
+            assertThrows<IllegalStateException> {
+                caseSummaryService.getMappaAndRoshHistory(person.crn)
+            }
 
         assertThat(exception.message, equalTo("Unexpected MAPPA category: XX"))
     }
@@ -166,9 +167,10 @@ internal class CaseSummaryServiceTest {
         givenPersonalDetails()
         givenMappa(RegistrationGenerator.generate(person.id, RegisterType.MAPPA_TYPE, "MAPPA", level = "YY"))
 
-        val exception = assertThrows<IllegalStateException> {
-            caseSummaryService.getMappaAndRoshHistory(person.crn)
-        }
+        val exception =
+            assertThrows<IllegalStateException> {
+                caseSummaryService.getMappaAndRoshHistory(person.crn)
+            }
 
         assertThat(exception.message, equalTo("Unexpected MAPPA level: YY"))
     }
@@ -229,9 +231,7 @@ internal class CaseSummaryServiceTest {
         whenever(personManagerRepository.findByPersonId(person.id)).thenReturn(PersonManagerGenerator.CASE_SUMMARY)
     }
 
-    private fun givenRegistrations(
-        registrations: List<Registration> = listOf(RegistrationGenerator.MAPPA, RegistrationGenerator.HIGH_ROSH)
-    ) {
+    private fun givenRegistrations(registrations: List<Registration> = listOf(RegistrationGenerator.MAPPA, RegistrationGenerator.HIGH_ROSH)) {
         whenever(registrationRepository.findActiveTypeDescriptionsByPersonId(person.id))
             .thenReturn(registrations.map { it.type.description })
     }
@@ -251,8 +251,7 @@ internal class CaseSummaryServiceTest {
         return events
     }
 
-    private fun givenACustodialEvent(event: Event = EventGenerator.CASE_SUMMARY) =
-        givenCustodialEvents(listOf(event))[0]
+    private fun givenACustodialEvent(event: Event = EventGenerator.CASE_SUMMARY) = givenCustodialEvents(listOf(event))[0]
 
     private fun givenARelease(): Release {
         val event = givenACustodialEvent()

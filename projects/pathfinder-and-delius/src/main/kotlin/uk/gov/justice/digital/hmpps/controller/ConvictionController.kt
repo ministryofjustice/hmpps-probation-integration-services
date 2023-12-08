@@ -12,11 +12,10 @@ import uk.gov.justice.digital.hmpps.service.ConvictionService
 @Validated
 @RestController
 class ConvictionController(private val convictionService: ConvictionService) {
-
     @PreAuthorize("hasRole('ROLE_PATHFINDER_PROBATION_CASE')")
     @PostMapping(value = ["/convictions"])
     fun convictions(
         @Valid @RequestBody
-        request: BatchRequest
+        request: BatchRequest,
     ) = convictionService.getConvictions(request)
 }

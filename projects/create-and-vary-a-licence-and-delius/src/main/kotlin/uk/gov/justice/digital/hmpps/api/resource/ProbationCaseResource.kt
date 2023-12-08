@@ -14,13 +14,17 @@ import uk.gov.justice.digital.hmpps.service.ManagerService
 @RequestMapping("probation-case/{crn}")
 class ProbationCaseResource(
     private val responsibleManagerService: ManagerService,
-    private val addressService: AddressService
+    private val addressService: AddressService,
 ) {
     @PreAuthorize("hasRole('CVL_CONTEXT')")
     @GetMapping("responsible-community-manager")
-    fun findCommunityManager(@PathVariable crn: String): Manager = responsibleManagerService.findCommunityManager(crn)
+    fun findCommunityManager(
+        @PathVariable crn: String,
+    ): Manager = responsibleManagerService.findCommunityManager(crn)
 
     @PreAuthorize("hasRole('CVL_CONTEXT')")
     @GetMapping("addresses")
-    fun findAddresses(@PathVariable crn: String): List<Address> = addressService.findAddresses(crn)
+    fun findAddresses(
+        @PathVariable crn: String,
+    ): List<Address> = addressService.findAddresses(crn)
 }

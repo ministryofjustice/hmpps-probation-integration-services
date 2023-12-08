@@ -11,7 +11,7 @@ import java.time.ZonedDateTime
 data class ProbationRecord(
     val crn: String,
     val offenderManagers: List<OffenderManager>,
-    val convictions: List<Conviction>
+    val convictions: List<Conviction>,
 )
 
 data class OffenderManager(
@@ -19,33 +19,33 @@ data class OffenderManager(
     val allocatedDate: LocalDate,
     val team: Team,
     val provider: String,
-    val active: Boolean
+    val active: Boolean,
 )
 
-fun PersonManager.toOffenderManager() =
-    OffenderManager(staff.toStaff(), date.toLocalDate(), team.toTeam(), provider.description, true)
+fun PersonManager.toOffenderManager() = OffenderManager(staff.toStaff(), date.toLocalDate(), team.toTeam(), provider.description, true)
 
-fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.toStaff() =
-    Staff(listOfNotNull(forename, forename2).joinToString(" "), surname)
+fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.toStaff() = Staff(listOfNotNull(forename, forename2).joinToString(" "), surname)
 
-fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team.toTeam() =
-    Team(description, telephone, ldu.description, district.description)
+fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Team.toTeam() = Team(description, telephone, ldu.description, district.description)
 
 fun ReferenceData.keyValueOf() = KeyValue(code, description)
+
 fun RequirementMainCategory.keyValueOf() = KeyValue(code, description)
+
 fun AdRequirementMainCategory.keyValueOf() = KeyValue(code, description)
+
 fun CourtReportType.keyValueOf() = KeyValue(code, description)
 
 data class Staff(
     val forenames: String,
-    val surname: String
+    val surname: String,
 )
 
 data class Team(
     val description: String,
     val telephone: String? = null,
     val localDeliveryUnit: String,
-    val district: String
+    val district: String,
 )
 
 data class Conviction(
@@ -61,7 +61,7 @@ data class Conviction(
     val requirements: List<Requirement> = listOf(),
     val pssRequirements: List<PssRequirement> = listOf(),
     val licenceConditions: List<LicenceCondition> = listOf(),
-    val courtReports: List<CourtReport> = listOf()
+    val courtReports: List<CourtReport> = listOf(),
 )
 
 data class CourtReport(
@@ -70,13 +70,13 @@ data class CourtReport(
     val completedDate: LocalDate?,
     val courtReportType: KeyValue?,
     val deliveredCourtReportType: KeyValue?,
-    val author: ReportAuthor?
+    val author: ReportAuthor?,
 )
 
 data class ReportAuthor(
     val unallocated: Boolean,
     val forenames: String?,
-    val surname: String?
+    val surname: String?,
 )
 
 data class Sentence(
@@ -87,28 +87,27 @@ data class Sentence(
     val terminationDate: LocalDate?,
     val startDate: LocalDate?,
     val endDate: LocalDate?,
-    val terminationReason: String?
+    val terminationReason: String?,
 )
 
 data class Offence(
     val description: String,
     val main: Boolean = false,
-    val offenceDate: LocalDate?
+    val offenceDate: LocalDate?,
 )
 
 data class KeyValue(
     val code: String,
-    val description: String
+    val description: String,
 )
 
 data class OffenderDocumentDetail(
-
     val documentName: String,
     val author: String?,
     val type: DocumentType,
     val extendedDescription: String?,
     val createdAt: ZonedDateTime?,
-    val subType: KeyValue?
+    val subType: KeyValue?,
 )
 
 enum class DocumentType(val description: String) {
@@ -127,19 +126,19 @@ enum class DocumentType(val description: String) {
     NSI_DOCUMENT("Non Statutory Intervention related document"),
     PERSONAL_CIRCUMSTANCE_DOCUMENT("Personal circumstance related document"),
     UPW_APPOINTMENT_DOCUMENT("Unpaid work appointment document"),
-    CONTACT_DOCUMENT("Contact related document")
+    CONTACT_DOCUMENT("Contact related document"),
 }
 
 class Breach(
     val description: String?,
     val status: String?,
     val started: LocalDate?,
-    val statusDate: LocalDate?
+    val statusDate: LocalDate?,
 )
 
 class PssRequirement(
     val description: String?,
-    val subTypeDescription: String?
+    val subTypeDescription: String?,
 )
 
 data class Requirement(
@@ -153,7 +152,7 @@ data class Requirement(
     val adRequirementTypeMainCategory: KeyValue?,
     val adRequirementTypeSubCategory: KeyValue?,
     val terminationReason: KeyValue?,
-    val length: Long?
+    val length: Long?,
 )
 
 data class LicenceCondition(
@@ -161,5 +160,5 @@ data class LicenceCondition(
     val subTypeDescription: String?,
     val startDate: LocalDate?,
     val notes: String?,
-    val active: Boolean
+    val active: Boolean,
 )

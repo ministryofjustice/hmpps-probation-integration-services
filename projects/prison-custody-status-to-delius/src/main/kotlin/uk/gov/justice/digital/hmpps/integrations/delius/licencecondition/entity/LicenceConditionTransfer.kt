@@ -29,80 +29,64 @@ class LicenceConditionTransfer(
     @Id
     @Column(name = "lic_condition_transfer_id", nullable = false)
     val id: Long = 0,
-
     @Version
     @Column(name = "row_version", nullable = false)
     val version: Long = 0,
-
     @ManyToOne
     @JoinColumn(name = "lic_condition_id", nullable = false)
     val licenceCondition: LicenceCondition,
-
     @ManyToOne
     @JoinColumn(name = "transfer_status_id", nullable = false)
     var status: ReferenceData,
-
     @ManyToOne
     @JoinColumn(name = "accepted_decision_id")
     var decision: ReferenceData? = null,
-
     @ManyToOne
     @JoinColumn(name = "allocation_reason_id")
     val reason: ReferenceData? = null,
-
     @ManyToOne
     @JoinColumn(name = "rejection_reason_id")
     var rejectionReason: ReferenceData? = null,
-
     @Column
     var requestDate: ZonedDateTime,
-
     @Column(name = "transfer_status_date")
     var statusDate: ZonedDateTime? = null,
-
     @Lob
     @Column
     var notes: String? = null,
-
     @ManyToOne
     @JoinColumn(name = "origin_team_id")
     val originTeam: Team,
-
     @ManyToOne
     @JoinColumn(name = "origin_staff_id")
     val originStaff: Staff,
-
     @ManyToOne
     @JoinColumn(name = "receiving_team_id")
     val receivingTeam: Team,
-
     @ManyToOne
     @JoinColumn(name = "receiving_staff_id")
     val receivingStaff: Staff,
-
     @Column
     val masterTransferId: Long? = null,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @CreatedBy
     @Column(nullable = false)
     var createdByUserId: Long = 0,
-
     @LastModifiedBy
     @Column(nullable = false)
     var lastUpdatedUserId: Long = 0,
-
     @CreatedDate
     @Column(nullable = false)
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
-
     @LastModifiedDate
     @Column(nullable = false)
-    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 )
 
 interface LicenceConditionTransferRepository : JpaRepository<LicenceConditionTransfer, Long> {
-    fun findAllByLicenceConditionIdAndStatusCode(licenceConditionId: Long, statusCode: String): List<LicenceConditionTransfer>
+    fun findAllByLicenceConditionIdAndStatusCode(
+        licenceConditionId: Long,
+        statusCode: String,
+    ): List<LicenceConditionTransfer>
 }

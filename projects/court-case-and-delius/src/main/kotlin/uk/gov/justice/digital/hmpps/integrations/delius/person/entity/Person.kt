@@ -13,20 +13,16 @@ import java.time.LocalDate
 @Entity
 @Table(name = "offender")
 class Person(
-
     @Column(columnDefinition = "char(7)")
     val crn: String,
-
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Id
     @Column(name = "offender_id")
-    val id: Long
+    val id: Long,
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {
-
     @Query(
         """
         select
@@ -48,7 +44,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
             and o.soft_deleted = 0
         group by o.crn
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun statusOf(crn: String): SentenceCounts?
 

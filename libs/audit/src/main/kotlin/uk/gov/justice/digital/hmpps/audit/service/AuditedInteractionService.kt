@@ -13,14 +13,14 @@ import uk.gov.justice.digital.hmpps.security.ServiceContext
 @Service
 class AuditedInteractionService(
     private val businessInteractionRepository: BusinessInteractionRepository,
-    private val auditedInteractionRepository: AuditedInteractionRepository
+    private val auditedInteractionRepository: AuditedInteractionRepository,
 ) {
     @Async
     @Transactional
     fun createAuditedInteraction(
         interactionCode: InteractionCode,
         params: AuditedInteraction.Parameters,
-        outcome: AuditedInteraction.Outcome
+        outcome: AuditedInteraction.Outcome,
     ) {
         ServiceContext.servicePrincipal()!!.let {
             val bi = businessInteractionRepository.findByCode(interactionCode.code)
@@ -29,8 +29,8 @@ class AuditedInteractionService(
                     bi?.id ?: throw BusinessInteractionNotFoundException(interactionCode.code),
                     it.userId,
                     parameters = params,
-                    outcome = outcome
-                )
+                    outcome = outcome,
+                ),
             )
         }
     }

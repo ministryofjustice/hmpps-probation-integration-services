@@ -28,41 +28,31 @@ import java.time.ZonedDateTime
 @SQLRestriction("active_flag = 1 and soft_deleted = 0")
 @SequenceGenerator(name = "lic_condition_id_seq", sequenceName = "lic_condition_id_seq", allocationSize = 1)
 class LicenceCondition(
-
     @Column(name = "disposal_id")
     val disposalId: Long,
-
     val startDate: LocalDate,
-
     @ManyToOne
     @JoinColumn(name = "lic_cond_type_main_cat_id")
     val mainCategory: LicenceConditionCategory,
-
     @ManyToOne
     @JoinColumn(name = "lic_cond_type_sub_cat_id")
     val subCategory: ReferenceData,
-
     @Lob
     @Column(name = "lic_condition_notes")
     val notes: String?,
-
     @Column(columnDefinition = "number")
     val pendingTransfer: Boolean = false,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Version
     @Column(name = "row_version")
     val version: Long = 0,
-
     @Id
     @Column(name = "lic_condition_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lic_condition_id_seq")
-    val id: Long = 0
+    val id: Long = 0,
 ) {
     @Column
     @CreatedBy
@@ -87,29 +77,23 @@ class LicenceCondition(
 @SQLRestriction("active_flag = 1 and soft_deleted = 0")
 @SequenceGenerator(name = "lic_condition_manager_id_seq", sequenceName = "lic_condition_manager_id_seq", allocationSize = 1)
 class LicenceConditionManager(
-
     @Column(name = "lic_condition_id")
     val licenceConditionId: Long,
-
     @Column(name = "probation_area_id")
     val providerId: Long,
     val teamId: Long,
     val staffId: Long,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Version
     @Column(name = "row_version")
     val version: Long = 0,
-
     @Id
     @Column(name = "lic_condition_manager_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lic_condition_manager_id_seq")
-    val id: Long = 0
+    val id: Long = 0,
 ) {
     @Column
     @CreatedBy

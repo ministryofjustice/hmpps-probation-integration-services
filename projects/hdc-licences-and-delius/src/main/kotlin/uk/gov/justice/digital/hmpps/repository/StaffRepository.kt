@@ -17,7 +17,7 @@ interface StaffRepository : JpaRepository<StaffEntity, Long> {
             left join fetch t.district d
             left join fetch d.borough
             where upper(u.username) = upper(:username)
-        """
+        """,
     )
     fun findByUserUsername(username: String): StaffEntity?
 

@@ -27,13 +27,17 @@ class CaseViewService(
     val personRepository: CaseViewPersonRepository,
     val additionalOffenceRepository: CaseViewAdditionalOffenceRepository,
     val requirementRepository: CaseViewRequirementRepository,
-    val documentRepository: DocumentRepository
+    val documentRepository: DocumentRepository,
 ) {
-    fun caseView(crn: String, eventNumber: String): CaseView {
+    fun caseView(
+        crn: String,
+        eventNumber: String,
+    ): CaseView {
         val person = personRepository.getByCrn(crn)
         val address = personRepository.findMainAddress(person.id)
-        val sentence = personRepository.findSentenceSummary(person.id, eventNumber)
-            ?: throw NotFoundException("Event", "number", eventNumber)
+        val sentence =
+            personRepository.findSentenceSummary(person.id, eventNumber)
+                ?: throw NotFoundException("Event", "number", eventNumber)
         val additionalOffences = additionalOffenceRepository.findAllByEventId(sentence.eventId)
         val requirements = requirementRepository.findAllByDisposalEventId(sentence.eventId)
         val docs = documentRepository.findCpsAndPreCons(person.id).associateBy { it.type }
@@ -51,40 +55,45 @@ class CaseViewService(
             requirements.map { it.toCvRequirement() },
             cpsPack?.toCvDocument(),
             preCon?.toCvDocument(),
-            courtReport?.toCvDocument()
+            courtReport?.toCvDocument(),
         )
     }
 
     private fun CaseViewPerson.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)
 
-    private fun CaseViewPersonAddress.toCvAddress() = CvAddress(
-        buildingName,
-        addressNumber,
-        streetName,
-        town,
-        county,
-        postcode,
-        noFixedAbode ?: false,
-        typeVerified ?: false,
-        type?.description,
-        startDate
-    )
+    private fun CaseViewPersonAddress.toCvAddress() =
+        CvAddress(
+            buildingName,
+            addressNumber,
+            streetName,
+            town,
+            county,
+            postcode,
+            noFixedAbode ?: false,
+            typeVerified ?: false,
+            type?.description,
+            startDate,
+        )
 
     private fun SentenceSummary.toCvSentence() = CvSentence(description, startDate, length, endDate)
+
     private fun SentenceSummary.mainOffence() = CvOffence(offenceMainCategory, offenceSubCategory, true)
+
     private fun CaseViewAdditionalOffence.toCvOffence() =
         CvOffence(offence.mainCategoryDescription, offence.subCategoryDescription, false)
 
-    private fun CaseViewRequirement.toCvRequirement() = CvRequirement(
-        mainCategory.description,
-        subCategory?.description,
-        length?.let { "$length ${mainCategory.units?.description ?: ""}" } ?: ""
-    )
+    private fun CaseViewRequirement.toCvRequirement() =
+        CvRequirement(
+            mainCategory.description,
+            subCategory?.description,
+            length?.let { "$length ${mainCategory.units?.description ?: ""}" } ?: "",
+        )
 
-    private fun Document.toCvDocument() = CvDocument(
-        alfrescoId!!,
-        name,
-        dateProduced?.toLocalDate() ?: lastSaved!!.toLocalDate(),
-        findRelatedTo().description
-    )
+    private fun Document.toCvDocument() =
+        CvDocument(
+            alfrescoId!!,
+            name,
+            dateProduced?.toLocalDate() ?: lastSaved!!.toLocalDate(),
+            findRelatedTo().description,
+        )
 }

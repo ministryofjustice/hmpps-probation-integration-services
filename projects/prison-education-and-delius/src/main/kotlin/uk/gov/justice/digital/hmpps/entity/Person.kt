@@ -15,10 +15,8 @@ data class Person(
     @Id
     @Column(name = "offender_id")
     val id: Long,
-
     @Column(name = "nomsNumber", columnDefinition = "char(7)")
     val prisonerId: String,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )

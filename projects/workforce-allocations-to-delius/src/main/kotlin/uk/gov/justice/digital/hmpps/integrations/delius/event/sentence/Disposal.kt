@@ -18,39 +18,29 @@ class Disposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "disposal_type_id")
     val type: DisposalType,
-
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
     @Column(name = "disposal_date")
     val date: ZonedDateTime,
-
     @Column
     val notionalEndDate: ZonedDateTime? = null,
-
     @Column
     val enteredNotionalEndDate: ZonedDateTime? = null,
-
     @Column
     val entryLength: Long? = null,
-
     @ManyToOne
     @JoinColumn(name = "entry_length_units_id")
     val entryLengthUnit: ReferenceData? = null,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Column
-    val terminationDate: ZonedDateTime? = null
+    val terminationDate: ZonedDateTime? = null,
 ) {
     val length
         get() = "$entryLength ${entryLengthUnit?.description}"
@@ -63,9 +53,7 @@ class DisposalType(
     @Id
     @Column(name = "disposal_type_id")
     val id: Long,
-
     @Column
     val sentenceType: String,
-
-    val description: String
+    val description: String,
 )

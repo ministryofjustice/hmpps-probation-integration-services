@@ -8,7 +8,7 @@ fun TelemetryService.hmppsEventReceived(hmppsEvent: HmppsDomainEvent) {
         "${hmppsEvent.eventType.uppercase().replace(".", "_")}_RECEIVED",
         mapOf("eventType" to hmppsEvent.eventType) +
             (hmppsEvent.detailUrl?.let { mapOf("detailUrl" to it) } ?: mapOf()) +
-            (hmppsEvent.personReference.identifiers.associate { Pair(it.type, it.value) })
+            (hmppsEvent.personReference.identifiers.associate { Pair(it.type, it.value) }),
     )
 }
 

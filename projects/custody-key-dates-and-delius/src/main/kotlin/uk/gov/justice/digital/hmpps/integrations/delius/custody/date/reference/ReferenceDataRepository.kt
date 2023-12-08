@@ -10,10 +10,12 @@ interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
         SELECT rd FROM ReferenceData rd
         WHERE rd.dataset.code = :datasetCode
         AND rd.code = :code
-    """
+    """,
     )
-    fun findByDatasetAndCode(datasetCode: DatasetCode, code: String): ReferenceData?
+    fun findByDatasetAndCode(
+        datasetCode: DatasetCode,
+        code: String,
+    ): ReferenceData?
 }
 
-fun ReferenceDataRepository.findKeyDateType(code: String): ReferenceData =
-    findByDatasetAndCode(DatasetCode.KEY_DATE_TYPE, code) ?: throw NotFoundException("KeyDateType", "code", code)
+fun ReferenceDataRepository.findKeyDateType(code: String): ReferenceData = findByDatasetAndCode(DatasetCode.KEY_DATE_TYPE, code) ?: throw NotFoundException("KeyDateType", "code", code)

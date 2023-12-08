@@ -20,7 +20,7 @@ class Handler(
     private val contactService: ContactService,
     private val addressService: AddressService,
     private val cas3ApiClient: Cas3ApiClient,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
@@ -99,10 +99,11 @@ class Handler(
         }
     }
 
-    fun HmppsDomainEvent.telemetryProperties() = mapOf(
-        "occurredAt" to occurredAt.toString(),
-        "crn" to crn()
-    )
+    fun HmppsDomainEvent.telemetryProperties() =
+        mapOf(
+            "occurredAt" to occurredAt.toString(),
+            "crn" to crn(),
+        )
 }
 
 fun HmppsDomainEvent.crn(): String = personReference.findCrn() ?: throw IllegalArgumentException("Missing CRN")

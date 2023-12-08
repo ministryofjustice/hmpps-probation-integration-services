@@ -10,18 +10,21 @@ import uk.gov.justice.digital.hmpps.service.DocumentService
 @RestController
 @PreAuthorize("hasRole('ROLE_PROBATION_API__DPS__DOCUMENTS')")
 class DocumentController(private val documentService: DocumentService) {
-
     @GetMapping(value = ["/case/{nomisId}/documents"])
     @Operation(
         summary = "List documents for a case",
         description = """Returns basic personal information for the case, along with a list of person-level documents 
             and event-level documents. Documents are annotated with the type and description, based on what they relate 
             to in the probation case (e.g. a court appearance, an event, etc).
-        """
+        """,
     )
-    fun getDocuments(@PathVariable nomisId: String) = documentService.getDocumentsForCase(nomisId)
+    fun getDocuments(
+        @PathVariable nomisId: String,
+    ) = documentService.getDocumentsForCase(nomisId)
 
     @GetMapping(value = ["/document/{id}"])
     @Operation(summary = "Download document content")
-    fun downloadDocument(@PathVariable id: String) = documentService.downloadDocument(id)
+    fun downloadDocument(
+        @PathVariable id: String,
+    ) = documentService.downloadDocument(id)
 }

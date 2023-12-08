@@ -21,7 +21,6 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 import java.time.format.DateTimeFormatter.ISO_LOCAL_TIME
 
 interface ContactRepository : JpaRepository<Contact, Long> {
-
     @Query(
         """
         select count(distinct c.date) 
@@ -29,21 +28,24 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         where c.eventId = :eventId and c.complied = false
         and c.type.nationalStandards = true 
         and (:lastResetDate is null or c.date >= :lastResetDate)
-        """
+        """,
     )
-    fun countFailureToComply(eventId: Long, lastResetDate: LocalDate?): Long
+    fun countFailureToComply(
+        eventId: Long,
+        lastResetDate: LocalDate?,
+    ): Long
 
     @Query(
         """
             select count(c.id) from Contact c 
             where c.eventId = :eventId and c.type.code = :contactCode 
             and c.outcome is null and (:breachEnd is null or c.date >= :breachEnd)
-        """
+        """,
     )
     fun countEnforcementUnderReview(
         @Param("eventId") eventId: Long,
         @Param("contactCode") contactCode: String,
-        @Param("breachEnd") breachEnd: LocalDate?
+        @Param("breachEnd") breachEnd: LocalDate?,
     ): Long
 
     @Query(
@@ -57,7 +59,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             and (c.complied is null or c.complied = true)
             and nsi.id = :nsiId 
             and rq.mainCategory.code = 'F'
-        """
+        """,
     )
     fun countNsiRar(nsiId: Long): Long
 
@@ -73,16 +75,19 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         and c.type.id in (select ct.id from ContactType ct where ct.code in :contactTypes)
         and c.outcome is null
         and c.date >= :date
-    """
+    """,
     )
     fun withdrawFutureAppointments(
         nsiId: Long,
         appointmentWithdrawn: ContactOutcome,
         contactTypes: List<String> = listOf(CRSAPT.value, CRSSAA.value),
-        date: LocalDate = LocalDate.now()
+        date: LocalDate = LocalDate.now(),
     )
 
-    fun findByPersonCrnAndExternalReference(crn: String, externalReference: String): Contact?
+    fun findByPersonCrnAndExternalReference(
+        crn: String,
+        externalReference: String,
+    ): Contact?
 
     @Query(
         """
@@ -97,7 +102,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             and to_char(c.contact_end_time, 'HH24:MI') > :startTime
             and c.soft_deleted = 0 and c.contact_outcome_type_id is null
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun getClashCount(
         personId: Long,
@@ -105,7 +110,7 @@ interface ContactRepository : JpaRepository<Contact, Long> {
         date: String,
         startTime: String,
         endTime: String,
-        previousExternalReference: String?
+        previousExternalReference: String?,
     ): Int
 
     @Query(
@@ -114,9 +119,13 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             where c.nsiId = :nsiId
             and c.type.code = :contactType
             and c.date = :date
-        """
+        """,
     )
-    fun findNotificationContact(nsiId: Long, contactType: String, date: LocalDate): List<Contact>
+    fun findNotificationContact(
+        nsiId: Long,
+        contactType: String,
+        date: LocalDate,
+    ): List<Contact>
 
     @Query(
         """
@@ -135,13 +144,13 @@ interface ContactRepository : JpaRepository<Contact, Long> {
             left join user_ last_updated_by on last_updated_by.user_id = nsi.last_updated_user_id
             where nsi_offender.crn = :crn and nsi.external_reference = :nsiExternalReference
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun getNotFoundReason(
         crn: String,
         nsiExternalReference: String,
         contactExternalReference: String,
-        contactId: Long
+        contactId: Long,
     ): ContactNotFoundReason?
 }
 
@@ -151,15 +160,16 @@ fun ContactRepository.appointmentClashes(
     date: LocalDate,
     startTime: ZonedDateTime,
     endTime: ZonedDateTime,
-    previousExternalReference: String?
-): Boolean = getClashCount(
-    personId,
-    externalReference,
-    date.format(ISO_LOCAL_DATE),
-    startTime.format(ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
-    endTime.format(ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
-    previousExternalReference
-) > 0
+    previousExternalReference: String?,
+): Boolean =
+    getClashCount(
+        personId,
+        externalReference,
+        date.format(ISO_LOCAL_DATE),
+        startTime.format(ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
+        endTime.format(ISO_LOCAL_TIME.withZone(ZoneId.systemDefault())),
+        previousExternalReference,
+    ) > 0
 
 interface ContactTypeRepository : JpaRepository<ContactType, Long> {
     fun findByCode(code: String): ContactType?

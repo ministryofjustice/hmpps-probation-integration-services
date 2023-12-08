@@ -5,7 +5,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Release as R
 
 data class Release(
     val releaseDate: LocalDate,
-    val recallDate: LocalDate?
+    val recallDate: LocalDate?,
 )
 
 fun ReleaseEntity.dates() = Release(date, recall?.date)

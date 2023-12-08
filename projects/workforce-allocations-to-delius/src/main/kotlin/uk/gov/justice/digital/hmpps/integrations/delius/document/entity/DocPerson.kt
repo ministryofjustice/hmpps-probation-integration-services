@@ -10,14 +10,11 @@ import org.hibernate.annotations.Immutable
 @Entity
 @Table(name = "offender")
 class DocPerson(
-
     @Id
     @Column(name = "offender_id")
     val id: Long,
-
     @Column(columnDefinition = "CHAR(7)")
     val crn: String,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )

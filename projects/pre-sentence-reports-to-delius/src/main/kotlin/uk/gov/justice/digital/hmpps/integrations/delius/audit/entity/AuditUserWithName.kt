@@ -14,12 +14,10 @@ class User(
     @Id
     @Column(name = "user_id")
     val id: Long,
-
     @Column(name = "distinguished_name")
     val username: String,
-
     val surname: String,
-    val forename: String
+    val forename: String,
 )
 
 interface UserRepository : JpaRepository<User, Long> {

@@ -44,7 +44,6 @@ import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 
 @ExtendWith(MockitoExtension::class)
 internal class AllocatePersonServiceTest {
-
     @Mock
     private lateinit var auditedInteractionService: AuditedInteractionService
 
@@ -87,8 +86,8 @@ internal class AllocatePersonServiceTest {
         whenever(
             personManagerRepository.findActiveManager(
                 PersonGenerator.DEFAULT.id,
-                allocationDetail.createdDate
-            )
+                allocationDetail.createdDate,
+            ),
         ).thenReturn(null)
 
         assertThrows<NotFoundException> { allocatePersonService.createPersonAllocation(allocationDetail) }
@@ -97,15 +96,16 @@ internal class AllocatePersonServiceTest {
     @Test
     fun `when duplicate allocation noop`() {
         whenever(personRepository.findIdByCrn(allocationDetail.crn)).thenReturn(PersonGenerator.DEFAULT.id)
-        val allocationDetail = allocationDetail.copy(
-            staffCode = OrderManagerGenerator.DEFAULT.staff.code,
-            teamCode = OrderManagerGenerator.DEFAULT.team.code
-        )
+        val allocationDetail =
+            allocationDetail.copy(
+                staffCode = OrderManagerGenerator.DEFAULT.staff.code,
+                teamCode = OrderManagerGenerator.DEFAULT.team.code,
+            )
         whenever(
             personManagerRepository.findActiveManager(
                 PersonGenerator.DEFAULT.id,
-                allocationDetail.createdDate
-            )
+                allocationDetail.createdDate,
+            ),
         ).thenReturn(PersonManagerGenerator.DEFAULT)
 
         assertDoesNotThrow { allocatePersonService.createPersonAllocation(allocationDetail) }
@@ -119,8 +119,8 @@ internal class AllocatePersonServiceTest {
         whenever(
             personManagerRepository.findActiveManager(
                 PersonGenerator.DEFAULT.id,
-                allocationDetail.createdDate
-            )
+                allocationDetail.createdDate,
+            ),
         ).thenReturn(PersonManagerGenerator.DEFAULT)
 
         whenever(personRepository.countPendingTransfers(PersonGenerator.DEFAULT.id)).thenReturn(1)
@@ -135,8 +135,8 @@ internal class AllocatePersonServiceTest {
         whenever(
             personManagerRepository.findActiveManager(
                 PersonGenerator.DEFAULT.id,
-                allocationDetail.createdDate
-            )
+                allocationDetail.createdDate,
+            ),
         ).thenReturn(PersonManagerGenerator.DEFAULT)
 
         whenever(personRepository.countPendingTransfers(PersonGenerator.DEFAULT.id)).thenReturn(0)
@@ -145,8 +145,8 @@ internal class AllocatePersonServiceTest {
                 TeamStaffContainer(
                     TeamGenerator.DEFAULT,
                     StaffGenerator.DEFAULT,
-                    ReferenceDataGenerator.INITIAL_OM_ALLOCATION
-                )
+                    ReferenceDataGenerator.INITIAL_OM_ALLOCATION,
+                ),
             )
 
         whenever(personManagerRepository.save(any<PersonManager>())).thenAnswer { it.arguments[0] }
@@ -154,8 +154,8 @@ internal class AllocatePersonServiceTest {
         whenever(
             responsibleOfficerRepository.findActiveManagerAtDate(
                 PersonGenerator.DEFAULT.id,
-                allocationDetail.createdDate
-            )
+                allocationDetail.createdDate,
+            ),
         ).thenReturn(null)
 
         assertThrows<NotFoundException> { allocatePersonService.createPersonAllocation(allocationDetail) }
@@ -168,8 +168,8 @@ internal class AllocatePersonServiceTest {
         whenever(
             personManagerRepository.findActiveManager(
                 PersonGenerator.DEFAULT.id,
-                allocationDetail.createdDate
-            )
+                allocationDetail.createdDate,
+            ),
         ).thenReturn(PersonManagerGenerator.DEFAULT)
 
         whenever(personRepository.countPendingTransfers(PersonGenerator.DEFAULT.id)).thenReturn(0)
@@ -178,8 +178,8 @@ internal class AllocatePersonServiceTest {
                 TeamStaffContainer(
                     TeamGenerator.DEFAULT,
                     StaffGenerator.DEFAULT,
-                    ReferenceDataGenerator.INITIAL_OM_ALLOCATION
-                )
+                    ReferenceDataGenerator.INITIAL_OM_ALLOCATION,
+                ),
             )
 
         whenever(personManagerRepository.save(any<PersonManager>())).thenAnswer { it.arguments[0] }
@@ -187,19 +187,20 @@ internal class AllocatePersonServiceTest {
         whenever(
             responsibleOfficerRepository.findActiveManagerAtDate(
                 PersonGenerator.DEFAULT.id,
-                allocationDetail.createdDate
-            )
+                allocationDetail.createdDate,
+            ),
         ).thenReturn(
             ResponsibleOfficerGenerator.generate(
                 communityManager = null,
-                prisonManager = PrisonManager(
-                    23,
-                    PersonGenerator.DEFAULT.id,
-                    ProviderGenerator.DEFAULT,
-                    TeamGenerator.DEFAULT,
-                    StaffGenerator.DEFAULT
-                )
-            )
+                prisonManager =
+                    PrisonManager(
+                        23,
+                        PersonGenerator.DEFAULT.id,
+                        ProviderGenerator.DEFAULT,
+                        TeamGenerator.DEFAULT,
+                        StaffGenerator.DEFAULT,
+                    ),
+            ),
         )
 
         whenever(contactTypeRepository.findByCode(ContactTypeCode.RESPONSIBLE_OFFICER_CHANGE.value))

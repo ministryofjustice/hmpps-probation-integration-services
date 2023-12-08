@@ -33,14 +33,17 @@ class AllocateRequirementService(
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val transferReasonRepository: TransferReasonRepository,
-    private val optimisationTables: OptimisationTables
+    private val optimisationTables: OptimisationTables,
 ) : ManagerService<RequirementManager>(auditedInteractionService, requirementManagerRepository) {
-
     @Transactional
-    fun createRequirementAllocation(crn: String, allocationDetail: RequirementAllocationDetail) =
+    fun createRequirementAllocation(
+        crn: String,
+        allocationDetail: RequirementAllocationDetail,
+    ) =
         audit(BusinessInteractionCode.CREATE_COMPONENT_TRANSFER) {
-            val requirement = requirementRepository.findByIdOrNull(allocationDetail.requirementId)
-                ?: throw NotFoundException("Requirement", "id", allocationDetail.requirementId)
+            val requirement =
+                requirementRepository.findByIdOrNull(allocationDetail.requirementId)
+                    ?: throw NotFoundException("Requirement", "id", allocationDetail.requirementId)
 
             it["offenderId"] = requirement.person.id
             it["eventId"] = requirement.disposal.event.id
@@ -58,12 +61,13 @@ class AllocateRequirementService(
             }
             if (!requirement.active) throw NotActiveException("Requirement", "id", allocationDetail.requirementId)
 
-            val activeRequirementManager = requirementManagerRepository.findActiveManagerAtDate(
-                allocationDetail.requirementId,
-                allocationDetail.createdDate
-            ) ?: throw NotFoundException(
-                "Requirement Manager for requirement ${allocationDetail.requirementId} at ${allocationDetail.createdDate} not found"
-            )
+            val activeRequirementManager =
+                requirementManagerRepository.findActiveManagerAtDate(
+                    allocationDetail.requirementId,
+                    allocationDetail.createdDate,
+                ) ?: throw NotFoundException(
+                    "Requirement Manager for requirement ${allocationDetail.requirementId} at ${allocationDetail.createdDate} not found",
+                )
 
             if (allocationDetail.isDuplicate(activeRequirementManager)) {
                 return@audit
@@ -72,20 +76,23 @@ class AllocateRequirementService(
             if (requirementRepository.countPendingTransfers(requirement.id) > 0) {
                 throw ConflictException("Pending transfer exists for this requirement: ${requirement.id}")
             }
-            val ts = allocationValidator.initialValidations(
-                activeRequirementManager.provider.id,
-                allocationDetail
-            )
+            val ts =
+                allocationValidator.initialValidations(
+                    activeRequirementManager.provider.id,
+                    allocationDetail,
+                )
 
-            val transferReason = transferReasonRepository.findByCode(TransferReasonCode.COMPONENT.value)
-                ?: throw NotFoundException("Transfer Reason", "code", TransferReasonCode.COMPONENT.value)
+            val transferReason =
+                transferReasonRepository.findByCode(TransferReasonCode.COMPONENT.value)
+                    ?: throw NotFoundException("Transfer Reason", "code", TransferReasonCode.COMPONENT.value)
 
-            val newRequirementManager = RequirementManager(
-                requirementId = allocationDetail.requirementId,
-                transferReasonId = transferReason.id
-            ).apply {
-                populate(allocationDetail.createdDate, ts, activeRequirementManager)
-            }
+            val newRequirementManager =
+                RequirementManager(
+                    requirementId = allocationDetail.requirementId,
+                    transferReasonId = transferReason.id,
+                ).apply {
+                    populate(allocationDetail.createdDate, ts, activeRequirementManager)
+                }
 
             val (activeOM, newOM) = updateDateTimes(activeRequirementManager, newRequirementManager)
 
@@ -97,9 +104,9 @@ class AllocateRequirementService(
                         contactTypeRepository.findByCodeOrThrow(ContactTypeCode.SENTENCE_COMPONENT_TRANSFER.value),
                         requirement.person.id,
                         requirement.disposal.event.id,
-                        requirement.id
-                    )
-                )
+                        requirement.id,
+                    ),
+                ),
             )
 
             if (requirement.isAccreditedProgramme()) {
@@ -111,9 +118,11 @@ class AllocateRequirementService(
 private const val ACCREDITED_PROGRAMME = "7"
 private const val WY_ACCRED_PROGRAMME = "RM38"
 private const val NOT_SPECIFIED = "RS66"
-private fun Requirement.isAccreditedProgramme() = when {
-    mainCategory?.code == ACCREDITED_PROGRAMME && subCategory?.code != NOT_SPECIFIED -> true
-    mainCategory?.code == WY_ACCRED_PROGRAMME -> true
-    additionalMainCategory?.code in arrayOf(ACCREDITED_PROGRAMME, WY_ACCRED_PROGRAMME) -> true
-    else -> false
-}
+
+private fun Requirement.isAccreditedProgramme() =
+    when {
+        mainCategory?.code == ACCREDITED_PROGRAMME && subCategory?.code != NOT_SPECIFIED -> true
+        mainCategory?.code == WY_ACCRED_PROGRAMME -> true
+        additionalMainCategory?.code in arrayOf(ACCREDITED_PROGRAMME, WY_ACCRED_PROGRAMME) -> true
+        else -> false
+    }

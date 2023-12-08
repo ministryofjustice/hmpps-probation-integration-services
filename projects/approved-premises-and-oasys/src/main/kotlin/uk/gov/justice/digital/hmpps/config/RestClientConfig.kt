@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.oasys.client.OasysClient
 @Configuration
 class RestClientConfig(private val oauth2Client: RestClient) {
     @Bean
-    fun oasysClient(@Value("\${integrations.ords-oasys.url}") oasysBaseUrl: String) =
-        createClient<OasysClient>(oauth2Client.mutate().baseUrl(oasysBaseUrl).build())
+    fun oasysClient(
+        @Value("\${integrations.ords-oasys.url}") oasysBaseUrl: String,
+    ) = createClient<OasysClient>(oauth2Client.mutate().baseUrl(oasysBaseUrl).build())
 }

@@ -78,13 +78,14 @@ internal class PrisonManagerServiceTest {
     fun missingAllStaffTeamIsThrown() {
         val event = EventGenerator.custodialEvent(PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT)
 
-        val exception = assertThrows<NotFoundException> {
-            prisonManagerService.allocateToProbationArea(
-                event.disposal!!,
-                ProbationAreaGenerator.DEFAULT,
-                ZonedDateTime.now()
-            )
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                prisonManagerService.allocateToProbationArea(
+                    event.disposal!!,
+                    ProbationAreaGenerator.DEFAULT,
+                    ZonedDateTime.now(),
+                )
+            }
         assertEquals("Team with code of N02ALL not found", exception.message)
     }
 
@@ -92,16 +93,17 @@ internal class PrisonManagerServiceTest {
     fun missingUnallocatedStaffIsThrown() {
         val event = EventGenerator.custodialEvent(PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT)
         whenever(teamRepository.findByCodeAndProbationAreaId("N02ALL", ProbationAreaGenerator.DEFAULT.id)).thenReturn(
-            TeamGenerator.DEFAULT
+            TeamGenerator.DEFAULT,
         )
 
-        val exception = assertThrows<NotFoundException> {
-            prisonManagerService.allocateToProbationArea(
-                event.disposal!!,
-                ProbationAreaGenerator.DEFAULT,
-                ZonedDateTime.now()
-            )
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                prisonManagerService.allocateToProbationArea(
+                    event.disposal!!,
+                    ProbationAreaGenerator.DEFAULT,
+                    ZonedDateTime.now(),
+                )
+            }
         assertEquals("Staff with code of N02UATU not found", exception.message)
     }
 
@@ -109,22 +111,23 @@ internal class PrisonManagerServiceTest {
     fun missingAllocationReasonIsThrown() {
         val event = EventGenerator.custodialEvent(PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT)
         whenever(teamRepository.findByCodeAndProbationAreaId("N02ALL", ProbationAreaGenerator.DEFAULT.id)).thenReturn(
-            TeamGenerator.DEFAULT
+            TeamGenerator.DEFAULT,
         )
         whenever(
             staffRepository.findByCodeAndTeamsId(
                 "N02UATU",
-                TeamGenerator.DEFAULT.id
-            )
+                TeamGenerator.DEFAULT.id,
+            ),
         ).thenReturn(StaffGenerator.UNALLOCATED)
 
-        val exception = assertThrows<NotFoundException> {
-            prisonManagerService.allocateToProbationArea(
-                event.disposal!!,
-                ProbationAreaGenerator.DEFAULT,
-                ZonedDateTime.now()
-            )
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                prisonManagerService.allocateToProbationArea(
+                    event.disposal!!,
+                    ProbationAreaGenerator.DEFAULT,
+                    ZonedDateTime.now(),
+                )
+            }
         assertEquals("POM ALLOCATION REASON with code of AUT not found", exception.message)
     }
 
@@ -132,22 +135,22 @@ internal class PrisonManagerServiceTest {
     fun newPrisonManagerIsCreated() {
         val event = EventGenerator.custodialEvent(PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT)
         whenever(teamRepository.findByCodeAndProbationAreaId("N02ALL", ProbationAreaGenerator.DEFAULT.id)).thenReturn(
-            TeamGenerator.DEFAULT
+            TeamGenerator.DEFAULT,
         )
         whenever(
             staffRepository.findByCodeAndTeamsId(
                 "N02UATU",
-                TeamGenerator.DEFAULT.id
-            )
+                TeamGenerator.DEFAULT.id,
+            ),
         ).thenReturn(StaffGenerator.UNALLOCATED)
         whenever(referenceDataRepository.findByCodeAndSetName("AUT", "POM ALLOCATION REASON")).thenReturn(
-            ReferenceDataGenerator.generate("TEST", ReferenceDataSetGenerator.generate("POM ALLOCATION REASON"))
+            ReferenceDataGenerator.generate("TEST", ReferenceDataSetGenerator.generate("POM ALLOCATION REASON")),
         )
 
         prisonManagerService.allocateToProbationArea(
             event.disposal!!,
             ProbationAreaGenerator.DEFAULT,
-            ZonedDateTime.now()
+            ZonedDateTime.now(),
         )
 
         verify(prisonManagerRepository, times(1)).save(any())
@@ -167,13 +170,13 @@ internal class PrisonManagerServiceTest {
             check { oldPrisonManager ->
                 assertNotNull(oldPrisonManager.endDate)
                 assertFalse(oldPrisonManager.active)
-            }
+            },
         )
         verify(prisonManagerRepository).save(
             check { newPrisonManager ->
                 assertNull(newPrisonManager.endDate)
                 assertTrue(newPrisonManager.active)
-            }
+            },
         )
 
         verify(contactRepository).save(check { assertEquals("EPOMAT", it.type.code) })
@@ -187,14 +190,14 @@ internal class PrisonManagerServiceTest {
         whenever(
             prisonManagerRepository.findActiveManagerAtDate(
                 PersonGenerator.RECALLABLE.id,
-                allocationDate
-            )
+                allocationDate,
+            ),
         ).thenReturn(
             PrisonManagerGenerator.generate(
                 PersonGenerator.RECALLABLE,
                 startDate = ZonedDateTime.now().minusDays(2),
-                endDate = ZonedDateTime.now()
-            )
+                endDate = ZonedDateTime.now(),
+            ),
         )
 
         prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
@@ -237,7 +240,7 @@ internal class PrisonManagerServiceTest {
                 assertThat(newPrisonManager.date, equalTo(allocationDate))
                 assertThat(newPrisonManager.endDate, equalTo(futureStartDate))
                 assertFalse(newPrisonManager.active)
-            }
+            },
         )
     }
 

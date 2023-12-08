@@ -12,9 +12,12 @@ interface OGRSAssessmentRepository : JpaRepository<OGRSAssessment, Long> {
         join fetch a.event e
         where e.person.id = :personId
         order by a.assessmentDate desc, a.lastModifiedDateTime desc
-    """
+    """,
     )
-    fun findLatestAssessment(personId: Long, pageable: Pageable = PageRequest.of(0, 1)): List<OGRSAssessment>
+    fun findLatestAssessment(
+        personId: Long,
+        pageable: Pageable = PageRequest.of(0, 1),
+    ): List<OGRSAssessment>
 }
 
 fun OGRSAssessmentRepository.findLatest(personId: Long) =

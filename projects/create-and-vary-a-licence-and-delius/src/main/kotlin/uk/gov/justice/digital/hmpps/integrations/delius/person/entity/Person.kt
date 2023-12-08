@@ -12,14 +12,11 @@ import org.hibernate.annotations.SQLRestriction
 @Table(name = "offender")
 @SQLRestriction("soft_deleted = 0")
 class Person(
-
     @Column(columnDefinition = "char(7)")
     val crn: String,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Id
     @Column(name = "offender_id")
-    val id: Long
+    val id: Long,
 )

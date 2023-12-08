@@ -16,7 +16,7 @@ class Handler(
     private val telemetryService: TelemetryService,
     private val tierClient: TierClient,
     private val tierService: TierService,
-    override val converter: NotificationConverter<HmppsDomainEvent>
+    override val converter: NotificationConverter<HmppsDomainEvent>,
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
@@ -27,8 +27,9 @@ class Handler(
     }
 }
 
-fun TierCalculation.telemetryProperties(crn: String) = mapOf(
-    "crn" to crn,
-    "tier" to tierScore,
-    "calculationDate" to calculationDate.toString()
-)
+fun TierCalculation.telemetryProperties(crn: String) =
+    mapOf(
+        "crn" to crn,
+        "tier" to tierScore,
+        "calculationDate" to calculationDate.toString(),
+    )

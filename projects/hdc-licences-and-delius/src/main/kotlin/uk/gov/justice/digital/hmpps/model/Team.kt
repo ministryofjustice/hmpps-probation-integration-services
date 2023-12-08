@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.model
 
 data class Team(
     val code: String,
-    val description: String
+    val description: String,
 )
 
 data class TeamDetails(
@@ -11,5 +11,5 @@ data class TeamDetails(
     val telephone: String?,
     val emailAddress: String?,
     val probationDeliveryUnit: ProbationDeliveryUnit,
-    val localAdminUnit: LocalAdminUnit
+    val localAdminUnit: LocalAdminUnit,
 )

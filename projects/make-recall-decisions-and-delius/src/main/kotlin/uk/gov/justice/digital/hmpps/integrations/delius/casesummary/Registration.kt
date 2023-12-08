@@ -22,33 +22,25 @@ class Registration(
     @Id
     @Column(name = "registration_id")
     val id: Long,
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @ManyToOne
     @JoinColumn(name = "register_type_id")
     val type: RegisterType,
-
     @ManyToOne
     @JoinColumn(name = "register_category_id")
     val category: ReferenceData?,
-
     @ManyToOne
     @JoinColumn(name = "register_level_id")
     val level: ReferenceData?,
-
     @Column(name = "registration_notes", columnDefinition = "clob")
     val notes: String?,
-
     @Column(name = "registration_date")
     val date: LocalDate,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @Column(columnDefinition = "number")
-    val deregistered: Boolean = false
+    val deregistered: Boolean = false,
 )
 
 @Immutable
@@ -58,16 +50,13 @@ class RegisterType(
     @Id
     @Column(name = "register_type_id")
     val id: Long,
-
     @Column
     val code: String,
-
     @Column
     val description: String,
-
     @ManyToOne
     @JoinColumn(name = "register_type_flag_id")
-    val flag: ReferenceData
+    val flag: ReferenceData,
 ) {
     companion object {
         const val MAPPA_TYPE = "MAPP"
@@ -80,14 +69,18 @@ interface CaseSummaryRegistrationRepository : JpaRepository<Registration, Long> 
     fun findActiveTypeDescriptionsByPersonId(personId: Long): List<String>
 
     @EntityGraph(attributePaths = ["type.flag", "category", "level"])
-    fun findByPersonIdAndTypeFlagCodeOrderByDateDesc(personId: Long, typeCode: String): List<Registration>
+    fun findByPersonIdAndTypeFlagCodeOrderByDateDesc(
+        personId: Long,
+        typeCode: String,
+    ): List<Registration>
 
     @EntityGraph(attributePaths = ["type.flag", "category", "level"])
-    fun findFirstByPersonIdAndTypeCodeAndDeregisteredFalseOrderByDateDesc(personId: Long, typeCode: String): Registration?
+    fun findFirstByPersonIdAndTypeCodeAndDeregisteredFalseOrderByDateDesc(
+        personId: Long,
+        typeCode: String,
+    ): Registration?
 }
 
-fun CaseSummaryRegistrationRepository.findRoshHistory(personId: Long) =
-    findByPersonIdAndTypeFlagCodeOrderByDateDesc(personId, RegisterType.ROSH_FLAG)
+fun CaseSummaryRegistrationRepository.findRoshHistory(personId: Long) = findByPersonIdAndTypeFlagCodeOrderByDateDesc(personId, RegisterType.ROSH_FLAG)
 
-fun CaseSummaryRegistrationRepository.findMappa(personId: Long) =
-    findFirstByPersonIdAndTypeCodeAndDeregisteredFalseOrderByDateDesc(personId, RegisterType.MAPPA_TYPE)
+fun CaseSummaryRegistrationRepository.findMappa(personId: Long) = findFirstByPersonIdAndTypeCodeAndDeregisteredFalseOrderByDateDesc(personId, RegisterType.MAPPA_TYPE)

@@ -19,21 +19,27 @@ class LdapService(private val ldapTemplate: LdapTemplate) {
     }
 
     @WithSpan
-    fun findEmailForStaff(@SpanAttribute staff: StaffWithUser?) =
+    fun findEmailForStaff(
+        @SpanAttribute staff: StaffWithUser?,
+    ) =
         staff?.user?.username?.let { ldapTemplate.findEmailByUsername(it) }
 
     @WithSpan
-    fun findEmailsForStaffIn(@SpanAttribute staff: List<StaffWithUser>) = staff.mapNotNull { it.user?.username }
-        .distinct()
-        .chunked(LDAP_MAX_RESULTS_PER_QUERY)
-        .flatMap {
-            val filter = it.map { username -> EqualsFilter("cn", username) }.fold(OrFilter()) { a, b -> a.or(b) }
-            val query = LdapQueryBuilder.query()
-                .attributes("mail")
-                .base("ou=Users")
-                .searchScope(SearchScope.ONELEVEL)
-                .filter(filter)
-            ldapTemplate.find(query, LdapUser::class.java)
-        }
-        .associate { it.username to it.email }
+    fun findEmailsForStaffIn(
+        @SpanAttribute staff: List<StaffWithUser>,
+    ) =
+        staff.mapNotNull { it.user?.username }
+            .distinct()
+            .chunked(LDAP_MAX_RESULTS_PER_QUERY)
+            .flatMap {
+                val filter = it.map { username -> EqualsFilter("cn", username) }.fold(OrFilter()) { a, b -> a.or(b) }
+                val query =
+                    LdapQueryBuilder.query()
+                        .attributes("mail")
+                        .base("ou=Users")
+                        .searchScope(SearchScope.ONELEVEL)
+                        .filter(filter)
+                ldapTemplate.find(query, LdapUser::class.java)
+            }
+            .associate { it.username to it.email }
 }

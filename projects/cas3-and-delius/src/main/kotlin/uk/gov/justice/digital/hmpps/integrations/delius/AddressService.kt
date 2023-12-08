@@ -21,14 +21,20 @@ import java.time.ZonedDateTime
 class AddressService(
     private val personAddressRepository: PersonAddressRepository,
     private val referenceDataRepository: ReferenceDataRepository,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
 ) {
-    fun updateMainAddress(person: Person, details: PersonArrived) {
+    fun updateMainAddress(
+        person: Person,
+        details: PersonArrived,
+    ) {
         endMainAddress(person, details.arrivedAt.toLocalDate())
         toPersonAddress(person, details).apply(personAddressRepository::save)
     }
 
-    fun endMainAddress(person: Person, endDate: LocalDate) {
+    fun endMainAddress(
+        person: Person,
+        endDate: LocalDate,
+    ) {
         val personForUpdate = personRepository.getByIdForUpdate(person.id)
         val currentMain = personAddressRepository.findMainAddress(personForUpdate.id)
         currentMain?.apply {
@@ -38,7 +44,10 @@ class AddressService(
         }
     }
 
-    fun endMainCAS3Address(person: Person, endDate: ZonedDateTime) {
+    fun endMainCAS3Address(
+        person: Person,
+        endDate: ZonedDateTime,
+    ) {
         val personForUpdate = personRepository.getByIdForUpdate(person.id)
         val currentMain = personAddressRepository.findMainAddress(personForUpdate.id)
         currentMain?.apply {
@@ -50,7 +59,10 @@ class AddressService(
         }
     }
 
-    private fun toPersonAddress(person: Person, details: PersonArrived): PersonAddress {
+    private fun toPersonAddress(
+        person: Person,
+        details: PersonArrived,
+    ): PersonAddress {
         val addressLines = details.premises.addressLines
         return PersonAddress(
             0,
@@ -63,7 +75,7 @@ class AddressService(
             town = details.premises.town,
             county = details.premises.region,
             postcode = details.premises.postcode,
-            startDate = details.arrivedAt.toLocalDate()
+            startDate = details.arrivedAt.toLocalDate(),
         )
     }
 }

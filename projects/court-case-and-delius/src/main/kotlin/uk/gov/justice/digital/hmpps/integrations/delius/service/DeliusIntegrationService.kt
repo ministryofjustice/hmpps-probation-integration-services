@@ -24,12 +24,17 @@ class DeliusIntegrationService(
     private val caseNoteRepository: CaseNoteRepository,
     private val caseNoteTypeRepository: CaseNoteTypeRepository,
     private val personRepository: PersonRepository,
-    private val personManagerRepository: PersonManagerRepository
+    private val personManagerRepository: PersonManagerRepository,
 ) : AuditableService(auditedInteractionService) {
     @Transactional
-    fun mergeCourtCaseNote(crn: String, caseNote: CourtCaseNote, occurredAt: ZonedDateTime) = audit(UPDATE_CONTACT) {
-        val person = personRepository.findByCrnAndSoftDeletedIsFalse(crn)
-            ?: throw NotFoundException("Person", "crn", crn)
+    fun mergeCourtCaseNote(
+        crn: String,
+        caseNote: CourtCaseNote,
+        occurredAt: ZonedDateTime,
+    ) = audit(UPDATE_CONTACT) {
+        val person =
+            personRepository.findByCrnAndSoftDeletedIsFalse(crn)
+                ?: throw NotFoundException("Person", "crn", crn)
         val externalReference = caseNote.reference
 
         val existing =
@@ -41,7 +46,7 @@ class DeliusIntegrationService(
             } else {
                 existing.updateFrom(
                     caseNote,
-                    occurredAt
+                    occurredAt,
                 )
             }
         if (entity != null) {
@@ -49,7 +54,10 @@ class DeliusIntegrationService(
         }
     }
 
-    private fun CaseNote.updateFrom(caseNote: CourtCaseNote, occurredAt: ZonedDateTime): CaseNote? {
+    private fun CaseNote.updateFrom(
+        caseNote: CourtCaseNote,
+        occurredAt: ZonedDateTime,
+    ): CaseNote? {
         val last = lastModifiedDateTime.truncatedTo(ChronoUnit.SECONDS)
         val current = occurredAt.truncatedTo(ChronoUnit.SECONDS)
         return if (last.isBefore(current)) {
@@ -63,17 +71,22 @@ class DeliusIntegrationService(
         }
     }
 
-    private fun CourtCaseNote.newEntity(occurredAt: ZonedDateTime, personId: Long): CaseNote {
-        val caseNoteType = caseNoteTypeRepository.findByCode(DEFAULT_CODE) ?: throw NotFoundException(
-            "ContactType",
-            "code",
-            DEFAULT_CODE
-        )
-        val comDetails = personManagerRepository.findActiveManager(personId) ?: throw NotFoundException(
-            "PersonManager",
-            "personId",
-            personId
-        )
+    private fun CourtCaseNote.newEntity(
+        occurredAt: ZonedDateTime,
+        personId: Long,
+    ): CaseNote {
+        val caseNoteType =
+            caseNoteTypeRepository.findByCode(DEFAULT_CODE) ?: throw NotFoundException(
+                "ContactType",
+                "code",
+                DEFAULT_CODE,
+            )
+        val comDetails =
+            personManagerRepository.findActiveManager(personId) ?: throw NotFoundException(
+                "PersonManager",
+                "personId",
+                personId,
+            )
 
         return CaseNote(
             offenderId = personId,
@@ -85,7 +98,7 @@ class DeliusIntegrationService(
             probationAreaId = comDetails.provider.id,
             teamId = comDetails.team.id,
             staffId = comDetails.staff.id,
-            externalReference = reference
+            externalReference = reference,
         )
     }
 

@@ -16,6 +16,6 @@ class CourtAppearancesController(private val courtAppearanceService: CourtAppear
     @PostMapping(value = ["/court-appearances"])
     fun courtAppearances(
         @Valid @RequestBody
-        request: BatchRequest
+        request: BatchRequest,
     ) = courtAppearanceService.getCourtAppearances(request)
 }

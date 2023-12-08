@@ -16,19 +16,19 @@ data class Detail(
     val religion: String? = null,
     val keyDates: List<KeyDate> = listOf(),
     val releaseDate: LocalDate? = null,
-    val releaseLocation: String? = null
+    val releaseLocation: String? = null,
 )
 
 data class Name(
     val forename: String,
     val middleName: String?,
-    val surname: String
+    val surname: String,
 )
 
 data class KeyDate(
     val code: String,
     val description: String,
-    val data: LocalDate
+    val data: LocalDate,
 )
 
 fun DetailPerson.name() = Name(forename, listOfNotNull(secondName, thirdName).joinToString(" "), surname)

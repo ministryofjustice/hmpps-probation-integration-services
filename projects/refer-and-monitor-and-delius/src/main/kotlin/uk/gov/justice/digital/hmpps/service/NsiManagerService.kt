@@ -14,15 +14,16 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referral.entity.NsiManag
 class NsiManagerService(
     private val teamRepository: TeamRepository,
     private val staffRepository: StaffRepository,
-    private val nsiManagerRepository: NsiManagerRepository
+    private val nsiManagerRepository: NsiManagerRepository,
 ) {
-    fun createNewManager(nsi: Nsi) = nsiManagerRepository.save(
-        NsiManager(
-            nsi,
-            nsi.intendedProviderId!!,
-            teamRepository.getByCode(Team.INTENDED_TEAM_CODE).id,
-            staffRepository.getByCode(Staff.INTENDED_STAFF_CODE).id,
-            nsi.statusDate
+    fun createNewManager(nsi: Nsi) =
+        nsiManagerRepository.save(
+            NsiManager(
+                nsi,
+                nsi.intendedProviderId!!,
+                teamRepository.getByCode(Team.INTENDED_TEAM_CODE).id,
+                staffRepository.getByCode(Staff.INTENDED_STAFF_CODE).id,
+                nsi.statusDate,
+            ),
         )
-    )
 }

@@ -14,9 +14,8 @@ class OfficeLocation(
     @Id
     @Column(name = "office_location_id")
     val id: Long,
-
     @Column(name = "code", columnDefinition = "char(7)")
-    val code: String
+    val code: String,
 )
 
 interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {

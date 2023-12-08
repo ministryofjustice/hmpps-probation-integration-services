@@ -11,7 +11,6 @@ class Team(
     @Id
     @Column(name = "team_id")
     val id: Long = 0,
-
     @Column(columnDefinition = "char(6)")
-    val code: String
+    val code: String,
 )

@@ -19,18 +19,14 @@ class ReferenceData(
     @Id
     @Column(name = "standard_reference_list_id", nullable = false)
     val id: Long,
-
     @Column(name = "code_value", length = 100, nullable = false)
     val code: String,
-
     @Column(name = "code_description", length = 500, nullable = false)
     val description: String,
-
     @Column(name = "reference_data_master_id", nullable = false)
     val datasetId: Long,
-
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean
+    val selectable: Boolean,
 )
 
 @Immutable
@@ -40,10 +36,9 @@ class Dataset(
     @Id
     @Column(name = "reference_data_master_id")
     val id: Long,
-
     @Convert(converter = DatasetCodeConverter::class)
     @Column(name = "code_set_name", nullable = false)
-    val code: DatasetCode
+    val code: DatasetCode,
 )
 
 enum class DatasetCode(val value: String) {
@@ -67,12 +62,13 @@ enum class DatasetCode(val value: String) {
     RISK_OF_HARM("RISK OF HARM"),
     SOURCE_TYPE("SOURCE TYPE"),
     STAFF_GRADE("OFFICER GRADE"),
-    YES_NO("YES NO DONT KNOW");
+    YES_NO("YES NO DONT KNOW"),
+    ;
 
     companion object {
         private val index = DatasetCode.entries.associateBy { it.value }
-        fun fromString(value: String): DatasetCode =
-            index[value] ?: throw IllegalArgumentException("Invalid DatasetCode")
+
+        fun fromString(value: String): DatasetCode = index[value] ?: throw IllegalArgumentException("Invalid DatasetCode")
     }
 }
 
@@ -84,12 +80,15 @@ class DatasetCodeConverter : AttributeConverter<DatasetCode, String> {
 }
 
 @Embeddable
-class ApGroupLinkId(val approvedPremisesId: Long, @Column(name = "standard_reference_list_id") val apGroupId: Long) : Serializable
+class ApGroupLinkId(
+    val approvedPremisesId: Long,
+    @Column(name = "standard_reference_list_id") val apGroupId: Long,
+) : Serializable
 
 @Immutable
 @Entity
 @Table(name = "r_ap_referral_group")
 class ApGroupLink(
     @Id
-    val id: ApGroupLinkId
+    val id: ApGroupLinkId,
 )

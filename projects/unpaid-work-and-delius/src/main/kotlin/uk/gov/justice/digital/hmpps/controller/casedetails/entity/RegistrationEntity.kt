@@ -34,7 +34,7 @@ class RegistrationEntity(
     @JoinColumn(name = "registration_level", updatable = false)
     val level: ReferenceData,
     val softDeleted: Boolean = false,
-    val deregistered: Boolean = false
+    val deregistered: Boolean = false,
 )
 
 @Entity
@@ -44,13 +44,10 @@ class RegisterType(
     @Id
     @Column(name = "register_type_id")
     val id: Long,
-
     @Column(name = "code")
     val code: String,
-
     @Column(name = "description")
     val description: String,
-
     @Column(name = "colour")
-    val riskColour: String?
+    val riskColour: String?,
 )

@@ -11,29 +11,35 @@ data class Offence(
     val mainCategory: OffenceCategory?,
     val subCategory: OffenceCategory?,
     val schedule15SexualOffence: Boolean?,
-    val schedule15ViolentOffence: Boolean?
+    val schedule15ViolentOffence: Boolean?,
 ) {
     companion object {
-        fun of(date: LocalDate?, count: Int?, offence: Offence) = Offence(
+        fun of(
+            date: LocalDate?,
+            count: Int?,
+            offence: Offence,
+        ) = Offence(
             date = date,
             count = count,
             code = offence.code,
             description = offence.description,
-            mainCategory = OffenceCategory(
-                code = offence.mainCategoryCode,
-                description = offence.mainCategoryDescription
-            ),
-            subCategory = OffenceCategory(
-                code = offence.subCategoryCode,
-                description = offence.subCategoryDescription
-            ),
+            mainCategory =
+                OffenceCategory(
+                    code = offence.mainCategoryCode,
+                    description = offence.mainCategoryDescription,
+                ),
+            subCategory =
+                OffenceCategory(
+                    code = offence.subCategoryCode,
+                    description = offence.subCategoryDescription,
+                ),
             schedule15SexualOffence = offence.schedule15SexualOffence,
-            schedule15ViolentOffence = offence.schedule15ViolentOffence
+            schedule15ViolentOffence = offence.schedule15ViolentOffence,
         )
     }
 }
 
 data class OffenceCategory(
     val code: String,
-    val description: String
+    val description: String,
 )

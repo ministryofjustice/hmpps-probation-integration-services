@@ -48,7 +48,6 @@ import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
 internal class AllocateRequirementServiceTest {
-
     @Mock
     private lateinit var auditedInteractionService: AuditedInteractionService
 
@@ -83,15 +82,15 @@ internal class AllocateRequirementServiceTest {
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(
             Optional.of(
                 RequirementGenerator.generate(
-                    person = PersonGenerator.generate("NX999")
-                )
-            )
+                    person = PersonGenerator.generate("NX999"),
+                ),
+            ),
         )
 
         assertThrows<ConflictException> {
             allocateRequirementService.createRequirementAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail
+                allocationDetail,
             )
         }
     }
@@ -103,7 +102,7 @@ internal class AllocateRequirementServiceTest {
         assertThrows<NotFoundException> {
             allocateRequirementService.createRequirementAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail
+                allocationDetail,
             )
         }
     }
@@ -116,7 +115,7 @@ internal class AllocateRequirementServiceTest {
         assertThrows<ConflictException> {
             allocateRequirementService.createRequirementAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail.copy(eventNumber = 3)
+                allocationDetail.copy(eventNumber = 3),
             )
         }
     }
@@ -126,18 +125,19 @@ internal class AllocateRequirementServiceTest {
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(
             Optional.of(
                 RequirementGenerator.generate(
-                    disposal = DisposalGenerator.generate(
-                        EventGenerator.generate(),
-                        active = false
-                    )
-                )
-            )
+                    disposal =
+                        DisposalGenerator.generate(
+                            EventGenerator.generate(),
+                            active = false,
+                        ),
+                ),
+            ),
         )
 
         assertThrows<NotActiveException> {
             allocateRequirementService.createRequirementAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail
+                allocationDetail,
             )
         }
     }
@@ -147,17 +147,18 @@ internal class AllocateRequirementServiceTest {
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(
             Optional.of(
                 RequirementGenerator.generate(
-                    disposal = DisposalGenerator.generate(
-                        EventGenerator.generate(active = false)
-                    )
-                )
-            )
+                    disposal =
+                        DisposalGenerator.generate(
+                            EventGenerator.generate(active = false),
+                        ),
+                ),
+            ),
         )
 
         assertThrows<NotActiveException> {
             allocateRequirementService.createRequirementAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail
+                allocationDetail,
             )
         }
     }
@@ -168,17 +169,18 @@ internal class AllocateRequirementServiceTest {
             Optional.of(
                 RequirementGenerator.generate(
                     active = false,
-                    disposal = DisposalGenerator.generate(
-                        EventGenerator.generate()
-                    )
-                )
-            )
+                    disposal =
+                        DisposalGenerator.generate(
+                            EventGenerator.generate(),
+                        ),
+                ),
+            ),
         )
 
         assertThrows<NotActiveException> {
             allocateRequirementService.createRequirementAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail
+                allocationDetail,
             )
         }
     }
@@ -188,53 +190,55 @@ internal class AllocateRequirementServiceTest {
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(
             Optional.of(
                 RequirementGenerator.generate(
-                    disposal = DisposalGenerator.generate(
-                        EventGenerator.generate()
-                    )
-                )
-            )
+                    disposal =
+                        DisposalGenerator.generate(
+                            EventGenerator.generate(),
+                        ),
+                ),
+            ),
         )
 
         whenever(
             requirementManagerRepository.findActiveManagerAtDate(
                 allocationDetail.requirementId,
-                allocationDetail.createdDate
-            )
+                allocationDetail.createdDate,
+            ),
         ).thenReturn(null)
 
         assertThrows<NotFoundException> {
             allocateRequirementService.createRequirementAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail
+                allocationDetail,
             )
         }
     }
 
     @Test
     fun `when duplicate allocation noop`() {
-        val allocationDetail = allocationDetail.copy(
-            staffCode = OrderManagerGenerator.DEFAULT.staff.code,
-            teamCode = OrderManagerGenerator.DEFAULT.team.code
-        )
+        val allocationDetail =
+            allocationDetail.copy(
+                staffCode = OrderManagerGenerator.DEFAULT.staff.code,
+                teamCode = OrderManagerGenerator.DEFAULT.team.code,
+            )
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(
             Optional.of(
                 RequirementGenerator.generate(
-                    disposal = DisposalGenerator.generate(EventGenerator.generate())
-                )
-            )
+                    disposal = DisposalGenerator.generate(EventGenerator.generate()),
+                ),
+            ),
         )
 
         whenever(
             requirementManagerRepository.findActiveManagerAtDate(
                 allocationDetail.requirementId,
-                allocationDetail.createdDate
-            )
+                allocationDetail.createdDate,
+            ),
         ).thenReturn(RequirementManagerGenerator.DEFAULT)
 
         assertDoesNotThrow {
             allocateRequirementService.createRequirementAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail
+                allocationDetail,
             )
         }
         verify(requirementRepository, never()).countPendingTransfers(any())
@@ -242,22 +246,24 @@ internal class AllocateRequirementServiceTest {
 
     @Test
     fun `when pending transfers exist`() {
-        val requirement = RequirementGenerator.generate(
-            disposal = DisposalGenerator.generate(
-                EventGenerator.generate()
+        val requirement =
+            RequirementGenerator.generate(
+                disposal =
+                    DisposalGenerator.generate(
+                        EventGenerator.generate(),
+                    ),
             )
-        )
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(
             Optional.of(
-                requirement
-            )
+                requirement,
+            ),
         )
 
         whenever(
             requirementManagerRepository.findActiveManagerAtDate(
                 allocationDetail.requirementId,
-                allocationDetail.createdDate
-            )
+                allocationDetail.createdDate,
+            ),
         ).thenReturn(RequirementManagerGenerator.DEFAULT)
 
         whenever(requirementRepository.countPendingTransfers(requirement.id)).thenReturn(1)
@@ -265,29 +271,31 @@ internal class AllocateRequirementServiceTest {
         assertThrows<ConflictException> {
             allocateRequirementService.createRequirementAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail
+                allocationDetail,
             )
         }
     }
 
     @Test
     fun `when  transfer reason not found`() {
-        val requirement = RequirementGenerator.generate(
-            disposal = DisposalGenerator.generate(
-                EventGenerator.generate()
+        val requirement =
+            RequirementGenerator.generate(
+                disposal =
+                    DisposalGenerator.generate(
+                        EventGenerator.generate(),
+                    ),
             )
-        )
         whenever(requirementRepository.findById(allocationDetail.requirementId)).thenReturn(
             Optional.of(
-                requirement
-            )
+                requirement,
+            ),
         )
 
         whenever(
             requirementManagerRepository.findActiveManagerAtDate(
                 allocationDetail.requirementId,
-                allocationDetail.createdDate
-            )
+                allocationDetail.createdDate,
+            ),
         ).thenReturn(RequirementManagerGenerator.DEFAULT)
 
         whenever(requirementRepository.countPendingTransfers(requirement.id)).thenReturn(0)
@@ -297,14 +305,19 @@ internal class AllocateRequirementServiceTest {
         assertThrows<NotFoundException> {
             allocateRequirementService.createRequirementAllocation(
                 PersonGenerator.DEFAULT.crn,
-                allocationDetail
+                allocationDetail,
             )
         }
     }
 
     @ParameterizedTest(name = "Requirement with categories(main={0}, additional={1}, sub={2}) should update IAPS: {3}")
     @MethodSource("iapsCases")
-    fun `update IAPS`(mainCategory: String?, additionalMainCategory: String?, subCategory: String?, shouldUpdateIaps: Boolean) {
+    fun `update IAPS`(
+        mainCategory: String?,
+        additionalMainCategory: String?,
+        subCategory: String?,
+        shouldUpdateIaps: Boolean,
+    ) {
         val requirement = RequirementGenerator.generate(mainCategory, additionalMainCategory, subCategory)
 
         whenever(requirementRepository.findById(allocationDetail.requirementId))
@@ -326,16 +339,17 @@ internal class AllocateRequirementServiceTest {
 
     companion object {
         @JvmStatic
-        fun iapsCases() = listOf(
-            Arguments.of(null, null, null, false),
-            Arguments.of("7", null, "RS66", false),
-            Arguments.of("7", null, null, true),
-            Arguments.of("RM38", null, null, true),
-            Arguments.of("RM38", null, "RS66", true),
-            Arguments.of(null, "7", null, true),
-            Arguments.of(null, "7", "RS66", true),
-            Arguments.of(null, "RM38", null, true),
-            Arguments.of(null, "RM38", "RS66", true)
-        )
+        fun iapsCases() =
+            listOf(
+                Arguments.of(null, null, null, false),
+                Arguments.of("7", null, "RS66", false),
+                Arguments.of("7", null, null, true),
+                Arguments.of("RM38", null, null, true),
+                Arguments.of("RM38", null, "RS66", true),
+                Arguments.of(null, "7", null, true),
+                Arguments.of(null, "7", "RS66", true),
+                Arguments.of(null, "RM38", null, true),
+                Arguments.of(null, "RM38", "RS66", true),
+            )
     }
 }

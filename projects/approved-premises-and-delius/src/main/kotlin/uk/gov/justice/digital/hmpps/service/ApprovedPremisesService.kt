@@ -26,7 +26,7 @@ class ApprovedPremisesService(
     private val eventRepository: EventRepository,
     private val contactService: ContactService,
     private val nsiService: NsiService,
-    private val referralService: ReferralService
+    private val referralService: ReferralService,
 ) {
     fun applicationSubmitted(event: HmppsDomainEvent) {
         val details = approvedPremisesApiClient.getApplicationSubmittedDetails(event.url()).eventDetails
@@ -37,12 +37,12 @@ class ApprovedPremisesService(
                 date = details.submittedAt,
                 type = APPLICATION_SUBMITTED,
                 description = "Approved Premises Application Submitted",
-                notes = details.notes
+                notes = details.notes,
             ),
             person = person,
             eventId = dEvent.id,
             staff = staffRepository.getByCode(details.submittedBy.staffMember.staffCode),
-            probationAreaCode = details.submittedBy.probationArea.code
+            probationAreaCode = details.submittedBy.probationArea.code,
         )
     }
 
@@ -55,12 +55,12 @@ class ApprovedPremisesService(
                 date = details.assessedAt,
                 type = APPLICATION_ASSESSED,
                 notes = details.notes,
-                description = "Approved Premises Application ${details.decision}"
+                description = "Approved Premises Application ${details.decision}",
             ),
             person = person,
             eventId = dEvent.id,
             staff = staffRepository.getByCode(details.assessedBy.staffMember.staffCode),
-            probationAreaCode = details.assessedBy.probationArea.code
+            probationAreaCode = details.assessedBy.probationArea.code,
         )
     }
 
@@ -72,15 +72,16 @@ class ApprovedPremisesService(
             ContactDetails(
                 date = details.withdrawnAt,
                 type = APPLICATION_WITHDRAWN,
-                notes = listOfNotNull(
-                    details.withdrawalReason,
-                    "For more details, click here: ${details.applicationUrl}"
-                ).joinToString(System.lineSeparator() + System.lineSeparator())
+                notes =
+                    listOfNotNull(
+                        details.withdrawalReason,
+                        "For more details, click here: ${details.applicationUrl}",
+                    ).joinToString(System.lineSeparator() + System.lineSeparator()),
             ),
             person = person,
             eventId = dEvent.id,
             staff = staffRepository.getByCode(details.withdrawnBy.staffMember.staffCode),
-            probationAreaCode = details.withdrawnBy.probationArea.code
+            probationAreaCode = details.withdrawnBy.probationArea.code,
         )
     }
 
@@ -109,7 +110,7 @@ class ApprovedPremisesService(
             personRepository.getByCrn(event.crn()),
             ap,
             details.timestamp,
-            details.eventDetails
+            details.eventDetails,
         )
     }
 

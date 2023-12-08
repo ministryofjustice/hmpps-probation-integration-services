@@ -13,11 +13,15 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.getCaseType
 
 @Service
 class PersonService(private val personRepository: PersonRepository) {
-    fun findByIdentifier(value: String, type: IdentifierType): Person {
-        val person = when (type) {
-            CRN -> personRepository.getByCrnAndSoftDeletedFalse(value)
-            NOMS -> personRepository.getByNomsIdAndSoftDeletedFalse(value)
-        }
+    fun findByIdentifier(
+        value: String,
+        type: IdentifierType,
+    ): Person {
+        val person =
+            when (type) {
+                CRN -> personRepository.getByCrnAndSoftDeletedFalse(value)
+                NOMS -> personRepository.getByNomsIdAndSoftDeletedFalse(value)
+            }
         val caseType = personRepository.getCaseType(person.crn)
         return Person(person.crn, person.name(), caseType)
     }

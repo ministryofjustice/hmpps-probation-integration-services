@@ -46,5 +46,5 @@ class CaseViewPersonAddress(
     val startDate: LocalDate = LocalDate.now(),
     val endDate: LocalDate? = null,
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )

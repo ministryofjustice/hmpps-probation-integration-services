@@ -66,17 +66,19 @@ internal class ReleaseActionTest {
     @ParameterizedTest
     @MethodSource("invalidDatesForRelease")
     fun `invalid release date is recorded with no changes`(custody: Custody) {
-        val prisonerMovement = PrisonerMovement.Released(
-            custody.disposal.event.person.nomsNumber,
-            InstitutionGenerator.DEFAULT.nomisCdeCode!!,
-            PrisonerMovement.Type.RELEASED,
-            "",
-            ZonedDateTime.now().minusDays(1)
-        )
+        val prisonerMovement =
+            PrisonerMovement.Released(
+                custody.disposal.event.person.nomsNumber,
+                InstitutionGenerator.DEFAULT.nomisCdeCode!!,
+                PrisonerMovement.Type.RELEASED,
+                "",
+                ZonedDateTime.now().minusDays(1),
+            )
 
-        val ex = assertThrows<IgnorableMessageException> {
-            action.accept(PrisonerMovementContext(prisonerMovement, custody))
-        }
+        val ex =
+            assertThrows<IgnorableMessageException> {
+                action.accept(PrisonerMovementContext(prisonerMovement, custody))
+            }
         assertThat(ex.message, equalTo("InvalidReleaseDate"))
     }
 
@@ -84,13 +86,14 @@ internal class ReleaseActionTest {
     @MethodSource("nonReleasableStatuses")
     fun `unable to release if not in releasable state`(statusCode: CustodialStatusCode) {
         val event = EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT, statusCode)
-        val prisonerMovement = PrisonerMovement.Released(
-            event.person.nomsNumber,
-            InstitutionGenerator.DEFAULT.nomisCdeCode,
-            PrisonerMovement.Type.RELEASED,
-            "",
-            ZonedDateTime.now().minusDays(1)
-        )
+        val prisonerMovement =
+            PrisonerMovement.Released(
+                event.person.nomsNumber,
+                InstitutionGenerator.DEFAULT.nomisCdeCode,
+                PrisonerMovement.Type.RELEASED,
+                "",
+                ZonedDateTime.now().minusDays(1),
+            )
         withReferenceData(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE]!!)
         whenever(institutionRepository.findByNomisCdeCode(InstitutionGenerator.DEFAULT.nomisCdeCode!!))
             .thenReturn(InstitutionGenerator.DEFAULT)
@@ -105,13 +108,14 @@ internal class ReleaseActionTest {
     fun `uses delius institution if not provided or not found`() {
         val event =
             EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, InstitutionGenerator.DEFAULT).withManager()
-        val prisonerMovement = PrisonerMovement.Released(
-            event.person.nomsNumber,
-            "NonExistent",
-            PrisonerMovement.Type.RELEASED,
-            "",
-            ZonedDateTime.now().minusDays(1)
-        )
+        val prisonerMovement =
+            PrisonerMovement.Released(
+                event.person.nomsNumber,
+                "NonExistent",
+                PrisonerMovement.Type.RELEASED,
+                "",
+                ZonedDateTime.now().minusDays(1),
+            )
         withReferenceData(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE]!!)
 
         val res = action.accept(PrisonerMovementContext(prisonerMovement, event.disposal!!.custody!!))
@@ -127,18 +131,20 @@ internal class ReleaseActionTest {
     @ParameterizedTest
     @MethodSource("nonReleasableMovementTypes")
     fun `unable to release if movement type not expected`(type: PrisonerMovement.Type) {
-        val custody = CustodyGenerator.generate(
-            PersonGenerator.RELEASABLE,
-            InstitutionGenerator.DEFAULT,
-            CustodialStatusCode.IN_CUSTODY
-        )
-        val prisonerMovement = PrisonerMovement.Released(
-            custody.disposal.event.person.nomsNumber,
-            InstitutionGenerator.DEFAULT.nomisCdeCode,
-            type,
-            "",
-            ZonedDateTime.now().minusDays(1)
-        )
+        val custody =
+            CustodyGenerator.generate(
+                PersonGenerator.RELEASABLE,
+                InstitutionGenerator.DEFAULT,
+                CustodialStatusCode.IN_CUSTODY,
+            )
+        val prisonerMovement =
+            PrisonerMovement.Released(
+                custody.disposal.event.person.nomsNumber,
+                InstitutionGenerator.DEFAULT.nomisCdeCode,
+                type,
+                "",
+                ZonedDateTime.now().minusDays(1),
+            )
 
         val ex = assertThrows<IgnorableMessageException> { action.accept(PrisonerMovementContext(prisonerMovement, custody)) }
         assertThat(ex.message, equalTo("UnsupportedReleaseType"))
@@ -148,13 +154,14 @@ internal class ReleaseActionTest {
     fun `can create release even if no custody institution set`() {
         val event =
             EventGenerator.custodialEvent(PersonGenerator.RELEASABLE, null).withManager()
-        val prisonerMovement = PrisonerMovement.Released(
-            event.person.nomsNumber,
-            null,
-            PrisonerMovement.Type.RELEASED,
-            "",
-            ZonedDateTime.now().minusDays(1)
-        )
+        val prisonerMovement =
+            PrisonerMovement.Released(
+                event.person.nomsNumber,
+                null,
+                PrisonerMovement.Type.RELEASED,
+                "",
+                ZonedDateTime.now().minusDays(1),
+            )
         withReferenceData(ReferenceDataGenerator.RELEASE_TYPE[ReleaseTypeCode.ADULT_LICENCE]!!)
         whenever(institutionRepository.findByCode(InstitutionCode.UNKNOWN.code))
             .thenReturn(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN])
@@ -167,35 +174,37 @@ internal class ReleaseActionTest {
         verify(releaseRepository).save(release.capture())
         assertThat(
             release.firstValue.institutionId,
-            equalTo(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]?.id)
+            equalTo(InstitutionGenerator.STANDARD_INSTITUTIONS[InstitutionCode.UNKNOWN]?.id),
         )
         verify(contactService).createContact(any(), any(), any(), any(), anyOrNull())
     }
 
     companion object {
         @JvmStatic
-        fun invalidDatesForRelease() = listOf(
-            EventGenerator.custodialEvent(
-                PersonGenerator.RELEASABLE,
-                InstitutionGenerator.DEFAULT,
-                disposalDate = ZonedDateTime.now()
-            ).disposal!!.custody,
-            EventGenerator.previouslyRecalledEvent(
-                PersonGenerator.RELEASABLE,
-                InstitutionGenerator.DEFAULT,
-                recallDate = ZonedDateTime.now()
-            ).disposal!!.custody
-        )
+        fun invalidDatesForRelease() =
+            listOf(
+                EventGenerator.custodialEvent(
+                    PersonGenerator.RELEASABLE,
+                    InstitutionGenerator.DEFAULT,
+                    disposalDate = ZonedDateTime.now(),
+                ).disposal!!.custody,
+                EventGenerator.previouslyRecalledEvent(
+                    PersonGenerator.RELEASABLE,
+                    InstitutionGenerator.DEFAULT,
+                    recallDate = ZonedDateTime.now(),
+                ).disposal!!.custody,
+            )
 
         @JvmStatic
-        fun nonReleasableStatuses() = listOf(
-            CustodialStatusCode.RELEASED_ON_LICENCE,
-            CustodialStatusCode.CUSTODY_ROTL,
-            CustodialStatusCode.TERMINATED,
-            CustodialStatusCode.AUTO_TERMINATED,
-            CustodialStatusCode.IN_CUSTODY_IRC,
-            CustodialStatusCode.POST_SENTENCE_SUPERVISION
-        )
+        fun nonReleasableStatuses() =
+            listOf(
+                CustodialStatusCode.RELEASED_ON_LICENCE,
+                CustodialStatusCode.CUSTODY_ROTL,
+                CustodialStatusCode.TERMINATED,
+                CustodialStatusCode.AUTO_TERMINATED,
+                CustodialStatusCode.IN_CUSTODY_IRC,
+                CustodialStatusCode.POST_SENTENCE_SUPERVISION,
+            )
 
         @JvmStatic
         fun nonReleasableMovementTypes() = PrisonerMovement.Type.entries.filter { it != PrisonerMovement.Type.RELEASED }

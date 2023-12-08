@@ -24,42 +24,32 @@ class Nsi(
     @Id
     @Column(name = "nsi_id", nullable = false)
     val id: Long = 0,
-
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val person: Person,
-
     @ManyToOne
     @JoinColumn(name = "nsi_type_id", nullable = false)
     val type: NsiType,
-
     @ManyToOne
     @JoinColumn(name = "nsi_sub_type_id", nullable = false)
     val subType: ReferenceData,
-
     @ManyToOne
     @JoinColumn(name = "nsi_status_id")
     val status: NsiStatus,
-
     @Column
     val referralDate: LocalDate,
-
     @Column
     val actualStartDate: ZonedDateTime? = null,
-
     @Lob
     @Column
     val notes: String? = null,
-
     @Column
     @CreatedDate
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(name = "active_flag", columnDefinition = "number")
     var active: Boolean = true,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Entity
@@ -69,9 +59,8 @@ class NsiType(
     @Id
     @Column(name = "nsi_type_id")
     val id: Long = 0,
-
     @Column(name = "code")
-    val code: String
+    val code: String,
 )
 
 @Entity
@@ -81,15 +70,13 @@ class NsiStatus(
     @Id
     @Column(name = "nsi_status_id")
     val id: Long,
-
     @Column(name = "code")
     val code: String,
-
     @Column(name = "description")
-    val description: String
+    val description: String,
 )
-interface NsiRepository : JpaRepository<Nsi, Long> {
 
+interface NsiRepository : JpaRepository<Nsi, Long> {
     @Query(
         """
         select nsi from Nsi nsi
@@ -99,9 +86,12 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
         and nsi.type.code = 'DTR'
         and nsi.status.code = 'INIT'
         order by nsi.createdDatetime desc
-    """
+    """,
     )
-    fun findDutyToReferByCrn(crn: String, page: PageRequest = PageRequest.of(0, 1)): Nsi?
+    fun findDutyToReferByCrn(
+        crn: String,
+        page: PageRequest = PageRequest.of(0, 1),
+    ): Nsi?
 
     @Query(
         """
@@ -112,7 +102,10 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
         and nsi.type.code = 'DTR'
         and nsi.status.code = 'INIT'
         order by nsi.createdDatetime desc
-    """
+    """,
     )
-    fun findDutyToReferByNoms(noms: String, page: PageRequest = PageRequest.of(0, 1)): Nsi?
+    fun findDutyToReferByNoms(
+        noms: String,
+        page: PageRequest = PageRequest.of(0, 1),
+    ): Nsi?
 }

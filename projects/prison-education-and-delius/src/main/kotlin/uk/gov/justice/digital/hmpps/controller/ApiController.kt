@@ -22,7 +22,7 @@ import uk.gov.justice.digital.hmpps.repository.PersonRepository
 class ApiController(
     private val personRepository: PersonRepository,
     private val communityManagerRepository: CommunityManagerRepository,
-    private val ldapTemplate: LdapTemplate
+    private val ldapTemplate: LdapTemplate,
 ) {
     @PreAuthorize("hasRole('ROLE_PRISON_EDUCATION_AND_DELIUS')")
     @GetMapping(value = ["/probation-case/{prisonerId}/community-manager"])
@@ -37,17 +37,21 @@ class ApiController(
             ApiResponse(
                 responseCode = "404",
                 description = "No probation case found with the given prisoner identifier. This could mean the Prison and Probation cases have not been linked yet.",
-                content = [Content(schema = Schema(implementation = ErrorResponse::class), examples = [ExampleObject("""{"status": 404, "message": "Person with prisonerId of A0000AA not found"}""")])]
-            )
-        ]
+                content = [Content(schema = Schema(implementation = ErrorResponse::class), examples = [ExampleObject("""{"status": 404, "message": "Person with prisonerId of A0000AA not found"}""")])],
+            ),
+        ],
     )
-    fun getCommunityManager(@PathVariable prisonerId: String) = personRepository.findByPrisonerId(prisonerId)
-        ?.let { communityManagerRepository.findByPersonId(it.id).response }
-        ?: throw NotFoundException("Person", "prisonerId", prisonerId)
+    fun getCommunityManager(
+        @PathVariable prisonerId: String,
+    ) =
+        personRepository.findByPrisonerId(prisonerId)
+            ?.let { communityManagerRepository.findByPersonId(it.id).response }
+            ?: throw NotFoundException("Person", "prisonerId", prisonerId)
 
-    val CommunityManager.response get() = CommunityManagerResponse(
-        firstName = staff.forename,
-        lastName = staff.surname,
-        email = staff.user?.username?.let { ldapTemplate.findEmailByUsername(it) }
-    )
+    val CommunityManager.response get() =
+        CommunityManagerResponse(
+            firstName = staff.forename,
+            lastName = staff.surname,
+            email = staff.user?.username?.let { ldapTemplate.findEmailByUsername(it) },
+        )
 }

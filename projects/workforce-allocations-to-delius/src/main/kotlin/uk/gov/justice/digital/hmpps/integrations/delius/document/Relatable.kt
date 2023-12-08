@@ -6,8 +6,9 @@ interface Relatable {
     fun findRelatedTo(): RelatedTo
 }
 
-fun DocEvent.toDocumentEvent() = DocumentEvent(
-    if (active) EventType.CURRENT else EventType.PREVIOUS,
-    eventNumber,
-    mainOffence?.offence?.description ?: ""
-)
+fun DocEvent.toDocumentEvent() =
+    DocumentEvent(
+        if (active) EventType.CURRENT else EventType.PREVIOUS,
+        eventNumber,
+        mainOffence?.offence?.description ?: "",
+    )

@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.service.TeamService
 
 @RestController
 class TeamController(
-    private val teamService: TeamService
+    private val teamService: TeamService,
 ) {
     @PreAuthorize("hasRole('ROLE_APPROVED_PREMISES_STAFF')")
     @Operation(
@@ -22,11 +22,11 @@ class TeamController(
             with a list of every team code that covers the probation case identified
             by the CRN to enable the Approved Premises service to present the
             relevant list of Approved Premises applications to it's users.
-        """
+        """,
     )
     @GetMapping(value = ["/teams/managingCase/{crn}"])
     fun getTeamsManagingCase(
         @PathVariable crn: String,
-        @RequestParam staffCode: String?
+        @RequestParam staffCode: String?,
     ) = teamService.getTeamsManagingCase(crn, staffCode)
 }

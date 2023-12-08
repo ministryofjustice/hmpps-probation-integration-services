@@ -5,5 +5,5 @@ data class UserDetails(
     val username: String,
     val email: String?,
     val homeArea: Provider?,
-    val staffCode: String?
+    val staffCode: String?,
 )

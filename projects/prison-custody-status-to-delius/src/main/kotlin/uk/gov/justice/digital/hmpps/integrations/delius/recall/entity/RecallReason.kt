@@ -20,26 +20,22 @@ class RecallReason(
     @Id
     @Column(name = "recall_reason_id")
     val id: Long,
-
     @Column(nullable = false)
     val code: String,
-
     @Column(nullable = false)
     val description: String,
-
     @ManyToOne
     @JoinColumn(name = "termination_reason_id")
     val licenceConditionTerminationReason: ReferenceData,
-
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
-    val selectable: Boolean = true
+    val selectable: Boolean = true,
 ) {
     enum class Code(val value: String) {
         NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT("NN"),
         END_OF_TEMPORARY_LICENCE("EOTL"),
         TRANSFER_TO_SECURE_HOSPITAL("TSH"),
-        TRANSFER_TO_IRC("IRC")
+        TRANSFER_TO_IRC("IRC"),
     }
 }
 

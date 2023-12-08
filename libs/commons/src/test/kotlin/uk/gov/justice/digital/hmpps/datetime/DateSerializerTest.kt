@@ -18,7 +18,6 @@ import java.time.format.DateTimeFormatter
 
 @ExtendWith(MockitoExtension::class)
 class DateSerializerTest {
-
     @Mock
     private lateinit var jsonParser: JsonParser
 
@@ -26,7 +25,10 @@ class DateSerializerTest {
 
     @ParameterizedTest
     @MethodSource("dateTimeStrings")
-    fun `deserialize zoned date time`(dateTime: String, zonedDateTime: ZonedDateTime) {
+    fun `deserialize zoned date time`(
+        dateTime: String,
+        zonedDateTime: ZonedDateTime,
+    ) {
         whenever(jsonParser.text).thenReturn(dateTime)
 
         val result = deserializer.deserialize(jsonParser, null)
@@ -45,15 +47,16 @@ class DateSerializerTest {
         private val utcDateTime = utcLocalDateTime.atZone(EuropeLondon)
 
         @JvmStatic
-        private fun dateTimeStrings(): List<Arguments> = listOf(
-            Arguments.of(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(bstDateTime), bstDateTime),
-            Arguments.of(DateTimeFormatter.ISO_INSTANT.format(bstDateTime), bstDateTime),
-            Arguments.of(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(bstDateTime), bstDateTime),
-            Arguments.of(DateTimeFormatter.ISO_ZONED_DATE_TIME.format(bstDateTime), bstDateTime),
-            Arguments.of(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(utcDateTime), utcDateTime),
-            Arguments.of(DateTimeFormatter.ISO_INSTANT.format(utcDateTime), utcDateTime),
-            Arguments.of(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(utcDateTime), utcDateTime),
-            Arguments.of(DateTimeFormatter.ISO_ZONED_DATE_TIME.format(utcDateTime), utcDateTime)
-        )
+        private fun dateTimeStrings(): List<Arguments> =
+            listOf(
+                Arguments.of(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(bstDateTime), bstDateTime),
+                Arguments.of(DateTimeFormatter.ISO_INSTANT.format(bstDateTime), bstDateTime),
+                Arguments.of(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(bstDateTime), bstDateTime),
+                Arguments.of(DateTimeFormatter.ISO_ZONED_DATE_TIME.format(bstDateTime), bstDateTime),
+                Arguments.of(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(utcDateTime), utcDateTime),
+                Arguments.of(DateTimeFormatter.ISO_INSTANT.format(utcDateTime), utcDateTime),
+                Arguments.of(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(utcDateTime), utcDateTime),
+                Arguments.of(DateTimeFormatter.ISO_ZONED_DATE_TIME.format(utcDateTime), utcDateTime),
+            )
     }
 }

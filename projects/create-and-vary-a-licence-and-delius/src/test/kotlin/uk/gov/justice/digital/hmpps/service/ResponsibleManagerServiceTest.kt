@@ -19,7 +19,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.manager.entity.PersonMan
 
 @ExtendWith(MockitoExtension::class)
 internal class ResponsibleManagerServiceTest {
-
     @Mock
     lateinit var personManagerRepository: PersonManagerRepository
 

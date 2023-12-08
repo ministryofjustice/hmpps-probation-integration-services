@@ -12,16 +12,21 @@ import uk.gov.justice.digital.hmpps.service.CaseDetailService
 @RestController
 @RequestMapping("/probation-cases")
 class CaseDetailController(private val caseDetailService: CaseDetailService) {
-
     @PreAuthorize("hasRole('RESETTLEMENT_PASSPORT_SUPERVISION_ACCESS')")
     @GetMapping("/{nomsId}/crn")
-    fun findCrn(@PathVariable nomsId: String): CaseIdentifiers = caseDetailService.findCrnByNomsId(nomsId)
+    fun findCrn(
+        @PathVariable nomsId: String,
+    ): CaseIdentifiers = caseDetailService.findCrnByNomsId(nomsId)
 
     @PreAuthorize("hasRole('RESETTLEMENT_PASSPORT_SUPERVISION_ACCESS')")
     @GetMapping("/{crn}/mappa")
-    fun findMappaInfo(@PathVariable crn: String): MappaDetail = caseDetailService.findMappaDetail(crn)
+    fun findMappaInfo(
+        @PathVariable crn: String,
+    ): MappaDetail = caseDetailService.findMappaDetail(crn)
 
     @PreAuthorize("hasRole('RESETTLEMENT_PASSPORT_SUPERVISION_ACCESS')")
     @GetMapping("/{crn}/community-manager")
-    fun getCommunityManager(@PathVariable crn: String) = caseDetailService.findCommunityManager(crn)
+    fun getCommunityManager(
+        @PathVariable crn: String,
+    ) = caseDetailService.findCommunityManager(crn)
 }

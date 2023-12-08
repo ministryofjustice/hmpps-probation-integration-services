@@ -5,5 +5,5 @@ data class ChoosePractitionerResponse(
     val name: Name,
     val probationStatus: ProbationStatus,
     val communityPersonManager: Manager?,
-    val teams: Map<String, List<StaffMember>>
+    val teams: Map<String, List<StaffMember>>,
 )

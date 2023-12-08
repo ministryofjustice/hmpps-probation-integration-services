@@ -23,27 +23,20 @@ class ConvictionEventEntity(
     @Id
     @Column(name = "event_id")
     val id: Long,
-
     val convictionDate: LocalDate?,
-
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val convictionEventPerson: ConvictionEventPerson,
-
     @OneToOne(mappedBy = "event")
     val mainOffence: MainOffence? = null,
-
     @OneToMany(mappedBy = "event")
     val additionalOffences: List<AdditionalOffence> = listOf(),
-
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -54,16 +47,12 @@ class ConvictionEventPerson(
     @Id
     @Column(name = "offender_id")
     val id: Long,
-
     @Column(columnDefinition = "char(7)")
     val crn: String,
-
     @Column(columnDefinition = "char(7)")
     val nomsNumber: String,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
-
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -74,23 +63,18 @@ class Disposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "disposal_type_id")
     val type: DisposalType,
-
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: ConvictionEventEntity,
-
     @OneToOne(mappedBy = "disposal")
     val custody: Custody? = null,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -100,9 +84,8 @@ class DisposalType(
     @Id
     @Column(name = "disposal_type_id")
     val id: Long,
-
     @Column
-    val description: String
+    val description: String,
 )
 
 @Immutable
@@ -113,17 +96,14 @@ class MainOffence(
     @Id
     @Column(name = "main_offence_id")
     val id: Long,
-
     @OneToOne
     @JoinColumn(name = "event_id", nullable = false)
     val event: ConvictionEventEntity?,
-
     @JoinColumn(name = "offence_id")
     @ManyToOne
     val offence: Offence,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -134,17 +114,14 @@ class AdditionalOffence(
     @Id
     @Column(name = "additional_offence_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
     val event: ConvictionEventEntity?,
-
     @JoinColumn(name = "offence_id")
     @ManyToOne()
     val offence: Offence,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -154,12 +131,10 @@ class Offence(
     @Id
     @Column(name = "offence_id")
     val id: Long,
-
     @Column(columnDefinition = "char(5)")
     val code: String,
-
     @Column
-    val description: String
+    val description: String,
 )
 
 interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long> {
@@ -169,15 +144,15 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
             "additionalOffences.offence",
             "disposal.type",
             "convictionEventPerson",
-            "disposal.custody"
+            "disposal.custody",
 
-        ]
+        ],
     )
     @Query(
         """
         select c from ConvictionEventEntity c
         where c.convictionEventPerson.crn in :crns
-    """
+    """,
     )
     fun getAllByConvictionEventPersonCrnIn(crns: List<String>): List<ConvictionEventEntity>
 }

@@ -42,69 +42,75 @@ class NsiService(
     private val contactTypeRepository: ContactTypeRepository,
     private val contactOutcomeRepository: ContactOutcomeRepository,
     private val createNsi: CreateNsi,
-    private val telemetryService: TelemetryService // temporarily added here for determining fuzzy matches
+    // temporarily added here for determining fuzzy matches
+    private val telemetryService: TelemetryService,
 ) : AuditableService(auditedInteractionService) {
+    @Transactional
+    fun startNsi(
+        crn: String,
+        rs: ReferralStarted,
+    ) =
+        audit(MANAGE_NSI) { audit ->
+            val find = { nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn) }
+            val nsi =
+                find()
+                    ?: createNsi.new(crn, rs) {
+                        statusHistoryRepository.save(it.statusHistory())
+                        contactRepository.save(it.contact(NSI_REFERRAL.value, it.statusDate))
+                        contactRepository.save(it.statusChangeContact())
+                        contactRepository.save(it.contact(NSI_COMMENCED.value, it.actualStartDate!!))
+                    } ?: find() ?: throw IllegalStateException("Unable to find or create NSI for ${rs.urn}")
+
+            audit["offenderId"] = nsi.person.id
+            audit["nsiId"] = nsi.id
+
+            if (nsi.notes != rs.notes) {
+                nsi.notes = rs.notes
+            }
+
+            if (nsi.actualStartDate != rs.startedAt) {
+                nsi.actualStartDate = rs.startedAt
+            }
+
+            if (nsi.status.code != NsiStatus.Code.IN_PROGRESS.value) {
+                nsi.status = nsiStatusRepository.getByCode(NsiStatus.Code.IN_PROGRESS.value)
+                nsi.statusDate = rs.startedAt
+                statusHistoryRepository.save(nsi.statusHistory())
+                contactRepository.save(nsi.statusChangeContact())
+            }
+        }
 
     @Transactional
-    fun startNsi(crn: String, rs: ReferralStarted) = audit(MANAGE_NSI) { audit ->
-        val find = { nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn) }
-        val nsi = find()
-            ?: createNsi.new(crn, rs) {
-                statusHistoryRepository.save(it.statusHistory())
-                contactRepository.save(it.contact(NSI_REFERRAL.value, it.statusDate))
-                contactRepository.save(it.statusChangeContact())
-                contactRepository.save(it.contact(NSI_COMMENCED.value, it.actualStartDate!!))
-            } ?: find() ?: throw IllegalStateException("Unable to find or create NSI for ${rs.urn}")
+    fun terminateNsi(termination: NsiTermination) =
+        audit(MANAGE_NSI) { audit ->
+            val nsi = findNsi(termination)
+            val status = nsiStatusRepository.getByCode(END.value)
+            val outcome = nsiOutcomeRepository.nsiOutcome(termination.endType.outcome)
 
-        audit["offenderId"] = nsi.person.id
-        audit["nsiId"] = nsi.id
+            audit["offenderId"] = nsi.person.id
+            audit["nsiId"] = nsi.id
 
-        if (nsi.notes != rs.notes) {
-            nsi.notes = rs.notes
+            if (nsi.status.id != status.id) {
+                nsi.status = status
+                nsi.statusDate = termination.endDate
+                nsi.notes = listOfNotNull(nsi.notes, termination.notes).joinToString(System.lineSeparator())
+                statusHistoryRepository.save(nsi.statusHistory())
+                contactRepository.withdrawFutureAppointments(
+                    nsi.id,
+                    contactOutcomeRepository.getByCode(ContactOutcome.Code.WITHDRAWN.value),
+                )
+                contactRepository.save(nsi.statusChangeContact())
+            }
+            if (nsi.outcome?.id != outcome.id) {
+                nsi.outcome = outcome
+                contactRepository.save(nsi.terminationContact())
+            }
+            if (nsi.actualEndDate != termination.endDate) {
+                nsi.actualEndDate = termination.endDate
+            }
+
+            createNotificationIfNotExists(termination, nsi)
         }
-
-        if (nsi.actualStartDate != rs.startedAt) {
-            nsi.actualStartDate = rs.startedAt
-        }
-
-        if (nsi.status.code != NsiStatus.Code.IN_PROGRESS.value) {
-            nsi.status = nsiStatusRepository.getByCode(NsiStatus.Code.IN_PROGRESS.value)
-            nsi.statusDate = rs.startedAt
-            statusHistoryRepository.save(nsi.statusHistory())
-            contactRepository.save(nsi.statusChangeContact())
-        }
-    }
-
-    @Transactional
-    fun terminateNsi(termination: NsiTermination) = audit(MANAGE_NSI) { audit ->
-        val nsi = findNsi(termination)
-        val status = nsiStatusRepository.getByCode(END.value)
-        val outcome = nsiOutcomeRepository.nsiOutcome(termination.endType.outcome)
-
-        audit["offenderId"] = nsi.person.id
-        audit["nsiId"] = nsi.id
-
-        if (nsi.status.id != status.id) {
-            nsi.status = status
-            nsi.statusDate = termination.endDate
-            nsi.notes = listOfNotNull(nsi.notes, termination.notes).joinToString(System.lineSeparator())
-            statusHistoryRepository.save(nsi.statusHistory())
-            contactRepository.withdrawFutureAppointments(
-                nsi.id,
-                contactOutcomeRepository.getByCode(ContactOutcome.Code.WITHDRAWN.value)
-            )
-            contactRepository.save(nsi.statusChangeContact())
-        }
-        if (nsi.outcome?.id != outcome.id) {
-            nsi.outcome = outcome
-            contactRepository.save(nsi.terminationContact())
-        }
-        if (nsi.actualEndDate != termination.endDate) {
-            nsi.actualEndDate = termination.endDate
-        }
-
-        createNotificationIfNotExists(termination, nsi)
-    }
 
     private fun findNsi(termination: NsiTermination): Nsi {
         val nsi: Nsi? = nsiRepository.findByPersonCrnAndExternalReference(termination.crn, termination.urn)
@@ -119,58 +125,68 @@ class NsiService(
                     nfr == null -> "NSI cannot be determined"
                     nfr.nsiSoftDeleted == 1 -> "NSI soft deleted"
                     else -> "Unknown"
-                }
+                },
             )
         }
         return nsi
     }
 
     private fun Nsi.statusHistory() = NsiStatusHistory(id, status.id, statusDate, notes)
-    private fun Nsi.statusChangeContact() = Contact(
-        person,
-        contactTypeRepository.getReferenceById(status.contactTypeId),
-        eventId = eventId,
-        nsiId = id,
-        date = statusDate.toLocalDate(),
-        startTime = statusDate,
-        providerId = manager.providerId,
-        teamId = manager.teamId,
-        staffId = manager.staffId
-    )
 
-    private fun Nsi.contact(type: String, date: ZonedDateTime) = Contact(
-        person,
-        contactTypeRepository.getByCode(type),
-        providerId = manager.providerId,
-        teamId = manager.teamId,
-        staffId = manager.staffId,
-        eventId = eventId,
-        nsiId = id,
-        date = date.toLocalDate(),
-        startTime = date
-    )
+    private fun Nsi.statusChangeContact() =
+        Contact(
+            person,
+            contactTypeRepository.getReferenceById(status.contactTypeId),
+            eventId = eventId,
+            nsiId = id,
+            date = statusDate.toLocalDate(),
+            startTime = statusDate,
+            providerId = manager.providerId,
+            teamId = manager.teamId,
+            staffId = manager.staffId,
+        )
 
-    private fun Nsi.terminationContact() = Contact(
-        person,
-        contactTypeRepository.getByCode(NSI_TERMINATED.value),
-        providerId = manager.providerId,
-        teamId = manager.teamId,
-        staffId = manager.staffId,
-        eventId = eventId,
-        nsiId = id,
-        date = statusDate.toLocalDate(),
-        startTime = statusDate
-    ).addNotes("NSI Terminated with Outcome: ${outcome!!.description}")
+    private fun Nsi.contact(
+        type: String,
+        date: ZonedDateTime,
+    ) =
+        Contact(
+            person,
+            contactTypeRepository.getByCode(type),
+            providerId = manager.providerId,
+            teamId = manager.teamId,
+            staffId = manager.staffId,
+            eventId = eventId,
+            nsiId = id,
+            date = date.toLocalDate(),
+            startTime = date,
+        )
 
-    private fun createNotificationIfNotExists(nsiTermination: NsiTermination, nsi: Nsi) {
+    private fun Nsi.terminationContact() =
+        Contact(
+            person,
+            contactTypeRepository.getByCode(NSI_TERMINATED.value),
+            providerId = manager.providerId,
+            teamId = manager.teamId,
+            staffId = manager.staffId,
+            eventId = eventId,
+            nsiId = id,
+            date = statusDate.toLocalDate(),
+            startTime = statusDate,
+        ).addNotes("NSI Terminated with Outcome: ${outcome!!.description}")
+
+    private fun createNotificationIfNotExists(
+        nsiTermination: NsiTermination,
+        nsi: Nsi,
+    ) {
         nsiTermination.notificationDateTime?.let {
             contactRepository.findNotificationContact(
                 nsi.id,
                 ContactType.Code.CRSNOTE.value,
-                it.toLocalDate()
+                it.toLocalDate(),
             ).firstOrNull { c -> c.notes?.contains("End of Service Report Submitted") == true } ?: run {
                 contactRepository.save(
-                    nsi.contact(ContactType.Code.CRSNOTE.value, it).addNotes(nsiTermination.notificationNotes)
+                    nsi.contact(ContactType.Code.CRSNOTE.value, it).addNotes(nsiTermination.notificationNotes),
                 )
             }
         }

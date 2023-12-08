@@ -13,13 +13,10 @@ class PersonTransfer(
     @Id
     @Column(name = "offender_transfer_id")
     val id: Long,
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @Column(name = "transfer_status_id")
     val statusId: Long,
-
     @Column(columnDefinition = "NUMBER", nullable = false)
-    val softDeleted: Boolean
+    val softDeleted: Boolean,
 )

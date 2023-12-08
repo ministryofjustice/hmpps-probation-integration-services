@@ -7,10 +7,13 @@ import uk.gov.justice.digital.hmpps.model.TeamCodeResponse
 
 @Service
 class TeamService(
-    private val caseloadRepository: CaseloadRepository
+    private val caseloadRepository: CaseloadRepository,
 ) {
     @Transactional
-    fun getTeamsManagingCase(crn: String, staffCode: String?) = TeamCodeResponse(
-        teamCodes = caseloadRepository.findTeamsManagingCase(crn, staffCode)
+    fun getTeamsManagingCase(
+        crn: String,
+        staffCode: String?,
+    ) = TeamCodeResponse(
+        teamCodes = caseloadRepository.findTeamsManagingCase(crn, staffCode),
     )
 }

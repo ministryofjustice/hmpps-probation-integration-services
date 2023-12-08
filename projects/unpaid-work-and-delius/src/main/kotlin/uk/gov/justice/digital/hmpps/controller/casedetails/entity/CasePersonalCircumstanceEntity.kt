@@ -16,7 +16,6 @@ import java.time.LocalDate
 @SQLRestriction("soft_deleted = 0 and (end_date is null or end_date > current_date)")
 @Table(name = "personal_circumstance")
 class CasePersonalCircumstanceEntity(
-
     id: Long,
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
@@ -27,6 +26,5 @@ class CasePersonalCircumstanceEntity(
     start: LocalDate? = null,
     endDate: LocalDate? = null,
     softDeleted: Boolean = false,
-    evidenced: Boolean = false
-
+    evidenced: Boolean = false,
 ) : PersonalCircumstanceBase(id, type, subType, notes, start, endDate, softDeleted, evidenced)

@@ -20,20 +20,16 @@ class RequirementEntity(
     @Id
     @Column(name = "rqmnt_id", nullable = false)
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "disposal_id")
     val disposal: Disposal? = null,
-
     @ManyToOne
     @JoinColumn(name = "rqmnt_type_main_category_id")
     val mainCategory: RequirementMainCategory?,
-
     @Column(name = "active_flag", columnDefinition = "NUMBER", nullable = false)
     val active: Boolean = true,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -47,8 +43,7 @@ class RequirementMainCategory(
     val description: String,
     @Column(name = "restrictive")
     @Convert(converter = YesNoConverter::class)
-    val restrictive: Boolean
-
+    val restrictive: Boolean,
 )
 
 interface RequirementRepository : JpaRepository<RequirementEntity, Long>

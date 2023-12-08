@@ -24,21 +24,16 @@ import java.time.ZonedDateTime
 @EntityListeners(AuditingEntityListener::class)
 @SequenceGenerator(name = "ap_residence_id_seq", sequenceName = "ap_residence_id_seq", allocationSize = 1)
 class Residence(
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @Column(name = "approved_premises_referral_id")
     val referralId: Long,
-
     @Column(name = "approved_premises_id")
     val approvedPremisesId: Long,
-
     val arrivalDate: ZonedDateTime,
     @Lob
     val arrivalNotes: String?,
-
-    val keyWorkerStaffId: Long?
+    val keyWorkerStaffId: Long?,
 ) {
     var departureDate: ZonedDateTime? = null
     var departureReasonId: Long? = null
@@ -82,12 +77,14 @@ class MoveOnCategory(
     @Id
     @Column(name = "move_on_category_id")
     val id: Long,
-
-    val code: String
+    val code: String,
 )
 
 interface ResidenceRepository : JpaRepository<Residence, Long> {
-    fun findByReferralIdAndCreatedByUserId(referralId: Long, createdByUserId: Long): Residence?
+    fun findByReferralIdAndCreatedByUserId(
+        referralId: Long,
+        createdByUserId: Long,
+    ): Residence?
 }
 
 interface MoveOnCategoryRepository : JpaRepository<MoveOnCategory, Long> {

@@ -10,16 +10,16 @@ data class CaseDetails(
     val nomisId: String?,
     val region: String?,
     val keyWorker: Manager,
-    val inCustody: Boolean = false
+    val inCustody: Boolean = false,
 )
 
 data class Name(
     val forename: String,
     val middleName: String?,
-    val surname: String
+    val surname: String,
 )
 
 data class Manager(
     val name: Name?,
-    val unallocated: Boolean = false
+    val unallocated: Boolean = false,
 )

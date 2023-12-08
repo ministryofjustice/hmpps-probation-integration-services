@@ -21,11 +21,11 @@ class AllocationDetailResource(private val allocationDemand: AllocationDemandSer
         description = """Summary information on the person on probation and probation practitioner
             identified by the list of CRNs and staff codes provided in the request. Used to support
             showing the impact of case allocations in the HMPPS Workforce service
-        """
+        """,
     )
     @PostMapping("/details")
     fun getDetails(
         @Valid @RequestBody
-        detailRequests: AllocationDetailRequests
+        detailRequests: AllocationDetailRequests,
     ) = allocationDemand.getDetails(detailRequests)
 }

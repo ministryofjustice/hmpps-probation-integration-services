@@ -14,7 +14,7 @@ class PomCaseMessageHandler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
     private val handoverDatesChanged: HandoverDatesChanged,
     private val pomAllocated: PomAllocated,
-    private val telemetryService: TelemetryService
+    private val telemetryService: TelemetryService,
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)

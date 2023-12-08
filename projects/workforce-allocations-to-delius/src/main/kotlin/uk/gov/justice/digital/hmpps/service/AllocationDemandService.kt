@@ -50,7 +50,7 @@ class AllocationDemandService(
     private val caseViewRequirementRepository: CaseViewRequirementRepository,
     private val eventRepository: EventRepository,
     private val contactRepository: ContactRepository,
-    private val courtAppearanceRepository: CourtAppearanceRepository
+    private val courtAppearanceRepository: CourtAppearanceRepository,
 ) {
     fun findAllocationDemand(allocationDemandRequest: AllocationDemandRequest): AllocationDemandResponse {
         return AllocationDemandResponse(
@@ -58,52 +58,57 @@ class AllocationDemandService(
                 allocationDemandRequest.cases.map {
                     Pair(
                         it.crn,
-                        it.eventNumber
+                        it.eventNumber,
                     )
-                }
-            )
+                },
+            ),
         )
     }
 
     fun getChoosePractitionerResponse(
         crn: String,
-        teamCodes: List<String>
+        teamCodes: List<String>,
     ): ChoosePractitionerResponse {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val personManager = personManagerRepository.findActiveManager(person.id)
-        val staffInTeams = teamCodes.associateWith { teamCode ->
-            val staff = staffRepository.findActiveStaffInTeam(teamCode)
-            val emails = ldapService.findEmailsForStaffIn(staff)
-            staff.map { it.toStaffMember(emails[it.user?.username]) }
-        }
+        val staffInTeams =
+            teamCodes.associateWith { teamCode ->
+                val staff = staffRepository.findActiveStaffInTeam(teamCode)
+                val emails = ldapService.findEmailsForStaffIn(staff)
+                staff.map { it.toStaffMember(emails[it.user?.username]) }
+            }
         return ChoosePractitionerResponse(
             crn = crn,
             name = person.name(),
             probationStatus = ProbationStatus(personRepository.getProbationStatus(person.crn)),
             communityPersonManager = personManager?.toManager(),
-            teams = staffInTeams
+            teams = staffInTeams,
         )
     }
 
-    fun getProbationRecord(crn: String, eventNumber: String): ProbationRecord {
+    fun getProbationRecord(
+        crn: String,
+        eventNumber: String,
+    ): ProbationRecord {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val sentences: Map<Boolean, List<SentenceWithManager>> =
             disposalRepository.findAllSentencesExcludingEventNumber(person.id, eventNumber)
                 .groupBy { it.disposal.active && it.disposal.event.active }
-        val additionalOffences = if (sentences.isNotEmpty()) {
-            additionalOffenceRepository.findAllByEventIdInAndSoftDeletedFalse(
-                sentences.values.flatMap { s -> s.map { it.disposal.event.id } }
-            ).groupBy { it.event.id }
-        } else {
-            mapOf()
-        }
+        val additionalOffences =
+            if (sentences.isNotEmpty()) {
+                additionalOffenceRepository.findAllByEventIdInAndSoftDeletedFalse(
+                    sentences.values.flatMap { s -> s.map { it.disposal.event.id } },
+                ).groupBy { it.event.id }
+            } else {
+                mapOf()
+            }
 
         return ProbationRecord(
             person.crn,
             person.name(),
             Event(eventNumber),
             sentences[true].toPrEvent(additionalOffences),
-            sentences[false].toPrEvent(additionalOffences)
+            sentences[false].toPrEvent(additionalOffences),
         )
     }
 
@@ -115,10 +120,10 @@ class AllocationDemandService(
                     it.disposal.type.description,
                     it.disposal.length,
                     it.disposal.date.toLocalDate(),
-                    it.disposal.terminationDate?.toLocalDate()
+                    it.disposal.terminationDate?.toLocalDate(),
                 ),
                 listOf(it.mainOffence.toOffence()) + aos[it.disposal.event.id].toOffences(),
-                if (it.manager.code.endsWith("U")) null else it.manager.toStaffMember()
+                if (it.manager.code.endsWith("U")) null else it.manager.toStaffMember(),
             )
         }
     }
@@ -130,26 +135,31 @@ class AllocationDemandService(
         return map { PrOffence(it.offence.description) }
     }
 
-    fun getImpact(crn: String, staffCode: String): AllocationImpact {
+    fun getImpact(
+        crn: String,
+        staffCode: String,
+    ): AllocationImpact {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val staff = staffRepository.getWithUserByCode(staffCode)
         return AllocationImpact(person.crn, person.name(), staff.toStaffMember(ldapService.findEmailForStaff(staff)))
     }
 
     fun getDetails(requests: AllocationDetailRequests): AllocationDetails {
-        val cases = personRepository.findAllByCrnAndSoftDeletedFalse(requests.cases.map { it.crn })
-            .associateBy { it.crn }
-        val staff = staffRepository.findAllByCodeIn(requests.cases.map { it.staffCode })
-            .map { it.toStaffMember() }
-            .associateBy { it.code }
+        val cases =
+            personRepository.findAllByCrnAndSoftDeletedFalse(requests.cases.map { it.crn })
+                .associateBy { it.crn }
+        val staff =
+            staffRepository.findAllByCodeIn(requests.cases.map { it.staffCode })
+                .map { it.toStaffMember() }
+                .associateBy { it.code }
         return AllocationDetails(
             requests.cases.map {
                 AllocationImpact(
                     cases[it.crn]?.crn,
                     cases[it.crn]?.name(),
-                    staff[it.staffCode]
+                    staff[it.staffCode],
                 )
-            }
+            },
         )
     }
 
@@ -163,15 +173,16 @@ class AllocationDemandService(
         crn: String,
         eventNumber: String,
         staffCode: String,
-        allocatingStaffUsername: String
+        allocatingStaffUsername: String,
     ): AllocationDemandStaffResponse {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val staff = staffRepository.findStaffWithUserByCode(staffCode)!!
         val allocatingStaff = staffRepository.findStaffWithUserByUsername(allocatingStaffUsername)!!
         val eventId = eventRepository.findByPersonCrnAndNumber(crn, eventNumber)!!.id
-        val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId)
-            .filter { it.mainCategory.code !in listOf("W", "W2") }
-            .map { it.toRequirement() }
+        val requirements =
+            caseViewRequirementRepository.findAllByDisposalEventId(eventId)
+                .filter { it.mainCategory.code !in listOf("W", "W2") }
+                .map { it.toRequirement() }
         val initialAppointment = contactRepository.getInitialAppointmentData(person.id, eventId)
         val emails = ldapService.findEmailsForStaffIn(listOfNotNull(staff, allocatingStaff, initialAppointment?.staff))
         return AllocationDemandStaffResponse(
@@ -182,21 +193,22 @@ class AllocationDemandService(
             initialAppointment?.let { ia ->
                 InitialAppointment(
                     ia.date,
-                    ia.staff.toStaffMember(ia.staff.user?.username?.let { emails[it] })
+                    ia.staff.toStaffMember(ia.staff.user?.username?.let { emails[it] }),
                 )
             },
             allocationRiskService.getRiskOgrs(person),
             disposalRepository.findSentenceForEventNumberAndPersonId(person.id, eventNumber),
             courtAppearanceRepository.findOriginalCourt(eventId),
             eventRepository.findAllOffencesByEventId(eventId).sortedByDescending { it.mainOffence },
-            requirements
+            requirements,
         )
     }
 
-    private fun CaseViewRequirement.toRequirement() = Requirement(
-        mainCategory.description,
-        subCategory?.description,
-        length?.let { "$length ${mainCategory.units?.description ?: ""}" } ?: "",
-        id
-    )
+    private fun CaseViewRequirement.toRequirement() =
+        Requirement(
+            mainCategory.description,
+            subCategory?.description,
+            length?.let { "$length ${mainCategory.units?.description ?: ""}" } ?: "",
+            id,
+        )
 }

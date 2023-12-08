@@ -15,13 +15,14 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 class Handler(
     override val converter: KeyDateChangedEventConverter,
     private val cduService: CustodyDateUpdateService,
-    private val telemetryService: TelemetryService
+    private val telemetryService: TelemetryService,
 ) : NotificationHandler<Any> {
     override fun handle(notification: Notification<Any>) {
         telemetryService.notificationReceived(notification)
         when (val message = notification.message) {
-            is HmppsDomainEvent -> message.personReference.findNomsNumber()
-                ?.let { cduService.updateCustodyKeyDates(it) }
+            is HmppsDomainEvent ->
+                message.personReference.findNomsNumber()
+                    ?.let { cduService.updateCustodyKeyDates(it) }
             is CustodyDateChanged -> cduService.updateCustodyKeyDates(message.bookingId)
         }
     }
@@ -40,12 +41,12 @@ class KeyDateChangedEventConverter(objectMapper: ObjectMapper) : NotificationCon
         if (json.has("bookingId")) {
             return Notification(
                 message = objectMapper.readValue(stringMessage.message, CustodyDateChanged::class.java),
-                attributes = stringMessage.attributes
+                attributes = stringMessage.attributes,
             )
         }
         return Notification(
             message = objectMapper.readValue(stringMessage.message, HmppsDomainEvent::class.java),
-            attributes = stringMessage.attributes
+            attributes = stringMessage.attributes,
         )
     }
 }

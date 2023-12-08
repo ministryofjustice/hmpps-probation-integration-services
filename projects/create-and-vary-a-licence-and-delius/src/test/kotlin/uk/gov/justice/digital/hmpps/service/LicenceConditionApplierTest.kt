@@ -51,13 +51,14 @@ internal class LicenceConditionApplierTest {
         whenever(personManagerRepository.findByPersonCrn(crn)).thenReturn(PersonGenerator.DEFAULT_CM)
         whenever(disposalRepository.findCustodialSentences(crn)).thenReturn(listOf())
 
-        val ex = assertThrows<IllegalStateException> {
-            licenceConditionApplier.applyLicenceConditions(
-                crn,
-                ActivatedLicence(crn, LocalDate.now(), null, null, listOf(), listOf(), listOf()),
-                ZonedDateTime.now()
-            )
-        }
+        val ex =
+            assertThrows<IllegalStateException> {
+                licenceConditionApplier.applyLicenceConditions(
+                    crn,
+                    ActivatedLicence(crn, LocalDate.now(), null, null, listOf(), listOf(), listOf()),
+                    ZonedDateTime.now(),
+                )
+            }
         assertThat(ex.message, equalTo("No Custodial Sentences to apply Licence Conditions"))
     }
 }

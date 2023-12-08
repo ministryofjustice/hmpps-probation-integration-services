@@ -42,7 +42,10 @@ class CaseDetailServiceTest {
 
     @ParameterizedTest
     @MethodSource("mappaDetails")
-    fun `mappa details are correctly mapped`(registration: Registration, mappa: MappaDetail) {
+    fun `mappa details are correctly mapped`(
+        registration: Registration,
+        mappa: MappaDetail,
+    ) {
         val crn = "Z123456"
         whenever(registrationRepository.findMappa(crn)).thenReturn(registration)
 
@@ -57,59 +60,60 @@ class CaseDetailServiceTest {
     }
 
     companion object {
-
-        private val detail = MappaDetail(
-            null,
-            null,
-            null,
-            null,
-            LocalDate.now(),
-            null
-        )
+        private val detail =
+            MappaDetail(
+                null,
+                null,
+                null,
+                null,
+                LocalDate.now(),
+                null,
+            )
 
         @JvmStatic
-        fun mappaDetails() = listOf(
-            Arguments.of(generate(), detail),
-            Arguments.of(
-                generate(category = CATEGORIES[Category.X9.name]),
-                detail.copy(category = 0, categoryDescription = "Description of X9")
-            ),
-            Arguments.of(
-                generate(category = CATEGORIES[Category.M1.name], level = LEVELS[Level.M0.name]),
-                detail.copy(
-                    category = 1,
-                    categoryDescription = "Description of M1",
-                    level = 0,
-                    levelDescription = "Description of M0"
-                )
-            ),
-            Arguments.of(
-                generate(category = CATEGORIES[Category.M2.name], level = LEVELS[Level.M1.name]),
-                detail.copy(
-                    category = 2,
-                    categoryDescription = "Description of M2",
-                    level = 1,
-                    levelDescription = "Description of M1"
-                )
-            ),
-            Arguments.of(
-                generate(category = CATEGORIES[Category.M3.name], level = LEVELS[Level.M2.name]),
-                detail.copy(
-                    category = 3,
-                    categoryDescription = "Description of M3",
-                    level = 2,
-                    levelDescription = "Description of M2"
-                )
-            ),
-            Arguments.of(
-                generate(category = CATEGORIES[Category.M4.name], level = LEVELS[Level.M3.name]),
-                detail.copy(
-                    category = 4,
-                    categoryDescription = "Description of M4",
-                    level = 3,
-                    levelDescription = "Description of M3"
-                )
+        fun mappaDetails() =
+            listOf(
+                Arguments.of(generate(), detail),
+                Arguments.of(
+                    generate(category = CATEGORIES[Category.X9.name]),
+                    detail.copy(category = 0, categoryDescription = "Description of X9"),
+                ),
+                Arguments.of(
+                    generate(category = CATEGORIES[Category.M1.name], level = LEVELS[Level.M0.name]),
+                    detail.copy(
+                        category = 1,
+                        categoryDescription = "Description of M1",
+                        level = 0,
+                        levelDescription = "Description of M0",
+                    ),
+                ),
+                Arguments.of(
+                    generate(category = CATEGORIES[Category.M2.name], level = LEVELS[Level.M1.name]),
+                    detail.copy(
+                        category = 2,
+                        categoryDescription = "Description of M2",
+                        level = 1,
+                        levelDescription = "Description of M1",
+                    ),
+                ),
+                Arguments.of(
+                    generate(category = CATEGORIES[Category.M3.name], level = LEVELS[Level.M2.name]),
+                    detail.copy(
+                        category = 3,
+                        categoryDescription = "Description of M3",
+                        level = 2,
+                        levelDescription = "Description of M2",
+                    ),
+                ),
+                Arguments.of(
+                    generate(category = CATEGORIES[Category.M4.name], level = LEVELS[Level.M3.name]),
+                    detail.copy(
+                        category = 4,
+                        categoryDescription = "Description of M4",
+                        level = 3,
+                        levelDescription = "Description of M3",
+                    ),
+                ),
             )
-        )
     }
 }

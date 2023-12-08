@@ -22,27 +22,20 @@ class ConvictionEventEntity(
     @Id
     @Column(name = "event_id")
     val id: Long,
-
     val convictionDate: LocalDate?,
-
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val convictionEventPerson: ConvictionEventPerson,
-
     @OneToOne(mappedBy = "event")
     val mainOffence: MainOffence? = null,
-
     @OneToMany(mappedBy = "event")
     val additionalOffences: List<AdditionalOffence> = listOf(),
-
     @OneToOne(mappedBy = "event")
     val disposal: Disposal? = null,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -53,16 +46,12 @@ class ConvictionEventPerson(
     @Id
     @Column(name = "offender_id")
     val id: Long,
-
     @Column(columnDefinition = "char(7)")
     val crn: String,
-
     @Column(columnDefinition = "char(7)")
     val nomsNumber: String? = null,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
-
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -73,26 +62,20 @@ class Disposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "disposal_type_id")
     val type: DisposalType,
-
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: ConvictionEventEntity,
-
     @Column(name = "disposal_date")
     val startDate: LocalDate,
-
     @Column(name = "notional_end_date")
     val expectedEndDate: LocalDate? = null,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -102,9 +85,8 @@ class DisposalType(
     @Id
     @Column(name = "disposal_type_id")
     val id: Long,
-
     @Column
-    val description: String
+    val description: String,
 )
 
 @Immutable
@@ -115,17 +97,14 @@ class MainOffence(
     @Id
     @Column(name = "main_offence_id")
     val id: Long,
-
     @OneToOne
     @JoinColumn(name = "event_id", nullable = false)
     val event: ConvictionEventEntity?,
-
     @JoinColumn(name = "offence_id")
     @ManyToOne
     val offence: Offence,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -136,17 +115,14 @@ class AdditionalOffence(
     @Id
     @Column(name = "additional_offence_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
     val event: ConvictionEventEntity?,
-
     @JoinColumn(name = "offence_id")
     @ManyToOne()
     val offence: Offence,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -156,12 +132,10 @@ class Offence(
     @Id
     @Column(name = "offence_id")
     val id: Long,
-
     @Column(columnDefinition = "char(5)")
     val code: String,
-
     @Column
-    val description: String
+    val description: String,
 )
 
 interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long> {
@@ -169,8 +143,8 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         attributePaths = [
             "mainOffence.offence",
             "additionalOffences.offence",
-            "disposal.type"
-        ]
+            "disposal.type",
+        ],
     )
     fun getAllByConvictionEventPersonIdOrderByConvictionDateDesc(personId: Long): List<ConvictionEventEntity>
 
@@ -178,8 +152,8 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         attributePaths = [
             "mainOffence.offence",
             "additionalOffences.offence",
-            "disposal.type"
-        ]
+            "disposal.type",
+        ],
     )
     fun getAllByConvictionEventPersonCrn(crn: String): List<ConvictionEventEntity>
 
@@ -187,8 +161,8 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         attributePaths = [
             "mainOffence.offence",
             "additionalOffences.offence",
-            "disposal.type"
-        ]
+            "disposal.type",
+        ],
     )
     fun getAllByConvictionEventPersonNomsNumber(nomsNumber: String): List<ConvictionEventEntity>
 
@@ -196,8 +170,8 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         attributePaths = [
             "mainOffence.offence",
             "additionalOffences.offence",
-            "disposal.type"
-        ]
+            "disposal.type",
+        ],
     )
     fun getAllByConvictionEventPersonCrnAndActiveIsTrue(crn: String): List<ConvictionEventEntity>
 
@@ -205,8 +179,8 @@ interface ConvictionEventRepository : JpaRepository<ConvictionEventEntity, Long>
         attributePaths = [
             "mainOffence.offence",
             "additionalOffences.offence",
-            "disposal.type"
-        ]
+            "disposal.type",
+        ],
     )
     fun getAllByConvictionEventPersonNomsNumberAndActiveIsTrue(nomsNumber: String): List<ConvictionEventEntity>
 }

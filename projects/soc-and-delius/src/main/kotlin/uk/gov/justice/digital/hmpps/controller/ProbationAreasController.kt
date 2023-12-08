@@ -14,6 +14,6 @@ class ProbationAreasController(private val probationAreaService: ProbationAreaSe
     fun probationAreas(
         @Parameter(description = "Include (true) or exclude (false) any probation areas that are not selectable")
         @RequestParam(defaultValue = "false")
-        includeNonSelectable: Boolean = false
+        includeNonSelectable: Boolean = false,
     ) = probationAreaService.getProbationAreas(includeNonSelectable)
 }

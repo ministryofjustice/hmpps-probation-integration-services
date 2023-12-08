@@ -28,17 +28,14 @@ class MainOffence(
     @Id
     @Column(name = "main_offence_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "offence_id")
     override val offence: Offence,
-
     @OneToOne
     @JoinColumn(name = "event_id")
     override val event: Event,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
-    override val softDeleted: Boolean = false
+    override val softDeleted: Boolean = false,
 ) : EventOffence
 
 @Immutable
@@ -49,17 +46,14 @@ class AdditionalOffence(
     @Id
     @Column(name = "additional_offence_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "offence_id")
     override val offence: Offence,
-
     @OneToOne
     @JoinColumn(name = "event_id")
     override val event: Event,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
-    override val softDeleted: Boolean = false
+    override val softDeleted: Boolean = false,
 ) : EventOffence
 
 @Immutable
@@ -69,8 +63,7 @@ class Offence(
     @Id
     @Column(name = "offence_id")
     val id: Long,
-
-    val description: String
+    val description: String,
 )
 
 interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long> {
@@ -81,5 +74,5 @@ interface AdditionalOffenceRepository : JpaRepository<AdditionalOffence, Long> {
 data class SentenceWithManager(
     val disposal: Disposal,
     val mainOffence: MainOffence,
-    val manager: Staff
+    val manager: Staff,
 )

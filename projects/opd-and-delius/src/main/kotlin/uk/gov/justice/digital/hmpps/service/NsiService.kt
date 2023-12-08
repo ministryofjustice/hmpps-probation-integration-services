@@ -24,25 +24,28 @@ class NsiService(
     private val nsiSubTypeRepository: NsiSubTypeRepository,
     private val nsiStatusRepository: NsiStatusRepository,
     private val nsiManagerRepository: NsiManagerRepository,
-    private val contactService: ContactService
+    private val contactService: ContactService,
 ) {
-    fun findOpdNsi(personId: Long) =
-        nsiRepository.findNsiByPersonIdAndTypeCode(personId, NsiType.Code.OPD_COMMUNITY_PATHWAY.value)
+    fun findOpdNsi(personId: Long) = nsiRepository.findNsiByPersonIdAndTypeCode(personId, NsiType.Code.OPD_COMMUNITY_PATHWAY.value)
 
-    fun createNsi(opdAssessment: OpdAssessment, com: PersonManager) {
+    fun createNsi(
+        opdAssessment: OpdAssessment,
+        com: PersonManager,
+    ) {
         val type = nsiTypeRepository.getByCode(NsiType.Code.OPD_COMMUNITY_PATHWAY.value)
         val subType = opdAssessment.result.subTypeCode?.value?.let { nsiSubTypeRepository.nsiSubType(it) }
         val status = nsiStatusRepository.getByCode(NsiStatus.Code.READY_FOR_SERVICE.value)
-        val nsi = Nsi(
-            com.person,
-            opdAssessment.date.toLocalDate(),
-            type,
-            subType,
-            status,
-            opdAssessment.date,
-            opdAssessment.date,
-            com.providerId
-        )
+        val nsi =
+            Nsi(
+                com.person,
+                opdAssessment.date.toLocalDate(),
+                type,
+                subType,
+                status,
+                opdAssessment.date,
+                opdAssessment.date,
+                com.providerId,
+            )
         nsi.appendNotes(opdAssessment.notes)
         nsiRepository.save(nsi)
 
@@ -52,8 +55,8 @@ class NsiService(
                 com.providerId,
                 com.teamId,
                 com.staffId,
-                opdAssessment.date
-            )
+                opdAssessment.date,
+            ),
         )
         contactService.createContact(com, status.contactType, opdAssessment)
     }

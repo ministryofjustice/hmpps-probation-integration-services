@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.message.Notification
 import kotlin.reflect.KClass
 
 abstract class NotificationConverter<T : Any>(
-    val objectMapper: ObjectMapper
+    val objectMapper: ObjectMapper,
 ) {
     abstract fun getMessageType(): KClass<T>
 
@@ -14,7 +14,7 @@ abstract class NotificationConverter<T : Any>(
         val stringMessage = objectMapper.readValue(message, jacksonTypeRef<Notification<String>>())
         return Notification(
             message = objectMapper.readValue(stringMessage.message, getMessageType().java),
-            attributes = stringMessage.attributes
+            attributes = stringMessage.attributes,
         )
     }
 
@@ -23,7 +23,7 @@ abstract class NotificationConverter<T : Any>(
             Notification(
                 message = objectMapper.writeValueAsString(obj.message),
                 attributes = obj.attributes,
-                obj.id
-            )
+                obj.id,
+            ),
         )
 }

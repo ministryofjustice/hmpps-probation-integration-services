@@ -31,10 +31,10 @@ class UserControllerTest {
                     CaseAccess(
                         it,
                         userExcluded = false,
-                        userRestricted = false
+                        userRestricted = false,
                     )
-                }
-            )
+                },
+            ),
         )
 
         val res = userController.userAccessCheck(username, crns)
@@ -51,10 +51,10 @@ class UserControllerTest {
                     CaseAccess(
                         it,
                         userExcluded = false,
-                        userRestricted = false
+                        userRestricted = false,
                     )
-                }
-            )
+                },
+            ),
         )
 
         val res = userController.userAccessCheck(null, crns)

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class CaseDetailsController(val service: CaseDetailsService) {
-
     @PreAuthorize("hasRole('UPW_DETAILS')")
     @Operation(
         summary = "Detailed information on the probation case",
@@ -17,11 +16,11 @@ class CaseDetailsController(val service: CaseDetailsService) {
             case information for the CRN and Event Number supplied in the
             request. Only active personal contacts and personal circumstances
             are included
-        """
+        """,
     )
     @GetMapping(value = ["/case-data/{crn}/{eventId}"])
     fun personDetails(
         @PathVariable crn: String,
-        @PathVariable eventId: Long
+        @PathVariable eventId: Long,
     ) = service.getCaseDetails(crn, eventId)
 }

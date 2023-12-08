@@ -15,8 +15,12 @@ interface UserAccessRepository : JpaRepository<Person, Long> {
                     and not exists (select r from Restriction r where upper(r.user.username) = upper(:username) and r.person.id = p.id)
                     and exists (select r from Restriction r where r.person.id = p.id))
         )
-        """
+        """,
     )
-    fun findByUsernameAndCrn(username: String, crn: String): UserAccess
+    fun findByUsernameAndCrn(
+        username: String,
+        crn: String,
+    ): UserAccess
+
     fun existsByCrn(crn: String): Boolean
 }

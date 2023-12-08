@@ -36,9 +36,10 @@ class KeyDateServiceTest {
 
     @Test
     fun `exception thrown if no active custody record`() {
-        val ex = assertThrows<IgnorableMessageException> {
-            keyDateService.mergeHandoverDates(9817264, LocalDate.now(), LocalDate.now())
-        }
+        val ex =
+            assertThrows<IgnorableMessageException> {
+                keyDateService.mergeHandoverDates(9817264, LocalDate.now(), LocalDate.now())
+            }
         assertThat(ex.message, equalTo("NoActiveCustodialSentence"))
     }
 
@@ -97,15 +98,15 @@ class KeyDateServiceTest {
         whenever(
             referenceDataRepository.findByCode(
                 ReferenceDataGenerator.KEY_DATE_HANDOVER_TYPE.code,
-                ReferenceDataSet.Code.KEY_DATE_TYPE.value
-            )
+                ReferenceDataSet.Code.KEY_DATE_TYPE.value,
+            ),
         ).thenReturn(ReferenceDataGenerator.KEY_DATE_HANDOVER_TYPE)
 
         whenever(
             referenceDataRepository.findByCode(
                 ReferenceDataGenerator.KEY_DATE_HANDOVER_START_DATE_TYPE.code,
-                ReferenceDataSet.Code.KEY_DATE_TYPE.value
-            )
+                ReferenceDataSet.Code.KEY_DATE_TYPE.value,
+            ),
         ).thenReturn(ReferenceDataGenerator.KEY_DATE_HANDOVER_START_DATE_TYPE)
     }
 
@@ -115,9 +116,12 @@ class KeyDateServiceTest {
         return EventGenerator.generateCustody(disposal)
     }
 
-    private fun givenKeyDates(custody: Custody, hod: LocalDate, hsd: LocalDate) =
-        listOf(
-            EventGenerator.generateKeyDate(custody, ReferenceDataGenerator.KEY_DATE_HANDOVER_TYPE, hod),
-            EventGenerator.generateKeyDate(custody, ReferenceDataGenerator.KEY_DATE_HANDOVER_START_DATE_TYPE, hsd)
-        )
+    private fun givenKeyDates(
+        custody: Custody,
+        hod: LocalDate,
+        hsd: LocalDate,
+    ) = listOf(
+        EventGenerator.generateKeyDate(custody, ReferenceDataGenerator.KEY_DATE_HANDOVER_TYPE, hod),
+        EventGenerator.generateKeyDate(custody, ReferenceDataGenerator.KEY_DATE_HANDOVER_START_DATE_TYPE, hsd),
+    )
 }

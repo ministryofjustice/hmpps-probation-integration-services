@@ -56,45 +56,49 @@ internal class CaseDetailsServiceTest {
                     number = 1,
                     active = true,
                     date = LocalDate.of(2023, 1, 2),
-                    sentence = Sentence(
-                        description = "ORA Suspended Sentence Order",
-                        date = LocalDate.of(2023, 3, 4),
-                        length = 6,
-                        lengthUnits = LengthUnit.Months,
-                        custodial = true
-                    ),
-                    mainOffence = Offence(
-                        date = LocalDate.of(2023, 1, 1),
-                        count = 1,
-                        code = "12345",
-                        description = "Test offence",
-                        mainCategory = OffenceCategory("123", "Test"),
-                        subCategory = OffenceCategory("45", "offence"),
-                        schedule15SexualOffence = true,
-                        schedule15ViolentOffence = null
-                    ),
-                    additionalOffences = listOf(
+                    sentence =
+                        Sentence(
+                            description = "ORA Suspended Sentence Order",
+                            date = LocalDate.of(2023, 3, 4),
+                            length = 6,
+                            lengthUnits = LengthUnit.Months,
+                            custodial = true,
+                        ),
+                    mainOffence =
                         Offence(
-                            date = null,
-                            count = 3,
+                            date = LocalDate.of(2023, 1, 1),
+                            count = 1,
                             code = "12345",
                             description = "Test offence",
                             mainCategory = OffenceCategory("123", "Test"),
                             subCategory = OffenceCategory("45", "offence"),
                             schedule15SexualOffence = true,
-                            schedule15ViolentOffence = null
-                        )
-                    ),
-                    courtAppearances = listOf(
-                        CourtAppearance(
-                            type = "Sentence",
-                            date = ZonedDateTime.of(LocalDate.of(2023, 2, 3), LocalTime.of(10, 0, 0), EuropeLondon),
-                            court = "Manchester Crown Court",
-                            plea = "Not guilty"
-                        )
-                    )
-                )
-            )
+                            schedule15ViolentOffence = null,
+                        ),
+                    additionalOffences =
+                        listOf(
+                            Offence(
+                                date = null,
+                                count = 3,
+                                code = "12345",
+                                description = "Test offence",
+                                mainCategory = OffenceCategory("123", "Test"),
+                                subCategory = OffenceCategory("45", "offence"),
+                                schedule15SexualOffence = true,
+                                schedule15ViolentOffence = null,
+                            ),
+                        ),
+                    courtAppearances =
+                        listOf(
+                            CourtAppearance(
+                                type = "Sentence",
+                                date = ZonedDateTime.of(LocalDate.of(2023, 2, 3), LocalTime.of(10, 0, 0), EuropeLondon),
+                                court = "Manchester Crown Court",
+                                plea = "Not guilty",
+                            ),
+                        ),
+                ),
+            ),
         )
     }
 }

@@ -9,10 +9,13 @@ import uk.gov.justice.digital.hmpps.ldap.findByUsername
 
 @Service
 class UserService(private val userAccessService: UserAccessService, private val ldapTemplate: LdapTemplate) {
+    fun userDetails(username: String): UserDetail? =
+        ldapTemplate.findByUsername<LdapUserDetails>(username)?.let {
+            UserDetail(it.username, Name(it.forename, it.surname), it.email)
+        }
 
-    fun userDetails(username: String): UserDetail? = ldapTemplate.findByUsername<LdapUserDetails>(username)?.let {
-        UserDetail(it.username, Name(it.forename, it.surname), it.email)
-    }
-
-    fun userAccessFor(username: String, crns: List<String>) = userAccessService.userAccessFor(username, crns)
+    fun userAccessFor(
+        username: String,
+        crns: List<String>,
+    ) = userAccessService.userAccessFor(username, crns)
 }

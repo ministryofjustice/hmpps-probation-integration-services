@@ -28,63 +28,80 @@ class StaffController(
     private val staffRepository: StaffRepository,
     private val communityManagerRepository: CommunityManagerRepository,
     private val personRepository: PersonRepository,
-    private val ldapTemplate: LdapTemplate
+    private val ldapTemplate: LdapTemplate,
 ) {
     @GetMapping("/staff/{code}")
-    fun getStaffByCode(@PathVariable code: String) = staffRepository.findByCode(code)?.toModel()
+    fun getStaffByCode(
+        @PathVariable code: String,
+    ) = staffRepository.findByCode(code)?.toModel()
         ?: throw NotFoundException("Staff", "code", code)
 
     @GetMapping("/staff", params = ["username"])
-    fun getStaffByUsername(@RequestParam username: String) = staffRepository.findByUserUsername(username)?.toModel()
+    fun getStaffByUsername(
+        @RequestParam username: String,
+    ) = staffRepository.findByUserUsername(username)?.toModel()
         ?: throw NotFoundException("Staff", "username", username)
 
     @GetMapping("/staff", params = ["id"])
     @Deprecated("Use `/staff/{code}` or `/staff?username={username}`")
-    fun getStaffById(@RequestParam id: Long) = staffRepository.findStaffById(id)?.toModel()
+    fun getStaffById(
+        @RequestParam id: Long,
+    ) = staffRepository.findStaffById(id)?.toModel()
         ?: throw NotFoundException("Staff", "staffId", id)
 
     @GetMapping("/staff/{code}/managedPrisonerIds")
-    fun getManagedPrisonersByStaffCode(@PathVariable code: String) = personRepository.findManagedPrisonerIdentifiersByStaffCode(code)
+    fun getManagedPrisonersByStaffCode(
+        @PathVariable code: String,
+    ) = personRepository.findManagedPrisonerIdentifiersByStaffCode(code)
 
     @GetMapping("/managedPrisonerIds", params = ["staffId"])
     @Deprecated("Use `/staff/{code}/managedPrisonerIds`")
-    fun getManagedPrisonersByStaffId(@RequestParam staffId: Long) = personRepository.findManagedPrisonerIdentifiersByStaffId(staffId)
+    fun getManagedPrisonersByStaffId(
+        @RequestParam staffId: Long,
+    ) = personRepository.findManagedPrisonerIdentifiersByStaffId(staffId)
 
     @GetMapping("/case/{nomsNumber}/communityManager")
-    fun getCommunityManager(@PathVariable nomsNumber: String) = communityManagerRepository.findCommunityManager(nomsNumber)?.toModel()
+    fun getCommunityManager(
+        @PathVariable nomsNumber: String,
+    ) = communityManagerRepository.findCommunityManager(nomsNumber)?.toModel()
         ?: throw NotFoundException("Community manager for case", "nomsNumber", nomsNumber)
 
-    private fun StaffEntity.toModel() = Staff(
-        code = code,
-        staffId = id,
-        name = Name(forenames(), surname),
-        teams = teams.map { team ->
-            TeamDetails(
-                code = team.code,
-                description = team.description,
-                telephone = team.telephone,
-                emailAddress = team.emailAddress,
-                probationDeliveryUnit = ProbationDeliveryUnit(
-                    code = team.district.borough.code,
-                    description = team.district.borough.description
-                ),
-                localAdminUnit = LocalAdminUnit(
-                    code = team.district.code,
-                    description = team.district.description
-                )
-            )
-        },
-        username = user?.username,
-        email = user?.username?.let { username -> ldapTemplate.findEmailByUsername(username) }
-    )
+    private fun StaffEntity.toModel() =
+        Staff(
+            code = code,
+            staffId = id,
+            name = Name(forenames(), surname),
+            teams =
+                teams.map { team ->
+                    TeamDetails(
+                        code = team.code,
+                        description = team.description,
+                        telephone = team.telephone,
+                        emailAddress = team.emailAddress,
+                        probationDeliveryUnit =
+                            ProbationDeliveryUnit(
+                                code = team.district.borough.code,
+                                description = team.district.borough.description,
+                            ),
+                        localAdminUnit =
+                            LocalAdminUnit(
+                                code = team.district.code,
+                                description = team.district.description,
+                            ),
+                    )
+                },
+            username = user?.username,
+            email = user?.username?.let { username -> ldapTemplate.findEmailByUsername(username) },
+        )
 
-    private fun CommunityManagerEntity.toModel() = CommunityManager(
-        code = staff.code,
-        staffId = staff.id,
-        name = Name(staff.forenames(), staff.surname),
-        team = Team(team.code, team.description),
-        localAdminUnit = LocalAdminUnit(team.district.code, team.district.description),
-        provider = Provider(team.probationArea.code, team.probationArea.description),
-        isUnallocated = staff.code.endsWith("U")
-    )
+    private fun CommunityManagerEntity.toModel() =
+        CommunityManager(
+            code = staff.code,
+            staffId = staff.id,
+            name = Name(staff.forenames(), staff.surname),
+            team = Team(team.code, team.description),
+            localAdminUnit = LocalAdminUnit(team.district.code, team.district.description),
+            provider = Provider(team.probationArea.code, team.probationArea.description),
+            isUnallocated = staff.code.endsWith("U"),
+        )
 }

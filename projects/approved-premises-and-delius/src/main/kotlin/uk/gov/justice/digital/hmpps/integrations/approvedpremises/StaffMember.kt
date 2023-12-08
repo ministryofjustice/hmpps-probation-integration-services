@@ -5,5 +5,5 @@ data class StaffMember(
     val staffIdentifier: Long,
     val forenames: String,
     val surname: String,
-    val username: String?
+    val username: String?,
 )

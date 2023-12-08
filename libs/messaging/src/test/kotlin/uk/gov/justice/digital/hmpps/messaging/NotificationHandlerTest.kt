@@ -16,7 +16,6 @@ import uk.gov.justice.digital.hmpps.message.Notification
 
 @ExtendWith(MockitoExtension::class)
 class NotificationHandlerTest {
-
     @Mock
     lateinit var domainConverter: NotificationConverter<HmppsDomainEvent>
 
@@ -24,14 +23,16 @@ class NotificationHandlerTest {
     fun `handle string calls converter`() {
         val event = HmppsDomainEvent("test.event.type", 1)
         whenever(domainConverter.fromMessage(any())).thenReturn(
-            Notification(event, MessageAttributes(event.eventType))
+            Notification(event, MessageAttributes(event.eventType)),
         )
-        val handler = object : NotificationHandler<HmppsDomainEvent> {
-            override val converter = domainConverter
-            override fun handle(notification: Notification<HmppsDomainEvent>) {
-                assertThat(notification.eventType, equalTo("test.event.type"))
+        val handler =
+            object : NotificationHandler<HmppsDomainEvent> {
+                override val converter = domainConverter
+
+                override fun handle(notification: Notification<HmppsDomainEvent>) {
+                    assertThat(notification.eventType, equalTo("test.event.type"))
+                }
             }
-        }
         handler.handle("{}")
         verify(domainConverter).fromMessage("{}")
     }

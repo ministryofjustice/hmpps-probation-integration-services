@@ -15,15 +15,14 @@ class NsiStatus(
     @Id
     @Column(name = "nsi_status_id")
     val id: Long,
-
     @Column(name = "code")
-    val code: String
+    val code: String,
 )
 
 enum class NsiStatusCode(val code: String) {
     IN_REFERRAL("AP01"),
     REFERRAL_ACCEPTED("AP02"),
-    IN_RESIDENCE("AP03")
+    IN_RESIDENCE("AP03"),
 }
 
 interface NsiStatusRepository : JpaRepository<NsiStatus, Long> {

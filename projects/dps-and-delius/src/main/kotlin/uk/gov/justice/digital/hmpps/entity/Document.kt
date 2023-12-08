@@ -17,36 +17,26 @@ class DocumentEntity(
     @Id
     @Column(name = "document_id")
     val id: Long,
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @Column(name = "alfresco_document_id")
     val alfrescoId: String,
-
     @Column
     val primaryKeyId: Long,
-
     @Column(name = "document_name")
     val name: String,
-
     @Column(name = "document_type")
     val type: String,
-
     @Column
     val tableName: String,
-
     @Column(name = "created_datetime")
     val createdAt: ZonedDateTime,
-
     @Column
     val createdByUserId: Long = 0,
-
     @Column
     val lastUpdatedUserId: Long = 0,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 interface Document {
@@ -61,23 +51,25 @@ interface Document {
 }
 
 fun Document.relatesToEvent() = eventId != null
-fun Document.typeDescription() = when (tableName) {
-    "OFFENDER" -> if (type == "PREVIOUS_CONVICTION") "PNC previous convictions" else "Offender related"
-    "EVENT" -> if (type == "CPS_PACK") "Crown Prosecution Service case pack" else "Sentence related"
-    "COURT_REPORT" -> "Court Report"
-    "INSTITUTIONAL_REPORT" -> "Institutional Report"
-    "ADDRESSASSESSMENT" -> "Address assessment related document"
-    "APPROVED_PREMISES_REFERRAL" -> "Approved premises referral related document"
-    "ASSESSMENT" -> "Assessment document"
-    "CASE_ALLOCATION" -> "Case allocation document"
-    "PERSONALCONTACT" -> "Personal contact related document"
-    "REFERRAL" -> "Referral related document"
-    "NSI" -> "Non Statutory Intervention related document"
-    "PERSONAL_CIRCUMSTANCE" -> "Personal circumstance related document"
-    "UPW_APPOINTMENT" -> "Unpaid work appointment document"
-    "CONTACT" -> "Contact related document"
-    else -> error("Un-mapped document type ($tableName/$type)")
-}
+
+fun Document.typeDescription() =
+    when (tableName) {
+        "OFFENDER" -> if (type == "PREVIOUS_CONVICTION") "PNC previous convictions" else "Offender related"
+        "EVENT" -> if (type == "CPS_PACK") "Crown Prosecution Service case pack" else "Sentence related"
+        "COURT_REPORT" -> "Court Report"
+        "INSTITUTIONAL_REPORT" -> "Institutional Report"
+        "ADDRESSASSESSMENT" -> "Address assessment related document"
+        "APPROVED_PREMISES_REFERRAL" -> "Approved premises referral related document"
+        "ASSESSMENT" -> "Assessment document"
+        "CASE_ALLOCATION" -> "Case allocation document"
+        "PERSONALCONTACT" -> "Personal contact related document"
+        "REFERRAL" -> "Referral related document"
+        "NSI" -> "Non Statutory Intervention related document"
+        "PERSONAL_CIRCUMSTANCE" -> "Personal circumstance related document"
+        "UPW_APPOINTMENT" -> "Unpaid work appointment document"
+        "CONTACT" -> "Contact related document"
+        else -> error("Un-mapped document type ($tableName/$type)")
+    }
 
 interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
     @Query(
@@ -170,7 +162,7 @@ interface DocumentRepository : JpaRepository<DocumentEntity, Long> {
                                       'EVENT', 'COURT_REPORT', 'INSTITUTIONAL_REPORT', 'APPROVED_PREMISES_REFERRAL', 'ASSESSMENT', 'CASE_ALLOCATION', 'REFERRAL', 'UPW_APPOINTMENT',
                                       'CONTACT', 'NSI')
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun getPersonAndEventDocuments(personId: Long): List<Document>
 

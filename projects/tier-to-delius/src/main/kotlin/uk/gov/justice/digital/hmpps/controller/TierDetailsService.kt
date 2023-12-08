@@ -24,7 +24,7 @@ class TierDetailsService(
     val eventRepository: EventRepository,
     val oasysAssessmentRepository: OASYSAssessmentRepository,
     val ogrsAssessmentRepository: OGRSAssessmentRepository,
-    val nsiRepository: NsiRepository
+    val nsiRepository: NsiRepository,
 ) {
     fun tierDetails(crn: String): TierDetails {
         val case = caseEntityRepository.getCase(crn)
@@ -40,22 +40,23 @@ class TierDetailsService(
             case.dynamicRsrScore,
             registrationEntities.map { Registration(it.type.code, it.type.description, it.level?.code, it.date) },
             convictions,
-            nsiRepository.previousEnforcementActivity(case.id)
+            nsiRepository.previousEnforcementActivity(case.id),
         )
     }
 
-    private fun mapToConvictions(eventEntities: List<EventEntity>) = eventEntities.mapNotNull { event ->
-        event.disposal?.let { disposal ->
-            Conviction(
-                disposal.terminationDate,
-                disposal.disposalType.sentenceType,
-                event.inBreach,
-                disposal.requirements.mapNotNull { rq ->
-                    rq.mainCategory?.code?.let { Requirement(it, rq.mainCategory.restrictive) }
-                }
-            )
+    private fun mapToConvictions(eventEntities: List<EventEntity>) =
+        eventEntities.mapNotNull { event ->
+            event.disposal?.let { disposal ->
+                Conviction(
+                    disposal.terminationDate,
+                    disposal.disposalType.sentenceType,
+                    event.inBreach,
+                    disposal.requirements.mapNotNull { rq ->
+                        rq.mainCategory?.code?.let { Requirement(it, rq.mainCategory.restrictive) }
+                    },
+                )
+            }
         }
-    }
 
     private fun getRiskOgrs(case: CaseEntity): Long? {
         val oasysAssessment = oasysAssessmentRepository.findLatest(case.id)

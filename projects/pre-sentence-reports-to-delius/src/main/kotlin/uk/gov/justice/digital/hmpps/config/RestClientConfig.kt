@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.integrations.psr.PsrClient
 
 @Configuration
 class RestClientConfig(private val oauth2Client: RestClient) {
-
     @Bean
     fun psrClient() = createClient<PsrClient>(oauth2Client)
 

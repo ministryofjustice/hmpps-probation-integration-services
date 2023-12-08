@@ -16,13 +16,10 @@ class ApprovedPremisesReferral(
     @Id
     @Column(name = "approved_premises_referral_id")
     val id: Long,
-
     @JoinColumn(name = "event_id", insertable = false, updatable = false)
     @ManyToOne
     val event: DocEvent,
-
     @JoinColumn(name = "referral_category_id", insertable = false, updatable = false)
     @ManyToOne
-    val category: ReferenceData
-
+    val category: ReferenceData,
 )

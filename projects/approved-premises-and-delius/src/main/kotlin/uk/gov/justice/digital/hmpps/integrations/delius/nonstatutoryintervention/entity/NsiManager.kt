@@ -32,61 +32,47 @@ class NsiManager(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nsi_manager_id_generator")
     @Column(name = "nsi_manager_id")
     val id: Long = 0,
-
     @Version
     @Column(name = "row_version")
     val version: Long = 0,
-
     @ManyToOne
     @JoinColumn(name = "nsi_id")
     val nsi: Nsi,
-
     @ManyToOne
     @JoinColumn(name = "staff_id")
     val staff: Staff,
-
     @ManyToOne
     @JoinColumn(name = "team_id")
     val team: Team,
-
     @ManyToOne
     @JoinColumn(name = "probation_area_id")
     val probationArea: ProbationArea,
-
     @Column
     val startDate: ZonedDateTime,
-
     @Column
     val endDate: ZonedDateTime? = null,
-
     @ManyToOne
     @JoinColumn(name = "transfer_reason_id")
     val transferReason: TransferReason,
-
     @Column
     @CreatedDate
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
-
     @Column
     @CreatedBy
     var createdByUserId: Long = 0,
-
     @Column
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
-
     @Column
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
-
+    // this is no longer used but the Delius database still requires it to be populated
     @Column
-    val partitionAreaId: Long = 0, // this is no longer used but the Delius database still requires it to be populated
-
+    val partitionAreaId: Long = 0,
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 interface NsiManagerRepository : JpaRepository<NsiManager, Long>
@@ -98,14 +84,12 @@ class TransferReason(
     @Id
     @Column(name = "transfer_reason_id")
     val id: Long,
-
     @Column(name = "code")
-    val code: String
+    val code: String,
 )
 
 interface TransferReasonRepository : JpaRepository<TransferReason, Long> {
     fun findByCode(code: String): TransferReason?
 }
 
-fun TransferReasonRepository.getNsiTransferReason(code: String = "NSI") =
-    findByCode(code) ?: throw NotFoundException("Transfer reason", "code", code)
+fun TransferReasonRepository.getNsiTransferReason(code: String = "NSI") = findByCode(code) ?: throw NotFoundException("Transfer reason", "code", code)

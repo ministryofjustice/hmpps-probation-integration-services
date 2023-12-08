@@ -33,9 +33,10 @@ class AllocationRiskServiceTest {
 
     @Test
     fun `person not found`() {
-        val exception = assertThrows<NotFoundException> {
-            allocationRiskService.getRiskRecord("UNK")
-        }
+        val exception =
+            assertThrows<NotFoundException> {
+                allocationRiskService.getRiskRecord("UNK")
+            }
         assertThat(exception.message, equalTo("Person with crn of UNK not found"))
     }
 
@@ -61,8 +62,8 @@ class AllocationRiskServiceTest {
         whenever(registrationRepository.findAllByPersonCrn(person.crn)).thenReturn(listOf(registration))
         whenever(
             oasysAssessmentRepository.findFirstByPersonIdAndScoreIsNotNullOrderByAssessmentDateDesc(
-                person.id
-            )
+                person.id,
+            ),
         ).thenReturn(OasysAssessmentGenerator.DEFAULT)
         val response = allocationRiskService.getRiskRecord(person.crn)
 
@@ -83,8 +84,8 @@ class AllocationRiskServiceTest {
         whenever(registrationRepository.findAllByPersonCrn(person.crn)).thenReturn(listOf(registration))
         whenever(
             ogrsAssessmentRepository.findFirstByEventPersonIdAndScoreIsNotNullOrderByAssessmentDateDesc(
-                person.id
-            )
+                person.id,
+            ),
         ).thenReturn(OgrsAssessmentGenerator.DEFAULT)
         val response = allocationRiskService.getRiskRecord(person.crn)
 

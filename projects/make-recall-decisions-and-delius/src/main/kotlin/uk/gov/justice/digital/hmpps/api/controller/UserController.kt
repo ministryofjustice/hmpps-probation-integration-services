@@ -16,13 +16,19 @@ class UserController(private val userService: UserService) {
     @GetMapping("/user/{username}/access/{crn}")
     @Operation(
         summary = "Details of any restrictions or exclusions",
-        description = "<p>Returns either an `exclusionMessage` or `restrictionMessage` if the user is not allowed to access the case. " +
-            "<p>This can happen if the user is *excluded* from viewing the case (e.g. a family member), or if the case has been *restricted* to a subset of users that the user is not a part of (e.g. high profile cases)."
+        description =
+            "<p>Returns either an `exclusionMessage` or `restrictionMessage` if the user is not allowed to access the case. " +
+                "<p>This can happen if the user is *excluded* from viewing the case (e.g. a family member), or if the case has been *restricted* to a subset of users that the user is not a part of (e.g. high profile cases).",
     )
     @ApiResponse(responseCode = "404", description = "A case with the provided CRN does not exist in Delius. Note: this could be the result of a merge or a deletion.")
-    fun checkUserAccess(@PathVariable username: String, @PathVariable crn: String) = userService.checkUserAccess(username, crn)
+    fun checkUserAccess(
+        @PathVariable username: String,
+        @PathVariable crn: String,
+    ) = userService.checkUserAccess(username, crn)
 
     @GetMapping("/user/{username}")
     @Operation(summary = "User details")
-    fun getUserDetails(@PathVariable username: String) = userService.getUserDetails(username)
+    fun getUserDetails(
+        @PathVariable username: String,
+    ) = userService.getUserDetails(username)
 }

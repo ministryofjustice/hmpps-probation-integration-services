@@ -13,7 +13,7 @@ interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {
         and pa.softDeleted = false  
         and pa.endDate is null 
         and pa.status.code = 'M'
-    """
+    """,
     )
     fun findMainAddress(personId: Long): PersonAddress?
 }

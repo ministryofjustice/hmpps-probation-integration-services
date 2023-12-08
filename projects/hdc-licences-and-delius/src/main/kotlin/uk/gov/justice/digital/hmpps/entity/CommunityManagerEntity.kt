@@ -15,22 +15,17 @@ class CommunityManagerEntity(
     @Id
     @Column(name = "offender_manager_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
-
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id")
     val staff: StaffEntity,
-
     @ManyToOne
     @JoinColumn(name = "team_id")
     val team: Team,
-
     @Column(columnDefinition = "number", nullable = false)
     val softDeleted: Boolean = false,
-
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
-    val active: Boolean = true
+    val active: Boolean = true,
 )

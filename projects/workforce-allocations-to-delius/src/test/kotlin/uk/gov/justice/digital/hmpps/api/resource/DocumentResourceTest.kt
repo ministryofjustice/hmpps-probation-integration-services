@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.document.DocumentService
 
 @ExtendWith(MockitoExtension::class)
 class DocumentResourceTest {
-
     @Mock
     private lateinit var documentService: DocumentService
 

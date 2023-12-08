@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.integrations.cvl.CvlClient
 
 @Configuration
 class RestClientConfig(private val oauth2Client: RestClient) {
-
     @Bean
     fun cvlClient() = createClient<CvlClient>(oauth2Client)
 }

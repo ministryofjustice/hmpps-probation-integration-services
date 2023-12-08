@@ -21,7 +21,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.NsiRepository
 
 @ExtendWith(MockitoExtension::class)
 internal class CaseNoteRelatedServiceTest {
-
     @Mock
     private lateinit var eventRepository: EventRepository
 

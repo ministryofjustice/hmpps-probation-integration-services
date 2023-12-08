@@ -13,11 +13,10 @@ class TransferReason(
     @Id
     @Column(name = "transfer_reason_id")
     val id: Long,
-
-    val code: String
+    val code: String,
 )
 
 enum class TransferReasonCode(val value: String) {
     CASE_ORDER("CASE ORDER"),
-    COMPONENT("COMPONENT")
+    COMPONENT("COMPONENT"),
 }

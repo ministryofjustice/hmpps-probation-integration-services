@@ -31,5 +31,5 @@ class AliasEntity(
     @ManyToOne
     @JoinColumn(name = "offender_id", nullable = false)
     val case: CaseEntity,
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )

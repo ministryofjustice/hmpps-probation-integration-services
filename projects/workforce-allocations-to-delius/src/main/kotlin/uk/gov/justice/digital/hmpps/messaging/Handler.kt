@@ -22,7 +22,7 @@ class Handler(
     private val allocateEventService: AllocateEventService,
     private val allocateRequirementService: AllocateRequirementService,
     private val telemetryService: TelemetryService,
-    override val converter: NotificationConverter<HmppsDomainEvent>
+    override val converter: NotificationConverter<HmppsDomainEvent>,
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
@@ -30,14 +30,16 @@ class Handler(
 
         when (val allocationDetail = allocationsClient.getAllocationDetail(URI.create(allocationEvent.detailUrl!!))) {
             is PersonAllocationDetail -> allocatePersonService.createPersonAllocation(allocationDetail)
-            is EventAllocationDetail -> allocateEventService.createEventAllocation(
-                allocationEvent.findCrn(),
-                allocationDetail
-            )
-            is RequirementAllocationDetail -> allocateRequirementService.createRequirementAllocation(
-                allocationEvent.findCrn(),
-                allocationDetail
-            )
+            is EventAllocationDetail ->
+                allocateEventService.createEventAllocation(
+                    allocationEvent.findCrn(),
+                    allocationDetail,
+                )
+            is RequirementAllocationDetail ->
+                allocateRequirementService.createRequirementAllocation(
+                    allocationEvent.findCrn(),
+                    allocationDetail,
+                )
         }
     }
 

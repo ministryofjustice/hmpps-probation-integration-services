@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface OffenderDeltaRepository : JpaRepository<OffenderDelta, Long> {
-
     @EntityGraph("OffenderDelta.withOffender")
     override fun findAll(pageable: Pageable): Page<OffenderDelta>
 }

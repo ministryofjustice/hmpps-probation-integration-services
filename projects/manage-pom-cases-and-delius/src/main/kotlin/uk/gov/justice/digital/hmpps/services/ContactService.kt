@@ -12,14 +12,14 @@ import java.time.ZonedDateTime
 @Service
 class ContactService(
     private val contactTypeRepository: ContactTypeRepository,
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
 ) {
     fun createContact(
         personId: Long,
         typeCode: ContactType.Code,
         dateTime: ZonedDateTime,
         manager: Manager,
-        notes: String?
+        notes: String?,
     ) {
         val type = contactTypeRepository.getByCode(typeCode.value)
         contactRepository.save(
@@ -31,8 +31,8 @@ class ContactService(
                 notes,
                 manager.probationArea.id,
                 manager.team.id,
-                manager.staff.id
-            )
+                manager.staff.id,
+            ),
         )
     }
 }

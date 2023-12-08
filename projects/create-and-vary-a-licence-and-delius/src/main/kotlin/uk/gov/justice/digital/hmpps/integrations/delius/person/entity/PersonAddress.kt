@@ -16,15 +16,12 @@ import java.time.LocalDate
 @Table(name = "offender_address")
 @SQLRestriction("soft_deleted = 0")
 class PersonAddress(
-
     @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
-
     @ManyToOne
     @JoinColumn(name = "address_status_id")
     val status: AddressStatus,
-
     @Column(name = "building_name")
     val buildingName: String?,
     @Column(name = "address_number")
@@ -36,32 +33,26 @@ class PersonAddress(
     val town: String?,
     val county: String?,
     val postcode: String?,
-
     val startDate: LocalDate,
     val endDate: LocalDate?,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean,
-
     @Id
     @Column(name = "offender_address_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
 @Entity
 @Table(name = "r_standard_reference_list")
 class AddressStatus(
-
     @Column(name = "code_value")
     val code: String,
-
     @Column(name = "code_description")
     val description: String,
-
     @Id
     @Column(name = "standard_reference_list_id")
-    val id: Long
+    val id: Long,
 )
 
 interface PersonAddressRepository : JpaRepository<PersonAddress, Long> {

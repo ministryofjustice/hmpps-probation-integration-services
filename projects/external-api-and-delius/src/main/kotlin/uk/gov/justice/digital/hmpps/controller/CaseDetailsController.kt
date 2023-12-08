@@ -15,9 +15,11 @@ import uk.gov.justice.digital.hmpps.service.CaseDetailsService
 @PreAuthorize("hasRole('ROLE_INTEGRATIONS_API')")
 @Tag(name = "Case Details", description = "Requires ROLE_INTEGRATIONS_API")
 class CaseDetailsController(
-    private val caseDetailsService: CaseDetailsService
+    private val caseDetailsService: CaseDetailsService,
 ) {
     @GetMapping(value = ["/supervisions"])
     @Operation(summary = "Get a list of supervisions (called “events” in Delius) for a probation case, by CRN")
-    fun supervisions(@PathVariable("crn") crn: String) = SupervisionResponse(caseDetailsService.getSupervisions(crn))
+    fun supervisions(
+        @PathVariable("crn") crn: String,
+    ) = SupervisionResponse(caseDetailsService.getSupervisions(crn))
 }

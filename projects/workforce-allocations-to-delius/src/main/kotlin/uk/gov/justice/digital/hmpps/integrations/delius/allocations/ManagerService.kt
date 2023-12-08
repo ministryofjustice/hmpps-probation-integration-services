@@ -14,7 +14,7 @@ import java.time.temporal.ChronoUnit
 
 abstract class ManagerService<T : ManagerBaseEntity>(
     auditedInteractionService: AuditedInteractionService,
-    private val managerRepository: JpaRepository<T, Long>
+    private val managerRepository: JpaRepository<T, Long>,
 ) : AuditableService(auditedInteractionService) {
     companion object {
         private val log = LoggerFactory.getLogger(this::class.java)
@@ -22,7 +22,7 @@ abstract class ManagerService<T : ManagerBaseEntity>(
 
     fun updateDateTimes(
         managerActive: T,
-        newManager: T
+        newManager: T,
     ): Pair<T, T> {
         newManager.endDate = managerActive.endDate
         managerActive.endDate = newManager.startDate
@@ -34,7 +34,7 @@ abstract class ManagerService<T : ManagerBaseEntity>(
     protected fun createTransferContact(
         oldManager: T,
         newManager: T,
-        cci: ContactContext
+        cci: ContactContext,
     ): Contact {
         return Contact(
             type = cci.contactType,
@@ -47,7 +47,7 @@ abstract class ManagerService<T : ManagerBaseEntity>(
             staffId = newManager.staff.id,
             providerId = newManager.provider.id,
             notes =
-            """
+                """
         |Transfer Reason: Internal Transfer
         |Transfer Date: ${newManager.startDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}
         |From Trust: ${newManager.provider.description}
@@ -55,7 +55,7 @@ abstract class ManagerService<T : ManagerBaseEntity>(
         |From Officer: ${oldManager.staff.displayName}
         |-------------------------------/${System.lineSeparator()}
         |"""
-                .trimMargin()
+                    .trimMargin(),
         )
     }
 

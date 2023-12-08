@@ -12,13 +12,10 @@ data class Staff(
     @Id
     @Column(name = "staff_id")
     val id: Long,
-
     @Column
     val forename: String,
-
     @Column
     val surname: String,
-
     @OneToOne(mappedBy = "staff")
-    val user: UserDetails?
+    val user: UserDetails?,
 )

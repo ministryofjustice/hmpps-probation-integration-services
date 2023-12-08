@@ -20,87 +20,87 @@ import java.sql.Date
 
 @Repository
 class AllocationDemandRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
-
     fun findAllocationDemand(params: List<Pair<String, String>>): List<AllocationResponse> {
         jdbcTemplate.update(
             "call PKG_VPD_CTX.SET_CLIENT_IDENTIFIER(:dbName)",
-            MapSqlParameterSource().addValue("dbName", ServiceContext.servicePrincipal()!!.username)
+            MapSqlParameterSource().addValue("dbName", ServiceContext.servicePrincipal()!!.username),
         )
         return jdbcTemplate.query(
             QS_ALLOCATION_DEMAND,
             MapSqlParameterSource()
                 .addValue("values", params.map { arrayOf(it.first, it.second) }),
-            mapper
+            mapper,
         )
     }
 
     companion object {
         private val gradeMap: Map<String, String> =
             mapOf("PSQ" to "PSO", "PSP" to "PQiP", "PSM" to "PO", "PSC" to "SPO")
-        val mapper = RowMapper<AllocationResponse> { rs, _ ->
-            val sentenceDate: Date? = rs.getDate("sentence_date")
-            val iad: Date? = rs.getDate("initial_appointment_date")
-            val managementStatus = ManagementStatus.valueOf(rs.getString("management_status"))
-            val managerCode = rs.getString("community_manager_code")
-            AllocationResponse(
-                rs.getString("crn"),
-                Name(rs.getString("forename"), rs.getString("middle_name"), rs.getString("surname")),
-                Event(
-                    rs.getString("event_number"),
-                    Manager(
-                        rs.getString("staff_code"),
-                        Name(
-                            rs.getString("staff_forename"),
-                            rs.getString("staff_middle_name"),
-                            rs.getString("staff_surname")
-                        ),
-                        rs.getString("team_code")
-                    )
-                ),
-                if (sentenceDate == null) {
-                    null
-                } else {
-                    Sentence(
-                        rs.getString("sentence_type"),
-                        rs.getDate("sentence_date").toLocalDate(),
-                        "${rs.getString("sentence_length_value")} ${rs.getString("sentence_length_unit")}"
-                    )
-                },
-                if (iad == null) {
-                    null
-                } else {
-                    InitialAppointment(
-                        iad.toLocalDate(),
-                        StaffMember(
-                            rs.getString("ias_code"),
+        val mapper =
+            RowMapper<AllocationResponse> { rs, _ ->
+                val sentenceDate: Date? = rs.getDate("sentence_date")
+                val iad: Date? = rs.getDate("initial_appointment_date")
+                val managementStatus = ManagementStatus.valueOf(rs.getString("management_status"))
+                val managerCode = rs.getString("community_manager_code")
+                AllocationResponse(
+                    rs.getString("crn"),
+                    Name(rs.getString("forename"), rs.getString("middle_name"), rs.getString("surname")),
+                    Event(
+                        rs.getString("event_number"),
+                        Manager(
+                            rs.getString("staff_code"),
                             Name(
-                                rs.getString("ias_forename"),
-                                rs.getString("ias_middle_name"),
-                                rs.getString("ias_surname")
+                                rs.getString("staff_forename"),
+                                rs.getString("staff_middle_name"),
+                                rs.getString("staff_surname"),
                             ),
-                            grade = rs.getString("ias_grade")
-                        )
-                    )
-                },
-                NamedCourt(rs.getString("court_name")),
-                CaseType.valueOf(rs.getString("case_type")),
-                ProbationStatus(managementStatus),
-                if (managerCode.endsWith("U")) {
-                    null
-                } else {
-                    Manager(
-                        managerCode,
-                        Name(
-                            rs.getString("community_manager_forename"),
-                            rs.getString("community_manager_middle_name"),
-                            rs.getString("community_manager_surname")
+                            rs.getString("team_code"),
                         ),
-                        rs.getString("community_manager_team_code"),
-                        gradeMap[rs.getString("community_manager_grade")]
-                    )
-                }
-            )
-        }
+                    ),
+                    if (sentenceDate == null) {
+                        null
+                    } else {
+                        Sentence(
+                            rs.getString("sentence_type"),
+                            rs.getDate("sentence_date").toLocalDate(),
+                            "${rs.getString("sentence_length_value")} ${rs.getString("sentence_length_unit")}",
+                        )
+                    },
+                    if (iad == null) {
+                        null
+                    } else {
+                        InitialAppointment(
+                            iad.toLocalDate(),
+                            StaffMember(
+                                rs.getString("ias_code"),
+                                Name(
+                                    rs.getString("ias_forename"),
+                                    rs.getString("ias_middle_name"),
+                                    rs.getString("ias_surname"),
+                                ),
+                                grade = rs.getString("ias_grade"),
+                            ),
+                        )
+                    },
+                    NamedCourt(rs.getString("court_name")),
+                    CaseType.valueOf(rs.getString("case_type")),
+                    ProbationStatus(managementStatus),
+                    if (managerCode.endsWith("U")) {
+                        null
+                    } else {
+                        Manager(
+                            managerCode,
+                            Name(
+                                rs.getString("community_manager_forename"),
+                                rs.getString("community_manager_middle_name"),
+                                rs.getString("community_manager_surname"),
+                            ),
+                            rs.getString("community_manager_team_code"),
+                            gradeMap[rs.getString("community_manager_grade")],
+                        )
+                    },
+                )
+            }
     }
 }
 

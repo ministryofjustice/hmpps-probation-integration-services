@@ -17,17 +17,14 @@ class MainOffence(
     @Id
     @Column(name = "main_offence_id")
     val id: Long,
-
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event? = null,
-
     @ManyToOne
     @JoinColumn(name = "offence_id")
     val offence: Offence,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Entity
@@ -37,7 +34,6 @@ data class Offence(
     @Id
     @Column(name = "offence_id")
     val id: Long,
-
     @Column
-    val subCategoryDescription: String
+    val subCategoryDescription: String,
 )

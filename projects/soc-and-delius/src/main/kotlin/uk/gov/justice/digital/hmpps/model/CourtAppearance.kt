@@ -9,14 +9,14 @@ data class CourtAppearance(
     val courtName: String,
     val crn: String,
     val courtAppearanceId: Long,
-    val offenderId: Long
+    val offenderId: Long,
 )
 
 data class Type(
     val code: String,
-    val description: String
+    val description: String,
 )
 
 data class CourtAppearancesContainer(
-    val courtAppearances: List<CourtAppearance> = listOf()
+    val courtAppearances: List<CourtAppearance> = listOf(),
 )

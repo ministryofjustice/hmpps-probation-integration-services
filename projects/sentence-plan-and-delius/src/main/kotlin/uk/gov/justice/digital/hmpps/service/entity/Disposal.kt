@@ -15,17 +15,13 @@ class Disposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long,
-
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: Event,
-
     @OneToOne(mappedBy = "disposal")
     var custody: Custody? = null,
-
     @Column(name = "active_flag", columnDefinition = "NUMBER")
     val active: Boolean = true,
-
     @Column(columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )

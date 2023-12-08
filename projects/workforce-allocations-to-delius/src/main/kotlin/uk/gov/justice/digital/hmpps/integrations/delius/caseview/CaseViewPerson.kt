@@ -41,11 +41,10 @@ class CaseViewPerson(
     @Column(columnDefinition = "char(13)")
     val pncNumber: String? = null,
     @Column(updatable = false, columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 interface CaseViewPersonRepository : JpaRepository<CaseViewPerson, Long> {
-
     @EntityGraph(attributePaths = ["gender.dataset"])
     fun findByCrn(crn: String): CaseViewPerson?
 
@@ -59,7 +58,7 @@ interface CaseViewPersonRepository : JpaRepository<CaseViewPerson, Long> {
         where ma.personId = :personId 
         and ma.status.code = 'M'
         and ma.endDate is null
-    """
+    """,
     )
     fun findMainAddress(personId: Long): CaseViewPersonAddress?
 
@@ -90,10 +89,14 @@ interface CaseViewPersonRepository : JpaRepository<CaseViewPerson, Long> {
          and e.soft_deleted = 0
          and e.active_flag = 1
     """,
-        nativeQuery = true
+        nativeQuery = true,
     )
-    fun findSentenceSummary(personId: Long, eventNumber: String): SentenceSummary?
+    fun findSentenceSummary(
+        personId: Long,
+        eventNumber: String,
+    ): SentenceSummary?
 }
 
-fun CaseViewPersonRepository.getByCrn(crn: String) = findByCrn(crn)
-    ?: throw NotFoundException("Person", "crn", crn)
+fun CaseViewPersonRepository.getByCrn(crn: String) =
+    findByCrn(crn)
+        ?: throw NotFoundException("Person", "crn", crn)

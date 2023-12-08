@@ -5,10 +5,10 @@ data class OasysAssessmentTimeline(
     val inputs: Inputs,
     val crn: String,
     val limitedAccessOffender: Boolean,
-    val timeline: List<OasysTimelineAssessment> = emptyList()
+    val timeline: List<OasysTimelineAssessment> = emptyList(),
 )
 
 data class Inputs(
     val crn: String,
-    val laoPrivilege: String
+    val laoPrivilege: String,
 )

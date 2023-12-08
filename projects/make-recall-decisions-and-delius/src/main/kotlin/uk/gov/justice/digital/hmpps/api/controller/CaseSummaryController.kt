@@ -21,34 +21,42 @@ import java.time.LocalDate
 @RequestMapping("/case-summary/{crn}")
 @PreAuthorize("hasRole('ROLE_MAKE_RECALL_DECISIONS_API')")
 class CaseSummaryController(private val caseSummaryService: CaseSummaryService) {
-
     @GetMapping(value = ["/personal-details"])
     @Operation(summary = "Personal details including name, date of birth, address")
-    fun getPersonalDetails(@PathVariable crn: String) = caseSummaryService.getPersonalDetails(crn)
+    fun getPersonalDetails(
+        @PathVariable crn: String,
+    ) = caseSummaryService.getPersonalDetails(crn)
 
     @GetMapping(value = ["/overview"])
     @Operation(summary = "Overview of the probation case including active events/convictions, register flags")
-    fun getOverview(@PathVariable crn: String) = caseSummaryService.getOverview(crn)
+    fun getOverview(
+        @PathVariable crn: String,
+    ) = caseSummaryService.getOverview(crn)
 
     @GetMapping(value = ["/mappa-and-rosh-history"])
     @Operation(
         summary = "Current MAPPA and historical RoSH registrations",
-        description = "<p>This is intended to populate the MAPPA (Multi-agency public protection arrangements) and RoSH (Risk of Serious Harm) widgets." +
-            "<p>Note that risk assessment information is generally held in OASys, and this endpoint only surfaces supplementary Delius registration/register details."
+        description =
+            "<p>This is intended to populate the MAPPA (Multi-agency public protection arrangements) and RoSH (Risk of Serious Harm) widgets." +
+                "<p>Note that risk assessment information is generally held in OASys, and this endpoint only surfaces supplementary Delius registration/register details.",
     )
-    fun getMappaAndRoshHistory(@PathVariable crn: String) = caseSummaryService.getMappaAndRoshHistory(crn)
+    fun getMappaAndRoshHistory(
+        @PathVariable crn: String,
+    ) = caseSummaryService.getMappaAndRoshHistory(crn)
 
     @GetMapping(value = ["/licence-conditions"])
     @Operation(
         summary = "Active events/convictions, with licence conditions",
-        description = "Only returns active licence conditions that are associated with active events/convictions"
+        description = "Only returns active licence conditions that are associated with active events/convictions",
     )
-    fun getLicenceConditions(@PathVariable crn: String) = caseSummaryService.getLicenceConditions(crn)
+    fun getLicenceConditions(
+        @PathVariable crn: String,
+    ) = caseSummaryService.getLicenceConditions(crn)
 
     @GetMapping(value = ["/contact-history"])
     @Operation(
         summary = "Contact history",
-        description = "Returns matching historical records from the Delius contact log, including linked documents, and a summary showing the total number of contacts on the case grouped by type."
+        description = "Returns matching historical records from the Delius contact log, including linked documents, and a summary showing the total number of contacts on the case grouped by type.",
     )
     fun getContactHistory(
         @PathVariable
@@ -69,13 +77,15 @@ class CaseSummaryController(private val caseSummaryService: CaseSummaryService) 
         type: List<String> = listOf(),
         @Parameter(description = "Include (true) or exclude (false) any contact types that are system-generated")
         @RequestParam(defaultValue = "true")
-        includeSystemGenerated: Boolean = true
+        includeSystemGenerated: Boolean = true,
     ) = caseSummaryService.getContactHistory(crn, query, from, to ?: LocalDate.now(), type, includeSystemGenerated)
 
     @GetMapping(value = ["/recommendation-model"])
     @Operation(
         summary = "Case data required to populate the recommendation model",
-        description = "This is used to populate the Recall Part A document template when a recommendation is made, and to refresh the case data when a recall decision is made later."
+        description = "This is used to populate the Recall Part A document template when a recommendation is made, and to refresh the case data when a recall decision is made later.",
     )
-    fun getRecommendationModel(@PathVariable crn: String) = caseSummaryService.getRecommendationModel(crn)
+    fun getRecommendationModel(
+        @PathVariable crn: String,
+    ) = caseSummaryService.getRecommendationModel(crn)
 }

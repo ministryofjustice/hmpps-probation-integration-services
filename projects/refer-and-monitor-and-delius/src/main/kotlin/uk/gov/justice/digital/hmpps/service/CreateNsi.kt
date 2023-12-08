@@ -26,36 +26,43 @@ class CreateNsi(
     private val nsiTypeRepository: NsiTypeRepository,
     private val nsiStatusRepository: NsiStatusRepository,
     private val nsiRepository: NsiRepository,
-    private val nsiManagerService: NsiManagerService
+    private val nsiManagerService: NsiManagerService,
 ) {
-    fun new(crn: String, rs: ReferralStarted, additions: (nsi: Nsi) -> Unit): Nsi? {
+    fun new(
+        crn: String,
+        rs: ReferralStarted,
+        additions: (nsi: Nsi) -> Unit,
+    ): Nsi? {
         val person = personRepository.getByCrn(crn)
         val sentence = disposalRepository.getByPersonIdAndEventId(person.id, rs.sentenceId)
-        val req = requirementRepository.findForPersonAndEvent(
-            person.id,
-            sentence.id,
-            RequirementMainCategory.Code.REHAB_ACTIVITY_TYPE.value
-        ).firstOrNull()
+        val req =
+            requirementRepository.findForPersonAndEvent(
+                person.id,
+                sentence.id,
+                RequirementMainCategory.Code.REHAB_ACTIVITY_TYPE.value,
+            ).firstOrNull()
 
-        val nsiTypeCode = ContractTypeNsiType.MAPPING[rs.contractType]
-            ?: throw IllegalArgumentException("Unexpected Contract Type")
+        val nsiTypeCode =
+            ContractTypeNsiType.MAPPING[rs.contractType]
+                ?: throw IllegalArgumentException("Unexpected Contract Type")
         val type = nsiTypeRepository.getByCode(nsiTypeCode)
         val status = nsiStatusRepository.getByCode(NsiStatus.Code.IN_PROGRESS.value)
-        val nsi = nsiRepository.save(
-            Nsi(
-                person = person,
-                intendedProviderId = providerRepository.getCrsProvider().id,
-                type = type,
-                eventId = sentence.event.id,
-                requirementId = req?.id,
-                referralDate = rs.startedAt.toLocalDate(),
-                actualStartDate = rs.startedAt,
-                status = status,
-                statusDate = rs.startedAt,
-                externalReference = rs.urn,
-                notes = rs.notes
+        val nsi =
+            nsiRepository.save(
+                Nsi(
+                    person = person,
+                    intendedProviderId = providerRepository.getCrsProvider().id,
+                    type = type,
+                    eventId = sentence.event.id,
+                    requirementId = req?.id,
+                    referralDate = rs.startedAt.toLocalDate(),
+                    actualStartDate = rs.startedAt,
+                    status = status,
+                    statusDate = rs.startedAt,
+                    externalReference = rs.urn,
+                    notes = rs.notes,
+                ),
             )
-        )
         val manager = nsiManagerService.createNewManager(nsi)
         additions(nsi.withManager(manager))
         return nsiRepository.findByPersonCrnAndExternalReference(crn, rs.urn)

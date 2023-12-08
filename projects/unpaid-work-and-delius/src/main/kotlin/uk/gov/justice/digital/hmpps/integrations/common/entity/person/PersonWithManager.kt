@@ -12,25 +12,18 @@ import org.hibernate.annotations.SQLRestriction
 @Entity
 @Table(name = "offender")
 class PersonWithManager(
-
     @Id
     @Column(name = "offender_id")
     val id: Long,
-
     @Column(columnDefinition = "char(7)")
     val crn: String,
-
     @Column(name = "first_name", length = 35)
     val forename: String,
-
     @Column(name = "surname", length = 35)
     val surname: String,
-
     @Column(updatable = false, columnDefinition = "number")
     val softDeleted: Boolean = false,
-
     @OneToMany(mappedBy = "person")
     @SQLRestriction("active_flag = 1")
-    val managers: List<PersonManager> = listOf()
-
+    val managers: List<PersonManager> = listOf(),
 )

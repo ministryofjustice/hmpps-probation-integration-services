@@ -25,34 +25,35 @@ class AllocationCompletedService(
     private val staffRepository: StaffRepository,
     private val ldapService: LdapService,
     private val contactRepository: ContactRepository,
-    private val orderManagerRepository: OrderManagerRepository
+    private val orderManagerRepository: OrderManagerRepository,
 ) {
     fun getDetails(
         crn: String,
         eventNumber: String,
-        staffCode: String
+        staffCode: String,
     ): AllocationCompletedResponse {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val event = eventRepository.getByPersonCrnAndNumber(crn, eventNumber)
         val staff = staffRepository.findStaffWithUserByCode(staffCode)
         val initialAppointmentData = contactRepository.getInitialAppointmentData(person.id, event.id)
         val emails = ldapService.findEmailsForStaffIn(listOfNotNull(staff, initialAppointmentData?.staff))
-        val initialAppointment = initialAppointmentData?.let { ia ->
-            InitialAppointment(ia.date, ia.staff.toStaffMember(ia.staff.user?.username?.let { emails[it] }))
-        }
+        val initialAppointment =
+            initialAppointmentData?.let { ia ->
+                InitialAppointment(ia.date, ia.staff.toStaffMember(ia.staff.user?.username?.let { emails[it] }))
+            }
         return AllocationCompletedResponse(
             crn = crn,
             name = person.name(),
             event = Event(eventNumber),
             type = personRepository.getCaseType(crn),
             initialAppointment = initialAppointment,
-            staff = staff?.toStaffMember(staff.user?.username?.let { emails[it] })
+            staff = staff?.toStaffMember(staff.user?.username?.let { emails[it] }),
         )
     }
 
     fun getAllocationManager(
         crn: String,
-        eventNumber: String
+        eventNumber: String,
     ): Manager {
         val event = eventRepository.getByPersonCrnAndNumber(crn, eventNumber)
         return orderManagerRepository.getOrderManager(event.id).toManager()

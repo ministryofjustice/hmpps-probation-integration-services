@@ -37,9 +37,10 @@ class ControllerAdviceTest {
     fun `handles invalid method argument`() {
         val bindingResult = mock(BindingResult::class.java)
         whenever(bindingResult.fieldErrors).thenReturn(listOf(FieldError("object", "field", "message")))
-        val response = ControllerAdvice().handleMethodArgumentNotValid(
-            MethodArgumentNotValidException(MethodParameter(::testMethod.javaMethod!!, 0), bindingResult)
-        )
+        val response =
+            ControllerAdvice().handleMethodArgumentNotValid(
+                MethodArgumentNotValidException(MethodParameter(::testMethod.javaMethod!!, 0), bindingResult),
+            )
 
         assertThat(response.statusCode, equalTo(BAD_REQUEST))
         assertThat(response.body?.message, equalTo("Validation failure"))

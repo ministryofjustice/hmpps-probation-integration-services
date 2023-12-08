@@ -23,15 +23,14 @@ class ManagementOversightRecall(
     private val staffRepository: StaffRepository,
     private val contactTypeRepository: ContactTypeRepository,
     private val contactOutcomeRepository: ContactOutcomeRepository,
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
 ) {
-
     fun decision(
         crn: String,
         decision: ManagementDecision,
         details: DecisionDetails,
         username: String,
-        occurredAt: ZonedDateTime
+        occurredAt: ZonedDateTime,
     ) {
         val person = personRepository.getPerson(crn)
         val staff = staffRepository.getStaff(username)
@@ -44,7 +43,7 @@ class ManagementOversightRecall(
         notes: String,
         sensitive: Boolean,
         staff: Staff,
-        occurredAt: ZonedDateTime
+        occurredAt: ZonedDateTime,
     ): Contact {
         checkNotNull(manager) { "No Active Person Manager" }
         return Contact(
@@ -58,7 +57,7 @@ class ManagementOversightRecall(
             teamId = manager.teamId,
             staffId = staff.id,
             outcome = contactOutcomeRepository.getByCode(decision.code),
-            isSensitive = sensitive
+            isSensitive = sensitive,
         )
     }
 }

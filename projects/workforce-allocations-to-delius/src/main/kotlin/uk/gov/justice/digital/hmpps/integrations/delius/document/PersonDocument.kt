@@ -8,13 +8,13 @@ data class PersonDocument(
     val relatedTo: RelatedTo,
     val dateSaved: ZonedDateTime?,
     val dateCreated: ZonedDateTime?,
-    val sensitive: Boolean
+    val sensitive: Boolean,
 )
 
 data class RelatedTo(
     val type: RelatedType,
     val name: String = "",
-    val event: DocumentEvent? = null
+    val event: DocumentEvent? = null,
 ) {
     val description: String = type.description()
 }
@@ -22,11 +22,12 @@ data class RelatedTo(
 data class DocumentEvent(
     val eventType: EventType,
     val eventNumber: String,
-    val mainOffence: String
+    val mainOffence: String,
 )
 
 enum class EventType {
-    CURRENT, PREVIOUS
+    CURRENT,
+    PREVIOUS,
 }
 
 enum class RelatedType(private val displayName: String = "") {
@@ -49,7 +50,8 @@ enum class RelatedType(private val displayName: String = "") {
     PERSONAL_CIRCUMSTANCE,
     REFERRAL,
     REGISTRATION,
-    UPW_APPOINTMENT("Unpaid Work Appointment");
+    UPW_APPOINTMENT("Unpaid Work Appointment"),
+    ;
 
     fun description(): String =
         displayName.ifEmpty { name.split("_").joinToString(" ") { it.lowercase().replaceFirstChar(Char::titlecase) } }

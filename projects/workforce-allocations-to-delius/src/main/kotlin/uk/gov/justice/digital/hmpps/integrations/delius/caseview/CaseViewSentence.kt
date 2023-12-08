@@ -18,16 +18,13 @@ class CaseViewDisposal(
     @Id
     @Column(name = "disposal_id")
     val id: Long,
-
     @OneToOne
     @JoinColumn(name = "event_id")
     val event: CaseViewEvent,
-
     @Column(name = "active_flag", columnDefinition = "number")
     val active: Boolean = true,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -38,18 +35,14 @@ class CaseViewEvent(
     @Id
     @Column(name = "event_id", nullable = false)
     val id: Long,
-
     @Column(name = "offender_id", nullable = false)
     val personId: Long,
-
     @Column(name = "event_number", nullable = false)
     val number: String,
-
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     val active: Boolean,
-
     @Column(name = "soft_deleted", columnDefinition = "number")
-    val softDeleted: Boolean
+    val softDeleted: Boolean,
 )
 
 interface SentenceSummary {

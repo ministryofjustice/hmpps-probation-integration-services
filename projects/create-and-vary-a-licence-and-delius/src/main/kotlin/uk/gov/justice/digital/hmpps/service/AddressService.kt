@@ -17,7 +17,7 @@ class AddressService(private val personAddressRepository: PersonAddressRepositor
                 it.county,
                 it.postcode,
                 it.startDate,
-                it.endDate
+                it.endDate,
             )
         }
 }

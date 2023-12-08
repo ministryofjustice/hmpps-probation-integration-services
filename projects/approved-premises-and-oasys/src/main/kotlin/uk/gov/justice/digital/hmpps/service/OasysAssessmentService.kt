@@ -41,8 +41,8 @@ class OasysAssessmentService(private var oasysClient: OasysClient) {
             oasysClient.getOffenceDetails(
                 crn,
                 latestAssessment.assessmentPk,
-                latestAssessment.status
-            )
+                latestAssessment.status,
+            ),
         )
     }
 
@@ -52,8 +52,8 @@ class OasysAssessmentService(private var oasysClient: OasysClient) {
             oasysClient.getNeedsDetails(
                 crn,
                 latestAssessment.assessmentPk,
-                latestAssessment.status
-            )
+                latestAssessment.status,
+            ),
         )
     }
 
@@ -63,8 +63,8 @@ class OasysAssessmentService(private var oasysClient: OasysClient) {
             oasysClient.getRiskManagementPlanDetails(
                 crn,
                 latestAssessment.assessmentPk,
-                latestAssessment.status
-            )
+                latestAssessment.status,
+            ),
         )
     }
 
@@ -74,8 +74,8 @@ class OasysAssessmentService(private var oasysClient: OasysClient) {
             oasysClient.getRoshSummary(
                 crn,
                 latestAssessment.assessmentPk,
-                latestAssessment.status
-            )
+                latestAssessment.status,
+            ),
         )
     }
 
@@ -85,8 +85,8 @@ class OasysAssessmentService(private var oasysClient: OasysClient) {
             oasysClient.getRiskToTheIndividual(
                 crn,
                 latestAssessment.assessmentPk,
-                latestAssessment.status
-            )
+                latestAssessment.status,
+            ),
         )
     }
 
@@ -96,8 +96,8 @@ class OasysAssessmentService(private var oasysClient: OasysClient) {
             oasysClient.getRiskAssessment(
                 crn,
                 latestAssessment.assessmentPk,
-                latestAssessment.status
-            )
+                latestAssessment.status,
+            ),
         )
     }
 
@@ -107,8 +107,8 @@ class OasysAssessmentService(private var oasysClient: OasysClient) {
             oasysClient.getRiskOfSeriousHarm(
                 crn,
                 latestAssessment.assessmentPk,
-                latestAssessment.status
-            )
+                latestAssessment.status,
+            ),
         )
     }
 
@@ -118,8 +118,8 @@ class OasysAssessmentService(private var oasysClient: OasysClient) {
             oasysClient.getHealthDetails(
                 crn,
                 latestAssessment.assessmentPk,
-                latestAssessment.status
-            )
+                latestAssessment.status,
+            ),
         )
     }
 }

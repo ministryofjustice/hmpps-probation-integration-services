@@ -15,90 +15,69 @@ import org.hibernate.type.YesNoConverter
 @Immutable
 @Table(name = "probation_area")
 class ProbationAreaEntity(
-
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean,
-
     val description: String,
-
     @Column(columnDefinition = "char(3)")
     val code: String,
-
     @Column(columnDefinition = "char(1)")
     val establishment: String?,
-
     @Id
     @Column(name = "probation_area_id")
     val id: Long,
-
     @OneToMany(mappedBy = "probationArea")
-    val boroughs: List<Borough> = listOf()
+    val boroughs: List<Borough> = listOf(),
 )
 
 @Immutable
 @Entity
 @Table(name = "district")
 class District(
-
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean,
-
     @Column(name = "code")
     val code: String,
-
     val description: String,
-
     @ManyToOne
     @JoinColumn(name = "borough_id")
     val borough: Borough,
-
     @Id
     @Column(name = "district_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
 @Entity
 @Table
 class LocalDeliveryUnit(
-
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean,
-
     @Column(name = "code")
     val code: String,
-
     val description: String,
-
     @Id
     @Column(name = "local_delivery_unit_id")
-    val id: Long
+    val id: Long,
 )
 
 @Immutable
 @Entity
 @Table(name = "borough")
 class Borough(
-
     @Column(nullable = false)
     @Convert(converter = YesNoConverter::class)
     val selectable: Boolean,
-
     @Id
     @Column(name = "borough_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "probation_area_id")
     val probationArea: ProbationAreaEntity,
-
     @Column(name = "code")
     val code: String,
-
     @OneToMany(mappedBy = "borough")
-    val districts: List<District> = listOf()
-
+    val districts: List<District> = listOf(),
 )

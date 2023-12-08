@@ -33,13 +33,13 @@ class LicenceConditionApplier(
     private val licenceConditionCategoryRepository: LicenceConditionCategoryRepository,
     private val referenceDataRepository: ReferenceDataRepository,
     private val licenceConditionService: LicenceConditionService,
-    private val contactService: ContactService
+    private val contactService: ContactService,
 ) {
     @Transactional
     fun applyLicenceConditions(
         crn: String,
         activatedLicence: ActivatedLicence,
-        occurredAt: ZonedDateTime
+        occurredAt: ZonedDateTime,
     ): List<ActionResult> {
         val com = personManagerRepository.getByCrn(crn)
         return disposalRepository.findCustodialSentences(crn).ifEmpty {
@@ -48,7 +48,7 @@ class LicenceConditionApplier(
             applyLicenceConditions(
                 SentencedCase(com, it, licenceConditionService.findByDisposalId(it.id)),
                 activatedLicence,
-                occurredAt
+                occurredAt,
             )
         }
     }
@@ -56,23 +56,25 @@ class LicenceConditionApplier(
     private fun applyLicenceConditions(
         sentencedCase: SentencedCase,
         activatedLicence: ActivatedLicence,
-        occurredAt: ZonedDateTime
+        occurredAt: ZonedDateTime,
     ): List<ActionResult> {
-        val standardResult = activatedLicence.groupedConditions(
-            sentencedCase,
-            licenceConditionCategoryRepository.getByCode(STANDARD_CATEGORY_CODE),
-            referenceDataRepository.getLicenceConditionSubCategory(STANDARD_SUB_CATEGORY_CODE),
-            activatedLicence.standardLicenceConditions,
-            ActionResult.Type.StandardLicenceConditionAdded
-        )
+        val standardResult =
+            activatedLicence.groupedConditions(
+                sentencedCase,
+                licenceConditionCategoryRepository.getByCode(STANDARD_CATEGORY_CODE),
+                referenceDataRepository.getLicenceConditionSubCategory(STANDARD_SUB_CATEGORY_CODE),
+                activatedLicence.standardLicenceConditions,
+                ActionResult.Type.StandardLicenceConditionAdded,
+            )
         val additionalResult = activatedLicence.additionalConditions(sentencedCase)
-        val bespokeResult = activatedLicence.groupedConditions(
-            sentencedCase,
-            licenceConditionCategoryRepository.getByCode(BESPOKE_CATEGORY_CODE),
-            referenceDataRepository.getLicenceConditionSubCategory(BESPOKE_SUB_CATEGORY_CODE),
-            activatedLicence.bespokeLicenceConditions,
-            ActionResult.Type.BespokeLicenceConditionAdded
-        )
+        val bespokeResult =
+            activatedLicence.groupedConditions(
+                sentencedCase,
+                licenceConditionCategoryRepository.getByCode(BESPOKE_CATEGORY_CODE),
+                referenceDataRepository.getLicenceConditionSubCategory(BESPOKE_SUB_CATEGORY_CODE),
+                activatedLicence.bespokeLicenceConditions,
+                ActionResult.Type.BespokeLicenceConditionAdded,
+            )
         val results = listOfNotNull(standardResult, additionalResult, bespokeResult)
         if (results.isNotEmpty()) {
             contactService.createContact(sentencedCase.sentence, sentencedCase.com, occurredAt)
@@ -81,8 +83,8 @@ class LicenceConditionApplier(
             listOf(
                 ActionResult.Success(
                     ActionResult.Type.NoChangeToLicenceConditions,
-                    activatedLicence.telemetryProperties(sentencedCase.sentence.event.number)
-                )
+                    activatedLicence.telemetryProperties(sentencedCase.sentence.event.number),
+                ),
             )
         }
     }
@@ -92,7 +94,7 @@ class LicenceConditionApplier(
         category: LicenceConditionCategory,
         subCategory: ReferenceData,
         described: List<Describable>,
-        successType: ActionResult.Type
+        successType: ActionResult.Type,
     ): ActionResult? {
         return if (
             sentencedCase.licenceConditions.none {
@@ -105,43 +107,42 @@ class LicenceConditionApplier(
                 category,
                 subCategory,
                 described.joinToString(System.lineSeparator()) { it.description },
-                sentencedCase.com
+                sentencedCase.com,
             )
             ActionResult.Success(
                 successType,
-                telemetryProperties(sentencedCase.sentence.event.number)
+                telemetryProperties(sentencedCase.sentence.event.number),
             )
         } else {
             null
         }
     }
 
-    private fun ActivatedLicence.additionalConditions(
-        sentencedCase: SentencedCase
-    ): ActionResult? {
-        val additions = additionalLicenceConditions.mapNotNull { condition ->
-            val cvlMapping = cvlMappingRepository.getByCvlCode(condition.code)
-            if (
-                sentencedCase.licenceConditions.none {
-                    it.mainCategory.code == cvlMapping.mainCategory.code && it.subCategory.code == cvlMapping.subCategory.code
+    private fun ActivatedLicence.additionalConditions(sentencedCase: SentencedCase): ActionResult? {
+        val additions =
+            additionalLicenceConditions.mapNotNull { condition ->
+                val cvlMapping = cvlMappingRepository.getByCvlCode(condition.code)
+                if (
+                    sentencedCase.licenceConditions.none {
+                        it.mainCategory.code == cvlMapping.mainCategory.code && it.subCategory.code == cvlMapping.subCategory.code
+                    }
+                ) {
+                    licenceConditionService.createLicenceCondition(
+                        sentencedCase.sentence,
+                        releaseDate,
+                        cvlMapping.mainCategory,
+                        cvlMapping.subCategory,
+                        condition.description,
+                        sentencedCase.com,
+                    )
+                } else {
+                    null
                 }
-            ) {
-                licenceConditionService.createLicenceCondition(
-                    sentencedCase.sentence,
-                    releaseDate,
-                    cvlMapping.mainCategory,
-                    cvlMapping.subCategory,
-                    condition.description,
-                    sentencedCase.com
-                )
-            } else {
-                null
             }
-        }
         return if (additions.isNotEmpty()) {
             ActionResult.Success(
                 ActionResult.Type.AdditionalLicenceConditionsAdded,
-                telemetryProperties(sentencedCase.sentence.event.number)
+                telemetryProperties(sentencedCase.sentence.event.number),
             )
         } else {
             null
@@ -152,5 +153,5 @@ class LicenceConditionApplier(
 class SentencedCase(
     val com: PersonManager,
     val sentence: Disposal,
-    val licenceConditions: List<LicenceCondition>
+    val licenceConditions: List<LicenceCondition>,
 )

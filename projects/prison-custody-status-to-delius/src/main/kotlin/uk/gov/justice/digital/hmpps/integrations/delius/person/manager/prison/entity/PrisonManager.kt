@@ -35,57 +35,43 @@ class PrisonManager(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prison_manager_id_generator")
     @Column(name = "prison_offender_manager_id", nullable = false)
     val id: Long = 0,
-
     @Version
     @Column(name = "row_version", nullable = false)
     val version: Long = 0,
-
     @Column(name = "offender_id", nullable = false)
     val personId: Long,
-
     @Column(name = "allocation_date", nullable = false)
     val date: ZonedDateTime,
-
     @ManyToOne
     @JoinColumn(name = "allocation_reason_id", nullable = false)
     val allocationReason: ReferenceData,
-
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id", nullable = false)
     val staff: Staff,
-
     @ManyToOne
     @JoinColumn(name = "allocation_team_id", nullable = false)
     val team: Team,
-
     @ManyToOne
     @JoinColumn(name = "probation_area_id", nullable = false)
     val probationArea: ProbationArea,
-
     @Column(columnDefinition = "number", nullable = false)
     val softDeleted: Boolean = false,
-
     @Column(name = "active_flag", columnDefinition = "number", nullable = false)
     var active: Boolean = true,
-
     @Column
     var endDate: ZonedDateTime? = null,
-
     @CreatedBy
     @Column(nullable = false, updatable = false)
     var createdByUserId: Long = 0,
-
     @LastModifiedBy
     @Column(nullable = false)
     var lastUpdatedUserId: Long = 0,
-
     @CreatedDate
     @Column(nullable = false, updatable = false)
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
-
     @LastModifiedDate
     @Column(nullable = false)
-    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now()
+    var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
 )
 
 interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
@@ -96,9 +82,12 @@ interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
             and pm.softDeleted = false
             and pm.date <= :date
             and (pm.endDate is null or pm.endDate > :date)
-        """
+        """,
     )
-    fun findActiveManagerAtDate(personId: Long, date: ZonedDateTime): PrisonManager?
+    fun findActiveManagerAtDate(
+        personId: Long,
+        date: ZonedDateTime,
+    ): PrisonManager?
 
     @Query(
         """
@@ -107,7 +96,11 @@ interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
             and pm.softDeleted = false
             and pm.date > :date
             order by pm.date asc
-        """
+        """,
     )
-    fun findFirstManagerAfterDate(personId: Long, date: ZonedDateTime, pageable: Pageable = PageRequest.of(0, 1)): List<PrisonManager>
+    fun findFirstManagerAfterDate(
+        personId: Long,
+        date: ZonedDateTime,
+        pageable: Pageable = PageRequest.of(0, 1),
+    ): List<PrisonManager>
 }

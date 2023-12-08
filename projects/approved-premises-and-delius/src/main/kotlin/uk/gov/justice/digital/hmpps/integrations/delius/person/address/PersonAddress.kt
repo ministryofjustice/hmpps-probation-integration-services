@@ -55,23 +55,18 @@ class PersonAddress(
     var endDate: LocalDate? = null,
     @Column(updatable = false, columnDefinition = "NUMBER")
     val softDeleted: Boolean = false,
-
     @CreatedDate
     @Column(nullable = false)
     var createdDatetime: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(nullable = false)
     @CreatedBy
     var createdByUserId: Long = 0,
-
     @Column(nullable = false)
     @LastModifiedDate
     var lastUpdatedDatetime: ZonedDateTime = ZonedDateTime.now(),
-
     @Column(nullable = false)
     @LastModifiedBy
     var lastUpdatedUserId: Long = 0,
-
     @Column(nullable = false)
-    val partitionAreaId: Long = 0
+    val partitionAreaId: Long = 0,
 )

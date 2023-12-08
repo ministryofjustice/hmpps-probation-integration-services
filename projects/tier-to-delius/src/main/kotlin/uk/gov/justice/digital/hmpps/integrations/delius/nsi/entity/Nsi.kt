@@ -19,26 +19,20 @@ import java.time.LocalDate
 @Table(name = "nsi")
 @SQLRestriction("soft_deleted = 0")
 class Nsi(
-
     @Id
     @Column(name = "nsi_id")
     val id: Long,
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @ManyToOne
     @JoinColumn(name = "event_id")
     val event: NsiEvent?,
-
     val referralDate: LocalDate,
-
     @ManyToOne
     @JoinColumn(name = "nsi_outcome_id")
     val outcome: ReferenceData?,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean
+    val softDeleted: Boolean,
 )
 
 @Immutable
@@ -49,9 +43,8 @@ class NsiEvent(
     @Id
     @Column(name = "event_id")
     val id: Long,
-
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean
+    val softDeleted: Boolean,
 )
 
 interface NsiRepository : JpaRepository<Nsi, Long> {
@@ -63,9 +56,13 @@ interface NsiRepository : JpaRepository<Nsi, Long> {
         where nsi.personId = :personId
         and nsi.referralDate >= :referralDate
         and nsi.outcome.code in :outcomes
-    """
+    """,
     )
-    fun countByPersonIdAndOutcomeIn(personId: Long, referralDate: LocalDate, outcomes: List<String>): Int
+    fun countByPersonIdAndOutcomeIn(
+        personId: Long,
+        referralDate: LocalDate,
+        outcomes: List<String>,
+    ): Int
 }
 
 fun NsiRepository.previousEnforcementActivity(personId: Long): Boolean =

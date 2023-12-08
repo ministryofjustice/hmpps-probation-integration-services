@@ -11,7 +11,6 @@ import java.time.ZonedDateTime
 
 @MappedSuperclass
 abstract class BaseEntity {
-
     val partitionAreaId = 0
 
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)

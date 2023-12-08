@@ -18,9 +18,8 @@ class AllocationRiskService(
     private val registrationRepository: RegistrationRepository,
     private val ogrsAssessmentRepository: OGRSAssessmentRepository,
     private val oasysAssessmentRepository: OASYSAssessmentRepository,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
 ) {
-
     fun getRiskRecord(crn: String): RiskRecord {
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val registrations = registrationRepository.findAllByPersonCrn(crn)
@@ -33,14 +32,15 @@ class AllocationRiskService(
             person.name(),
             riskRegistrations[true] ?: listOf(),
             riskRegistrations[false] ?: listOf(),
-            riskOGRS
+            riskOGRS,
         )
     }
 
     fun getRiskOgrs(person: Person): RiskOGRS? {
-        val oasysAssessment = oasysAssessmentRepository.findFirstByPersonIdAndScoreIsNotNullOrderByAssessmentDateDesc(
-            person.id
-        )
+        val oasysAssessment =
+            oasysAssessmentRepository.findFirstByPersonIdAndScoreIsNotNullOrderByAssessmentDateDesc(
+                person.id,
+            )
         val ogrsAssessment = ogrsAssessmentRepository.findFirstByEventPersonIdAndScoreIsNotNullOrderByAssessmentDateDesc(person.id)
         val assessment = listOfNotNull(oasysAssessment, ogrsAssessment).maxByOrNull { it.assessmentDate }
         return assessment?.let {

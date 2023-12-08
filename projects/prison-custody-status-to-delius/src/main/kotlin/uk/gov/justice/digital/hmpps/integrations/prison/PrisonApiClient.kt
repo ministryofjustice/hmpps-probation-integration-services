@@ -6,23 +6,24 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.GetExchange
 
 interface PrisonApiClient {
-
     @GetExchange(value = "/{id}")
     fun getBooking(
         @PathVariable("id") id: Long,
         @RequestParam basicInfo: Boolean = false,
-        @RequestParam extraInfo: Boolean = true
+        @RequestParam extraInfo: Boolean = true,
     ): Booking
 
     @GetExchange(value = "/offenderNo/{nomsId}")
     fun getBookingByNomsId(
         @PathVariable("nomsId") id: String,
         @RequestParam basicInfo: Boolean = false,
-        @RequestParam extraInfo: Boolean = true
+        @RequestParam extraInfo: Boolean = true,
     ): BookingId
 }
 
-data class BookingId(@JsonAlias("bookingId") val id: Long)
+data class BookingId(
+    @JsonAlias("bookingId") val id: Long,
+)
 
 data class Booking(
     @JsonAlias("bookingId")
@@ -38,10 +39,11 @@ data class Booking(
     val movementType: String,
     @JsonAlias("lastMovementReasonCode")
     val movementReason: String,
-    val inOutStatus: InOutStatus
+    val inOutStatus: InOutStatus,
 ) {
     enum class InOutStatus {
-        IN, OUT
+        IN,
+        OUT,
     }
 
     enum class Type(val received: String?, val released: String?) {
@@ -51,32 +53,34 @@ data class Booking(
         RELEASE(null, "RELEASED"),
         TEMPORARY_ABSENCE("TEMPORARY_ABSENCE_RETURN", "TEMPORARY_ABSENCE_RELEASE"),
         TRANSFER("TRANSFERRED", "TRANSFERRED"),
-        OTHER(null, null)
+        OTHER(null, null),
     }
 
-    val reason = run {
-        val type = when (movementType) {
-            "CRT" -> Type.COURT
-            "TAP" -> Type.TEMPORARY_ABSENCE
-            "ADM" -> {
-                when (movementReason) {
-                    "INT", "TRNCRT", "TRNTAP" -> Type.TRANSFER
-                    else -> Type.ADMISSION
-                }
-            }
+    val reason =
+        run {
+            val type =
+                when (movementType) {
+                    "CRT" -> Type.COURT
+                    "TAP" -> Type.TEMPORARY_ABSENCE
+                    "ADM" -> {
+                        when (movementReason) {
+                            "INT", "TRNCRT", "TRNTAP" -> Type.TRANSFER
+                            else -> Type.ADMISSION
+                        }
+                    }
 
-            "REL" -> {
-                when (movementReason) {
-                    "HO", "HP", "HQ" -> Type.HOSPITAL
-                    else -> Type.RELEASE
-                }
-            }
+                    "REL" -> {
+                        when (movementReason) {
+                            "HO", "HP", "HQ" -> Type.HOSPITAL
+                            else -> Type.RELEASE
+                        }
+                    }
 
-            else -> Type.OTHER
+                    else -> Type.OTHER
+                }
+            when (inOutStatus) {
+                InOutStatus.IN -> type.received
+                InOutStatus.OUT -> type.released
+            }
         }
-        when (inOutStatus) {
-            InOutStatus.IN -> type.received
-            InOutStatus.OUT -> type.released
-        }
-    }
 }

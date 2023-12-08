@@ -17,7 +17,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRep
 
 @ExtendWith(MockitoExtension::class)
 class OfficerCodeGeneratorTest {
-
     @Mock
     private lateinit var staffRepository: StaffRepository
 
@@ -35,9 +34,10 @@ class OfficerCodeGeneratorTest {
                 prefix + "999"
             }
 
-        val ex = assertThrows<StaffCodeExhaustedException> {
-            officerCodeGenerator.generateFor(probationAreaCode)
-        }
+        val ex =
+            assertThrows<StaffCodeExhaustedException> {
+                officerCodeGenerator.generateFor(probationAreaCode)
+            }
 
         assertThat(ex.message, containsString(probationAreaCode))
     }

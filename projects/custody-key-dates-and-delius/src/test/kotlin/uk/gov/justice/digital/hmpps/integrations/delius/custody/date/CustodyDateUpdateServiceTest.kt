@@ -24,7 +24,6 @@ import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 internal class CustodyDateUpdateServiceTest {
-
     @Mock
     lateinit var prisonApi: PrisonApiClient
 
@@ -89,13 +88,13 @@ internal class CustodyDateUpdateServiceTest {
                 listOf(
                     SentenceGenerator.generateCustodialSentence(
                         disposal = SentenceGenerator.generateDisposal(SentenceGenerator.generateEvent()),
-                        bookingRef = booking.bookingNo
+                        bookingRef = booking.bookingNo,
                     ),
                     SentenceGenerator.generateCustodialSentence(
                         disposal = SentenceGenerator.generateDisposal(SentenceGenerator.generateEvent()),
-                        bookingRef = booking.bookingNo
-                    )
-                )
+                        bookingRef = booking.bookingNo,
+                    ),
+                ),
             )
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
@@ -137,9 +136,9 @@ internal class CustodyDateUpdateServiceTest {
                 listOf(
                     SentenceGenerator.generateCustodialSentence(
                         disposal = SentenceGenerator.generateDisposal(SentenceGenerator.generateEvent()),
-                        bookingRef = booking.bookingNo
-                    )
-                )
+                        bookingRef = booking.bookingNo,
+                    ),
+                ),
             )
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)

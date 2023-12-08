@@ -63,7 +63,7 @@ abstract class Document : Relatable {
 enum class DocumentType {
     DOCUMENT,
     CPS_PACK,
-    PREVIOUS_CONVICTION
+    PREVIOUS_CONVICTION,
 }
 
 @Entity
@@ -99,7 +99,7 @@ class OffenderAddress : Document() {
     override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.OFFENDER_ADDRESS)
 }
 
-const val entityNotFound = "ENTITY_NOT_FOUND"
+const val ENTITY_NOT_FOUND = "ENTITY_NOT_FOUND"
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -108,19 +108,19 @@ class EventDocument(
     @JoinColumn(name = "primary_key_id", referencedColumnName = "event_id", insertable = false, updatable = false)
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    val event: DocEvent?
+    val event: DocEvent?,
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         if (type == DocumentType.CPS_PACK) {
             RelatedTo(
                 RelatedType.CPSPACK,
-                event = event?.toDocumentEvent()
+                event = event?.toDocumentEvent(),
             )
         } else {
             RelatedTo(
                 RelatedType.EVENT,
-                if (event == null) entityNotFound else event.disposal?.type?.description ?: "",
-                event?.toDocumentEvent()
+                if (event == null) ENTITY_NOT_FOUND else event.disposal?.type?.description ?: "",
+                event?.toDocumentEvent(),
             )
         }
 }
@@ -133,29 +133,29 @@ class AddressAssessmentDocument(
         name = "primary_key_id",
         referencedColumnName = "address_assessment_id",
         insertable = false,
-        updatable = false
+        updatable = false,
     )
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    val addressAssessment: AddressAssessment?
+    val addressAssessment: AddressAssessment?,
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.ADDRESS_ASSESSMENT,
-            getPersonAddressLine(addressAssessment?.personAddress)
+            getPersonAddressLine(addressAssessment?.personAddress),
         )
 
     private fun getPersonAddressLine(personAddress: DocPersonAddress?): String {
         if (personAddress == null) {
-            return entityNotFound
+            return ENTITY_NOT_FOUND
         } else {
             (
                 return listOfNotNull(
                     personAddress.buildingName,
                     personAddress.addressNumber,
-                    personAddress.streetName
+                    personAddress.streetName,
                 ).joinToString(", ")
-                )
+            )
         }
     }
 }
@@ -168,17 +168,17 @@ class ApprovedPremisesReferralDocument(
         name = "primary_key_id",
         referencedColumnName = "approved_premises_referral_id",
         insertable = false,
-        updatable = false
+        updatable = false,
     )
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    val approvedPremisesReferral: ApprovedPremisesReferral?
+    val approvedPremisesReferral: ApprovedPremisesReferral?,
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.APPROVED_PREMISES_REFERRAL,
-            approvedPremisesReferral?.category?.description ?: entityNotFound,
-            approvedPremisesReferral?.event?.toDocumentEvent()
+            approvedPremisesReferral?.category?.description ?: ENTITY_NOT_FOUND,
+            approvedPremisesReferral?.event?.toDocumentEvent(),
         )
 }
 
@@ -189,13 +189,13 @@ class AssessmentDocument(
     @JoinColumn(name = "primary_key_id", referencedColumnName = "assessment_id", insertable = false, updatable = false)
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    val docAssessment: DocAssessment?
+    val docAssessment: DocAssessment?,
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.ASSESSMENT,
-            docAssessment?.type?.description ?: entityNotFound,
-            docAssessment?.docReferral?.event?.toDocumentEvent()
+            docAssessment?.type?.description ?: ENTITY_NOT_FOUND,
+            docAssessment?.docReferral?.event?.toDocumentEvent(),
         )
 }
 
@@ -207,17 +207,17 @@ class CaseAllocationDocument(
         name = "primary_key_id",
         referencedColumnName = "case_allocation_id",
         insertable = false,
-        updatable = false
+        updatable = false,
     )
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    val allocation: CaseAllocationDoc?
+    val allocation: CaseAllocationDoc?,
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.CASE_ALLOCATION,
-            allocation?.event?.disposal?.type?.description ?: entityNotFound,
-            allocation?.event?.toDocumentEvent()
+            allocation?.event?.disposal?.type?.description ?: ENTITY_NOT_FOUND,
+            allocation?.event?.toDocumentEvent(),
         )
 }
 
@@ -228,13 +228,13 @@ class ContactDocument(
     @JoinColumn(name = "primary_key_id", referencedColumnName = "contact_id", insertable = false, updatable = false)
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    val contact: DocContact?
+    val contact: DocContact?,
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.CONTACT,
-            contact?.type?.description ?: entityNotFound,
-            contact?.event?.toDocumentEvent()
+            contact?.type?.description ?: ENTITY_NOT_FOUND,
+            contact?.event?.toDocumentEvent(),
         )
 }
 
@@ -246,17 +246,17 @@ class CourtReportDocument(
         name = "primary_key_id",
         referencedColumnName = "court_report_id",
         insertable = false,
-        updatable = false
+        updatable = false,
     )
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    val courtReportDoc: CourtReportDoc?
+    val courtReportDoc: CourtReportDoc?,
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.COURT_REPORT,
-            courtReportDoc?.type?.description ?: entityNotFound,
-            courtReportDoc?.documentCourtAppearance?.event?.toDocumentEvent()
+            courtReportDoc?.type?.description ?: ENTITY_NOT_FOUND,
+            courtReportDoc?.documentCourtAppearance?.event?.toDocumentEvent(),
         )
 }
 
@@ -268,15 +268,13 @@ class InstitutionalReportDocument(
         name = "primary_key_id",
         referencedColumnName = "institutional_report_id",
         insertable = false,
-        updatable = false
+        updatable = false,
     )
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    val institutionalReport: InstitutionalReport?
+    val institutionalReport: InstitutionalReport?,
 ) : Document() {
-
-    override fun findRelatedTo(): RelatedTo =
-        RelatedTo(RelatedType.INSTITUTIONAL_REPORT, institutionalReport?.type?.description ?: entityNotFound)
+    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.INSTITUTIONAL_REPORT, institutionalReport?.type?.description ?: ENTITY_NOT_FOUND)
 }
 
 @Entity
@@ -287,17 +285,17 @@ class NsiDocument(
         name = "primary_key_id",
         referencedColumnName = "nsi_id",
         insertable = false,
-        updatable = false
+        updatable = false,
     )
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    val docNsi: DocNsi?
+    val docNsi: DocNsi?,
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.NSI,
-            docNsi?.type?.description ?: entityNotFound,
-            docNsi?.event?.toDocumentEvent()
+            docNsi?.type?.description ?: ENTITY_NOT_FOUND,
+            docNsi?.event?.toDocumentEvent(),
         )
 }
 
@@ -309,18 +307,16 @@ class PersonalCircumstanceDocument(
         name = "primary_key_id",
         referencedColumnName = "personal_circumstance_id",
         insertable = false,
-        updatable = false
+        updatable = false,
     )
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    val personalCircumstance: PersonalCircumstance?
+    val personalCircumstance: PersonalCircumstance?,
 ) : Document() {
-
-    override fun findRelatedTo(): RelatedTo =
-        RelatedTo(RelatedType.PERSONAL_CIRCUMSTANCE, getCircName())
+    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.PERSONAL_CIRCUMSTANCE, getCircName())
 
     private fun getCircName(): String {
-        var circName: String = personalCircumstance?.type?.description ?: entityNotFound
+        var circName: String = personalCircumstance?.type?.description ?: ENTITY_NOT_FOUND
         if (personalCircumstance?.subType != null) {
             circName += " - ${personalCircumstance.subType.description}"
         }
@@ -336,24 +332,22 @@ class PersonalContactDocument(
         name = "primary_key_id",
         referencedColumnName = "personal_contact_id",
         insertable = false,
-        updatable = false
+        updatable = false,
     )
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    val personalContact: DocPersonalContact?
+    val personalContact: DocPersonalContact?,
 ) : Document() {
-
-    override fun findRelatedTo(): RelatedTo =
-        RelatedTo(RelatedType.PERSONAL_CONTACT, getPersonalContactLine())
+    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.PERSONAL_CONTACT, getPersonalContactLine())
 
     private fun getPersonalContactLine(): String {
         return if (personalContact == null) {
-            entityNotFound
+            ENTITY_NOT_FOUND
         } else {
             listOfNotNull(
                 personalContact.title?.description,
                 personalContact.forename,
-                personalContact.surname
+                personalContact.surname,
             ).joinToString(" ")
         }
     }
@@ -367,17 +361,17 @@ class ReferralDocument(
         name = "primary_key_id",
         referencedColumnName = "referral_id",
         insertable = false,
-        updatable = false
+        updatable = false,
     )
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    val docReferral: DocReferral?
+    val docReferral: DocReferral?,
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.REFERRAL,
-            docReferral?.type?.description ?: entityNotFound,
-            docReferral?.event?.toDocumentEvent()
+            docReferral?.type?.description ?: ENTITY_NOT_FOUND,
+            docReferral?.event?.toDocumentEvent(),
         )
 }
 
@@ -389,15 +383,13 @@ class RegistrationDocument(
         name = "primary_key_id",
         referencedColumnName = "registration_id",
         insertable = false,
-        updatable = false
+        updatable = false,
     )
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    val registration: DocRegistration?
+    val registration: DocRegistration?,
 ) : Document() {
-
-    override fun findRelatedTo(): RelatedTo =
-        RelatedTo(RelatedType.REGISTRATION, registration?.type?.description ?: entityNotFound)
+    override fun findRelatedTo(): RelatedTo = RelatedTo(RelatedType.REGISTRATION, registration?.type?.description ?: ENTITY_NOT_FOUND)
 }
 
 @Entity
@@ -408,16 +400,16 @@ class UPWAppointmentDocument(
         name = "primary_key_id",
         referencedColumnName = "upw_appointment_id",
         insertable = false,
-        updatable = false
+        updatable = false,
     )
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    val upwAppointment: UpwAppointment?
+    val upwAppointment: UpwAppointment?,
 ) : Document() {
     override fun findRelatedTo(): RelatedTo =
         RelatedTo(
             RelatedType.UPW_APPOINTMENT,
-            upwAppointment?.upwDetails?.disposal?.type?.description ?: entityNotFound,
-            upwAppointment?.upwDetails?.disposal?.event?.toDocumentEvent()
+            upwAppointment?.upwDetails?.disposal?.type?.description ?: ENTITY_NOT_FOUND,
+            upwAppointment?.upwDetails?.disposal?.event?.toDocumentEvent(),
         )
 }

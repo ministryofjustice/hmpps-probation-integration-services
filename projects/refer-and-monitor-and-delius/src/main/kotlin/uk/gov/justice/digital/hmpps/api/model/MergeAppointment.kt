@@ -17,7 +17,7 @@ data class MergeAppointment(
     val outcome: Outcome?,
     val sentenceId: Long?,
     val previousId: UUID?,
-    val deliusId: Long?
+    val deliusId: Long?,
 ) {
     val referralUrn
         get() = "urn:hmpps:interventions-referral:$referralId"

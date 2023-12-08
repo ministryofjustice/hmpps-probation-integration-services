@@ -13,25 +13,18 @@ class PersonManager(
     @Id
     @Column(name = "offender_manager_id")
     val id: Long,
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @Column(name = "team_id")
     val teamId: Long,
-
     @Column(name = "allocation_staff_id")
     val staffId: Long,
-
     @Column(name = "probation_area_id")
     val probationAreaId: Long,
-
     @Column(name = "active_flag", columnDefinition = "NUMBER")
     val active: Boolean = true,
-
     @Column(name = "soft_deleted", columnDefinition = "NUMBER", nullable = false)
-    val softDeleted: Boolean = false
-
+    val softDeleted: Boolean = false,
 )
 
 interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
@@ -41,7 +34,7 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
         where pm.personId = :personId
         and pm.active = true
         and pm.softDeleted = false
-        """
+        """,
     )
     fun findActiveManager(personId: Long): PersonManager?
 }

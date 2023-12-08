@@ -19,7 +19,6 @@ import org.springframework.core.env.ConfigurableEnvironment
 
 @ExtendWith(MockitoExtension::class)
 internal class WireMockInitialiserTest {
-
     @Mock
     private lateinit var ctx: ConfigurableApplicationContext
 

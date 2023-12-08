@@ -14,7 +14,7 @@ data class RiskAssessmentDetails(
     override val laterWIPAssessmentExists: Boolean? = null,
     override val limitedAccessOffender: Boolean,
     override val lastUpdatedDate: ZonedDateTime? = null,
-    val riskAssessment: RiskAssessment
+    val riskAssessment: RiskAssessment,
 ) : Assessment() {
     companion object {
         fun from(oasysRiskAssessmentDetails: OasysRiskAssessmentDetails): RiskAssessmentDetails {
@@ -44,8 +44,8 @@ data class RiskAssessmentDetails(
                         previousWhoVictims,
                         previousHowDone,
                         previousWhereAndWhen,
-                        previousWhatDone
-                    )
+                        previousWhatDone,
+                    ),
                 )
             }
         }
@@ -66,5 +66,5 @@ data class RiskAssessment(
     val previousWhoVictims: String? = null,
     val previousHowDone: String? = null,
     val previousWhereAndWhen: String? = null,
-    val previousWhatDone: String? = null
+    val previousWhatDone: String? = null,
 )

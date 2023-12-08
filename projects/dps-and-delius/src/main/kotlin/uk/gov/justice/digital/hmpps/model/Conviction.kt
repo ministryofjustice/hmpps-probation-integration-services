@@ -8,5 +8,5 @@ data class Conviction(
     val date: LocalDate,
     val active: Boolean,
     val documents: List<Document>,
-    val institutionName: String?
+    val institutionName: String?,
 )

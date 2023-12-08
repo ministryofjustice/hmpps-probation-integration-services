@@ -19,16 +19,13 @@ class CaseViewMainOffence(
     @Id
     @Column(name = "main_offence_id")
     val id: Long,
-
     @Column(name = "event_id")
     val eventId: Long,
-
     @ManyToOne
     @JoinColumn(name = "offence_id")
     val offence: CaseViewOffence,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -39,16 +36,13 @@ class CaseViewAdditionalOffence(
     @Id
     @Column(name = "additional_offence_id")
     val id: Long,
-
     @Column(name = "event_id")
     val eventId: Long,
-
     @ManyToOne
     @JoinColumn(name = "offence_id")
     val offence: CaseViewOffence,
-
     @Column(updatable = false, columnDefinition = "NUMBER")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 @Immutable
@@ -58,10 +52,9 @@ class CaseViewOffence(
     @Id
     @Column(name = "offence_id")
     val id: Long,
-
     val description: String,
     val mainCategoryDescription: String,
-    val subCategoryDescription: String
+    val subCategoryDescription: String,
 )
 
 interface CaseViewAdditionalOffenceRepository : JpaRepository<CaseViewAdditionalOffence, Long> {

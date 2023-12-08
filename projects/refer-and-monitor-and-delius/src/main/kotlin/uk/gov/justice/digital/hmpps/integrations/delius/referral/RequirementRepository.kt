@@ -13,12 +13,12 @@ interface RequirementRepository : JpaRepository<Requirement, Long> {
             where r.personId = :personId
             and r.disposalId = :disposalId
             and r.mainCategory.code = :type
-        """
+        """,
     )
     fun findForPersonAndEvent(
         personId: Long,
         disposalId: Long,
         type: String,
-        pageable: Pageable = Pageable.ofSize(1)
+        pageable: Pageable = Pageable.ofSize(1),
     ): List<Requirement>
 }

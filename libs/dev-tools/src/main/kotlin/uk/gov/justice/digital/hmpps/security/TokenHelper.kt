@@ -7,11 +7,12 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.web.client.RestTemplate
 
 class TokenHelper(
-    private val wireMockServer: WireMockServer
+    private val wireMockServer: WireMockServer,
 ) {
     fun getToken(): String {
-        val authResponse = RestTemplate()
-            .postForObject("http://localhost:${wireMockServer.port()}/auth/oauth/token", null, JsonNode::class.java)!!
+        val authResponse =
+            RestTemplate()
+                .postForObject("http://localhost:${wireMockServer.port()}/auth/oauth/token", null, JsonNode::class.java)!!
         return authResponse["access_token"].asText()
     }
 }

@@ -21,7 +21,6 @@ import uk.gov.justice.digital.hmpps.message.Notification
 
 @ExtendWith(MockitoExtension::class)
 class AwsNotificationPublisherTest {
-
     @Mock
     lateinit var notificationTemplate: SnsTemplate
 
@@ -46,17 +45,18 @@ class AwsNotificationPublisherTest {
 
         verify(notificationTemplate).convertAndSend(eq("my-topic"), eq(notification.message), captor.capture())
 
-        val message = captor.value.postProcessMessage(
-            MessageBuilder.createMessage(notification.message, MessageHeaders(mapOf()))
-        )
+        val message =
+            captor.value.postProcessMessage(
+                MessageBuilder.createMessage(notification.message, MessageHeaders(mapOf())),
+            )
 
         assertThat(
             message.headers["eventType"],
-            equalTo("OFFENDER_UPDATED")
+            equalTo("OFFENDER_UPDATED"),
         )
         assertThat(
             message.headers["anotherValue"],
-            equalTo("Test")
+            equalTo("Test"),
         )
     }
 }

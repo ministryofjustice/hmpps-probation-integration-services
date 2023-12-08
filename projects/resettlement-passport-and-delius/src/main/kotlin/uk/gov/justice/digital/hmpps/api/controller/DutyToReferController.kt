@@ -11,14 +11,15 @@ import uk.gov.justice.digital.hmpps.service.ResettlementPassportService
 @RestController
 @RequestMapping("/duty-to-refer-nsi")
 class DutyToReferController(private val service: ResettlementPassportService) {
-
     @PreAuthorize("hasRole('RESETTLEMENT_PASSPORT_SUPERVISION_ACCESS')")
     @GetMapping("/{value}")
     fun findPerson(
         @PathVariable value: String,
-        @RequestParam(required = false, defaultValue = "CRN") type: IdentifierType
+        @RequestParam(required = false, defaultValue = "CRN") type: IdentifierType,
     ) = service.getDutyToReferNSI(value, type)
+
     enum class IdentifierType {
-        CRN, NOMS
+        CRN,
+        NOMS,
     }
 }

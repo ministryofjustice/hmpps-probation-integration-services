@@ -14,28 +14,21 @@ import javax.naming.Name
 class LdapUser(
     @Id
     val dn: Name,
-
     @Attribute(name = "cn")
     @DnAttribute(value = "cn", index = 1)
     val username: String,
-
     @Attribute(name = "givenName")
     val forename: String,
-
     @Attribute(name = "sn")
     val surname: String,
-
     @Attribute(name = "userHomeArea")
     val homeArea: String?,
-
     @Attribute(name = "mail")
     val email: String?,
-
     @Attribute(name = "endDate")
     val endDate: String?,
-
     @Transient
-    var roles: List<String>
+    var roles: List<String>,
 ) {
     val enabled: Boolean
         get() = endDate == null || LocalDate.parse(endDate.substring(0, 8), ofPattern("yyyyMMdd")).isAfter(now())

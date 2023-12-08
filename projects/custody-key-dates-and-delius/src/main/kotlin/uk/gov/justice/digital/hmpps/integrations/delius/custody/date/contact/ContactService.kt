@@ -9,31 +9,39 @@ import java.lang.System.lineSeparator
 @Service
 class ContactService(
     private val contactTypeRepository: ContactTypeRepository,
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
 ) {
-    fun createForKeyDateChanges(custody: Custody, updates: List<KeyDate>, deleted: List<KeyDate>) {
+    fun createForKeyDateChanges(
+        custody: Custody,
+        updates: List<KeyDate>,
+        deleted: List<KeyDate>,
+    ) {
         if (updates.isEmpty() && deleted.isEmpty()) return
+
         fun notes(): String {
-            val updateNotes = updates.joinToString(lineSeparator()) {
-                "${it.type.description} ${DeliusDateFormatter.format(it.date)}"
-            }
-            val deletedNotes = deleted.joinToString(lineSeparator()) {
-                "Removed ${it.type.description} ${DeliusDateFormatter.format(it.date)}"
-            }
+            val updateNotes =
+                updates.joinToString(lineSeparator()) {
+                    "${it.type.description} ${DeliusDateFormatter.format(it.date)}"
+                }
+            val deletedNotes =
+                deleted.joinToString(lineSeparator()) {
+                    "Removed ${it.type.description} ${DeliusDateFormatter.format(it.date)}"
+                }
             return updateNotes + lineSeparator() + deletedNotes
         }
 
         val event = custody.disposal?.event!!
         val om = event.manager!!
-        val contact = Contact(
-            personId = event.person.id,
-            eventId = event.id,
-            type = contactTypeRepository.edssType(),
-            notes = notes(),
-            staffId = om.staffId,
-            teamId = om.teamId,
-            providerId = event.manager.providerId
-        )
+        val contact =
+            Contact(
+                personId = event.person.id,
+                eventId = event.id,
+                type = contactTypeRepository.edssType(),
+                notes = notes(),
+                staffId = om.staffId,
+                teamId = om.teamId,
+                providerId = event.manager.providerId,
+            )
 
         contactRepository.save(contact)
     }

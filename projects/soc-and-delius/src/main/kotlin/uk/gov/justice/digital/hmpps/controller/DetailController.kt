@@ -13,6 +13,6 @@ class DetailController(private val detailService: DetailService) {
     @GetMapping(value = ["/detail/{value}"])
     fun convictions(
         @PathVariable value: String,
-        @RequestParam(required = false, defaultValue = "CRN") type: IdentifierType
+        @RequestParam(required = false, defaultValue = "CRN") type: IdentifierType,
     ) = detailService.getDetails(value, type)
 }

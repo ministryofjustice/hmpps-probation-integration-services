@@ -39,11 +39,12 @@ internal class LicenceActivatedHandlerTest {
 
     @Test
     fun `exception returned when detail url not found in message`() {
-        val event = HmppsDomainEvent(
-            DomainEventType.LicenceActivated.name,
-            1,
-            personReference = PersonReference(listOf(PersonIdentifier("CRN", "X123456")))
-        )
+        val event =
+            HmppsDomainEvent(
+                DomainEventType.LicenceActivated.name,
+                1,
+                personReference = PersonReference(listOf(PersonIdentifier("CRN", "X123456"))),
+            )
         val res = lah.licenceActivated(event).first()
         assertThat(res, instanceOf(ActionResult.Failure::class.java))
         val fail = res as ActionResult.Failure
@@ -53,12 +54,13 @@ internal class LicenceActivatedHandlerTest {
 
     @Test
     fun `exception returned when activated licence not found`() {
-        val event = HmppsDomainEvent(
-            DomainEventType.LicenceActivated.name,
-            1,
-            detailUrl = "https://cvl.service.co.uk/licence-activated/58eb2a20-6b0e-416b-b91d-5b98b0c1be7f",
-            personReference = PersonReference(listOf(PersonIdentifier("CRN", "X123456")))
-        )
+        val event =
+            HmppsDomainEvent(
+                DomainEventType.LicenceActivated.name,
+                1,
+                detailUrl = "https://cvl.service.co.uk/licence-activated/58eb2a20-6b0e-416b-b91d-5b98b0c1be7f",
+                personReference = PersonReference(listOf(PersonIdentifier("CRN", "X123456"))),
+            )
         whenever(cvlClient.getActivatedLicence(any())).thenReturn(null)
 
         val res = lah.licenceActivated(event).first()
@@ -67,7 +69,7 @@ internal class LicenceActivatedHandlerTest {
         assertThat(fail.exception, instanceOf(NotFoundException::class.java))
         assertThat(
             fail.exception.message,
-            equalTo("Activated Licence with detailUrl of https://cvl.service.co.uk/licence-activated/58eb2a20-6b0e-416b-b91d-5b98b0c1be7f not found")
+            equalTo("Activated Licence with detailUrl of https://cvl.service.co.uk/licence-activated/58eb2a20-6b0e-416b-b91d-5b98b0c1be7f not found"),
         )
     }
 }

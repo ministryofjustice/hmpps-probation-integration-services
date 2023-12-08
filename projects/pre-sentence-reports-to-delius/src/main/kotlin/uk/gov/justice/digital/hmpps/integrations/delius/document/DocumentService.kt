@@ -24,44 +24,48 @@ class DocumentService(
     auditedInteractionService: AuditedInteractionService,
     private val documentRepository: DocumentRepository,
     private val courtReportRepository: CourtReportRepository,
-    private val alfrescoUploadClient: AlfrescoUploadClient
+    private val alfrescoUploadClient: AlfrescoUploadClient,
 ) : AuditableService(auditedInteractionService) {
     fun AdditionalInformation.reportId() = this["reportId"] as String
 
     @Transactional
-    fun updateCourtReportDocument(hmppsEvent: HmppsDomainEvent, file: ByteArray) =
-        audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
-            val reportId = hmppsEvent.additionalInformation.reportId()
-            val document = documentRepository.findByExternalReference(reportId)
+    fun updateCourtReportDocument(
+        hmppsEvent: HmppsDomainEvent,
+        file: ByteArray,
+    ) = audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
+        val reportId = hmppsEvent.additionalInformation.reportId()
+        val document =
+            documentRepository.findByExternalReference(reportId)
                 ?: throw NotFoundException("Document", "externalReference", reportId)
-            it["documentId"] = document.id
-            it["alfrescoDocumentId"] = document.alfrescoId
-            it["entityId"] = document.courtReportId
-            it["tableName"] = "COURT_REPORT"
+        it["documentId"] = document.id
+        it["alfrescoDocumentId"] = document.alfrescoId
+        it["entityId"] = document.courtReportId
+        it["tableName"] = "COURT_REPORT"
 
-            val courtReport = courtReportRepository.findById(document.courtReportId).orElseThrow {
+        val courtReport =
+            courtReportRepository.findById(document.courtReportId).orElseThrow {
                 NotFoundException("CourtReport", "id", document.courtReportId)
             }
 
-            if (courtReport.person.crn != hmppsEvent.personReference.findCrn()) {
-                throw ConflictException("Court report ${courtReport.id} not for ${hmppsEvent.personReference.findCrn()}")
-            }
-
-            document.name = document.name.replace(Regex("\\.doc$"), ".pdf")
-            document.lastSaved = ZonedDateTime.now()
-            document.lastUpdatedUserId = ServiceContext.servicePrincipal()!!.userId
-
-            alfrescoUploadClient.releaseDocument(document.alfrescoId)
-            alfrescoUploadClient.updateDocument(
-                document.alfrescoId,
-                populateBodyValues(hmppsEvent, document, file)
-            )
+        if (courtReport.person.crn != hmppsEvent.personReference.findCrn()) {
+            throw ConflictException("Court report ${courtReport.id} not for ${hmppsEvent.personReference.findCrn()}")
         }
+
+        document.name = document.name.replace(Regex("\\.doc$"), ".pdf")
+        document.lastSaved = ZonedDateTime.now()
+        document.lastUpdatedUserId = ServiceContext.servicePrincipal()!!.userId
+
+        alfrescoUploadClient.releaseDocument(document.alfrescoId)
+        alfrescoUploadClient.updateDocument(
+            document.alfrescoId,
+            populateBodyValues(hmppsEvent, document, file),
+        )
+    }
 
     private fun populateBodyValues(
         hmppsEvent: HmppsDomainEvent,
         document: Document,
-        file: ByteArray
+        file: ByteArray,
     ): MultiValueMap<String, HttpEntity<*>> {
         val crn = hmppsEvent.personReference.findCrn()!!
         return populateBodyValues(crn, document.courtReportId, document.name, file, "Service,Pre-Sentence")
@@ -73,7 +77,7 @@ class DocumentService(
         filename: String,
         file: ByteArray,
         authorName: String,
-        locked: Boolean = false
+        locked: Boolean = false,
     ): MultiValueMap<String, HttpEntity<*>> {
         val bodyBuilder = MultipartBodyBuilder()
         bodyBuilder.part("CRN", crn, MediaType.TEXT_PLAIN)

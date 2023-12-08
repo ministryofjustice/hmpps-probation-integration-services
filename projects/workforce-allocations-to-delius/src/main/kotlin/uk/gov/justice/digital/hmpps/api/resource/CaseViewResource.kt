@@ -20,8 +20,11 @@ class CaseViewResource(val service: CaseViewService) {
             documents held in Delius. Used to support the 'Case View' screen of the
             HMPPS Workforce service which provides a detailed overview of the case
             when allocating to a probation practitioner
-        """
+        """,
     )
     @GetMapping("/{crn}/{eventNumber}/case-view")
-    fun caseView(@PathVariable crn: String, @PathVariable eventNumber: String) = service.caseView(crn, eventNumber)
+    fun caseView(
+        @PathVariable crn: String,
+        @PathVariable eventNumber: String,
+    ) = service.caseView(crn, eventNumber)
 }

@@ -35,43 +35,34 @@ class PrisonManager(
     @SequenceGenerator(
         name = "prison_manager_id_generator",
         sequenceName = "prison_offender_manager_id_seq",
-        allocationSize = 1
+        allocationSize = 1,
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prison_manager_id_generator")
     @Column(name = "prison_offender_manager_id", nullable = false)
     val id: Long = 0,
-
     @Version
     @Column(name = "row_version", nullable = false)
     val version: Long = 0,
-
     @Column(name = "offender_id", nullable = false)
     val personId: Long,
-
     @Column(name = "allocation_date", nullable = false)
     val date: ZonedDateTime,
-
     @ManyToOne
     @JoinColumn(name = "allocation_reason_id", nullable = false)
     val allocationReason: ReferenceData,
-
     @ManyToOne
     @JoinColumn(name = "allocation_staff_id", nullable = false)
     override val staff: Staff,
-
     @ManyToOne
     @JoinColumn(name = "allocation_team_id", nullable = false)
     override val team: Team,
-
     @ManyToOne
     @JoinColumn(name = "probation_area_id", nullable = false)
     override val probationArea: ProbationArea,
-
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "prisonManager", cascade = [CascadeType.PERSIST, CascadeType.MERGE])
     val responsibleOfficers: MutableList<ResponsibleOfficer> = mutableListOf(),
-
     @Column(columnDefinition = "number", nullable = false)
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 ) : Manager {
     @Column
     var endDate: ZonedDateTime? = null
@@ -113,7 +104,7 @@ class PrisonManager(
     enum class AllocationReasonCode(val value: String, val ctc: ContactType.Code) {
         AUTO("AUT", ContactType.Code.POM_AUTO_ALLOCATION),
         INTERNAL("INA", ContactType.Code.POM_INTERNAL_ALLOCATION),
-        EXTERNAL("EXT", ContactType.Code.POM_EXTERNAL_ALLOCATION)
+        EXTERNAL("EXT", ContactType.Code.POM_EXTERNAL_ALLOCATION),
     }
 }
 
@@ -123,29 +114,23 @@ class PrisonManager(
 @SequenceGenerator(
     name = "responsible_officer_id_generator",
     sequenceName = "responsible_officer_id_seq",
-    allocationSize = 1
+    allocationSize = 1,
 )
 class ResponsibleOfficer(
-
     @Column(name = "offender_id")
     val personId: Long,
-
     @ManyToOne
     @JoinColumn(name = "PRISON_OFFENDER_MANAGER_ID")
     var prisonManager: PrisonManager?,
-
     val startDate: ZonedDateTime,
-
     @Version
     @Column(name = "row_version")
     val version: Long = 0,
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "responsible_officer_id_generator")
     @Column(name = "responsible_officer_id", nullable = false)
-    val id: Long = 0
+    val id: Long = 0,
 ) {
-
     @CreatedBy
     var createdByUserId: Long = 0
 
@@ -170,9 +155,12 @@ interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
             and pm.softDeleted = false
             and pm.date <= :date
             and (pm.endDate is null or pm.endDate > :date)
-        """
+        """,
     )
-    fun findActiveManagerAtDate(personId: Long, date: ZonedDateTime): PrisonManager?
+    fun findActiveManagerAtDate(
+        personId: Long,
+        date: ZonedDateTime,
+    ): PrisonManager?
 
     @Query(
         """
@@ -181,11 +169,11 @@ interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
             and pm.softDeleted = false
             and pm.date > :date
             order by pm.date asc
-        """
+        """,
     )
     fun findFirstManagerAfterDate(
         personId: Long,
         date: ZonedDateTime,
-        pageable: Pageable = PageRequest.of(0, 1)
+        pageable: Pageable = PageRequest.of(0, 1),
     ): List<PrisonManager>
 }

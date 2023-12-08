@@ -10,14 +10,19 @@ import java.time.LocalDate
 
 @Service
 class CourtAppearanceService(private val courtAppearanceRepository: CourtAppearanceRepository) {
-    fun getCourtAppearances(value: String, type: IdentifierType, requestDate: LocalDate?): CourtAppearancesContainer {
+    fun getCourtAppearances(
+        value: String,
+        type: IdentifierType,
+        requestDate: LocalDate?,
+    ): CourtAppearancesContainer {
         val courtAppearanceModels = mutableListOf<CourtAppearance>()
         var fromDate = LocalDate.now()
         requestDate?.also { fromDate = it }
-        val courtAppearances = when (type) {
-            IdentifierType.CRN -> courtAppearanceRepository.findMostRecentCourtAppearancesByCrn(fromDate, value)
-            IdentifierType.NOMS -> courtAppearanceRepository.findMostRecentCourtAppearancesByNomsNumber(fromDate, value)
-        }
+        val courtAppearances =
+            when (type) {
+                IdentifierType.CRN -> courtAppearanceRepository.findMostRecentCourtAppearancesByCrn(fromDate, value)
+                IdentifierType.NOMS -> courtAppearanceRepository.findMostRecentCourtAppearancesByNomsNumber(fromDate, value)
+            }
         courtAppearances.map {
             courtAppearanceModels.add(
                 CourtAppearance(
@@ -27,8 +32,8 @@ class CourtAppearanceService(private val courtAppearanceRepository: CourtAppeara
                     it.court.name,
                     it.courtAppearanceEventEntity.courtAppearancePerson.crn,
                     it.id,
-                    it.courtAppearanceEventEntity.courtAppearancePerson.id
-                )
+                    it.courtAppearanceEventEntity.courtAppearancePerson.id,
+                ),
             )
         }
         return CourtAppearancesContainer(courtAppearanceModels)

@@ -5,5 +5,7 @@ import org.springframework.web.service.annotation.GetExchange
 
 interface ExampleClient {
     @GetExchange(value = "/example/{inputId}")
-    fun getExampleAPICall(@PathVariable("inputId") inputId: String): String
+    fun getExampleAPICall(
+        @PathVariable("inputId") inputId: String,
+    ): String
 }

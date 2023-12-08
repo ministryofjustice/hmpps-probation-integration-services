@@ -5,5 +5,5 @@ import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.Refer
 data class TeamStaffContainer(
     val team: Team,
     val staff: Staff,
-    val reason: ReferenceData
+    val reason: ReferenceData,
 )

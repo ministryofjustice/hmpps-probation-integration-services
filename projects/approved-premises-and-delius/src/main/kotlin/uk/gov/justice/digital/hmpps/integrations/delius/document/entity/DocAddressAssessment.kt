@@ -14,10 +14,9 @@ class AddressAssessment(
     @Id
     @Column(name = "address_assessment_id")
     val id: Long,
-
     @ManyToOne
     @JoinColumn(name = "offender_address_id", insertable = false, updatable = false)
-    val personAddress: DocPersonAddress?
+    val personAddress: DocPersonAddress?,
 )
 
 @Entity
@@ -29,5 +28,5 @@ class DocPersonAddress(
     val id: Long,
     val buildingName: String?,
     val addressNumber: String?,
-    val streetName: String?
+    val streetName: String?,
 )

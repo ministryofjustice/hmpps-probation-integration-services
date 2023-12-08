@@ -44,16 +44,17 @@ class CaseSummaryService(
     private val registrationRepository: CaseSummaryRegistrationRepository,
     private val releaseRepository: CaseSummaryReleaseRepository,
     private val eventRepository: CaseSummaryEventRepository,
-    private val contactRepository: CaseSummaryContactRepository
+    private val contactRepository: CaseSummaryContactRepository,
 ) {
-    fun getPersonalDetailsOverview(person: Person) = PersonalDetailsOverview(
-        name = person.name(),
-        identifiers = person.identifiers(),
-        dateOfBirth = person.dateOfBirth,
-        gender = person.gender.description,
-        ethnicity = person.ethnicity?.description,
-        primaryLanguage = person.primaryLanguage?.description
-    )
+    fun getPersonalDetailsOverview(person: Person) =
+        PersonalDetailsOverview(
+            name = person.name(),
+            identifiers = person.identifiers(),
+            dateOfBirth = person.dateOfBirth,
+            gender = person.gender.description,
+            ethnicity = person.ethnicity?.description,
+            primaryLanguage = person.primaryLanguage?.description,
+        )
 
     fun getPersonalDetails(crn: String): PersonalDetails {
         val person = personRepository.getPerson(crn)
@@ -63,7 +64,7 @@ class CaseSummaryService(
         return PersonalDetails(
             personalDetails = personalDetails,
             mainAddress = mainAddress?.toAddress(),
-            communityManager = personManager?.toManager()
+            communityManager = personManager?.toManager(),
         )
     }
 
@@ -77,7 +78,7 @@ class CaseSummaryService(
             personalDetails = personalDetails,
             registerFlags = registerFlags,
             lastRelease = lastRelease?.dates(),
-            activeConvictions = events.map { it.toConviction() }
+            activeConvictions = events.map { it.toConviction() },
         )
     }
 
@@ -89,7 +90,7 @@ class CaseSummaryService(
         return MappaAndRoshHistory(
             personalDetails = personalDetails,
             mappa = mappa,
-            roshHistory = roshHistory
+            roshHistory = roshHistory,
         )
     }
 
@@ -99,7 +100,7 @@ class CaseSummaryService(
         val events = eventRepository.findByPersonId(person.id)
         return LicenceConditions(
             personalDetails = personalDetails,
-            activeConvictions = events.map { it.toConvictionWithLicenceConditions() }
+            activeConvictions = events.map { it.toConvictionWithLicenceConditions() },
         )
     }
 
@@ -109,7 +110,7 @@ class CaseSummaryService(
         from: LocalDate? = null,
         to: LocalDate = LocalDate.now(),
         types: List<String> = emptyList(),
-        includeSystemGenerated: Boolean = true
+        includeSystemGenerated: Boolean = true,
     ): ContactHistory {
         val person = personRepository.getPerson(crn)
         val personalDetails = getPersonalDetailsOverview(person)
@@ -118,10 +119,11 @@ class CaseSummaryService(
         return ContactHistory(
             personalDetails = personalDetails,
             contacts = contacts.map { it.toContact() },
-            summary = ContactHistory.ContactSummary(
-                types = typeSummary,
-                hits = contacts.size
-            )
+            summary =
+                ContactHistory.ContactSummary(
+                    types = typeSummary,
+                    hits = contacts.size,
+                ),
         )
     }
 
@@ -139,12 +141,13 @@ class CaseSummaryService(
             lastReleasedFromInstitution = lastRelease?.institution?.let { Institution(it.name, it.description) },
             mappa = mappa,
             activeConvictions = events.map { it.toConviction() },
-            activeCustodialConvictions = events.custodial().map { it.toConvictionDetails() }
+            activeCustodialConvictions = events.custodial().map { it.toConvictionDetails() },
         )
     }
 
-    private fun List<Event>.lastRelease() = map { it.disposal?.custody }.singleOrNull()
-        ?.let { releaseRepository.findFirstByCustodyIdOrderByDateDesc(it.id) }
+    private fun List<Event>.lastRelease() =
+        map { it.disposal?.custody }.singleOrNull()
+            ?.let { releaseRepository.findFirstByCustodyIdOrderByDateDesc(it.id) }
 
     private fun List<Event>.custodial() = filter { it.disposal?.custody != null }
 }

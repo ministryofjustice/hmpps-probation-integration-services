@@ -34,15 +34,14 @@ class RiskAssessmentService(
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository,
     private val referenceDataRepository: ReferenceDataRepository,
-    private val managementTierEventRepository: ManagementTierEventRepository
+    private val managementTierEventRepository: ManagementTierEventRepository,
 ) {
-
     @Transactional
     fun addOrUpdateRiskAssessment(
         crn: String,
         eventNumber: Int?,
         assessmentDate: ZonedDateTime,
-        ogrsScore: OgrsScore
+        ogrsScore: OgrsScore,
     ) {
         // validate that the CRN is for a real offender
         val person = personRepository.getByCrn(crn)
@@ -75,8 +74,8 @@ class RiskAssessmentService(
                     assessmentDate.toLocalDate(),
                     event,
                     ogrsScore.ogrs3Yr1.toLong(),
-                    ogrsScore.ogrs3Yr2.toLong()
-                )
+                    ogrsScore.ogrs3Yr2.toLong(),
+                ),
             )
             createContact(person, event, assessmentDate, ogrsScore)
             createManagementTierEvent(person)
@@ -89,8 +88,8 @@ class RiskAssessmentService(
                 person,
                 contactType = contactTypeRepository.getByCode(OGRS_ASSESSMENT_CT),
                 changeReason = referenceDataRepository.findByDatasetAndCode(DatasetCode.TIER_CHANGE_REASON, "OGRS") ?: throw NotFoundException(DatasetCode.TIER_CHANGE_REASON.name, "code", "OGRS"),
-                tier = referenceDataRepository.findByDatasetAndCode(DatasetCode.TIER, "NA") ?: throw NotFoundException(DatasetCode.TIER.name, "code", "NA")
-            )
+                tier = referenceDataRepository.findByDatasetAndCode(DatasetCode.TIER, "NA") ?: throw NotFoundException(DatasetCode.TIER.name, "code", "NA"),
+            ),
         )
     }
 
@@ -98,7 +97,7 @@ class RiskAssessmentService(
         person: Person,
         event: Event,
         assessmentDate: ZonedDateTime,
-        ogrsScore: OgrsScore
+        ogrsScore: OgrsScore,
     ) {
         val personManager = personManagerRepository.getManager(person.id)
         contactRepository.save(
@@ -109,18 +108,22 @@ class RiskAssessmentService(
                 person = person,
                 notes = generateNotes(person, ogrsScore, event),
                 staffId = personManager.staff.id,
-                teamId = personManager.team.id
-            )
+                teamId = personManager.team.id,
+            ),
         )
     }
 
-    private fun generateNotes(person: Person, ogrsScore: OgrsScore, event: Event): String {
+    private fun generateNotes(
+        person: Person,
+        ogrsScore: OgrsScore,
+        event: Event,
+    ): String {
         return """
             CRN: ${person.crn}
             PNC Number: ${person.pncNumber}
             Name: ${person.forename} ${person.surname}
             Order: ${event.disposal?.disposalType?.description ?: ""}
             Reconviction calculation is ${ogrsScore.ogrs3Yr1}% within one year and ${ogrsScore.ogrs3Yr2}% within 2 years.
-        """.trimIndent()
+            """.trimIndent()
     }
 }

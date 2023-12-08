@@ -13,7 +13,6 @@ data class ReferenceData(
     @Id
     @Column(name = "standard_reference_list_id")
     val id: Long,
-
     @Column(name = "code_description")
-    val description: String
+    val description: String,
 )

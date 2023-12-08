@@ -14,7 +14,7 @@ data class RiskManagementPlanDetails(
     override val laterWIPAssessmentExists: Boolean? = null,
     override val limitedAccessOffender: Boolean,
     override val lastUpdatedDate: ZonedDateTime? = null,
-    val riskManagementPlan: RiskManagementPlan
+    val riskManagementPlan: RiskManagementPlan,
 ) : Assessment() {
     companion object {
         fun from(oasysRiskManagementPlan: OasysRiskManagementPlanDetails): RiskManagementPlanDetails {
@@ -38,8 +38,8 @@ data class RiskManagementPlanDetails(
                         interventionsAndTreatment,
                         monitoringAndControl,
                         supervision,
-                        keyInformationAboutCurrentSituation
-                    )
+                        keyInformationAboutCurrentSituation,
+                    ),
                 )
             }
         }
@@ -54,5 +54,5 @@ data class RiskManagementPlan(
     val interventionsAndTreatment: String? = null,
     val monitoringAndControl: String? = null,
     val supervision: String? = null,
-    val keyInformationAboutCurrentSituation: String? = null
+    val keyInformationAboutCurrentSituation: String? = null,
 )

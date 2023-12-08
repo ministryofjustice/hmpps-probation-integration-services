@@ -12,11 +12,10 @@ import uk.gov.justice.digital.hmpps.service.DetailService
 @Validated
 @RestController
 class DetailController(private val detailService: DetailService) {
-
     @PreAuthorize("hasRole('ROLE_PATHFINDER_PROBATION_CASE')")
     @PostMapping(value = ["/detail"])
     fun batchDetails(
         @Valid @RequestBody
-        request: BatchRequest
+        request: BatchRequest,
     ) = detailService.getBatchDetails(request)
 }

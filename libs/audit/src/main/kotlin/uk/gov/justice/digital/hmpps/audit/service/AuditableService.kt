@@ -7,21 +7,21 @@ abstract class AuditableService(private val auditedInteractionService: AuditedIn
     protected fun <T> audit(
         interactionCode: InteractionCode,
         params: AuditedInteraction.Parameters = AuditedInteraction.Parameters(),
-        code: (AuditedInteraction.Parameters) -> T
+        code: (AuditedInteraction.Parameters) -> T,
     ): T {
         try {
             val result = code(params)
             auditedInteractionService.createAuditedInteraction(
                 interactionCode,
                 params,
-                AuditedInteraction.Outcome.SUCCESS
+                AuditedInteraction.Outcome.SUCCESS,
             )
             return result
         } catch (e: Exception) {
             auditedInteractionService.createAuditedInteraction(
                 interactionCode,
                 params,
-                AuditedInteraction.Outcome.FAIL
+                AuditedInteraction.Outcome.FAIL,
             )
             throw e
         }

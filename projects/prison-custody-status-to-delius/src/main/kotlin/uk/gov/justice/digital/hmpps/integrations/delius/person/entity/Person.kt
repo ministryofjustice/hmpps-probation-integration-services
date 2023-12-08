@@ -11,16 +11,13 @@ import org.springframework.data.jpa.repository.JpaRepository
 @Entity
 @Table(name = "offender")
 class Person(
-
     @Id
     @Column(name = "offender_id")
     val id: Long,
-
     @Column(columnDefinition = "char(7)")
     val nomsNumber: String,
-
     @Column(updatable = false, columnDefinition = "number")
-    val softDeleted: Boolean = false
+    val softDeleted: Boolean = false,
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {

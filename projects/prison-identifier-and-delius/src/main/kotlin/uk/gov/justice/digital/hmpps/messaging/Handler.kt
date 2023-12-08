@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 @Component
 class Handler(
     override val converter: NotificationConverter<HmppsDomainEvent>,
-    private val telemetryService: TelemetryService
+    private val telemetryService: TelemetryService,
 ) : NotificationHandler<HmppsDomainEvent> {
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)

@@ -18,7 +18,6 @@ fun interface SecurityConfigurer {
 @EnableMethodSecurity(prePostEnabled = true)
 @ConditionalOnDefaultWebSecurity
 class SecurityConfig(private val configurers: List<SecurityConfigurer>) {
-
     @Bean
     @ConditionalOnMissingBean
     fun configure(http: HttpSecurity): SecurityFilterChain {
