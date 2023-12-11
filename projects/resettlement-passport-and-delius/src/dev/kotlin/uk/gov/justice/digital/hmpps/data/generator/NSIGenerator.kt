@@ -41,5 +41,11 @@ object NSIManagerGenerator {
     val DEFAULT = generate()
 
     fun generate(id: Long = IdGenerator.getAndIncrement()) =
-        NsiManager(id, NSIGenerator.DEFAULT, ProviderGenerator.DEFAULT_STAFF, ProviderGenerator.DEFAULT_TEAM, ProviderGenerator.DEFAULT_AREA)
+        NsiManager(
+            id,
+            NSIGenerator.DEFAULT,
+            ProviderGenerator.DEFAULT_STAFF,
+            ProviderGenerator.DEFAULT_TEAM,
+            ProviderGenerator.DEFAULT_AREA
+        )
 }

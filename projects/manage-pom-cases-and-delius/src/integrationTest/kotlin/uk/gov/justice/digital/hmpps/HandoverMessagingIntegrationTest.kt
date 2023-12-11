@@ -84,7 +84,8 @@ internal class HandoverMessagingIntegrationTest {
             )
         )
 
-        val custody = custodyRepository.findAllByDisposalEventPersonId(PersonGenerator.CREATE_HANDOVER_AND_START.id).first()
+        val custody =
+            custodyRepository.findAllByDisposalEventPersonId(PersonGenerator.CREATE_HANDOVER_AND_START.id).first()
         val handoverDates = keyDateRepository.findHandoverDates(custody.id).associateBy { it.type.code }
         assertThat(handoverDates.size, equalTo(2))
         assertThat(handoverDates[KeyDate.TypeCode.HANDOVER_DATE.value]?.date, equalTo(LocalDate.of(2023, 5, 10)))

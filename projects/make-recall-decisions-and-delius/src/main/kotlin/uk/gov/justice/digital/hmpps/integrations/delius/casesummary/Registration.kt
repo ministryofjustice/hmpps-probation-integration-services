@@ -83,7 +83,10 @@ interface CaseSummaryRegistrationRepository : JpaRepository<Registration, Long> 
     fun findByPersonIdAndTypeFlagCodeOrderByDateDesc(personId: Long, typeCode: String): List<Registration>
 
     @EntityGraph(attributePaths = ["type.flag", "category", "level"])
-    fun findFirstByPersonIdAndTypeCodeAndDeregisteredFalseOrderByDateDesc(personId: Long, typeCode: String): Registration?
+    fun findFirstByPersonIdAndTypeCodeAndDeregisteredFalseOrderByDateDesc(
+        personId: Long,
+        typeCode: String
+    ): Registration?
 }
 
 fun CaseSummaryRegistrationRepository.findRoshHistory(personId: Long) =

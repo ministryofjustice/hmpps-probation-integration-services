@@ -133,6 +133,7 @@ data class Address(
                 AddressLines(lines.pop(), lines.pop(), lines.pop())
             }
         }
+
     fun inNotes(): String {
         return listOfNotNull(addressLine1, addressLine2, postcode, town, region).joinToString(" ")
     }

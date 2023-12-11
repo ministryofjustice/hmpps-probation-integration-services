@@ -27,13 +27,17 @@ import uk.gov.justice.digital.hmpps.sevice.model.NomsUpdates
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class NomsNumberIntegrationTest {
 
-    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    @Autowired lateinit var wireMockServer: WireMockServer
+    @Autowired
+    lateinit var wireMockServer: WireMockServer
 
-    @Autowired lateinit var personRepository: PersonRepository
+    @Autowired
+    lateinit var personRepository: PersonRepository
 
-    @Autowired lateinit var custodyRepository: CustodyRepository
+    @Autowired
+    lateinit var custodyRepository: CustodyRepository
 
     @Autowired
     lateinit var objectMapper: ObjectMapper
@@ -52,7 +56,8 @@ internal class NomsNumberIntegrationTest {
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, NomsUpdates::class.java)
-        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message).isEqualTo("Custody record not found in Delius without a booking reference")
+        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message)
+            .isEqualTo("Custody record not found in Delius without a booking reference")
     }
 
     @Test
@@ -69,7 +74,8 @@ internal class NomsNumberIntegrationTest {
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, NomsUpdates::class.java)
-        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message).isEqualTo("This person already has a noms number in Delius")
+        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message)
+            .isEqualTo("This person already has a noms number in Delius")
     }
 
     @Test
@@ -86,7 +92,8 @@ internal class NomsNumberIntegrationTest {
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, NomsUpdates::class.java)
-        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message).isEqualTo("Found a single match in prison search api")
+        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message)
+            .isEqualTo("Found a single match in prison search api")
     }
 
     @Test
@@ -103,8 +110,10 @@ internal class NomsNumberIntegrationTest {
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, NomsUpdates::class.java)
-        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message).isEqualTo("Found a single match in prison search api and matching criteria.")
-        val person = personRepository.findByNomsNumberAndSoftDeletedIsFalse(detailResponse.personMatches.first().matchDetail!!.nomsNumber)
+        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message)
+            .isEqualTo("Found a single match in prison search api and matching criteria.")
+        val person =
+            personRepository.findByNomsNumberAndSoftDeletedIsFalse(detailResponse.personMatches.first().matchDetail!!.nomsNumber)
         Assertions.assertThat(person).isNull()
     }
 
@@ -123,8 +132,10 @@ internal class NomsNumberIntegrationTest {
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, NomsUpdates::class.java)
-        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message).isEqualTo("Found a single match in prison search api and matching criteria.")
-        val person = personRepository.findByNomsNumberAndSoftDeletedIsFalse(detailResponse.personMatches.first().matchDetail!!.nomsNumber)
+        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message)
+            .isEqualTo("Found a single match in prison search api and matching criteria.")
+        val person =
+            personRepository.findByNomsNumberAndSoftDeletedIsFalse(detailResponse.personMatches.first().matchDetail!!.nomsNumber)
 
         val custody = custodyRepository.findByIdOrNull(custodyId)
         Assertions.assertThat(person?.crn).isEqualTo(crn)
@@ -145,7 +156,8 @@ internal class NomsNumberIntegrationTest {
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, NomsUpdates::class.java)
-        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message).isEqualTo("Unable to find a unique match using matching criteria.")
+        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message)
+            .isEqualTo("Unable to find a unique match using matching criteria.")
     }
 
     @Test
@@ -162,6 +174,7 @@ internal class NomsNumberIntegrationTest {
             .andExpect(status().is2xxSuccessful).andReturn()
 
         val detailResponse = objectMapper.readValue(result.response.contentAsString, NomsUpdates::class.java)
-        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message).isEqualTo("Person was matched to noms number but another person exists in delius with this noms number")
+        Assertions.assertThat(detailResponse.personMatches.first().matchReason.message)
+            .isEqualTo("Person was matched to noms number but another person exists in delius with this noms number")
     }
 }

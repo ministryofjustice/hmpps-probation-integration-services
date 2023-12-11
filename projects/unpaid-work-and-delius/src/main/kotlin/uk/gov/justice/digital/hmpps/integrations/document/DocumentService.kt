@@ -29,12 +29,21 @@ class DocumentService(
 
 ) : AuditableService(auditedInteractionService) {
     @Transactional
-    fun createDeliusDocument(hmppsEvent: HmppsDomainEvent, file: ByteArray, filename: String, episodeId: String, person: PersonWithManager, eventId: Long, contactDate: ZonedDateTime) =
+    fun createDeliusDocument(
+        hmppsEvent: HmppsDomainEvent,
+        file: ByteArray,
+        filename: String,
+        episodeId: String,
+        person: PersonWithManager,
+        eventId: Long,
+        contactDate: ZonedDateTime
+    ) =
         audit(BusinessInteractionCode.UPLOAD_DOCUMENT) {
             val externalReference = "urn:hmpps:unpaid-work-assessment:$episodeId"
             val contactId = createContact(person, eventId, contactDate, externalReference)
 
-            val alfrescoDocument = alfrescoUploadClient.addDocument(populateBodyValues(hmppsEvent, file, filename, contactId))
+            val alfrescoDocument =
+                alfrescoUploadClient.addDocument(populateBodyValues(hmppsEvent, file, filename, contactId))
             documentRepository.save(
                 Document(
                     contactId = contactId,

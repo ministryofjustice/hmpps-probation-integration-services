@@ -48,7 +48,11 @@ class UserService(
     )
 
     private fun LdapUser.toUserDetails() = UserDetails(
-        userId = auditUserService.findUser(username)?.id ?: throw NotFoundException("User entity", "username", username),
+        userId = auditUserService.findUser(username)?.id ?: throw NotFoundException(
+            "User entity",
+            "username",
+            username
+        ),
         username = username,
         firstName = forename,
         surname = surname,

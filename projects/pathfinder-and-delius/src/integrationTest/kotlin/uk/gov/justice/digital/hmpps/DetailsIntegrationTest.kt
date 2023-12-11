@@ -73,6 +73,12 @@ internal class DetailsIntegrationTest {
         Name(DetailsGenerator.STAFF.forename, DetailsGenerator.STAFF.middleName, DetailsGenerator.STAFF.surname),
         ConvictionEventGenerator.OFFENCE_MAIN.description,
         DetailsGenerator.PERSON.religion?.description,
-        listOf(KeyDate(KeyDateGenerator.SED_KEYDATE.code, KeyDateGenerator.SED_KEYDATE.description, KeyDateGenerator.KEYDATE.date))
+        listOf(
+            KeyDate(
+                KeyDateGenerator.SED_KEYDATE.code,
+                KeyDateGenerator.SED_KEYDATE.description,
+                KeyDateGenerator.KEYDATE.date
+            )
+        )
     )
 }

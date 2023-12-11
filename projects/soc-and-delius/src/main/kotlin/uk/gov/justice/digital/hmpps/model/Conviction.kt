@@ -31,6 +31,7 @@ data class Custody(
     val status: CustodyStatus,
     val keyDates: List<KeyDate>
 )
+
 data class CustodyStatus(
     val code: String,
     val description: String

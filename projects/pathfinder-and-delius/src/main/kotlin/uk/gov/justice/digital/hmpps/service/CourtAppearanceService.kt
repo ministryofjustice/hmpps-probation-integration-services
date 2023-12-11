@@ -13,7 +13,10 @@ import java.time.temporal.ChronoUnit
 class CourtAppearanceService(private val courtAppearanceRepository: CourtAppearanceRepository) {
     fun getCourtAppearances(batchRequest: BatchRequest): CourtAppearancesContainer {
         val courtAppearanceModels = mutableListOf<CourtAppearance>()
-        val courtAppearances = courtAppearanceRepository.findMostRecentCourtAppearances(ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS), batchRequest.crns)
+        val courtAppearances = courtAppearanceRepository.findMostRecentCourtAppearances(
+            ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS),
+            batchRequest.crns
+        )
         courtAppearances.map {
             courtAppearanceModels.add(
                 CourtAppearance(

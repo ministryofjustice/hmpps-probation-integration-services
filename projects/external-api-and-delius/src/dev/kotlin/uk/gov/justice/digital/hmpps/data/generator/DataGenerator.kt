@@ -34,10 +34,12 @@ object DataGenerator {
     val COURT = Court(id = IdGenerator.getAndIncrement(), name = "Manchester Crown Court")
     val COURT_APPEARANCE_TYPE = ReferenceData(id = IdGenerator.getAndIncrement(), description = "Sentence")
     val COURT_APPEARANCE_PLEA = ReferenceData(id = IdGenerator.getAndIncrement(), description = "Not guilty")
-    val DISPOSAL_TYPE = DisposalType(id = IdGenerator.getAndIncrement(), description = "ORA Suspended Sentence Order", "SC")
+    val DISPOSAL_TYPE =
+        DisposalType(id = IdGenerator.getAndIncrement(), description = "ORA Suspended Sentence Order", "SC")
     val MONTHS = ReferenceData(IdGenerator.getAndIncrement(), "Months")
 
     val EVENT: Event
+
     init {
         EVENT = Event(
             id = IdGenerator.getAndIncrement(),

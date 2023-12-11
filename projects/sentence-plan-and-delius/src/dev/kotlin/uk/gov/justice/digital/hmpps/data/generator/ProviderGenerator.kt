@@ -13,6 +13,7 @@ object ProviderGenerator {
         id: Long = IdGenerator.getAndIncrement(),
         description: String = "London"
     ) = ProbationArea(id, description)
+
     fun generateTeam(
         code: String,
         description: String = "Team $code",

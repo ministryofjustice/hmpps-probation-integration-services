@@ -22,9 +22,11 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest {
-    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    @Autowired lateinit var wireMockServer: WireMockServer
+    @Autowired
+    lateinit var wireMockServer: WireMockServer
 
     @Test
     fun `non-existent case returns 404`() {
@@ -48,13 +50,38 @@ internal class IntegrationTest {
             .andExpect(jsonPath("convictions[0].documents[5].type", equalTo("Sentence related")))
             .andExpect(jsonPath("convictions[0].documents[4].type", equalTo("Crown Prosecution Service case pack")))
             .andExpect(jsonPath("convictions[0].documents[3].type", equalTo("Court Report")))
-            .andExpect(jsonPath("convictions[0].documents[3].description", equalTo("court report type requested by test court on 01/01/2000")))
+            .andExpect(
+                jsonPath(
+                    "convictions[0].documents[3].description",
+                    equalTo("court report type requested by test court on 01/01/2000")
+                )
+            )
             .andExpect(jsonPath("convictions[0].documents[2].type", equalTo("Institutional Report")))
-            .andExpect(jsonPath("convictions[0].documents[2].description", equalTo("institutional report type at test institution requested on 02/01/2000")))
+            .andExpect(
+                jsonPath(
+                    "convictions[0].documents[2].description",
+                    equalTo("institutional report type at test institution requested on 02/01/2000")
+                )
+            )
             .andExpect(jsonPath("convictions[0].documents[1].type", equalTo("Contact related document")))
-            .andExpect(jsonPath("convictions[0].documents[1].description", equalTo("Contact on 03/01/2000 for contact type")))
-            .andExpect(jsonPath("convictions[0].documents[0].type", equalTo("Non Statutory Intervention related document")))
-            .andExpect(jsonPath("convictions[0].documents[0].description", equalTo("Non Statutory Intervention for nsi type on 04/01/2000")))
+            .andExpect(
+                jsonPath(
+                    "convictions[0].documents[1].description",
+                    equalTo("Contact on 03/01/2000 for contact type")
+                )
+            )
+            .andExpect(
+                jsonPath(
+                    "convictions[0].documents[0].type",
+                    equalTo("Non Statutory Intervention related document")
+                )
+            )
+            .andExpect(
+                jsonPath(
+                    "convictions[0].documents[0].description",
+                    equalTo("Non Statutory Intervention for nsi type on 04/01/2000")
+                )
+            )
             .andExpect(jsonPath("convictions[1].offence", equalTo("Daylight Robbery")))
             .andExpect(jsonPath("convictions[1].title", equalTo("Community Order")))
             .andExpect(jsonPath("convictions[1].active", equalTo(true)))
@@ -78,7 +105,12 @@ internal class IntegrationTest {
             .andDo(MvcResult::getAsyncResult)
             .andExpect(status().is2xxSuccessful)
             .andExpect(header().string("Content-Type", "application/octet-stream"))
-            .andExpect(header().string("Content-Disposition", "attachment; filename=\"=?UTF-8?Q?OFFENDER-related_document?=\"; filename*=UTF-8''OFFENDER-related%20document"))
+            .andExpect(
+                header().string(
+                    "Content-Disposition",
+                    "attachment; filename=\"=?UTF-8?Q?OFFENDER-related_document?=\"; filename*=UTF-8''OFFENDER-related%20document"
+                )
+            )
             .andExpect(header().doesNotExist("Custom-Alfresco-Header"))
             .andExpect(content().bytes(ResourceUtils.getFile("classpath:simulations/__files/document.pdf").readBytes()))
     }

@@ -1,4 +1,5 @@
 import uk.gov.justice.digital.hmpps.extensions.ClassPathExtension
+
 dependencies {
     implementation(project(":libs:commons"))
     implementation(project(":libs:messaging"))

@@ -98,5 +98,8 @@ class Contact(
 )
 
 interface ContactRepository : JpaRepository<Contact, Long> {
-    fun deleteAllByLicenceConditionIdAndDateAfterAndOutcomeIdIsNull(licenceConditionId: Long, date: ZonedDateTime = ZonedDateTime.now())
+    fun deleteAllByLicenceConditionIdAndDateAfterAndOutcomeIdIsNull(
+        licenceConditionId: Long,
+        date: ZonedDateTime = ZonedDateTime.now()
+    )
 }

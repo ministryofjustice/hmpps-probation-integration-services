@@ -42,7 +42,11 @@ internal class ReferralEndSubmittedTest {
             DomainEventType.ReferralEnded.name,
             1,
             "https://fake.org/url",
-            nullableAdditionalInformation = AdditionalInformation(mutableMapOf("referralId" to UUID.randomUUID().toString())),
+            nullableAdditionalInformation = AdditionalInformation(
+                mutableMapOf(
+                    "referralId" to UUID.randomUUID().toString()
+                )
+            ),
             personReference = PersonReference(listOf(PersonIdentifier("CRN", "T123456")))
         )
 

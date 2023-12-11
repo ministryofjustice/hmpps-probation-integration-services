@@ -12,7 +12,11 @@ import java.time.ZonedDateTime
 @Entity
 class RejectedTransferDiary(
     @Id
-    @SequenceGenerator(name = "rejected_transfer_diary_id_generator", sequenceName = "rejected_transfer_diary_id_seq", allocationSize = 1)
+    @SequenceGenerator(
+        name = "rejected_transfer_diary_id_generator",
+        sequenceName = "rejected_transfer_diary_id_seq",
+        allocationSize = 1
+    )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rejected_transfer_diary_id_generator")
     @Column(name = "rejected_transfer_diary_id", nullable = false)
     val id: Long = 0,

@@ -61,7 +61,9 @@ internal class HandlerTest {
         val notification = Notification(ResourceLoader.event("offence-changed"))
         val offenceCode = notification.message.offenceCode
         whenever(manageOffencesClient.getOffence(offenceCode)).thenReturn(offence(offenceCode))
-        whenever(referenceDataRepository.findByCodeAndSetName(COURT_CATEGORY.code, COURT_CATEGORY.set.name)).thenReturn(COURT_CATEGORY)
+        whenever(referenceDataRepository.findByCodeAndSetName(COURT_CATEGORY.code, COURT_CATEGORY.set.name)).thenReturn(
+            COURT_CATEGORY
+        )
 
         handler.handle(notification)
 
@@ -81,7 +83,9 @@ internal class HandlerTest {
         val notification = Notification(ResourceLoader.event("offence-changed"))
         val offenceCode = notification.message.offenceCode
         whenever(manageOffencesClient.getOffence(offenceCode)).thenReturn(offence(notification.message.offenceCode))
-        whenever(referenceDataRepository.findByCodeAndSetName(COURT_CATEGORY.code, COURT_CATEGORY.set.name)).thenReturn(COURT_CATEGORY)
+        whenever(referenceDataRepository.findByCodeAndSetName(COURT_CATEGORY.code, COURT_CATEGORY.set.name)).thenReturn(
+            COURT_CATEGORY
+        )
         whenever(detailedOffenceRepository.findByCode(EXISTING_OFFENCE.code)).thenReturn(EXISTING_OFFENCE)
 
         handler.handle(notification)

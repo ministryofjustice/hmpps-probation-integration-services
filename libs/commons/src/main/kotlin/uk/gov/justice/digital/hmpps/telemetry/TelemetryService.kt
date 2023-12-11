@@ -19,7 +19,11 @@ class TelemetryService(private val telemetryClient: TelemetryClient = TelemetryC
     }
 
     @Async
-    fun trackException(exception: Exception, properties: Map<String, String> = mapOf(), metrics: Map<String, Double> = mapOf()) {
+    fun trackException(
+        exception: Exception,
+        properties: Map<String, String> = mapOf(),
+        metrics: Map<String, Double> = mapOf()
+    ) {
         log.debug("{} {} {}", exception.message, properties, metrics)
         telemetryClient.trackException(exception, properties, metrics)
     }

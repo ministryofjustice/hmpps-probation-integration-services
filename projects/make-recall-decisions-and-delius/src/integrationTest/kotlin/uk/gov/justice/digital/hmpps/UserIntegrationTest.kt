@@ -17,9 +17,11 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 @SpringBootTest
 @AutoConfigureMockMvc
 internal class UserIntegrationTest {
-    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    @Autowired lateinit var wireMockserver: WireMockServer
+    @Autowired
+    lateinit var wireMockserver: WireMockServer
 
     @Test
     fun `get user details`() {

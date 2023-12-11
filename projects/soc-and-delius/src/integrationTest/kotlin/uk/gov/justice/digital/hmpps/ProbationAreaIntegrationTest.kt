@@ -72,6 +72,7 @@ internal class ProbationAreaIntegrationTest {
             )
         )
     )
+
     private fun getProbationAreasIncludingNonSelectable(): ProbationAreaContainer = ProbationAreaContainer(
         listOf(
             ProbationArea(

@@ -42,7 +42,14 @@ data class PersonalDetails(
     }
 }
 
-fun Team.toTeam() = PersonalDetails.Manager.Team(code, description, localAdminUnit = district.description, telephone, emailAddress)
+fun Team.toTeam() = PersonalDetails.Manager.Team(
+    code,
+    description,
+    localAdminUnit = district.description,
+    telephone,
+    emailAddress
+)
+
 fun PersonManager.toManager() = PersonalDetails.Manager(
     staffCode = staff.code,
     name = staff.name(),
@@ -50,4 +57,9 @@ fun PersonManager.toManager() = PersonalDetails.Manager(
     provider = provider.toProvider()
 )
 
-fun Person.identifiers() = PersonalDetailsOverview.Identifiers(pncNumber, croNumber, nomsNumber, bookingNumber = mostRecentPrisonerNumber)
+fun Person.identifiers() = PersonalDetailsOverview.Identifiers(
+    pncNumber,
+    croNumber,
+    nomsNumber,
+    bookingNumber = mostRecentPrisonerNumber
+)

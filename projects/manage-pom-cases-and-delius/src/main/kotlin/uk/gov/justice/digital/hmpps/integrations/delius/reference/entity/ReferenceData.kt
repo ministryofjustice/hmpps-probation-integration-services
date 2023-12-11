@@ -61,4 +61,5 @@ fun ReferenceDataRepository.keyDateType(code: String) =
     findByCode(code, ReferenceDataSet.Code.KEY_DATE_TYPE.value) ?: throw NotFoundException("KeyDateType", "code", code)
 
 fun ReferenceDataRepository.pomAllocationReason(code: String) =
-    findByCode(code, ReferenceDataSet.Code.POM_ALLOCATION_REASON.value) ?: throw NotFoundException("PomAllocationReason", "code", code)
+    findByCode(code, ReferenceDataSet.Code.POM_ALLOCATION_REASON.value)
+        ?: throw NotFoundException("PomAllocationReason", "code", code)

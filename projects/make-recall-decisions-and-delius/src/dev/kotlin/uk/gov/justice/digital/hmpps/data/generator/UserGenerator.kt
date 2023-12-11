@@ -11,7 +11,15 @@ object UserGenerator {
     val AUDIT_USER = AuditUser(IdGenerator.getAndIncrement(), "MakeRecallDecisionsAndDelius")
     val TEST_USER1 = User(IdGenerator.getAndIncrement(), "Test1")
     val TEST_USER2 = User(IdGenerator.getAndIncrement(), "Test2")
-    val WITH_STAFF = StaffUser(IdGenerator.getAndIncrement(), "WithStaff", Staff(IdGenerator.getAndIncrement(), "TEST001"))
+    val WITH_STAFF =
+        StaffUser(IdGenerator.getAndIncrement(), "WithStaff", Staff(IdGenerator.getAndIncrement(), "TEST001"))
     val WITHOUT_STAFF = StaffUser(IdGenerator.getAndIncrement(), "WithoutStaff")
-    val USER_DETAILS = UserDetails(IdGenerator.getAndIncrement(), "TestUser", "Forename", "Middle name", "Surname", UserDetailsStaff(IdGenerator.getAndIncrement(), "TEST002", null))
+    val USER_DETAILS = UserDetails(
+        IdGenerator.getAndIncrement(),
+        "TestUser",
+        "Forename",
+        "Middle name",
+        "Surname",
+        UserDetailsStaff(IdGenerator.getAndIncrement(), "TEST002", null)
+    )
 }

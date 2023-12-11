@@ -1,7 +1,7 @@
 plugins {
     id("com.google.cloud.tools.jib") version "3.4.0" apply false
     id("org.sonarqube") version "4.4.1.3373" apply false
-   `kotlin-dsl`
+    `kotlin-dsl`
 }
 
 repositories {

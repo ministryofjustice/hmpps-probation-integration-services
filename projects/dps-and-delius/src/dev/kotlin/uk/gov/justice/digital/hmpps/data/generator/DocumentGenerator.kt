@@ -13,13 +13,19 @@ object DocumentGenerator {
     val PERSONALCONTACT = generate("PERSONALCONTACT")
     val PERSONAL_CIRCUMSTANCE = generate("PERSONAL_CIRCUMSTANCE")
     val COURT_REPORT = generate("COURT_REPORT", primaryKeyId = EventGenerator.COURT_REPORT.courtReportId)
-    val INSTITUTIONAL_REPORT = generate("INSTITUTIONAL_REPORT", primaryKeyId = EventGenerator.INSTITUTIONAL_REPORT.institutionalReportId)
+    val INSTITUTIONAL_REPORT =
+        generate("INSTITUTIONAL_REPORT", primaryKeyId = EventGenerator.INSTITUTIONAL_REPORT.institutionalReportId)
     val OFFENDER_CONTACT = generate("CONTACT")
     val EVENT_CONTACT = generate("CONTACT", primaryKeyId = EventGenerator.CONTACT.contactId)
     val OFFENDER_NSI = generate("NSI")
     val EVENT_NSI = generate("NSI", primaryKeyId = EventGenerator.NSI.nsiId)
 
-    fun generate(tableName: String, type: String = "DOCUMENT", primaryKeyId: Long = 0, alfrescoId: String = UUID.randomUUID().toString()) = DocumentEntity(
+    fun generate(
+        tableName: String,
+        type: String = "DOCUMENT",
+        primaryKeyId: Long = 0,
+        alfrescoId: String = UUID.randomUUID().toString()
+    ) = DocumentEntity(
         id = IdGenerator.getAndIncrement(),
         personId = PersonGenerator.DEFAULT.id,
         alfrescoId = alfrescoId,

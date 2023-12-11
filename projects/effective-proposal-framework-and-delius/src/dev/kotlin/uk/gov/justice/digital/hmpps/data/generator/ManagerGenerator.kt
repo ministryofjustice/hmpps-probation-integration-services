@@ -9,7 +9,8 @@ import java.time.ZonedDateTime
 object ManagerGenerator {
 
     val DEFAULT_PERSON_MANAGER = personManagerGenerator()
-    val DEFAULT_RESPONSIBLE_OFFICER = responsibleOfficerGenerator(communityManager = DEFAULT_PERSON_MANAGER, prisonManager = null, endDate = null)
+    val DEFAULT_RESPONSIBLE_OFFICER =
+        responsibleOfficerGenerator(communityManager = DEFAULT_PERSON_MANAGER, prisonManager = null, endDate = null)
 
     fun responsibleOfficerGenerator(
         id: Long = IdGenerator.getAndIncrement(),

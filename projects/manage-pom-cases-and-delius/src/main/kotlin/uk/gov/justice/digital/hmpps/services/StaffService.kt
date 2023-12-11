@@ -29,7 +29,11 @@ class StaffService(
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    fun create(pa: ProbationArea, team: Team, staffName: Name, startDate: ZonedDateTime): Staff = synchronized(getMutex(pa.id)) {
+    fun create(pa: ProbationArea, team: Team, staffName: Name, startDate: ZonedDateTime): Staff = synchronized(
+        getMutex(
+            pa.id
+        )
+    ) {
         val staff = staffRepository.save(
             Staff(
                 forename = staffName.forename,
