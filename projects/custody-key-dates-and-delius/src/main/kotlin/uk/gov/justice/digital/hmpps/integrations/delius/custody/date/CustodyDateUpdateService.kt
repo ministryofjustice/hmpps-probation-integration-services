@@ -22,9 +22,9 @@ class CustodyDateUpdateService(
     private val contactService: ContactService,
     private val telemetryService: TelemetryService
 ) {
-    fun updateCustodyKeyDates(nomsId: String) {
+    fun updateCustodyKeyDates(nomsId: String, dryRun: Boolean = false) {
         val booking = prisonApi.getBookingFromNomsNumber(nomsId)
-        updateCustodyKeyDates(booking)
+        updateCustodyKeyDates(booking, dryRun)
     }
 
     fun updateCustodyKeyDates(bookingId: Long) {
@@ -32,7 +32,7 @@ class CustodyDateUpdateService(
         updateCustodyKeyDates(booking)
     }
 
-    private fun updateCustodyKeyDates(booking: Booking) {
+    private fun updateCustodyKeyDates(booking: Booking, dryRun: Boolean = false) {
         if (!booking.active) return telemetryService.trackEvent("BookingNotActive", booking.telemetry())
         val sentenceDetail = prisonApi.getSentenceDetail(booking.id)
         val person = personRepository.findByNomsIdAndSoftDeletedIsFalse(booking.offenderNo)
@@ -49,8 +49,10 @@ class CustodyDateUpdateService(
                 booking.telemetry()
             )
         } else {
-            deleted.ifNotEmpty(keyDateRepository::deleteAll)
-            updated.ifNotEmpty(keyDateRepository::saveAll)
+            if (!dryRun) {
+                deleted.ifNotEmpty(keyDateRepository::deleteAll)
+                updated.ifNotEmpty(keyDateRepository::saveAll)
+            }
             contactService.createForKeyDateChanges(custody, updated, deleted)
             telemetryService.trackEvent(
                 "KeyDatesUpdated",
