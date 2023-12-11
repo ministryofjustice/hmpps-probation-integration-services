@@ -1,0 +1,13 @@
+{
+  "Type": "Notification",
+  "MessageId": "9777104b-a276-4462-bbab-84d50f80672a",
+  "TopicArn": "arn:aws:sns:eu-west-2:000000000000:example",
+  "Message": "{\"eventType\":\"intervention.session-appointment.session-feedback-submitted\",\"version\":1,\"description\":\"Session feedback submitted for a session appointment\",\"detailUrl\":\"http://localhost:{wiremock.port}/referral/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080/delivery-session-appointments/52caa3e3-40b0-401a-babc-4d48cbd6e096\",\"occurredAt\":\"2023-11-14T15:00:00.000Z\",\"additionalInformation\":{\"referralReference\":\"FE4536C\",\"deliusAppointmentId\":1,\"contractTypeName\":\"Accommodation Referral\",\"primeProviderName\":\"ProviderName\",\"referralProbationUserURL\":\"https://ui/url\", \"referralId\":\"68df9f6c-3fcb-4ec6-8fcf-96551cd9b080\"},\"personReference\":{\"identifiers\":[{\"type\":\"CRN\",\"value\":\"T140223\"}]}}",
+  "Timestamp": "2023-11-14T11:01:20.306Z",
+  "MessageAttributes": {
+    "eventType": {
+      "Type": "String",
+      "Value": "intervention.session-appointment.session-feedback-submitted"
+    }
+  }
+}
