@@ -45,11 +45,9 @@ class ClassPathPlugin : Plugin<Project> {
                         classDirectories.files.map { project.fileTree(it) { exclude(extension.jacocoExclusions) } }
                     )
                 )
-                executionData
-                    .setFrom(
-                        project.fileTree(project.layout.buildDirectory.get().asFile.path)
-                            .include("/jacoco/*.exec")
-                    )
+                executionData.setFrom(
+                    project.fileTree(project.layout.buildDirectory.get().asFile.path).include("/jacoco/*.exec")
+                )
                 reports {
                     html.required.set(true)
                     xml.required.set(true)
@@ -59,15 +57,8 @@ class ClassPathPlugin : Plugin<Project> {
             project.tasks.create("integrationTest", Test::class.java) {
                 testClassesDirs = getByName("integrationTest").output.classesDirs
                 classpath = getByName("integrationTest").runtimeClasspath
-                systemProperty(
-                    "spring.profiles.active",
-                    "integration-test,${
-                        System.getProperty(
-                            "spring.profiles.active",
-                            System.getenv("SPRING_PROFILES_ACTIVE")
-                        )
-                    }"
-                )
+                val profiles = System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE"))
+                systemProperty("spring.profiles.active", "integration-test,$profiles")
             }
             project.tasks.withType(Test::class.java) {
                 useJUnitPlatform()
