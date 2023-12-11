@@ -1,0 +1,69 @@
+name: Format code
+description: Format Kotlin and Java code using IntelliJ IDEA.
+
+inputs:
+  commit_message:
+    description: Commit message
+    default: Formatting changes
+  idea_version:
+    description: IntelliJ IDEA version, defaults to latest
+    default: latest
+  mask:
+    description: |
+      Specify a comma-separated list of file masks that define the files to be processed. You can use the * (any string)
+      and ? (any single character) wildcards.
+    default: "*.kt,*.kts,*.java"
+  dry:
+    description: |
+      Run the formatter in the validation mode. The formatter will perform the same formatting operations in memory and 
+      will exit with a non-zero status in case any of the formatted files differs from the original one.
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install dependencies
+      shell: bash
+      run: sudo apt-get install -y libxml2-utils
+
+    - name: Check for the latest version of IntelliJ IDEA
+      id: latest
+      shell: bash
+      run: |
+        if [ "$version" = "latest" ]; then
+          curl -fsSL https://www.jetbrains.com/updates/updates.xml > /tmp/updates.xml
+          version=$(xmllint --xpath 'string(//products/product[@name="IntelliJ IDEA"]/channel[@name="IntelliJ IDEA RELEASE"]/build[1]/@version)' /tmp/updates.xml)
+        fi
+        echo "version=$version" >> $GITHUB_OUTPUT
+      env:
+        version: ${{ inputs.idea_version }}
+
+    - name: Download IntelliJ IDEA Community Edition
+      shell: bash
+      run: |
+        curl -fsSL https://download.jetbrains.com/idea/ideaIC-$version.tar.gz | tar -xz
+        mv idea-* /tmp/idea
+      env:
+        version: ${{ steps.latest.outputs.version }}
+
+    - name: Validate code formatting
+      if: inputs.dry == 'true'
+      shell: bash
+      run: /tmp/idea/bin/idea.sh format -mask "$mask" -dry -r .
+      env:
+        mask: ${{ inputs.mask }}
+
+    - name: Fix code formatting
+      if: inputs.dry == 'false'
+      shell: bash
+      run: /tmp/idea/bin/idea.sh format -mask "$mask" -r .
+      env:
+        mask: ${{ inputs.mask }}
+
+    - uses: planetscale/ghcommit-action@809c8a73d775889ce1815025c015609d3df9fdf2 # v0.2.9
+      with:
+        commit_message: ${{ inputs.commit_message }}
+        repo: ${{ github.repository }}
+        branch: ${{ github.head_ref || github.ref_name }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}

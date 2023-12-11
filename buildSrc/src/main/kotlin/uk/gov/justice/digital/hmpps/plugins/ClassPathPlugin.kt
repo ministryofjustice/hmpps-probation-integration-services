@@ -64,7 +64,7 @@ class ClassPathPlugin : Plugin<Project> {
                 finalizedBy("jacocoTestReport")
             }
             project.tasks.named("check") {
-                dependsOn("ktlintCheck", "test", "integrationTest")
+                dependsOn("test", "integrationTest")
             }
 
             project.configure<SonarExtension> {
