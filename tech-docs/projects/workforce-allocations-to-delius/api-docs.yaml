@@ -39,8 +39,6 @@ paths:
           minItems: 1
           type: array
           items:
-            maxLength: 500
-            minLength: 1
             type: string
       - name: username
         in: query
@@ -83,8 +81,6 @@ paths:
               minItems: 1
               type: array
               items:
-                maxLength: 500
-                minLength: 1
                 type: string
         required: true
       responses:

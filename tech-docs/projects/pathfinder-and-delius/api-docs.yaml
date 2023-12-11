@@ -131,8 +131,6 @@ components:
           minItems: 1
           type: array
           items:
-            maxLength: 500
-            minLength: 1
             type: string
     Detail:
       required:

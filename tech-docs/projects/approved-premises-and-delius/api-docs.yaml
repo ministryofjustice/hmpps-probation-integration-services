@@ -33,8 +33,6 @@ paths:
           minItems: 1
           type: array
           items:
-            maxLength: 500
-            minLength: 1
             type: string
       responses:
         "200":
@@ -61,8 +59,6 @@ paths:
               minItems: 1
               type: array
               items:
-                maxLength: 500
-                minLength: 1
                 type: string
         required: true
       responses:
@@ -86,8 +82,6 @@ paths:
           minItems: 1
           type: array
           items:
-            maxLength: 500
-            minLength: 1
             type: string
       responses:
         "200":
@@ -108,8 +102,6 @@ paths:
               minItems: 1
               type: array
               items:
-                maxLength: 500
-                minLength: 1
                 type: string
         required: true
       responses:
@@ -651,24 +643,24 @@ components:
           format: int64
         sort:
           $ref: '#/components/schemas/SortObject'
-        unpaged:
-          type: boolean
-        paged:
-          type: boolean
         pageNumber:
           type: integer
           format: int32
         pageSize:
           type: integer
           format: int32
+        unpaged:
+          type: boolean
+        paged:
+          type: boolean
     SortObject:
       type: object
       properties:
         empty:
           type: boolean
-        unsorted:
-          type: boolean
         sorted:
+          type: boolean
+        unsorted:
           type: boolean
     StaffGrade:
       required:

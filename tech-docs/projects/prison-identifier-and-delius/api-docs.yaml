@@ -34,8 +34,6 @@ paths:
           minItems: 1
           type: array
           items:
-            maxLength: 500
-            minLength: 1
             type: string
       responses:
         "200":
@@ -63,8 +61,6 @@ paths:
               minItems: 1
               type: array
               items:
-                maxLength: 500
-                minLength: 1
                 type: string
         required: true
       responses:
