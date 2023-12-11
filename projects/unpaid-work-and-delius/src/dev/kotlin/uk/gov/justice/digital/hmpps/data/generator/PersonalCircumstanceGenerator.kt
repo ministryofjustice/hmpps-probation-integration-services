@@ -7,7 +7,10 @@ import java.time.LocalDate
 object PersonalCircumstanceGenerator {
     val DEFAULT = generate()
 
-    fun generate(person: CaseEntity = CaseGenerator.DEFAULT, id: Long = IdGenerator.getAndIncrement()) = CasePersonalCircumstanceEntity(
+    fun generate(
+        person: CaseEntity = CaseGenerator.DEFAULT,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = CasePersonalCircumstanceEntity(
         id,
         person,
         PersonalCircumstanceTypeGenerator.DEFAULT,

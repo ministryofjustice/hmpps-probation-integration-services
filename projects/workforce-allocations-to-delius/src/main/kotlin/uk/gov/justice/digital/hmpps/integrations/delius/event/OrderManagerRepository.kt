@@ -18,4 +18,5 @@ interface OrderManagerRepository : JpaRepository<OrderManager, Long> {
     fun findActiveManagerAtDate(eventId: Long, dateTime: ZonedDateTime): OrderManager?
 }
 
-fun OrderManagerRepository.getOrderManager(eventId: Long) = findActiveManagerAtDate(eventId, ZonedDateTime.now()) ?: throw NotFoundException("OrderManager", "eventId", eventId)
+fun OrderManagerRepository.getOrderManager(eventId: Long) = findActiveManagerAtDate(eventId, ZonedDateTime.now())
+    ?: throw NotFoundException("OrderManager", "eventId", eventId)

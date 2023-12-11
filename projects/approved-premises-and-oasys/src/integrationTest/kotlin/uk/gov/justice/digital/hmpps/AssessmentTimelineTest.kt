@@ -36,7 +36,8 @@ internal class AssessmentTimelineTest {
             .andExpect(status().is2xxSuccessful)
             .andReturn()
 
-        val oasysTimelineAssessment = objectMapper.readValue(result.response.contentAsString, OasysTimelineAssessment::class.java)
+        val oasysTimelineAssessment =
+            objectMapper.readValue(result.response.contentAsString, OasysTimelineAssessment::class.java)
         assertThat(oasysTimelineAssessment.initiationDate)
             .isEqualTo(ZonedDateTime.parse("2022-07-27T12:10:58+01:00").withZoneSameInstant(EuropeLondon))
     }

@@ -40,6 +40,7 @@ interface TeamRepository : JpaRepository<Team, Long> {
     @EntityGraph(attributePaths = ["district"])
     fun findByCode(code: String): Team?
 }
+
 fun TeamRepository.getByCode(code: String) = findByCode(code) ?: throw NotFoundException("Team", "code", code)
 
 @Immutable

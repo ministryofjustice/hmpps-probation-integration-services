@@ -14,5 +14,12 @@ object PersonGenerator {
         Person(crn, softDeleted, id)
 
     fun generatePersonManager(person: Person) =
-        PersonManager(IdGenerator.getAndIncrement(), person, TeamGenerator.DEFAULT, StaffGenerator.ALLOCATED, ProviderGenerator.DEFAULT, ZonedDateTime.now())
+        PersonManager(
+            IdGenerator.getAndIncrement(),
+            person,
+            TeamGenerator.DEFAULT,
+            StaffGenerator.ALLOCATED,
+            ProviderGenerator.DEFAULT,
+            ZonedDateTime.now()
+        )
 }

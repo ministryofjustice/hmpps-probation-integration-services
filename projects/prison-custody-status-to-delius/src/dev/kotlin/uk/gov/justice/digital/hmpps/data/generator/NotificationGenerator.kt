@@ -10,13 +10,16 @@ object NotificationGenerator {
     val PRISONER_MATCHED = ResourceLoader.notification<HmppsDomainEvent>("prisoner-matched")
     val PRISONER_NEW_CUSTODY = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-new-custody")
     val PRISONER_RECALLED = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-recalled")
-    val PRISONER_HOSPITAL_RELEASED = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-hospital-released")
-    val PRISONER_HOSPITAL_IN_CUSTODY = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-hospital-custody")
+    val PRISONER_HOSPITAL_RELEASED =
+        ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-hospital-released")
+    val PRISONER_HOSPITAL_IN_CUSTODY =
+        ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-hospital-custody")
     val PRISONER_ROTL_RETURN = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-rotl")
     val PRISONER_IRC_RELEASED = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-irc-released")
     val PRISONER_IRC_IN_CUSTODY = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-irc-custody")
     val PRISONER_RELEASED_ECSL_ACTIVE = ResourceLoader.notification<HmppsDomainEvent>("prisoner-released-ecsl-active")
-    val PRISONER_RELEASED_ECSL_INACTIVE = ResourceLoader.notification<HmppsDomainEvent>("prisoner-released-ecsl-inactive")
+    val PRISONER_RELEASED_ECSL_INACTIVE =
+        ResourceLoader.notification<HmppsDomainEvent>("prisoner-released-ecsl-inactive")
     val PRISONER_ABSCONDED = ResourceLoader.notification<HmppsDomainEvent>("prisoner-absconded")
     val PRISONER_ETR_IN_CUSTODY = ResourceLoader.notification<HmppsDomainEvent>("prisoner-received-etr-custody")
 }

@@ -26,12 +26,14 @@ data class ContactHistory(
         data class Type(val code: String, val description: String, val systemGenerated: Boolean)
         data class DocumentReference(val id: String, val name: String, val lastUpdated: ZonedDateTime)
     }
+
     data class ContactSummary(
         val types: List<ContactTypeSummary>,
         val hits: Int,
         val total: Int = types.sumOf { it.total }
     )
 }
+
 data class ContactTypeSummary(val code: String, val description: String, val total: Int)
 
 fun Contact.toContact() = ContactHistory.Contact(

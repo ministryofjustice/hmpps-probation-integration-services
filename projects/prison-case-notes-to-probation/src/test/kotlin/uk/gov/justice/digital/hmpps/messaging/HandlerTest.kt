@@ -103,7 +103,8 @@ internal class HandlerTest {
     @Test
     fun `get case note from NOMIS has null caseNoteId`() {
         val message = prepMessage(CaseNoteMessageGenerator.EXISTS_IN_DELIUS).message
-        val prisonOffenderEvent = Notification(message = message.copy(nullableAdditionalInformation = AdditionalInformation()))
+        val prisonOffenderEvent =
+            Notification(message = message.copy(nullableAdditionalInformation = AdditionalInformation()))
         handler.handle(prisonOffenderEvent)
         verify(deliusService, times(0)).mergeCaseNote(any())
         verify(prisonCaseNotesClient, times(0)).getCaseNote(any())

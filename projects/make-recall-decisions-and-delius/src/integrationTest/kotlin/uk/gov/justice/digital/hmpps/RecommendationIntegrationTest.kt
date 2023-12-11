@@ -47,7 +47,10 @@ internal class RecommendationIntegrationTest {
         assertThat(contact.providerId, equalTo(PersonGenerator.DEFAULT_PROVIDER.id))
         assertThat(contact.teamId, equalTo(PersonGenerator.DEFAULT_TEAM.id))
         assertThat(contact.staffId, equalTo(UserGenerator.WITH_STAFF.staff!!.id))
-        assertThat(contact.notes, equalTo("View details of the Manage a Recall Oversight Decision: http://mrd.case.crn/overview"))
+        assertThat(
+            contact.notes,
+            equalTo("View details of the Manage a Recall Oversight Decision: http://mrd.case.crn/overview")
+        )
         assertThat(contact.isSensitive, equalTo(true))
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
     }
@@ -63,7 +66,10 @@ internal class RecommendationIntegrationTest {
         assertThat(contact.providerId, equalTo(PersonGenerator.DEFAULT_PROVIDER.id))
         assertThat(contact.teamId, equalTo(PersonGenerator.DEFAULT_TEAM.id))
         assertThat(contact.staffId, equalTo(UserGenerator.WITH_STAFF.staff!!.id))
-        assertThat(contact.notes, equalTo("View details of the Manage a Recall Oversight Decision: http://mrd.case.crn/overview"))
+        assertThat(
+            contact.notes,
+            equalTo("View details of the Manage a Recall Oversight Decision: http://mrd.case.crn/overview")
+        )
         assertThat(contact.isSensitive, equalTo(true))
         verify(telemetryService, atLeastOnce()).notificationReceived(notification)
     }

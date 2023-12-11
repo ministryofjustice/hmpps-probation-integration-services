@@ -10,9 +10,11 @@ import uk.gov.justice.digital.hmpps.service.TeamService
 
 @ExtendWith(MockitoExtension::class)
 internal class TeamControllerTest {
-    @Mock lateinit var teamService: TeamService
+    @Mock
+    lateinit var teamService: TeamService
 
-    @InjectMocks lateinit var teamController: TeamController
+    @InjectMocks
+    lateinit var teamController: TeamController
 
     @Test
     fun `calls the service`() {

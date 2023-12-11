@@ -1,4 +1,5 @@
 package uk.gov.justice.digital.hmpps.controller.personaldetails
+
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import uk.gov.justice.digital.hmpps.controller.personaldetails.entity.Person
@@ -9,7 +10,10 @@ import uk.gov.justice.digital.hmpps.integrations.common.mapper.AddressMapper
 import uk.gov.justice.digital.hmpps.integrations.common.model.PersonalCircumstance
 import uk.gov.justice.digital.hmpps.integrations.common.model.PersonalContact
 
-@Mapper(componentModel = "spring", uses = [PersonalCircumstanceMapper::class, PersonalContactMapper::class, AddressMapper::class])
+@Mapper(
+    componentModel = "spring",
+    uses = [PersonalCircumstanceMapper::class, PersonalContactMapper::class, AddressMapper::class]
+)
 interface PersonMapper {
     fun convertToModel(person: Person): PersonalDetails
 }

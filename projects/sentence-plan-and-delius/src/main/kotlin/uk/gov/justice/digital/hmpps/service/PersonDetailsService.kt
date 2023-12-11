@@ -14,7 +14,11 @@ import uk.gov.justice.digital.hmpps.service.entity.isInCustody
 import uk.gov.justice.digital.hmpps.service.entity.name
 
 @Service
-class PersonDetailsService(val personRepository: PersonRepository, val eventRepository: EventRepository, val contactRepository: ContactRepository) {
+class PersonDetailsService(
+    val personRepository: PersonRepository,
+    val eventRepository: EventRepository,
+    val contactRepository: ContactRepository
+) {
     fun getPersonalDetails(crn: String): CaseDetails {
         val personEntity = personRepository.getPerson(crn)
         val manager = personEntity.manager

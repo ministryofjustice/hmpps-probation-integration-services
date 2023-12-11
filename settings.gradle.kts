@@ -62,13 +62,19 @@ dependencyResolutionManagement {
             library("aws-sqs", "io.awspring.cloud:spring-cloud-aws-starter-sqs:3.0.3")
             library("aws-sts", "software.amazon.awssdk:sts:2.21.12")
             library("aws-query-protocol", "software.amazon.awssdk:aws-query-protocol:2.21.12")
-            bundle("aws-messaging", listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs", "aws-sts", "aws-query-protocol"))
+            bundle(
+                "aws-messaging",
+                listOf("aws-autoconfigure", "aws-starter", "aws-sns", "aws-sqs", "aws-sts", "aws-query-protocol")
+            )
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.2.1")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
             library("insights", "com.microsoft.azure:applicationinsights-web:3.4.18")
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.0.0")
-            library("opentelemetry-annotations", "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.32.0")
+            library(
+                "opentelemetry-annotations",
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.32.0"
+            )
             bundle("telemetry", listOf("insights", "opentelemetry-annotations", "sentry"))
             library("springdoc", "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
             library("wiremock", "com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")

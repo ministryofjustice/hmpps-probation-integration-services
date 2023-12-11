@@ -40,7 +40,8 @@ class PSRContextControllerTest {
     fun `Get pre sentence report context not found`() {
         whenever(preSentenceReportService.getPreSentenceReportContext("1")).thenThrow(NotFoundException("Not found"))
 
-        val exception: Exception = assertThrows(NotFoundException::class.java) { pSRContextController.getPreSentenceReportContext("1") }
+        val exception: Exception =
+            assertThrows(NotFoundException::class.java) { pSRContextController.getPreSentenceReportContext("1") }
         assertTrue(exception.message!!.contains("Not found"))
     }
 

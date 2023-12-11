@@ -19,13 +19,17 @@ import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 class StaffServiceTest {
-    @Mock lateinit var staffRepository: StaffRepository
+    @Mock
+    lateinit var staffRepository: StaffRepository
 
-    @Mock lateinit var ldapService: LdapService
+    @Mock
+    lateinit var ldapService: LdapService
 
-    @Mock lateinit var personRepository: PersonRepository
+    @Mock
+    lateinit var personRepository: PersonRepository
 
-    @InjectMocks lateinit var staffService: StaffService
+    @InjectMocks
+    lateinit var staffService: StaffService
 
     @Test
     fun `officer view staff not found`() {
@@ -48,9 +52,17 @@ class StaffServiceTest {
         val staff = StaffGenerator.STAFF_WITH_USER
         whenever(ldapService.findEmailForStaff(staff)).thenReturn("test@test.com")
         whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
-        whenever(staffRepository.getParoleReportsDueCountByStaffId(staff.id, LocalDate.now().plusWeeks(4))).thenReturn(1L)
+        whenever(staffRepository.getParoleReportsDueCountByStaffId(staff.id, LocalDate.now().plusWeeks(4))).thenReturn(
+            1L
+        )
         whenever(staffRepository.getSentencesDueCountByStaffId(staff.id, LocalDate.now().plusWeeks(4))).thenReturn(2L)
-        whenever(staffRepository.getKeyDateCountByCodeAndStaffId(staff.id, "EXP", LocalDate.now().plusWeeks(4))).thenReturn(3L)
+        whenever(
+            staffRepository.getKeyDateCountByCodeAndStaffId(
+                staff.id,
+                "EXP",
+                LocalDate.now().plusWeeks(4)
+            )
+        ).thenReturn(3L)
 
         val response = staffService.getOfficerView(staff.code)
 

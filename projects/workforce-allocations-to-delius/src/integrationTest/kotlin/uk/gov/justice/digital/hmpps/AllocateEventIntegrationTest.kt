@@ -114,7 +114,10 @@ class AllocateEventIntegrationTest {
 
         assertNotNull(cadeContact)
 
-        assertThat(cadeContact!!.isSensitive, equalTo((allocationDetail as AllocationDetail.EventAllocationDetail).sensitive))
+        assertThat(
+            cadeContact!!.isSensitive,
+            equalTo((allocationDetail as AllocationDetail.EventAllocationDetail).sensitive)
+        )
         assertThat(cadeContact.notes, equalTo(allocationDetail.notes))
     }
 }

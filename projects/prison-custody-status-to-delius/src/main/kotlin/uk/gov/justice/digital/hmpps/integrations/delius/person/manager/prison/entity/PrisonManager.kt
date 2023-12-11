@@ -31,7 +31,11 @@ import java.time.ZonedDateTime
 @Table(name = "prison_offender_manager")
 class PrisonManager(
     @Id
-    @SequenceGenerator(name = "prison_manager_id_generator", sequenceName = "prison_offender_manager_id_seq", allocationSize = 1)
+    @SequenceGenerator(
+        name = "prison_manager_id_generator",
+        sequenceName = "prison_offender_manager_id_seq",
+        allocationSize = 1
+    )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prison_manager_id_generator")
     @Column(name = "prison_offender_manager_id", nullable = false)
     val id: Long = 0,
@@ -109,5 +113,9 @@ interface PrisonManagerRepository : JpaRepository<PrisonManager, Long> {
             order by pm.date asc
         """
     )
-    fun findFirstManagerAfterDate(personId: Long, date: ZonedDateTime, pageable: Pageable = PageRequest.of(0, 1)): List<PrisonManager>
+    fun findFirstManagerAfterDate(
+        personId: Long,
+        date: ZonedDateTime,
+        pageable: Pageable = PageRequest.of(0, 1)
+    ): List<PrisonManager>
 }

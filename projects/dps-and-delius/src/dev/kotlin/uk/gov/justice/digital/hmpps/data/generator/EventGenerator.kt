@@ -88,7 +88,8 @@ object EventGenerator {
         outcome = ReferenceData(IdGenerator.getAndIncrement(), "TEST", "Community Order")
     ).also { UNSENTENCED_EVENT.set(Event::courtAppearances, listOf(this)) }
 
-    val COURT_REPORT_TYPE = CourtReportType(courtReportTypeId = IdGenerator.getAndIncrement(), description = "court report type")
+    val COURT_REPORT_TYPE =
+        CourtReportType(courtReportTypeId = IdGenerator.getAndIncrement(), description = "court report type")
     val COURT_REPORT = CourtReport(
         courtReportId = IdGenerator.getAndIncrement(),
         courtReportTypeId = COURT_REPORT_TYPE.courtReportTypeId,

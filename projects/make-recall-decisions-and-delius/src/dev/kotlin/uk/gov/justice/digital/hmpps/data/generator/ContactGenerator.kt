@@ -17,7 +17,8 @@ object ContactGenerator {
     val SYSTEM_GENERATED_TYPE = ContactType(IdGenerator.getAndIncrement(), "SG", "System-generated contact type", true)
 
     val DEFAULT = generate(notes = "default")
-    val SYSTEM_GENERATED = generate(notes = "system-generated", LocalDate.now().minusDays(1), type = SYSTEM_GENERATED_TYPE)
+    val SYSTEM_GENERATED =
+        generate(notes = "system-generated", LocalDate.now().minusDays(1), type = SYSTEM_GENERATED_TYPE)
     val WITH_DOCUMENTS = generate(notes = "documents", LocalDate.now().minusDays(2)).set(Contact::documents) {
         listOf(
             generateContactDocument(it, "uuid1", "doc1"),

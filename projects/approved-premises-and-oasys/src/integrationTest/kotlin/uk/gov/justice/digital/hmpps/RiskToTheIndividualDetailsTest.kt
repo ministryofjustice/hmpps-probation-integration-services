@@ -36,7 +36,8 @@ internal class RiskToTheIndividualDetailsTest {
             .andExpect(status().is2xxSuccessful)
             .andReturn()
 
-        val riskToTheIndividualDetails = objectMapper.readValue(result.response.contentAsString, RiskToTheIndividualDetails::class.java)
+        val riskToTheIndividualDetails =
+            objectMapper.readValue(result.response.contentAsString, RiskToTheIndividualDetails::class.java)
         assertThat(riskToTheIndividualDetails.initiationDate)
             .isEqualTo(ZonedDateTime.parse("2022-11-09T14:33:53Z").withZoneSameInstant(EuropeLondon))
         assertThat(riskToTheIndividualDetails.lastUpdatedDate)

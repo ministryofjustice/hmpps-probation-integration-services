@@ -60,7 +60,12 @@ fun CaseSummary.withDetail(offences: List<CaseOffence>, registrations: List<Regi
 
 fun ProbationCase.name() = Name(forename, surname, listOfNotNull(secondName, thirdName))
 fun ProbationCase.profile() =
-    Profile(ethnicity?.description, genderIdentityDescription ?: genderIdentity?.description, nationality?.description, religion?.description)
+    Profile(
+        ethnicity?.description,
+        genderIdentityDescription ?: genderIdentity?.description,
+        nationality?.description,
+        religion?.description
+    )
 
 fun ProbationCase.manager(): Manager =
     with(currentManager()) {

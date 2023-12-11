@@ -23,15 +23,20 @@ import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 
 @ExtendWith(MockitoExtension::class)
 internal class HandlerTest {
-    @Mock lateinit var telemetryService: TelemetryService
+    @Mock
+    lateinit var telemetryService: TelemetryService
 
-    @Mock lateinit var riskScoreService: RiskScoreService
+    @Mock
+    lateinit var riskScoreService: RiskScoreService
 
-    @Mock lateinit var riskAssessmentService: RiskAssessmentService
+    @Mock
+    lateinit var riskAssessmentService: RiskAssessmentService
 
-    @Mock lateinit var converter: NotificationConverter<HmppsDomainEvent>
+    @Mock
+    lateinit var converter: NotificationConverter<HmppsDomainEvent>
 
-    @InjectMocks lateinit var handler: Handler
+    @InjectMocks
+    lateinit var handler: Handler
 
     @Test
     fun `message is logged to telemetry`() {

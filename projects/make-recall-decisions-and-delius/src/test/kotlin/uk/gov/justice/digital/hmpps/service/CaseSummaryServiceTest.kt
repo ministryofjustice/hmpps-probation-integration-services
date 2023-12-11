@@ -98,7 +98,10 @@ internal class CaseSummaryServiceTest {
         assertThat(overview.activeConvictions, hasSize(1))
         assertThat(overview.activeConvictions[0].number, equalTo("3"))
         assertThat(overview.activeConvictions[0].mainOffence.description, equalTo("Offence description"))
-        assertThat(overview.activeConvictions[0].additionalOffences[0].description, equalTo("Additional offence description"))
+        assertThat(
+            overview.activeConvictions[0].additionalOffences[0].description,
+            equalTo("Additional offence description")
+        )
         assertThat(overview.activeConvictions[0].sentence!!.description, equalTo("Sentence type"))
         assertThat(overview.activeConvictions[0].sentence!!.length, equalTo(6))
         assertThat(overview.activeConvictions[0].sentence!!.lengthUnits, equalTo("Months"))
@@ -213,7 +216,10 @@ internal class CaseSummaryServiceTest {
         assertThat(recommendationModel.activeCustodialConvictions, hasSize(1))
         assertThat(recommendationModel.activeCustodialConvictions[0].sentence!!.secondLength, equalTo(2))
         assertThat(recommendationModel.activeCustodialConvictions[0].sentence!!.secondLengthUnits, equalTo("Years"))
-        assertThat(recommendationModel.activeCustodialConvictions[0].sentence!!.startDate, equalTo(LocalDate.of(2021, 1, 1)))
+        assertThat(
+            recommendationModel.activeCustodialConvictions[0].sentence!!.startDate,
+            equalTo(LocalDate.of(2021, 1, 1))
+        )
     }
 
     private fun givenPersonalDetails() {
@@ -237,7 +243,12 @@ internal class CaseSummaryServiceTest {
     }
 
     private fun givenMappa(mappa: Registration = RegistrationGenerator.MAPPA) {
-        whenever(registrationRepository.findFirstByPersonIdAndTypeCodeAndDeregisteredFalseOrderByDateDesc(person.id, RegisterType.MAPPA_TYPE))
+        whenever(
+            registrationRepository.findFirstByPersonIdAndTypeCodeAndDeregisteredFalseOrderByDateDesc(
+                person.id,
+                RegisterType.MAPPA_TYPE
+            )
+        )
             .thenReturn(mappa)
     }
 
@@ -257,7 +268,9 @@ internal class CaseSummaryServiceTest {
     private fun givenARelease(): Release {
         val event = givenACustodialEvent()
         val release = event.disposal!!.custody!!.release()
-        whenever(releaseRepository.findFirstByCustodyIdOrderByDateDesc(event.disposal!!.custody!!.id)).thenReturn(release)
+        whenever(releaseRepository.findFirstByCustodyIdOrderByDateDesc(event.disposal!!.custody!!.id)).thenReturn(
+            release
+        )
         return release
     }
 

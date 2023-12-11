@@ -30,10 +30,24 @@ object BoroughGenerator {
 
 object DistrictGenerator {
     val DEFAULT = generate()
-    fun generate(id: Long = IdGenerator.getAndIncrement()) = District(true, "London", "LN1", BoroughGenerator.DEFAULT, id)
+    fun generate(id: Long = IdGenerator.getAndIncrement()) = District(
+        true,
+        "London",
+        "LN1",
+        BoroughGenerator.DEFAULT,
+        id
+    )
 }
 
 object TeamGenerator {
     val DEFAULT = generate()
-    fun generate(id: Long = IdGenerator.getAndIncrement()) = Team(id, "T1", "Team1", "123", "email@address.com", LDUGenerator.DEFAULT, DistrictGenerator.DEFAULT)
+    fun generate(id: Long = IdGenerator.getAndIncrement()) = Team(
+        id,
+        "T1",
+        "Team1",
+        "123",
+        "email@address.com",
+        LDUGenerator.DEFAULT,
+        DistrictGenerator.DEFAULT
+    )
 }

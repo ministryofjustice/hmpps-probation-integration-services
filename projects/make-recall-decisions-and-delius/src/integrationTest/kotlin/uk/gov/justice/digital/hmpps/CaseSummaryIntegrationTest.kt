@@ -24,9 +24,11 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class CaseSummaryIntegrationTest {
-    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    @Autowired lateinit var wireMockserver: WireMockServer
+    @Autowired
+    lateinit var wireMockserver: WireMockServer
 
     @Test
     fun `personal details are returned`() {
@@ -51,10 +53,25 @@ internal class CaseSummaryIntegrationTest {
             .andExpectPersonalDetailsToMatch(person)
             .andExpect(jsonPath("$.registerFlags", equalTo(listOf("MAPPA 1", "High RoSH"))))
             .andExpect(jsonPath("$.activeConvictions[0].number", equalTo(event.number)))
-            .andExpect(jsonPath("$.activeConvictions[0].mainOffence.description", equalTo(event.mainOffence.offence.description)))
-            .andExpect(jsonPath("$.activeConvictions[0].additionalOffences[0].description", equalTo(event.additionalOffences[0].offence.description)))
+            .andExpect(
+                jsonPath(
+                    "$.activeConvictions[0].mainOffence.description",
+                    equalTo(event.mainOffence.offence.description)
+                )
+            )
+            .andExpect(
+                jsonPath(
+                    "$.activeConvictions[0].additionalOffences[0].description",
+                    equalTo(event.additionalOffences[0].offence.description)
+                )
+            )
             .andExpect(jsonPath("$.activeConvictions[0].sentence.isCustodial", equalTo(true)))
-            .andExpect(jsonPath("$.activeConvictions[0].sentence.custodialStatusCode", equalTo(event.disposal!!.custody!!.status.code)))
+            .andExpect(
+                jsonPath(
+                    "$.activeConvictions[0].sentence.custodialStatusCode",
+                    equalTo(event.disposal!!.custody!!.status.code)
+                )
+            )
             .andExpect(jsonPath("$.activeConvictions[0].sentence.sentenceExpiryDate", equalTo("2023-01-01")))
     }
 
@@ -78,8 +95,18 @@ internal class CaseSummaryIntegrationTest {
             .andExpectPersonalDetailsToMatch(person)
             .andExpect(jsonPath("$.activeConvictions[0].licenceConditions.size()", equalTo(1)))
             .andExpect(jsonPath("$.activeConvictions[0].licenceConditions[0].startDate", equalTo("2020-01-01")))
-            .andExpect(jsonPath("$.activeConvictions[0].licenceConditions[0].mainCategory.description", equalTo(event.disposal!!.licenceConditions[0].mainCategory.description)))
-            .andExpect(jsonPath("$.activeConvictions[0].licenceConditions[0].notes", equalTo(event.disposal!!.licenceConditions[0].notes)))
+            .andExpect(
+                jsonPath(
+                    "$.activeConvictions[0].licenceConditions[0].mainCategory.description",
+                    equalTo(event.disposal!!.licenceConditions[0].mainCategory.description)
+                )
+            )
+            .andExpect(
+                jsonPath(
+                    "$.activeConvictions[0].licenceConditions[0].notes",
+                    equalTo(event.disposal!!.licenceConditions[0].notes)
+                )
+            )
     }
 
     @Test
@@ -88,7 +115,12 @@ internal class CaseSummaryIntegrationTest {
         mockMvc.perform(get("/case-summary/${person.crn}/contact-history").withOAuth2Token(wireMockserver))
             .andExpect(status().is2xxSuccessful)
             .andExpectPersonalDetailsToMatch(person)
-            .andExpect(jsonPath("$.contacts.*.notes", equalTo(listOf("default", "system-generated", "documents", "past"))))
+            .andExpect(
+                jsonPath(
+                    "$.contacts.*.notes",
+                    equalTo(listOf("default", "system-generated", "documents", "past"))
+                )
+            )
             .andExpect(jsonPath("$.contacts[0].outcome", equalTo(ContactGenerator.DEFAULT_OUTCOME.description)))
             .andExpect(jsonPath("$.contacts[1].type.code", equalTo(ContactGenerator.SYSTEM_GENERATED_TYPE.code)))
             .andExpect(jsonPath("$.contacts[2].documents[*].name", equalTo(listOf("doc1", "doc2"))))
@@ -105,7 +137,11 @@ internal class CaseSummaryIntegrationTest {
     @Test
     fun `contacts can be filtered on date`() {
         val person = PersonGenerator.CASE_SUMMARY
-        mockMvc.perform(get("/case-summary/${person.crn}/contact-history?from=2022-01-01&to=2022-01-01").withOAuth2Token(wireMockserver))
+        mockMvc.perform(
+            get("/case-summary/${person.crn}/contact-history?from=2022-01-01&to=2022-01-01").withOAuth2Token(
+                wireMockserver
+            )
+        )
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.contacts.*.notes", equalTo(listOf("past"))))
             .andExpect(jsonPath("$.summary.hits", equalTo(1)))
@@ -115,7 +151,11 @@ internal class CaseSummaryIntegrationTest {
     @Test
     fun `contacts can be excluded if they are system-generated`() {
         val person = PersonGenerator.CASE_SUMMARY
-        mockMvc.perform(get("/case-summary/${person.crn}/contact-history?includeSystemGenerated=false").withOAuth2Token(wireMockserver))
+        mockMvc.perform(
+            get("/case-summary/${person.crn}/contact-history?includeSystemGenerated=false").withOAuth2Token(
+                wireMockserver
+            )
+        )
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.contacts.*.notes", not(hasItem("system-generated"))))
     }

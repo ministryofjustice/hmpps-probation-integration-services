@@ -21,15 +21,20 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 
 @ExtendWith(MockitoExtension::class)
 class AllocationRiskServiceTest {
-    @Mock lateinit var registrationRepository: RegistrationRepository
+    @Mock
+    lateinit var registrationRepository: RegistrationRepository
 
-    @Mock lateinit var ogrsAssessmentRepository: OGRSAssessmentRepository
+    @Mock
+    lateinit var ogrsAssessmentRepository: OGRSAssessmentRepository
 
-    @Mock lateinit var oasysAssessmentRepository: OASYSAssessmentRepository
+    @Mock
+    lateinit var oasysAssessmentRepository: OASYSAssessmentRepository
 
-    @Mock lateinit var personRepository: PersonRepository
+    @Mock
+    lateinit var personRepository: PersonRepository
 
-    @InjectMocks lateinit var allocationRiskService: AllocationRiskService
+    @InjectMocks
+    lateinit var allocationRiskService: AllocationRiskService
 
     @Test
     fun `person not found`() {
@@ -71,7 +76,10 @@ class AllocationRiskServiceTest {
         assertThat(response.activeRegistrations.size, equalTo(1))
         assertThat(response.inactiveRegistrations.size, equalTo(0))
         assertThat(response.ogrs!!.score, equalTo(OasysAssessmentGenerator.DEFAULT.score))
-        assertThat(response.ogrs!!.lastUpdatedDate, equalTo(OasysAssessmentGenerator.DEFAULT.lastModifiedDateTime.toLocalDate()))
+        assertThat(
+            response.ogrs!!.lastUpdatedDate,
+            equalTo(OasysAssessmentGenerator.DEFAULT.lastModifiedDateTime.toLocalDate())
+        )
     }
 
     @Test
@@ -93,6 +101,9 @@ class AllocationRiskServiceTest {
         assertThat(response.activeRegistrations.size, equalTo(0))
         assertThat(response.inactiveRegistrations.size, equalTo(1))
         assertThat(response.ogrs!!.score, equalTo(OgrsAssessmentGenerator.DEFAULT.score))
-        assertThat(response.ogrs!!.lastUpdatedDate, equalTo(OgrsAssessmentGenerator.DEFAULT.lastModifiedDateTime.toLocalDate()))
+        assertThat(
+            response.ogrs!!.lastUpdatedDate,
+            equalTo(OgrsAssessmentGenerator.DEFAULT.lastModifiedDateTime.toLocalDate())
+        )
     }
 }

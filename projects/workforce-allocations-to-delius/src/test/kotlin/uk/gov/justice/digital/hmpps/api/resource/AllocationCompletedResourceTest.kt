@@ -10,9 +10,11 @@ import uk.gov.justice.digital.hmpps.service.AllocationCompletedService
 
 @ExtendWith(MockitoExtension::class)
 class AllocationCompletedResourceTest {
-    @Mock lateinit var allocationCompletedService: AllocationCompletedService
+    @Mock
+    lateinit var allocationCompletedService: AllocationCompletedService
 
-    @InjectMocks lateinit var allocationCompletedResource: AllocationCompletedResource
+    @InjectMocks
+    lateinit var allocationCompletedResource: AllocationCompletedResource
 
     @Test
     fun `details resource calls service`() {

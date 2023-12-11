@@ -18,9 +18,11 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class StaffControllerIntegrationTest {
-    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    @Autowired lateinit var wireMockServer: WireMockServer
+    @Autowired
+    lateinit var wireMockServer: WireMockServer
 
     @Test
     fun `approved premises key worker staff are returned successfully`() {
@@ -30,7 +32,12 @@ class StaffControllerIntegrationTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.numberOfElements", equalTo(3)))
             .andExpect(jsonPath("$.size", equalTo(100)))
-            .andExpect(jsonPath("$.content[*].name.surname", equalTo(listOf("Key-worker", "Not key-worker", "Unallocated"))))
+            .andExpect(
+                jsonPath(
+                    "$.content[*].name.surname",
+                    equalTo(listOf("Key-worker", "Not key-worker", "Unallocated"))
+                )
+            )
             .andExpect(jsonPath("$.content[*].keyWorker", equalTo(listOf(true, false, false))))
     }
 
@@ -55,7 +62,11 @@ class StaffControllerIntegrationTest {
     @Test
     fun `approved premises key workers only are returned successfully`() {
         val approvedPremises = ApprovedPremisesGenerator.DEFAULT
-        mockMvc.perform(get("/approved-premises/${approvedPremises.code.code}/staff?keyWorker=true").withOAuth2Token(wireMockServer))
+        mockMvc.perform(
+            get("/approved-premises/${approvedPremises.code.code}/staff?keyWorker=true").withOAuth2Token(
+                wireMockServer
+            )
+        )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.numberOfElements", equalTo(1)))
             .andExpect(jsonPath("$.content[*].name.surname", equalTo(listOf("Key-worker"))))

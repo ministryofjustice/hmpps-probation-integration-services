@@ -23,7 +23,8 @@ class CvlHandler(
             return
         }
         val results =
-            when (val eventType = (notification.eventType ?: notification.message.eventType).let { DomainEventType.of(it) }) {
+            when (val eventType =
+                (notification.eventType ?: notification.message.eventType).let { DomainEventType.of(it) }) {
                 is DomainEventType.LicenceActivated -> licenceActivatedHandler.licenceActivated(notification.message)
                 else -> listOf(
                     ActionResult.Ignored(

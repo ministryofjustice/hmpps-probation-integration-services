@@ -88,6 +88,7 @@ class NsiStatus(
     @Column(name = "description")
     val description: String
 )
+
 interface NsiRepository : JpaRepository<Nsi, Long> {
 
     @Query(
