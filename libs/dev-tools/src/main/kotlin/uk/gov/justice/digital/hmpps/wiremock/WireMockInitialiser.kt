@@ -27,7 +27,7 @@ class WireMockInitialiser : ApplicationContextInitializer<ConfigurableApplicatio
             WireMockConfiguration()
                 .port(wmPort)
                 .usingFilesUnderClasspath("simulations")
-               // .maxLoggedResponseSize(100_000)
+                .maxLoggedResponseSize(100_000)
         )
         wireMockServer.start()
 
