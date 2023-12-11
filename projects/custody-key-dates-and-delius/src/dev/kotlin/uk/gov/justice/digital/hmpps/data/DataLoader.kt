@@ -20,10 +20,12 @@ import uk.gov.justice.digital.hmpps.data.repository.DatasetRepository
 import uk.gov.justice.digital.hmpps.data.repository.DisposalRepository
 import uk.gov.justice.digital.hmpps.data.repository.EventRepository
 import uk.gov.justice.digital.hmpps.data.repository.OrderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.KeyDateRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.reference.ReferenceDataRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.user.AuditUserRepository
 import java.time.LocalDate
@@ -87,5 +89,26 @@ class DataLoader(
                 )
             )
         )
+        createPersonWithKeyDates(PersonGenerator.PERSON_WITH_KEYDATES, "38340A")
+    }
+
+    private fun createPersonWithKeyDates(personRef: Person, bookingRef: String): Custody {
+        val person = personRepository.save(personRef)
+        val event = eventRepository.save(generateEvent(person, "1"))
+        orderManagerRepository.save(generateOrderManager(event))
+        val disposal = disposalRepository.save(generateDisposal(event))
+        val custody = custodyRepository.save(
+            generateCustodialSentence(
+                ReferenceDataGenerator.DEFAULT_CUSTODY_STATUS,
+                disposal,
+                bookingRef
+            )
+        )
+        keyDateRepository.saveAll(
+            ReferenceDataGenerator.KEY_DATE_TYPES.values.map {
+                KeyDateGenerator.generate(custody, it, LocalDate.parse("2023-12-11"))
+            }
+        )
+        return custody
     }
 }
