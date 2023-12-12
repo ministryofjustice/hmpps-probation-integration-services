@@ -49,14 +49,14 @@ runs:
     - name: Validate code formatting
       if: inputs.dry == 'true'
       shell: bash
-      run: /tmp/idea/bin/idea.sh format -mask "$mask" -dry -r .
+      run: /tmp/idea/bin/idea.sh format -allowDefaults -mask "$mask" -dry -r .
       env:
         mask: ${{ inputs.mask }}
 
     - name: Fix code formatting
       if: inputs.dry == 'false'
       shell: bash
-      run: /tmp/idea/bin/idea.sh format -mask "$mask" -r .
+      run: /tmp/idea/bin/idea.sh format -allowDefaults -mask "$mask" -r .
       env:
         mask: ${{ inputs.mask }}
 
