@@ -17,6 +17,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
                 where allocation_staff_id = :staffId and active_flag = 1 and soft_deleted = 0
             )
             and noms_number is not null
+            and soft_deleted = 0
         """,
         nativeQuery = true
     )
@@ -36,6 +37,7 @@ interface PersonRepository : JpaRepository<Person, Long> {
                 where s.officer_code = :code and pom.active_flag = 1 and pom.soft_deleted = 0
             )
             and noms_number is not null
+            and soft_deleted = 0
         """,
         nativeQuery = true
     )
