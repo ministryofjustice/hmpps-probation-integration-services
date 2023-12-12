@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.sevice
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CustodyRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
@@ -23,6 +24,7 @@ class PersonService(
     val custodyRepository: CustodyRepository,
     val prisonSearchAPI: PrisonSearchAPI
 ) {
+    @Transactional
     fun populateNomsNumber(crns: List<String>, trialOnly: Boolean): NomsUpdates {
         return NomsUpdates(
             crns.map { crn ->
