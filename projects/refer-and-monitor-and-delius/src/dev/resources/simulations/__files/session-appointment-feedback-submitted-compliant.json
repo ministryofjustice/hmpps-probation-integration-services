@@ -21,7 +21,7 @@
           }
         },
         "sessionFeedback": {
-          "behaviourDescription": "A description of the beha§viour",
+          "behaviourDescription": "A description of the behaviour",
           "notifyProbationPractitioner": true
         },
         "submitted": true,
