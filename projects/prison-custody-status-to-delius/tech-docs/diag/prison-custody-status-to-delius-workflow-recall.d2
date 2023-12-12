@@ -1,0 +1,62 @@
+# Custody Status Workflow: Prison Recall
+
+direction: right
+
+style {
+  fill: "#ffffff"
+}
+
+# What triggers the workflow?
+nomis: NOMIS  {
+     style.font-size: 24
+
+     explanation: |md
+     ## Prison Release
+     User receives a person via NOMIS. \
+     This action raises a domain event
+     |
+
+     received: Prisoner Received
+}
+
+domain_event: "prison-offender-events\n.prisoner.received" {
+    style.font-size: 12
+    shape: queue
+}
+
+# What happens in Delius?
+delius: Delius {
+    style.font-size: 24
+
+    explanation: |md
+    ## Delius Throughcare Updates
+    Custody status is updated in Delius based on \
+    the status, movement reason and location \
+    in the domain event message
+    |
+
+    d_recall: Add Recall Record
+    d_location: Update\nCurrent Institution
+    d_custody: Update Custody Status
+    d_licence: Terminate\nLicence Conditions
+    d_contact: Create Contact
+
+    d_recall -> d_location -> d_custody
+    d_licence -> d_contact
+}
+
+nomis -> domain_event -> delius
+
+
+# Styles
+
+style {
+  fill: "#ffffff"
+}
+
+** {
+  style {
+    border-radius: 10
+    stroke-width: 2
+  }
+}
