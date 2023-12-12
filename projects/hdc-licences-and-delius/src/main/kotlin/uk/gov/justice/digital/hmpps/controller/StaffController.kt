@@ -44,21 +44,18 @@ class StaffController(
         ?: throw NotFoundException("Staff", "staffId", id)
 
     @GetMapping("/staff/{code}/managedPrisonerIds")
-    fun getManagedPrisonersByStaffCode(@PathVariable code: String) = personRepository.findManagedPrisonerIdentifiersByStaffCode(
-        code
-    )
+    fun getManagedPrisonersByStaffCode(@PathVariable code: String) =
+        personRepository.findManagedPrisonerIdentifiersByStaffCode(code)
 
     @GetMapping("/managedPrisonerIds", params = ["staffId"])
     @Deprecated("Use `/staff/{code}/managedPrisonerIds`")
-    fun getManagedPrisonersByStaffId(@RequestParam staffId: Long) = personRepository.findManagedPrisonerIdentifiersByStaffId(
-        staffId
-    )
+    fun getManagedPrisonersByStaffId(@RequestParam staffId: Long) =
+        personRepository.findManagedPrisonerIdentifiersByStaffId(staffId)
 
     @GetMapping("/case/{nomsNumber}/communityManager")
-    fun getCommunityManager(@PathVariable nomsNumber: String) = communityManagerRepository.findCommunityManager(
-        nomsNumber
-    )?.toModel()
-        ?: throw NotFoundException("Community manager for case", "nomsNumber", nomsNumber)
+    fun getCommunityManager(@PathVariable nomsNumber: String) =
+        communityManagerRepository.findCommunityManager(nomsNumber)?.toModel()
+            ?: throw NotFoundException("Community manager for case", "nomsNumber", nomsNumber)
 
     private fun StaffEntity.toModel() = Staff(
         code = code,

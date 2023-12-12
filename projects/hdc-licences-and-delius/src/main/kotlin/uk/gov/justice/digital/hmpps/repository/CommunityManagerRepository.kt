@@ -10,7 +10,8 @@ interface CommunityManagerRepository : JpaRepository<CommunityManagerEntity, Lon
             select cm
             from CommunityManagerEntity cm 
             join fetch cm.staff 
-            where cm.person.nomsNumber = :nomsNumber
+            where cm.person.nomsNumber = :nomsNumber 
+            and cm.person.softDeleted = false
             and cm.active = true and cm.softDeleted = false
         """
     )
