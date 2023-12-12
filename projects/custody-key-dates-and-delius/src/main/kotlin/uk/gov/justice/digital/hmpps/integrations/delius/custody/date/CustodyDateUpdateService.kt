@@ -23,7 +23,7 @@ class CustodyDateUpdateService(
     private val telemetryService: TelemetryService
 ) {
     fun updateCustodyKeyDates(nomsId: String, dryRun: Boolean = false) {
-        val booking = prisonApi.getBookingFromNomsNumber(nomsId)
+        val booking = prisonApi.getBookingFromNomsNumber(nomsId.uppercase())
         updateCustodyKeyDates(booking, dryRun)
     }
 
