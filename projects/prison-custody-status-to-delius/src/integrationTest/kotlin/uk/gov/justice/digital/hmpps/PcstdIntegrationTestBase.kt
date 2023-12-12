@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.hmpps
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.get
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.containsInAnyOrder
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasItems
-import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.*
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -28,6 +30,8 @@ import uk.gov.justice.digital.hmpps.integrations.delius.recall.entity.RecallRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.CustodyEventTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.ReleaseRepository
+import uk.gov.justice.digital.hmpps.integrations.prison.Booking
+import uk.gov.justice.digital.hmpps.integrations.prison.BookingId
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
@@ -38,6 +42,12 @@ open class PcstdIntegrationTestBase {
 
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
+
+    @Autowired
+    internal lateinit var wireMockServer: WireMockServer
+
+    @Autowired
+    internal lateinit var objectMapper: ObjectMapper
 
     @Autowired
     internal lateinit var channelManager: HmppsChannelManager
@@ -77,6 +87,25 @@ open class PcstdIntegrationTestBase {
 
     @MockBean
     internal lateinit var featureFlags: FeatureFlags
+
+    internal fun withBooking(booking: Booking) {
+        wireMockServer.stubFor(
+            get(WireMock.urlPathEqualTo("/api/bookings/offenderNo/${booking.personReference}"))
+                .willReturn(
+                    aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(objectMapper.writeValueAsString(BookingId(booking.id)))
+                )
+        )
+        wireMockServer.stubFor(
+            get(WireMock.urlPathEqualTo("/api/bookings/${booking.id}"))
+                .willReturn(
+                    aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(objectMapper.writeValueAsString(booking))
+                )
+        )
+    }
 
     internal fun getPersonId(nomsNumber: String) =
         personRepository.findByNomsNumberAndSoftDeletedIsFalse(nomsNumber).single().id

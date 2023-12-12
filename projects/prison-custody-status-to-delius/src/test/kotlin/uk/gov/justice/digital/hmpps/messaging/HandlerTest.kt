@@ -8,22 +8,13 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
 import uk.gov.justice.digital.hmpps.integrations.prison.BookingId
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
-import uk.gov.justice.digital.hmpps.message.AdditionalInformation
-import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
-import uk.gov.justice.digital.hmpps.message.MessageAttributes
-import uk.gov.justice.digital.hmpps.message.Notification
-import uk.gov.justice.digital.hmpps.message.PersonIdentifier
-import uk.gov.justice.digital.hmpps.message.PersonReference
+import uk.gov.justice.digital.hmpps.message.*
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
@@ -151,16 +142,29 @@ internal class HandlerTest {
 
     @Test
     fun `logs telemetry event when no config for movement`() {
+        val nomsId = "Z0001ZZ"
+        val prisonId = "ZZZ"
+        val movementReason = "OPA"
+
+        val booking = booking.copy(
+            personReference = nomsId,
+            agencyId = prisonId,
+            movementType = "CRT",
+            movementReason = movementReason
+        )
+        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
+        whenever(prisonApiClient.getBooking(booking.id)).thenReturn(booking)
+
         handler.handle(notification)
         verify(telemetryService).trackEvent(
             "NoConfigForMovement",
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
-                "nomsNumber" to "Z0001ZZ",
-                "institution" to "ZZZ",
+                "nomsNumber" to nomsId,
+                "institution" to prisonId,
                 "details" to "CRT-OPA",
                 "movementType" to "RETURN_FROM_COURT",
-                "movementReason" to "OPA"
+                "movementReason" to movementReason
             )
         )
     }
@@ -246,18 +250,24 @@ internal class HandlerTest {
 
     @Test
     fun `noop whenever feature flagged and not active`() {
+        val nomsId = "Z0001ZZ"
+        val prisonId = "ZZZ"
+        val movementReason = "HQ"
+
+        val booking = booking.copy(
+            personReference = nomsId,
+            agencyId = prisonId,
+            movementType = "REL",
+            movementReason = movementReason,
+            inOutStatus = Booking.InOutStatus.OUT
+        )
+        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
+        whenever(prisonApiClient.getBooking(booking.id)).thenReturn(booking)
         whenever(featureFlags.enabled("messages_released_hospital")).thenReturn(false)
+
         val hospitalNotification = notification.copy(
             message = notification.message.copy(
-                nullableAdditionalInformation = AdditionalInformation(
-                    mutableMapOf(
-                        "nomsNumber" to "Z0001ZZ",
-                        "prisonId" to "OUT",
-                        "reason" to "RELEASED_TO_HOSPITAL",
-                        "nomisMovementReasonCode" to "HP",
-                        "details" to "REL-HQ"
-                    )
-                )
+                nullableAdditionalInformation = AdditionalInformation(mutableMapOf("nomsNumber" to nomsId))
             )
         )
         handler.handle(hospitalNotification)
@@ -266,10 +276,9 @@ internal class HandlerTest {
             mapOf(
                 "featureFlag" to "messages_released_hospital",
                 "occurredAt" to hospitalNotification.message.occurredAt.toString(),
-                "nomsNumber" to "Z0001ZZ",
-                "institution" to "OUT",
+                "nomsNumber" to nomsId,
                 "reason" to "RELEASED_TO_HOSPITAL",
-                "movementReason" to "HP",
+                "movementReason" to "HQ",
                 "movementType" to "Released"
             )
         )

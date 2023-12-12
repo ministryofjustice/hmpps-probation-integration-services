@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.data.generator.BookingGenerator
 import uk.gov.justice.digital.hmpps.data.generator.InstitutionGenerator
 import uk.gov.justice.digital.hmpps.data.generator.NotificationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
@@ -28,6 +29,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `release a prisoner`() {
         val notification = NotificationGenerator.PRISONER_RELEASED
+        withBooking(BookingGenerator.RELEASED)
         val nomsNumber = notification.nomsId()
         assertTrue(getCustody(nomsNumber).isInCustody())
 
@@ -53,7 +55,6 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0001AA",
-                "institution" to "WSI",
                 "reason" to "RELEASED",
                 "movementReason" to "NCS",
                 "movementType" to "Released"
@@ -64,6 +65,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `recall a prisoner`() {
         val notification = NotificationGenerator.PRISONER_RECEIVED
+        withBooking(BookingGenerator.RECEIVED)
         val nomsNumber = notification.nomsId()
         assertFalse(getCustody(nomsNumber).isInCustody())
 
@@ -118,6 +120,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `when a prisoner is matched`() {
         val person = PersonGenerator.MATCHABLE
+        withBooking(BookingGenerator.MATCHED)
         val before = getCustody(person.nomsNumber)
         assertThat(before.institution?.code, equalTo(InstitutionGenerator.DEFAULT.code))
 
@@ -150,20 +153,10 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `a person died in custody alerts manager`() {
         val person = PersonGenerator.DIED
+        withBooking(BookingGenerator.DIED)
 
         val notification = NotificationGenerator.PRISONER_DIED
         channelManager.getChannel(queueName).publishAndWait(notification)
-
-        verifyTelemetry("Died") {
-            mapOf(
-                "occurredAt" to notification.message.occurredAt.toString(),
-                "nomsNumber" to person.nomsNumber,
-                "institution" to "WSI",
-                "reason" to "RELEASED",
-                "movementReason" to "DEC",
-                "movementType" to "Released"
-            )
-        }
 
         val dus = contactRepository.findAll().firstOrNull { it.person.id == person.id }
         assertNotNull(dus!!)
@@ -174,11 +167,22 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
         assertThat(dus.staffId, equalTo(personManager.staff.id))
         val alert = contactAlertRepository.findAll().firstOrNull { it.contactId == dus.id }
         assertNotNull(alert)
+
+        verifyTelemetry("Died") {
+            mapOf(
+                "occurredAt" to notification.message.occurredAt.toString(),
+                "nomsNumber" to person.nomsNumber,
+                "reason" to "RELEASED",
+                "movementReason" to "DEC",
+                "movementType" to "Released"
+            )
+        }
     }
 
     @Test
     fun `receieve a new custodial sentence`() {
         val notification = NotificationGenerator.PRISONER_NEW_CUSTODY
+        withBooking(BookingGenerator.NEW_CUSTODY)
         val nomsNumber = notification.nomsId()
         val before = getCustody(nomsNumber)
         assertThat(before.status.code, equalTo(CustodialStatusCode.SENTENCED_IN_CUSTODY.code))
@@ -219,6 +223,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `receieve a prisoner already recalled in delius`() {
         val notification = NotificationGenerator.PRISONER_RECALLED
+        withBooking(BookingGenerator.RECALLED)
         val nomsNumber = notification.nomsId()
 
         channelManager.getChannel(queueName).publishAndWait(notification)
@@ -257,6 +262,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     fun `hospital release when released on licence in delius`() {
         whenever(featureFlags.enabled("messages_released_hospital")).thenReturn(true)
         val notification = NotificationGenerator.PRISONER_HOSPITAL_RELEASED
+        withBooking(BookingGenerator.HOSPITAL_RELEASE)
         val nomsNumber = notification.nomsId()
         assertFalse(getCustody(nomsNumber).isInCustody())
 
@@ -286,7 +292,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0005AA",
-                "reason" to "RELEASED",
+                "reason" to "RELEASED_TO_HOSPITAL",
                 "movementReason" to "HO",
                 "movementType" to "Released"
             )
@@ -296,8 +302,8 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `hospital release when in custody in delius`() {
         whenever(featureFlags.enabled("messages_released_hospital")).thenReturn(true)
-
         val notification = NotificationGenerator.PRISONER_HOSPITAL_IN_CUSTODY
+        withBooking(BookingGenerator.HOSPITAL_CUSTODY)
         val nomsNumber = notification.nomsId()
         assertTrue(getCustody(nomsNumber).isInCustody())
 
@@ -326,7 +332,6 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0007AA",
-                "institution" to "SWI",
                 "reason" to "RELEASED_TO_HOSPITAL",
                 "movementReason" to "HQ",
                 "movementType" to "Released"
@@ -337,6 +342,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `received into prison when on rotl`() {
         val notification = NotificationGenerator.PRISONER_ROTL_RETURN
+        withBooking(BookingGenerator.ROTL_RETURN)
         val nomsNumber = notification.nomsId()
         assertFalse(getCustody(nomsNumber).isInCustody())
 
@@ -372,6 +378,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `IRC release when released on licence in delius`() {
         val notification = NotificationGenerator.PRISONER_IRC_RELEASED
+        withBooking(BookingGenerator.IRC_RELEASED)
         val nomsNumber = notification.nomsId()
         assertFalse(getCustody(nomsNumber).isInCustody())
 
@@ -399,7 +406,6 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0009AA",
-                "institution" to "WSI",
                 "reason" to "RELEASED",
                 "movementReason" to "DE",
                 "movementType" to "Released"
@@ -410,6 +416,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `irc release when in custody in delius`() {
         val notification = NotificationGenerator.PRISONER_IRC_IN_CUSTODY
+        withBooking(BookingGenerator.IRC_CUSTODY)
         val nomsNumber = notification.nomsId()
         assertTrue(getCustody(nomsNumber).isInCustody())
 
@@ -434,7 +441,6 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0011AA",
-                "institution" to "SWI",
                 "reason" to "RELEASED",
                 "movementReason" to "DD",
                 "movementType" to "Released"
@@ -445,6 +451,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `release a ecsl prisoner with feature active`() {
         val notification = NotificationGenerator.PRISONER_RELEASED_ECSL_ACTIVE
+        withBooking(BookingGenerator.ECSL_ACTIVE)
         val nomsNumber = notification.nomsId()
         assertTrue(getCustody(nomsNumber).isInCustody())
 
@@ -470,7 +477,6 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0013AA",
-                "institution" to "WSI",
                 "reason" to "RELEASED",
                 "movementReason" to "ECSL",
                 "movementType" to "Released"
@@ -482,6 +488,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     fun `prisoner absconded - unlawfully at large`() {
         whenever(featureFlags.enabled("messages_released_absconded")).thenReturn(true)
         val notification = NotificationGenerator.PRISONER_ABSCONDED
+        withBooking(BookingGenerator.ABSCONDED)
         val nomsNumber = notification.nomsId()
         assertFalse(getCustody(nomsNumber).isInCustody())
 
@@ -520,7 +527,6 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to nomsNumber,
-                "institution" to "WSI",
                 "reason" to "RELEASED",
                 "movementReason" to "UAL",
                 "movementType" to "Released"
@@ -531,6 +537,7 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
     @Test
     fun `etr release when in custody in delius`() {
         val notification = NotificationGenerator.PRISONER_ETR_IN_CUSTODY
+        withBooking(BookingGenerator.ETR_CUSTODY)
         val nomsNumber = notification.nomsId()
 
         channelManager.getChannel(queueName).publishAndWait(notification)
@@ -553,7 +560,6 @@ class PcstdIntegrationTest : PcstdIntegrationTestBase() {
             mapOf(
                 "occurredAt" to notification.message.occurredAt.toString(),
                 "nomsNumber" to "A0019AA",
-                "institution" to "SWI",
                 "reason" to "RELEASED",
                 "movementReason" to "ETR",
                 "movementType" to "Released"
