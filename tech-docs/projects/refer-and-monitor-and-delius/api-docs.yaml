@@ -413,7 +413,18 @@ components:
           - "YES"
           - LATE
           - "NO"
+        didSessionHappen:
+          type: boolean
+          writeOnly: true
+        noSessionReasonType:
+          type: string
+          enum:
+          - LOGISTICS
+          - POP_ACCEPTABLE
+          - POP_UNACCEPTABLE
         notify:
+          type: boolean
+        sessionHappened:
           type: boolean
     CaseIdentifier:
       required:
