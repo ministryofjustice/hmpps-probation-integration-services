@@ -35,14 +35,14 @@ class KeyDate(
     val type: ReferenceData,
 
     @Column(name = "key_date")
-    private var date: LocalDate
+    val date: LocalDate
 
 ) : BaseEntity() {
-    fun date(): LocalDate = date
     fun changeDate(date: LocalDate): KeyDate? = if (this.date == date) {
         null
     } else {
-        this.date = date
-        this
+        val keyDate = KeyDate(id, custody, type, date)
+        keyDate.version = version
+        keyDate
     }
 }

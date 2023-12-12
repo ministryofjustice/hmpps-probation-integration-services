@@ -22,9 +22,9 @@ class CustodyDateUpdateService(
     private val contactService: ContactService,
     private val telemetryService: TelemetryService
 ) {
-    fun updateCustodyKeyDates(nomsId: String) {
+    fun updateCustodyKeyDates(nomsId: String, dryRun: Boolean = false) {
         val booking = prisonApi.getBookingFromNomsNumber(nomsId)
-        updateCustodyKeyDates(booking)
+        updateCustodyKeyDates(booking, dryRun)
     }
 
     fun updateCustodyKeyDates(bookingId: Long) {
@@ -32,7 +32,7 @@ class CustodyDateUpdateService(
         updateCustodyKeyDates(booking)
     }
 
-    private fun updateCustodyKeyDates(booking: Booking) {
+    private fun updateCustodyKeyDates(booking: Booking, dryRun: Boolean = false) {
         if (!booking.active) return telemetryService.trackEvent("BookingNotActive", booking.telemetry())
         val sentenceDetail = prisonApi.getSentenceDetail(booking.id)
         val person = personRepository.findByNomsIdAndSoftDeletedIsFalse(booking.offenderNo)
@@ -49,13 +49,15 @@ class CustodyDateUpdateService(
                 booking.telemetry()
             )
         } else {
-            deleted.ifNotEmpty(keyDateRepository::deleteAll)
-            updated.ifNotEmpty(keyDateRepository::saveAll)
-            contactService.createForKeyDateChanges(custody, updated, deleted)
+            if (!dryRun) {
+                deleted.ifNotEmpty(keyDateRepository::deleteAll)
+                updated.ifNotEmpty(keyDateRepository::saveAll)
+                contactService.createForKeyDateChanges(custody, updated, deleted)
+            }
             telemetryService.trackEvent(
-                "KeyDatesUpdated",
+                if (dryRun) "KeyDatesDryRun" else "KeyDatesUpdated",
                 booking.telemetry() +
-                    updated.associateBy({ it.type.code }, { it.date().toString() }) +
+                    updated.associateBy({ it.type.code }, { it.date.toString() }) +
                     deleted.associateBy({ it.type.code }, { "deleted" })
             )
         }
@@ -69,7 +71,12 @@ class CustodyDateUpdateService(
     ): List<KeyDate> = CustodyDateType.entries.mapNotNull { cdt ->
         val date = cdt.field.getter.call(sentenceDetail)
         if (date == null) {
-            custody.keyDates.find(cdt.code)?.let { it.softDeleted = true; it }
+            custody.keyDates.find(cdt.code)?.let {
+                val kd = KeyDate(it.id, it.custody, it.type, it.date)
+                kd.softDeleted = true
+                kd.version = it.version
+                kd
+            }
         } else {
             val existing = custody.keyDates.find(cdt.code)
             if (existing != null) {
