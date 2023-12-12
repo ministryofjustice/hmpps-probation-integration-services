@@ -84,16 +84,6 @@ internal class ReferAndMonitorIntegrationTest {
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        verify(telemetryService).trackEvent(
-            "SessionAppointmentSubmitted",
-            mapOf(
-                "crn" to "T140223",
-                "appointmentId" to "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                "referralId" to "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
-                "referralReference" to "FE4536C"
-            )
-        )
-
         val expectedOutcome = ContactGenerator.OUTCOMES[ContactOutcome.Code.FAILED_TO_COMPLY.value]!!
         val appointment = contactRepository.findById(ContactGenerator.CRSAPT_NON_COMPLIANT.id).orElseThrow()
         assertThat(appointment.outcome?.code, equalTo(expectedOutcome.code))
@@ -121,6 +111,16 @@ internal class ReferAndMonitorIntegrationTest {
             event.breachEnd
         ) > 0
         assertTrue(reviewCreated)
+
+        verify(telemetryService).trackEvent(
+            "SessionAppointmentSubmitted",
+            mapOf(
+                "crn" to "T140223",
+                "appointmentId" to "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                "referralId" to "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+                "referralReference" to "FE4536C"
+            )
+        )
     }
 
     @Test
@@ -135,16 +135,6 @@ internal class ReferAndMonitorIntegrationTest {
         )
 
         channelManager.getChannel(queueName).publishAndWait(notification)
-
-        verify(telemetryService).trackEvent(
-            "SessionAppointmentSubmitted",
-            mapOf(
-                "crn" to "T140223",
-                "appointmentId" to "3b8282cd-baa5-45d3-8489-b5836a58a0e8",
-                "referralId" to "89a3f79c-f12b-43de-9616-77ae19813cfe",
-                "referralReference" to "AY0164AC"
-            )
-        )
 
         val expectedOutcome = ContactGenerator.OUTCOMES[ContactOutcome.Code.FAILED_TO_ATTEND.value]!!
         val appointment = contactRepository.findById(ContactGenerator.CRSAPT_NOT_ATTENDED.id).orElseThrow()
@@ -167,7 +157,7 @@ internal class ReferAndMonitorIntegrationTest {
         assertThat(event.ftcCount, equalTo(2))
 
         val nsi = nsiRepository.findById(appointment.nsiId!!).orElseThrow()
-        assertThat(nsi.rarCount, equalTo(1))
+        assertThat(nsi.rarCount, equalTo(2))
 
         val reviewCreated = contactRepository.countEnforcementUnderReview(
             event.id,
@@ -175,6 +165,16 @@ internal class ReferAndMonitorIntegrationTest {
             event.breachEnd
         ) > 0
         assertTrue(reviewCreated)
+
+        verify(telemetryService).trackEvent(
+            "SessionAppointmentSubmitted",
+            mapOf(
+                "crn" to "T140223",
+                "appointmentId" to "3b8282cd-baa5-45d3-8489-b5836a58a0e8",
+                "referralId" to "89a3f79c-f12b-43de-9616-77ae19813cfe",
+                "referralReference" to "AY0164AC"
+            )
+        )
     }
 
     @Test
@@ -189,16 +189,6 @@ internal class ReferAndMonitorIntegrationTest {
         )
 
         channelManager.getChannel(queueName).publishAndWait(notification)
-
-        verify(telemetryService).trackEvent(
-            "SessionAppointmentSubmitted",
-            mapOf(
-                "crn" to "T140223",
-                "referralId" to "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
-                "appointmentId" to "48911ad2-1213-4bd3-8312-3824dc29f131",
-                "referralReference" to "FE4536C"
-            )
-        )
 
         val expectedOutcome = ContactGenerator.OUTCOMES[ContactOutcome.Code.COMPLIED.value]!!
         val appointment = contactRepository.findById(ContactGenerator.CRSAPT_COMPLIANT.id).orElseThrow()
@@ -221,11 +211,52 @@ internal class ReferAndMonitorIntegrationTest {
         assertThat(event.ftcCount, equalTo(2))
 
         val nsi = nsiRepository.findById(appointment.nsiId!!).orElseThrow()
-        assertThat(nsi.rarCount, equalTo(1))
+        assertThat(nsi.rarCount, equalTo(2))
+
+        verify(telemetryService).trackEvent(
+            "SessionAppointmentSubmitted",
+            mapOf(
+                "crn" to "T140223",
+                "referralId" to "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+                "appointmentId" to "48911ad2-1213-4bd3-8312-3824dc29f131",
+                "referralReference" to "FE4536C"
+            )
+        )
     }
 
     @Test
     @Order(4)
+    fun `session appointment feedback submitted no session`() {
+        val scheduled = contactRepository.findById(ContactGenerator.CRSAPT_NO_SESSION.id).orElseThrow()
+        assertNull(scheduled.outcome)
+
+        val notification = prepNotification(
+            notification("session-appointment-feedback-submitted-no-session"),
+            wireMockServer.port()
+        )
+
+        channelManager.getChannel(queueName).publishAndWait(notification)
+
+        val expectedOutcome = ContactGenerator.OUTCOMES[ContactOutcome.Code.SENT_HOME.value]!!
+        val appointment = contactRepository.findById(ContactGenerator.CRSAPT_NO_SESSION.id).orElseThrow()
+        assertThat(appointment.outcome?.code, equalTo(expectedOutcome.code))
+        assertThat(appointment.attended, equalTo(expectedOutcome.attendance))
+        assertThat(appointment.complied, equalTo(expectedOutcome.compliantAcceptable))
+        assertThat(appointment.hoursCredited, equalTo(null))
+
+        verify(telemetryService).trackEvent(
+            "SessionAppointmentSubmitted",
+            mapOf(
+                "crn" to "T140223",
+                "appointmentId" to "c8801fa4-4487-4b38-9169-efabd4be98c9",
+                "referralId" to "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+                "referralReference" to "FE4536C"
+            )
+        )
+    }
+
+    @Test
+    @Order(5)
     fun `referral end submitted`() {
         val nsi = nsiRepository.findById(NsiGenerator.END_PREMATURELY.id).orElseThrow()
         assertThat(nsi.status.code, equalTo(NsiStatus.Code.IN_PROGRESS.value))
@@ -251,17 +282,6 @@ internal class ReferAndMonitorIntegrationTest {
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
-        verify(telemetryService).trackEvent(
-            "ReferralEnded",
-            mapOf(
-                "crn" to "T140223",
-                "referralId" to "f56c5f7c-632f-4cad-a1b3-693541cb5f22",
-                "referralUrn" to "urn:hmpps:interventions-referral:68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
-                "endDate" to "2023-02-23T15:29:54.197Z[Europe/London]",
-                "endType" to "PREMATURELY_ENDED"
-            )
-        )
-
         val saved = nsiRepository.findById(NsiGenerator.END_PREMATURELY.id).orElseThrow()
         assertThat(saved.status.code, equalTo(NsiStatus.Code.END.value))
         assertThat(
@@ -283,6 +303,17 @@ internal class ReferAndMonitorIntegrationTest {
         val futureAppts = contacts.filter { it.date.isAfter(LocalDate.now()) }
         assertThat(futureAppts.size, equalTo(1))
         futureAppts.forEach { assertThat(it.outcome?.code, equalTo(ContactOutcome.Code.WITHDRAWN.value)) }
+
+        verify(telemetryService).trackEvent(
+            "ReferralEnded",
+            mapOf(
+                "crn" to "T140223",
+                "referralId" to "f56c5f7c-632f-4cad-a1b3-693541cb5f22",
+                "referralUrn" to "urn:hmpps:interventions-referral:68df9f6c-3fcb-4ec6-8fcf-96551cd9b080",
+                "endDate" to "2023-02-23T15:29:54.197Z[Europe/London]",
+                "endType" to "PREMATURELY_ENDED"
+            )
+        )
     }
 
     @Test
@@ -294,6 +325,12 @@ internal class ReferAndMonitorIntegrationTest {
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
+        val contact = contactRepository.findAll()
+            .filter { it.person.id == PersonGenerator.DEFAULT.id && it.type.code == ContactType.Code.CRSNOTE.value }
+            .firstOrNull { it.notes?.contains("Action Plan Submitted") == true }
+
+        assertNotNull(contact)
+
         verify(telemetryService).trackEvent(
             "ActionPlanSubmitted",
             mapOf(
@@ -301,12 +338,6 @@ internal class ReferAndMonitorIntegrationTest {
                 "referralId" to "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080"
             )
         )
-
-        val contact = contactRepository.findAll()
-            .filter { it.person.id == PersonGenerator.DEFAULT.id && it.type.code == ContactType.Code.CRSNOTE.value }
-            .firstOrNull { it.notes?.contains("Action Plan Submitted") == true }
-
-        assertNotNull(contact)
     }
 
     @Test
@@ -318,6 +349,12 @@ internal class ReferAndMonitorIntegrationTest {
 
         channelManager.getChannel(queueName).publishAndWait(notification)
 
+        val contact = contactRepository.findAll()
+            .filter { it.person.id == PersonGenerator.DEFAULT.id && it.type.code == ContactType.Code.CRSNOTE.value }
+            .firstOrNull { it.notes?.contains("Action Plan Approved") == true }
+
+        assertNotNull(contact)
+
         verify(telemetryService).trackEvent(
             "ActionPlanApproved",
             mapOf(
@@ -325,12 +362,6 @@ internal class ReferAndMonitorIntegrationTest {
                 "referralId" to "68df9f6c-3fcb-4ec6-8fcf-96551cd9b080"
             )
         )
-
-        val contact = contactRepository.findAll()
-            .filter { it.person.id == PersonGenerator.DEFAULT.id && it.type.code == ContactType.Code.CRSNOTE.value }
-            .firstOrNull { it.notes?.contains("Action Plan Approved") == true }
-
-        assertNotNull(contact)
     }
 
     @Test

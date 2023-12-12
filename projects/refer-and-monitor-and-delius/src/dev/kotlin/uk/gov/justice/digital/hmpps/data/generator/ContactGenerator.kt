@@ -19,7 +19,12 @@ object ContactGenerator {
     }.associateBy { it.code }
     val OUTCOMES = ContactOutcome.Code.entries.map {
         when (it) {
-            ContactOutcome.Code.COMPLIED -> generateOutcome(it.value, attendance = true, compliantAcceptable = true)
+            ContactOutcome.Code.COMPLIED, ContactOutcome.Code.SENT_HOME -> generateOutcome(
+                it.value,
+                attendance = true,
+                compliantAcceptable = true
+            )
+
             ContactOutcome.Code.FAILED_TO_COMPLY -> generateOutcome(
                 it.value,
                 attendance = true,
@@ -32,7 +37,7 @@ object ContactGenerator {
                 compliantAcceptable = false
             )
 
-            ContactOutcome.Code.RESCHEDULED_SERVICE_REQUEST -> generateOutcome(
+            ContactOutcome.Code.RESCHEDULED_SERVICE_REQUEST, ContactOutcome.Code.RESCHEDULED_POP_REQUEST -> generateOutcome(
                 it.value,
                 attendance = false,
                 compliantAcceptable = true
@@ -66,18 +71,30 @@ object ContactGenerator {
         """.trimMargin(),
         nsi = NsiGenerator.END_PREMATURELY,
         rarActivity = true,
-        externalReference = "48911ad2-1213-4bd3-8312-3824dc29f131"
+        externalReference = "urn:hmpps:interventions-appointment:48911ad2-1213-4bd3-8312-3824dc29f131"
     )
 
     var CRSAPT_NOT_ATTENDED = generate(
         type = TYPES[Code.CRSAPT.value]!!,
         date = LocalDate.now().minusDays(2),
         notes = """
-            |Service Delivery Appointment for Accommodation Referral AY0164AC with Prime Provider ProviderName
+            |Service Delivery Appointment for Accommodation Referral FE4536C with Prime Provider ProviderName
             |https://refer-monitor-intervention.service.justice.gov.uk/probation-practitioner/referrals/89a3f79c-f12b-43de-9616-77ae19813cfe/progress
         """.trimMargin(),
         nsi = NsiGenerator.END_PREMATURELY,
         rarActivity = true
+    )
+
+    var CRSAPT_NO_SESSION = generate(
+        type = TYPES[Code.CRSAPT.value]!!,
+        date = LocalDate.now().minusDays(3),
+        notes = """
+            |Service Delivery Appointment for Accommodation Referral FE4536C with Prime Provider ProviderName
+            |https://refer-monitor-intervention.service.justice.gov.uk/probation-practitioner/referrals/b408f920-a6e8-49c6-877d-6f1fa9309032/progress
+        """.trimMargin(),
+        nsi = NsiGenerator.END_PREMATURELY,
+        rarActivity = true,
+        externalReference = "urn:hmpps:interventions-appointment:c8801fa4-4487-4b38-9169-efabd4be98c9"
     )
 
     fun generate(

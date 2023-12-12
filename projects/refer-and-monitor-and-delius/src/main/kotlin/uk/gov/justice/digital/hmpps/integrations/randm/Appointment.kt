@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.randm
 
+import uk.gov.justice.digital.hmpps.service.NoSessionReasonType
 import java.time.ZonedDateTime
 import java.util.UUID
 
@@ -16,10 +17,12 @@ data class AppointmentFeedback(val attendanceFeedback: AttendanceFeedback, val s
 // Non-null behaviour with nullable attended to match model from Interventions Service
 data class AttendanceFeedback(
     val attended: String?,
+    val didSessionHappen: Boolean?,
     val submittedAt: ZonedDateTime?
 )
 
 // Non-null behaviour with nullable notify to match model from Interventions Service
 data class SessionFeedback(
+    val noSessionReasonType: NoSessionReasonType?,
     val notifyProbationPractitioner: Boolean?
 )
