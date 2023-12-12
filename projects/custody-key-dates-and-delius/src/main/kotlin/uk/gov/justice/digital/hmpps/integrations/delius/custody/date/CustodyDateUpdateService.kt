@@ -42,7 +42,6 @@ class CustodyDateUpdateService(
             singleOrNull() ?: return telemetryService.trackEvent("MissingBookingRef", booking.telemetry())
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
-        custodyRepository.flush()
         val (deleted, updated) = calculateKeyDateChanges(sentenceDetail, custody).partition { it.softDeleted }
         if (deleted.isEmpty() && updated.isEmpty()) {
             telemetryService.trackEvent(
