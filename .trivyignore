@@ -1,0 +1,10 @@
+
+# Vulnerability in Logback, which is used by the following dependencies:
+#
+# * Application Insights Java agent
+#     Not exploitable in the context of the Application Insights Java agent.
+#     Reference: https://github.com/microsoft/ApplicationInsights-Java/issues/3414#issuecomment-1833988304
+# * Spring Boot
+#     Only exploitable if logback receiver component is deployed. This is not the case by default in Spring Boot.
+#     Reference: https://github.com/spring-projects/spring-boot/issues/38643#issuecomment-1838497420
+CVE-2023-6378 exp:2024-01-12
