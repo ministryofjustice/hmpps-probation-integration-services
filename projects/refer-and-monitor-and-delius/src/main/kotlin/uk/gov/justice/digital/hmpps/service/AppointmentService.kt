@@ -274,6 +274,7 @@ class AppointmentService(
                     Attended.NO -> Code.FAILED_TO_ATTEND
                     else -> noSession(outcome)
                 }
+
                 null -> legacyOutcome(outcome)
             }
 
