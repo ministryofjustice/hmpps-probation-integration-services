@@ -268,10 +268,27 @@ class AppointmentService(
 
     companion object {
         private fun attendanceOutcome(outcome: Outcome): Code =
-            when (outcome.attended) {
-                Attended.YES, Attended.LATE -> if (outcome.notify) Code.FAILED_TO_COMPLY else Code.COMPLIED
-                Attended.NO -> Code.FAILED_TO_ATTEND
+            when (outcome.sessionHappened) {
+                true -> Code.COMPLIED
+                false -> when (outcome.attended) {
+                    Attended.NO -> Code.FAILED_TO_ATTEND
+                    else -> noSession(outcome)
+                }
+
+                null -> legacyOutcome(outcome)
             }
+
+        private fun noSession(outcome: Outcome) = when (outcome.noSessionReasonType) {
+            NoSessionReasonType.POP_UNACCEPTABLE -> Code.FAILED_TO_COMPLY
+            NoSessionReasonType.POP_ACCEPTABLE -> Code.RESCHEDULED_POP_REQUEST
+            NoSessionReasonType.LOGISTICS -> Code.SENT_HOME
+            else -> throw IllegalArgumentException("Outcome Scenario Not Mapped: $outcome")
+        }
+
+        private fun legacyOutcome(outcome: Outcome) = when (outcome.attended) {
+            Attended.YES, Attended.LATE -> if (outcome.notify) Code.FAILED_TO_COMPLY else Code.COMPLIED
+            Attended.NO -> Code.FAILED_TO_ATTEND
+        }
     }
 }
 
@@ -300,5 +317,15 @@ enum class Attended {
 
 data class Outcome(
     val attended: Attended,
+    private val didSessionHappen: Boolean? = null,
+    val noSessionReasonType: NoSessionReasonType? = null,
     val notify: Boolean = false
-)
+) {
+    val sessionHappened = didSessionHappen
+}
+
+enum class NoSessionReasonType {
+    LOGISTICS,
+    POP_ACCEPTABLE,
+    POP_UNACCEPTABLE
+}

@@ -12,6 +12,7 @@
       "appointmentFeedback": {
         "attendanceFeedback": {
           "attended": "no",
+          "didSessionHappen": false,
           "additionalAttendanceInformation": "",
           "submittedAt": "2023-04-17T11:34:15.372669+01:00",
           "submittedBy": {

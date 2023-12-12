@@ -3,6 +3,19 @@
     {
       "request": {
         "method": "GET",
+        "url": "/referral/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080/delivery-session-appointments/52caa3e3-40b0-401a-babc-4d48cbd6e096"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "session-appointment-feedback-submitted-no-session.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "url": "/referral/68df9f6c-3fcb-4ec6-8fcf-96551cd9b080/delivery-session-appointments/8802fcba-8c4f-4ca9-aca0-bdce9bfeed30"
       },
       "response": {
