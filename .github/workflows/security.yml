@@ -40,7 +40,7 @@ jobs:
           exit-code: '1'
           format: 'sarif'
           output: 'trivy-results.sarif'
-          trivyignores: 'projects/${{ matrix.project }}/.trivyignore'
+          trivyignores: '.trivyignore,projects/${{ matrix.project }}/.trivyignore'
           limit-severities-for-sarif: true
 
       - name: Upload Trivy scan results to GitHub Security tab
@@ -58,7 +58,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
           format: 'json'
           output: 'results.json'
-          trivyignores: 'projects/${{ matrix.project }}/.trivyignore'
+          trivyignores: '.trivyignore,projects/${{ matrix.project }}/.trivyignore'
 
       - name: Output Trivy results
         if: always()
