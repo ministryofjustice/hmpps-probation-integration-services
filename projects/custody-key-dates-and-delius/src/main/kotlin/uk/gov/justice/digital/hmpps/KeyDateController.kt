@@ -2,11 +2,7 @@ package uk.gov.justice.digital.hmpps
 
 import jakarta.validation.constraints.Size
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateUpdateService
 
 @RestController
@@ -19,7 +15,18 @@ class KeyDateController(private val custodyDateUpdateService: CustodyDateUpdateS
         @Size(min = 1, max = 1000, message = "Please provide between 1 and 1000 noms numbers")
         nomsNumbers: List<String>,
         @RequestParam(required = false, defaultValue = "true") dryRun: Boolean
-    ) {
-        nomsNumbers.forEach { custodyDateUpdateService.updateCustodyKeyDates(it, dryRun) }
+    ) = nomsNumbers.map {
+        try {
+            custodyDateUpdateService.updateCustodyKeyDates(it, dryRun)
+            Result(it, true)
+        } catch (ex: Exception) {
+            Result(it, false, ex.message)
+        }
     }
 }
+
+data class Result(
+    val nomsNumber: String,
+    val processed: Boolean,
+    val message: String? = null
+)
