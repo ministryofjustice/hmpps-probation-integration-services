@@ -11,7 +11,6 @@ import org.hibernate.type.YesNoConverter
 
 @Entity
 @Immutable
-@SQLRestriction("selectable = 'Y' and (establishment is null or establishment <> 'Y')")
 class ProbationArea(
     @Id
     @Column(name = "probation_area_id")
