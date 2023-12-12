@@ -35,7 +35,7 @@ class CustodyDateUpdateService(
     private fun updateCustodyKeyDates(booking: Booking, dryRun: Boolean = false) {
         if (!booking.active) return telemetryService.trackEvent("BookingNotActive", booking.telemetry())
         val sentenceDetail = prisonApi.getSentenceDetail(booking.id)
-        val person = personRepository.findByNomsIdAndSoftDeletedIsFalse(booking.offenderNo)
+        val person = personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)
             ?: return telemetryService.trackEvent("MissingNomsNumber", booking.telemetry())
         val custodyId = custodyRepository.findCustodyId(person.id, booking.bookingNo).run {
             if (size > 1) return telemetryService.trackEvent("DuplicateBookingRef", booking.telemetry())
