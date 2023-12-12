@@ -34,6 +34,7 @@ class Handler(
                 allocationEvent.findCrn(),
                 allocationDetail
             )
+
             is RequirementAllocationDetail -> allocateRequirementService.createRequirementAllocation(
                 allocationEvent.findCrn(),
                 allocationDetail

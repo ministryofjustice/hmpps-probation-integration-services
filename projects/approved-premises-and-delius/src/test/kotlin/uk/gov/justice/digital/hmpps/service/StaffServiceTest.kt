@@ -21,11 +21,14 @@ import uk.gov.justice.digital.hmpps.integrations.delius.staff.StaffRepository
 
 @ExtendWith(MockitoExtension::class)
 internal class StaffServiceTest {
-    @Mock lateinit var approvedPremisesRepository: ApprovedPremisesRepository
+    @Mock
+    lateinit var approvedPremisesRepository: ApprovedPremisesRepository
 
-    @Mock lateinit var staffRepository: StaffRepository
+    @Mock
+    lateinit var staffRepository: StaffRepository
 
-    @InjectMocks lateinit var staffService: StaffService
+    @InjectMocks
+    lateinit var staffService: StaffService
 
     @Test
     fun `throws not found when approved premises does not exist`() {
@@ -41,11 +44,24 @@ internal class StaffServiceTest {
     fun `maps and returns results`() {
         val approvedPremises = ApprovedPremisesGenerator.DEFAULT
         val staffEntities = listOf(
-            StaffGenerator.generate("Staff 1", teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM), approvedPremises = emptyList()),
-            StaffGenerator.generate("Staff 2", teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM), approvedPremises = listOf(approvedPremises))
+            StaffGenerator.generate(
+                "Staff 1",
+                teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM),
+                approvedPremises = emptyList()
+            ),
+            StaffGenerator.generate(
+                "Staff 2",
+                teams = listOf(TeamGenerator.APPROVED_PREMISES_TEAM),
+                approvedPremises = listOf(approvedPremises)
+            )
         )
         whenever(approvedPremisesRepository.existsByCodeCode(approvedPremises.code.code)).thenReturn(true)
-        whenever(staffRepository.findAllStaffLinkedToApprovedPremisesTeam(approvedPremises.code.code, Pageable.unpaged()))
+        whenever(
+            staffRepository.findAllStaffLinkedToApprovedPremisesTeam(
+                approvedPremises.code.code,
+                Pageable.unpaged()
+            )
+        )
             .thenReturn(PageImpl(staffEntities))
 
         val results = staffService.getStaffInApprovedPremises(approvedPremises.code.code, false, Pageable.unpaged())

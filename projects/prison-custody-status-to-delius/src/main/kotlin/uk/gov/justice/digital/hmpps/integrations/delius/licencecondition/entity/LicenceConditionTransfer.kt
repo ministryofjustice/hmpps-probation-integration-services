@@ -104,5 +104,8 @@ class LicenceConditionTransfer(
 )
 
 interface LicenceConditionTransferRepository : JpaRepository<LicenceConditionTransfer, Long> {
-    fun findAllByLicenceConditionIdAndStatusCode(licenceConditionId: Long, statusCode: String): List<LicenceConditionTransfer>
+    fun findAllByLicenceConditionIdAndStatusCode(
+        licenceConditionId: Long,
+        statusCode: String
+    ): List<LicenceConditionTransfer>
 }

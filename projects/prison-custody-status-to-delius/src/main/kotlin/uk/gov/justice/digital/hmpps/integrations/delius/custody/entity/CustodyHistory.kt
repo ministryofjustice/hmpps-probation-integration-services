@@ -19,7 +19,11 @@ import java.time.ZonedDateTime
 @Table(name = "custody_history")
 class CustodyHistory(
     @Id
-    @SequenceGenerator(name = "custody_history_id_generator", sequenceName = "custody_history_id_seq", allocationSize = 1)
+    @SequenceGenerator(
+        name = "custody_history_id_generator",
+        sequenceName = "custody_history_id_seq",
+        allocationSize = 1
+    )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custody_history_id_generator")
     @Column(name = "custody_history_id")
     val id: Long = 0,

@@ -17,6 +17,7 @@ object RegistrationGenerator {
         LocalDate.now()
     )
 }
+
 object RegisterTypeGenerator {
     val DEFAULT = generate("ROSH")
 

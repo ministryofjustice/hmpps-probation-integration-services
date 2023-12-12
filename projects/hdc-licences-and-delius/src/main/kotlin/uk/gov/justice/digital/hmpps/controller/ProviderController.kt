@@ -23,7 +23,8 @@ class ProviderController(
 ) {
 
     @GetMapping
-    fun getProviders() = probationAreaRepository.findSelectableProbationAreas().map { Provider(it.code, it.description) }
+    fun getProviders() = probationAreaRepository.findSelectableProbationAreas()
+        .map { Provider(it.code, it.description) }
 
     @GetMapping("/{code}")
     fun getProvider(@PathVariable code: String) = probationAreaRepository.findByCodeWithSelectableDistricts(code)
@@ -31,12 +32,16 @@ class ProviderController(
             ProviderWithLaus(
                 code = probationArea.code,
                 description = probationArea.description,
-                localAdminUnits = probationArea.boroughs.flatMap { it.districts }.map { LocalAdminUnit(it.code, it.description) }
+                localAdminUnits = probationArea.boroughs.flatMap { it.districts }
+                    .map { LocalAdminUnit(it.code, it.description) }
             )
         } ?: throw NotFoundException("Provider", "code", code)
 
     @GetMapping("/{providerCode}/localAdminUnits/{lauCode}")
-    fun getLocalAdminUnit(@PathVariable providerCode: String, @PathVariable lauCode: String) = districtRepository.findByProbationAreaAndCode(providerCode, lauCode)
+    fun getLocalAdminUnit(
+        @PathVariable providerCode: String,
+        @PathVariable lauCode: String
+    ) = districtRepository.findByProbationAreaAndCode(providerCode, lauCode)
         ?.let { district ->
             LocalAdminUnitWithTeams(
                 code = district.code,

@@ -35,19 +35,31 @@ class DataLoader(
         val personWithNomsCustody = generateCustody(personWithNomsDisposal)
 
         val personWithNoNomsNumberEvent = generateEvent(PersonGenerator.PERSON_WITH_NO_NOMS)
-        val personWithNoNomsNumberDisposal = generateDisposal(LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")), personWithNoNomsNumberEvent)
+        val personWithNoNomsNumberDisposal = generateDisposal(
+            LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+            personWithNoNomsNumberEvent
+        )
         val personWithNoNomsNumberCustody = generateCustody(personWithNoNomsNumberDisposal)
 
         val personWithMultiMatchEvent = generateEvent(PersonGenerator.PERSON_WITH_MULTI_MATCH)
-        val personWithMultiMatchDisposal = generateDisposal(LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")), personWithMultiMatchEvent)
+        val personWithMultiMatchDisposal = generateDisposal(
+            LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+            personWithMultiMatchEvent
+        )
         val personWithMultiMatchCustody = generateCustody(personWithMultiMatchDisposal)
 
         val personWithNoMatchEvent = generateEvent(PersonGenerator.PERSON_WITH_NO_MATCH)
-        val personWithNoMatchDisposal = generateDisposal(LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")), personWithNoMatchEvent)
+        val personWithNoMatchDisposal = generateDisposal(
+            LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+            personWithNoMatchEvent
+        )
         val personWithNoMatchCustody = generateCustody(personWithNoMatchDisposal)
 
         val personWithNomsInDeliusEvent = generateEvent(PersonGenerator.PERSON_WITH_NOMS_IN_DELIUS)
-        val personWithNomsInDeliusDisposal = generateDisposal(LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")), personWithNomsInDeliusEvent)
+        val personWithNomsInDeliusDisposal = generateDisposal(
+            LocalDate.parse("12/12/2022", DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+            personWithNomsInDeliusEvent
+        )
         val personWithNomsInDeliusCustody = generateCustody(personWithNomsInDeliusDisposal)
 
         em.saveAll(

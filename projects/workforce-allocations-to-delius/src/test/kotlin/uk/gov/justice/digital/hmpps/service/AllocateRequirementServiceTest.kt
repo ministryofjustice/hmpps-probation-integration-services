@@ -304,18 +304,36 @@ internal class AllocateRequirementServiceTest {
 
     @ParameterizedTest(name = "Requirement with categories(main={0}, additional={1}, sub={2}) should update IAPS: {3}")
     @MethodSource("iapsCases")
-    fun `update IAPS`(mainCategory: String?, additionalMainCategory: String?, subCategory: String?, shouldUpdateIaps: Boolean) {
+    fun `update IAPS`(
+        mainCategory: String?,
+        additionalMainCategory: String?,
+        subCategory: String?,
+        shouldUpdateIaps: Boolean
+    ) {
         val requirement = RequirementGenerator.generate(mainCategory, additionalMainCategory, subCategory)
 
         whenever(requirementRepository.findById(allocationDetail.requirementId))
             .thenReturn(Optional.of(requirement))
-        whenever(requirementManagerRepository.findActiveManagerAtDate(allocationDetail.requirementId, allocationDetail.createdDate))
+        whenever(
+            requirementManagerRepository.findActiveManagerAtDate(
+                allocationDetail.requirementId,
+                allocationDetail.createdDate
+            )
+        )
             .thenReturn(RequirementManagerGenerator.DEFAULT)
         whenever(requirementManagerRepository.save(ArgumentMatchers.any())).thenAnswer { it.arguments[0] }
         whenever(requirementRepository.countPendingTransfers(requirement.id)).thenReturn(0)
-        whenever(transferReasonRepository.findByCode(TransferReasonCode.COMPONENT.value)).thenReturn(TransferReasonGenerator.COMPONENT)
+        whenever(transferReasonRepository.findByCode(TransferReasonCode.COMPONENT.value)).thenReturn(
+            TransferReasonGenerator.COMPONENT
+        )
         whenever(allocationValidator.initialValidations(ProviderGenerator.DEFAULT.id, allocationDetail))
-            .thenReturn(TeamStaffContainer(TeamGenerator.DEFAULT, StaffGenerator.DEFAULT, ReferenceDataGenerator.INITIAL_OM_ALLOCATION))
+            .thenReturn(
+                TeamStaffContainer(
+                    TeamGenerator.DEFAULT,
+                    StaffGenerator.DEFAULT,
+                    ReferenceDataGenerator.INITIAL_OM_ALLOCATION
+                )
+            )
         whenever(contactTypeRepository.findByCode(ContactTypeCode.SENTENCE_COMPONENT_TRANSFER.value))
             .thenReturn(ContactTypeGenerator.SENTENCE_COMPONENT_TRANSFER)
 

@@ -27,9 +27,11 @@ import java.time.ZonedDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class RiskScoreServiceTest {
-    @Mock private lateinit var jdbcTemplate: JdbcTemplate
+    @Mock
+    private lateinit var jdbcTemplate: JdbcTemplate
 
-    @Mock private lateinit var simpleJdbcCall: SimpleJdbcCall
+    @Mock
+    private lateinit var simpleJdbcCall: SimpleJdbcCall
 
     @Test
     fun `scores are passed to the database procedure`() {

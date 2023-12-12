@@ -14,6 +14,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
 import java.io.Serializable
 import java.time.ZonedDateTime
+
 @EntityListeners(AuditingEntityListener::class)
 @Entity
 @IdClass(StaffTeamId::class)

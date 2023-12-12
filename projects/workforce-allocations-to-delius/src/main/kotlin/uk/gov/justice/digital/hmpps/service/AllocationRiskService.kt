@@ -41,7 +41,8 @@ class AllocationRiskService(
         val oasysAssessment = oasysAssessmentRepository.findFirstByPersonIdAndScoreIsNotNullOrderByAssessmentDateDesc(
             person.id
         )
-        val ogrsAssessment = ogrsAssessmentRepository.findFirstByEventPersonIdAndScoreIsNotNullOrderByAssessmentDateDesc(person.id)
+        val ogrsAssessment =
+            ogrsAssessmentRepository.findFirstByEventPersonIdAndScoreIsNotNullOrderByAssessmentDateDesc(person.id)
         val assessment = listOfNotNull(oasysAssessment, ogrsAssessment).maxByOrNull { it.assessmentDate }
         return assessment?.let {
             RiskOGRS(assessment.lastModifiedDateTime.toLocalDate(), assessment.score)

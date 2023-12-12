@@ -85,7 +85,11 @@ class LicenceCondition(
 @EntityListeners(AuditingEntityListener::class)
 @Table(name = "lic_condition_manager")
 @SQLRestriction("active_flag = 1 and soft_deleted = 0")
-@SequenceGenerator(name = "lic_condition_manager_id_seq", sequenceName = "lic_condition_manager_id_seq", allocationSize = 1)
+@SequenceGenerator(
+    name = "lic_condition_manager_id_seq",
+    sequenceName = "lic_condition_manager_id_seq",
+    allocationSize = 1
+)
 class LicenceConditionManager(
 
     @Column(name = "lic_condition_id")

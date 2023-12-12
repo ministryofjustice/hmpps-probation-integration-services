@@ -30,9 +30,11 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class CaseDetailsIntegrationTest {
-    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    @Autowired lateinit var wireMockserver: WireMockServer
+    @Autowired
+    lateinit var wireMockserver: WireMockServer
 
     @Test
     fun `successful response`() {

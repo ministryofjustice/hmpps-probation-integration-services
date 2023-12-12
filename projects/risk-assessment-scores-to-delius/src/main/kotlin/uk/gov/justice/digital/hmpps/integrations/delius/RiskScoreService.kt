@@ -65,5 +65,6 @@ class RiskScoreService(jdbcTemplate: JdbcTemplate) {
         ?.replace(Regex("\\[[^]]++]\\s*"), "") // remove anything inside square brackets
         ?.removePrefix("ORA-20000: INTERNAL ERROR: An unexpected error in PL/SQL: ERROR : ") // remove Oracle prefix
         ?.trim()
+
     private fun String.isDeliusValidationMessage() = DeliusValidationError.isKnownValidationMessage(this)
 }

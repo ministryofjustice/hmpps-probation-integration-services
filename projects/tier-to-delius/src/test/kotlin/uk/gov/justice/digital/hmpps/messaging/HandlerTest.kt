@@ -20,15 +20,20 @@ import java.time.ZonedDateTime.now
 
 @ExtendWith(MockitoExtension::class)
 internal class HandlerTest {
-    @Mock lateinit var telemetryService: TelemetryService
+    @Mock
+    lateinit var telemetryService: TelemetryService
 
-    @Mock lateinit var tierClient: TierClient
+    @Mock
+    lateinit var tierClient: TierClient
 
-    @Mock lateinit var tierService: TierService
+    @Mock
+    lateinit var tierService: TierService
 
-    @Mock lateinit var converter: NotificationConverter<HmppsDomainEvent>
+    @Mock
+    lateinit var converter: NotificationConverter<HmppsDomainEvent>
 
-    @InjectMocks lateinit var handler: Handler
+    @InjectMocks
+    lateinit var handler: Handler
 
     @Test
     fun `should update tier`() {
@@ -36,7 +41,9 @@ internal class HandlerTest {
         val message = prepMessage("tier-calculation", 1234)
         // And a calculation
         val calculation = TierCalculation("someScore", "calculationId", now())
-        whenever(tierClient.getTierCalculation(URI.create("http://localhost:1234/hmpps-tier/crn/A000001/tier/123e4567-e89b-12d3-a456-426614174000"))).thenReturn(calculation)
+        whenever(tierClient.getTierCalculation(URI.create("http://localhost:1234/hmpps-tier/crn/A000001/tier/123e4567-e89b-12d3-a456-426614174000"))).thenReturn(
+            calculation
+        )
 
         // When the message is received
         handler.handle(message)

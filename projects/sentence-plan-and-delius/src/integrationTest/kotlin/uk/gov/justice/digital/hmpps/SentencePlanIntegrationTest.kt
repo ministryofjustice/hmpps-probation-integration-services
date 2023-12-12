@@ -55,7 +55,10 @@ internal class SentencePlanIntegrationTest {
             .perform(get("/case-details/X123124").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful).andReturn()
         val detailResponse = objectMapper.readValue(result.response.contentAsString, CaseDetails::class.java)
-        MatcherAssert.assertThat(detailResponse, Matchers.equalTo(getDetailResponse(false, PersonGenerator.NON_CUSTODIAL)))
+        MatcherAssert.assertThat(
+            detailResponse,
+            Matchers.equalTo(getDetailResponse(false, PersonGenerator.NON_CUSTODIAL))
+        )
     }
 
     @Test

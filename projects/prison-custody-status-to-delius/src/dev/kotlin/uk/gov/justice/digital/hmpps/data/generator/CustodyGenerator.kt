@@ -9,5 +9,9 @@ object CustodyGenerator {
         person: Person,
         institution: Institution?,
         custodialStatusCode: CustodialStatusCode = CustodialStatusCode.IN_CUSTODY
-    ) = EventGenerator.custodialEvent(person, institution, custodialStatusCode = custodialStatusCode).disposal!!.custody!!
+    ) = EventGenerator.custodialEvent(
+        person,
+        institution,
+        custodialStatusCode = custodialStatusCode
+    ).disposal!!.custody!!
 }

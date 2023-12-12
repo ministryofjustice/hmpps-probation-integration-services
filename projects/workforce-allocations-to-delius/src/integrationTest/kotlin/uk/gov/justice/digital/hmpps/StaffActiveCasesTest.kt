@@ -19,18 +19,22 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class StaffActiveCasesTest {
-    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    @Autowired lateinit var wireMockserver: WireMockServer
+    @Autowired
+    lateinit var wireMockserver: WireMockServer
 
-    @Autowired lateinit var objectMapper: ObjectMapper
+    @Autowired
+    lateinit var objectMapper: ObjectMapper
 
     @Test
     fun `successful response`() {
         val staff = StaffGenerator.DEFAULT
         val person = PersonGenerator.DEFAULT
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/staff/${StaffGenerator.DEFAULT.code}/active-cases").withOAuth2Token(wireMockserver)
+            MockMvcRequestBuilders.post("/staff/${StaffGenerator.DEFAULT.code}/active-cases")
+                .withOAuth2Token(wireMockserver)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(listOf(person.crn)))
         )

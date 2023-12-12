@@ -16,6 +16,7 @@ data class MatchReason(
     val message: String,
     val potentialMatches: List<MatchDetail> = listOf()
 )
+
 data class MatchDetail(
     val nomsNumber: String,
     val bookingRef: String?,

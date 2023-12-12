@@ -14,5 +14,16 @@ object AddressGenerator {
         county: String? = null,
         postcode: String? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = PersonAddress(id, PersonGenerator.DEFAULT, status = ReferenceDataGenerator.ADDRESS_STATUS, buildingName, addressNumber, streetName, district, town, county, postcode)
+    ) = PersonAddress(
+        id,
+        PersonGenerator.DEFAULT,
+        status = ReferenceDataGenerator.ADDRESS_STATUS,
+        buildingName,
+        addressNumber,
+        streetName,
+        district,
+        town,
+        county,
+        postcode
+    )
 }

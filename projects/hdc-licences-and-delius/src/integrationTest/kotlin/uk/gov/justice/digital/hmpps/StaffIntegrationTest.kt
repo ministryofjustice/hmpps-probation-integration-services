@@ -92,6 +92,11 @@ internal class StaffIntegrationTest {
         mockMvc
             .perform(get("/case/DOESNOTEXIST/communityManager").withOAuth2Token(wireMockServer))
             .andExpect(status().isNotFound)
-            .andExpect(jsonPath("message", equalTo("Community manager for case with nomsNumber of DOESNOTEXIST not found")))
+            .andExpect(
+                jsonPath(
+                    "message",
+                    equalTo("Community manager for case with nomsNumber of DOESNOTEXIST not found")
+                )
+            )
     }
 }

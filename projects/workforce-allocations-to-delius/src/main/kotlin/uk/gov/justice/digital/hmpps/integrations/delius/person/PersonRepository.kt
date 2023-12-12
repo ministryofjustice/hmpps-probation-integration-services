@@ -16,6 +16,7 @@ const val DISPOSAL_SQL = """
     join disposal d on d.event_id = e.event_id and d.soft_deleted = 0
     where crn = :crn
 """
+
 interface PersonRepository : JpaRepository<Person, Long> {
     fun findByCrnAndSoftDeletedFalse(crn: String): Person?
     fun findByNomsIdAndSoftDeletedFalse(nomsId: String): Person?

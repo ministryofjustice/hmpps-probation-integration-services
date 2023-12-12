@@ -50,7 +50,10 @@ class CaseNotesIntegrationTest {
             prepMessage(CourtCaseNoteMessageGenerator.NEW, wireMockserver.port())
         )
 
-        val caseNote = caseNoteRepository.findByExternalReferenceAndOffenderIdAndSoftDeletedIsFalse("1111", PersonGenerator.NEW_TO_PROBATION.id)
+        val caseNote = caseNoteRepository.findByExternalReferenceAndOffenderIdAndSoftDeletedIsFalse(
+            "1111",
+            PersonGenerator.NEW_TO_PROBATION.id
+        )
         assertThat(caseNote!!.notes, equalTo("Some new notes about the court case."))
 
         verify(telemetryService).trackEvent(eq(COURT_CASE_NOTE_MERGED), anyMap(), anyMap())
@@ -64,7 +67,10 @@ class CaseNotesIntegrationTest {
             prepMessage(message, wireMockserver.port())
         )
 
-        val caseNote = caseNoteRepository.findByExternalReferenceAndOffenderIdAndSoftDeletedIsFalse("2222", PersonGenerator.CURRENTLY_MANAGED.id)
+        val caseNote = caseNoteRepository.findByExternalReferenceAndOffenderIdAndSoftDeletedIsFalse(
+            "2222",
+            PersonGenerator.CURRENTLY_MANAGED.id
+        )
         assertThat(caseNote!!.notes, equalTo("Overwritten the existing notes about the court case."))
 
         verify(telemetryService).trackEvent(eq(COURT_CASE_NOTE_MERGED), anyMap(), anyMap())

@@ -70,7 +70,10 @@ class LdapTemplateExtensionsTest {
 
         assertThat(nameCapture.firstValue.toString(), equalTo("cn=ROLE1,cn=john-smith,ou=Users"))
         assertThat(attributeCapture.firstValue["cn"].toString(), equalTo("cn: ROLE1"))
-        assertThat(attributeCapture.firstValue["objectclass"].toString(), equalTo("objectclass: NDRoleAssociation, alias, top"))
+        assertThat(
+            attributeCapture.firstValue["objectclass"].toString(),
+            equalTo("objectclass: NDRoleAssociation, alias, top")
+        )
     }
 
     @Test

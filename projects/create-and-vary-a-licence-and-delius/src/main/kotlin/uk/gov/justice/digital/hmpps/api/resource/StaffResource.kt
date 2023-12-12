@@ -27,5 +27,7 @@ class StaffResource(
 
     @PreAuthorize("hasRole('CVL_CONTEXT')")
     @PostMapping
-    fun findStaffForUsernames(@RequestBody usernames: List<String>): List<StaffName> = staffService.findStaffForUsernames(usernames)
+    fun findStaffForUsernames(@RequestBody usernames: List<String>): List<StaffName> = staffService.findStaffForUsernames(
+        usernames
+    )
 }

@@ -16,9 +16,11 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 @SpringBootTest
 @AutoConfigureMockMvc
 internal class ProviderIntegrationTest {
-    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    @Autowired lateinit var wireMockserver: WireMockServer
+    @Autowired
+    lateinit var wireMockserver: WireMockServer
 
     @Test
     fun `get provider by code`() {

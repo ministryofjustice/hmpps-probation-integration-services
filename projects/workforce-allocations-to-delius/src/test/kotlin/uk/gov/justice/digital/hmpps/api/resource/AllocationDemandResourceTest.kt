@@ -14,11 +14,14 @@ import uk.gov.justice.digital.hmpps.service.AllocationRiskService
 
 @ExtendWith(MockitoExtension::class)
 class AllocationDemandResourceTest {
-    @Mock lateinit var allocationDemandService: AllocationDemandService
+    @Mock
+    lateinit var allocationDemandService: AllocationDemandService
 
-    @Mock lateinit var allocationRisk: AllocationRiskService
+    @Mock
+    lateinit var allocationRisk: AllocationRiskService
 
-    @InjectMocks lateinit var allocationDemandResource: AllocationDemandResource
+    @InjectMocks
+    lateinit var allocationDemandResource: AllocationDemandResource
 
     @Test
     fun `find unallocated handles empty request`() {

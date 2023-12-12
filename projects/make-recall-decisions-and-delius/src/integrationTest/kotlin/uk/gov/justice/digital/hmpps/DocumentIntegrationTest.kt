@@ -18,9 +18,11 @@ import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class DocumentIntegrationTest {
-    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    @Autowired lateinit var wireMockserver: WireMockServer
+    @Autowired
+    lateinit var wireMockserver: WireMockServer
 
     @Test
     fun `document is downloaded`() {
@@ -33,7 +35,12 @@ internal class DocumentIntegrationTest {
             .andDo(MvcResult::getAsyncResult)
             .andExpect(status().is2xxSuccessful)
             .andExpect(header().string("Content-Type", "application/octet-stream"))
-            .andExpect(header().string("Content-Disposition", "attachment; filename=\"=?UTF-8?Q?doc1?=\"; filename*=UTF-8''doc1"))
+            .andExpect(
+                header().string(
+                    "Content-Disposition",
+                    "attachment; filename=\"=?UTF-8?Q?doc1?=\"; filename*=UTF-8''doc1"
+                )
+            )
             .andExpect(header().doesNotExist("Custom-Alfresco-Header"))
             .andExpect(content().bytes(ResourceUtils.getFile("classpath:simulations/__files/document.pdf").readBytes()))
     }

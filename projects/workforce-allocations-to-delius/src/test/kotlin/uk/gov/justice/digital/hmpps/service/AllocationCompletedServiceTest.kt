@@ -108,10 +108,10 @@ class AllocationCompletedServiceTest {
         whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
         whenever(ldapService.findEmailsForStaffIn(any())).thenReturn(mapOf(user.username to user.email))
         whenever(contactRepository.getInitialAppointmentData(person.id, event.id)).thenReturn(object :
-                InitialAppointmentData {
-                override val date = initialAppointmentDate
-                override val staff = staff
-            })
+            InitialAppointmentData {
+            override val date = initialAppointmentDate
+            override val staff = staff
+        })
 
         val response = allocationCompletedService.getDetails(person.crn, event.number, staff.code)
 

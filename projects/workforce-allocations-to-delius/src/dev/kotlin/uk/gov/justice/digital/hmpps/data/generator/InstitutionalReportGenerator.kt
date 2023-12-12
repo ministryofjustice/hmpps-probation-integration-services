@@ -8,5 +8,10 @@ object InstitutionalReportGenerator {
 
     fun generate(
         id: Long = IdGenerator.getAndIncrement()
-    ) = InstitutionalReport(id, ReferenceDataGenerator.INS_RPT_PAR, LocalDate.now().plusWeeks(1), custodyId = CustodyGenerator.DEFAULT.id)
+    ) = InstitutionalReport(
+        id,
+        ReferenceDataGenerator.INS_RPT_PAR,
+        LocalDate.now().plusWeeks(1),
+        custodyId = CustodyGenerator.DEFAULT.id
+    )
 }

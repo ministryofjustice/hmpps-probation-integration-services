@@ -84,7 +84,8 @@ class DatasetCodeConverter : AttributeConverter<DatasetCode, String> {
 }
 
 @Embeddable
-class ApGroupLinkId(val approvedPremisesId: Long, @Column(name = "standard_reference_list_id") val apGroupId: Long) : Serializable
+class ApGroupLinkId(val approvedPremisesId: Long, @Column(name = "standard_reference_list_id") val apGroupId: Long) :
+    Serializable
 
 @Immutable
 @Entity

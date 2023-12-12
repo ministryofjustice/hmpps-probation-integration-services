@@ -27,12 +27,18 @@ class UserController(private val ldapTemplate: LdapTemplate) {
         username = username,
         roles = ldapTemplate.getRoles(username).filter { role -> LicencesRole.entries.any { it.name == role } },
         enabled = ldapTemplate.findAttributeByUsername(username, "endDate")
-            .let { it == null || LocalDate.parse(it.substring(0, 8), DateTimeFormatter.ofPattern("yyyyMMdd")).isAfter(now()) }
+            .let {
+                it == null || LocalDate.parse(it.substring(0, 8), DateTimeFormatter.ofPattern("yyyyMMdd"))
+                    .isAfter(now())
+            }
     )
 
     @PutMapping("/roles/{role}")
     fun addRole(@PathVariable username: String, @PathVariable role: LicencesRole) = ldapTemplate.addRole(username, role)
 
     @DeleteMapping("/roles/{role}")
-    fun removeRole(@PathVariable username: String, @PathVariable role: LicencesRole) = ldapTemplate.removeRole(username, role)
+    fun removeRole(@PathVariable username: String, @PathVariable role: LicencesRole) = ldapTemplate.removeRole(
+        username,
+        role
+    )
 }

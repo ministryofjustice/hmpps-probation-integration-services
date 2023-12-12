@@ -41,7 +41,8 @@ internal class CourtAppearancesIntegrationTest {
             .perform(get("/court-appearances/$crn").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful).andReturn()
 
-        val detailResponse = objectMapper.readValue(result.response.contentAsString, CourtAppearancesContainer::class.java)
+        val detailResponse =
+            objectMapper.readValue(result.response.contentAsString, CourtAppearancesContainer::class.java)
         Assertions.assertThat(detailResponse).isEqualTo(getCourtAppearances())
     }
 
@@ -52,7 +53,8 @@ internal class CourtAppearancesIntegrationTest {
             .perform(get("/court-appearances/$crn?fromDate=2099-12-12").withOAuth2Token(wireMockServer))
             .andExpect(status().is2xxSuccessful).andReturn()
 
-        val detailResponse = objectMapper.readValue(result.response.contentAsString, CourtAppearancesContainer::class.java)
+        val detailResponse =
+            objectMapper.readValue(result.response.contentAsString, CourtAppearancesContainer::class.java)
         Assertions.assertThat(detailResponse).isEqualTo(CourtAppearancesContainer(listOf()))
     }
 
@@ -60,7 +62,10 @@ internal class CourtAppearancesIntegrationTest {
         listOf(
             CourtAppearance(
                 CourtAppearanceGenerator.DEFAULT_CA.appearanceDate,
-                Type(CourtAppearanceGenerator.DEFAULT_CA_TYPE.code, CourtAppearanceGenerator.DEFAULT_CA_TYPE.description),
+                Type(
+                    CourtAppearanceGenerator.DEFAULT_CA_TYPE.code,
+                    CourtAppearanceGenerator.DEFAULT_CA_TYPE.description
+                ),
                 CourtAppearanceGenerator.DEFAULT_COURT.code,
                 CourtAppearanceGenerator.DEFAULT_COURT.name,
                 CourtAppearanceGenerator.DEFAULT_PERSON.crn,

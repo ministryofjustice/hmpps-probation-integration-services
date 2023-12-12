@@ -12,7 +12,8 @@ object ReferenceDataGenerator {
     val MAPPA_LEVEL_1 = generate(DatasetGenerator.REGISTER_LEVEL, "M1", "MAPPA Level 1")
     val MAPPA_CATEGORY_2 = generate(DatasetGenerator.REGISTER_CATEGORY, "M2", "MAPPA Cat 2")
     val HEARING_PROVISION = generate(DatasetGenerator.DISABILITY_PROVISION, "H", "Hearing Aid")
-    val HEARING_PROVISION_CATEGORY = generate(DatasetGenerator.DISABILITY_PROVISION_CATEGORY, "H1", "Hearing Aid in one ear")
+    val HEARING_PROVISION_CATEGORY =
+        generate(DatasetGenerator.DISABILITY_PROVISION_CATEGORY, "H1", "Hearing Aid in one ear")
     val DOCTOR_RELATIONSHIP = generate(DatasetGenerator.RELATIONSHIP, "DOC", "Doctor")
     val MAIN_ADDRESS = generate(DatasetGenerator.ADDRESS_STATUS, "M", "Main")
 

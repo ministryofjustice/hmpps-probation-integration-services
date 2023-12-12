@@ -66,6 +66,9 @@ internal class UserRoleIntegrationTest {
                     .build()
             )
         }
-        assertThat(res.message, equalTo("[LDAP: error code 32 - Unable to perform the search because base entry 'cn=LHDCBT002,cn=john-smith,ou=Users,dc=moj,dc=com' does not exist in the server.]"))
+        assertThat(
+            res.message,
+            equalTo("[LDAP: error code 32 - Unable to perform the search because base entry 'cn=LHDCBT002,cn=john-smith,ou=Users,dc=moj,dc=com' does not exist in the server.]")
+        )
     }
 }

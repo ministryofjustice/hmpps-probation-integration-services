@@ -14,5 +14,6 @@ object DataGenerator {
         .set(Staff::user) { UserDetails(id = IdGenerator.getAndIncrement(), username = "TestUser", staff = it) }
 
     val COMMUNITY_MANAGER = CommunityManager(id = IdGenerator.getAndIncrement(), personId = PERSON.id, staff = STAFF)
-    val COMMUNITY_MANAGER_WITH_USER = CommunityManager(id = IdGenerator.getAndIncrement(), personId = PERSON.id, staff = STAFF_WITH_USER)
+    val COMMUNITY_MANAGER_WITH_USER =
+        CommunityManager(id = IdGenerator.getAndIncrement(), personId = PERSON.id, staff = STAFF_WITH_USER)
 }

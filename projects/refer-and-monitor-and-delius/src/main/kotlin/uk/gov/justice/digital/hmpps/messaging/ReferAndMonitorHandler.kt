@@ -27,6 +27,7 @@ class ReferAndMonitorHandler(
                 res.eventType::class.simpleName!!,
                 notification.message.commonFields() + res.properties
             )
+
             is Failure -> {
                 telemetryService.trackEvent(
                     res.exception::class.simpleName!!,
@@ -34,12 +35,14 @@ class ReferAndMonitorHandler(
                 )
                 throw res.exception
             }
+
             is Rejected -> {
                 telemetryService.trackEvent(
                     res.exception.message!!,
                     notification.message.commonFields() + res.properties
                 )
             }
+
             null -> telemetryService.trackEvent(
                 "UnhandledEventReceived",
                 notification.message.commonFields() + ("eventType" to event.name)
