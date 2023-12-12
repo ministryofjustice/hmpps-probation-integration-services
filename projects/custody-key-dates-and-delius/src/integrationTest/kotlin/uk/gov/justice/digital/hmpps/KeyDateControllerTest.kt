@@ -6,9 +6,15 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.core.IsEqual.equalTo
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.timeout
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -18,6 +24,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyDateType
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.CustodyRepository
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.LocalDate
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -36,6 +43,9 @@ internal class KeyDateControllerTest {
     @Autowired
     lateinit var custodyRepository: CustodyRepository
 
+    @MockBean
+    lateinit var telemetryService: TelemetryService
+
     @Test
     fun `API call in dry run `() {
         val noms = PersonGenerator.PERSON_WITH_KEYDATES.nomsId
@@ -47,6 +57,12 @@ internal class KeyDateControllerTest {
                     .content(objectMapper.writeValueAsString(listOf(noms)))
             )
             .andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
+
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("Batch update custody key dates finished"),
+            ArgumentMatchers.anyMap(),
+            ArgumentMatchers.anyMap()
+        )
 
         val custodyId = custodyRepository.findCustodyId(PersonGenerator.PERSON_WITH_KEYDATES.id, "38340A").first()
         val custody = custodyRepository.findCustodyById(custodyId)
@@ -65,6 +81,12 @@ internal class KeyDateControllerTest {
                     .content(objectMapper.writeValueAsString(listOf(noms)))
             )
             .andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
+
+        verify(telemetryService, timeout(5000)).trackEvent(
+            eq("Batch update custody key dates finished"),
+            ArgumentMatchers.anyMap(),
+            ArgumentMatchers.anyMap()
+        )
 
         val custodyId = custodyRepository.findCustodyId(PersonGenerator.PERSON_WITH_KEYDATES.id, "38340A").first()
         val custody = custodyRepository.findCustodyById(custodyId)
