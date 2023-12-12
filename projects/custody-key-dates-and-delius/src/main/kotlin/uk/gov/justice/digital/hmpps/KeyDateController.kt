@@ -19,13 +19,14 @@ class KeyDateController(private val custodyDateUpdateService: CustodyDateUpdateS
         try {
             custodyDateUpdateService.updateCustodyKeyDates(it, dryRun)
             Result(it, true)
-        } catch (ignore: Exception) {
-            Result(it, false)
+        } catch (ex: Exception) {
+            Result(it, false, ex.message)
         }
     }
 }
 
 data class Result(
     val nomsNumber: String,
-    val processed: Boolean
+    val processed: Boolean,
+    val message: String? = null
 )
