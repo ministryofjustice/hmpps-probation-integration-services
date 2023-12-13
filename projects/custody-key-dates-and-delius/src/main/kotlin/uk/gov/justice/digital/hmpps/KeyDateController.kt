@@ -25,7 +25,7 @@ class KeyDateController(
             telemetryService.trackEvent("Batch update custody key dates started")
             nomsNumbers.forEach {
                 try {
-                    custodyDateUpdateService.updateCustodyKeyDates(it, dryRun)
+                    custodyDateUpdateService.updateCustodyKeyDates(it, dryRun, "API")
                 } catch (ex: Exception) {
                     telemetryService.trackEvent(
                         "KeyDateUpdateFailed",

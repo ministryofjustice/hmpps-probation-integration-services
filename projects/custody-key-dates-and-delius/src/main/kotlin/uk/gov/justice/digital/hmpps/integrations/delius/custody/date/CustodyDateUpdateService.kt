@@ -22,9 +22,9 @@ class CustodyDateUpdateService(
     private val contactService: ContactService,
     private val telemetryService: TelemetryService
 ) {
-    fun updateCustodyKeyDates(nomsId: String, dryRun: Boolean = false) {
+    fun updateCustodyKeyDates(nomsId: String, dryRun: Boolean = false, clientSource: String = "messaging") {
         val booking = prisonApi.getBookingFromNomsNumber(nomsId.uppercase())
-        updateCustodyKeyDates(booking, dryRun)
+        updateCustodyKeyDates(booking, dryRun, clientSource)
     }
 
     fun updateCustodyKeyDates(bookingId: Long) {
@@ -32,21 +32,21 @@ class CustodyDateUpdateService(
         updateCustodyKeyDates(booking)
     }
 
-    private fun updateCustodyKeyDates(booking: Booking, dryRun: Boolean = false) {
-        if (!booking.active) return telemetryService.trackEvent("BookingNotActive", booking.telemetry())
+    private fun updateCustodyKeyDates(booking: Booking, dryRun: Boolean = false, clientSource: String = "messaging") {
+        if (!booking.active) return telemetryService.trackEvent("BookingNotActive", booking.telemetry(clientSource))
         val sentenceDetail = prisonApi.getSentenceDetail(booking.id)
         val person = personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)
-            ?: return telemetryService.trackEvent("MissingNomsNumber", booking.telemetry())
+            ?: return telemetryService.trackEvent("MissingNomsNumber", booking.telemetry(clientSource))
         val custodyId = custodyRepository.findCustodyId(person.id, booking.bookingNo).run {
-            if (size > 1) return telemetryService.trackEvent("DuplicateBookingRef", booking.telemetry())
-            singleOrNull() ?: return telemetryService.trackEvent("MissingBookingRef", booking.telemetry())
+            if (size > 1) return telemetryService.trackEvent("DuplicateBookingRef", booking.telemetry(clientSource))
+            singleOrNull() ?: return telemetryService.trackEvent("MissingBookingRef", booking.telemetry(clientSource))
         }
         val custody = custodyRepository.findCustodyById(custodyRepository.findForUpdate(custodyId))
         val (deleted, updated) = calculateKeyDateChanges(sentenceDetail, custody).partition { it.softDeleted }
         if (deleted.isEmpty() && updated.isEmpty()) {
             telemetryService.trackEvent(
                 "KeyDatesUnchanged",
-                booking.telemetry()
+                booking.telemetry(clientSource)
             )
         } else {
             if (!dryRun) {
@@ -56,7 +56,7 @@ class CustodyDateUpdateService(
             }
             telemetryService.trackEvent(
                 if (dryRun) "KeyDatesDryRun" else "KeyDatesUpdated",
-                booking.telemetry() +
+                booking.telemetry(clientSource) +
                     updated.associateBy({ it.type.code }, { it.date.toString() }) +
                     deleted.associateBy({ it.type.code }, { "deleted" })
             )
@@ -90,5 +90,9 @@ class CustodyDateUpdateService(
 
     private fun List<KeyDate>.find(code: String): KeyDate? = firstOrNull { it.type.code == code }
 
-    private fun Booking.telemetry() = mapOf("nomsNumber" to offenderNo, "bookingRef" to bookingNo)
+    private fun Booking.telemetry(clientSource: String) = mapOf(
+        "nomsNumber" to offenderNo,
+        "bookingRef" to bookingNo,
+        "clientSource" to clientSource
+    )
 }
