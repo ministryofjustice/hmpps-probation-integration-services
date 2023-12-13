@@ -54,7 +54,7 @@ data class Booking(
         OTHER(null, null)
     }
 
-    val reason = run {
+    val reason = let {
         val type = when (movementType) {
             "CRT" -> Type.COURT
             "TAP" -> Type.TEMPORARY_ABSENCE
