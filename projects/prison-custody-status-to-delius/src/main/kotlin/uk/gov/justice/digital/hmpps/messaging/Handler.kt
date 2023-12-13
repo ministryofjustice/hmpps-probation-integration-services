@@ -80,10 +80,9 @@ class Handler(
         }
     }
 
-    private fun PrisonApiClient.bookingFromNomsId(nomsId: String) = getBookingByNomsId(nomsId).let { b ->
-        getBooking(b.id).takeIf { it.active }
+    private fun PrisonApiClient.bookingFromNomsId(nomsId: String) =
+        getBookingByNomsId(nomsId).takeIf { it.active }
             ?: throw IgnorableMessageException("BookingInactive", mapOf("nomsNumber" to nomsId))
-    }
 }
 
 fun AdditionalInformation.prisonId() = this["prisonId"] as String?

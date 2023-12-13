@@ -7,22 +7,13 @@ import org.springframework.web.service.annotation.GetExchange
 
 interface PrisonApiClient {
 
-    @GetExchange(value = "/{id}")
-    fun getBooking(
-        @PathVariable("id") id: Long,
-        @RequestParam basicInfo: Boolean = false,
-        @RequestParam extraInfo: Boolean = true
-    ): Booking
-
     @GetExchange(value = "/offenderNo/{nomsId}")
     fun getBookingByNomsId(
         @PathVariable("nomsId") id: String,
         @RequestParam basicInfo: Boolean = false,
         @RequestParam extraInfo: Boolean = true
-    ): BookingId
+    ): Booking
 }
-
-data class BookingId(@JsonAlias("bookingId") val id: Long)
 
 data class Booking(
     @JsonAlias("bookingId")

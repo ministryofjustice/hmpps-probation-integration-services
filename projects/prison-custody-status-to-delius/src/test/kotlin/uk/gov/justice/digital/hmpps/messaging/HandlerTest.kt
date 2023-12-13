@@ -12,7 +12,6 @@ import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.converter.NotificationConverter
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
-import uk.gov.justice.digital.hmpps.integrations.prison.BookingId
 import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.message.*
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
@@ -111,8 +110,7 @@ internal class HandlerTest {
 
     @Test
     fun `messages with inactive booking are ignored`() {
-        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
-        whenever(prisonApiClient.getBooking(booking.id)).thenReturn(booking.copy(active = false))
+        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(booking.copy(active = false))
         handler.handle(identifierAddedNotification)
         verify(telemetryService).trackEvent(
             "BookingInactive",
@@ -125,8 +123,7 @@ internal class HandlerTest {
 
     @Test
     fun `logs telemetry event when unknown reason given`() {
-        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
-        whenever(prisonApiClient.getBooking(booking.id))
+        whenever(prisonApiClient.getBookingByNomsId(booking.personReference))
             .thenReturn(booking.copy(movementType = "UNKNOWN", movementReason = ""))
         handler.handle(identifierAddedNotification)
         verify(telemetryService).trackEvent(
@@ -152,8 +149,7 @@ internal class HandlerTest {
             movementType = "CRT",
             movementReason = movementReason
         )
-        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
-        whenever(prisonApiClient.getBooking(booking.id)).thenReturn(booking)
+        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(booking)
 
         handler.handle(notification)
         verify(telemetryService).trackEvent(
@@ -172,8 +168,7 @@ internal class HandlerTest {
     @Test
     fun `booking is correctly mapped to a received prisoner movement when identifier added`() {
         val booking = booking.copy(movementReason = "N")
-        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
-        whenever(prisonApiClient.getBooking(booking.id)).thenReturn(booking)
+        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(booking)
         whenever(actionProcessor.processActions(any(), any()))
             .thenReturn(
                 listOf(
@@ -205,8 +200,7 @@ internal class HandlerTest {
             inOutStatus = Booking.InOutStatus.OUT
         )
         val prisonerMovement = releaseBooking.prisonerMovement(identifierAddedNotification.message.occurredAt)
-        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
-        whenever(prisonApiClient.getBooking(booking.id)).thenReturn(releaseBooking)
+        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(releaseBooking)
         whenever(actionProcessor.processActions(any(), any()))
             .thenReturn(
                 listOf(
@@ -261,8 +255,7 @@ internal class HandlerTest {
             movementReason = movementReason,
             inOutStatus = Booking.InOutStatus.OUT
         )
-        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(BookingId(booking.id))
-        whenever(prisonApiClient.getBooking(booking.id)).thenReturn(booking)
+        whenever(prisonApiClient.getBookingByNomsId(booking.personReference)).thenReturn(booking)
         whenever(featureFlags.enabled("messages_released_hospital")).thenReturn(false)
 
         val hospitalNotification = notification.copy(

@@ -31,7 +31,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.ReleaseTypeCode
 import uk.gov.justice.digital.hmpps.integrations.delius.release.entity.ReleaseRepository
 import uk.gov.justice.digital.hmpps.integrations.prison.Booking
-import uk.gov.justice.digital.hmpps.integrations.prison.BookingId
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
@@ -91,14 +90,6 @@ open class PcstdIntegrationTestBase {
     internal fun withBooking(booking: Booking) {
         wireMockServer.stubFor(
             get(WireMock.urlPathEqualTo("/api/bookings/offenderNo/${booking.personReference}"))
-                .willReturn(
-                    aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(objectMapper.writeValueAsString(BookingId(booking.id)))
-                )
-        )
-        wireMockServer.stubFor(
-            get(WireMock.urlPathEqualTo("/api/bookings/${booking.id}"))
                 .willReturn(
                     aResponse()
                         .withHeader("Content-Type", "application/json")
