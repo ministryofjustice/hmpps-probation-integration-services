@@ -1,4 +1,5 @@
 # Default config
+server.shutdown: graceful
 spring:
   jackson:
     default-property-inclusion: non_empty
