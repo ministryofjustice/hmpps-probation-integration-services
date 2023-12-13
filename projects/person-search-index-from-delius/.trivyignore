@@ -1,3 +1,4 @@
+
 # Reason: No parsing of untrusted HTML or XML
 # Package: org.jsoup:jsoup:1.7.2
 CVE-2021-37714
