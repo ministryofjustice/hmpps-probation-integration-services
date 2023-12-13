@@ -1,0 +1,45 @@
+
+
+context-nomis: NOMIS/DPS Context {
+
+  entities: Entities {
+    grid-columns: 3
+    pip: Person\nin Prison
+    noms-number: NOMS Number
+    sentence: Sentence
+    booking: Booking
+    identifiers: Additional\nIdentifiers
+  }
+}
+
+context-delius: Delius Context {
+  style.stroke-width: 8
+
+  interface: Prison Identifier and Delius {
+    type: Anti-Corruption Layer
+  }
+
+  entities: Entities {
+    grid-columns: 3
+    pop: Person\non Probation
+    crn: Case Reference\nNumber (CRN)
+    sentence: Sentence
+    prison_number: Prisoner Number
+    identifiers: Additional\nIdentifiers
+  }
+}
+
+context-nomis--context-delius.interface: Upstream\n\n\nDownstream
+
+# Styles
+
+style {
+  fill: "#ffffff"
+}
+
+** {
+  style {
+    border-radius: 10
+    stroke-width: 2
+  }
+}
