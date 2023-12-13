@@ -132,7 +132,9 @@ internal class HandlerTest {
                 "occurredAt" to identifierAddedNotification.message.occurredAt.toString(),
                 "nomsNumber" to booking.personReference,
                 "movementType" to "UNKNOWN",
-                "movementReason" to ""
+                "movementReason" to "",
+                "inOutStatus" to "IN",
+                "prisonId" to "SWI"
             )
         )
     }
