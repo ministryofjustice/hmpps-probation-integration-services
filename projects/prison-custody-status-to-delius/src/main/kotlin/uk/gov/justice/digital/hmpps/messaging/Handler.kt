@@ -111,7 +111,13 @@ fun Booking.prisonerMovement(dateTime: ZonedDateTime): PrisonerMovement {
     if (reason == null) {
         throw IgnorableMessageException(
             "UnableToCalculateMovementType",
-            mapOf("nomsNumber" to personReference, "movementType" to movementType, "movementReason" to movementReason)
+            mapOf(
+                "nomsNumber" to personReference,
+                "movementType" to movementType,
+                "movementReason" to movementReason,
+                "inOutStatus" to inOutStatus.name,
+                "prisonId" to agencyId
+            )
         )
     }
     return when (inOutStatus) {
@@ -130,5 +136,7 @@ fun Booking.prisonerMovement(dateTime: ZonedDateTime): PrisonerMovement {
             movementReason,
             dateTime
         )
+
+        Booking.InOutStatus.TRN -> throw IgnorableMessageException("BeingTransferred")
     }
 }

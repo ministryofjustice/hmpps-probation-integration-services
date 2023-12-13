@@ -32,7 +32,7 @@ data class Booking(
     val inOutStatus: InOutStatus
 ) {
     enum class InOutStatus {
-        IN, OUT
+        IN, OUT, TRN
     }
 
     enum class Type(val received: String?, val released: String?) {
@@ -68,6 +68,7 @@ data class Booking(
         when (inOutStatus) {
             InOutStatus.IN -> type.received
             InOutStatus.OUT -> type.released
+            InOutStatus.TRN -> null
         }
     }
 }
