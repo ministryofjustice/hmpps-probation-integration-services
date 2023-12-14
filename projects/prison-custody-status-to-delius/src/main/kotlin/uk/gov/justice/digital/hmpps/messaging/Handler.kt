@@ -81,7 +81,7 @@ class Handler(
     }
 
     private fun PrisonApiClient.bookingFromNomsId(nomsId: String) =
-        getBookingByNomsId(nomsId).takeIf { it.active }
+        getBookingByNomsId(nomsId).takeIf { it.active || it.movementType == "REL" }
             ?: throw IgnorableMessageException("BookingInactive", mapOf("nomsNumber" to nomsId))
 }
 
