@@ -1,3 +1,4 @@
+enabled: false
 generic-service:
   ingress:
     host: prison-custody-status-to-delius.hmpps.service.justice.gov.uk
