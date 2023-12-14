@@ -7,22 +7,13 @@ import org.springframework.web.service.annotation.GetExchange
 
 interface PrisonApiClient {
 
-    @GetExchange(value = "/{id}")
-    fun getBooking(
-        @PathVariable("id") id: Long,
-        @RequestParam basicInfo: Boolean = false,
-        @RequestParam extraInfo: Boolean = true
-    ): Booking
-
     @GetExchange(value = "/offenderNo/{nomsId}")
     fun getBookingByNomsId(
         @PathVariable("nomsId") id: String,
         @RequestParam basicInfo: Boolean = false,
         @RequestParam extraInfo: Boolean = true
-    ): BookingId
+    ): Booking
 }
-
-data class BookingId(@JsonAlias("bookingId") val id: Long)
 
 data class Booking(
     @JsonAlias("bookingId")
@@ -41,7 +32,7 @@ data class Booking(
     val inOutStatus: InOutStatus
 ) {
     enum class InOutStatus {
-        IN, OUT
+        IN, OUT, TRN
     }
 
     enum class Type(val received: String?, val released: String?) {
@@ -54,7 +45,7 @@ data class Booking(
         OTHER(null, null)
     }
 
-    val reason = run {
+    val reason = let {
         val type = when (movementType) {
             "CRT" -> Type.COURT
             "TAP" -> Type.TEMPORARY_ABSENCE
@@ -77,6 +68,7 @@ data class Booking(
         when (inOutStatus) {
             InOutStatus.IN -> type.received
             InOutStatus.OUT -> type.released
+            InOutStatus.TRN -> null
         }
     }
 }

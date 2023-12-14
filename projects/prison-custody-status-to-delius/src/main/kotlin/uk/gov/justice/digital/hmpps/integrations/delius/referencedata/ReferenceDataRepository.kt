@@ -11,6 +11,17 @@ fun ReferenceDataRepository.getByCodeAndSetName(code: String, set: String): Refe
     findByCodeAndSetName(code, set) ?: throw NotFoundException(set, "code", code)
 
 fun ReferenceDataRepository.getReleaseType(code: String): ReferenceData = getByCodeAndSetName(code, "RELEASE TYPE")
-fun ReferenceDataRepository.getCustodialStatus(code: String): ReferenceData = getByCodeAndSetName(code, "THROUGHCARE STATUS")
-fun ReferenceDataRepository.getCustodyEventType(code: String): ReferenceData = getByCodeAndSetName(code, "CUSTODY EVENT TYPE")
-fun ReferenceDataRepository.getTransferStatus(code: String): ReferenceData = getByCodeAndSetName(code, "TRANSFER STATUS")
+fun ReferenceDataRepository.getCustodialStatus(code: String): ReferenceData = getByCodeAndSetName(
+    code,
+    "THROUGHCARE STATUS"
+)
+
+fun ReferenceDataRepository.getCustodyEventType(code: String): ReferenceData = getByCodeAndSetName(
+    code,
+    "CUSTODY EVENT TYPE"
+)
+
+fun ReferenceDataRepository.getTransferStatus(code: String): ReferenceData = getByCodeAndSetName(
+    code,
+    "TRANSFER STATUS"
+)

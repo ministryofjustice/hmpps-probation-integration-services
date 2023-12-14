@@ -140,7 +140,14 @@ internal class ReleaseActionTest {
             ZonedDateTime.now().minusDays(1)
         )
 
-        val ex = assertThrows<IgnorableMessageException> { action.accept(PrisonerMovementContext(prisonerMovement, custody)) }
+        val ex = assertThrows<IgnorableMessageException> {
+            action.accept(
+                PrisonerMovementContext(
+                    prisonerMovement,
+                    custody
+                )
+            )
+        }
         assertThat(ex.message, equalTo("UnsupportedReleaseType"))
     }
 

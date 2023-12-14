@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Scan image
-        uses: aquasecurity/trivy-action@2b6a709cf9c4025c5438138008beaddbb02086f0 # v0.14.0
+        uses: aquasecurity/trivy-action@91713af97dc80187565512baba96e4364e983601 # v0.16.0
         with:
           image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
           ignore-unfixed: true
@@ -40,25 +40,25 @@ jobs:
           exit-code: '1'
           format: 'sarif'
           output: 'trivy-results.sarif'
-          trivyignores: 'projects/${{ matrix.project }}/.trivyignore'
+          trivyignores: '.trivyignore,projects/${{ matrix.project }}/.trivyignore'
           limit-severities-for-sarif: true
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
 
       - name: Get Trivy results
         if: always()
-        uses: aquasecurity/trivy-action@2b6a709cf9c4025c5438138008beaddbb02086f0 # v0.14.0
+        uses: aquasecurity/trivy-action@91713af97dc80187565512baba96e4364e983601 # v0.16.0
         with:
           image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
           format: 'json'
           output: 'results.json'
-          trivyignores: 'projects/${{ matrix.project }}/.trivyignore'
+          trivyignores: '.trivyignore,projects/${{ matrix.project }}/.trivyignore'
 
       - name: Output Trivy results
         if: always()
@@ -105,7 +105,7 @@ jobs:
       - get-projects
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: temurin

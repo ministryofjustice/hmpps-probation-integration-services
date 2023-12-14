@@ -16,11 +16,14 @@ import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class IntegrationTest {
-    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    @Autowired lateinit var wireMockServer: WireMockServer
+    @Autowired
+    lateinit var wireMockServer: WireMockServer
 
-    @MockBean lateinit var telemetryService: TelemetryService
+    @MockBean
+    lateinit var telemetryService: TelemetryService
 
     @Test
     fun `API call retuns a success response`() {

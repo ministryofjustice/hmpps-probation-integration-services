@@ -55,6 +55,7 @@
   "appointmentFeedback": {
     "attendanceFeedback": {
       "attended": "yes",
+      "didSessionHappen": false,
       "additionalAttendanceInformation": "additional information about the attendance",
       "submittedAt": "2023-02-14T15:07:03.774Z",
       "submittedBy": {
@@ -64,6 +65,7 @@
       }
     },
     "sessionFeedback": {
+      "noSessionReasonType": "POP_UNACCEPTABLE",
       "behaviourDescription": "a description of the behaviour",
       "notifyProbationPractitioner": true
     },

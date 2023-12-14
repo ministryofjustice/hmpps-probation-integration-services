@@ -1,11 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.provider.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
@@ -135,7 +130,7 @@ interface TeamRepository : JpaRepository<Team, Long> {
 fun TeamRepository.getByCode(code: String) = findByCode(code) ?: throw NotFoundException("Team", "code", code)
 
 interface LocationRepository : JpaRepository<Location, Long> {
-    fun findByCode(code: String): Location?
+    fun findByCodeAndEndDateIsNull(code: String): Location?
 
     @Query(
         """
@@ -147,4 +142,5 @@ interface LocationRepository : JpaRepository<Location, Long> {
     fun findAllLocationsForProvider(providerId: Long): List<Location>
 }
 
-fun LocationRepository.getByCode(code: String) = findByCode(code) ?: throw NotFoundException("Location", "code", code)
+fun LocationRepository.getByCode(code: String) =
+    findByCodeAndEndDateIsNull(code) ?: throw NotFoundException("Location", "code", code)

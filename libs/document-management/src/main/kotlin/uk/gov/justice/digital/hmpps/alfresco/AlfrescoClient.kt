@@ -64,7 +64,7 @@ class AlfrescoClient(
 class AlfrescoClientConfig(@Value("\${integrations.alfresco.url}") private val alfrescoBaseUrl: String) {
     @Bean
     fun alfrescoRestClient() = RestClient.builder()
-        .requestFactory(withTimeouts(Duration.ofSeconds(1), Duration.ofSeconds(30)))
+        .requestFactory(withTimeouts(Duration.ofSeconds(1), Duration.ofSeconds(60)))
         .requestInterceptor(AlfrescoInterceptor())
         .baseUrl(alfrescoBaseUrl)
         .build()

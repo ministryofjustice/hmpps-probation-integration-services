@@ -31,9 +31,10 @@ With this in mind, we aim to:
 * Unit tests with [JUnit 5](https://junit.org/) and [Mockito](https://mockito.org/)
 * Integration tests with [Spring Boot Test](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing), [Wiremock](https://wiremock.org/) and [H2](https://www.h2database.com/)
 * End-to-end testing with [Playwright](https://playwright.dev/) - see [End-to-end tests](https://github.com/ministryofjustice/hmpps-probation-integration-services#end-to-end-tests)
-* Container images are built with [Jib](https://github.com/GoogleContainerTools/jib#readme), and pushed to 
-[GitHub Packages](https://github.com/orgs/ministryofjustice/packages?repo_name=hmpps-probation-integration-services)
-* Code formatting by [ktlint](https://ktlint.github.io/)
+* Container images are built with [Jib](https://github.com/GoogleContainerTools/jib#readme), and pushed
+  to [GitHub Packages](https://github.com/orgs/ministryofjustice/packages?repo_name=hmpps-probation-integration-services)
+* Code formatting by [IntelliJ IDEA formatter](https://www.jetbrains.com/help/idea/command-line-formatter.html),
+  according to [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html)
 * Continuous integration with [GitHub Actions](https://help.github.com/en/actions)
 
 ## Structure
@@ -58,25 +59,10 @@ The directory layout is as follows:
 The project is configured to enable developers to build/test/run integration services in isolation without the need for 
 Docker or remote dependencies.
 
-To set up your development environment,
+To set up your development environment:
 1. Open the project in [IntelliJ IDEA](https://www.jetbrains.com/idea/). Select "Import project from external model", then "Gradle".
 2. To run the tests for a service, right-click the `src/test` folder in the project view and select "Run tests" (See [Test](#test)).
 3. To start the service, use the pre-defined run configuration in `.idea/runConfigurations` (See [Run](#run)).
-
-## Code formatting
-Kotlin code is formatted using [ktlint](https://ktlint.github.io/). IntelliJ will detect the ktlint configuration in 
-[.idea/codeStyles](.idea/codeStyles) and [.idea/inspectionProfiles](.idea/inspectionProfiles) and ensure formatting is 
-applied consistently in your IDE.
-
-To fix any formatting issues in your code locally, run 
-```shell
-./gradlew ktlintFormat
-```
-
-Or, to add a pre-commit hook to automatically fix any formatting issues, run:
-```shell
-./gradlew addKtlintFormatGitPreCommitHook
-```
 
 # Build
 IntelliJ will automatically build your code as needed. To build using Gradle, follow the instructions below. 
@@ -110,6 +96,15 @@ To build Docker images locally, run:
 ```shell
 ./gradlew jibDockerBuild
 ```
+
+## Code formatting
+Kotlin code is formatted using IntelliJ IDEA's code formatter,
+which follows the [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html).
+
+GitHub Actions will automatically fix any formatting issues when you open a pull request. 
+You can also use <strong title="Command">⌘</strong><strong title="Option">⌥</strong>**L** (macOS), 
+or **Ctrl+Alt+L** (Windows/Linux) to manually reformat your code in IntelliJ IDEA.
+See [Reformat file](https://www.jetbrains.com/guide/java/tips/reformat-file/).
 
 # Run
 ## IntelliJ
@@ -212,7 +207,7 @@ Feature flags are managed in the [Flipt dashboard](https://feature-flags.probati
 You'll need to be in an appropriate GitHub team to access it.
 The list of allowed teams is defined here: [code.js](tools/feature-flags/deploy/auth0/actions/Check%20GitHub%20teams/code.js).
 
-To add a feature flag to your code,
+To add a feature flag to your code:
 
 1. Create a new flag in the dashboard
 2. Add the FLIPT_URL and FLIPT_TOKEN to your values-prod.yml file.

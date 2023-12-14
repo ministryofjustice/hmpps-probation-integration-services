@@ -15,7 +15,11 @@ import uk.gov.justice.digital.hmpps.entity.Staff
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Service
-class ResettlementPassportService(val addressRepository: PersonAddressRepository, val nsiRepository: NsiRepository, val nsiManagerRepository: NsiManagerRepository) {
+class ResettlementPassportService(
+    val addressRepository: PersonAddressRepository,
+    val nsiRepository: NsiRepository,
+    val nsiManagerRepository: NsiManagerRepository
+) {
     fun getDutyToReferNSI(value: String, type: IdentifierType): DutyToReferNSI {
         // get the main address for this person and also the most recent NSI type of DTR associated with this person
         val dutyToRefer = when (type) {
@@ -37,5 +41,16 @@ class ResettlementPassportService(val addressRepository: PersonAddressRepository
         )
     }
 }
-fun PersonAddress.toModel() = MainAddress(buildingName, addressNumber, streetName, district, town, county, postcode, noFixedAbode)
+
+fun PersonAddress.toModel() = MainAddress(
+    buildingName,
+    addressNumber,
+    streetName,
+    district,
+    town,
+    county,
+    postcode,
+    noFixedAbode
+)
+
 fun Staff.officer() = Officer(forename, surname, middleName)

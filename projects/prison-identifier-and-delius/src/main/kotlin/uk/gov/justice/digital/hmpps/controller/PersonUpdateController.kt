@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.sevice.PersonService
 @RequestMapping("person")
 class PersonUpdateController(private val personService: PersonService) {
 
-    @PreAuthorize("hasRole('ROLE_UPDATE_NOMS_NUMBER')")
+    @PreAuthorize("hasRole('ROLE_PROBATION_API__PRISON_IDENTIFIER__UPDATE')")
     @RequestMapping(value = ["/populate-noms-number"], method = [RequestMethod.GET, RequestMethod.POST])
     fun populateNomsNumbers(
         @RequestParam(defaultValue = "true") trialOnly: Boolean,

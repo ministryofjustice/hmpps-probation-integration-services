@@ -20,9 +20,11 @@ import java.util.concurrent.CompletionException
 
 @ExtendWith(MockitoExtension::class)
 class AwsNotificationListenerTest {
-    @Mock lateinit var handler: NotificationHandler<Any>
+    @Mock
+    lateinit var handler: NotificationHandler<Any>
 
-    @InjectMocks lateinit var listener: AwsNotificationListener
+    @InjectMocks
+    lateinit var listener: AwsNotificationListener
 
     @Test
     fun `messages are dispatched to handler`() {

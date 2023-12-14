@@ -24,9 +24,15 @@ class AddressTest {
         @JvmStatic
         fun addressLines() = listOf(
             Arguments.of(address.copy(addressLine1 = thirtyFive), AddressLines(null, thirtyFive, null)),
-            Arguments.of(address.copy(addressLine1 = thirtyFive, addressLine2 = extension), AddressLines(null, thirtyFive, extension)),
+            Arguments.of(
+                address.copy(addressLine1 = thirtyFive, addressLine2 = extension),
+                AddressLines(null, thirtyFive, extension)
+            ),
             Arguments.of(address.copy(addressLine1 = seventy), AddressLines(null, thirtyFive, extension)),
-            Arguments.of(address.copy(addressLine1 = seventy, addressLine2 = "with an extra line"), AddressLines(thirtyFive, extension, "with an extra line"))
+            Arguments.of(
+                address.copy(addressLine1 = seventy, addressLine2 = "with an extra line"),
+                AddressLines(thirtyFive, extension, "with an extra line")
+            )
         )
     }
 }

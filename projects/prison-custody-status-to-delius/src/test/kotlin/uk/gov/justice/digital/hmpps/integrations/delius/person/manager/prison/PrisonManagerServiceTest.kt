@@ -224,7 +224,14 @@ internal class PrisonManagerServiceTest {
         // But there is a future-dated manager
         val futureStartDate = ZonedDateTime.now().minusDays(1)
         whenever(prisonManagerRepository.findFirstManagerAfterDate(PersonGenerator.RECALLABLE.id, allocationDate))
-            .thenReturn(listOf(PrisonManagerGenerator.generate(PersonGenerator.RECALLABLE, startDate = futureStartDate)))
+            .thenReturn(
+                listOf(
+                    PrisonManagerGenerator.generate(
+                        PersonGenerator.RECALLABLE,
+                        startDate = futureStartDate
+                    )
+                )
+            )
 
         prisonManagerService.allocateToProbationArea(event.disposal!!, ProbationAreaGenerator.DEFAULT, allocationDate)
 
@@ -247,7 +254,12 @@ internal class PrisonManagerServiceTest {
         whenever(staffRepository.findByCodeAndTeamsId("N02UATU", TeamGenerator.DEFAULT.id))
             .thenReturn(StaffGenerator.UNALLOCATED)
         whenever(referenceDataRepository.findByCodeAndSetName("AUT", "POM ALLOCATION REASON"))
-            .thenReturn(ReferenceDataGenerator.generate("TEST", ReferenceDataSetGenerator.generate("POM ALLOCATION REASON")))
+            .thenReturn(
+                ReferenceDataGenerator.generate(
+                    "TEST",
+                    ReferenceDataSetGenerator.generate("POM ALLOCATION REASON")
+                )
+            )
         whenever(contactTypeRepository.findByCode(ContactType.Code.PRISON_MANAGER_AUTOMATIC_TRANSFER.value))
             .thenReturn(ReferenceDataGenerator.CONTACT_TYPE[ContactType.Code.PRISON_MANAGER_AUTOMATIC_TRANSFER])
     }

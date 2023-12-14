@@ -13,7 +13,6 @@ plugins {
     id("org.springframework.boot") version "3.2.0" apply false
     id("io.spring.dependency-management") version "1.1.4" apply false
     id("com.google.cloud.tools.jib") apply false
-    id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
     id("base")
     id("org.sonarqube")
 }
@@ -62,7 +61,6 @@ subprojects {
     apply { plugin("org.jetbrains.kotlin.jvm") }
     apply { plugin("org.jetbrains.kotlin.plugin.spring") }
     apply { plugin("org.jetbrains.kotlin.plugin.jpa") }
-    apply { plugin("org.jlleitschuh.gradle.ktlint") }
     apply { plugin("jacoco") }
     apply { plugin("test-report-aggregation") }
     apply { plugin("jacoco-report-aggregation") }
@@ -73,7 +71,8 @@ subprojects {
 
     tasks {
         withType<BootRun> {
-            if (System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE"))?.split(",")?.contains("dev") == true) {
+            val profiles = System.getProperty("spring.profiles.active", System.getenv("SPRING_PROFILES_ACTIVE"))
+            if (profiles?.split(",")?.contains("dev") == true) {
                 classpath = sourceSets.getByName("dev").runtimeClasspath
             }
         }
@@ -90,9 +89,8 @@ subprojects {
 
     if (!path.startsWith(":libs")) {
         tasks.named("check") {
-            dependsOn(rootProject.subprojects.filter { it.path.startsWith(":libs") }.map { it.tasks.getByName("check") })
+            dependsOn(rootProject.subprojects.filter { it.path.startsWith(":libs") }
+                .map { it.tasks.getByName("check") })
         }
     }
 }
-
-tasks.named("check") { dependsOn("ktlintCheck") }

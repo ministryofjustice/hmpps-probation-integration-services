@@ -116,7 +116,7 @@ class RecallAction(
             }
         }
 
-        PrisonerMovement.Type.RELEASED -> when {
+        PrisonerMovement.Type.RELEASED, PrisonerMovement.Type.RELEASED_TO_HOSPITAL -> when {
             prisonerMovement.isAbsconded() -> if (statusCode == CustodialStatusCode.CUSTODY_ROTL) RecallReason.Code.END_OF_TEMPORARY_LICENCE else RecallReason.Code.NOTIFIED_BY_CUSTODIAL_ESTABLISHMENT
             prisonerMovement.isHospitalRelease() -> RecallReason.Code.TRANSFER_TO_SECURE_HOSPITAL
             prisonerMovement.isIrcRelease() -> RecallReason.Code.TRANSFER_TO_IRC

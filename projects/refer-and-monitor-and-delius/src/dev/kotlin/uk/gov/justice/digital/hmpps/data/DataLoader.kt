@@ -287,6 +287,18 @@ class DataLoader(
             )
         )
 
+        val crsD = ContactGenerator.CRSAPT_NO_SESSION
+        ContactGenerator.CRSAPT_NO_SESSION = contactRepository.save(
+            ContactGenerator.generate(
+                crsD.type,
+                date = crsD.date,
+                notes = crsD.notes,
+                nsi = NsiGenerator.END_PREMATURELY,
+                rarActivity = crsD.rarActivity,
+                externalReference = crsD.externalReference
+            )
+        )
+
         personRepository.save(PersonGenerator.FUZZY_SEARCH)
         NsiGenerator.FUZZY_SEARCH = nsiRepository.save(NsiGenerator.FUZZY_SEARCH)
         nsiManagerRepository.save(NsiGenerator.generateManager(NsiGenerator.FUZZY_SEARCH))

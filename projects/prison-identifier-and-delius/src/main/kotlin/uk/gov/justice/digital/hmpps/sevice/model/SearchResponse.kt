@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.sevice.model
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import java.time.LocalDate
 
 data class SearchResponse(
@@ -19,6 +20,8 @@ data class PrisonSearchResult(
     val firstName: String,
     val lastName: String,
     val prisonerNumber: String,
+    @JsonAlias("bookNumber")
+    val bookingNumber: String?,
     val pncNumber: String?,
     val croNumber: String?,
     val sentenceStartDate: LocalDate?,

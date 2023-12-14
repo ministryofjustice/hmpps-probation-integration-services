@@ -36,7 +36,8 @@ internal class RiskManagementPlanDetailsTest {
             .andExpect(status().is2xxSuccessful)
             .andReturn()
 
-        val riskManagementPlanDetails = objectMapper.readValue(result.response.contentAsString, RiskManagementPlanDetails::class.java)
+        val riskManagementPlanDetails =
+            objectMapper.readValue(result.response.contentAsString, RiskManagementPlanDetails::class.java)
         assertThat(riskManagementPlanDetails.initiationDate)
             .isEqualTo(ZonedDateTime.parse("2022-11-09T14:33:53Z").withZoneSameInstant(EuropeLondon))
         assertThat(riskManagementPlanDetails.lastUpdatedDate)

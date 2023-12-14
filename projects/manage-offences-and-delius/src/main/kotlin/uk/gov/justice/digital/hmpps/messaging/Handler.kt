@@ -34,16 +34,18 @@ class Handler(
         )
     }
 
-    val Offence.newEntity get() = DetailedOffence(
-        code = code,
-        description = description,
-        startDate = startDate,
-        endDate = endDate,
-        homeOfficeCode = homeOfficeStatsCode,
-        homeOfficeDescription = homeOfficeDescription,
-        legislation = legislation,
-        category = referenceDataRepository.findCourtCategory(offenceType) ?: throw NotFoundException("Court category", "code", offenceType)
-    )
+    val Offence.newEntity
+        get() = DetailedOffence(
+            code = code,
+            description = description,
+            startDate = startDate,
+            endDate = endDate,
+            homeOfficeCode = homeOfficeStatsCode,
+            homeOfficeDescription = homeOfficeDescription,
+            legislation = legislation,
+            category = referenceDataRepository.findCourtCategory(offenceType)
+                ?: throw NotFoundException("Court category", "code", offenceType)
+        )
 
     fun DetailedOffence?.mergeWith(newEntity: DetailedOffence) = this?.copy(
         code = newEntity.code,

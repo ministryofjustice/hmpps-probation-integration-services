@@ -46,7 +46,8 @@ class TierService(
         optimisationTables.rebuild(person.id)
         val tier = referenceDataRepository.getByCodeAndSetName("U${tierCalculation.tierScore}", "TIER")
         val changeReason = referenceDataRepository.getByCodeAndSetName("ATS", "TIER CHANGE REASON")
-        val latestTierChangeDate = managementTierRepository.findFirstByIdPersonIdOrderByIdDateChangedDesc(person.id)?.id?.dateChanged
+        val latestTierChangeDate =
+            managementTierRepository.findFirstByIdPersonIdOrderByIdDateChangedDesc(person.id)?.id?.dateChanged
 
         if (person.currentTier == null || person.currentTier != tier.id) {
             createTier(person, tier, tierCalculation.calculationDate, changeReason)

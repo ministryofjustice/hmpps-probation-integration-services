@@ -17,12 +17,14 @@ data class LicenceConditions(
         val additionalOffences: List<Offence>,
         val licenceConditions: List<LicenceCondition>
     )
+
     data class LicenceCondition(
         val startDate: LocalDate,
         val mainCategory: LicenceConditionCategory,
         val subCategory: LicenceConditionCategory?,
         val notes: String?
     )
+
     data class LicenceConditionCategory(
         val code: String,
         val description: String
@@ -39,7 +41,12 @@ fun Event.toConvictionWithLicenceConditions() = toConviction().let {
             LicenceCondition(
                 startDate = lc.startDate,
                 mainCategory = LicenceConditionCategory(lc.mainCategory.code, lc.mainCategory.description),
-                subCategory = lc.subCategory?.let { subCategory -> LicenceConditionCategory(subCategory.code, subCategory.description) },
+                subCategory = lc.subCategory?.let { subCategory ->
+                    LicenceConditionCategory(
+                        subCategory.code,
+                        subCategory.description
+                    )
+                },
                 notes = lc.notes
             )
         } ?: emptyList()

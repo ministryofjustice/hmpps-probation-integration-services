@@ -19,7 +19,7 @@ class DiedAction(
     override fun accept(context: PrisonerMovementContext): ActionResult {
         val person = context.custody.disposal.event.person
         val notes = "This information has been provided via a movement reason recorded at ${
-        DeliusDateTimeFormatter.format(context.prisonerMovement.occurredAt)
+            DeliusDateTimeFormatter.format(context.prisonerMovement.occurredAt)
         } in NOMIS"
         contactService.createContact(
             ContactDetail(ContactType.Code.DIED_IN_CUSTODY, context.prisonerMovement.occurredAt, notes, alert = true),

@@ -2,8 +2,9 @@ database:
   access:
     username_key: /prison-identifier-and-delius/db-username
     password_key: /prison-identifier-and-delius/db-password
-  tables:
-    - offender
+    tables:
+      - offender
+      - custody
 
   audit:
     username: PrisonIdentifierAndDelius

@@ -17,4 +17,6 @@ interface PersonManagerRepository : JpaRepository<PersonManager, Long> {
     )
     fun findActiveManager(personId: Long, dateTime: ZonedDateTime = ZonedDateTime.now()): PersonManager?
 }
-fun PersonManagerRepository.getActiveManager(personId: Long) = findActiveManager(personId) ?: throw NotFoundException("PersonManager", "personId", personId)
+
+fun PersonManagerRepository.getActiveManager(personId: Long) = findActiveManager(personId)
+    ?: throw NotFoundException("PersonManager", "personId", personId)

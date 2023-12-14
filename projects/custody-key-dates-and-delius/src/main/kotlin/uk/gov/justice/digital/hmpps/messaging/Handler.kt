@@ -22,6 +22,7 @@ class Handler(
         when (val message = notification.message) {
             is HmppsDomainEvent -> message.personReference.findNomsNumber()
                 ?.let { cduService.updateCustodyKeyDates(it) }
+
             is CustodyDateChanged -> cduService.updateCustodyKeyDates(message.bookingId)
         }
     }

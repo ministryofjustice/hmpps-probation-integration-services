@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.Custody
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Disposal
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.Person
@@ -46,6 +47,9 @@ object PersonGenerator {
 
     fun generateDisposal(startDate: LocalDate, event: Event, id: Long = IdGenerator.getAndIncrement()) =
         Disposal(id, startDate, event, active = true, softDeleted = false)
+
+    fun generateCustody(disposal: Disposal, id: Long = IdGenerator.getAndIncrement()) =
+        Custody(id, null, disposal = disposal)
 
     fun generateGender(code: String, id: Long = IdGenerator.getAndIncrement()) = ReferenceData(id, code)
 }

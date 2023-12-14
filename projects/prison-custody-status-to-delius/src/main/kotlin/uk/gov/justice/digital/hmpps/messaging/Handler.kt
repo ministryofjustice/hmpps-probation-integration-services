@@ -9,10 +9,7 @@ import uk.gov.justice.digital.hmpps.integrations.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.message.Notification
-import uk.gov.justice.digital.hmpps.messaging.DomainEventType.IdentifierAdded
-import uk.gov.justice.digital.hmpps.messaging.DomainEventType.IdentifierUpdated
-import uk.gov.justice.digital.hmpps.messaging.DomainEventType.PrisonerReceived
-import uk.gov.justice.digital.hmpps.messaging.DomainEventType.PrisonerReleased
+import uk.gov.justice.digital.hmpps.messaging.DomainEventType.*
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
 import java.time.ZonedDateTime
 
@@ -32,18 +29,15 @@ class Handler(
         val eventType = DomainEventType.of(message.eventType)
         try {
             val movement = when (eventType) {
-                IdentifierAdded, IdentifierUpdated ->
+                IdentifierAdded, IdentifierUpdated, PrisonerReceived, PrisonerReleased ->
                     prisonApiClient.bookingFromNomsId(message.personReference.findNomsNumber()!!)
                         .prisonerMovement(message.occurredAt)
-
-                PrisonerReceived -> message.asReceived()
-
-                PrisonerReleased -> message.asReleased()
 
                 else -> {
                     throw IllegalArgumentException("Unknown event type ${message.eventType}")
                 }
             }
+
             val config = configs.firstOrNull { it.validFor(movement.type, movement.reason) }
                 ?: throw IgnorableMessageException(
                     "NoConfigForMovement",
@@ -86,15 +80,12 @@ class Handler(
         }
     }
 
-    private fun PrisonApiClient.bookingFromNomsId(nomsId: String) = getBookingByNomsId(nomsId).let { b ->
-        getBooking(b.id).takeIf { it.active }
+    private fun PrisonApiClient.bookingFromNomsId(nomsId: String) =
+        getBookingByNomsId(nomsId).takeIf { it.active || it.movementType == "REL" }
             ?: throw IgnorableMessageException("BookingInactive", mapOf("nomsNumber" to nomsId))
-    }
 }
 
 fun AdditionalInformation.prisonId() = this["prisonId"] as String?
-fun AdditionalInformation.reason() = this["reason"] as String
-fun AdditionalInformation.movementReason() = this["nomisMovementReasonCode"] as String
 fun AdditionalInformation.details() = this["details"] as String?
 fun HmppsDomainEvent.telemetryProperties() = listOfNotNull(
     "occurredAt" to occurredAt.toString(),
@@ -116,27 +107,17 @@ fun PrisonerMovement?.telemetryProperties() = if (this == null) {
     ).toMap()
 }
 
-fun HmppsDomainEvent.asReceived() = PrisonerMovement.Received(
-    personReference.findNomsNumber()!!,
-    additionalInformation.prisonId()!!,
-    PrisonerMovement.Type.valueOf(additionalInformation.reason()),
-    additionalInformation.movementReason(),
-    occurredAt
-)
-
-fun HmppsDomainEvent.asReleased() = PrisonerMovement.Released(
-    personReference.findNomsNumber()!!,
-    additionalInformation.prisonId(),
-    PrisonerMovement.Type.valueOf(additionalInformation.reason()),
-    additionalInformation.movementReason(),
-    occurredAt
-)
-
 fun Booking.prisonerMovement(dateTime: ZonedDateTime): PrisonerMovement {
     if (reason == null) {
         throw IgnorableMessageException(
             "UnableToCalculateMovementType",
-            mapOf("nomsNumber" to personReference, "movementType" to movementType, "movementReason" to movementReason)
+            mapOf(
+                "nomsNumber" to personReference,
+                "movementType" to movementType,
+                "movementReason" to movementReason,
+                "inOutStatus" to inOutStatus.name,
+                "prisonId" to agencyId
+            )
         )
     }
     return when (inOutStatus) {
@@ -155,5 +136,7 @@ fun Booking.prisonerMovement(dateTime: ZonedDateTime): PrisonerMovement {
             movementReason,
             dateTime
         )
+
+        Booking.InOutStatus.TRN -> throw IgnorableMessageException("BeingTransferred")
     }
 }

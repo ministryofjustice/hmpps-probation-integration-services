@@ -6,11 +6,7 @@ import org.mockito.ArgumentMatchers.anyList
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.custody.date.contact.ContactService
@@ -57,7 +53,7 @@ internal class CustodyDateUpdateServiceTest {
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = inactive.id)
 
-        verify(personRepository, never()).findByNomsIdAndSoftDeletedIsFalse(any())
+        verify(personRepository, never()).findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(any())
         verify(contactService, never()).createForKeyDateChanges(any(), any(), any())
         verify(telemetryService).trackEvent(eq("BookingNotActive"), any(), any())
     }
@@ -68,7 +64,7 @@ internal class CustodyDateUpdateServiceTest {
 
         whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail(conditionalReleaseDate = LocalDate.now()))
-        whenever(personRepository.findByNomsIdAndSoftDeletedIsFalse(booking.offenderNo)).thenReturn(null)
+        whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo)).thenReturn(null)
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
@@ -82,7 +78,7 @@ internal class CustodyDateUpdateServiceTest {
 
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail())
         whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
-        whenever(personRepository.findByNomsIdAndSoftDeletedIsFalse(booking.offenderNo))
+        whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo))
             .thenReturn(PersonGenerator.DEFAULT)
         whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo))
             .thenReturn(listOf(42342562452L, 34345249134L))
@@ -101,7 +97,7 @@ internal class CustodyDateUpdateServiceTest {
 
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail())
         whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
-        whenever(personRepository.findByNomsIdAndSoftDeletedIsFalse(booking.offenderNo))
+        whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo))
             .thenReturn(PersonGenerator.DEFAULT)
         whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo)).thenReturn(listOf())
 
@@ -123,7 +119,7 @@ internal class CustodyDateUpdateServiceTest {
 
         whenever(prisonApi.getSentenceDetail(booking.id)).thenReturn(SentenceDetail())
         whenever(prisonApi.getBooking(booking.id, basicInfo = false, extraInfo = true)).thenReturn(booking)
-        whenever(personRepository.findByNomsIdAndSoftDeletedIsFalse(booking.offenderNo))
+        whenever(personRepository.findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(booking.offenderNo))
             .thenReturn(PersonGenerator.DEFAULT)
         whenever(custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, booking.bookingNo))
             .thenReturn(listOf(custody.id))

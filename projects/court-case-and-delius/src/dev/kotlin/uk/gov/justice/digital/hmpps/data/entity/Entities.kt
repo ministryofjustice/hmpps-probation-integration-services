@@ -13,10 +13,19 @@ import java.time.LocalDate
 class AddressAssessment(@Id val addressAssessmentId: Long, val assessmentDate: LocalDate)
 
 @Entity
-class ApprovedPremisesReferral(@Id val approvedPremisesReferralId: Long, val referralDate: LocalDate, val eventId: Long?)
+class ApprovedPremisesReferral(
+    @Id val approvedPremisesReferralId: Long,
+    val referralDate: LocalDate,
+    val eventId: Long?
+)
 
 @Entity
-class Assessment(@Id val assessmentId: Long, val assessmentTypeId: Long, val referralId: Long?, val assessmentDate: LocalDate)
+class Assessment(
+    @Id val assessmentId: Long,
+    val assessmentTypeId: Long,
+    val referralId: Long?,
+    val assessmentDate: LocalDate
+)
 
 @Entity
 @Table(name = "r_assessment_type")
@@ -58,7 +67,12 @@ class Referral(@Id val referralId: Long, val referralTypeId: Long, val referralD
 class ReferralType(@Id val referralTypeId: Long, val description: String)
 
 @Entity
-class UpwAppointment(@Id val upwAppointmentId: Long, val upwDetailsId: Long, val upwProjectId: Long, val appointmentDate: LocalDate)
+class UpwAppointment(
+    @Id val upwAppointmentId: Long,
+    val upwDetailsId: Long,
+    val upwProjectId: Long,
+    val appointmentDate: LocalDate
+)
 
 @Entity
 class UpwDetails(@Id val upwDetailsId: Long, val disposalId: Long)

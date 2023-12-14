@@ -52,7 +52,9 @@ class ImpactIntegrationTest {
     @Test
     fun `get impact no matching staff`() {
         mockMvc.perform(
-            get("/allocation-demand/impact?crn=${PersonGenerator.DEFAULT.crn}&staff=N01DTT1").withOAuth2Token(wireMockserver)
+            get("/allocation-demand/impact?crn=${PersonGenerator.DEFAULT.crn}&staff=N01DTT1").withOAuth2Token(
+                wireMockserver
+            )
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isNotFound)
     }

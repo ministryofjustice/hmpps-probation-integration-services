@@ -18,6 +18,7 @@ class DutyToReferController(private val service: ResettlementPassportService) {
         @PathVariable value: String,
         @RequestParam(required = false, defaultValue = "CRN") type: IdentifierType
     ) = service.getDutyToReferNSI(value, type)
+
     enum class IdentifierType {
         CRN, NOMS
     }

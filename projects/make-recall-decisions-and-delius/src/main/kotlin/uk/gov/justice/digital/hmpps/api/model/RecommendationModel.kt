@@ -18,12 +18,14 @@ data class RecommendationModel(
         val name: String?,
         val description: String
     )
+
     data class ConvictionDetails(
         val number: String,
         val sentence: ExtendedSentence?,
         val mainOffence: Offence,
         val additionalOffences: List<Offence>
     )
+
     data class ExtendedSentence(
         val description: String,
         val length: Long?,

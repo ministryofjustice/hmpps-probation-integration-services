@@ -78,6 +78,9 @@ internal class AuthenticationIntegrationTest {
             .content(json)
 
     private fun currentPassword() =
-        ldapTemplate.search("ou=Users", "cn=test.user", AttributesMapper { String(it["userPassword"].get() as ByteArray) })
+        ldapTemplate.search(
+            "ou=Users",
+            "cn=test.user",
+            AttributesMapper { String(it["userPassword"].get() as ByteArray) })
             .toList().single()
 }

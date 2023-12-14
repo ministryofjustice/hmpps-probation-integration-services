@@ -27,6 +27,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOu
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.service.Attended
+import uk.gov.justice.digital.hmpps.service.NoSessionReasonType
 import uk.gov.justice.digital.hmpps.service.Outcome
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
 import java.time.ZonedDateTime
@@ -189,7 +190,7 @@ internal class MergeAppointmentIntegrationTest {
             "Appointment Notes",
             "DEFAULT",
             false,
-            Outcome(Attended.YES, false),
+            Outcome(Attended.YES, null, null, false),
             null,
             appointmentId,
             null
@@ -256,7 +257,7 @@ internal class MergeAppointmentIntegrationTest {
             "Appointment Notes",
             "DEFAULT",
             false,
-            Outcome(Attended.LATE, true),
+            Outcome(Attended.LATE, false, NoSessionReasonType.POP_UNACCEPTABLE, true),
             null,
             null,
             null

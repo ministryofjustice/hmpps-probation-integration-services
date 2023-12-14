@@ -3,10 +3,9 @@ package uk.gov.justice.digital.hmpps.data.generator
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.Institution
 import uk.gov.justice.digital.hmpps.integrations.delius.probationarea.institution.entity.InstitutionId
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.wellknown.InstitutionCode
-import uk.gov.justice.digital.hmpps.messaging.prisonId
 
 object InstitutionGenerator {
-    val DEFAULT = NotificationGenerator.PRISONER_RELEASED.message.additionalInformation.prisonId()!!.let { generate(it + "HMP", it) }
+    val DEFAULT = generate("WSIHMP", "WSI")
     val STANDARD_INSTITUTIONS = InstitutionCode.entries.associateWith { generate(it.code, null) }
     val MOVED_TO = generate("SWIHMP", "SWI")
 

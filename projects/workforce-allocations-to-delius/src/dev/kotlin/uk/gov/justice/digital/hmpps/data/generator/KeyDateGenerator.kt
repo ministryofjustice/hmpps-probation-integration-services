@@ -8,5 +8,10 @@ object KeyDateGenerator {
 
     fun generate(
         id: Long = IdGenerator.getAndIncrement()
-    ) = KeyDate(id, CustodyGenerator.DEFAULT, ReferenceDataGenerator.KEY_DATE_EXP_REL_DATE, LocalDate.now().plusWeeks(1))
+    ) = KeyDate(
+        id,
+        CustodyGenerator.DEFAULT,
+        ReferenceDataGenerator.KEY_DATE_EXP_REL_DATE,
+        LocalDate.now().plusWeeks(1)
+    )
 }

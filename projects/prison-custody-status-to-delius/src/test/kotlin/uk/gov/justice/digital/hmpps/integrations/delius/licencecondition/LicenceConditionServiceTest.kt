@@ -123,7 +123,8 @@ internal class LicenceConditionServiceTest {
     @Test
     fun licenceConditionsAreTerminated() {
         val now = ZonedDateTime.now()
-        val event = EventGenerator.custodialEvent(PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT).withManager()
+        val event =
+            EventGenerator.custodialEvent(PersonGenerator.RECALLABLE, InstitutionGenerator.DEFAULT).withManager()
         val licenceConditions = List(3) { LicenceConditionGenerator.generate(event).withManager() }
         withLicenceConditions(event, licenceConditions)
 

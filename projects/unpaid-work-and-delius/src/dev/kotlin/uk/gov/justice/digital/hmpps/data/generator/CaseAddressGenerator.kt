@@ -15,5 +15,17 @@ object CaseAddressGenerator {
         postcode: String? = null,
         telephoneNumber: String? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = CaseAddress(id, CaseGenerator.DEFAULT, buildingName, addressNumber, streetName, district, town, county, postcode, telephoneNumber, status = ReferenceDataGenerator.MAIN_ADDRESS)
+    ) = CaseAddress(
+        id,
+        CaseGenerator.DEFAULT,
+        buildingName,
+        addressNumber,
+        streetName,
+        district,
+        town,
+        county,
+        postcode,
+        telephoneNumber,
+        status = ReferenceDataGenerator.MAIN_ADDRESS
+    )
 }

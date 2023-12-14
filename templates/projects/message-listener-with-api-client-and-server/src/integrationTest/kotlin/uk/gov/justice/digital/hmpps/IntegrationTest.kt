@@ -27,13 +27,17 @@ internal class IntegrationTest {
     @Value("\${messaging.consumer.queue}")
     lateinit var queueName: String
 
-    @Autowired lateinit var channelManager: HmppsChannelManager
+    @Autowired
+    lateinit var channelManager: HmppsChannelManager
 
-    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    @Autowired lateinit var wireMockServer: WireMockServer
+    @Autowired
+    lateinit var wireMockServer: WireMockServer
 
-    @MockBean lateinit var telemetryService: TelemetryService
+    @MockBean
+    lateinit var telemetryService: TelemetryService
 
     @Test
     fun `message is logged to telemetry`() {

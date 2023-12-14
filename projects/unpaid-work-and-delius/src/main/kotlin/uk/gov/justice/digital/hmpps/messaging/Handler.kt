@@ -18,6 +18,9 @@ class Handler(
     override fun handle(notification: Notification<HmppsDomainEvent>) {
         telemetryService.notificationReceived(notification)
         upwAssessmentService.processMessage(notification)
-        telemetryService.trackEvent("UPWAssessmentProcessed", mapOf("crn" to notification.message.personReference.findCrn()!!))
+        telemetryService.trackEvent(
+            "UPWAssessmentProcessed",
+            mapOf("crn" to notification.message.personReference.findCrn()!!)
+        )
     }
 }

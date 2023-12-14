@@ -42,25 +42,35 @@ import java.time.ZonedDateTime.now
 
 @ExtendWith(MockitoExtension::class)
 internal class TierServiceTest {
-    @Mock lateinit var personRepository: PersonRepository
+    @Mock
+    lateinit var personRepository: PersonRepository
 
-    @Mock lateinit var referenceDataRepository: ReferenceDataRepository
+    @Mock
+    lateinit var referenceDataRepository: ReferenceDataRepository
 
-    @Mock lateinit var managementTierRepository: ManagementTierRepository
+    @Mock
+    lateinit var managementTierRepository: ManagementTierRepository
 
-    @Mock lateinit var contactRepository: ContactRepository
+    @Mock
+    lateinit var contactRepository: ContactRepository
 
-    @Mock lateinit var staffRepository: StaffRepository
+    @Mock
+    lateinit var staffRepository: StaffRepository
 
-    @Mock lateinit var teamRepository: TeamRepository
+    @Mock
+    lateinit var teamRepository: TeamRepository
 
-    @Mock lateinit var contactTypeRepository: ContactTypeRepository
+    @Mock
+    lateinit var contactTypeRepository: ContactTypeRepository
 
-    @Mock lateinit var telemetryService: TelemetryService
+    @Mock
+    lateinit var telemetryService: TelemetryService
 
-    @Mock lateinit var optimisationTables: OptimisationTables
+    @Mock
+    lateinit var optimisationTables: OptimisationTables
 
-    @InjectMocks lateinit var tierService: TierService
+    @InjectMocks
+    lateinit var tierService: TierService
 
     private val tierScore = ReferenceDataGenerator.generate("someTierCode", ReferenceDataSetGenerator.TIER)
     private val changeReason = ReferenceDataGenerator.generate("ATS", ReferenceDataSetGenerator.TIER_CHANGE_REASON)
@@ -90,7 +100,12 @@ internal class TierServiceTest {
     @Test
     fun `should throw exception when change reason not found`() {
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(person.crn)).thenReturn(person)
-        whenever(referenceDataRepository.findByCodeAndSetName("U${tierScore.code}", ReferenceDataSetGenerator.TIER.name))
+        whenever(
+            referenceDataRepository.findByCodeAndSetName(
+                "U${tierScore.code}",
+                ReferenceDataSetGenerator.TIER.name
+            )
+        )
             .thenReturn(tierScore)
 
         val exception = assertThrows<NotFoundException> {
@@ -104,7 +119,12 @@ internal class TierServiceTest {
     fun `should throw exception when PersonManager not found`() {
         person.managers.clear()
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(person.crn)).thenReturn(person)
-        whenever(referenceDataRepository.findByCodeAndSetName("U${tierScore.code}", ReferenceDataSetGenerator.TIER.name))
+        whenever(
+            referenceDataRepository.findByCodeAndSetName(
+                "U${tierScore.code}",
+                ReferenceDataSetGenerator.TIER.name
+            )
+        )
             .thenReturn(tierScore)
         whenever(referenceDataRepository.findByCodeAndSetName("ATS", ReferenceDataSetGenerator.TIER_CHANGE_REASON.name))
             .thenReturn(changeReason)
@@ -118,7 +138,12 @@ internal class TierServiceTest {
     fun `should ignore identical updates`() {
         person.currentTier = tierScore.id
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(person.crn)).thenReturn(person)
-        whenever(referenceDataRepository.findByCodeAndSetName("U${tierScore.code}", ReferenceDataSetGenerator.TIER.name))
+        whenever(
+            referenceDataRepository.findByCodeAndSetName(
+                "U${tierScore.code}",
+                ReferenceDataSetGenerator.TIER.name
+            )
+        )
             .thenReturn(tierScore)
         whenever(referenceDataRepository.findByCodeAndSetName("ATS", ReferenceDataSetGenerator.TIER_CHANGE_REASON.name))
             .thenReturn(changeReason)
@@ -135,15 +160,27 @@ internal class TierServiceTest {
         val currentTierDate = now()
         val updatedTierScore = ReferenceDataGenerator.generate("someOtherTierCode", ReferenceDataSetGenerator.TIER)
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(person.crn)).thenReturn(person)
-        whenever(referenceDataRepository.findByCodeAndSetName("U${updatedTierScore.code}", ReferenceDataSetGenerator.TIER.name))
+        whenever(
+            referenceDataRepository.findByCodeAndSetName(
+                "U${updatedTierScore.code}",
+                ReferenceDataSetGenerator.TIER.name
+            )
+        )
             .thenReturn(updatedTierScore)
         whenever(referenceDataRepository.findByCodeAndSetName("ATS", ReferenceDataSetGenerator.TIER_CHANGE_REASON.name))
             .thenReturn(changeReason)
         whenever(managementTierRepository.findFirstByIdPersonIdOrderByIdDateChangedDesc(person.id))
-            .thenReturn(ManagementTier(id = ManagementTierId(person.id, tierScore.id, currentTierDate), tierChangeReasonId = changeReason.id))
+            .thenReturn(
+                ManagementTier(
+                    id = ManagementTierId(person.id, tierScore.id, currentTierDate),
+                    tierChangeReasonId = changeReason.id
+                )
+            )
         whenever(staffRepository.findByCode(StaffGenerator.DEFAULT.code)).thenReturn(StaffGenerator.DEFAULT)
         whenever(teamRepository.findByCode(TeamGenerator.DEFAULT.code)).thenReturn(TeamGenerator.DEFAULT)
-        whenever(contactTypeRepository.findByCode(ContactTypeGenerator.TIER_UPDATE.code)).thenReturn(ContactTypeGenerator.TIER_UPDATE)
+        whenever(contactTypeRepository.findByCode(ContactTypeGenerator.TIER_UPDATE.code)).thenReturn(
+            ContactTypeGenerator.TIER_UPDATE
+        )
 
         tierService.updateTier(
             person.crn,
@@ -163,15 +200,27 @@ internal class TierServiceTest {
         val currentTierDate = tierCalculationDate.minusDays(1)
         val updatedTierScore = ReferenceDataGenerator.generate("someOtherTierCode", ReferenceDataSetGenerator.TIER)
         whenever(personRepository.findByCrnAndSoftDeletedIsFalse(person.crn)).thenReturn(person)
-        whenever(referenceDataRepository.findByCodeAndSetName("U${updatedTierScore.code}", ReferenceDataSetGenerator.TIER.name))
+        whenever(
+            referenceDataRepository.findByCodeAndSetName(
+                "U${updatedTierScore.code}",
+                ReferenceDataSetGenerator.TIER.name
+            )
+        )
             .thenReturn(updatedTierScore)
         whenever(referenceDataRepository.findByCodeAndSetName("ATS", ReferenceDataSetGenerator.TIER_CHANGE_REASON.name))
             .thenReturn(changeReason)
         whenever(managementTierRepository.findFirstByIdPersonIdOrderByIdDateChangedDesc(person.id))
-            .thenReturn(ManagementTier(id = ManagementTierId(person.id, tierScore.id, currentTierDate), tierChangeReasonId = changeReason.id))
+            .thenReturn(
+                ManagementTier(
+                    id = ManagementTierId(person.id, tierScore.id, currentTierDate),
+                    tierChangeReasonId = changeReason.id
+                )
+            )
         whenever(staffRepository.findByCode(StaffGenerator.DEFAULT.code)).thenReturn(StaffGenerator.DEFAULT)
         whenever(teamRepository.findByCode(TeamGenerator.DEFAULT.code)).thenReturn(TeamGenerator.DEFAULT)
-        whenever(contactTypeRepository.findByCode(ContactTypeGenerator.TIER_UPDATE.code)).thenReturn(ContactTypeGenerator.TIER_UPDATE)
+        whenever(contactTypeRepository.findByCode(ContactTypeGenerator.TIER_UPDATE.code)).thenReturn(
+            ContactTypeGenerator.TIER_UPDATE
+        )
 
         tierService.updateTier(
             person.crn,
