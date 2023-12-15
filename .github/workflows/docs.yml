@@ -91,7 +91,7 @@ jobs:
           bundle exec middleman build --verbose
         working-directory: doc/tech-docs
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: index
           path: doc/tech-docs/build
@@ -154,7 +154,7 @@ jobs:
           curl -sf localhost:8080/v3/api-docs.yaml -o api-docs.yaml
         working-directory: projects/${{ matrix.project }}/tech-docs/build
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.project }}
           path: projects/${{ matrix.project }}/tech-docs/build
