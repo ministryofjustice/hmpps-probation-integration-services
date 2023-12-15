@@ -1,20 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.entity
 
-import jakarta.persistence.CascadeType
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
-import jakarta.persistence.OrderBy
-import jakarta.persistence.SequenceGenerator
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
@@ -81,7 +67,7 @@ class Registration(
         private set
 
     @OneToMany(mappedBy = "registration", cascade = [CascadeType.ALL])
-    @OrderBy("reviewDate, createdDate")
+    @OrderBy("date, createdDatetime")
     var reviews: List<RegistrationReview> = listOf()
         private set
 
@@ -90,12 +76,14 @@ class Registration(
         return this
     }
 
-    fun deregister(contact: Contact) {
+    fun deregister(contact: Contact): List<Contact> {
         deregistration = DeRegistration(LocalDate.now(), this, contact, contact.teamId, contact.staffId)
         deregistered = true
         nextReviewDate = null
-        reviews = reviews.filter(RegistrationReview::completed)
+        val splitReviews = reviews.groupBy { it.completed }
+        reviews = splitReviews[true] ?: listOf()
         reviews.firstOrNull()?.reviewDue = null
+        return splitReviews[false]?.map { it.contact } ?: listOf()
     }
 }
 
@@ -113,14 +101,14 @@ class RegisterType(
     @JoinColumn(name = "register_type_flag_id")
     val flag: ReferenceData,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "registration_contact_type_id")
     val registrationContactType: ContactType?,
 
     @Column(name = "register_review_period")
     val reviewPeriod: Long?,
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "review_contact_type_id")
     val reviewContactType: ContactType?,
 
@@ -142,7 +130,7 @@ class RegistrationReview(
     @JoinColumn(name = "registration_id")
     val registration: Registration,
 
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "contact_id")
     val contact: Contact,
 

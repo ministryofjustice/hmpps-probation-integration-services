@@ -1,12 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.person.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.jpa.repository.JpaRepository
@@ -21,11 +15,6 @@ class Person(
     @Column(columnDefinition = "char(7)")
     val crn: String,
 
-    @OneToOne
-    @JoinColumn(name = "offender_id")
-    @SQLRestriction("active_flag = 1 and soft_deleted = 0")
-    val manager: PersonManager,
-
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,
 
@@ -35,6 +24,11 @@ class Person(
 ) {
     @Column(name = "current_highest_risk_colour")
     var highestRiskColour: String? = null
+
+    @OneToOne(mappedBy = "person")
+    @SQLRestriction("active_flag = 1 and soft_deleted = 0")
+    var manager: PersonManager? = null
+        private set
 }
 
 @Immutable
@@ -43,7 +37,7 @@ class Person(
 @SQLRestriction("active_flag = 1 and soft_deleted = 0")
 class PersonManager(
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
 

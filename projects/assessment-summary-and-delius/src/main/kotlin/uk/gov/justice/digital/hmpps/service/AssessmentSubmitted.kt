@@ -19,12 +19,12 @@ class AssessmentSubmitted(
     private val riskService: RiskService,
     private val domainEventService: DomainEventService
 ) : AuditableService(auditedInteractionService) {
-    fun assessmentSubmitted(summary: AssessmentSummary) {
-        val person = personRepository.getByCrn(summary.crn)
+    fun assessmentSubmitted(crn: String, summary: AssessmentSummary) {
+        val person = personRepository.getByCrn(crn)
 
         audit(SUBMIT_ASSESSMENT_SUMMARY) {
             it["CRN"] = person.crn
-            it["OASysId"] = summary.oasysId
+            it["OASysId"] = summary.assessmentPk
             assessmentService.recordAssessment(person, summary)
         }
 

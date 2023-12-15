@@ -1,0 +1,126 @@
+{
+  "crn": "X510288",
+  "assessments": [
+    {
+      "assessmentPk": 10078385,
+      "assessmentType": "LAYER3",
+      "dateCompleted": "2023-12-15T08:34:44",
+      "assessorSignedDate": "2023-12-15T08:33:39",
+      "initiationDate": "2023-12-15T07:58:07",
+      "assessmentStatus": "COMPLETE",
+      "superStatus": "COMPLETE",
+      "laterWIPAssessmentExists": false,
+      "latestWIPDate": null,
+      "laterSignLockAssessmentExists": false,
+      "latestSignLockDate": null,
+      "laterPartCompUnsignedAssessmentExists": false,
+      "latestPartCompUnsignedDate": "2023-11-03T09:51:25",
+      "laterPartCompSignedAssessmentExists": false,
+      "latestPartCompSignedDate": null,
+      "laterCompleteAssessmentExists": false,
+      "latestCompleteDate": "2023-12-15T08:34:44",
+      "currentConcernsRiskOfSuicide": "Yes",
+      "reviewSpDate": null,
+      "initialSpDate": null,
+      "reviewNum": 1,
+      "riskPrisonersCustody": "Low",
+      "riskStaffCustody": "Low",
+      "riskStaffCommunity": "Low",
+      "riskKnownAdultCustody": "Low",
+      "riskAdultCommunity": "Medium",
+      "riskPublicCustody": "Low",
+      "riskPublicCommunity": "High",
+      "riskChildrenCustody": "Low",
+      "riskChildrenCommunity": "Low",
+      "currentConcernsBreachOfTrust": "Yes",
+      "currentConcernsDisruptive": "Yes",
+      "currentConcernsEscape": "Yes",
+      "currentConcernsVulnerablity": "Yes",
+      "currentConcernsHostel": "No",
+      "currentConcernsCustody": "Yes",
+      "currentConcernsRiskOfSelfHarm": "Yes",
+      "weightedScores": {
+        "accommodationWeightedScore": 8,
+        "eteWeightedScore": 7,
+        "relationshipsWeightedScore": 4,
+        "lifestyleWeightedScore": 5,
+        "drugWeightedScore": 4,
+        "alcoholWeightedScore": 0,
+        "thinkingWeightedScore": 5,
+        "attitudesWeightedScore": 5
+      },
+      "furtherInformation": {
+        "totWeightedScore": 108,
+        "pOAssessment": "270",
+        "pOAssessmentDesc": "Review",
+        "assessorName": "LevelTwo CentralSupport",
+        "ogrs1Year": 43,
+        "ogrs2Year": 61,
+        "reviewTerm": "N",
+        "cmsEventNumber": 1,
+        "courtCode": "LVRPCC",
+        "courtType": "CC",
+        "courtName": "Liverpool Crown Court"
+      },
+      "offender": {
+        "riskToOthers": "H",
+        "offenderPk": 7374816
+      },
+      "ogpOvp": {
+        "ogpNC": "N",
+        "ovpNC": "N",
+        "ogp1Year": 55,
+        "ogp2Year": 69,
+        "ovp1Year": 22,
+        "ovp2Year": 35,
+        "ogrs3RiskRecon": "M",
+        "ogpRisk": "H",
+        "ovpRisk": "M"
+      },
+      "basicSentencePlan": null,
+      "offences": [
+        {
+          "offenceCode": "008",
+          "offenceSubcode": "57",
+          "additionalOffence": "N"
+        }
+      ],
+      "sentencePlan": {
+        "objectives": [
+          {
+            "objectiveCode": "Increased knowledge of physical/ psychological/ emotional self harm linked to drug use",
+            "objectiveMeasure": "RII",
+            "objectiveSequence": 1,
+            "criminogenicNeeds": [
+              {
+                "criminogenicNeed": "IHD"
+              }
+            ],
+            "actions": [
+              {
+                "action": "VI9",
+                "actionComment": null
+              }
+            ]
+          },
+          {
+            "objectiveCode": "Improve employment related skills",
+            "objectiveMeasure": "RII",
+            "objectiveSequence": 2,
+            "criminogenicNeeds": [
+              {
+                "criminogenicNeed": "I4"
+              }
+            ],
+            "actions": [
+              {
+                "action": "VIII1",
+                "actionComment": null
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

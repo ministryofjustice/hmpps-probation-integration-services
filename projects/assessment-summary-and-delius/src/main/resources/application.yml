@@ -19,13 +19,13 @@ spring:
             drop_tables: false
   security.oauth2.client:
     registration:
-      assessment-summary-and-delius:
-        provider: hmpps-auth
+      default:
+        provider: oasys-ords-auth
         authorization-grant-type: client_credentials
         client-id: ${integrations.ords.client-id}
         client-secret: ${integrations.ords.client-secret}
     provider:
-      hmpps-auth:
+      oasys-ords-auth:
         token-uri: ${integrations.ords.url}/oauth/token
   threads.virtual.enabled: true
 
@@ -56,6 +56,8 @@ integrations:
     url: http://localhost:${wiremock.port}/eor/oasys
     client-id: assessment-summary-and-delius
     client-secret: assessment-summary-and-delius
+
+wiremock.port: 60990
 
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG

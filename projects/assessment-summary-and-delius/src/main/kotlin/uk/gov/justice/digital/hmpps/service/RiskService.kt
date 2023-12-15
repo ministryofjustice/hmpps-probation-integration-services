@@ -3,12 +3,7 @@ package uk.gov.justice.digital.hmpps.service
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterType
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Registration
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegistrationRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
@@ -25,8 +20,7 @@ class RiskService(
     private val contactService: ContactService
 ) {
     fun recordRisk(person: Person, summary: AssessmentSummary): List<HmppsDomainEvent> {
-        val highestRisk = summary.riskFlags?.splitToSequence(",")
-            ?.mapNotNull(Risk::of)?.sortedByDescending(Risk::ordinal)?.firstOrNull()
+        val highestRisk = summary.riskFlags.mapNotNull(Risk::of).sortedByDescending(Risk::ordinal).firstOrNull()
 
         val registrations = registrationRepository.findByPersonIdAndTypeFlagCode(
             person.id,

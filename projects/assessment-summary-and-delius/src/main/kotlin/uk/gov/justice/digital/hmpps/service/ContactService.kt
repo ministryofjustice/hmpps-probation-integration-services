@@ -1,11 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.getByCode
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Event
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import java.time.LocalDate
@@ -19,7 +15,7 @@ class ContactService(
         contactRepository.save(
             Contact(detail.contactType ?: contactTypeRepository.getByCode(detail.typeCode.value), person, event?.id)
                 .withNotes(detail.notes)
-                .withDateTeamAndStaff(detail.date, person.manager.teamId, person.manager.staffId)
+                .withDateTeamAndStaff(detail.date, person.manager!!.teamId, person.manager!!.staffId)
         )
 }
 

@@ -4,8 +4,16 @@ database:
     password_key: /assessment-summary-and-delius/db-password
     tables:
       - contact
+      - deregistration
+      - domain_event
       - oasys_assessment
-      - ogrs_contact
+      - oasys_assmnt_section_score
+      - oasys_sentence_plan
+      - oasys_sp_need
+      - oasys_sp_text
+      - oasys_sp_work_summary
+      - registration
+      - registration_review
 
   audit:
     username: AssessmentSummaryAndDelius

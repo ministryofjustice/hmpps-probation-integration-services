@@ -20,6 +20,6 @@ class Handler(
         if (notification.message.eventType != AssessmentSummaryProduced) return
         notification.message.detailUrl
             ?.let { ordsClient.getAssessmentSummary(URI.create(it)) }
-            ?.let { assessmentSubmitted.assessmentSubmitted(it) }
+            ?.let { assessmentSubmitted.assessmentSubmitted(it.crn, it.assessments.first()) }
     }
 }

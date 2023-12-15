@@ -1,18 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity
 
-import jakarta.persistence.CascadeType
-import jakarta.persistence.Column
-import jakarta.persistence.Embeddable
-import jakarta.persistence.EmbeddedId
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.SequenceGenerator
-import jakarta.persistence.Table
-import jakarta.persistence.Version
+import jakarta.persistence.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import java.io.Serializable
 
@@ -44,30 +32,30 @@ class SentencePlan(
     @Column(name = "oasys_sentence_plan_id")
     val id: Long
 ) {
-    @OneToMany(mappedBy = "sentencePlan", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "id.sentencePlan", cascade = [CascadeType.ALL])
     var needs: List<Need> = listOf()
         private set
 
-    @OneToMany(mappedBy = "sentencePlan", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "id.sentencePlan", cascade = [CascadeType.ALL])
     var texts: List<Text> = listOf()
         private set
 
-    @OneToMany(mappedBy = "sentencePlan", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "id.sentencePlan", cascade = [CascadeType.ALL])
     var workSummaries: List<WorkSummary> = listOf()
         private set
 
     fun withNeed(level: Long, need: String): SentencePlan {
-        needs = needs + Need(SentencePlanRelatedId(this, level), need, this, person)
+        needs = needs + Need(SentencePlanRelatedId(this, level), need, person)
         return this
     }
 
     fun withText(level: Long, text: String): SentencePlan {
-        texts = texts + Text(SentencePlanRelatedId(this, level), text, this, person)
+        texts = texts + Text(SentencePlanRelatedId(this, level), text, person)
         return this
     }
 
     fun withWorkSummary(level: Long, workSummary: String): SentencePlan {
-        workSummaries = workSummaries + WorkSummary(SentencePlanRelatedId(this, level), workSummary, this, person)
+        workSummaries = workSummaries + WorkSummary(SentencePlanRelatedId(this, level), workSummary, person)
         return this
     }
 }
@@ -79,10 +67,6 @@ class Need(
     val id: SentencePlanRelatedId,
 
     val need: String,
-
-    @ManyToOne
-    @JoinColumn(name = "oasys_sentence_plan_id")
-    val sentencePlan: SentencePlan,
 
     @ManyToOne
     @JoinColumn(name = "offender_id")
@@ -107,10 +91,6 @@ class Text(
     val text: String,
 
     @ManyToOne
-    @JoinColumn(name = "oasys_sentence_plan_id")
-    val sentencePlan: SentencePlan,
-
-    @ManyToOne
     @JoinColumn(name = "offender_id")
     val person: Person,
 
@@ -131,10 +111,6 @@ class WorkSummary(
     val id: SentencePlanRelatedId,
 
     val workSummary: String,
-
-    @ManyToOne
-    @JoinColumn(name = "oasys_sentence_plan_id")
-    val sentencePlan: SentencePlan,
 
     @ManyToOne
     @JoinColumn(name = "offender_id")

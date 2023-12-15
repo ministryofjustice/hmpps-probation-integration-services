@@ -1,21 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity
 
-import jakarta.persistence.CascadeType
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Embeddable
-import jakarta.persistence.EmbeddedId
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
-import jakarta.persistence.SequenceGenerator
-import jakarta.persistence.Table
-import jakarta.persistence.Version
+import jakarta.persistence.*
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.JpaRepository
@@ -24,7 +9,6 @@ import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Offence
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.AuditableEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
 import java.io.Serializable
 import java.time.LocalDate
 
@@ -45,7 +29,7 @@ class OasysAssessment(
 
     val eventNumber: String,
 
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "contact_id")
     val contact: Contact,
 
@@ -57,12 +41,8 @@ class OasysAssessment(
     @JoinColumn(name = "offence_id")
     val offence: Offence?,
 
-    @ManyToOne
-    @JoinColumn(name = "tier_id")
-    val tier: ReferenceData?,
-
     @Column(name = "oasys_total_score")
-    val totalScore: Long,
+    val totalScore: Long?,
 
     @Column(name = "oasys_assessment_description")
     val description: String?,
@@ -92,7 +72,7 @@ class OasysAssessment(
     val layer1Objective: String?,
 
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean,
+    val softDeleted: Boolean = false,
 
     @Id
     @GeneratedValue(generator = "oasys_assessment_id_seq")
@@ -109,7 +89,7 @@ class OasysAssessment(
         }
     }
 
-    @OneToMany(mappedBy = "assessment", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "id.assessment", cascade = [CascadeType.ALL])
     var sectionScores: List<SectionScore> = listOf()
         private set
 
@@ -118,7 +98,7 @@ class OasysAssessment(
         private set
 
     fun withSectionScore(level: Long, score: Long): OasysAssessment {
-        sectionScores = sectionScores + SectionScore(SectionScoreId(this, level), score, this)
+        sectionScores = sectionScores + SectionScore(SectionScoreId(this, level), score)
         return this
     }
 
@@ -142,10 +122,6 @@ class SectionScore(
 
     @Column(name = "section_score")
     var score: Long,
-
-    @ManyToOne
-    @JoinColumn(name = "oasys_assessment_id")
-    val assessment: OasysAssessment,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,

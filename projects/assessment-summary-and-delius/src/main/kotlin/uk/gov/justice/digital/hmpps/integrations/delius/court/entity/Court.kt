@@ -10,10 +10,10 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 @Immutable
 @Entity
 class Court(
+    val code: String,
     @Id
     @Column(name = "court_id")
-    val id: Long,
-    val code: String
+    val id: Long
 )
 
 interface CourtRepository : JpaRepository<Court, Long> {

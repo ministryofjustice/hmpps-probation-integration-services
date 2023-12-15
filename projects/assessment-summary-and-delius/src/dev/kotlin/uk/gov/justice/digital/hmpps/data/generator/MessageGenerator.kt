@@ -4,5 +4,5 @@ import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 
 object MessageGenerator {
-    val EXAMPLE = ResourceLoader.message<HmppsDomainEvent>("example-message")
+    val NO_REGISTRATIONS = ResourceLoader.message<HmppsDomainEvent>("assessment-summary-produced-N123456")
 }

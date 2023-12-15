@@ -1,18 +1,23 @@
 package uk.gov.justice.digital.hmpps
 
+import com.github.tomakehurst.wiremock.WireMockServer
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.IsEqual.equalTo
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import uk.gov.justice.digital.hmpps.data.generator.MessageGenerator
-import uk.gov.justice.digital.hmpps.message.Notification
+import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
+import uk.gov.justice.digital.hmpps.data.generator.ReferenceDataGenerator
+import uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity.OasysAssessmentRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegistrationRepository
+import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
+import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader.notification
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
-import java.util.concurrent.TimeoutException
 
 @SpringBootTest
 internal class IntegrationTest {
@@ -20,24 +25,35 @@ internal class IntegrationTest {
     lateinit var queueName: String
 
     @Autowired
+    lateinit var wireMockServer: WireMockServer
+
+    @Autowired
     lateinit var channelManager: HmppsChannelManager
+
+    @Autowired
+    lateinit var registrationRepository: RegistrationRepository
+
+    @Autowired
+    lateinit var oasysAssessmentRepository: OasysAssessmentRepository
 
     @MockBean
     lateinit var telemetryService: TelemetryService
 
     @Test
     fun `message is logged to telemetry`() {
-        // Given a message
-        val notification = Notification(message = MessageGenerator.EXAMPLE)
+        val person = PersonGenerator.NO_RISK
+        val message = notification<HmppsDomainEvent>("assessment-summary-produced-${person.crn}")
+        val prevRegs =
+            registrationRepository.findByPersonIdAndTypeFlagCode(person.id, ReferenceDataGenerator.DEFAULT_FLAG.code)
+        assertThat(prevRegs.size, equalTo(2))
 
-        // When it is received
-        try {
-            channelManager.getChannel(queueName).publishAndWait(notification)
-        } catch (_: TimeoutException) {
-            // Note: Remove this try/catch when the MessageListener logic has been implemented
-        }
+        channelManager.getChannel(queueName).publishAndWait(prepNotification(message, wireMockServer.port()))
 
-        // Then it is logged to telemetry
-        verify(telemetryService, atLeastOnce()).notificationReceived(notification)
+        val registrations =
+            registrationRepository.findByPersonIdAndTypeFlagCode(person.id, ReferenceDataGenerator.DEFAULT_FLAG.code)
+        assertTrue(registrations.isEmpty())
+
+        val assessment = oasysAssessmentRepository.findAll().firstOrNull { it.person.id == person.id }
+        assertNotNull(assessment)
     }
 }
