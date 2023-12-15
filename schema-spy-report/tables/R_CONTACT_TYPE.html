@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>R_CONTACT_TYPE - DNDA Database</title>
+        <title>R_CONTACT_TYPE - DMDNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DNDA</b> Database</a>
+                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>R_CONTACT_TYPE</h1><p><span id="recordNumber">3021</span> rows</p><br />
+                    <h1>R_CONTACT_TYPE</h1><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -87,7 +87,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Column</th>
@@ -112,92 +118,119 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="CONTACT.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0021883"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021883<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="CONTACT.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0024665"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024665</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="CONTACT.SESSION_DELIVERED_CON_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via R_1395"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.SESSION_DELIVERED_CON_TYPE_ID</span></td>
-                                                <td class="constraint detail">R_1395<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1395</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="CONTACT_ALERT.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via R_773"><a href='CONTACT_ALERT.html'>CONTACT_ALERT</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">R_773<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="CONTACT_ALERT.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0024413"><a href='CONTACT_ALERT.html'>CONTACT_ALERT</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024413</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="CONTACT_REDEF.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via TMP$$_SYS_C00246650"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
+                                                <td class="constraint detail">TMP$$_SYS_C00246650</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="MANAGEMENT_TIER_EVENT.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via R_1303"><a href='MANAGEMENT_TIER_EVENT.html'>MANAGEMENT_TIER_EVENT</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">R_1303<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1303</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="R_ASSESSMENT_TYPE.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0021280"><a href='R_ASSESSMENT_TYPE.html'>R_ASSESSMENT_TYPE</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021280<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="R_ASSESSMENT_TYPE.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0024480"><a href='R_ASSESSMENT_TYPE.html'>R_ASSESSMENT_TYPE</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024480</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="R_CON_OUT_TYPE_CONTACT_TYPE.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0021234"><a href='R_CON_OUT_TYPE_CONTACT_TYPE.html'>R_CON_OUT_TYPE_CONTACT_TYPE</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021234<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="R_CON_OUT_TYPE_CONTACT_TYPE.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0024349"><a href='R_CON_OUT_TYPE_CONTACT_TYPE.html'>R_CON_OUT_TYPE_CONTACT_TYPE</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024349</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="R_CON_TYPE_AD_REQ_TYPE_MAINCAT.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0021236"><a href='R_CON_TYPE_AD_REQ_TYPE_MAINCAT.html'>R_CON_TYPE_AD_REQ_TYPE_MAINCAT</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021236<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="R_CON_TYPE_AD_REQ_TYPE_MAINCAT.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0024351"><a href='R_CON_TYPE_AD_REQ_TYPE_MAINCAT.html'>R_CON_TYPE_AD_REQ_TYPE_MAINCAT</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024351</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="R_CON_TYPE_LIC_CON_TYPEMAINCAT.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0021159"><a href='R_CON_TYPE_LIC_CON_TYPEMAINCAT.html'>R_CON_TYPE_LIC_CON_TYPEMAINCAT</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021159<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="R_CON_TYPE_LIC_CON_TYPEMAINCAT.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0024354"><a href='R_CON_TYPE_LIC_CON_TYPEMAINCAT.html'>R_CON_TYPE_LIC_CON_TYPEMAINCAT</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024354</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="R_CON_TYPE_REQ_TYPE_MAINCAT.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0021068"><a href='R_CON_TYPE_REQ_TYPE_MAINCAT.html'>R_CON_TYPE_REQ_TYPE_MAINCAT</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021068<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="R_CON_TYPE_REQ_TYPE_MAINCAT.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0024357"><a href='R_CON_TYPE_REQ_TYPE_MAINCAT.html'>R_CON_TYPE_REQ_TYPE_MAINCAT</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024357</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="R_CONTACT_TYPE_DISPOSAL_TYPE.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0021287"><a href='R_CONTACT_TYPE_DISPOSAL_TYPE.html'>R_CONTACT_TYPE_DISPOSAL_TYPE</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021287<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="R_CONTACT_TYPE_DISPOSAL_TYPE.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0024489"><a href='R_CONTACT_TYPE_DISPOSAL_TYPE.html'>R_CONTACT_TYPE_DISPOSAL_TYPE</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024489</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="R_CONTACT_TYPE_NOMIS_TYPE.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via R_1207"><a href='R_CONTACT_TYPE_NOMIS_TYPE.html'>R_CONTACT_TYPE_NOMIS_TYPE</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">R_1207<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1207</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="R_CONTACT_TYPE_NSI_TYPE.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via R_817"><a href='R_CONTACT_TYPE_NSI_TYPE.html'>R_CONTACT_TYPE_NSI_TYPE</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">R_817<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_817</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="R_CONTACT_TYPE_OUTCOME.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0021368"><a href='R_CONTACT_TYPE_OUTCOME.html'>R_CONTACT_TYPE_OUTCOME</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021368<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="R_CONTACT_TYPE_OUTCOME.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0024492"><a href='R_CONTACT_TYPE_OUTCOME.html'>R_CONTACT_TYPE_OUTCOME</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024492</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="R_CONTACT_TYPECONTACT_CATEGORY.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0021127"><a href='R_CONTACT_TYPECONTACT_CATEGORY.html'>R_CONTACT_TYPECONTACT_CATEGORY</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021127<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="R_CONTACT_TYPECONTACT_CATEGORY.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0024495"><a href='R_CONTACT_TYPECONTACT_CATEGORY.html'>R_CONTACT_TYPECONTACT_CATEGORY</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024495</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="R_DRUG_CONTEXT_CONTACT_TYPE.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via R_1363"><a href='R_DRUG_CONTEXT_CONTACT_TYPE.html'>R_DRUG_CONTEXT_CONTACT_TYPE</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">R_1363<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1363</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="R_ENFORCEMENT_ACTION.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0021380"><a href='R_ENFORCEMENT_ACTION.html'>R_ENFORCEMENT_ACTION</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021380<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="R_ENFORCEMENT_ACTION.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0024326"><a href='R_ENFORCEMENT_ACTION.html'>R_ENFORCEMENT_ACTION</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024326</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="R_NSI_STATUS.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via R_806"><a href='R_NSI_STATUS.html'>R_NSI_STATUS</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">R_806<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_806</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="R_REFERRAL_TYPE.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0021010"><a href='R_REFERRAL_TYPE.html'>R_REFERRAL_TYPE</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021010<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="R_REFERRAL_TYPE.CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via SYS_C0024105"><a href='R_REFERRAL_TYPE.html'>R_REFERRAL_TYPE</a><span class='relatedKey'>.CONTACT_TYPE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024105</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="R_REGISTER_TYPE.DELETED_CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via R_1108"><a href='R_REGISTER_TYPE.html'>R_REGISTER_TYPE</a><span class='relatedKey'>.DELETED_CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">R_1108<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1108</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="R_REGISTER_TYPE.DEREGISTRATION_CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via R_1106"><a href='R_REGISTER_TYPE.html'>R_REGISTER_TYPE</a><span class='relatedKey'>.DEREGISTRATION_CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">R_1106<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1106</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="R_REGISTER_TYPE.REGISTRATION_CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via R_1105"><a href='R_REGISTER_TYPE.html'>R_REGISTER_TYPE</a><span class='relatedKey'>.REGISTRATION_CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">R_1105<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1105</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="R_REGISTER_TYPE.REVIEW_CONTACT_TYPE_ID references R_CONTACT_TYPE.CONTACT_TYPE_ID via R_1107"><a href='R_REGISTER_TYPE.html'>R_REGISTER_TYPE</a><span class='relatedKey'>.REVIEW_CONTACT_TYPE_ID</span></td>
-                                                <td class="constraint detail">R_1107<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1107</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -208,7 +241,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CODE">CODE</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="CODE">CODE</span></td>
                                     <td>VARCHAR2</td>
                                     <td>10</td>
                                     <td title=''></td>
@@ -514,7 +547,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -565,7 +598,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -577,6 +610,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="R_CONTACT_TYPE.CREATED_BY_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -599,7 +637,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -611,6 +649,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="R_CONTACT_TYPE.LAST_UPDATED_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -633,7 +676,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CONTACT_TYPE_ICON_ID">CONTACT_TYPE_ICON_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CONTACT_TYPE_ICON_ID">CONTACT_TYPE_ICON_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -646,8 +689,9 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="R_CONTACT_TYPE.CONTACT_TYPE_ICON_ID references CONTACT_TYPE_ICON.CONTACT_TYPE_ICON_ID via SYS_C0021868"><a href='CONTACT_TYPE_ICON.html'>CONTACT_TYPE_ICON</a><span class='relatedKey'>.CONTACT_TYPE_ICON_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021868<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="R_CONTACT_TYPE.CONTACT_TYPE_ICON_ID references CONTACT_TYPE_ICON.CONTACT_TYPE_ICON_ID via SYS_C0024918"><a href='CONTACT_TYPE_ICON.html'>CONTACT_TYPE_ICON</a><span class='relatedKey'>.CONTACT_TYPE_ICON_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024918</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -854,7 +898,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="indexes_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -902,7 +952,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="check_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -915,60 +971,20 @@
                                     <td>CONTACT_OUTCOME_FLAG IN (&#39;Y&#39;, &#39;N&#39;, &#39;B&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY_130798902</td>
-                                    <td>PSS_RQMNT IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>YES_OR_NO_414</td>
+                                    <td>SMS_MESSAGE_TEXT IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>TRUE_OR_FALSE_1089845492</td>
-                                    <td>SPG_OVERRIDE IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_416</td>
-                                    <td>LEGACY_ORDERS IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_418</td>
-                                    <td>DPA_EXCLUDE IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>DRUG_VIEW_TYPE_VALID_108622676</td>
-                                    <td>DRUG_VIEW_TYPE IN (&#39;A&#39;, &#39;T&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_410</td>
-                                    <td>ATTENDANCE_CONTACT IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE_1656616625</td>
-                                    <td>SGC_FLAG IN (0, 1)</td>
+                                    <td>YES_OR_NO_413</td>
+                                    <td>OFFENDER_LEVEL_CONTACT IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_411</td>
                                     <td>RECORDED_HOURS_CREDITED IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY_407206540</td>
-                                    <td>DRUG_TEST_VIEW IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_409</td>
-                                    <td>NATIONAL_STANDARDS_CONTACT IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY_46649825</td>
-                                    <td>RM38_RAR_DAY IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_414</td>
-                                    <td>SMS_MESSAGE_TEXT IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_415</td>
-                                    <td>OFFENDER_EVENT_0 IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_413</td>
-                                    <td>OFFENDER_LEVEL_CONTACT IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>YES_OR_NO_418</td>
+                                    <td>DPA_EXCLUDE IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_417</td>
@@ -983,20 +999,60 @@
                                     <td>SPG_INTEREST IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO9</td>
-                                    <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
+                                    <td>YES_OR_NO_416</td>
+                                    <td>LEGACY_ORDERS IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
-                                    <td>YES_OR_NO_412</td>
-                                    <td>SENSITIVE_CONTACT IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>TRUE_OR_FALSE_1089845492</td>
+                                    <td>SPG_OVERRIDE IN (0, 1)</td>
                                 </tr>
                                 <tr>
                                     <td>YES_OR_NO_ONLY_1413652680</td>
                                     <td>FUTURE_SCHEDULED_CONTACTS_FLAG IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 <tr>
+                                    <td>YES_OR_NO_ONLY_407206540</td>
+                                    <td>DRUG_TEST_VIEW IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>DRUG_VIEW_TYPE_VALID_108622676</td>
+                                    <td>DRUG_VIEW_TYPE IN (&#39;A&#39;, &#39;T&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_410</td>
+                                    <td>ATTENDANCE_CONTACT IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO9</td>
+                                    <td>SELECTABLE IN (&#39;N&#39;,&#39;Y&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_130798902</td>
+                                    <td>PSS_RQMNT IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_46649825</td>
+                                    <td>RM38_RAR_DAY IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE_1656616625</td>
+                                    <td>SGC_FLAG IN (0, 1)</td>
+                                </tr>
+                                <tr>
                                     <td>YES_OR_NO_OR_BOTH_ONLY1</td>
                                     <td>CONTACT_LOCATION_FLAG IN (&#39;Y&#39;, &#39;N&#39;, &#39;B&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_409</td>
+                                    <td>NATIONAL_STANDARDS_CONTACT IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_412</td>
+                                    <td>SENSITIVE_CONTACT IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_415</td>
+                                    <td>OFFENDER_EVENT_0 IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -1016,16 +1072,61 @@
                                 <h5>Close relationships within degrees of separation</h5>
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
-                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="oneDegreeImg" data="../diagrams/tables/R_CONTACT_TYPE.1degree.svg" class="diagram" border="0" align="left"></object></a>
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1233,1460,1556,2927">
+<area shape="rect" id="node2" href="R_CONTACT_TYPE.html" target="_top" title="R_CONTACT_TYPE" alt="" coords="297,4328,761,5512">
+<area shape="rect" id="node3" href="R_ENFORCEMENT_ACTION.html" target="_top" title="R_ENFORCEMENT_ACTION" alt="" coords="839,2545,1156,2780">
+<area shape="rect" id="node12" href="CONTACT_TYPE_ICON.html" target="_top" title="CONTACT_TYPE_ICON" alt="" coords="5,5093,253,5269">
+<area shape="rect" id="node4" href="CONTACT_ALERT.html" target="_top" title="CONTACT_ALERT" alt="" coords="1600,1372,1880,1724">
+<area shape="rect" id="node5" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="1233,5,1556,1443">
+<area shape="rect" id="node6" href="MANAGEMENT_TIER_EVENT.html" target="_top" title="MANAGEMENT_TIER_EVENT" alt="" coords="850,2965,1145,3259">
+<area shape="rect" id="node7" href="R_ASSESSMENT_TYPE.html" target="_top" title="R_ASSESSMENT_TYPE" alt="" coords="851,3276,1143,3540">
+<area shape="rect" id="node8" href="R_CON_OUT_TYPE_CONTACT_TYPE.html" target="_top" title="R_CON_OUT_TYPE_CONTACT_TYPE" alt="" coords="825,3557,1170,3733">
+<area shape="rect" id="node9" href="R_CON_TYPE_AD_REQ_TYPE_MAINCAT.html" target="_top" title="R_CON_TYPE_AD_REQ_TYPE_MAINCAT" alt="" coords="811,3751,1183,3927">
+<area shape="rect" id="node10" href="R_CON_TYPE_LIC_CON_TYPEMAINCAT.html" target="_top" title="R_CON_TYPE_LIC_CON_TYPEMAINCAT" alt="" coords="812,3944,1183,4120">
+<area shape="rect" id="node11" href="R_CON_TYPE_REQ_TYPE_MAINCAT.html" target="_top" title="R_CON_TYPE_REQ_TYPE_MAINCAT" alt="" coords="826,4137,1169,4313">
+<area shape="rect" id="node13" href="R_CONTACT_TYPE_DISPOSAL_TYPE.html" target="_top" title="R_CONTACT_TYPE_DISPOSAL_TYPE" alt="" coords="824,4331,1171,4507">
+<area shape="rect" id="node14" href="R_CONTACT_TYPE_NOMIS_TYPE.html" target="_top" title="R_CONTACT_TYPE_NOMIS_TYPE" alt="" coords="835,4524,1159,4647">
+<area shape="rect" id="node15" href="R_CONTACT_TYPE_NSI_TYPE.html" target="_top" title="R_CONTACT_TYPE_NSI_TYPE" alt="" coords="849,4664,1145,4840">
+<area shape="rect" id="node16" href="R_CONTACT_TYPE_OUTCOME.html" target="_top" title="R_CONTACT_TYPE_OUTCOME" alt="" coords="845,4857,1149,5033">
+<area shape="rect" id="node17" href="R_CONTACT_TYPECONTACT_CATEGORY.html" target="_top" title="R_CONTACT_TYPECONTACT_CATEGORY" alt="" coords="805,5051,1189,5227">
+<area shape="rect" id="node18" href="R_DRUG_CONTEXT_CONTACT_TYPE.html" target="_top" title="R_DRUG_CONTEXT_CONTACT_TYPE" alt="" coords="822,5244,1173,5391">
+<area shape="rect" id="node19" href="R_NSI_STATUS.html" target="_top" title="R_NSI_STATUS" alt="" coords="870,5408,1125,5643">
+<area shape="rect" id="node20" href="R_REFERRAL_TYPE.html" target="_top" title="R_REFERRAL_TYPE" alt="" coords="870,5660,1125,5924">
+<area shape="rect" id="node21" href="R_REGISTER_TYPE.html" target="_top" title="R_REGISTER_TYPE" alt="" coords="829,5941,1166,6352">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/R_CONTACT_TYPE.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
-                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="twodegreesDegreeImg" data="../diagrams/tables/R_CONTACT_TYPE.2degrees.svg" class="diagram" border="0" align="left"></object></a>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1333,1460,1656,2927">
+<area shape="rect" id="node2" href="R_CONTACT_TYPE.html" target="_top" title="R_CONTACT_TYPE" alt="" coords="397,2771,861,3955">
+<area shape="rect" id="node3" href="USER_.html" target="_top" title="USER_" alt="" coords="5,3419,353,3741">
+<area shape="rect" id="node4" href="R_ENFORCEMENT_ACTION.html" target="_top" title="R_ENFORCEMENT_ACTION" alt="" coords="939,1471,1256,1705">
+<area shape="rect" id="node13" href="CONTACT_TYPE_ICON.html" target="_top" title="CONTACT_TYPE_ICON" alt="" coords="55,3759,303,3935">
+<area shape="rect" id="node5" href="CONTACT_ALERT.html" target="_top" title="CONTACT_ALERT" alt="" coords="1700,1372,1980,1724">
+<area shape="rect" id="node6" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="1333,5,1656,1443">
+<area shape="rect" id="node7" href="MANAGEMENT_TIER_EVENT.html" target="_top" title="MANAGEMENT_TIER_EVENT" alt="" coords="950,1124,1245,1417">
+<area shape="rect" id="node8" href="R_ASSESSMENT_TYPE.html" target="_top" title="R_ASSESSMENT_TYPE" alt="" coords="951,4181,1243,4445">
+<area shape="rect" id="node9" href="R_CON_OUT_TYPE_CONTACT_TYPE.html" target="_top" title="R_CON_OUT_TYPE_CONTACT_TYPE" alt="" coords="925,2980,1270,3156">
+<area shape="rect" id="node10" href="R_CON_TYPE_AD_REQ_TYPE_MAINCAT.html" target="_top" title="R_CON_TYPE_AD_REQ_TYPE_MAINCAT" alt="" coords="911,3173,1283,3349">
+<area shape="rect" id="node11" href="R_CON_TYPE_LIC_CON_TYPEMAINCAT.html" target="_top" title="R_CON_TYPE_LIC_CON_TYPEMAINCAT" alt="" coords="912,3367,1283,3543">
+<area shape="rect" id="node12" href="R_CON_TYPE_REQ_TYPE_MAINCAT.html" target="_top" title="R_CON_TYPE_REQ_TYPE_MAINCAT" alt="" coords="926,3560,1269,3736">
+<area shape="rect" id="node14" href="R_CONTACT_TYPE_DISPOSAL_TYPE.html" target="_top" title="R_CONTACT_TYPE_DISPOSAL_TYPE" alt="" coords="924,1831,1271,2007">
+<area shape="rect" id="node15" href="R_CONTACT_TYPE_NOMIS_TYPE.html" target="_top" title="R_CONTACT_TYPE_NOMIS_TYPE" alt="" coords="935,2024,1259,2147">
+<area shape="rect" id="node16" href="R_CONTACT_TYPE_NSI_TYPE.html" target="_top" title="R_CONTACT_TYPE_NSI_TYPE" alt="" coords="949,2164,1245,2340">
+<area shape="rect" id="node17" href="R_CONTACT_TYPE_OUTCOME.html" target="_top" title="R_CONTACT_TYPE_OUTCOME" alt="" coords="945,2357,1249,2533">
+<area shape="rect" id="node18" href="R_CONTACT_TYPECONTACT_CATEGORY.html" target="_top" title="R_CONTACT_TYPECONTACT_CATEGORY" alt="" coords="905,2551,1289,2727">
+<area shape="rect" id="node19" href="R_DRUG_CONTEXT_CONTACT_TYPE.html" target="_top" title="R_DRUG_CONTEXT_CONTACT_TYPE" alt="" coords="922,2744,1273,2891">
+<area shape="rect" id="node20" href="R_NSI_STATUS.html" target="_top" title="R_NSI_STATUS" alt="" coords="970,4463,1225,4697">
+<area shape="rect" id="node21" href="R_REFERRAL_TYPE.html" target="_top" title="R_REFERRAL_TYPE" alt="" coords="970,4715,1225,4979">
+<area shape="rect" id="node22" href="R_REGISTER_TYPE.html" target="_top" title="R_REGISTER_TYPE" alt="" coords="929,3753,1266,4164">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/R_CONTACT_TYPE.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>
@@ -1045,7 +1146,7 @@
                         <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
                         <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
                     </div>
-                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.0</a></strong>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
                 </div>
                 <!-- /.container -->
             </footer>

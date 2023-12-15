@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>EVENT - DNDA Database</title>
+        <title>EVENT - DMDNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DNDA</b> Database</a>
+                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>EVENT</h1><p><span id="recordNumber">14604</span> rows</p><br />
+                    <h1>EVENT</h1><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -87,7 +87,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Column</th>
@@ -112,112 +118,144 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="ADDITIONAL_OFFENCE.EVENT_ID references EVENT.EVENT_ID via SYS_C0021163"><a href='ADDITIONAL_OFFENCE.html'>ADDITIONAL_OFFENCE</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021163<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="ADDITIONAL_OFFENCE.EVENT_ID references EVENT.EVENT_ID via SYS_C0024426"><a href='ADDITIONAL_OFFENCE.html'>ADDITIONAL_OFFENCE</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024426</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="ADDITIONAL_SENTENCE.EVENT_ID references EVENT.EVENT_ID via SYS_C0021810"><a href='ADDITIONAL_SENTENCE.html'>ADDITIONAL_SENTENCE</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021810<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="ADDITIONAL_SENTENCE.EVENT_ID references EVENT.EVENT_ID via SYS_C0025040"><a href='ADDITIONAL_SENTENCE.html'>ADDITIONAL_SENTENCE</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0025040</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="APPROVED_PREMISES_REFERRAL.EVENT_ID references EVENT.EVENT_ID via SYS_C0021657"><a href='APPROVED_PREMISES_REFERRAL.html'>APPROVED_PREMISES_REFERRAL</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021657<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="APPROVED_PREMISES_REFERRAL.EVENT_ID references EVENT.EVENT_ID via SYS_C0024812"><a href='APPROVED_PREMISES_REFERRAL.html'>APPROVED_PREMISES_REFERRAL</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024812</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="ASSESSMENT.EVENT_ID references EVENT.EVENT_ID via R_1346"><a href='ASSESSMENT.html'>ASSESSMENT</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">R_1346<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1346</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="CASE_ALLOCATION.EVENT_ID references EVENT.EVENT_ID via R_1068"><a href='CASE_ALLOCATION.html'>CASE_ALLOCATION</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">R_1068<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1068</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="CASELOAD.EVENT_ID references EVENT.EVENT_ID via SYS_C0021556"><a href='CASELOAD.html'>CASELOAD</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021556<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="CASELOAD.EVENT_ID references EVENT.EVENT_ID via SYS_C0024927"><a href='CASELOAD.html'>CASELOAD</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024927</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="COHORT.EVENT_ID references EVENT.EVENT_ID via R_918"><a href='COHORT.html'>COHORT</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">R_918<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_918</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="COHORT_DIARY.EVENT_ID references EVENT.EVENT_ID via R_1014"><a href='COHORT_DIARY.html'>COHORT_DIARY</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">R_1014<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1014</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="COHORT_HISTORY.EVENT_ID references EVENT.EVENT_ID via R_926"><a href='COHORT_HISTORY.html'>COHORT_HISTORY</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">R_926<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_926</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="CONTACT.EVENT_ID references EVENT.EVENT_ID via SYS_C0021904"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021904<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="CONTACT.EVENT_ID references EVENT.EVENT_ID via SYS_C0024671"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024671</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="COURT_APPEARANCE.EVENT_ID references EVENT.EVENT_ID via SYS_C0021928"><a href='COURT_APPEARANCE.html'>COURT_APPEARANCE</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021928<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="CONTACT_REDEF.EVENT_ID references EVENT.EVENT_ID via TMP$$_SYS_C00246710"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">TMP$$_SYS_C00246710</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="COURT_APPEARANCE.EVENT_ID references EVENT.EVENT_ID via SYS_C0025030"><a href='COURT_APPEARANCE.html'>COURT_APPEARANCE</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0025030</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="DATA_SCRIPT_MESSAGE.EVENT_ID references EVENT.EVENT_ID via R_1248"><a href='DATA_SCRIPT_MESSAGE.html'>DATA_SCRIPT_MESSAGE</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">R_1248<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1248</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="DISPOSAL.EVENT_ID references EVENT.EVENT_ID via SYS_C0021970"><a href='DISPOSAL.html'>DISPOSAL</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021970<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="DISPOSAL.EVENT_ID references EVENT.EVENT_ID via SYS_C0024798"><a href='DISPOSAL.html'>DISPOSAL</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024798</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="DRUG_TEST_PROFILE.EVENT_ID references EVENT.EVENT_ID via SYS_C0021785"><a href='DRUG_TEST_PROFILE.html'>DRUG_TEST_PROFILE</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021785<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="DRUG_TEST_PROFILE.EVENT_ID references EVENT.EVENT_ID via SYS_C0024964"><a href='DRUG_TEST_PROFILE.html'>DRUG_TEST_PROFILE</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024964</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="DRUGS_TEST.EVENT_ID references EVENT.EVENT_ID via SYS_C0021458"><a href='DRUGS_TEST.html'>DRUGS_TEST</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021458<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="DRUGS_TEST.EVENT_ID references EVENT.EVENT_ID via SYS_C0025045"><a href='DRUGS_TEST.html'>DRUGS_TEST</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0025045</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="EVENT.CONCURRENT_WITH_EVENT_ID references EVENT.EVENT_ID via R_784"><a href='EVENT.html'>EVENT</a><span class='relatedKey'>.CONCURRENT_WITH_EVENT_ID</span></td>
-                                                <td class="constraint detail">R_784<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="EVENT.CONCURRENT_WITH_EVENT_ID references EVENT.EVENT_ID via SYS_C0024977"><a href='EVENT.html'>EVENT</a><span class='relatedKey'>.CONCURRENT_WITH_EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024977</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="EVENT.CONSECUTIVE_TO_EVENT_ID references EVENT.EVENT_ID via R_785"><a href='EVENT.html'>EVENT</a><span class='relatedKey'>.CONSECUTIVE_TO_EVENT_ID</span></td>
-                                                <td class="constraint detail">R_785<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="EVENT.CONSECUTIVE_TO_EVENT_ID references EVENT.EVENT_ID via SYS_C0024980"><a href='EVENT.html'>EVENT</a><span class='relatedKey'>.CONSECUTIVE_TO_EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024980</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="MAIN_OFFENCE.EVENT_ID references EVENT.EVENT_ID via SYS_C0021874"><a href='MAIN_OFFENCE.html'>MAIN_OFFENCE</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021874<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="MAIN_OFFENCE.EVENT_ID references EVENT.EVENT_ID via SYS_C0024753"><a href='MAIN_OFFENCE.html'>MAIN_OFFENCE</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024753</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="NSI.EVENT_ID references EVENT.EVENT_ID via R_803"><a href='NSI.html'>NSI</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">R_803<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_803</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="OGRS_ASSESSMENT.EVENT_ID references EVENT.EVENT_ID via SYS_C0021365"><a href='OGRS_ASSESSMENT.html'>OGRS_ASSESSMENT</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021365<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="OGRS_ASSESSMENT.EVENT_ID references EVENT.EVENT_ID via SYS_C0024397"><a href='OGRS_ASSESSMENT.html'>OGRS_ASSESSMENT</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024397</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="ORDER_MANAGER.EVENT_ID references EVENT.EVENT_ID via SYS_C0021261"><a href='ORDER_MANAGER.html'>ORDER_MANAGER</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021261<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="ORDER_MANAGER.EVENT_ID references EVENT.EVENT_ID via SYS_C0024257"><a href='ORDER_MANAGER.html'>ORDER_MANAGER</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024257</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="ORDER_TRANSFER.EVENT_ID references EVENT.EVENT_ID via R_847"><a href='ORDER_TRANSFER.html'>ORDER_TRANSFER</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">R_847<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_847</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="REFERRAL.EVENT_ID references EVENT.EVENT_ID via SYS_C0021466"><a href='REFERRAL.html'>REFERRAL</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021466<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="REFERRAL.EVENT_ID references EVENT.EVENT_ID via SYS_C0024580"><a href='REFERRAL.html'>REFERRAL</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024580</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="REJECTED_TRANSFER_DIARY.EVENT_ID references EVENT.EVENT_ID via R_1157"><a href='REJECTED_TRANSFER_DIARY.html'>REJECTED_TRANSFER_DIARY</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">R_1157<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1157</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="REPORT_MANAGER.EVENT_ID references EVENT.EVENT_ID via SYS_C0021250"><a href='REPORT_MANAGER.html'>REPORT_MANAGER</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021250<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="REPORT_MANAGER.EVENT_ID references EVENT.EVENT_ID via SYS_C0024550"><a href='REPORT_MANAGER.html'>REPORT_MANAGER</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024550</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="SPG_DOCUMENT_REQUEST.EVENT_ID references EVENT.EVENT_ID via R_1227"><a href='SPG_DOCUMENT_REQUEST.html'>SPG_DOCUMENT_REQUEST</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">R_1227<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1227</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="TIER_ALLOCATION.EVENT_ID references EVENT.EVENT_ID via R_1185"><a href='TIER_ALLOCATION.html'>TIER_ALLOCATION</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">R_1185<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1185</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -228,7 +266,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CONSECUTIVE_TO_EVENT_ID">CONSECUTIVE_TO_EVENT_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CONSECUTIVE_TO_EVENT_ID">CONSECUTIVE_TO_EVENT_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -241,15 +279,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="EVENT.CONSECUTIVE_TO_EVENT_ID references EVENT.EVENT_ID via R_785"><a href='EVENT.html'>EVENT</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">R_785<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="EVENT.CONSECUTIVE_TO_EVENT_ID references EVENT.EVENT_ID via SYS_C0024980"><a href='EVENT.html'>EVENT</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024980</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CONCURRENT_WITH_EVENT_ID">CONCURRENT_WITH_EVENT_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CONCURRENT_WITH_EVENT_ID">CONCURRENT_WITH_EVENT_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -262,15 +301,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="EVENT.CONCURRENT_WITH_EVENT_ID references EVENT.EVENT_ID via R_784"><a href='EVENT.html'>EVENT</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">R_784<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="EVENT.CONCURRENT_WITH_EVENT_ID references EVENT.EVENT_ID via SYS_C0024977"><a href='EVENT.html'>EVENT</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024977</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OFFENDER_ID">OFFENDER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OFFENDER_ID">OFFENDER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -283,15 +323,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="EVENT.OFFENDER_ID references OFFENDER.OFFENDER_ID via SYS_C0021870"><a href='OFFENDER.html'>OFFENDER</a><span class='relatedKey'>.OFFENDER_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021870<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="EVENT.OFFENDER_ID references OFFENDER.OFFENDER_ID via SYS_C0024978"><a href='OFFENDER.html'>OFFENDER</a><span class='relatedKey'>.OFFENDER_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024978</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="EVENT_NUMBER">EVENT_NUMBER</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="EVENT_NUMBER">EVENT_NUMBER</span></td>
                                     <td>VARCHAR2</td>
                                     <td>10</td>
                                     <td title=''></td>
@@ -308,7 +349,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="REFERRAL_DATE">REFERRAL_DATE</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="REFERRAL_DATE">REFERRAL_DATE</span></td>
                                     <td>DATE</td>
                                     <td>7</td>
                                     <td title=''></td>
@@ -342,7 +383,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="SOFT_DELETED">SOFT_DELETED</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="SOFT_DELETED">SOFT_DELETED</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -359,7 +400,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PARTITION_AREA_ID">PARTITION_AREA_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PARTITION_AREA_ID">PARTITION_AREA_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -372,8 +413,9 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="EVENT.PARTITION_AREA_ID references PARTITION_AREA.PARTITION_AREA_ID via SYS_C0021871"><a href='PARTITION_AREA.html'>PARTITION_AREA</a><span class='relatedKey'>.PARTITION_AREA_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021871<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="EVENT.PARTITION_AREA_ID references PARTITION_AREA.PARTITION_AREA_ID via SYS_C0024979"><a href='PARTITION_AREA.html'>PARTITION_AREA</a><span class='relatedKey'>.PARTITION_AREA_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024979</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -397,7 +439,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -409,12 +451,17 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="EVENT.CREATED_BY_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CREATED_DATETIME">CREATED_DATETIME</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="CREATED_DATETIME">CREATED_DATETIME</span></td>
                                     <td>DATE</td>
                                     <td>7</td>
                                     <td title=''></td>
@@ -431,7 +478,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -443,6 +490,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="EVENT.LAST_UPDATED_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -465,7 +517,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -516,7 +568,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ACTIVE_FLAG">ACTIVE_FLAG</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="ACTIVE_FLAG">ACTIVE_FLAG</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -635,7 +687,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="COURT_ID">COURT_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="COURT_ID">COURT_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -649,7 +701,8 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="EVENT.COURT_ID references COURT.COURT_ID via R_1234"><a href='COURT.html'>COURT</a><span class='relatedKey'>.COURT_ID</span></td>
-                                                <td class="constraint detail">R_1234<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1234</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -669,7 +722,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="indexes_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -747,7 +806,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="check_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -756,8 +821,16 @@
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td>TRUE_OR_FALSE52</td>
+                                    <td>SOFT_DELETED IN (0, 1)</td>
+                                </tr>
+                                <tr>
                                     <td>TRUE_OR_FALSE_1415501270</td>
                                     <td>PENDING_TRANSFER IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE54</td>
+                                    <td>ACTIVE_FLAG IN (0, 1)</td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE_1988266100</td>
@@ -766,14 +839,6 @@
                                 <tr>
                                     <td>TRUE_OR_FALSE53</td>
                                     <td>IN_BREACH IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE52</td>
-                                    <td>SOFT_DELETED IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE54</td>
-                                    <td>ACTIVE_FLAG IN (0, 1)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -793,16 +858,79 @@
                                 <h5>Close relationships within degrees of separation</h5>
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
-                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="oneDegreeImg" data="../diagrams/tables/EVENT.1degree.svg" class="diagram" border="0" align="left"></object></a>
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="ADDITIONAL_OFFENCE.html" target="_top" title="ADDITIONAL_OFFENCE" alt="" coords="1215,767,1472,1119">
+<area shape="rect" id="node2" href="EVENT.html" target="_top" title="EVENT" alt="" coords="649,5803,1127,6605">
+<area shape="rect" id="node3" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="5,6868,229,7015">
+<area shape="rect" id="node5" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="273,2957,605,4160">
+<area shape="rect" id="node22" href="COURT.html" target="_top" title="COURT" alt="" coords="312,6509,567,6891">
+<area shape="rect" id="node4" href="ADDITIONAL_SENTENCE.html" target="_top" title="ADDITIONAL_SENTENCE" alt="" coords="1191,1208,1496,1560">
+<area shape="rect" id="node6" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="1177,4665,1510,5956">
+<area shape="rect" id="node7" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="1942,645,2261,1261">
+<area shape="rect" id="node8" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1560,1108,1883,2575">
+<area shape="rect" id="node9" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="1560,2592,1883,4029">
+<area shape="rect" id="node10" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1187,104,1500,749">
+<area shape="rect" id="node14" href="NSI.html" target="_top" title="NSI" alt="" coords="1201,4025,1485,4612">
+<area shape="rect" id="node11" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="1177,3356,1510,3972">
+<area shape="rect" id="node12" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="1927,6545,2276,7513">
+<area shape="rect" id="node13" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="1173,7632,1514,8219">
+<area shape="rect" id="node15" href="ORDER_MANAGER.html" target="_top" title="ORDER_MANAGER" alt="" coords="1591,6663,1851,7367">
+<area shape="rect" id="node16" href="REPORT_MANAGER.html" target="_top" title="REPORT_MANAGER" alt="" coords="1171,10079,1516,10900">
+<area shape="rect" id="node27" href="ORDER_TRANSFER.html" target="_top" title="ORDER_TRANSFER" alt="" coords="1177,6881,1510,7615">
+<area shape="rect" id="node17" href="COHORT.html" target="_top" title="COHORT" alt="" coords="1197,1685,1490,2037">
+<area shape="rect" id="node18" href="COHORT_DIARY.html" target="_top" title="COHORT_DIARY" alt="" coords="1591,6117,1851,6645">
+<area shape="rect" id="node19" href="MAIN_OFFENCE.html" target="_top" title="MAIN_OFFENCE" alt="" coords="1216,8664,1471,9075">
+<area shape="rect" id="node20" href="COHORT_HISTORY.html" target="_top" title="COHORT_HISTORY" alt="" coords="1197,2055,1490,2407">
+<area shape="rect" id="node21" href="COURT_APPEARANCE.html" target="_top" title="COURT_APPEARANCE" alt="" coords="1173,9092,1514,9649">
+<area shape="rect" id="node23" href="DATA_SCRIPT_MESSAGE.html" target="_top" title="DATA_SCRIPT_MESSAGE" alt="" coords="1196,2424,1491,2629">
+<area shape="rect" id="node24" href="DRUG_TEST_PROFILE.html" target="_top" title="DRUG_TEST_PROFILE" alt="" coords="1216,8236,1471,8647">
+<area shape="rect" id="node25" href="DRUGS_TEST.html" target="_top" title="DRUGS_TEST" alt="" coords="1203,6189,1483,6864">
+<area shape="rect" id="node26" href="OGRS_ASSESSMENT.html" target="_top" title="OGRS_ASSESSMENT" alt="" coords="1216,9667,1471,9989">
+<area shape="rect" id="node28" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="1561,4680,1881,5531">
+<area shape="rect" id="node29" href="SPG_DOCUMENT_REQUEST.html" target="_top" title="SPG_DOCUMENT_REQUEST" alt="" coords="1199,2647,1487,2911">
+<area shape="rect" id="node30" href="TIER_ALLOCATION.html" target="_top" title="TIER_ALLOCATION" alt="" coords="1177,2928,1510,3339">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/EVENT.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
-                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="twodegreesDegreeImg" data="../diagrams/tables/EVENT.2degrees.svg" class="diagram" border="0" align="left"></object></a>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="ADDITIONAL_OFFENCE.html" target="_top" title="ADDITIONAL_OFFENCE" alt="" coords="1339,3994,1596,4346">
+<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="5,5895,353,6218">
+<area shape="rect" id="node3" href="EVENT.html" target="_top" title="EVENT" alt="" coords="773,5902,1251,6704">
+<area shape="rect" id="node4" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="67,3136,291,3283">
+<area shape="rect" id="node6" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="397,6991,729,8194">
+<area shape="rect" id="node22" href="COURT.html" target="_top" title="COURT" alt="" coords="436,5792,691,6174">
+<area shape="rect" id="node5" href="ADDITIONAL_SENTENCE.html" target="_top" title="ADDITIONAL_SENTENCE" alt="" coords="1315,4967,1620,5319">
+<area shape="rect" id="node7" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="1301,6199,1634,7490">
+<area shape="rect" id="node8" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="2066,8232,2385,8848">
+<area shape="rect" id="node9" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1684,9087,2007,10554">
+<area shape="rect" id="node10" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="1684,10607,2007,12044">
+<area shape="rect" id="node11" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1311,2639,1624,3284">
+<area shape="rect" id="node15" href="NSI.html" target="_top" title="NSI" alt="" coords="1325,8858,1609,9444">
+<area shape="rect" id="node12" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="1301,10390,1634,11006">
+<area shape="rect" id="node13" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="2051,2534,2400,3502">
+<area shape="rect" id="node14" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="1297,4363,1638,4950">
+<area shape="rect" id="node16" href="ORDER_MANAGER.html" target="_top" title="ORDER_MANAGER" alt="" coords="1715,138,1975,842">
+<area shape="rect" id="node17" href="REPORT_MANAGER.html" target="_top" title="REPORT_MANAGER" alt="" coords="1295,1424,1640,2246">
+<area shape="rect" id="node28" href="ORDER_TRANSFER.html" target="_top" title="ORDER_TRANSFER" alt="" coords="1301,674,1634,1407">
+<area shape="rect" id="node18" href="COHORT.html" target="_top" title="COHORT" alt="" coords="1321,7730,1614,8082">
+<area shape="rect" id="node19" href="COHORT_DIARY.html" target="_top" title="COHORT_DIARY" alt="" coords="1715,7024,1975,7552">
+<area shape="rect" id="node20" href="MAIN_OFFENCE.html" target="_top" title="MAIN_OFFENCE" alt="" coords="1340,9962,1595,10372">
+<area shape="rect" id="node21" href="COHORT_HISTORY.html" target="_top" title="COHORT_HISTORY" alt="" coords="1321,8099,1614,8451">
+<area shape="rect" id="node23" href="COURT_APPEARANCE.html" target="_top" title="COURT_APPEARANCE" alt="" coords="1297,5336,1638,5894">
+<area shape="rect" id="node24" href="DATA_SCRIPT_MESSAGE.html" target="_top" title="DATA_SCRIPT_MESSAGE" alt="" coords="1320,7507,1615,7712">
+<area shape="rect" id="node25" href="DRUG_TEST_PROFILE.html" target="_top" title="DRUG_TEST_PROFILE" alt="" coords="1340,246,1595,656">
+<area shape="rect" id="node26" href="DRUGS_TEST.html" target="_top" title="DRUGS_TEST" alt="" coords="1327,3302,1607,3976">
+<area shape="rect" id="node27" href="OGRS_ASSESSMENT.html" target="_top" title="OGRS_ASSESSMENT" alt="" coords="1340,2263,1595,2586">
+<area shape="rect" id="node29" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="1685,5151,2005,6002">
+<area shape="rect" id="node30" href="SPG_DOCUMENT_REQUEST.html" target="_top" title="SPG_DOCUMENT_REQUEST" alt="" coords="1323,8576,1611,8840">
+<area shape="rect" id="node31" href="TIER_ALLOCATION.html" target="_top" title="TIER_ALLOCATION" alt="" coords="1301,9498,1634,9908">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/EVENT.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>
@@ -822,7 +950,7 @@
                         <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
                         <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
                     </div>
-                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.0</a></strong>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
                 </div>
                 <!-- /.container -->
             </footer>

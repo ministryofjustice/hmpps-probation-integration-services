@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>SPG_ERROR - DNDA Database</title>
+        <title>SPG_ERROR - DMDNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DNDA</b> Database</a>
+                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>SPG_ERROR</h1><p><span id="recordNumber">25460</span> rows</p><br />
+                    <h1>SPG_ERROR</h1><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -87,7 +87,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Column</th>
@@ -113,11 +119,13 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="SPG_ERROR_DETAIL.SPG_ERROR_ID references SPG_ERROR.SPG_ERROR_ID via R_1132"><a href='SPG_ERROR_DETAIL.html'>SPG_ERROR_DETAIL</a><span class='relatedKey'>.SPG_ERROR_ID</span></td>
-                                                <td class="constraint detail">R_1132<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1132</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="SPG_ERROR_ELEMENT.SPG_ERROR_ID references SPG_ERROR.SPG_ERROR_ID via R_1130"><a href='SPG_ERROR_ELEMENT.html'>SPG_ERROR_ELEMENT</a><span class='relatedKey'>.SPG_ERROR_ID</span></td>
-                                                <td class="constraint detail">R_1130<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1130</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -128,7 +136,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="SPG_NOTIFICATION_ID">SPG_NOTIFICATION_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="SPG_NOTIFICATION_ID">SPG_NOTIFICATION_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -140,12 +148,17 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="SPG_ERROR.SPG_NOTIFICATION_ID&#39;s name implies that it&#39;s a child of SPG_NOTIFICATION.SPG_NOTIFICATION_ID, but it doesn&#39;t reference that column."><a href='SPG_NOTIFICATION.html'>SPG_NOTIFICATION</a><span class='relatedKey'>.SPG_NOTIFICATION_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="SPG_MESSAGE_TYPE_ID">SPG_MESSAGE_TYPE_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="SPG_MESSAGE_TYPE_ID">SPG_MESSAGE_TYPE_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -159,7 +172,8 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="SPG_ERROR.SPG_MESSAGE_TYPE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1128"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
-                                                <td class="constraint detail">R_1128<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1128</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -183,7 +197,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -195,6 +209,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="SPG_ERROR.CREATED_BY_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -217,7 +236,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -229,6 +248,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="SPG_ERROR.LAST_UPDATED_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -256,7 +280,7 @@
                                     <td>38</td>
                                     <td title=''></td>
                                     <td title=''></td>
-                                    <td>0  </td>
+                                    <td>0 </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -268,7 +292,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="SPG_ERROR_CATEGORY_ID">SPG_ERROR_CATEGORY_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="SPG_ERROR_CATEGORY_ID">SPG_ERROR_CATEGORY_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -282,7 +306,8 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="SPG_ERROR.SPG_ERROR_CATEGORY_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1139"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
-                                                <td class="constraint detail">R_1139<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1139</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -323,7 +348,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="RESOLUTION_STATUS_ID">RESOLUTION_STATUS_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="RESOLUTION_STATUS_ID">RESOLUTION_STATUS_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -337,7 +362,8 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="SPG_ERROR.RESOLUTION_STATUS_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1140"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
-                                                <td class="constraint detail">R_1140<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1140</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -378,7 +404,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ASSIGNED_TO_STAFF_ID">ASSIGNED_TO_STAFF_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ASSIGNED_TO_STAFF_ID">ASSIGNED_TO_STAFF_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -392,7 +418,8 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="SPG_ERROR.ASSIGNED_TO_STAFF_ID references STAFF.STAFF_ID via R_1229"><a href='STAFF.html'>STAFF</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">R_1229<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1229</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -412,7 +439,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="indexes_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -476,16 +509,30 @@
                                 <h5>Close relationships within degrees of separation</h5>
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
-                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="oneDegreeImg" data="../diagrams/tables/SPG_ERROR.1degree.svg" class="diagram" border="0" align="left"></object></a>
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="SPG_ERROR.html" target="_top" title="SPG_ERROR" alt="" coords="667,5,1028,544">
+<area shape="rect" id="node2" href="STAFF.html" target="_top" title="STAFF" alt="" coords="368,341,623,781">
+<area shape="rect" id="node3" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,459,324,723">
+<area shape="rect" id="node4" href="SPG_ERROR_DETAIL.html" target="_top" title="SPG_ERROR_DETAIL" alt="" coords="1371,389,1613,595">
+<area shape="rect" id="node5" href="SPG_ERROR_ELEMENT.html" target="_top" title="SPG_ERROR_ELEMENT" alt="" coords="1072,448,1327,683">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/SPG_ERROR.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
-                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="twodegreesDegreeImg" data="../diagrams/tables/SPG_ERROR.2degrees.svg" class="diagram" border="0" align="left"></object></a>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="714,435,1033,699">
+<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="322,521,670,844">
+<area shape="rect" id="node4" href="STAFF.html" target="_top" title="STAFF" alt="" coords="23,308,278,748">
+<area shape="rect" id="node3" href="SPG_ERROR.html" target="_top" title="SPG_ERROR" alt="" coords="1429,337,1790,876">
+<area shape="rect" id="node5" href="SPG_NOTIFICATION.html" target="_top" title="SPG_NOTIFICATION" alt="" coords="1077,63,1385,591">
+<area shape="rect" id="node6" href="SPG_ERROR_DETAIL.html" target="_top" title="SPG_ERROR_DETAIL" alt="" coords="2133,311,2375,516">
+<area shape="rect" id="node7" href="SPG_ERROR_ELEMENT.html" target="_top" title="SPG_ERROR_ELEMENT" alt="" coords="1834,795,2089,1029">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/SPG_ERROR.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>
@@ -505,7 +552,7 @@
                         <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
                         <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
                     </div>
-                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.0</a></strong>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
                 </div>
                 <!-- /.container -->
             </footer>

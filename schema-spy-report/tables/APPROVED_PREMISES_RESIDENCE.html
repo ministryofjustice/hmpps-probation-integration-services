@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>APPROVED_PREMISES_RESIDENCE - DNDA Database</title>
+        <title>APPROVED_PREMISES_RESIDENCE - DMDNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DNDA</b> Database</a>
+                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>APPROVED_PREMISES_RESIDENCE</h1><p><span id="recordNumber">7</span> rows</p><br />
+                    <h1>APPROVED_PREMISES_RESIDENCE</h1><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -87,7 +87,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Column</th>
@@ -113,7 +119,8 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="OFFENDER_ADDRESS.APPROVED_PREMISES_RESIDENCE_ID references APPROVED_PREMISES_RESIDENCE.APPROVED_PREMISES_RESIDENCE_ID via R_1373"><a href='OFFENDER_ADDRESS.html'>OFFENDER_ADDRESS</a><span class='relatedKey'>.APPROVED_PREMISES_RESIDENCE_ID</span></td>
-                                                <td class="constraint detail">R_1373<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1373</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -124,7 +131,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="APPROVED_PREMISES_REFERRAL_ID">APPROVED_PREMISES_REFERRAL_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="APPROVED_PREMISES_REFERRAL_ID">APPROVED_PREMISES_REFERRAL_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -137,8 +144,9 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="APPROVED_PREMISES_RESIDENCE.APPROVED_PREMISES_REFERRAL_ID references APPROVED_PREMISES_REFERRAL.APPROVED_PREMISES_REFERRAL_ID via SYS_C0021592"><a href='APPROVED_PREMISES_REFERRAL.html'>APPROVED_PREMISES_REFERRAL</a><span class='relatedKey'>.APPROVED_PREMISES_REFERRAL_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021592<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="APPROVED_PREMISES_RESIDENCE.APPROVED_PREMISES_REFERRAL_ID references APPROVED_PREMISES_REFERRAL.APPROVED_PREMISES_REFERRAL_ID via SYS_C0024950"><a href='APPROVED_PREMISES_REFERRAL.html'>APPROVED_PREMISES_REFERRAL</a><span class='relatedKey'>.APPROVED_PREMISES_REFERRAL_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024950</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -247,7 +255,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PARTITION_AREA_ID">PARTITION_AREA_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PARTITION_AREA_ID">PARTITION_AREA_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -260,8 +268,9 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="APPROVED_PREMISES_RESIDENCE.PARTITION_AREA_ID references PARTITION_AREA.PARTITION_AREA_ID via SYS_C0021586"><a href='PARTITION_AREA.html'>PARTITION_AREA</a><span class='relatedKey'>.PARTITION_AREA_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021586<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="APPROVED_PREMISES_RESIDENCE.PARTITION_AREA_ID references PARTITION_AREA.PARTITION_AREA_ID via SYS_C0024946"><a href='PARTITION_AREA.html'>PARTITION_AREA</a><span class='relatedKey'>.PARTITION_AREA_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024946</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -285,7 +294,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="DEPARTURE_REASON_ID">DEPARTURE_REASON_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="DEPARTURE_REASON_ID">DEPARTURE_REASON_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -298,15 +307,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="APPROVED_PREMISES_RESIDENCE.DEPARTURE_REASON_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0021587"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021587<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="APPROVED_PREMISES_RESIDENCE.DEPARTURE_REASON_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0024942"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024942</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="APPROVED_PREMISES_ID">APPROVED_PREMISES_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="APPROVED_PREMISES_ID">APPROVED_PREMISES_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -319,15 +329,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="APPROVED_PREMISES_RESIDENCE.APPROVED_PREMISES_ID references R_APPROVED_PREMISES.APPROVED_PREMISES_ID via SYS_C0021585"><a href='R_APPROVED_PREMISES.html'>R_APPROVED_PREMISES</a><span class='relatedKey'>.APPROVED_PREMISES_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021585<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="APPROVED_PREMISES_RESIDENCE.APPROVED_PREMISES_ID references R_APPROVED_PREMISES.APPROVED_PREMISES_ID via SYS_C0024944"><a href='R_APPROVED_PREMISES.html'>R_APPROVED_PREMISES</a><span class='relatedKey'>.APPROVED_PREMISES_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024944</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="DEST_APPROVED_PREMISES_ID">DEST_APPROVED_PREMISES_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="DEST_APPROVED_PREMISES_ID">DEST_APPROVED_PREMISES_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -340,15 +351,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="APPROVED_PREMISES_RESIDENCE.DEST_APPROVED_PREMISES_ID references R_APPROVED_PREMISES.APPROVED_PREMISES_ID via SYS_C0021584"><a href='R_APPROVED_PREMISES.html'>R_APPROVED_PREMISES</a><span class='relatedKey'>.APPROVED_PREMISES_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021584<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="APPROVED_PREMISES_RESIDENCE.DEST_APPROVED_PREMISES_ID references R_APPROVED_PREMISES.APPROVED_PREMISES_ID via SYS_C0024945"><a href='R_APPROVED_PREMISES.html'>R_APPROVED_PREMISES</a><span class='relatedKey'>.APPROVED_PREMISES_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024945</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="MOVE_ON_CATEGORY_ID">MOVE_ON_CATEGORY_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="MOVE_ON_CATEGORY_ID">MOVE_ON_CATEGORY_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -361,15 +373,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="APPROVED_PREMISES_RESIDENCE.MOVE_ON_CATEGORY_ID references R_MOVE_ON_CATEGORY.MOVE_ON_CATEGORY_ID via SYS_C0021588"><a href='R_MOVE_ON_CATEGORY.html'>R_MOVE_ON_CATEGORY</a><span class='relatedKey'>.MOVE_ON_CATEGORY_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021588<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="APPROVED_PREMISES_RESIDENCE.MOVE_ON_CATEGORY_ID references R_MOVE_ON_CATEGORY.MOVE_ON_CATEGORY_ID via SYS_C0024941"><a href='R_MOVE_ON_CATEGORY.html'>R_MOVE_ON_CATEGORY</a><span class='relatedKey'>.MOVE_ON_CATEGORY_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024941</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="APPROVED_PREMISES_STAFF_ID">APPROVED_PREMISES_STAFF_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="APPROVED_PREMISES_STAFF_ID">APPROVED_PREMISES_STAFF_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -382,15 +395,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="APPROVED_PREMISES_RESIDENCE.APPROVED_PREMISES_STAFF_ID references STAFF.STAFF_ID via SYS_C0021589"><a href='STAFF.html'>STAFF</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021589<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="APPROVED_PREMISES_RESIDENCE.APPROVED_PREMISES_STAFF_ID references STAFF.STAFF_ID via SYS_C0024947"><a href='STAFF.html'>STAFF</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024947</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="KEY_WORKER_STAFF_ID">KEY_WORKER_STAFF_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="KEY_WORKER_STAFF_ID">KEY_WORKER_STAFF_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -403,15 +417,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="APPROVED_PREMISES_RESIDENCE.KEY_WORKER_STAFF_ID references STAFF.STAFF_ID via SYS_C0021590"><a href='STAFF.html'>STAFF</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021590<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="APPROVED_PREMISES_RESIDENCE.KEY_WORKER_STAFF_ID references STAFF.STAFF_ID via SYS_C0024948"><a href='STAFF.html'>STAFF</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024948</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CREATED_DATETIME">CREATED_DATETIME</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="CREATED_DATETIME">CREATED_DATETIME</span></td>
                                     <td>DATE</td>
                                     <td>7</td>
                                     <td title=''></td>
@@ -428,7 +443,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -440,6 +455,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="APPROVED_PREMISES_RESIDENCE.CREATED_BY_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -462,7 +482,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="APPROVED_PREMISES_TEAM_ID">APPROVED_PREMISES_TEAM_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="APPROVED_PREMISES_TEAM_ID">APPROVED_PREMISES_TEAM_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -475,15 +495,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="APPROVED_PREMISES_RESIDENCE.APPROVED_PREMISES_TEAM_ID references TEAM.TEAM_ID via SYS_C0021591"><a href='TEAM.html'>TEAM</a><span class='relatedKey'>.TEAM_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021591<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="APPROVED_PREMISES_RESIDENCE.APPROVED_PREMISES_TEAM_ID references TEAM.TEAM_ID via SYS_C0024949"><a href='TEAM.html'>TEAM</a><span class='relatedKey'>.TEAM_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024949</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -495,12 +516,17 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="APPROVED_PREMISES_RESIDENCE.LAST_UPDATED_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -517,7 +543,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OFFENDER_ID">OFFENDER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OFFENDER_ID">OFFENDER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -530,8 +556,9 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="APPROVED_PREMISES_RESIDENCE.OFFENDER_ID references OFFENDER.OFFENDER_ID via SYS_C0021594"><a href='OFFENDER.html'>OFFENDER</a><span class='relatedKey'>.OFFENDER_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021594<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="APPROVED_PREMISES_RESIDENCE.OFFENDER_ID references OFFENDER.OFFENDER_ID via SYS_C0024943"><a href='OFFENDER.html'>OFFENDER</a><span class='relatedKey'>.OFFENDER_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024943</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -568,7 +595,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="indexes_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -670,7 +703,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="check_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -700,16 +739,39 @@
                                 <h5>Close relationships within degrees of separation</h5>
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
-                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="oneDegreeImg" data="../diagrams/tables/APPROVED_PREMISES_RESIDENCE.1degree.svg" class="diagram" border="0" align="left"></object></a>
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="744,968,1077,2259">
+<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,2009,324,2273">
+<area shape="rect" id="node3" href="R_APPROVED_PREMISES.html" target="_top" title="R_APPROVED_PREMISES" alt="" coords="381,1488,687,1869">
+<area shape="rect" id="node4" href="STAFF.html" target="_top" title="STAFF" alt="" coords="407,671,661,1111">
+<area shape="rect" id="node5" href="TEAM.html" target="_top" title="TEAM" alt="" coords="390,301,678,653">
+<area shape="rect" id="node6" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="368,2139,700,3341">
+<area shape="rect" id="node7" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="53,1088,277,1235">
+<area shape="rect" id="node8" href="APPROVED_PREMISES_RESIDENCE.html" target="_top" title="APPROVED_PREMISES_RESIDENCE" alt="" coords="1121,936,1644,1709">
+<area shape="rect" id="node9" href="R_MOVE_ON_CATEGORY.html" target="_top" title="R_MOVE_ON_CATEGORY" alt="" coords="773,2384,1048,2619">
+<area shape="rect" id="node10" href="OFFENDER_ADDRESS.html" target="_top" title="OFFENDER_ADDRESS" alt="" coords="1688,29,2023,469">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/APPROVED_PREMISES_RESIDENCE.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
-                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="twodegreesDegreeImg" data="../diagrams/tables/APPROVED_PREMISES_RESIDENCE.2degrees.svg" class="diagram" border="0" align="left"></object></a>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="1453,504,1786,1795">
+<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="714,1529,1033,1793">
+<area shape="rect" id="node3" href="R_APPROVED_PREMISES.html" target="_top" title="R_APPROVED_PREMISES" alt="" coords="1089,3005,1396,3387">
+<area shape="rect" id="node4" href="USER_.html" target="_top" title="USER_" alt="" coords="322,1599,670,1921">
+<area shape="rect" id="node5" href="STAFF.html" target="_top" title="STAFF" alt="" coords="23,1364,278,1804">
+<area shape="rect" id="node6" href="TEAM.html" target="_top" title="TEAM" alt="" coords="1099,444,1387,796">
+<area shape="rect" id="node7" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1077,1785,1409,2988">
+<area shape="rect" id="node8" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="761,885,985,1032">
+<area shape="rect" id="node9" href="APPROVED_PREMISES_RESIDENCE.html" target="_top" title="APPROVED_PREMISES_RESIDENCE" alt="" coords="1830,1848,2353,2621">
+<area shape="rect" id="node10" href="R_MOVE_ON_CATEGORY.html" target="_top" title="R_MOVE_ON_CATEGORY" alt="" coords="736,1955,1011,2189">
+<area shape="rect" id="node11" href="OFFENDER_ADDRESS.html" target="_top" title="OFFENDER_ADDRESS" alt="" coords="2397,5,2731,445">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/APPROVED_PREMISES_RESIDENCE.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>
@@ -729,7 +791,7 @@
                         <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
                         <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
                     </div>
-                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.0</a></strong>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
                 </div>
                 <!-- /.container -->
             </footer>

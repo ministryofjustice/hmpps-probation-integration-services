@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>EXTERNAL_PROVIDER - DNDA Database</title>
+        <title>EXTERNAL_PROVIDER - DMDNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DNDA</b> Database</a>
+                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>EXTERNAL_PROVIDER</h1><p><span id="recordNumber">1</span> rows</p><br />
+                    <h1>EXTERNAL_PROVIDER</h1><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -87,7 +87,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Column</th>
@@ -112,28 +118,34 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="LIC_CONDITION_MANAGER.EXTERNAL_PROVIDER_ID references EXTERNAL_PROVIDER.EXTERNAL_PROVIDER_ID via SYS_C0021027"><a href='LIC_CONDITION_MANAGER.html'>LIC_CONDITION_MANAGER</a><span class='relatedKey'>.EXTERNAL_PROVIDER_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021027<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="LIC_CONDITION_MANAGER.EXTERNAL_PROVIDER_ID references EXTERNAL_PROVIDER.EXTERNAL_PROVIDER_ID via SYS_C0024228"><a href='LIC_CONDITION_MANAGER.html'>LIC_CONDITION_MANAGER</a><span class='relatedKey'>.EXTERNAL_PROVIDER_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024228</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="ORGANISATION_OFFENDER.EXTERNAL_PROVIDER_ID references EXTERNAL_PROVIDER.EXTERNAL_PROVIDER_ID via SYS_C0021150"><a href='ORGANISATION_OFFENDER.html'>ORGANISATION_OFFENDER</a><span class='relatedKey'>.EXTERNAL_PROVIDER_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021150<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="ORGANISATION_OFFENDER.EXTERNAL_PROVIDER_ID references EXTERNAL_PROVIDER.EXTERNAL_PROVIDER_ID via SYS_C0024339"><a href='ORGANISATION_OFFENDER.html'>ORGANISATION_OFFENDER</a><span class='relatedKey'>.EXTERNAL_PROVIDER_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024339</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="PROVIDER_EMPLOYEE.EXTERNAL_PROVIDER_ID references EXTERNAL_PROVIDER.EXTERNAL_PROVIDER_ID via SYS_C0021006"><a href='PROVIDER_EMPLOYEE.html'>PROVIDER_EMPLOYEE</a><span class='relatedKey'>.EXTERNAL_PROVIDER_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021006<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="PROVIDER_EMPLOYEE.EXTERNAL_PROVIDER_ID references EXTERNAL_PROVIDER.EXTERNAL_PROVIDER_ID via SYS_C0024288"><a href='PROVIDER_EMPLOYEE.html'>PROVIDER_EMPLOYEE</a><span class='relatedKey'>.EXTERNAL_PROVIDER_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024288</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="PROVIDER_LOCATION.EXTERNAL_PROVIDER_ID references EXTERNAL_PROVIDER.EXTERNAL_PROVIDER_ID via SYS_C0021748"><a href='PROVIDER_LOCATION.html'>PROVIDER_LOCATION</a><span class='relatedKey'>.EXTERNAL_PROVIDER_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021748<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="PROVIDER_LOCATION.EXTERNAL_PROVIDER_ID references EXTERNAL_PROVIDER.EXTERNAL_PROVIDER_ID via SYS_C0024778"><a href='PROVIDER_LOCATION.html'>PROVIDER_LOCATION</a><span class='relatedKey'>.EXTERNAL_PROVIDER_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024778</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="PROVIDER_TEAM.EXTERNAL_PROVIDER_ID references EXTERNAL_PROVIDER.EXTERNAL_PROVIDER_ID via SYS_C0021316"><a href='PROVIDER_TEAM.html'>PROVIDER_TEAM</a><span class='relatedKey'>.EXTERNAL_PROVIDER_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021316<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="PROVIDER_TEAM.EXTERNAL_PROVIDER_ID references EXTERNAL_PROVIDER.EXTERNAL_PROVIDER_ID via SYS_C0024291"><a href='PROVIDER_TEAM.html'>PROVIDER_TEAM</a><span class='relatedKey'>.EXTERNAL_PROVIDER_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024291</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="USER_.EXTERNAL_PROVIDER_ID references EXTERNAL_PROVIDER.EXTERNAL_PROVIDER_ID via SYS_C0021454"><a href='USER_.html'>USER_</a><span class='relatedKey'>.EXTERNAL_PROVIDER_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021454<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="USER_.EXTERNAL_PROVIDER_ID references EXTERNAL_PROVIDER.EXTERNAL_PROVIDER_ID via SYS_C0024693"><a href='USER_.html'>USER_</a><span class='relatedKey'>.EXTERNAL_PROVIDER_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024693</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -144,7 +156,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CODE">CODE</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="CODE">CODE</span></td>
                                     <td>VARCHAR2</td>
                                     <td>20</td>
                                     <td title=''></td>
@@ -229,7 +241,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ADDRESS_ID">ADDRESS_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ADDRESS_ID">ADDRESS_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -242,8 +254,9 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="EXTERNAL_PROVIDER.ADDRESS_ID references ADDRESS.ADDRESS_ID via SYS_C0021012"><a href='ADDRESS.html'>ADDRESS</a><span class='relatedKey'>.ADDRESS_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021012<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="EXTERNAL_PROVIDER.ADDRESS_ID references ADDRESS.ADDRESS_ID via SYS_C0024460"><a href='ADDRESS.html'>ADDRESS</a><span class='relatedKey'>.ADDRESS_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024460</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -284,7 +297,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -296,6 +309,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="EXTERNAL_PROVIDER.CREATED_BY_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -318,7 +336,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -330,6 +348,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="EXTERNAL_PROVIDER.LAST_UPDATED_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -352,7 +375,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -382,7 +405,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="indexes_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -436,7 +465,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="check_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -446,7 +481,7 @@
                                 <tbody>
                                 <tr>
                                     <td>PROVIDER_LOCATION_DATE_VALID5</td>
-                                    <td> (&#10;(START_DATE &lt;= END_DATE) OR (END_DATE IS NULL)&#10;) </td>
+                                    <td> (&#10;(START_DATE &lt;&#61; END_DATE) OR (END_DATE IS NULL)&#10;) </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -466,16 +501,34 @@
                                 <h5>Close relationships within degrees of separation</h5>
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
-                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="oneDegreeImg" data="../diagrams/tables/EXTERNAL_PROVIDER.1degree.svg" class="diagram" border="0" align="left"></object></a>
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="EXTERNAL_PROVIDER.html" target="_top" title="EXTERNAL_PROVIDER" alt="" coords="304,856,665,1336">
+<area shape="rect" id="node2" href="ADDRESS.html" target="_top" title="ADDRESS" alt="" coords="5,1175,260,1409">
+<area shape="rect" id="node3" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="1075,5,1367,739">
+<area shape="rect" id="node4" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="729,539,983,920">
+<area shape="rect" id="node5" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="729,228,983,521">
+<area shape="rect" id="node6" href="ORGANISATION_OFFENDER.html" target="_top" title="ORGANISATION_OFFENDER" alt="" coords="709,937,1003,1172">
+<area shape="rect" id="node7" href="PROVIDER_LOCATION.html" target="_top" title="PROVIDER_LOCATION" alt="" coords="729,1225,983,1548">
+<area shape="rect" id="node8" href="USER_.html" target="_top" title="USER_" alt="" coords="1047,893,1395,1216">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/EXTERNAL_PROVIDER.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
-                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="twodegreesDegreeImg" data="../diagrams/tables/EXTERNAL_PROVIDER.2degrees.svg" class="diagram" border="0" align="left"></object></a>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="ADDRESS.html" target="_top" title="ADDRESS" alt="" coords="1159,936,1413,1171">
+<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="767,600,1115,923">
+<area shape="rect" id="node3" href="EXTERNAL_PROVIDER.html" target="_top" title="EXTERNAL_PROVIDER" alt="" coords="24,561,385,1041">
+<area shape="rect" id="node5" href="PROVIDER_EMPLOYEE.html" target="_top" title="PROVIDER_EMPLOYEE" alt="" coords="449,181,703,563">
+<area shape="rect" id="node4" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="1457,5,1749,739">
+<area shape="rect" id="node6" href="PROVIDER_TEAM.html" target="_top" title="PROVIDER_TEAM" alt="" coords="1159,296,1413,589">
+<area shape="rect" id="node7" href="ORGANISATION_OFFENDER.html" target="_top" title="ORGANISATION_OFFENDER" alt="" coords="429,580,723,815">
+<area shape="rect" id="node8" href="PROVIDER_LOCATION.html" target="_top" title="PROVIDER_LOCATION" alt="" coords="1476,824,1731,1147">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/EXTERNAL_PROVIDER.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>
@@ -495,7 +548,7 @@
                         <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
                         <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
                     </div>
-                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.0</a></strong>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
                 </div>
                 <!-- /.container -->
             </footer>

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>MAIN_OFFENCE - DNDA Database</title>
+        <title>MAIN_OFFENCE - DMDNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DNDA</b> Database</a>
+                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>MAIN_OFFENCE</h1><p><span id="recordNumber">14603</span> rows</p><br />
+                    <h1>MAIN_OFFENCE</h1><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -87,7 +87,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Column</th>
@@ -113,7 +119,8 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="COHORT_DIARY.MAIN_OFFENCE_ID references MAIN_OFFENCE.MAIN_OFFENCE_ID via R_1015"><a href='COHORT_DIARY.html'>COHORT_DIARY</a><span class='relatedKey'>.MAIN_OFFENCE_ID</span></td>
-                                                <td class="constraint detail">R_1015<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1015</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -124,7 +131,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OFFENCE_DATE">OFFENCE_DATE</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="OFFENCE_DATE">OFFENCE_DATE</span></td>
                                     <td>DATE</td>
                                     <td>7</td>
                                     <td title=''></td>
@@ -158,7 +165,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="EVENT_ID">EVENT_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="EVENT_ID">EVENT_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -171,8 +178,9 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="MAIN_OFFENCE.EVENT_ID references EVENT.EVENT_ID via SYS_C0021874"><a href='EVENT.html'>EVENT</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021874<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="MAIN_OFFENCE.EVENT_ID references EVENT.EVENT_ID via SYS_C0024753"><a href='EVENT.html'>EVENT</a><span class='relatedKey'>.EVENT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024753</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -213,7 +221,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="SOFT_DELETED">SOFT_DELETED</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="SOFT_DELETED">SOFT_DELETED</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -230,7 +238,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PARTITION_AREA_ID">PARTITION_AREA_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PARTITION_AREA_ID">PARTITION_AREA_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -243,8 +251,9 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="MAIN_OFFENCE.PARTITION_AREA_ID references PARTITION_AREA.PARTITION_AREA_ID via SYS_C0021876"><a href='PARTITION_AREA.html'>PARTITION_AREA</a><span class='relatedKey'>.PARTITION_AREA_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021876<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="MAIN_OFFENCE.PARTITION_AREA_ID references PARTITION_AREA.PARTITION_AREA_ID via SYS_C0024752"><a href='PARTITION_AREA.html'>PARTITION_AREA</a><span class='relatedKey'>.PARTITION_AREA_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024752</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -268,7 +277,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OFFENCE_ID">OFFENCE_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OFFENCE_ID">OFFENCE_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -281,15 +290,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="MAIN_OFFENCE.OFFENCE_ID references R_OFFENCE.OFFENCE_ID via SYS_C0021875"><a href='R_OFFENCE.html'>R_OFFENCE</a><span class='relatedKey'>.OFFENCE_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021875<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="MAIN_OFFENCE.OFFENCE_ID references R_OFFENCE.OFFENCE_ID via SYS_C0024754"><a href='R_OFFENCE.html'>R_OFFENCE</a><span class='relatedKey'>.OFFENCE_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024754</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -306,7 +316,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OFFENDER_ID">OFFENDER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OFFENDER_ID">OFFENDER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -319,8 +329,9 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="MAIN_OFFENCE.OFFENDER_ID references OFFENDER.OFFENDER_ID via SYS_C0021878"><a href='OFFENDER.html'>OFFENDER</a><span class='relatedKey'>.OFFENDER_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021878<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="MAIN_OFFENCE.OFFENDER_ID references OFFENDER.OFFENDER_ID via SYS_C0024756"><a href='OFFENDER.html'>OFFENDER</a><span class='relatedKey'>.OFFENDER_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024756</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -344,9 +355,9 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
                                     <td>NUMBER</td>
-                                    <td>22</td>
+                                    <td>38</td>
                                     <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -356,6 +367,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="MAIN_OFFENCE.CREATED_BY_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -378,9 +394,9 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
                                     <td>NUMBER</td>
-                                    <td>22</td>
+                                    <td>38</td>
                                     <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -390,6 +406,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="MAIN_OFFENCE.LAST_UPDATED_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -412,7 +433,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="DETAILED_OFFENCE_ID">DETAILED_OFFENCE_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="DETAILED_OFFENCE_ID">DETAILED_OFFENCE_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -426,7 +447,8 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="MAIN_OFFENCE.DETAILED_OFFENCE_ID references R_DETAILED_OFFENCE.DETAILED_OFFENCE_ID via R_1392"><a href='R_DETAILED_OFFENCE.html'>R_DETAILED_OFFENCE</a><span class='relatedKey'>.DETAILED_OFFENCE_ID</span></td>
-                                                <td class="constraint detail">R_1392<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1392</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -446,7 +468,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="indexes_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -524,7 +552,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="check_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -537,12 +571,12 @@
                                     <td>OFFENCE_COUNT &gt; 0</td>
                                 </tr>
                                 <tr>
-                                    <td>VERDICT</td>
-                                    <td>VERDICT IN (&#39;G&#39;, &#39;N&#39;, &#39;M&#39;)</td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE57</td>
                                     <td>SOFT_DELETED IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>VERDICT</td>
+                                    <td>VERDICT IN (&#39;G&#39;, &#39;N&#39;, &#39;M&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -562,16 +596,33 @@
                                 <h5>Close relationships within degrees of separation</h5>
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
-                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="oneDegreeImg" data="../diagrams/tables/MAIN_OFFENCE.1degree.svg" class="diagram" border="0" align="left"></object></a>
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="COHORT_DIARY.html" target="_top" title="COHORT_DIARY" alt="" coords="1489,657,1749,1185">
+<area shape="rect" id="node2" href="EVENT.html" target="_top" title="EVENT" alt="" coords="659,745,949,1244">
+<area shape="rect" id="node3" href="MAIN_OFFENCE.html" target="_top" title="MAIN_OFFENCE" alt="" coords="1003,1021,1445,1619">
+<area shape="rect" id="node4" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="273,5,605,1208">
+<area shape="rect" id="node5" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="5,1185,229,1332">
+<area shape="rect" id="node6" href="R_DETAILED_OFFENCE.html" target="_top" title="R_DETAILED_OFFENCE" alt="" coords="653,1556,955,1791">
+<area shape="rect" id="node7" href="R_OFFENCE.html" target="_top" title="R_OFFENCE" alt="" coords="649,1297,959,1503">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/MAIN_OFFENCE.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
-                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="twodegreesDegreeImg" data="../diagrams/tables/MAIN_OFFENCE.2degrees.svg" class="diagram" border="0" align="left"></object></a>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="COHORT_DIARY.html" target="_top" title="COHORT_DIARY" alt="" coords="1613,473,1873,1001">
+<area shape="rect" id="node2" href="EVENT.html" target="_top" title="EVENT" alt="" coords="783,561,1073,1060">
+<area shape="rect" id="node3" href="MAIN_OFFENCE.html" target="_top" title="MAIN_OFFENCE" alt="" coords="1127,912,1569,1509">
+<area shape="rect" id="node4" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="397,81,729,1284">
+<area shape="rect" id="node5" href="USER_.html" target="_top" title="USER_" alt="" coords="5,1315,353,1637">
+<area shape="rect" id="node6" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="67,5,291,152">
+<area shape="rect" id="node7" href="R_DETAILED_OFFENCE.html" target="_top" title="R_DETAILED_OFFENCE" alt="" coords="412,1445,715,1680">
+<area shape="rect" id="node8" href="R_OFFENCE.html" target="_top" title="R_OFFENCE" alt="" coords="773,1077,1083,1283">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/MAIN_OFFENCE.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>
@@ -591,7 +642,7 @@
                         <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
                         <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
                     </div>
-                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.0</a></strong>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
                 </div>
                 <!-- /.container -->
             </footer>

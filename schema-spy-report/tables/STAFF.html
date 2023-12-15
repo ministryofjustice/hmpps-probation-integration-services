@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>STAFF - DNDA Database</title>
+        <title>STAFF - DMDNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DNDA</b> Database</a>
+                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>STAFF</h1><p><span id="recordNumber">3352</span> rows</p><br />
+                    <h1>STAFF</h1><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -87,7 +87,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Column</th>
@@ -112,236 +118,309 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="ADDRESS_ASSESSMENT.STAFF_ID references STAFF.STAFF_ID via SYS_C0021726"><a href='ADDRESS_ASSESSMENT.html'>ADDRESS_ASSESSMENT</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021726<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="ADDRESS_ASSESSMENT.STAFF_ID references STAFF.STAFF_ID via SYS_C0024840"><a href='ADDRESS_ASSESSMENT.html'>ADDRESS_ASSESSMENT</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024840</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="APPROVED_PREMISES_REFERRAL.DECISION_BY_STAFF_ID references STAFF.STAFF_ID via SYS_C0021656"><a href='APPROVED_PREMISES_REFERRAL.html'>APPROVED_PREMISES_REFERRAL</a><span class='relatedKey'>.DECISION_BY_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021656<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="AP_REFERRAL_DELTA_ERROR.ASSIGNED_TO_STAFF_ID&#39;s name implies that it&#39;s a child of STAFF.STAFF_ID, but it doesn&#39;t reference that column."><a href='AP_REFERRAL_DELTA_ERROR.html'>AP_REFERRAL_DELTA_ERROR</a><span class='relatedKey'>.ASSIGNED_TO_STAFF_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="APPROVED_PREMISES_REFERRAL.REFERRING_STAFF_ID references STAFF.STAFF_ID via SYS_C0021644"><a href='APPROVED_PREMISES_REFERRAL.html'>APPROVED_PREMISES_REFERRAL</a><span class='relatedKey'>.REFERRING_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021644<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="APPROVED_PREMISES_REFERRAL.DECISION_BY_STAFF_ID references STAFF.STAFF_ID via SYS_C0024813"><a href='APPROVED_PREMISES_REFERRAL.html'>APPROVED_PREMISES_REFERRAL</a><span class='relatedKey'>.DECISION_BY_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024813</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="APPROVED_PREMISES_RESIDENCE.APPROVED_PREMISES_STAFF_ID references STAFF.STAFF_ID via SYS_C0021589"><a href='APPROVED_PREMISES_RESIDENCE.html'>APPROVED_PREMISES_RESIDENCE</a><span class='relatedKey'>.APPROVED_PREMISES_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021589<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="APPROVED_PREMISES_REFERRAL.REFERRING_STAFF_ID references STAFF.STAFF_ID via SYS_C0024819"><a href='APPROVED_PREMISES_REFERRAL.html'>APPROVED_PREMISES_REFERRAL</a><span class='relatedKey'>.REFERRING_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024819</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="APPROVED_PREMISES_RESIDENCE.KEY_WORKER_STAFF_ID references STAFF.STAFF_ID via SYS_C0021590"><a href='APPROVED_PREMISES_RESIDENCE.html'>APPROVED_PREMISES_RESIDENCE</a><span class='relatedKey'>.KEY_WORKER_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021590<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="APPROVED_PREMISES_RESIDENCE.APPROVED_PREMISES_STAFF_ID references STAFF.STAFF_ID via SYS_C0024947"><a href='APPROVED_PREMISES_RESIDENCE.html'>APPROVED_PREMISES_RESIDENCE</a><span class='relatedKey'>.APPROVED_PREMISES_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024947</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="ASSESSMENT.STAFF_ID references STAFF.STAFF_ID via SYS_C0021672"><a href='ASSESSMENT.html'>ASSESSMENT</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021672<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="APPROVED_PREMISES_RESIDENCE.KEY_WORKER_STAFF_ID references STAFF.STAFF_ID via SYS_C0024948"><a href='APPROVED_PREMISES_RESIDENCE.html'>APPROVED_PREMISES_RESIDENCE</a><span class='relatedKey'>.KEY_WORKER_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024948</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="ASSESSMENT.STAFF_ID references STAFF.STAFF_ID via SYS_C0024957"><a href='ASSESSMENT.html'>ASSESSMENT</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024957</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="CASE_ALLOCATION.DECISION_STAFF_ID references STAFF.STAFF_ID via R_1077"><a href='CASE_ALLOCATION.html'>CASE_ALLOCATION</a><span class='relatedKey'>.DECISION_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_1077<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1077</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="CASE_ALLOCATION.RSR_ASSESSOR_STAFF_ID references STAFF.STAFF_ID via R_1072"><a href='CASE_ALLOCATION.html'>CASE_ALLOCATION</a><span class='relatedKey'>.RSR_ASSESSOR_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_1072<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1072</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="COHORT.AUTHORISATION_STAFF_ID references STAFF.STAFF_ID via R_924"><a href='COHORT.html'>COHORT</a><span class='relatedKey'>.AUTHORISATION_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_924<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_924</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="COHORT_HISTORY.AUTHORISATION_STAFF_ID references STAFF.STAFF_ID via R_932"><a href='COHORT_HISTORY.html'>COHORT_HISTORY</a><span class='relatedKey'>.AUTHORISATION_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_932<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_932</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="CONTACT.STAFF_ID references STAFF.STAFF_ID via SYS_C0021898"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021898<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="CONTACT.STAFF_ID references STAFF.STAFF_ID via SYS_C0024661"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024661</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="COURT_APPEARANCE.STAFF_ID references STAFF.STAFF_ID via SYS_C0021934"><a href='COURT_APPEARANCE.html'>COURT_APPEARANCE</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021934<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="CONTACT_REDEF.STAFF_ID references STAFF.STAFF_ID via TMP$$_SYS_C00246610"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">TMP$$_SYS_C00246610</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="COURT_APPEARANCE.STAFF_ID references STAFF.STAFF_ID via SYS_C0025034"><a href='COURT_APPEARANCE.html'>COURT_APPEARANCE</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0025034</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="COURT_REPORT_TRANSFER.ORIGIN_STAFF_ID references STAFF.STAFF_ID via R_1027"><a href='COURT_REPORT_TRANSFER.html'>COURT_REPORT_TRANSFER</a><span class='relatedKey'>.ORIGIN_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_1027<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1027</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="COURT_REPORT_TRANSFER.RECEIVING_STAFF_ID references STAFF.STAFF_ID via R_1029"><a href='COURT_REPORT_TRANSFER.html'>COURT_REPORT_TRANSFER</a><span class='relatedKey'>.RECEIVING_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_1029<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1029</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="DEREGISTRATION.DEREGISTERING_STAFF_ID references STAFF.STAFF_ID via SYS_C0021862"><a href='DEREGISTRATION.html'>DEREGISTRATION</a><span class='relatedKey'>.DEREGISTERING_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021862<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="DEREGISTRATION.DEREGISTERING_STAFF_ID references STAFF.STAFF_ID via SYS_C0024804"><a href='DEREGISTRATION.html'>DEREGISTRATION</a><span class='relatedKey'>.DEREGISTERING_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024804</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="DRUG_TEST_PROFILE.STAFF_ID references STAFF.STAFF_ID via SYS_C0021790"><a href='DRUG_TEST_PROFILE.html'>DRUG_TEST_PROFILE</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021790<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="DRUG_TEST_PROFILE.STAFF_ID references STAFF.STAFF_ID via SYS_C0024967"><a href='DRUG_TEST_PROFILE.html'>DRUG_TEST_PROFILE</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024967</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="DRUGS_TEST.STAFF_ID references STAFF.STAFF_ID via R_1323"><a href='DRUGS_TEST.html'>DRUGS_TEST</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">R_1323<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1323</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="EXCLUSION.EXCLUSION_END_STAFF_ID references STAFF.STAFF_ID via SYS_C0021081"><a href='EXCLUSION.html'>EXCLUSION</a><span class='relatedKey'>.EXCLUSION_END_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021081<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="EXCLUSION.EXCLUSION_END_STAFF_ID references STAFF.STAFF_ID via SYS_C0024459"><a href='EXCLUSION.html'>EXCLUSION</a><span class='relatedKey'>.EXCLUSION_END_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024459</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="EXCLUSION.EXCLUSION_START_STAFF_ID references STAFF.STAFF_ID via SYS_C0021079"><a href='EXCLUSION.html'>EXCLUSION</a><span class='relatedKey'>.EXCLUSION_START_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021079<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="EXCLUSION.EXCLUSION_START_STAFF_ID references STAFF.STAFF_ID via SYS_C0024457"><a href='EXCLUSION.html'>EXCLUSION</a><span class='relatedKey'>.EXCLUSION_START_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024457</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="INSTITUTIONAL_REPORT_TRANSFER.ORIGIN_STAFF_ID references STAFF.STAFF_ID via R_976"><a href='INSTITUTIONAL_REPORT_TRANSFER.html'>INSTITUTIONAL_REPORT_TRANSFER</a><span class='relatedKey'>.ORIGIN_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_976<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_976</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="INSTITUTIONAL_REPORT_TRANSFER.RECEIVING_STAFF_ID references STAFF.STAFF_ID via R_978"><a href='INSTITUTIONAL_REPORT_TRANSFER.html'>INSTITUTIONAL_REPORT_TRANSFER</a><span class='relatedKey'>.RECEIVING_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_978<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_978</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="LIC_CONDITION_MANAGER.STAFF_ID references STAFF.STAFF_ID via SYS_C0021026"><a href='LIC_CONDITION_MANAGER.html'>LIC_CONDITION_MANAGER</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021026<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="LIC_CONDITION_MANAGER.STAFF_ID references STAFF.STAFF_ID via SYS_C0024227"><a href='LIC_CONDITION_MANAGER.html'>LIC_CONDITION_MANAGER</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024227</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="LIC_CONDITION_TRANSFER.ORIGIN_STAFF_ID references STAFF.STAFF_ID via R_864"><a href='LIC_CONDITION_TRANSFER.html'>LIC_CONDITION_TRANSFER</a><span class='relatedKey'>.ORIGIN_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_864<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_864</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="LIC_CONDITION_TRANSFER.RECEIVING_STAFF_ID references STAFF.STAFF_ID via R_866"><a href='LIC_CONDITION_TRANSFER.html'>LIC_CONDITION_TRANSFER</a><span class='relatedKey'>.RECEIVING_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_866<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_866</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="NOMIS_CASE_NOTE_ERROR.STAFF_ID references STAFF.STAFF_ID via R_1228"><a href='NOMIS_CASE_NOTE_ERROR.html'>NOMIS_CASE_NOTE_ERROR</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">R_1228<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1228</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="NSI_MANAGER.STAFF_ID references STAFF.STAFF_ID via R_840"><a href='NSI_MANAGER.html'>NSI_MANAGER</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">R_840<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_840</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="NSI_TRANSFER.ORIGIN_STAFF_ID references STAFF.STAFF_ID via R_830"><a href='NSI_TRANSFER.html'>NSI_TRANSFER</a><span class='relatedKey'>.ORIGIN_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_830<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_830</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="NSI_TRANSFER.TARGET_STAFF_ID references STAFF.STAFF_ID via R_832"><a href='NSI_TRANSFER.html'>NSI_TRANSFER</a><span class='relatedKey'>.TARGET_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_832<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_832</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="OFFENDER_DRUG_PROFILE.STAFF_ID references STAFF.STAFF_ID via R_1338"><a href='OFFENDER_DRUG_PROFILE.html'>OFFENDER_DRUG_PROFILE</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">R_1338<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1338</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="OFFENDER_MANAGER.ALLOCATION_STAFF_ID references STAFF.STAFF_ID via SYS_C0021110"><a href='OFFENDER_MANAGER.html'>OFFENDER_MANAGER</a><span class='relatedKey'>.ALLOCATION_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021110<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="OFFENDER_MANAGER.ALLOCATION_STAFF_ID references STAFF.STAFF_ID via SYS_C0024385"><a href='OFFENDER_MANAGER.html'>OFFENDER_MANAGER</a><span class='relatedKey'>.ALLOCATION_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024385</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="OFFENDER_TRANSFER.ORIGIN_STAFF_ID references STAFF.STAFF_ID via SYS_C0021702"><a href='OFFENDER_TRANSFER.html'>OFFENDER_TRANSFER</a><span class='relatedKey'>.ORIGIN_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021702<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="OFFENDER_TRANSFER.ORIGIN_STAFF_ID references STAFF.STAFF_ID via SYS_C0025096"><a href='OFFENDER_TRANSFER.html'>OFFENDER_TRANSFER</a><span class='relatedKey'>.ORIGIN_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0025096</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="OFFENDER_TRANSFER.RECEIVING_STAFF_ID references STAFF.STAFF_ID via SYS_C0021706"><a href='OFFENDER_TRANSFER.html'>OFFENDER_TRANSFER</a><span class='relatedKey'>.RECEIVING_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021706<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="OFFENDER_TRANSFER.RECEIVING_STAFF_ID references STAFF.STAFF_ID via SYS_C0025091"><a href='OFFENDER_TRANSFER.html'>OFFENDER_TRANSFER</a><span class='relatedKey'>.RECEIVING_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0025091</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="ORDER_MANAGER.ALLOCATION_STAFF_ID references STAFF.STAFF_ID via SYS_C0021259"><a href='ORDER_MANAGER.html'>ORDER_MANAGER</a><span class='relatedKey'>.ALLOCATION_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021259<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="ORDER_MANAGER.ALLOCATION_STAFF_ID references STAFF.STAFF_ID via SYS_C0024255"><a href='ORDER_MANAGER.html'>ORDER_MANAGER</a><span class='relatedKey'>.ALLOCATION_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024255</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="ORDER_TRANSFER.ORIGIN_STAFF_ID references STAFF.STAFF_ID via R_852"><a href='ORDER_TRANSFER.html'>ORDER_TRANSFER</a><span class='relatedKey'>.ORIGIN_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_852<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_852</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="ORDER_TRANSFER.RECEIVING_STAFF_ID references STAFF.STAFF_ID via R_854"><a href='ORDER_TRANSFER.html'>ORDER_TRANSFER</a><span class='relatedKey'>.RECEIVING_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_854<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_854</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="PRISON_OFFENDER_MANAGER.ALLOCATION_STAFF_ID references STAFF.STAFF_ID via R_1200"><a href='PRISON_OFFENDER_MANAGER.html'>PRISON_OFFENDER_MANAGER</a><span class='relatedKey'>.ALLOCATION_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_1200<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1200</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="PSS_RQMNT_MANAGER.STAFF_ID references STAFF.STAFF_ID via R_945"><a href='PSS_RQMNT_MANAGER.html'>PSS_RQMNT_MANAGER</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">R_945<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_945</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="PSS_RQMNT_TRANSFER.ORIGIN_STAFF_ID references STAFF.STAFF_ID via R_957"><a href='PSS_RQMNT_TRANSFER.html'>PSS_RQMNT_TRANSFER</a><span class='relatedKey'>.ORIGIN_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_957<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_957</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="PSS_RQMNT_TRANSFER.RECEIVING_STAFF_ID references STAFF.STAFF_ID via R_959"><a href='PSS_RQMNT_TRANSFER.html'>PSS_RQMNT_TRANSFER</a><span class='relatedKey'>.RECEIVING_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_959<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_959</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="R_APPROVED_PREMISES_STAFF.STAFF_ID references STAFF.STAFF_ID via SYS_C0021426"><a href='R_APPROVED_PREMISES_STAFF.html'>R_APPROVED_PREMISES_STAFF</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021426<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="R_APPROVED_PREMISES_STAFF.STAFF_ID references STAFF.STAFF_ID via SYS_C0024476"><a href='R_APPROVED_PREMISES_STAFF.html'>R_APPROVED_PREMISES_STAFF</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024476</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="REFERRAL.REF_TO_STAFF_ID references STAFF.STAFF_ID via SYS_C0021460"><a href='REFERRAL.html'>REFERRAL</a><span class='relatedKey'>.REF_TO_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021460<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="REFERRAL.REF_TO_STAFF_ID references STAFF.STAFF_ID via SYS_C0024584"><a href='REFERRAL.html'>REFERRAL</a><span class='relatedKey'>.REF_TO_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024584</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="REGISTRATION.REGISTERING_STAFF_ID references STAFF.STAFF_ID via SYS_C0021524"><a href='REGISTRATION.html'>REGISTRATION</a><span class='relatedKey'>.REGISTERING_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021524<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="REGISTRATION.REGISTERING_STAFF_ID references STAFF.STAFF_ID via SYS_C0024594"><a href='REGISTRATION.html'>REGISTRATION</a><span class='relatedKey'>.REGISTERING_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024594</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="REGISTRATION_REVIEW.REVIEWING_STAFF_ID references STAFF.STAFF_ID via SYS_C0021756"><a href='REGISTRATION_REVIEW.html'>REGISTRATION_REVIEW</a><span class='relatedKey'>.REVIEWING_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021756<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="REGISTRATION$CFO.REGISTERING_STAFF_ID&#39;s name implies that it&#39;s a child of STAFF.STAFF_ID, but it doesn&#39;t reference that column."><a href='REGISTRATION_CFO_15fb2de1.html'>REGISTRATION$CFO</a><span class='relatedKey'>.REGISTERING_STAFF_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="REGISTRATION_REVIEW.REVIEWING_STAFF_ID references STAFF.STAFF_ID via SYS_C0024734"><a href='REGISTRATION_REVIEW.html'>REGISTRATION_REVIEW</a><span class='relatedKey'>.REVIEWING_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024734</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="REJECTED_TRANSFER_DIARY.ORIGIN_STAFF_ID references STAFF.STAFF_ID via R_1149"><a href='REJECTED_TRANSFER_DIARY.html'>REJECTED_TRANSFER_DIARY</a><span class='relatedKey'>.ORIGIN_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_1149<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1149</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="REJECTED_TRANSFER_DIARY.TARGET_STAFF_ID references STAFF.STAFF_ID via R_1146"><a href='REJECTED_TRANSFER_DIARY.html'>REJECTED_TRANSFER_DIARY</a><span class='relatedKey'>.TARGET_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_1146<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1146</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="REPORT_MANAGER.STAFF_ID references STAFF.STAFF_ID via SYS_C0021254"><a href='REPORT_MANAGER.html'>REPORT_MANAGER</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021254<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="REPORT_MANAGER.STAFF_ID references STAFF.STAFF_ID via SYS_C0024537"><a href='REPORT_MANAGER.html'>REPORT_MANAGER</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024537</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="RESTRICTION.RESTRICTION_END_STAFF_ID references STAFF.STAFF_ID via SYS_C0021411"><a href='RESTRICTION.html'>RESTRICTION</a><span class='relatedKey'>.RESTRICTION_END_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021411<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="RESTRICTION.RESTRICTION_END_STAFF_ID references STAFF.STAFF_ID via SYS_C0024533"><a href='RESTRICTION.html'>RESTRICTION</a><span class='relatedKey'>.RESTRICTION_END_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024533</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="RESTRICTION.RESTRICTION_START_STAFF_ID references STAFF.STAFF_ID via SYS_C0021409"><a href='RESTRICTION.html'>RESTRICTION</a><span class='relatedKey'>.RESTRICTION_START_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021409<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="RESTRICTION.RESTRICTION_START_STAFF_ID references STAFF.STAFF_ID via SYS_C0024531"><a href='RESTRICTION.html'>RESTRICTION</a><span class='relatedKey'>.RESTRICTION_START_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024531</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="RQMNT_MANAGER.ALLOCATED_STAFF_ID references STAFF.STAFF_ID via SYS_C0021322"><a href='RQMNT_MANAGER.html'>RQMNT_MANAGER</a><span class='relatedKey'>.ALLOCATED_STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021322<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="RQMNT_MANAGER.ALLOCATED_STAFF_ID references STAFF.STAFF_ID via SYS_C0024123"><a href='RQMNT_MANAGER.html'>RQMNT_MANAGER</a><span class='relatedKey'>.ALLOCATED_STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024123</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="RQMNT_TRANSFER.ORIGIN_STAFF_ID references STAFF.STAFF_ID via R_876"><a href='RQMNT_TRANSFER.html'>RQMNT_TRANSFER</a><span class='relatedKey'>.ORIGIN_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_876<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_876</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="RQMNT_TRANSFER.RECEIVING_STAFF_ID references STAFF.STAFF_ID via R_878"><a href='RQMNT_TRANSFER.html'>RQMNT_TRANSFER</a><span class='relatedKey'>.RECEIVING_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_878<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_878</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="SPG_ERROR.ASSIGNED_TO_STAFF_ID references STAFF.STAFF_ID via R_1229"><a href='SPG_ERROR.html'>SPG_ERROR</a><span class='relatedKey'>.ASSIGNED_TO_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_1229<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1229</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="SPG_EXCEPTION.ASSIGNED_TO_STAFF_ID references STAFF.STAFF_ID via R_1230"><a href='SPG_EXCEPTION.html'>SPG_EXCEPTION</a><span class='relatedKey'>.ASSIGNED_TO_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_1230<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1230</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="STAFF_TEAM.STAFF_ID references STAFF.STAFF_ID via SYS_C0021057"><a href='STAFF_TEAM.html'>STAFF_TEAM</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021057<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="STAFF_TEAM.STAFF_ID references STAFF.STAFF_ID via SYS_C0024200"><a href='STAFF_TEAM.html'>STAFF_TEAM</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024200</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="TIER_ALLOCATION.DECISION_STAFF_ID references STAFF.STAFF_ID via R_1190"><a href='TIER_ALLOCATION.html'>TIER_ALLOCATION</a><span class='relatedKey'>.DECISION_STAFF_ID</span></td>
-                                                <td class="constraint detail">R_1190<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1190</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="UPW_APPOINTMENT.STAFF_ID references STAFF.STAFF_ID via SYS_C0021689"><a href='UPW_APPOINTMENT.html'>UPW_APPOINTMENT</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021689<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="UPW_APPOINTMENT.STAFF_ID references STAFF.STAFF_ID via SYS_C0024713"><a href='UPW_APPOINTMENT.html'>UPW_APPOINTMENT</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024713</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="UPW_DETAILS.STAFF_ID references STAFF.STAFF_ID via SYS_C0021850"><a href='UPW_DETAILS.html'>UPW_DETAILS</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021850<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="UPW_DETAILS.STAFF_ID references STAFF.STAFF_ID via SYS_C0024718"><a href='UPW_DETAILS.html'>UPW_DETAILS</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024718</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="USER_.STAFF_ID references STAFF.STAFF_ID via SYS_C0021452"><a href='USER_.html'>USER_</a><span class='relatedKey'>.STAFF_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021452<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="USER_.STAFF_ID references STAFF.STAFF_ID via SYS_C0024694"><a href='USER_.html'>USER_</a><span class='relatedKey'>.STAFF_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024694</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -369,7 +448,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="SURNAME">SURNAME</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="SURNAME">SURNAME</span></td>
                                     <td>VARCHAR2</td>
                                     <td>35</td>
                                     <td title=''></td>
@@ -403,7 +482,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="FORENAME">FORENAME</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="FORENAME">FORENAME</span></td>
                                     <td>VARCHAR2</td>
                                     <td>35</td>
                                     <td title=''></td>
@@ -437,7 +516,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="FORENAME2">FORENAME2</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="FORENAME2">FORENAME2</span></td>
                                     <td>VARCHAR2</td>
                                     <td>35</td>
                                     <td title='nullable'>√</td>
@@ -454,7 +533,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="STAFF_GRADE_ID">STAFF_GRADE_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="STAFF_GRADE_ID">STAFF_GRADE_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -467,15 +546,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="STAFF.STAFF_GRADE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0021311"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021311<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="STAFF.STAFF_GRADE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0024124"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024124</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="TITLE_ID">TITLE_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="TITLE_ID">TITLE_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -488,15 +568,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="STAFF.TITLE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0021313"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021313<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="STAFF.TITLE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0024125"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024125</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OFFICER_CODE">OFFICER_CODE</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="OFFICER_CODE">OFFICER_CODE</span></td>
                                     <td>CHAR</td>
                                     <td>7</td>
                                     <td title='nullable'>√</td>
@@ -513,7 +594,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -525,12 +606,17 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="STAFF.CREATED_BY_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -542,6 +628,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="STAFF.LAST_UPDATED_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -581,7 +672,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -615,7 +706,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="SC_PROVIDER_ID">SC_PROVIDER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="SC_PROVIDER_ID">SC_PROVIDER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -629,14 +720,15 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="STAFF.SC_PROVIDER_ID references SC_PROVIDER.SC_PROVIDER_ID via R_894"><a href='SC_PROVIDER.html'>SC_PROVIDER</a><span class='relatedKey'>.SC_PROVIDER_ID</span></td>
-                                                <td class="constraint detail">R_894<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_894</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PROBATION_AREA_ID">PROBATION_AREA_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PROBATION_AREA_ID">PROBATION_AREA_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -649,8 +741,9 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="STAFF.PROBATION_AREA_ID references PROBATION_AREA.PROBATION_AREA_ID via R_917"><a href='PROBATION_AREA.html'>PROBATION_AREA</a><span class='relatedKey'>.PROBATION_AREA_ID</span></td>
-                                                <td class="constraint detail">R_917<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="STAFF.PROBATION_AREA_ID references PROBATION_AREA.PROBATION_AREA_ID via SYS_C0024127"><a href='PROBATION_AREA.html'>PROBATION_AREA</a><span class='relatedKey'>.PROBATION_AREA_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024127</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -670,7 +763,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="indexes_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -728,12 +827,6 @@
                                     <td><span title='Ascending'>Asc</span></td>
                                     <td>TITLE_ID</td>
                                 </tr>
-                                <tr>
-                                    <td title='Indexed'>XIF7STAFF</td>
-                                    <td>Performance</td>
-                                    <td><span title='Ascending'>Asc</span></td>
-                                    <td>PROBATION_AREA_ID</td>
-                                </tr>
                                 </tbody>
                             </table>
                         </div><!-- /.box-body -->
@@ -748,7 +841,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="check_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -757,12 +856,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>PROVIDER_LOCATION_DATE_VALID7</td>
-                                    <td> (&#10;(START_DATE &lt;= END_DATE) OR (END_DATE IS NULL)&#10;) </td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE_925119186</td>
                                     <td>PRIVATE IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>PROVIDER_LOCATION_DATE_VALID7</td>
+                                    <td> (&#10;(START_DATE &lt;&#61; END_DATE) OR (END_DATE IS NULL)&#10;) </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -782,16 +881,118 @@
                                 <h5>Close relationships within degrees of separation</h5>
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
-                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="oneDegreeImg" data="../diagrams/tables/STAFF.1degree.svg" class="diagram" border="0" align="left"></object></a>
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="ADDRESS_ASSESSMENT.html" target="_top" title="ADDRESS_ASSESSMENT" alt="" coords="1480,1426,1740,1866">
+<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,11487,324,11751">
+<area shape="rect" id="node3" href="STAFF.html" target="_top" title="STAFF" alt="" coords="1033,9926,1387,10523">
+<area shape="rect" id="node5" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="368,6991,691,7519">
+<area shape="rect" id="node43" href="SC_PROVIDER.html" target="_top" title="SC_PROVIDER" alt="" coords="735,7395,989,7659">
+<area shape="rect" id="node4" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="1443,1883,1777,3174">
+<area shape="rect" id="node6" href="APPROVED_PREMISES_RESIDENCE.html" target="_top" title="APPROVED_PREMISES_RESIDENCE" alt="" coords="1835,5015,2177,5543">
+<area shape="rect" id="node7" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="1847,4346,2165,4962">
+<area shape="rect" id="node8" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1449,4110,1771,5576">
+<area shape="rect" id="node9" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="1449,5594,1771,7031">
+<area shape="rect" id="node10" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1453,130,1767,775">
+<area shape="rect" id="node11" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="1443,792,1777,1408">
+<area shape="rect" id="node12" href="COHORT.html" target="_top" title="COHORT" alt="" coords="1463,3371,1757,3723">
+<area shape="rect" id="node13" href="COHORT_HISTORY.html" target="_top" title="COHORT_HISTORY" alt="" coords="1463,3740,1757,4092">
+<area shape="rect" id="node14" href="COURT_APPEARANCE.html" target="_top" title="COURT_APPEARANCE" alt="" coords="1439,13436,1781,13994">
+<area shape="rect" id="node15" href="COURT_REPORT_TRANSFER.html" target="_top" title="COURT_REPORT_TRANSFER" alt="" coords="1465,16346,1755,16903">
+<area shape="rect" id="node16" href="DEREGISTRATION.html" target="_top" title="DEREGISTRATION" alt="" coords="2226,4323,2481,4763">
+<area shape="rect" id="node17" href="REGISTRATION.html" target="_top" title="REGISTRATION" alt="" coords="1878,3728,2134,4256">
+<area shape="rect" id="node18" href="DRUG_TEST_PROFILE.html" target="_top" title="DRUG_TEST_PROFILE" alt="" coords="1483,9471,1737,9882">
+<area shape="rect" id="node19" href="DRUGS_TEST.html" target="_top" title="DRUGS_TEST" alt="" coords="1470,14011,1750,14686">
+<area shape="rect" id="node20" href="EXCLUSION.html" target="_top" title="EXCLUSION" alt="" coords="1870,6731,2142,7230">
+<area shape="rect" id="node21" href="USER_.html" target="_top" title="USER_" alt="" coords="1436,7300,1784,7623">
+<area shape="rect" id="node22" href="INSTITUTIONAL_REPORT_TRANSFER.html" target="_top" title="INSTITUTIONAL_REPORT_TRANSFER" alt="" coords="1431,15830,1789,16328">
+<area shape="rect" id="node23" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="1860,7247,2152,7980">
+<area shape="rect" id="node24" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="1443,10567,1777,11300">
+<area shape="rect" id="node25" href="NOMIS_CASE_NOTE_ERROR.html" target="_top" title="NOMIS_CASE_NOTE_ERROR" alt="" coords="1465,9899,1755,10104">
+<area shape="rect" id="node26" href="NSI_MANAGER.html" target="_top" title="NSI_MANAGER" alt="" coords="1879,5560,2133,6000">
+<area shape="rect" id="node27" href="NSI_TRANSFER.html" target="_top" title="NSI_TRANSFER" alt="" coords="1482,7712,1738,8328">
+<area shape="rect" id="node28" href="OFFENDER_DRUG_PROFILE.html" target="_top" title="OFFENDER_DRUG_PROFILE" alt="" coords="1466,14739,1754,15062">
+<area shape="rect" id="node29" href="OFFENDER_MANAGER.html" target="_top" title="OFFENDER_MANAGER" alt="" coords="1876,7998,2136,8614">
+<area shape="rect" id="node30" href="OFFENDER_TRANSFER.html" target="_top" title="OFFENDER_TRANSFER" alt="" coords="1443,11318,1777,12080">
+<area shape="rect" id="node31" href="ORDER_MANAGER.html" target="_top" title="ORDER_MANAGER" alt="" coords="1876,9994,2136,10698">
+<area shape="rect" id="node32" href="ORDER_TRANSFER.html" target="_top" title="ORDER_TRANSFER" alt="" coords="1443,12134,1777,12867">
+<area shape="rect" id="node33" href="PRISON_OFFENDER_MANAGER.html" target="_top" title="PRISON_OFFENDER_MANAGER" alt="" coords="1451,8382,1769,8734">
+<area shape="rect" id="node34" href="PSS_RQMNT_MANAGER.html" target="_top" title="PSS_RQMNT_MANAGER" alt="" coords="1875,10715,2137,11126">
+<area shape="rect" id="node35" href="PSS_RQMNT_TRANSFER.html" target="_top" title="PSS_RQMNT_TRANSFER" alt="" coords="1479,12920,1741,13419">
+<area shape="rect" id="node36" href="R_APPROVED_PREMISES_STAFF.html" target="_top" title="R_APPROVED_PREMISES_STAFF" alt="" coords="1451,10194,1769,10370">
+<area shape="rect" id="node37" href="REGISTRATION_REVIEW.html" target="_top" title="REGISTRATION_REVIEW" alt="" coords="2223,5100,2484,5482">
+<area shape="rect" id="node38" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="1846,11143,2166,11994">
+<area shape="rect" id="node39" href="RQMNT_TRANSFER.html" target="_top" title="RQMNT_TRANSFER" alt="" coords="1443,15079,1777,15812">
+<area shape="rect" id="node40" href="REPORT_MANAGER.html" target="_top" title="REPORT_MANAGER" alt="" coords="1833,15472,2179,16294">
+<area shape="rect" id="node41" href="RESTRICTION.html" target="_top" title="RESTRICTION" alt="" coords="1863,8631,2149,9130">
+<area shape="rect" id="node42" href="RQMNT_MANAGER.html" target="_top" title="RQMNT_MANAGER" alt="" coords="1876,13267,2136,13971">
+<area shape="rect" id="node44" href="SPG_ERROR.html" target="_top" title="SPG_ERROR" alt="" coords="1483,17603,1737,17926">
+<area shape="rect" id="node45" href="SPG_EXCEPTION.html" target="_top" title="SPG_EXCEPTION" alt="" coords="1483,17943,1737,18295">
+<area shape="rect" id="node46" href="STAFF_TEAM.html" target="_top" title="STAFF_TEAM" alt="" coords="1483,9219,1737,9454">
+<area shape="rect" id="node47" href="TIER_ALLOCATION.html" target="_top" title="TIER_ALLOCATION" alt="" coords="1443,18312,1777,18723">
+<area shape="rect" id="node48" href="UPW_APPOINTMENT.html" target="_top" title="UPW_APPOINTMENT" alt="" coords="1866,17552,2146,18432">
+<area shape="rect" id="node49" href="UPW_DETAILS.html" target="_top" title="UPW_DETAILS" alt="" coords="1483,17028,1737,17586">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/STAFF.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
-                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="twodegreesDegreeImg" data="../diagrams/tables/STAFF.2degrees.svg" class="diagram" border="0" align="left"></object></a>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="ADDRESS_ASSESSMENT.html" target="_top" title="ADDRESS_ASSESSMENT" alt="" coords="1898,13755,2158,14195">
+<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="1484,6511,1802,6775">
+<area shape="rect" id="node3" href="USER_.html" target="_top" title="USER_" alt="" coords="1090,11627,1438,11950">
+<area shape="rect" id="node4" href="STAFF.html" target="_top" title="STAFF" alt="" coords="692,9536,1046,10134">
+<area shape="rect" id="node45" href="SC_PROVIDER.html" target="_top" title="SC_PROVIDER" alt="" coords="394,11386,648,11650">
+<area shape="rect" id="node7" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="27,7830,350,8358">
+<area shape="rect" id="node5" href="AP_REFERRAL_DELTA_ERROR.html" target="_top" title="AP_REFERRAL_DELTA_ERROR" alt="" coords="1864,16510,2191,16744">
+<area shape="rect" id="node6" href="APPROVED_PREMISES_REFERRAL.html" target="_top" title="APPROVED_PREMISES_REFERRAL" alt="" coords="1861,4955,2194,6246">
+<area shape="rect" id="node8" href="APPROVED_PREMISES_RESIDENCE.html" target="_top" title="APPROVED_PREMISES_RESIDENCE" alt="" coords="2253,820,2594,1348">
+<area shape="rect" id="node9" href="ASSESSMENT.html" target="_top" title="ASSESSMENT" alt="" coords="2264,13396,2583,14012">
+<area shape="rect" id="node10" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1482,13355,1804,14822">
+<area shape="rect" id="node11" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="1482,14875,1804,16312">
+<area shape="rect" id="node12" href="REFERRAL.html" target="_top" title="REFERRAL" alt="" coords="1871,8302,2184,8947">
+<area shape="rect" id="node13" href="CASE_ALLOCATION.html" target="_top" title="CASE_ALLOCATION" alt="" coords="1861,1624,2194,2240">
+<area shape="rect" id="node14" href="COHORT.html" target="_top" title="COHORT" alt="" coords="1881,408,2174,760">
+<area shape="rect" id="node15" href="COHORT_HISTORY.html" target="_top" title="COHORT_HISTORY" alt="" coords="1881,778,2174,1130">
+<area shape="rect" id="node16" href="COURT_APPEARANCE.html" target="_top" title="COURT_APPEARANCE" alt="" coords="1857,7547,2198,8104">
+<area shape="rect" id="node17" href="COURT_REPORT_TRANSFER.html" target="_top" title="COURT_REPORT_TRANSFER" alt="" coords="1882,3524,2173,4082">
+<area shape="rect" id="node18" href="DEREGISTRATION.html" target="_top" title="DEREGISTRATION" alt="" coords="2296,14828,2551,15268">
+<area shape="rect" id="node19" href="REGISTRATION.html" target="_top" title="REGISTRATION" alt="" coords="1900,15016,2156,15544">
+<area shape="rect" id="node20" href="DRUG_TEST_PROFILE.html" target="_top" title="DRUG_TEST_PROFILE" alt="" coords="1516,12639,1770,13050">
+<area shape="rect" id="node21" href="DRUGS_TEST.html" target="_top" title="DRUGS_TEST" alt="" coords="1888,11094,2168,11768">
+<area shape="rect" id="node22" href="EXCLUSION.html" target="_top" title="EXCLUSION" alt="" coords="1892,15958,2164,16456">
+<area shape="rect" id="node23" href="INSTITUTIONAL_REPORT_TRANSFER.html" target="_top" title="INSTITUTIONAL_REPORT_TRANSFER" alt="" coords="1848,4439,2207,4938">
+<area shape="rect" id="node24" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="2278,5938,2570,6671">
+<area shape="rect" id="node25" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="1861,2258,2194,2991">
+<area shape="rect" id="node26" href="NOMIS_CASE_NOTE_ERROR.html" target="_top" title="NOMIS_CASE_NOTE_ERROR" alt="" coords="1498,10760,1788,10966">
+<area shape="rect" id="node27" href="NSI_MANAGER.html" target="_top" title="NSI_MANAGER" alt="" coords="2296,16032,2551,16472">
+<area shape="rect" id="node28" href="NSI_TRANSFER.html" target="_top" title="NSI_TRANSFER" alt="" coords="1900,9304,2156,9920">
+<area shape="rect" id="node29" href="OFFENDER_DRUG_PROFILE.html" target="_top" title="OFFENDER_DRUG_PROFILE" alt="" coords="1884,4099,2172,4422">
+<area shape="rect" id="node30" href="OFFENDER_MANAGER.html" target="_top" title="OFFENDER_MANAGER" alt="" coords="2294,7694,2554,8310">
+<area shape="rect" id="node31" href="OFFENDER_TRANSFER.html" target="_top" title="OFFENDER_TRANSFER" alt="" coords="1861,6767,2194,7530">
+<area shape="rect" id="node32" href="ORDER_MANAGER.html" target="_top" title="ORDER_MANAGER" alt="" coords="2294,16490,2554,17194">
+<area shape="rect" id="node33" href="ORDER_TRANSFER.html" target="_top" title="ORDER_TRANSFER" alt="" coords="1861,9938,2194,10671">
+<area shape="rect" id="node34" href="PRISON_OFFENDER_MANAGER.html" target="_top" title="PRISON_OFFENDER_MANAGER" alt="" coords="1869,1255,2186,1607">
+<area shape="rect" id="node35" href="PSS_RQMNT_MANAGER.html" target="_top" title="PSS_RQMNT_MANAGER" alt="" coords="2292,192,2555,603">
+<area shape="rect" id="node36" href="PSS_RQMNT_TRANSFER.html" target="_top" title="PSS_RQMNT_TRANSFER" alt="" coords="1897,3008,2158,3507">
+<area shape="rect" id="node37" href="R_APPROVED_PREMISES_STAFF.html" target="_top" title="R_APPROVED_PREMISES_STAFF" alt="" coords="1104,12874,1423,13050">
+<area shape="rect" id="node38" href="REGISTRATION_CFO_15fb2de1.html" target="_top" title="REGISTRATION$CFO" alt="" coords="2296,15294,2552,15616">
+<area shape="rect" id="node39" href="REGISTRATION_REVIEW.html" target="_top" title="REGISTRATION_REVIEW" alt="" coords="2293,15634,2554,16015">
+<area shape="rect" id="node40" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2264,2820,2584,3671">
+<area shape="rect" id="node41" href="RQMNT_TRANSFER.html" target="_top" title="RQMNT_TRANSFER" alt="" coords="1861,12932,2194,13666">
+<area shape="rect" id="node42" href="REPORT_MANAGER.html" target="_top" title="REPORT_MANAGER" alt="" coords="2251,6744,2596,7566">
+<area shape="rect" id="node43" href="RESTRICTION.html" target="_top" title="RESTRICTION" alt="" coords="1885,14212,2170,14711">
+<area shape="rect" id="node44" href="RQMNT_MANAGER.html" target="_top" title="RQMNT_MANAGER" alt="" coords="2294,17211,2554,17915">
+<area shape="rect" id="node46" href="SPG_ERROR.html" target="_top" title="SPG_ERROR" alt="" coords="1900,8964,2155,9287">
+<area shape="rect" id="node47" href="SPG_EXCEPTION.html" target="_top" title="SPG_EXCEPTION" alt="" coords="1900,10724,2155,11076">
+<area shape="rect" id="node48" href="STAFF_TEAM.html" target="_top" title="STAFF_TEAM" alt="" coords="1516,12387,1770,12622">
+<area shape="rect" id="node49" href="TIER_ALLOCATION.html" target="_top" title="TIER_ALLOCATION" alt="" coords="1861,11786,2194,12196">
+<area shape="rect" id="node50" href="UPW_APPOINTMENT.html" target="_top" title="UPW_APPOINTMENT" alt="" coords="2284,12414,2564,13294">
+<area shape="rect" id="node51" href="UPW_DETAILS.html" target="_top" title="UPW_DETAILS" alt="" coords="1900,12358,2155,12915">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/STAFF.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>
@@ -811,7 +1012,7 @@
                         <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
                         <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
                     </div>
-                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.0</a></strong>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
                 </div>
                 <!-- /.container -->
             </footer>

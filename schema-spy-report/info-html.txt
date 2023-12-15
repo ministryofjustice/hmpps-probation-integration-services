@@ -1,5 +1,5 @@
-date=2023-10-11 07:03:59+0000
-os=Linux 5.10.186-179.751.amzn2.x86_64
-schemaspy-version=6.1.0
-schemaspy-build=6.1.0.41 2019-09-17 21:52:57
-diagramImplementation=Viz.js 1.7.1 (Graphviz 2.40.1, Expat 2.1.0, Emscripten 1.37.9)
+date=2023-12-15 12:13:31+0000
+os=Linux 5.10.199-190.747.amzn2.x86_64
+schemaspy-version=6.2.4
+schemaspy-build=6.2.4.41 2023-07-21 11:15:12
+renderer=Graphviz dot 2.47.1 

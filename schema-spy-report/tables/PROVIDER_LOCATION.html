@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>PROVIDER_LOCATION - DNDA Database</title>
+        <title>PROVIDER_LOCATION - DMDNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DNDA</b> Database</a>
+                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>PROVIDER_LOCATION</h1><p><span id="recordNumber">1</span> rows</p><br />
+                    <h1>PROVIDER_LOCATION</h1><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -87,7 +87,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Column</th>
@@ -112,12 +118,19 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="CONTACT.PROVIDER_LOCATION_ID references PROVIDER_LOCATION.PROVIDER_LOCATION_ID via SYS_C0021896"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.PROVIDER_LOCATION_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021896<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="CONTACT.PROVIDER_LOCATION_ID references PROVIDER_LOCATION.PROVIDER_LOCATION_ID via SYS_C0024669"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.PROVIDER_LOCATION_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024669</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="PROVIDER_TEAM_LOCATION.PROVIDER_LOCATION_ID references PROVIDER_LOCATION.PROVIDER_LOCATION_ID via SYS_C0020996"><a href='PROVIDER_TEAM_LOCATION.html'>PROVIDER_TEAM_LOCATION</a><span class='relatedKey'>.PROVIDER_LOCATION_ID</span></td>
-                                                <td class="constraint detail">SYS_C0020996<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="CONTACT_REDEF.PROVIDER_LOCATION_ID references PROVIDER_LOCATION.PROVIDER_LOCATION_ID via TMP$$_SYS_C00246690"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.PROVIDER_LOCATION_ID</span></td>
+                                                <td class="constraint detail">TMP$$_SYS_C00246690</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="PROVIDER_TEAM_LOCATION.PROVIDER_LOCATION_ID references PROVIDER_LOCATION.PROVIDER_LOCATION_ID via SYS_C0024297"><a href='PROVIDER_TEAM_LOCATION.html'>PROVIDER_TEAM_LOCATION</a><span class='relatedKey'>.PROVIDER_LOCATION_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024297</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -128,7 +141,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CODE">CODE</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="CODE">CODE</span></td>
                                     <td>CHAR</td>
                                     <td>7</td>
                                     <td title=''></td>
@@ -179,7 +192,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="EXTERNAL_PROVIDER_ID">EXTERNAL_PROVIDER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="EXTERNAL_PROVIDER_ID">EXTERNAL_PROVIDER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -192,8 +205,9 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="PROVIDER_LOCATION.EXTERNAL_PROVIDER_ID references EXTERNAL_PROVIDER.EXTERNAL_PROVIDER_ID via SYS_C0021748"><a href='EXTERNAL_PROVIDER.html'>EXTERNAL_PROVIDER</a><span class='relatedKey'>.EXTERNAL_PROVIDER_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021748<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="PROVIDER_LOCATION.EXTERNAL_PROVIDER_ID references EXTERNAL_PROVIDER.EXTERNAL_PROVIDER_ID via SYS_C0024778"><a href='EXTERNAL_PROVIDER.html'>EXTERNAL_PROVIDER</a><span class='relatedKey'>.EXTERNAL_PROVIDER_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024778</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -217,7 +231,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ADDRESS_ID">ADDRESS_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ADDRESS_ID">ADDRESS_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -230,8 +244,9 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="PROVIDER_LOCATION.ADDRESS_ID references ADDRESS.ADDRESS_ID via SYS_C0021749"><a href='ADDRESS.html'>ADDRESS</a><span class='relatedKey'>.ADDRESS_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021749<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="PROVIDER_LOCATION.ADDRESS_ID references ADDRESS.ADDRESS_ID via SYS_C0024776"><a href='ADDRESS.html'>ADDRESS</a><span class='relatedKey'>.ADDRESS_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024776</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -323,7 +338,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -335,6 +350,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="PROVIDER_LOCATION.CREATED_BY_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -357,7 +377,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -369,12 +389,17 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="PROVIDER_LOCATION.LAST_UPDATED_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -391,7 +416,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PROBATION_AREA_ID">PROBATION_AREA_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PROBATION_AREA_ID">PROBATION_AREA_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -404,8 +429,9 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="PROVIDER_LOCATION.PROBATION_AREA_ID references PROBATION_AREA.PROBATION_AREA_ID via SYS_C0021750"><a href='PROBATION_AREA.html'>PROBATION_AREA</a><span class='relatedKey'>.PROBATION_AREA_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021750<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="PROVIDER_LOCATION.PROBATION_AREA_ID references PROBATION_AREA.PROBATION_AREA_ID via SYS_C0024779"><a href='PROBATION_AREA.html'>PROBATION_AREA</a><span class='relatedKey'>.PROBATION_AREA_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024779</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -425,7 +451,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="indexes_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -491,7 +523,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="check_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -501,7 +539,7 @@
                                 <tbody>
                                 <tr>
                                     <td>PROVIDER_LOCATION_DATE_VALID2</td>
-                                    <td> (&#10;(START_DATE &lt;= END_DATE) OR (END_DATE IS NULL)&#10;) </td>
+                                    <td> (&#10;(START_DATE &lt;&#61; END_DATE) OR (END_DATE IS NULL)&#10;) </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -521,16 +559,33 @@
                                 <h5>Close relationships within degrees of separation</h5>
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
-                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="oneDegreeImg" data="../diagrams/tables/PROVIDER_LOCATION.1degree.svg" class="diagram" border="0" align="left"></object></a>
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1076,1712,1399,3179">
+<area shape="rect" id="node2" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="304,1188,627,1716">
+<area shape="rect" id="node3" href="PROVIDER_LOCATION.html" target="_top" title="PROVIDER_LOCATION" alt="" coords="671,680,1032,1248">
+<area shape="rect" id="node6" href="ADDRESS.html" target="_top" title="ADDRESS" alt="" coords="5,1041,260,1276">
+<area shape="rect" id="node5" href="EXTERNAL_PROVIDER.html" target="_top" title="EXTERNAL_PROVIDER" alt="" coords="338,800,593,1064">
+<area shape="rect" id="node4" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="1076,257,1399,1695">
+<area shape="rect" id="node7" href="PROVIDER_TEAM_LOCATION.html" target="_top" title="PROVIDER_TEAM_LOCATION" alt="" coords="1087,5,1387,240">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/PROVIDER_LOCATION.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
-                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="twodegreesDegreeImg" data="../diagrams/tables/PROVIDER_LOCATION.2degrees.svg" class="diagram" border="0" align="left"></object></a>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="ADDRESS.html" target="_top" title="ADDRESS" alt="" coords="716,1452,971,1687">
+<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="324,1681,672,2004">
+<area shape="rect" id="node7" href="EXTERNAL_PROVIDER.html" target="_top" title="EXTERNAL_PROVIDER" alt="" coords="25,1564,280,1828">
+<area shape="rect" id="node3" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1787,5,2109,1472">
+<area shape="rect" id="node4" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="1015,1776,1337,2304">
+<area shape="rect" id="node5" href="PROVIDER_LOCATION.html" target="_top" title="PROVIDER_LOCATION" alt="" coords="1381,1296,1743,1864">
+<area shape="rect" id="node6" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="1787,1489,2109,2927">
+<area shape="rect" id="node8" href="PROVIDER_TEAM_LOCATION.html" target="_top" title="PROVIDER_TEAM_LOCATION" alt="" coords="1798,2944,2098,3179">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/PROVIDER_LOCATION.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>
@@ -550,7 +605,7 @@
                         <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
                         <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
                     </div>
-                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.0</a></strong>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
                 </div>
                 <!-- /.container -->
             </footer>

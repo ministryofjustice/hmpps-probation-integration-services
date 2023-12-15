@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>NSI - DNDA Database</title>
+        <title>NSI - DMDNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DNDA</b> Database</a>
+                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>NSI</h1><p><span id="recordNumber">718</span> rows</p><br />
+                    <h1>NSI</h1><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -87,7 +87,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Column</th>
@@ -113,27 +119,38 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="CASELOAD.NSI_ID references NSI.NSI_ID via R_1170"><a href='CASELOAD.html'>CASELOAD</a><span class='relatedKey'>.NSI_ID</span></td>
-                                                <td class="constraint detail">R_1170<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1170</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="CONTACT.NSI_ID references NSI.NSI_ID via R_895"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.NSI_ID</span></td>
-                                                <td class="constraint detail">R_895<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_895</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="CONTACT_REDEF.NSI_ID references NSI.NSI_ID via TMP$$_R_8950"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.NSI_ID</span></td>
+                                                <td class="constraint detail">TMP$$_R_8950</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="NSI_MANAGER.NSI_ID references NSI.NSI_ID via R_837"><a href='NSI_MANAGER.html'>NSI_MANAGER</a><span class='relatedKey'>.NSI_ID</span></td>
-                                                <td class="constraint detail">R_837<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_837</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="NSI_STATUS_HISTORY.NSI_ID references NSI.NSI_ID via R_1312"><a href='NSI_STATUS_HISTORY.html'>NSI_STATUS_HISTORY</a><span class='relatedKey'>.NSI_ID</span></td>
-                                                <td class="constraint detail">R_1312<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1312</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="NSI_TRANSFER.NSI_ID references NSI.NSI_ID via R_825"><a href='NSI_TRANSFER.html'>NSI_TRANSFER</a><span class='relatedKey'>.NSI_ID</span></td>
-                                                <td class="constraint detail">R_825<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_825</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="REJECTED_TRANSFER_DIARY.NSI_ID references NSI.NSI_ID via R_1155"><a href='REJECTED_TRANSFER_DIARY.html'>REJECTED_TRANSFER_DIARY</a><span class='relatedKey'>.NSI_ID</span></td>
-                                                <td class="constraint detail">R_1155<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1155</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -144,7 +161,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OFFENDER_ID">OFFENDER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OFFENDER_ID">OFFENDER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -158,14 +175,15 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="NSI.OFFENDER_ID references OFFENDER.OFFENDER_ID via R_802"><a href='OFFENDER.html'>OFFENDER</a><span class='relatedKey'>.OFFENDER_ID</span></td>
-                                                <td class="constraint detail">R_802<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_802</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="EVENT_ID">EVENT_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="EVENT_ID">EVENT_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -179,14 +197,15 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="NSI.EVENT_ID references EVENT.EVENT_ID via R_803"><a href='EVENT.html'>EVENT</a><span class='relatedKey'>.EVENT_ID</span></td>
-                                                <td class="constraint detail">R_803<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_803</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="NSI_TYPE_ID">NSI_TYPE_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="NSI_TYPE_ID">NSI_TYPE_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -200,14 +219,15 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="NSI.NSI_TYPE_ID references R_NSI_TYPE.NSI_TYPE_ID via R_820"><a href='R_NSI_TYPE.html'>R_NSI_TYPE</a><span class='relatedKey'>.NSI_TYPE_ID</span></td>
-                                                <td class="constraint detail">R_820<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_820</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="NSI_SUB_TYPE_ID">NSI_SUB_TYPE_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="NSI_SUB_TYPE_ID">NSI_SUB_TYPE_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -221,7 +241,8 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="NSI.NSI_SUB_TYPE_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_821"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
-                                                <td class="constraint detail">R_821<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_821</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -330,7 +351,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="NSI_STATUS_ID">NSI_STATUS_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="NSI_STATUS_ID">NSI_STATUS_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -344,7 +365,8 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="NSI.NSI_STATUS_ID references R_NSI_STATUS.NSI_STATUS_ID via R_822"><a href='R_NSI_STATUS.html'>R_NSI_STATUS</a><span class='relatedKey'>.NSI_STATUS_ID</span></td>
-                                                <td class="constraint detail">R_822<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_822</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -402,7 +424,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="NSI_OUTCOME_ID">NSI_OUTCOME_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="NSI_OUTCOME_ID">NSI_OUTCOME_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -416,7 +438,8 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="NSI.NSI_OUTCOME_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_823"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
-                                                <td class="constraint detail">R_823<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_823</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -440,7 +463,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -452,6 +475,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="NSI.CREATED_BY_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -474,7 +502,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -486,6 +514,11 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="NSI.LAST_UPDATED_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td></td>
@@ -576,7 +609,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -610,7 +643,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="RQMNT_ID">RQMNT_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="RQMNT_ID">RQMNT_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -624,7 +657,8 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="NSI.RQMNT_ID references RQMNT.RQMNT_ID via R_1039"><a href='RQMNT.html'>RQMNT</a><span class='relatedKey'>.RQMNT_ID</span></td>
-                                                <td class="constraint detail">R_1039<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1039</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -665,7 +699,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="INTENDED_PROVIDER_ID">INTENDED_PROVIDER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="INTENDED_PROVIDER_ID">INTENDED_PROVIDER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -679,14 +713,15 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="NSI.INTENDED_PROVIDER_ID references PROBATION_AREA.PROBATION_AREA_ID via R_1090"><a href='PROBATION_AREA.html'>PROBATION_AREA</a><span class='relatedKey'>.PROBATION_AREA_ID</span></td>
-                                                <td class="constraint detail">R_1090<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1090</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ADDITIONAL_IDENTIFIER1_ID">ADDITIONAL_IDENTIFIER1_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ADDITIONAL_IDENTIFIER1_ID">ADDITIONAL_IDENTIFIER1_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -700,14 +735,15 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="NSI.ADDITIONAL_IDENTIFIER1_ID references ADDITIONAL_IDENTIFIER.ADDITIONAL_IDENTIFIER_ID via R_1254"><a href='ADDITIONAL_IDENTIFIER.html'>ADDITIONAL_IDENTIFIER</a><span class='relatedKey'>.ADDITIONAL_IDENTIFIER_ID</span></td>
-                                                <td class="constraint detail">R_1254<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1254</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ADDITIONAL_IDENTIFIER2_ID">ADDITIONAL_IDENTIFIER2_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ADDITIONAL_IDENTIFIER2_ID">ADDITIONAL_IDENTIFIER2_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -721,14 +757,15 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="NSI.ADDITIONAL_IDENTIFIER2_ID references ADDITIONAL_IDENTIFIER.ADDITIONAL_IDENTIFIER_ID via R_1255"><a href='ADDITIONAL_IDENTIFIER.html'>ADDITIONAL_IDENTIFIER</a><span class='relatedKey'>.ADDITIONAL_IDENTIFIER_ID</span></td>
-                                                <td class="constraint detail">R_1255<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1255</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ADDITIONAL_REFERENCE_1_ID">ADDITIONAL_REFERENCE_1_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ADDITIONAL_REFERENCE_1_ID">ADDITIONAL_REFERENCE_1_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -742,7 +779,8 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="NSI.ADDITIONAL_REFERENCE_1_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1358"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
-                                                <td class="constraint detail">R_1358<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1358</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -766,7 +804,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ADDITIONAL_REFERENCE_2_ID">ADDITIONAL_REFERENCE_2_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ADDITIONAL_REFERENCE_2_ID">ADDITIONAL_REFERENCE_2_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -780,7 +818,8 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
                                                 <td title="NSI.ADDITIONAL_REFERENCE_2_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via R_1359"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
-                                                <td class="constraint detail">R_1359<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1359</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -804,7 +843,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="EXTERNAL_REFERENCE">EXTERNAL_REFERENCE</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="EXTERNAL_REFERENCE">EXTERNAL_REFERENCE</span></td>
                                     <td>VARCHAR2</td>
                                     <td>200</td>
                                     <td title='nullable'>√</td>
@@ -834,7 +873,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="indexes_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -948,7 +993,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="check_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -957,20 +1008,20 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY_1986954636</td>
-                                    <td>DOCUMENT_LINKED IN (&#39;Y&#39;,&#39;N&#39;)</td>
-                                </tr>
-                                <tr>
-                                    <td>ACTIVE_FLAG_ACTUAL_E_385237158</td>
-                                    <td> (ACTIVE_FLAG = 0 AND ACTUAL_END_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG = 1 AND ACTUAL_END_DATE IS NULL)&#10; </td>
-                                </tr>
-                                <tr>
                                     <td>TRUE_OR_FALSE_1566803328</td>
                                     <td>PENDING_TRANSFER IN (0, 1)</td>
                                 </tr>
                                 <tr>
+                                    <td>ACTIVE_FLAG_ACTUAL_E_385237158</td>
+                                    <td> (ACTIVE_FLAG &#61; 0 AND ACTUAL_END_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG &#61; 1 AND ACTUAL_END_DATE IS NULL)&#10; </td>
+                                </tr>
+                                <tr>
                                     <td>TRUE_OR_FALSE_421013047</td>
                                     <td>SOFT_DELETED IN (0, 1)</td>
+                                </tr>
+                                <tr>
+                                    <td>YES_OR_NO_ONLY_1986954636</td>
+                                    <td>DOCUMENT_LINKED IN (&#39;Y&#39;,&#39;N&#39;)</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -990,16 +1041,51 @@
                                 <h5>Close relationships within degrees of separation</h5>
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
-                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="oneDegreeImg" data="../diagrams/tables/NSI.1degree.svg" class="diagram" border="0" align="left"></object></a>
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="ADDITIONAL_IDENTIFIER.html" target="_top" title="ADDITIONAL_IDENTIFIER" alt="" coords="782,3525,1055,3877">
+<area shape="rect" id="node2" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,3113,324,3377">
+<area shape="rect" id="node3" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="368,1661,700,2863">
+<area shape="rect" id="node4" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="2384,2797,2733,3765">
+<area shape="rect" id="node5" href="EVENT.html" target="_top" title="EVENT" alt="" coords="774,322,1063,821">
+<area shape="rect" id="node6" href="NSI.html" target="_top" title="NSI" alt="" coords="1137,2981,1609,4165">
+<area shape="rect" id="node7" href="NSI_MANAGER.html" target="_top" title="NSI_MANAGER" alt="" coords="2053,3530,2307,3970">
+<area shape="rect" id="node8" href="RQMNT.html" target="_top" title="RQMNT" alt="" coords="744,2531,1093,3147">
+<area shape="rect" id="node10" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="757,1986,1080,2514">
+<area shape="rect" id="node12" href="R_NSI_STATUS.html" target="_top" title="R_NSI_STATUS" alt="" coords="791,3966,1046,4201">
+<area shape="rect" id="node13" href="R_NSI_TYPE.html" target="_top" title="R_NSI_TYPE" alt="" coords="371,3025,697,3435">
+<area shape="rect" id="node14" href="NSI_TRANSFER.html" target="_top" title="NSI_TRANSFER" alt="" coords="1687,3765,1943,4381">
+<area shape="rect" id="node9" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="1653,1813,1976,3279">
+<area shape="rect" id="node11" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="1653,358,1976,1795">
+<area shape="rect" id="node15" href="NSI_STATUS_HISTORY.html" target="_top" title="NSI_STATUS_HISTORY" alt="" coords="1687,3513,1942,3747">
+<area shape="rect" id="node16" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2020,178,2340,1029">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/NSI.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
-                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="twodegreesDegreeImg" data="../diagrams/tables/NSI.2degrees.svg" class="diagram" border="0" align="left"></object></a>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="ADDITIONAL_IDENTIFIER.html" target="_top" title="ADDITIONAL_IDENTIFIER" alt="" coords="1174,4130,1447,4482">
+<area shape="rect" id="node2" href="USER_.html" target="_top" title="USER_" alt="" coords="5,4017,353,4339">
+<area shape="rect" id="node3" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="397,3829,716,4093">
+<area shape="rect" id="node4" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="760,2559,1092,3762">
+<area shape="rect" id="node5" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="2776,3358,3125,4326">
+<area shape="rect" id="node6" href="EVENT.html" target="_top" title="EVENT" alt="" coords="1166,1695,1455,2194">
+<area shape="rect" id="node7" href="NSI.html" target="_top" title="NSI" alt="" coords="1529,3406,2001,4590">
+<area shape="rect" id="node8" href="NSI_MANAGER.html" target="_top" title="NSI_MANAGER" alt="" coords="2445,4149,2699,4589">
+<area shape="rect" id="node9" href="RQMNT.html" target="_top" title="RQMNT" alt="" coords="1136,2283,1485,2899">
+<area shape="rect" id="node11" href="PROBATION_AREA.html" target="_top" title="PROBATION_AREA" alt="" coords="1149,1081,1472,1609">
+<area shape="rect" id="node13" href="R_NSI_STATUS.html" target="_top" title="R_NSI_STATUS" alt="" coords="429,4853,684,5087">
+<area shape="rect" id="node14" href="R_NSI_TYPE.html" target="_top" title="R_NSI_TYPE" alt="" coords="763,4247,1089,4658">
+<area shape="rect" id="node15" href="NSI_TRANSFER.html" target="_top" title="NSI_TRANSFER" alt="" coords="2079,4243,2335,4859">
+<area shape="rect" id="node10" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="2045,215,2368,1682">
+<area shape="rect" id="node12" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="2045,1771,2368,3209">
+<area shape="rect" id="node16" href="NSI_STATUS_HISTORY.html" target="_top" title="NSI_STATUS_HISTORY" alt="" coords="2079,4957,2334,5191">
+<area shape="rect" id="node17" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2412,2559,2732,3410">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/NSI.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>
@@ -1019,7 +1105,7 @@
                         <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
                         <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
                     </div>
-                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.0</a></strong>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
                 </div>
                 <!-- /.container -->
             </footer>

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>LIC_CONDITION - DNDA Database</title>
+        <title>LIC_CONDITION - DMDNDA.DELIUS_APP_SCHEMA</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -46,7 +46,7 @@
                 <nav class="navbar navbar-static-top">
                     <div class="container">
                         <div class="navbar-header">
-                            <a href="../index.html" class="navbar-brand"><b>DNDA</b> Database</a>
+                            <a href="../index.html" class="navbar-brand"><b>DMDNDA</b></a><span class="navbar-brand" style="padding-left: 0">.DELIUS_APP_SCHEMA</span>
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
                         </div>
 
@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>LIC_CONDITION</h1><p><span id="recordNumber">5585</span> rows</p><br />
+                    <h1>LIC_CONDITION</h1><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -87,7 +87,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="standard_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Column</th>
@@ -112,24 +118,34 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="CASELOAD.LIC_CONDITION_ID references LIC_CONDITION.LIC_CONDITION_ID via SYS_C0021559"><a href='CASELOAD.html'>CASELOAD</a><span class='relatedKey'>.LIC_CONDITION_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021559<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="CASELOAD.LIC_CONDITION_ID references LIC_CONDITION.LIC_CONDITION_ID via SYS_C0024937"><a href='CASELOAD.html'>CASELOAD</a><span class='relatedKey'>.LIC_CONDITION_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024937</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="CONTACT.LIC_CONDITION_ID references LIC_CONDITION.LIC_CONDITION_ID via SYS_C0021895"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.LIC_CONDITION_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021895<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="CONTACT.LIC_CONDITION_ID references LIC_CONDITION.LIC_CONDITION_ID via SYS_C0024655"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.LIC_CONDITION_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024655</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="LIC_CONDITION_MANAGER.LIC_CONDITION_ID references LIC_CONDITION.LIC_CONDITION_ID via SYS_C0021024"><a href='LIC_CONDITION_MANAGER.html'>LIC_CONDITION_MANAGER</a><span class='relatedKey'>.LIC_CONDITION_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021024<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="CONTACT_REDEF.LIC_CONDITION_ID references LIC_CONDITION.LIC_CONDITION_ID via TMP$$_SYS_C00246550"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.LIC_CONDITION_ID</span></td>
+                                                <td class="constraint detail">TMP$$_SYS_C00246550</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="LIC_CONDITION_MANAGER.LIC_CONDITION_ID references LIC_CONDITION.LIC_CONDITION_ID via SYS_C0024225"><a href='LIC_CONDITION_MANAGER.html'>LIC_CONDITION_MANAGER</a><span class='relatedKey'>.LIC_CONDITION_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024225</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="LIC_CONDITION_TRANSFER.LIC_CONDITION_ID references LIC_CONDITION.LIC_CONDITION_ID via R_859"><a href='LIC_CONDITION_TRANSFER.html'>LIC_CONDITION_TRANSFER</a><span class='relatedKey'>.LIC_CONDITION_ID</span></td>
-                                                <td class="constraint detail">R_859<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_859</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
                                                 <td title="REJECTED_TRANSFER_DIARY.LIC_CONDITION_ID references LIC_CONDITION.LIC_CONDITION_ID via R_1161"><a href='REJECTED_TRANSFER_DIARY.html'>REJECTED_TRANSFER_DIARY</a><span class='relatedKey'>.LIC_CONDITION_ID</span></td>
-                                                <td class="constraint detail">R_1161<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td class="constraint detail">R_1161</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -140,7 +156,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="DISPOSAL_ID">DISPOSAL_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="DISPOSAL_ID">DISPOSAL_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -153,15 +169,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="LIC_CONDITION.DISPOSAL_ID references DISPOSAL.DISPOSAL_ID via SYS_C0021619"><a href='DISPOSAL.html'>DISPOSAL</a><span class='relatedKey'>.DISPOSAL_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021619<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="LIC_CONDITION.DISPOSAL_ID references DISPOSAL.DISPOSAL_ID via SYS_C0024744"><a href='DISPOSAL.html'>DISPOSAL</a><span class='relatedKey'>.DISPOSAL_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024744</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="START_DATE">START_DATE</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="START_DATE">START_DATE</span></td>
                                     <td>DATE</td>
                                     <td>7</td>
                                     <td title=''></td>
@@ -212,7 +229,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="COMMENCEMENT_DATE">COMMENCEMENT_DATE</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="COMMENCEMENT_DATE">COMMENCEMENT_DATE</span></td>
                                     <td>DATE</td>
                                     <td>7</td>
                                     <td title='nullable'>√</td>
@@ -246,7 +263,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="TERMINATION_DATE">TERMINATION_DATE</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="TERMINATION_DATE">TERMINATION_DATE</span></td>
                                     <td>DATE</td>
                                     <td>7</td>
                                     <td title='nullable'>√</td>
@@ -280,7 +297,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PARTITION_AREA_ID">PARTITION_AREA_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PARTITION_AREA_ID">PARTITION_AREA_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -293,15 +310,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="LIC_CONDITION.PARTITION_AREA_ID references PARTITION_AREA.PARTITION_AREA_ID via SYS_C0021622"><a href='PARTITION_AREA.html'>PARTITION_AREA</a><span class='relatedKey'>.PARTITION_AREA_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021622<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="LIC_CONDITION.PARTITION_AREA_ID references PARTITION_AREA.PARTITION_AREA_ID via SYS_C0024747"><a href='PARTITION_AREA.html'>PARTITION_AREA</a><span class='relatedKey'>.PARTITION_AREA_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024747</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="SOFT_DELETED">SOFT_DELETED</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="SOFT_DELETED">SOFT_DELETED</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -369,7 +387,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LIC_COND_TYPE_SUB_CAT_ID">LIC_COND_TYPE_SUB_CAT_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LIC_COND_TYPE_SUB_CAT_ID">LIC_COND_TYPE_SUB_CAT_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -382,15 +400,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="LIC_CONDITION.LIC_COND_TYPE_SUB_CAT_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0021615"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021615<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="LIC_CONDITION.LIC_COND_TYPE_SUB_CAT_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0024749"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024749</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CREATED_DATETIME">CREATED_DATETIME</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="CREATED_DATETIME">CREATED_DATETIME</span></td>
                                     <td>DATE</td>
                                     <td>7</td>
                                     <td title=''></td>
@@ -424,7 +443,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="INSTITUTION_ID">INSTITUTION_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="INSTITUTION_ID">INSTITUTION_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title='nullable'>√</td>
@@ -437,15 +456,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="LIC_CONDITION.[INSTITUTION_ID, ESTABLISHMENT] references R_INSTITUTION.[INSTITUTION_ID, ESTABLISHMENT] via SYS_C0021616"><a href='R_INSTITUTION.html'>R_INSTITUTION</a><span class='relatedKey'>.INSTITUTION_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021616<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="LIC_CONDITION.[INSTITUTION_ID, ESTABLISHMENT] references R_INSTITUTION.[INSTITUTION_ID, ESTABLISHMENT] via SYS_C0024750"><a href='R_INSTITUTION.html'>R_INSTITUTION</a><span class='relatedKey'>.INSTITUTION_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024750</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ESTABLISHMENT">ESTABLISHMENT</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ESTABLISHMENT">ESTABLISHMENT</span></td>
                                     <td>CHAR</td>
                                     <td>1</td>
                                     <td title='nullable'>√</td>
@@ -458,108 +478,16 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="LIC_CONDITION.[INSTITUTION_ID, ESTABLISHMENT] references R_INSTITUTION.[INSTITUTION_ID, ESTABLISHMENT] via SYS_C0021616"><a href='R_INSTITUTION.html'>R_INSTITUTION</a><span class='relatedKey'>.ESTABLISHMENT</span></td>
-                                                <td class="constraint detail">SYS_C0021616<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="LIC_CONDITION.[INSTITUTION_ID, ESTABLISHMENT] references R_INSTITUTION.[INSTITUTION_ID, ESTABLISHMENT] via SYS_C0024750"><a href='R_INSTITUTION.html'>R_INSTITUTION</a><span class='relatedKey'>.ESTABLISHMENT</span></td>
+                                                <td class="constraint detail">SYS_C0024750</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
-                                    <td>NUMBER</td>
-                                    <td>38</td>
-                                    <td title=''></td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LIC_COND_TYPE_MAIN_CAT_ID">LIC_COND_TYPE_MAIN_CAT_ID</span></td>
-                                    <td>NUMBER</td>
-                                    <td>38</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="LIC_CONDITION.LIC_COND_TYPE_MAIN_CAT_ID references R_LIC_COND_TYPE_MAIN_CAT.LIC_COND_TYPE_MAIN_CAT_ID via SYS_C0021617"><a href='R_LIC_COND_TYPE_MAIN_CAT.html'>R_LIC_COND_TYPE_MAIN_CAT</a><span class='relatedKey'>.LIC_COND_TYPE_MAIN_CAT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021617<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
-                                    <td>NUMBER</td>
-                                    <td>38</td>
-                                    <td title=''></td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LIC_TERMINATION_REASON_ID">LIC_TERMINATION_REASON_ID</span></td>
-                                    <td>NUMBER</td>
-                                    <td>38</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="LIC_CONDITION.LIC_TERMINATION_REASON_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0021618"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021618<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
-                                    <td>NUMBER</td>
-                                    <td>38</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OFFENDER_ID">OFFENDER_ID</span></td>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CREATED_BY_USER_ID">CREATED_BY_USER_ID</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -572,8 +500,114 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="LIC_CONDITION.OFFENDER_ID references OFFENDER.OFFENDER_ID via SYS_C0021621"><a href='OFFENDER.html'>OFFENDER</a><span class='relatedKey'>.OFFENDER_ID</span></td>
-                                                <td class="constraint detail">SYS_C0021621<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                                <td title="LIC_CONDITION.CREATED_BY_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LIC_COND_TYPE_MAIN_CAT_ID">LIC_COND_TYPE_MAIN_CAT_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="LIC_CONDITION.LIC_COND_TYPE_MAIN_CAT_ID references R_LIC_COND_TYPE_MAIN_CAT.LIC_COND_TYPE_MAIN_CAT_ID via SYS_C0024751"><a href='R_LIC_COND_TYPE_MAIN_CAT.html'>R_LIC_COND_TYPE_MAIN_CAT</a><span class='relatedKey'>.LIC_COND_TYPE_MAIN_CAT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024751</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LAST_UPDATED_USER_ID">LAST_UPDATED_USER_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="LIC_CONDITION.LAST_UPDATED_USER_ID&#39;s name implies that it&#39;s a child of USER_.USER_ID, but it doesn&#39;t reference that column."><a href='USER_.html'>USER_</a><span class='relatedKey'>.USER_ID</span></td>
+                                                <td class="constraint detail">Implied Constraint</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="LIC_TERMINATION_REASON_ID">LIC_TERMINATION_REASON_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="LIC_CONDITION.LIC_TERMINATION_REASON_ID references R_STANDARD_REFERENCE_LIST.STANDARD_REFERENCE_LIST_ID via SYS_C0024748"><a href='R_STANDARD_REFERENCE_LIST.html'>R_STANDARD_REFERENCE_LIST</a><span class='relatedKey'>.STANDARD_REFERENCE_LIST_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024748</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="TRAINING_SESSION_ID">TRAINING_SESSION_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="OFFENDER_ID">OFFENDER_ID</span></td>
+                                    <td>NUMBER</td>
+                                    <td>38</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="LIC_CONDITION.OFFENDER_ID references OFFENDER.OFFENDER_ID via SYS_C0024746"><a href='OFFENDER.html'>OFFENDER</a><span class='relatedKey'>.OFFENDER_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024746</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -597,7 +631,7 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ACTIVE_FLAG">ACTIVE_FLAG</span></td>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="ACTIVE_FLAG">ACTIVE_FLAG</span></td>
                                     <td>NUMBER</td>
                                     <td>38</td>
                                     <td title=''></td>
@@ -678,7 +712,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="indexes_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="indexes_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -768,7 +808,13 @@
                             </div>
                         </div>
                         <div class="box-body">
-                            <table id="check_table" class="table table-bordered table-striped dataTable" role="grid">
+                            <table
+                                    id="check_table"
+                                    class="table table-bordered table-striped dataTable"
+                                    role="grid"
+                                    data-paging="true"
+                                    data-page-length="10"
+                                    data-length-change="false">
                                 <thead align='left'>
                                 <tr>
                                     <th>Constraint Name</th>
@@ -777,24 +823,24 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>YES_OR_NO_ONLY6</td>
-                                    <td>ESTABLISHMENT IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>LIC_CONDITION</td>
+                                    <td> (&#10;(TERMINATION_DATE &gt;&#61; COMMENCEMENT_DATE) OR ( COMMENCEMENT_DATE IS NULL)&#10;) </td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE11</td>
+                                    <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE_368876692</td>
                                     <td>PENDING_TRANSFER IN (0, 1)</td>
                                 </tr>
                                 <tr>
+                                    <td>YES_OR_NO_ONLY6</td>
+                                    <td>ESTABLISHMENT IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
                                     <td>ACTIVE_FLAG_TERMINATION_DATE1</td>
-                                    <td> (ACTIVE_FLAG = 0 AND TERMINATION_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG = 1 AND TERMINATION_DATE IS NULL)&#10; </td>
-                                </tr>
-                                <tr>
-                                    <td>LIC_CONDITION</td>
-                                    <td> (&#10;(TERMINATION_DATE &gt;= COMMENCEMENT_DATE) OR ( COMMENCEMENT_DATE IS NULL)&#10;) </td>
-                                </tr>
-                                <tr>
-                                    <td>TRUE_OR_FALSE11</td>
-                                    <td>SOFT_DELETED IN (0, 1)</td>
+                                    <td> (ACTIVE_FLAG &#61; 0 AND TERMINATION_DATE IS NOT NULL)&#10;OR&#10;(ACTIVE_FLAG &#61; 1 AND TERMINATION_DATE IS NULL)&#10; </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -814,16 +860,45 @@
                                 <h5>Close relationships within degrees of separation</h5>
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
-                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="oneDegreeImg" data="../diagrams/tables/LIC_CONDITION.1degree.svg" class="diagram" border="0" align="left"></object></a>
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="2751,2132,3100,3100">
+<area shape="rect" id="node2" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="1103,214,1444,801">
+<area shape="rect" id="node3" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="5,2249,324,2513">
+<area shape="rect" id="node4" href="R_LIC_COND_TYPE_MAIN_CAT.html" target="_top" title="R_LIC_COND_TYPE_MAIN_CAT" alt="" coords="1119,998,1427,1262">
+<area shape="rect" id="node5" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="1488,998,1965,1948">
+<area shape="rect" id="node6" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="2401,178,2693,912">
+<area shape="rect" id="node7" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="727,1925,1059,3128">
+<area shape="rect" id="node8" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="413,1317,637,1464">
+<area shape="rect" id="node11" href="R_INSTITUTION.html" target="_top" title="R_INSTITUTION" alt="" coords="368,1996,683,2318">
+<area shape="rect" id="node12" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="2009,142,2343,876">
+<area shape="rect" id="node9" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="2015,2528,2337,3994">
+<area shape="rect" id="node10" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="2015,1073,2337,2510">
+<area shape="rect" id="node13" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2387,2108,2707,2958">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/LIC_CONDITION.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
-                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
-                                        
-                                        <a name='diagram'><object type="image/svg+xml" id="twodegreesDegreeImg" data="../diagrams/tables/LIC_CONDITION.2degrees.svg" class="diagram" border="0" align="left"></object></a>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="CASELOAD.html" target="_top" title="CASELOAD" alt="" coords="3143,1595,3492,2563">
+<area shape="rect" id="node2" href="DISPOSAL.html" target="_top" title="DISPOSAL" alt="" coords="1495,415,1836,1002">
+<area shape="rect" id="node3" href="R_STANDARD_REFERENCE_LIST.html" target="_top" title="R_STANDARD_REFERENCE_LIST" alt="" coords="397,1870,716,2134">
+<area shape="rect" id="node4" href="R_LIC_COND_TYPE_MAIN_CAT.html" target="_top" title="R_LIC_COND_TYPE_MAIN_CAT" alt="" coords="763,2773,1071,3037">
+<area shape="rect" id="node5" href="LIC_CONDITION.html" target="_top" title="LIC_CONDITION" alt="" coords="1880,1271,2357,2221">
+<area shape="rect" id="node6" href="LIC_CONDITION_MANAGER.html" target="_top" title="LIC_CONDITION_MANAGER" alt="" coords="2793,66,3085,799">
+<area shape="rect" id="node7" href="OFFENDER.html" target="_top" title="OFFENDER" alt="" coords="1119,1451,1451,2654">
+<area shape="rect" id="node8" href="PARTITION_AREA.html" target="_top" title="PARTITION_AREA" alt="" coords="805,1199,1029,1346">
+<area shape="rect" id="node10" href="USER_.html" target="_top" title="USER_" alt="" coords="5,2103,353,2426">
+<area shape="rect" id="node12" href="R_INSTITUTION.html" target="_top" title="R_INSTITUTION" alt="" coords="760,2361,1075,2683">
+<area shape="rect" id="node13" href="LIC_CONDITION_TRANSFER.html" target="_top" title="LIC_CONDITION_TRANSFER" alt="" coords="2401,377,2735,1110">
+<area shape="rect" id="node9" href="CONTACT.html" target="_top" title="CONTACT" alt="" coords="2407,3122,2729,4589">
+<area shape="rect" id="node11" href="CONTACT_REDEF.html" target="_top" title="CONTACT_REDEF" alt="" coords="2407,1667,2729,3105">
+<area shape="rect" id="node14" href="REJECTED_TRANSFER_DIARY.html" target="_top" title="REJECTED_TRANSFER_DIARY" alt="" coords="2779,853,3099,1703">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/LIC_CONDITION.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>
@@ -843,7 +918,7 @@
                         <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
                         <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
                     </div>
-                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.0</a></strong>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
                 </div>
                 <!-- /.container -->
             </footer>
