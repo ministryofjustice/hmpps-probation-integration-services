@@ -92,7 +92,27 @@
               <nav id="toc" class="js-toc-list toc__list" aria-labelledby="toc-heading" data-module="collapsible-navigation">
                       <ul>
   <li>
-    <a href="./index.html"><span>prison-identifier-and-delius</span></a>
+    <a href="./index.html"><span>Prison Identifier and Delius</span></a>
+    <ul>
+      <li>
+        <a href="./index.html#business-need"><span>Business Need</span></a>
+      </li>
+      <li>
+        <a href="./index.html#context-map"><span>Context Map</span></a>
+      </li>
+      <li>
+        <a href="./index.html#workflow-triggers"><span>Workflow Triggers</span></a>
+      </li>
+      <li>
+        <a href="./index.html#workflows"><span>Workflows</span></a>
+      </li>
+      <li>
+        <a href="./index.html#interfaces"><span>Interfaces</span></a>
+      </li>
+      <li>
+        <a href="./index.html#concepts"><span>Concepts</span></a>
+      </li>
+    </ul>
   </li>
   <li>
     <a href="./api-reference.html"><span>API Reference v1.0</span></a>
@@ -114,8 +134,63 @@
 
         <div class="app-pane__content toc-open-disabled" aria-label="Content" tabindex="0">
           <main id="content" class="technical-documentation" data-module="anchored-headings">
-            <h1 id="prison-identifier-and-delius">prison-identifier-and-delius</h1>
-<p>// TODO Describe the service</p>
+            <h1 id="prison-identifier-and-delius">Prison Identifier and Delius</h1>
+<h2 id="business-need">Business Need</h2>
+<p>HMPPS has a number of systems each holding information about a person&rsquo;s interaction with different aspects of the justice system. These systems have been set up and managed over a long period of time resulting in different identifiers being used for a person in each. In order to integrate these independent systems we must match the person records using the information held in each. To achieve this for NOMIS (NOMS Number) and Delius (CRN) we query the two systems and determine that likely matches based on the data. Once we have a likely match we can link the records by adding the NOMS Number to the person record in the Delius database. When this link is in place the two systems can be integrated in other ways to support case management as the person moves through different stages of HMPPS supervision.</p>
+<h2 id="context-map">Context Map</h2>
+<p><a href="././img/prison-identifier-and-delius-context-map.svg" rel="noopener noreferrer"><img src="img/prison-identifier-and-delius-context-map.svg" alt="Context Map" /></a></p>
+<h2 id="workflow-triggers">Workflow Triggers</h2>
+<h3 id="batch-processing">Batch Processing</h3>
+<p>The matching process can be triggered by a request to the integration service API endpoint</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>API Endpoint</th>
+</tr><tr>
+<td>List of CRNs to Match</td>
+<td>/person/populate-noms-number</td>
+</tr>
+        </table>
+      </div><h3 id="domain-event-processing-not-yet-implemented">Domain Event Processing (Not Yet Implemented)</h3>
+<p>The matching process will be triggered by domain events raised by Delius, once these events are implemented</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>Business Event</th>
+<th>Message Event Type / Filter</th>
+</tr><tr>
+<td>New Sentence Added to Delius</td>
+<td>probation-case.sentence.created</td>
+</tr><tr>
+<td>Sentence Changed in Delius</td>
+<td>probation-case.sentence.amended</td>
+</tr><tr>
+<td>Sentence Moved to New Delius Event</td>
+<td>probation-case.sentence.move</td>
+</tr>
+        </table>
+      </div><h2 id="workflows">Workflows</h2>
+<h3 id="workflows-batch-processing">Batch Processing</h3>
+<p><a href="././img/prison-identifier-and-delius-workflow-id-update.svg" rel="noopener noreferrer"><img src="img/prison-identifier-and-delius-workflow-id-update.svg" alt="Batch Processing Workflow" /></a></p>
+<h2 id="interfaces">Interfaces</h2>
+<h3 id="api-access-control">API Access Control</h3>
+<p>API endpoints are secured by roles supplied by the HMPPS Auth client used in
+the requests</p>
+<div class="table-container">
+        <table>
+          <tr>
+<th>API Endpoint</th>
+<th>Required Role</th>
+</tr><tr>
+<td>All</td>
+<td>ROLE_PROBATION_API__PRISON_IDENTIFIER__UPDATE</td>
+</tr>
+        </table>
+      </div><h2 id="concepts">Concepts</h2>
+<h3 id="person-record-matching-process">Person Record Matching Process</h3>
+<p>The logic used to match NOMIS person records to Delius person records uses the basic personal details, any additional identifiers and the recorded sentence dates.</p>
+<p><a href="././img/prison-identifier-and-delius-match-process.svg" rel="noopener noreferrer"><img src="img/prison-identifier-and-delius-match-process.svg" alt="Matching Process" /></a></p>
 
             
           </main>
