@@ -30,8 +30,8 @@ jobs:
           HOST: ${{ secrets.SCHEMA_SPY_HOST }}
           PORT: ${{ secrets.SCHEMA_SPY_PORT }}
           SCHEMA: ${{ secrets.SCHEMA_SPY_SCHEMA }}
-          USERNAME: ${{ secrets.SCHEMA_SPY_USERNAME }}
-          PASSWORD: ${{ secrets.SCHEMA_SPY_PASSWORD }}
+          DB_USERNAME: ${{ secrets.SCHEMA_SPY_USERNAME }}
+          DB_PASSWORD: ${{ secrets.SCHEMA_SPY_PASSWORD }}
 
       - name: Publish HTML report
         uses: JamesIves/github-pages-deploy-action@65b5dfd4f5bcd3a7403bbc2959c144256167464e # v4.5.0

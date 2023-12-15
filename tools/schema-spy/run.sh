@@ -21,8 +21,8 @@ kubectl run "$pod_name" \
           "stdin": true,
           "tty": true,
           "securityContext": { "runAsNonRoot": true, "runAsUser": 1000 },
-          "resources": { "limits": { "cpu": "2000m", "memory": "8000Mi" } },
-          "env": [ { "name": "JAVA_TOOL_OPTIONS", "value": "-Xss1g -XX:MaxRAMPercentage=75" } ]
+          "resources": { "limits": { "cpu": "2000m", "memory": "2000Mi" } },
+          "env": [ { "name": "JAVA_TOOL_OPTIONS", "value": "-XX:MaxRAMPercentage=75" } ]
         }
       ]
     }
@@ -34,7 +34,17 @@ kubectl cp ./tools/schema-spy/ojdbc10.jar "$pod_name:/drivers_inc/ojdbc10.jar"
 
 # Generate report
 excludes='^(^Z.*$|^.*[0-9]$|^PRF_.*$|^PERF_.*$|^MIS_.*$|^.*_MV$|^.*\\$.*$|^.*TRAINING.*$|^PDT_THREAD$|^CHANGE_CAPTURE$)$'
-kubectl exec "$pod_name" -- /usr/local/bin/schemaspy -db "${DB}" -host "${HOST}" -port "${PORT}" -s "${SCHEMA}" -u "${USERNAME}" -p "${PASSWORD}" -cat "${SCHEMA}" -t orathin-service -I "$excludes" -vizjs -norows -noviews
+kubectl exec "$pod_name" -- /usr/local/bin/schemaspy \
+  -host "${HOST}" \
+  -port "${PORT}" \
+  -db "${DB}" \
+  -s "${SCHEMA}" \
+  -cat "${SCHEMA}" \
+  -u "${DB_USERNAME}" \
+  -p "${DB_PASSWORD}" \
+  -t orathin-service \
+  -I "$excludes" \
+  -norows -noviews -degree 1
 
 # Download report
 kubectl cp "$pod_name:/output" schema-spy-report
