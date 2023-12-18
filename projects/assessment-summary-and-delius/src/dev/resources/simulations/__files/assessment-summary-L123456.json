@@ -40,14 +40,14 @@
       "riskPublicCommunity": null,
       "riskChildrenCustody": "Low",
       "weightedScores": {
-        "accommodationWeightedScore": 3,
-        "eteWeightedScore": 3,
-        "relationshipsWeightedScore": 2,
-        "lifestyleWeightedScore": 3,
-        "drugWeightedScore": 0,
-        "alcoholWeightedScore": 3,
-        "thinkingWeightedScore": 5,
-        "attitudesWeightedScore": 4
+        "accommodationWeightedScore": 1,
+        "eteWeightedScore": 2,
+        "relationshipsWeightedScore": 3,
+        "lifestyleWeightedScore": 4,
+        "drugWeightedScore": 5,
+        "alcoholWeightedScore": 6,
+        "thinkingWeightedScore": 7,
+        "attitudesWeightedScore": 8
       },
       "furtherInformation": {
         "totWeightedScore": 94,

@@ -29,6 +29,19 @@
     {
       "request": {
         "method": "GET",
+        "urlPath": "/eor/oasys/ass/asssumm/M123456/ALLOW/100835871/COMPLETE"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "assessment-summary-M123456.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPath": "/eor/oasys/ass/asssumm/H123456/ALLOW/10078385/COMPLETE"
       },
       "response": {

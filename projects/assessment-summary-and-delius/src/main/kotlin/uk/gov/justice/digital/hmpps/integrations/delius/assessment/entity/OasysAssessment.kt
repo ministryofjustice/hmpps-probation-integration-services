@@ -3,12 +3,14 @@ package uk.gov.justice.digital.hmpps.integrations.delius.assessment.entity
 import jakarta.persistence.*
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Court
 import uk.gov.justice.digital.hmpps.integrations.delius.court.entity.Offence
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.AuditableEntity
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
+import uk.gov.justice.digital.hmpps.integrations.oasys.WeightedScores
 import java.io.Serializable
 import java.time.LocalDate
 
@@ -94,8 +96,8 @@ class OasysAssessment(
     var sentencePlans: List<SentencePlan> = listOf()
         private set
 
-    fun withSectionScore(level: Long, score: Long): OasysAssessment {
-        sectionScores = sectionScores + SectionScore(SectionScoreId(this, level), score)
+    fun withSectionScores(weightedScores: WeightedScores): OasysAssessment {
+        sectionScores = weightedScores.asSectionScores().map { SectionScore(SectionScoreId(this, it.first), it.second) }
         return this
     }
 
@@ -108,6 +110,17 @@ class OasysAssessment(
         val RISK_FLAGS_PATTERN: Regex = "^([VvHhMmLlNn],){8}[VvHhMmLlNn]$".toRegex()
         val CONCERN_FLAGS_PATTERN: Regex = "^((NO|YES|DK),){7}(NO|YES|DK)$".toRegex()
     }
+
+    private fun WeightedScores.asSectionScores(): List<Pair<Long, Long>> = listOfNotNull(
+        accommodationWeightedScore?.let { 3L to it },
+        eteWeightedScore?.let { 4L to it },
+        relationshipsWeightedScore?.let { 6L to it },
+        lifestyleWeightedScore?.let { 7L to it },
+        drugWeightedScore?.let { 8L to it },
+        alcoholWeightedScore?.let { 9L to it },
+        thinkingWeightedScore?.let { 11L to it },
+        attitudesWeightedScore?.let { 12L to it },
+    )
 }
 
 @Entity
@@ -141,5 +154,6 @@ class SectionScoreId(
 ) : Serializable
 
 interface OasysAssessmentRepository : JpaRepository<OasysAssessment, Long> {
+    @EntityGraph(attributePaths = ["sectionScores"])
     fun findByOasysId(oasysId: String): OasysAssessment?
 }

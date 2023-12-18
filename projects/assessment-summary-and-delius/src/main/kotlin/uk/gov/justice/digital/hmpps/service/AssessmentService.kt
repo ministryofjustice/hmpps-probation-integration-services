@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.EventRepos
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.getByNumber
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
+import uk.gov.justice.digital.hmpps.integrations.oasys.Objective
 import java.time.LocalDate
 
 @Service
@@ -72,7 +73,7 @@ class AssessmentService(
             ogpOvp.ogp2Year,
             ogpOvp.ovp1Year,
             ogpOvp.ovp2Year,
-        )
+        ).withSectionScores(weightedScores)
         sentencePlan?.objectives?.map { it.plan(person, assessment) }
             ?.forEach { assessment.withSentencePlan(it) }
         return assessment
@@ -86,12 +87,22 @@ private fun AssessmentSummary.contactDetail() =
         "Reason for Assessment: ${furtherInformation.pOAssessmentDesc}"
     )
 
-fun uk.gov.justice.digital.hmpps.integrations.oasys.Objective.plan(
+fun Objective.plan(
     person: Person,
     assessment: OasysAssessment
-): SentencePlan = SentencePlan(
-    person,
-    assessment,
-    objectiveSequence,
-    objectiveCode
-)
+): SentencePlan {
+    val sp = SentencePlan(
+        person,
+        assessment,
+        objectiveSequence,
+        objectiveCode
+    )
+    criminogenicNeeds.forEachIndexed { index, need -> sp.withNeed(index.toLong(), need.criminogenicNeed) }
+    actions.forEachIndexed { index, action ->
+        sp.withWorkSummary(index.toLong(), action.action)
+        action.actionComment?.also {
+            sp.withText(index.toLong(), it)
+        }
+    }
+    return sp
+}

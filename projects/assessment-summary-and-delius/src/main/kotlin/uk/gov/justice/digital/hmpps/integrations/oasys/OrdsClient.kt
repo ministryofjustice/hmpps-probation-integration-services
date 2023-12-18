@@ -63,7 +63,13 @@ data class AssessmentSummary(
         currentConcernsRiskOfSelfHarm,
         currentConcernsRiskOfSuicide,
         currentConcernsVulnerablity
-    ).map { it?.uppercase() ?: "DK" }
+    ).map {
+        when (it?.first()?.uppercase()) {
+            "Y" -> "YES"
+            "N" -> "NO"
+            else -> "DK"
+        }
+    }
 }
 
 data class WeightedScores(
@@ -110,7 +116,18 @@ data class SentencePlan(
 data class Objective(
     val objectiveCode: String,
     val objectiveMeasure: String,
-    val objectiveSequence: Long
+    val objectiveSequence: Long,
+    val criminogenicNeeds: List<Need>,
+    val actions: List<Action>
+)
+
+data class Need(
+    val criminogenicNeed: String
+)
+
+data class Action(
+    val action: String,
+    val actionComment: String?
 )
 
 data class AssessmentSummaries(
