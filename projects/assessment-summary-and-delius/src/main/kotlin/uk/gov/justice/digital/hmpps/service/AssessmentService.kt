@@ -42,11 +42,11 @@ class AssessmentService(
         )
 
         previousAssessment?.also(oasysAssessmentRepository::delete)
-        oasysAssessmentRepository.saveAndFlush(summary.oasysAssessment(person, event, contact))
+        oasysAssessmentRepository.save(summary.oasysAssessment(person, event, contact))
     }
 
-    fun AssessmentSummary.oasysAssessment(person: Person, event: Event, contact: Contact): OasysAssessment =
-        OasysAssessment(
+    fun AssessmentSummary.oasysAssessment(person: Person, event: Event, contact: Contact): OasysAssessment {
+        val assessment = OasysAssessment(
             assessmentPk.toString(),
             dateCompleted,
             person,
@@ -72,11 +72,11 @@ class AssessmentService(
             ogpOvp.ogp2Year,
             ogpOvp.ovp1Year,
             ogpOvp.ovp2Year,
-
-            // TODO: check if these fields can be completed or remove
-            null,
-            null
         )
+        sentencePlan?.objectives?.map { it.plan(person, assessment) }
+            ?.forEach { assessment.withSentencePlan(it) }
+        return assessment
+    }
 }
 
 private fun AssessmentSummary.contactDetail() =
@@ -86,6 +86,12 @@ private fun AssessmentSummary.contactDetail() =
         "Reason for Assessment: ${furtherInformation.pOAssessmentDesc}"
     )
 
-fun AssessmentSummary.sentencePlan(): SentencePlan {
-    TODO()
-}
+fun uk.gov.justice.digital.hmpps.integrations.oasys.Objective.plan(
+    person: Person,
+    assessment: OasysAssessment
+): SentencePlan = SentencePlan(
+    person,
+    assessment,
+    objectiveSequence,
+    objectiveCode
+)

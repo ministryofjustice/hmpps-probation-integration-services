@@ -12,6 +12,7 @@ database:
       - oasys_sp_need
       - oasys_sp_text
       - oasys_sp_work_summary
+      - offender
       - registration
       - registration_review
 

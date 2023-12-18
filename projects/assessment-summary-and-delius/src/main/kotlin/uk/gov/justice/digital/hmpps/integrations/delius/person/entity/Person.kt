@@ -3,10 +3,12 @@ package uk.gov.justice.digital.hmpps.integrations.delius.person.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
+import org.springframework.data.jpa.repository.Query
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
-@Immutable
 @Entity
 @Table(name = "offender")
 @SQLRestriction("soft_deleted = 0")
@@ -58,7 +60,32 @@ class PersonManager(
 )
 
 interface PersonRepository : JpaRepository<Person, Long> {
+    @EntityGraph(attributePaths = ["manager"])
     fun findByCrn(crn: String): Person?
+
+    @Query(
+        """
+        select count(r) 
+        from Requirement r
+        where r.person.id = :personId
+        and (r.mainCategory.code = 'RM38'
+            or (r.mainCategory.code = '7' and (r.subCategory.code is null or r.subCategory.code <> 'RS66'))
+            or (r.additionalMainCategory.code in ('RM38', '7')))
+        and r.active = true and r.softDeleted = false
+    """
+    )
+    fun countAccreditedProgrammeRequirements(personId: Long): Int
+
+    @Modifying
+    @Query(
+        """
+        merge into iaps_offender using dual on (offender_id = ?1) 
+        when matched then update set iaps_flag=?2 
+        when not matched then insert(offender_id, iaps_flag) values(?1,?2)
+        """,
+        nativeQuery = true
+    )
+    fun updateIaps(personId: Long, iapsFlagValue: Long = 1)
 }
 
 fun PersonRepository.getByCrn(crn: String) =

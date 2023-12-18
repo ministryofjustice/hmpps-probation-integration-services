@@ -5,12 +5,13 @@ import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.SQLRestriction
 import org.hibernate.type.YesNoConverter
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.AuditableEntity
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.LocalDate
 
 @Entity
@@ -38,14 +39,6 @@ class Registration(
     @ManyToOne
     @JoinColumn(name = "register_type_id")
     val type: RegisterType,
-
-    @ManyToOne
-    @JoinColumn(name = "register_category_id")
-    val category: ReferenceData?,
-
-    @ManyToOne
-    @JoinColumn(name = "register_level_id")
-    val level: ReferenceData?,
 
     var nextReviewDate: LocalDate? = null,
 
@@ -190,10 +183,12 @@ class DeRegistration(
 ) : AuditableEntity()
 
 interface RegistrationRepository : JpaRepository<Registration, Long> {
+    @EntityGraph(attributePaths = ["contact", "type.flag", "type.registrationContactType", "type.reviewContactType", "reviews.contact"])
     fun findByPersonIdAndTypeFlagCode(personId: Long, flagCode: String): List<Registration>
 }
 
 interface RegisterTypeRepository : JpaRepository<RegisterType, Long> {
+    @EntityGraph(attributePaths = ["flag", "registrationContactType", "reviewContactType"])
     fun findByCode(code: String): RegisterType?
 }
 

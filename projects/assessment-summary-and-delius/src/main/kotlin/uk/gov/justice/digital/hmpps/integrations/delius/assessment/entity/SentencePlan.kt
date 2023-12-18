@@ -17,11 +17,11 @@ class SentencePlan(
     @JoinColumn(name = "oasys_assessment_id")
     val assessment: OasysAssessment,
 
-    var objectiveNumber: Long,
+    val objectiveNumber: Long,
     val objective: String,
 
     @Column(columnDefinition = "number")
-    val softDeleted: Boolean,
+    val softDeleted: Boolean = false,
 
     @Version
     @Column(name = "row_version")
@@ -30,7 +30,7 @@ class SentencePlan(
     @Id
     @GeneratedValue(generator = "oasys_sentence_plan_id_seq")
     @Column(name = "oasys_sentence_plan_id")
-    val id: Long
+    val id: Long = 0
 ) {
     @OneToMany(mappedBy = "id.sentencePlan", cascade = [CascadeType.ALL])
     var needs: List<Need> = listOf()

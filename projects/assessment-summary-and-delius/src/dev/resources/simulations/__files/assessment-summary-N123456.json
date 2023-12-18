@@ -41,7 +41,7 @@
       "riskChildrenCustody": null,
       "weightedScores": {
         "accommodationWeightedScore": 3,
-        "eteWeightedScore": null,
+        "eteWeightedScore": 3,
         "relationshipsWeightedScore": 2,
         "lifestyleWeightedScore": 3,
         "drugWeightedScore": 0,
@@ -50,7 +50,7 @@
         "attitudesWeightedScore": 4
       },
       "furtherInformation": {
-        "totWeightedScore": null,
+        "totWeightedScore": 76,
         "pOAssessment": "270",
         "pOAssessmentDesc": "Review",
         "assessorName": "John Smith",

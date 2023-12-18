@@ -4,7 +4,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.RegisterType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Registration
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.service.Risk
 import java.time.LocalDate
 
@@ -28,12 +28,10 @@ object RegistrationGenerator {
         contact: Contact,
         teamId: Long = ProviderGenerator.DEFAULT_TEAM_ID,
         staffId: Long = ProviderGenerator.DEFAULT_STAFF_ID,
-        category: ReferenceData? = null,
-        level: ReferenceData? = null,
         nextReviewDate: LocalDate? = type.reviewPeriod?.let { date.plusMonths(it) },
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Registration(personId, date, contact, teamId, staffId, type, category, level, nextReviewDate, softDeleted, id)
+    ) = Registration(personId, date, contact, teamId, staffId, type, nextReviewDate, softDeleted, id)
 
     fun generateType(
         code: String,

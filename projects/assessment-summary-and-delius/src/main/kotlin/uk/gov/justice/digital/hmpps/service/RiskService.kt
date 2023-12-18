@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.*
-import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReferenceData
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import uk.gov.justice.digital.hmpps.integrations.oasys.AssessmentSummary
 import uk.gov.justice.digital.hmpps.message.AdditionalInformation
 import uk.gov.justice.digital.hmpps.message.HmppsDomainEvent
@@ -37,8 +37,8 @@ class RiskService(
         }
 
         val regEvent: HmppsDomainEvent? = highestRisk?.let { risk ->
-            registrations.firstOrNull { risk == Risk.from(it.type) }?.let { null }
-                ?: createRegistration(person, registrations, risk)
+            val matchingReg = registrations.firstOrNull { risk == Risk.from(it.type) }
+            if (matchingReg == null) createRegistration(person, registrations, risk) else null
         }
 
         person.highestRiskColour = registrations.firstOrNull { !it.deregistered }?.type?.colour
@@ -72,8 +72,6 @@ class RiskService(
                 contact.teamId,
                 contact.staffId,
                 type,
-                null,
-                null,
                 type.reviewPeriod?.let { LocalDate.now().plusMonths(it) }
             ).withReview(reviewContact)
         )
@@ -94,8 +92,6 @@ enum class Risk(val code: String) {
 
 fun Registration.notes(): String = listOfNotNull(
     "Type: ${type.flag.description} - ${type.description}",
-    level?.let { "Level: ${it.description}" },
-    category?.let { "Category: ${it.description}" }
 ).joinToString(System.lineSeparator())
 
 fun Registration.deRegEvent(crn: String): HmppsDomainEvent = HmppsDomainEvent(
@@ -107,9 +103,9 @@ fun Registration.deRegEvent(crn: String): HmppsDomainEvent = HmppsDomainEvent(
         listOfNotNull(
             "registerTypeCode" to type.code,
             "registerTypeDescription" to type.description,
-            "deregistrationId" to deregistration?.id,
-            "deregistrationDate" to deregistration?.date,
-            "createdDateAndTime" to deregistration?.createdDatetime
+            "deregistrationId" to deregistration!!.id,
+            "deregistrationDate" to deregistration!!.date,
+            "createdDateAndTime" to deregistration!!.createdDatetime
         ).toMap().toMutableMap()
     )
 )

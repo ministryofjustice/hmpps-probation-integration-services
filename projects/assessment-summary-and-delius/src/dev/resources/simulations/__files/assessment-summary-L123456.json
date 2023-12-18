@@ -1,12 +1,12 @@
 {
-  "crn": "X510288",
+  "crn": "L123456",
   "assessments": [
     {
-      "assessmentPk": 10078385,
+      "assessmentPk": 10096930,
       "assessmentType": "LAYER3",
-      "dateCompleted": "2023-12-15T08:34:44",
-      "assessorSignedDate": "2023-12-15T08:33:39",
-      "initiationDate": "2023-12-15T07:58:07",
+      "dateCompleted": "2023-12-07T12:22:44",
+      "assessorSignedDate": "2023-12-07T12:16:12",
+      "initiationDate": "2023-12-07T11:49:57",
       "assessmentStatus": "COMPLETE",
       "superStatus": "COMPLETE",
       "laterWIPAssessmentExists": false,
@@ -14,113 +14,78 @@
       "laterSignLockAssessmentExists": false,
       "latestSignLockDate": null,
       "laterPartCompUnsignedAssessmentExists": false,
-      "latestPartCompUnsignedDate": "2023-11-03T09:51:25",
+      "latestPartCompUnsignedDate": null,
       "laterPartCompSignedAssessmentExists": false,
       "latestPartCompSignedDate": null,
       "laterCompleteAssessmentExists": false,
-      "latestCompleteDate": "2023-12-15T08:34:44",
-      "currentConcernsRiskOfSuicide": "Yes",
-      "reviewSpDate": null,
+      "latestCompleteDate": "2023-12-07T12:22:44",
+      "riskChildrenCommunity": null,
+      "currentConcernsCustody": null,
+      "currentConcernsDisruptive": null,
+      "currentConcernsHostel": null,
+      "reviewNum": null,
+      "currentConcernsEscape": null,
       "initialSpDate": null,
-      "reviewNum": 1,
+      "currentConcernsVulnerablity": null,
+      "currentConcernsBreachOfTrust": null,
+      "currentConcernsRiskOfSelfHarm": null,
+      "currentConcernsRiskOfSuicide": null,
+      "reviewSpDate": null,
       "riskPrisonersCustody": "Low",
-      "riskStaffCustody": "Low",
+      "riskStaffCustody": null,
       "riskStaffCommunity": "Low",
-      "riskKnownAdultCustody": "Low",
-      "riskAdultCommunity": "Medium",
+      "riskKnownAdultCustody": null,
+      "riskAdultCommunity": null,
       "riskPublicCustody": "Low",
-      "riskPublicCommunity": "High",
+      "riskPublicCommunity": null,
       "riskChildrenCustody": "Low",
-      "riskChildrenCommunity": "Low",
-      "currentConcernsBreachOfTrust": "Yes",
-      "currentConcernsDisruptive": "Yes",
-      "currentConcernsEscape": "Yes",
-      "currentConcernsVulnerablity": "Yes",
-      "currentConcernsHostel": "No",
-      "currentConcernsCustody": "Yes",
-      "currentConcernsRiskOfSelfHarm": "Yes",
       "weightedScores": {
-        "accommodationWeightedScore": 8,
-        "eteWeightedScore": 7,
-        "relationshipsWeightedScore": 4,
-        "lifestyleWeightedScore": 5,
-        "drugWeightedScore": 4,
-        "alcoholWeightedScore": 0,
+        "accommodationWeightedScore": 3,
+        "eteWeightedScore": 3,
+        "relationshipsWeightedScore": 2,
+        "lifestyleWeightedScore": 3,
+        "drugWeightedScore": 0,
+        "alcoholWeightedScore": 3,
         "thinkingWeightedScore": 5,
-        "attitudesWeightedScore": 5
+        "attitudesWeightedScore": 4
       },
       "furtherInformation": {
-        "totWeightedScore": 108,
+        "totWeightedScore": 94,
         "pOAssessment": "270",
         "pOAssessmentDesc": "Review",
-        "assessorName": "LevelTwo CentralSupport",
-        "ogrs1Year": 43,
-        "ogrs2Year": 61,
+        "assessorName": "John Smith",
+        "ogrs1Year": 11,
+        "ogrs2Year": 20,
         "reviewTerm": "N",
         "cmsEventNumber": 1,
-        "courtCode": "LVRPCC",
-        "courtType": "CC",
-        "courtName": "Liverpool Crown Court"
+        "courtCode": "CRT150",
+        "courtType": "MC",
+        "courtName": "Downpatrick Magistrate Court (DPKMC)"
       },
       "offender": {
-        "riskToOthers": "H",
-        "offenderPk": 7374816
+        "riskToOthers": "N",
+        "offenderPk": 7843827
       },
       "ogpOvp": {
-        "ogpNC": "N",
-        "ovpNC": "N",
-        "ogp1Year": 55,
-        "ogp2Year": 69,
-        "ovp1Year": 22,
-        "ovp2Year": 35,
-        "ogrs3RiskRecon": "M",
-        "ogpRisk": "H",
-        "ovpRisk": "M"
+        "ogpNC": "Y",
+        "ovpNC": "Y",
+        "ogp1Year": null,
+        "ogp2Year": null,
+        "ovp1Year": null,
+        "ovp2Year": null,
+        "ogrs3RiskRecon": "L",
+        "ogpRisk": null,
+        "ovpRisk": null
       },
       "basicSentencePlan": null,
       "offences": [
         {
-          "offenceCode": "008",
-          "offenceSubcode": "57",
+          "offenceCode": "804",
+          "offenceSubcode": "00",
           "additionalOffence": "N"
         }
       ],
-      "sentencePlan": {
-        "objectives": [
-          {
-            "objectiveCode": "Increased knowledge of physical/ psychological/ emotional self harm linked to drug use",
-            "objectiveMeasure": "RII",
-            "objectiveSequence": 1,
-            "criminogenicNeeds": [
-              {
-                "criminogenicNeed": "IHD"
-              }
-            ],
-            "actions": [
-              {
-                "action": "VI9",
-                "actionComment": null
-              }
-            ]
-          },
-          {
-            "objectiveCode": "Improve employment related skills",
-            "objectiveMeasure": "RII",
-            "objectiveSequence": 2,
-            "criminogenicNeeds": [
-              {
-                "criminogenicNeed": "I4"
-              }
-            ],
-            "actions": [
-              {
-                "action": "VIII1",
-                "actionComment": null
-              }
-            ]
-          }
-        ]
-      }
+      "sentencePlan": null
     }
   ]
 }

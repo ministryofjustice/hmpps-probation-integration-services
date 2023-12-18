@@ -33,6 +33,9 @@ class AssessmentSubmitted(
             riskService.recordRisk(person, summary)
         }
 
+        if (personRepository.countAccreditedProgrammeRequirements(person.id) > 0) {
+            personRepository.updateIaps(person.id)
+        }
         domainEventService.publishEvents(regEvents)
     }
 }

@@ -40,7 +40,7 @@ data class AssessmentSummary(
     val ogpOvp: OgpOvp = OgpOvp(),
     val offences: List<Offence> = arrayListOf(),
     val basicSentencePlan: String? = null,
-    val sentencePlan: String? = null
+    val sentencePlan: SentencePlan? = null
 ) {
     val riskFlags: List<String> = listOf(
         riskAdultCommunity,
@@ -92,21 +92,25 @@ data class FurtherInformation(
 )
 
 data class OgpOvp(
-    val ogpNC: String? = null,
-    val ovpNC: String? = null,
     val ogp1Year: Long? = null,
     val ogp2Year: Long? = null,
     val ovp1Year: Long? = null,
     val ovp2Year: Long? = null,
-    val ogrs3RiskRecon: String? = null,
-    val ogpRisk: Long? = null,
-    val ovpRisk: Long? = null
 )
 
 data class Offence(
     val offenceCode: String? = null,
-    val offenceSubcode: String? = null,
-    val additionalOffence: String? = null
+    val offenceSubcode: String? = null
+)
+
+data class SentencePlan(
+    val objectives: List<Objective> = listOf()
+)
+
+data class Objective(
+    val objectiveCode: String,
+    val objectiveMeasure: String,
+    val objectiveSequence: Long
 )
 
 data class AssessmentSummaries(

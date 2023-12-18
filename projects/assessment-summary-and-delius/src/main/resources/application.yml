@@ -57,8 +57,6 @@ integrations:
     client-id: assessment-summary-and-delius
     client-secret: assessment-summary-and-delius
 
-wiremock.port: 60990
-
 logging.level:
   uk.gov.justice.digital.hmpps: DEBUG
   org.hibernate.tool.schema: ERROR

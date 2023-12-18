@@ -7,3 +7,8 @@ generic-service:
   env:
     SENTRY_ENVIRONMENT: prod
     INTEGRATIONS_ORDS_URL: https://bridge-oasys.az.justice.gov.uk/eor/oasys
+    FLIPT_URL: http://feature-flags.hmpps-probation-integration.svc.cluster.local
+
+  namespace_secrets:
+    flipt-client:
+      FLIPT_TOKEN: TOKEN

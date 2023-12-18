@@ -29,7 +29,7 @@ class OasysAssessment(
 
     val eventNumber: String,
 
-    @OneToOne(cascade = [CascadeType.ALL])
+    @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "contact_id")
     val contact: Contact,
 
@@ -67,9 +67,6 @@ class OasysAssessment(
     val ogpScore2: Long?,
     val ovpScore1: Long?,
     val ovpScore2: Long?,
-
-    val objectiveStatus: String?,
-    val layer1Objective: String?,
 
     @Column(columnDefinition = "number")
     val softDeleted: Boolean = false,

@@ -1,8 +1,7 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.PersonManager
+import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.*
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 
 object PersonGenerator {
     val NO_RISK = generate("N123456")
@@ -34,4 +33,14 @@ object PersonGenerator {
         softDeleted: Boolean = false,
         id: Long = IdGenerator.getAndIncrement()
     ) = Event(number, person.id, active, softDeleted, id)
+
+    fun generateRequirement(
+        person: Person,
+        mainCategory: RequirementMainCategory = ReferenceDataGenerator.REQ_MAIN_CATS.first(),
+        additionalMainCategory: RequirementAdditionalMainCategory? = null,
+        subCategory: ReferenceData? = null,
+        active: Boolean = true,
+        softDeleted: Boolean = false,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Requirement(person, mainCategory, additionalMainCategory, subCategory, active, softDeleted, id)
 }
