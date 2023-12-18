@@ -1,0 +1,91 @@
+{
+  "crn": "N123456",
+  "assessments": [
+    {
+      "assessmentPk": 10071389,
+      "assessmentType": "LAYER3",
+      "dateCompleted": "2023-12-07T12:22:44",
+      "assessorSignedDate": "2023-12-07T12:16:12",
+      "initiationDate": "2023-12-07T11:49:57",
+      "assessmentStatus": "COMPLETE",
+      "superStatus": "COMPLETE",
+      "laterWIPAssessmentExists": false,
+      "latestWIPDate": null,
+      "laterSignLockAssessmentExists": false,
+      "latestSignLockDate": null,
+      "laterPartCompUnsignedAssessmentExists": false,
+      "latestPartCompUnsignedDate": null,
+      "laterPartCompSignedAssessmentExists": false,
+      "latestPartCompSignedDate": null,
+      "laterCompleteAssessmentExists": false,
+      "latestCompleteDate": "2023-12-07T12:22:44",
+      "riskChildrenCommunity": null,
+      "currentConcernsCustody": null,
+      "currentConcernsDisruptive": null,
+      "currentConcernsHostel": null,
+      "reviewNum": null,
+      "currentConcernsEscape": null,
+      "initialSpDate": null,
+      "currentConcernsVulnerablity": null,
+      "currentConcernsBreachOfTrust": null,
+      "currentConcernsRiskOfSelfHarm": null,
+      "currentConcernsRiskOfSuicide": null,
+      "reviewSpDate": null,
+      "riskPrisonersCustody": null,
+      "riskStaffCustody": null,
+      "riskStaffCommunity": null,
+      "riskKnownAdultCustody": null,
+      "riskAdultCommunity": null,
+      "riskPublicCustody": null,
+      "riskPublicCommunity": null,
+      "riskChildrenCustody": null,
+      "weightedScores": {
+        "accommodationWeightedScore": 3,
+        "eteWeightedScore": 3,
+        "relationshipsWeightedScore": 2,
+        "lifestyleWeightedScore": 3,
+        "drugWeightedScore": 0,
+        "alcoholWeightedScore": 3,
+        "thinkingWeightedScore": 5,
+        "attitudesWeightedScore": 4
+      },
+      "furtherInformation": {
+        "totWeightedScore": 76,
+        "pOAssessment": "270",
+        "pOAssessmentDesc": "Review",
+        "assessorName": "John Smith",
+        "ogrs1Year": 11,
+        "ogrs2Year": 20,
+        "reviewTerm": "N",
+        "cmsEventNumber": 1,
+        "courtCode": "CRT150",
+        "courtType": "MC",
+        "courtName": "Downpatrick Magistrate Court (DPKMC)"
+      },
+      "offender": {
+        "riskToOthers": "N",
+        "offenderPk": 7843827
+      },
+      "ogpOvp": {
+        "ogpNC": "Y",
+        "ovpNC": "Y",
+        "ogp1Year": null,
+        "ogp2Year": null,
+        "ovp1Year": null,
+        "ovp2Year": null,
+        "ogrs3RiskRecon": "L",
+        "ogpRisk": null,
+        "ovpRisk": null
+      },
+      "basicSentencePlan": null,
+      "offences": [
+        {
+          "offenceCode": "804",
+          "offenceSubcode": "00",
+          "additionalOffence": "N"
+        }
+      ],
+      "sentencePlan": null
+    }
+  ]
+}

@@ -1,13 +1,13 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/auth/oauth/token"
+    "urlPath": "/eor/oasys/oauth/token"
   },
   "response": {
     "headers": {
       "Content-Type": "application/json"
     },
     "status": 200,
-    "bodyFileName": "hmpps-auth-token-body.json"
+    "bodyFileName": "oasys-ords-auth-token-body.json"
   }
 }
