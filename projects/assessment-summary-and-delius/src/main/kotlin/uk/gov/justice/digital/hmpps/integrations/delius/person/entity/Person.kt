@@ -79,9 +79,6 @@ interface PersonRepository : JpaRepository<Person, Long> {
     )
     fun countAccreditedProgrammeRequirements(personId: Long): Int
 
-    @Query("select r from Requirement r")
-    fun findAllRequirements(): List<Requirement>
-
     @Modifying
     @Query(
         """

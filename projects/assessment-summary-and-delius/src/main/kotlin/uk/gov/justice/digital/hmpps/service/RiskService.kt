@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.datetime.DeliusDateFormatter
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactType
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.*
@@ -48,10 +49,16 @@ class RiskService(
 
     private fun createRegistration(person: Person, registrations: List<Registration>, risk: Risk): HmppsDomainEvent {
         val type = registerTypeRepository.getByCode(risk.code)
+        val nextReviewDate = type.reviewPeriod?.let { LocalDate.now().plusMonths(it) }
+        val notes = listOfNotNull(
+            "Type: ${type.flag.description} - ${type.description}",
+            nextReviewDate?.let { "Next Review Date: ${DeliusDateFormatter.format(it)}" }
+        ).joinToString(System.lineSeparator())
+
         val contact: Contact = contactService.createContact(
             ContactDetail(
                 ContactType.Code.REGISTRATION,
-                notes = "Type: ${type.flag.description} - ${type.description}",
+                notes = notes,
                 contactType = type.registrationContactType
             ),
             person
@@ -59,7 +66,7 @@ class RiskService(
         val reviewContact: Contact = contactService.createContact(
             ContactDetail(
                 ContactType.Code.REGISTRATION_REVIEW,
-                notes = "Type: ${type.flag.description} - ${type.description}",
+                notes = notes,
                 contactType = type.reviewContactType
             ),
             person
@@ -72,7 +79,7 @@ class RiskService(
                 contact.teamId,
                 contact.staffId,
                 type,
-                type.reviewPeriod?.let { LocalDate.now().plusMonths(it) }
+                nextReviewDate
             ).withReview(reviewContact)
         )
         registrations.addLast(registration)
@@ -92,6 +99,7 @@ enum class Risk(val code: String) {
 
 fun Registration.notes(): String = listOfNotNull(
     "Type: ${type.flag.description} - ${type.description}",
+    nextReviewDate?.let { "Next Review Date: ${DeliusDateFormatter.format(it)}" }
 ).joinToString(System.lineSeparator())
 
 fun Registration.deRegEvent(crn: String): HmppsDomainEvent = HmppsDomainEvent(
