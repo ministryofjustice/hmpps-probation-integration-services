@@ -98,9 +98,9 @@ jobs:
         run: |
           deployments=$(kubectl get deployments -o jsonpath='{.items[*].metadata.name}')
           for deployment in $deployments; do
-            if [ "$deployment" != 'hmpps-auth-and-delius' ] 
-            && [ "$deployment" != 'domain-events-and-delius' ] 
-            && [ "$deployment" != 'offender-events-and-delius' ]; then
+            if [ "$deployment" != 'hmpps-auth-and-delius' ] && \
+               [ "$deployment" != 'domain-events-and-delius' ] && \
+               [ "$deployment" != 'offender-events-and-delius' ]; then
               kubectl scale deploy "$deployment" --replicas "$replicas"
             fi
           done
