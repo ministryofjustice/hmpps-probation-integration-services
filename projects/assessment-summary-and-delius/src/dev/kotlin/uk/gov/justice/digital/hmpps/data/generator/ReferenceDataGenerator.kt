@@ -21,7 +21,7 @@ object ReferenceDataGenerator {
     val DEFAULT_FLAG = generateReferenceData("1", dataset = FLAG_DATASET)
     val OFFENCES = listOf("80400", "00857").map { generateOffence(it) }
     val COURTS = listOf("CRT150", "LVRPCC").map { generateCourt(it) }
-    val REQ_MAIN_CATS = listOf("7", "RM38").map { generateReqMainCat(it) }
+    val REQ_MAIN_CATS = listOf("RM38").map { generateReqMainCat(it) }
 
     fun generateReferenceData(
         code: String,
