@@ -1062,8 +1062,6 @@
     "sorted": "boolean",
     "unsorted": "boolean"
   },
-  "first": "boolean",
-  "last": "boolean",
   "numberOfElements": "integer",
   "pageable": {
     "offset": "integer",
@@ -1072,11 +1070,13 @@
       "sorted": "boolean",
       "unsorted": "boolean"
     },
-    "unpaged": "boolean",
-    "paged": "boolean",
     "pageNumber": "integer",
-    "pageSize": "integer"
+    "pageSize": "integer",
+    "unpaged": "boolean",
+    "paged": "boolean"
   },
+  "first": "boolean",
+  "last": "boolean",
   "empty": "boolean"
 }</code></pre>
 
@@ -2169,26 +2169,6 @@
 </tr>
 
 <tr>
-<td>first</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>last</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
 <td>numberOfElements</td>
 <td>integer</td>
 <td>false</td>
@@ -2205,6 +2185,26 @@
 <td></td>
 <td>
   <a href='#schema-pageableobject'>PageableObject</a>
+</td>
+</tr>
+
+<tr>
+<td>first</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>last</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
 </td>
 </tr>
 
@@ -2251,26 +2251,6 @@
 </tr>
 
 <tr>
-<td>unpaged</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
-<td>paged</td>
-<td>boolean</td>
-<td>false</td>
-<td></td>
-<td>
-  
-</td>
-</tr>
-
-<tr>
 <td>pageNumber</td>
 <td>integer</td>
 <td>false</td>
@@ -2283,6 +2263,26 @@
 <tr>
 <td>pageSize</td>
 <td>integer</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>unpaged</td>
+<td>boolean</td>
+<td>false</td>
+<td></td>
+<td>
+  
+</td>
+</tr>
+
+<tr>
+<td>paged</td>
+<td>boolean</td>
 <td>false</td>
 <td></td>
 <td>
