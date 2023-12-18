@@ -89,7 +89,8 @@ internal class IntegrationTest {
             )
         assertThat(prevRegs.size, equalTo(1))
 
-        channelManager.getChannel(queueName).publishAndWait(prepNotification(message, wireMockServer.port()), Duration.ofMinutes(3))
+        channelManager.getChannel(queueName)
+            .publishAndWait(prepNotification(message, wireMockServer.port()), Duration.ofMinutes(3))
 
         val person = personRepository.getByCrn(PersonGenerator.LOW_RISK.crn)
         assertThat(person.highestRiskColour, equalTo("Green"))
