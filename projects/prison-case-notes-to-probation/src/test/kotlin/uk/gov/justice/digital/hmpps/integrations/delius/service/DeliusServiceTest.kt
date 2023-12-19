@@ -1,9 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.service
 
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.startsWith
-import org.hamcrest.Matchers.stringContainsInOrder
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -11,25 +9,16 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentCaptor
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.times
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
-import uk.gov.justice.digital.hmpps.data.generator.CaseNoteGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CaseNoteNomisTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CaseNoteTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OffenderGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PrisonCaseNoteGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ProbationAreaGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
+import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteNomisType
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
 import uk.gov.justice.digital.hmpps.integrations.delius.model.CaseNoteRelatedIds
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteNomisTypeRepository
@@ -37,8 +26,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteRepos
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.CaseNoteTypeRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.OffenderRepository
 import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
-import java.util.Optional
-import java.util.Random
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 class DeliusServiceTest {
@@ -64,6 +52,9 @@ class DeliusServiceTest {
     @Mock
     lateinit var caseNoteRelatedService: CaseNoteRelatedService
 
+    @Mock
+    lateinit var featureFlags: FeatureFlags
+
     @InjectMocks
     lateinit var deliusService: DeliusService
 
@@ -83,7 +74,7 @@ class DeliusServiceTest {
 
         val caseNoteCaptor = ArgumentCaptor.forClass(CaseNote::class.java)
 
-        verify(caseNoteRepository, Mockito.times(1)).save(caseNoteCaptor.capture())
+        verify(caseNoteRepository, times(1)).save(caseNoteCaptor.capture())
 
         val saved = caseNoteCaptor.value
         assertThat(
@@ -128,7 +119,7 @@ class DeliusServiceTest {
 
         val caseNoteCaptor = ArgumentCaptor.forClass(CaseNote::class.java)
 
-        verify(caseNoteRepository, Mockito.times(1)).save(caseNoteCaptor.capture())
+        verify(caseNoteRepository, times(1)).save(caseNoteCaptor.capture())
 
         val saved = caseNoteCaptor.value
         assertThat(saved.notes, startsWith("${deliusCaseNote.body.type} ${deliusCaseNote.body.subType}"))
@@ -163,7 +154,7 @@ class DeliusServiceTest {
 
         val caseNoteCaptor = ArgumentCaptor.forClass(CaseNote::class.java)
 
-        verify(caseNoteRepository, Mockito.times(1)).save(caseNoteCaptor.capture())
+        verify(caseNoteRepository, times(1)).save(caseNoteCaptor.capture())
 
         val saved = caseNoteCaptor.value
         assertThat(saved.notes, startsWith("${deliusCaseNote.body.type} ${deliusCaseNote.body.subType}"))
@@ -223,7 +214,7 @@ class DeliusServiceTest {
 
         val caseNoteCaptor = ArgumentCaptor.forClass(CaseNote::class.java)
 
-        verify(caseNoteRepository, Mockito.times(1)).save(caseNoteCaptor.capture())
+        verify(caseNoteRepository, times(1)).save(caseNoteCaptor.capture())
 
         val saved = caseNoteCaptor.value
         assertThat(saved.notes, startsWith("${deliusCaseNote.body.type} ${deliusCaseNote.body.subType}"))
@@ -246,7 +237,7 @@ class DeliusServiceTest {
 
         val caseNoteCaptor = ArgumentCaptor.forClass(CaseNote::class.java)
 
-        verify(caseNoteRepository, Mockito.times(1)).save(caseNoteCaptor.capture())
+        verify(caseNoteRepository, times(1)).save(caseNoteCaptor.capture())
 
         val saved = caseNoteCaptor.value
         assertThat(
@@ -255,5 +246,61 @@ class DeliusServiceTest {
         )
 
         assertThat(caseNote.notes.length, equalTo(saved.notes.length))
+    }
+
+    @Test
+    fun `sets description for new case note with default type`() {
+        givenNewCaseNote()
+        whenever(featureFlags.enabled("case-note-description")).thenReturn(true)
+
+        deliusService.mergeCaseNote(deliusCaseNote)
+
+        verify(caseNoteRepository).save(check {
+            assertThat(it.description, equalTo("NOMIS Case Note - ${deliusCaseNote.body.type} - ${deliusCaseNote.body.subType}"))
+        })
+    }
+
+    @Test
+    fun `does not update description for existing case note`() {
+        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(caseNote)
+
+        deliusService.mergeCaseNote(deliusCaseNote)
+
+        verify(caseNoteRepository).save(check { assertThat(it.description, equalTo(null)) })
+    }
+
+    @Test
+    fun `does not set description for new case note of known type`() {
+        givenNewCaseNote(Optional.of(CaseNoteNomisTypeGenerator.NEG))
+        whenever(featureFlags.enabled("case-note-description")).thenReturn(true)
+
+        deliusService.mergeCaseNote(deliusCaseNote)
+
+        verify(caseNoteRepository).save(check { assertThat(it.description, equalTo(null)) })
+    }
+
+    @Test
+    fun `does not set description when feature flag is disabled`() {
+        givenNewCaseNote()
+        whenever(featureFlags.enabled("case-note-description")).thenReturn(false)
+
+        deliusService.mergeCaseNote(deliusCaseNote)
+
+        verify(caseNoteRepository).save(check { assertThat(it.description, equalTo(null)) })
+    }
+
+    private fun givenNewCaseNote(type: Optional<CaseNoteNomisType> = Optional.empty()) {
+        val offender = OffenderGenerator.DEFAULT
+        whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
+        whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(type)
+        if (type.isEmpty) {
+            whenever(caseNoteTypeRepository.findByCode(CaseNoteType.DEFAULT_CODE)).thenReturn(CaseNoteTypeGenerator.DEFAULT)
+        }
+        whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId))
+            .thenReturn(offender)
+        whenever(assignmentService.findAssignment(deliusCaseNote.body.establishmentCode, deliusCaseNote.body.staffName))
+            .thenReturn(Triple(probationArea.id, team.id, staff.id))
+        whenever(caseNoteRelatedService.findRelatedCaseNoteIds(offender.id, deliusCaseNote.body.typeLookup()))
+            .thenReturn(CaseNoteRelatedIds())
     }
 }

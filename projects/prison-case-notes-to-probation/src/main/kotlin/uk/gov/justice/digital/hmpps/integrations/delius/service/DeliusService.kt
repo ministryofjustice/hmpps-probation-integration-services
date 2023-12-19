@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode.CASE_NOTES_MERGE
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNote
 import uk.gov.justice.digital.hmpps.integrations.delius.entity.CaseNoteType
@@ -27,7 +28,8 @@ class DeliusService(
     private val caseNoteTypeRepository: CaseNoteTypeRepository,
     private val offenderRepository: OffenderRepository,
     private val assignmentService: AssignmentService,
-    private val relatedService: CaseNoteRelatedService
+    private val relatedService: CaseNoteRelatedService,
+    private val featureFlags: FeatureFlags
 ) : AuditableService(auditedInteractionService) {
     @Transactional
     fun mergeCaseNote(@Valid caseNote: DeliusCaseNote) = audit(CASE_NOTES_MERGE) {
@@ -66,6 +68,10 @@ class DeliusService(
                     ?: throw NotFoundException("Case note type ${body.typeLookup()} not found and no default type is set")
             }
 
+        val description = if (featureFlags.enabled("case-note-description") && caseNoteType.code == CaseNoteType.DEFAULT_CODE) {
+            "NOMIS Case Note - ${body.type} - ${body.subType}"
+        } else null
+
         val offender = offenderRepository.findByNomsIdAndSoftDeletedIsFalse(header.nomisId)
             ?: throw OffenderNotFoundException(header.nomisId)
 
@@ -79,6 +85,7 @@ class DeliusService(
             nsiId = relatedIds.nsiId,
             type = caseNoteType,
             nomisId = header.noteId,
+            description = description,
             notes = body.notes(),
             date = body.contactTimeStamp,
             startTime = body.contactTimeStamp,
