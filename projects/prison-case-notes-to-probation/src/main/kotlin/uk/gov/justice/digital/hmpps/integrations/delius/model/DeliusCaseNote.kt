@@ -34,7 +34,11 @@ data class CaseNoteBody(
 
     fun description(caseNoteType: CaseNoteType): String? {
         return if (typeLookup().isAlertType()) {
-            "NOMIS ${if (content.length > 192) { content.take(190) + " ~" } else content.take(192)}"
+            "NOMIS ${
+                if (content.length > 192) {
+                    content.take(190) + " ~"
+                } else content.take(192)
+            }"
         } else if (caseNoteType.code == CaseNoteType.DEFAULT_CODE) {
             "NOMIS Case Note - $type - $subType"
         } else {

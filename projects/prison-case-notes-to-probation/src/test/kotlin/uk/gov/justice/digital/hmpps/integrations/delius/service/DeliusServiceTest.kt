@@ -203,7 +203,9 @@ class DeliusServiceTest {
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(Optional.empty())
         whenever(caseNoteTypeRepository.findByCode(CaseNoteType.DEFAULT_CODE)).thenReturn(CaseNoteTypeGenerator.DEFAULT)
-        whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId)).thenReturn(offender)
+        whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId)).thenReturn(
+            offender
+        )
         whenever(assignmentService.findAssignment(deliusCaseNote.body.establishmentCode, deliusCaseNote.body.staffName))
             .thenReturn(Triple(probationArea.id, team.id, staff.id))
         whenever(
@@ -259,7 +261,10 @@ class DeliusServiceTest {
         deliusService.mergeCaseNote(deliusCaseNote)
 
         verify(caseNoteRepository).save(check {
-            assertThat(it.description, equalTo("NOMIS Case Note - ${deliusCaseNote.body.type} - ${deliusCaseNote.body.subType}"))
+            assertThat(
+                it.description,
+                equalTo("NOMIS Case Note - ${deliusCaseNote.body.type} - ${deliusCaseNote.body.subType}")
+            )
         })
     }
 
@@ -330,7 +335,10 @@ class DeliusServiceTest {
         verify(caseNoteRepository).save(check { assertThat(it.description, equalTo(null)) })
     }
 
-    private fun givenNewCaseNote(type: CaseNoteNomisType? = null, relatedIds: CaseNoteRelatedIds = CaseNoteRelatedIds()) {
+    private fun givenNewCaseNote(
+        type: CaseNoteNomisType? = null,
+        relatedIds: CaseNoteRelatedIds = CaseNoteRelatedIds()
+    ) {
         val offender = OffenderGenerator.DEFAULT
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(Optional.ofNullable(type))
