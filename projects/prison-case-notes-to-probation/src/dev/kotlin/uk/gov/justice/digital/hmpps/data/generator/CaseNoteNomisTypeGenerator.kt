@@ -12,4 +12,12 @@ object CaseNoteNomisTypeGenerator {
             false
         )
     )
+    val ALERT = CaseNoteNomisType(
+        "ALERT ACTIVE",
+        CaseNoteType(
+            IdGenerator.getAndIncrement(),
+            "CNT2",
+            false
+        )
+    )
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditableService
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.config.setDescription
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
 import uk.gov.justice.digital.hmpps.flags.FeatureFlags
@@ -68,9 +69,7 @@ class DeliusService(
                     ?: throw NotFoundException("Case note type ${body.typeLookup()} not found and no default type is set")
             }
 
-        val description = if (featureFlags.enabled("case-note-description") && caseNoteType.code == CaseNoteType.DEFAULT_CODE) {
-            "NOMIS Case Note - ${body.type} - ${body.subType}"
-        } else null
+        val description = if (featureFlags.setDescription()) body.description(caseNoteType) else null
 
         val offender = offenderRepository.findByNomsIdAndSoftDeletedIsFalse(header.nomisId)
             ?: throw OffenderNotFoundException(header.nomisId)

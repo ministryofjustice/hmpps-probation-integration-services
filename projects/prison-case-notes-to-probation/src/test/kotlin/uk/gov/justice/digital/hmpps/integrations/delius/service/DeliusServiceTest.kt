@@ -13,6 +13,7 @@ import org.mockito.Mockito.times
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
+import uk.gov.justice.digital.hmpps.config.AlertsProcessing
 import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.OffenderNotFoundException
@@ -61,7 +62,7 @@ class DeliusServiceTest {
     private val caseNote = CaseNoteGenerator.EXISTING
     private val caseNoteNomisType = CaseNoteNomisTypeGenerator.NEG
     private val nomisCaseNote = PrisonCaseNoteGenerator.EXISTING_IN_BOTH
-    private val deliusCaseNote = nomisCaseNote.toDeliusCaseNote()
+    private var deliusCaseNote = nomisCaseNote.toDeliusCaseNote()
     private val probationArea = ProbationAreaGenerator.DEFAULT
     private val team = TeamGenerator.DEFAULT
     private val staff = StaffGenerator.DEFAULT
@@ -251,12 +252,50 @@ class DeliusServiceTest {
     @Test
     fun `sets description for new case note with default type`() {
         givenNewCaseNote()
-        whenever(featureFlags.enabled("case-note-description")).thenReturn(true)
+        whenever(featureFlags.enabled(AlertsProcessing)).thenReturn(true)
 
         deliusService.mergeCaseNote(deliusCaseNote)
 
         verify(caseNoteRepository).save(check {
             assertThat(it.description, equalTo("NOMIS Case Note - ${deliusCaseNote.body.type} - ${deliusCaseNote.body.subType}"))
+        })
+    }
+
+    @Test
+    fun `sets short description for new case note with alert type`() {
+        deliusCaseNote = deliusCaseNote.copy(
+            body = deliusCaseNote.body.copy(
+                type = "ALERT",
+                subType = "ACTIVE",
+                content = "123"
+            )
+        )
+        givenNewCaseNote(CaseNoteNomisTypeGenerator.ALERT)
+        whenever(featureFlags.enabled(AlertsProcessing)).thenReturn(true)
+
+        deliusService.mergeCaseNote(deliusCaseNote)
+
+        verify(caseNoteRepository).save(check { assertThat(it.description, equalTo("NOMIS 123")) })
+    }
+
+    @Test
+    fun `sets truncated description for new case note with alert type and long text`() {
+        deliusCaseNote = deliusCaseNote.copy(
+            body = deliusCaseNote.body.copy(
+                type = "ALERT",
+                subType = "ACTIVE",
+                content = List(200) { "X" }.joinToString("")
+            )
+        )
+        givenNewCaseNote(CaseNoteNomisTypeGenerator.ALERT)
+        whenever(featureFlags.enabled(AlertsProcessing)).thenReturn(true)
+
+        deliusService.mergeCaseNote(deliusCaseNote)
+
+        verify(caseNoteRepository).save(check {
+            assertThat(it.description, hasLength(198))
+            assertThat(it.description, startsWith("NOMIS XXX"))
+            assertThat(it.description, endsWith("XXX ~"))
         })
     }
 
@@ -271,8 +310,8 @@ class DeliusServiceTest {
 
     @Test
     fun `does not set description for new case note of known type`() {
-        givenNewCaseNote(Optional.of(CaseNoteNomisTypeGenerator.NEG))
-        whenever(featureFlags.enabled("case-note-description")).thenReturn(true)
+        givenNewCaseNote(CaseNoteNomisTypeGenerator.NEG)
+        whenever(featureFlags.enabled(AlertsProcessing)).thenReturn(true)
 
         deliusService.mergeCaseNote(deliusCaseNote)
 
@@ -282,18 +321,18 @@ class DeliusServiceTest {
     @Test
     fun `does not set description when feature flag is disabled`() {
         givenNewCaseNote()
-        whenever(featureFlags.enabled("case-note-description")).thenReturn(false)
+        whenever(featureFlags.enabled(AlertsProcessing)).thenReturn(false)
 
         deliusService.mergeCaseNote(deliusCaseNote)
 
         verify(caseNoteRepository).save(check { assertThat(it.description, equalTo(null)) })
     }
 
-    private fun givenNewCaseNote(type: Optional<CaseNoteNomisType> = Optional.empty()) {
+    private fun givenNewCaseNote(type: CaseNoteNomisType? = null) {
         val offender = OffenderGenerator.DEFAULT
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
-        whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(type)
-        if (type.isEmpty) {
+        whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(Optional.ofNullable(type))
+        if (type == null) {
             whenever(caseNoteTypeRepository.findByCode(CaseNoteType.DEFAULT_CODE)).thenReturn(CaseNoteTypeGenerator.DEFAULT)
         }
         whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId))
