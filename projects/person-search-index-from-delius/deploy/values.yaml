@@ -27,7 +27,7 @@ generic-service:
   env:
     CONTACT_INDEX_PREFIX: contact-search
     PERSON_INDEX_PREFIX: person-search
-    PIPELINES_ENABLED: person-incremental,person-dlq,contact-incremental,contact-dlq
+    PIPELINES_ENABLED: person-incremental,contact-incremental
     JDK_JAVA_OPTIONS: -XX:MaxRAMPercentage=75.0
 
   namespace_secrets:
@@ -42,12 +42,8 @@ generic-service:
       SENTRY_DSN: SENTRY_DSN
     person-search-index-from-delius-person-queue:
       PERSON_SQS_QUEUE_NAME: QUEUE_NAME
-    person-search-index-from-delius-person-dlq:
-      PERSON_SQS_DLQ_NAME: QUEUE_NAME
     person-search-index-from-delius-contact-queue:
       CONTACT_SQS_QUEUE_NAME: QUEUE_NAME
-    person-search-index-from-delius-contact-dlq:
-      CONTACT_SQS_DLQ_NAME: QUEUE_NAME
 
 generic-prometheus-alerts:
   targetApplication: person-search-index-from-delius

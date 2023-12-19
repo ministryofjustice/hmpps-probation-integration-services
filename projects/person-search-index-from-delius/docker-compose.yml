@@ -29,12 +29,10 @@ services:
       PERSON_INDEX_SCHEDULE: "* * * * *"
       PERSON_REINDEXING_TIMEOUT: 600
       PERSON_SQS_QUEUE_NAME: person-queue
-      PERSON_SQS_DLQ_NAME: person-dlq
       CONTACT_INDEX_PREFIX: contact-search
       CONTACT_INDEX_SCHEDULE: "* * * * *"
       CONTACT_REINDEXING_TIMEOUT: 600
       CONTACT_SQS_QUEUE_NAME: contact-queue
-      CONTACT_SQS_DLQ_NAME: contact-dlq
     ports:
       - "9600:9600"
     depends_on:

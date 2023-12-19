@@ -32,7 +32,7 @@ spec:
                 - name: CONTACT_REINDEXING_TIMEOUT
                   value: '172800' # 48 hours
                 - name: PIPELINES_ENABLED
-                  value: contact-full-load,contact-dlq
+                  value: contact-full-load
                 - name: PIPELINE_BATCH_SIZE # Maximum number of in-memory events per worker
                   value: '10000'
                 - name: JDBC_BATCH_SIZE # Maximum number of results to return from DB at a time
@@ -84,11 +84,5 @@ spec:
                     secretKeyRef:
                       name: person-search-index-from-delius-sentry
                       key: CONTACT_REINDEXING_SENTRY_MONITOR_ID
-                      optional: false
-                - name: CONTACT_SQS_DLQ_NAME
-                  valueFrom:
-                    secretKeyRef:
-                      name: person-search-index-from-delius-contact-dlq
-                      key: QUEUE_NAME
                       optional: false
           restartPolicy: Never

@@ -2,12 +2,8 @@
   path.config: /pipelines/person/logstash-full-load.conf
 - pipeline.id: person-incremental
   path.config: /pipelines/person/logstash-incremental.conf
-- pipeline.id: person-dlq
-  path.config: /pipelines/person/logstash-dlq.conf
 
 - pipeline.id: contact-full-load
   path.config: /pipelines/contact/logstash-full-load.conf
 - pipeline.id: contact-incremental
   path.config: /pipelines/contact/logstash-incremental.conf
-- pipeline.id: contact-dlq
-  path.config: /pipelines/contact/logstash-dlq.conf
