@@ -32,7 +32,7 @@ spec:
                 - name: PERSON_REINDEXING_TIMEOUT
                   value: '7200' # 3 hours
                 - name: PIPELINES_ENABLED
-                  value: person-full-load,person-dlq
+                  value: person-full-load
                 - name: PIPELINE_BATCH_SIZE # Maximum number of in-memory events per worker
                   value: '5000'
                 - name: JDBC_BATCH_SIZE # Maximum number of results to return from DB at a time
@@ -84,11 +84,5 @@ spec:
                     secretKeyRef:
                       name: person-search-index-from-delius-sentry
                       key: PERSON_REINDEXING_SENTRY_MONITOR_ID
-                      optional: false
-                - name: PERSON_SQS_DLQ_NAME
-                  valueFrom:
-                    secretKeyRef:
-                      name: person-search-index-from-delius-person-dlq
-                      key: QUEUE_NAME
                       optional: false
           restartPolicy: Never
