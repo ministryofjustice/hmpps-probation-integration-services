@@ -36,6 +36,10 @@ class DataLoader(
         saveAll(*ContactGenerator.TYPES.values.toTypedArray())
         saveAll(*RegistrationGenerator.TYPES.values.toTypedArray())
         saveAll(*ReferenceDataGenerator.REQ_MAIN_CATS.toTypedArray())
+        saveAll(
+            ReferenceDataGenerator.DOMAIN_EVENT_TYPE_DATASET,
+            *ReferenceDataGenerator.DOMAIN_EVENT_TYPES.toTypedArray()
+        )
 
         PersonGenerator.NO_RISK.withEvent().withRisk(Risk.M, Risk.L)
         PersonGenerator.LOW_RISK

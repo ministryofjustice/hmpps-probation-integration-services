@@ -103,7 +103,7 @@ fun Registration.notes(): String = listOfNotNull(
 ).joinToString(System.lineSeparator())
 
 fun Registration.deRegEvent(crn: String): HmppsDomainEvent = HmppsDomainEvent(
-    eventType = "probation-case.registration.deregistered",
+    eventType = ReferenceData.Code.REGISTRATION_DEREGISTERED.value,
     version = 1,
     occurredAt = ZonedDateTime.now(),
     personReference = forCrn(crn),
@@ -119,7 +119,7 @@ fun Registration.deRegEvent(crn: String): HmppsDomainEvent = HmppsDomainEvent(
 )
 
 fun Registration.regEvent(crn: String): HmppsDomainEvent = HmppsDomainEvent(
-    eventType = "probation-case.registration.added",
+    eventType = ReferenceData.Code.REGISTRATION_ADDED.value,
     version = 1,
     personReference = forCrn(crn),
     nullableAdditionalInformation = AdditionalInformation(

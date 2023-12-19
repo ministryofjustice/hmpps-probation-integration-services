@@ -5,6 +5,9 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import uk.gov.justice.digital.hmpps.exception.NotFoundException
 
 @Immutable
 @Entity
@@ -25,7 +28,9 @@ class ReferenceData(
     val id: Long
 ) {
     enum class Code(val value: String) {
-        OASYS_RISK_FLAG("1")
+        OASYS_RISK_FLAG("1"),
+        REGISTRATION_ADDED("probation-case.registration.added"),
+        REGISTRATION_DEREGISTERED("probation-case.registration.deregistered")
     }
 }
 
@@ -42,6 +47,23 @@ class Dataset(
     val id: Long
 ) {
     enum class Code(val value: String) {
+        DOMAIN_EVENT_TYPE("DOMAIN EVENT TYPE"),
         REGISTER_TYPE_FLAG("REGISTER TYPE FLAG")
     }
 }
+
+interface ReferenceDataRepository : JpaRepository<ReferenceData, Long> {
+    @Query(
+        """
+        select rd from ReferenceData rd
+        join Dataset ds on rd.datasetId = ds.id
+        where ds.name = :datasetCode and rd.code = :code
+        """
+    )
+    fun findByCode(code: String, datasetCode: String): ReferenceData?
+}
+
+fun ReferenceDataRepository.getByCode(code: String, datasetCode: String) =
+    findByCode(code, datasetCode) ?: throw NotFoundException(datasetCode, "code", code)
+
+fun ReferenceDataRepository.domainEventType(code: String) = getByCode(code, Dataset.Code.DOMAIN_EVENT_TYPE.value)
