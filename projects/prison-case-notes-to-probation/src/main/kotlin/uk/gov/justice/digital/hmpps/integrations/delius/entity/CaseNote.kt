@@ -47,6 +47,9 @@ data class CaseNote(
     @JoinColumn(name = "contact_type_id", updatable = false)
     val type: CaseNoteType,
 
+    @Column(updatable = false)
+    val description: String?,
+
     @Lob
     val notes: String,
 
