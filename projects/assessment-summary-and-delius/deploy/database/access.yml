@@ -3,6 +3,7 @@ database:
     username_key: /assessment-summary-and-delius/db-username
     password_key: /assessment-summary-and-delius/db-password
     tables:
+      - audited_interaction
       - contact
       - deregistration
       - domain_event
