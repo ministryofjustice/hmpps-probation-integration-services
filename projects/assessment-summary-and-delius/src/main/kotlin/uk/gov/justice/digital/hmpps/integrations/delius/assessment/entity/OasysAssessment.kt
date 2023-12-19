@@ -63,11 +63,17 @@ class OasysAssessment(
     val reviewNumber: String?,
     val layerType: String?,
 
+    @Column(name = "ogrs_score_1")
     val ogrsScore1: Long?,
+    @Column(name = "ogrs_score_2")
     val ogrsScore2: Long?,
+    @Column(name = "ogp_score_1")
     val ogpScore1: Long?,
+    @Column(name = "ogp_score_2")
     val ogpScore2: Long?,
+    @Column(name = "ovp_score_1")
     val ovpScore1: Long?,
+    @Column(name = "ovp_score_2")
     val ovpScore2: Long?,
 
     @Column(columnDefinition = "number")
