@@ -108,11 +108,14 @@ interface PersonRepository : JpaRepository<Person, Long> {
         """
         select count(r) 
         from Requirement r
+        left join r.mainCategory mc
+        left join r.subCategory sc
+        left join r.additionalMainCategory amc
         where r.person.id = :personId
-        and (r.mainCategory.code = 'RM38'
-            or (r.mainCategory.code = '7' and (r.subCategory.code is null or r.subCategory.code <> 'RS66'))
-            or (r.additionalMainCategory.code in ('RM38', '7'))
-        )
+        and (mc.code = 'RM38' 
+            or (mc.code = '7' and (sc is null or sc.code <> 'RS66'))
+            or (amc.code in ('RM38', '7')))
+        and r.active = true and r.softDeleted = false
     """
     )
     fun countAccreditedProgrammeRequirements(personId: Long): Int

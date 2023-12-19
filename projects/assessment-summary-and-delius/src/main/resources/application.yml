@@ -17,15 +17,16 @@ spring:
           global_temporary:
             create_tables: false
             drop_tables: false
+    show-sql: true
   security.oauth2.client:
     registration:
-      assessment-summary-and-delius:
-        provider: hmpps-auth
+      default:
+        provider: oasys-ords-auth
         authorization-grant-type: client_credentials
         client-id: ${integrations.ords.client-id}
         client-secret: ${integrations.ords.client-secret}
     provider:
-      hmpps-auth:
+      oasys-ords-auth:
         token-uri: ${integrations.ords.url}/oauth/token
   threads.virtual.enabled: true
 

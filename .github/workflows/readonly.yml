@@ -1,8 +1,18 @@
 name: Read-only
 # Prepare for Delius down-time by entering "read-only" mode.
-# Disables message consumers, blocks any write APIs, and re-points everything else at the snapshot standby database.
+# Switches off message consumers, blocks any write APIs, and re-points everything else at the snapshot standby database.
 
 on:
+  workflow_call:
+    inputs:
+      environment:
+        description: Environment
+        required: true
+        type: string
+      action:
+        description: Enable or disable read-only mode?
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       environment:
@@ -38,19 +48,11 @@ jobs:
           namespace: ${{ secrets.KUBE_NAMESPACE }}
           token: ${{ secrets.KUBE_TOKEN }}
 
-      - name: Patch ingresses
+      - name: Patch deployments - switch back to primary database
+        if: inputs.environment != 'test' && inputs.action == 'disable'
         env:
-          configuration_snippet: ${{ inputs.action == 'enable' && 'limit_except OPTIONS GET HEAD { deny all; }' || '' }}
-        run: |
-          ingresses=$(kubectl get ingresses -o jsonpath='{.items[*].metadata.name}')
-          for ingress in $ingresses; do
-            kubectl annotate ingress "$ingress" "nginx.ingress.kubernetes.io/configuration-snippet=$configuration_snippet" --overwrite
-          done
-
-      - name: Patch deployments
-        env:
-          MESSAGING_CONSUMER_ENABLED: ${{ inputs.action == 'enable' && 'false' || 'true' }}
-          SPRING_DATASOURCE_URL: ${{ inputs.action == 'enable' && 'DB_STANDBY_URL' || 'DB_URL' }}
+          MESSAGING_CONSUMER_ENABLED: 'true'
+          SPRING_DATASOURCE_URL: 'DB_URL'
         run: |
           deployments=$(kubectl get deployments -o jsonpath='{.items[*].metadata.name}')
           for deployment in $deployments; do
@@ -62,9 +64,141 @@ jobs:
             | kubectl apply -f -
           done
 
-      - name: Stop/start event publishers
+      - name: Patch ingresses
+        env:
+          configuration_snippet: ${{ inputs.action == 'enable' && 'limit_except GET { deny all; }' || '' }}
+        run: |
+          ingresses=$(kubectl get ingresses -o jsonpath='{.items[*].metadata.name}')
+          for ingress in $ingresses; do
+            if [[ "$ingress" != hmpps-auth-and-delius* ]]; then
+              kubectl annotate ingress "$ingress" "nginx.ingress.kubernetes.io/configuration-snippet=$configuration_snippet" --overwrite
+            fi
+          done
+
+      - name: Patch deployments - switch to standby database
+        if: inputs.environment != 'test' && inputs.action == 'enable'
+        env:
+          MESSAGING_CONSUMER_ENABLED: 'false'
+          SPRING_DATASOURCE_URL: 'DB_STANDBY_URL'
+        run: |
+          deployments=$(kubectl get deployments -o jsonpath='{.items[*].metadata.name}')
+          for deployment in $deployments; do
+            kubectl get deployment "$deployment" -o json \
+            | jq --arg name MESSAGING_CONSUMER_ENABLED --arg value "$MESSAGING_CONSUMER_ENABLED" \
+              '.spec.template.spec.containers[0].env |= if any(.[]; .name == $name) then map(if .name == $name then . + {"value":$value} else . end) else . + [{"name":$name,"value":$value}] end' \
+            | jq --arg name SPRING_DATASOURCE_URL --arg value "$SPRING_DATASOURCE_URL" \
+              '.spec.template.spec.containers[0].env |= map(if .name == $name then .valueFrom.secretKeyRef.key = $value else . end)' \
+            | kubectl apply -f -
+          done
+
+      - name: ${{ inputs.action == 'enable' && 'Stop' || 'Start' }} deployments - no standby database
+        if: inputs.environment == 'test'
+        env:
+          replicas: ${{ inputs.action == 'enable' && '0' || '2' }}
+        run: |
+          deployments=$(kubectl get deployments -o jsonpath='{.items[*].metadata.name}')
+          for deployment in $deployments; do
+            if [ "$deployment" != 'hmpps-auth-and-delius' ] && \
+               [ "$deployment" != 'domain-events-and-delius' ] && \
+               [ "$deployment" != 'offender-events-and-delius' ]; then
+              kubectl scale deploy "$deployment" --replicas "$replicas"
+            fi
+          done
+
+      - name: ${{ inputs.action == 'enable' && 'Stop' || 'Start' }} event publishers
         env:
           replicas: ${{ inputs.action == 'enable' && '0' || '1' }}
         run: |
           kubectl scale deploy domain-events-and-delius --replicas "$replicas"
           kubectl scale deploy offender-events-and-delius --replicas "$replicas"
+
+      - name: Send message to Slack
+        uses: slackapi/slack-github-action@e28cf165c92ffef168d23c5c9000cffc8a25e117 # v1.24.0
+        with:
+          channel-id: probation-integration-notifications
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ inputs.action == 'enable' && (inputs.environment == 'test' && '🔴 Offline' || '🚫 Read-only') || '🟢 Online' }}"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "The *${{ inputs.environment }}* integration services ${{ inputs.action == 'enable' && (inputs.environment == 'test' && 'have been switched off for a Delius deployment' || 'are in read-only mode') || 'are back online' }}."
+                    }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "↩️ Switch back"
+                      },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/workflows/readonly.yml"
+                    },
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "📝 Logs"
+                      },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Send failure message to Slack
+        uses: slackapi/slack-github-action@e28cf165c92ffef168d23c5c9000cffc8a25e117 # v1.24.0
+        if: failure()
+        with:
+          channel-id: probation-integration-notifications
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "❌ Failed to ${{ inputs.action }} read-only mode"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "The *${{ inputs.environment }}* integration services may be in the wrong state. Please check the logs and re-run the workflow."
+                    }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "📝 Logs"
+                      },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

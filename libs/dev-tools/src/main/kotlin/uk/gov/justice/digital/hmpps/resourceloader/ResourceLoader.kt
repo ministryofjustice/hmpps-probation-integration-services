@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.springframework.util.ResourceUtils
@@ -34,7 +33,7 @@ object ResourceLoader {
 
     inline fun <reified T> notification(filename: String): Notification<T> {
         val file = ResourceUtils.getFile("classpath:messages/$filename.json")
-        val stringMessage = MAPPER.readValue(file, jacksonTypeRef<Notification<String>>())
+        val stringMessage = MAPPER.readValue<Notification<String>>(file)
         return Notification(
             message = MAPPER.readValue(stringMessage.message, T::class.java),
             attributes = stringMessage.attributes
