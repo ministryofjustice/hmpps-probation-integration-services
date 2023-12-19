@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 @Immutable
 @Entity
 class Court(
+    @Column(columnDefinition = "char(6)")
     val code: String,
     @Id
     @Column(name = "court_id")
