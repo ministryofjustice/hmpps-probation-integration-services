@@ -32,7 +32,8 @@ object ReferenceDataGenerator {
 
     fun generateDataset(code: String, id: Long = IdGenerator.getAndIncrement()) = Dataset(code, id)
 
-    fun generateCourt(code: String, id: Long = IdGenerator.getAndIncrement()) = Court(code, id)
+    fun generateCourt(code: String, selectable: Boolean = true, id: Long = IdGenerator.getAndIncrement()) =
+        Court(code, selectable, id)
 
     fun generateOffence(code: String, id: Long = IdGenerator.getAndIncrement()) = Offence(code, id)
 
