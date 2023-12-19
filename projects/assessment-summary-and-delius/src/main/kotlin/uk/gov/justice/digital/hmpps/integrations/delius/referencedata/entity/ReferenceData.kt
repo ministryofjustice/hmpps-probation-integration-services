@@ -14,6 +14,7 @@ class ReferenceData(
     @Column(name = "code_value")
     val code: String,
 
+    @Column(name = "code_description")
     val description: String,
 
     @Column(name = "reference_data_master_id")
