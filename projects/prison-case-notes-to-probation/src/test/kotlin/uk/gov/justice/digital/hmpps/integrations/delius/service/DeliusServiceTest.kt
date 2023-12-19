@@ -11,7 +11,9 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.junit.jupiter.MockitoSettings
 import org.mockito.kotlin.*
+import org.mockito.quality.Strictness
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.config.AlertsProcessing
 import uk.gov.justice.digital.hmpps.data.generator.*
@@ -30,6 +32,7 @@ import uk.gov.justice.digital.hmpps.integrations.prison.toDeliusCaseNote
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class DeliusServiceTest {
 
     @Mock
@@ -170,12 +173,11 @@ class DeliusServiceTest {
 
     @Test
     fun `add new case note offender not found`() {
+        whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId))
+            .thenReturn(OffenderGenerator.DEFAULT)
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
-        whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(
-            Optional.of(
-                caseNoteNomisType
-            )
-        )
+        whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup()))
+            .thenReturn(Optional.of(caseNoteNomisType))
         whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId)).thenReturn(null)
 
         assertThrows<OffenderNotFoundException> { deliusService.mergeCaseNote(deliusCaseNote) }
@@ -184,6 +186,8 @@ class DeliusServiceTest {
 
     @Test
     fun `add new case note case note type not found`() {
+        whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId))
+            .thenReturn(OffenderGenerator.DEFAULT)
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(Optional.empty())
         whenever(caseNoteTypeRepository.findByCode(CaseNoteType.DEFAULT_CODE)).thenReturn(null)
@@ -199,9 +203,7 @@ class DeliusServiceTest {
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(Optional.empty())
         whenever(caseNoteTypeRepository.findByCode(CaseNoteType.DEFAULT_CODE)).thenReturn(CaseNoteTypeGenerator.DEFAULT)
-        whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId)).thenReturn(
-            offender
-        )
+        whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId)).thenReturn(offender)
         whenever(assignmentService.findAssignment(deliusCaseNote.body.establishmentCode, deliusCaseNote.body.staffName))
             .thenReturn(Triple(probationArea.id, team.id, staff.id))
         whenever(
@@ -270,7 +272,7 @@ class DeliusServiceTest {
                 content = "123"
             )
         )
-        givenNewCaseNote(CaseNoteNomisTypeGenerator.ALERT)
+        givenNewCaseNote()
         whenever(featureFlags.enabled(AlertsProcessing)).thenReturn(true)
 
         deliusService.mergeCaseNote(deliusCaseNote)
@@ -287,7 +289,7 @@ class DeliusServiceTest {
                 content = List(200) { "X" }.joinToString("")
             )
         )
-        givenNewCaseNote(CaseNoteNomisTypeGenerator.ALERT)
+        givenNewCaseNote()
         whenever(featureFlags.enabled(AlertsProcessing)).thenReturn(true)
 
         deliusService.mergeCaseNote(deliusCaseNote)
@@ -309,8 +311,8 @@ class DeliusServiceTest {
     }
 
     @Test
-    fun `does not set description for new case note of known type`() {
-        givenNewCaseNote(CaseNoteNomisTypeGenerator.NEG)
+    fun `does not set description for new case note of mapped type`() {
+        givenNewCaseNote(type = CaseNoteNomisTypeGenerator.NEG, relatedIds = CaseNoteRelatedIds(nsiId = 123))
         whenever(featureFlags.enabled(AlertsProcessing)).thenReturn(true)
 
         deliusService.mergeCaseNote(deliusCaseNote)
@@ -328,18 +330,16 @@ class DeliusServiceTest {
         verify(caseNoteRepository).save(check { assertThat(it.description, equalTo(null)) })
     }
 
-    private fun givenNewCaseNote(type: CaseNoteNomisType? = null) {
+    private fun givenNewCaseNote(type: CaseNoteNomisType? = null, relatedIds: CaseNoteRelatedIds = CaseNoteRelatedIds()) {
         val offender = OffenderGenerator.DEFAULT
         whenever(caseNoteRepository.findByNomisId(deliusCaseNote.header.noteId)).thenReturn(null)
         whenever(nomisTypeRepository.findById(deliusCaseNote.body.typeLookup())).thenReturn(Optional.ofNullable(type))
-        if (type == null) {
-            whenever(caseNoteTypeRepository.findByCode(CaseNoteType.DEFAULT_CODE)).thenReturn(CaseNoteTypeGenerator.DEFAULT)
-        }
+        whenever(caseNoteTypeRepository.findByCode(CaseNoteType.DEFAULT_CODE)).thenReturn(CaseNoteTypeGenerator.DEFAULT)
         whenever(offenderRepository.findByNomsIdAndSoftDeletedIsFalse(deliusCaseNote.header.nomisId))
             .thenReturn(offender)
         whenever(assignmentService.findAssignment(deliusCaseNote.body.establishmentCode, deliusCaseNote.body.staffName))
             .thenReturn(Triple(probationArea.id, team.id, staff.id))
         whenever(caseNoteRelatedService.findRelatedCaseNoteIds(offender.id, deliusCaseNote.body.typeLookup()))
-            .thenReturn(CaseNoteRelatedIds())
+            .thenReturn(relatedIds)
     }
 }
