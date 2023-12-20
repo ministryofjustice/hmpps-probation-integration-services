@@ -54,7 +54,7 @@ internal class CustodyDateUpdateServiceTest {
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = inactive.id)
 
         verify(personRepository, never()).findByNomsIdIgnoreCaseAndSoftDeletedIsFalse(any())
-        verify(contactService, never()).createForKeyDateChanges(any(), any(), any())
+        verify(contactService, never()).createForKeyDateChanges(any(), any())
         verify(telemetryService).trackEvent(eq("BookingNotActive"), any(), any())
     }
 
@@ -68,7 +68,7 @@ internal class CustodyDateUpdateServiceTest {
 
         custodyDateUpdateService.updateCustodyKeyDates(bookingId = booking.id)
 
-        verify(contactService, never()).createForKeyDateChanges(any(), any(), any())
+        verify(contactService, never()).createForKeyDateChanges(any(), any())
         verify(telemetryService).trackEvent(eq("MissingNomsNumber"), any(), any())
     }
 
@@ -87,7 +87,7 @@ internal class CustodyDateUpdateServiceTest {
 
         verify(keyDateRepository, never()).saveAll(anyList())
         verify(keyDateRepository, never()).deleteAll(any())
-        verify(contactService, never()).createForKeyDateChanges(any(), any(), any())
+        verify(contactService, never()).createForKeyDateChanges(any(), any())
         verify(telemetryService).trackEvent(eq("DuplicateBookingRef"), any(), any())
     }
 
@@ -105,7 +105,7 @@ internal class CustodyDateUpdateServiceTest {
 
         verify(keyDateRepository, never()).saveAll(anyList())
         verify(keyDateRepository, never()).deleteAll(any())
-        verify(contactService, never()).createForKeyDateChanges(any(), any(), any())
+        verify(contactService, never()).createForKeyDateChanges(any(), any())
         verify(telemetryService).trackEvent(eq("MissingBookingRef"), any(), any())
     }
 

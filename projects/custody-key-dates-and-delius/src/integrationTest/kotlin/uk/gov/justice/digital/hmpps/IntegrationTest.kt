@@ -66,14 +66,12 @@ internal class IntegrationTest {
         val custodyId = custodyRepository.findCustodyId(PersonGenerator.DEFAULT.id, DEFAULT_CUSTODY.bookingRef).first()
         val custody = custodyRepository.findCustodyById(custodyId)
         verifyUpdatedKeyDates(custody)
-        verifyDeletedKeyDate(custody)
         verifyContactCreated()
 
         verify(telemetryService).trackEvent(
             eq("KeyDatesUpdated"),
             check {
                 assertThat(it[CustodyDateType.SENTENCE_EXPIRY_DATE.code], equalTo("2025-09-10"))
-                assertThat(it[CustodyDateType.PAROLE_ELIGIBILITY_DATE.code], equalTo("deleted"))
             },
             anyMap()
         )
@@ -99,10 +97,6 @@ internal class IntegrationTest {
         assertThat(hde?.date, equalTo(LocalDate.parse("2022-10-28")))
     }
 
-    private fun verifyDeletedKeyDate(custody: Custody) {
-        assertNull(custody.keyDate(CustodyDateType.PAROLE_ELIGIBILITY_DATE.code))
-    }
-
     private fun verifyContactCreated() {
         val event = DEFAULT_CUSTODY.disposal!!.event
         val contact = contactRepository.findAll()
@@ -121,10 +115,10 @@ internal class IntegrationTest {
                 """
             LED 11/09/2025
             ACR 26/11/2022
+            PED 26/10/2022
             SED 10/09/2025
             EXP 27/11/2022
             HDE 28/10/2022
-            Removed PED 26/10/2022
                 """.trimIndent()
             )
         )
