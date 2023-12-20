@@ -65,12 +65,12 @@ class Registration(
         private set
 
     fun withReview(contact: Contact): Registration {
-        reviews = reviews + RegistrationReview(this, contact, null, nextReviewDate, teamId, staffId)
+        reviews = reviews + RegistrationReview(personId, this, contact, null, nextReviewDate, teamId, staffId)
         return this
     }
 
     fun deregister(contact: Contact): List<Contact> {
-        deregistration = DeRegistration(LocalDate.now(), this, contact, contact.teamId, contact.staffId)
+        deregistration = DeRegistration(LocalDate.now(), this, personId, contact, contact.teamId, contact.staffId)
         deregistered = true
         nextReviewDate = null
         val splitReviews = reviews.groupBy { it.completed }
@@ -119,6 +119,9 @@ class RegisterType(
 @EntityListeners(AuditingEntityListener::class)
 class RegistrationReview(
 
+    @Column(name = "offender_id")
+    val personId: Long,
+
     @ManyToOne
     @JoinColumn(name = "registration_id")
     val registration: Registration,
@@ -163,6 +166,9 @@ class DeRegistration(
     @OneToOne
     @JoinColumn(name = "registration_id")
     val registration: Registration,
+
+    @Column(name = "offender_id")
+    val personId: Long,
 
     @OneToOne
     @JoinColumn(name = "contact_id")

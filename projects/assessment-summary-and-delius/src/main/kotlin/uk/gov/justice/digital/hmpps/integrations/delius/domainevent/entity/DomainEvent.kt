@@ -1,17 +1,17 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.domainevent.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.SequenceGenerator
+import jakarta.persistence.*
 import org.springframework.data.jpa.repository.JpaRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.entity.ReferenceData
 import java.time.ZonedDateTime
 
 @Entity
 @SequenceGenerator(name = "domain_event_id_seq", sequenceName = "domain_event_id_seq", allocationSize = 1)
 class DomainEvent(
+
+    @ManyToOne
+    @JoinColumn(name = "domain_event_type_id")
+    val type: ReferenceData,
 
     @Column(columnDefinition = "varchar2(4000)")
     val messageBody: String,
