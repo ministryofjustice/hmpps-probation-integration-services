@@ -12,10 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.NomisNsiTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.NsiGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OffenderGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.flags.FeatureFlags
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.repository.NsiRepository
 
@@ -27,6 +25,9 @@ internal class CaseNoteRelatedServiceTest {
 
     @Mock
     private lateinit var nsiRepository: NsiRepository
+
+    @Mock
+    private lateinit var featureFlags: FeatureFlags
 
     @InjectMocks
     private lateinit var caseNoteRelatedService: CaseNoteRelatedService
@@ -87,6 +88,32 @@ internal class CaseNoteRelatedServiceTest {
         val res = caseNoteRelatedService.findRelatedCaseNoteIds(offenderId, nomType)
 
         verify(eventRepository, times(0)).findActiveCustodialEvents(anyLong())
+
+        assertNull(res.eventId)
+        assertThat(res.nsiId, equalTo(nsi.id))
+    }
+
+    @Test
+    fun `alert contacts are always set to person-level`() {
+        val offenderId = OffenderGenerator.DEFAULT.id
+        val nomType = CaseNoteNomisTypeGenerator.ALERT.nomisCode
+        whenever(featureFlags.enabled("case-notes-alerts")).thenReturn(true)
+
+        val res = caseNoteRelatedService.findRelatedCaseNoteIds(offenderId, nomType)
+
+        assertNull(res.eventId)
+        assertNull(res.nsiId)
+    }
+
+    @Test
+    fun `alert contacts are not set to person-level if feature flag is disabled`() {
+        val offenderId = OffenderGenerator.DEFAULT.id
+        val nomType = CaseNoteNomisTypeGenerator.ALERT.nomisCode
+        val nsi = NsiGenerator.generate(offenderId)
+        whenever(featureFlags.enabled("case-notes-alerts")).thenReturn(false)
+        whenever(nsiRepository.findCaseNoteRelatedNsis(offenderId, nomType)).thenReturn(listOf(nsi))
+
+        val res = caseNoteRelatedService.findRelatedCaseNoteIds(offenderId, nomType)
 
         assertNull(res.eventId)
         assertThat(res.nsiId, equalTo(nsi.id))

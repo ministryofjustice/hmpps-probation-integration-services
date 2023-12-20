@@ -8,7 +8,7 @@ import kotlin.random.Random
 object CaseNoteGenerator {
     var EXISTING = generate(
         EventGenerator.EXISTING_EVENT_ID,
-        description = """
+        notes = """
             NEG IEP_WARN
             This is an existing case note
             [Mickey Mouse updated the case notes on 2022/07/20 12:25:20]
@@ -24,7 +24,8 @@ object CaseNoteGenerator {
         eventId: Long? = EventGenerator.CUSTODIAL_EVENT.id,
         nsiId: Long? = NsiGenerator.EVENT_CASE_NOTE_NSI.id,
         type: CaseNoteType = CaseNoteTypeGenerator.DEFAULT,
-        description: String = "Another case note from Nomis",
+        notes: String = "Another case note from Nomis",
+        description: String? = null,
         probationAreaId: Long = ProbationAreaGenerator.DEFAULT.id,
         teamId: Long = TeamGenerator.DEFAULT.id,
         staffId: Long = StaffGenerator.DEFAULT.id,
@@ -40,6 +41,7 @@ object CaseNoteGenerator {
             nomisId,
             type,
             description,
+            notes,
             startDateTime,
             startDateTime,
             staffId,
