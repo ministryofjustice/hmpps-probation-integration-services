@@ -47,7 +47,7 @@ data class CaseNote(
     @JoinColumn(name = "contact_type_id", updatable = false)
     val type: CaseNoteType,
 
-    @Column(updatable = false)
+    @Column(updatable = false, columnDefinition = "varchar2(200)")
     val description: String?,
 
     @Lob

@@ -300,7 +300,7 @@ class DeliusServiceTest {
         deliusService.mergeCaseNote(deliusCaseNote)
 
         verify(caseNoteRepository).save(check {
-            assertThat(it.description, hasLength(198))
+            assertThat(it.description, hasLength(200))
             assertThat(it.description, startsWith("NOMIS XXX"))
             assertThat(it.description, endsWith("XXX ~"))
         })
