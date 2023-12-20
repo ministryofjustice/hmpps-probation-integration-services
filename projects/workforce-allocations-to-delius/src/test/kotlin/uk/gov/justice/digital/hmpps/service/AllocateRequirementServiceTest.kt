@@ -33,6 +33,7 @@ import uk.gov.justice.digital.hmpps.data.generator.TransferReasonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exceptions.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationValidator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeCode
@@ -42,7 +43,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamStaffContainer
-import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.RequirementAllocationDetail
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.RequirementAllocation
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import java.util.Optional
 
@@ -76,7 +77,7 @@ internal class AllocateRequirementServiceTest {
     @InjectMocks
     private lateinit var allocateRequirementService: AllocateRequirementService
 
-    private val allocationDetail = ResourceLoader.file<RequirementAllocationDetail>("get-requirement-allocation-body")
+    private val allocationDetail = ResourceLoader.file<RequirementAllocation>("get-requirement-allocation-body")
 
     @Test
     fun `when requirement not for person with crn exception thrown`() {
@@ -262,7 +263,7 @@ internal class AllocateRequirementServiceTest {
 
         whenever(requirementRepository.countPendingTransfers(requirement.id)).thenReturn(1)
 
-        assertThrows<ConflictException> {
+        assertThrows<IgnorableMessageException> {
             allocateRequirementService.createRequirementAllocation(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail

@@ -10,9 +10,9 @@ class AllocationDetailDeserialiser : JsonDeserializer<AllocationDetail>() {
         val om = jp.codec
         val node: JsonNode = om.readTree(jp)
         return when {
-            node.has("crn") -> om.treeToValue(node, AllocationDetail.PersonAllocationDetail::class.java)
-            node.has("requirementId") -> om.treeToValue(node, AllocationDetail.RequirementAllocationDetail::class.java)
-            node.has("eventNumber") -> om.treeToValue(node, AllocationDetail.EventAllocationDetail::class.java)
+            node.has("crn") -> om.treeToValue(node, AllocationDetail.PersonAllocation::class.java)
+            node.has("requirementId") -> om.treeToValue(node, AllocationDetail.RequirementAllocation::class.java)
+            node.has("eventNumber") -> om.treeToValue(node, AllocationDetail.EventAllocation::class.java)
             else -> throw IllegalArgumentException("Unexpected response from allocation service.")
         }
     }

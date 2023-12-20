@@ -5,7 +5,8 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.timeout
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -23,7 +24,6 @@ import uk.gov.justice.digital.hmpps.integrations.workforceallocations.Allocation
 import uk.gov.justice.digital.hmpps.messaging.HmppsChannelManager
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
-import uk.gov.justice.digital.hmpps.telemetry.notificationReceived
 import java.time.ZonedDateTime
 
 @SpringBootTest
@@ -59,6 +59,17 @@ class AllocateEventIntegrationTest {
             event,
             1
         )
+
+        verify(telemetryService).trackEvent(
+            eq("EventAllocation"),
+            eq(
+                mapOf(
+                    "crn" to event.person.crn,
+                    "detailUrl" to "http://localhost:${wireMockServer.port()}/allocation/event/allocate-new-order-manager"
+                )
+            ),
+            any()
+        )
     }
 
     @Test
@@ -87,6 +98,17 @@ class AllocateEventIntegrationTest {
 
         val insertedPm = orderManagerRepository.findActiveManagerAtDate(event.id, ZonedDateTime.now().minusDays(2))
         assert(secondOm.startDate.closeTo(insertedPm?.endDate))
+
+        verify(telemetryService).trackEvent(
+            eq("EventAllocation"),
+            eq(
+                mapOf(
+                    "crn" to event.person.crn,
+                    "detailUrl" to "http://localhost:${wireMockServer.port()}/allocation/event/allocate-historic-order-manager"
+                )
+            ),
+            any()
+        )
     }
 
     private fun allocateAndValidate(
@@ -98,8 +120,6 @@ class AllocateEventIntegrationTest {
     ) {
         val allocationEvent = prepMessage(messageName, wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(allocationEvent)
-
-        verify(telemetryService, timeout(30000)).notificationReceived(allocationEvent)
 
         val allocationDetail = ResourceLoader.file<AllocationDetail>(jsonFile)
 
@@ -116,7 +136,7 @@ class AllocateEventIntegrationTest {
 
         assertThat(
             cadeContact!!.isSensitive,
-            equalTo((allocationDetail as AllocationDetail.EventAllocationDetail).sensitive)
+            equalTo((allocationDetail as AllocationDetail.EventAllocation).sensitive)
         )
         assertThat(cadeContact.notes, equalTo(allocationDetail.notes))
     }

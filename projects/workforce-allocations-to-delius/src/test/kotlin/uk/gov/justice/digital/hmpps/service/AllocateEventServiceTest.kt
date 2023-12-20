@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exceptions.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationValidator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
@@ -28,7 +29,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonRepository
-import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocationDetail
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocation
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 
 @ExtendWith(MockitoExtension::class)
@@ -61,7 +62,7 @@ internal class AllocateEventServiceTest {
     @InjectMocks
     private lateinit var allocateEventService: AllocateEventService
 
-    private val allocationDetail = ResourceLoader.file<EventAllocationDetail>("get-event-allocation-body")
+    private val allocationDetail = ResourceLoader.file<EventAllocation>("get-event-allocation-body")
 
     @Test
     fun `when event not found exception thrown`() {
@@ -156,7 +157,7 @@ internal class AllocateEventServiceTest {
 
         whenever(eventRepository.countPendingTransfers(event.id)).thenReturn(1)
 
-        assertThrows<ConflictException> {
+        assertThrows<IgnorableMessageException> {
             allocateEventService.createEventAllocation(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail

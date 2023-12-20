@@ -28,6 +28,7 @@ import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exceptions.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationValidator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
@@ -39,7 +40,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PrisonManager
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.TeamStaffContainer
-import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.PersonAllocationDetail
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.PersonAllocation
 import uk.gov.justice.digital.hmpps.resourceloader.ResourceLoader
 
 @ExtendWith(MockitoExtension::class)
@@ -72,7 +73,7 @@ internal class AllocatePersonServiceTest {
     @InjectMocks
     private lateinit var allocatePersonService: AllocatePersonService
 
-    private val allocationDetail = ResourceLoader.file<PersonAllocationDetail>("get-person-allocation-body")
+    private val allocationDetail = ResourceLoader.file<PersonAllocation>("get-person-allocation-body")
 
     @Test
     fun `when person not found exception thrown`() {
@@ -125,7 +126,7 @@ internal class AllocatePersonServiceTest {
 
         whenever(personRepository.countPendingTransfers(PersonGenerator.DEFAULT.id)).thenReturn(1)
 
-        assertThrows<ConflictException> { allocatePersonService.createPersonAllocation(allocationDetail) }
+        assertThrows<IgnorableMessageException> { allocatePersonService.createPersonAllocation(allocationDetail) }
     }
 
     @Test

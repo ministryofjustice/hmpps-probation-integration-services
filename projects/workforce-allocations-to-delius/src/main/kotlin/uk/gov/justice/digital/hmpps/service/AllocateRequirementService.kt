@@ -8,21 +8,18 @@ import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exceptions.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationValidator
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactContext
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.findByCodeOrThrow
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonCode
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requirement
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManager
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementRepository
-import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.RequirementAllocationDetail
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.RequirementAllocation
 
 @Service
 class AllocateRequirementService(
@@ -37,14 +34,14 @@ class AllocateRequirementService(
 ) : ManagerService<RequirementManager>(auditedInteractionService, requirementManagerRepository) {
 
     @Transactional
-    fun createRequirementAllocation(crn: String, allocationDetail: RequirementAllocationDetail) =
-        audit(BusinessInteractionCode.CREATE_COMPONENT_TRANSFER) {
+    fun createRequirementAllocation(crn: String, allocationDetail: RequirementAllocation) =
+        audit(BusinessInteractionCode.CREATE_COMPONENT_TRANSFER) { audit ->
             val requirement = requirementRepository.findByIdOrNull(allocationDetail.requirementId)
                 ?: throw NotFoundException("Requirement", "id", allocationDetail.requirementId)
 
-            it["offenderId"] = requirement.person.id
-            it["eventId"] = requirement.disposal.event.id
-            it["requirementId"] = requirement.id
+            audit["offenderId"] = requirement.person.id
+            audit["eventId"] = requirement.disposal.event.id
+            audit["requirementId"] = requirement.id
             optimisationTables.rebuild(requirement.person.id)
 
             if (requirement.person.crn != crn) {
@@ -70,7 +67,14 @@ class AllocateRequirementService(
             }
 
             if (requirementRepository.countPendingTransfers(requirement.id) > 0) {
-                throw ConflictException("Pending transfer exists for this requirement: ${requirement.id}")
+                throw IgnorableMessageException(
+                    "Pending transfer exists in Delius",
+                    listOfNotNull(
+                        "eventNumber" to requirement.disposal.event.number,
+                        requirement.mainCategory?.description?.let { "mainCategory" to it },
+                        requirement.subCategory?.description?.let { "subCategory" to it }
+                    ).toMap()
+                )
             }
             val ts = allocationValidator.initialValidations(
                 activeRequirementManager.provider.id,

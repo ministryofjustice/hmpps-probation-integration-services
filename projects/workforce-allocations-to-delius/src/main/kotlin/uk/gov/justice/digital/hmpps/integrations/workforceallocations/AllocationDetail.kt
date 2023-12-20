@@ -16,7 +16,7 @@ sealed interface AllocationDetail {
     val code: String
 
     @JsonDeserialize(using = JsonDeserializer.None::class)
-    data class PersonAllocationDetail(
+    data class PersonAllocation(
         override val id: String,
         override val staffCode: String,
         override val teamCode: String,
@@ -27,7 +27,7 @@ sealed interface AllocationDetail {
     ) : AllocationDetail
 
     @JsonDeserialize(using = JsonDeserializer.None::class)
-    data class EventAllocationDetail(
+    data class EventAllocation(
         override val id: String,
         override val staffCode: String,
         override val teamCode: String,
@@ -42,7 +42,7 @@ sealed interface AllocationDetail {
     ) : AllocationDetail
 
     @JsonDeserialize(using = JsonDeserializer.None::class)
-    data class RequirementAllocationDetail(
+    data class RequirementAllocation(
         override val id: String,
         override val staffCode: String,
         override val teamCode: String,

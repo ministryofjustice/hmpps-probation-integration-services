@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.datetime.DeliusDateTimeFormatter
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exceptions.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationValidator
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
@@ -21,7 +22,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepo
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficer
 import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficerRepository
-import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.PersonAllocationDetail
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.PersonAllocation
 
 @Service
 class AllocatePersonService(
@@ -36,7 +37,7 @@ class AllocatePersonService(
 ) : ManagerService<PersonManager>(auditedInteractionService, personManagerRepository) {
 
     @Transactional
-    fun createPersonAllocation(allocationDetail: PersonAllocationDetail) =
+    fun createPersonAllocation(allocationDetail: PersonAllocation) =
         audit(BusinessInteractionCode.ADD_PERSON_ALLOCATION) {
             val personId = personRepository.findIdByCrn(allocationDetail.crn)
                 ?: throw NotFoundException("Person", "crn", allocationDetail.crn)
@@ -56,7 +57,7 @@ class AllocatePersonService(
             }
 
             if (personRepository.countPendingTransfers(personId) > 0) {
-                throw ConflictException("Pending transfer exists for this person: ${allocationDetail.crn}")
+                throw IgnorableMessageException("Pending transfer exists in Delius")
             }
             val ts = allocationValidator.initialValidations(
                 activeOffenderManager.provider.id,
