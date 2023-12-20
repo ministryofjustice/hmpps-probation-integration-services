@@ -27,7 +27,10 @@ class AllocationValidator(
             ?: throw NotFoundException("Team", "code", allocationDetail.teamCode)
 
         if (team.providerId != providerId) {
-            throw IgnorableMessageException("External transfer not permitted")
+            throw IgnorableMessageException(
+                "External transfer not permitted",
+                mapOf("fromProvider" to providerId.toString(), "toProvider" to team.providerId.toString())
+            )
         }
 
         if (team.endDate != null && team.endDate.isBefore(allocationDetail.createdDate)) {
