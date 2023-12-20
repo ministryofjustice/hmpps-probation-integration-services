@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exceptions.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exceptions.StaffNotInTeamException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.StaffRepository
@@ -27,7 +27,10 @@ class AllocationValidator(
             ?: throw NotFoundException("Team", "code", allocationDetail.teamCode)
 
         if (team.providerId != providerId) {
-            throw ConflictException("Cannot transfer from provider $providerId to ${team.providerId}")
+            throw IgnorableMessageException(
+                "External transfer not permitted",
+                mapOf("fromProvider" to providerId.toString(), "toProvider" to team.providerId.toString())
+            )
         }
 
         if (team.endDate != null && team.endDate.isBefore(allocationDetail.createdDate)) {
@@ -37,7 +40,7 @@ class AllocationValidator(
         val allocationReason = referenceDataRepository.findByDatasetAndCode(
             allocationDetail.datasetCode,
             allocationDetail.code
-        ) ?: throw NotFoundException("$allocationDetail.datasetCode.value with code ${allocationDetail.code} not found")
+        ) ?: throw NotFoundException(allocationDetail.datasetCode.value, "code", allocationDetail.code)
 
         val staff = staffRepository.findByCode(allocationDetail.staffCode)
             ?: throw NotFoundException("Staff", "code", allocationDetail.staffCode)

@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.allocations
 
+import com.nimbusds.openid.connect.sdk.assurance.claims.ISO3166_1Alpha2CountryCode.OM
+import io.sentry.clientreport.DiscardedEvent.JsonKeys.REASON
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -15,6 +17,7 @@ import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
 import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exceptions.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.exceptions.StaffNotInTeamException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.entity.ReferenceDataRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
@@ -60,13 +63,13 @@ class AllocationValidatorTest {
             .thenReturn(TeamGenerator.DEFAULT)
 
         val exception =
-            assertThrows<ConflictException> {
+            assertThrows<IgnorableMessageException> {
                 allocationValidator.initialValidations(
                     -99L,
                     allocationDetail
                 )
             }
-        assert(exception.message!!.contains("Cannot transfer from provider -99 to ${TeamGenerator.DEFAULT.providerId}"))
+        assert(exception.message.contains("External transfer not permitted"))
     }
 
     @Test
@@ -125,7 +128,7 @@ class AllocationValidatorTest {
                     allocationDetail
                 )
             }
-        assert(exception.message!!.contains("$allocationDetail.datasetCode.value with code ${allocationDetail.code} not found"))
+        assert(exception.message!!.contains("${allocationDetail.datasetCode.value} with code of ${allocationDetail.code} not found"))
     }
 
     @Test

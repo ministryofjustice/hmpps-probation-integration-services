@@ -4,26 +4,16 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.audit.service.AuditedInteractionService
 import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
-import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.exceptions.IgnorableMessageException
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationValidator
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.ManagerService
 import uk.gov.justice.digital.hmpps.integrations.delius.audit.BusinessInteractionCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.Contact
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactContext
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeCode
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactTypeRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.contact.findByCodeOrThrow
-import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
-import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.contact.*
+import uk.gov.justice.digital.hmpps.integrations.delius.event.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonCode.CASE_ORDER
-import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.getByPersonCrnAndNumber
-import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocationDetail
+import uk.gov.justice.digital.hmpps.integrations.workforceallocations.AllocationDetail.EventAllocation
 
 @Service
 class AllocateEventService(
@@ -38,7 +28,7 @@ class AllocateEventService(
 ) : ManagerService<OrderManager>(auditedInteractionService, orderManagerRepository) {
 
     @Transactional
-    fun createEventAllocation(crn: String, allocationDetail: EventAllocationDetail) =
+    fun createEventAllocation(crn: String, allocationDetail: EventAllocation) =
         audit(BusinessInteractionCode.ADD_EVENT_ALLOCATION) {
             val event = eventRepository.getByPersonCrnAndNumber(crn, allocationDetail.eventNumber.toString())
 
@@ -60,7 +50,10 @@ class AllocateEventService(
             }
 
             if (eventRepository.countPendingTransfers(event.id) > 0) {
-                throw ConflictException("Pending transfer exists for this event: ${event.id}")
+                throw IgnorableMessageException(
+                    "Pending transfer exists in Delius",
+                    mapOf("eventNumber" to event.number)
+                )
             }
             val ts = allocationValidator.initialValidations(
                 activeOrderManager.provider.id,
@@ -95,7 +88,7 @@ class AllocateEventService(
             }
         }
 
-    fun createCadeContact(allocationDetail: EventAllocationDetail, event: Event, orderManager: OrderManager) {
+    fun createCadeContact(allocationDetail: EventAllocation, event: Event, orderManager: OrderManager) {
         contactRepository.save(
             Contact(
                 type = contactTypeRepository.findByCodeOrThrow(ContactTypeCode.CASE_ALLOCATION_DECISION_EVIDENCE.value),

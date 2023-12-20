@@ -4,6 +4,8 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -61,6 +63,17 @@ class AllocatePersonIntegrationTest {
             1,
             1
         )
+
+        verify(telemetryService).trackEvent(
+            eq("PersonAllocation"),
+            eq(
+                mapOf(
+                    "crn" to person.crn,
+                    "detailUrl" to "http://localhost:${wireMockServer.port()}/allocation/person/allocate-new-person-manager"
+                )
+            ),
+            any()
+        )
     }
 
     @Test
@@ -110,6 +123,17 @@ class AllocatePersonIntegrationTest {
         val insertedRo =
             responsibleOfficerRepository.findActiveManagerAtDate(person.id, ZonedDateTime.now().minusDays(2))
         assert(secondRo.startDate.closeTo(insertedRo?.endDate))
+
+        verify(telemetryService).trackEvent(
+            eq("PersonAllocation"),
+            eq(
+                mapOf(
+                    "crn" to person.crn,
+                    "detailUrl" to "http://localhost:${wireMockServer.port()}/allocation/person/allocate-historic-person-manager"
+                )
+            ),
+            any()
+        )
     }
 
     private fun allocateAndValidate(
@@ -123,8 +147,6 @@ class AllocatePersonIntegrationTest {
     ) {
         val allocationEvent = prepMessage(messageName, wireMockServer.port())
         channelManager.getChannel(queueName).publishAndWait(allocationEvent)
-
-        verify(telemetryService).notificationReceived(allocationEvent)
 
         val allocationDetail = ResourceLoader.file<AllocationDetail>(jsonFile)
 
