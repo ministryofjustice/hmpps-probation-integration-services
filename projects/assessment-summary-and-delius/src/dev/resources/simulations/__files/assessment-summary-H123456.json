@@ -27,7 +27,7 @@
       "riskStaffCustody": "Low",
       "riskStaffCommunity": "Low",
       "riskKnownAdultCustody": "Low",
-      "riskAdultCommunity": "Medium",
+      "riskKnownAdultCommunity": "Medium",
       "riskPublicCustody": "Low",
       "riskPublicCommunity": "High",
       "riskChildrenCustody": "Low",
@@ -88,34 +88,35 @@
       "sentencePlan": {
         "objectives": [
           {
-            "objectiveCode": "Increased knowledge of physical/ psychological/ emotional self harm linked to drug use",
-            "objectiveMeasure": "RII",
+            "objectiveCodeDesc": "Increased knowledge of physical/ psychological/ emotional self harm linked to drug use",
             "objectiveSequence": 1,
             "criminogenicNeeds": [
               {
-                "criminogenicNeed": "IHD"
+                "criminogenicNeed": "IHD",
+                "criminogenicNeedDesc": "Risk to Public"
               }
             ],
             "actions": [
               {
-                "action": "VI9",
-                "actionComment": null
+                "actionDesc": "Drug counselling",
+                "actionComment": "Comments about the action"
               }
             ]
           },
           {
-            "objectiveCode": "Improve employment related skills",
-            "objectiveMeasure": "RII",
+            "objectiveCodeDesc": "Improve employment related skills",
             "objectiveSequence": 2,
             "criminogenicNeeds": [
               {
-                "criminogenicNeed": "I4"
+                "criminogenicNeed": "I4",
+                "criminogenicNeedDesc": "Education Training and Employment"
               }
             ],
             "actions": [
               {
                 "action": "VIII1",
-                "actionComment": null
+                "actionDesc": "Basic skills",
+                "actionComment": "Some comment about their basic skills"
               }
             ]
           }

@@ -26,7 +26,7 @@ data class AssessmentSummary(
     val currentConcernsRiskOfSelfHarm: String? = null,
     val currentConcernsRiskOfSuicide: String? = null,
     val currentConcernsVulnerablity: String? = null,
-    val riskAdultCommunity: String? = null,
+    val riskKnownAdultCommunity: String? = null,
     val riskChildrenCommunity: String? = null,
     val riskChildrenCustody: String? = null,
     val riskKnownAdultCustody: String? = null,
@@ -42,27 +42,35 @@ data class AssessmentSummary(
     val basicSentencePlan: String? = null,
     val sentencePlan: SentencePlan? = null
 ) {
+    /*
+        Order of Risk has to match Delius read order:
+        Children, Public, KnownAdult, Staff, Prisoner - community variant of each first
+    */
     val riskFlags: List<String> = listOf(
-        riskAdultCommunity,
         riskChildrenCommunity,
         riskChildrenCustody,
-        riskKnownAdultCustody,
-        riskPrisonersCustody,
         riskPublicCommunity,
         riskPublicCustody,
+        riskKnownAdultCommunity,
+        riskKnownAdultCustody,
         riskStaffCommunity,
-        riskStaffCustody
+        riskStaffCustody,
+        riskPrisonersCustody
     ).map { it?.firstOrNull()?.uppercase() ?: "N" }
 
+    /*
+        Order of Concerns has to match Delius read order:
+        Suicide, Harm, Custody, Hostel, Vulnerability, Abscond, Disruptive Behaviour, Breach of Trust
+    */
     val concernFlags: List<String> = listOf(
-        currentConcernsBreachOfTrust,
-        currentConcernsCustody,
-        currentConcernsDisruptive,
-        currentConcernsEscape,
-        currentConcernsHostel,
-        currentConcernsRiskOfSelfHarm,
         currentConcernsRiskOfSuicide,
-        currentConcernsVulnerablity
+        currentConcernsRiskOfSelfHarm,
+        currentConcernsCustody,
+        currentConcernsHostel,
+        currentConcernsVulnerablity,
+        currentConcernsEscape,
+        currentConcernsDisruptive,
+        currentConcernsBreachOfTrust
     ).map {
         when (it?.first()?.uppercase()) {
             "Y" -> "YES"
@@ -114,19 +122,18 @@ data class SentencePlan(
 )
 
 data class Objective(
-    val objectiveCode: String,
-    val objectiveMeasure: String,
+    val objectiveCodeDesc: String,
     val objectiveSequence: Long,
     val criminogenicNeeds: List<Need>,
     val actions: List<Action>
 )
 
 data class Need(
-    val criminogenicNeed: String
+    val criminogenicNeedDesc: String
 )
 
 data class Action(
-    val action: String,
+    val actionDesc: String,
     val actionComment: String?
 )
 

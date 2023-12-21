@@ -35,7 +35,7 @@
       "riskStaffCustody": null,
       "riskStaffCommunity": "Low",
       "riskKnownAdultCustody": null,
-      "riskAdultCommunity": null,
+      "riskKnownAdultCommunity": null,
       "riskPublicCustody": "Low",
       "riskPublicCommunity": null,
       "riskChildrenCustody": "Low",

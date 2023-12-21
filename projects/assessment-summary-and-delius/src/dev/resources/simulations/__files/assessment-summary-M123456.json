@@ -88,34 +88,32 @@
       "sentencePlan": {
         "objectives": [
           {
-            "objectiveCode": "Increased knowledge of physical/ psychological/ emotional self harm linked to drug use",
-            "objectiveMeasure": "RII",
+            "objectiveCodeDesc": "Increased knowledge of physical/ psychological/ emotional self harm linked to drug use",
             "objectiveSequence": 1,
             "criminogenicNeeds": [
               {
-                "criminogenicNeed": "Risk to Public"
+                "criminogenicNeedDesc": "Risk to Public"
               }
             ],
             "actions": [
               {
-                "action": "Drug counselling",
+                "actionDesc": "Drug counselling",
                 "actionComment": "Frank will need to attend regularly"
               }
             ]
           },
           {
-            "objectiveCode": "Improve employment related skills",
-            "objectiveMeasure": "RII",
+            "objectiveCodeDesc": "Improve employment related skills",
             "objectiveSequence": 2,
             "criminogenicNeeds": [
               {
-                "criminogenicNeed": "EDUCATION TRAINING AND EMPLOYMENT"
+                "criminogenicNeedDesc": "Education Training and Employment"
               }
             ],
             "actions": [
               {
-                "action": "Basic skills",
-                "actionComment": null
+                "actionDesc": "Basic skills",
+                "actionComment": "Some comment about their skills"
               }
             ]
           }
