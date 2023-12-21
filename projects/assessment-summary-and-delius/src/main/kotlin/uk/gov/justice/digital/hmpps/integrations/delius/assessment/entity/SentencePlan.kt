@@ -32,6 +32,8 @@ class SentencePlan(
     @Column(name = "oasys_sentence_plan_id")
     val id: Long = 0
 ) {
+    val partitionAreaId: Long = 0
+
     @OneToMany(mappedBy = "id.sentencePlan", cascade = [CascadeType.ALL])
     var needs: List<Need> = listOf()
         private set
