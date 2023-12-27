@@ -527,13 +527,13 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="REGISTRATION.CONTACT_ID references CONTACT.CONTACT_ID via SYS_C0024590"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.CONTACT_ID</span></td>
-                                                <td class="constraint detail">SYS_C0024590</td>
+                                                <td title="REGISTRATION.CONTACT_ID references CONTACT_REDEF.CONTACT_ID via TMP$$_SYS_C00245900"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.CONTACT_ID</span></td>
+                                                <td class="constraint detail">TMP$$_SYS_C00245900</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
-                                                <td title="REGISTRATION.CONTACT_ID references CONTACT_REDEF.CONTACT_ID via TMP$$_SYS_C00245900"><a href='CONTACT_REDEF.html'>CONTACT_REDEF</a><span class='relatedKey'>.CONTACT_ID</span></td>
-                                                <td class="constraint detail">TMP$$_SYS_C00245900</td>
+                                                <td title="REGISTRATION.CONTACT_ID references CONTACT.CONTACT_ID via SYS_C0024590"><a href='CONTACT.html'>CONTACT</a><span class='relatedKey'>.CONTACT_ID</span></td>
+                                                <td class="constraint detail">SYS_C0024590</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -739,20 +739,20 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>TRUE_OR_FALSE34</td>
-                                    <td>SOFT_DELETED IN (0, 1)</td>
-                                </tr>
-                                <tr>
-                                    <td>YES_OR_NO_ONLY_184817030</td>
-                                    <td>DOCUMENT_LINKED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                    <td>REGISTRATION</td>
+                                    <td> (&#10;(REGISTRATION_DATE &lt;&#61; NEXT_REVIEW_DATE) OR (NEXT_REVIEW_DATE IS NULL)&#10;) </td>
                                 </tr>
                                 <tr>
                                     <td>TRUE_OR_FALSE35</td>
                                     <td>DEREGISTERED IN (0, 1)</td>
                                 </tr>
                                 <tr>
-                                    <td>REGISTRATION</td>
-                                    <td> (&#10;(REGISTRATION_DATE &lt;&#61; NEXT_REVIEW_DATE) OR (NEXT_REVIEW_DATE IS NULL)&#10;) </td>
+                                    <td>YES_OR_NO_ONLY_184817030</td>
+                                    <td>DOCUMENT_LINKED IN (&#39;Y&#39;,&#39;N&#39;)</td>
+                                </tr>
+                                <tr>
+                                    <td>TRUE_OR_FALSE34</td>
+                                    <td>SOFT_DELETED IN (0, 1)</td>
                                 </tr>
                                 </tbody>
                             </table>
