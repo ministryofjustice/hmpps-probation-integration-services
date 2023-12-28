@@ -136,6 +136,8 @@ class DataLoader(
 
         mainCatRepository.save(SentenceGenerator.MAIN_CAT_F)
 
+        providerRepository.save(ProviderGenerator.NON_CRS_PROVIDER)
+        providerRepository.save(ProviderGenerator.INACTIVE_PROVIDER)
         val provider = providerRepository.saveAndFlush(ProviderGenerator.INTENDED_PROVIDER)
         pduRepository.saveAll(
             listOf(

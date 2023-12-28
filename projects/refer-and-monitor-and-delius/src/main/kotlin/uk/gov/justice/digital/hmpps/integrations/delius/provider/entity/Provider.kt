@@ -18,6 +18,8 @@ class Provider(
 
     val description: String,
 
+    val endDate: LocalDate?,
+
     @Id
     @Column(name = "probation_area_id")
     val id: Long
@@ -73,8 +75,9 @@ class Location(
     val startDate: LocalDate,
     val endDate: LocalDate?,
 
-    @Column(name = "probation_area_id")
-    val providerId: Long,
+    @ManyToOne
+    @JoinColumn(name = "probation_area_id")
+    val provider: Provider,
 
     @Id
     @Column(name = "office_location_id")
@@ -130,17 +133,28 @@ interface TeamRepository : JpaRepository<Team, Long> {
 fun TeamRepository.getByCode(code: String) = findByCode(code) ?: throw NotFoundException("Team", "code", code)
 
 interface LocationRepository : JpaRepository<Location, Long> {
-    fun findByCodeAndEndDateIsNull(code: String): Location?
+    @Query(
+        """
+        select l from Location l
+        join fetch l.provider p
+        where l.code = :code
+        and (p.endDate is null or p.endDate > current_date)
+        and (l.endDate is null or l.endDate > current_date)
+        """
+    )
+    fun findActiveLocationByCode(code: String): Location?
 
     @Query(
         """
         select l from Location l
-        where l.providerId = :providerId
-        and l.endDate is null
+        join fetch l.provider p
+        where p.id = :providerId 
+        and (p.endDate is null or p.endDate > current_date)
+        and (l.endDate is null or l.endDate > current_date)
     """
     )
     fun findAllLocationsForProvider(providerId: Long): List<Location>
 }
 
 fun LocationRepository.getByCode(code: String) =
-    findByCodeAndEndDateIsNull(code) ?: throw NotFoundException("Location", "code", code)
+    findActiveLocationByCode(code) ?: throw NotFoundException("Location", "code", code)

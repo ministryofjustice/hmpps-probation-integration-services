@@ -12,6 +12,8 @@ import java.time.LocalDate
 
 object ProviderGenerator {
     val INTENDED_PROVIDER = generateProvider(Provider.INTENDED_PROVIDER_CODE, "Test Provider")
+    val NON_CRS_PROVIDER = generateProvider("N01", "Non-CRS Provider")
+    val INACTIVE_PROVIDER = generateProvider("N02", "Inactive Provider", endDate = LocalDate.of(2020, 1, 1))
     val PROBATION_BOROUGH = generateBorough("PDU01")
     val PRISON_BOROUGH = generateBorough("PDU02")
     val PROBATION_DISTRICT = generateDistrict("LDU01", borough = PROBATION_BOROUGH)
@@ -28,11 +30,17 @@ object ProviderGenerator {
     val LOCATIONS = listOf(
         generateLocation("TESTONE", buildingName = "Test One", streetName = "Mantle Place", postcode = "MP1 1PM"),
         generateLocation("TESTTWO", buildingName = "Test Two", postcode = "MP2 2PM", telephoneNumber = "020 123 6789"),
-        generateLocation("NOTCRS", providerId = 999L)
+        generateLocation("NOTCRS", provider = NON_CRS_PROVIDER),
+        generateLocation("DEFAULT", provider = INACTIVE_PROVIDER), // duplicate code linked to inactive provider
+        generateLocation("ENDDATE", endDate = LocalDate.of(2020, 1, 1))
     )
 
-    fun generateProvider(code: String, description: String, id: Long = IdGenerator.getAndIncrement()) =
-        Provider(code, description, id)
+    fun generateProvider(
+        code: String,
+        description: String,
+        endDate: LocalDate? = null,
+        id: Long = IdGenerator.getAndIncrement()
+    ) = Provider(code, description, endDate, id)
 
     fun generateBorough(
         code: String,
@@ -83,7 +91,7 @@ object ProviderGenerator {
         telephoneNumber: String? = null,
         startDate: LocalDate = LocalDate.now().minusDays(7),
         endDate: LocalDate? = null,
-        providerId: Long = INTENDED_PROVIDER.id,
+        provider: Provider = INTENDED_PROVIDER,
         id: Long = IdGenerator.getAndIncrement()
     ) = Location(
         code,
@@ -98,7 +106,7 @@ object ProviderGenerator {
         telephoneNumber,
         startDate,
         endDate,
-        providerId,
+        provider,
         id
     )
 }
