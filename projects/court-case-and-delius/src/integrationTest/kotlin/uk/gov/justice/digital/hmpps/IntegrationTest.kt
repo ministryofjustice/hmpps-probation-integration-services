@@ -11,13 +11,13 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
 import uk.gov.justice.digital.hmpps.api.model.ProbationStatusDetail
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
 @AutoConfigureMockMvc
@@ -36,15 +36,15 @@ internal class IntegrationTest {
     @MethodSource("probationStatuses")
     fun `correct status returned for each case`(crn: String, statusDetail: ProbationStatusDetail) {
         val expect = mockMvc
-            .perform(get("/probation-case/$crn/status").withOAuth2Token(wireMockServer))
+            .perform(get("/probation-case/$crn/status").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(statusDetail.status.name))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.inBreach").value(statusDetail.inBreach))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.preSentenceActivity").value(statusDetail.preSentenceActivity))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.awaitingPsr").value(statusDetail.awaitingPsr))
+            .andExpect(jsonPath("$.status").value(statusDetail.status.name))
+            .andExpect(jsonPath("$.inBreach").value(statusDetail.inBreach))
+            .andExpect(jsonPath("$.preSentenceActivity").value(statusDetail.preSentenceActivity))
+            .andExpect(jsonPath("$.awaitingPsr").value(statusDetail.awaitingPsr))
 
         statusDetail.terminationDate?.let {
-            expect.andExpect(MockMvcResultMatchers.jsonPath("$.terminationDate").value(it.toString()))
+            expect.andExpect(jsonPath("$.terminationDate").value(it.toString()))
         }
     }
 

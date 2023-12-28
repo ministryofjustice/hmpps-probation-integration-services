@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,7 +10,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -19,13 +18,10 @@ internal class StaffIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
     @Test
     fun `get staff by code`() {
         mockMvc
-            .perform(get("/staff/STAFF01").withOAuth2Token(wireMockServer))
+            .perform(get("/staff/STAFF01").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("code", equalTo("STAFF01")))
             .andExpect(jsonPath("username", equalTo("test.user")))
@@ -37,7 +33,7 @@ internal class StaffIntegrationTest {
     @Test
     fun `get staff by username`() {
         mockMvc
-            .perform(get("/staff?username=test.user").withOAuth2Token(wireMockServer))
+            .perform(get("/staff?username=test.user").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("code", equalTo("STAFF01")))
             .andExpect(jsonPath("username", equalTo("test.user")))
@@ -45,14 +41,14 @@ internal class StaffIntegrationTest {
 
     @Test
     fun `staff by code not found`() {
-        mockMvc.perform(get("/staff/DOESNOTEXIST").withOAuth2Token(wireMockServer))
+        mockMvc.perform(get("/staff/DOESNOTEXIST").withToken())
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("message", equalTo("Staff with code of DOESNOTEXIST not found")))
     }
 
     @Test
     fun `staff by username not found`() {
-        mockMvc.perform(get("/staff?username=DOESNOTEXIST").withOAuth2Token(wireMockServer))
+        mockMvc.perform(get("/staff?username=DOESNOTEXIST").withToken())
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("message", equalTo("Staff with username of DOESNOTEXIST not found")))
     }
@@ -60,7 +56,7 @@ internal class StaffIntegrationTest {
     @Test
     fun `staff by id not found`() {
         mockMvc
-            .perform(get("/staff?id=-1").withOAuth2Token(wireMockServer))
+            .perform(get("/staff?id=-1").withToken())
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("message", equalTo("Staff with staffId of -1 not found")))
     }
@@ -68,7 +64,7 @@ internal class StaffIntegrationTest {
     @Test
     fun `get managed prisoners`() {
         mockMvc
-            .perform(get("/staff/STAFF01/managedPrisonerIds").withOAuth2Token(wireMockServer))
+            .perform(get("/staff/STAFF01/managedPrisonerIds").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("[*]", equalTo(listOf("PERSON1"))))
     }
@@ -76,7 +72,7 @@ internal class StaffIntegrationTest {
     @Test
     fun `get community manager`() {
         mockMvc
-            .perform(get("/case/PERSON1/communityManager").withOAuth2Token(wireMockServer))
+            .perform(get("/case/PERSON1/communityManager").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("code", equalTo("STAFF01")))
             .andExpect(jsonPath("name.forenames", equalTo("Test")))
@@ -90,7 +86,7 @@ internal class StaffIntegrationTest {
     @Test
     fun `community manager not found`() {
         mockMvc
-            .perform(get("/case/DOESNOTEXIST/communityManager").withOAuth2Token(wireMockServer))
+            .perform(get("/case/DOESNOTEXIST/communityManager").withToken())
             .andExpect(status().isNotFound)
             .andExpect(
                 jsonPath(

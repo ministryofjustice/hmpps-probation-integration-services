@@ -10,14 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.request
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.util.ResourceUtils
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -31,14 +27,14 @@ internal class IntegrationTest {
     @Test
     fun `non-existent case returns 404`() {
         mockMvc
-            .perform(get("/case/DOESNOTEXIST/documents").withOAuth2Token(wireMockServer))
+            .perform(get("/case/DOESNOTEXIST/documents").withToken())
             .andExpect(status().isNotFound)
     }
 
     @Test
     fun `get person and event level documents`() {
         mockMvc
-            .perform(get("/case/${PersonGenerator.DEFAULT.nomisId}/documents").withOAuth2Token(wireMockServer))
+            .perform(get("/case/${PersonGenerator.DEFAULT.nomisId}/documents").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("crn", equalTo(PersonGenerator.DEFAULT.crn)))
             .andExpect(jsonPath("name.forename", equalTo(PersonGenerator.DEFAULT.forename)))
@@ -96,11 +92,7 @@ internal class IntegrationTest {
 
     @Test
     fun `document can be downloaded`() {
-        mockMvc.perform(
-            get("/document/uuid1")
-                .accept("application/octet-stream")
-                .withOAuth2Token(wireMockServer)
-        )
+        mockMvc.perform(get("/document/uuid1").accept("application/octet-stream").withToken())
             .andExpect(request().asyncStarted())
             .andDo(MvcResult::getAsyncResult)
             .andExpect(status().is2xxSuccessful)

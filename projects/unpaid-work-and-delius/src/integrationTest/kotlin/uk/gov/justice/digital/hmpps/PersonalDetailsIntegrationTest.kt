@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -11,13 +10,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.controller.personaldetails.model.name
-import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CaseGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceSubTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonalCircumstanceTypeGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonalContactGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -25,15 +19,10 @@ class PersonalDetailsIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockserver: WireMockServer
-
     @Test
     fun `successful response`() {
         val person = CaseGenerator.DEFAULT
-        mockMvc.perform(
-            get("/case-data/${person.crn}/personal-details").withOAuth2Token(wireMockserver)
-        )
+        mockMvc.perform(get("/case-data/${person.crn}/personal-details").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.crn").value(person.crn))
             .andExpect(jsonPath("$.personalCircumstances[0].type.code").value(PersonalCircumstanceTypeGenerator.DEFAULT.code))

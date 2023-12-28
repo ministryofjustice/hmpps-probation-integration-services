@@ -1,8 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItems
@@ -11,20 +8,16 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.api.model.CaseView
-import uk.gov.justice.digital.hmpps.api.model.CvDocument
-import uk.gov.justice.digital.hmpps.api.model.CvOffence
-import uk.gov.justice.digital.hmpps.api.model.CvRequirement
-import uk.gov.justice.digital.hmpps.api.model.CvSentence
+import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
 import uk.gov.justice.digital.hmpps.data.generator.DocumentGenerator
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -34,36 +27,22 @@ class CaseViewIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
-    @Autowired
-    lateinit var wireMockserver: WireMockServer
-
     @Test
     fun `get case view unauthorised`() {
-        mockMvc.perform(
-            get("/allocation-demand/N452321/1/case-view")
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isUnauthorized)
+        mockMvc.perform(get("/allocation-demand/N452321/1/case-view"))
+            .andExpect(status().isUnauthorized)
     }
 
     @Test
     fun `get case view no matching crn`() {
-        mockMvc.perform(
-            get("/allocation-demand/N452321/1/case-view")
-                .withOAuth2Token(wireMockserver)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isNotFound)
+        mockMvc.perform(get("/allocation-demand/N452321/1/case-view").withToken())
+            .andExpect(status().isNotFound)
     }
 
     @Test
     fun `get case view no matching event`() {
-        mockMvc.perform(
-            get("/allocation-demand/${PersonGenerator.DEFAULT.crn}/107/case-view")
-                .withOAuth2Token(wireMockserver)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isNotFound)
+        mockMvc.perform(get("/allocation-demand/${PersonGenerator.DEFAULT.crn}/107/case-view").withToken())
+            .andExpect(status().isNotFound)
     }
 
     @Test
@@ -71,15 +50,10 @@ class CaseViewIntegrationTest {
         val person = PersonGenerator.CASE_VIEW
         val eventNumber = EventGenerator.CASE_VIEW.number
 
-        val res = mockMvc.perform(
-            get("/allocation-demand/${person.crn}/$eventNumber/case-view")
-                .withOAuth2Token(wireMockserver)
-                .contentType(MediaType.APPLICATION_JSON)
-        )
+        val cv = mockMvc.perform(get("/allocation-demand/${person.crn}/$eventNumber/case-view").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andReturn().response.contentAsString
+            .andReturn().response.contentAsJson<CaseView>()
 
-        val cv = objectMapper.readValue<CaseView>(res)
         Assertions.assertNotNull(cv)
         assertThat(cv.name.forename, equalTo(person.forename))
         assertThat(cv.name.surname, equalTo(person.surname))

@@ -53,11 +53,14 @@ spring:
   ldap.embedded:
     validation.enabled: false
     base-dn: ${spring.ldap.base}
-  security.oauth2.resourceserver.jwt.public-key-location: classpath:local-public-key.pub
 
 seed.database: true
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+
+jwt.authorities:
+  - ROLE_CVL_CONTEXT
+  - ROLE_PROBATION_API__CVL__USER_ROLES
 
 oauth2:
   client-id: create-and-vary-a-licence-and-delius

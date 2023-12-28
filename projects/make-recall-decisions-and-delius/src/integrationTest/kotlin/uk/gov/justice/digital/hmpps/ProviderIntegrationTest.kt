@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,7 +10,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -19,13 +18,10 @@ internal class ProviderIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockserver: WireMockServer
-
     @Test
     fun `get provider by code`() {
         val provider = PersonGenerator.DEFAULT_PROVIDER
-        mockMvc.perform(get("/provider/${provider.code}").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/provider/${provider.code}").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.code", equalTo("TST")))
             .andExpect(jsonPath("$.name", equalTo("Provider description")))
@@ -33,7 +29,7 @@ internal class ProviderIntegrationTest {
 
     @Test
     fun `get providers`() {
-        mockMvc.perform(get("/provider").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/provider").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.size()", equalTo(1)))
             .andExpect(jsonPath("$[0].code", equalTo("TST")))

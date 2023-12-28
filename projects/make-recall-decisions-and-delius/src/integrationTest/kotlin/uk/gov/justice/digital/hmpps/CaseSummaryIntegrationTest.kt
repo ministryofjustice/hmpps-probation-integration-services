@@ -1,9 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasItem
-import org.hamcrest.Matchers.not
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -13,13 +10,9 @@ import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
+import uk.gov.justice.digital.hmpps.data.generator.*
 import uk.gov.justice.digital.hmpps.integrations.delius.casesummary.Person
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -27,15 +20,12 @@ internal class CaseSummaryIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockserver: WireMockServer
-
     @Test
     fun `personal details are returned`() {
         val person = PersonGenerator.CASE_SUMMARY
         val manager = PersonManagerGenerator.CASE_SUMMARY
         val address = AddressGenerator.CASE_SUMMARY_MAIN_ADDRESS
-        mockMvc.perform(get("/case-summary/${person.crn}/personal-details").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/case-summary/${person.crn}/personal-details").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpectPersonalDetailsToMatch(person)
             .andExpect(jsonPath("$.communityManager.staffCode", equalTo(manager.staff.code)))
@@ -48,7 +38,7 @@ internal class CaseSummaryIntegrationTest {
     fun `overview is returned`() {
         val person = PersonGenerator.CASE_SUMMARY
         val event = EventGenerator.CASE_SUMMARY
-        mockMvc.perform(get("/case-summary/${person.crn}/overview").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/case-summary/${person.crn}/overview").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpectPersonalDetailsToMatch(person)
             .andExpect(jsonPath("$.registerFlags", equalTo(listOf("MAPPA 1", "High RoSH"))))
@@ -78,7 +68,7 @@ internal class CaseSummaryIntegrationTest {
     @Test
     fun `mappa and rosh history is returned`() {
         val person = PersonGenerator.CASE_SUMMARY
-        mockMvc.perform(get("/case-summary/${person.crn}/mappa-and-rosh-history").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/case-summary/${person.crn}/mappa-and-rosh-history").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpectPersonalDetailsToMatch(person)
             .andExpect(jsonPath("$.mappa.category", equalTo(1)))
@@ -90,7 +80,7 @@ internal class CaseSummaryIntegrationTest {
     fun `licence conditions are returned`() {
         val person = PersonGenerator.CASE_SUMMARY
         val event = EventGenerator.CASE_SUMMARY
-        mockMvc.perform(get("/case-summary/${person.crn}/licence-conditions").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/case-summary/${person.crn}/licence-conditions").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpectPersonalDetailsToMatch(person)
             .andExpect(jsonPath("$.activeConvictions[0].licenceConditions.size()", equalTo(1)))
@@ -112,7 +102,7 @@ internal class CaseSummaryIntegrationTest {
     @Test
     fun `contact history is returned`() {
         val person = PersonGenerator.CASE_SUMMARY
-        mockMvc.perform(get("/case-summary/${person.crn}/contact-history").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/case-summary/${person.crn}/contact-history").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpectPersonalDetailsToMatch(person)
             .andExpect(
@@ -137,11 +127,7 @@ internal class CaseSummaryIntegrationTest {
     @Test
     fun `contacts can be filtered on date`() {
         val person = PersonGenerator.CASE_SUMMARY
-        mockMvc.perform(
-            get("/case-summary/${person.crn}/contact-history?from=2022-01-01&to=2022-01-01").withOAuth2Token(
-                wireMockserver
-            )
-        )
+        mockMvc.perform(get("/case-summary/${person.crn}/contact-history?from=2022-01-01&to=2022-01-01").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.contacts.*.notes", equalTo(listOf("past"))))
             .andExpect(jsonPath("$.summary.hits", equalTo(1)))
@@ -151,11 +137,7 @@ internal class CaseSummaryIntegrationTest {
     @Test
     fun `contacts can be excluded if they are system-generated`() {
         val person = PersonGenerator.CASE_SUMMARY
-        mockMvc.perform(
-            get("/case-summary/${person.crn}/contact-history?includeSystemGenerated=false").withOAuth2Token(
-                wireMockserver
-            )
-        )
+        mockMvc.perform(get("/case-summary/${person.crn}/contact-history?includeSystemGenerated=false").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.contacts.*.notes", not(hasItem("system-generated"))))
     }
@@ -163,7 +145,7 @@ internal class CaseSummaryIntegrationTest {
     @Test
     fun `contacts can be queried on notes`() {
         val person = PersonGenerator.CASE_SUMMARY
-        mockMvc.perform(get("/case-summary/${person.crn}/contact-history?query=Doc").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/case-summary/${person.crn}/contact-history?query=Doc").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.contacts.*.notes", hasItem("documents")))
     }
@@ -171,7 +153,7 @@ internal class CaseSummaryIntegrationTest {
     @Test
     fun `recommendation model is returned`() {
         val person = PersonGenerator.CASE_SUMMARY
-        mockMvc.perform(get("/case-summary/${person.crn}/recommendation-model").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/case-summary/${person.crn}/recommendation-model").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpectPersonalDetailsToMatch(person)
             .andExpect(jsonPath("$.mainAddress.addressNumber", equalTo("123")))

@@ -1,8 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -14,19 +11,17 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.api.model.Address
-import uk.gov.justice.digital.hmpps.api.model.Manager
-import uk.gov.justice.digital.hmpps.api.model.PDUHead
-import uk.gov.justice.digital.hmpps.api.model.Staff
-import uk.gov.justice.digital.hmpps.api.model.StaffName
+import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.service.asManager
 import uk.gov.justice.digital.hmpps.service.asPDUHead
 import uk.gov.justice.digital.hmpps.service.asStaff
 import uk.gov.justice.digital.hmpps.service.asStaffName
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
 @AutoConfigureMockMvc
@@ -35,22 +30,15 @@ internal class IntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
     @Test
     fun `returns responsible officer details`() {
         val crn = PersonGenerator.DEFAULT_PERSON.crn
 
-        val res = mockMvc
-            .perform(get("/probation-case/$crn/responsible-community-manager").withOAuth2Token(wireMockServer))
+        val manager = mockMvc
+            .perform(get("/probation-case/$crn/responsible-community-manager").withToken())
             .andExpect(status().isOk)
-            .andReturn().response.contentAsString
+            .andReturn().response.contentAsJson<Manager>()
 
-        val manager = objectMapper.readValue<Manager>(res)
         assertThat(
             manager,
             equalTo(
@@ -63,7 +51,7 @@ internal class IntegrationTest {
     fun `returns 404 if no crn or community officer`() {
         mockMvc.perform(
             get("/probation-case/Z123456/responsible-community-manager")
-                .withOAuth2Token(wireMockServer)
+                .withToken()
         ).andExpect(status().isNotFound)
     }
 
@@ -71,12 +59,11 @@ internal class IntegrationTest {
     fun `can return all addresses for a crn`() {
         val crn = PersonGenerator.DEFAULT_PERSON.crn
 
-        val res = mockMvc
-            .perform(get("/probation-case/$crn/addresses").withOAuth2Token(wireMockServer))
+        val addresses = mockMvc
+            .perform(get("/probation-case/$crn/addresses").withToken())
             .andExpect(status().isOk)
-            .andReturn().response.contentAsString
+            .andReturn().response.contentAsJson<List<Address>>()
 
-        val addresses = objectMapper.readValue<List<Address>>(res)
         assertThat(addresses.size, equalTo(2))
         assertThat(
             addresses.first(),
@@ -109,12 +96,11 @@ internal class IntegrationTest {
     fun `returns staff details`() {
         val username = StaffGenerator.DEFAULT_STAFF_USER.username
 
-        val res = mockMvc
-            .perform(get("/staff/$username").withOAuth2Token(wireMockServer))
+        val staff = mockMvc
+            .perform(get("/staff/$username").withToken())
             .andExpect(status().isOk)
-            .andReturn().response.contentAsString
+            .andReturn().response.contentAsJson<Staff>()
 
-        val staff = objectMapper.readValue<Staff>(res)
         assertThat(
             staff,
             equalTo(
@@ -127,12 +113,11 @@ internal class IntegrationTest {
     fun `returns pdu heads`() {
         val boroughCode = ProviderGenerator.DEFAULT_BOROUGH.code
 
-        val res = mockMvc
-            .perform(get("/staff/$boroughCode/pdu-head").withOAuth2Token(wireMockServer))
+        val pduHeads = mockMvc
+            .perform(get("/staff/$boroughCode/pdu-head").withToken())
             .andExpect(status().isOk)
-            .andReturn().response.contentAsString
+            .andReturn().response.contentAsJson<List<PDUHead>>()
 
-        val pduHeads = objectMapper.readValue<List<PDUHead>>(res)
         assertThat(
             pduHeads,
             equalTo(
@@ -148,16 +133,11 @@ internal class IntegrationTest {
         val usernames =
             listOf(StaffGenerator.DEFAULT_PDUSTAFF_USER.username, StaffGenerator.DEFAULT_STAFF_USER.username)
 
-        val res = mockMvc
-            .perform(
-                post("/staff").withOAuth2Token(wireMockServer)
-                    .contentType("application/json")
-                    .content(objectMapper.writeValueAsString(usernames))
-            )
+        val staffNames = mockMvc
+            .perform(post("/staff").withToken().withJson(usernames))
             .andExpect(status().isOk)
-            .andReturn().response.contentAsString
+            .andReturn().response.contentAsJson<List<StaffName>>()
 
-        val staffNames = objectMapper.readValue<List<StaffName>>(res)
         assertThat(
             staffNames,
             equalTo(

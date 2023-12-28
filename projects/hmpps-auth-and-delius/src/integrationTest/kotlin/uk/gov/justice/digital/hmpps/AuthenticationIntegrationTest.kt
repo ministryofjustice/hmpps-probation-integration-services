@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -15,16 +14,13 @@ import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 internal class AuthenticationIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
 
     @Autowired
     lateinit var ldapTemplate: LdapTemplate
@@ -68,12 +64,12 @@ internal class AuthenticationIntegrationTest {
             .andExpect(status().isBadRequest)
     }
 
-    private fun authenticate(json: String) = post("/authenticate").withOAuth2Token(wireMockServer)
+    private fun authenticate(json: String) = post("/authenticate").withToken()
         .contentType(MediaType.APPLICATION_JSON)
         .content(json)
 
     private fun changePassword(username: String, json: String) =
-        post("/user/$username/password").withOAuth2Token(wireMockServer)
+        post("/user/$username/password").withToken()
             .contentType(MediaType.APPLICATION_JSON)
             .content(json)
 

@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -15,23 +13,23 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultMatcher
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.MergeAppointment
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.entity.ContactOutcome
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.service.Attended
 import uk.gov.justice.digital.hmpps.service.NoSessionReasonType
 import uk.gov.justice.digital.hmpps.service.Outcome
 import uk.gov.justice.digital.hmpps.test.CustomMatchers.isCloseTo
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -41,23 +39,15 @@ internal class MergeAppointmentIntegrationTest {
     lateinit var mockMvc: MockMvc
 
     @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
-    @Autowired
     lateinit var contactRepository: ContactRepository
 
     private fun makeRequest(person: Person, referralId: UUID, request: MergeAppointment, result: ResultMatcher) {
-        val json = objectMapper.readTree(objectMapper.writeValueAsString(request))
-
         mockMvc.perform(
-            MockMvcRequestBuilders.put("/probation-case/${person.crn}/referrals/$referralId/appointments")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json.toPrettyString())
-        ).andExpect(result)
+            put("/probation-case/${person.crn}/referrals/$referralId/appointments")
+                .withToken()
+                .withJson(request)
+        )
+            .andExpect(result)
     }
 
     @Test

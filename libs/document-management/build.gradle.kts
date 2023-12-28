@@ -4,6 +4,7 @@ dependencies {
     implementation(project(":libs:commons"))
     implementation(project(":libs:audit"))
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")

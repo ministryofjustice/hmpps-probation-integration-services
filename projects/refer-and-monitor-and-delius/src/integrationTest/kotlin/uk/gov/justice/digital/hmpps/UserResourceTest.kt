@@ -1,22 +1,17 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.github.tomakehurst.wiremock.WireMockServer
 import jakarta.servlet.ServletException
 import jakarta.validation.ConstraintViolationException
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.CoreMatchers.hasItem
-import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.CaseIdentifier
 import uk.gov.justice.digital.hmpps.api.model.ManagedCases
@@ -25,9 +20,12 @@ import uk.gov.justice.digital.hmpps.api.model.UserDetail
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.service.CaseAccess
 import uk.gov.justice.digital.hmpps.service.UserAccess
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,21 +33,12 @@ class UserResourceTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
     @Test
     fun `correctly returns cases managed by a given user`() {
-        val res = mockMvc.perform(
-            MockMvcRequestBuilders.get("/users/john-smith/managed-cases")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().is2xxSuccessful).andReturn().response.contentAsString
+        val managedCases = mockMvc.perform(get("/users/john-smith/managed-cases").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<ManagedCases>()
 
-        val managedCases = objectMapper.readValue<ManagedCases>(res)
         assertThat(managedCases.managedCases.size, equalTo(2))
         assertThat(managedCases.managedCases, hasItem(CaseIdentifier(PersonGenerator.COMMUNITY_RESPONSIBLE.crn)))
         assertThat(managedCases.managedCases, hasItem(CaseIdentifier(PersonGenerator.COMMUNITY_NOT_RESPONSIBLE.crn)))
@@ -57,23 +46,21 @@ class UserResourceTest {
 
     @Test
     fun `limited access controls are correctly returned`() {
-        val res = mockMvc.perform(
-            MockMvcRequestBuilders.post("/users/${UserGenerator.LIMITED_ACCESS_USER.username.lowercase()}/access")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    objectMapper.writeValueAsString(
-                        listOf(
-                            PersonGenerator.EXCLUSION.crn,
-                            PersonGenerator.RESTRICTION.crn,
-                            PersonGenerator.DEFAULT.crn,
-                            PersonGenerator.RESTRICTION_EXCLUSION.crn
-                        )
+        val userAccess = mockMvc.perform(
+            post("/users/${UserGenerator.LIMITED_ACCESS_USER.username.lowercase()}/access")
+                .withToken()
+                .withJson(
+                    listOf(
+                        PersonGenerator.EXCLUSION.crn,
+                        PersonGenerator.RESTRICTION.crn,
+                        PersonGenerator.DEFAULT.crn,
+                        PersonGenerator.RESTRICTION_EXCLUSION.crn
                     )
                 )
-        ).andReturn().response.contentAsString
+        )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<UserAccess>()
 
-        val userAccess = objectMapper.readValue<UserAccess>(res)
         val result: Map<String, CaseAccess> = userAccess.access.associateBy { it.crn }
 
         val excludedCrn = PersonGenerator.EXCLUSION.crn
@@ -131,22 +118,20 @@ class UserResourceTest {
 
     @Test
     fun `limited access controls do not prevent legitimate access`() {
-        val res = mockMvc.perform(
-            MockMvcRequestBuilders.post("/users/${UserGenerator.AUDIT_USER.username.lowercase()}/access")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    objectMapper.writeValueAsString(
-                        listOf(
-                            PersonGenerator.EXCLUSION.crn,
-                            PersonGenerator.RESTRICTION.crn,
-                            PersonGenerator.DEFAULT.crn
-                        )
+        val userAccess = mockMvc.perform(
+            post("/users/${UserGenerator.AUDIT_USER.username.lowercase()}/access")
+                .withToken()
+                .withJson(
+                    listOf(
+                        PersonGenerator.EXCLUSION.crn,
+                        PersonGenerator.RESTRICTION.crn,
+                        PersonGenerator.DEFAULT.crn
                     )
                 )
-        ).andReturn().response.contentAsString
+        )
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<UserAccess>()
 
-        val userAccess = objectMapper.readValue<UserAccess>(res)
         val result: Map<String, CaseAccess> = userAccess.access.associateBy { it.crn }
 
         val exclusionCrn = PersonGenerator.EXCLUSION.crn
@@ -169,12 +154,12 @@ class UserResourceTest {
     @Test
     fun `validates that between 1 and 500 crns are provided`() {
         val ex = assertThrows<ServletException> {
-            mockMvc.perform(
-                MockMvcRequestBuilders.post("/users/${UserGenerator.AUDIT_USER.username.lowercase()}/access")
-                    .withOAuth2Token(wireMockServer)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(listOf<String>()))
-            ).andReturn().response.contentAsString
+            mockMvc
+                .perform(
+                    post("/users/${UserGenerator.AUDIT_USER.username.lowercase()}/access")
+                        .withToken()
+                        .withJson(listOf<String>())
+                )
         }
         assertThat(ex.cause, instanceOf(ConstraintViolationException::class.java))
         assertThat(ex.cause!!.message, equalTo("userAccessCheck.crns: Please provide between 1 and 500 crns"))
@@ -182,43 +167,25 @@ class UserResourceTest {
 
     @Test
     fun `user details not found returns 404`() {
-        mockMvc.perform(
-            MockMvcRequestBuilders.get("/users/non-existent-user/details")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isNotFound)
+        mockMvc.perform(get("/users/non-existent-user/details").withToken())
+            .andExpect(status().isNotFound)
     }
 
     @Test
     fun `user details not found returns 404 from id`() {
-        mockMvc.perform(
-            MockMvcRequestBuilders.get("/users/829185656291/details")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isNotFound)
+        mockMvc.perform(get("/users/829185656291/details").withToken())
+            .andExpect(status().isNotFound)
     }
 
     @Test
     fun `user details are correctly returned`() {
-        val res = mockMvc.perform(
-            MockMvcRequestBuilders.get("/users/john-smith/details")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andReturn().response.contentAsString
-
-        val userDetail = objectMapper.readValue<UserDetail>(res)
-        assertThat(userDetail, equalTo(UserDetail("john-smith", Name("John", "Smith"), "john.smith@moj.gov.uk")))
+        mockMvc.perform(get("/users/john-smith/details").withToken())
+            .andExpectJson(UserDetail("john-smith", Name("John", "Smith"), "john.smith@moj.gov.uk"))
     }
 
     @Test
     fun `user details are correctly returned from id`() {
-        val res = mockMvc.perform(
-            MockMvcRequestBuilders.get("/users/${ProviderGenerator.JOHN_SMITH_USER.id}/details")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andReturn().response.contentAsString
-
-        val userDetail = objectMapper.readValue<UserDetail>(res)
-        assertThat(userDetail, equalTo(UserDetail("john-smith", Name("John", "Smith"), "john.smith@moj.gov.uk")))
+        mockMvc.perform(get("/users/${ProviderGenerator.JOHN_SMITH_USER.id}/details").withToken())
+            .andExpectJson(UserDetail("john-smith", Name("John", "Smith"), "john.smith@moj.gov.uk"))
     }
 }

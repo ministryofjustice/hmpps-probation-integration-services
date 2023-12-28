@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +12,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.model.HealthDetail
 import uk.gov.justice.digital.hmpps.model.HealthDetails
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
@@ -24,20 +23,13 @@ internal class HealthDetailsTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
     @Test
     fun `should return health details`() {
-        val result = mockMvc
-            .perform(get("/health-details/D006296").withOAuth2Token(wireMockServer))
+        val healthDetails = mockMvc
+            .perform(get("/health-details/D006296").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andReturn()
+            .andReturn().response.contentAsJson<HealthDetails>()
 
-        val healthDetails = objectMapper.readValue(result.response.contentAsString, HealthDetails::class.java)
         assertThat(healthDetails.initiationDate)
             .isEqualTo(ZonedDateTime.parse("2022-11-09T14:33:53Z").withZoneSameInstant(EuropeLondon))
         assertThat(healthDetails.lastUpdatedDate)
@@ -63,7 +55,7 @@ internal class HealthDetailsTest {
     @Test
     fun `should return HTTP not found when CRN does not exist`() {
         mockMvc
-            .perform(get("/health-details/D000001").withOAuth2Token(wireMockServer))
+            .perform(get("/health-details/D000001").withToken())
             .andExpect(status().isNotFound)
     }
 }

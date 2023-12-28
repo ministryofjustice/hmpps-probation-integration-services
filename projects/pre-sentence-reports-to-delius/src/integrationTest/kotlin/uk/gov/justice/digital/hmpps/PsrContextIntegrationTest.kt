@@ -1,8 +1,6 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -11,21 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.HttpHeaders
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.web.client.RestTemplate
 import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.courtreport.CourtReportRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.Address
-import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.Court
-import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.LocalJusticeArea
-import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.Name
-import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.Offence
-import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.PreSentenceReportContext
+import uk.gov.justice.digital.hmpps.integrations.delius.presentencereport.*
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
-import java.util.UUID
+import java.util.*
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -36,9 +29,6 @@ class PsrContextIntegrationTest {
 
     @Autowired
     lateinit var objectMapper: ObjectMapper
-
-    @Autowired
-    lateinit var wireMockserver: WireMockServer
 
     @MockBean
     lateinit var courtReportRepository: CourtReportRepository
@@ -56,10 +46,7 @@ class PsrContextIntegrationTest {
         whenever(courtReportRepository.getCourtReportContextJson(reportId))
             .thenReturn(null)
 
-        mockMvc.perform(
-            get("/context/$reportId")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer ${getToken()}")
-        )
+        mockMvc.perform(get("/context/$reportId").withToken())
             .andExpect(status().isNotFound)
     }
 
@@ -69,24 +56,11 @@ class PsrContextIntegrationTest {
         whenever(courtReportRepository.getCourtReportContextJson(reportId))
             .thenReturn(objectMapper.writeValueAsString(getPreSentenceReportContext()))
 
-        val result = mockMvc.perform(
-            get("/context/$reportId")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer ${getToken()}")
-        )
+        val detail = mockMvc.perform(get("/context/$reportId").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andReturn()
-        val detail = objectMapper.readValue(result.response.contentAsString, PreSentenceReportContext::class.java)
+            .andReturn().response.contentAsJson<PreSentenceReportContext>()
 
         assertThat(detail, equalTo(getPreSentenceReportContext()))
-    }
-
-    private fun getToken(): String {
-        val authResponse = RestTemplate().postForObject(
-            "http://localhost:${wireMockserver.port()}/auth/oauth/token",
-            null,
-            JsonNode::class.java
-        )!!
-        return authResponse["access_token"].asText()
     }
 
     private fun getPreSentenceReportContext(): PreSentenceReportContext {

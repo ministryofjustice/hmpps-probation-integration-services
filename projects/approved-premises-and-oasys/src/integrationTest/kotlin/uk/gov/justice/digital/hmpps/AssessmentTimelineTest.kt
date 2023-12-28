@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +11,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.integrations.oasys.model.OasysTimelineAssessment
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
@@ -23,21 +22,13 @@ internal class AssessmentTimelineTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
     @Test
     fun `get latest layer 3 timeline assessment`() {
-        val result = mockMvc
-            .perform(get("/latest-assessment/D006296").withOAuth2Token(wireMockServer))
+        val oasysTimelineAssessment = mockMvc
+            .perform(get("/latest-assessment/D006296").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andReturn()
+            .andReturn().response.contentAsJson<OasysTimelineAssessment>()
 
-        val oasysTimelineAssessment =
-            objectMapper.readValue(result.response.contentAsString, OasysTimelineAssessment::class.java)
         assertThat(oasysTimelineAssessment.initiationDate)
             .isEqualTo(ZonedDateTime.parse("2022-07-27T12:10:58+01:00").withZoneSameInstant(EuropeLondon))
     }
@@ -45,14 +36,14 @@ internal class AssessmentTimelineTest {
     @Test
     fun `should return HTTP not found when CRN does not exist`() {
         mockMvc
-            .perform(get("/latest-assessment/D000000").withOAuth2Token(wireMockServer))
+            .perform(get("/latest-assessment/D000000").withToken())
             .andExpect(status().isNotFound)
     }
 
     @Test
     fun `should return HTTP not found when a layer 3 assessment does not exist`() {
         mockMvc
-            .perform(get("/latest-assessment/D000001").withOAuth2Token(wireMockServer))
+            .perform(get("/latest-assessment/D000001").withToken())
             .andExpect(status().isNotFound)
     }
 }

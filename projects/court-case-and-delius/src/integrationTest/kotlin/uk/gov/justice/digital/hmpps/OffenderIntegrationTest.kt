@@ -17,8 +17,9 @@ import uk.gov.justice.digital.hmpps.api.model.ProbationRecord
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -40,14 +41,14 @@ internal class OffenderIntegrationTest {
     @Test
     fun `API call retuns probation record`() {
         val crn = PersonGenerator.CURRENTLY_MANAGED.crn
-        val result = mockMvc
-            .perform(get("/probation-case/$crn").withOAuth2Token(wireMockServer))
-            .andExpect(status().is2xxSuccessful).andReturn()
+        val detailResponse = mockMvc
+            .perform(get("/probation-case/$crn").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<ProbationRecord>()
 
         val todaysDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         val futureDate = LocalDate.now().plusDays(5).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
-        val detailResponse = objectMapper.readValue(result.response.contentAsString, ProbationRecord::class.java)
         Assertions.assertThat(detailResponse.crn).isEqualTo(crn)
         Assertions.assertThat(detailResponse.offenderManagers[0].staff.forenames)
             .isEqualTo(StaffGenerator.ALLOCATED.forename + " " + StaffGenerator.ALLOCATED.forename2)

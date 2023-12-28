@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,16 +12,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class TeamControllerIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
 
     @Test
     fun `teams managing case are returned successfully`() {
@@ -33,7 +29,7 @@ class TeamControllerIntegrationTest {
             TeamGenerator.UNALLOCATED.code
         )
         mockMvc
-            .perform(get("/teams/managingCase/${person.crn}").withOAuth2Token(wireMockServer))
+            .perform(get("/teams/managingCase/${person.crn}").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.teamCodes.size()", equalTo(3)))
             .andExpect(jsonPath("$.teamCodes", equalTo(allTeams)))
@@ -43,7 +39,7 @@ class TeamControllerIntegrationTest {
     fun `staff code can be used to filter the returned teams`() {
         val person = PersonGenerator.DEFAULT
         mockMvc
-            .perform(get("/teams/managingCase/${person.crn}?staffCode=KEY0001").withOAuth2Token(wireMockServer))
+            .perform(get("/teams/managingCase/${person.crn}?staffCode=KEY0001").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.teamCodes.size()", equalTo(1)))
             .andExpect(jsonPath("$.teamCodes[0]", equalTo(TeamGenerator.APPROVED_PREMISES_TEAM.code)))

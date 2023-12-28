@@ -1,20 +1,38 @@
 package uk.gov.justice.digital.hmpps.security
 
-import com.fasterxml.jackson.databind.JsonNode
-import com.github.tomakehurst.wiremock.WireMockServer
-import org.springframework.http.HttpHeaders.AUTHORIZATION
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
-import org.springframework.web.client.RestTemplate
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.security.oauth2.jwt.JwtDecoder
+import java.time.Duration
+import java.time.Instant
 
-class TokenHelper(
-    private val wireMockServer: WireMockServer
-) {
-    fun getToken(): String {
-        val authResponse = RestTemplate()
-            .postForObject("http://localhost:${wireMockServer.port()}/auth/oauth/token", null, JsonNode::class.java)!!
-        return authResponse["access_token"].asText()
+@Configuration
+@EnableConfigurationProperties(TokenHelper.JwtProperties::class)
+class TokenHelper {
+    companion object {
+        const val TOKEN = "token"
     }
-}
 
-fun MockHttpServletRequestBuilder.withOAuth2Token(wireMockServer: WireMockServer) =
-    this.header(AUTHORIZATION, "Bearer ${TokenHelper(wireMockServer).getToken()}")
+    @ConfigurationProperties(prefix = "jwt")
+    class JwtProperties {
+        var authorities: List<String> = emptyList()
+    }
+
+    @Bean
+    fun jwt(jwtProperties: JwtProperties): Jwt = Jwt
+        .withTokenValue(TOKEN)
+        .issuedAt(Instant.now())
+        .expiresAt(Instant.now().plus(Duration.ofDays(1)))
+        .header("alg", "none")
+        .claim("sub", "probation-integration-dev")
+        .claim("authorities", jwtProperties.authorities)
+        .build()
+
+    @Bean
+    @Primary
+    fun jwtDecoder(jwt: Jwt) = JwtDecoder { jwt }
+}

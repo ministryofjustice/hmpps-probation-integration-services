@@ -1,8 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -11,12 +8,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.service.Engagement
 import uk.gov.justice.digital.hmpps.service.Identifiers
 import uk.gov.justice.digital.hmpps.service.Name
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -24,20 +22,14 @@ internal class EngagementCreatedTest {
     @Autowired
     internal lateinit var mockMvc: MockMvc
 
-    @Autowired
-    internal lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    internal lateinit var objectMapper: ObjectMapper
-
     @Test
     fun `engagement details returned from detail url`() {
         val person = PersonGenerator.ENGAGEMENT_CREATED
-        val response = mockMvc
-            .perform(get("/probation-case.engagement.created/${person.crn}").withOAuth2Token(wireMockServer))
-            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn().response.contentAsString
+        val engagement = mockMvc
+            .perform(get("/probation-case.engagement.created/${person.crn}").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<Engagement>()
 
-        val engagement = objectMapper.readValue<Engagement>(response)
         assertThat(
             engagement,
             equalTo(

@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +11,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.datetime.EuropeLondon
 import uk.gov.justice.digital.hmpps.model.RoshSummaryDetails
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.ZonedDateTime
 
 @AutoConfigureMockMvc
@@ -23,20 +22,13 @@ internal class RoshSummaryDetailsTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
     @Test
     fun `should return rosh summary details`() {
-        val result = mockMvc
-            .perform(get("/rosh-summary/D006296").withOAuth2Token(wireMockServer))
+        val roshSummaryDetails = mockMvc
+            .perform(get("/rosh-summary/D006296").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andReturn()
+            .andReturn().response.contentAsJson<RoshSummaryDetails>()
 
-        val roshSummaryDetails = objectMapper.readValue(result.response.contentAsString, RoshSummaryDetails::class.java)
         assertThat(roshSummaryDetails.initiationDate)
             .isEqualTo(ZonedDateTime.parse("2022-11-09T14:33:53Z").withZoneSameInstant(EuropeLondon))
         assertThat(roshSummaryDetails.lastUpdatedDate)
@@ -56,7 +48,7 @@ internal class RoshSummaryDetailsTest {
     @Test
     fun `should return HTTP not found when CRN does not exist`() {
         mockMvc
-            .perform(get("/rosh-summary/D000001").withOAuth2Token(wireMockServer))
+            .perform(get("/rosh-summary/D000001").withToken())
             .andExpect(status().isNotFound)
     }
 }

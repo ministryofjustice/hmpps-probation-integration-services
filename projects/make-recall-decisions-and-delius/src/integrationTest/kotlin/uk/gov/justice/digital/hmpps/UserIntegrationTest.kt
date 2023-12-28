@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,7 +11,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -20,13 +19,10 @@ internal class UserIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockserver: WireMockServer
-
     @Test
     fun `get user details`() {
         val user = UserGenerator.USER_DETAILS
-        mockMvc.perform(get("/user/${user.username.lowercase()}").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/user/${user.username.lowercase()}").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.username", equalTo("TestUser")))
             .andExpect(jsonPath("$.staffCode", equalTo("TEST002")))
@@ -40,7 +36,7 @@ internal class UserIntegrationTest {
         val user = UserGenerator.TEST_USER1
         val person = PersonGenerator.NO_ACCESS_LIMITATIONS
 
-        mockMvc.perform(get("/user/${user.username}/access/${person.crn}").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/user/${user.username}/access/${person.crn}").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.userExcluded", equalTo(false)))
             .andExpect(jsonPath("$.exclusionMessage").doesNotExist())
@@ -53,7 +49,7 @@ internal class UserIntegrationTest {
         val user = UserGenerator.TEST_USER1
         val person = PersonGenerator.EXCLUDED
 
-        mockMvc.perform(get("/user/${user.username}/access/${person.crn}").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/user/${user.username}/access/${person.crn}").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.userExcluded", equalTo(true)))
             .andExpect(jsonPath("$.exclusionMessage", equalTo(person.exclusionMessage)))
@@ -66,7 +62,7 @@ internal class UserIntegrationTest {
         val user = UserGenerator.TEST_USER1
         val person = PersonGenerator.RESTRICTED
 
-        mockMvc.perform(get("/user/${user.username}/access/${person.crn}").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/user/${user.username}/access/${person.crn}").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.userExcluded", equalTo(false)))
             .andExpect(jsonPath("$.exclusionMessage").doesNotExist())
@@ -79,7 +75,7 @@ internal class UserIntegrationTest {
         val user = UserGenerator.TEST_USER2
         val person = PersonGenerator.RESTRICTED
 
-        mockMvc.perform(get("/user/${user.username}/access/${person.crn}").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/user/${user.username}/access/${person.crn}").withToken())
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.userExcluded", equalTo(false)))
             .andExpect(jsonPath("$.exclusionMessage").doesNotExist())
@@ -91,7 +87,7 @@ internal class UserIntegrationTest {
     fun `case does not exist`() {
         val user = UserGenerator.TEST_USER1
 
-        mockMvc.perform(get("/user/${user.username}/access/NOTFOUND").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/user/${user.username}/access/NOTFOUND").withToken())
             .andExpect(status().isNotFound)
     }
 }
