@@ -3,26 +3,28 @@ resource "aws_sns_topic_subscription" "SERVICE_NAME-queue-subscription" {
   protocol  = "sqs"
   endpoint  = module.SERVICE_NAME-queue.sqs_arn
   filter_policy = jsonencode({
-    eventType = [] # TODO add event type filter e.g ["queue.name"]
+    eventType = [] # TODO add event type filter e.g ["prison.case-note.published"]
   })
 }
 
 module "SERVICE_NAME-queue" {
   source                 = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=5.0.0"
-  namespace              = var.namespace
-  team_name              = var.team_name
-  environment_name       = var.environment_name
-  infrastructure_support = var.infrastructure_support
-  is_production          = var.is_production
-  business_unit          = var.business_unit
 
-  application = "SERVICE_NAME"
-  sqs_name    = "SERVICE_NAME-queue"
-
+  # Queue configuration
+  sqs_name = "SERVICE_NAME-queue"
   redrive_policy = jsonencode({
     deadLetterTargetArn = module.SERVICE_NAME-dlq.sqs_arn
     maxReceiveCount     = 3
   })
+
+  # Tags
+  application            = "SERVICE_NAME"
+  business_unit          = var.business_unit
+  environment_name       = var.environment_name
+  infrastructure_support = var.infrastructure_support
+  is_production          = var.is_production
+  namespace              = var.namespace
+  team_name              = var.team_name
 }
 
 resource "aws_sqs_queue_policy" "SERVICE_NAME-queue-policy" {
@@ -32,15 +34,19 @@ resource "aws_sqs_queue_policy" "SERVICE_NAME-queue-policy" {
 
 module "SERVICE_NAME-dlq" {
   source                 = "github.com/ministryofjustice/cloud-platform-terraform-sqs?ref=5.0.0"
-  namespace              = var.namespace
-  team_name              = var.team_name
+
+  # Queue configuration
+  sqs_name                  = "SERVICE_NAME-dlq"
+  message_retention_seconds = 7 * 24 * 3600 # 1 week
+
+  # Tags
+  application   = "SERVICE_NAME"
+  business_unit = var.business_unit
   environment_name       = var.environment_name
   infrastructure_support = var.infrastructure_support
   is_production          = var.is_production
-  business_unit          = var.business_unit
-
-  application = "SERVICE_NAME"
-  sqs_name    = "SERVICE_NAME-dlq"
+  namespace     = var.namespace
+  team_name     = var.team_name
 }
 
 resource "aws_sqs_queue_policy" "SERVICE_NAME-dlq-policy" {
