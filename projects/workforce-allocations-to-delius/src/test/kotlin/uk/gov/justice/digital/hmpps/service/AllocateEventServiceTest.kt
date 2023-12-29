@@ -18,7 +18,6 @@ import uk.gov.justice.digital.hmpps.audit.service.OptimisationTables
 import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.exception.ConflictException
 import uk.gov.justice.digital.hmpps.exception.NotActiveException
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.exceptions.IgnorableMessageException
@@ -66,7 +65,7 @@ internal class AllocateEventServiceTest {
 
     @Test
     fun `when event not found exception thrown`() {
-        whenever(eventRepository.findByPersonCrnAndNumber(any(), any())).thenReturn(null)
+        whenever(eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(any(), any())).thenReturn(null)
 
         val ex = assertThrows<NotFoundException> {
             allocateEventService.createEventAllocation(
@@ -80,7 +79,7 @@ internal class AllocateEventServiceTest {
     @Test
     fun `when event not active exception thrown`() {
         whenever(
-            eventRepository.findByPersonCrnAndNumber(
+            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail.eventNumber.toString()
             )
@@ -99,7 +98,7 @@ internal class AllocateEventServiceTest {
     fun `when order manager not found for event and date exception thrown`() {
         val event = EventGenerator.generate()
         whenever(
-            eventRepository.findByPersonCrnAndNumber(
+            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail.eventNumber.toString()
             )
@@ -124,7 +123,7 @@ internal class AllocateEventServiceTest {
         )
         val event = EventGenerator.generate()
         whenever(
-            eventRepository.findByPersonCrnAndNumber(
+            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail.eventNumber.toString()
             )
@@ -146,7 +145,7 @@ internal class AllocateEventServiceTest {
     fun `when pending transfer for event exception thrown`() {
         val event = EventGenerator.generate()
         whenever(
-            eventRepository.findByPersonCrnAndNumber(
+            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
                 PersonGenerator.DEFAULT.crn,
                 "1"
             )
@@ -169,7 +168,7 @@ internal class AllocateEventServiceTest {
     fun `when transfer reason not found exception thrown`() {
         val event = EventGenerator.generate()
         whenever(
-            eventRepository.findByPersonCrnAndNumber(
+            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
                 PersonGenerator.DEFAULT.crn,
                 allocationDetail.eventNumber.toString()
             )
