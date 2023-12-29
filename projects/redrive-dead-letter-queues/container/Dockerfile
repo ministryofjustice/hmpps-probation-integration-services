@@ -1,7 +1,8 @@
-FROM public.ecr.aws/aws-cli/aws-cli
+FROM public.ecr.aws/aws-cli/aws-cli:2.15.5
 
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# hadolint ignore=DL3033
 RUN yum update -y && \
     yum install -y shadow-utils jq && \
     yum clean all && \

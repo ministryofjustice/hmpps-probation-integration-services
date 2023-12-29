@@ -25,3 +25,8 @@ updates:
     directory: "/projects/person-search-index-from-delius/container"
     schedule:
       interval: "daily"
+
+  - package-ecosystem: "docker"
+    directory: "/projects/redrive-dead-letter-queues/container"
+    schedule:
+      interval: "monthly" # to reduce frequency of AWS CLI updates
