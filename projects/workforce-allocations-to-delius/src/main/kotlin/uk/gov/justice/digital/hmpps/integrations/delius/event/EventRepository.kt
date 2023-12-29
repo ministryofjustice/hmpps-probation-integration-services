@@ -62,4 +62,4 @@ interface EventRepository : JpaRepository<Event, Long> {
 
 fun EventRepository.getByPersonCrnAndNumber(crn: String, number: String) =
     findByPersonCrnAndNumberAndSoftDeletedFalse(crn, number)
-    ?: throw NotFoundException("Event $number not found for crn $crn")
+        ?: throw NotFoundException("Event $number not found for crn $crn")
