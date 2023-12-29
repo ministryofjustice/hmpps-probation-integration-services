@@ -11,6 +11,8 @@ object OrderManagerGenerator {
     var DEFAULT = generate(startDateTime = ManagerGenerator.START_DATE_TIME)
     var NEW = generate(eventId = EventGenerator.NEW.id, startDateTime = ManagerGenerator.START_DATE_TIME)
     var HISTORIC = generate(eventId = EventGenerator.HISTORIC.id, startDateTime = ManagerGenerator.START_DATE_TIME)
+    var DELETED_EVENT =
+        generate(eventId = EventGenerator.DELETED.id, startDateTime = ManagerGenerator.START_DATE_TIME.minusDays(3))
     var INACTIVE_EVENT = generate(
         eventId = EventGenerator.INACTIVE.id,
         startDateTime = ManagerGenerator.START_DATE_TIME.minusDays(2),

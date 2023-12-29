@@ -1,36 +1,14 @@
 package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.api.model.AllocationDemandRequest
-import uk.gov.justice.digital.hmpps.api.model.AllocationDemandResponse
-import uk.gov.justice.digital.hmpps.api.model.AllocationDemandStaffResponse
-import uk.gov.justice.digital.hmpps.api.model.AllocationDetailRequests
-import uk.gov.justice.digital.hmpps.api.model.AllocationDetails
-import uk.gov.justice.digital.hmpps.api.model.AllocationImpact
-import uk.gov.justice.digital.hmpps.api.model.ChoosePractitionerResponse
-import uk.gov.justice.digital.hmpps.api.model.Event
-import uk.gov.justice.digital.hmpps.api.model.InitialAppointment
-import uk.gov.justice.digital.hmpps.api.model.PrEvent
-import uk.gov.justice.digital.hmpps.api.model.PrOffence
-import uk.gov.justice.digital.hmpps.api.model.PrSentence
-import uk.gov.justice.digital.hmpps.api.model.ProbationRecord
-import uk.gov.justice.digital.hmpps.api.model.ProbationStatus
-import uk.gov.justice.digital.hmpps.api.model.Requirement
-import uk.gov.justice.digital.hmpps.api.model.UnallocatedEventsResponse
-import uk.gov.justice.digital.hmpps.api.model.name
-import uk.gov.justice.digital.hmpps.api.model.toManager
-import uk.gov.justice.digital.hmpps.api.model.toStaffMember
+import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.integrations.delius.allocations.AllocationDemandRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirement
 import uk.gov.justice.digital.hmpps.integrations.delius.caseview.CaseViewRequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.courtappearance.CourtAppearanceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffence
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffenceRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.MainOffence
-import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.SentenceWithManager
+import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.*
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.person.getByCrnAndSoftDeletedFalse
@@ -168,7 +146,7 @@ class AllocationDemandService(
         val person = personRepository.getByCrnAndSoftDeletedFalse(crn)
         val staff = staffRepository.findStaffWithUserByCode(staffCode)!!
         val allocatingStaff = staffRepository.findStaffWithUserByUsername(allocatingStaffUsername)!!
-        val eventId = eventRepository.findByPersonCrnAndNumber(crn, eventNumber)!!.id
+        val eventId = eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(crn, eventNumber)!!.id
         val requirements = caseViewRequirementRepository.findAllByDisposalEventId(eventId)
             .filter { it.mainCategory.code !in listOf("W", "W2") }
             .map { it.toRequirement() }
