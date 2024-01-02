@@ -37,7 +37,7 @@ jobs:
           image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
-          exit-code: '1'
+          exit-code: '0'
           format: 'sarif'
           output: 'trivy-results.sarif'
           trivyignores: '.trivyignore,projects/${{ matrix.project }}/.trivyignore'
@@ -50,7 +50,6 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
       - name: Get Trivy results
-        if: always()
         uses: aquasecurity/trivy-action@91713af97dc80187565512baba96e4364e983601 # v0.16.0
         with:
           image-ref: 'ghcr.io/ministryofjustice/hmpps-probation-integration-services/${{ matrix.project }}:latest'
@@ -60,44 +59,77 @@ jobs:
           output: 'results.json'
           trivyignores: '.trivyignore,projects/${{ matrix.project }}/.trivyignore'
 
-      - name: Output Trivy results
-        if: always()
-        run: cat results.json
+      - name: Output results
+        id: results
+        run: echo "vulnerabilities=$(jq -c '.Results[].Vulnerabilities | select(. != null) | flatten' results.json)" | tee -a "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Merge outputs
+        uses: cloudposse/github-action-matrix-outputs-write@928e2a2d3d6ae4eb94010827489805c17c81181f # v0.4.2
+        with:
+          matrix-step-name: trivy
+          matrix-key: ${{ matrix.project }}
+          outputs: |
+            vulnerabilities: ${{ steps.results.outputs.vulnerabilities }}
+
+  trivy-merge:
+    runs-on: ubuntu-latest
+    needs:
+      - trivy-scan
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cloudposse/github-action-matrix-outputs-read@ea1c28d66c34b8400391ed74d510f66abc392d5e # v0.1.1
+        id: trivy
+        with:
+          matrix-step-name: trivy
 
       - name: Create GitHub issues
-        if: failure()
         run: |
-          jq -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[]' results.json | while read -r vulnerability; do
-            id=$(echo "$vulnerability" | jq -r '.VulnerabilityID')
-            if [[ $(gh issue list --state open --label dependencies --label security --search "$id (${{ matrix.project }})" | wc -l) -gt 0 ]]; then
-              echo "Issue '$id (${{ matrix.project }})' already exists"
+          echo "$result" | jq -c '[.vulnerabilities | to_entries[] | .key as $project | .value // empty | map(. + {Projects: [$project]})] 
+            | flatten 
+            | group_by(.VulnerabilityID) 
+            | map(reduce .[] as $vuln (.[0] + {Locations:[]}; .Projects += $vuln.Projects | .Locations += [$vuln.PkgName + ":" + $vuln.InstalledVersion + " (" + $vuln.PkgPath + ")"]))
+            | map_values({Title: .VulnerabilityID, Body: ("### " + .Title + "\n" + .PrimaryURL + "\n>" + .Description + "\n#### Projects:\n* " + (.Projects | sort | unique | join("\n* ")) + "\n#### Locations:\n* `" + (.Locations | sort | unique | join("`\n* `")) + "`\n#### References:\n* " + (.References | sort | unique | join("\n* ")))})
+            | .[]' \
+          | while read -r vulnerability; do
+            title=$(echo "$vulnerability" | jq -r '.Title')
+            body=$(echo "$vulnerability" | jq -r '.Body')
+            existing=$(gh issue list --state open --label dependencies --label security --search "$title" --json 'number' --jq '.[].number' | head -n1)
+            if [ -n "$existing" ]; then
+              echo "Issue '$title' already exists, updating body..."
+              gh issue edit "$existing" --body "$body"
             else
-              gh issue create \
-                --title "$id (${{ matrix.project }})" \
-                --body "$(echo "$vulnerability" | jq -r '.Title + "\n* Project: ${{ matrix.project }}\n* Package: `" + .PkgName + ":" + .InstalledVersion + "`\n* Location: `" + .PkgPath + "`\n\n>" + .Description + "\n\n" + .PrimaryURL + "\n\nIf the vulnerability does not impact the `${{ matrix.project }}` project, you can suppress this alert by adding a comment starting with `Suppress`. For example, \"Suppressed because we do not process any untrusted XML content\"."')" \
-                --label 'dependencies,security'
+              gh issue create --title "$title" --body "$body" --label 'dependencies,security'
             fi
           done
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          result: ${{ steps.trivy.outputs.result }}
 
-      - name: Check & Close GH Issue
-        if: always()
+      - name: Close GitHub issues
         run: |
-          openissues="$(gh issue list --state open --label dependencies --label security --search '(${{ matrix.project }})' | awk '{print $3}')"
-          scanresults="$(jq -r -c '.Results[].Vulnerabilities | select(. != null) | flatten | .[].VulnerabilityID' results.json)"
+          openissues="$(gh issue list --state open --label dependencies --label security | awk '{print $3}')"
+          scanresults="$(echo "$result" | jq -r -c '.vulnerabilities | with_entries(select(.value != null)) | .[][].VulnerabilityID' | sort -u)"
           issuestoclose="$(comm -23 <(echo "$openissues" | sort -u) <(echo "$scanresults" | sort -u))" #print lines only present in first file
           echo "openissues=$openissues"
           echo "scanresults=$scanresults"
           echo "issuestoclose=$issuestoclose"
           for cve in $issuestoclose; do
             echo "$cve is already resolved, removing matching issue..."
-            issuenumber=$(gh issue list --state open --label dependencies --label security --search "$cve (${{ matrix.project }})" | awk '{print $1}')
+            issuenumber=$(gh issue list --state open --label dependencies --label security --search "$cve" | awk '{print $1}')
             echo "$issuenumber" | xargs -n1 gh issue close
           done
-
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          result: ${{ steps.trivy.outputs.result }}
+
+      - name: Fail job if any vulnerabilities are found
+        if: steps.trivy.outputs.result != '{}'
+        run: if [ "$(echo "$result" | jq '.vulnerabilities | with_entries(select(.value != null)) | length')" != 0 ]; then exit 1; fi
+        env:
+          result: ${{ steps.trivy.outputs.result }}
 
   veracode-scan:
     runs-on: ubuntu-latest

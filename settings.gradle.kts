@@ -70,7 +70,7 @@ dependencyResolutionManagement {
             library("mockito-kotlin", "org.mockito.kotlin:mockito-kotlin:5.2.1")
             library("mockito-inline", "org.mockito:mockito-inline:5.2.0")
             bundle("mockito", listOf("mockito-kotlin", "mockito-inline"))
-            library("insights", "com.microsoft.azure:applicationinsights-web:3.4.18")
+            library("insights", "com.microsoft.azure:applicationinsights-web:3.4.19")
             library("sentry", "io.sentry:sentry-spring-boot-starter-jakarta:7.1.0")
             library(
                 "opentelemetry-annotations",
