@@ -36,20 +36,32 @@ jobs:
         project:
           - approved-premises-and-delius
           - approved-premises-and-oasys
+          - arns-and-delius
+          - assessment-summary-and-delius
+          - cas3-and-delius
           - court-case-and-delius
           - create-and-vary-a-licence-and-delius
           - custody-key-dates-and-delius
           - domain-events-and-delius
+          - dps-and-delius
           - effective-proposal-framework-and-delius
           - external-api-and-delius
+          - hdc-licences-and-delius
+          - hmpps-auth-and-delius
           - make-recall-decisions-and-delius
+          - manage-offences-and-delius
           - manage-pom-cases-and-delius
           - offender-events-and-delius
+          - opd-and-delius
           - pathfinder-and-delius
           - pre-sentence-reports-to-delius
           - prison-case-notes-to-probation
           - prison-custody-status-to-delius
+          - prison-education-and-delius
+          - prison-identifier-and-delius
+          - prisoner-profile-and-delius
           - refer-and-monitor-and-delius
+          - resettlement-passport-and-delius
           - risk-assessment-scores-to-delius
           - sentence-plan-and-delius
           - sentence-plan-and-oasys
@@ -57,18 +69,6 @@ jobs:
           - tier-to-delius
           - unpaid-work-and-delius
           - workforce-allocations-to-delius
-          - manage-offences-and-delius
-          - resettlement-passport-and-delius
-          - prison-education-and-delius
-          - opd-and-delius
-          - hmpps-auth-and-delius
-          - dps-and-delius
-          - arns-and-delius
-          - cas3-and-delius
-          - hdc-licences-and-delius
-          - prisoner-profile-and-delius
-          - prison-identifier-and-delius
-          - assessment-summary-and-delius
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
@@ -129,6 +129,7 @@ jobs:
       matrix:
         project:
           - person-search-index-from-delius
+          - redrive-dead-letter-queues
     steps:
       - uses: actions/checkout@v4
 

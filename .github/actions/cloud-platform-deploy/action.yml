@@ -6,7 +6,7 @@ inputs:
     description: The project to deploy
     required: true
   environment:
-    description: The environment to deploy to (dev/preprod/prod)
+    description: The environment name to deploy to (test/preprod/prod)
     required: true
   version:
     description: The version of the service to deploy

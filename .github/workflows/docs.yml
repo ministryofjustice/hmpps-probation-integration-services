@@ -18,21 +18,33 @@ on:
           - 'All'
           - '["approved-premises-and-delius"]'
           - '["approved-premises-and-oasys"]'
+          - '["arns-and-delius"]'
+          - '["assessment-summary-and-delius"]'
+          - '["cas3-and-delius"]'
           - '["court-case-and-delius"]'
           - '["create-and-vary-a-licence-and-delius"]'
           - '["custody-key-dates-and-delius"]'
           - '["domain-events-and-delius"]'
+          - '["dps-and-delius"]'
           - '["effective-proposal-framework-and-delius"]'
           - '["external-api-and-delius"]'
+          - '["hdc-licences-and-delius"]'
+          - '["hmpps-auth-and-delius"]'
           - '["make-recall-decisions-and-delius"]'
+          - '["manage-offences-and-delius"]'
           - '["manage-pom-cases-and-delius"]'
           - '["offender-events-and-delius"]'
+          - '["opd-and-delius"]'
           - '["pathfinder-and-delius"]'
           - '["person-search-index-from-delius"]'
           - '["pre-sentence-reports-to-delius"]'
           - '["prison-case-notes-to-probation"]'
           - '["prison-custody-status-to-delius"]'
+          - '["prison-education-and-delius"]'
+          - '["prison-identifier-and-delius"]'
+          - '["prisoner-profile-and-delius"]'
           - '["refer-and-monitor-and-delius"]'
+          - '["resettlement-passport-and-delius"]'
           - '["risk-assessment-scores-to-delius"]'
           - '["sentence-plan-and-delius"]'
           - '["sentence-plan-and-oasys"]'
@@ -40,18 +52,6 @@ on:
           - '["tier-to-delius"]'
           - '["unpaid-work-and-delius"]'
           - '["workforce-allocations-to-delius"]'
-          - '["manage-offences-and-delius"]'
-          - '["resettlement-passport-and-delius"]'
-          - '["prison-education-and-delius"]'
-          - '["opd-and-delius"]'
-          - '["hmpps-auth-and-delius"]'
-          - '["dps-and-delius"]'
-          - '["arns-and-delius"]'
-          - '["cas3-and-delius"]'
-          - '["hdc-licences-and-delius"]'
-          - '["prisoner-profile-and-delius"]'
-          - '["prison-identifier-and-delius"]'
-          - '["assessment-summary-and-delius"]'
           # ^ add new projects here
           # GitHub Actions doesn't support dynamic choices, we must add each project here to enable manual deployments
           # See https://github.com/community/community/discussions/11795
@@ -68,7 +68,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Get projects - all
         if: github.event_name != 'workflow_dispatch' || inputs.projects == 'All'
-        run: echo "projects=$(find projects -mindepth 1 -maxdepth 1 -printf "%f\n" | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_ENV"
+        run: echo "projects=$(cd projects && find . -name tech-docs -exec dirname {} \; | sed 's#^\./##' | jq --raw-input . | jq --slurp --compact-output .)" | tee -a "$GITHUB_ENV"
       - name: Get projects - selected
         if: github.event_name == 'workflow_dispatch' && inputs.projects != 'All'
         run: echo 'projects=${{ inputs.projects }}' | tee -a "$GITHUB_ENV"
