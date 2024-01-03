@@ -100,7 +100,7 @@ class Borough(
     val provider: Provider
 )
 
-interface BoroughRepository : JpaRepository<Borough?, Long?> {
+interface BoroughRepository : JpaRepository<Borough, Long> {
     @Query(
         """
         select b from Borough b
