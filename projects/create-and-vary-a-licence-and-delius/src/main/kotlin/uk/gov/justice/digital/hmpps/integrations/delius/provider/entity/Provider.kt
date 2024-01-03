@@ -143,7 +143,7 @@ class OfficeLocation(
     val id: Long
 )
 
-interface OfficeLocationRepository : JpaRepository<OfficeLocation?, Long?> {
+interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
     @Query(
         """
         select ol from OfficeLocation ol
