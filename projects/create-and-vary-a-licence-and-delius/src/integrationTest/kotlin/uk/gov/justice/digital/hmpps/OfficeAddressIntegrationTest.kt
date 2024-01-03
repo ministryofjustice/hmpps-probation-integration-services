@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -22,7 +21,7 @@ import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.DISTR
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.LOCATION_BRK_1
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.LOCATION_BRK_2
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.generateOfficeAddress
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -31,17 +30,12 @@ internal class OfficeAddressIntegrationTest {
     lateinit var mockMvc: MockMvc
 
     @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
     lateinit var objectMapper: ObjectMapper
-
-
 
     @Test
     fun badRequest() {
         mockMvc
-            .perform(get("/office/addresses").withOAuth2Token(wireMockServer))
+            .perform(get("/office/addresses").withToken())
             .andExpect(status().isBadRequest)
     }
 
@@ -49,7 +43,7 @@ internal class OfficeAddressIntegrationTest {
     @MethodSource("officeAddressArgs")
     fun getOfficeAddress(url: String, pageSize: Int, resultSize: Int, pageNumber: Int, results: List<OfficeAddress>?) {
         val res = mockMvc
-            .perform(get(url).withOAuth2Token(wireMockServer))
+            .perform(get(url).withToken())
             .andExpect(status().isOk)
             .andReturn().response.contentAsString
         val rs = objectMapper.readValue<ResultSet<OfficeAddress>>(res)
