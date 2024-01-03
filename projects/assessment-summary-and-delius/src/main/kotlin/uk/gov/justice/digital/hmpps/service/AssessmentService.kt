@@ -91,17 +91,18 @@ fun Objective.plan(
     person: Person,
     assessment: OasysAssessment
 ): SentencePlan {
+    fun Int.deliusIndex() = this + 1L
     val sp = SentencePlan(
         person,
         assessment,
         objectiveSequence,
-        objectiveCode
+        objectiveCodeDesc
     )
-    criminogenicNeeds.forEachIndexed { index, need -> sp.withNeed(index.toLong(), need.criminogenicNeed) }
+    criminogenicNeeds.forEachIndexed { index, need -> sp.withNeed(index.deliusIndex(), need.criminogenicNeedDesc) }
     actions.forEachIndexed { index, action ->
-        sp.withWorkSummary(index.toLong(), action.action)
+        sp.withWorkSummary(index.deliusIndex(), action.actionDesc)
         action.actionComment?.also {
-            sp.withText(index.toLong(), it)
+            sp.withText(index.deliusIndex(), it)
         }
     }
     return sp
