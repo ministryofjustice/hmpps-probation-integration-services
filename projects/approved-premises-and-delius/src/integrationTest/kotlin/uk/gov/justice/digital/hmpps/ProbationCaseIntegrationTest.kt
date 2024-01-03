@@ -1,8 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -17,12 +14,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProbationCaseGenerator.COM_TEAM
-import uk.gov.justice.digital.hmpps.model.CaseDetail
-import uk.gov.justice.digital.hmpps.model.CaseSummaries
-import uk.gov.justice.digital.hmpps.model.Ldu
-import uk.gov.justice.digital.hmpps.model.Name
-import uk.gov.justice.digital.hmpps.model.Team
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.model.*
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
 @AutoConfigureMockMvc
@@ -31,27 +26,15 @@ class ProbationCaseIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
     @Test
     fun `case summaries are correctly returned`() {
         val complex = ProbationCaseGenerator.CASE_COMPLEX
         val simple = ProbationCaseGenerator.CASE_SIMPLE
-        val response = mockMvc
-            .perform(
-                post("/probation-cases/summaries")
-                    .contentType("application/json")
-                    .content(objectMapper.writeValueAsString(listOf(complex.crn, simple.crn)))
-                    .withOAuth2Token(wireMockServer)
-            )
+        val summaries = mockMvc
+            .perform(post("/probation-cases/summaries").withToken().withJson(listOf(complex.crn, simple.crn)))
             .andExpect(status().isOk)
-            .andReturn().response.contentAsString
+            .andReturn().response.contentAsJson<CaseSummaries>()
 
-        val summaries = objectMapper.readValue<CaseSummaries>(response)
         assertThat(summaries.cases.size, equalTo(2))
         assertThat(summaries.cases.map { it.crn }.sorted(), equalTo(listOf(complex.crn, simple.crn).sorted()))
         val complexCase = summaries.cases.first { it.crn == complex.crn }
@@ -64,16 +47,11 @@ class ProbationCaseIntegrationTest {
     @Test
     fun `case details are correctly returned`() {
         val case = ProbationCaseGenerator.CASE_COMPLEX
-        val response = mockMvc
-            .perform(
-                get("/probation-cases/${case.crn}/details")
-                    .contentType("application/json")
-                    .withOAuth2Token(wireMockServer)
-            )
+        val detail = mockMvc
+            .perform(get("/probation-cases/${case.crn}/details").withToken())
             .andExpect(status().isOk)
-            .andReturn().response.contentAsString
+            .andReturn().response.contentAsJson<CaseDetail>()
 
-        val detail = objectMapper.readValue<CaseDetail>(response)
         assertThat(detail.case.name, equalTo(Name("James", "Brown", listOf("John", "Jack"))))
         assertThat(detail.case.dateOfBirth, equalTo(LocalDate.of(1979, 3, 12)))
         assertTrue(detail.case.currentExclusion)

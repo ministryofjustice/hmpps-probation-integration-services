@@ -47,7 +47,6 @@ spring.config.activate.on-profile: [ "dev", "integration-test" ]
 spring:
   datasource.url: jdbc:h2:file:./dev;MODE=Oracle;DEFAULT_NULL_ORDERING=HIGH;AUTO_SERVER=true;AUTO_SERVER_PORT=9092
   jpa.hibernate.ddl-auto: create-drop
-  security.oauth2.resourceserver.jwt.public-key-location: classpath:local-public-key.pub
 
 seed.database: true
 wiremock.enabled: true

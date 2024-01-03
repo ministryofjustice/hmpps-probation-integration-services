@@ -1,8 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -10,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import uk.gov.justice.digital.hmpps.data.generator.LimitedAccessGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
 import uk.gov.justice.digital.hmpps.service.CaseAccess
 import uk.gov.justice.digital.hmpps.service.UserAccess
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -24,28 +22,19 @@ internal class LimitedAccessTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockserver: WireMockServer
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
     @Test
     fun `limited access controls are correctly returned with username`() {
         val res = mockMvc.perform(
-            MockMvcRequestBuilders.post("/users/access?username=${LimitedAccessGenerator.LIMITED_ACCESS_USER.username}")
-                .withOAuth2Token(wireMockserver)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    objectMapper.writeValueAsString(
-                        listOf(
-                            LimitedAccessGenerator.EXCLUDED_CASE.crn,
-                            LimitedAccessGenerator.RESTRICTED_CASE.crn,
-                            LimitedAccessGenerator.UNLIMITED_ACCESS.crn
-                        )
+            post("/users/access?username=${LimitedAccessGenerator.LIMITED_ACCESS_USER.username}")
+                .withToken()
+                .withJson(
+                    listOf(
+                        LimitedAccessGenerator.EXCLUDED_CASE.crn,
+                        LimitedAccessGenerator.RESTRICTED_CASE.crn,
+                        LimitedAccessGenerator.UNLIMITED_ACCESS.crn
                     )
                 )
-        ).andReturn().response.contentAsString
+        ).andReturn().response.contentAsJson<UserAccess>()
 
         validateResults(res)
     }
@@ -53,25 +42,21 @@ internal class LimitedAccessTest {
     @Test
     fun `limited access controls are correctly returned without username`() {
         val res = mockMvc.perform(
-            MockMvcRequestBuilders.post("/users/access")
-                .withOAuth2Token(wireMockserver)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    objectMapper.writeValueAsString(
-                        listOf(
-                            LimitedAccessGenerator.EXCLUDED_CASE.crn,
-                            LimitedAccessGenerator.RESTRICTED_CASE.crn,
-                            LimitedAccessGenerator.UNLIMITED_ACCESS.crn
-                        )
+            post("/users/access")
+                .withToken()
+                .withJson(
+                    listOf(
+                        LimitedAccessGenerator.EXCLUDED_CASE.crn,
+                        LimitedAccessGenerator.RESTRICTED_CASE.crn,
+                        LimitedAccessGenerator.UNLIMITED_ACCESS.crn
                     )
                 )
-        ).andReturn().response.contentAsString
+        ).andReturn().response.contentAsJson<UserAccess>()
 
         validateResults(res)
     }
 
-    private fun validateResults(res: String) {
-        val result = objectMapper.readValue<UserAccess>(res)
+    private fun validateResults(result: UserAccess) {
         assertThat(
             result.access.first { it.crn == LimitedAccessGenerator.EXCLUDED_CASE.crn },
             equalTo(
@@ -108,22 +93,18 @@ internal class LimitedAccessTest {
 
     @Test
     fun `limited access controls are correctly returned with full access`() {
-        val res = mockMvc.perform(
-            MockMvcRequestBuilders.post("/users/access?username=${LimitedAccessGenerator.FULL_ACCESS_USER.username}")
-                .withOAuth2Token(wireMockserver)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    objectMapper.writeValueAsString(
-                        listOf(
-                            LimitedAccessGenerator.EXCLUDED_CASE.crn,
-                            LimitedAccessGenerator.RESTRICTED_CASE.crn,
-                            LimitedAccessGenerator.UNLIMITED_ACCESS.crn
-                        )
+        val result = mockMvc.perform(
+            post("/users/access?username=${LimitedAccessGenerator.FULL_ACCESS_USER.username}")
+                .withToken()
+                .withJson(
+                    listOf(
+                        LimitedAccessGenerator.EXCLUDED_CASE.crn,
+                        LimitedAccessGenerator.RESTRICTED_CASE.crn,
+                        LimitedAccessGenerator.UNLIMITED_ACCESS.crn
                     )
                 )
-        ).andReturn().response.contentAsString
+        ).andReturn().response.contentAsJson<UserAccess>()
 
-        val result = objectMapper.readValue<UserAccess>(res)
         assertThat(
             result.access.first { it.crn == LimitedAccessGenerator.EXCLUDED_CASE.crn },
             equalTo(

@@ -1,14 +1,10 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.WireMockServer
-import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -20,8 +16,8 @@ import uk.gov.justice.digital.hmpps.model.Detail
 import uk.gov.justice.digital.hmpps.model.KeyDate
 import uk.gov.justice.digital.hmpps.model.Name
 import uk.gov.justice.digital.hmpps.model.name
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -29,35 +25,22 @@ internal class DetailsIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @MockBean
-    lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
     @Test
     fun `API call retuns a success response using NOMS`() {
         val noms = DetailsGenerator.PERSON.nomsNumber
-        val result = mockMvc
-            .perform(get("/detail/$noms?type=NOMS").withOAuth2Token(wireMockServer))
-            .andExpect(status().is2xxSuccessful).andReturn()
-
-        val detailResponse = objectMapper.readValue(result.response.contentAsString, Detail::class.java)
-        Assertions.assertThat(detailResponse).isEqualTo(getDetail())
+        mockMvc
+            .perform(get("/detail/$noms?type=NOMS").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andExpectJson(getDetail())
     }
 
     @Test
     fun `API call retuns a success response using CRN`() {
         val crn = DetailsGenerator.PERSON.crn
-        val result = mockMvc
-            .perform(get("/detail/$crn?type=CRN").withOAuth2Token(wireMockServer))
-            .andExpect(status().is2xxSuccessful).andReturn()
-
-        val detailResponse = objectMapper.readValue(result.response.contentAsString, Detail::class.java)
-        Assertions.assertThat(detailResponse).isEqualTo(getDetail())
+        mockMvc
+            .perform(get("/detail/$crn?type=CRN").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andExpectJson(getDetail())
     }
 
     private fun getDetail(): Detail = Detail(

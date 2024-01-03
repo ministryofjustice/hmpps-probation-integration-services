@@ -1,10 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.github.tomakehurst.wiremock.WireMockServer
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -24,7 +19,8 @@ import uk.gov.justice.digital.hmpps.data.generator.CommunityManagerGenerator.TEA
 import uk.gov.justice.digital.hmpps.data.generator.CommunityManagerGenerator.UNALLOCATED_PERSON
 import uk.gov.justice.digital.hmpps.data.generator.CommunityManagerGenerator.UNALLOCATED_STAFF
 import uk.gov.justice.digital.hmpps.integrations.delius.manager.name
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -32,34 +28,19 @@ internal class CommunityManagerIntTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
     @ParameterizedTest
     @MethodSource("communityManagers")
     fun `returns the community manager correctly`(nomsId: String, expected: Manager) {
-        val res = mockMvc
-            .perform(
-                get("/probation-cases/$nomsId/community-manager")
-                    .withOAuth2Token(wireMockServer)
-            )
+        mockMvc
+            .perform(get("/probation-cases/$nomsId/community-manager").withToken())
             .andExpect(status().is2xxSuccessful)
-            .andReturn().response.contentAsString
-
-        val actual = objectMapper.readValue<Manager>(res)
-        assertThat(actual, equalTo(expected))
+            .andExpectJson(expected)
     }
 
     @Test
     fun `noms id not found throws 404`() {
         mockMvc
-            .perform(
-                get("/probation-cases/invalid/community-manager")
-                    .withOAuth2Token(wireMockServer)
-            )
+            .perform(get("/probation-cases/invalid/community-manager").withToken())
             .andExpect(status().isNotFound)
     }
 

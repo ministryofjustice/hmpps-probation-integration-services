@@ -55,11 +55,13 @@ spring:
   ldap.embedded:
     base-dn: ${spring.ldap.base}
     validation.enabled: false
-  security.oauth2.resourceserver.jwt.public-key-location: classpath:local-public-key.pub
 
 seed.database: true
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+
+jwt.authorities:
+  - ROLE_MAKE_RECALL_DECISIONS_API
 
 messaging.consumer.queue: message-queue
 

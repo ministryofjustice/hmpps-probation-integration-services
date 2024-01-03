@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -11,21 +10,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.api.model.Mappings
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class AllocationCompletedIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var wireMockserver: WireMockServer
 
     @Test
     fun `successful response`() {
@@ -34,7 +26,7 @@ class AllocationCompletedIntegrationTest {
         val staff = StaffGenerator.DEFAULT
         val contact = ContactGenerator.INITIAL_APPOINTMENT
         mockMvc.perform(
-            get("/allocation-completed/details").withOAuth2Token(wireMockserver)
+            get("/allocation-completed/details").withToken()
                 .param("crn", person.crn)
                 .param("eventNumber", event.number)
                 .param("staffCode", staff.code)
@@ -57,7 +49,7 @@ class AllocationCompletedIntegrationTest {
         val team = TeamGenerator.DEFAULT
         val staff = StaffGenerator.DEFAULT
         mockMvc.perform(
-            get("/allocation-completed/order-manager").withOAuth2Token(wireMockserver)
+            get("/allocation-completed/order-manager").withToken()
                 .param("crn", person.crn)
                 .param("eventNumber", event.number)
         )

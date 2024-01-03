@@ -1,28 +1,18 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.WireMockServer
-import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ConvictionEventGenerator
 import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
-import uk.gov.justice.digital.hmpps.model.Conviction
-import uk.gov.justice.digital.hmpps.model.ConvictionsContainer
-import uk.gov.justice.digital.hmpps.model.Custody
-import uk.gov.justice.digital.hmpps.model.CustodyStatus
-import uk.gov.justice.digital.hmpps.model.KeyDate
-import uk.gov.justice.digital.hmpps.model.Offence
-import uk.gov.justice.digital.hmpps.model.Sentence
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
-import uk.gov.justice.digital.hmpps.telemetry.TelemetryService
+import uk.gov.justice.digital.hmpps.model.*
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.andExpectJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -30,57 +20,40 @@ internal class ConvictionsIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @MockBean
-    lateinit var telemetryService: TelemetryService
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
     @Test
     fun `API call retuns a success response using NOMS`() {
         val noms = ConvictionEventGenerator.PERSON.nomsNumber
-        val result = mockMvc
-            .perform(get("/convictions/$noms?type=NOMS").withOAuth2Token(wireMockServer))
-            .andExpect(status().is2xxSuccessful).andReturn()
-
-        val detailResponse = objectMapper.readValue(result.response.contentAsString, ConvictionsContainer::class.java)
-        Assertions.assertThat(detailResponse).isEqualTo(getConvictions(true))
+        mockMvc
+            .perform(get("/convictions/$noms?type=NOMS").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andExpectJson(getConvictions(true))
     }
 
     @Test
     fun `API call retuns a success response using CRN`() {
         val crn = ConvictionEventGenerator.PERSON.crn
-        val result = mockMvc
-            .perform(get("/convictions/$crn?type=CRN").withOAuth2Token(wireMockServer))
-            .andExpect(status().is2xxSuccessful).andReturn()
-
-        val detailResponse = objectMapper.readValue(result.response.contentAsString, ConvictionsContainer::class.java)
-        Assertions.assertThat(detailResponse).isEqualTo(getConvictions(true))
+        mockMvc
+            .perform(get("/convictions/$crn?type=CRN").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andExpectJson(getConvictions(true))
     }
 
     @Test
     fun `API call retuns only active convictions success response using CRN`() {
         val crn = ConvictionEventGenerator.PERSON.crn
-        val result = mockMvc
-            .perform(get("/convictions/$crn?type=CRN&activeOnly=true").withOAuth2Token(wireMockServer))
-            .andExpect(status().is2xxSuccessful).andReturn()
-
-        val detailResponse = objectMapper.readValue(result.response.contentAsString, ConvictionsContainer::class.java)
-        Assertions.assertThat(detailResponse).isEqualTo(getConvictions())
+        mockMvc
+            .perform(get("/convictions/$crn?type=CRN&activeOnly=true").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andExpectJson(getConvictions())
     }
 
     @Test
     fun `API call retuns only active convictions success response using NOMS`() {
         val noms = ConvictionEventGenerator.PERSON.nomsNumber
-        val result = mockMvc
-            .perform(get("/convictions/$noms?type=NOMS&activeOnly=true").withOAuth2Token(wireMockServer))
-            .andExpect(status().is2xxSuccessful).andReturn()
-
-        val detailResponse = objectMapper.readValue(result.response.contentAsString, ConvictionsContainer::class.java)
-        Assertions.assertThat(detailResponse).isEqualTo(getConvictions())
+        mockMvc
+            .perform(get("/convictions/$noms?type=NOMS&activeOnly=true").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andExpectJson(getConvictions())
     }
 
     private fun getConvictions(withInActive: Boolean = false): ConvictionsContainer {

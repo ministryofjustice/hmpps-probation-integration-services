@@ -18,11 +18,11 @@ management:
 # Shared dev/test config
 spring.config.activate.on-profile: [ "dev", "integration-test" ]
 
-spring:
-  security.oauth2.resourceserver.jwt.public-key-location: classpath:local-public-key.pub
-
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+
+jwt.authorities:
+  - ROLE_SENTENCE_PLAN_RW
 
 ords:
   client-id: sentence-plan-and-oasys

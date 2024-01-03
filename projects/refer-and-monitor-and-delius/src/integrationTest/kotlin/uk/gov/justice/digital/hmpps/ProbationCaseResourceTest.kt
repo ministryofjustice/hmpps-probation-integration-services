@@ -1,13 +1,8 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -15,29 +10,17 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import uk.gov.justice.digital.hmpps.api.model.Address
-import uk.gov.justice.digital.hmpps.api.model.CaseConviction
-import uk.gov.justice.digital.hmpps.api.model.CaseConvictions
-import uk.gov.justice.digital.hmpps.api.model.CaseDetail
-import uk.gov.justice.digital.hmpps.api.model.CaseIdentifier
-import uk.gov.justice.digital.hmpps.api.model.ContactDetails
-import uk.gov.justice.digital.hmpps.api.model.Conviction
-import uk.gov.justice.digital.hmpps.api.model.Disability
-import uk.gov.justice.digital.hmpps.api.model.Name
-import uk.gov.justice.digital.hmpps.api.model.Offence
-import uk.gov.justice.digital.hmpps.api.model.Profile
-import uk.gov.justice.digital.hmpps.api.model.ResponsibleOfficer
-import uk.gov.justice.digital.hmpps.api.model.Sentence
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import uk.gov.justice.digital.hmpps.api.model.*
 import uk.gov.justice.digital.hmpps.data.generator.CaseDetailsGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
 import uk.gov.justice.digital.hmpps.data.generator.SentenceGenerator
 import uk.gov.justice.digital.hmpps.integrations.delius.person.entity.Person
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 import java.time.LocalDate
 
 @AutoConfigureMockMvc
@@ -46,24 +29,16 @@ class ProbationCaseResourceTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
     @ParameterizedTest
     @MethodSource("existingCases")
     fun `retrieve responsible officer`(person: Person, communityResponsible: Boolean) {
         val staff = ProviderGenerator.JOHN_SMITH
 
-        val res = mockMvc.perform(
-            MockMvcRequestBuilders.get("/probation-case/${person.crn}/responsible-officer")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn().response.contentAsString
+        val ro = mockMvc
+            .perform(get("/probation-case/${person.crn}/responsible-officer").withToken())
+            .andExpect(status().is2xxSuccessful)
+            .andReturn().response.contentAsJson<ResponsibleOfficer>()
 
-        val ro = objectMapper.readValue<ResponsibleOfficer>(res)
         val com = ro.communityManager
         assertThat(com.code, equalTo(staff.code))
         assertThat(com.name, equalTo(Name(staff.forename, staff.surname)))
@@ -89,43 +64,34 @@ class ProbationCaseResourceTest {
 
     @Test
     fun `crn not found returns 404`() {
-        mockMvc.perform(
-            MockMvcRequestBuilders.get("/probation-case/InvalidCrn/responsible-officer")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers.status().isNotFound)
+        mockMvc
+            .perform(get("/probation-case/InvalidCrn/responsible-officer").withToken())
+            .andExpect(status().isNotFound)
     }
 
     @Test
     fun `nomsId returned when populated`() {
-        val res = mockMvc.perform(
-            MockMvcRequestBuilders.get("/probation-case/${PersonGenerator.DEFAULT.crn}/identifiers")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers.status().isOk).andReturn().response.contentAsString
+        val identifiers = mockMvc
+            .perform(get("/probation-case/${PersonGenerator.DEFAULT.crn}/identifiers").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<CaseIdentifier>()
 
-        val identifiers = objectMapper.readValue<CaseIdentifier>(res)
         assertThat(identifiers.nomsId, equalTo("A1234YZ"))
     }
 
     @Test
     fun `case details returns 404 when not found`() {
-        mockMvc.perform(
-            MockMvcRequestBuilders.get("/probation-case/InvalidCrn/detail")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers.status().isNotFound)
+        mockMvc.perform(get("/probation-case/InvalidCrn/detail").withToken())
+            .andExpect(status().isNotFound)
     }
 
     @Test
     fun `basic details returned for a case successfully`() {
-        val res = mockMvc.perform(
-            MockMvcRequestBuilders.get("/probation-case/${CaseDetailsGenerator.MINIMAL_PERSON.crn}/details")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers.status().isOk).andReturn().response.contentAsString
+        val caseDetail = mockMvc
+            .perform(get("/probation-case/${CaseDetailsGenerator.MINIMAL_PERSON.crn}/details").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<CaseDetail>()
 
-        val caseDetail = objectMapper.readValue<CaseDetail>(res)
         assertThat(
             caseDetail,
             equalTo(
@@ -143,25 +109,21 @@ class ProbationCaseResourceTest {
 
     @Test
     fun `full details returned for case when available`() {
-        val res = mockMvc.perform(
-            MockMvcRequestBuilders.get("/probation-case/${CaseDetailsGenerator.FULL_PERSON.crn}/details")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers.status().isOk).andReturn().response.contentAsString
+        val caseDetail = mockMvc
+            .perform(get("/probation-case/${CaseDetailsGenerator.FULL_PERSON.crn}/details").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<CaseDetail>()
 
-        val caseDetail = objectMapper.readValue<CaseDetail>(res)
         assertFullPersonDetails(caseDetail)
     }
 
     @Test
     fun `conviction details returned for case when available`() {
-        val res = mockMvc.perform(
-            MockMvcRequestBuilders.get("/probation-case/${CaseDetailsGenerator.FULL_PERSON.crn}/convictions")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers.status().isOk).andReturn().response.contentAsString
+        val cc = mockMvc
+            .perform(get("/probation-case/${CaseDetailsGenerator.FULL_PERSON.crn}/convictions").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<CaseConvictions>()
 
-        val cc = objectMapper.readValue<CaseConvictions>(res)
         assertFullPersonDetails(cc.caseDetail)
         assertThat(cc.convictions.size, equalTo(1))
         assertFullConvictionDetails(cc.convictions.first())
@@ -169,13 +131,11 @@ class ProbationCaseResourceTest {
 
     @Test
     fun `conviction details returned for individual conviction when available`() {
-        val res = mockMvc.perform(
-            MockMvcRequestBuilders.get("/probation-case/${CaseDetailsGenerator.FULL_PERSON.crn}/convictions/${SentenceGenerator.FULL_DETAIL_EVENT.id}")
-                .withOAuth2Token(wireMockServer)
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers.status().isOk).andReturn().response.contentAsString
+        val cc = mockMvc
+            .perform(get("/probation-case/${CaseDetailsGenerator.FULL_PERSON.crn}/convictions/${SentenceGenerator.FULL_DETAIL_EVENT.id}").withToken())
+            .andExpect(status().isOk)
+            .andReturn().response.contentAsJson<CaseConviction>()
 
-        val cc = objectMapper.readValue<CaseConviction>(res)
         assertFullPersonDetails(cc.caseDetail)
         assertFullConvictionDetails(cc.conviction)
     }

@@ -30,11 +30,9 @@ management:
 # Shared dev/test config
 spring.config.activate.on-profile: [ "dev", "integration-test" ]
 
-spring:
-  security.oauth2.resourceserver.jwt.public-key-location: classpath:local-public-key.pub
-
 wiremock.enabled: true
 context.initializer.classes: uk.gov.justice.digital.hmpps.wiremock.WireMockInitialiser
+jwt.authorities: ROLE_APPROVED_PREMISES_ASSESSMENTS
 
 ords:
   client-id: approved-premises-and-oasys

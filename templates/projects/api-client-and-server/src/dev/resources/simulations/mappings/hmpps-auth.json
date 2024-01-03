@@ -8,6 +8,14 @@
       "Content-Type": "application/json"
     },
     "status": 200,
-    "bodyFileName": "hmpps-auth-token-body.json"
+    "jsonBody": {
+      "access_token": "token",
+      "token_type": "bearer",
+      "expires_in": 9999999999,
+      "scope": "read write",
+      "sub": "probation-integration-dev",
+      "auth_source": "none",
+      "iss": "https://sign-in-dev.hmpps.service.justice.gov.uk/auth/issuer"
+    }
   }
 }

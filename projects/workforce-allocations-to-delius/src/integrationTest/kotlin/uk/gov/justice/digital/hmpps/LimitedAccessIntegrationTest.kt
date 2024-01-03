@@ -1,22 +1,20 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import uk.gov.justice.digital.hmpps.api.model.CaseAccess
 import uk.gov.justice.digital.hmpps.api.model.UserAccess
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -24,31 +22,21 @@ class LimitedAccessIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockserver: WireMockServer
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
     @Test
     fun `limited access controls are correctly returned`() {
-        val res = mockMvc.perform(
-            MockMvcRequestBuilders.post("/users/limited-access?username=${UserGenerator.LIMITED_ACCESS_USER.username}")
-                .withOAuth2Token(wireMockserver)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    objectMapper.writeValueAsString(
-                        listOf(
-                            PersonGenerator.EXCLUSION.crn,
-                            PersonGenerator.RESTRICTION.crn,
-                            PersonGenerator.DEFAULT.crn,
-                            PersonGenerator.RESTRICTION_EXCLUSION.crn
-                        )
+        val result = mockMvc.perform(
+            post("/users/limited-access?username=${UserGenerator.LIMITED_ACCESS_USER.username}")
+                .withToken()
+                .withJson(
+                    listOf(
+                        PersonGenerator.EXCLUSION.crn,
+                        PersonGenerator.RESTRICTION.crn,
+                        PersonGenerator.DEFAULT.crn,
+                        PersonGenerator.RESTRICTION_EXCLUSION.crn
                     )
                 )
-        ).andReturn().response.contentAsString
+        ).andReturn().response.contentAsJson<UserAccess>()
 
-        val result = objectMapper.readValue<UserAccess>(res)
         assertThat(
             result.access.first { it.crn == PersonGenerator.EXCLUSION.crn },
             equalTo(
@@ -97,22 +85,18 @@ class LimitedAccessIntegrationTest {
 
     @Test
     fun `limited access controls do not prevent legitimate access`() {
-        val res = mockMvc.perform(
-            MockMvcRequestBuilders.post("/users/limited-access?username=${UserGenerator.AUDIT_USER.username}")
-                .withOAuth2Token(wireMockserver)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    objectMapper.writeValueAsString(
-                        listOf(
-                            PersonGenerator.EXCLUSION.crn,
-                            PersonGenerator.RESTRICTION.crn,
-                            PersonGenerator.DEFAULT.crn
-                        )
+        val result = mockMvc.perform(
+            post("/users/limited-access?username=${UserGenerator.AUDIT_USER.username}")
+                .withToken()
+                .withJson(
+                    listOf(
+                        PersonGenerator.EXCLUSION.crn,
+                        PersonGenerator.RESTRICTION.crn,
+                        PersonGenerator.DEFAULT.crn
                     )
                 )
-        ).andReturn().response.contentAsString
+        ).andReturn().response.contentAsJson<UserAccess>()
 
-        val result = objectMapper.readValue<UserAccess>(res)
         assertThat(
             result.access.first { it.crn == PersonGenerator.EXCLUSION.crn },
             equalTo(CaseAccess(PersonGenerator.EXCLUSION.crn, userExcluded = false, userRestricted = false))

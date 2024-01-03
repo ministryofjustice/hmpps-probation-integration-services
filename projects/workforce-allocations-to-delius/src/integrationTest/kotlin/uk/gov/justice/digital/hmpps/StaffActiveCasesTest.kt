@@ -1,20 +1,18 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withJson
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -22,22 +20,15 @@ class StaffActiveCasesTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockserver: WireMockServer
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
     @Test
     fun `successful response`() {
         val staff = StaffGenerator.DEFAULT
         val person = PersonGenerator.DEFAULT
-        mockMvc.perform(
-            MockMvcRequestBuilders.post("/staff/${StaffGenerator.DEFAULT.code}/active-cases")
-                .withOAuth2Token(wireMockserver)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(listOf(person.crn)))
-        )
+        mockMvc
+            .perform(
+                post("/staff/${StaffGenerator.DEFAULT.code}/active-cases").withToken()
+                    .withJson(listOf(person.crn))
+            )
             .andExpect(status().is2xxSuccessful)
             .andExpect(jsonPath("$.code").value(staff.code))
             .andExpect(jsonPath("$.name.forename").value(staff.forename))

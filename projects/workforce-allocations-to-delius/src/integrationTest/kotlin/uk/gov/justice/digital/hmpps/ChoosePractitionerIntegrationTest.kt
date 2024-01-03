@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -12,7 +11,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.TeamGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -20,16 +19,13 @@ class ChoosePractitionerIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockserver: WireMockServer
-
     @Test
     fun `successful response`() {
         val person = PersonGenerator.DEFAULT
         val team1 = TeamGenerator.DEFAULT.code
         val team2 = TeamGenerator.ALLOCATION_TEAM.code
         mockMvc.perform(
-            get("/allocation-demand/choose-practitioner").withOAuth2Token(wireMockserver)
+            get("/allocation-demand/choose-practitioner").withToken()
                 .param("crn", person.crn)
                 .param("teamCode", team1)
                 .param("teamCode", team2)
@@ -54,7 +50,7 @@ class ChoosePractitionerIntegrationTest {
     fun `team codes can be empty`() {
         val person = PersonGenerator.DEFAULT
         mockMvc.perform(
-            get("/allocation-demand/choose-practitioner").withOAuth2Token(wireMockserver)
+            get("/allocation-demand/choose-practitioner").withToken()
                 .param("crn", person.crn)
         )
             .andExpect(status().is2xxSuccessful)
@@ -63,7 +59,7 @@ class ChoosePractitionerIntegrationTest {
 
     @Test
     fun `crn is required`() {
-        mockMvc.perform(get("/allocation-demand/choose-practitioner").withOAuth2Token(wireMockserver))
+        mockMvc.perform(get("/allocation-demand/choose-practitioner").withToken())
             .andExpect(status().is4xxClientError)
     }
 }

@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,7 +10,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -19,13 +18,10 @@ internal class ProviderIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
     @Test
     fun `providers are returned successfully`() {
         mockMvc
-            .perform(get("/providers").withOAuth2Token(wireMockServer))
+            .perform(get("/providers").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("length()", equalTo(1)))
             .andExpect(jsonPath("[0].code", equalTo("TST")))
@@ -35,7 +31,7 @@ internal class ProviderIntegrationTest {
     @Test
     fun `single provider is returned successfully`() {
         mockMvc
-            .perform(get("/providers/TST").withOAuth2Token(wireMockServer))
+            .perform(get("/providers/TST").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("code", equalTo("TST")))
             .andExpect(jsonPath("description", equalTo("Test")))
@@ -47,14 +43,14 @@ internal class ProviderIntegrationTest {
     @Test
     fun `non-existent provider returns 404`() {
         mockMvc
-            .perform(get("/providers/DOESNOTEXIST").withOAuth2Token(wireMockServer))
+            .perform(get("/providers/DOESNOTEXIST").withToken())
             .andExpect(status().isNotFound)
     }
 
     @Test
     fun `local admin unit is returned successfully`() {
         mockMvc
-            .perform(get("/providers/TST/localAdminUnits/LAU").withOAuth2Token(wireMockServer))
+            .perform(get("/providers/TST/localAdminUnits/LAU").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("code", equalTo("LAU")))
             .andExpect(jsonPath("description", equalTo("Local Admin Unit")))
@@ -68,7 +64,7 @@ internal class ProviderIntegrationTest {
     @Test
     fun `non-existent local admin unit returns 404`() {
         mockMvc
-            .perform(get("/providers/TST/localAdminUnits/DOESNOTEXIST").withOAuth2Token(wireMockServer))
+            .perform(get("/providers/TST/localAdminUnits/DOESNOTEXIST").withToken())
             .andExpect(status().isNotFound)
     }
 }

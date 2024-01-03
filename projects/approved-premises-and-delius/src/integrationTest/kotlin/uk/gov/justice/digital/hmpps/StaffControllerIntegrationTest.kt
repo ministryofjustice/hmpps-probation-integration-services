@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +12,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import uk.gov.justice.digital.hmpps.data.generator.ApprovedPremisesGenerator
 import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.security.withOAuth2Token
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -21,14 +20,11 @@ class StaffControllerIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var wireMockServer: WireMockServer
-
     @Test
     fun `approved premises key worker staff are returned successfully`() {
         val approvedPremises = ApprovedPremisesGenerator.DEFAULT
         mockMvc
-            .perform(get("/approved-premises/${approvedPremises.code.code}/staff").withOAuth2Token(wireMockServer))
+            .perform(get("/approved-premises/${approvedPremises.code.code}/staff").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.numberOfElements", equalTo(3)))
             .andExpect(jsonPath("$.size", equalTo(100)))
@@ -45,7 +41,7 @@ class StaffControllerIntegrationTest {
     fun `empty approved premises returns 200 with empty results`() {
         val approvedPremises = ApprovedPremisesGenerator.NO_STAFF
         mockMvc
-            .perform(get("/approved-premises/${approvedPremises.code.code}/staff").withOAuth2Token(wireMockServer))
+            .perform(get("/approved-premises/${approvedPremises.code.code}/staff").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.numberOfElements", equalTo(0)))
             .andExpect(jsonPath("$.totalElements", equalTo(0)))
@@ -54,7 +50,7 @@ class StaffControllerIntegrationTest {
     @Test
     fun `non-existent approved premises returns 404`() {
         mockMvc
-            .perform(get("/approved-premises/NOTFOUND/staff").withOAuth2Token(wireMockServer))
+            .perform(get("/approved-premises/NOTFOUND/staff").withToken())
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.message", equalTo("Approved Premises with code of NOTFOUND not found")))
     }
@@ -62,11 +58,7 @@ class StaffControllerIntegrationTest {
     @Test
     fun `approved premises key workers only are returned successfully`() {
         val approvedPremises = ApprovedPremisesGenerator.DEFAULT
-        mockMvc.perform(
-            get("/approved-premises/${approvedPremises.code.code}/staff?keyWorker=true").withOAuth2Token(
-                wireMockServer
-            )
-        )
+        mockMvc.perform(get("/approved-premises/${approvedPremises.code.code}/staff?keyWorker=true").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.numberOfElements", equalTo(1)))
             .andExpect(jsonPath("$.content[*].name.surname", equalTo(listOf("Key-worker"))))
@@ -76,7 +68,7 @@ class StaffControllerIntegrationTest {
     @Test
     fun `Get staff by username`() {
         val username = StaffGenerator.DEFAULT_STAFF.user!!.username
-        mockMvc.perform(get("/staff/$username").withOAuth2Token(wireMockServer))
+        mockMvc.perform(get("/staff/$username").withToken())
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.username", equalTo(username)))
             .andExpect(jsonPath("$.name.surname", equalTo(StaffGenerator.DEFAULT_STAFF.surname)))
