@@ -10,6 +10,8 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDate
@@ -107,4 +109,48 @@ interface BoroughRepository : JpaRepository<Borough?, Long?> {
     """
     )
     fun findActiveByCode(code: String): Borough?
+}
+
+@Immutable
+@Entity
+@Table(name = "office_location")
+class OfficeLocation(
+
+    @Column(name = "code", columnDefinition = "char(7)")
+    val code: String,
+
+    val description: String,
+    val buildingName: String?,
+    val buildingNumber: String?,
+    val streetName: String?,
+
+    @Column(name = "district")
+    val districtStr: String?,
+
+    val townCity: String?,
+    val county: String?,
+    val postcode: String?,
+    val telephoneNumber: String?,
+    val startDate: LocalDate,
+    val endDate: LocalDate?,
+
+    @JoinColumn(name = "district_id")
+    @ManyToOne
+    val district: District,
+
+    @Id
+    @Column(name = "office_location_id")
+    val id: Long
+)
+
+interface OfficeLocationRepository : JpaRepository<OfficeLocation?, Long?> {
+    @Query(
+        """
+        select ol from OfficeLocation ol
+        where ol.description like %:officeName% and ol.district.description like %:ldu%
+        and (ol.endDate is null or ol.endDate > current_date)
+        order by ol.description
+    """
+    )
+    fun findByLduAndOfficeName(ldu: String, officeName: String, pageable: Pageable): Page<OfficeLocation>
 }
