@@ -57,16 +57,29 @@ internal class OfficeAddressIntegrationTest {
         @JvmStatic
         fun officeAddressArgs(): List<Arguments> = listOf(
             Arguments.of("/office/addresses?ldu=Berk&officeName=nothing", 0, 0, 0, listOf<OfficeAddress>()),
-            Arguments.of("/office/addresses?ldu=Berk&officeName=Office", 1, 2, 0,
-                listOf(generateOfficeAddress(LOCATION_BRK_1, DISTRICT_BRK), generateOfficeAddress(LOCATION_BRK_2, DISTRICT_BRK))),
-            Arguments.of("/office/addresses?ldu=Berk&officeName=Reading", 1, 1, 0,
-                listOf(generateOfficeAddress(LOCATION_BRK_2, DISTRICT_BRK))),
-            Arguments.of("/office/addresses?ldu=Berk&officeName=Brack", 1, 1, 0,
-                listOf(generateOfficeAddress(LOCATION_BRK_1, DISTRICT_BRK))),
-            Arguments.of("/office/addresses?page=0&size=1&ldu=Berk&officeName=Office", 2, 1, 0,
-                listOf(generateOfficeAddress(LOCATION_BRK_1, DISTRICT_BRK))),
-            Arguments.of("/office/addresses?page=1&size=1&ldu=Berk&officeName=Office", 2, 1, 1,
-                listOf(generateOfficeAddress(LOCATION_BRK_2, DISTRICT_BRK))),
+            Arguments.of(
+                "/office/addresses?ldu=Berk&officeName=Office", 1, 2, 0,
+                listOf(
+                    generateOfficeAddress(LOCATION_BRK_1, DISTRICT_BRK),
+                    generateOfficeAddress(LOCATION_BRK_2, DISTRICT_BRK)
+                )
+            ),
+            Arguments.of(
+                "/office/addresses?ldu=Berk&officeName=Reading", 1, 1, 0,
+                listOf(generateOfficeAddress(LOCATION_BRK_2, DISTRICT_BRK))
+            ),
+            Arguments.of(
+                "/office/addresses?ldu=Berk&officeName=Brack", 1, 1, 0,
+                listOf(generateOfficeAddress(LOCATION_BRK_1, DISTRICT_BRK))
+            ),
+            Arguments.of(
+                "/office/addresses?page=0&size=1&ldu=Berk&officeName=Office", 2, 1, 0,
+                listOf(generateOfficeAddress(LOCATION_BRK_1, DISTRICT_BRK))
+            ),
+            Arguments.of(
+                "/office/addresses?page=1&size=1&ldu=Berk&officeName=Office", 2, 1, 1,
+                listOf(generateOfficeAddress(LOCATION_BRK_2, DISTRICT_BRK))
+            ),
         )
     }
 }

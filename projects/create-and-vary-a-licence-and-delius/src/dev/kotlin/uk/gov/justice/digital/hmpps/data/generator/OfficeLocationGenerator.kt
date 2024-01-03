@@ -7,9 +7,9 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.OfficeLo
 import java.time.LocalDate
 
 object OfficeLocationGenerator {
-    val DISTRICT_BRK = generateDistrict("TVP_BRK","Berkshire")
-    val DISTRICT_OXF = generateDistrict("TVP_OXF","Oxfordshire")
-    val DISTRICT_MKY = generateDistrict("TVP_MKY","Milton Keynes")
+    val DISTRICT_BRK = generateDistrict("TVP_BRK", "Berkshire")
+    val DISTRICT_OXF = generateDistrict("TVP_OXF", "Oxfordshire")
+    val DISTRICT_MKY = generateDistrict("TVP_MKY", "Milton Keynes")
 
     val LOCATION_BRK_1 = generateLocation(
         code = "TVP_BRK",
@@ -41,7 +41,8 @@ object OfficeLocationGenerator {
 
     fun generateOfficeAddress(
         officeLocation: OfficeLocation,
-        officeDistrict: District) = OfficeAddress(
+        officeDistrict: District
+    ) = OfficeAddress(
         officeLocation.description,
         officeLocation.buildingName,
         officeLocation.buildingNumber,
@@ -52,7 +53,8 @@ object OfficeLocationGenerator {
         officeLocation.postcode,
         officeLocation.telephoneNumber,
         officeLocation.startDate,
-        officeLocation.endDate)
+        officeLocation.endDate
+    )
 
     fun generateLocation(location: OfficeLocation, district: District) =
         OfficeLocation(
@@ -69,7 +71,8 @@ object OfficeLocationGenerator {
             location.startDate,
             location.endDate,
             district,
-            location.id)
+            location.id
+        )
 
     fun generateLocation(
         code: String,

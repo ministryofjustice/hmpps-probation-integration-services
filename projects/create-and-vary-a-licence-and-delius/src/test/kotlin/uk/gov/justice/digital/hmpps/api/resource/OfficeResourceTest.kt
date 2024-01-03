@@ -24,8 +24,17 @@ internal class OfficeResourceTest {
 
     @Test
     fun `calls office address service`() {
-        val address = OfficeLocationGenerator.generateOfficeAddress(OfficeLocationGenerator.LOCATION_BRK_2, OfficeLocationGenerator.DISTRICT_BRK)
-        whenever(officeAddressService.findAddresses("berk", "Read", PageRequest.of(0, 1))).thenReturn(PageImpl(listOf(address)))
+        val address = OfficeLocationGenerator.generateOfficeAddress(
+            OfficeLocationGenerator.LOCATION_BRK_2,
+            OfficeLocationGenerator.DISTRICT_BRK
+        )
+        whenever(officeAddressService.findAddresses("berk", "Read", PageRequest.of(0, 1))).thenReturn(
+            PageImpl(
+                listOf(
+                    address
+                )
+            )
+        )
         val res = resource.findAddresses("berk", "Read", 0, 1)
         assertThat(res.results[0].officeName, equalTo("Reading Office"))
     }

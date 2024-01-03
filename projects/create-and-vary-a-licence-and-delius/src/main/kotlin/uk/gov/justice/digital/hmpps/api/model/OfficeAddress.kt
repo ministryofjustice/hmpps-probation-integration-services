@@ -35,7 +35,19 @@ data class OfficeAddress(
             ) {
                 null
             } else {
-                OfficeAddress(officeName, buildingName, buildingNumber, streetName, district, town, county, postcode, telephoneNumber, from, to)
+                OfficeAddress(
+                    officeName,
+                    buildingName,
+                    buildingNumber,
+                    streetName,
+                    district,
+                    town,
+                    county,
+                    postcode,
+                    telephoneNumber,
+                    from,
+                    to
+                )
             }
     }
 }
