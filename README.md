@@ -324,32 +324,6 @@ generic-service:
     SERVICE_URL: https://example.com
 ```
 
-### Secrets
-Add secrets for each environment here: https://github.com/ministryofjustice/hmpps-probation-integration-services/settings/secrets/actions.
-
-The deployment job pushes GitHub secrets to the Kubernetes namespaces. Then at runtime, Kubernetes passes these secrets
-as environment variables to the container.
-
-GitHub secret names should be uppercase and prefixed with the project name. (
-e.g. `PRISON_CASE_NOTES_TO_PROBATION_CLIENT_ID`). The project name will be used as the Kubernetes secret name, and
-anything after it will be used as the key.
-
-For example, `PRISON_CASE_NOTES_TO_PROBATION_CLIENT_ID` will be converted into a secret
-named `prison-case-notes-to-probation`, containing a key of `CLIENT_ID`. This can be referenced in the `values*.yml`
-files like so:
-```yaml
-namespace_secrets:
-  prison-case-notes-to-probation:
-    MY_ENV_VAR: CLIENT_ID
-```
-
-Additionally, there are some shared values defined in a `common` secret in each namespace. This secret contains:
-```yaml
-APPLICATIONINSIGHTS_CONNECTION_STRING: Connection string for pushing Telemetry to Azure Application Insights.
-DB_URL: URL for the Delius probation database
-DB_STANDBY_URL: URL for the standby (read-only) Delius probation database
-```
-
 ## Accessing the Delius Database
 To configure access to the Delius probation database, add an `access.yml` file to the project's `deploy/database` 
 folder.
