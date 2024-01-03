@@ -20,12 +20,13 @@ class OfficeResource(
     fun findAddresses(
         @RequestParam(required = true) ldu: String,
         @RequestParam(required = true) officeName: String,
-        @RequestParam(required = false, defaultValue = "0")  page: Int,
+        @RequestParam(required = false, defaultValue = "0") page: Int,
         @RequestParam(required = false, defaultValue = "50") size: Int,
 
-    ): ResultSet<OfficeAddress> = officeAddressService.findAddresses(ldu, officeName, PageRequest.of(page, size)).let {
-        ResultSet(it.content, it.totalElements, it.totalPages, page, size)
-    }
+        ): ResultSet<OfficeAddress> =
+        officeAddressService.findAddresses(ldu, officeName, PageRequest.of(page, size)).let {
+            ResultSet(it.content, it.totalElements, it.totalPages, page, size)
+        }
 }
 
 data class ResultSet<T>(

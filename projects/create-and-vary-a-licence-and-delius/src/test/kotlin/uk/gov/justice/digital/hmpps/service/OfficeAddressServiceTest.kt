@@ -24,8 +24,13 @@ internal class OfficeAddressServiceTest {
 
     @Test
     fun `calls office location repository`() {
-        val location = OfficeLocationGenerator.generateLocation(OfficeLocationGenerator.LOCATION_BRK_1, OfficeLocationGenerator.DISTRICT_BRK)
-        whenever(officeLocationRepository.findByLduAndOfficeName("berk", "Brack", Pageable.ofSize(1))).thenReturn(PageImpl(listOf(location)))
+        val location = OfficeLocationGenerator.generateLocation(
+            OfficeLocationGenerator.LOCATION_BRK_1,
+            OfficeLocationGenerator.DISTRICT_BRK
+        )
+        whenever(officeLocationRepository.findByLduAndOfficeName("berk", "Brack", Pageable.ofSize(1))).thenReturn(
+            PageImpl(listOf(location))
+        )
         val res = service.findAddresses("berk", "Brack", Pageable.ofSize(1))
         assertThat(res.content[0].officeName, equalTo("Bracknell Office"))
     }

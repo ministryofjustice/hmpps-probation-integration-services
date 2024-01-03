@@ -89,13 +89,14 @@ class DataLoader(
         entityManager.saveCvlMappings(ReferenceDataGenerator.CVL_MAPPINGS)
     }
 
-    private fun createOfficeLocationsAndDistricts(){
+    private fun createOfficeLocationsAndDistricts() {
         entityManager.persistAll(
             OfficeLocationGenerator.DISTRICT_BRK,
             OfficeLocationGenerator.DISTRICT_MKY,
             OfficeLocationGenerator.DISTRICT_OXF,
             OfficeLocationGenerator.LOCATION_BRK_1,
-            OfficeLocationGenerator.LOCATION_BRK_2)
+            OfficeLocationGenerator.LOCATION_BRK_2
+        )
     }
 
     private fun EntityManager.persistAll(vararg entities: Any) {
