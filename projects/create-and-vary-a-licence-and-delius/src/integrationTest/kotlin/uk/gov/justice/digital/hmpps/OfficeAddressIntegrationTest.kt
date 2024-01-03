@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
@@ -21,6 +19,7 @@ import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.DISTR
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.LOCATION_BRK_1
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.LOCATION_BRK_2
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator.generateOfficeAddress
+import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.contentAsJson
 import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 
 @AutoConfigureMockMvc
@@ -28,9 +27,6 @@ import uk.gov.justice.digital.hmpps.test.MockMvcExtensions.withToken
 internal class OfficeAddressIntegrationTest {
     @Autowired
     lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
 
     @Test
     fun badRequest() {
@@ -45,12 +41,12 @@ internal class OfficeAddressIntegrationTest {
         val res = mockMvc
             .perform(get(url).withToken())
             .andExpect(status().isOk)
-            .andReturn().response.contentAsString
-        val rs = objectMapper.readValue<ResultSet<OfficeAddress>>(res)
-        assertThat(rs.totalPages, equalTo(pageSize))
-        assertThat(rs.results.size, equalTo(resultSize))
-        assertThat(rs.page, equalTo(pageNumber))
-        assertThat(rs.results, equalTo(results))
+            .andReturn().response.contentAsJson<ResultSet<OfficeAddress>>()
+
+        assertThat(res.totalPages, equalTo(pageSize))
+        assertThat(res.results.size, equalTo(resultSize))
+        assertThat(res.page, equalTo(pageNumber))
+        assertThat(res.results, equalTo(results))
     }
 
     companion object {
