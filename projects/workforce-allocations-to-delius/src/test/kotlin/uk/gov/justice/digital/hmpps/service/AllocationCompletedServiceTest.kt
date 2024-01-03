@@ -72,7 +72,12 @@ class AllocationCompletedServiceTest {
         val event = EventGenerator.DEFAULT
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
         whenever(personRepository.findCaseType(person.crn)).thenReturn(COMMUNITY)
-        whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
+        whenever(
+            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
+                person.crn,
+                event.number
+            )
+        ).thenReturn(event)
 
         val response = allocationCompletedService.getDetails(person.crn, event.number, "MISSING")
 
@@ -87,7 +92,12 @@ class AllocationCompletedServiceTest {
         val staff = StaffGenerator.STAFF_WITH_USER
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
         whenever(personRepository.findCaseType(person.crn)).thenReturn(COMMUNITY)
-        whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
+        whenever(
+            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
+                person.crn,
+                event.number
+            )
+        ).thenReturn(event)
         whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
 
         val response = allocationCompletedService.getDetails(person.crn, event.number, staff.code)
@@ -104,7 +114,12 @@ class AllocationCompletedServiceTest {
         val initialAppointmentDate = LocalDate.now()
         whenever(personRepository.findByCrnAndSoftDeletedFalse(person.crn)).thenReturn(person)
         whenever(personRepository.findCaseType(person.crn)).thenReturn(COMMUNITY)
-        whenever(eventRepository.findByPersonCrnAndNumber(person.crn, event.number)).thenReturn(event)
+        whenever(
+            eventRepository.findByPersonCrnAndNumberAndSoftDeletedFalse(
+                person.crn,
+                event.number
+            )
+        ).thenReturn(event)
         whenever(staffRepository.findStaffWithUserByCode(staff.code)).thenReturn(staff)
         whenever(ldapService.findEmailsForStaffIn(any())).thenReturn(mapOf(user.username to user.email))
         whenever(contactRepository.getInitialAppointmentData(person.id, event.id)).thenReturn(object :

@@ -2,38 +2,10 @@ package uk.gov.justice.digital.hmpps.data
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.data.generator.ContactGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CourtReportGenerator
-import uk.gov.justice.digital.hmpps.data.generator.CustodyGenerator
-import uk.gov.justice.digital.hmpps.data.generator.DisposalGenerator
-import uk.gov.justice.digital.hmpps.data.generator.EventGenerator
-import uk.gov.justice.digital.hmpps.data.generator.InstitutionalReportGenerator
-import uk.gov.justice.digital.hmpps.data.generator.KeyDateGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OasysAssessmentGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OffenceGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OgrsAssessmentGenerator
-import uk.gov.justice.digital.hmpps.data.generator.OrderManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
-import uk.gov.justice.digital.hmpps.data.generator.PersonManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RegistrationGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RequirementGenerator
-import uk.gov.justice.digital.hmpps.data.generator.RequirementManagerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.ResponsibleOfficerGenerator
-import uk.gov.justice.digital.hmpps.data.generator.StaffGenerator
-import uk.gov.justice.digital.hmpps.data.generator.TransferReasonGenerator
-import uk.gov.justice.digital.hmpps.data.repository.CourtReportRepository
-import uk.gov.justice.digital.hmpps.data.repository.CustodyRepository
-import uk.gov.justice.digital.hmpps.data.repository.DisposalTypeRepository
-import uk.gov.justice.digital.hmpps.data.repository.InstitutionalReportRepository
-import uk.gov.justice.digital.hmpps.data.repository.KeyDateRepository
-import uk.gov.justice.digital.hmpps.data.repository.MainOffenceRepository
+import uk.gov.justice.digital.hmpps.data.generator.*
+import uk.gov.justice.digital.hmpps.data.repository.*
 import uk.gov.justice.digital.hmpps.integrations.delius.contact.ContactRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.Event
-import uk.gov.justice.digital.hmpps.integrations.delius.event.EventRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManager
-import uk.gov.justice.digital.hmpps.integrations.delius.event.OrderManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.event.TransferReasonRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.event.*
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OASYSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.ogrs.OGRSAssessmentRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.registration.RegistrationRepository
@@ -43,12 +15,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.Requir
 import uk.gov.justice.digital.hmpps.integrations.delius.event.requirement.RequirementRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.AdditionalOffenceRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.event.sentence.DisposalRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.Person
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManager
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonManagerRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.PersonRepository
-import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficer
-import uk.gov.justice.digital.hmpps.integrations.delius.person.ResponsibleOfficerRepository
+import uk.gov.justice.digital.hmpps.integrations.delius.person.*
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.Staff
 
 @Component
@@ -93,6 +60,7 @@ class PersonAllocationDataLoader(
         OrderManagerGenerator.DEFAULT = createEventWithManager(EventGenerator.DEFAULT)
         OrderManagerGenerator.NEW = createEventWithManager(EventGenerator.NEW)
         OrderManagerGenerator.HISTORIC = createEventWithManager(EventGenerator.HISTORIC)
+        OrderManagerGenerator.DELETED_EVENT = createEventWithManager(EventGenerator.DELETED)
         OrderManagerGenerator.INACTIVE_EVENT =
             createEventWithManager(EventGenerator.INACTIVE, StaffGenerator.STAFF_FOR_INACTIVE_EVENT)
 
