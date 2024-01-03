@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.OfficeLo
 class OfficeAddressService(private val officeLocationRepository: OfficeLocationRepository) {
     fun findAddresses(ldu: String, officeName: String, pageable: Pageable): Page<OfficeAddress> =
         officeLocationRepository.findByLduAndOfficeName(ldu, officeName, pageable).map {
-            OfficeAddress.from(
+            OfficeAddress(
                 it.description,
                 it.buildingName,
                 it.buildingNumber,
