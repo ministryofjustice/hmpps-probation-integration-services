@@ -147,7 +147,8 @@ interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
     @Query(
         """
         select ol from OfficeLocation ol
-        where ol.description like %:officeName% and ol.district.description like %:ldu%
+        where lower(ol.description) like lower(concat('%', :officeName,'%')) 
+        and lower(ol.district.description) like lower(concat('%', :ldu,'%'))
         and (ol.endDate is null or ol.endDate > current_date)
         order by ol.description
     """
