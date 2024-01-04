@@ -11,25 +11,17 @@ class ContactService(
     private val contactTypeRepository: ContactTypeRepository,
     private val contactRepository: ContactRepository
 ) {
-    fun createForKeyDateChanges(custody: Custody, updates: List<KeyDate>, deleted: List<KeyDate>) {
-        if (updates.isEmpty() && deleted.isEmpty()) return
-        fun notes(): String {
-            val updateNotes = updates.joinToString(lineSeparator()) {
-                "${it.type.description} ${DeliusDateFormatter.format(it.date)}"
-            }
-            val deletedNotes = deleted.joinToString(lineSeparator()) {
-                "Removed ${it.type.description} ${DeliusDateFormatter.format(it.date)}"
-            }
-            return updateNotes + lineSeparator() + deletedNotes
-        }
-
+    fun createForKeyDateChanges(custody: Custody, updates: List<KeyDate>) {
+        if (updates.isEmpty()) return
         val event = custody.disposal?.event!!
         val om = event.manager!!
         val contact = Contact(
             personId = event.person.id,
             eventId = event.id,
             type = contactTypeRepository.edssType(),
-            notes = notes(),
+            notes = updates.joinToString(lineSeparator()) {
+                "${it.type.description} ${DeliusDateFormatter.format(it.date)}"
+            },
             staffId = om.staffId,
             teamId = om.teamId,
             providerId = event.manager.providerId
