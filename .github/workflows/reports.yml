@@ -43,7 +43,7 @@ jobs:
                     "type": "plain_text",
                     "text": "The following cases failed to allocate in Delius over the last 7 days. Please check and manually correct the cases if required."
                   },
-                  "fields": ([
+                  "fields": [
                     {
                       "type": "mrkdwn",
                       "text": "*CRN*"
@@ -52,32 +52,22 @@ jobs:
                       "type": "mrkdwn",
                       "text": "*Reason*"
                     }
-                  ] + (.[:4] | map([
-                    { 
-                      type: "plain_text", 
-                      text: .[0]
-                    }, 
-                    {
-                      type: "mrkdwn", 
-                      text: (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[2] + "%22,%22timestamp%22:%22" + .[3] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}%22%7D|Details>).")
-                    }
-                  ]) | flatten))
+                  ]
                 }
               ] + 
-              (.[4:] | [_nwise(5)] | map(
-                {
-                  "type": "section",
-                  "fields": (. | map([
-                    { 
-                      type: "plain_text", 
-                      text: .[0]
-                    }, 
-                    {
-                      type: "mrkdwn", 
-                      text: (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[3] + "%22,%22timestamp%22:%22" + .[4] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}%22%7D|Details>).")
-                    }
-                  ]) | flatten)
-                })) + 
+              (. | [_nwise(5)] | map({
+                "type": "section",
+                "fields": (. | map([
+                  { 
+                    type: "plain_text", 
+                    text: .[0]
+                  }, 
+                  {
+                    type: "mrkdwn", 
+                    text: (.[1] + " (<https://portal.azure.com/#blade/AppInsightsExtension/DetailsV2Blade/DataModel/%7B%22eventId%22:%22" + .[3] + "%22,%22timestamp%22:%22" + .[4] + "%22%7D/ComponentId/%7B%22Name%22:%22nomisapi-prod%22,%22ResourceGroup%22:%22nomisapi-prod-rg%22,%22SubscriptionId%22:%22${{ secrets.APP_INSIGHTS_SUBSCRIPTION_ID }}%22%7D|Details>).")
+                  }
+                ]) | flatten)
+              })) + 
               [
                 {
                   "type": "context",
