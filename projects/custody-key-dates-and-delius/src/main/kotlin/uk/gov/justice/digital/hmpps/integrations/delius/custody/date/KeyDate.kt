@@ -41,6 +41,7 @@ class KeyDate(
     fun changeDate(date: LocalDate): KeyDate? = if (this.date == date) {
         null
     } else {
+        // create new entity to allow dry run to not make changes
         KeyDate(id, custody, type, date).also {
             it.createdDateTime = createdDateTime
             it.createdUserId = createdUserId
