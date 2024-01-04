@@ -67,21 +67,13 @@ class CustodyDateUpdateService(
         sentenceDetail: SentenceDetail,
         custody: Custody
     ): List<KeyDate> = CustodyDateType.entries.mapNotNull { cdt ->
-        val date = cdt.field.getter.call(sentenceDetail)
-        if (date == null) {
-            custody.keyDates.find(cdt.code)?.let {
-                val kd = KeyDate(it.id, it.custody, it.type, it.date)
-                kd.softDeleted = true
-                kd.version = it.version
-                kd
-            }
-        } else {
+        cdt.field.getter.call(sentenceDetail)?.let {
             val existing = custody.keyDates.find(cdt.code)
             if (existing != null) {
-                existing.changeDate(date)
+                existing.changeDate(it)
             } else {
                 val kdt = referenceDataRepository.findKeyDateType(cdt.code)
-                KeyDate(null, custody, kdt, date)
+                KeyDate(null, custody, kdt, it)
             }
         }
     }
