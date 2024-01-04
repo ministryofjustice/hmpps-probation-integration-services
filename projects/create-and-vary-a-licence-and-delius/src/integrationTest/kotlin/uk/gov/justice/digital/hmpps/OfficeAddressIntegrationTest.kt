@@ -76,6 +76,10 @@ internal class OfficeAddressIntegrationTest {
                 "/office/addresses?page=1&size=1&ldu=Berk&officeName=Office", 2, 1, 1,
                 listOf(generateOfficeAddress(LOCATION_BRK_2, DISTRICT_BRK))
             ),
+            Arguments.of(
+                "/office/addresses?page=1&size=1&ldu=berk&officeName=office", 2, 1, 1,
+                listOf(generateOfficeAddress(LOCATION_BRK_2, DISTRICT_BRK))
+            ),
         )
     }
 }
