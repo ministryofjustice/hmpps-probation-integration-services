@@ -16,9 +16,10 @@ object OfficeLocationGenerator {
         description = "Bracknell Office",
         buildingNumber = "21",
         streetName = "Some Place",
+        district = "District 1",
         town = "Hearth",
         postcode = "H34 7TH",
-        district = DISTRICT_BRK
+        ldu = DISTRICT_BRK
     )
 
     val LOCATION_BRK_2 = generateLocation(
@@ -27,9 +28,10 @@ object OfficeLocationGenerator {
         buildingNumber = "23",
         buildingName = "The old hall",
         streetName = "Another Place",
+        district = "District 2",
         town = "Reading",
         postcode = "RG1 3EH",
-        district = DISTRICT_BRK
+        ldu = DISTRICT_BRK
     )
 
     fun generateDistrict(
@@ -41,36 +43,37 @@ object OfficeLocationGenerator {
 
     fun generateOfficeAddress(
         officeLocation: OfficeLocation,
-        officeDistrict: District
+        ldu: District
     ) = OfficeAddress(
         officeLocation.description,
         officeLocation.buildingName,
         officeLocation.buildingNumber,
         officeLocation.streetName,
-        officeDistrict.description,
+        officeLocation.district,
         officeLocation.townCity,
         officeLocation.county,
         officeLocation.postcode,
+        ldu.description,
         officeLocation.telephoneNumber,
         officeLocation.startDate,
         officeLocation.endDate
     )
 
-    fun generateLocation(location: OfficeLocation, district: District) =
+    fun generateLocation(location: OfficeLocation, ldu: District) =
         OfficeLocation(
             location.code,
             location.description,
             location.buildingName,
             location.buildingNumber,
             location.streetName,
-            location.districtStr,
+            location.district,
             location.townCity,
             location.county,
             location.postcode,
             location.telephoneNumber,
             location.startDate,
             location.endDate,
-            district,
+            ldu,
             location.id
         )
 
@@ -80,14 +83,14 @@ object OfficeLocationGenerator {
         buildingName: String? = null,
         buildingNumber: String,
         streetName: String? = null,
-        districtStr: String? = null,
+        district: String? = null,
         town: String? = null,
         county: String? = null,
         postcode: String? = null,
         telephoneNumber: String? = null,
         startDate: LocalDate = LocalDate.now(),
         endDate: LocalDate? = null,
-        district: District,
+        ldu: District,
         id: Long = IdGenerator.getAndIncrement()
     ) = OfficeLocation(
         code,
@@ -95,14 +98,14 @@ object OfficeLocationGenerator {
         buildingName,
         buildingNumber,
         streetName,
-        districtStr,
+        district,
         town,
         county,
         postcode,
         telephoneNumber,
         startDate,
         endDate,
-        district,
+        ldu,
         id
     )
 }

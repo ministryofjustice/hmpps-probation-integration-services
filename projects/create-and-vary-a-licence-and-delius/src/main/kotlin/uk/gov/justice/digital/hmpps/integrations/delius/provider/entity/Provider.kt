@@ -123,10 +123,7 @@ class OfficeLocation(
     val buildingName: String?,
     val buildingNumber: String?,
     val streetName: String?,
-
-    @Column(name = "district")
-    val districtStr: String?,
-
+    val district: String?,
     val townCity: String?,
     val county: String?,
     val postcode: String?,
@@ -136,7 +133,7 @@ class OfficeLocation(
 
     @JoinColumn(name = "district_id")
     @ManyToOne
-    val district: District,
+    val ldu: District,
 
     @Id
     @Column(name = "office_location_id")
@@ -148,7 +145,7 @@ interface OfficeLocationRepository : JpaRepository<OfficeLocation, Long> {
         """
         select ol from OfficeLocation ol
         where lower(ol.description) like lower(concat('%',:officeName,'%')) 
-        and lower(ol.district.description) like lower(concat('%',:ldu,'%'))
+        and lower(ol.ldu.description) like lower(concat('%',:ldu,'%'))
         and (ol.endDate is null or ol.endDate > current_date)
         order by ol.description
     """

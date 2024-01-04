@@ -11,6 +11,7 @@ data class OfficeAddress(
     val town: String?,
     val county: String?,
     val postcode: String?,
+    val ldu: String,
     val telephoneNumber: String?,
     val from: LocalDate,
     val to: LocalDate?
