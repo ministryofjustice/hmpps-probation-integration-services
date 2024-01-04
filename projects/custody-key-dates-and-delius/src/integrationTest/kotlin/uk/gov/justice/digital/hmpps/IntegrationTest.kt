@@ -115,7 +115,6 @@ internal class IntegrationTest {
                 """
             LED 11/09/2025
             ACR 26/11/2022
-            PED 26/10/2022
             SED 10/09/2025
             EXP 27/11/2022
             HDE 28/10/2022

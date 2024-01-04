@@ -41,8 +41,11 @@ class KeyDate(
     fun changeDate(date: LocalDate): KeyDate? = if (this.date == date) {
         null
     } else {
-        val keyDate = KeyDate(id, custody, type, date)
-        keyDate.version = version
-        keyDate
+        // create new entity to allow dry run to not make changes
+        KeyDate(id, custody, type, date).also {
+            it.createdDateTime = createdDateTime
+            it.createdUserId = createdUserId
+            it.version = version
+        }
     }
 }
