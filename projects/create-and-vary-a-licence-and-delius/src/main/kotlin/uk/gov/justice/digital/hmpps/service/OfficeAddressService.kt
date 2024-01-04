@@ -15,10 +15,11 @@ class OfficeAddressService(private val officeLocationRepository: OfficeLocationR
                 it.buildingName,
                 it.buildingNumber,
                 it.streetName,
-                it.district.description,
+                it.district,
                 it.townCity,
                 it.county,
                 it.postcode,
+                it.ldu.description,
                 it.telephoneNumber,
                 it.startDate,
                 it.endDate
