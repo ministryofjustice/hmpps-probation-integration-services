@@ -328,6 +328,7 @@ components:
     OfficeAddress:
       required:
       - from
+      - ldu
       - officeName
       type: object
       properties:
@@ -346,6 +347,8 @@ components:
         county:
           type: string
         postcode:
+          type: string
+        ldu:
           type: string
         telephoneNumber:
           type: string
