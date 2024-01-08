@@ -188,7 +188,8 @@ class NsiStatus(
     val id: Long
 ) {
     enum class Code(val value: String, val contactTypeCode: ContactType.Code?) {
-        READY_FOR_SERVICE("OPD01", ContactType.Code.READY_FOR_SERVICES)
+        READY_FOR_SERVICE("OPD01", ContactType.Code.READY_FOR_SERVICES),
+        PENDING_CONSULTATION("OPD04", ContactType.Code.PENDING_CONSULTATION)
     }
 }
 

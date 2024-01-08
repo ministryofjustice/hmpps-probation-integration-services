@@ -73,7 +73,7 @@ internal class OpdIntegrationTest {
         assertNotNull(nsi!!)
         assertThat(nsi.type.code, equalTo(NsiType.Code.OPD_COMMUNITY_PATHWAY.value))
         assertThat(nsi.subType?.code, equalTo(NsiSubType.Code.COMMUNITY_PATHWAY.value))
-        assertThat(nsi.status.code, equalTo(NsiStatus.Code.READY_FOR_SERVICE.value))
+        assertThat(nsi.status.code, equalTo(NsiStatus.Code.PENDING_CONSULTATION.value))
         assertThat(
             nsi.notes,
             containsString(
@@ -91,7 +91,7 @@ internal class OpdIntegrationTest {
         assertThat(nsiManager.staffId, equalTo(com.staffId))
 
         val opdContact = contactRepository.findAll()
-            .firstOrNull { it.personId == com.person.id && it.type.code == ContactType.Code.READY_FOR_SERVICES.value }
+            .firstOrNull { it.personId == com.person.id && it.type.code == ContactType.Code.PENDING_CONSULTATION.value }
         assertNotNull(opdContact!!)
 
         verify(telemetryService).trackEvent(
@@ -127,7 +127,7 @@ internal class OpdIntegrationTest {
         )
 
         val opdContact = contactRepository.findAll()
-            .firstOrNull { it.personId == com.person.id && it.type.code == ContactType.Code.READY_FOR_SERVICES.value }
+            .firstOrNull { it.personId == com.person.id && it.type.code == ContactType.Code.PENDING_CONSULTATION.value }
         assertNotNull(opdContact!!)
     }
 

@@ -32,7 +32,7 @@ class NsiService(
     fun createNsi(opdAssessment: OpdAssessment, com: PersonManager) {
         val type = nsiTypeRepository.getByCode(NsiType.Code.OPD_COMMUNITY_PATHWAY.value)
         val subType = opdAssessment.result.subTypeCode?.value?.let { nsiSubTypeRepository.nsiSubType(it) }
-        val status = nsiStatusRepository.getByCode(NsiStatus.Code.READY_FOR_SERVICE.value)
+        val status = nsiStatusRepository.getByCode(NsiStatus.Code.PENDING_CONSULTATION.value)
         val nsi = Nsi(
             com.person,
             opdAssessment.date.toLocalDate(),
