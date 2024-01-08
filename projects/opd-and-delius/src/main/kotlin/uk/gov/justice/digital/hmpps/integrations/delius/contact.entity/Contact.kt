@@ -88,7 +88,6 @@ class ContactType(
     val id: Long
 ) {
     enum class Code(val value: String) {
-        READY_FOR_SERVICES("OPD001"),
         PENDING_CONSULTATION("OPD025")
     }
 }
