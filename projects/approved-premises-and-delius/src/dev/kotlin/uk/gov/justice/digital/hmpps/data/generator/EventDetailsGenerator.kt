@@ -1,23 +1,12 @@
 package uk.gov.justice.digital.hmpps.data.generator
 
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationAssessed
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.ApplicationSubmitted
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.AssessedBy
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookedBy
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.BookingMade
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Decision
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.EventDetails
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonArrived
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.PersonNotArrived
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.Premises
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.StaffMember
-import uk.gov.justice.digital.hmpps.integrations.approvedpremises.SubmittedBy
+import uk.gov.justice.digital.hmpps.integrations.approvedpremises.*
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.ReleaseType
 import uk.gov.justice.digital.hmpps.integrations.delius.referencedata.SentenceType
 import uk.gov.justice.digital.hmpps.integrations.delius.staff.Staff
 import java.time.LocalDate
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 object EventDetailsGenerator {
     fun applicationSubmitted(submittedBy: SubmittedBy) = EventDetails(
@@ -34,7 +23,7 @@ object EventDetailsGenerator {
         )
     )
 
-    fun applicationAssessed(assessedBy: AssessedBy) = EventDetails(
+    fun applicationAssessed(assessedBy: AssessedBy, arrivalDate: LocalDate? = null) = EventDetails(
         id = UUID.randomUUID().toString(),
         timestamp = ZonedDateTime.now(),
         eventType = "approved-premises.application.assessed",
@@ -45,7 +34,8 @@ object EventDetailsGenerator {
             assessedBy = assessedBy,
             decision = Decision.ACCEPTED,
             decisionRationale = "Test decision rationale",
-            "7"
+            "7",
+            arrivalDate
         )
     )
 
