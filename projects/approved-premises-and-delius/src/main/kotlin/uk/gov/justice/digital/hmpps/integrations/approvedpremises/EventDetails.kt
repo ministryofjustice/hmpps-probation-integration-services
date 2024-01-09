@@ -54,12 +54,13 @@ data class ApplicationAssessed(
     val decision: Decision,
     val decisionRationale: String?,
     @JsonAlias("deliusEventNumber")
-    val eventNumber: String
+    val eventNumber: String,
+    val arrivalDate: LocalDate?
 ) {
     val notes: String
         get() = when (decision) {
             Decision.ACCEPTED -> """
-                |Application for a placement in an Approved Premises has been assessed as suitable. The application will now be matched to a suitable Approved Premises.
+                |Application for a placement in an Approved Premises has been assessed as suitable. The application will now be matched to a suitable Approved Premises${additionalNotes()}.
                 |Details of the application can be found here: $applicationUrl
             """.trimMargin()
 
@@ -69,6 +70,9 @@ data class ApplicationAssessed(
                 |Details of the application can be found here: $applicationUrl
             """.trimMargin()
         }
+
+    private fun additionalNotes() =
+        arrivalDate?.let { "" } ?: " once a placement request has been received and approved"
 }
 
 data class AssessedBy(
