@@ -1,5 +1,7 @@
+import com.gorylenko.GenerateGitPropertiesTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.noarg.gradle.NoArgExtension
+import org.springframework.boot.gradle.tasks.buildinfo.BuildInfo
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
 import uk.gov.justice.digital.hmpps.plugins.ClassPathPlugin
@@ -12,6 +14,7 @@ plugins {
     kotlin("kapt") version "1.9.22" apply false
     id("org.springframework.boot") version "3.2.1" apply false
     id("io.spring.dependency-management") version "1.1.4" apply false
+    id("com.gorylenko.gradle-git-properties") version "2.4.1" apply false
     id("com.google.cloud.tools.jib") apply false
     id("base")
     id("org.sonarqube")
@@ -59,15 +62,16 @@ subprojects {
     apply { plugin("org.springframework.boot") }
     apply { plugin("io.spring.dependency-management") }
     apply { plugin("org.jetbrains.kotlin.jvm") }
-    apply { plugin("org.jetbrains.kotlin.plugin.spring") }
+    apply { plugin("org.jetbrains.kotlin.kapt") }
     apply { plugin("org.jetbrains.kotlin.plugin.jpa") }
+    apply { plugin("org.jetbrains.kotlin.plugin.spring") }
     apply { plugin("jacoco") }
     apply { plugin("test-report-aggregation") }
     apply { plugin("jacoco-report-aggregation") }
+    apply { plugin("org.sonarqube") }
+    apply { plugin("com.gorylenko.gradle-git-properties") }
     apply { plugin(JibConfigPlugin::class.java) }
     apply { plugin(ClassPathPlugin::class.java) }
-    apply { plugin("org.sonarqube") }
-    apply { plugin("org.jetbrains.kotlin.kapt") }
 
     tasks {
         withType<BootRun> {
@@ -80,6 +84,13 @@ subprojects {
             isPreserveFileTimestamps = false
             isReproducibleFileOrder = true
             archiveFileName.set("${archiveBaseName.get()}-${archiveClassifier.get()}.${archiveExtension.get()}")
+        }
+        named<GenerateGitPropertiesTask>("generateGitProperties") { enabled = false }
+        register<GenerateGitPropertiesTask>("gitInfo") {
+            gitProperties.gitPropertiesResourceDir = projectDir
+        }
+        register<BuildInfo>("buildInfo") {
+            destinationDir = projectDir
         }
     }
 

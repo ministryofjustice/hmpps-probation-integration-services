@@ -33,13 +33,19 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Get environment details
       uses: ./.github/actions/get-env-details
       id: env
       with:
         environment: ${{ inputs.environment }}
+
+    - name: Get build info
+      uses: ./.github/actions/get-build-info
+      with:
+        project: ${{ inputs.project }}
+        version: ${{ inputs.version }}
 
     - name: Authenticate
       uses: ./.github/actions/cloud-platform-auth
@@ -63,9 +69,11 @@ runs:
           --force \
           --install \
           --reset-values \
-          --set 'generic-service.env.VERSION=${{ inputs.version }}' \
-          --set 'generic-service.image.tag=${{ inputs.version }}' \
           --set 'version=${{ inputs.version }}' \
+          --set 'generic-service.image.tag=${{ inputs.version }}' \
+          --set 'generic-service.env.VERSION=${{ inputs.version }}' \
+          --set "generic-service.env.BUILD_INFO=$([ -r "$BUILD_INFO" ] && cat "$BUILD_INFO" | base64 -w0 || echo)" \
+          --set "generic-service.env.GIT_INFO=$([ -r "$GIT_INFO" ] && cat "$GIT_INFO" | base64 -w0 || echo)" \
           --timeout 10m \
           --values <(curl "$(gh api '/repos/ministryofjustice/hmpps-ip-allowlists/contents/ip-allowlist-groups.yaml' | jq -r '.download_url')") \
           --values templates/helm-defaults.yml \
@@ -74,3 +82,5 @@ runs:
           --wait
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
+        BUILD_INFO: projects/${{ inputs.project }}/build-info.properties
+        GIT_INFO: projects/${{ inputs.project }}/git.properties
