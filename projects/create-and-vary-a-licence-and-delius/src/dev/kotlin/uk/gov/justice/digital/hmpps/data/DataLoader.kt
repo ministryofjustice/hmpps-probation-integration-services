@@ -103,11 +103,13 @@ class DataLoader(
 
     private fun createCaseloadData() {
         entityManager.persistAll(
+            CaseloadGenerator.TEAM1,
             CaseloadGenerator.STAFF1,
             CaseloadGenerator.STAFF2,
             CaseloadGenerator.CASELOAD_ROLE_OM_1,
             CaseloadGenerator.CASELOAD_ROLE_OM_2,
             CaseloadGenerator.CASELOAD_ROLE_OM_3,
+            CaseloadGenerator.CASELOAD_ROLE_OM_4,
             CaseloadGenerator.CASELOAD_ROLE_OS_1
         )
     }
