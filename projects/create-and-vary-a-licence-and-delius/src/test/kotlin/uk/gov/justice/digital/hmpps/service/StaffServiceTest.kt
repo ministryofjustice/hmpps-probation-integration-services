@@ -20,12 +20,16 @@ internal class StaffServiceTest {
 
     @Mock
     lateinit var ldapTemplate: LdapTemplate
+
     @Mock
     lateinit var staffRepository: StaffRepository
+
     @Mock
-    lateinit var  boroughRepository: BoroughRepository
+    lateinit var boroughRepository: BoroughRepository
+
     @Mock
     lateinit var caseloadRepository: CaseloadRepository
+
     @Mock
     lateinit var teamRepository: TeamRepository
 
