@@ -42,10 +42,15 @@ class Team(
     val code: String,
 
     val description: String,
+    val telephone: String?,
+    val emailAddress: String?,
 
     @ManyToOne
     @JoinColumn(name = "district_id")
     val district: District,
+
+    val startDate: LocalDate,
+    val endDate: LocalDate?,
 
     @Id
     @Column(name = "team_id")

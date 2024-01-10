@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.data.generator.AddressGenerator
+import uk.gov.justice.digital.hmpps.data.generator.CaseloadGenerator
 import uk.gov.justice.digital.hmpps.data.generator.OfficeLocationGenerator
 import uk.gov.justice.digital.hmpps.data.generator.PersonGenerator
 import uk.gov.justice.digital.hmpps.data.generator.ProviderGenerator
@@ -70,6 +71,7 @@ class DataLoader(
 
         createForAddingLicenceConditions()
         createOfficeLocationsAndDistricts()
+        createCaseloadData()
     }
 
     private fun createForAddingLicenceConditions() {
@@ -96,6 +98,17 @@ class DataLoader(
             OfficeLocationGenerator.DISTRICT_OXF,
             OfficeLocationGenerator.LOCATION_BRK_1,
             OfficeLocationGenerator.LOCATION_BRK_2
+        )
+    }
+
+    private fun createCaseloadData() {
+        entityManager.persistAll(
+            CaseloadGenerator.STAFF1,
+            CaseloadGenerator.STAFF2,
+            CaseloadGenerator.CASELOAD_ROLE_OM_1,
+            CaseloadGenerator.CASELOAD_ROLE_OM_2,
+            CaseloadGenerator.CASELOAD_ROLE_OM_3,
+            CaseloadGenerator.CASELOAD_ROLE_OS_1
         )
     }
 

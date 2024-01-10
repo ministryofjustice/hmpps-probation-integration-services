@@ -37,7 +37,11 @@ object ProviderGenerator {
     fun generateTeam(
         code: String,
         description: String = "Description of $code",
+        telephone: String? = "12345",
+        emailAddress: String? = "testemail",
         district: District = DEFAULT_DISTRICT,
+        startDate: LocalDate = LocalDate.now(),
+        endDate: LocalDate? = null,
         id: Long = IdGenerator.getAndIncrement()
-    ) = Team(code, description, district, id)
+    ) = Team(code, description, telephone, emailAddress, district, startDate, endDate, id)
 }
