@@ -28,7 +28,7 @@ runs:
           projects:
             - 'projects/${{ inputs.project }}/**'
 
-    - uses: docker/setup-qemu-action@v2
+    - uses: docker/setup-qemu-action@v3
       if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project) || inputs.force-deploy == 'true'
     - uses: docker/setup-buildx-action@v2
       if: contains(fromJSON(steps.check-changes.outputs.projects), inputs.project) || inputs.force-deploy == 'true'
