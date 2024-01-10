@@ -34,7 +34,7 @@ on:
           - disable
 
 jobs:
-  stop:
+  readonly:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
@@ -65,15 +65,19 @@ jobs:
           done
 
       - name: Patch ingresses
+        uses: nick-fields/retry@14672906e672a08bd6eeb15720e9ed3ce869cdd4 # v2.9.0
+        with:
+          max_attempts: 3 # Patching ingresses intermittently fails on MOJ Cloud Platform, so we retry this step
+          timeout_minutes: 15
+          command: |
+            ingresses=$(kubectl get ingresses -o jsonpath='{.items[*].metadata.name}')
+            for ingress in $ingresses; do
+              if [[ "$ingress" != hmpps-auth-and-delius* ]]; then
+                kubectl annotate ingress "$ingress" "nginx.ingress.kubernetes.io/configuration-snippet=$configuration_snippet" --overwrite
+              fi
+            done
         env:
           configuration_snippet: ${{ inputs.action == 'enable' && 'limit_except GET { deny all; }' || '' }}
-        run: |
-          ingresses=$(kubectl get ingresses -o jsonpath='{.items[*].metadata.name}')
-          for ingress in $ingresses; do
-            if [[ "$ingress" != hmpps-auth-and-delius* ]]; then
-              kubectl annotate ingress "$ingress" "nginx.ingress.kubernetes.io/configuration-snippet=$configuration_snippet" --overwrite
-            fi
-          done
 
       - name: Patch deployments - switch to standby database
         if: inputs.environment != 'test' && inputs.action == 'enable'
