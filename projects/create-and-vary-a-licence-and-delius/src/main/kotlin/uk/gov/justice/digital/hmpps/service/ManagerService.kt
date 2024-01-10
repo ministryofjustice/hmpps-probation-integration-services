@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.ManagedOffender
 import uk.gov.justice.digital.hmpps.api.model.Manager
 import uk.gov.justice.digital.hmpps.api.model.Name
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
@@ -40,6 +41,24 @@ fun PersonManager.asManager() = Manager(
 
 fun Staff.name() = Name(forename, middleName, surname)
 fun Provider.asProvider() = uk.gov.justice.digital.hmpps.api.model.Provider(code, description)
-fun Team.asTeam() = uk.gov.justice.digital.hmpps.api.model.Team(code, description, district.asDistrict())
+fun Team.asTeam() = uk.gov.justice.digital.hmpps.api.model.Team(
+    code,
+    description,
+    telephone,
+    emailAddress,
+    district.asDistrict(),
+    district.borough.asBorough(),
+    startDate,
+    endDate
+)
+
+fun uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload.asManagedOffender() = ManagedOffender(
+    crn,
+    Name(firstName, secondName, surname),
+    allocationDate,
+    staff.asStaff(),
+    team.asTeam()
+)
+
 fun District.asDistrict() = uk.gov.justice.digital.hmpps.api.model.District(code, description, borough.asBorough())
 fun Borough.asBorough() = uk.gov.justice.digital.hmpps.api.model.Borough(code, description)
