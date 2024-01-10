@@ -42,6 +42,6 @@ internal class StaffServiceTest {
             listOf(CaseloadGenerator.CASELOAD_ROLE_OM_1)
         )
         val res = service.getManagedOffenders("STCDE01")
-        assertThat(res[0].offenderCrn, equalTo("crn1"))
+        assertThat(res[0].crn, equalTo("crn1"))
     }
 }
