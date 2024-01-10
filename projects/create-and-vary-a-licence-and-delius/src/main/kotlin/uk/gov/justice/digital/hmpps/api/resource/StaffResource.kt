@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.api.model.ManagedOffender
 import uk.gov.justice.digital.hmpps.api.model.PDUHead
 import uk.gov.justice.digital.hmpps.api.model.Staff
 import uk.gov.justice.digital.hmpps.api.model.StaffName
@@ -31,4 +32,9 @@ class StaffResource(
         staffService.findStaffForUsernames(
             usernames
         )
+
+    @PreAuthorize("hasRole('CVL_CONTEXT')")
+    @GetMapping("/{staffCode}/caseload/managed-offenders")
+    fun getManagedOffenders(@PathVariable staffCode: String): List<ManagedOffender> =
+        staffService.getManagedOffenders(staffCode)
 }

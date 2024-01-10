@@ -2,10 +2,13 @@ package uk.gov.justice.digital.hmpps.service
 
 import org.springframework.ldap.core.LdapTemplate
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.api.model.ManagedOffender
 import uk.gov.justice.digital.hmpps.api.model.PDUHead
 import uk.gov.justice.digital.hmpps.api.model.Staff
 import uk.gov.justice.digital.hmpps.api.model.StaffName
 import uk.gov.justice.digital.hmpps.exception.NotFoundException
+import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.Caseload.CaseloadRole
+import uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity.CaseloadRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.BoroughRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.StaffRepository
 import uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.TeamRepository
@@ -16,6 +19,7 @@ class StaffService(
     private val ldapTemplate: LdapTemplate,
     private val staffRepository: StaffRepository,
     private val boroughRepository: BoroughRepository,
+    private val caseloadRepository: CaseloadRepository,
     private val teamRepository: TeamRepository
 ) {
     fun findStaff(username: String): Staff =
@@ -40,6 +44,14 @@ class StaffService(
         staffRepository.findByUserUsernameIn(usernames).map {
             it.asStaffName()
         }
+
+    fun getManagedOffenders(staffCode: String): List<ManagedOffender> =
+        caseloadRepository.findByStaffCodeAndRoleCode(
+            staffCode,
+            CaseloadRole.OFFENDER_MANAGER.value
+        ).map {
+            it.asManagedOffender()
+        }
 }
 
 fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asStaff() = Staff(
@@ -60,3 +72,4 @@ fun uk.gov.justice.digital.hmpps.integrations.delius.provider.entity.Staff.asSta
     name(),
     code
 )
+
