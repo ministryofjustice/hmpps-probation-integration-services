@@ -36,7 +36,7 @@ runs:
         echo "ORG_GRADLE_PROJECT_version=$version" | tee -a "$GITHUB_ENV"
         echo "version=$version" | tee -a "$GITHUB_OUTPUT"
 
-    - uses: actions/setup-java@v3
+    - uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'temurin'
