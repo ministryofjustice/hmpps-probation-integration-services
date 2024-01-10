@@ -20,7 +20,7 @@ runs:
       with:
         files: projects/${{ inputs.project }}/build.gradle.kts
 
-    - uses: actions/setup-java@v3
+    - uses: actions/setup-java@v4
       if: ${{ steps.gradle_file.outputs.files_exists == 'true' }}
       with:
         java-version: '21'
