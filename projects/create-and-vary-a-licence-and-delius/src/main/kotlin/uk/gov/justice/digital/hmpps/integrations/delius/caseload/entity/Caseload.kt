@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.integrations.delius.caseload.entity
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.Id
@@ -34,7 +35,10 @@ class Caseload(
 
     val allocationDate: LocalDate?,
     val roleCode: String,
+
+    @Column(columnDefinition = "char(7)")
     val crn: String,
+
     val firstName: String,
     val secondName: String?,
     val surname: String,

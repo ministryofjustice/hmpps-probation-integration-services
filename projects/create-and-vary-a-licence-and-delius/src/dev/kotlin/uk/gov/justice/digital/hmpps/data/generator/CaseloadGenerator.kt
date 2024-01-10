@@ -17,7 +17,7 @@ object CaseloadGenerator {
 
     val CASELOAD_ROLE_OM_1 = generateCaseload(
         staff = STAFF1, team = DEFAULT_TEAM,
-        crn = "crn1",
+        crn = "crn0001",
         firstName = "John",
         secondName = "x",
         surname = "Brown",
@@ -26,7 +26,7 @@ object CaseloadGenerator {
     val CASELOAD_ROLE_OM_2 = generateCaseload(
         staff = STAFF1,
         team = DEFAULT_TEAM,
-        crn = "crn22",
+        crn = "crn0022",
         firstName = "Jane",
         secondName = "y",
         surname = "Doe",
@@ -36,7 +36,7 @@ object CaseloadGenerator {
     val CASELOAD_ROLE_OM_3 = generateCaseload(
         staff = STAFF2,
         team = DEFAULT_TEAM,
-        crn = "crn77",
+        crn = "crn0077",
         firstName = "Ano",
         secondName = "no",
         surname = "mys",
@@ -46,7 +46,7 @@ object CaseloadGenerator {
     val CASELOAD_ROLE_OS_1 = generateCaseload(
         staff = STAFF2,
         team = DEFAULT_TEAM,
-        crn = "crn88",
+        crn = "crn0088",
         firstName = "Robert",
         secondName = "Alan",
         surname = "Brown",
