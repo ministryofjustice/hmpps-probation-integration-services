@@ -18,7 +18,7 @@ runs:
         name: test-results
 
     - name: Publish test reports
-      uses: mikepenz/action-junit-report@4fa23552acda20a6a1d44f16224a90efbeb6c5f1 # v3.7.5
+      uses: mikepenz/action-junit-report@0831a82caad2465c31c6dd929978f640cb42556c # v4.0.3
       if: always() && github.actor != 'dependabot[bot]'
       with:
         check_name: |-
