@@ -7,22 +7,22 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.data.generator.UserGenerator
-import uk.gov.justice.digital.hmpps.user.AuditUserRepository
+import uk.gov.justice.digital.hmpps.entity.UserRepository
 
 @Component
 @ConditionalOnProperty("seed.database")
 class DataLoader(
-    private val auditUserRepository: AuditUserRepository
+    private val userRepository: UserRepository
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     @PostConstruct
     fun saveAuditUser() {
-        auditUserRepository.save(UserGenerator.AUDIT_USER)
+        userRepository.save(UserGenerator.USER)
     }
 
     @Transactional
     override fun onApplicationEvent(are: ApplicationReadyEvent) {
-        auditUserRepository.save(UserGenerator.TEST_USER)
-        auditUserRepository.save(UserGenerator.INACTIVE_USER)
+        userRepository.save(UserGenerator.TEST_USER)
+        userRepository.save(UserGenerator.INACTIVE_USER)
     }
 }

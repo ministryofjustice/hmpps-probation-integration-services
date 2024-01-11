@@ -6,6 +6,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.Immutable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 
 @Immutable
 @Entity
@@ -21,5 +22,8 @@ class User(
 
 interface UserRepository : JpaRepository<User, Long> {
     fun findUserById(userId: Long): User?
+
+    @Query("select u from User u where upper(u.username) = upper(:username)")
+    fun findUserByUsername(username: String): User?
 }
 

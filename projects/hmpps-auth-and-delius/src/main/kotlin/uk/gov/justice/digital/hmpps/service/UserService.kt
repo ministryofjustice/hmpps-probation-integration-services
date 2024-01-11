@@ -12,13 +12,11 @@ import uk.gov.justice.digital.hmpps.exception.NotFoundException
 import uk.gov.justice.digital.hmpps.ldap.byUsername
 import uk.gov.justice.digital.hmpps.ldap.findByUsername
 import uk.gov.justice.digital.hmpps.model.UserDetails
-import uk.gov.justice.digital.hmpps.user.AuditUserService
 import javax.naming.Name
 
 @Service
 class UserService(
     private val ldapTemplate: LdapTemplate,
-    private val auditUserService: AuditUserService,
     private val userRepository: UserRepository
 ) {
 
@@ -54,19 +52,8 @@ class UserService(
         AttributesMapper { it["cn"].get().toString() }
     )
 
-    private fun LdapUser.toUserDetails() = UserDetails(
-        userId = auditUserService.findUser(username)?.id ?: throw NotFoundException(
-            "User entity",
-            "username",
-            username
-        ),
-        username = username,
-        firstName = forename,
-        surname = surname,
-        email = email,
-        enabled = enabled,
-        roles = getUserRoles(dn)
-    )
+    private fun LdapUser.toUserDetails() = userRepository.findUserByUsername(username)?.let { toUserDetails(it.id) }
+        ?: throw NotFoundException("User entity", "username", username)
 
     private fun LdapUser.toUserDetails(userId: Long) = UserDetails(
         userId = userId,
